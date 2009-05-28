@@ -41,12 +41,15 @@ import org.apache.catalina.deploy.FilterDef;
 public class TuscanyStandardContext extends StandardContext {
     protected static final String TUSCANY_FILTER_NAME = "TuscanyFilter";
     protected static final String TUSCANY_SERVLET_FILTER = "org.apache.tuscany.sca.host.webapp.TuscanyServletFilter";
-    protected static final String TUSCANY_CONTEXT_LISTENER = "org.apache.tuscany.sca.host.webapp.TuscanyContextListener";
+    protected static final String TUSCANY_CONTEXT_LISTENER =
+        "org.apache.tuscany.sca.host.webapp.TuscanyContextListener";
     private static final long serialVersionUID = 1L;
     private static final Logger log = Logger.getLogger(TuscanyStandardContext.class.getName());
 
+    private boolean isSCAApp;
+
     // TODO: this gives an instance per connector, work out how to have only one per server
-    private ClassLoader tuscanyClassLoader;
+    private static URLClassLoader tuscanyClassLoader;
 
     /**
      * Overrides the getLoader method in the Tomcat StandardContext as its a convenient
@@ -61,8 +64,16 @@ public class TuscanyStandardContext extends StandardContext {
             return loader;
         }
 
-        if(isSCAApplication()) {
-            setParentClassLoader(getTuscanyClassloader());
+        ClassLoader parent = getParentClassLoader();
+        if (isSCAApp = isSCAApplication()) {
+            String sharedProp = System.getProperty(TuscanyLifecycleListener.TUSCANY_SHARED_PROP, "false");
+            boolean shared = "true".equalsIgnoreCase(sharedProp);
+            if (!shared) {
+                setParentClassLoader(copy(getTuscanyClassloader(parent)));
+            } else {
+                // The default parent classloader is the one for the webapp
+                setParentClassLoader(getTuscanyClassloader(parent));
+            }
         }
 
         return super.getLoader();
@@ -70,7 +81,7 @@ public class TuscanyStandardContext extends StandardContext {
 
     @Override
     public boolean listenerStart() {
-        if (tuscanyClassLoader != null) {
+        if (isSCAApp) {
             enableTuscany();
         }
         return super.listenerStart();
@@ -78,15 +89,15 @@ public class TuscanyStandardContext extends StandardContext {
 
     private void enableTuscany() {
 
-        for(String listener: findApplicationListeners()) {
-            if(TUSCANY_CONTEXT_LISTENER.equals(listener)) {
+        for (String listener : findApplicationListeners()) {
+            if (TUSCANY_CONTEXT_LISTENER.equals(listener)) {
                 // The web application already has the context listener configured
                 return;
             }
         }
 
-        for(FilterDef filterDef: findFilterDefs()) {
-            if(TUSCANY_SERVLET_FILTER.equals(filterDef.getFilterClass())) {
+        for (FilterDef filterDef : findFilterDefs()) {
+            if (TUSCANY_SERVLET_FILTER.equals(filterDef.getFilterClass())) {
                 // The web application already has the filter configured
                 return;
             }
@@ -120,7 +131,7 @@ public class TuscanyStandardContext extends StandardContext {
             } catch (NamingException e) {
             }
         }
-        if(o==null) {
+        if (o == null) {
             return false;
         }
 
@@ -140,16 +151,20 @@ public class TuscanyStandardContext extends StandardContext {
         return true;
     }
 
-    private ClassLoader getTuscanyClassloader() {
+    private static URLClassLoader copy(URLClassLoader classLoader) {
+        return new URLClassLoader(classLoader.getURLs(), classLoader.getParent());
+    }
+
+    private synchronized URLClassLoader getTuscanyClassloader(ClassLoader parent) {
         if (tuscanyClassLoader == null) {
-            File tuscanyWar = new File(System.getProperty("org.apache.tuscany.sca.tomcat.war"));
+            File tuscanyWar = new File(System.getProperty(TuscanyLifecycleListener.TUSCANY_WAR_PROP));
             File[] runtimeJars = new File(tuscanyWar, "tuscany-lib").listFiles();
             try {
                 URL[] jarURLs = new URL[runtimeJars.length];
-                for (int i=0; i< jarURLs.length; i++) {
+                for (int i = 0; i < jarURLs.length; i++) {
                     jarURLs[i] = runtimeJars[i].toURI().toURL();
                 }
-                tuscanyClassLoader =  new URLClassLoader(jarURLs, getParentClassLoader());
+                tuscanyClassLoader = new URLClassLoader(jarURLs, parent);
                 return tuscanyClassLoader;
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -157,4 +172,5 @@ public class TuscanyStandardContext extends StandardContext {
         }
         return tuscanyClassLoader;
     }
+
 }
