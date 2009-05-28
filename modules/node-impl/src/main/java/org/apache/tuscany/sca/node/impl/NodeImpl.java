@@ -34,7 +34,6 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.ActivationException;
 import org.apache.tuscany.sca.core.assembly.CompositeActivator;
-import org.apache.tuscany.sca.core.assembly.impl.RuntimeComponentServiceImpl;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.node.Client;
 import org.apache.tuscany.sca.node.Node;
@@ -42,6 +41,7 @@ import org.apache.tuscany.sca.node.NodeFinder;
 import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentContext;
+import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.oasisopen.sca.CallableReference;
 import org.oasisopen.sca.ServiceReference;
 import org.oasisopen.sca.ServiceRuntimeException;
@@ -218,8 +218,10 @@ public class NodeImpl implements Node, Client {
                 for (Composite composite : domainComposite.getIncludes()) {
                     for (Component component : composite.getComponents()) {
                         for (Service service : component.getServices()) {
-                            if (service instanceof RuntimeComponentServiceImpl) {
-                                endpoints.addAll(((RuntimeComponentServiceImpl)service).getEndpoints());
+                        	// MJE 28/05/2009 - changed to RuntimeComponentService from RuntimeComponentServiceImpl
+                        	// - no need to access the Impl directly here
+                            if (service instanceof RuntimeComponentService) {
+                                endpoints.addAll(((RuntimeComponentService)service).getEndpoints());
                             }
                         }
                     }
