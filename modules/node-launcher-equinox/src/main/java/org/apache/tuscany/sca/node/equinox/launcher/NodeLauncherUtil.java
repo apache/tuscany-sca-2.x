@@ -598,12 +598,18 @@ final class NodeLauncherUtil {
      */
     static void fixupBundle(String location) throws BundleException, IOException {
         File target = file(new URL(location));
+        if (!target.exists()) {
+            return;
+        }
         location = target.toURI().toString();
 
         // For development mode, copy the MANIFEST.MF file to the bundle location as it's
         // initially outside of target/classes, at the root of the project.
         if (location.endsWith("/target/classes/")) {
             File targetManifest = new File(target, "META-INF/MANIFEST.MF");
+            if (!targetManifest.isFile()) {
+                return;
+            }
             File sourceManifest = new File(target.getParentFile().getParentFile(), "META-INF/MANIFEST.MF");
             targetManifest.getParentFile().mkdirs();
             OutputStream os = new FileOutputStream(targetManifest);
