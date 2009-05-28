@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.war;
@@ -29,13 +29,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.util.Properties;
 
 import org.apache.tuscany.sca.tomcat.TuscanyLifecycleListener;
 import org.codehaus.swizzle.stream.DelimitedTokenReplacementInputStream;
 import org.codehaus.swizzle.stream.StringTokenHandler;
 
 public class Installer {
-    
+
     private static boolean restartRequired;
     private static boolean tuscanyHookRunning;
     static {
@@ -45,7 +46,7 @@ public class Installer {
             tuscanyHookRunning = false;
         }
     }
-    
+
     public static boolean isTuscanyHookRunning() {
         return tuscanyHookRunning;
     }
@@ -66,15 +67,15 @@ public class Installer {
     public static boolean isInstalled() {
         return false;
     }
-    
+
     public String getStatus() {
         return status;
     }
 
-    public boolean install() {
+    public boolean install(boolean singleton) {
         try {
 
-            doInstall();
+            doInstall(singleton);
             status = "Install successful, Tomcat restart required.";
             restartRequired = true;
             return true;
@@ -92,9 +93,10 @@ public class Installer {
 
     public boolean uninstall() {
         try {
-            
-            doUnintsall();            
-            status = "Tuscany removed from server.xml, please restart Tomcat and manually remove Tuscany jars from Tomcat lib";
+
+            doUnintsall();
+            status =
+                "Tuscany removed from server.xml, please restart Tomcat and manually remove Tuscany jars from Tomcat lib";
             restartRequired = true;
             return true;
 
@@ -114,9 +116,14 @@ public class Installer {
             throw new IllegalStateException("conf/server.xml not found: " + serverXml.getAbsolutePath());
         }
         removeServerXml(serverXml);
+        File propFile = new File(tuscanyWAR, "tuscany.properties");
+        if (propFile.isFile()) {
+            propFile.delete();
+        }
+
     }
-    
-    private boolean doInstall() {
+
+    private boolean doInstall(boolean singleton) {
         // First verify all the file locations are as expected
         if (!tuscanyWAR.exists()) {
             throw new IllegalStateException("Tuscany war missing: " + tuscanyWAR.getAbsolutePath());
@@ -129,7 +136,7 @@ public class Installer {
             // try Tomcat 5 server/lib
             if (new File(catalinaBase, "/server").exists()) {
                 serverLib = new File(new File(catalinaBase, "/server"), "/lib");
-            } 
+            }
         }
         if (!(serverLib.exists())) {
             throw new IllegalStateException("Tomcat lib not found: " + serverLib.getAbsolutePath());
@@ -139,17 +146,31 @@ public class Installer {
             throw new IllegalStateException("conf/server.xml not found: " + serverXml.getAbsolutePath());
         }
 
-        File tuscanyTomcatJar = findTuscanyTomcatJar(tuscanyWAR);        
+        File tuscanyTomcatJar = findTuscanyTomcatJar(tuscanyWAR);
         if (tuscanyTomcatJar == null || !tuscanyTomcatJar.exists()) {
             throw new IllegalStateException("Can't find tuscany-tomcat-*.jar in: " + tuscanyWAR.getAbsolutePath());
         }
 
-        // Copy tuscany-tomcat jar from the tuscany webapp web-inf/lib to Tomcat server/lib 
+        // Copy tuscany-tomcat jar from the tuscany webapp web-inf/lib to Tomcat server/lib
         copyFile(tuscanyTomcatJar, new File(serverLib, tuscanyTomcatJar.getName()));
+
+        if (singleton) {
+            try {
+                // Write out a property file
+                File propFile = new File(tuscanyWAR, "tuscany.properties");
+                FileOutputStream os = new FileOutputStream(propFile);
+                Properties props = new Properties();
+                props.put("singleton", "true");
+                props.store(os, "Apache Tuscany properties for Tomcat");
+                os.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
 
         // Add Tuscany LifecycleListener to Tomcat server.xml
         updateServerXml(serverXml);
-        
+
         return true;
     }
 
@@ -163,35 +184,27 @@ public class Installer {
         return null;
     }
 
-    static final String tuscanyListener = "\r\n" + "  <!-- Tuscany plugin for Tomcat -->\r\n" + "<Listener className=\"org.apache.tuscany.sca.tomcat.TuscanyLifecycleListener\" />";
+    static final String tuscanyListener =
+        "\r\n" + "  <!-- Tuscany plugin for Tomcat -->\r\n"
+            + "<Listener className=\"org.apache.tuscany.sca.tomcat.TuscanyLifecycleListener\" />";
 
     private void updateServerXml(File serverXmlFile) {
         String serverXML = readAll(serverXmlFile);
         if (!serverXML.contains(tuscanyListener)) {
-            String newServerXml = replace(
-               serverXML,
-               "<Server",
-               "<Server",
-               ">",
-               ">" + tuscanyListener);
+            String newServerXml = replace(serverXML, "<Server", "<Server", ">", ">" + tuscanyListener);
             backup(serverXmlFile);
             writeAll(serverXmlFile, newServerXml);
         }
-        
+
     }
 
     private void removeServerXml(File serverXmlFile) {
         String serverXML = readAll(serverXmlFile);
         if (serverXML.contains(tuscanyListener)) {
-            String newServerXml = replace(
-               serverXML,
-               "<Server",
-               "<Server",
-               ">" + tuscanyListener,
-               ">");
+            String newServerXml = replace(serverXML, "<Server", "<Server", ">" + tuscanyListener, ">");
             writeAll(serverXmlFile, newServerXml);
         }
-        
+
     }
 
     private String replace(String inputText, String begin, String newBegin, String end, String newEnd) {
@@ -225,13 +238,14 @@ public class Installer {
             close(in);
         }
     }
+
     private String readAll(InputStream in) {
         try {
             // SwizzleStream block read methods are broken so read byte at a time
             StringBuilder sb = new StringBuilder();
             int i = in.read();
             while (i != -1) {
-                sb.append((char) i);
+                sb.append((char)i);
                 i = in.read();
             }
             return sb.toString();
@@ -276,7 +290,7 @@ public class Installer {
         }
         out.flush();
     }
-    
+
     private void close(Closeable thing) {
         if (thing != null) {
             try {

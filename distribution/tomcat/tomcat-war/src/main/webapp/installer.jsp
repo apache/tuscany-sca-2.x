@@ -48,6 +48,7 @@
        <B>Install Tuscany</B><BR>
        To install Tuscany into Tomcat, click:
                 <form action='installer' method='post'>
+                <input type='checkbox' name='singleton' value='true'>The Tuscany runtime is shared by all web applications if checked.<p>
                 <input type='submit' name='action' value='Install'>
                 </form>
        <BR>
