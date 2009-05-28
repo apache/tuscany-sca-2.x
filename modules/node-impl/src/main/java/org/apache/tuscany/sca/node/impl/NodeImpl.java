@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.node.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,10 +28,13 @@ import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeService;
+import org.apache.tuscany.sca.assembly.Endpoint2;
+import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.ActivationException;
 import org.apache.tuscany.sca.core.assembly.CompositeActivator;
+import org.apache.tuscany.sca.core.assembly.impl.RuntimeComponentServiceImpl;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.node.Client;
 import org.apache.tuscany.sca.node.Node;
@@ -199,6 +203,30 @@ public class NodeImpl implements Node, Client {
 
     public ExtensionPointRegistry getExtensionPoints() {
         return manager.getExtensionPoints();
+    }
+    
+    /**
+     * Get the service endpoints in this Node
+     * TODO: needs review, works for the very simple testcase but i expect there are
+     *    other endpoints to be included
+     */
+    public List<Endpoint2> getServiceEndpoints() {
+        List<Endpoint2> endpoints = new ArrayList<Endpoint2>();
+        if (compositeActivator != null) {
+            Composite domainComposite = compositeActivator.getDomainComposite();
+            if (domainComposite != null) {
+                for (Composite composite : domainComposite.getIncludes()) {
+                    for (Component component : composite.getComponents()) {
+                        for (Service service : component.getServices()) {
+                            if (service instanceof RuntimeComponentServiceImpl) {
+                                endpoints.addAll(((RuntimeComponentServiceImpl)service).getEndpoints());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return endpoints;
     }
 
 }
