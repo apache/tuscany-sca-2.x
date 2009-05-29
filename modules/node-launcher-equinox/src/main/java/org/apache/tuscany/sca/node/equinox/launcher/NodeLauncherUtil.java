@@ -607,10 +607,10 @@ final class NodeLauncherUtil {
         // initially outside of target/classes, at the root of the project.
         if (location.endsWith("/target/classes/")) {
             File targetManifest = new File(target, "META-INF/MANIFEST.MF");
-            if (!targetManifest.isFile()) {
+            File sourceManifest = new File(target.getParentFile().getParentFile(), "META-INF/MANIFEST.MF");
+            if (!sourceManifest.isFile()) {
                 return;
             }
-            File sourceManifest = new File(target.getParentFile().getParentFile(), "META-INF/MANIFEST.MF");
             targetManifest.getParentFile().mkdirs();
             OutputStream os = new FileOutputStream(targetManifest);
             InputStream is = new FileInputStream(sourceManifest);
