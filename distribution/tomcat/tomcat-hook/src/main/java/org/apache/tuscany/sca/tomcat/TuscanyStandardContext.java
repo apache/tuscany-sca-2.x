@@ -39,16 +39,16 @@ import org.apache.catalina.deploy.FilterDef;
  * the start and inserts any required Tuscany configuration.
  */
 public class TuscanyStandardContext extends StandardContext {
-    protected static final String TUSCANY_FILTER_NAME = "TuscanyFilter";
-    protected static final String TUSCANY_SERVLET_FILTER = "org.apache.tuscany.sca.host.webapp.TuscanyServletFilter";
-    protected static final String TUSCANY_CONTEXT_LISTENER =
-        "org.apache.tuscany.sca.host.webapp.TuscanyContextListener";
     private static final long serialVersionUID = 1L;
     private static final Logger log = Logger.getLogger(TuscanyStandardContext.class.getName());
 
+    protected static final String TUSCANY_FILTER_NAME = "TuscanyFilter";
+    protected static final String TUSCANY_SERVLET_FILTER = "org.apache.tuscany.sca.host.webapp.TuscanyServletFilter";
+    protected static final String TUSCANY_CONTEXT_LISTENER = "org.apache.tuscany.sca.host.webapp.TuscanyContextListener";
+
     private boolean isSCAApp;
 
-    // TODO: this gives an instance per connector, work out how to have only one per server
+    // TODO: this gives an instance per webapp, work out how to have only one per server
     private static URLClassLoader tuscanyClassLoader;
 
     /**
@@ -172,5 +172,4 @@ public class TuscanyStandardContext extends StandardContext {
         }
         return tuscanyClassLoader;
     }
-
 }
