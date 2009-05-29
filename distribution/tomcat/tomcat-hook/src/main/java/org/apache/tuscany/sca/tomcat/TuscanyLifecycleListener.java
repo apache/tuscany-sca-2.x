@@ -70,6 +70,7 @@ public class TuscanyLifecycleListener implements LifecycleListener {
                 log.severe("Tuscany disabled as Tuscany webapp not found");
             } else {
                 System.setProperty(TUSCANY_WAR_PROP, webappDir.getAbsolutePath());
+                System.setProperty("org.apache.tuscany.sca.contribution.processor.ValidationSchemaExtensionPoint.enabled", "false");
                 File propFile = new File(webappDir, "tuscany.properties");
                 if (propFile.isFile()) {
                     try {
