@@ -103,17 +103,19 @@ public class NodeImpl implements Node, Client {
                 return;
             }
             NodeFinder.removeNode(NodeUtil.createURI(configuration.getDomainURI()));
-            List<Composite> composites = compositeActivator.getDomainComposite().getIncludes();
-            for (Composite composite : composites) {
-
-                // Stop the composite
-                compositeActivator.stop(composite);
-
-                // Deactivate the composite
-                compositeActivator.deactivate(composite);
-
-            }
-            composites.clear();
+            if( compositeActivator.getDomainComposite() != null ) {
+	            List<Composite> composites = compositeActivator.getDomainComposite().getIncludes();
+	            for (Composite composite : composites) {
+	
+	                // Stop the composite
+	                compositeActivator.stop(composite);
+	
+	                // Deactivate the composite
+	                compositeActivator.deactivate(composite);
+	
+	            } // end for
+	            composites.clear();
+            } // end if 
 
             manager.removeNode(configuration);
             this.compositeActivator = null;
