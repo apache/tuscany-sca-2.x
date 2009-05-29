@@ -48,25 +48,13 @@
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-feature-webservice</artifactId>
+            <artifactId>tuscany-implementation-web-runtime</artifactId>
             <version>2.0-SNAPSHOT</version>
-            <type>pom</type>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.tuscany.sca</groupId>
-                    <artifactId>tuscany-host-jetty</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.tuscany.sca</groupId>
-                    <artifactId>tuscany-host-tomcat</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-feature-webapp</artifactId>
+            <artifactId>tuscany-binding-ws-axis2</artifactId>
             <version>2.0-SNAPSHOT</version>
-            <type>pom</type>
         </dependency>
 
     </dependencies>
