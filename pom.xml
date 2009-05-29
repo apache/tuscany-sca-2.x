@@ -470,6 +470,12 @@
                     <include>LICENSE</include>
                     <include>NOTICE</include>
                     <include>README</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>${basedir}/META-INF</directory>
+                <targetPath>META-INF</targetPath>
+                <includes>
                     <include>MANIFEST.MF</include>
                 </includes>
             </resource>
