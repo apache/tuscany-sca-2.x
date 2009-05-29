@@ -184,7 +184,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>jaxws-maven-plugin</artifactId>
-                <version>1.11</version>
+                <version>1.12</version>
                 <!-- Explicitly add the transitive dependencies for jaxws-api
                      http://jira.codehaus.org/browse/MEV-498
                 -->
