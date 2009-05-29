@@ -45,6 +45,7 @@ public class TuscanyStandardContext extends StandardContext {
     protected static final String TUSCANY_FILTER_NAME = "TuscanyFilter";
     protected static final String TUSCANY_SERVLET_FILTER = "org.apache.tuscany.sca.host.webapp.TuscanyServletFilter";
     protected static final String TUSCANY_CONTEXT_LISTENER = "org.apache.tuscany.sca.host.webapp.TuscanyContextListener";
+    protected static final String TUSCANY_MANAGER_LISTENER = "org.apache.tuscany.sca.tomcat.foo.TuscanyTomcatNode";
 
     private boolean isSCAApp;
 
@@ -65,7 +66,7 @@ public class TuscanyStandardContext extends StandardContext {
         }
 
         ClassLoader parent = getParentClassLoader();
-        if (isSCAApp = isSCAApplication()) {
+        if (isSCAApp = isSCAApplication() || isTuscanyManager()) {
             String sharedProp = System.getProperty(TuscanyLifecycleListener.TUSCANY_SHARED_PROP, "false");
             boolean shared = "true".equalsIgnoreCase(sharedProp);
             if (!shared) {
@@ -81,7 +82,11 @@ public class TuscanyStandardContext extends StandardContext {
 
     @Override
     public boolean listenerStart() {
-        if (isSCAApp) {
+        if (isTuscanyManager()) {
+            // this isn't great having the manager app config scattered about different modules
+            // but is temp until this is all tidied up in a refactor after the basics are working
+            addApplicationListener(TUSCANY_MANAGER_LISTENER);
+        } else if (isSCAApp) {
             enableTuscany();
         }
         return super.listenerStart();
@@ -149,6 +154,10 @@ public class TuscanyStandardContext extends StandardContext {
         } catch (NamingException e) {
         }
         return true;
+    }
+
+    private boolean isTuscanyManager() {
+        return "/tuscany".equals(getName());
     }
 
     private static URLClassLoader copy(URLClassLoader classLoader) {
