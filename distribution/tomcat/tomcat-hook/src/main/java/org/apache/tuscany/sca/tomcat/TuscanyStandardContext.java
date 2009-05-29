@@ -148,6 +148,7 @@ public class TuscanyStandardContext extends StandardContext {
                 String jar = enumeration.nextElement().getName();
                 if (jar.startsWith("tuscany-")) {
                     // Do not alter is
+                    log.info("Tuscany SCA ignoring webapp with embedded Tuscany runtime: " + this.getName());
                     return false;
                 }
             }
