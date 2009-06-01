@@ -220,7 +220,7 @@ public class NodeFactoryImpl extends NodeFactory {
 
     private static void warning(Monitor monitor, String message, Object model, Object... messageParameters) {
         if (monitor != null) {
-            Problem problem = monitor.createProblem(NodeImpl.class.getName(), "workspace-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
+            Problem problem = monitor.createProblem(NodeImpl.class.getName(), "node-impl-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
             monitor.problem(problem);
         }
     }
