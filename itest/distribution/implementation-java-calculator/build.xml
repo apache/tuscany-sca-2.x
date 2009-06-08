@@ -18,7 +18,7 @@
 -->
 <project name="itest-samples" default="run"> 
 	
-	<echo>${JAVA_HOME}</echo>
+	<echo>${java.home}</echo>
 	<!-- 
 	    compile and run each sample as though the user were running
 	    samples from the binary distribution. Here we use ant targets
