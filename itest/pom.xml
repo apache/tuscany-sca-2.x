@@ -50,6 +50,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
+                <!--module>builder</module-->
                 <module>callback-api</module>
                 <module>callback-basic</module>
                 <module>callback-complex-type</module>
@@ -66,6 +67,7 @@
                 <module>exceptions</module>
                 <module>implementation-spring</module>
                 <module>interfaces</module>
+                <module>nodes</module>
 <!--
                 <module>operation-overloading</module>
 -->
