@@ -27,7 +27,7 @@
     </parent>
     <packaging>pom</packaging>
     <artifactId>itest-nodes</artifactId>
-    <name>Apache Tuscany SCA Nodes Integration Tests</name>
+    <name>Apache Tuscany SCA iTest Nodes</name>
     
   <build>
 	<defaultGoal>install</defaultGoal>
