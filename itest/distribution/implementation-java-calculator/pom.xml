@@ -70,6 +70,7 @@
                         <configuration>
                             <tasks> 
                                 <property name="tuscany.version" value="${version}" />
+                                <property name="java.home" value="${java.home}"/>
                                 <ant antfile="./build.xml" target="run"/>
                             </tasks>
                         </configuration>
