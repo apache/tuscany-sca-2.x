@@ -32,6 +32,7 @@ import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Endpoint2;
 import org.apache.tuscany.sca.assembly.EndpointReference2;
+import org.apache.tuscany.sca.assembly.EndpointRegistry;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.assembly.SCABinding;
@@ -40,6 +41,7 @@ import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.assembly.builder.EndpointReferenceBuilder;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
@@ -47,6 +49,7 @@ import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySubject;
+import org.oasisopen.sca.SCARuntimeException;
 
 /**
  * An builder that takes endpoint references and resolves them. It either finds local 
@@ -62,15 +65,19 @@ public class EndpointReferenceBuilderImpl implements CompositeBuilder, EndpointR
     protected ExtensionPointRegistry extensionPoints;
     protected AssemblyFactory assemblyFactory;
     protected InterfaceContractMapper interfaceContractMapper;
+    protected EndpointRegistry endpointRegistry;
     
     
     public EndpointReferenceBuilderImpl(ExtensionPointRegistry extensionPoints) {
         this.extensionPoints = extensionPoints;
-    }
-    
-    public EndpointReferenceBuilderImpl(FactoryExtensionPoint factories, InterfaceContractMapper mapper) {
+        
+        FactoryExtensionPoint factories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         this.assemblyFactory = factories.getFactory(AssemblyFactory.class);
-        this.interfaceContractMapper = mapper;
+        
+        UtilityExtensionPoint utils = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
+        this.interfaceContractMapper = utils.getUtility(InterfaceContractMapper.class);
+        
+        this.endpointRegistry = utils.getUtility(EndpointRegistry.class);
     }
 
     public String getID() {
@@ -121,58 +128,6 @@ public class EndpointReferenceBuilderImpl implements CompositeBuilder, EndpointR
             monitor.problem(problem);
         }
     }    
-    
-    /**
-     * Index components inside a composite
-     * 
-     * @param composite
-     * @param componentServices
-
-     */
-    protected void indexComponents(Composite composite,
-                                 Map<String, Component> components) {
-        for (Component component : composite.getComponents()) {
-            // Index components by name
-            components.put(component.getName(), component);
-        }    
-    }
-    
-    /**
-     * Index services inside a composite
-     * 
-     * @param composite
-     * @param componentServices
-     */
-    protected void indexServices(Composite composite,
-                                 Map<String, ComponentService> componentServices) {
-
-        for (Component component : composite.getComponents()) {
-            
-            ComponentService nonCallbackService = null;
-            int nonCallbackServiceCount = 0;
-            
-            for (ComponentService componentService : component.getServices()) {                 
-                // Index component services by component name / service name
-                String uri = component.getName() + '/' + componentService.getName();
-                componentServices.put(uri, componentService);
-                
-                // count how many non-callback there are
-                if (!componentService.isCallback()) {                            
-                    
-                    if (nonCallbackServiceCount == 0) {
-                        nonCallbackService = componentService;
-                    }
-                    nonCallbackServiceCount++;
-                }
-            }
-            if (nonCallbackServiceCount == 1) {
-                // If we have a single non callback service, index it by
-                // component name as well
-                componentServices.put(component.getName(), nonCallbackService);
-            }
-        }    
-    }    
-        
 
     /**
      * Build all the endpoint references
@@ -181,46 +136,37 @@ public class EndpointReferenceBuilderImpl implements CompositeBuilder, EndpointR
      */
     public void build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException 
     {
-        // process top level composite references
-        // TODO - I don't think OASIS allows for these
-        //
-        //processCompositeReferences(composite);
-        
-        // process component services
-        processComponentReferences(composite, monitor);  
+        // Not used now
     }
-    
-    private void processCompositeReferences(Composite composite) {
-        // TODO do we need this for OASIS?
-    }
-    
-    private void processComponentReferences(Composite composite, Monitor monitor) {
+
+    /*
+    private void populateEndpointRegistry(Composite composite, Monitor monitor) {
         
-        // index all of the components in the composite
-        Map<String, Component> components = new HashMap<String, Component>();
-        indexComponents(composite, components);
-        
-        // index all of the services in the composite
-        Map<String, ComponentService> componentServices = new HashMap<String, ComponentService>();
-        indexServices(composite, componentServices);
-        
-        // create endpoint references for each component's references
+        // register endpoints (and endpoint references) for each component
         for (Component component : composite.getComponents()) {
             // recurse for composite implementations
             Implementation implementation = component.getImplementation();
             if (implementation instanceof Composite) {
-                processComponentReferences((Composite)implementation, monitor);
+                populateEndpointRegistry((Composite)implementation, monitor);
             }
             
-            // build endpoint references 
-            for (ComponentReference reference : component.getReferences()) {
-                for (EndpointReference2 endpointReference : reference.getEndpointReferences()){
-                    build(endpointReference, monitor);
+            // register endpoints  
+            for (ComponentService service : component.getServices()) {
+                for (Endpoint2 endpoint : service.getEndpoints()){
+                    endpointRegistry.addEndpoint(endpoint);
                 }
             }
+            
+            // register endpoint references  
+            for (ComponentReference reference : component.getReferences()) {
+                for (EndpointReference2 endpointReference : reference.getEndpointReferences()){
+                    endpointRegistry.addEndpointReference(endpointReference);
+                }
+            }            
         }
-    }    
-
+    }
+    */
+    
     /**
      * Build a single endpoint reference
      * 
@@ -234,23 +180,50 @@ public class EndpointReferenceBuilderImpl implements CompositeBuilder, EndpointR
             // an error?
         } else {          
             if (endpoint.isUnresolved() == false){
-                // everything is resolved
+                // Wired - service resolved - binding matched
+                // The service is in the same composite
                 return;
             }
             
             if (endpointReference.isUnresolved() == false ){  
-                // TODO - bring resolution and binding matching together
-                // just do binding matching
+                // Wired - service resolved - binding not matched 
+                // The service is in the same composite
+                // TODO - How do we get to here?
                 matchForwardBinding(endpointReference, 
                                     monitor);
                 
                 matchCallbackBinding(endpointReference, 
                                      monitor);
             } else {
-                // resolve the endpoint reference in the domain and then 
-                // match bindings
+                // Wired - service specified but unresolved
+                // The service is in a remote composite somewhere else in the domain
+                
+                // find the service in the endpoint registry
+                List<Endpoint2> endpoints = endpointRegistry.findEndpoint(endpointReference);
+                
+                // TODO - do we exepect to find more than one endpoint in 
+                //        anything other than the autowire case?
+                if (endpoints.size() == 0) {
+                    throw new SCARuntimeException("No endpoints found for EndpointReference " + endpointReference.toString());
+                }
+                
+                if (endpoints.size() > 1) {
+                    throw new SCARuntimeException("More than one endpoint found for EndpointReference" + endpointReference.toString());
+                }
+                
+                endpointReference.setTargetEndpoint(endpoints.get(0));
+                
+                matchForwardBinding(endpointReference, 
+                        monitor);
+    
+                matchCallbackBinding(endpointReference, 
+                         monitor);
             } 
-        }        
+        }      
+        
+        if (endpointReference.isUnresolved()){
+            throw new SCARuntimeException("EndpointReference can't be resolved");
+        }
     }
     
     // TODO - EPR - In OASIS case there are no bindings to match with on the 
@@ -279,7 +252,7 @@ public class EndpointReferenceBuilderImpl implements CompositeBuilder, EndpointR
         if (matchedReferenceBinding.isEmpty()) {
             // No matching binding
             endpointReference.setBinding(null);
-            endpointReference.setTargetEndpoint(null);
+            endpointReference.setUnresolved(true);
             warning(monitor, 
                     "NoMatchingBinding", 
                     endpointReference.getReference(),
@@ -324,6 +297,7 @@ public class EndpointReferenceBuilderImpl implements CompositeBuilder, EndpointR
                 Endpoint2 clonedEndpoint = (Endpoint2)serviceEndpoint.clone();
                 
                 endpointReference.setTargetEndpoint(clonedEndpoint);
+                endpointReference.setUnresolved(false);
 
             } catch (Exception ex) {
                 // do nothing
@@ -368,6 +342,7 @@ public class EndpointReferenceBuilderImpl implements CompositeBuilder, EndpointR
         if (matchedEndpoint.isEmpty()) {
             // No matching binding
             endpointReference.setCallbackEndpoint(null);
+            endpointReference.setUnresolved(true);
             warning(monitor, 
                     "NoMatchingCallbackBinding", 
                     endpointReference.getReference(),
@@ -386,6 +361,7 @@ public class EndpointReferenceBuilderImpl implements CompositeBuilder, EndpointR
             }
             
             endpointReference.setCallbackEndpoint(matchedEndpoint.get(selectedEndpoint));
+            endpointReference.setUnresolved(false);
         }
     }     
     

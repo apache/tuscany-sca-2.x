@@ -20,6 +20,8 @@
 package org.apache.tuscany.sca.core.assembly.impl;
 
 import java.lang.reflect.InvocationTargetException;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +31,11 @@ import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Endpoint2;
 import org.apache.tuscany.sca.assembly.EndpointReference2;
+import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
+import org.apache.tuscany.sca.assembly.builder.CompositeBuilderExtensionPoint;
+import org.apache.tuscany.sca.assembly.builder.EndpointReferenceBuilder;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.conversation.ConversationManager;
 import org.apache.tuscany.sca.core.invocation.NonBlockingInterceptor;
 import org.apache.tuscany.sca.core.invocation.RuntimeWireInvoker;
@@ -42,9 +49,13 @@ import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.invocation.Phase;
+import org.apache.tuscany.sca.monitor.MonitorFactory;
+import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.provider.PolicyProvider;
+import org.apache.tuscany.sca.provider.PolicyProviderFactory;
 import org.apache.tuscany.sca.provider.PolicyProviderRRB;
+import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.provider.ReferenceBindingProviderRRB;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
@@ -62,6 +73,9 @@ import org.oasisopen.sca.ServiceRuntimeException;
  * @version $Rev$ $Date$
  */
 public class RuntimeWireImpl2 implements RuntimeWire {
+    
+    private ExtensionPointRegistry extensionPoints;
+    
     private Boolean isReferenceWire = false;
     private EndpointReference2 endpointReference;
     private Endpoint2 endpoint;
@@ -82,6 +96,9 @@ public class RuntimeWireImpl2 implements RuntimeWire {
 
     private List<InvocationChain> chains;
     private InvocationChain bindingInvocationChain;
+    
+    private EndpointReferenceBuilder endpointReferenceBuilder;
+    private final ProviderFactoryExtensionPoint providerFactories;
 
     /**
      * @param source
@@ -92,7 +109,8 @@ public class RuntimeWireImpl2 implements RuntimeWire {
      * @param messageFactory 
      * @param conversationManager 
      */
-    public RuntimeWireImpl2(boolean isReferenceWire,
+    public RuntimeWireImpl2(ExtensionPointRegistry extensionPoints,
+                            boolean isReferenceWire,
                             EndpointReference2 endpointReference,
                             Endpoint2 endpoint,
                             InterfaceContractMapper interfaceContractMapper,
@@ -101,6 +119,7 @@ public class RuntimeWireImpl2 implements RuntimeWire {
                             MessageFactory messageFactory,
                             ConversationManager conversationManager) {
         super();
+        this.extensionPoints = extensionPoints;
         this.isReferenceWire = isReferenceWire;
         this.endpointReference = endpointReference;
         this.endpoint = endpoint;
@@ -110,6 +129,10 @@ public class RuntimeWireImpl2 implements RuntimeWire {
         this.messageFactory = messageFactory;
         this.conversationManager = conversationManager;
         this.invoker = new RuntimeWireInvoker(this.messageFactory, this.conversationManager, this);
+       
+        UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
+        this.endpointReferenceBuilder = utilities.getUtility(EndpointReferenceBuilder.class);
+        this.providerFactories = extensionPoints.getExtensionPoint(ProviderFactoryExtensionPoint.class);
     }
 
     public synchronized List<InvocationChain> getInvocationChains() {
@@ -164,12 +187,15 @@ public class RuntimeWireImpl2 implements RuntimeWire {
      * Initialize the invocation chains
      */
     private void initInvocationChains() {
+   
         chains = new ArrayList<InvocationChain>();
         InterfaceContract sourceContract = endpointReference.getInterfaceContract();
-        InterfaceContract targetContract = endpoint.getInterfaceContract();
 
         if (isReferenceWire) {
             // It's the reference wire
+            resolveEndpointReference();
+
+            InterfaceContract targetContract = endpoint.getInterfaceContract();
             RuntimeComponentReference reference = (RuntimeComponentReference)endpointReference.getReference();
             Binding refBinding = endpointReference.getBinding();
             for (Operation operation : sourceContract.getInterface().getOperations()) {
@@ -191,6 +217,7 @@ public class RuntimeWireImpl2 implements RuntimeWire {
             
         } else {
             // It's the service wire
+            InterfaceContract targetContract = endpoint.getInterfaceContract();
             RuntimeComponentService service = (RuntimeComponentService)endpoint.getService();
             RuntimeComponent serviceComponent = (RuntimeComponent)endpoint.getComponent();
             Binding serviceBinding = endpoint.getBinding();
@@ -215,6 +242,88 @@ public class RuntimeWireImpl2 implements RuntimeWire {
         }
         wireProcessor.process(this);
     }
+    
+    /**
+     * This code used to be in the activator but has moved here as 
+     * the endpoint reference may not now be resolved until the wire
+     * is first used
+     */
+    private void resolveEndpointReference(){
+        endpointReferenceBuilder.build(endpointReference, null);
+        
+        // set the endpoint based on the resolved endpoint
+        endpoint = endpointReference.getTargetEndpoint();
+                
+        RuntimeComponentReference runtimeRef = (RuntimeComponentReference)endpointReference.getReference();
+        
+        if (runtimeRef.getBindingProvider(endpointReference.getBinding()) == null) {
+            addReferenceBindingProvider((RuntimeComponent)endpointReference.getComponent(), 
+                    runtimeRef, 
+                    endpointReference.getBinding());
+        }
+        
+        // start the binding provider   
+        final ReferenceBindingProvider bindingProvider = runtimeRef.getBindingProvider(endpointReference.getBinding());
+        
+        if (bindingProvider != null) {
+            // Allow bindings to add shutdown hooks. Requires RuntimePermission shutdownHooks in policy. 
+            AccessController.doPrivileged(new PrivilegedAction<Object>() {
+                public Object run() {
+                    bindingProvider.start();
+                    return null;
+                  }
+            });                       
+        }
+        
+        InterfaceContract bindingContract = getInterfaceContract(endpointReference.getReference(), endpointReference.getBinding());
+        Endpoint2 endpoint = endpointReference.getTargetEndpoint();
+        endpoint.setInterfaceContract(bindingContract);
+    }
+    
+    private ReferenceBindingProvider addReferenceBindingProvider(
+            RuntimeComponent component, RuntimeComponentReference reference,
+            Binding binding) {
+        BindingProviderFactory providerFactory = (BindingProviderFactory) providerFactories
+                .getProviderFactory(binding.getClass());
+        if (providerFactory != null) {
+            @SuppressWarnings("unchecked")
+            ReferenceBindingProvider bindingProvider = providerFactory
+                    .createReferenceBindingProvider(
+                            (RuntimeComponent) component,
+                            (RuntimeComponentReference) reference, binding);
+            if (bindingProvider != null) {
+                ((RuntimeComponentReference) reference).setBindingProvider(
+                        binding, bindingProvider);
+            }
+            for (PolicyProviderFactory f : providerFactories
+                    .getPolicyProviderFactories()) {
+                PolicyProvider policyProvider = f
+                        .createReferencePolicyProvider(component, reference,
+                                binding);
+                if (policyProvider != null) {
+                    reference.addPolicyProvider(binding, policyProvider);
+                }
+            }
+
+            return bindingProvider;
+        } else {
+            throw new IllegalStateException(
+                    "Provider factory not found for class: "
+                            + binding.getClass().getName());
+        }
+    }  
+    
+    private InterfaceContract getInterfaceContract(ComponentReference reference, Binding binding) {
+        InterfaceContract interfaceContract = reference.getInterfaceContract();
+        ReferenceBindingProvider provider = ((RuntimeComponentReference)reference).getBindingProvider(binding);
+        if (provider != null) {
+            InterfaceContract bindingContract = provider.getBindingInterfaceContract();
+            if (bindingContract != null) {
+                interfaceContract = bindingContract;
+            }
+        }
+        return interfaceContract.makeUnidirectional(false);
+    }     
     
     private void initReferenceBindingInvocationChains() {
         RuntimeComponentReference reference = (RuntimeComponentReference)endpointReference.getReference();

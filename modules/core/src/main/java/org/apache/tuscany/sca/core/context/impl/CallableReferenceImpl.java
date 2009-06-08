@@ -81,9 +81,6 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
 
     protected transient RuntimeComponent component;
     protected transient RuntimeComponentReference reference;
-    // TODO - EPR - remove wire indexing on bindings as enpoint references
-    //              can share reference bindings
-    protected transient Binding binding;
     protected transient EndpointReference2 endpointReference;
 
     protected String scdl;
@@ -110,36 +107,33 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
     protected CallableReferenceImpl(Class<B> businessInterface,
                                     RuntimeComponent component,
                                     RuntimeComponentReference reference,
-                                    Binding binding,
+                                    EndpointReference2 endpointReference,
                                     ProxyFactory proxyFactory,
                                     CompositeActivator compositeActivator) {
         this.proxyFactory = proxyFactory;
         this.businessInterface = businessInterface;
         this.component = component;
         this.reference = reference;
-        this.binding = binding;
+        this.endpointReference = endpointReference;
         
         // FIXME: The SCA Specification is not clear how we should handle multiplicity 
         // for CallableReference
-        if (this.binding == null) {
-            this.binding = this.reference.getBinding(SCABinding.class);
-            if (this.binding == null) {
-
-                // TODO: TUSCANY-2580: if the refernece doesn't have a binding yet then instead of NPE use a candidate one if its avaialable              
-                if (reference.getBindings() != null && reference.getBindings().size() > 0) {
-                    this.binding = this.reference.getBindings().get(0);
-                } 
+        if (this.endpointReference == null) {
+            
+            // TODO - EPR - If no endpoint reference specified assume the first one
+            //        This will happen when a self reference is created in which case the 
+            //        the reference should only have on endpointReference so use that 
+            if (this.reference.getEndpointReferences().size() == 0){
+                throw new ServiceRuntimeException("The reference " + reference.getName() + " in component " + 
+                        component.getName() + " has no endpoint references");
             }
             
-            // TODO - EPR - If no binding specified assume default binding and find the endpoint reference 
-            //              related to it
-            for (EndpointReference2 endpointReference : this.reference.getEndpointReferences()){
-                if ((endpointReference.getBinding() != null) && 
-                    (endpointReference.getBinding() instanceof SCABinding)){
-                    this.endpointReference = endpointReference;
-                    break;
-                }
+            if (this.reference.getEndpointReferences().size() > 1){
+                throw new ServiceRuntimeException("The reference " + reference.getName() + " in component " + 
+                        component.getName() + " has more than one endpoint reference");
             }
+            
+            this.endpointReference = this.reference.getEndpointReferences().get(0);
         }
 
         // FIXME: Should we normalize the componentName/serviceName URI into an absolute SCA URI in the SCA binding?
@@ -160,8 +154,6 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
             resolve();
             if (endpointReference != null){
                 return reference.getRuntimeWire(endpointReference);
-            } else if (reference != null) {
-                return reference.getRuntimeWire(binding);
             } else {
                 return null;
             }
@@ -174,7 +166,6 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
         if (wire != null) {
             this.component = wire.getSource().getComponent();
             this.reference = (RuntimeComponentReference)wire.getSource().getContract();
-            this.binding = wire.getSource().getBinding();
             this.endpointReference = wire.getEndpointReference();
             this.compositeActivator = ((ComponentContextExt)component.getComponentContext()).getCompositeActivator();
             this.conversationManager = this.compositeActivator.getCompositeContext().getConversationManager();
@@ -276,6 +267,8 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
     /**
      * @throws IOException
      */
+ // TODO - EPR all needs sorting out for endpoint references
+    
     private synchronized void resolve() throws Exception {
         if ((scdl != null || xmlReader != null) && component == null && reference == null) {
             CompositeContext componentContextHelper = CompositeContext.getCurrentCompositeContext();
@@ -308,6 +301,7 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
                     attachConversation(parameters.getConversationID());
                 }
 
+                // TODO - EPR all needs sorting out for endpoint references
                 for (Binding binding : reference.getBindings()) {
                     if (binding instanceof OptimizableBinding) {
                         // Resolve the Component
@@ -341,6 +335,7 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
                         }
                     }
                 }
+/*
                 // FIXME: The SCA Specification is not clear how we should handle multiplicity 
                 // for CallableReference
                 if (binding == null) {
@@ -349,6 +344,8 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
                         binding = reference.getBindings().get(0);
                     }
                 }
+*/
+                
                 Interface i = reference.getInterfaceContract().getInterface();
                 if (i instanceof JavaInterface) {
                     JavaInterface javaInterface = (JavaInterface)i;
@@ -370,9 +367,11 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
                     }
                     this.businessInterface = (Class<B>)javaInterface.getJavaClass();
                 }
+/*                
                 if (binding instanceof BindingBuilderExtension) {
                     ((BindingBuilderExtension)binding).getBuilder().build(component, reference, binding, null);
                 }
+*/
                 this.proxyFactory = compositeActivator.getCompositeContext().getProxyFactory();
             }
         } else {
@@ -508,6 +507,7 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
         return parameters;
     }
 
+    // TODO - EPR - needs sorting out for new endpoint references
     public EndpointReference getEndpointReference() {
         try {
             resolve();
@@ -517,7 +517,7 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
             InterfaceContract sourceContract =
                 componentTypeRef == null ? reference.getInterfaceContract() : componentTypeRef.getInterfaceContract();
             sourceContract = sourceContract.makeUnidirectional(false);
-            EndpointReference epr = new EndpointReferenceImpl(component, reference, binding, sourceContract);
+            EndpointReference epr = new EndpointReferenceImpl(component, reference, null /*binding*/, sourceContract);
             ReferenceParameters parameters = getReferenceParameters();
             epr.setReferenceParameters(parameters);
             return epr;
