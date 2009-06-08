@@ -20,22 +20,38 @@
 package org.apache.tuscany.sca.node;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class NodeFinder {
 
-    private static Map<URI, Node> nodes = new HashMap<URI, Node>();
+    private static Map<URI, List<Node>> nodes = new HashMap<URI, List<Node>>();
 
     public static void addNode(URI domainName, Node node) {
-        nodes.put(domainName, node);
+        List<Node> domainNodes = nodes.get(domainName);
+        if (domainNodes == null) {
+            domainNodes = new ArrayList<Node>();
+        }
+        domainNodes.add(node);
+        nodes.put(domainName, domainNodes);
     }
 
-    public static Node removeNode(URI domainName) {
-        return nodes.remove(domainName);
+    public static Node removeNode(Node node) {
+        for (List<Node> domainNodes : nodes.values()) {
+            if (domainNodes.contains(node)) {
+                domainNodes.remove(node);
+                if (domainNodes.size() < 1) {
+                    nodes.remove(domainNodes);
+                }
+                return node;
+            }
+        }
+        return null;
     }
 
-    public static Node getNode(URI domainURI) {
+    public static List<Node> getNodes(URI domainURI) {
         return nodes.get(domainURI);
     }
 
