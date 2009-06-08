@@ -52,9 +52,6 @@ public class TwoNodesTestCase{
 
     @Test
     public void testCalculator() throws Exception {
-        
-        // Ideally this would use the SCAClient API but leaving that tillwe have the basics working
-        
         Helloworld service = serviceNode.getService(Helloworld.class, "HelloworldService");
         assertNotNull(service);
         assertEquals("Hello Petra", service.sayHello("Petra"));
@@ -66,8 +63,6 @@ public class TwoNodesTestCase{
 
     @Test
     public void testCalculatorClientAPI() throws Exception {
-        
-        // Ideally this would use the SCAClient API but leaving that tillwe have the basics working
         SCAClient scaClient = SCAClientFactory.newInstance();
         Helloworld service = scaClient.getService(Helloworld.class, "HelloworldService", null);
         assertNotNull(service);
