@@ -137,6 +137,9 @@ public class CallbackReferenceImpl<B> extends CallableReferenceImpl<B> {
     }
 
     /**
+     * Gets the endpoint reference from the incoming message that points
+     * back to the callback service
+     * 
      * @param msgContext
      */
     private static EndpointReference getCallbackEndpoint(Message msgContext) {
@@ -159,20 +162,34 @@ public class CallbackReferenceImpl<B> extends CallableReferenceImpl<B> {
                 RuntimeComponentReference ref = null;
                 if (contract == null) {
                     //TODO - EPR - does it ever go through here?
+                    //       in what situation is there no reference in the endpoint reference
+                    //       pointing back to the callbac service
                     boundWire = (RuntimeWire)wire.clone();
 
                 } else if (contract instanceof RuntimeComponentReference) {
+                    // TODO - EPP - the endpoint reference pointing back to the 
+                    //        callback service holds a reference representing
+                    //        a reference to the callback service. This is true if a 
+                    //        callback object has been set into the reference on the 
+                    //        client side 
                     ref = (RuntimeComponentReference)contract;
-                    //TODO - EPR - get the bound wire based on endpont reference no binding
-                    //boundWire = ref.getRuntimeWire(resolvedEndpoint.getBinding());
+                    
+                    // TODO - EPR - get the wire from the reference that matches the 
+                    //        injected callback reference wire. We don't have bindings yet as the 
+                    //        callback object wire hasn't been initialized 
+/*                    
                     for (RuntimeWire runtimeWire : ref.getRuntimeWires()){
-                        if (runtimeWire.getEndpointReference().getBinding().getName().equals(resolvedEndpoint.getBinding().getName())){
+                        if (runtimeWire.getEndpointReference().getBinding().getName().equals(wire.getEndpointReference().getBinding().getName())){
                             boundWire = runtimeWire;
                             break;
                         }
                     }
+*/
+                    // just get the first one for now
+                    boundWire = ref.getRuntimeWires().get(0);
 
                 } else {  // contract instanceof RuntimeComponentService
+                    //TODO - EPR - I think it does this if no callback object has been set explicitly
                     ref = bind((RuntimeComponentReference)wire.getSource().getContract(),
                                 resolvedEndpoint);
                     boundWire = ref.getRuntimeWires().get(0);
@@ -242,7 +259,9 @@ public class CallbackReferenceImpl<B> extends CallableReferenceImpl<B> {
         RuntimeComponentReference ref = (RuntimeComponentReference)wire.getSource().getContract();
         
         // TODO - EPR
-        wire.getEndpointReference().getTargetEndpoint().setInterfaceContract(ref.getBindingProvider(binding).getBindingInterfaceContract());
+        // needs to be set after the chains have been created for the first time
+        // as now the binding provider won't be created until that time 
+        //wire.getEndpointReference().getTargetEndpoint().setInterfaceContract(ref.getBindingProvider(binding).getBindingInterfaceContract());
     }
 
     /**

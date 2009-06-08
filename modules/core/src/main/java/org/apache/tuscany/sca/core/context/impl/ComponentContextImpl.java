@@ -215,7 +215,7 @@ public class ComponentContextImpl implements ComponentContextExt {
      */
     public <B> ServiceReference<B> getServiceReference(Class<B> businessInterface,
                                                        RuntimeComponentReference reference,
-                                                       Binding binding) {
+                                                       EndpointReference2 endpointReference) {
         try {
             RuntimeComponentReference ref = (RuntimeComponentReference)reference;
             InterfaceContract interfaceContract = reference.getInterfaceContract();
@@ -233,7 +233,7 @@ public class ComponentContextImpl implements ComponentContextExt {
                 }
             }
             ref.setComponent(component);
-            return new ServiceReferenceImpl<B>(businessInterface, component, ref, binding, proxyFactory,
+            return new ServiceReferenceImpl<B>(businessInterface, component, ref, endpointReference, proxyFactory,
                                                compositeActivator);
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);
@@ -452,9 +452,9 @@ public class ComponentContextImpl implements ComponentContextExt {
             for (ComponentReference ref : component.getReferences()) {
                 if (referenceName.equals(ref.getName())) {
                     ArrayList<ServiceReference<B>> serviceRefs = new ArrayList<ServiceReference<B>>();
-                    for (Binding binding : ref.getBindings()) {
+                    for (EndpointReference2 endpointReference : ref.getEndpointReferences()) {
                         serviceRefs
-                            .add(getServiceReference(businessInterface, (RuntimeComponentReference)ref, binding));
+                            .add(getServiceReference(businessInterface, (RuntimeComponentReference)ref, endpointReference));
                     }
                     return serviceRefs;
                 }

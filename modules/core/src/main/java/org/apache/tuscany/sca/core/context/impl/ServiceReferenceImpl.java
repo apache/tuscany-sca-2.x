@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.core.context.impl;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.assembly.EndpointReference2;
 import org.apache.tuscany.sca.core.assembly.CompositeActivator;
 import org.apache.tuscany.sca.core.context.CallableReferenceExt;
 import org.apache.tuscany.sca.core.context.ServiceReferenceExt;
@@ -79,10 +80,10 @@ public class ServiceReferenceImpl<B> extends CallableReferenceImpl<B> implements
     public ServiceReferenceImpl(Class<B> businessInterface,
                                 RuntimeComponent component,
                                 RuntimeComponentReference reference,
-                                Binding binding,
+                                EndpointReference2 endpointReference,
                                 ProxyFactory proxyFactory,
                                 CompositeActivator compositeActivator) {
-        super(businessInterface, component, reference, binding, proxyFactory, compositeActivator);
+        super(businessInterface, component, reference, endpointReference, proxyFactory, compositeActivator);
     }
 
     public Object getConversationID() {

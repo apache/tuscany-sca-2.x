@@ -25,6 +25,7 @@ import java.io.Writer;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.ComponentService;
+import org.apache.tuscany.sca.assembly.EndpointReference2;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.oasisopen.sca.CallableReference;
 import org.oasisopen.sca.ComponentContext;
@@ -61,13 +62,12 @@ public interface RuntimeComponentContext extends ComponentContext {
      * @param <B>
      * @param businessInterface The business interface
      * @param reference The reference to be wired
-     * @param binding The binding to be used, if it's null, either binding.sca or the 1st binding
-     * will be selected
+     * @param endpointReference The endpointReference to be used
      * @return A service reference representing the wire
      */
     <B> ServiceReference<B> getServiceReference(Class<B> businessInterface,
                                                 RuntimeComponentReference reference,
-                                                Binding binding);
+                                                EndpointReference2 endpointReference);
 
     /**
      * Bind the reference to a target component/componentService

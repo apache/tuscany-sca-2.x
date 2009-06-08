@@ -149,10 +149,15 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
             throw new ServiceRuntimeException("No runtime wire is available");
         }
         InvocationChain chain = getInvocationChain(method, wire);
+        
         if (chain == null) {
             throw new IllegalArgumentException("No matching operation is found: " + method);
         }
 
+        // The EndpointReference is not now resolved until the invocation chain 
+        // is first created so reset the source here 
+        source = wire.getSource();
+        
         // send the invocation down the wire
         Object result = invoke(chain, args, wire, source);
 
@@ -349,11 +354,17 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
                 scopeContainer.addWrapperReference(currentConversationID, conversation.getConversationID());
             }
         }
-
+        
         Interface interfaze = msg.getFrom().getCallbackEndpoint().getInterfaceContract().getInterface();
         if (callbackObject != null) {
             if (callbackObject instanceof ServiceReference) {
-                EndpointReference callbackRef = ((CallableReferenceExt<?>)callbackObject).getEndpointReference();
+                CallableReferenceExt<?> callableReference = (CallableReferenceExt<?>)callbackObject;
+                EndpointReference callbackRef = callableReference.getEndpointReference();
+                
+                // TODO - EPR - create chains on the callback reference in case this hasn't already happened
+                //        needed as the bindings are not now matched until the chanins are created
+                callableReference.getRuntimeWire().getInvocationChains();
+                
                 parameters.setCallbackReference(callbackRef);
             } else {
                 if (interfaze != null) {

@@ -144,9 +144,11 @@ public class ComponentServiceEndpointBuilderImpl implements CompositeBuilder {
                     		leafService.getEndpoints().add(endpoint);
                     	} // end if 
                     } // end if
-                    System.out.println( "Endpoint created for Component = " + component.getName() + " Leaf component = " + 
-                    		endpoint.getComponent().getName() + " service = " + 
-                    		endpoint.getService().getName() + " binding = " + endpoint.getBinding() );
+                    // debug
+                    // disabled for the time being - SL
+                    //System.out.println( "Endpoint created for Component = " + component.getName() + " Leaf component = " + 
+                    //		endpoint.getComponent().getName() + " service = " + 
+                    //		endpoint.getService().getName() + " binding = " + endpoint.getBinding() );
             	} // end for	
     		} // end for
     		// Handle composites as implementations

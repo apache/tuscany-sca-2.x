@@ -210,7 +210,7 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
                 } else {
                     // add an unresolved endpoint reference with an unresolved endpoint to go with it
                     EndpointReference2 endpointRef = createEndpointRef( component, reference, true  );
-                    endpointRef.setTargetEndpoint(createEndpoint(true));
+                    endpointRef.setTargetEndpoint(createEndpoint(targetName));
                     reference.getEndpointReferences().add(endpointRef);
                     warning(monitor, "ComponentReferenceTargetNotFound",
                             composite, 
@@ -342,10 +342,11 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
         			} // end if
         		} // end if
         		// (Debug) For the moment, print out the results
-        		System.out.println( "Created endpointRef. Component = " + component.getName() + " Reference = " +
-        				reference.getName() + " LeafComponent = " + endRef.getComponent().getName() + " LeafReference = " +
-        				endRef.getReference().getName() + " Binding = " + endRef.getBinding() + " target Component = " +
-        				endpoint.getComponent() + " target Service = " + endpoint.getService() );
+        		// disable for the time being - SL
+        		//System.out.println( "Created endpointRef. Component = " + component.getName() + " Reference = " +
+        		//		reference.getName() + " LeafComponent = " + endRef.getComponent().getName() + " LeafReference = " +
+        		//		endRef.getReference().getName() + " Binding = " + endRef.getBinding() + " target Component = " +
+        		//		endpoint.getComponent() + " target Service = " + endpoint.getService() );
         	} // end for
         } // end for
     	
@@ -858,5 +859,31 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
 	    endpoint.setUnresolved(unresolved);
 	    return endpoint;
     } // end method createEndpoint
+    
+    /**
+     * Helper method to create an Endpoint
+     * @param unresolved
+     * @return the endpoint
+     */
+    private Endpoint2 createEndpoint(String targetName) {
+        String componentName;
+        String serviceName;
+        int i = targetName.lastIndexOf('/');
+        if (i != -1) {
+            componentName = targetName.substring(0, i);
+            serviceName = targetName.substring(i + 1);
+
+        } else {
+            componentName = targetName;
+            serviceName = null;
+        }
+        
+        Endpoint2 endpoint = assemblyFactory.createEndpoint();
+        endpoint.setUnresolved(true);
+        endpoint.setComponentName(componentName);
+        endpoint.setServiceName(serviceName);
+        return endpoint;
+    } // end method createEndpoint
+
     
 } // end class

@@ -221,7 +221,7 @@ public class JavaComponentContextProvider {
                                 new CallableReferenceObjectFactory(businessInterface, component,
                                                                    (RuntimeComponentReference)wireList.get(i)
                                                                        .getSource().getContract(), wireList.get(i)
-                                                                       .getSource().getBinding());
+                                                                       .getEndpointReference());
                         } else {
                             factory = createObjectFactory(baseType, wireList.get(i));
                         }
@@ -246,7 +246,7 @@ public class JavaComponentContextProvider {
                                     .getGenericType());
                             factory =
                                 new CallableReferenceObjectFactory(businessInterface, component,
-                                                                   (RuntimeComponentReference)componentReference, null);
+                                                                   (RuntimeComponentReference)componentReference, wireList.get(0).getEndpointReference());
                         } else {
                             factory = createObjectFactory(element.getType(), wireList.get(0));
                         }
