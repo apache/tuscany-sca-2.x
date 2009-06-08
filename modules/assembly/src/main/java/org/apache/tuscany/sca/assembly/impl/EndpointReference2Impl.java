@@ -50,7 +50,6 @@ public class EndpointReference2Impl implements EndpointReference2 {
     
     // the target of the endpoint reference 
     private Endpoint2 targetEndpoint;
-//  private String uri;
     
     // callback endpoint that messages across this reference 
     // will be directed toward
@@ -118,16 +117,6 @@ public class EndpointReference2Impl implements EndpointReference2 {
         this.interfaceContract = interfaceContract;
     }
     
-    /*
-    public String getURI() {
-        return uri;
-    }
-
-    public void setURI(String uri) {
-        this.uri = uri;
-    }
-    */
-
     public List<PolicySet> getPolicySets() {
         return policySets;
     }
@@ -154,4 +143,32 @@ public class EndpointReference2Impl implements EndpointReference2 {
     public void setCallbackEndpoint(Endpoint2 callbackEndpoint) {
         this.callbackEndpoint = callbackEndpoint;
     }
+    
+    public String toString(){
+        String output =  "Endpoint Reference: ";
+        
+        if (component != null){
+            output += " Component = " + component.getName();
+        }
+        
+        if (reference != null){
+            output += " Reference = " + reference.getName();
+        }
+        
+        if (binding != null){
+            output += " Binding = " + binding.getName() + "/" + binding.getClass().getName() + " ";
+        }
+        
+        if (unresolved) {
+            output += " Unresolved = true ";
+        } else {
+            output += " Unresolved = false ";
+        }
+        
+        if (targetEndpoint != null) {
+            output += " Target " + targetEndpoint.toString();
+        }
+        
+        return output;
+    }    
 }
