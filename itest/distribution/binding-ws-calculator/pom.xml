@@ -26,7 +26,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>itest-distribution-binding-ws-calculator</artifactId>
-    <name>Apache Tuscany SCA Distribution iTest binding-ws-calculator</name>
+    <name>Apache Tuscany SCA iTest Distribution binding-ws-calculator</name>
 
     <dependencies>
         <dependency>
@@ -69,6 +69,7 @@
                         </goals>
                         <configuration>
                             <tasks> 
+                                <property name="java.home" value="${java.home}"/>
                                 <property name="tuscany.version" value="${version}" />
                                 <ant antfile="./build.xml" target="run"/>
                             </tasks>
