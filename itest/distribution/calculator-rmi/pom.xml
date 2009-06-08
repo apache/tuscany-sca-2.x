@@ -26,7 +26,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>itest-distribution-calculator-rmi</artifactId>
-    <name>Apache Tuscany SCA Distribution iTest calculator-rmi</name>
+    <name>Apache Tuscany SCA iTest Distribution calculator-rmi</name>
 
     <dependencies>
         <dependency>

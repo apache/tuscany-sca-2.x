@@ -26,7 +26,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>itest-distribution-webapp-helloworld-jsp</artifactId>
-    <name>Apache Tuscany SCA Distribution iTest Webapp helloworld-jsp</name>
+    <name>Apache Tuscany SCA iTest Distribution Webapp helloworld-jsp</name>
 
     <dependencies>
 

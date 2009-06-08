@@ -27,7 +27,7 @@
     </parent>
     <packaging>pom</packaging>
     <artifactId>itest-distribution</artifactId>
-    <name>Apache Tuscany SCA Distribution Integration Tests</name>
+    <name>Apache Tuscany SCA iTest Distribution</name>
     
   <build>
 	<defaultGoal>install</defaultGoal>
