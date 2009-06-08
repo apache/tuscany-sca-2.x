@@ -40,12 +40,14 @@ import org.apache.tuscany.sca.policy.PolicySubject;
 public class Endpoint2Impl implements Endpoint2 {
 
     private Boolean unresolved;
+    private String componentName;
     private Component component;
+    private String serviceName;
     private ComponentService service;
+    private String bindingName;
     private Binding binding;
     private InterfaceContract interfaceContract;
     private List<EndpointReference2> callbackEndpointReferences = new ArrayList<EndpointReference2>();
-    //private String uri;
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
     private List<Intent> requiredIntents = new ArrayList<Intent>();
 
@@ -64,6 +66,14 @@ public class Endpoint2Impl implements Endpoint2 {
     public void setUnresolved(boolean unresolved) {
         this.unresolved = unresolved;
     }
+    
+    public String getComponentName() {
+        return componentName;
+    }
+    
+    public void setComponentName(String componentName) {
+        this.componentName = componentName;
+    }
 
     public Component getComponent() {
         return component;
@@ -71,14 +81,32 @@ public class Endpoint2Impl implements Endpoint2 {
 
     public void setComponent(Component component) {
         this.component = component;
+        this.componentName = component.getURI();
     }
 
+    public String getServiceName() {
+        return serviceName;
+    }
+    
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName; 
+    }
+    
     public ComponentService getService() {
         return service;
     }
 
     public void setService(ComponentService service) {
         this.service = service;
+        this.serviceName = service.getName();
+    }
+    
+    public String getBindingName() {
+        return bindingName;
+    }
+    
+    public void setBindingName(String bindingName) {
+        this.bindingName = bindingName;
     }
 
     public Binding getBinding() {
@@ -87,6 +115,7 @@ public class Endpoint2Impl implements Endpoint2 {
 
     public void setBinding(Binding binding) {
         this.binding = binding;
+        this.bindingName = binding.getName();
     }
 
     public InterfaceContract getInterfaceContract() {
@@ -108,15 +137,6 @@ public class Endpoint2Impl implements Endpoint2 {
         return callbackEndpointReferences;
     }
     
-/*
-    public String getURI() {
-        return uri;
-    }
-
-    public void setURI(String uri) {
-        this.uri = uri;
-    }
-*/
     public List<PolicySet> getPolicySets() {
         return policySets;
     }
@@ -134,5 +154,29 @@ public class Endpoint2Impl implements Endpoint2 {
 
     public void setType(ExtensionType type) {
         throw new UnsupportedOperationException();
+    }
+    
+    public String toString(){
+        String output =  "Endpoint: ";
+        
+        if (componentName != null){
+            output += " Component = " + componentName;
+        }
+        
+        if (serviceName != null){
+            output += " Service = " + serviceName;
+        }
+        
+        if (bindingName != null){
+            output += " Binding = " + bindingName + "/" + binding.getClass().getName() + " ";
+        }
+        
+        if (unresolved) {
+            output += " Unresolved = true";
+        } else {
+            output += " Unresolved = false";
+        }
+        
+        return output;
     }
 }
