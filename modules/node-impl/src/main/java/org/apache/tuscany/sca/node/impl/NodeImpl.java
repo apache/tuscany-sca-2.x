@@ -45,6 +45,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.oasisopen.sca.CallableReference;
 import org.oasisopen.sca.ServiceReference;
 import org.oasisopen.sca.ServiceRuntimeException;
+import org.oasisopen.sca.ServiceUnavailableException;
 
 /**
  * An SCA Node that is managed by the NodeManager
@@ -106,16 +107,16 @@ public class NodeImpl implements Node, Client {
             if( compositeActivator.getDomainComposite() != null ) {
 	            List<Composite> composites = compositeActivator.getDomainComposite().getIncludes();
 	            for (Composite composite : composites) {
-	
+
 	                // Stop the composite
 	                compositeActivator.stop(composite);
-	
+
 	                // Deactivate the composite
 	                compositeActivator.deactivate(composite);
-	
+
 	            } // end for
 	            composites.clear();
-            } // end if 
+            } // end if
 
             manager.removeNode(configuration);
             this.compositeActivator = null;
@@ -168,7 +169,7 @@ public class NodeImpl implements Node, Client {
         }
 
         if (component == null) {
-            throw new ServiceRuntimeException("The service " + name + " has not been contributed to the domain");
+            throw new ServiceUnavailableException("The service " + name + " has not been contributed to the domain");
         }
         RuntimeComponentContext componentContext = null;
 
@@ -206,7 +207,7 @@ public class NodeImpl implements Node, Client {
     public ExtensionPointRegistry getExtensionPoints() {
         return manager.getExtensionPoints();
     }
-    
+
     /**
      * Get the service endpoints in this Node
      * TODO: needs review, works for the very simple testcase but i expect there are

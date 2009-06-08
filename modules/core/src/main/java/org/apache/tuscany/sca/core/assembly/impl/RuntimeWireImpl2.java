@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.core.assembly.impl;
@@ -29,10 +29,11 @@ import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
+import org.apache.tuscany.sca.assembly.CompositeReference;
+import org.apache.tuscany.sca.assembly.CompositeService;
+import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.assembly.Endpoint2;
 import org.apache.tuscany.sca.assembly.EndpointReference2;
-import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
-import org.apache.tuscany.sca.assembly.builder.CompositeBuilderExtensionPoint;
 import org.apache.tuscany.sca.assembly.builder.EndpointReferenceBuilder;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
@@ -49,7 +50,6 @@ import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.invocation.Phase;
-import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.provider.PolicyProvider;
@@ -73,9 +73,9 @@ import org.oasisopen.sca.ServiceRuntimeException;
  * @version $Rev$ $Date$
  */
 public class RuntimeWireImpl2 implements RuntimeWire {
-    
+
     private ExtensionPointRegistry extensionPoints;
-    
+
     private Boolean isReferenceWire = false;
     private EndpointReference2 endpointReference;
     private Endpoint2 endpoint;
@@ -96,18 +96,18 @@ public class RuntimeWireImpl2 implements RuntimeWire {
 
     private List<InvocationChain> chains;
     private InvocationChain bindingInvocationChain;
-    
+
     private EndpointReferenceBuilder endpointReferenceBuilder;
     private final ProviderFactoryExtensionPoint providerFactories;
 
     /**
      * @param source
      * @param target
-     * @param interfaceContractMapper 
-     * @param workScheduler 
-     * @param wireProcessor 
-     * @param messageFactory 
-     * @param conversationManager 
+     * @param interfaceContractMapper
+     * @param workScheduler
+     * @param wireProcessor
+     * @param messageFactory
+     * @param conversationManager
      */
     public RuntimeWireImpl2(ExtensionPointRegistry extensionPoints,
                             boolean isReferenceWire,
@@ -129,7 +129,7 @@ public class RuntimeWireImpl2 implements RuntimeWire {
         this.messageFactory = messageFactory;
         this.conversationManager = conversationManager;
         this.invoker = new RuntimeWireInvoker(this.messageFactory, this.conversationManager, this);
-       
+
         UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
         this.endpointReferenceBuilder = utilities.getUtility(EndpointReferenceBuilder.class);
         this.providerFactories = extensionPoints.getExtensionPoint(ProviderFactoryExtensionPoint.class);
@@ -141,7 +141,7 @@ public class RuntimeWireImpl2 implements RuntimeWire {
         }
         return chains;
     }
-    
+
     public synchronized InvocationChain getBindingInvocationChain() {
         if (bindingInvocationChain == null) {
             bindingInvocationChain = new InvocationChainImpl(null, null, isReferenceWire);
@@ -168,10 +168,10 @@ public class RuntimeWireImpl2 implements RuntimeWire {
         }
         return null;
     }
-    
+
     public Object invoke(Message msg) throws InvocationTargetException {
         return getBindingInvocationChain().getHeadInvoker().invoke(msg);
-    }    
+    }
 
     public Object invoke(Operation operation, Object[] args) throws InvocationTargetException {
         Message msg = messageFactory.createMessage();
@@ -184,18 +184,71 @@ public class RuntimeWireImpl2 implements RuntimeWire {
     }
 
     /**
+     * Navigate the component/componentType inheritence chain to find the leaf contract
+     * @param contract
+     * @return
+     */
+    private Contract getLeafContract(Contract contract) {
+        Contract prev = null;
+        Contract current = contract;
+        while (current != null) {
+            prev = current;
+            if (current instanceof ComponentReference) {
+                current = ((ComponentReference)current).getReference();
+            } else if (current instanceof CompositeReference) {
+                current = ((CompositeReference)current).getPromotedReferences().get(0);
+            } else if (current instanceof ComponentService) {
+                current = ((ComponentService)current).getService();
+            } else if (current instanceof CompositeService) {
+                current = ((CompositeService)current).getPromotedService();
+            } else {
+                break;
+            }
+            if (current == null) {
+                return prev;
+            }
+        }
+        return current;
+    }
+
+    private InterfaceContract getLeafInterfaceContract(EndpointReference2 epr) {
+        ComponentReference reference = epr.getReference();
+        if (reference == null) {
+            return epr.getInterfaceContract();
+        }
+        InterfaceContract interfaceContract = getLeafContract(reference).getInterfaceContract();
+        if (interfaceContract == null) {
+            interfaceContract = epr.getInterfaceContract();
+        }
+        return interfaceContract;
+    }
+
+    private InterfaceContract getLeafInterfaceContract(Endpoint2 ep) {
+        ComponentService service = ep.getService();
+        if (service == null) {
+            return ep.getInterfaceContract();
+        }
+        InterfaceContract interfaceContract = getLeafContract(service).getInterfaceContract();
+        if (interfaceContract == null) {
+            interfaceContract = ep.getInterfaceContract();
+        }
+        return interfaceContract;
+    }
+
+    /**
      * Initialize the invocation chains
      */
     private void initInvocationChains() {
-   
         chains = new ArrayList<InvocationChain>();
-        InterfaceContract sourceContract = endpointReference.getInterfaceContract();
+        //        InterfaceContract sourceContract = endpointReference.getInterfaceContract();
+        //        InterfaceContract targetContract = endpoint.getInterfaceContract();
+        InterfaceContract sourceContract = getLeafInterfaceContract(endpointReference);
 
         if (isReferenceWire) {
             // It's the reference wire
             resolveEndpointReference();
 
-            InterfaceContract targetContract = endpoint.getInterfaceContract();
+            InterfaceContract targetContract = getLeafInterfaceContract(endpoint);
             RuntimeComponentReference reference = (RuntimeComponentReference)endpointReference.getReference();
             Binding refBinding = endpointReference.getBinding();
             for (Operation operation : sourceContract.getInterface().getOperations()) {
@@ -214,13 +267,13 @@ public class RuntimeWireImpl2 implements RuntimeWire {
                 addReferenceBindingInterceptor(reference, refBinding, chain, operation);
                 chains.add(chain);
             }
-            
+
         } else {
             // It's the service wire
-            InterfaceContract targetContract = endpoint.getInterfaceContract();
             RuntimeComponentService service = (RuntimeComponentService)endpoint.getService();
             RuntimeComponent serviceComponent = (RuntimeComponent)endpoint.getComponent();
             Binding serviceBinding = endpoint.getBinding();
+            InterfaceContract targetContract = getLeafInterfaceContract(endpoint);
             for (Operation operation : sourceContract.getInterface().getOperations()) {
                 Operation targetOperation = interfaceContractMapper.map(targetContract.getInterface(), operation);
                 if (targetOperation == null) {
@@ -238,48 +291,49 @@ public class RuntimeWireImpl2 implements RuntimeWire {
                 addImplementationInterceptor(serviceComponent, service, chain, targetOperation);
                 chains.add(chain);
             }
-            
+
         }
         wireProcessor.process(this);
     }
-    
+
+
     /**
-     * This code used to be in the activator but has moved here as 
+     * This code used to be in the activator but has moved here as
      * the endpoint reference may not now be resolved until the wire
      * is first used
      */
     private void resolveEndpointReference(){
         endpointReferenceBuilder.build(endpointReference, null);
-        
+
         // set the endpoint based on the resolved endpoint
         endpoint = endpointReference.getTargetEndpoint();
-                
+
         RuntimeComponentReference runtimeRef = (RuntimeComponentReference)endpointReference.getReference();
-        
+
         if (runtimeRef.getBindingProvider(endpointReference.getBinding()) == null) {
-            addReferenceBindingProvider((RuntimeComponent)endpointReference.getComponent(), 
-                    runtimeRef, 
+            addReferenceBindingProvider((RuntimeComponent)endpointReference.getComponent(),
+                    runtimeRef,
                     endpointReference.getBinding());
         }
-        
-        // start the binding provider   
+
+        // start the binding provider
         final ReferenceBindingProvider bindingProvider = runtimeRef.getBindingProvider(endpointReference.getBinding());
-        
+
         if (bindingProvider != null) {
-            // Allow bindings to add shutdown hooks. Requires RuntimePermission shutdownHooks in policy. 
+            // Allow bindings to add shutdown hooks. Requires RuntimePermission shutdownHooks in policy.
             AccessController.doPrivileged(new PrivilegedAction<Object>() {
                 public Object run() {
                     bindingProvider.start();
                     return null;
                   }
-            });                       
+            });
         }
-        
+
         InterfaceContract bindingContract = getInterfaceContract(endpointReference.getReference(), endpointReference.getBinding());
         Endpoint2 endpoint = endpointReference.getTargetEndpoint();
         endpoint.setInterfaceContract(bindingContract);
     }
-    
+
     private ReferenceBindingProvider addReferenceBindingProvider(
             RuntimeComponent component, RuntimeComponentReference reference,
             Binding binding) {
@@ -311,8 +365,8 @@ public class RuntimeWireImpl2 implements RuntimeWire {
                     "Provider factory not found for class: "
                             + binding.getClass().getName());
         }
-    }  
-    
+    }
+
     private InterfaceContract getInterfaceContract(ComponentReference reference, Binding binding) {
         InterfaceContract interfaceContract = reference.getInterfaceContract();
         if (interfaceContract == null) {
@@ -326,19 +380,18 @@ public class RuntimeWireImpl2 implements RuntimeWire {
             }
         }
         return interfaceContract.makeUnidirectional(false);
-    }     
-    
+    }
+
     private void initReferenceBindingInvocationChains() {
         RuntimeComponentReference reference = (RuntimeComponentReference)endpointReference.getReference();
         Binding referenceBinding = endpointReference.getBinding();
-        
+
         // add the binding interceptors to the reference binding wire
         ReferenceBindingProvider provider = reference.getBindingProvider(referenceBinding);
-        if ((provider != null) &&
-            (provider instanceof ReferenceBindingProviderRRB)){
+        if ((provider != null) && (provider instanceof ReferenceBindingProviderRRB)) {
             ((ReferenceBindingProviderRRB)provider).configureBindingChain(this);
         }
-        
+
         // add the policy interceptors to the service binding wire
         // find out which policies are active
         List<PolicyProvider> pps = ((RuntimeComponentReference)reference).getPolicyProviders(referenceBinding);
@@ -351,20 +404,19 @@ public class RuntimeWireImpl2 implements RuntimeWire {
                     }
                 }
             }
-        }               
-    }    
-    
+        }
+    }
+
     private void initServiceBindingInvocationChains() {
         RuntimeComponentService service = (RuntimeComponentService)endpoint.getService();
         Binding serviceBinding = endpoint.getBinding();
-        
+
         // add the binding interceptors to the service binding wire
         ServiceBindingProvider provider = service.getBindingProvider(serviceBinding);
-        if ((provider != null) &&
-            (provider instanceof ServiceBindingProviderRRB)){
+        if ((provider != null) && (provider instanceof ServiceBindingProviderRRB)) {
             ((ServiceBindingProviderRRB)provider).configureBindingChain(this);
         }
-        
+
         // add the policy interceptors to the service binding wire
         List<PolicyProvider> pps = ((RuntimeComponentService)service).getPolicyProviders(serviceBinding);
         if (pps != null) {
@@ -376,59 +428,53 @@ public class RuntimeWireImpl2 implements RuntimeWire {
                     }
                 }
             }
-        }        
-        
-        
-        // TODO - add something on the end of the wire to invoke the 
+        }
+
+        // TODO - add something on the end of the wire to invoke the
         //        invocation chain. Need to split out the runtime
         //        wire invoker into conversation, callback interceptors etc
         bindingInvocationChain.addInvoker(invoker);
-        
+
     }
 
     // ===============================================================
     // TODO - EPR remove when we convert fully over to EndpointReference2
-    
+
     // TODO - remove. Just here during development
     static EndpointReference epr;
-    
+
     public EndpointReference getSource() {
         // TODO - EPR convert this into method that returns EndpointReference2
-        
+
         // convert the source info into old endpoint reference format
-        epr = new EndpointReferenceImpl((RuntimeComponent)endpointReference.getComponent(),
-                                                          endpointReference.getReference(),
-                                                          endpointReference.getBinding(),
-                                                          endpointReference.getInterfaceContract());
-        
-        if (endpointReference.getCallbackEndpoint() != null){
+        epr =
+            new EndpointReferenceImpl((RuntimeComponent)endpointReference.getComponent(), endpointReference
+                .getReference(), endpointReference.getBinding(), endpointReference.getInterfaceContract());
+
+        if (endpointReference.getCallbackEndpoint() != null) {
             // convert the source callback endpoint into old endpoint reference format
             EndpointReference cepr;
-            cepr = new EndpointReferenceImpl((RuntimeComponent)endpointReference.getComponent(),
-                    endpointReference.getCallbackEndpoint().getService(),
-                    endpointReference.getCallbackEndpoint().getBinding(),
-                    endpointReference.getCallbackEndpoint().getInterfaceContract());
+            cepr =
+                new EndpointReferenceImpl((RuntimeComponent)endpointReference.getComponent(), endpointReference
+                    .getCallbackEndpoint().getService(), endpointReference.getCallbackEndpoint().getBinding(),
+                                          endpointReference.getCallbackEndpoint().getInterfaceContract());
             epr.setCallbackEndpoint(cepr);
         }
-        
-        
-        // TODO - somtimes used to reset the interface contract so we 
-        //        copy it back in in the rebuild method below  
+
+        // TODO - somtimes used to reset the interface contract so we
+        //        copy it back in in the rebuild method below
         return epr;
     }
 
-    
-    
     public EndpointReference getTarget() {
         // TODO - EPR convert this into method that returns Endpoint2
-        
+
         Endpoint2 endpoint = this.endpoint != null ? this.endpoint : endpointReference.getTargetEndpoint();
 
         // convert the target info into old endpoint reference format
-        EndpointReference epr = new EndpointReferenceImpl((RuntimeComponent)endpoint.getComponent(),
-                                                           endpoint.getService(),
-                                                           endpoint.getBinding(),
-                                                           endpoint.getInterfaceContract());
+        EndpointReference epr =
+            new EndpointReferenceImpl((RuntimeComponent)endpoint.getComponent(), endpoint.getService(), endpoint
+                .getBinding(), endpoint.getInterfaceContract());
         return epr;
     }
 
@@ -436,27 +482,27 @@ public class RuntimeWireImpl2 implements RuntimeWire {
         // TODO - can we use the idea of setTarget to rebuild the wire?
 
     }
-    
+
     // ===================================================================
 
     public void rebuild() {
         // TODO - can we use the idea of setTarget to rebuild the wire?
-        //        used at the moment by binding.sca when it resets the 
+        //        used at the moment by binding.sca when it resets the
         //        source interface contract for local wires
         this.chains = null;
-        
+
         // TODO - cheating here as I fixed the RuntimeComponentService code
         //        to call this when it resets the interface contract
         endpointReference.setInterfaceContract(epr.getInterfaceContract());
     }
-    
-    public EndpointReference2 getEndpointReference(){
+
+    public EndpointReference2 getEndpointReference() {
         return endpointReference;
     }
 
     /**
      * Add the interceptor for a reference binding
-     * 
+     *
      * @param reference
      * @param binding
      * @param chain
@@ -486,7 +532,7 @@ public class RuntimeWireImpl2 implements RuntimeWire {
 
     /**
      * Add the interceptor for a binding
-     * 
+     *
      * @param reference
      * @param binding
      * @param chain
@@ -509,7 +555,7 @@ public class RuntimeWireImpl2 implements RuntimeWire {
 
     /**
      * Add a non-blocking interceptor if the reference binding needs it
-     * 
+     *
      * @param reference
      * @param binding
      * @param chain
@@ -542,7 +588,7 @@ public class RuntimeWireImpl2 implements RuntimeWire {
 
     /**
      * Add the interceptor for a component implementation
-     * 
+     *
      * @param component
      * @param service
      * @param chain
