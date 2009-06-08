@@ -102,7 +102,7 @@ public class NodeImpl implements Node, Client {
             if (compositeActivator == null) {
                 return;
             }
-            NodeFinder.removeNode(NodeUtil.createURI(configuration.getDomainURI()));
+            NodeFinder.removeNode(this);
             if( compositeActivator.getDomainComposite() != null ) {
 	            List<Composite> composites = compositeActivator.getDomainComposite().getIncludes();
 	            for (Composite composite : composites) {
