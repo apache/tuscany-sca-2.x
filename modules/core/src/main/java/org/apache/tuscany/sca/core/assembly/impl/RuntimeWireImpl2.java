@@ -315,6 +315,9 @@ public class RuntimeWireImpl2 implements RuntimeWire {
     
     private InterfaceContract getInterfaceContract(ComponentReference reference, Binding binding) {
         InterfaceContract interfaceContract = reference.getInterfaceContract();
+        if (interfaceContract == null) {
+            interfaceContract = endpoint.getInterfaceContract();
+        }
         ReferenceBindingProvider provider = ((RuntimeComponentReference)reference).getBindingProvider(binding);
         if (provider != null) {
             InterfaceContract bindingContract = provider.getBindingInterfaceContract();
@@ -419,6 +422,8 @@ public class RuntimeWireImpl2 implements RuntimeWire {
     public EndpointReference getTarget() {
         // TODO - EPR convert this into method that returns Endpoint2
         
+        Endpoint2 endpoint = this.endpoint != null ? this.endpoint : endpointReference.getTargetEndpoint();
+
         // convert the target info into old endpoint reference format
         EndpointReference epr = new EndpointReferenceImpl((RuntimeComponent)endpoint.getComponent(),
                                                            endpoint.getService(),
