@@ -9,10 +9,8 @@ Bnd-LastModified: 1225397189093
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Client Impl
-Import-Package: org.apache.tuscany.sca.assembly;version="2.0.0",
- org.apache.tuscany.sca.client.impl;version="2.0.0",
+Import-Package: org.apache.tuscany.sca.client.impl;version="2.0.0",
  org.apache.tuscany.sca.node;version="2.0.0",
- org.apache.tuscany.sca.node.impl;version="2.0.0",
  org.oasisopen.sca;version="2.0.0",
  org.oasisopen.sca.annotation;version="2.0.0";resolution:=optional,
  org.oasisopen.sca.client;version="2.0.0"

@@ -22,12 +22,11 @@ package org.apache.tuscany.sca.client.impl;
 import java.net.URI;
 import java.util.List;
 
-import org.apache.tuscany.sca.assembly.Endpoint2;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFinder;
-import org.apache.tuscany.sca.node.impl.NodeImpl;
 import org.oasisopen.sca.NoSuchDomainException;
 import org.oasisopen.sca.NoSuchServiceException;
+import org.oasisopen.sca.ServiceUnavailableException;
 import org.oasisopen.sca.client.SCAClient;
 
 public class SCAClientImpl implements SCAClient {
@@ -41,15 +40,12 @@ public class SCAClientImpl implements SCAClient {
         if (nodes == null || nodes.size() < 1) {
             throw new NoSuchDomainException(domainURI.toString());
         }
-        
+
         for (Node n : nodes) {
-            if (n instanceof NodeImpl) {
-                for ( Endpoint2 e : ((NodeImpl)n).getServiceEndpoints()) {
-                    // TODO: implement more complete matching
-                    if (serviceName.equals(e.getComponent().getName())) {
-                       return n.getService(serviceInterface, serviceName);
-                   }
-                }
+            try {
+                return n.getService(serviceInterface, serviceName);
+            } catch(ServiceUnavailableException e) {
+                // Ingore and continue
             }
         }
 
