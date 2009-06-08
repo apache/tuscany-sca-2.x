@@ -37,6 +37,7 @@
     <module>helloworld-iface</module>
     <module>helloworld-service</module>
     <module>helloworld-client</module>
+    <module>one-node-test</module>
     <module>two-nodes-test</module>
   </modules>
 
