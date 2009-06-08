@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apace.tuscany.sca.binding.sca;
 
@@ -61,13 +61,13 @@ import org.junit.Test;
  * @version $Rev$ $Date$
  */
 public class EndpointTestCase {
-	
+
     private static URLArtifactProcessor<Contribution> contributionProcessor;
     private static ModelResolverExtensionPoint modelResolvers;
     private static FactoryExtensionPoint modelFactories;
     private static AssemblyFactory assemblyFactory;
     private static XMLOutputFactory outputFactory;
-    private static StAXArtifactProcessor<Object> xmlProcessor; 
+    private static StAXArtifactProcessor<Object> xmlProcessor;
     private static CompositeBuilder compositeBuilder;
     private static ModelResolver modelResolver;
     private static CompositeActivator compositeActivator;
@@ -76,17 +76,17 @@ public class EndpointTestCase {
 
     @BeforeClass
     public static void init() {
-        
-        // Create extension point registry 
+
+        // Create extension point registry
         extensionPoints = new DefaultExtensionPointRegistry();
-        
+
         // Create a monitor
         UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
         MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
-        monitor = monitorFactory.createMonitor();        
-        
+        monitor = monitorFactory.createMonitor();
+
         modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
-                
+
         // Initialize the Tuscany module activators
         ModuleActivatorExtensionPoint moduleActivators = extensionPoints.getExtensionPoint(ModuleActivatorExtensionPoint.class);
         for (ModuleActivator activator: moduleActivators.getModuleActivators()) {
@@ -97,30 +97,30 @@ public class EndpointTestCase {
 
         XMLInputFactory inputFactory = modelFactories.getFactory(XMLInputFactory.class);
         outputFactory = modelFactories.getFactory(XMLOutputFactory.class);
-        
+
         // Get contribution workspace and assembly model factories
-        assemblyFactory = new RuntimeAssemblyFactory();
+        assemblyFactory = new RuntimeAssemblyFactory(extensionPoints);
         modelFactories.addFactory(assemblyFactory);
-        
+
         // Create XML artifact processors
         StAXArtifactProcessorExtensionPoint xmlProcessorExtensions = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         xmlProcessor = new ExtensibleStAXArtifactProcessor(xmlProcessorExtensions, inputFactory, outputFactory, monitor);
-        
+
         // Create contribution content processor
         URLArtifactProcessorExtensionPoint docProcessorExtensions = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
         contributionProcessor = docProcessorExtensions.getProcessor(Contribution.class);
-        
+
         // Get the model resolvers
         modelResolvers = extensionPoints.getExtensionPoint(ModelResolverExtensionPoint.class);
         modelResolver = new ExtensibleModelResolver(null, modelResolvers, modelFactories);
-               
+
         // Create a composite builder
         compositeBuilder = extensionPoints.getExtensionPoint(CompositeBuilderExtensionPoint.class).getCompositeBuilder("org.apache.tuscany.sca.assembly.builder.CompositeBuilder");
-                                                      
 
-        
+
+
     }
-    
+
     @Ignore
     @Test
     public void testProvider(){
@@ -128,33 +128,33 @@ public class EndpointTestCase {
             URI calculatorURI = URI.create("calcualtor");
             URL calculatorURL = new File("./target/test-classes").toURI().toURL();
             Contribution contribution = contributionProcessor.read(null, calculatorURI, calculatorURL);
-           
+
             contributionProcessor.resolve(contribution, modelResolver);
-            
+
             Composite composite = contribution.getDeployables().get(0);
-            
+
             compositeBuilder.build(composite, null, monitor);
-            
+
             ComponentReference ref = (composite.getComponents().get(0).getReferences().get(0));
-/* TODO - EPR - convert to new endpoint reference           
+/* TODO - EPR - convert to new endpoint reference
             Assert.assertEquals(1, ref.getEndpoints().size());
-            
+
             Endpoint endpoint = ref.getEndpoints().get(0);
-            
+
             EndpointResolverFactory<Endpoint> factory = new EndpointResolverFactoryImpl(extensionPoints);
-            
+
             EndpointResolver endpointResolver = factory.createEndpointResolver(endpoint, null);
-            
+
             Assert.assertNotNull(endpointResolver);
-*/            
-            
-    
+*/
+
+
         } catch(Exception ex) {
             ex.printStackTrace();
             System.out.println(ex.toString());
             Assert.fail();
         }
     }
-    
-  
+
+
 }
