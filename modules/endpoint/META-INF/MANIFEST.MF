@@ -21,6 +21,7 @@ Import-Package: javax.xml.stream;resolution:=optional,
  org.apache.tuscany.sca.interfacedef;version="2.0.0";resolution:=optional,
  org.apache.tuscany.sca.monitor;version="2.0.0";resolution:=optional,
  org.apache.tuscany.sca.policy;version="2.0.0";resolution:=optional,
+ org.oasisopen.sca;version="2.0.0",
  org.oasisopen.sca.annotation;version="2.0.0";resolution:=optional
 Bundle-SymbolicName: org.apache.tuscany.sca.endpoint
 Bundle-DocURL: http://www.apache.org/
