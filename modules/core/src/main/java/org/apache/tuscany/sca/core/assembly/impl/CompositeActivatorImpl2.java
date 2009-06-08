@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.core.assembly.impl;
@@ -33,7 +33,6 @@ import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Endpoint2;
 import org.apache.tuscany.sca.assembly.EndpointReference2;
-import org.apache.tuscany.sca.assembly.EndpointRegistry;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
@@ -68,6 +67,7 @@ import org.apache.tuscany.sca.provider.PolicyProviderFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
+import org.apache.tuscany.sca.runtime.EndpointRegistry;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentContext;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
@@ -104,7 +104,7 @@ public class CompositeActivatorImpl2 implements CompositeActivator {
     private final CompositeContext compositeContext;
 
     private Composite domainComposite;
-    
+
     public CompositeActivatorImpl2(ExtensionPointRegistry extensionPoints) {
         this.extensionPoints = extensionPoints;
         this.compositeContext = new CompositeContextImpl(extensionPoints);
@@ -130,9 +130,9 @@ public class CompositeActivatorImpl2 implements CompositeActivator {
     //=========================================================================
     // Activation
     //=========================================================================
-    
+
     // Composite activation/deactivation
-    
+
     public void activate(Composite composite) throws ActivationException {
         try {
             if (logger.isLoggable(Level.FINE)) {
@@ -158,9 +158,9 @@ public class CompositeActivatorImpl2 implements CompositeActivator {
             throw new ActivationException(e);
         }
     }
-    
+
     // Component activation/deactivation
-    
+
     public void activateComponent(Component component)
             throws ActivationException {
         try {
@@ -190,7 +190,7 @@ public class CompositeActivatorImpl2 implements CompositeActivator {
             throw new ActivationException(e);
         }
     }
-   
+
     public void deactivateComponent(Component component)
             throws ActivationException {
         try {
@@ -217,10 +217,10 @@ public class CompositeActivatorImpl2 implements CompositeActivator {
         } catch (Exception e) {
             throw new ActivationException(e);
         }
-    }      
-    
+    }
+
     // add/remove artifacts required to get the implementation going
-    
+
     private void addImplementationProvider(RuntimeComponent component, Implementation implementation) {
         ImplementationProviderFactory providerFactory =
             (ImplementationProviderFactory)providerFactories.getProviderFactory(implementation.getClass());
@@ -241,14 +241,14 @@ public class CompositeActivatorImpl2 implements CompositeActivator {
                 component.addPolicyProvider(policyProvider);
             }
         }
-        
+
     }
 
     private void removeImplementationProvider(RuntimeComponent component) {
         component.setImplementationProvider(null);
         component.getPolicyProviders().clear();
     }
-    
+
     private void addScopeContainer(Component component) {
         if (!(component instanceof ScopedRuntimeComponent)) {
             return;
@@ -269,13 +269,13 @@ public class CompositeActivatorImpl2 implements CompositeActivator {
         ScopeContainer scopeContainer = runtimeComponent.getScopeContainer();
         if(scopeContainer != null && scopeContainer.getScope() == Scope.CONVERSATION) {
             conversationManager.removeListener((ConversationalScopeContainer) scopeContainer);
-        }        
+        }
         runtimeComponent.setScopeContainer(null);
     }
-    
-    
+
+
     // Service activation/deactivation
-    
+
     public void activate(RuntimeComponent component, RuntimeComponentService service) {
         if (service.getService() == null) {
             if (logger.isLoggable(Level.WARNING)) {
@@ -285,14 +285,14 @@ public class CompositeActivatorImpl2 implements CompositeActivator {
             }
             return;
         }
-        
-        /* TODO - EPR - activate services at all levels as promoted endpoin references are maintained 
-         *              on the higher level services 
+
+        /* TODO - EPR - activate services at all levels as promoted endpoin references are maintained
+         *              on the higher level services
         if (service.getService() instanceof CompositeService) {
             return;
         }
         */
-        
+
         if (logger.isLoggable(Level.FINE)) {
             logger.fine("Activating component service: " + component.getURI() + "#" + service.getName());
         }
@@ -312,7 +312,7 @@ public class CompositeActivatorImpl2 implements CompositeActivator {
             removeServiceBindingProvider(component, service, binding);
         }
     }
-    
+
     private ServiceBindingProvider addServiceBindingProvider(
             RuntimeComponent component, RuntimeComponentService service,
             Binding binding) {
@@ -358,18 +358,18 @@ public class CompositeActivatorImpl2 implements CompositeActivator {
         if (!(service instanceof RuntimeComponentService)) {
             return;
         }
-        
+
         RuntimeComponentService runtimeService = (RuntimeComponentService)service;
 
         // Add a wire for each service Endpoint
         for ( Endpoint2 endpoint : runtimeService.getEndpoints()){
-            
+
             // fluff up a fake endpoint reference as we are on the service side
             // so we need to represent the reference that will call us
             EndpointReference2 endpointReference = assemblyFactory.createEndpointReference();
             endpointReference.setBinding(endpoint.getBinding());
             endpointReference.setTargetEndpoint(endpoint);
-            
+
             // create the interface contract for the binding and service ends of the wire
             // that are created as forward only contracts
             // FIXME: [rfeng] We might need a better way to get the impl interface contract
@@ -379,30 +379,30 @@ public class CompositeActivatorImpl2 implements CompositeActivator {
             }
             endpoint.setInterfaceContract(targetService.getInterfaceContract().makeUnidirectional(false));
             endpointReference.setInterfaceContract(getServiceBindingInterfaceContract(service, endpoint.getBinding()));
-            
+
             // create the wire
             RuntimeWire wire = new RuntimeWireImpl2(extensionPoints,
-                                                    false, 
-                                                    endpointReference, 
-                                                    endpoint, 
-                                                    interfaceContractMapper, 
-                                                    workScheduler, 
+                                                    false,
+                                                    endpointReference,
+                                                    endpoint,
+                                                    interfaceContractMapper,
+                                                    workScheduler,
                                                     wireProcessor,
-                                                    messageFactory, 
+                                                    messageFactory,
                                                     conversationManager);
-            
+
             runtimeService.getRuntimeWires().add(wire);
         }
-    }  
-    
+    }
+
     private void removeServiceWires(ComponentService service) {
         if (!(service instanceof RuntimeComponentService)) {
             return;
         }
         RuntimeComponentService runtimeService = (RuntimeComponentService)service;
         runtimeService.getRuntimeWires().clear();
-    }    
-    
+    }
+
     private InterfaceContract getServiceBindingInterfaceContract(ComponentService service, Binding binding) {
         InterfaceContract interfaceContract = service.getInterfaceContract();
 
@@ -415,22 +415,22 @@ public class CompositeActivatorImpl2 implements CompositeActivator {
         }
         return interfaceContract.makeUnidirectional(false);
     }
-    
+
     // Reference activation/deactivation
-    
+
     public void activate(RuntimeComponent component, RuntimeComponentReference reference) {
         if (logger.isLoggable(Level.FINE)) {
             logger.fine("Activating component reference: " + component.getURI() + "#" + reference.getName());
         }
-       
-        // set the parent component onto the reference. It's used at start time when the 
+
+        // set the parent component onto the reference. It's used at start time when the
         // reference is asked to return it's runtime wires. If there are none the reference
         // asks the component context to start the reference which creates the wires
         reference.setComponent(component);
-        
+
         // TODO reference wires are added at component start for some reason
-    }    
-    
+    }
+
     public void deactivate(RuntimeComponent component, RuntimeComponentReference reference) {
         if (logger.isLoggable(Level.FINE)) {
             logger.fine("Deactivating component reference: " + component.getURI() + "#" + reference.getName());
@@ -441,8 +441,8 @@ public class CompositeActivatorImpl2 implements CompositeActivator {
                 removeReferenceBindingProvider(component, reference, endpointReference.getBinding());
             }
         }
-    }  
-/*    
+    }
+/*
     private ReferenceBindingProvider addReferenceBindingProvider(
             RuntimeComponent component, RuntimeComponentReference reference,
             Binding binding) {
@@ -475,7 +475,7 @@ public class CompositeActivatorImpl2 implements CompositeActivator {
                             + binding.getClass().getName());
         }
     }
-*/    
+*/
     private void removeReferenceBindingProvider(RuntimeComponent component,
             RuntimeComponentReference reference, Binding binding) {
         reference.setBindingProvider(binding, null);
@@ -486,24 +486,24 @@ public class CompositeActivatorImpl2 implements CompositeActivator {
             }
         }
     }
-    
+
     private void removeReferenceWires(ComponentReference reference) {
         if (!(reference instanceof RuntimeComponentReference)) {
             return;
         }
-        
+
         // TODO - EPR what is this all about?
         // [rfeng] Comment out the following statements to avoid the on-demand activation
         // RuntimeComponentReference runtimeRef = (RuntimeComponentReference)reference;
         // runtimeRef.getRuntimeWires().clear();
     }
-    
+
     //=========================================================================
     // Start
     //=========================================================================
-    
+
     // Composite start/stop
-    
+
     public void start(Composite composite) {
         if (logger.isLoggable(Level.FINE)) {
             logger.fine("Starting composite: " + composite.getName());
@@ -521,9 +521,9 @@ public class CompositeActivatorImpl2 implements CompositeActivator {
             stop(component);
         }
     }
-    
+
     // Component start/stop
-    
+
     public void start(Component component) {
         if (logger.isLoggable(Level.FINE)) {
             logger.fine("Starting component: " + component.getURI());
@@ -532,9 +532,9 @@ public class CompositeActivatorImpl2 implements CompositeActivator {
         if(runtimeComponent.isStarted()) {
             return;
         }
-        
+
         configureComponentContext(runtimeComponent);
-        
+
         // Reference bindings aren't started until the wire is first used
 
         for (ComponentService service : component.getServices()) {
@@ -547,13 +547,13 @@ public class CompositeActivatorImpl2 implements CompositeActivator {
                 final ServiceBindingProvider bindingProvider = runtimeService.getBindingProvider(endpoint.getBinding());
                 if (bindingProvider != null) {
                     // bindingProvider.start();
-                    // Allow bindings to add shutdown hooks. Requires RuntimePermission shutdownHooks in policy. 
+                    // Allow bindings to add shutdown hooks. Requires RuntimePermission shutdownHooks in policy.
                     AccessController.doPrivileged(new PrivilegedAction<Object>() {
                         public Object run() {
                             bindingProvider.start();
                             return null;
                           }
-                    });                       
+                    });
                 }
             }
         }
@@ -593,13 +593,13 @@ public class CompositeActivatorImpl2 implements CompositeActivator {
                 endpointRegistry.removeEndpoint(endpoint);
                 final ServiceBindingProvider bindingProvider = ((RuntimeComponentService)service).getBindingProvider(endpoint.getBinding());
                 if (bindingProvider != null) {
-                    // Allow bindings to read properties. Requires PropertyPermission read in security policy. 
+                    // Allow bindings to read properties. Requires PropertyPermission read in security policy.
                     AccessController.doPrivileged(new PrivilegedAction<Object>() {
                         public Object run() {
                             bindingProvider.stop();
                             return null;
                           }
-                    });                       
+                    });
                 }
             }
         }
@@ -608,19 +608,19 @@ public class CompositeActivatorImpl2 implements CompositeActivator {
                 logger.fine("Starting component reference: " + component.getURI() + "#" + reference.getName());
             }
             RuntimeComponentReference runtimeRef = ((RuntimeComponentReference)reference);
-            
+
             for (EndpointReference2 endpointReference : reference.getEndpointReferences()) {
                 final ReferenceBindingProvider bindingProvider = runtimeRef.getBindingProvider(endpointReference.getBinding());
                 if (bindingProvider != null) {
-                    // Allow bindings to read properties. Requires PropertyPermission read in security policy. 
+                    // Allow bindings to read properties. Requires PropertyPermission read in security policy.
                     AccessController.doPrivileged(new PrivilegedAction<Object>() {
                         public Object run() {
                             bindingProvider.stop();
                             return null;
                           }
-                    });                       
+                    });
                 }
-            }              
+            }
         }
         Implementation implementation = component.getImplementation();
         if (implementation instanceof Composite) {
@@ -628,19 +628,19 @@ public class CompositeActivatorImpl2 implements CompositeActivator {
         } else {
             final ImplementationProvider implementationProvider = ((RuntimeComponent)component).getImplementationProvider();
             if (implementationProvider != null) {
-                // Allow bindings to read properties. Requires PropertyPermission read in security policy. 
+                // Allow bindings to read properties. Requires PropertyPermission read in security policy.
                 AccessController.doPrivileged(new PrivilegedAction<Object>() {
                     public Object run() {
                         implementationProvider.stop();
                         return null;
                       }
-                });                       
+                });
             }
         }
 
         if (component instanceof ScopedRuntimeComponent) {
             ScopedRuntimeComponent runtimeComponent = (ScopedRuntimeComponent)component;
-            if (runtimeComponent.getScopeContainer() != null && 
+            if (runtimeComponent.getScopeContainer() != null &&
                     runtimeComponent.getScopeContainer().getLifecycleState() != ScopeContainer.STOPPED) {
                 runtimeComponent.getScopeContainer().stop();
             }
@@ -648,79 +648,79 @@ public class CompositeActivatorImpl2 implements CompositeActivator {
 
         ((RuntimeComponent)component).setStarted(false);
     }
-    
+
     public void configureComponentContext(RuntimeComponent runtimeComponent) {
         RuntimeComponentContext componentContext = (RuntimeComponentContext) componentContextFactory.createComponentContext(runtimeComponent);
         runtimeComponent.setComponentContext(componentContext);
-    }    
-    
+    }
+
     // Service start/stop
-    
+
     // TODO - EPR done as part of the component start above
-    
+
     // Reference start/stop
     // Used by component context start
     // TODO - EPR I don't know why reference wires don't get added until component start
-    
+
     public void start(RuntimeComponent component, RuntimeComponentReference componentReference) {
         synchronized (componentReference) {
-            
+
             if (!(componentReference instanceof RuntimeComponentReference)) {
                 return;
             }
-            
-            /* The way it was 
+
+            /* The way it was
             // create a wire for each endpoint reference. An endpoint reference says that a
             // target has been specified and hence the reference has been wired in some way.
-            // The service may not have been found yet, depending on the way the composite 
-            // is deployed, but it is expected to be found. In the case where the reference 
-            // is unwired (a target has not been specified) there will be no endpoint 
+            // The service may not have been found yet, depending on the way the composite
+            // is deployed, but it is expected to be found. In the case where the reference
+            // is unwired (a target has not been specified) there will be no endpoint
             // reference and this will lead to null being injected
             for (EndpointReference2 endpointReference : componentReference.getEndpointReferences()){
-                
+
                 // if there is a binding an endpoint has been found for the endpoint reference
                 if (endpointReference.getBinding() != null){
-                    
+
                     // add the binding provider. This is apparently a repeat
                     // of previous configuration as self references are created
                     // on the fly and miss the previous point where providers are added
                     RuntimeComponentReference runtimeRef = (RuntimeComponentReference)componentReference;
-                    
+
                     if (runtimeRef.getBindingProvider(endpointReference.getBinding()) == null) {
                         addReferenceBindingProvider(component, componentReference, endpointReference.getBinding());
                     }
-                    
-                    // start the binding provider   
+
+                    // start the binding provider
                     final ReferenceBindingProvider bindingProvider = runtimeRef.getBindingProvider(endpointReference.getBinding());
-                    
+
                     if (bindingProvider != null) {
-                        // Allow bindings to add shutdown hooks. Requires RuntimePermission shutdownHooks in policy. 
+                        // Allow bindings to add shutdown hooks. Requires RuntimePermission shutdownHooks in policy.
                         AccessController.doPrivileged(new PrivilegedAction<Object>() {
                             public Object run() {
                                 bindingProvider.start();
                                 return null;
                               }
-                        });                       
+                        });
                     }
-                    
+
                     // add the wire
                     addReferenceWire(component, componentReference, endpointReference);
                 }
-            }   
+            }
             */
-            
-            // create a wire for each endpoint reference. An endpoint reference says either that 
+
+            // create a wire for each endpoint reference. An endpoint reference says either that
             // - a target has been specified and hence the reference has been wired in some way.
             // - an unwired binding ha been specified
             // and endpoint reference representing a wired reference may not at this point
-            // be resolved (the service to which it points may not be present in the 
+            // be resolved (the service to which it points may not be present in the
             // current composite). Endpoint reference resolution takes place when the wire
             // is first used (when the chains are created)
             for (EndpointReference2 endpointReference : componentReference.getEndpointReferences()){
                 addReferenceWire(component, componentReference, endpointReference);
                 endpointRegistry.addEndpointReference(endpointReference);
             }
-            
+
         }
     }
 
@@ -737,10 +737,10 @@ public class CompositeActivatorImpl2 implements CompositeActivator {
             }
         }
     }
-    
+
     private void addReferenceWire(Component component, ComponentReference reference, EndpointReference2 endpointReference) {
         RuntimeComponentReference runtimeRef = (RuntimeComponentReference)reference;
-        
+
         // Use the interface contract of the reference on the component type and if there
         // isn't one then use the one from the reference itself
         Reference componentTypeRef = reference.getReference();
@@ -751,7 +751,7 @@ public class CompositeActivatorImpl2 implements CompositeActivator {
         } else {
             sourceContract = componentTypeRef.getInterfaceContract();
         }
-       
+
         // TODO - EPR - interface contract seems to be null in the implementation.web
         //              case. Not introspecting the CT properly?
         if (sourceContract == null){
@@ -760,7 +760,7 @@ public class CompositeActivatorImpl2 implements CompositeActivator {
             sourceContract = endpointReference.getTargetEndpoint().getInterfaceContract();
             reference.setInterfaceContract(sourceContract);
         }
-        
+
         endpointReference.setInterfaceContract(sourceContract.makeUnidirectional(false));
 
 /* TODO - EPR should have been done previously during matching
@@ -787,36 +787,36 @@ public class CompositeActivatorImpl2 implements CompositeActivator {
         }
 */
 
-/* TODO - EPR can't do this until the binding matches the EPR        
+/* TODO - EPR can't do this until the binding matches the EPR
         InterfaceContract bindingContract = getInterfaceContract(reference, endpointReference.getBinding());
         Endpoint2 endpoint = endpointReference.getTargetEndpoint();
         endpoint.setInterfaceContract(bindingContract);
 */
-    
-/* TODO - EPR review in the light of new matching code        
+
+/* TODO - EPR review in the light of new matching code
         // TUSCANY-2029 - We should use the URI of the serviceBinding because the target may be a Component in a
-        // nested composite. 
+        // nested composite.
         if (serviceBinding != null) {
             wireTarget.setURI(serviceBinding.getURI());
         }
-*/        
+*/
 
         // create the wire
-        // null endpoint passed in here as the endpoint reference may 
+        // null endpoint passed in here as the endpoint reference may
         // not be resolved yet
         RuntimeWire wire = new RuntimeWireImpl2(extensionPoints,
-                                                true, 
-                                                endpointReference, 
-                                                null, 
-                                                interfaceContractMapper, 
-                                                workScheduler, 
+                                                true,
+                                                endpointReference,
+                                                null,
+                                                interfaceContractMapper,
+                                                workScheduler,
                                                 wireProcessor,
-                                                messageFactory, 
+                                                messageFactory,
                                                 conversationManager);
         runtimeRef.getRuntimeWires().add(wire);
-        
+
     }
-    
+
     private InterfaceContract getInterfaceContract(ComponentReference reference, Binding binding) {
         InterfaceContract interfaceContract = reference.getInterfaceContract();
         ReferenceBindingProvider provider = ((RuntimeComponentReference)reference).getBindingProvider(binding);
@@ -827,13 +827,13 @@ public class CompositeActivatorImpl2 implements CompositeActivator {
             }
         }
         return interfaceContract.makeUnidirectional(false);
-    }    
-    
-    
-    
+    }
+
+
+
    // Utility functions
    // TODO - can we get rid of these?
-    
+
     public CompositeContext getCompositeContext() {
         return compositeContext;
     }
@@ -872,5 +872,5 @@ public class CompositeActivatorImpl2 implements CompositeActivator {
         }
         return null;
     }
-    
+
 }
