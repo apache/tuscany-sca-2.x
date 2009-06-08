@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.assembly.impl;
@@ -40,13 +40,20 @@ import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.Wire;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 
 /**
  * A factory for the assembly model.
- * 
+ *
  * @version $Rev$ $Date$
  */
 public abstract class AssemblyFactoryImpl implements AssemblyFactory {
+
+    protected ExtensionPointRegistry registry;
+    protected AssemblyFactoryImpl(ExtensionPointRegistry registry) {
+        super();
+        this.registry = registry;
+    }
 
     public AbstractProperty createAbstractProperty() {
         return new AbstractPropertyImpl();
@@ -115,16 +122,16 @@ public abstract class AssemblyFactoryImpl implements AssemblyFactory {
     public Wire createWire() {
         return new WireImpl();
     }
-    
+
     public Extension createExtension() {
         return new ExtensionImpl();
     }
 
     public Endpoint2 createEndpoint() {
-        return new Endpoint2Impl();
+        return new Endpoint2Impl(registry);
     }
-    
+
     public EndpointReference2 createEndpointReference() {
-        return new EndpointReference2Impl();
+        return new EndpointReference2Impl(registry);
     }
 }

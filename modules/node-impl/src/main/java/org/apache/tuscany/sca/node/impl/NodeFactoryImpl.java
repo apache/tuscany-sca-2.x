@@ -389,7 +389,7 @@ public class NodeFactoryImpl extends NodeFactory {
 
         // Use the runtime-enabled assembly factory
         modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
-        assemblyFactory = new RuntimeAssemblyFactory();
+        assemblyFactory = new RuntimeAssemblyFactory(extensionPoints);
         modelFactories.addFactory(assemblyFactory);
 
         // Create a monitor
