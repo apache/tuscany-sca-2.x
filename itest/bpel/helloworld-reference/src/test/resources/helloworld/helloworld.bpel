@@ -1,0 +1,84 @@
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~    http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+<process name="HelloWorld"
+    targetNamespace="http://helloworld"
+    xmlns="http://schemas.xmlsoap.org/ws/2004/03/business-process/"
+    xmlns:bpws="http://schemas.xmlsoap.org/ws/2004/03/business-process/"
+    xmlns:tns="http://helloworld"    
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:helloworld="http://helloworld"
+    xmlns:greetings="http://greetings"
+    queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0"
+    expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0">
+
+  <import location="helloworld.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"
+     namespace="http://helloworld"/>
+
+  <import location="../greetings/greetings.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"
+     namespace="http://greetings"/>
+
+   <partnerLinks>
+      <partnerLink name="helloPartnerLink" partnerLinkType="helloworld:HelloPartnerLinkType" myRole="me" />
+      <partnerLink name="greetingsPartnerLink" partnerLinkType="greetings:GreetingsPartnerLinkType" partnerRole="Provider" initializePartnerRole="yes" />
+   </partnerLinks>
+    
+   <variables>
+     <variable name="helloMessage" messageType="helloworld:HelloMessage"/>
+     <variable name="helloResponse" messageType="helloworld:HelloMessage"/>
+     <variable name="greetingsRequest" messageType="greetings:getGreetingsRequest"/>
+     <variable name="greetingsResponse" messageType="greetings:getGreetingsResponse"/>
+   </variables>
+
+   <sequence>
+       <receive
+          name="start"
+          createInstance="yes"
+          operation="hello"
+          variable="helloMessage"
+          partnerLink="helloPartnerLink"
+          portType="helloworld:HelloWorld" />
+
+       <assign name="assignToGreetingsRequest">
+          <copy>
+              <from>$helloMessage.TestPart</from>
+              <to>$greetingsRequest.parameters</to>
+          </copy>
+       </assign>
+
+      <invoke name="invokeGreetings"
+              operation="getGreetings"
+              inputVariable="greetingsRequest"
+              outputVariable="greetingsResponse"
+              partnerLink="greetingsPartnerLink"
+              portType="greetings:Greetings" />
+
+       <assign name="assignToHelloResponse">
+          <copy>
+              <from>$greetingsResponse.parameters/greetings:getGreetingsReturn</from>
+              <to>$helloResponse.TestPart</to>
+          </copy>
+       </assign>
+
+       <reply name="end"  
+              operation="hello"
+              partnerLink="helloPartnerLink"
+              portType="helloworld:HelloWorld" 
+              variable="helloResponse"/>
+   </sequence>
+</process>
