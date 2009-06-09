@@ -1,173 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
-    * Licensed to the Apache Software Foundation (ASF) under one
-    * or more contributor license agreements.  See the NOTICE file
-    * distributed with this work for additional information
-    * regarding copyright ownership.  The ASF licenses this file
-    * to you under the Apache License, Version 2.0 (the
-    * "License"); you may not use this file except in compliance
-    * with the License.  You may obtain a copy of the License at
-    *
-    *   http://www.apache.org/licenses/LICENSE-2.0
-    *
-    * Unless required by applicable law or agreed to in writing,
-    * software distributed under the License is distributed on an
-    * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-    * KIND, either express or implied.  See the License for the
-    * specific language governing permissions and limitations
-    * under the License.
--->
-<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://vtest.wsbinding.wsdlelement.service.cservice" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="CService" targetNamespace="http://vtest.wsbinding.wsdlelement.service.cservice">
-  <wsdl:types>
-    <xsd:schema targetNamespace="http://vtest.wsbinding.wsdlelement.service.cservice" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-      <xsd:element name="getFloat">
-        <xsd:complexType>
-          <xsd:sequence>
-            <xsd:element name="in" type="xsd:float"/>
-          </xsd:sequence>
-        </xsd:complexType>
-      </xsd:element>
-      <xsd:element name="getFloatResponse">
-        <xsd:complexType>
-          <xsd:sequence>
-            <xsd:element name="out" type="xsd:float"/>
-          </xsd:sequence>
-        </xsd:complexType>
-      </xsd:element>
-      <xsd:element name="getInteger">
-      	<xsd:complexType>
-      		<xsd:sequence>      			<xsd:element name="in" type="xsd:integer"></xsd:element>
-      		</xsd:sequence>
-      	</xsd:complexType>
-      </xsd:element>
-      <xsd:element name="getIntegerResponse">
-      	<xsd:complexType>
-      		<xsd:sequence>
-      			<xsd:element name="out" type="xsd:integer"></xsd:element>
-      		</xsd:sequence>
-      	</xsd:complexType>
-      </xsd:element>
-      <xsd:element name="getString2">
-      	<xsd:complexType>
-      		<xsd:sequence>
-      			<xsd:element name="in1" type="xsd:string"></xsd:element>
-      			<xsd:element name="in2" type="xsd:string"></xsd:element>
-      		</xsd:sequence>
-      	</xsd:complexType>
-      </xsd:element>
-      <xsd:element name="getString2Response">
-      	<xsd:complexType>
-      		<xsd:sequence>
-      			<xsd:element name="out" type="xsd:string"></xsd:element>
-      		</xsd:sequence>
-      	</xsd:complexType>
-      </xsd:element>
-      <xsd:element name="getString">
-      	<xsd:complexType>
-      		<xsd:sequence>
-      			<xsd:element name="in" type="xsd:string"></xsd:element>
-      		</xsd:sequence>
-      	</xsd:complexType>
-      </xsd:element>
-      <xsd:element name="getStringResponse">
-      	<xsd:complexType>
-      		<xsd:sequence>
-      			<xsd:element name="out" type="xsd:string"></xsd:element>
-      		</xsd:sequence>
-      	</xsd:complexType>
-      </xsd:element>
-    </xsd:schema>
-  </wsdl:types>
-  <wsdl:message name="getFloatRequest">
-    <wsdl:part element="tns:getFloat" name="parameters"/>
-  </wsdl:message>
-  <wsdl:message name="getFloatResponse">
-    <wsdl:part element="tns:getFloatResponse" name="parameters"/>
-  </wsdl:message>
-  <wsdl:message name="getIntegerRequest">
-  	<wsdl:part name="parameters" element="tns:getInteger"></wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="getIntegerResponse">
-  	<wsdl:part name="parameters" element="tns:getIntegerResponse"></wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="getString2Request">
-  	<wsdl:part name="parameters" element="tns:getString2"></wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="getString2Response">
-  	<wsdl:part name="parameters" element="tns:getString2Response"></wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="getStringRequest">
-  	<wsdl:part name="parameters" element="tns:getString"></wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="getStringResponse">
-  	<wsdl:part name="parameters" element="tns:getStringResponse"></wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="getString2Request">
-  	<wsdl:part name="parameters" element="tns:getString2"></wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="getString2Response">
-  	<wsdl:part name="parameters" element="tns:getString2Response"></wsdl:part>
-  </wsdl:message>
-  <wsdl:portType name="CServicePortType">
-    <wsdl:operation name="getFloat">
-      <wsdl:input message="tns:getFloatRequest"/>
-      <wsdl:output message="tns:getFloatResponse"/>
-    </wsdl:operation>
-    <wsdl:operation name="getInteger">
-    	<wsdl:input message="tns:getIntegerRequest"></wsdl:input>
-    	<wsdl:output message="tns:getIntegerResponse"></wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="getString">
-    	<wsdl:input message="tns:getStringRequest"></wsdl:input>
-    	<wsdl:output message="tns:getStringResponse"></wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="getString2">
-    	<wsdl:input message="tns:getString2Request"></wsdl:input>
-    	<wsdl:output message="tns:getString2Response"></wsdl:output>
-    </wsdl:operation>
-  </wsdl:portType>
-  <wsdl:binding name="CServiceSOAPBinding"
-  	type="tns:CServicePortType">  	<soap:binding style="document"
-  		transport="http://schemas.xmlsoap.org/soap/http" />  	<wsdl:operation name="getFloat">  		<soap:operation
-  			soapAction="http://vtest.wsbinding.wsdlelement.service.cservice/getFloat" />  		<wsdl:input>  			<soap:body use="literal" />
-  		</wsdl:input>
-  		<wsdl:output>  			<soap:body use="literal" />
-  		</wsdl:output>
-  	</wsdl:operation>
-  	<wsdl:operation name="getInteger">
-  		<soap:operation
-  			soapAction="http://vtest.wsbinding.wsdlelement.service.cservice/getInteger" />
-  		<wsdl:input>
-  			<soap:body use="literal" />
-  		</wsdl:input>
-  		<wsdl:output>
-  			<soap:body use="literal" />
-  		</wsdl:output>
-  	</wsdl:operation>
-  	<wsdl:operation name="getString">
-  		<soap:operation
-  			soapAction="http://vtest.wsbinding.wsdlelement.service.cservice/getString" />
-  		<wsdl:input>
-  			<soap:body use="literal" />
-  		</wsdl:input>
-  		<wsdl:output>
-  			<soap:body use="literal" />
-  		</wsdl:output>
-  	</wsdl:operation>
-  	<wsdl:operation name="getString2">
-  		<soap:operation
-  			soapAction="http://vtest.wsbinding.wsdlelement.service.cservice/getString2" />
-  		<wsdl:input>
-  			<soap:body use="literal" />
-  		</wsdl:input>
-  		<wsdl:output>
-  			<soap:body use="literal" />
-  		</wsdl:output>
-  	</wsdl:operation>
-  </wsdl:binding>
-  <wsdl:service name="CService">
-    <wsdl:port binding="tns:CServiceSOAPBinding" name="CServiceSOAP">
-      <soap:address location=""/>
-    </wsdl:port>
-  </wsdl:service>
-</wsdl:definitions>
