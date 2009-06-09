@@ -32,10 +32,6 @@ import org.apache.tuscany.sca.runtime.EndpointRegistry;
 
 public class EndpointRegistryImpl implements EndpointRegistry {
     private final Logger logger = Logger.getLogger(EndpointRegistryImpl.class.getName());
-    //public static final EndpointRegistryImpl INSTANCE = new EndpointRegistryImpl();
-    //public static EndpointRegistryImpl getInstance() {
-    //    return INSTANCE;
-    //}
 
     static List<Endpoint2> endpoints = new ArrayList<Endpoint2>();
     static List<EndpointReference2> endpointreferences = new ArrayList<EndpointReference2>();
