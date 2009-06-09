@@ -147,7 +147,8 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry {
         if (bindingName == null) {
             bindingName = ep.getService().getName();
         }
-        String epURI = ep.getComponent().getURI() + "#" + ep.getService().getName() + "/" + bindingName;
+        String epURI =
+            ep.getComponent().getURI() + "#service-binding(" + ep.getService().getName() + "/" + bindingName + ")";
         return epURI;
     }
 
