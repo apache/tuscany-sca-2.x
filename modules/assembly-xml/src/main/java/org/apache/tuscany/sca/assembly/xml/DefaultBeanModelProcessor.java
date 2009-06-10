@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.assembly.xml;
@@ -49,10 +49,10 @@ import org.apache.tuscany.sca.policy.PolicySubject;
  *
  * @version $Rev$ $Date$
  */
-public class DefaultBeanModelProcessor extends BaseAssemblyProcessor implements StAXArtifactProcessor {
+public class DefaultBeanModelProcessor<T> extends BaseAssemblyProcessor implements StAXArtifactProcessor<T> {
 
     private QName artifactType;
-    private Class<Implementation> modelClass;
+    private Class<T> modelClass;
     private Object modelFactory;
     private Method factoryMethod;
     private Map<String, Method> setterMethods = new HashMap<String, Method>();
@@ -60,17 +60,17 @@ public class DefaultBeanModelProcessor extends BaseAssemblyProcessor implements 
 
     public DefaultBeanModelProcessor(FactoryExtensionPoint modeFactories,
                                      QName artifactType,
-                                     Class<Implementation> modelClass,
+                                     Class<T> modelClass,
                                      Object modelFactory,
                                      Monitor monitor) {
         super(modeFactories, null, monitor);
         this.artifactType = artifactType;
         this.modelClass = modelClass;
         this.modelFactory = modelFactory;
-        
+
         // Introspect the factory class and bean model class
         if (modelFactory != null) {
-            
+
             // Find the model create method
             for (Method method: modelFactory.getClass().getMethods()) {
                 if (method.getName().startsWith("create") && method.getReturnType() == modelClass) {
@@ -79,13 +79,13 @@ public class DefaultBeanModelProcessor extends BaseAssemblyProcessor implements 
                 }
             }
         }
-        
+
         // Index the bean's setter methods
         for (Method method: modelClass.getMethods()) {
             Method getter;
             String name = method.getName();
             if (name.startsWith("set") && name.length() > 3) {
-                
+
                 // Get the corresponding getter method
                 try {
                     getter = modelClass.getMethod("get" + name.substring(3));
@@ -93,7 +93,7 @@ public class DefaultBeanModelProcessor extends BaseAssemblyProcessor implements 
                     getter = null;
                     continue;
                 }
-                
+
                 // Get the property name
                 name = name.substring(3);
                 if (name.length() > 1) {
@@ -104,12 +104,12 @@ public class DefaultBeanModelProcessor extends BaseAssemblyProcessor implements 
             } else {
                 continue;
             }
-            
-            // Map an uppercase property name to a lowercase attribute name 
+
+            // Map an uppercase property name to a lowercase attribute name
             if (name.toUpperCase().equals(name)) {
                 name = name.toLowerCase();
             }
-            
+
             // Trim trailing _ from property names
             if (name.endsWith("_")) {
                 name = name.substring(0, name.length()-1);
@@ -119,11 +119,11 @@ public class DefaultBeanModelProcessor extends BaseAssemblyProcessor implements 
         }
     }
 
-    public Object read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+    public T read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
 
         // Read an element
         try {
-            
+
             // Create a new instance of the model
             Object model;
             if (modelFactory != null) {
@@ -149,19 +149,19 @@ public class DefaultBeanModelProcessor extends BaseAssemblyProcessor implements 
             policyProcessor.readPolicies(model, reader);
 
             // FIXME read extension elements
-            
+
             // By default mark the model object unresolved
             if (model instanceof Base) {
                 ((Base)model).setUnresolved(true);
             }
-            
+
             // Skip to end element
             while (reader.hasNext()) {
                 if (reader.next() == END_ELEMENT && artifactType.equals(reader.getName())) {
                     break;
                 }
             }
-            return model;
+            return (T) model;
 
         } catch (Exception e) {
         	ContributionReadException ce = new ContributionReadException(e);
@@ -170,7 +170,7 @@ public class DefaultBeanModelProcessor extends BaseAssemblyProcessor implements 
         }
     }
 
-    public void write(Object bean, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
+    public void write(T bean, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
         try {
             // Write the bean properties as attributes
             List<XAttr> attrs = new ArrayList<XAttr>();
@@ -180,7 +180,7 @@ public class DefaultBeanModelProcessor extends BaseAssemblyProcessor implements 
                     attrs.add(new XAttr(entry.getKey(), value));
                 }
             }
-            
+
             // Write element
             writeStart(writer, artifactType.getNamespaceURI(), artifactType.getLocalPart(),
                        policyProcessor.writePolicies(bean), new XAttr(null, attrs));
@@ -194,8 +194,8 @@ public class DefaultBeanModelProcessor extends BaseAssemblyProcessor implements 
         }
     }
 
-    public void resolve(Object bean, ModelResolver resolver) throws ContributionResolveException {
-        
+    public void resolve(T bean, ModelResolver resolver) throws ContributionResolveException {
+
         // Resolve and merge the component type associated with an
         // implementation model
         if (bean instanceof Implementation) {
@@ -205,26 +205,26 @@ public class DefaultBeanModelProcessor extends BaseAssemblyProcessor implements 
                 int d = uri.lastIndexOf('.');
                 if (d != -1) {
                     uri = uri.substring(0, d) + ".componentType";
-                    
+
                     // Resolve the component type
                     ComponentType componentType = assemblyFactory.createComponentType();
                     componentType.setURI(uri);
                     componentType.setUnresolved(true);
-                    
+
                     componentType = resolver.resolveModel(ComponentType.class, componentType);
                     if (componentType != null && !componentType.isUnresolved()) {
-                        
+
                         // We found a component type, merge it into the implementation model
                         implementation.getServices().addAll(componentType.getServices());
                         implementation.getReferences().addAll(componentType.getReferences());
                         implementation.getProperties().addAll(componentType.getProperties());
                         implementation.setConstrainingType(componentType.getConstrainingType());
-                        
+
                         if (implementation instanceof PolicySubject &&
                                 componentType instanceof PolicySubject ) {
                             PolicySubject policiedImpl = (PolicySubject)implementation;
                             PolicySubject policiedCompType = (PolicySubject)componentType;
-                            
+
                             if ( policiedImpl.getPolicySets() != null) {
                                 policiedImpl.getPolicySets().addAll(policiedCompType.getPolicySets());
                             }
@@ -236,7 +236,7 @@ public class DefaultBeanModelProcessor extends BaseAssemblyProcessor implements 
                 }
             }
         }
-        
+
         // Mark the model resolved
         if (bean instanceof Base) {
             ((Base)bean).setUnresolved(false);
@@ -247,7 +247,7 @@ public class DefaultBeanModelProcessor extends BaseAssemblyProcessor implements 
         return artifactType;
     }
 
-    public Class<?> getModelType() {
+    public Class<T> getModelType() {
         return modelClass;
     }
 
