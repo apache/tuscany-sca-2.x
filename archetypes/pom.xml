@@ -43,6 +43,7 @@
                 <module>quickstart</module>
                 <module>quickstart-jsf</module>
                 <module>quickstart-stripes</module>
+                <module>quickstart-bpel</module>
             </modules>
         </profile>
     </profiles>    
