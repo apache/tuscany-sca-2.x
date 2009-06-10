@@ -51,6 +51,7 @@
             </activation>
             <modules>
                 <!--module>builder</module-->
+                <module>bpel</module>
                 <module>callback-api</module>
                 <module>callback-basic</module>
                 <module>callback-complex-type</module>
@@ -64,6 +65,7 @@
                 <module>contribution-zip</module>
                 <module>conversations</module>
                 <!--module>definitions-multiple</module-->
+                <module>distribution</module>
                 <module>exceptions</module>
                 <module>implementation-spring</module>
                 <module>interfaces</module>
@@ -77,7 +79,6 @@
                 <module>recursive-multi-level</module>
                 <module>references</module>
                 <module>scaclient-api</module>
-                <module>distribution</module>
                 <module>scopes</module>
                 <module>services</module>
                 <module>wires</module>
