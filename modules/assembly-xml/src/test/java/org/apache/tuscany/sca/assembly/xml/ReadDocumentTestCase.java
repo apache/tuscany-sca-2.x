@@ -50,6 +50,7 @@ import org.apache.tuscany.sca.core.DefaultFactoryExtensionPoint;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
 /**
@@ -64,6 +65,7 @@ public class ReadDocumentTestCase {
     private static ModelResolver resolver;
     private static XMLInputFactory inputFactory;
     private static StAXArtifactProcessor<Object> staxProcessor;
+    private static ValidatorHandler handler;
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -78,24 +80,12 @@ public class ReadDocumentTestCase {
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null, null);
 
         resolver = new DefaultModelResolver();
+        handler = getValidationHandler();
+
     }
 
     @Test
     public void testValidateAssembly() throws Exception {
-
-        SchemaFactory schemaFactory;
-        try {
-            schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        } catch (Error e) {
-            // Some old JDKs don't support XMLSchema validation
-            return;
-        } catch (Exception e) {
-            // Some old JDKs don't support XMLSchema validation
-            return;
-        }
-        Schema schema = schemaFactory.newSchema(getClass().getClassLoader().getResource(TUSCANY_11_XSD));
-        ValidatorHandler handler = schema.newValidatorHandler();
-
         SAXParserFactory parserFactory = SAXParserFactory.newInstance();
         URL url = getClass().getResource("Calculator.composite");
         XMLReader reader = parserFactory.newSAXParser().getXMLReader();
@@ -105,22 +95,25 @@ public class ReadDocumentTestCase {
 
     }
 
-    @Test
-    public void testValidateImplementation() throws Exception {
-
+    private static ValidatorHandler getValidationHandler() throws SAXException {
         SchemaFactory schemaFactory;
         try {
             schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+            schemaFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
         } catch (Error e) {
             // Some old JDKs don't support XMLSchema validation
-            return;
+            return null;
         } catch (Exception e) {
             // Some old JDKs don't support XMLSchema validation
-            return;
+            return null;
         }
-        Schema schema = schemaFactory.newSchema(getClass().getClassLoader().getResource(TUSCANY_11_XSD));
+        Schema schema = schemaFactory.newSchema(ReadDocumentTestCase.class.getClassLoader().getResource(TUSCANY_11_XSD));
         ValidatorHandler handler = schema.newValidatorHandler();
+        return handler;
+    }
 
+    @Test
+    public void testValidateImplementation() throws Exception {
         SAXParserFactory parserFactory = SAXParserFactory.newInstance();
         URL url = getClass().getResource("Calculator.composite");
         XMLReader reader = parserFactory.newSAXParser().getXMLReader();
@@ -149,20 +142,6 @@ public class ReadDocumentTestCase {
 
     @Test
     public void testValidateBinding() throws Exception {
-
-        SchemaFactory schemaFactory;
-        try {
-            schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        } catch (Error e) {
-            // Some old JDKs don't support XMLSchema validation
-            return;
-        } catch (Exception e) {
-            // Some old JDKs don't support XMLSchema validation
-            return;
-        }
-        Schema schema = schemaFactory.newSchema(getClass().getClassLoader().getResource(TUSCANY_11_XSD));
-        ValidatorHandler handler = schema.newValidatorHandler();
-
         SAXParserFactory parserFactory = SAXParserFactory.newInstance();
         URL url = getClass().getResource("RMIBindingTest.composite");
         XMLReader reader = parserFactory.newSAXParser().getXMLReader();
