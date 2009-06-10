@@ -39,7 +39,7 @@
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>helloworld-jsp</artifactId>
+            <artifactId>sample-helloworld-jsp</artifactId>
             <type>war</type>
             <version>2.0-SNAPSHOT</version>
         </dependency>        
@@ -89,6 +89,7 @@
                         <type>embedded</type>  
                         <systemProperties>
                             <org.apache.commons.logging.Log>org.apache.commons.logging.impl.SimpleLog</org.apache.commons.logging.Log>
+                            <Dorg.apache.tuscany.sca.contribution.processor.ValidationSchemaExtensionPoint.enabled>false</Dorg.apache.tuscany.sca.contribution.processor.ValidationSchemaExtensionPoint.enabled>
                         </systemProperties>
                     </container>
                     <!-- container>
@@ -108,7 +109,7 @@
                         <deployables>
                            <deployable>
                               <groupId>org.apache.tuscany.sca</groupId>
-                              <artifactId>helloworld-jsp</artifactId>
+                              <artifactId>sample-helloworld-jsp</artifactId>
                               <type>war</type>
                               <properties>
                                  <context>helloworld-jsp</context>
