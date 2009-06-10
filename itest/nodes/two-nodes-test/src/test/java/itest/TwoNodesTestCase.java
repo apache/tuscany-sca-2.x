@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package itest;
@@ -22,6 +22,8 @@ package itest;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import itest.nodes.Helloworld;
+
+import java.io.File;
 
 import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.Node;
@@ -44,9 +46,9 @@ public class TwoNodesTestCase{
     public static void setUpBeforeClass() throws Exception {
         System.setProperty("org.apache.tuscany.sca.contribution.processor.ValidationSchemaExtensionPoint.enabled", "false");
         NodeFactory factory = NodeFactory.newInstance();
-        serviceNode = factory.createNode(new Contribution("service", "..\\helloworld-service\\target\\itest-nodes-helloworld-service-2.0-SNAPSHOT.jar"));
+        serviceNode = factory.createNode(new Contribution("service", new File("../helloworld-service/target/itest-nodes-helloworld-service-2.0-SNAPSHOT.jar").toURI().toString()));
         serviceNode.start();
-        clientNode = factory.createNode(new Contribution("client", "..\\helloworld-client\\target\\itest-nodes-helloworld-client-2.0-SNAPSHOT.jar"));
+        clientNode = factory.createNode(new Contribution("client", new File("../helloworld-client/target/itest-nodes-helloworld-client-2.0-SNAPSHOT.jar").toURI().toString()));
         clientNode.start();
     }
 
@@ -55,7 +57,7 @@ public class TwoNodesTestCase{
         Helloworld service = serviceNode.getService(Helloworld.class, "HelloworldService");
         assertNotNull(service);
         assertEquals("Hello Petra", service.sayHello("Petra"));
-        
+
         Helloworld client = clientNode.getService(Helloworld.class, "HelloworldClient");
         assertNotNull(client);
         assertEquals("Hi Hello Petra", client.sayHello("Petra"));
@@ -67,7 +69,7 @@ public class TwoNodesTestCase{
         Helloworld service = scaClient.getService(Helloworld.class, "HelloworldService", null);
         assertNotNull(service);
         assertEquals("Hello Petra", service.sayHello("Petra"));
-        
+
         Helloworld client = scaClient.getService(Helloworld.class, "HelloworldClient", null);
         assertNotNull(client);
         assertEquals("Hi Hello Petra", client.sayHello("Petra"));
