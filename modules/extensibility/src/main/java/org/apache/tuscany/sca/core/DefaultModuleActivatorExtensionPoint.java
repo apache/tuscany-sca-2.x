@@ -20,9 +20,13 @@
 package org.apache.tuscany.sca.core;
 
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
 import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
@@ -33,6 +37,7 @@ import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
  * @version $Rev$ $Date$
  */
 public class DefaultModuleActivatorExtensionPoint implements ModuleActivatorExtensionPoint {
+    private final static Logger logger = Logger.getLogger(DefaultModuleActivatorExtensionPoint.class.getName());
     private List<ModuleActivator> activators = new ArrayList<ModuleActivator>();
     private boolean loadedActivators;
 
@@ -72,17 +77,31 @@ public class DefaultModuleActivatorExtensionPoint implements ModuleActivatorExte
         }
 
         // Load and instantiate module activators
-        for (ServiceDeclaration activatorDeclaration: activatorDeclarations) {
-            ModuleActivator activator;
+        for (ServiceDeclaration activatorDeclaration : activatorDeclarations) {
+            if (logger.isLoggable(Level.FINE)) {
+                logger.fine("Loading " + activatorDeclaration.getClassName());
+            }
+            ModuleActivator activator = null;
             try {
                 Class<ModuleActivator> activatorClass = (Class<ModuleActivator>)activatorDeclaration.loadClass();
-                activator = activatorClass.newInstance();
-            } catch (ClassNotFoundException e) {
-                throw new IllegalArgumentException(e);
-            } catch (InstantiationException e) {
-                throw new IllegalArgumentException(e);
-            } catch (IllegalAccessException e) {
-                throw new IllegalArgumentException(e);
+                Constructor<ModuleActivator> constructor = null;
+                try {
+                    constructor = activatorClass.getConstructor();
+                    activator = constructor.newInstance();
+                } catch (NoSuchMethodException e) {
+                    // Try the one that takes a Map<String, String>
+                    constructor = activatorClass.getConstructor(Map.class);
+                    activator = constructor.newInstance(activatorDeclaration.getAttributes());
+                }
+            } catch (Throwable e) {
+                String optional = activatorDeclaration.getAttributes().get("optional");
+                if ("true".equalsIgnoreCase(optional)) {
+                    // If the optional flag is true, just log the error
+                    logger.log(Level.SEVERE, e.getMessage(), e);
+                    continue;
+                } else {
+                    throw new IllegalArgumentException(e);
+                }
             }
             addModuleActivator(activator);
         }
