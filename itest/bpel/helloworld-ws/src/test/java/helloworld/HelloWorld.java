@@ -20,7 +20,7 @@
 package helloworld;
 
 import org.apache.tuscany.implementation.bpel.example.helloworld.HelloPortType;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * @version $Rev$ $Date$

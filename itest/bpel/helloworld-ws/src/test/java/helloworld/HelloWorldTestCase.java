@@ -22,34 +22,41 @@ package helloworld;
 import java.io.IOException;
 import java.net.Socket;
 
-import junit.framework.TestCase;
+import junit.framework.Assert;
 
 import org.apache.tuscany.implementation.bpel.example.helloworld.HelloPortType;
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 
 /**
  * Tests the BPEL Helloworld Service
  * 
  * @version $Rev$ $Date$
  */
-public class HelloWorldTestCase extends TestCase {
+public class HelloWorldTestCase {
 
-    private SCADomain scaDomain;
+	private Node node;
     
     /**
      * @throws java.lang.Exception
      */
-    @Override
+    @BeforeClass
     protected void setUp() throws Exception {
-        scaDomain = SCADomain.newInstance("helloworld/helloworld.composite");
+    	String location = ContributionLocationHelper.getContributionLocation("helloworld/helloworld.composite");
+		node = NodeFactory.newInstance().createNode("CallBackApiTest.composite", new Contribution("c1", location));
+		node.start();
     }
 
     /**
      * @throws java.lang.Exception
      */
-    @Override
+    @AfterClass
     protected void tearDown() throws Exception {
-        scaDomain.close();
+        node.stop();
     }
     
     public void testPing() throws IOException {
@@ -57,8 +64,8 @@ public class HelloWorldTestCase extends TestCase {
     }
     
     public void testServiceInvocation() throws Exception {
-        HelloPortType bpelService = scaDomain.getService(HelloPortType.class, "BPELHelloWorldServiceComponent");
+        HelloPortType bpelService = node.getService(HelloPortType.class, "BPELHelloWorldServiceComponent");
         String response = bpelService.hello("Hello");
-        assertEquals("Hello World", response);
+        Assert.assertEquals("Hello World", response);
     }
 }
