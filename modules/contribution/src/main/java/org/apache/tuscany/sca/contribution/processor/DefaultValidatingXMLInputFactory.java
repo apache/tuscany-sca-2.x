@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.contribution.processor;
@@ -27,9 +27,13 @@ import java.net.URLConnection;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.XMLConstants;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.EventFilter;
 import javax.xml.stream.StreamFilter;
 import javax.xml.stream.XMLEventReader;
@@ -51,8 +55,11 @@ import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.ls.DOMImplementationLS;
+import org.w3c.dom.ls.LSInput;
+import org.w3c.dom.ls.LSResourceResolver;
 import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 
 /**
  * Default implementation of an XMLInputFactory that creates validating
@@ -60,9 +67,11 @@ import org.xml.sax.SAXParseException;
  *
  * @version $Rev$ $Date$
  */
-public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory {
-    
+public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory implements LSResourceResolver {
+
     private XMLInputFactory inputFactory;
+    private DocumentBuilderFactory documentBuilderFactory;
+    private DOMImplementationLS ls;
     private ValidationSchemaExtensionPoint schemas;
     private Monitor monitor;
     private boolean initialized;
@@ -71,16 +80,16 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
 
     public DefaultValidatingXMLInputFactory(ExtensionPointRegistry registry) {
         FactoryExtensionPoint factoryExtensionPoint = registry.getExtensionPoint(FactoryExtensionPoint.class);
-        XMLInputFactory factory = factoryExtensionPoint.getFactory(XMLInputFactory.class);
-        this.inputFactory = factory;
+        this.inputFactory = factoryExtensionPoint.getFactory(XMLInputFactory.class);
+        this.documentBuilderFactory = factoryExtensionPoint.getFactory(DocumentBuilderFactory.class);
         this.schemas = registry.getExtensionPoint(ValidationSchemaExtensionPoint.class);
         this.monitor =
             registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(MonitorFactory.class).createMonitor();
     }
-    
+
     /**
      * Constructs a new XMLInputFactory.
-     * 
+     *
      * @param inputFactory
      * @param schemas
      */
@@ -89,21 +98,40 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
         this.schemas = schemas;
         this.monitor = monitor;
     }
-    
+
     /**
      * Report a exception.
-     * 
+     *
      * @param problems
      * @param message
      * @param model
      */
-     private void error(String message, Object model, Exception ex) {
-    	 if (monitor != null) {
-    		 Problem problem = monitor.createProblem(this.getClass().getName(), "contribution-validation-messages", Severity.ERROR, model, message, ex);
-    	     monitor.problem(problem);
-    	 }        
-     }
-    
+    private void error(String message, Object model, Throwable ex) {
+        if (monitor != null) {
+            Problem problem =
+                monitor.createProblem(this.getClass().getName(),
+                                      "contribution-validation-messages",
+                                      Severity.ERROR,
+                                      model,
+                                      message,
+                                      ex);
+            monitor.problem(problem);
+        }
+    }
+
+    private void warn(String message, Object model, Throwable ex) {
+        if (monitor != null) {
+            Problem problem =
+                monitor.createProblem(this.getClass().getName(),
+                                      "contribution-validation-messages",
+                                      Severity.WARNING,
+                                      model,
+                                      message,
+                                      ex);
+            monitor.problem(problem);
+        }
+    }
+
     /**
      * Initialize the registered schemas and create an aggregated schema for
      * validation.
@@ -113,7 +141,7 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
             return;
         }
         initialized = true;
-        
+
         // Load the XSDs registered in the validation schema extension point
         try {
             List<String> uris = schemas.getSchemas();
@@ -143,9 +171,31 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
                 }
                 sources[i] = new StreamSource(urlStream, uri);
             }
-            
+
             // Create an aggregated validation schemas from all the XSDs
             final SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+
+            /*
+            // Set the feature to avoid DTD processing
+            try {
+                schemaFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-dtd-grammar", false);
+                schemaFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+                schemaFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+            } catch (SAXException e) {
+                // Ignore
+            }
+            */
+
+            DOMImplementation impl = null;
+            try {
+                impl = documentBuilderFactory.newDocumentBuilder().getDOMImplementation();
+            } catch (ParserConfigurationException e) {
+                // Ignore
+            }
+            if (impl instanceof DOMImplementationLS) {
+                ls = (DOMImplementationLS)impl;
+                schemaFactory.setResourceResolver(this);
+            }
             // Allow privileged access to check files. Requires FilePermission
             // in security policy.
             try {
@@ -155,20 +205,19 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
                     }
                 });
             } catch (PrivilegedActionException e) {
-            	error("PrivilegedActionException", schemaFactory, (SAXException)e.getException());
+            	warn("PrivilegedActionException", schemaFactory, (SAXException)e.getException());
+            	hasSchemas = false;
                 throw (SAXException)e.getException();
             }
 
-        } catch (Error e) {
-            // FIXME Log this, some old JDKs don't support XMLSchema validation
-            //e.printStackTrace();
-        } catch (SAXParseException e) {
-        	IllegalStateException ie = new IllegalStateException(e);
-        	error("IllegalStateException", schemas, ie);
-            throw ie;
-        } catch (Exception e) {
+        } catch (SAXException e) {
+//            IllegalStateException ie = new IllegalStateException(e);
+//            error("IllegalStateException", schemas, ie);
+//            throw ie;
+        } catch (Throwable e) {
             //FIXME Log this, some old JDKs don't support XMLSchema validation
-            e.printStackTrace();
+            warn(e.getMessage(), schemas, e);
+            hasSchemas = false;
         }
     }
 
@@ -320,6 +369,40 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
     @Override
     public void setXMLResolver(XMLResolver arg0) {
         inputFactory.setXMLResolver(arg0);
+    }
+
+    private static Map<String, URL> cachedXSDs = new HashMap<String, URL>();
+    static {
+        cachedXSDs
+            .put("http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd",
+                 DefaultValidatingXMLInputFactory.class
+                     .getResource("/org/apache/tuscany/sca/assembly/xsd/oasis-200401-wss-wssecurity-secext-1.0.xsd"));
+        cachedXSDs
+            .put("http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd",
+                 DefaultValidatingXMLInputFactory.class
+                     .getResource("/org/apache/tuscany/sca/assembly/xsd/oasis-200401-wss-wssecurity-utility-1.0.xsd"));
+        cachedXSDs.put("http://www.w3.org/2005/08/addressing", DefaultValidatingXMLInputFactory.class
+            .getResource("/org/apache/tuscany/sca/assembly/xsd/ws-addr.xsd"));
+        cachedXSDs.put("http://www.w3.org/ns/ws-policy", DefaultValidatingXMLInputFactory.class
+            .getResource("/org/apache/tuscany/sca/assembly/xsd/ws-policy.xsd"));
+        cachedXSDs.put("http://www.w3.org/ns/wsdl-instance", DefaultValidatingXMLInputFactory.class
+            .getResource("/org/apache/tuscany/sca/assembly/xsd/wsdli.xsd"));
+        cachedXSDs.put("http://www.w3.org/XML/1998/namespace", DefaultValidatingXMLInputFactory.class
+            .getResource("/org/apache/tuscany/sca/assembly/xsd/xml.xsd"));
+        cachedXSDs.put("http://www.w3.org/2000/09/xmldsig#", DefaultValidatingXMLInputFactory.class
+            .getResource("/org/apache/tuscany/sca/assembly/xsd/xmldsig-core-schema.xsd"));
+    };
+
+    public LSInput resolveResource(String type, String namespaceURI, String publicId, String systemId, String baseURI) {
+        URL url = cachedXSDs.get(namespaceURI);
+        if (url != null) {
+            systemId = url.toString();
+        }
+        LSInput input = ls.createLSInput();
+        input.setBaseURI(baseURI);
+        input.setPublicId(publicId);
+        input.setSystemId(systemId);
+        return input;
     }
 
 }
