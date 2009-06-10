@@ -70,6 +70,10 @@ public class NodeUtil {
         if (uri == null) {
             return null;
         }
+        if (uri.indexOf('%') != -1) {
+            // Avoid double-escaping
+            return URI.create(uri);
+        }
         int index = uri.indexOf(':');
         String scheme = null;
         String ssp = uri;

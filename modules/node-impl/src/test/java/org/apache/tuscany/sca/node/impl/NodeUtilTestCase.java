@@ -33,5 +33,6 @@ public class NodeUtilTestCase {
         Assert.assertEquals("/a%20b", NodeUtil.createURI("/a b").toString());
         Assert.assertEquals("file:/a/b", NodeUtil.createURI("file:/a/b").toString());
         Assert.assertEquals("file:/a%20b", NodeUtil.createURI("file:/a b").toString());
+        Assert.assertEquals("file:/a%20b", NodeUtil.createURI("file:/a%20b").toString());
     }
 }
