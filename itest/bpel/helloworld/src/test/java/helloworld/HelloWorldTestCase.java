@@ -19,45 +19,52 @@
 
 package helloworld;
 
-import junit.framework.TestCase;
+import junit.framework.Assert;
 
 import org.apache.tuscany.implementation.bpel.example.helloworld.HelloPortType;
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  * Tests the BPEL Helloworld Service
  * 
  * @version $Rev$ $Date$
  */
-public class HelloWorldTestCase extends TestCase {
+public class HelloWorldTestCase {
 
-    private SCADomain scaDomain;
+	private Node node;
     
     /**
      * @throws java.lang.Exception
      */
-    @Override
+    @BeforeClass
     protected void setUp() throws Exception {
-        scaDomain = SCADomain.newInstance("helloworld/helloworld.composite");
+        node = NodeFactory.newInstance().createNode();
+        node.start();
     }
 
     /**
      * @throws java.lang.Exception
      */
-    @Override
+    @AfterClass
     protected void tearDown() throws Exception {
-        scaDomain.close();
+    	node.stop();
     }
     
+    @Test
     public void testServiceInvocation() throws Exception {
-        HelloPortType bpelService = scaDomain.getService(HelloPortType.class, "BPELHelloWorldService");
+        HelloPortType bpelService = node.getService(HelloPortType.class, "BPELHelloWorldService");
         String response = bpelService.hello("Hello");
-        assertEquals("Hello World", response);
+        Assert.assertEquals("Hello World", response);
     }
     
+    @Test
     public void testReferenceInvocation() throws Exception {
-        HelloWorld bpelService = scaDomain.getService(HelloWorld.class, "BPELHelloWorld");
+        HelloWorld bpelService = node.getService(HelloWorld.class, "BPELHelloWorld");
         String response = bpelService.hello("Hello");
-        assertEquals("Hello World", response);        
+        Assert.assertEquals("Hello World", response);        
     }
 }
