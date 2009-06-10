@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.core;
@@ -38,11 +38,11 @@ import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
  */
 public class DefaultUtilityExtensionPoint implements UtilityExtensionPoint {
     private Map<Class<?>, Object> utilities = new ConcurrentHashMap<Class<?>, Object>();
-    
+
     private ExtensionPointRegistry extensionPoints;
-    
+
     /**
-     * Constructs a new extension point. 
+     * Constructs a new extension point.
      */
     public DefaultUtilityExtensionPoint(ExtensionPointRegistry extensionPoints) {
         this.extensionPoints = extensionPoints;
@@ -66,8 +66,8 @@ public class DefaultUtilityExtensionPoint implements UtilityExtensionPoint {
             utilities.put(i, utility);
         }
     }
-    
-    private Constructor<?> getConstructor(Constructor<?>[] constructors, Class<?>[] paramTypes) {
+
+    private Constructor<?> getConstructor(Constructor<?>[] constructors, Class<?>... paramTypes) {
         for (Constructor<?> c : constructors) {
             Class<?>[] types = c.getParameterTypes();
             if (c.getParameterTypes().length == paramTypes.length) {
@@ -150,28 +150,32 @@ public class DefaultUtilityExtensionPoint implements UtilityExtensionPoint {
             utility = utilities.get(utilityType);
         }
         if (utility == null) {
-            
-            // Dynamically load a utility class declared under META-INF/services/"utilityType"           
+
+            // Dynamically load a utility class declared under META-INF/services/"utilityType"
             try {
-                ServiceDeclaration utilityDeclaration =ServiceDiscovery.getInstance().getServiceDeclaration(utilityType.getName());
+                ServiceDeclaration utilityDeclaration =
+                    ServiceDiscovery.getInstance().getServiceDeclaration(utilityType.getName());
                 if (utilityDeclaration != null) {
                     Class<?> utilityClass = utilityDeclaration.loadClass();
-                    
+
                     // Construct the utility
                     Constructor<?>[] constructors = utilityClass.getConstructors();
-                    Constructor<?> constructor = getConstructor(constructors, new Class<?>[] {ExtensionPointRegistry.class});
+                    Constructor<?> constructor = getConstructor(constructors, ExtensionPointRegistry.class, Map.class);
                     if (constructor != null) {
-                        utility = constructor.newInstance(extensionPoints);
+                        utility = constructor.newInstance(extensionPoints, utilityDeclaration.getAttributes());
                     } else {
-                        constructor = getConstructor(constructors, new Class<?>[] {});
+                        constructor = getConstructor(constructors, ExtensionPointRegistry.class);
                         if (constructor != null) {
-                            utility = constructor.newInstance();
+                            utility = constructor.newInstance(extensionPoints);
                         } else {
-                            throw new IllegalArgumentException(
-                                                               "No valid constructor is found for " + utilityClass);
+                            constructor = getConstructor(constructors);
+                            if (constructor != null) {
+                                utility = constructor.newInstance();
+                            } else {
+                                throw new IllegalArgumentException("No valid constructor is found for " + utilityClass);
+                            }
                         }
                     }
-                   
                     // Cache the loaded utility
                     addUtility(utility);
                 }
@@ -187,6 +191,7 @@ public class DefaultUtilityExtensionPoint implements UtilityExtensionPoint {
                 throw new IllegalArgumentException(e);
             }
         }
-        return utilityType.cast(utility);    }
+        return utilityType.cast(utility);
+    }
 
 }
