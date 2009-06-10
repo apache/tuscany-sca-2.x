@@ -371,6 +371,9 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
         inputFactory.setXMLResolver(arg0);
     }
 
+    /**
+     * Cache for public XSDs and DTDs
+     */
     private static Map<String, URL> cachedXSDs = new HashMap<String, URL>();
     static {
         cachedXSDs
@@ -391,13 +394,25 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
             .getResource("/org/apache/tuscany/sca/assembly/xsd/xml.xsd"));
         cachedXSDs.put("http://www.w3.org/2000/09/xmldsig#", DefaultValidatingXMLInputFactory.class
             .getResource("/org/apache/tuscany/sca/assembly/xsd/xmldsig-core-schema.xsd"));
+
+        cachedXSDs.put("-//W3C//DTD XMLSCHEMA 200102//EN", DefaultValidatingXMLInputFactory.class
+            .getResource("/org/apache/tuscany/sca/assembly/xsd/XMLSchema.dtd"));
+        cachedXSDs.put("datatypes", DefaultValidatingXMLInputFactory.class
+            .getResource("/org/apache/tuscany/sca/assembly/xsd/datatypes.dtd"));
     };
 
     public LSInput resolveResource(String type, String namespaceURI, String publicId, String systemId, String baseURI) {
-        URL url = cachedXSDs.get(namespaceURI);
+        String key = null;
+        if("http://www.w3.org/2001/XMLSchema".equals(type)) {
+            key = namespaceURI;
+        } else if("http://www.w3.org/TR/REC-xml".equals(type)) {
+            key = publicId;
+        }
+        URL url = cachedXSDs.get(key);
         if (url != null) {
             systemId = url.toString();
         }
+
         LSInput input = ls.createLSInput();
         input.setBaseURI(baseURI);
         input.setPublicId(publicId);
