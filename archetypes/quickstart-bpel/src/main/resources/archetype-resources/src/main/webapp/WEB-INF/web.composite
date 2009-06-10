@@ -23,9 +23,11 @@
            targetNamespace="http://${package}"
            name="${artifactId}">
 
-    <component name="${artifactId}WebComponent">
+    <component name="WebComponent">
         <implementation.web web-uri=""/>
-        <reference name="service" target="HelloworldComponent"/>
+        <reference name="service" target="HelloworldComponent">
+            <interface.java interface="${package}.HelloworldService"/>
+        </reference>
     </component>
 
     <component name="HelloworldComponent">
