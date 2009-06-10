@@ -38,11 +38,14 @@ import org.apache.tuscany.sca.assembly.EndpointReference2;
 import org.apache.tuscany.sca.runtime.EndpointListener;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
 
+/**
+ * A replicated EndpointRegistry based on Apache Tomcat Tribes
+ */
 public class ReplicatedEndpointRegistry implements EndpointRegistry {
     private final static Logger logger = Logger.getLogger(ReplicatedEndpointRegistry.class.getName());
     private static final String MULTICAST_ADDRESS = "228.0.0.100";
     private static final int MULTICAST_PORT = 50000;
-    private String domainURI;
+    private String domainURI = "default";
 
     private List<EndpointReference2> endpointreferences = new CopyOnWriteArrayList<EndpointReference2>();
     private List<EndpointListener> listeners = new CopyOnWriteArrayList<EndpointListener>();
@@ -64,12 +67,18 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry {
             mcastService.setBind(bindAddress);
         }
 
+        // mcastService.setBind("192.168.1.100");
+
         try {
             channel.start(Channel.DEFAULT);
         } catch (ChannelException e) {
             throw new IllegalStateException(e);
         }
         return channel;
+    }
+
+    public ReplicatedEndpointRegistry() {
+        this("default");
     }
 
     public ReplicatedEndpointRegistry(String domainURI) {
