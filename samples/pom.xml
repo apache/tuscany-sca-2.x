@@ -59,6 +59,7 @@
                 <!-- module>host-webapp-calculator</module -->
 
                 <module>webapps/helloworld</module>
+                <module>webapps/helloworld-bpel</module>
                 <module>webapps/helloworld-jsp</module>
                 <module>webapps/helloworld-stripes</module>
 
