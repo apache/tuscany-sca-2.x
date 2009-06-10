@@ -184,6 +184,7 @@ public class EndpointReferenceBuilderImpl implements CompositeBuilder, EndpointR
                 // The service is in the same composite
                 // TODO - How do we get to here?
                 matchForwardBinding(endpointReference,
+                                    true,
                                     monitor);
 
                 matchCallbackBinding(endpointReference,
@@ -207,11 +208,9 @@ public class EndpointReferenceBuilderImpl implements CompositeBuilder, EndpointR
 
                 endpointReference.setTargetEndpoint(endpoints.get(0));
 
-                matchForwardBinding(endpointReference,
-                        monitor);
+                matchForwardBinding(endpointReference, false, monitor);
 
-                matchCallbackBinding(endpointReference,
-                         monitor);
+                matchCallbackBinding(endpointReference, monitor);
             }
         }
 
@@ -223,6 +222,7 @@ public class EndpointReferenceBuilderImpl implements CompositeBuilder, EndpointR
     // TODO - EPR - In OASIS case there are no bindings to match with on the
     //        reference side.
     private void matchForwardBinding(EndpointReference2 endpointReference,
+                                     boolean local,
                                      Monitor monitor) {
 
         Endpoint2 endpoint = endpointReference.getTargetEndpoint();
@@ -232,13 +232,26 @@ public class EndpointReferenceBuilderImpl implements CompositeBuilder, EndpointR
 
         // Find the corresponding bindings from the service side
         for (Binding referenceBinding : endpointReference.getReference().getBindings()) {
-            for (Endpoint2 serviceEndpoint : endpoint.getService().getEndpoints()) {
+            if (local) {
+                for (Endpoint2 serviceEndpoint : endpoint.getService().getEndpoints()) {
 
-                if (referenceBinding.getClass() == serviceEndpoint.getBinding().getClass() &&
-                    hasCompatiblePolicySets(referenceBinding, serviceEndpoint.getBinding())) {
+                    if (referenceBinding.getClass() == serviceEndpoint.getBinding().getClass() && hasCompatiblePolicySets(referenceBinding,
+                                                                                                                          serviceEndpoint
+                                                                                                                              .getBinding())) {
+
+                        matchedReferenceBinding.add(referenceBinding);
+                        matchedServiceEndpoint.add(serviceEndpoint);
+                    }
+                }
+            } else {
+                Endpoint2 serviceEndpoint = endpoint;
+                if (referenceBinding.getClass() == serviceEndpoint.getBinding().getClass() && hasCompatiblePolicySets(referenceBinding,
+                                                                                                                      serviceEndpoint
+                                                                                                                          .getBinding())) {
 
                     matchedReferenceBinding.add(referenceBinding);
                     matchedServiceEndpoint.add(serviceEndpoint);
+
                 }
             }
         }

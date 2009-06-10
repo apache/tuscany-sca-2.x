@@ -31,6 +31,19 @@ import org.apache.tuscany.sca.policy.PolicySubject;
  * @version $Rev$ $Date$
  */
 public interface EndpointReference2 extends Base, PolicySubject, Cloneable, Serializable {
+    /**
+     * Get the structural URI of the reference binding
+     * @return The structural URI of the reference/binding
+     */
+    String getURI();
+
+    /**
+     * Set the structural URI of the reference binding
+     * @param uri &lt;componentURI&gt;#reference-binding(referenceName/bindingName)
+     * or &lt;componentURI&gt;#reference(referenceName) if binding is not present
+     *
+     */
+    void setURI(String uri);
 
     /**
      * Supports endpoint reference cloning

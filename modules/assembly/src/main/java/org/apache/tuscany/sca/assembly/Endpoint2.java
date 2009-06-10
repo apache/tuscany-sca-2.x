@@ -33,7 +33,18 @@ import org.apache.tuscany.sca.policy.PolicySubject;
  * @version $Rev$ $Date$
  */
 public interface Endpoint2 extends Base, PolicySubject, Cloneable, Serializable {
+    /**
+     * Get the structural URI of the service binding
+     * @return structural URI of the service/binding
+     */
+    String getURI();
 
+    /**
+     * Set the structural URI of the service binding
+     * @param uri &lt;componentURI&gt;#service-binding(serviceName/bindingName)
+     * or &lt;componentURI&gt;#service(serviceName)
+     */
+    void setURI(String uri);
     /**
      * Supports endpoint cloning
      *

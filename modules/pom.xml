@@ -57,6 +57,7 @@
         <module>definitions</module>
         <module>definitions-xml</module>
         <module>endpoint</module>
+        <module>endpoint-tribes</module>
         <module>extensibility</module>
         <module>extensibility-equinox</module>
         <module>host-http</module>
