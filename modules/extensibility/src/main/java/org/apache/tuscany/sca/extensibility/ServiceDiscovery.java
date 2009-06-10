@@ -100,7 +100,7 @@ public final class ServiceDiscovery implements ServiceDiscoverer {
     public ServiceDeclaration getServiceDeclaration(final String name) throws IOException {
         //        ServiceDeclaration service = getServiceDiscoverer().getFirstServiceDeclaration(name);
         //        return service;
-        Collection<ServiceDeclaration> declarations = getServiceDeclarations(name);
+        Collection<ServiceDeclaration> declarations = getServiceDeclarations(name, true);
         if (!declarations.isEmpty()) {
             List<ServiceDeclaration> declarationList = new ArrayList<ServiceDeclaration>(declarations);
             Collections.sort(declarationList, ServiceComparator.DESCENDING_ORDER);

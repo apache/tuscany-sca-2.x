@@ -18,10 +18,6 @@
  */
 package org.apache.tuscany.sca.assembly.impl;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,8 +38,10 @@ import org.apache.tuscany.sca.policy.PolicySubject;
  *
  * @version $Rev$ $Date$
  */
-public class Endpoint2Impl implements Endpoint2, Externalizable {
-    private ExtensionPointRegistry registry;
+public class Endpoint2Impl implements Endpoint2 {
+    private static final long serialVersionUID = 7344399683703812593L;
+
+    protected ExtensionPointRegistry registry;
     private Boolean unresolved;
     private String componentName;
     private Component component;
@@ -184,18 +182,6 @@ public class Endpoint2Impl implements Endpoint2, Externalizable {
         }
 
         return output;
-    }
-
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        // TODO: Lookup an endpoint serializer utility from the UtilityExtensionPoint
-        // Read the EP from the XML document
-        // See javax.xml.ws.wsaddressing.W3CEndpointReference
-    }
-
-    public void writeExternal(ObjectOutput out) throws IOException {
-        // TODO: Lookup an endpoint serializer utility from the UtilityExtensionPoint
-        // Write the EP as XML document
-        // See javax.xml.ws.wsaddressing.W3CEndpointReference
     }
 
 }

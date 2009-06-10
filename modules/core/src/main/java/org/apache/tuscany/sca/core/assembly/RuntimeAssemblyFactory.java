@@ -26,7 +26,10 @@ import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
+import org.apache.tuscany.sca.assembly.Endpoint2;
+import org.apache.tuscany.sca.assembly.EndpointReference2;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.assembly.impl.RuntimeEndpointImpl;
 import org.apache.tuscany.sca.core.assembly.impl.EndpointReferenceImpl;
 import org.apache.tuscany.sca.core.assembly.impl.ReferenceParametersImpl;
 import org.apache.tuscany.sca.core.assembly.impl.RuntimeComponentImpl;
@@ -76,6 +79,18 @@ public class RuntimeAssemblyFactory extends DefaultAssemblyFactory implements As
 
     public ReferenceParameters createReferenceParameters() {
         return new ReferenceParametersImpl();
+    }
+
+    @Override
+    public Endpoint2 createEndpoint() {
+        // Create an instance of EndpointImpl that can be serialized/deserialized using the Tuscany
+        // runtime extension points and extensions
+        return new RuntimeEndpointImpl(registry);
+    }
+
+    @Override
+    public EndpointReference2 createEndpointReference() {
+        return super.createEndpointReference();
     }
 
 }
