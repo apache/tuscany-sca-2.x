@@ -35,6 +35,7 @@ import org.apache.catalina.tribes.tipis.AbstractReplicatedMap;
 import org.apache.catalina.tribes.tipis.ReplicatedMap;
 import org.apache.tuscany.sca.assembly.Endpoint2;
 import org.apache.tuscany.sca.assembly.EndpointReference2;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.runtime.EndpointListener;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
 
@@ -45,8 +46,14 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry {
     private final static Logger logger = Logger.getLogger(ReplicatedEndpointRegistry.class.getName());
     private static final String MULTICAST_ADDRESS = "228.0.0.100";
     private static final int MULTICAST_PORT = 50000;
-    private String domainURI = "default";
 
+    private int port = MULTICAST_PORT;
+    private String address = MULTICAST_ADDRESS;
+    private String bind = null;
+    private int timeout = 50;
+
+    private final static String DEFAULT_DOMAIN_URI = "http://tuscany.apache.org/sca/1.1/domains/default";
+    private String domainURI = DEFAULT_DOMAIN_URI;
     private List<EndpointReference2> endpointreferences = new CopyOnWriteArrayList<EndpointReference2>();
     private List<EndpointListener> listeners = new CopyOnWriteArrayList<EndpointListener>();
 
@@ -67,25 +74,41 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry {
             mcastService.setBind(bindAddress);
         }
 
-        // mcastService.setBind("192.168.1.100");
-
-        try {
-            channel.start(Channel.DEFAULT);
-        } catch (ChannelException e) {
-            throw new IllegalStateException(e);
-        }
+        mcastService.setBind("192.168.1.100");
         return channel;
     }
 
-    public ReplicatedEndpointRegistry() {
-        this("default");
+    public ReplicatedEndpointRegistry(ExtensionPointRegistry registry, Map<String, String> attributes) {
+        String portStr = attributes.get("port");
+        if (portStr != null) {
+            port = Integer.parseInt(portStr);
+        }
+        String address = attributes.get("address");
+        if (address == null) {
+            address = MULTICAST_ADDRESS;
+        }
+        bind = attributes.get("bind");
+        String timeoutStr = attributes.get("timeout");
+        if (timeoutStr != null) {
+            timeout = Integer.parseInt(timeoutStr);
+        }
+        start();
     }
 
     public ReplicatedEndpointRegistry(String domainURI) {
         this.domainURI = domainURI;
+        start();
+    }
+
+    public void start() {
         map =
-            new ReplicatedMap(null, createChannel(MULTICAST_ADDRESS, MULTICAST_PORT, null), 50, domainURI,
+            new ReplicatedMap(null, createChannel(address, port, bind), timeout, this.domainURI,
                               new ClassLoader[] {ReplicatedEndpointRegistry.class.getClassLoader()});
+        try {
+            map.getChannel().start(Channel.DEFAULT);
+        } catch (ChannelException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     public void addEndpoint(Endpoint2 endpoint) {
@@ -116,7 +139,7 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry {
                 Endpoint2 endpoint = (Endpoint2)v;
                 // TODO: implement more complete matching
                 if (endpoint.getComponentName().equals(targetEndpoint.getComponentName())) {
-                    if ((targetEndpoint.getServiceName() != null) && (endpoint.getServiceName().equals(targetEndpoint
+                    if ((targetEndpoint.getServiceName() == null) || (targetEndpoint.getServiceName().equals(endpoint
                         .getServiceName()))) {
                         foundEndpoints.add(endpoint);
                         logger.info("EndpointRegistry: Found endpoint with matching service  - " + endpoint);
@@ -209,9 +232,9 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry {
             Thread.sleep(2000);
             System.out.println(localhost + ": " + map.keySet());
         }
-        for(Object e: map.entrySetFull()) {
-            Map.Entry en = (Map.Entry) e;
-            AbstractReplicatedMap.MapEntry entry = (AbstractReplicatedMap.MapEntry) en.getValue();
+        for (Object e : map.entrySetFull()) {
+            Map.Entry en = (Map.Entry)e;
+            AbstractReplicatedMap.MapEntry entry = (AbstractReplicatedMap.MapEntry)en.getValue();
             entry.isPrimary();
         }
         map.breakdown();

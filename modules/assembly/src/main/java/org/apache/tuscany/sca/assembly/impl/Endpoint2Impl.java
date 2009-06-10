@@ -42,17 +42,18 @@ public class Endpoint2Impl implements Endpoint2 {
     private static final long serialVersionUID = 7344399683703812593L;
 
     protected ExtensionPointRegistry registry;
-    private Boolean unresolved;
-    private String componentName;
-    private Component component;
-    private String serviceName;
-    private ComponentService service;
-    private String bindingName;
-    private Binding binding;
-    private InterfaceContract interfaceContract;
-    private List<EndpointReference2> callbackEndpointReferences = new ArrayList<EndpointReference2>();
-    private List<PolicySet> policySets = new ArrayList<PolicySet>();
-    private List<Intent> requiredIntents = new ArrayList<Intent>();
+    protected boolean unresolved;
+    protected String uri;
+    protected String componentName;
+    protected Component component;
+    protected String serviceName;
+    protected ComponentService service;
+    protected String bindingName;
+    protected Binding binding;
+    protected InterfaceContract interfaceContract;
+    protected List<EndpointReference2> callbackEndpointReferences = new ArrayList<EndpointReference2>();
+    protected List<PolicySet> policySets = new ArrayList<PolicySet>();
+    protected List<Intent> requiredIntents = new ArrayList<Intent>();
 
     protected Endpoint2Impl(ExtensionPointRegistry registry) {
         this.registry = registry;
@@ -182,6 +183,14 @@ public class Endpoint2Impl implements Endpoint2 {
         }
 
         return output;
+    }
+
+    public String getURI() {
+        return uri;
+    }
+
+    public void setURI(String uri) {
+        this.uri = uri;
     }
 
 }

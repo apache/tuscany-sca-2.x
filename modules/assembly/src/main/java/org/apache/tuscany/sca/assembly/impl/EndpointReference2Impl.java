@@ -18,10 +18,6 @@
  */
 package org.apache.tuscany.sca.assembly.impl;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,23 +38,24 @@ import org.apache.tuscany.sca.policy.PolicySubject;
  *
  * @version $Rev$ $Date$
  */
-public class EndpointReference2Impl implements EndpointReference2, Externalizable {
-    private ExtensionPointRegistry registry;
+public class EndpointReference2Impl implements EndpointReference2 {
+    protected ExtensionPointRegistry registry;
     // this endpoint reference
-    private Boolean unresolved = true;
-    private Component component;
-    private ComponentReference reference;
-    private Binding binding;
-    private List<PolicySet> policySets = new ArrayList<PolicySet>();
-    private List<Intent> requiredIntents = new ArrayList<Intent>();
-    private InterfaceContract interfaceContract;
+    protected boolean unresolved = true;
+    protected String uri;
+    protected Component component;
+    protected ComponentReference reference;
+    protected Binding binding;
+    protected List<PolicySet> policySets = new ArrayList<PolicySet>();
+    protected List<Intent> requiredIntents = new ArrayList<Intent>();
+    protected InterfaceContract interfaceContract;
 
     // the target of the endpoint reference
-    private Endpoint2 targetEndpoint;
+    protected Endpoint2 targetEndpoint;
 
     // callback endpoint that messages across this reference
     // will be directed toward
-    private Endpoint2 callbackEndpoint;
+    protected Endpoint2 callbackEndpoint;
 
     protected EndpointReference2Impl(ExtensionPointRegistry registry) {
         this.registry = registry;
@@ -178,15 +175,11 @@ public class EndpointReference2Impl implements EndpointReference2, Externalizabl
         return output;
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        // TODO: Lookup an endpoint reference serializer utility from the UtilityExtensionPoint
-        // Read the EPR from the XML document
-        // See javax.xml.ws.wsaddressing.W3CEndpointReference
+    public String getURI() {
+        return uri;
     }
 
-    public void writeExternal(ObjectOutput out) throws IOException {
-        // TODO: Lookup an endpoint reference serializer utility from the UtilityExtensionPoint
-        // Write the EPR as XML document
-        // See javax.xml.ws.wsaddressing.W3CEndpointReference
+    public void setURI(String uri) {
+        this.uri = uri;
     }
 }
