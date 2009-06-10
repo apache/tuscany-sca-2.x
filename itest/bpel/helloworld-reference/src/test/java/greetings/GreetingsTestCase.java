@@ -19,42 +19,47 @@
 
 package greetings;
 
-import java.io.IOException;
-import java.net.Socket;
+import junit.framework.Assert;
 
-import junit.framework.TestCase;
-
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  * Tests the Greetings service
  * 
  * @version $Rev$ $Date$
  */
-public class GreetingsTestCase extends TestCase {
+public class GreetingsTestCase {
 
-    private SCADomain scaDomain;
-    GreetingsService greetingsService = null;
-    
-    /**
-     * @throws java.lang.Exception
-     */
-    @Override
-    protected void setUp() throws Exception {
-        scaDomain = SCADomain.newInstance("greetings/greetings.composite");
-        greetingsService = scaDomain.getService(GreetingsService.class, "GreetingsServiceComponent");
-    }
+	private Node node;
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @Override
-    protected void tearDown() throws Exception {
-        scaDomain.close();
-    }
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@BeforeClass
+	protected void setUp() throws Exception {
+		String location = ContributionLocationHelper.getContributionLocation("greetings/greetings.composite");
+		node = NodeFactory.newInstance().createNode("CallBackApiTest.composite", new Contribution("c1", location));
+		node.start();
+	}
 
-    public void testInvoke() {
-        String response = greetingsService.getGreetings("Luciano");
-        assertEquals("Hello Luciano", response);
-    }
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@AfterClass
+	protected void tearDown() throws Exception {
+		node.stop();
+	}
+
+	@Test
+	public void testInvoke() {
+		GreetingsService greetingsService = node.getService(GreetingsService.class, "GreetingsServiceComponent");
+		String response = greetingsService.getGreetings("Luciano");
+		Assert.assertEquals("Hello Luciano", response);
+	}
 }
