@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.core.invocation;
 
 import java.lang.reflect.InvocationTargetException;
 
+import org.apache.tuscany.sca.assembly.EndpointReference2;
 import org.apache.tuscany.sca.core.conversation.ConversationExt;
 import org.apache.tuscany.sca.core.conversation.ConversationManager;
 import org.apache.tuscany.sca.core.conversation.ConversationState;
@@ -37,7 +38,6 @@ import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
-import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.ReferenceParameters;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
@@ -61,11 +61,13 @@ public class RuntimeWireInvoker implements Invoker{
         this.messageFactory = messageFactory;
         this.wire = wire;
         this.conversationManager = conversationManager;
-        init(wire);
+        //init(wire);
     }
 
+    /* TODO - EPR - not required for OASIS
     protected void init(RuntimeWire wire) {
         if (wire != null) {
+            
             ReferenceParameters parameters = wire.getSource().getReferenceParameters();
             this.callbackID = parameters.getCallbackID();
             this.callbackObject = parameters.getCallbackReference();
@@ -74,6 +76,7 @@ public class RuntimeWireInvoker implements Invoker{
             this.conversational = contract.getInterface().isConversational();
         }
     }
+    */
     
     /*
      * TODO - Introduced to allow the RuntimeWireInvoker to sit on the end of the 
@@ -105,25 +108,35 @@ public class RuntimeWireInvoker implements Invoker{
     }
 
     protected Object invoke(InvocationChain chain, Message msg, RuntimeWire wire) throws InvocationTargetException {
-        EndpointReference from = msg.getFrom();
-        EndpointReference epFrom = wire.getSource();
+        EndpointReference2 from = msg.getFrom();
+        EndpointReference2 epFrom = wire.getEndpointReference();
         if (from != null) {
-            from.mergeEndpoint(epFrom);
+            from.setComponent(epFrom.getComponent());
+            from.setReference(epFrom.getReference());
+            from.setBinding(epFrom.getBinding());
+            from.setInterfaceContract(epFrom.getInterfaceContract());
+            from.setTargetEndpoint(epFrom.getTargetEndpoint());
+            from.setCallbackEndpoint(epFrom.getCallbackEndpoint());
+
+            // TODO - EPR - what's going on here?
+            //from.mergeEndpoint(epFrom);
         } else {
             msg.setFrom(epFrom);
         }
-        msg.setTo(wire.getTarget());
+        msg.setTo(wire.getEndpoint());
 
         Invoker headInvoker = chain.getHeadInvoker();
         Operation operation = chain.getTargetOperation();
         msg.setOperation(operation);
 
         Message msgContext = ThreadMessageContext.getMessageContext();
-        Object currentConversationID = msgContext.getFrom().getReferenceParameters().getConversationID();
+        // TODO - EPR - no required for OASIS
+        //Object currentConversationID = msgContext.getFrom().getReferenceParameters().getConversationID();
 
         ThreadMessageContext.setMessageContext(msg);
         try {
-            conversationPreinvoke(msg);
+            // TODO - EPR - no required for OASIS
+            //conversationPreinvoke(msg);
             // handleCallback(msg, currentConversationID);
             // dispatch the wire down the chain and get the response
             Message resp = headInvoker.invoke(msg);
@@ -138,9 +151,10 @@ public class RuntimeWireInvoker implements Invoker{
             throw new ServiceRuntimeException(e);
         } finally {
             try {
-                conversationPostInvoke(msg);
-            } catch (TargetDestructionException e) {
-                throw new ServiceRuntimeException(e);
+                // TODO - EPR - no required for OASIS
+                //conversationPostInvoke(msg);
+            //} catch (TargetDestructionException e) {
+            //    throw new ServiceRuntimeException(e);
             } finally {
                 ThreadMessageContext.setMessageContext(msgContext);
             }
@@ -150,16 +164,19 @@ public class RuntimeWireInvoker implements Invoker{
     /**
      * @param msgContext
      */
+   /* TODO - EPR - no required for OASIS
     protected EndpointReference getCallbackEndpoint(Message msgContext) {
         EndpointReference from = msgContext.getFrom();
         return from == null ? null : from.getReferenceParameters().getCallbackReference();
     }
+    */
 
     /**
      * Pre-invoke for the conversation handling
      * @param msg
      * @throws TargetResolutionException
      */
+    /* TODO - EPR - no required for OASIS    
     private void conversationPreinvoke(Message msg) {
         if (conversational) {
             ReferenceParameters parameters = msg.getFrom().getReferenceParameters();
@@ -185,6 +202,7 @@ public class RuntimeWireInvoker implements Invoker{
             parameters.setConversationID(conversation.getConversationID());
         }
     }
+    */
 
     /**
      * Post-invoke for the conversation handling
@@ -192,6 +210,7 @@ public class RuntimeWireInvoker implements Invoker{
      * @param operation
      * @throws TargetDestructionException
      */
+    /* TODO - EPR - no required for OASIS
     @SuppressWarnings("unchecked")
     private void conversationPostInvoke(Message msg) throws TargetDestructionException {
         if (conversational) {       
@@ -222,7 +241,7 @@ public class RuntimeWireInvoker implements Invoker{
     private ScopeContainer getConversationalScopeContainer(Message msg) {
         ScopeContainer scopeContainer = null;
 
-        RuntimeComponent component = msg.getTo().getComponent();
+        RuntimeComponent component = (RuntimeComponent) msg.getTo().getComponent();
 
         if (component instanceof ScopedRuntimeComponent) {
             ScopedRuntimeComponent scopedRuntimeComponent = (ScopedRuntimeComponent)component;
@@ -235,6 +254,7 @@ public class RuntimeWireInvoker implements Invoker{
 
         return scopeContainer;
     }
+    */
 
 
     /**

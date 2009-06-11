@@ -56,7 +56,7 @@ public class RuntimeComponentServiceImpl extends ComponentServiceImpl implements
 
     public RuntimeWire getRuntimeWire(Binding binding) {
         for (RuntimeWire wire : wires) {
-            if (wire.getTarget().getBinding() == binding) {
+            if (wire.getEndpoint().getBinding() == binding) {
                 return wire;
             }
         }
@@ -68,11 +68,11 @@ public class RuntimeComponentServiceImpl extends ComponentServiceImpl implements
         if (wire == null) {
             return null;
         }
-        if (interfaceContract != null && interfaceContract != wire.getSource().getInterfaceContract()) {
+        if (interfaceContract != null && interfaceContract != wire.getEndpointReference().getInterfaceContract()) {
             try {
                 // FIXME: [rfeng] We could avoid clone() using a better comparison of the two interface contracts
                 wire = (RuntimeWire)wire.clone();
-                wire.getSource().setInterfaceContract(interfaceContract);
+                wire.getEndpointReference().setInterfaceContract(interfaceContract);
                 wire.rebuild();
             } catch (CloneNotSupportedException e) {
                 throw new ServiceRuntimeException(e);
@@ -112,11 +112,11 @@ public class RuntimeComponentServiceImpl extends ComponentServiceImpl implements
         if (wire == null) {
             return null;
         }
-        if (interfaceContract != null && interfaceContract != wire.getSource().getInterfaceContract()) {
+        if (interfaceContract != null && interfaceContract != wire.getEndpointReference().getInterfaceContract()) {
             try {
                 // FIXME: [rfeng] We could avoid clone() using a better comparison of the two interface contracts
                 wire = (RuntimeWire)wire.clone();
-                wire.getSource().setInterfaceContract(interfaceContract);
+                wire.getEndpointReference().setInterfaceContract(interfaceContract);
                 wire.rebuild();
             } catch (CloneNotSupportedException e) {
                 throw new ServiceRuntimeException(e);

@@ -149,7 +149,7 @@ public class JavaComponentContextProvider {
                 if (callbackReference != null) {
                     List<RuntimeWire> wires = callbackReference.getRuntimeWires();
                     if (!wires.isEmpty()) {
-                        callbackWires.put(wires.get(0).getSource().getInterfaceContract().getInterface().toString(),
+                        callbackWires.put(wires.get(0).getEndpointReference().getInterfaceContract().getInterface().toString(),
                                           wires);
                     }
                 }
@@ -220,7 +220,7 @@ public class JavaComponentContextProvider {
                             factory =
                                 new CallableReferenceObjectFactory(businessInterface, component,
                                                                    (RuntimeComponentReference)wireList.get(i)
-                                                                       .getSource().getContract(), wireList.get(i)
+                                                                       .getEndpointReference().getReference(), wireList.get(i)
                                                                        .getEndpointReference());
                         } else {
                             factory = createObjectFactory(baseType, wireList.get(i));

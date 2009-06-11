@@ -28,6 +28,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.tuscany.sca.assembly.Endpoint2;
+import org.apache.tuscany.sca.assembly.EndpointReference2;
 import org.apache.tuscany.sca.core.assembly.impl.RuntimeWireImpl2;
 import org.apache.tuscany.sca.core.context.CallableReferenceExt;
 import org.apache.tuscany.sca.core.context.impl.CallableReferenceImpl;
@@ -51,7 +53,6 @@ import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
-import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.ReferenceParameters;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
@@ -69,8 +70,8 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
     protected boolean conversational;
     protected ConversationExt conversation;
     protected MessageFactory messageFactory;
-    protected EndpointReference source;
-    protected EndpointReference target;
+    protected EndpointReference2 source;
+    protected Endpoint2 target;
     protected RuntimeWire wire;
     protected CallableReference<?> callableReference;
     protected Class<?> businessInterface;
@@ -100,7 +101,8 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
     }
 
     protected void init(RuntimeWire wire) {
-        // TODO - EPR needs fixing when we remove the old EndpointReference
+        // TODO - EPR not required for OASIS
+        /*
         if (wire != null) {
             try {
                 // Clone the endpoint reference so that reference parameters can be changed
@@ -110,12 +112,15 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
             }
             initConversational(wire);
         }
+        */
     }
 
+    /* TODO - EPR - not required for OASIS
     protected void initConversational(RuntimeWire wire) {
         InterfaceContract contract = wire.getSource().getInterfaceContract();
         this.conversational = contract.getInterface().isConversational();
     }
+    */
 
     protected Object getCallbackID() {
         if (callableReference != null) {
@@ -156,7 +161,7 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
 
         // The EndpointReference is not now resolved until the invocation chain 
         // is first created so reset the source here 
-        source = wire.getSource();
+        source = wire.getEndpointReference();
         
         // send the invocation down the wire
         Object result = invoke(chain, args, wire, source);
@@ -265,18 +270,18 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
         return found;
     }
 
-    protected void setEndpoint(EndpointReference endpoint) {
+    protected void setEndpoint(Endpoint2 endpoint) {
         this.target = endpoint;
     }
 
-    protected Object invoke(InvocationChain chain, Object[] args, RuntimeWire wire, EndpointReference source)
+    protected Object invoke(InvocationChain chain, Object[] args, RuntimeWire wire, EndpointReference2 source)
                          throws Throwable {
         Message msg = messageFactory.createMessage();
         msg.setFrom(source);
         if (target != null) {
             msg.setTo(target);
         } else {
-            msg.setTo(wire.getTarget());
+            msg.setTo(wire.getEndpoint());
         }
         Invoker headInvoker = chain.getHeadInvoker();
         Operation operation = chain.getTargetOperation();
@@ -284,10 +289,12 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
         msg.setBody(args);
 
         Message msgContext = ThreadMessageContext.getMessageContext();
-        Object currentConversationID = msgContext.getFrom().getReferenceParameters().getConversationID();
-
-        conversationPreinvoke(msg, wire);
-        handleCallback(msg, wire, currentConversationID);
+        
+        // TODO - EPR - not required for OASIS
+        //Object currentConversationID = msgContext.getFrom().getReferenceParameters().getConversationID();
+        //conversationPreinvoke(msg, wire);
+        
+        handleCallback(msg, wire);
         ThreadMessageContext.setMessageContext(msg);
         boolean abnormalEndConversation = false;
         try {
@@ -295,6 +302,7 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
             Message resp = headInvoker.invoke(msg);
             Object body = resp.getBody();
             if (resp.isFault()) {
+                /* TODO - EPR - not required in OASIS
                 // mark the conversation as ended if the exception is not a business exception
                 if (currentConversationID != null ){
                     try {
@@ -315,11 +323,12 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
                         //        a system exception in the middle of a business exception 
                     }
                 }
+                */
                 throw (Throwable)body;
             }
             return body;
         } finally {
-            conversationPostInvoke(msg, wire, abnormalEndConversation);
+            //conversationPostInvoke(msg, wire, abnormalEndConversation);
             ThreadMessageContext.setMessageContext(msgContext);
         }
     }
@@ -330,14 +339,17 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
      * @param interfaze
      * @throws TargetResolutionException
      */
-    private void handleCallback(Message msg, RuntimeWire wire, Object currentConversationID)
+    private void handleCallback(Message msg, RuntimeWire wire)
         throws TargetResolutionException {
-        ReferenceParameters parameters = msg.getFrom().getReferenceParameters();
-        parameters.setCallbackID(getCallbackID());
+        
+        //ReferenceParameters parameters = msg.getFrom().getReferenceParameters();
+        //parameters.setCallbackID(getCallbackID());
+        
         if (msg.getFrom() == null || msg.getFrom().getCallbackEndpoint() == null) {
             return;
         }
 
+        /* TODO - EPR - not required for OASIS
         parameters.setCallbackReference(msg.getFrom().getCallbackEndpoint());
 
         // If we are passing out a callback target
@@ -386,6 +398,7 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
                 }
             }
         }
+        */
     }
 
     /**
@@ -393,6 +406,7 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
      * @param msg
      * @throws TargetResolutionException
      */
+    /* TODO - EPR - not required for OASIS
     private void conversationPreinvoke(Message msg, RuntimeWire wire) {
         if (!conversational) {
             // Not conversational or the conversation has been started
@@ -407,8 +421,8 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
             
             // if this is a local wire then set up the conversation timeouts here based on the 
             // parameters from the component
-            if (wire.getTarget().getComponent() != null){
-                conversation.initializeConversationAttributes(wire.getTarget().getComponent());
+            if (wire.getEndpoint().getComponent() != null){
+                conversation.initializeConversationAttributes((RuntimeComponent)wire.getEndpoint().getComponent());
             }
             
             // connect the conversation to the CallableReference so it can be retrieve in the future
@@ -422,13 +436,14 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
         // if this is a local wire then schedule conversation timeouts based on the timeout
         // parameters from the service implementation. If this isn't a local wire then
         // the RuntimeWireInvoker will take care of this
-        if (wire.getTarget().getComponent() != null){
+        if (wire.getEndpoint().getComponent() != null){
             conversation.updateLastReferencedTime();
         }
 
         msg.getFrom().getReferenceParameters().setConversationID(conversation.getConversationID());
 
     }
+    */
 
     /**
      * Post-invoke for the conversation handling
@@ -436,6 +451,7 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
      * @param operation
      * @throws TargetDestructionException
      */
+    /* TODO - not required for OASIS 
     @SuppressWarnings("unchecked")
     private void conversationPostInvoke(Message msg, RuntimeWire wire, boolean abnormalEndConversation)
                      throws TargetDestructionException {
@@ -457,11 +473,12 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
             conversation.end();
         }
     }
+   
 
     private ScopeContainer<Object> getConversationalScopeContainer(RuntimeWire wire) {
         ScopeContainer<Object> scopeContainer = null;
 
-        RuntimeComponent runtimeComponent = wire.getSource().getComponent();
+        RuntimeComponent runtimeComponent = (RuntimeComponent)wire.getEndpointReference().getComponent();
 
         if (runtimeComponent instanceof ScopedRuntimeComponent) {
             ScopedRuntimeComponent scopedRuntimeComponent = (ScopedRuntimeComponent)runtimeComponent;
@@ -474,12 +491,14 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
 
         return scopeContainer;
     }
+     */
 
     /**
      * Creates a new conversation id
      * 
      * @return the conversation id
      */
+    /* TODO - EPR - not required for OASIS
     private Object createConversationID() {
         if (getConversationID() != null) {
             return getConversationID();
@@ -487,6 +506,7 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
             return UUID.randomUUID().toString();
         }
     }
+    */
 
     /**
      * @return the callableReference

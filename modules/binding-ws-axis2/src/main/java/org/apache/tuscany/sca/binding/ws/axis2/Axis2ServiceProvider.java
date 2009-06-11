@@ -80,6 +80,8 @@ import org.apache.axis2.transport.jms.JMSUtils;
 import org.apache.tuscany.sca.assembly.AbstractContract;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.assembly.Endpoint2;
+import org.apache.tuscany.sca.assembly.EndpointReference2;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.axis2.Axis2ServiceClient.URIResolverImpl;
 import org.apache.tuscany.sca.binding.ws.axis2.policy.authentication.token.Axis2TokenAuthenticationPolicy;
@@ -100,7 +102,6 @@ import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySubject;
 import org.apache.tuscany.sca.policy.authentication.basic.BasicAuthenticationPolicy;
-import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.ReferenceParameters;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
@@ -130,6 +131,8 @@ public class Axis2ServiceProvider {
     private WebServiceBinding wsBinding;
     private ServletHost servletHost;
     private MessageFactory messageFactory;
+    private FactoryExtensionPoint modelFactories;
+    private RuntimeAssemblyFactory assemblyFactory;
     private ConfigurationContext configContext;
     private JMSSender jmsSender;
     private JMSListener jmsListener;
@@ -236,6 +239,8 @@ public class Axis2ServiceProvider {
         this.wsBinding = wsBinding;
         this.servletHost = servletHost;
         this.messageFactory = messageFactory;
+        this.modelFactories = modelFactories;
+        this.assemblyFactory = (RuntimeAssemblyFactory)modelFactories.getFactory(AssemblyFactory.class);
 
         final boolean isRampartRequired = AxisPolicyHelper.isRampartRequired(wsBinding);
         try {
@@ -330,13 +335,15 @@ public class Axis2ServiceProvider {
         }
     }
 
-    // FIXME: [rfeng] Need to have a better way
-    private EndpointReference createEndpointReference(String uri) {
+    // TODO - EPR - what to do with URI
+    /*
+    private EndpointReference2 createEndpointReference() {
         FactoryExtensionPoint factories =
             component.getComponentContext().getExtensionPointRegistry().getExtensionPoint(FactoryExtensionPoint.class);
         RuntimeAssemblyFactory factory = (RuntimeAssemblyFactory)factories.getFactory(AssemblyFactory.class);
-        return factory.createEndpointReference(uri);
+        return factory.createEndpointReference();
     }
+    */
 
     private String computeEndpointURI(String uri, ServletHost servletHost) {
 
@@ -762,6 +769,8 @@ public class Axis2ServiceProvider {
                         callbackAddress = callbackAddrElement.getText();
                     }
                 }
+                
+/* TODO - EPR - not required by OASIS                
                 OMElement params = from.getFirstChildWithName(QNAME_WSA_REFERENCE_PARAMETERS);
                 if (params != null) {
                     OMElement convIDElement =
@@ -777,6 +786,7 @@ public class Axis2ServiceProvider {
                         callbackID = callbackIDElement.getText();
                     }
                 }
+*/
             }
 
             // get policy specified headers
@@ -797,14 +807,16 @@ public class Axis2ServiceProvider {
         fillQoSContext(msg, inMC);
 
         // if reference parameters are needed, create a new "From" EPR to hold them
-        EndpointReference from = null;
-        ReferenceParameters parameters = null;
-        if (callbackAddress != null || callbackID != null || conversationID != null) {
-            from = createEndpointReference(null);
-            parameters = from.getReferenceParameters();
+        EndpointReference2 from = null;
+        if (callbackAddress != null ) {
+            from = assemblyFactory.createEndpointReference();
+            Endpoint2 fromEndpoint = assemblyFactory.createEndpoint();
+            from.setTargetEndpoint(fromEndpoint);
+            // TODO - EPR - need to set callback address
             msg.setFrom(from);
         }
 
+        /* TODO - EPR - not required in OASIS
         // set the reference parameters into the "From" EPR
         if (callbackAddress != null) {
             parameters.setCallbackReference(createEndpointReference(callbackAddress));
@@ -819,6 +831,7 @@ public class Axis2ServiceProvider {
         if (basicAuthenticationPolicy != null) {
             Axis2BindingBasicAuthenticationConfigurator.parseHTTPHeader(inMC, msg, basicAuthenticationPolicy);
         }
+        */
 
         // find the runtime wire and invoke it with the message
         RuntimeWire wire = ((RuntimeComponentService)contract).getRuntimeWire(getBinding());

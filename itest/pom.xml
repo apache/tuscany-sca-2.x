@@ -52,15 +52,19 @@
                 <module>callback-api</module>
                 <module>callback-basic</module>
                 <module>callback-complex-type</module>
-                <module>callback-id</module>
                 <module>callback-multiple-wires</module>
                 <module>callback-separatethread</module>
+
+                <!-- not supported in OASIS 
+                <module>callback-id</module>
                 <module>callback-set-callback</module>
                 <module>callback-set-conversation</module>
+                <module>conversations</module>
+                -->
                 <module>component-type</module>
                 <module>contribution-folder</module>
                 <module>contribution-zip</module>
-                <module>conversations</module>
+                
                 <!--module>definitions-multiple</module-->
                 <module>distribution</module>
                 <module>exceptions</module>

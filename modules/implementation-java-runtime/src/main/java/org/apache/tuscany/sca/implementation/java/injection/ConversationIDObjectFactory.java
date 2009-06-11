@@ -33,7 +33,10 @@ public class ConversationIDObjectFactory implements ObjectFactory {
     }
 
     public Object getInstance() {
+        /* TODO - EPR - not reqiured for OASIS
         return ThreadMessageContext.getMessageContext().getFrom().getReferenceParameters().getConversationID();
+        */
+        return null;
 
     }
 }

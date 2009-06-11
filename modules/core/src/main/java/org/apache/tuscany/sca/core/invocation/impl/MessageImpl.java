@@ -21,10 +21,10 @@ package org.apache.tuscany.sca.core.invocation.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.sca.core.assembly.impl.EndpointReferenceImpl;
+import org.apache.tuscany.sca.assembly.Endpoint2;
+import org.apache.tuscany.sca.assembly.EndpointReference2;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Message;
-import org.apache.tuscany.sca.runtime.EndpointReference;
 
 /**
  * The default implementation of a message flowed through a wire during an invocation
@@ -38,12 +38,15 @@ public class MessageImpl implements Message {
     private boolean isFault;
     private Operation operation;
 
-    private EndpointReference from;
-    private EndpointReference to;
+    private EndpointReference2 from;
+    private Endpoint2 to;
 
     public MessageImpl() {
-        this.from = new EndpointReferenceImpl("/");
-        this.to = new EndpointReferenceImpl("/");
+        // TODO - EPR - What to do by default?
+        //this.from = new EndpointReferenceImpl("/");
+        //this.to = new EndpointReferenceImpl("/");
+        this.from = null;
+        this.to = null;
     }
 
     @SuppressWarnings("unchecked")
@@ -73,19 +76,19 @@ public class MessageImpl implements Message {
         this.body = fault;
     }
 
-    public EndpointReference getFrom() {
+    public EndpointReference2 getFrom() {
         return from;
     }
 
-    public void setFrom(EndpointReference from) {
+    public void setFrom(EndpointReference2 from) {
         this.from = from;
     }
 
-    public EndpointReference getTo() {
+    public Endpoint2 getTo() {
         return to;
     }
 
-    public void setTo(EndpointReference to) {
+    public void setTo(Endpoint2 to) {
         this.to = to;
     }
 

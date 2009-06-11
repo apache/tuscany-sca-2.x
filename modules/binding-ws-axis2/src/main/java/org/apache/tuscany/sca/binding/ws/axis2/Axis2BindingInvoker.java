@@ -39,6 +39,7 @@ import org.apache.axis2.client.OperationClient;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.transport.http.HTTPConstants;
+import org.apache.tuscany.sca.assembly.Endpoint2;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.axis2.policy.authentication.token.Axis2TokenAuthenticationPolicy;
 import org.apache.tuscany.sca.binding.ws.axis2.policy.configurator.Axis2BindingBasicAuthenticationConfigurator;
@@ -218,8 +219,9 @@ public class Axis2BindingInvoker implements Invoker, DataExchangeSemantics {
         final OperationClient operationClient = serviceClient.getServiceClient().createClient(wsdlOperationName);
         operationClient.setOptions(options);
 
-        ReferenceParameters parameters = msg.getFrom().getReferenceParameters();
+        Endpoint2 callbackEndpoint = msg.getFrom().getCallbackEndpoint();
 
+/* TODO - EPR - not required for OASIS
         // set callback endpoint and callback ID for WS-Addressing header
         EndpointReference fromEPR = null;
         org.apache.tuscany.sca.runtime.EndpointReference callbackEPR = parameters.getCallbackReference();
@@ -244,10 +246,12 @@ public class Axis2BindingInvoker implements Invoker, DataExchangeSemantics {
             //FIXME: serialize conversation ID to XML in case it is not a string
             fromEPR.addReferenceParameter(CONVERSATION_ID_REFPARM_QN, conversationId.toString());
         }
+*/
 
         // add WS-Addressing header
         //FIXME: is there any way to use the Axis2 addressing support for this?
-        if (fromEPR != null) {
+        if (callbackEndpoint != null) {
+            EndpointReference fromEPR = new EndpointReference(callbackEndpoint.getBinding().getURI());
             SOAPEnvelope sev = requestMC.getEnvelope();
             SOAPHeader sh = sev.getHeader();
             OMElement epr =
@@ -267,9 +271,9 @@ public class Axis2BindingInvoker implements Invoker, DataExchangeSemantics {
         // if target endpoint was not specified when this invoker was created, 
         // use dynamically specified target endpoint passed in on this call
         if (options.getTo() == null) {
-            org.apache.tuscany.sca.runtime.EndpointReference ep = msg.getTo();
+            Endpoint2 ep = msg.getTo();
             if (ep != null) {
-                requestMC.setTo(new EndpointReference(ep.getURI()));
+                requestMC.setTo(new EndpointReference(ep.getBinding().getURI()));
             } else {
                 throw new RuntimeException("Unable to determine destination endpoint");
             }

@@ -27,9 +27,9 @@ import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Contract;
+import org.apache.tuscany.sca.assembly.Endpoint2;
 import org.apache.tuscany.sca.assembly.EndpointReference2;
 import org.apache.tuscany.sca.assembly.OptimizableBinding;
-import org.apache.tuscany.sca.core.assembly.impl.EndpointReferenceImpl;
 import org.apache.tuscany.sca.core.assembly.impl.RuntimeComponentReferenceImpl;
 import org.apache.tuscany.sca.core.assembly.impl.RuntimeWireImpl2;
 import org.apache.tuscany.sca.core.context.CompositeContext;
@@ -39,7 +39,6 @@ import org.apache.tuscany.sca.core.invocation.ThreadMessageContext;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.invocation.Message;
-import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
@@ -53,13 +52,13 @@ import org.apache.tuscany.sca.runtime.RuntimeWire;
 public class CallbackReferenceImpl<B> extends CallableReferenceImpl<B> {
     private RuntimeWire wire;
     private List<RuntimeWire> wires;
-    private EndpointReference resolvedEndpoint;
+    private Endpoint2 resolvedEndpoint;
 	private Object convID;
 
     public static CallbackReferenceImpl newInstance(Class interfaze,
                                                     ProxyFactory proxyFactory,
                                                     List<RuntimeWire> wires) {
-        if (getCallbackEndpoint(ThreadMessageContext.getMessageContext()) != null) {
+        if (ThreadMessageContext.getMessageContext().getFrom().getCallbackEndpoint() != null) {
             return new CallbackReferenceImpl(interfaze, proxyFactory, wires);
         } else {
             return null;
@@ -84,11 +83,14 @@ public class CallbackReferenceImpl<B> extends CallableReferenceImpl<B> {
         wire = selectCallbackWire(msgContext);
         if (wire == null) {
             //FIXME: need better exception
-            throw new RuntimeException("No callback binding found for " + msgContext.getTo().getURI());
+            throw new RuntimeException("No callback binding found for " + msgContext.getTo().toString());
         }
-        resolvedEndpoint = getCallbackEndpoint(msgContext);
+        resolvedEndpoint = msgContext.getFrom().getCallbackEndpoint();
+        
+        /* TODO - EPR - not required for OASIS
         convID = msgContext.getFrom().getReferenceParameters().getConversationID();
         callbackID = msgContext.getFrom().getReferenceParameters().getCallbackID();
+        */
     }
 
     @Override
@@ -108,46 +110,32 @@ public class CallbackReferenceImpl<B> extends CallableReferenceImpl<B> {
 	    return convID;
 	}
 
-    protected EndpointReference getResolvedEndpoint() {
+    protected Endpoint2 getResolvedEndpoint() {
 	    return resolvedEndpoint;
 	}
 
     private RuntimeWire selectCallbackWire(Message msgContext) {
         // look for callback binding with same name as service binding
-        EndpointReference to = msgContext.getTo();
+        Endpoint2 to = msgContext.getTo();
         if (to == null) {
             //FIXME: need better exception
             throw new RuntimeException("Destination for forward call is not available");
         }
         for (RuntimeWire wire : wires) {
-            if (wire.getSource().getBinding().getName().equals(to.getBinding().getName())) {
+            if (wire.getEndpointReference().getBinding().getName().equals(to.getBinding().getName())) {
 			    return wire;
             }
         }
 
         // if no match, look for callback binding with same type as service binding
         for (RuntimeWire wire : wires) {
-            if (wire.getSource().getBinding().getClass() == to.getBinding().getClass()) {
+            if (wire.getEndpointReference().getBinding().getClass() == to.getBinding().getClass()) {
 			    return wire;
             }
         }
 
         // no suitable callback wire was found
         return null;
-    }
-
-    /**
-     * Gets the endpoint reference from the incoming message that points
-     * back to the callback service
-     * 
-     * @param msgContext
-     */
-    private static EndpointReference getCallbackEndpoint(Message msgContext) {
-        EndpointReference from = msgContext.getFrom();
-        if (from == null) {
-            return null;
-        }
-        return from.getReferenceParameters().getCallbackReference();
     }
 
     private RuntimeWire cloneAndBind(RuntimeWire wire) {
@@ -158,7 +146,20 @@ public class CallbackReferenceImpl<B> extends CallableReferenceImpl<B> {
                 return boundWire;
             }
             try {
-                Contract contract = resolvedEndpoint.getContract();
+                // TODO - EPR - is this correct?
+                
+                // Fluff up a new response wire based on the callback endpoint
+                RuntimeComponentReference ref =
+                    bind((RuntimeComponentReference)wire.getEndpointReference().getReference(),
+                          resolvedEndpoint);
+                
+                boundWire = ref.getRuntimeWires().get(0);
+                
+                Binding binding = wire.getEndpointReference().getBinding();
+                binding.setURI(resolvedEndpoint.getBinding().getURI());
+
+/* TODO - EPR - remove as there are no callback objects now
+ *              Contract contract = resolvedEndpoint.getContract();
                 RuntimeComponentReference ref = null;
                 if (contract == null) {
                     //TODO - EPR - does it ever go through here?
@@ -177,24 +178,27 @@ public class CallbackReferenceImpl<B> extends CallableReferenceImpl<B> {
                     // TODO - EPR - get the wire from the reference that matches the 
                     //        injected callback reference wire. We don't have bindings yet as the 
                     //        callback object wire hasn't been initialized 
-/*                    
-                    for (RuntimeWire runtimeWire : ref.getRuntimeWires()){
-                        if (runtimeWire.getEndpointReference().getBinding().getName().equals(wire.getEndpointReference().getBinding().getName())){
-                            boundWire = runtimeWire;
-                            break;
-                        }
-                    }
-*/
+                    
+//                    for (RuntimeWire runtimeWire : ref.getRuntimeWires()){
+//                        if (runtimeWire.getEndpointReference().getBinding().getName().equals(wire.getEndpointReference().getBinding().getName())){
+//                            boundWire = runtimeWire;
+//                            break;
+//                        }
+//                    }
+
                     // just get the first one for now
                     boundWire = ref.getRuntimeWires().get(0);
 
                 } else {  // contract instanceof RuntimeComponentService
                     //TODO - EPR - I think it does this if no callback object has been set explicitly
-                    ref = bind((RuntimeComponentReference)wire.getSource().getContract(),
+                    ref = bind((RuntimeComponentReference)wire.getEndpointReference().getReference(),
                                 resolvedEndpoint);
                     boundWire = ref.getRuntimeWires().get(0);
                 }
+                
                 configureWire(boundWire);
+*/
+                
                 ((RuntimeWireImpl2)wire).addToCache(resolvedEndpoint, boundWire);
             } catch (CloneNotSupportedException e) {
                 // will not happen
@@ -205,13 +209,15 @@ public class CallbackReferenceImpl<B> extends CallableReferenceImpl<B> {
 
     // TODO - EPR - why static & convert to ne endpoint reference
     private static RuntimeComponentReference bind(RuntimeComponentReference reference,
-                                                  EndpointReference resolvedEndpoint) throws CloneNotSupportedException {
-        RuntimeComponent component = resolvedEndpoint.getComponent();
-        RuntimeComponentService service = (RuntimeComponentService)resolvedEndpoint.getContract();
+                                                  Endpoint2 resolvedEndpoint) throws CloneNotSupportedException {
+        RuntimeComponent component = (RuntimeComponent)resolvedEndpoint.getComponent();
+        RuntimeComponentService service = (RuntimeComponentService)resolvedEndpoint.getService();
         
         RuntimeComponentReference ref = (RuntimeComponentReference)reference.clone();
         ref.getTargets().add(service);
         ref.getBindings().clear();
+        
+        /* TODO - EPR - don't think this is require now we have endpoint references
         for (Binding binding : service.getBindings()) {
             if (binding instanceof OptimizableBinding) {
                 OptimizableBinding optimizableBinding = (OptimizableBinding)((OptimizableBinding)binding).clone();
@@ -223,6 +229,7 @@ public class CallbackReferenceImpl<B> extends CallableReferenceImpl<B> {
                 ref.getBindings().add(binding);
             }
         }
+        */
         
         ref.getEndpointReferences().clear();
         
@@ -230,10 +237,10 @@ public class CallbackReferenceImpl<B> extends CallableReferenceImpl<B> {
             EndpointReference2 clone = (EndpointReference2)endpointReference.clone();
             
             clone.setReference(ref);
-            clone.getBinding().setURI(resolvedEndpoint.getURI());
+            clone.getBinding().setURI(resolvedEndpoint.getBinding().getURI());
             
             clone.getTargetEndpoint().setComponent(resolvedEndpoint.getComponent());
-            clone.getTargetEndpoint().setService((ComponentService)resolvedEndpoint.getContract());  
+            clone.getTargetEndpoint().setService((ComponentService)resolvedEndpoint.getService());  
             clone.getTargetEndpoint().setBinding(resolvedEndpoint.getBinding());
             
             ref.getEndpointReferences().add(clone);
@@ -242,27 +249,29 @@ public class CallbackReferenceImpl<B> extends CallableReferenceImpl<B> {
         return ref;
     }
 
+    /* TODO - EPR - remove
     private void configureWire(RuntimeWire wire ) {
         
-        // TODO - EPR - do we actiually need this code? Combine with bind?
+        // TODO - EPR - do we actually need this code? Combine with bind?
         // need to set the endpoint on the binding also so that when the chains are created next
         // the sca binding can decide whether to provide local or remote invokers. 
         // TODO - there is a problem here though in that I'm setting a target on a 
         //        binding that may possibly be trying to point at two things in the multi threaded 
         //        case. Need to confirm the general model here and how the clone and bind part
         //        is intended to work
-        Binding binding = wire.getSource().getBinding();
-        binding.setURI(resolvedEndpoint.getURI());
+        Binding binding = wire.getEndpointReference().getBinding();
+        binding.setURI(resolvedEndpoint.getBinding().getURI());
 
         // set the target contract as it varies for the sca binding depending on 
         // whether it is local or remote
-        RuntimeComponentReference ref = (RuntimeComponentReference)wire.getSource().getContract();
+        RuntimeComponentReference ref = (RuntimeComponentReference)wire.getEndpointReference().getReference();
         
         // TODO - EPR
         // needs to be set after the chains have been created for the first time
         // as now the binding provider won't be created until that time 
         //wire.getEndpointReference().getTargetEndpoint().setInterfaceContract(ref.getBindingProvider(binding).getBindingInterfaceContract());
     }
+    */
 
     /**
      * {@inheritDoc}
@@ -282,9 +291,10 @@ public class CallbackReferenceImpl<B> extends CallableReferenceImpl<B> {
         final InterfaceContract targetServiceIfaceContract = targetService.getInterfaceContract();
 
         // Re-create the resolved Endpoint
-        this.resolvedEndpoint = new EndpointReferenceImpl(
-                (RuntimeComponent) targetComponent, targetService, null, 
-                targetServiceIfaceContract);
+        this.resolvedEndpoint = assemblyFactory.createEndpoint();
+        this.resolvedEndpoint.setComponent(targetComponent);
+        this.resolvedEndpoint.setService(targetService);
+        this.resolvedEndpoint.setInterfaceContract(targetServiceIfaceContract);
 
         // Copy the Java Interface from the Service
         final JavaInterface ji = (JavaInterface) targetServiceIfaceContract.getInterface();
@@ -300,11 +310,12 @@ public class CallbackReferenceImpl<B> extends CallableReferenceImpl<B> {
             throw new IOException(e.toString());
         }
 
+        // TODO - EPR - This doesn't sound right to me. 
         // Setup the reference on the cloned wire
         final RuntimeComponentReference ref = new RuntimeComponentReferenceImpl();
         ref.setComponent((RuntimeComponent) targetComponent);
         ref.setInterfaceContract(targetServiceIfaceContract);
-        ((EndpointReferenceImpl) this.wire.getSource()).setContract(ref);
+        ((EndpointReference2) this.wire.getEndpointReference()).setReference(ref);
     }
 
     /**
@@ -315,6 +326,8 @@ public class CallbackReferenceImpl<B> extends CallableReferenceImpl<B> {
         super.writeExternal(out);
         out.writeObject(this.callbackID);
         out.writeObject(this.convID);
-        out.writeUTF(this.resolvedEndpoint.getURI());
+        
+        // TODO - EPR - What to do about URI?
+        out.writeUTF(this.resolvedEndpoint.getBinding().getURI());
     }
 }

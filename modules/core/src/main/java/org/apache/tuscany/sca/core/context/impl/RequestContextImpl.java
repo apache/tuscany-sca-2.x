@@ -22,6 +22,7 @@ import java.util.List;
 
 import javax.security.auth.Subject;
 
+import org.apache.tuscany.sca.assembly.Endpoint2;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.context.CallableReferenceExt;
 import org.apache.tuscany.sca.core.invocation.ExtensibleProxyFactory;
@@ -31,7 +32,6 @@ import org.apache.tuscany.sca.core.invocation.ThreadMessageContext;
 import org.apache.tuscany.sca.core.invocation.impl.CallbackReferenceImpl;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.invocation.Message;
-import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.ReferenceParameters;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
@@ -65,20 +65,23 @@ public class RequestContextImpl implements RequestContext {
     }
 
     public String getServiceName() {
-        return ThreadMessageContext.getMessageContext().getTo().getContract().getName();
+        return ThreadMessageContext.getMessageContext().getTo().getService().getName();
     }
 
     public <B> CallableReference<B> getServiceReference() {
         Message msgContext = ThreadMessageContext.getMessageContext();
         // FIXME: [rfeng] Is this the service reference matching the caller side?
-        EndpointReference to = msgContext.getTo();
-        RuntimeComponentService service = (RuntimeComponentService) to.getContract();
+        Endpoint2 to = msgContext.getTo();
+        RuntimeComponentService service = (RuntimeComponentService) to.getService();
         RuntimeComponent component = (RuntimeComponent) to.getComponent();
         
         CallableReference<B> callableReference = component.getComponentContext().getCallableReference(null, component, service);
-        ReferenceParameters parameters = msgContext.getFrom().getReferenceParameters();
-        ((CallableReferenceExt<B>) callableReference).attachCallbackID(parameters.getCallbackID());
-        ((CallableReferenceExt<B>) callableReference).attachConversation(parameters.getConversationID());
+        
+        //TODO - EPR - not required for OASIS
+        //ReferenceParameters parameters = msgContext.getFrom().getReferenceParameters();
+        //((CallableReferenceExt<B>) callableReference).attachCallbackID(parameters.getCallbackID());
+        //((CallableReferenceExt<B>) callableReference).attachConversation(parameters.getConversationID());
+        
         return callableReference;
     }
 
@@ -93,8 +96,8 @@ public class RequestContextImpl implements RequestContext {
     @SuppressWarnings("unchecked")
     public <CB> CallableReference<CB> getCallbackReference() {
         Message msgContext = ThreadMessageContext.getMessageContext();
-        EndpointReference to = msgContext.getTo();
-        RuntimeComponentService service = (RuntimeComponentService) to.getContract();
+        Endpoint2 to = msgContext.getTo();
+        RuntimeComponentService service = (RuntimeComponentService) to.getService();
         RuntimeComponentReference callbackReference = (RuntimeComponentReference)service.getCallbackReference();
         if (callbackReference == null) {
             return null;
@@ -106,11 +109,12 @@ public class RequestContextImpl implements RequestContext {
         CallbackReferenceImpl ref = CallbackReferenceImpl.newInstance(javaClass, proxyFactory, wires);
         if (ref != null) {  
             //ref.resolveTarget();
-            ReferenceParameters parameters = msgContext.getFrom().getReferenceParameters();
-            ref.attachCallbackID(parameters.getCallbackID());
-            if (ref.getConversation() != null) {
-                ref.attachConversationID(parameters.getConversationID());
-            }
+            // TODO - EPR - not required for OASIS
+            //ReferenceParameters parameters = msgContext.getFrom().getReferenceParameters();
+            //ref.attachCallbackID(parameters.getCallbackID());
+            //if (ref.getConversation() != null) {
+            //    ref.attachConversationID(parameters.getConversationID());
+            //}
         }
         return ref;
     }

@@ -72,7 +72,8 @@ public class ConversationalScopeContainer extends AbstractScopeContainer<Object>
             Message msgContext = ThreadMessageContext.getMessageContext();
 
             if (msgContext != null) {
-                msgContext.getFrom().getReferenceParameters().setConversationID(contextId);
+                // TODO - EPR - not required for OASIS
+                //msgContext.getFrom().getReferenceParameters().setConversationID(contextId);
             }
         }    
         
