@@ -14,4 +14,4 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-org.apache.tuscany.sca.endpoint.tribes.ReplicatedEndpointRegistry;ranking=100,address=228.0.0.100,port=50000,timeout=50
+org.apache.tuscany.sca.endpoint.tribes.ReplicatedEndpointRegistry;ranking=50,address=228.0.0.100,port=50000,timeout=50

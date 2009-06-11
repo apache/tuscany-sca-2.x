@@ -32,7 +32,12 @@ import org.apache.tuscany.sca.core.assembly.EndpointSerializer;
  * Runtime model for Endpoint that supports java serialization
  */
 public class RuntimeEndpointImpl extends Endpoint2Impl implements Externalizable {
+    /**
+     * FIXME: What's the best way to get the extension point registry upon deserialization?
+     * We can expose a method to receive the extension point registry
+     */
     private static EndpointSerializer serializer;
+    private String xml;
 
     /**
      * No-arg constructor for Java serilization
@@ -49,13 +54,32 @@ public class RuntimeEndpointImpl extends Endpoint2Impl implements Externalizable
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        // When this method is invoked, the instance is created using the no-arg constructor
-        // We need to keep the serializer as a static
-        serializer.readExternal(this, in);
+        this.uri = in.readUTF();
+        this.xml = in.readUTF();
+        // Defer the loading to resolve();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        serializer.writeExternal(this, out);
+        out.writeUTF(getURI());
+        out.writeUTF(serializer.write(this));
+    }
+
+    @Override
+    protected void reset() {
+        super.reset();
+        this.xml = null;
+    }
+
+    @Override
+    protected void resolve() {
+        if (component == null && xml != null) {
+            try {
+                serializer.read(this, xml);
+            } catch (IOException e) {
+                throw new IllegalStateException(e);
+            }
+        }
+        super.resolve();
     }
 
 }

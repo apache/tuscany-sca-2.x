@@ -44,11 +44,8 @@ public class Endpoint2Impl implements Endpoint2 {
     protected ExtensionPointRegistry registry;
     protected boolean unresolved;
     protected String uri;
-    protected String componentName;
     protected Component component;
-    protected String serviceName;
     protected ComponentService service;
-    protected String bindingName;
     protected Binding binding;
     protected InterfaceContract interfaceContract;
     protected List<EndpointReference2> callbackEndpointReferences = new ArrayList<EndpointReference2>();
@@ -72,58 +69,38 @@ public class Endpoint2Impl implements Endpoint2 {
         this.unresolved = unresolved;
     }
 
-    public String getComponentName() {
-        return componentName;
-    }
-
-    public void setComponentName(String componentName) {
-        this.componentName = componentName;
-    }
-
     public Component getComponent() {
+        resolve();
         return component;
     }
 
     public void setComponent(Component component) {
         this.component = component;
-        this.componentName = component.getURI();
-    }
-
-    public String getServiceName() {
-        return serviceName;
-    }
-
-    public void setServiceName(String serviceName) {
-        this.serviceName = serviceName;
+        reset();
     }
 
     public ComponentService getService() {
+        resolve();
         return service;
     }
 
     public void setService(ComponentService service) {
         this.service = service;
-        this.serviceName = service.getName();
-    }
-
-    public String getBindingName() {
-        return bindingName;
-    }
-
-    public void setBindingName(String bindingName) {
-        this.bindingName = bindingName;
+        reset();
     }
 
     public Binding getBinding() {
+        resolve();
         return binding;
     }
 
     public void setBinding(Binding binding) {
         this.binding = binding;
-        this.bindingName = binding.getName();
+        reset();
     }
 
     public InterfaceContract getInterfaceContract() {
+        resolve();
         return interfaceContract;
     }
 
@@ -139,14 +116,17 @@ public class Endpoint2Impl implements Endpoint2 {
      * @return callbackEndpoint the reference callback endpoint
      */
     public List<EndpointReference2> getCallbackEndpointReferences(){
+        resolve();
         return callbackEndpointReferences;
     }
 
     public List<PolicySet> getPolicySets() {
+        resolve();
         return policySets;
     }
 
     public List<Intent> getRequiredIntents() {
+        resolve();
         return requiredIntents;
     }
 
@@ -164,28 +144,31 @@ public class Endpoint2Impl implements Endpoint2 {
     public String toString(){
         String output =  "Endpoint: ";
 
-        if (componentName != null){
-            output += " Component = " + componentName;
-        }
-
-        if (serviceName != null){
-            output += " Service = " + serviceName;
-        }
-
-        if (bindingName != null){
-            output += " Binding = " + bindingName + "/" + binding.getClass().getName() + " ";
+        if (getURI() != null){
+            output += " URI = " + uri;
         }
 
         if (unresolved) {
-            output += " Unresolved = true";
-        } else {
-            output += " Unresolved = false";
+            output += " [Unresolved]";
         }
 
         return output;
     }
 
     public String getURI() {
+        if (uri == null) {
+            if (component != null && service != null && binding != null) {
+                String bindingName = binding.getName();
+                if (bindingName == null) {
+                    bindingName = service.getName();
+                }
+                uri = component.getURI() + "#service-binding(" + service.getName() + "/" + bindingName + ")";
+            } else if (component != null && service != null) {
+                uri = component.getURI() + "#service(" + service.getName() + ")";
+            } else if (component != null) {
+                uri = component.getURI();
+            }
+        }
         return uri;
     }
 
@@ -193,4 +176,10 @@ public class Endpoint2Impl implements Endpoint2 {
         this.uri = uri;
     }
 
+    protected void resolve() {
+    }
+
+    protected void reset() {
+        this.uri = null;
+    }
 }

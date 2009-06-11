@@ -86,6 +86,7 @@ public class EndpointReference2Impl implements EndpointReference2 {
 
     public void setComponent(Component component) {
         this.component = component;
+        this.uri = null;
     }
 
     public ComponentReference getReference() {
@@ -94,6 +95,7 @@ public class EndpointReference2Impl implements EndpointReference2 {
 
     public void setReference(ComponentReference reference) {
         this.reference = reference;
+        this.uri = null;
     }
 
     public Binding getBinding() {
@@ -102,6 +104,7 @@ public class EndpointReference2Impl implements EndpointReference2 {
 
     public void setBinding(Binding binding) {
         this.binding = binding;
+        this.uri = null;
     }
 
     public Endpoint2 getTargetEndpoint() {
@@ -147,35 +150,38 @@ public class EndpointReference2Impl implements EndpointReference2 {
         this.callbackEndpoint = callbackEndpoint;
     }
 
-    public String toString(){
-        String output =  "Endpoint Reference: ";
+    public String toString() {
+        String output = "Endpoint Reference: ";
 
-        if (component != null){
-            output += " Component = " + component.getName();
-        }
-
-        if (reference != null){
-            output += " Reference = " + reference.getName();
-        }
-
-        if (binding != null){
-            output += " Binding = " + binding.getName() + "/" + binding.getClass().getName() + " ";
+        if (getURI() != null) {
+            output += " URI = " + uri;
         }
 
         if (unresolved) {
-            output += " Unresolved = true ";
-        } else {
-            output += " Unresolved = false ";
+            output += " [Unresolved]";
         }
 
         if (targetEndpoint != null) {
-            output += " Target " + targetEndpoint.toString();
+            output += " Target = " + targetEndpoint.toString();
         }
 
         return output;
     }
 
     public String getURI() {
+        if (uri == null) {
+            if (component != null && reference != null && binding != null) {
+                String bindingName = binding.getName();
+                if (bindingName == null) {
+                    bindingName = reference.getName();
+                }
+                uri = component.getURI() + "#reference-binding(" + reference.getName() + "/" + bindingName + ")";
+            } else if (component != null && reference != null) {
+                uri = component.getURI() + "#reference(" + reference.getName() + ")";
+            } else if (component != null) {
+                uri = component.getURI();
+            }
+        }
         return uri;
     }
 

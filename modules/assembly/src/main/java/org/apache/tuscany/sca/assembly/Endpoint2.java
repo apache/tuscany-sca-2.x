@@ -58,42 +58,42 @@ public interface Endpoint2 extends Base, PolicySubject, Cloneable, Serializable 
      *
      * @return componentName
      */
-    String getComponentName();
+    // String getComponentName();
 
     /**
      * Set the name of the component to which this endpoint refers
      *
      * @Param componentName
      */
-    void setComponentName(String componentName);
+    // void setComponentName(String componentName);
 
     /**
      * Get the name of the service to which this endpoint refers
      *
      * @return serviceName
      */
-    String getServiceName();
+    // String getServiceName();
 
     /**
      * Set the name of the component to which this endpoint refers
      *
      * @Param serviceName
      */
-    void setServiceName(String serviceName);
+    // void setServiceName(String serviceName);
 
     /**
      * Get the name of the binding to which this endpoint refers
      *
      * @return bindingName
      */
-    String getBindingName();
+    // String getBindingName();
 
     /**
      * Set the name of the component to which this endpoint refers
      *
      * @param bindingName
      */
-    void setBindingName(String bindingName);
+    // void setBindingName(String bindingName);
 
     /**
      * Get the component model object
