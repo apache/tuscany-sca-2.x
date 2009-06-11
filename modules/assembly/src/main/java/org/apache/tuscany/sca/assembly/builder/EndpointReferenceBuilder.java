@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.assembly.builder;
 
-import org.apache.tuscany.sca.assembly.EndpointReference2;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
@@ -38,6 +38,6 @@ public interface EndpointReferenceBuilder {
      * @param endpointReference
      * @param monitor
      */
-    void build(EndpointReference2 endpointReference, Monitor monitor);
+    void build(EndpointReference endpointReference, Monitor monitor);
     
 }

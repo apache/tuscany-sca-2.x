@@ -21,7 +21,7 @@ package org.apache.tuscany.sca.implementation.java.invocation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.apache.tuscany.sca.assembly.EndpointReference2;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.core.factory.InstanceWrapper;
 import org.apache.tuscany.sca.core.scope.ScopeContainer;
 import org.apache.tuscany.sca.core.scope.ScopedRuntimeComponent;
@@ -76,7 +76,7 @@ public class JavaImplementationInvoker implements Invoker, DataExchangeSemantics
 
         Object contextId = null;
 
-        EndpointReference2 from = msg.getFrom();
+        EndpointReference from = msg.getFrom();
         /* TODO - EPR - not required for OASIS
         ReferenceParameters parameters = null;
         if (from != null) {

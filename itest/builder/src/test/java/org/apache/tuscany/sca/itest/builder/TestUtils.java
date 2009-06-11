@@ -38,8 +38,8 @@ import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Contract;
-import org.apache.tuscany.sca.assembly.Endpoint2;
-import org.apache.tuscany.sca.assembly.EndpointReference2;
+import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
@@ -216,7 +216,7 @@ public class TestUtils {
             // print component service endpoints
             for (ComponentService componentService : component.getServices()) {
                 buffer += indent + "Service - " + componentService.getName() + "\n";
-                for (Endpoint2 endpoint : componentService.getEndpoints()) {
+                for (Endpoint endpoint : componentService.getEndpoints()) {
                     if (endpoint.getBinding() != null){
                         buffer += printEndpoint(endpoint, indent);
                     }
@@ -225,7 +225,7 @@ public class TestUtils {
             
             for (ComponentReference componentReference : component.getReferences()) {
                 buffer += indent + "Reference - " + componentReference.getName() + "\n";
-                for (EndpointReference2 endpointReference : componentReference.getEndpointReferences()) {
+                for (EndpointReference endpointReference : componentReference.getEndpointReferences()) {
                     buffer += printEndpointReference(endpointReference, indent);
                 }
             }
@@ -241,7 +241,7 @@ public class TestUtils {
         return buffer;        
     }
     
-    protected static String printEndpoint(Endpoint2 endpoint, String indent){
+    protected static String printEndpoint(Endpoint endpoint, String indent){
         String buffer = ""; 
         
         buffer += indent + " Endpoint - Component: " + endpoint.getComponent().getName() +"\n";
@@ -251,7 +251,7 @@ public class TestUtils {
         return buffer;
     }
     
-    protected static String printEndpointReference(EndpointReference2 endpointReference, String indent){
+    protected static String printEndpointReference(EndpointReference endpointReference, String indent){
         String buffer = ""; 
         
         buffer += indent + " EndpointReference - Component:        " + endpointReference.getComponent().getName() +"\n";

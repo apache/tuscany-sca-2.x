@@ -28,8 +28,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.apache.tuscany.sca.assembly.Endpoint2;
-import org.apache.tuscany.sca.assembly.EndpointReference2;
+import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.core.assembly.impl.RuntimeWireImpl;
 import org.apache.tuscany.sca.core.context.CallableReferenceExt;
 import org.apache.tuscany.sca.core.context.impl.CallableReferenceImpl;
@@ -70,8 +70,8 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
     protected boolean conversational;
     protected ConversationExt conversation;
     protected MessageFactory messageFactory;
-    protected EndpointReference2 source;
-    protected Endpoint2 target;
+    protected EndpointReference source;
+    protected Endpoint target;
     protected RuntimeWire wire;
     protected CallableReference<?> callableReference;
     protected Class<?> businessInterface;
@@ -270,11 +270,11 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
         return found;
     }
 
-    protected void setEndpoint(Endpoint2 endpoint) {
+    protected void setEndpoint(Endpoint endpoint) {
         this.target = endpoint;
     }
 
-    protected Object invoke(InvocationChain chain, Object[] args, RuntimeWire wire, EndpointReference2 source)
+    protected Object invoke(InvocationChain chain, Object[] args, RuntimeWire wire, EndpointReference source)
                          throws Throwable {
         Message msg = messageFactory.createMessage();
         msg.setFrom(source);

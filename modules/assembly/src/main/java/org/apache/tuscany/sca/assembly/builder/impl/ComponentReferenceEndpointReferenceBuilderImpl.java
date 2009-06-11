@@ -31,8 +31,8 @@ import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeReference;
-import org.apache.tuscany.sca.assembly.Endpoint2;
-import org.apache.tuscany.sca.assembly.EndpointReference2;
+import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.apache.tuscany.sca.assembly.SCABinding;
@@ -114,7 +114,7 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
                     if ((service.getInterfaceContract() != null) &&
                         (service.getInterfaceContract().getCallbackInterface() != null)){
                         if ( reference.getName().equals(service.getName())){
-                            for ( Endpoint2 endpoint : service.getEndpoints()){
+                            for ( Endpoint endpoint : service.getEndpoints()){
                                 endpoint.getCallbackEndpointReferences().addAll(reference.getEndpointReferences());
                             }
                             break;
@@ -150,7 +150,7 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
                                                              targetComponentService.getInterfaceContract())) {
                         // create endpoint reference - with a dummy endpoint which will be replaced when policies
                         // are matched and bindings are configured later
-                        EndpointReference2 endpointRef = createEndpointRef( component, reference, false  );
+                        EndpointReference endpointRef = createEndpointRef( component, reference, false  );
                         endpointRef.setTargetEndpoint( createEndpoint(targetComponent, targetComponentService, true) );
                         reference.getEndpointReferences().add(endpointRef);
 
@@ -196,7 +196,7 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
 
                         // create endpoint reference -  with dummy endpoint which will be replaced when policies
                         // are matched and bindings are configured later
-                        EndpointReference2 endpointRef = createEndpointRef( component, reference, false  );
+                        EndpointReference endpointRef = createEndpointRef( component, reference, false  );
                         endpointRef.setTargetEndpoint(createEndpoint(targetComponent, targetComponentService, true));
                         reference.getEndpointReferences().add(endpointRef);
                     } else {
@@ -208,7 +208,7 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
                     }
                 } else {
                     // add an unresolved endpoint reference with an unresolved endpoint to go with it
-                    EndpointReference2 endpointRef = createEndpointRef( component, reference, true  );
+                    EndpointReference endpointRef = createEndpointRef( component, reference, true  );
                     endpointRef.setTargetEndpoint(createEndpoint(component, targetName));
                     reference.getEndpointReferences().add(endpointRef);
                     warning(monitor, "ComponentReferenceTargetNotFound",
@@ -234,7 +234,7 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
 
                     // create endpoint reference for manually configured bindings with a resolved endpoint to
                 	// signify that this reference is pointing at some unwired endpoint
-                    EndpointReference2 endpointRef = createEndpointRef( component, reference,
+                    EndpointReference endpointRef = createEndpointRef( component, reference,
                     		binding, null, false  );
                     endpointRef.setTargetEndpoint(createEndpoint(false));
                     reference.getEndpointReferences().add(endpointRef);
@@ -264,7 +264,7 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
                                                              targetComponentService.getInterfaceContract())) {
                         // create endpoint reference with dummy endpoint which will be replaced when policies
                         // are matched and bindings are configured later
-                        EndpointReference2 endpointRef = createEndpointRef( component, reference, binding, null, false  );
+                        EndpointReference endpointRef = createEndpointRef( component, reference, binding, null, false  );
                         endpointRef.setTargetEndpoint(createEndpoint(targetComponent, targetComponentService, true));
                         reference.getEndpointReferences().add(endpointRef);
                     } else {
@@ -277,7 +277,7 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
                 } else {
                     // create endpoint reference for manually configured bindings with resolved endpoint
                 	// to signify that this reference is pointing at some unwired endpoint
-                    EndpointReference2 endpointRef = createEndpointRef( component, reference, binding, null, false  );
+                    EndpointReference endpointRef = createEndpointRef( component, reference, binding, null, false  );
                     endpointRef.setTargetEndpoint(createEndpoint( false ));
                     reference.getEndpointReferences().add(endpointRef);
                 } // end if
@@ -302,7 +302,7 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
     	// Find all the leafmost component references related to this component reference
     	EndpointrefInfo refInfo = gatherEndpointrefInfo( component, reference, null );
 
-    	List<Endpoint2> endpoints = getReferenceEndpoints( composite, component,
+    	List<Endpoint> endpoints = getReferenceEndpoints( composite, component,
         		                                           reference, components, componentServices );
 
     	Multiplicity multiplicity = reference.getMultiplicity();
@@ -324,14 +324,14 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
     		ComponentReference leafReference = refInfo.getRefs().get(i);
     		boolean unresolved = false;
 
-        	for( Endpoint2 endpoint : endpoints ) {
+        	for( Endpoint endpoint : endpoints ) {
         		if( endpoint.isUnresolved() && endpoint.getComponent() == null && endpoint.getService() == null ) {
         			unresolved = true;
         		} else {
         			unresolved = false;
         		} // end if
         		// Create an EndpointReference pointing at the endpoint
-        		EndpointReference2 endRef =	createEndpointRef( leafComponent, leafReference,
+        		EndpointReference endRef =	createEndpointRef( leafComponent, leafReference,
         	    											   endpoint.getBinding(), endpoint, unresolved);
         		// Add the EndpointReference to the top level AND the leaf level reference, if not the same!!
         		if( useNew ) {
@@ -351,7 +351,7 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
 
     } // end method createReferenceEndpointReferences2
 
-    private List<Endpoint2> getReferenceEndpoints(Composite composite, Component component,
+    private List<Endpoint> getReferenceEndpoints(Composite composite, Component component,
     		ComponentReference reference, Map<String, Component> components,
             Map<String, ComponentService> componentServices ) {
     	// Target services for a component reference are specified in one of a number of ways, in order:
@@ -361,7 +361,7 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
     	//    are compatible with the reference
     	// 1. takes precedence over 2. - 3. is only used if neither of the other applies
 
-    	List<Endpoint2> endpoints = new ArrayList<Endpoint2>();
+    	List<Endpoint> endpoints = new ArrayList<Endpoint>();
 
     	// Get targets for references that are callbacks...
     	if( getReferenceCallbackEndpoints( composite, component, reference,
@@ -396,13 +396,13 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
      */
     private boolean getReferenceCallbackEndpoints( Composite composite, Component component,
     		ComponentReference reference, Map<String, Component> components,
-            Map<String, ComponentService> componentServices, List<Endpoint2> endpoints ) {
+            Map<String, ComponentService> componentServices, List<Endpoint> endpoints ) {
     	// Only if this reference is a callback are there any endpoints of this kind
     	if( reference.isCallback() ) {
             // add an unresolved endpoint reference with an unresolved endpoint to go with it
     		// there will be one of these for each binding on the reference
     		for( Binding binding : reference.getBindings() ) {
-	    		Endpoint2 endpoint = createEndpoint(true);
+	    		Endpoint endpoint = createEndpoint(true);
 	    		endpoint.setBinding(binding);
 	            endpoints.add( endpoint );
     		} // end for
@@ -425,7 +425,7 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
      */
     private boolean getReferenceTargetEndpoints( Composite composite, Component component,
     		ComponentReference reference, Map<String, Component> components,
-            Map<String, ComponentService> componentServices, List<Endpoint2> endpoints ) {
+            Map<String, ComponentService> componentServices, List<Endpoint> endpoints ) {
 
     	List<ComponentService> refTargets = getReferenceTargets( reference );
     	if ( !refTargets.isEmpty() ) {
@@ -442,11 +442,11 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
 	                    // create endpoint reference -  with dummy endpoint which will be replaced when policies
 	                    // are matched and bindings are configured later
 	                	// TODO
-	                	Endpoint2 endpoint = selectTargetEndpoint( reference, targetComponentService );
+	                	Endpoint endpoint = selectTargetEndpoint( reference, targetComponentService );
 	                	System.out.println("Selected Endpoint: component=" + endpoint.getComponent().getName() +
 	                			" service=" + endpoint.getService().getName() +
 	                			" binding=" + endpoint.getBinding().toString());
-	                	Endpoint2 endpoint2 = createEndpoint(targetComponent, targetComponentService, true);
+	                	Endpoint endpoint2 = createEndpoint(targetComponent, targetComponentService, true);
 	                	endpoint2.setBinding( endpoint.getBinding() );
 	                    endpoints.add( endpoint2 );
 	                } else {
@@ -477,11 +477,11 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
      * This will in practice select a particular binding on the service if there is more than one endpoint on the
      * service.  If there are no matches, this method returns null
      */
-    private Endpoint2 selectTargetEndpoint( ComponentReference reference, ComponentService service ) {
+    private Endpoint selectTargetEndpoint( ComponentReference reference, ComponentService service ) {
 
     	// Return the first endpoint with a Binding which is compatible with the policy requirements on
     	// the reference
-    	for( Endpoint2 endpoint : service.getEndpoints() ) {
+    	for( Endpoint endpoint : service.getEndpoints() ) {
     		return endpoint;
     	} //end for
 
@@ -500,7 +500,7 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
      */
     private boolean getReferenceBindingEndpoints( Composite composite, Component component,
     		ComponentReference reference, Map<String, Component> components,
-            Map<String, ComponentService> componentServices, List<Endpoint2> endpoints ) {
+            Map<String, ComponentService> componentServices, List<Endpoint> endpoints ) {
     	// Get service endpoints declared by <binding/> subelements
     	if( bindingsIdentifyTargets( reference ) ) {
             for (Binding binding : reference.getBindings()) {
@@ -515,7 +515,7 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
                 	if( !reference.isCallback() && (binding instanceof SCABinding) ) continue;
 
                     // create an unwired endpoint containing the binding
-                	Endpoint2 endpoint = createEndpoint( false );
+                	Endpoint endpoint = createEndpoint( false );
                 	endpoint.setBinding( binding );
                 	endpoints.add( endpoint );
                     continue;
@@ -569,7 +569,7 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
      */
     private boolean getReferenceAutowireEndpoints( Composite composite, Component component,
         		ComponentReference reference, Map<String, Component> components,
-                Map<String, ComponentService> componentServices, List<Endpoint2> endpoints ) {
+                Map<String, ComponentService> componentServices, List<Endpoint> endpoints ) {
     	// Get compatible target services if @autowire=true is specified
     	if ( reference.getAutowire() == Boolean.TRUE ) {
 
@@ -809,9 +809,9 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
      * @param unresolved
      * @return the endpoint reference
      */
-    private EndpointReference2 createEndpointRef( Component component, ComponentReference reference,
-    		Binding binding, Endpoint2 endpoint, boolean unresolved  ) {
-    	EndpointReference2 endpointRef = createEndpointRef( component, reference, unresolved  );
+    private EndpointReference createEndpointRef( Component component, ComponentReference reference,
+    		Binding binding, Endpoint endpoint, boolean unresolved  ) {
+    	EndpointReference endpointRef = createEndpointRef( component, reference, unresolved  );
         endpointRef.setBinding(binding);
         endpointRef.setTargetEndpoint(endpoint);
         return endpointRef;
@@ -824,8 +824,8 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
      * @param unresolved
      * @return the endpoint reference
      */
-    private EndpointReference2 createEndpointRef( Component component, ComponentReference reference, boolean unresolved  ) {
-	    EndpointReference2 endpointRef = assemblyFactory.createEndpointReference();
+    private EndpointReference createEndpointRef( Component component, ComponentReference reference, boolean unresolved  ) {
+	    EndpointReference endpointRef = assemblyFactory.createEndpointReference();
 	    endpointRef.setComponent(component);
 	    endpointRef.setReference(reference);
 	    endpointRef.setUnresolved(unresolved);
@@ -840,8 +840,8 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
      * @param unresolved
      * @return the endpoint
      */
-    private Endpoint2 createEndpoint( Component component, ComponentService service, boolean unresolved) {
-	    Endpoint2 endpoint = createEndpoint( unresolved);
+    private Endpoint createEndpoint( Component component, ComponentService service, boolean unresolved) {
+	    Endpoint endpoint = createEndpoint( unresolved);
 	    endpoint.setComponent(component);
 	    endpoint.setService(service);
 	    endpoint.setUnresolved(unresolved);
@@ -853,8 +853,8 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
      * @param unresolved
      * @return the endpoint
      */
-    private Endpoint2 createEndpoint( boolean unresolved) {
-    	Endpoint2 endpoint = assemblyFactory.createEndpoint();
+    private Endpoint createEndpoint( boolean unresolved) {
+    	Endpoint endpoint = assemblyFactory.createEndpoint();
 	    endpoint.setUnresolved(unresolved);
 	    return endpoint;
     } // end method createEndpoint
@@ -871,7 +871,7 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
      * </ul>
      * @return the endpoint
      */
-    private Endpoint2 createEndpoint(Component component, String targetName) {
+    private Endpoint createEndpoint(Component component, String targetName) {
         String[] parts = targetName.split("/");
         if (parts.length < 1 || parts.length > 3) {
             throw new IllegalArgumentException("Invalid target URI: " + targetName);
@@ -902,7 +902,7 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
             uri = uri + "#service(" + parts[1] + ")";
         }
 
-        Endpoint2 endpoint = assemblyFactory.createEndpoint();
+        Endpoint endpoint = assemblyFactory.createEndpoint();
         endpoint.setUnresolved(true);
         endpoint.setURI(uri);
         return endpoint;

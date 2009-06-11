@@ -80,8 +80,8 @@ import org.apache.axis2.transport.jms.JMSUtils;
 import org.apache.tuscany.sca.assembly.AbstractContract;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.assembly.Endpoint2;
-import org.apache.tuscany.sca.assembly.EndpointReference2;
+import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.axis2.Axis2ServiceClient.URIResolverImpl;
 import org.apache.tuscany.sca.binding.ws.axis2.policy.authentication.token.Axis2TokenAuthenticationPolicy;
@@ -807,10 +807,10 @@ public class Axis2ServiceProvider {
         fillQoSContext(msg, inMC);
 
         // if reference parameters are needed, create a new "From" EPR to hold them
-        EndpointReference2 from = null;
+        EndpointReference from = null;
         if (callbackAddress != null ) {
             from = assemblyFactory.createEndpointReference();
-            Endpoint2 fromEndpoint = assemblyFactory.createEndpoint();
+            Endpoint fromEndpoint = assemblyFactory.createEndpoint();
             from.setTargetEndpoint(fromEndpoint);
             // TODO - EPR - need to set callback address
             msg.setFrom(from);

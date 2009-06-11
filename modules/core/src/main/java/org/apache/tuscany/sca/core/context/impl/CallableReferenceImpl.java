@@ -32,8 +32,8 @@ import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.CompositeService;
-import org.apache.tuscany.sca.assembly.Endpoint2;
-import org.apache.tuscany.sca.assembly.EndpointReference2;
+import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.SCABinding;
@@ -84,7 +84,7 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
 
     protected transient RuntimeComponent component;
     protected transient RuntimeComponentReference reference;
-    protected transient EndpointReference2 endpointReference;
+    protected transient EndpointReference endpointReference;
 
     protected String scdl;
 
@@ -113,7 +113,7 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
     protected CallableReferenceImpl(Class<B> businessInterface,
                                     RuntimeComponent component,
                                     RuntimeComponentReference reference,
-                                    EndpointReference2 endpointReference,
+                                    EndpointReference endpointReference,
                                     ProxyFactory proxyFactory,
                                     CompositeActivator compositeActivator) {
         this.proxyFactory = proxyFactory;
@@ -519,7 +519,7 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
     }
 
     // TODO - EPR - needs sorting out for new endpoint references
-    public EndpointReference2 getEndpointReference() {
+    public EndpointReference getEndpointReference() {
         try {
             resolve();
 
@@ -529,13 +529,13 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
                 componentTypeRef == null ? reference.getInterfaceContract() : componentTypeRef.getInterfaceContract();
             sourceContract = sourceContract.makeUnidirectional(false);
             
-            EndpointReference2 epr = assemblyFactory.createEndpointReference();
+            EndpointReference epr = assemblyFactory.createEndpointReference();
             epr.setComponent(component);
             epr.setReference(reference);
             //epr.setBinding(binding);
             epr.setInterfaceContract(sourceContract);
             
-            Endpoint2 endpoint = assemblyFactory.createEndpoint();
+            Endpoint endpoint = assemblyFactory.createEndpoint();
             epr.setTargetEndpoint(endpoint);
             
             return epr;

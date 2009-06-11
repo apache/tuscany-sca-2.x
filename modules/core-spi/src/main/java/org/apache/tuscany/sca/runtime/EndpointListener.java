@@ -21,7 +21,7 @@ package org.apache.tuscany.sca.runtime;
 
 import java.util.EventListener;
 
-import org.apache.tuscany.sca.assembly.Endpoint2;
+import org.apache.tuscany.sca.assembly.Endpoint;
 
 /**
  * A listener for endpoint events
@@ -31,16 +31,16 @@ public interface EndpointListener extends EventListener {
      * The method is invoked when a new endpoint is added to the registry
      * @param endpoint
      */
-    void endpointAdded(Endpoint2 endpoint);
+    void endpointAdded(Endpoint endpoint);
     /**
      * The method is invoked when an endpoint is removed the registry
      * @param endpoint
      */
-    void endpointRemoved(Endpoint2 endpoint);
+    void endpointRemoved(Endpoint endpoint);
     /**
      * The method is invoked when an endpoint is updated in the registry
      * @param oldEndpoint
      * @param newEndpoint
      */
-    void endpointUpdated(Endpoint2 oldEndpoint, Endpoint2 newEndpoint);
+    void endpointUpdated(Endpoint oldEndpoint, Endpoint newEndpoint);
 }

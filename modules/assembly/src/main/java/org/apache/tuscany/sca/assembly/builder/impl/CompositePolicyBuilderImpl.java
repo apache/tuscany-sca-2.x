@@ -31,8 +31,8 @@ import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeReference;
 import org.apache.tuscany.sca.assembly.CompositeService;
-import org.apache.tuscany.sca.assembly.Endpoint2;
-import org.apache.tuscany.sca.assembly.EndpointReference2;
+import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
@@ -277,7 +277,7 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
                         .getService().getInterfaceContract().getCallbackInterface());
                 }
 
-                for (Endpoint2 ep : componentService.getEndpoints()) {
+                for (Endpoint ep : componentService.getEndpoints()) {
                     // Inherit from the componentType.service.interface
                     if (componentService.getService() != null && componentService.getService().getInterfaceContract() != null) {
                         inherit(ep, componentService.getService().getInterfaceContract().getInterface());
@@ -322,7 +322,7 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
                                       componentReference.getReference().getInterfaceContract().getCallbackInterface());
                 }
 
-                for (EndpointReference2 epr : componentReference.getEndpointReferences()) {
+                for (EndpointReference epr : componentReference.getEndpointReferences()) {
                     // Inherit from the componentType.reference.interface
                     if (componentReference.getReference() != null && componentReference.getReference()
                         .getInterfaceContract() != null) {

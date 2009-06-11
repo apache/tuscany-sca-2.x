@@ -25,8 +25,8 @@ import java.util.List;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.assembly.Endpoint2;
-import org.apache.tuscany.sca.assembly.EndpointReference2;
+import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
@@ -167,8 +167,8 @@ public class EndpointReferenceBuilderImpl implements CompositeBuilder, EndpointR
      * @param endpoint
      * @param monitor
      */
-    public void build(EndpointReference2 endpointReference, Monitor monitor) {
-        Endpoint2 endpoint = endpointReference.getTargetEndpoint();
+    public void build(EndpointReference endpointReference, Monitor monitor) {
+        Endpoint endpoint = endpointReference.getTargetEndpoint();
 
         if (endpoint == null){
             // an error?
@@ -194,7 +194,7 @@ public class EndpointReferenceBuilderImpl implements CompositeBuilder, EndpointR
                 // The service is in a remote composite somewhere else in the domain
 
                 // find the service in the endpoint registry
-                List<Endpoint2> endpoints = endpointRegistry.findEndpoint(endpointReference);
+                List<Endpoint> endpoints = endpointRegistry.findEndpoint(endpointReference);
 
                 // TODO - do we exepect to find more than one endpoint in
                 //        anything other than the autowire case?
@@ -221,19 +221,19 @@ public class EndpointReferenceBuilderImpl implements CompositeBuilder, EndpointR
 
     // TODO - EPR - In OASIS case there are no bindings to match with on the
     //        reference side.
-    private void matchForwardBinding(EndpointReference2 endpointReference,
+    private void matchForwardBinding(EndpointReference endpointReference,
                                      boolean local,
                                      Monitor monitor) {
 
-        Endpoint2 endpoint = endpointReference.getTargetEndpoint();
+        Endpoint endpoint = endpointReference.getTargetEndpoint();
 
         List<Binding> matchedReferenceBinding = new ArrayList<Binding>();
-        List<Endpoint2> matchedServiceEndpoint = new ArrayList<Endpoint2>();
+        List<Endpoint> matchedServiceEndpoint = new ArrayList<Endpoint>();
 
         // Find the corresponding bindings from the service side
         for (Binding referenceBinding : endpointReference.getReference().getBindings()) {
             if (local) {
-                for (Endpoint2 serviceEndpoint : endpoint.getService().getEndpoints()) {
+                for (Endpoint serviceEndpoint : endpoint.getService().getEndpoints()) {
 
                     if (referenceBinding.getClass() == serviceEndpoint.getBinding().getClass() && hasCompatiblePolicySets(referenceBinding,
                                                                                                                           serviceEndpoint
@@ -244,7 +244,7 @@ public class EndpointReferenceBuilderImpl implements CompositeBuilder, EndpointR
                     }
                 }
             } else {
-                Endpoint2 serviceEndpoint = endpoint;
+                Endpoint serviceEndpoint = endpoint;
                 if (referenceBinding.getClass() == serviceEndpoint.getBinding().getClass() && hasCompatiblePolicySets(referenceBinding,
                                                                                                                       serviceEndpoint
                                                                                                                           .getBinding())) {
@@ -278,7 +278,7 @@ public class EndpointReferenceBuilderImpl implements CompositeBuilder, EndpointR
             }
 
             Binding referenceBinding = matchedReferenceBinding.get(selectedBinding);
-            Endpoint2 serviceEndpoint = matchedServiceEndpoint.get(selectedBinding);
+            Endpoint serviceEndpoint = matchedServiceEndpoint.get(selectedBinding);
 
             // populate the endpoint reference
             try {
@@ -301,7 +301,7 @@ public class EndpointReferenceBuilderImpl implements CompositeBuilder, EndpointR
 
                 endpointReference.setBinding(clonedBinding);
 
-                Endpoint2 clonedEndpoint = (Endpoint2)serviceEndpoint.clone();
+                Endpoint clonedEndpoint = (Endpoint)serviceEndpoint.clone();
 
                 endpointReference.setTargetEndpoint(clonedEndpoint);
                 endpointReference.setUnresolved(false);
@@ -315,7 +315,7 @@ public class EndpointReferenceBuilderImpl implements CompositeBuilder, EndpointR
     // TODO - EPR
     // Find the callback endpoint for the endpoint reference by matching
     // callback bindings between reference and service
-    private void matchCallbackBinding(EndpointReference2 endpointReference,
+    private void matchCallbackBinding(EndpointReference endpointReference,
                                      Monitor monitor) {
 
         // if no callback on the interface or we are creating a self reference do nothing
@@ -325,17 +325,17 @@ public class EndpointReferenceBuilderImpl implements CompositeBuilder, EndpointR
                 return;
         }
 
-        Endpoint2 endpoint = endpointReference.getTargetEndpoint();
+        Endpoint endpoint = endpointReference.getTargetEndpoint();
 
-        List<Endpoint2> callbackEndpoints = endpointReference.getReference().getCallbackService().getEndpoints();
-        List<EndpointReference2> callbackEndpointReferences = endpoint.getCallbackEndpointReferences();
+        List<Endpoint> callbackEndpoints = endpointReference.getReference().getCallbackService().getEndpoints();
+        List<EndpointReference> callbackEndpointReferences = endpoint.getCallbackEndpointReferences();
 
-        List<Endpoint2> matchedEndpoint = new ArrayList<Endpoint2>();
+        List<Endpoint> matchedEndpoint = new ArrayList<Endpoint>();
 
         if ((callbackEndpoints != null) &&  (callbackEndpointReferences != null)){
             // Find the corresponding bindings from the service side
-            for (EndpointReference2 epr : callbackEndpointReferences) {
-                for (Endpoint2 ep : callbackEndpoints) {
+            for (EndpointReference epr : callbackEndpointReferences) {
+                for (Endpoint ep : callbackEndpoints) {
 
                     if (epr.getBinding().getClass() == ep.getBinding().getClass() &&
                         hasCompatiblePolicySets(epr.getBinding(), ep.getBinding())) {

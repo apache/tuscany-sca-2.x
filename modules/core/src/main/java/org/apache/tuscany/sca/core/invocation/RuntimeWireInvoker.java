@@ -21,7 +21,7 @@ package org.apache.tuscany.sca.core.invocation;
 
 import java.lang.reflect.InvocationTargetException;
 
-import org.apache.tuscany.sca.assembly.EndpointReference2;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.core.conversation.ConversationExt;
 import org.apache.tuscany.sca.core.conversation.ConversationManager;
 import org.apache.tuscany.sca.core.conversation.ConversationState;
@@ -108,8 +108,8 @@ public class RuntimeWireInvoker implements Invoker{
     }
 
     protected Object invoke(InvocationChain chain, Message msg, RuntimeWire wire) throws InvocationTargetException {
-        EndpointReference2 from = msg.getFrom();
-        EndpointReference2 epFrom = wire.getEndpointReference();
+        EndpointReference from = msg.getFrom();
+        EndpointReference epFrom = wire.getEndpointReference();
         if (from != null) {
             from.setComponent(epFrom.getComponent());
             from.setReference(epFrom.getReference());

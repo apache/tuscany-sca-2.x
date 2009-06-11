@@ -23,8 +23,8 @@ import java.net.URI;
 import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.assembly.DistributedSCABinding;
-import org.apache.tuscany.sca.assembly.Endpoint2;
-import org.apache.tuscany.sca.assembly.EndpointReference2;
+import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
@@ -186,7 +186,7 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
     }
 
     private Invoker getInvoker(RuntimeWire wire, Operation operation) {
-        Endpoint2 target = wire.getEndpoint();
+        Endpoint target = wire.getEndpoint();
         if (target != null) {
             RuntimeComponentService service = (RuntimeComponentService)target.getService();
             if (service != null) { // not a callback wire

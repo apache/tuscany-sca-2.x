@@ -158,12 +158,12 @@ public interface AssemblyFactory {
      * 
      * @return a new endpoint
      */
-    Endpoint2 createEndpoint();
+    Endpoint createEndpoint();
     
     /**
      * Create a new endpoint reference
      * 
      * @return a new endpoint reference
      */
-    EndpointReference2 createEndpointReference();
+    EndpointReference createEndpointReference();
 }

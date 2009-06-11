@@ -24,7 +24,7 @@ import java.io.IOException;
 
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.sca.assembly.EndpointReference2;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.core.conversation.ConversationExt;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.oasisopen.sca.CallableReference;
@@ -58,7 +58,7 @@ public interface CallableReferenceExt<B> extends CallableReference<B>, Externali
     /**
      * @return
      */
-    EndpointReference2 getEndpointReference();
+    EndpointReference getEndpointReference();
 
     /**
      * @return

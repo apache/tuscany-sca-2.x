@@ -24,8 +24,8 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Logger;
 
-import org.apache.tuscany.sca.assembly.Endpoint2;
-import org.apache.tuscany.sca.assembly.EndpointReference2;
+import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.runtime.EndpointListener;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
@@ -33,15 +33,15 @@ import org.apache.tuscany.sca.runtime.EndpointRegistry;
 public class EndpointRegistryImpl implements EndpointRegistry {
     private final Logger logger = Logger.getLogger(EndpointRegistryImpl.class.getName());
 
-    static List<Endpoint2> endpoints = new ArrayList<Endpoint2>();
-    static List<EndpointReference2> endpointreferences = new ArrayList<EndpointReference2>();
+    static List<Endpoint> endpoints = new ArrayList<Endpoint>();
+    static List<EndpointReference> endpointreferences = new ArrayList<EndpointReference>();
 
     private List<EndpointListener> listeners = new CopyOnWriteArrayList<EndpointListener>();
 
     public EndpointRegistryImpl(ExtensionPointRegistry extensionPoints) {
     }
 
-    public void addEndpoint(Endpoint2 endpoint) {
+    public void addEndpoint(Endpoint endpoint) {
         endpoints.add(endpoint);
         for (EndpointListener listener : listeners) {
             listener.endpointAdded(endpoint);
@@ -49,7 +49,7 @@ public class EndpointRegistryImpl implements EndpointRegistry {
         logger.info("EndpointRegistry: Add endpoint - " + endpoint.toString());
     }
 
-    public void addEndpointReference(EndpointReference2 endpointReference) {
+    public void addEndpointReference(EndpointReference endpointReference) {
         endpointreferences.add(endpointReference);
         logger.info("EndpointRegistry: Add endpoint reference - " + endpointReference.toString());
     }
@@ -98,14 +98,14 @@ public class EndpointRegistryImpl implements EndpointRegistry {
         return true;
     }
 
-    public List<Endpoint2> findEndpoint(EndpointReference2 endpointReference) {
-        List<Endpoint2> foundEndpoints = new ArrayList<Endpoint2>();
+    public List<Endpoint> findEndpoint(EndpointReference endpointReference) {
+        List<Endpoint> foundEndpoints = new ArrayList<Endpoint>();
 
         logger.info("EndpointRegistry: Find endpoint for reference - " + endpointReference.toString());
 
         if (endpointReference.getReference() != null) {
-            Endpoint2 targetEndpoint = endpointReference.getTargetEndpoint();
-            for (Endpoint2 endpoint : endpoints) {
+            Endpoint targetEndpoint = endpointReference.getTargetEndpoint();
+            for (Endpoint endpoint : endpoints) {
                 // TODO: implement more complete matching
                 if (matches(targetEndpoint.getURI(), endpoint.getURI())) {
                     foundEndpoints.add(endpoint);
@@ -118,11 +118,11 @@ public class EndpointRegistryImpl implements EndpointRegistry {
         return foundEndpoints;
     }
 
-    public List<EndpointReference2> findEndpointReference(Endpoint2 endpoint) {
+    public List<EndpointReference> findEndpointReference(Endpoint endpoint) {
         return null;
     }
 
-    public void removeEndpoint(Endpoint2 endpoint) {
+    public void removeEndpoint(Endpoint endpoint) {
         endpoints.remove(endpoint);
         for (EndpointListener listener : listeners) {
             listener.endpointRemoved(endpoint);
@@ -130,16 +130,16 @@ public class EndpointRegistryImpl implements EndpointRegistry {
         logger.info("EndpointRegistry: Remove endpoint - " + endpoint.toString());
     }
 
-    public void removeEndpointReference(EndpointReference2 endpointReference) {
+    public void removeEndpointReference(EndpointReference endpointReference) {
         endpointreferences.remove(endpointReference);
         logger.info("EndpointRegistry: Remove endpoint reference - " + endpointReference.toString());
     }
 
-    public List<EndpointReference2> getEndpointRefereneces() {
+    public List<EndpointReference> getEndpointRefereneces() {
         return endpointreferences;
     }
 
-    public List<Endpoint2> getEndpoints() {
+    public List<Endpoint> getEndpoints() {
         return endpoints;
     }
 
@@ -155,8 +155,8 @@ public class EndpointRegistryImpl implements EndpointRegistry {
         listeners.remove(listener);
     }
 
-    public Endpoint2 getEndpoint(String uri) {
-        for (Endpoint2 ep : endpoints) {
+    public Endpoint getEndpoint(String uri) {
+        for (Endpoint ep : endpoints) {
             String epURI =
                 ep.getComponent().getURI() + "#" + ep.getService().getName() + "/" + ep.getBinding().getName();
             if (epURI.equals(uri)) {
@@ -173,8 +173,8 @@ public class EndpointRegistryImpl implements EndpointRegistry {
 
     }
 
-    public void updateEndpoint(String uri, Endpoint2 endpoint) {
-        Endpoint2 oldEndpoint = getEndpoint(uri);
+    public void updateEndpoint(String uri, Endpoint endpoint) {
+        Endpoint oldEndpoint = getEndpoint(uri);
         if (oldEndpoint == null) {
             throw new IllegalArgumentException("Endpoint is not found: " + uri);
         }

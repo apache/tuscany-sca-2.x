@@ -33,8 +33,8 @@ import org.apache.catalina.tribes.group.GroupChannel;
 import org.apache.catalina.tribes.membership.McastService;
 import org.apache.catalina.tribes.tipis.AbstractReplicatedMap;
 import org.apache.catalina.tribes.tipis.ReplicatedMap;
-import org.apache.tuscany.sca.assembly.Endpoint2;
-import org.apache.tuscany.sca.assembly.EndpointReference2;
+import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.runtime.EndpointListener;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
@@ -54,7 +54,7 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry {
 
     private final static String DEFAULT_DOMAIN_URI = "http://tuscany.apache.org/sca/1.1/domains/default";
     private String domainURI = DEFAULT_DOMAIN_URI;
-    private List<EndpointReference2> endpointreferences = new CopyOnWriteArrayList<EndpointReference2>();
+    private List<EndpointReference> endpointreferences = new CopyOnWriteArrayList<EndpointReference>();
     private List<EndpointListener> listeners = new CopyOnWriteArrayList<EndpointListener>();
 
     private ReplicatedMap map;
@@ -111,7 +111,7 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry {
         }
     }
 
-    public void addEndpoint(Endpoint2 endpoint) {
+    public void addEndpoint(Endpoint endpoint) {
         map.put(getURI(endpoint), endpoint);
         for (EndpointListener listener : listeners) {
             listener.endpointAdded(endpoint);
@@ -119,7 +119,7 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry {
         logger.info("EndpointRegistry: Add endpoint - " + endpoint);
     }
 
-    public void addEndpointReference(EndpointReference2 endpointReference) {
+    public void addEndpointReference(EndpointReference endpointReference) {
         endpointreferences.add(endpointReference);
         logger.info("EndpointRegistry: Add endpoint reference - " + endpointReference);
     }
@@ -172,15 +172,15 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry {
         return true;
     }
 
-    public List<Endpoint2> findEndpoint(EndpointReference2 endpointReference) {
-        List<Endpoint2> foundEndpoints = new ArrayList<Endpoint2>();
+    public List<Endpoint> findEndpoint(EndpointReference endpointReference) {
+        List<Endpoint> foundEndpoints = new ArrayList<Endpoint>();
 
         logger.info("EndpointRegistry: Find endpoint for reference - " + endpointReference);
 
         if (endpointReference.getReference() != null) {
-            Endpoint2 targetEndpoint = endpointReference.getTargetEndpoint();
+            Endpoint targetEndpoint = endpointReference.getTargetEndpoint();
             for (Object v : map.values()) {
-                Endpoint2 endpoint = (Endpoint2)v;
+                Endpoint endpoint = (Endpoint)v;
                 // TODO: implement more complete matching
                 if (matches(targetEndpoint.getURI(), endpoint.getURI())) {
                     foundEndpoints.add(endpoint);
@@ -192,27 +192,27 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry {
         return foundEndpoints;
     }
 
-    public List<EndpointReference2> findEndpointReference(Endpoint2 endpoint) {
+    public List<EndpointReference> findEndpointReference(Endpoint endpoint) {
         return endpointreferences;
     }
 
-    public Endpoint2 getEndpoint(String uri) {
-        return (Endpoint2)map.get(uri);
+    public Endpoint getEndpoint(String uri) {
+        return (Endpoint)map.get(uri);
     }
 
-    public List<EndpointReference2> getEndpointRefereneces() {
+    public List<EndpointReference> getEndpointRefereneces() {
         return endpointreferences;
     }
 
-    public List<Endpoint2> getEndpoints() {
-        return new ArrayList<Endpoint2>(map.values());
+    public List<Endpoint> getEndpoints() {
+        return new ArrayList<Endpoint>(map.values());
     }
 
     public List<EndpointListener> getListeners() {
         return listeners;
     }
 
-    private String getURI(Endpoint2 ep) {
+    private String getURI(Endpoint ep) {
         String bindingName = ep.getBinding().getName();
         if (bindingName == null) {
             bindingName = ep.getService().getName();
@@ -222,7 +222,7 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry {
         return epURI;
     }
 
-    public void removeEndpoint(Endpoint2 endpoint) {
+    public void removeEndpoint(Endpoint endpoint) {
         map.remove(getURI(endpoint));
         for (EndpointListener listener : listeners) {
             listener.endpointRemoved(endpoint);
@@ -230,7 +230,7 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry {
         logger.info("EndpointRegistry: Remove endpoint - " + endpoint);
     }
 
-    public void removeEndpointReference(EndpointReference2 endpointReference) {
+    public void removeEndpointReference(EndpointReference endpointReference) {
         endpointreferences.remove(endpointReference);
         logger.info("EndpointRegistry: Remove endpoint reference - " + endpointReference);
     }
@@ -239,8 +239,8 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry {
         listeners.remove(listener);
     }
 
-    public void updateEndpoint(String uri, Endpoint2 endpoint) {
-        Endpoint2 oldEndpoint = getEndpoint(uri);
+    public void updateEndpoint(String uri, Endpoint endpoint) {
+        Endpoint oldEndpoint = getEndpoint(uri);
         if (oldEndpoint == null) {
             throw new IllegalArgumentException("Endpoint is not found: " + uri);
         }

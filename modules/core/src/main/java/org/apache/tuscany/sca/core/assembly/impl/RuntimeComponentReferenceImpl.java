@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.assembly.EndpointReference2;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.impl.ComponentReferenceImpl;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.InvocationChain;
@@ -71,7 +71,7 @@ public class RuntimeComponentReferenceImpl extends ComponentReferenceImpl implem
         return null;
     }
     
-    public RuntimeWire getRuntimeWire(EndpointReference2 endpointReference) {
+    public RuntimeWire getRuntimeWire(EndpointReference endpointReference) {
         for (RuntimeWire wire : getRuntimeWires()) {
             if (wire.getEndpointReference() == endpointReference) {
                 return wire;

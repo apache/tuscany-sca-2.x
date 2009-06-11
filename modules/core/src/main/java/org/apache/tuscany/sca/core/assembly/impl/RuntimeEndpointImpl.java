@@ -24,14 +24,14 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.apache.tuscany.sca.assembly.impl.Endpoint2Impl;
+import org.apache.tuscany.sca.assembly.impl.EndpointImpl;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.assembly.EndpointSerializer;
 
 /**
  * Runtime model for Endpoint that supports java serialization
  */
-public class RuntimeEndpointImpl extends Endpoint2Impl implements Externalizable {
+public class RuntimeEndpointImpl extends EndpointImpl implements Externalizable {
     /**
      * FIXME: What's the best way to get the extension point registry upon deserialization?
      * We can expose a method to receive the extension point registry

@@ -24,8 +24,8 @@ import java.util.List;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentService;
-import org.apache.tuscany.sca.assembly.Endpoint2;
-import org.apache.tuscany.sca.assembly.EndpointReference2;
+import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.policy.ExtensionType;
@@ -38,7 +38,7 @@ import org.apache.tuscany.sca.policy.PolicySubject;
  *
  * @version $Rev$ $Date$
  */
-public class Endpoint2Impl implements Endpoint2 {
+public class EndpointImpl implements Endpoint {
     private static final long serialVersionUID = 7344399683703812593L;
 
     protected ExtensionPointRegistry registry;
@@ -48,11 +48,11 @@ public class Endpoint2Impl implements Endpoint2 {
     protected ComponentService service;
     protected Binding binding;
     protected InterfaceContract interfaceContract;
-    protected List<EndpointReference2> callbackEndpointReferences = new ArrayList<EndpointReference2>();
+    protected List<EndpointReference> callbackEndpointReferences = new ArrayList<EndpointReference>();
     protected List<PolicySet> policySets = new ArrayList<PolicySet>();
     protected List<Intent> requiredIntents = new ArrayList<Intent>();
 
-    protected Endpoint2Impl(ExtensionPointRegistry registry) {
+    protected EndpointImpl(ExtensionPointRegistry registry) {
         this.registry = registry;
     }
 
@@ -115,7 +115,7 @@ public class Endpoint2Impl implements Endpoint2 {
      *
      * @return callbackEndpoint the reference callback endpoint
      */
-    public List<EndpointReference2> getCallbackEndpointReferences(){
+    public List<EndpointReference> getCallbackEndpointReferences(){
         resolve();
         return callbackEndpointReferences;
     }

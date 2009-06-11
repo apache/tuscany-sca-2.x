@@ -39,8 +39,8 @@ import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.assembly.Endpoint2;
-import org.apache.tuscany.sca.assembly.EndpointReference2;
+import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.assembly.Reference;
@@ -275,7 +275,7 @@ public class CompositeContextImpl extends CompositeContext {
     public static RuntimeComponent getCurrentComponent() {
         Message message = ThreadMessageContext.getMessageContext();
         if (message != null) {
-            Endpoint2 to = message.getTo();
+            Endpoint to = message.getTo();
             if (to == null) {
                 return null;
             }
