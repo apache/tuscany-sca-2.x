@@ -30,6 +30,7 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
+import org.apache.tuscany.sca.assembly.Endpoint2;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.assembly.CompositeActivator;
 import org.apache.tuscany.sca.core.conversation.ConversationManager;
@@ -38,7 +39,6 @@ import org.apache.tuscany.sca.core.invocation.ThreadMessageContext;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.invocation.Message;
-import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
@@ -146,11 +146,11 @@ public abstract class CompositeContext {
     public static RuntimeComponent getCurrentComponent() {
         Message message = ThreadMessageContext.getMessageContext();
         if (message != null) {
-            EndpointReference to = message.getTo();
+            Endpoint2 to = message.getTo();
             if (to == null) {
                 return null;
             }
-            RuntimeComponent component = message.getTo().getComponent();
+            RuntimeComponent component = (RuntimeComponent) message.getTo().getComponent();
             return component;
         }
         return null;

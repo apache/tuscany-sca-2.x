@@ -23,6 +23,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.assembly.Contract;
+import org.apache.tuscany.sca.assembly.Endpoint2;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.core.invocation.CallbackInterfaceInterceptor;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
@@ -33,7 +34,6 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Phase;
-import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
@@ -63,19 +63,19 @@ public class JavaCallbackRuntimeWireProcessor implements RuntimeWireProcessor {
     }
 
     private void addCallbackInterfaceInterceptors(RuntimeWire wire) {
-        Contract contract = wire.getSource().getContract();
+        Contract contract = wire.getEndpointReference().getReference();
         if (!(contract instanceof RuntimeComponentReference)) {
             return;
         }
-        RuntimeComponent component = wire.getSource().getComponent();
+        RuntimeComponent component = (RuntimeComponent) wire.getEndpointReference().getComponent();
         Implementation implementation = component.getImplementation();
         if (!(implementation instanceof JavaImplementation)) {
             return;
         }
         JavaImplementation javaImpl = (JavaImplementation)implementation;
-        EndpointReference callbackEndpoint = wire.getSource().getCallbackEndpoint();
+        Endpoint2 callbackEndpoint = wire.getEndpointReference().getCallbackEndpoint();
         if (callbackEndpoint != null) {
-            Interface iface = callbackEndpoint.getContract().getInterfaceContract().getInterface();
+            Interface iface = callbackEndpoint.getService().getInterfaceContract().getInterface();
             if (!supportsCallbackInterface(iface, javaImpl)) {
                 // callback to this impl is not possible, so ensure a callback object is set
                 for (InvocationChain chain : wire.getInvocationChains()) {

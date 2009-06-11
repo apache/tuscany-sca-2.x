@@ -63,7 +63,7 @@ public class RuntimeComponentReferenceImpl extends ComponentReferenceImpl implem
     // TODO - EPR - shouldn't rely on this anymore
     public RuntimeWire getRuntimeWire(Binding binding) {
         for (RuntimeWire wire : getRuntimeWires()) {
-            if (wire.getSource().getBinding() == binding) {
+            if (wire.getEndpointReference().getBinding() == binding) {
                 return wire;
             }
         }

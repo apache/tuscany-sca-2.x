@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.sca.core.invocation;
 
-import org.apache.tuscany.sca.core.assembly.impl.EndpointReferenceImpl;
 import org.apache.tuscany.sca.core.invocation.impl.MessageImpl;
 import org.apache.tuscany.sca.invocation.Message;
 
@@ -33,7 +32,8 @@ public final class ThreadMessageContext {
         @Override
         protected synchronized Message initialValue() {
             Message msg =  new MessageImpl();
-            msg.setFrom(new EndpointReferenceImpl("/"));
+            // TODO - EPR - What to set as default?
+            //msg.setFrom(new EndpointReferenceImpl("/"));
             return msg;
         }
     };

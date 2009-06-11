@@ -27,19 +27,23 @@ import java.util.UUID;
 
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.CompositeService;
+import org.apache.tuscany.sca.assembly.Endpoint2;
 import org.apache.tuscany.sca.assembly.EndpointReference2;
 import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.builder.BindingBuilderExtension;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.CompositeActivator;
+import org.apache.tuscany.sca.core.assembly.RuntimeAssemblyFactory;
 import org.apache.tuscany.sca.core.assembly.impl.CompositeActivatorImpl2;
-import org.apache.tuscany.sca.core.assembly.impl.EndpointReferenceImpl;
 import org.apache.tuscany.sca.core.assembly.impl.ReferenceParametersImpl;
 import org.apache.tuscany.sca.core.context.CallableReferenceExt;
 import org.apache.tuscany.sca.core.context.ComponentContextExt;
@@ -52,7 +56,6 @@ import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
-import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.ReferenceParameters;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
@@ -88,6 +91,9 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
     private transient RuntimeComponentReference clonedRef;
     private transient ReferenceParameters refParams;
     private transient XMLStreamReader xmlReader;
+    
+    private FactoryExtensionPoint modelFactories;
+    protected RuntimeAssemblyFactory assemblyFactory;
 
     /*
      * Public constructor for Externalizable serialization/deserialization
@@ -115,6 +121,11 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
         this.component = component;
         this.reference = reference;
         this.endpointReference = endpointReference;
+        
+        ExtensionPointRegistry registry = compositeActivator.getCompositeContext().getExtensionPointRegistry();
+        this.modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
+        this.assemblyFactory = (RuntimeAssemblyFactory)modelFactories.getFactory(AssemblyFactory.class);
+
         
         // FIXME: The SCA Specification is not clear how we should handle multiplicity 
         // for CallableReference
@@ -164,8 +175,8 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
 
     protected void bind(RuntimeWire wire) {
         if (wire != null) {
-            this.component = wire.getSource().getComponent();
-            this.reference = (RuntimeComponentReference)wire.getSource().getContract();
+            this.component = (RuntimeComponent)wire.getEndpointReference().getComponent();
+            this.reference = (RuntimeComponentReference)wire.getEndpointReference().getReference();
             this.endpointReference = wire.getEndpointReference();
             this.compositeActivator = ((ComponentContextExt)component.getComponentContext()).getCompositeActivator();
             this.conversationManager = this.compositeActivator.getCompositeContext().getConversationManager();
@@ -508,7 +519,7 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
     }
 
     // TODO - EPR - needs sorting out for new endpoint references
-    public EndpointReference getEndpointReference() {
+    public EndpointReference2 getEndpointReference() {
         try {
             resolve();
 
@@ -517,9 +528,16 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
             InterfaceContract sourceContract =
                 componentTypeRef == null ? reference.getInterfaceContract() : componentTypeRef.getInterfaceContract();
             sourceContract = sourceContract.makeUnidirectional(false);
-            EndpointReference epr = new EndpointReferenceImpl(component, reference, null /*binding*/, sourceContract);
-            ReferenceParameters parameters = getReferenceParameters();
-            epr.setReferenceParameters(parameters);
+            
+            EndpointReference2 epr = assemblyFactory.createEndpointReference();
+            epr.setComponent(component);
+            epr.setReference(reference);
+            //epr.setBinding(binding);
+            epr.setInterfaceContract(sourceContract);
+            
+            Endpoint2 endpoint = assemblyFactory.createEndpoint();
+            epr.setTargetEndpoint(endpoint);
+            
             return epr;
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);

@@ -23,6 +23,8 @@ import java.net.URI;
 import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.assembly.DistributedSCABinding;
+import org.apache.tuscany.sca.assembly.Endpoint2;
+import org.apache.tuscany.sca.assembly.EndpointReference2;
 import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
@@ -35,7 +37,6 @@ import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
-import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
@@ -185,13 +186,13 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
     }
 
     private Invoker getInvoker(RuntimeWire wire, Operation operation) {
-        EndpointReference target = wire.getTarget();
+        Endpoint2 target = wire.getEndpoint();
         if (target != null) {
-            RuntimeComponentService service = (RuntimeComponentService)target.getContract();
+            RuntimeComponentService service = (RuntimeComponentService)target.getService();
             if (service != null) { // not a callback wire
                 SCABinding scaBinding = service.getBinding(SCABinding.class);
                 InvocationChain chain =
-                    service.getInvocationChain(scaBinding, wire.getSource().getInterfaceContract(), operation);
+                    service.getInvocationChain(scaBinding, wire.getEndpointReference().getInterfaceContract(), operation);
                 return chain == null ? null : new SCABindingInvoker(chain);
             }
         }

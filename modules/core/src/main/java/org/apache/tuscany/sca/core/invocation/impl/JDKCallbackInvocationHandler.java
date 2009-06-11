@@ -60,7 +60,8 @@ public class JDKCallbackInvocationHandler extends JDKInvocationHandler {
 
         // set the conversational state based on the interface that
         // is specified for the reference that this wire belongs to
-        initConversational(wire);
+        // TODO - EPR - not required for OASIS
+        //initConversational(wire);
 
         // set the conversation id into the conversation object. This is
         // a special case for callbacks as, unless otherwise set manually,
@@ -94,7 +95,7 @@ public class JDKCallbackInvocationHandler extends JDKInvocationHandler {
         }
 
         try {
-            return invoke(chain, args, wire, wire.getSource());
+            return invoke(chain, args, wire, wire.getEndpointReference());
         } catch (InvocationTargetException e) {
             Throwable t = e.getCause();
             if (t instanceof NoRegisteredCallbackException) {

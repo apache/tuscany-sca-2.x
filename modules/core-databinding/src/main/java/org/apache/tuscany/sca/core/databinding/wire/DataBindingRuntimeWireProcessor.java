@@ -130,8 +130,8 @@ public class DataBindingRuntimeWireProcessor implements RuntimeWireProcessor {
     }
 
     public void process(RuntimeWire wire) {
-        InterfaceContract sourceContract = wire.getSource().getInterfaceContract();
-        InterfaceContract targetContract = wire.getTarget().getInterfaceContract();
+        InterfaceContract sourceContract = wire.getEndpointReference().getInterfaceContract();
+        InterfaceContract targetContract = wire.getEndpoint().getInterfaceContract();
         if (targetContract == null) {
             targetContract = sourceContract;
         }
@@ -160,7 +160,7 @@ public class DataBindingRuntimeWireProcessor implements RuntimeWireProcessor {
             }
             if (interceptor != null) {
                 String phase =
-                    (wire.getSource().getContract() instanceof ComponentReference) ? Phase.REFERENCE_INTERFACE
+                    (wire.getEndpointReference().getReference() instanceof ComponentReference) ? Phase.REFERENCE_INTERFACE
                         : Phase.SERVICE_INTERFACE;
                 chain.addInterceptor(phase, interceptor);
             }

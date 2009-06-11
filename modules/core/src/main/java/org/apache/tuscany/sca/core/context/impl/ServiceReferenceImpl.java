@@ -27,7 +27,6 @@ import org.apache.tuscany.sca.core.context.CallableReferenceExt;
 import org.apache.tuscany.sca.core.context.ServiceReferenceExt;
 import org.apache.tuscany.sca.core.conversation.ConversationState;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
-import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.ReferenceParameters;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
@@ -118,6 +117,7 @@ public class ServiceReferenceImpl<B> extends CallableReferenceImpl<B> implements
         this.callback = callback;
     }
 
+/* TODO - EPR - not required in OASIS
     @Override
     protected ReferenceParameters getReferenceParameters() {
         ReferenceParameters parameters = super.getReferenceParameters();
@@ -133,4 +133,5 @@ public class ServiceReferenceImpl<B> extends CallableReferenceImpl<B> implements
         }
         return parameters;
     }
+*/
 }

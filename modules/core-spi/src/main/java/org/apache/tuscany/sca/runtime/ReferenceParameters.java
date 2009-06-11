@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.runtime;
 
+import org.apache.tuscany.sca.assembly.EndpointReference2;
+
 /**
  * Parameters for the EndPointReference
  * 
@@ -61,9 +63,9 @@ public interface ReferenceParameters extends Cloneable {
      */
     void setCallbackObjectID(Object callbackObjectID);
 
-    EndpointReference getCallbackReference();
+    EndpointReference2 getCallbackReference();
 
-    void setCallbackReference(EndpointReference callback);
+    void setCallbackReference(EndpointReference2 callback);
 
     Object clone() throws CloneNotSupportedException;
 }

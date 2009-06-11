@@ -37,13 +37,18 @@ public class CallbackInterfaceInterceptor implements Interceptor {
     }
 
     public Message invoke(Message msg) {
+        
+        /* TODO - EPR - not required for OASIS
         ReferenceParameters parameters = msg.getFrom().getReferenceParameters();
         if (parameters.getCallbackObjectID() != null || parameters.getCallbackReference() != msg.getFrom()
             .getCallbackEndpoint()) {
+        */
             return next.invoke(msg);
+        /*
         } else {
             throw new NoRegisteredCallbackException("Callback target does not implement the callback interface");
         }
+        */
     }
 
     public void setNext(Invoker next) {

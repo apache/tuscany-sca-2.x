@@ -24,11 +24,12 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.tuscany.sca.assembly.Endpoint2;
+import org.apache.tuscany.sca.assembly.EndpointReference2;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
-import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.apache.tuscany.sca.work.WorkScheduler;
 import org.oasisopen.sca.ServiceRuntimeException;
@@ -151,19 +152,19 @@ public class NonBlockingInterceptor implements Interceptor {
             throw new UnsupportedOperationException();
         }
 
-        public EndpointReference getFrom() {
+        public EndpointReference2 getFrom() {
             return null;
         }
 
-        public EndpointReference getTo() {
+        public Endpoint2 getTo() {
             return null;
         }
 
-        public void setFrom(EndpointReference from) {
+        public void setFrom(EndpointReference2 from) {
             throw new UnsupportedOperationException();
         }
 
-        public void setTo(EndpointReference to) {
+        public void setTo(Endpoint2 to) {
             throw new UnsupportedOperationException();
         }
 
@@ -178,7 +179,7 @@ public class NonBlockingInterceptor implements Interceptor {
         /**
          * @see org.apache.tuscany.sca.invocation.Message#getReplyTo()
          */
-        public EndpointReference getReplyTo() {
+        public EndpointReference2 getReplyTo() {
             return null;
         }
 

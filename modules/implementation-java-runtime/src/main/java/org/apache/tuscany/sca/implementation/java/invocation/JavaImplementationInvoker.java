@@ -21,8 +21,8 @@ package org.apache.tuscany.sca.implementation.java.invocation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import org.apache.tuscany.sca.assembly.EndpointReference2;
 import org.apache.tuscany.sca.core.factory.InstanceWrapper;
-import org.apache.tuscany.sca.core.scope.Scope;
 import org.apache.tuscany.sca.core.scope.ScopeContainer;
 import org.apache.tuscany.sca.core.scope.ScopedRuntimeComponent;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
@@ -33,7 +33,6 @@ import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil;
 import org.apache.tuscany.sca.invocation.DataExchangeSemantics;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
-import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.ReferenceParameters;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.oasisopen.sca.ServiceRuntimeException;
@@ -77,11 +76,13 @@ public class JavaImplementationInvoker implements Invoker, DataExchangeSemantics
 
         Object contextId = null;
 
-        EndpointReference from = msg.getFrom();
+        EndpointReference2 from = msg.getFrom();
+        /* TODO - EPR - not required for OASIS
         ReferenceParameters parameters = null;
         if (from != null) {
             parameters = from.getReferenceParameters();
         }
+        
         // check what sort of context is required
         if (scopeContainer != null) {
             Scope scope = scopeContainer.getScope();
@@ -91,6 +92,7 @@ public class JavaImplementationInvoker implements Invoker, DataExchangeSemantics
                 contextId = parameters.getConversationID();
             }
         }
+        */
 
         try {
             // The following call might create a new conversation, as a result, the msg.getConversationID() might 
@@ -104,11 +106,13 @@ public class JavaImplementationInvoker implements Invoker, DataExchangeSemantics
             // to get the contextId of this component and remove it after we have invoked the method on 
             // it. It is possible that the component instance will not go away when it is removed below 
             // because a callback conversation will still be holding a reference to it
+            /* TODO - EPR - not required for OASIS
             boolean removeTemporaryConversationalComponentAfterCall = false;
             if (parameters != null && (contextId == null) && (parameters.getConversationID() != null)) {
                 contextId = parameters.getConversationID();
                 removeTemporaryConversationalComponentAfterCall = true;
             }
+            */
 
             Object instance = wrapper.getInstance();
 
@@ -134,12 +138,15 @@ public class JavaImplementationInvoker implements Invoker, DataExchangeSemantics
 
             scopeContainer.returnWrapper(wrapper, contextId);
 
+            /* TODO - EPR - not required for OASIS
             if ((sequence == ConversationSequence.CONVERSATION_END) || (removeTemporaryConversationalComponentAfterCall)) {
                 // if end conversation, or we have the special case where a conversational
                 // object was created to service the stateless half of a stateful component
                 scopeContainer.remove(contextId);
                 parameters.setConversationID(null);
             }
+            */
+            
             msg.setBody(ret);
         } catch (InvocationTargetException e) {
             Throwable cause = e.getTargetException();
@@ -168,7 +175,9 @@ public class JavaImplementationInvoker implements Invoker, DataExchangeSemantics
                     
                     if (!isChecked && contextId != null) {
                         scopeContainer.remove(contextId);
+                        /* TODO - EPR - not required for OASIS
                         parameters.setConversationID(null);
+                        */
                     }
                 } catch (Exception ex){
                     // TODO - sure what the best course of action is here. We have

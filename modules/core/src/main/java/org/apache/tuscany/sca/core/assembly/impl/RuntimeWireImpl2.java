@@ -60,7 +60,6 @@ import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.provider.ReferenceBindingProviderRRB;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.provider.ServiceBindingProviderRRB;
-import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
@@ -89,7 +88,7 @@ public class RuntimeWireImpl2 implements RuntimeWire {
 
     // the following is a very simple cache that avoids re-cloning a wire
     // when consecutive callbacks to the same endpoint are made
-    private EndpointReference lastCallback;
+    private Endpoint2 lastCallback;
     private RuntimeWire cachedWire;
     private boolean wireReserved;
     private RuntimeWireImpl2 clonedFrom;
@@ -441,6 +440,7 @@ public class RuntimeWireImpl2 implements RuntimeWire {
     // TODO - EPR remove when we convert fully over to EndpointReference2
 
     // TODO - remove. Just here during development
+/*    
     static EndpointReference epr;
 
     public EndpointReference getSource() {
@@ -482,6 +482,7 @@ public class RuntimeWireImpl2 implements RuntimeWire {
         // TODO - can we use the idea of setTarget to rebuild the wire?
 
     }
+*/    
 
     // ===================================================================
 
@@ -493,11 +494,15 @@ public class RuntimeWireImpl2 implements RuntimeWire {
 
         // TODO - cheating here as I fixed the RuntimeComponentService code
         //        to call this when it resets the interface contract
-        endpointReference.setInterfaceContract(epr.getInterfaceContract());
+        //endpointReference.setInterfaceContract(epr.getInterfaceContract());
     }
 
     public EndpointReference2 getEndpointReference() {
         return endpointReference;
+    }
+    
+    public Endpoint2 getEndpoint() {
+        return endpoint;
     }
 
     /**
@@ -635,8 +640,10 @@ public class RuntimeWireImpl2 implements RuntimeWire {
         return conversationManager;
     }
 
-    public synchronized RuntimeWire lookupCache(EndpointReference callback) {
-        if (lastCallback != null && callback.getURI().equals(lastCallback.getURI()) && !wireReserved) {
+    public synchronized RuntimeWire lookupCache(Endpoint2 callback) {
+        if (lastCallback != null && 
+            callback.getURI().equals(lastCallback.getURI()) &&
+            !wireReserved) {
             wireReserved = true;
             return cachedWire;
         } else {
@@ -644,7 +651,7 @@ public class RuntimeWireImpl2 implements RuntimeWire {
         }
     }
 
-    public synchronized void addToCache(EndpointReference callback, RuntimeWire clonedWire) {
+    public synchronized void addToCache(Endpoint2 callback, RuntimeWire clonedWire) {
         ((RuntimeWireImpl2)clonedWire).setClonedFrom(this);
         lastCallback = callback;
         cachedWire = clonedWire;
