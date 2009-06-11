@@ -80,8 +80,8 @@ import org.apache.tuscany.sca.work.WorkScheduler;
 /**
  * @version $Rev$ $Date$
  */
-public class CompositeActivatorImpl2 implements CompositeActivator {
-    private static final Logger logger = Logger.getLogger(CompositeActivatorImpl2.class.getName());
+public class CompositeActivatorImpl implements CompositeActivator {
+    final Logger logger = Logger.getLogger(CompositeActivatorImpl.class.getName());
 
     private final ExtensionPointRegistry extensionPoints;
     private final AssemblyFactory assemblyFactory;
@@ -105,7 +105,7 @@ public class CompositeActivatorImpl2 implements CompositeActivator {
 
     private Composite domainComposite;
 
-    public CompositeActivatorImpl2(ExtensionPointRegistry extensionPoints) {
+    public CompositeActivatorImpl(ExtensionPointRegistry extensionPoints) {
         this.extensionPoints = extensionPoints;
         this.compositeContext = new CompositeContextImpl(extensionPoints);
         FactoryExtensionPoint factories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
@@ -381,7 +381,7 @@ public class CompositeActivatorImpl2 implements CompositeActivator {
             endpointReference.setInterfaceContract(getServiceBindingInterfaceContract(service, endpoint.getBinding()));
 
             // create the wire
-            RuntimeWire wire = new RuntimeWireImpl2(extensionPoints,
+            RuntimeWire wire = new RuntimeWireImpl(extensionPoints,
                                                     false,
                                                     endpointReference,
                                                     endpoint,
@@ -804,7 +804,7 @@ public class CompositeActivatorImpl2 implements CompositeActivator {
         // create the wire
         // null endpoint passed in here as the endpoint reference may
         // not be resolved yet
-        RuntimeWire wire = new RuntimeWireImpl2(extensionPoints,
+        RuntimeWire wire = new RuntimeWireImpl(extensionPoints,
                                                 true,
                                                 endpointReference,
                                                 null,

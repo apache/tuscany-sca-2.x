@@ -21,7 +21,7 @@ package org.apache.tuscany.sca.core.invocation.impl;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.apache.tuscany.sca.core.assembly.impl.RuntimeWireImpl2;
+import org.apache.tuscany.sca.core.assembly.impl.RuntimeWireImpl;
 import org.apache.tuscany.sca.core.context.impl.CallableReferenceImpl;
 import org.apache.tuscany.sca.core.conversation.ConversationState;
 import org.apache.tuscany.sca.invocation.InvocationChain;
@@ -79,7 +79,7 @@ public class JDKCallbackInvocationHandler extends JDKInvocationHandler {
             if (convID == null) {
                 convID = ((CallbackReferenceImpl)callableReference).getConvID();
                 if (convID != null) {
-                    conversation = ((RuntimeWireImpl2)wire).getConversationManager().getConversation(convID);
+                    conversation = ((RuntimeWireImpl)wire).getConversationManager().getConversation(convID);
                     if (callableReference != null) {
                         ((CallableReferenceImpl)callableReference).attachConversation(conversation);
                     }
@@ -104,7 +104,7 @@ public class JDKCallbackInvocationHandler extends JDKInvocationHandler {
             throw e;
         } finally {
             // allow the cloned wire to be reused by subsequent callbacks
-            ((RuntimeWireImpl2)wire).releaseWire();
+            ((RuntimeWireImpl)wire).releaseWire();
         }
     }
 

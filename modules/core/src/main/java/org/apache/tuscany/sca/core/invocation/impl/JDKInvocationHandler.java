@@ -30,7 +30,7 @@ import java.util.UUID;
 
 import org.apache.tuscany.sca.assembly.Endpoint2;
 import org.apache.tuscany.sca.assembly.EndpointReference2;
-import org.apache.tuscany.sca.core.assembly.impl.RuntimeWireImpl2;
+import org.apache.tuscany.sca.core.assembly.impl.RuntimeWireImpl;
 import org.apache.tuscany.sca.core.context.CallableReferenceExt;
 import org.apache.tuscany.sca.core.context.impl.CallableReferenceImpl;
 import org.apache.tuscany.sca.core.conversation.ConversationExt;

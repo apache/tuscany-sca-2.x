@@ -71,9 +71,9 @@ import org.oasisopen.sca.ServiceRuntimeException;
 /**
  * @version $Rev$ $Date$
  */
-public class RuntimeWireImpl2 implements RuntimeWire {
+public class RuntimeWireImpl implements RuntimeWire {
 
-    private ExtensionPointRegistry extensionPoints;
+    ExtensionPointRegistry extensionPoints;
 
     private Boolean isReferenceWire = false;
     private EndpointReference2 endpointReference;
@@ -91,7 +91,7 @@ public class RuntimeWireImpl2 implements RuntimeWire {
     private Endpoint2 lastCallback;
     private RuntimeWire cachedWire;
     private boolean wireReserved;
-    private RuntimeWireImpl2 clonedFrom;
+    private RuntimeWireImpl clonedFrom;
 
     private List<InvocationChain> chains;
     private InvocationChain bindingInvocationChain;
@@ -108,7 +108,7 @@ public class RuntimeWireImpl2 implements RuntimeWire {
      * @param messageFactory
      * @param conversationManager
      */
-    public RuntimeWireImpl2(ExtensionPointRegistry extensionPoints,
+    public RuntimeWireImpl(ExtensionPointRegistry extensionPoints,
                             boolean isReferenceWire,
                             EndpointReference2 endpointReference,
                             Endpoint2 endpoint,
@@ -625,7 +625,7 @@ public class RuntimeWireImpl2 implements RuntimeWire {
      */
     @Override
     public Object clone() throws CloneNotSupportedException {
-        RuntimeWireImpl2 copy = (RuntimeWireImpl2)super.clone();
+        RuntimeWireImpl copy = (RuntimeWireImpl)super.clone();
         copy.endpointReference = (EndpointReference2)endpointReference.clone();
         copy.endpoint = copy.endpointReference.getTargetEndpoint();
         copy.invoker = new RuntimeWireInvoker(copy.messageFactory, copy.conversationManager, copy);
@@ -652,7 +652,7 @@ public class RuntimeWireImpl2 implements RuntimeWire {
     }
 
     public synchronized void addToCache(Endpoint2 callback, RuntimeWire clonedWire) {
-        ((RuntimeWireImpl2)clonedWire).setClonedFrom(this);
+        ((RuntimeWireImpl)clonedWire).setClonedFrom(this);
         lastCallback = callback;
         cachedWire = clonedWire;
         wireReserved = true;
@@ -668,7 +668,7 @@ public class RuntimeWireImpl2 implements RuntimeWire {
         clonedFrom.releaseClonedWire(this);
     }
 
-    private void setClonedFrom(RuntimeWireImpl2 wire) {
+    private void setClonedFrom(RuntimeWireImpl wire) {
         clonedFrom = wire;
     }
 }
