@@ -20,8 +20,6 @@
 package org.apache.tuscany.sca.core.assembly;
 
 import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 
 import org.apache.tuscany.sca.assembly.Endpoint2;
 import org.apache.tuscany.sca.assembly.EndpointReference2;
@@ -30,11 +28,11 @@ import org.apache.tuscany.sca.assembly.EndpointReference2;
  * A utility to seralize/deserialize Endpoint/EndpointReference objects
  */
 public interface EndpointSerializer {
-    void readExternal(Endpoint2 endpoint, ObjectInput input) throws IOException;
+    void read(Endpoint2 endpoint, String xml) throws IOException;
 
-    void writeExternal(Endpoint2 endpoint, ObjectOutput output) throws IOException;
+    String write(Endpoint2 endpoint) throws IOException;
 
-    void readExternal(EndpointReference2 endpointReference, ObjectInput input) throws IOException;
+    void read(EndpointReference2 endpointReference, String xml) throws IOException;
 
-    void writeExternal(EndpointReference2 endpointReference, ObjectOutput output) throws IOException;
+    String write(EndpointReference2 endpointReference) throws IOException;
 }

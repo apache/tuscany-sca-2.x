@@ -20,8 +20,6 @@
 package org.apache.tuscany.sca.core.assembly.impl;
 
 import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.io.StringReader;
 import java.io.StringWriter;
 
@@ -54,54 +52,55 @@ public class EndpointSerializerImpl implements EndpointSerializer {
         refProcessor = processors.getProcessor(EndpointReference2.class);
     }
 
-    public void readExternal(Endpoint2 endpoint, ObjectInput input) throws IOException {
+    public void read(Endpoint2 endpoint, String xml) throws IOException {
         try {
-            String xml = input.readUTF();
             XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(xml));
             Endpoint2 result = processor.read(reader);
             endpoint.setComponent(result.getComponent());
             endpoint.setService(result.getService());
             endpoint.setBinding(result.getBinding());
+            endpoint.setInterfaceContract(result.getService().getInterfaceContract());
         } catch (Exception e) {
             throw new IOException(e);
         }
 
     }
 
-    public void writeExternal(Endpoint2 endpoint, ObjectOutput output) throws IOException {
+    public String write(Endpoint2 endpoint) throws IOException {
         StringWriter sw = new StringWriter();
         try {
             XMLStreamWriter writer = outputFactory.createXMLStreamWriter(sw);
             processor.write(endpoint, writer);
             writer.flush();
-            output.writeUTF(sw.toString());
             writer.close();
+            return sw.toString();
         } catch (Exception e) {
             throw new IOException(e);
         }
     }
 
-    public void readExternal(EndpointReference2 endpointReference, ObjectInput input) throws IOException {
+    public void read(EndpointReference2 endpointReference, String xml) throws IOException {
         try {
-            String xml = input.readUTF();
             XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(xml));
             EndpointReference2 result = refProcessor.read(reader);
             reader.close();
             endpointReference.setComponent(result.getComponent());
             endpointReference.setReference(result.getReference());
             endpointReference.setBinding(result.getBinding());
+            endpointReference.setInterfaceContract(result.getReference().getInterfaceContract());
         } catch (Exception e) {
             throw new IOException(e);
         }
     }
 
-    public void writeExternal(EndpointReference2 endpointReference, ObjectOutput output) throws IOException {
+    public String write(EndpointReference2 endpointReference) throws IOException {
         StringWriter sw = new StringWriter();
         try {
             XMLStreamWriter writer = outputFactory.createXMLStreamWriter(sw);
             refProcessor.write(endpointReference, writer);
             writer.flush();
-            output.writeUTF(sw.toString());
+            writer.close();
+            return sw.toString();
         } catch (Exception e) {
             throw new IOException(e);
         }
