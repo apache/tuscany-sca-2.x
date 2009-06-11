@@ -43,7 +43,7 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.CompositeActivator;
 import org.apache.tuscany.sca.core.assembly.RuntimeAssemblyFactory;
-import org.apache.tuscany.sca.core.assembly.impl.CompositeActivatorImpl2;
+import org.apache.tuscany.sca.core.assembly.impl.CompositeActivatorImpl;
 import org.apache.tuscany.sca.core.assembly.impl.ReferenceParametersImpl;
 import org.apache.tuscany.sca.core.context.CallableReferenceExt;
 import org.apache.tuscany.sca.core.context.ComponentContextExt;
@@ -470,7 +470,7 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
             if (conversation != null) {
                 refParams.setConversationID(conversation.getConversationID());
             }
-            return ((CompositeActivatorImpl2)compositeActivator).getCompositeContext().toXML(component, clonedRef);
+            return ((CompositeActivatorImpl)compositeActivator).getCompositeContext().toXML(component, clonedRef);
         } else {
             return scdl;
         }

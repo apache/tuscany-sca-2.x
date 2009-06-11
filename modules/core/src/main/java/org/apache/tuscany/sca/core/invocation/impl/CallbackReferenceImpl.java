@@ -31,7 +31,7 @@ import org.apache.tuscany.sca.assembly.Endpoint2;
 import org.apache.tuscany.sca.assembly.EndpointReference2;
 import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.core.assembly.impl.RuntimeComponentReferenceImpl;
-import org.apache.tuscany.sca.core.assembly.impl.RuntimeWireImpl2;
+import org.apache.tuscany.sca.core.assembly.impl.RuntimeWireImpl;
 import org.apache.tuscany.sca.core.context.CompositeContext;
 import org.apache.tuscany.sca.core.context.impl.CallableReferenceImpl;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
@@ -141,7 +141,7 @@ public class CallbackReferenceImpl<B> extends CallableReferenceImpl<B> {
     private RuntimeWire cloneAndBind(RuntimeWire wire) {
         RuntimeWire boundWire = null;
         if (resolvedEndpoint != null) {
-            boundWire = ((RuntimeWireImpl2)wire).lookupCache(resolvedEndpoint);
+            boundWire = ((RuntimeWireImpl)wire).lookupCache(resolvedEndpoint);
             if (boundWire != null) {
                 return boundWire;
             }
@@ -199,7 +199,7 @@ public class CallbackReferenceImpl<B> extends CallableReferenceImpl<B> {
                 configureWire(boundWire);
 */
                 
-                ((RuntimeWireImpl2)wire).addToCache(resolvedEndpoint, boundWire);
+                ((RuntimeWireImpl)wire).addToCache(resolvedEndpoint, boundWire);
             } catch (CloneNotSupportedException e) {
                 // will not happen
             }
@@ -305,7 +305,7 @@ public class CallbackReferenceImpl<B> extends CallableReferenceImpl<B> {
         // FIXME: Is this the best way to do this?
         final RuntimeWire cbWire = ((RuntimeComponentService) targetService).getRuntimeWires().get(0);
         try {
-            this.wire = (RuntimeWireImpl2) cbWire.clone();
+            this.wire = (RuntimeWireImpl) cbWire.clone();
         } catch (CloneNotSupportedException e) {
             throw new IOException(e.toString());
         }
