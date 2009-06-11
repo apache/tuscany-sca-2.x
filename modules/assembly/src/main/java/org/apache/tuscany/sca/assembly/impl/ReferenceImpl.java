@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Callback;
+import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.EndpointReference2;
 import org.apache.tuscany.sca.assembly.Reference;
@@ -53,7 +54,15 @@ public class ReferenceImpl extends AbstractReferenceImpl implements Reference, C
         ReferenceImpl clone = (ReferenceImpl)super.clone();
         clone.bindings = new ArrayList<Binding>(bindings);
         clone.targets = new ArrayList<ComponentService>(targets);
-        clone.endpointReferences = new ArrayList<EndpointReference2>(endpointReferences);
+        // clone the endpoint references themselves and set the reference pointer back to 
+        // this new refrence
+        clone.endpointReferences = new ArrayList<EndpointReference2>();
+        
+        for (EndpointReference2 epr : endpointReferences){
+            EndpointReference2 eprClone = (EndpointReference2)epr.clone();
+            eprClone.setReference((ComponentReference)clone);
+            clone.endpointReferences.add(eprClone);
+        }
         return clone;
     }
 
