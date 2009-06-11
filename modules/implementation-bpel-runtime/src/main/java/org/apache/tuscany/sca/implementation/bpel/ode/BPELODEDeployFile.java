@@ -211,7 +211,13 @@ public class BPELODEDeployFile {
     private File getBPELFile() {
         try {
             String location = this.implementation.getProcessDefinition().getLocation();
-            URI locationURI = new URI(null, location, null);
+            URI locationURI;
+            if (location.indexOf('%') != -1) {
+                locationURI = URI.create(location);
+            } else {
+                locationURI = new URI(null, location, null);
+            }
+            
             File theProcess = new File(locationURI);
             return theProcess;
         } catch( Exception e ) {
