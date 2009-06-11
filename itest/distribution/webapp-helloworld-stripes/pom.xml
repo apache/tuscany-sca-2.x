@@ -103,7 +103,7 @@
                                        to your local Tomcat installation   -->
                             <cargo.jvmargs><![CDATA[-Xdebug -Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=y]]></cargo.jvmargs> 
                             <cargo.servlet.port>8085</cargo.servlet.port>
-                            <context>sample-helloworld-stripes</context>
+                            <context>helloworld-stripes</context>
                         </properties>
                         <deployables>
                            <deployable>
@@ -111,7 +111,7 @@
                               <artifactId>sample-helloworld-stripes</artifactId>
                               <type>war</type>
                               <properties>
-                                 <context>sample-helloworld-stripes</context>
+                                 <context>helloworld-stripes</context>
                               </properties>
                            </deployable>
                         </deployables>
