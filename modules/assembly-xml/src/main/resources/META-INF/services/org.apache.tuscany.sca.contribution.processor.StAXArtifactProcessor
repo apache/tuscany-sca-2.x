@@ -20,4 +20,4 @@ org.apache.tuscany.sca.assembly.xml.ComponentTypeProcessor;qname=http://docs.oas
 org.apache.tuscany.sca.assembly.xml.ConstrainingTypeProcessor;qname=http://docs.oasis-open.org/ns/opencsa/sca/200903#constrainingType,model=org.apache.tuscany.sca.assembly.ConstrainingType
 org.apache.tuscany.sca.assembly.xml.CompositeProcessor;qname=http://docs.oasis-open.org/ns/opencsa/sca/200903#composite,model=org.apache.tuscany.sca.assembly.Composite
 org.apache.tuscany.sca.assembly.xml.SCABindingProcessor;qname=http://docs.oasis-open.org/ns/opencsa/sca/200903#binding.sca,model=org.apache.tuscany.sca.assembly.SCABinding
-org.apache.tuscany.sca.assembly.xml.EndpointProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.1#binding.rmi#endpoint,model=org.apache.tuscany.sca.assembly.Endpoint2
+org.apache.tuscany.sca.assembly.xml.EndpointProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.1#binding.rmi#endpoint,model=org.apache.tuscany.sca.assembly.Endpoint

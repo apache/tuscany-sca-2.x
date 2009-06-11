@@ -21,25 +21,25 @@ package org.apache.tuscany.sca.runtime;
 
 import java.util.List;
 
-import org.apache.tuscany.sca.assembly.Endpoint2;
-import org.apache.tuscany.sca.assembly.EndpointReference2;
+import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 
 /**
  * The EndpointRegistry holds the active service endpoints for the SCA domain
  */
 public interface EndpointRegistry {
-    void addEndpoint(Endpoint2 endpoint);
-    void removeEndpoint(Endpoint2 endpoint);
+    void addEndpoint(Endpoint endpoint);
+    void removeEndpoint(Endpoint endpoint);
 
-    Endpoint2 getEndpoint(String uri);
-    void updateEndpoint(String uri, Endpoint2 endpoint);
-    List<Endpoint2> findEndpoint(EndpointReference2 endpointReference);
-    List<Endpoint2> getEndpoints();
+    Endpoint getEndpoint(String uri);
+    void updateEndpoint(String uri, Endpoint endpoint);
+    List<Endpoint> findEndpoint(EndpointReference endpointReference);
+    List<Endpoint> getEndpoints();
 
-    void addEndpointReference(EndpointReference2 endpointReference);
-    void removeEndpointReference(EndpointReference2 endpointReference);
-    List<EndpointReference2> findEndpointReference(Endpoint2 endpoint);
-    List<EndpointReference2> getEndpointRefereneces();
+    void addEndpointReference(EndpointReference endpointReference);
+    void removeEndpointReference(EndpointReference endpointReference);
+    List<EndpointReference> findEndpointReference(Endpoint endpoint);
+    List<EndpointReference> getEndpointRefereneces();
 
     void addListener(EndpointListener listener);
     void removeListener(EndpointListener listener);

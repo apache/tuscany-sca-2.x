@@ -19,7 +19,7 @@
 package org.apache.tuscany.sca.core.invocation;
 
 import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.assembly.EndpointReference2;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.core.factory.ObjectCreationException;
 import org.apache.tuscany.sca.core.factory.ObjectFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -35,7 +35,7 @@ public class CallableReferenceObjectFactory implements ObjectFactory<CallableRef
     private Class<?> businessInterface;
     private RuntimeComponent component;
     private RuntimeComponentReference reference;
-    private EndpointReference2 endpointReference;
+    private EndpointReference endpointReference;
 
     /**
      * Constructor.
@@ -50,7 +50,7 @@ public class CallableReferenceObjectFactory implements ObjectFactory<CallableRef
     public CallableReferenceObjectFactory(Class<?> businessInterface,
                                           RuntimeComponent component,
                                           RuntimeComponentReference reference,
-                                          EndpointReference2 endpointReference) {
+                                          EndpointReference endpointReference) {
         this.businessInterface = businessInterface;
         this.component = component;
         this.reference = reference;

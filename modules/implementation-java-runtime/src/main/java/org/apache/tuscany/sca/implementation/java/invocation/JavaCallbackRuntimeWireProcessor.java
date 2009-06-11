@@ -23,7 +23,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.assembly.Contract;
-import org.apache.tuscany.sca.assembly.Endpoint2;
+import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.core.invocation.CallbackInterfaceInterceptor;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
@@ -73,7 +73,7 @@ public class JavaCallbackRuntimeWireProcessor implements RuntimeWireProcessor {
             return;
         }
         JavaImplementation javaImpl = (JavaImplementation)implementation;
-        Endpoint2 callbackEndpoint = wire.getEndpointReference().getCallbackEndpoint();
+        Endpoint callbackEndpoint = wire.getEndpointReference().getCallbackEndpoint();
         if (callbackEndpoint != null) {
             Interface iface = callbackEndpoint.getService().getInterfaceContract().getInterface();
             if (!supportsCallbackInterface(iface, javaImpl)) {

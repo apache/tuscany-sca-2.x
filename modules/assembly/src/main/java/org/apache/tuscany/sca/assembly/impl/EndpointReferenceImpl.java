@@ -24,8 +24,8 @@ import java.util.List;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentReference;
-import org.apache.tuscany.sca.assembly.Endpoint2;
-import org.apache.tuscany.sca.assembly.EndpointReference2;
+import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.policy.ExtensionType;
@@ -38,9 +38,8 @@ import org.apache.tuscany.sca.policy.PolicySubject;
  *
  * @version $Rev$ $Date$
  */
-public class EndpointReference2Impl implements EndpointReference2 {
+public class EndpointReferenceImpl implements EndpointReference {
     protected ExtensionPointRegistry registry;
-    // this endpoint reference
     protected boolean unresolved = true;
     protected String uri;
     protected Component component;
@@ -51,22 +50,22 @@ public class EndpointReference2Impl implements EndpointReference2 {
     protected InterfaceContract interfaceContract;
 
     // the target of the endpoint reference
-    protected Endpoint2 targetEndpoint;
+    protected Endpoint targetEndpoint;
 
     // callback endpoint that messages across this reference
     // will be directed toward
-    protected Endpoint2 callbackEndpoint;
+    protected Endpoint callbackEndpoint;
 
-    protected EndpointReference2Impl(ExtensionPointRegistry registry) {
+    protected EndpointReferenceImpl(ExtensionPointRegistry registry){
         this.registry = registry;
     }
 
     @Override
     public Object clone() throws CloneNotSupportedException {
-        EndpointReference2 cloned = (EndpointReference2)super.clone();
+        EndpointReference cloned = (EndpointReference)super.clone();
 
         if (targetEndpoint != null){
-            cloned.setTargetEndpoint((Endpoint2)targetEndpoint.clone());
+            cloned.setTargetEndpoint((Endpoint)targetEndpoint.clone());
         }
 
         return cloned;
@@ -107,11 +106,11 @@ public class EndpointReference2Impl implements EndpointReference2 {
         this.uri = null;
     }
 
-    public Endpoint2 getTargetEndpoint() {
+    public Endpoint getTargetEndpoint() {
         return targetEndpoint;
     }
 
-    public void setTargetEndpoint(Endpoint2 targetEndpoint) {
+    public void setTargetEndpoint(Endpoint targetEndpoint) {
         this.targetEndpoint = targetEndpoint;
     }
 
@@ -142,11 +141,11 @@ public class EndpointReference2Impl implements EndpointReference2 {
         throw new UnsupportedOperationException();
     }
 
-    public Endpoint2 getCallbackEndpoint() {
+    public Endpoint getCallbackEndpoint() {
         return callbackEndpoint;
     }
 
-    public void setCallbackEndpoint(Endpoint2 callbackEndpoint) {
+    public void setCallbackEndpoint(Endpoint callbackEndpoint) {
         this.callbackEndpoint = callbackEndpoint;
     }
 

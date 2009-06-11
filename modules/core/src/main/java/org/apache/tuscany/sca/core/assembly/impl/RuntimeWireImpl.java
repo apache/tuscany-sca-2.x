@@ -32,8 +32,8 @@ import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.CompositeReference;
 import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.Contract;
-import org.apache.tuscany.sca.assembly.Endpoint2;
-import org.apache.tuscany.sca.assembly.EndpointReference2;
+import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.builder.EndpointReferenceBuilder;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
@@ -76,8 +76,8 @@ public class RuntimeWireImpl implements RuntimeWire {
     ExtensionPointRegistry extensionPoints;
 
     private Boolean isReferenceWire = false;
-    private EndpointReference2 endpointReference;
-    private Endpoint2 endpoint;
+    private EndpointReference endpointReference;
+    private Endpoint endpoint;
 
     private transient RuntimeWireProcessor wireProcessor;
     private transient InterfaceContractMapper interfaceContractMapper;
@@ -88,7 +88,7 @@ public class RuntimeWireImpl implements RuntimeWire {
 
     // the following is a very simple cache that avoids re-cloning a wire
     // when consecutive callbacks to the same endpoint are made
-    private Endpoint2 lastCallback;
+    private Endpoint lastCallback;
     private RuntimeWire cachedWire;
     private boolean wireReserved;
     private RuntimeWireImpl clonedFrom;
@@ -110,8 +110,8 @@ public class RuntimeWireImpl implements RuntimeWire {
      */
     public RuntimeWireImpl(ExtensionPointRegistry extensionPoints,
                             boolean isReferenceWire,
-                            EndpointReference2 endpointReference,
-                            Endpoint2 endpoint,
+                            EndpointReference endpointReference,
+                            Endpoint endpoint,
                             InterfaceContractMapper interfaceContractMapper,
                             WorkScheduler workScheduler,
                             RuntimeWireProcessor wireProcessor,
@@ -210,7 +210,7 @@ public class RuntimeWireImpl implements RuntimeWire {
         return current;
     }
 
-    private InterfaceContract getLeafInterfaceContract(EndpointReference2 epr) {
+    private InterfaceContract getLeafInterfaceContract(EndpointReference epr) {
         ComponentReference reference = epr.getReference();
         if (reference == null) {
             return epr.getInterfaceContract();
@@ -222,7 +222,7 @@ public class RuntimeWireImpl implements RuntimeWire {
         return interfaceContract;
     }
 
-    private InterfaceContract getLeafInterfaceContract(Endpoint2 ep) {
+    private InterfaceContract getLeafInterfaceContract(Endpoint ep) {
         ComponentService service = ep.getService();
         if (service == null) {
             return ep.getInterfaceContract();
@@ -329,7 +329,7 @@ public class RuntimeWireImpl implements RuntimeWire {
         }
 
         InterfaceContract bindingContract = getInterfaceContract(endpointReference.getReference(), endpointReference.getBinding());
-        Endpoint2 endpoint = endpointReference.getTargetEndpoint();
+        Endpoint endpoint = endpointReference.getTargetEndpoint();
         endpoint.setInterfaceContract(bindingContract);
     }
 
@@ -497,11 +497,11 @@ public class RuntimeWireImpl implements RuntimeWire {
         //endpointReference.setInterfaceContract(epr.getInterfaceContract());
     }
 
-    public EndpointReference2 getEndpointReference() {
+    public EndpointReference getEndpointReference() {
         return endpointReference;
     }
     
-    public Endpoint2 getEndpoint() {
+    public Endpoint getEndpoint() {
         return endpoint;
     }
 
@@ -626,7 +626,7 @@ public class RuntimeWireImpl implements RuntimeWire {
     @Override
     public Object clone() throws CloneNotSupportedException {
         RuntimeWireImpl copy = (RuntimeWireImpl)super.clone();
-        copy.endpointReference = (EndpointReference2)endpointReference.clone();
+        copy.endpointReference = (EndpointReference)endpointReference.clone();
         copy.endpoint = copy.endpointReference.getTargetEndpoint();
         copy.invoker = new RuntimeWireInvoker(copy.messageFactory, copy.conversationManager, copy);
         copy.cachedWire = null; // TUSCANY-2630
@@ -640,7 +640,7 @@ public class RuntimeWireImpl implements RuntimeWire {
         return conversationManager;
     }
 
-    public synchronized RuntimeWire lookupCache(Endpoint2 callback) {
+    public synchronized RuntimeWire lookupCache(Endpoint callback) {
         if (lastCallback != null && 
             callback.getURI().equals(lastCallback.getURI()) &&
             !wireReserved) {
@@ -651,7 +651,7 @@ public class RuntimeWireImpl implements RuntimeWire {
         }
     }
 
-    public synchronized void addToCache(Endpoint2 callback, RuntimeWire clonedWire) {
+    public synchronized void addToCache(Endpoint callback, RuntimeWire clonedWire) {
         ((RuntimeWireImpl)clonedWire).setClonedFrom(this);
         lastCallback = callback;
         cachedWire = clonedWire;

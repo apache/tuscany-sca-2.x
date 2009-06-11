@@ -22,7 +22,7 @@ import java.util.List;
 
 import javax.security.auth.Subject;
 
-import org.apache.tuscany.sca.assembly.Endpoint2;
+import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.context.CallableReferenceExt;
 import org.apache.tuscany.sca.core.invocation.ExtensibleProxyFactory;
@@ -71,7 +71,7 @@ public class RequestContextImpl implements RequestContext {
     public <B> CallableReference<B> getServiceReference() {
         Message msgContext = ThreadMessageContext.getMessageContext();
         // FIXME: [rfeng] Is this the service reference matching the caller side?
-        Endpoint2 to = msgContext.getTo();
+        Endpoint to = msgContext.getTo();
         RuntimeComponentService service = (RuntimeComponentService) to.getService();
         RuntimeComponent component = (RuntimeComponent) to.getComponent();
         
@@ -96,7 +96,7 @@ public class RequestContextImpl implements RequestContext {
     @SuppressWarnings("unchecked")
     public <CB> CallableReference<CB> getCallbackReference() {
         Message msgContext = ThreadMessageContext.getMessageContext();
-        Endpoint2 to = msgContext.getTo();
+        Endpoint to = msgContext.getTo();
         RuntimeComponentService service = (RuntimeComponentService) to.getService();
         RuntimeComponentReference callbackReference = (RuntimeComponentReference)service.getCallbackReference();
         if (callbackReference == null) {

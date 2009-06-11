@@ -30,8 +30,8 @@ import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentProperty;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
-import org.apache.tuscany.sca.assembly.Endpoint2;
-import org.apache.tuscany.sca.assembly.EndpointReference2;
+import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.assembly.Reference;
@@ -215,7 +215,7 @@ public class ComponentContextImpl implements ComponentContextExt {
      */
     public <B> ServiceReference<B> getServiceReference(Class<B> businessInterface,
                                                        RuntimeComponentReference reference,
-                                                       EndpointReference2 endpointReference) {
+                                                       EndpointReference endpointReference) {
         try {
             RuntimeComponentReference ref = (RuntimeComponentReference)reference;
             InterfaceContract interfaceContract = reference.getInterfaceContract();
@@ -345,14 +345,14 @@ public class ComponentContextImpl implements ComponentContextExt {
         // component.getReferences().add(componentReference);
         
         // create endpoint reference
-        EndpointReference2 endpointReference = assemblyFactory
+        EndpointReference endpointReference = assemblyFactory
                 .createEndpointReference();
         endpointReference.setComponent(component);
         endpointReference.setReference(componentReference);
          endpointReference.setUnresolved(false);
 
         // create endpoint. 
-        Endpoint2 endpoint = assemblyFactory.createEndpoint();
+        Endpoint endpoint = assemblyFactory.createEndpoint();
         endpoint.setComponent(component);
         endpoint.setService(service);
         endpoint.setUnresolved(true);
@@ -452,7 +452,7 @@ public class ComponentContextImpl implements ComponentContextExt {
             for (ComponentReference ref : component.getReferences()) {
                 if (referenceName.equals(ref.getName())) {
                     ArrayList<ServiceReference<B>> serviceRefs = new ArrayList<ServiceReference<B>>();
-                    for (EndpointReference2 endpointReference : ref.getEndpointReferences()) {
+                    for (EndpointReference endpointReference : ref.getEndpointReferences()) {
                         serviceRefs
                             .add(getServiceReference(businessInterface, (RuntimeComponentReference)ref, endpointReference));
                     }

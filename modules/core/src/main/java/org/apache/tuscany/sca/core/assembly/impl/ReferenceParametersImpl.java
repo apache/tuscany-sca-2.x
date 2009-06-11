@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.core.assembly.impl;
 
-import org.apache.tuscany.sca.assembly.EndpointReference2;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.runtime.ReferenceParameters;
 
 /**
@@ -28,7 +28,7 @@ import org.apache.tuscany.sca.runtime.ReferenceParameters;
 public class ReferenceParametersImpl implements ReferenceParameters {
     private Object callbackID;
     private Object conversationID;
-    private EndpointReference2 callbackReference;
+    private EndpointReference callbackReference;
     private Object callbackObjectID;
     
     /**
@@ -59,13 +59,13 @@ public class ReferenceParametersImpl implements ReferenceParameters {
     /**
      * @see org.apache.tuscany.sca.runtime.ReferenceParameters#getCallbackReference()
      */
-    public EndpointReference2 getCallbackReference() {
+    public EndpointReference getCallbackReference() {
         return callbackReference;
     }
     /**
      * @see org.apache.tuscany.sca.runtime.ReferenceParameters#setCallback(java.lang.Object)
      */
-    public void setCallbackReference(EndpointReference2 callback) {
+    public void setCallbackReference(EndpointReference callback) {
         this.callbackReference = callback;
     }
     

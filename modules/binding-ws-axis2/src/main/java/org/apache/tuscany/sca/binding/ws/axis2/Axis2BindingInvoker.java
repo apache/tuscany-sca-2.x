@@ -39,7 +39,7 @@ import org.apache.axis2.client.OperationClient;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.transport.http.HTTPConstants;
-import org.apache.tuscany.sca.assembly.Endpoint2;
+import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.axis2.policy.authentication.token.Axis2TokenAuthenticationPolicy;
 import org.apache.tuscany.sca.binding.ws.axis2.policy.configurator.Axis2BindingBasicAuthenticationConfigurator;
@@ -219,7 +219,7 @@ public class Axis2BindingInvoker implements Invoker, DataExchangeSemantics {
         final OperationClient operationClient = serviceClient.getServiceClient().createClient(wsdlOperationName);
         operationClient.setOptions(options);
 
-        Endpoint2 callbackEndpoint = msg.getFrom().getCallbackEndpoint();
+        Endpoint callbackEndpoint = msg.getFrom().getCallbackEndpoint();
 
 /* TODO - EPR - not required for OASIS
         // set callback endpoint and callback ID for WS-Addressing header
@@ -271,7 +271,7 @@ public class Axis2BindingInvoker implements Invoker, DataExchangeSemantics {
         // if target endpoint was not specified when this invoker was created, 
         // use dynamically specified target endpoint passed in on this call
         if (options.getTo() == null) {
-            Endpoint2 ep = msg.getTo();
+            Endpoint ep = msg.getTo();
             if (ep != null) {
                 requestMC.setTo(new EndpointReference(ep.getBinding().getURI()));
             } else {

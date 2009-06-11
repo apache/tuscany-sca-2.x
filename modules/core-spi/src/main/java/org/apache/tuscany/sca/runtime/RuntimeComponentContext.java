@@ -25,7 +25,7 @@ import java.io.Writer;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.ComponentService;
-import org.apache.tuscany.sca.assembly.EndpointReference2;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.oasisopen.sca.CallableReference;
 import org.oasisopen.sca.ComponentContext;
@@ -67,7 +67,7 @@ public interface RuntimeComponentContext extends ComponentContext {
      */
     <B> ServiceReference<B> getServiceReference(Class<B> businessInterface,
                                                 RuntimeComponentReference reference,
-                                                EndpointReference2 endpointReference);
+                                                EndpointReference endpointReference);
 
     /**
      * Bind the reference to a target component/componentService

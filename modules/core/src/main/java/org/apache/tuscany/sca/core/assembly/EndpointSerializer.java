@@ -21,18 +21,18 @@ package org.apache.tuscany.sca.core.assembly;
 
 import java.io.IOException;
 
-import org.apache.tuscany.sca.assembly.Endpoint2;
-import org.apache.tuscany.sca.assembly.EndpointReference2;
+import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 
 /**
  * A utility to seralize/deserialize Endpoint/EndpointReference objects
  */
 public interface EndpointSerializer {
-    void read(Endpoint2 endpoint, String xml) throws IOException;
+    void read(Endpoint endpoint, String xml) throws IOException;
 
-    String write(Endpoint2 endpoint) throws IOException;
+    String write(Endpoint endpoint) throws IOException;
 
-    void read(EndpointReference2 endpointReference, String xml) throws IOException;
+    void read(EndpointReference endpointReference, String xml) throws IOException;
 
-    String write(EndpointReference2 endpointReference) throws IOException;
+    String write(EndpointReference endpointReference) throws IOException;
 }

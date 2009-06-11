@@ -30,7 +30,7 @@ import org.apache.tuscany.sca.policy.PolicySubject;
  *
  * @version $Rev$ $Date$
  */
-public interface EndpointReference2 extends Base, PolicySubject, Cloneable, Serializable {
+public interface EndpointReference extends Base, PolicySubject, Cloneable, Serializable {
     /**
      * Get the structural URI of the reference binding
      * @return The structural URI of the reference/binding
@@ -100,14 +100,14 @@ public interface EndpointReference2 extends Base, PolicySubject, Cloneable, Seri
      *
      * @return endpoint the target endpoint
      */
-    Endpoint2 getTargetEndpoint();
+    Endpoint getTargetEndpoint();
 
     /**
      * Set the target endpoint model object
      *
      * @param endpoint the target endpoint
      */
-    void setTargetEndpoint(Endpoint2 targetEndpoint);
+    void setTargetEndpoint(Endpoint targetEndpoint);
 
     /**
      * Returns the interface contract defining the interface
@@ -130,12 +130,12 @@ public interface EndpointReference2 extends Base, PolicySubject, Cloneable, Seri
      *
      * @return callbackEndpoint the reference callback endpoint
      */
-    Endpoint2 getCallbackEndpoint();
+    Endpoint getCallbackEndpoint();
 
     /**
      * Set the reference callback endpoint
      *
      * @param callbackEndpoint the reference callback endpoint
      */
-    void setCallbackEndpoint(Endpoint2 callbackEndpoint);
+    void setCallbackEndpoint(Endpoint callbackEndpoint);
 }

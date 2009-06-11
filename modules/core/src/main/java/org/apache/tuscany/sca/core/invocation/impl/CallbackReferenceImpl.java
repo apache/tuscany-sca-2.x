@@ -27,8 +27,8 @@ import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Contract;
-import org.apache.tuscany.sca.assembly.Endpoint2;
-import org.apache.tuscany.sca.assembly.EndpointReference2;
+import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.core.assembly.impl.RuntimeComponentReferenceImpl;
 import org.apache.tuscany.sca.core.assembly.impl.RuntimeWireImpl;
@@ -52,7 +52,7 @@ import org.apache.tuscany.sca.runtime.RuntimeWire;
 public class CallbackReferenceImpl<B> extends CallableReferenceImpl<B> {
     private RuntimeWire wire;
     private List<RuntimeWire> wires;
-    private Endpoint2 resolvedEndpoint;
+    private Endpoint resolvedEndpoint;
 	private Object convID;
 
     public static CallbackReferenceImpl newInstance(Class interfaze,
@@ -110,13 +110,13 @@ public class CallbackReferenceImpl<B> extends CallableReferenceImpl<B> {
 	    return convID;
 	}
 
-    protected Endpoint2 getResolvedEndpoint() {
+    protected Endpoint getResolvedEndpoint() {
 	    return resolvedEndpoint;
 	}
 
     private RuntimeWire selectCallbackWire(Message msgContext) {
         // look for callback binding with same name as service binding
-        Endpoint2 to = msgContext.getTo();
+        Endpoint to = msgContext.getTo();
         if (to == null) {
             //FIXME: need better exception
             throw new RuntimeException("Destination for forward call is not available");
@@ -209,7 +209,7 @@ public class CallbackReferenceImpl<B> extends CallableReferenceImpl<B> {
 
     // TODO - EPR - why static & convert to ne endpoint reference
     private static RuntimeComponentReference bind(RuntimeComponentReference reference,
-                                                  Endpoint2 resolvedEndpoint) throws CloneNotSupportedException {
+                                                  Endpoint resolvedEndpoint) throws CloneNotSupportedException {
         RuntimeComponent component = (RuntimeComponent)resolvedEndpoint.getComponent();
         RuntimeComponentService service = (RuntimeComponentService)resolvedEndpoint.getService();
         
@@ -233,8 +233,8 @@ public class CallbackReferenceImpl<B> extends CallableReferenceImpl<B> {
         
         ref.getEndpointReferences().clear();
         
-        for(EndpointReference2 endpointReference : reference.getEndpointReferences()){
-            EndpointReference2 clone = (EndpointReference2)endpointReference.clone();
+        for(EndpointReference endpointReference : reference.getEndpointReferences()){
+            EndpointReference clone = (EndpointReference)endpointReference.clone();
             
             clone.setReference(ref);
             clone.getBinding().setURI(resolvedEndpoint.getBinding().getURI());
@@ -315,7 +315,7 @@ public class CallbackReferenceImpl<B> extends CallableReferenceImpl<B> {
         final RuntimeComponentReference ref = new RuntimeComponentReferenceImpl();
         ref.setComponent((RuntimeComponent) targetComponent);
         ref.setInterfaceContract(targetServiceIfaceContract);
-        ((EndpointReference2) this.wire.getEndpointReference()).setReference(ref);
+        ((EndpointReference) this.wire.getEndpointReference()).setReference(ref);
     }
 
     /**

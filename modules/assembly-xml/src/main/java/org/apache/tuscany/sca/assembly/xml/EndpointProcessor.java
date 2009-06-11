@@ -28,7 +28,7 @@ import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.assembly.Endpoint2;
+import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
@@ -42,7 +42,7 @@ import org.apache.tuscany.sca.monitor.Monitor;
 /**
  *
  */
-public class EndpointProcessor extends BaseAssemblyProcessor implements StAXArtifactProcessor<Endpoint2> {
+public class EndpointProcessor extends BaseAssemblyProcessor implements StAXArtifactProcessor<Endpoint> {
     private final static String ENDPOINT = "endpoint";
     private final static QName ENDPOINT_QNAME = new QName(Constants.SCA11_TUSCANY_NS, ENDPOINT);
 
@@ -71,8 +71,8 @@ public class EndpointProcessor extends BaseAssemblyProcessor implements StAXArti
         return ENDPOINT_QNAME;
     }
 
-    public Endpoint2 read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
-        Endpoint2 endpoint = assemblyFactory.createEndpoint();
+    public Endpoint read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+        Endpoint endpoint = assemblyFactory.createEndpoint();
         reader.nextTag();
         Object model = extensionProcessor.read(reader);
         if (model instanceof Composite) {
@@ -87,13 +87,13 @@ public class EndpointProcessor extends BaseAssemblyProcessor implements StAXArti
         return endpoint;
     }
 
-    public void write(Endpoint2 model, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
+    public void write(Endpoint model, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
         // writeStart(writer, ENDPOINT_QNAME);
         extensionProcessor.write(wrap(model), writer);
         // writeEnd(writer);
     }
 
-    private Composite wrap(Endpoint2 endpoint) {
+    private Composite wrap(Endpoint endpoint) {
         try {
             Composite composite = assemblyFactory.createComposite();
             composite.setName(ENDPOINT_QNAME);
@@ -113,10 +113,10 @@ public class EndpointProcessor extends BaseAssemblyProcessor implements StAXArti
         }
     }
 
-    public Class<Endpoint2> getModelType() {
-        return Endpoint2.class;
+    public Class<Endpoint> getModelType() {
+        return Endpoint.class;
     }
 
-    public void resolve(Endpoint2 model, ModelResolver resolver) throws ContributionResolveException {
+    public void resolve(Endpoint model, ModelResolver resolver) throws ContributionResolveException {
     }
 }

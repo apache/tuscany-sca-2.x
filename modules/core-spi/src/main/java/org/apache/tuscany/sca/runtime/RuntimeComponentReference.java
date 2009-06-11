@@ -23,7 +23,7 @@ import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.ComponentReference;
-import org.apache.tuscany.sca.assembly.EndpointReference2;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.provider.PolicyProvider;
@@ -57,7 +57,7 @@ public interface RuntimeComponentReference extends ComponentReference {
      * @param endpointReference The assembly model endpoint reference 
      * @return The runtime wire
      */
-    RuntimeWire getRuntimeWire(EndpointReference2 endpointReference);
+    RuntimeWire getRuntimeWire(EndpointReference endpointReference);
 
     /**
      * Returns the reference binding provider associated with this

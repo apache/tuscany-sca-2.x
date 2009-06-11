@@ -24,7 +24,7 @@ import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Callback;
-import org.apache.tuscany.sca.assembly.Endpoint2;
+import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 
@@ -36,7 +36,7 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 public class ServiceImpl extends AbstractServiceImpl implements Service, Cloneable {
     private List<Binding> bindings = new ArrayList<Binding>();
     private Callback callback;
-    private List<Endpoint2> endpoints = new ArrayList<Endpoint2>();
+    private List<Endpoint> endpoints = new ArrayList<Endpoint>();
 
 
     /**
@@ -92,7 +92,7 @@ public class ServiceImpl extends AbstractServiceImpl implements Service, Cloneab
         return getInterfaceContract();
     }     
 
-    public List<Endpoint2> getEndpoints() {
+    public List<Endpoint> getEndpoints() {
         return endpoints;
     }
 }

@@ -21,8 +21,8 @@ package org.apache.tuscany.sca.core.invocation.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.sca.assembly.Endpoint2;
-import org.apache.tuscany.sca.assembly.EndpointReference2;
+import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Message;
 
@@ -38,8 +38,8 @@ public class MessageImpl implements Message {
     private boolean isFault;
     private Operation operation;
 
-    private EndpointReference2 from;
-    private Endpoint2 to;
+    private EndpointReference from;
+    private Endpoint to;
 
     public MessageImpl() {
         // TODO - EPR - What to do by default?
@@ -76,19 +76,19 @@ public class MessageImpl implements Message {
         this.body = fault;
     }
 
-    public EndpointReference2 getFrom() {
+    public EndpointReference getFrom() {
         return from;
     }
 
-    public void setFrom(EndpointReference2 from) {
+    public void setFrom(EndpointReference from) {
         this.from = from;
     }
 
-    public Endpoint2 getTo() {
+    public Endpoint getTo() {
         return to;
     }
 
-    public void setTo(Endpoint2 to) {
+    public void setTo(Endpoint to) {
         this.to = to;
     }
 

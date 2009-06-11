@@ -20,8 +20,8 @@ package org.apache.tuscany.sca.invocation;
 
 import java.util.List;
 
-import org.apache.tuscany.sca.assembly.Endpoint2;
-import org.apache.tuscany.sca.assembly.EndpointReference2;
+import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.interfacedef.Operation;
 
 /**
@@ -47,25 +47,25 @@ public interface Message {
      * Get the end point reference of the source reference
      * @return The end point reference of the reference originating the message
      */
-    EndpointReference2 getFrom();
+    EndpointReference getFrom();
 
     /**
      * Set the end point reference of the reference originating the message
      * @param from The end point reference of the reference originating the message
      */
-    void setFrom(EndpointReference2 from);
+    void setFrom(EndpointReference from);
 
     /**
      * Get the end point reference of target service
      * @return The end point reference of the service that the message targets
      */
-    Endpoint2 getTo();
+    Endpoint getTo();
 
     /**
      * Set the end point reference of target service
      * @param to The end point reference of the service that the message targets
      */
-    void setTo(Endpoint2 to);
+    void setTo(Endpoint to);
     
     /**
      * Returns the id of the message

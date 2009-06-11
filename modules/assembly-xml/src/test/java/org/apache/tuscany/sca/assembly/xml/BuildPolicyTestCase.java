@@ -32,8 +32,8 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
-import org.apache.tuscany.sca.assembly.Endpoint2;
-import org.apache.tuscany.sca.assembly.EndpointReference2;
+import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderExtensionPoint;
@@ -130,8 +130,8 @@ public class BuildPolicyTestCase {
                      new QName(namespaceUri, "tuscanyIntent_1"));
 
         Component component = composite.getComponents().get(0);
-        Endpoint2 ep = component.getServices().get(0).getEndpoints().get(0);
-        EndpointReference2 epr = component.getReferences().get(0).getEndpointReferences().get(0);
+        Endpoint ep = component.getServices().get(0).getEndpoints().get(0);
+        EndpointReference epr = component.getReferences().get(0).getEndpointReferences().get(0);
 
         System.out.println(ep.getRequiredIntents());
         System.out.println(epr.getRequiredIntents());

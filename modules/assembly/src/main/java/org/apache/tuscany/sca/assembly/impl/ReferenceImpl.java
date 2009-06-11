@@ -26,7 +26,7 @@ import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Callback;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
-import org.apache.tuscany.sca.assembly.EndpointReference2;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 
@@ -41,7 +41,7 @@ public class ReferenceImpl extends AbstractReferenceImpl implements Reference, C
     private List<ComponentService> targets = new ArrayList<ComponentService>();
     private Callback callback;
     private boolean promotionOverride;
-    private List<EndpointReference2> endpointReferences = new ArrayList<EndpointReference2>();
+    private List<EndpointReference> endpointReferences = new ArrayList<EndpointReference>();
 
     /**
      * Constructs a new reference.
@@ -56,10 +56,10 @@ public class ReferenceImpl extends AbstractReferenceImpl implements Reference, C
         clone.targets = new ArrayList<ComponentService>(targets);
         // clone the endpoint references themselves and set the reference pointer back to 
         // this new refrence
-        clone.endpointReferences = new ArrayList<EndpointReference2>();
+        clone.endpointReferences = new ArrayList<EndpointReference>();
         
-        for (EndpointReference2 epr : endpointReferences){
-            EndpointReference2 eprClone = (EndpointReference2)epr.clone();
+        for (EndpointReference epr : endpointReferences){
+            EndpointReference eprClone = (EndpointReference)epr.clone();
             eprClone.setReference((ComponentReference)clone);
             clone.endpointReferences.add(eprClone);
         }
@@ -125,7 +125,7 @@ public class ReferenceImpl extends AbstractReferenceImpl implements Reference, C
         return getInterfaceContract();
     }
 
-    public List<EndpointReference2> getEndpointReferences() {
+    public List<EndpointReference> getEndpointReferences() {
         return endpointReferences;
     }
 

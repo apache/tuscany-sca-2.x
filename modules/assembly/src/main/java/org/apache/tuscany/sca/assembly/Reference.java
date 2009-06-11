@@ -82,6 +82,6 @@ public interface Reference extends AbstractReference, Contract {
      *   
      * @return the endpoint references implied by this reference
      */
-    List<EndpointReference2> getEndpointReferences(); 
+    List<EndpointReference> getEndpointReferences(); 
 
 }

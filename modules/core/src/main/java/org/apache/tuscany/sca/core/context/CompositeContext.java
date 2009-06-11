@@ -30,7 +30,7 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
-import org.apache.tuscany.sca.assembly.Endpoint2;
+import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.assembly.CompositeActivator;
 import org.apache.tuscany.sca.core.conversation.ConversationManager;
@@ -146,7 +146,7 @@ public abstract class CompositeContext {
     public static RuntimeComponent getCurrentComponent() {
         Message message = ThreadMessageContext.getMessageContext();
         if (message != null) {
-            Endpoint2 to = message.getTo();
+            Endpoint to = message.getTo();
             if (to == null) {
                 return null;
             }

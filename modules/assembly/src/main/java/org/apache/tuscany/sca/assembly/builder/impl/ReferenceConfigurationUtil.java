@@ -27,7 +27,7 @@ import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.CompositeReference;
-import org.apache.tuscany.sca.assembly.EndpointReference2;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.assembly.Reference;
@@ -179,8 +179,8 @@ abstract class ReferenceConfigurationUtil {
                 } // end if
             } // end if
             // Clone the EndpointReferences from the outer level and add to the promoted reference
-            for( EndpointReference2 epRef : reference.getEndpointReferences()){
-            	EndpointReference2 epRefClone = copyHigherReference( epRef, promotedReference );
+            for( EndpointReference epRef : reference.getEndpointReferences()){
+            	EndpointReference epRefClone = copyHigherReference( epRef, promotedReference );
             	promotedReference.getEndpointReferences().add(epRefClone);
             } // end for
         } // end if
@@ -206,10 +206,10 @@ abstract class ReferenceConfigurationUtil {
      * @param promotedReference - the promoted reference
      * @return - a copy of the EndpointReference with data merged from the promoted reference
      */
-    private static EndpointReference2 copyHigherReference( EndpointReference2 epRef, ComponentReference promotedReference ) {
-    	EndpointReference2 epRefClone = null;
+    private static EndpointReference copyHigherReference( EndpointReference epRef, ComponentReference promotedReference ) {
+    	EndpointReference epRefClone = null;
     	try {
-    		epRefClone = (EndpointReference2) epRef.clone();
+    		epRefClone = (EndpointReference) epRef.clone();
     	} catch (Exception e) {
     		// Ignore (we know that EndpointReference2 can be cloned)
     	} // end try

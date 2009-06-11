@@ -31,8 +31,8 @@ import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.assembly.Endpoint2;
-import org.apache.tuscany.sca.assembly.EndpointReference2;
+import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
@@ -297,7 +297,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
             logger.fine("Activating component service: " + component.getURI() + "#" + service.getName());
         }
 
-        for (Endpoint2 endpoint : service.getEndpoints()) {
+        for (Endpoint endpoint : service.getEndpoints()) {
             addServiceBindingProvider(component, service, endpoint.getBinding());
         }
         addServiceWires(component, service);
@@ -362,11 +362,11 @@ public class CompositeActivatorImpl implements CompositeActivator {
         RuntimeComponentService runtimeService = (RuntimeComponentService)service;
 
         // Add a wire for each service Endpoint
-        for ( Endpoint2 endpoint : runtimeService.getEndpoints()){
+        for ( Endpoint endpoint : runtimeService.getEndpoints()){
 
             // fluff up a fake endpoint reference as we are on the service side
             // so we need to represent the reference that will call us
-            EndpointReference2 endpointReference = assemblyFactory.createEndpointReference();
+            EndpointReference endpointReference = assemblyFactory.createEndpointReference();
             endpointReference.setBinding(endpoint.getBinding());
             endpointReference.setTargetEndpoint(endpoint);
 
@@ -436,7 +436,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
             logger.fine("Deactivating component reference: " + component.getURI() + "#" + reference.getName());
         }
         removeReferenceWires(reference);
-        for (EndpointReference2 endpointReference : reference.getEndpointReferences()) {
+        for (EndpointReference endpointReference : reference.getEndpointReferences()) {
             if (endpointReference.getBinding() != null){
                 removeReferenceBindingProvider(component, reference, endpointReference.getBinding());
             }
@@ -542,7 +542,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
                 logger.fine("Starting component service: " + component.getURI() + "#" + service.getName());
             }
             RuntimeComponentService runtimeService = (RuntimeComponentService)service;
-            for (Endpoint2 endpoint : service.getEndpoints()) {
+            for (Endpoint endpoint : service.getEndpoints()) {
                 endpointRegistry.addEndpoint(endpoint);
                 final ServiceBindingProvider bindingProvider = runtimeService.getBindingProvider(endpoint.getBinding());
                 if (bindingProvider != null) {
@@ -589,7 +589,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
             if (logger.isLoggable(Level.FINE)) {
                 logger.fine("Stopping component service: " + component.getURI() + "#" + service.getName());
             }
-            for (Endpoint2 endpoint : service.getEndpoints()) {
+            for (Endpoint endpoint : service.getEndpoints()) {
                 endpointRegistry.removeEndpoint(endpoint);
                 final ServiceBindingProvider bindingProvider = ((RuntimeComponentService)service).getBindingProvider(endpoint.getBinding());
                 if (bindingProvider != null) {
@@ -609,7 +609,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
             }
             RuntimeComponentReference runtimeRef = ((RuntimeComponentReference)reference);
 
-            for (EndpointReference2 endpointReference : reference.getEndpointReferences()) {
+            for (EndpointReference endpointReference : reference.getEndpointReferences()) {
                 final ReferenceBindingProvider bindingProvider = runtimeRef.getBindingProvider(endpointReference.getBinding());
                 if (bindingProvider != null) {
                     // Allow bindings to read properties. Requires PropertyPermission read in security policy.
@@ -716,7 +716,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
             // be resolved (the service to which it points may not be present in the
             // current composite). Endpoint reference resolution takes place when the wire
             // is first used (when the chains are created)
-            for (EndpointReference2 endpointReference : componentReference.getEndpointReferences()){
+            for (EndpointReference endpointReference : componentReference.getEndpointReferences()){
                 addReferenceWire(component, componentReference, endpointReference);
                 endpointRegistry.addEndpointReference(endpointReference);
             }
@@ -729,7 +729,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
             logger.fine("Stopping component reference: " + component.getURI() + "#" + reference.getName());
         }
         RuntimeComponentReference runtimeRef = ((RuntimeComponentReference)reference);
-        for ( EndpointReference2 endpointReference : runtimeRef.getEndpointReferences()){
+        for ( EndpointReference endpointReference : runtimeRef.getEndpointReferences()){
             endpointRegistry.removeEndpointReference(endpointReference);
             ReferenceBindingProvider bindingProvider = runtimeRef.getBindingProvider(endpointReference.getBinding());
             if (bindingProvider != null) {
@@ -738,7 +738,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
         }
     }
 
-    private void addReferenceWire(Component component, ComponentReference reference, EndpointReference2 endpointReference) {
+    private void addReferenceWire(Component component, ComponentReference reference, EndpointReference endpointReference) {
         RuntimeComponentReference runtimeRef = (RuntimeComponentReference)reference;
 
         // Use the interface contract of the reference on the component type and if there

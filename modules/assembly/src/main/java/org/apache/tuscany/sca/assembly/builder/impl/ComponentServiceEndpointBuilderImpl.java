@@ -28,8 +28,8 @@ import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeService;
-import org.apache.tuscany.sca.assembly.Endpoint2;
-import org.apache.tuscany.sca.assembly.EndpointReference2;
+import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
@@ -104,7 +104,7 @@ public class ComponentServiceEndpointBuilderImpl implements CompositeBuilder {
                 } // end if
                                
                 for (Binding binding : service.getBindings()){
-                    Endpoint2 endpoint = assemblyFactory.createEndpoint();
+                    Endpoint endpoint = assemblyFactory.createEndpoint();
                     endpoint.setComponent(endpointComponent);
                     endpoint.setService(endpointService);
                     endpoint.setBinding(binding);
@@ -127,7 +127,7 @@ public class ComponentServiceEndpointBuilderImpl implements CompositeBuilder {
             	// Create an endpoint for each binding which applies to this service
             	// and copy across the information relating to the endpoint.
             	for( Binding binding : theBindings ) {
-        			Endpoint2 endpoint = assemblyFactory.createEndpoint();
+        			Endpoint endpoint = assemblyFactory.createEndpoint();
                     endpoint.setComponent(theInfo.getComponent());
                     endpoint.setService(theInfo.getComponentService());
                     endpoint.setBinding(binding);
