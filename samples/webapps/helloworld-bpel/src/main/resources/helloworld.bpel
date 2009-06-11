@@ -53,7 +53,7 @@
               <to variable="tmpVar"/>
           </copy>
           <copy>
-              <from>concat($tmpVar,' World')</from>
+              <from>concat('Hello ', $tmpVar)</from>
               <to variable="myVar" part="TestPart"/>
           </copy>
       </assign>
