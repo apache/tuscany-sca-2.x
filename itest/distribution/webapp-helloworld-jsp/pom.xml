@@ -89,7 +89,6 @@
                         <type>embedded</type>  
                         <systemProperties>
                             <org.apache.commons.logging.Log>org.apache.commons.logging.impl.SimpleLog</org.apache.commons.logging.Log>
-                            <Dorg.apache.tuscany.sca.contribution.processor.ValidationSchemaExtensionPoint.enabled>false</Dorg.apache.tuscany.sca.contribution.processor.ValidationSchemaExtensionPoint.enabled>
                         </systemProperties>
                     </container>
                     <!-- container>
