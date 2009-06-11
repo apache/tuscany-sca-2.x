@@ -23,6 +23,7 @@ import hello.HelloWorld;
 
 import java.io.File;
 import java.io.StringReader;
+import java.net.MalformedURLException;
 
 import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.Node;
@@ -61,11 +62,12 @@ public class NodeImplTestCase {
         testNode(node);
     }
 
+    @SuppressWarnings("deprecation")
     @Test
-    public void testNodeWithAbsoluteCompositeURI() {
+    public void testNodeWithAbsoluteCompositeURI() throws MalformedURLException {
         NodeFactory factory = new NodeFactoryImpl();
-        Contribution contribution = new Contribution("c1", new File("target/test-classes").toURI().toString());
-        String compositeURI = new File("target/test-classes/HelloWorld.composite").toURI().toString();
+        Contribution contribution = new Contribution("c1", new File("target/test-classes").toURL().toString());
+        String compositeURI = new File("target/test-classes/HelloWorld.composite").toURL().toString();
         Node node = factory.createNode(compositeURI, contribution);
         testNode(node);
     }
