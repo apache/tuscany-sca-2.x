@@ -35,9 +35,7 @@
         <module>assembly-xml-osoa</module>
         <module>assembly-xsd</module>
         <module>assembly-xsd-osoa</module>
-        <module>binding-dwr</module>
         <module>binding-jsonp</module>
-        <module>binding-jsonrpc</module>
         <module>binding-rmi</module>
         <module>binding-rmi-runtime</module>
         <module>binding-sca-runtime</module>
