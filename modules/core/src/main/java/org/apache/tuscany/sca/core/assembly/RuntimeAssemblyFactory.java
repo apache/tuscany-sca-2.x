@@ -20,7 +20,6 @@
 package org.apache.tuscany.sca.core.assembly;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
-
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
@@ -28,10 +27,11 @@ import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.core.assembly.impl.RuntimeEndpointImpl;
 import org.apache.tuscany.sca.core.assembly.impl.RuntimeComponentImpl;
 import org.apache.tuscany.sca.core.assembly.impl.RuntimeComponentReferenceImpl;
 import org.apache.tuscany.sca.core.assembly.impl.RuntimeComponentServiceImpl;
+import org.apache.tuscany.sca.core.assembly.impl.RuntimeEndpointImpl;
+import org.apache.tuscany.sca.core.assembly.impl.RuntimeEndpointReferenceImpl;
 
 
 /**
@@ -59,25 +59,6 @@ public class RuntimeAssemblyFactory extends DefaultAssemblyFactory implements As
         return new RuntimeComponentServiceImpl();
     }
 
-    /* TODO - EPR - remove now
-    // FIXME: [rfeng] We need to find a more consistent story to deal with EPR, EP and CallableReference
-    public EndpointReference createEndpointReference(String uri) {
-        return new EndpointReferenceImpl(uri);
-    }
-
-    public EndpointReference createEndpointReference(RuntimeComponent component,
-                                                     Contract contract,
-                                                     Binding binding,
-                                                     InterfaceContract interfaceContract) {
-        return new EndpointReferenceImpl(component, contract, binding, interfaceContract);
-    }
-    
-
-    public ReferenceParameters createReferenceParameters() {
-        return new ReferenceParametersImpl();
-    }
-    */
-
     @Override
     public Endpoint createEndpoint() {
         // Create an instance of EndpointImpl that can be serialized/deserialized using the Tuscany
@@ -87,7 +68,7 @@ public class RuntimeAssemblyFactory extends DefaultAssemblyFactory implements As
 
     @Override
     public EndpointReference createEndpointReference() {
-        return super.createEndpointReference();
+        return new RuntimeEndpointReferenceImpl(registry);
     }
 
 }

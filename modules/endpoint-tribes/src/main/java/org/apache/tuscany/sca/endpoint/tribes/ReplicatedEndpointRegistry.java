@@ -33,6 +33,7 @@ import org.apache.catalina.tribes.group.GroupChannel;
 import org.apache.catalina.tribes.membership.McastService;
 import org.apache.catalina.tribes.tipis.AbstractReplicatedMap;
 import org.apache.catalina.tribes.tipis.ReplicatedMap;
+import org.apache.catalina.tribes.tipis.AbstractReplicatedMap.MapEntry;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
@@ -57,6 +58,7 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry {
     private List<EndpointReference> endpointreferences = new CopyOnWriteArrayList<EndpointReference>();
     private List<EndpointListener> listeners = new CopyOnWriteArrayList<EndpointListener>();
 
+    private ExtensionPointRegistry registry;
     private ReplicatedMap map;
 
     private static final Channel createChannel(String address, int port, String bindAddress) {
@@ -70,15 +72,34 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry {
         // REVIEW: In my case, there are multiple IP addresses
         // One for the WIFI and the other one for VPN. For some reason the VPN one doesn't support
         // Multicast
+        /*
+        try {
+            Enumeration<NetworkInterface> nis = NetworkInterface.getNetworkInterfaces();
+            while (nis.hasMoreElements()) {
+                NetworkInterface ni = nis.nextElement();
+                if (ni.isLoopback() || !ni.isUp() || !ni.supportsMulticast()) {
+                    continue;
+                }
+                Enumeration<InetAddress> ips = ni.getInetAddresses();
+                while (ips.hasMoreElements()) {
+                    InetAddress addr = ips.nextElement();
+                    System.out.println(addr.getHostAddress());
+                }
+            }
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+        */
         if (bindAddress != null) {
             mcastService.setBind(bindAddress);
         }
 
-        mcastService.setBind("192.168.1.100");
+        // mcastService.setBind("192.168.1.100");
         return channel;
     }
 
     public ReplicatedEndpointRegistry(ExtensionPointRegistry registry, Map<String, String> attributes) {
+        this.registry = registry;
         String portStr = attributes.get("port");
         if (portStr != null) {
             port = Integer.parseInt(portStr);
@@ -111,8 +132,18 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry {
         }
     }
 
+    public void stop() {
+        Channel channel = map.getChannel();
+        map.breakdown();
+        try {
+            channel.stop(Channel.DEFAULT);
+        } catch (ChannelException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
     public void addEndpoint(Endpoint endpoint) {
-        map.put(getURI(endpoint), endpoint);
+        map.put(endpoint.getURI(), endpoint);
         for (EndpointListener listener : listeners) {
             listener.endpointAdded(endpoint);
         }
@@ -183,6 +214,10 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry {
                 Endpoint endpoint = (Endpoint)v;
                 // TODO: implement more complete matching
                 if (matches(targetEndpoint.getURI(), endpoint.getURI())) {
+                    MapEntry entry = map.getInternal(endpoint.getURI());
+                    if (!entry.isPrimary()) {
+                        endpoint.setExtensionPointRegistry(registry);
+                    }
                     foundEndpoints.add(endpoint);
                     logger.info("EndpointRegistry: Found endpoint with matching service  - " + endpoint);
                 }
@@ -212,18 +247,8 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry {
         return listeners;
     }
 
-    private String getURI(Endpoint ep) {
-        String bindingName = ep.getBinding().getName();
-        if (bindingName == null) {
-            bindingName = ep.getService().getName();
-        }
-        String epURI =
-            ep.getComponent().getURI() + "#service-binding(" + ep.getService().getName() + "/" + bindingName + ")";
-        return epURI;
-    }
-
     public void removeEndpoint(Endpoint endpoint) {
-        map.remove(getURI(endpoint));
+        map.remove(endpoint.getURI());
         for (EndpointListener listener : listeners) {
             listener.endpointRemoved(endpoint);
         }
@@ -244,7 +269,7 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry {
         if (oldEndpoint == null) {
             throw new IllegalArgumentException("Endpoint is not found: " + uri);
         }
-        map.put(getURI(endpoint), endpoint);
+        map.put(endpoint.getURI(), endpoint);
         for (EndpointListener listener : listeners) {
             listener.endpointUpdated(oldEndpoint, endpoint);
         }
@@ -273,7 +298,7 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry {
         for (Object e : map.entrySetFull()) {
             Map.Entry en = (Map.Entry)e;
             AbstractReplicatedMap.MapEntry entry = (AbstractReplicatedMap.MapEntry)en.getValue();
-            entry.isPrimary();
+            System.out.println(entry);
         }
         map.breakdown();
         channel.stop(Channel.DEFAULT);

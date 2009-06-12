@@ -39,6 +39,7 @@ import org.apache.tuscany.sca.policy.PolicySubject;
  * @version $Rev$ $Date$
  */
 public class EndpointReferenceImpl implements EndpointReference {
+    private static final long serialVersionUID = 8838066441709300972L;
     protected ExtensionPointRegistry registry;
     protected boolean unresolved = true;
     protected String uri;
@@ -80,53 +81,62 @@ public class EndpointReferenceImpl implements EndpointReference {
     }
 
     public Component getComponent() {
+        resolve();
         return component;
     }
 
     public void setComponent(Component component) {
         this.component = component;
-        this.uri = null;
+        reset();
     }
 
     public ComponentReference getReference() {
+        resolve();
         return reference;
     }
 
     public void setReference(ComponentReference reference) {
         this.reference = reference;
-        this.uri = null;
+        reset();
     }
 
     public Binding getBinding() {
+        resolve();
         return binding;
     }
 
     public void setBinding(Binding binding) {
         this.binding = binding;
-        this.uri = null;
+        reset();
     }
 
     public Endpoint getTargetEndpoint() {
+        resolve();
         return targetEndpoint;
     }
 
     public void setTargetEndpoint(Endpoint targetEndpoint) {
         this.targetEndpoint = targetEndpoint;
+        reset();
     }
 
     public InterfaceContract getInterfaceContract() {
+        resolve();
         return interfaceContract;
     }
 
     public void setInterfaceContract(InterfaceContract interfaceContract) {
         this.interfaceContract = interfaceContract;
+        reset();
     }
 
     public List<PolicySet> getPolicySets() {
+        resolve();
         return policySets;
     }
 
     public List<Intent> getRequiredIntents() {
+        resolve();
         return requiredIntents;
     }
 
@@ -142,11 +152,13 @@ public class EndpointReferenceImpl implements EndpointReference {
     }
 
     public Endpoint getCallbackEndpoint() {
+        resolve();
         return callbackEndpoint;
     }
 
     public void setCallbackEndpoint(Endpoint callbackEndpoint) {
         this.callbackEndpoint = callbackEndpoint;
+        reset();
     }
 
     public String toString() {
@@ -186,5 +198,16 @@ public class EndpointReferenceImpl implements EndpointReference {
 
     public void setURI(String uri) {
         this.uri = uri;
+    }
+
+    protected void resolve() {
+    }
+
+    protected void reset() {
+        this.uri = null;
+    }
+
+    public void setExtensionPointRegistry(ExtensionPointRegistry registry) {
+        this.registry = registry;
     }
 }
