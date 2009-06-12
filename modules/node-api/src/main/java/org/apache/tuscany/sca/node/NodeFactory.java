@@ -90,9 +90,7 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
 
         public <B> B getService(Class<B> businessInterface, String serviceName) {
             try {
-                return (B)node.getClass().getMethod("getService", Class.class, String.class).invoke(node,
-                                                                                                    businessInterface,
-                                                                                                    serviceName);
+                return (B)node.getClass().getMethod("getService", Class.class, String.class).invoke(node, businessInterface, serviceName);
             } catch (Throwable e) {
                 handleException(e);
                 return null;
@@ -101,8 +99,7 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
 
         public <B> ServiceReference<B> getServiceReference(Class<B> businessInterface, String serviceName) {
             try {
-                return (ServiceReference<B>)node.getClass().getMethod("getServiceReference", Class.class, String.class)
-                    .invoke(node, businessInterface, serviceName);
+                return (ServiceReference<B>)node.getClass().getMethod("getServiceReference", Class.class, String.class).invoke(node, businessInterface, serviceName);
             } catch (Throwable e) {
                 handleException(e);
                 return null;
@@ -354,17 +351,6 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
         return createNode(configuration);
     }
 
-    private NodeConfiguration createConfiguration(Contribution... contributions) {
-        NodeConfigurationFactory factory = this;
-        NodeConfiguration configuration = factory.createNodeConfiguration();
-        if (contributions != null) {
-            for (Contribution c : contributions) {
-                configuration.addContribution(c.getURI(), c.getLocation());
-            }
-        }
-        return configuration;
-    }
-
     /**
      * Creates a new SCA node using defaults for the contribution location and deployable composites.
      * By default, it uses the Thread context classloader to find META-INF/sca-contribution.xml or
@@ -382,6 +368,17 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
         }
         Contribution[] contributions = getContributions(locations);
         return createNode(contributions);
+    }
+    
+    private NodeConfiguration createConfiguration(Contribution... contributions) {
+        NodeConfigurationFactory factory = this;
+        NodeConfiguration configuration = factory.createNodeConfiguration();
+        if (contributions != null) {
+            for (Contribution c : contributions) {
+                configuration.addContribution(c.getURI(), c.getLocation());
+            }
+        }
+        return configuration;
     }
 
     private Contribution[] getContributions(List<String> locations) {
