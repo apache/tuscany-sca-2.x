@@ -35,13 +35,13 @@ import org.junit.Test;
  */
 public class HelloWorldTestCase {
 
-	private Node node;
+	private static Node node;
     
     /**
      * @throws java.lang.Exception
      */
     @BeforeClass
-    protected void setUp() throws Exception {
+    public static void setUp() throws Exception {
         node = NodeFactory.newInstance().createNode();
         node.start();
     }
@@ -50,7 +50,7 @@ public class HelloWorldTestCase {
      * @throws java.lang.Exception
      */
     @AfterClass
-    protected void tearDown() throws Exception {
+    public static void tearDown() throws Exception {
     	node.stop();
     }
     
