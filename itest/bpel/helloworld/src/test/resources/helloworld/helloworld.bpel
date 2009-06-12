@@ -24,7 +24,7 @@
     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
     xmlns:test="http://tuscany.apache.org/implementation/bpel/example/helloworld.wsdl"
     queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0"
-    expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0">
+    expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0" xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable">
 
   <import location="helloworld.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"
      namespace="http://tuscany.apache.org/implementation/bpel/example/helloworld.wsdl"/>
@@ -35,6 +35,7 @@
     
    <variables>
      <variable name="helloMessage" messageType="test:HelloMessage"/>
+     <variable name="helloMessageResponse" messageType="test:HelloMessageResponse"/>
      <variable name="tmpVar" type="xsd:string"/>
    </variables>
 
@@ -54,13 +55,13 @@
           </copy>
           <copy>
               <from>concat($tmpVar,' World')</from>
-              <to variable="helloMessage" part="TestPart"/>
+              <to variable="helloMessageResponse" part="TestResponse"/>
           </copy>
       </assign>
        <reply name="end"  
               partnerLink="helloPartnerLink"
               portType="test:HelloPortType" 
               operation="hello"
-              variable="helloMessage"/>
+              variable="helloMessageResponse"/>
    </sequence>
 </process>
