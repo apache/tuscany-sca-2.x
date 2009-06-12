@@ -24,7 +24,9 @@ import hello.HelloWorld;
 import java.io.File;
 import java.io.StringReader;
 import java.net.MalformedURLException;
+import java.util.List;
 
+import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
@@ -75,6 +77,18 @@ public class NodeImplTestCase {
     @Test
     public void testDefaultNode() {
         testNode(new NodeFactoryImpl().createNode());
+    }
+
+    @Test
+    public void testGetServiceEndpoints() {
+        NodeFactory factory = new NodeFactoryImpl();
+        Contribution contribution = new Contribution("c1", new File("target/test-classes").toURI().toString());
+        NodeImpl node = (NodeImpl)factory.createNode(new StringReader(composite), contribution);
+        node.start();
+        List<Endpoint> es = node.getServiceEndpoints();   
+        Assert.assertEquals(1, es.size());
+        Assert.assertEquals("HelloWorld2", es.get(0).getComponent().getName());
+        node.stop();
     }
 
     private void testNode(Node node) {
