@@ -54,48 +54,6 @@ public interface Endpoint extends Base, PolicySubject, Cloneable, Serializable {
     Object clone() throws CloneNotSupportedException;
 
     /**
-     * Get the name of the component to which this endpoint refers
-     *
-     * @return componentName
-     */
-    // String getComponentName();
-
-    /**
-     * Set the name of the component to which this endpoint refers
-     *
-     * @Param componentName
-     */
-    // void setComponentName(String componentName);
-
-    /**
-     * Get the name of the service to which this endpoint refers
-     *
-     * @return serviceName
-     */
-    // String getServiceName();
-
-    /**
-     * Set the name of the component to which this endpoint refers
-     *
-     * @Param serviceName
-     */
-    // void setServiceName(String serviceName);
-
-    /**
-     * Get the name of the binding to which this endpoint refers
-     *
-     * @return bindingName
-     */
-    // String getBindingName();
-
-    /**
-     * Set the name of the component to which this endpoint refers
-     *
-     * @param bindingName
-     */
-    // void setBindingName(String bindingName);
-
-    /**
      * Get the component model object
      *
      * @return component
