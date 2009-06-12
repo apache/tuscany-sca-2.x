@@ -20,6 +20,7 @@ package org.apache.tuscany.sca.assembly;
 
 import java.io.Serializable;
 
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.policy.PolicySubject;
 
@@ -138,4 +139,12 @@ public interface EndpointReference extends Base, PolicySubject, Cloneable, Seria
      * @param callbackEndpoint the reference callback endpoint
      */
     void setCallbackEndpoint(Endpoint callbackEndpoint);
+
+    /**
+     * Set the extension point registry against the endpoint after it is deserialized as
+     * the registry needs to be re-attached
+     *
+     * @param registry
+     */
+    void setExtensionPointRegistry(ExtensionPointRegistry registry);
 }

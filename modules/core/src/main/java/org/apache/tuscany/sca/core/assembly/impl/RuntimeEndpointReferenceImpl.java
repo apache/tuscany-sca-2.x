@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.apache.tuscany.sca.assembly.impl.EndpointImpl;
+import org.apache.tuscany.sca.assembly.impl.EndpointReferenceImpl;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.EndpointSerializer;
@@ -32,18 +32,18 @@ import org.apache.tuscany.sca.core.assembly.EndpointSerializer;
 /**
  * Runtime model for Endpoint that supports java serialization
  */
-public class RuntimeEndpointImpl extends EndpointImpl implements Externalizable {
+public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implements Externalizable {
     private EndpointSerializer serializer;
     private String xml;
 
     /**
      * No-arg constructor for Java serilization
      */
-    public RuntimeEndpointImpl() {
+    public RuntimeEndpointReferenceImpl() {
         super(null);
     }
 
-    public RuntimeEndpointImpl(ExtensionPointRegistry registry) {
+    public RuntimeEndpointReferenceImpl(ExtensionPointRegistry registry) {
         super(registry);
     }
 
