@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.tuscany.sca.databinding;
 
@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.databinding.impl.DirectedGraph;
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
 import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
@@ -38,9 +39,11 @@ public class DefaultTransformerExtensionPoint implements TransformerExtensionPoi
     private static final Logger logger = Logger.getLogger(DefaultTransformerExtensionPoint.class.getName());
     private boolean loadedTransformers;
 
+    private ExtensionPointRegistry registry;
     private final DirectedGraph<Object, Transformer> graph = new DirectedGraph<Object, Transformer>();
 
-    public DefaultTransformerExtensionPoint() {
+    public DefaultTransformerExtensionPoint(ExtensionPointRegistry registry) {
+        this.registry = registry;
     }
 
     public void addTransformer(String sourceType, String resultType, int weight, Transformer transformer, boolean publicTransformer) {
@@ -101,12 +104,12 @@ public class DefaultTransformerExtensionPoint implements TransformerExtensionPoi
         loadedTransformers = true;
         loadTransformers(PullTransformer.class);
         loadTransformers(PushTransformer.class);
-        
+
     }
 
     /**
      * Dynamically load transformers registered under META-INF/services.
-     * 
+     *
      * @param transformerClass
      */
     private synchronized void loadTransformers(Class<?> transformerClass) {
@@ -149,7 +152,7 @@ public class DefaultTransformerExtensionPoint implements TransformerExtensionPoi
      * A transformer facade allowing transformers to be lazily loaded
      * and initialized.
      */
-    private static class LazyPullTransformer implements PullTransformer<Object, Object> {
+    private class LazyPullTransformer implements PullTransformer<Object, Object> {
 
         private String source;
         private String target;
@@ -166,7 +169,7 @@ public class DefaultTransformerExtensionPoint implements TransformerExtensionPoi
 
         /**
          * Load and instantiate the transformer class.
-         * 
+         *
          * @return The transformer.
          */
         @SuppressWarnings("unchecked")
@@ -175,8 +178,14 @@ public class DefaultTransformerExtensionPoint implements TransformerExtensionPoi
                 try {
                     Class<PullTransformer<Object, Object>> transformerClass =
                         (Class<PullTransformer<Object, Object>>)transformerDeclaration.loadClass();
-                    Constructor<PullTransformer<Object, Object>> constructor = transformerClass.getConstructor();
-                    transformer = constructor.newInstance();
+                    try {
+                        Constructor<PullTransformer<Object, Object>> constructor = transformerClass.getConstructor();
+                        transformer = constructor.newInstance();
+                    } catch (NoSuchMethodException e) {
+                        Constructor<PullTransformer<Object, Object>> constructor =
+                            transformerClass.getConstructor(ExtensionPointRegistry.class);
+                        transformer = constructor.newInstance(registry);
+                    }
                 } catch (Exception e) {
                     throw new IllegalStateException(e);
                 }
@@ -212,7 +221,7 @@ public class DefaultTransformerExtensionPoint implements TransformerExtensionPoi
      * A transformer facade allowing transformers to be lazily loaded
      * and initialized.
      */
-    private static class LazyPushTransformer implements PushTransformer<Object, Object> {
+    private class LazyPushTransformer implements PushTransformer<Object, Object> {
 
         private String source;
         private String target;
@@ -229,7 +238,7 @@ public class DefaultTransformerExtensionPoint implements TransformerExtensionPoi
 
         /**
          * Load and instantiate the transformer class.
-         * 
+         *
          * @return The transformer.
          */
         @SuppressWarnings("unchecked")
@@ -238,8 +247,14 @@ public class DefaultTransformerExtensionPoint implements TransformerExtensionPoi
                 try {
                     Class<PushTransformer<Object, Object>> transformerClass =
                         (Class<PushTransformer<Object, Object>>)transformerDeclaration.loadClass();
-                    Constructor<PushTransformer<Object, Object>> constructor = transformerClass.getConstructor();
-                    transformer = constructor.newInstance();
+                    try {
+                        Constructor<PushTransformer<Object, Object>> constructor = transformerClass.getConstructor();
+                        transformer = constructor.newInstance();
+                    } catch (NoSuchMethodException e) {
+                        Constructor<PushTransformer<Object, Object>> constructor =
+                            transformerClass.getConstructor(ExtensionPointRegistry.class);
+                        transformer = constructor.newInstance(registry);
+                    }
                 } catch (Exception e) {
                     throw new IllegalStateException(e);
                 }
