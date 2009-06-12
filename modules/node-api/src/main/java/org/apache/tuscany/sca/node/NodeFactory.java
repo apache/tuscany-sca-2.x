@@ -323,25 +323,6 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
         return createNode(configuration);
     }
 
-    /**
-     * Creates a new SCA node.
-     *
-     * @param compositeURI the URI of the composite to use
-     * @param compositeContent the XML content of the composite to use
-     * @param contributions the URI of the contributions that provides the composites and related artifacts
-     * @return a new SCA node.
-     *
-     * @deprecated Please use createNode(InputStream compositeContent, Contribution... contributions) or
-     * createNode(Reader compositeContent, Contribution... contributions)
-     */
-    @Deprecated
-    public Node createNode(String compositeURI, String compositeContent, Contribution... contributions) {
-        NodeConfiguration configuration = createConfiguration(contributions);
-        if (compositeContent != null && configuration.getContributions().size() > 0) {
-            configuration.getContributions().get(0).addDeploymentComposite(compositeContent);
-        }
-        return createNode(configuration);
-    }
 
     /**
      * Creates a new SCA node.
