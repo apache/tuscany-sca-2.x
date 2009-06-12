@@ -22,6 +22,8 @@ package helloworld;
 import junit.framework.Assert;
 
 import org.apache.tuscany.implementation.bpel.example.helloworld.HelloPortType;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.AfterClass;
@@ -42,7 +44,8 @@ public class HelloWorldTestCase {
      */
     @BeforeClass
     public static void setUp() throws Exception {
-        node = NodeFactory.newInstance().createNode();
+    	String location = ContributionLocationHelper.getContributionLocation("helloworld/helloworld.composite");
+		node = NodeFactory.newInstance().createNode("helloworld/helloworld.composite", new Contribution("c1", location));
         node.start();
     }
 
