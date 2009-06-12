@@ -19,27 +19,29 @@
 
 package helloworld;
 
-import junit.framework.TestCase;
+import junit.framework.Assert;
 
-import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  * Tests the BPEL service
  * 
  * @version $Rev$ $Date$
  */
-public class BPELHelloWorldTestCase extends TestCase {
+public class BPELHelloWorldTestCase {
 
-    private Node node;
-    private Hello bpelService;
+    private static Node node;
+    private static Hello bpelService;
     
     /**
      * @throws java.lang.Exception
      */
-    @Override
-    protected void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         
         node = NodeFactory.newInstance().createNode();
         node.start();
@@ -50,13 +52,14 @@ public class BPELHelloWorldTestCase extends TestCase {
     /**
      * @throws java.lang.Exception
      */
-    @Override
-    protected void tearDown() throws Exception {
+    @AfterClass
+    public static void tearDown() throws Exception {
         node.stop();
     }
     
+    @Test
     public void testInvoke() throws Exception {
         String response = bpelService.hello("Hello");
-        assertEquals("Hello World", response);
+        Assert.assertEquals("Hello World", response);
     }
 }
