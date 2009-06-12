@@ -89,8 +89,7 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin
-				</artifactId>
+				<artifactId>maven-dependency-plugin</artifactId>
 				<executions>
 					<execution>
 						<id>unpack</id>
@@ -102,20 +101,18 @@
 							<artifactItems>
 								<artifactItem>
 									<groupId>org.apache.ode</groupId>
-									<artifactId>ode-dao-jpa-ojpa-derby
-									</artifactId>
+									<artifactId>ode-dao-jpa-ojpa-derby</artifactId>
 									<version>1.1</version>
 									<type>zip</type>
 									<overWrite>true</overWrite>
-									<outputDirectory>${project.build.directory}/test-classes/
-									</outputDirectory>
+									<outputDirectory>${project.build.directory}/test-classes/</outputDirectory>
 								</artifactItem>
 							</artifactItems>
 						</configuration>
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
+			<!-- plugin>
 				<groupId>org.apache.tuscany.sdo</groupId>
 				<artifactId>tuscany-sdo-plugin</artifactId>
 				<version>1.1.1</version>
@@ -124,11 +121,8 @@
 						<id>generate-bpel-helloworld</id>
 						<phase>generate-sources</phase>
 						<configuration>
-							<schemaFile>
-								${basedir}/src/test/resources/helloworld/helloworld.wsdl
-							</schemaFile>
-							<targetDirectory>${basedir}/target/wsdl2java-source
-							</targetDirectory>
+							<schemaFile>${basedir}/src/test/resources/helloworld/helloworld.wsdl</schemaFile>
+							<targetDirectory>${basedir}/target/wsdl2java-source</targetDirectory>
 							<prefix>HelloWorld</prefix>
 							<noNotification>true</noNotification>
 							<noContainer>true</noContainer>
@@ -150,9 +144,7 @@
 						<configuration>
 							<wsdlFiles>
 								<wsdlFile>
-									<fileName>
-										${basedir}/src/test/resources/helloworld/helloworld.wsdl
-									</fileName>
+									<fileName>${basedir}/src/test/resources/helloworld/helloworld.wsdl</fileName>
 								</wsdlFile>
 							</wsdlFiles>
 						</configuration>
@@ -161,7 +153,161 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
+			</plugin -->
+			
+			<plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <argLine>-Djava.endorsed.dirs=target/endorsed</argLine>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>javax.xml.ws</groupId>
+                                    <artifactId>jaxws-api</artifactId>
+                                    <version>2.1</version>
+                                    <type>jar</type>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>javax.xml.bind</groupId>
+                                    <artifactId>jaxb-api</artifactId>
+                                    <version>2.1</version>
+                                    <type>jar</type>
+                                </artifactItem>
+                            </artifactItems>
+                            <outputDirectory>${project.build.directory}/endorsed</outputDirectory>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>true</overWriteSnapshots>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.0</version>
+                <executions>
+                    <execution>
+                        <id>add-test-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-test-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>target/jaxws-source</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jaxws-maven-plugin</artifactId>
+                <version>1.12</version>
+                <!-- 
+                     Explicitly add the transitive dependencies for jaxws-api
+                     http://jira.codehaus.org/browse/MEV-498
+                -->
+                <dependencies>
+                    <dependency>
+                        <groupId>javax.jws</groupId>
+                        <artifactId>jsr181-api</artifactId>
+                        <version>1.0-MR1</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>javax.annotation</groupId>
+                        <artifactId>jsr250-api</artifactId>
+                        <version>1.0</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <id>wsimport</id>
+                        <phase>generate-test-sources</phase>
+                        <goals>
+                            <goal>wsimport</goal>
+                        </goals>
+                        <configuration>
+                            <packageName>org.apache.tuscany.implementation.bpel.example.helloworld</packageName>
+                            <wsdlDirectory>${basedir}/src/test/resources/helloworld/</wsdlDirectory>
+                            <wsdlFiles>
+                                <wsdlFile>helloworld.wsdl</wsdlFile>
+                            </wsdlFiles>
+                            <sourceDestDir>${project.build.directory}/jaxws-source</sourceDestDir>
+                            <verbose>false</verbose>
+                            <xnocompile>true</xnocompile>
+                        </configuration>
+                    </execution>
+
+                    <!--
+                    <execution>
+                        <id>wsgen</id>
+                        <phase>process-test-classes</phase>
+                        <goals>
+                            <goal>wsgen-test</goal>
+                        </goals>
+                        <configuration>
+                            <sei>org.apache.tuscany.sca.interfacedef.java.jaxws.MyServiceImpl</sei>
+                            <genWsdl>true</genWsdl>
+                            <keep>true</keep>
+                            <resourceDestDir>${project.build.directory}/jaxws-source</resourceDestDir>
+                            <sourceDestDir>${project.build.directory}/jaxws-source</sourceDestDir>
+                        </configuration>
+                    </execution>
+                    -->
+                </executions>
+
+            </plugin>
+
+            <!--
+            wsimport cannot handle WSDL files without a service/binding element.
+            CXF wsdl2java plugin does support that. I had to override the default
+            value of wsdlRoot/testWsdlRoot to a non-existent file to avoid NPE -->
+            <!--
+            <plugin>
+                <groupId>org.apache.cxf</groupId>
+                <artifactId>cxf-codegen-plugin</artifactId>
+                <version>2.1</version>
+                <executions>
+                    <execution>
+                        <id>generate-sources</id>
+                        <phase>generate-sources</phase>
+
+                        <configuration>
+                            <sourceRoot>${basedir}/target/jaxws-source</sourceRoot>
+                            <wsdlRoot>NONE</wsdlRoot>
+                            <testWsdlRoot>NONE</testWsdlRoot>
+                            <wsdlOptions>
+                                <wsdlOption>
+                                    <wsdl>${basedir}/src/test/resources/wsdl/Stock.wsdl</wsdl>
+                                    <outputDir>${basedir}/target/jaxws-source</outputDir>
+                                    <packagenames>
+                                        <packagename>com.example.stock.cxf</packagename>
+                                    </packagenames>
+                                </wsdlOption>
+                            </wsdlOptions>
+                        </configuration>
+                        <goals>
+                            <goal>wsdl2java</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+             -->
+             
 		</plugins>
 	</build>
 
