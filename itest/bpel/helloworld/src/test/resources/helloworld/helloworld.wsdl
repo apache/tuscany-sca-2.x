@@ -56,14 +56,14 @@
         <wsdl:part element="tns:hello" name="TestPart"/>
     </wsdl:message>
     
-    <wsdl:message name="HelloResponse">
+    <wsdl:message name="HelloMessageResponse">
         <wsdl:part element="tns:helloResponse" name="TestResponse"/>
     </wsdl:message>
     
     <wsdl:portType name="HelloPortType">
         <wsdl:operation name="hello">
             <wsdl:input message="tns:HelloMessage" name="TestIn"/>
-            <wsdl:output message="tns:HelloResponse" name="TestOut"/>
+            <wsdl:output message="tns:HelloMessageResponse" name="TestOut"/>
         </wsdl:operation>    
     </wsdl:portType>
     
