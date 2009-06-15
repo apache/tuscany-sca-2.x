@@ -19,7 +19,10 @@
 
 package org.apache.tuscany.sca.implementation.bpel.xml;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.namespace.QName;
@@ -30,6 +33,7 @@ import org.apache.tuscany.sca.contribution.namespace.NamespaceImport;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.implementation.bpel.BPELProcessDefinition;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 
 /**
  * A Model Resolver for BPEL process models.
@@ -56,27 +60,50 @@ public class BPELDocumentModelResolver implements ModelResolver {
     
     public <T> T resolveModel(Class<T> modelClass, T unresolved) {
         
-        // Lookup a definition for the given namespace
-        QName qname = ((BPELProcessDefinition)unresolved).getName();
-        BPELProcessDefinition resolved = (BPELProcessDefinition) map.get(qname);
-        if (resolved != null) {
-            return modelClass.cast(resolved);
-        }
-        
-        // No definition found, delegate the resolution to the imports
+    	BPELProcessDefinition resolved = null;
+    	QName qname = ((BPELProcessDefinition)unresolved).getName();
+    	
+    	// Lookup a definition for the given namespace, from imports
+    	List<String> locations = new ArrayList<String>();
+        // Collection of namespace imports with location
+        Map<String, NamespaceImport> locationMap = new HashMap<String, NamespaceImport>();
         for (Import import_ : this.contribution.getImports()) {
             if (import_ instanceof NamespaceImport) {
                 NamespaceImport namespaceImport = (NamespaceImport)import_;
                 if (namespaceImport.getNamespace().equals(qname.getNamespaceURI())) {
-                    
-                    // Delegate the resolution to the import resolver
-                    resolved = namespaceImport.getModelResolver().resolveModel(BPELProcessDefinition.class, (BPELProcessDefinition)unresolved);
-                    if (!resolved.isUnresolved()) {
-                        return modelClass.cast(resolved);
+                    if (namespaceImport.getLocation() == null) {
+	                    // Delegate the resolution to the import resolver
+	                    resolved = namespaceImport.getModelResolver().resolveModel(BPELProcessDefinition.class, (BPELProcessDefinition)unresolved);
+	                    if (!resolved.isUnresolved()) {
+	                        return modelClass.cast(resolved);
+	                    }
+                    } else {
+                    	// We might have multiple imports for the same namespace,
+                		// need to search them in lexical order.
+                		locations.add(namespaceImport.getLocation());
                     }
                 }
             }
         }
+        // Search namespace imports with locations in lexical order
+        Collections.sort(locations);
+        for (String location : locations) {
+        	NamespaceImport namespaceImport = (NamespaceImport)locationMap.get(location);
+        	// Delegate the resolution to the namespace import resolver
+            resolved = 
+                namespaceImport.getModelResolver().resolveModel(BPELProcessDefinition.class, (BPELProcessDefinition)unresolved);
+            if (!resolved.isUnresolved()) {
+                return modelClass.cast(resolved);
+            }
+        }
+        
+        
+        // Not found, Lookup a definition for the given namespace, within contribution       
+        resolved = (BPELProcessDefinition) map.get(qname);
+        if (resolved != null) {
+            return modelClass.cast(resolved);
+        }        
+        
         return (T)unresolved;
     }
     

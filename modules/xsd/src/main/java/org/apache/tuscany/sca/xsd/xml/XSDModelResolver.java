@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Collections;
 
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
@@ -84,9 +85,54 @@ public class XSDModelResolver implements ModelResolver {
 
     public <T> T resolveModel(Class<T> modelClass, T unresolved) {
 
-        XSDefinition definition = (XSDefinition)unresolved;
-        // Lookup a definition for the given namespace
+    	XSDefinition definition = (XSDefinition)unresolved;        
         String namespace = definition.getNamespace();
+        XSDefinition resolved = null;
+        
+        // Lookup a definition for the given namespace, from imports
+        List<String> locations = new ArrayList<String>();
+        // Collection of namespace imports with location
+        Map<String, NamespaceImport> locationMap = new HashMap<String, NamespaceImport>();
+        for (Import import_ : this.contribution.getImports()) {
+            if (import_ instanceof NamespaceImport) {
+                NamespaceImport namespaceImport = (NamespaceImport)import_;
+                if (namespaceImport.getNamespace().equals(namespace)) {
+                	if (namespaceImport.getLocation() == null) {
+	                    // Delegate the resolution to the namespace import resolver
+	                    resolved =
+	                        namespaceImport.getModelResolver().resolveModel(XSDefinition.class, (XSDefinition)unresolved);
+	                    if (!resolved.isUnresolved()) {
+	                        return modelClass.cast(resolved);
+	                    }
+                    } else {
+                    	// We might have multiple imports for the same namespace,
+                		// need to search them in lexical order.
+                		locations.add(namespaceImport.getLocation());
+                    }
+                }
+            } else if (import_ instanceof DefaultImport) {
+
+                // Delegate the resolution to the default import resolver
+                resolved =
+                    import_.getModelResolver().resolveModel(XSDefinition.class, (XSDefinition)unresolved);
+                if (!resolved.isUnresolved()) {
+                    return modelClass.cast(resolved);
+                }
+            }
+        }        
+        // Search namespace imports with location in lexical order
+        Collections.sort(locations);
+        for (String location : locations) {
+        	NamespaceImport namespaceImport = (NamespaceImport)locationMap.get(location);
+        	// Delegate the resolution to the namespace import resolver
+            resolved =
+                namespaceImport.getModelResolver().resolveModel(XSDefinition.class, (XSDefinition)unresolved);
+            if (!resolved.isUnresolved()) {
+                return modelClass.cast(resolved);
+            }
+        }
+        
+        // Not found, lookup a definition for the given namespace, within the contribution
         List<XSDefinition> list = map.get(namespace);
         XSDefinition modelXSD = null;
         if (list != null && definition.getDocument() != null) {
@@ -102,8 +148,7 @@ public class XSDModelResolver implements ModelResolver {
             list = new ArrayList<XSDefinition>();
             list.add(definition);
             map.put(namespace, list);
-        }
-        XSDefinition resolved = null;
+        }        
         try {
             resolved = aggregate(list);
         } catch (IOException e) {
@@ -120,30 +165,7 @@ public class XSDModelResolver implements ModelResolver {
             }
             return modelClass.cast(resolved);
         }
-
-        // No definition found, delegate the resolution to the imports
-        for (Import import_ : this.contribution.getImports()) {
-            if (import_ instanceof NamespaceImport) {
-                NamespaceImport namespaceImport = (NamespaceImport)import_;
-                if (namespaceImport.getNamespace().equals(namespace)) {
-
-                    // Delegate the resolution to the namespace import resolver
-                    resolved =
-                        namespaceImport.getModelResolver().resolveModel(XSDefinition.class, (XSDefinition)unresolved);
-                    if (!resolved.isUnresolved()) {
-                        return modelClass.cast(resolved);
-                    }
-                }
-            } else if (import_ instanceof DefaultImport) {
-
-                // Delegate the resolution to the default import resolver
-                resolved =
-                    import_.getModelResolver().resolveModel(XSDefinition.class, (XSDefinition)unresolved);
-                if (!resolved.isUnresolved()) {
-                    return modelClass.cast(resolved);
-                }
-            }
-        }
+        
         return modelClass.cast(unresolved);
     }
 
