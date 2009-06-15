@@ -251,7 +251,7 @@ public class Axis2BindingInvoker implements Invoker, DataExchangeSemantics {
         // add WS-Addressing header
         //FIXME: is there any way to use the Axis2 addressing support for this?
         if (callbackEndpoint != null) {
-            EndpointReference fromEPR = new EndpointReference(callbackEndpoint.getBinding().getURI());
+            EndpointReference fromEPR = new EndpointReference(callbackEndpoint.getURI());
             SOAPEnvelope sev = requestMC.getEnvelope();
             SOAPHeader sh = sev.getHeader();
             OMElement epr =
