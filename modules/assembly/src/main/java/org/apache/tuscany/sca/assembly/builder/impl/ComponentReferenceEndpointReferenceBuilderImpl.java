@@ -210,6 +210,7 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
                     // add an unresolved endpoint reference with an unresolved endpoint to go with it
                     EndpointReference endpointRef = createEndpointRef( component, reference, true  );
                     endpointRef.setTargetEndpoint(createEndpoint(component, targetName));
+                    endpointRef.setIsRemoteReference(true);
                     reference.getEndpointReferences().add(endpointRef);
                     warning(monitor, "ComponentReferenceTargetNotFound",
                             composite,
@@ -237,6 +238,7 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
                     EndpointReference endpointRef = createEndpointRef( component, reference,
                     		binding, null, false  );
                     endpointRef.setTargetEndpoint(createEndpoint(false));
+                    endpointRef.setIsRemoteReference(true);
                     reference.getEndpointReferences().add(endpointRef);
                     continue;
                 } // end if
@@ -279,6 +281,7 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
                 	// to signify that this reference is pointing at some unwired endpoint
                     EndpointReference endpointRef = createEndpointRef( component, reference, binding, null, false  );
                     endpointRef.setTargetEndpoint(createEndpoint( false ));
+                    endpointRef.setIsRemoteReference(true);
                     reference.getEndpointReferences().add(endpointRef);
                 } // end if
             }
@@ -443,9 +446,10 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
 	                    // are matched and bindings are configured later
 	                	// TODO
 	                	Endpoint endpoint = selectTargetEndpoint( reference, targetComponentService );
-	                	System.out.println("Selected Endpoint: component=" + endpoint.getComponent().getName() +
-	                			" service=" + endpoint.getService().getName() +
-	                			" binding=" + endpoint.getBinding().toString());
+	                	// SL - Turn off for now
+	                	//System.out.println("Selected Endpoint: component=" + endpoint.getComponent().getName() +
+	                	//		" service=" + endpoint.getService().getName() +
+	                	//		" binding=" + endpoint.getBinding().toString());
 	                	Endpoint endpoint2 = createEndpoint(targetComponent, targetComponentService, true);
 	                	endpoint2.setBinding( endpoint.getBinding() );
 	                    endpoints.add( endpoint2 );

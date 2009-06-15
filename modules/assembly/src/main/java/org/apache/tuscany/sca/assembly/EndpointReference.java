@@ -139,6 +139,22 @@ public interface EndpointReference extends Base, PolicySubject, Cloneable, Seria
      * @param callbackEndpoint the reference callback endpoint
      */
     void setCallbackEndpoint(Endpoint callbackEndpoint);
+    
+    /**
+     * Returns true if this endpoint reference refers to an endpoint that 
+     * is not running in this endpoint reference
+     * 
+     * @return true if the endpoint is remote
+     */
+    boolean getIsRemoteReference();
+    
+    /**
+     * Set true if this endpoint reference refers to an endpoint that 
+     * is not running in this endpoint reference
+     * 
+     * @param isRemoteReference set to true if the endpoint is remote
+     */
+    void setIsRemoteReference(boolean isRemoteReference);
 
     /**
      * Set the extension point registry against the endpoint after it is deserialized as
