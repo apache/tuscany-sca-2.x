@@ -806,14 +806,17 @@ public class Axis2ServiceProvider {
         //fill message with QoS context info 
         fillQoSContext(msg, inMC);
 
-        // if reference parameters are needed, create a new "From" EPR to hold them
+        // Create a from EPR to hold the details of the callback endpoint
         EndpointReference from = null;
         if (callbackAddress != null ) {
             from = assemblyFactory.createEndpointReference();
             Endpoint fromEndpoint = assemblyFactory.createEndpoint();
             from.setTargetEndpoint(fromEndpoint);
-            // TODO - EPR - need to set callback address
-            msg.setFrom(from);
+            msg.setFrom(from);   
+            Endpoint callbackEndpoint = assemblyFactory.createEndpoint();
+            callbackEndpoint.setURI(callbackAddress);
+            callbackEndpoint.setUnresolved(true);
+            from.setCallbackEndpoint(callbackEndpoint);
         }
 
         /* TODO - EPR - not required in OASIS

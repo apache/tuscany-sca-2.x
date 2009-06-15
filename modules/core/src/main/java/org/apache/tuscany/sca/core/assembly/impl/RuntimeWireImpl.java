@@ -239,15 +239,18 @@ public class RuntimeWireImpl implements RuntimeWire {
      */
     private void initInvocationChains() {
         chains = new ArrayList<InvocationChain>();
-        //        InterfaceContract sourceContract = endpointReference.getInterfaceContract();
-        //        InterfaceContract targetContract = endpoint.getInterfaceContract();
-        InterfaceContract sourceContract = getLeafInterfaceContract(endpointReference);
+        InterfaceContract sourceContract = endpointReference.getInterfaceContract();
+        // TODO - EPR why is this looking at the component types. The endpoint reference should have the right interface contract by this time 
+        //InterfaceContract sourceContract = getLeafInterfaceContract(endpointReference);
 
         if (isReferenceWire) {
             // It's the reference wire
             resolveEndpointReference();
 
-            InterfaceContract targetContract = getLeafInterfaceContract(endpoint);
+            InterfaceContract targetContract = endpoint.getInterfaceContract();
+            // TODO - EPR why is this looking at the component types. The endpoint should have the right interface contract by this time
+            //InterfaceContract targetContract = getLeafInterfaceContract(endpoint);
+            
             RuntimeComponentReference reference = (RuntimeComponentReference)endpointReference.getReference();
             Binding refBinding = endpointReference.getBinding();
             for (Operation operation : sourceContract.getInterface().getOperations()) {
@@ -272,7 +275,10 @@ public class RuntimeWireImpl implements RuntimeWire {
             RuntimeComponentService service = (RuntimeComponentService)endpoint.getService();
             RuntimeComponent serviceComponent = (RuntimeComponent)endpoint.getComponent();
             Binding serviceBinding = endpoint.getBinding();
+            //InterfaceContract targetContract = endpoint.getInterfaceContract();
+            // TODO - EPR - why is this looking at the component types. The endpoint should have the right interface contract by this time
             InterfaceContract targetContract = getLeafInterfaceContract(endpoint);
+            endpoint.setInterfaceContract(targetContract);
             for (Operation operation : sourceContract.getInterface().getOperations()) {
                 Operation targetOperation = interfaceContractMapper.map(targetContract.getInterface(), operation);
                 if (targetOperation == null) {

@@ -116,7 +116,7 @@ public class RuntimeWireInvoker implements Invoker{
             from.setBinding(epFrom.getBinding());
             from.setInterfaceContract(epFrom.getInterfaceContract());
             from.setTargetEndpoint(epFrom.getTargetEndpoint());
-            from.setCallbackEndpoint(epFrom.getCallbackEndpoint());
+            //from.setCallbackEndpoint(epFrom.getCallbackEndpoint());
 
             // TODO - EPR - what's going on here?
             //from.mergeEndpoint(epFrom);
