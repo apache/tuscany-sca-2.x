@@ -24,6 +24,8 @@ import java.net.URL;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.contribution.Contribution;
+import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
@@ -44,6 +46,7 @@ import org.junit.Test;
  */
 public class XSDDocumentProcessorTestCase {
     private URLArtifactProcessor<Object> documentProcessor;
+    private ContributionFactory contributionFactory;
     private ModelResolver resolver;
 
     /**
@@ -55,7 +58,9 @@ public class XSDDocumentProcessorTestCase {
         URLArtifactProcessorExtensionPoint documentProcessors = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
         documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors, null);
         FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
-        resolver = new XSDModelResolver(null, modelFactories);
+        contributionFactory = modelFactories.getFactory(ContributionFactory.class);
+        Contribution contribution = contributionFactory.createContribution();
+        resolver = new XSDModelResolver(contribution, modelFactories);
     }
 
     @Test

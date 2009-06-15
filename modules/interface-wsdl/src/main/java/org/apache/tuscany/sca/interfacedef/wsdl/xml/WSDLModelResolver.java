@@ -28,6 +28,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Collections;
 
 import javax.wsdl.Definition;
 import javax.wsdl.Operation;
@@ -284,29 +285,32 @@ public class WSDLModelResolver implements ModelResolver {
 
     public <T> T resolveModel(Class<T> modelClass, T unresolved) {
 
-        // Lookup a definition for the given namespace
-        String namespace = ((WSDLDefinition)unresolved).getNamespace();
-        if (namespace == null) {
+    	WSDLDefinition resolved = null;
+    	String namespace = ((WSDLDefinition)unresolved).getNamespace();
+    	if (namespace == null) {
             return modelClass.cast(unresolved);
-        }
-        List<WSDLDefinition> list = map.get(namespace);
-        WSDLDefinition resolved = aggregate(list);
-        if (resolved != null && !resolved.isUnresolved()) {
-            return modelClass.cast(resolved);
-        }
-
-        // No definition found, delegate the resolution to the imports
+        }    	
+    	
+    	// Lookup a definition for the given namespace, from imports
+    	List<String> locations = new ArrayList<String>();
+        // Collection of namespace imports with location
+        Map<String, NamespaceImport> locationMap = new HashMap<String, NamespaceImport>();        
         for (Import import_ : this.contribution.getImports()) {
             if (import_ instanceof NamespaceImport) {
                 NamespaceImport namespaceImport = (NamespaceImport)import_;
                 if (namespaceImport.getNamespace().equals(namespace)) {
-
-                    // Delegate the resolution to the namespace import resolver
-                    resolved =
-                        namespaceImport.getModelResolver().resolveModel(WSDLDefinition.class,
-                                                                        (WSDLDefinition)unresolved);
-                    if (!resolved.isUnresolved()) {
-                        return modelClass.cast(resolved);
+                	if (namespaceImport.getLocation() == null) {
+	                    // Delegate the resolution to the namespace import resolver
+	                    resolved =
+	                        namespaceImport.getModelResolver().resolveModel(WSDLDefinition.class,
+	                                                                        (WSDLDefinition)unresolved);
+	                    if (!resolved.isUnresolved()) {
+	                        return modelClass.cast(resolved);
+	                    }
+                    } else {
+                    	// We might have multiple imports for the same namespace,
+                		// need to search them in lexical order.
+                		locations.add(namespaceImport.getLocation());
                     }
                 }
             } else if (import_ instanceof DefaultImport) {
@@ -319,7 +323,28 @@ public class WSDLModelResolver implements ModelResolver {
                     return modelClass.cast(resolved);
                 }
             }
+        }        
+        // Search namespace imports with locations in lexical order
+        Collections.sort(locations);
+        for (String location : locations) {
+        	NamespaceImport namespaceImport = (NamespaceImport)locationMap.get(location);
+        	// Delegate the resolution to the namespace import resolver
+            resolved =
+                namespaceImport.getModelResolver().resolveModel(WSDLDefinition.class,
+                                                                (WSDLDefinition)unresolved);
+            if (!resolved.isUnresolved()) {
+                return modelClass.cast(resolved);
+            }
         }
+        
+        
+        // Not found, lookup a definition for the given namespace, within contribution
+        List<WSDLDefinition> list = map.get(namespace);
+        resolved = aggregate(list);
+        if (resolved != null && !resolved.isUnresolved()) {
+            return modelClass.cast(resolved);
+        }
+        
         return modelClass.cast(unresolved);
     }
 

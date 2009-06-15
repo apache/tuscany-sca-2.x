@@ -28,8 +28,13 @@ import java.net.URL;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.contribution.Contribution;
+import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
+import org.apache.tuscany.sca.contribution.resolver.ExtensibleModelResolver;
+import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
@@ -45,16 +50,23 @@ import org.junit.Test;
 public class WSDLTestCase {
 
     private ExtensibleURLArtifactProcessor documentProcessor;
+    private ContributionFactory contributionFactory;
     private WSDLModelResolver wsdlResolver;
+    private ModelResolver resolver;
 
     @Before
     public void setUp() throws Exception {
         ExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
         URLArtifactProcessorExtensionPoint documentProcessors = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
         documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors, null);
-
+        
         FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
-        wsdlResolver = new WSDLModelResolver(null, modelFactories);
+        contributionFactory = modelFactories.getFactory(ContributionFactory.class);
+        Contribution contribution = contributionFactory.createContribution();
+        ModelResolverExtensionPoint modelResolvers = extensionPoints.getExtensionPoint(ModelResolverExtensionPoint.class);
+        resolver = new ExtensibleModelResolver(contribution, modelResolvers, modelFactories);
+        contribution.setModelResolver(resolver);
+        wsdlResolver = new WSDLModelResolver(contribution, modelFactories);
     }
 
     @Test
