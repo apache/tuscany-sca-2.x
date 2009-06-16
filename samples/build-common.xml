@@ -71,7 +71,7 @@
     </target>	
 	
     <target name="common-run-jse" depends="compile">
-        <java jar="${distro.root}/modules/tuscany-node-launcher-2.0-SNAPSHOT.jar"
+        <java jar="${distro.root}/modules/tuscany-node-launcher-2.0-M3-SNAPSHOT.jar"
               fork="true"
         	  inputstring="q">
             <jvmarg value="-Djava.util.logging.config.file=${sample.root}/../../logging.properties"/>
@@ -83,7 +83,7 @@
     </target>
 	
     <target name="common-run-equinox" depends="compile">
-        <java jar="${distro.root}/modules/tuscany-node-launcher-equinox-2.0-SNAPSHOT.jar"
+        <java jar="${distro.root}/modules/tuscany-node-launcher-equinox-2.0-M3-SNAPSHOT.jar"
               fork="true"
         	  inputstring="q">
             <jvmarg value="-Djava.util.logging.config.file=${sample.root}/../../logging.properties"/>
