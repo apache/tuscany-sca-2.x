@@ -21,6 +21,9 @@ package itest;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+
+import java.io.File;
+
 import itest.nodes.Helloworld;
 
 import org.apache.tuscany.sca.node.Contribution;
@@ -42,11 +45,25 @@ public class OneNodeTestCase{
         System.setProperty("org.apache.tuscany.sca.contribution.processor.ValidationSchemaExtensionPoint.enabled", "false");
         NodeFactory factory = NodeFactory.newInstance();
         node = factory.createNode(
-               new Contribution("service", "../helloworld-service/target/itest-nodes-helloworld-service-2.0-SNAPSHOT.jar"),
-               new Contribution("client", "../helloworld-client/target/itest-nodes-helloworld-client-2.0-SNAPSHOT.jar"));
+               new Contribution("service", getJar("../helloworld-service/target")),
+               new Contribution("client", getJar("../helloworld-client/target")));
         node.start();
     }
 
+    /**
+     * Get the jar in the target folder without being dependent on the version name to 
+     * make tuscany releases easier
+     */
+    private static String getJar(String targetDirectory) {
+        File f = new File(targetDirectory);
+        for (File file : f.listFiles()) {
+            if (file.getName().endsWith(".jar")) {
+                return file.toURI().toString();
+            }
+        }
+        throw new IllegalStateException("Can't find jar in: " + targetDirectory);
+    }
+    
     @Test
     public void testCalculator() throws Exception {
 

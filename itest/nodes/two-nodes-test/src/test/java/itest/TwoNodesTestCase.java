@@ -46,12 +46,26 @@ public class TwoNodesTestCase{
     public static void setUpBeforeClass() throws Exception {
         System.setProperty("org.apache.tuscany.sca.contribution.processor.ValidationSchemaExtensionPoint.enabled", "false");
         NodeFactory factory = NodeFactory.newInstance();
-        serviceNode = factory.createNode(new Contribution("service", new File("../helloworld-service/target/itest-nodes-helloworld-service-2.0-SNAPSHOT.jar").toURI().toString()));
+        serviceNode = factory.createNode(new Contribution("service", getJar("../helloworld-service/target")));
         serviceNode.start();
-        clientNode = factory.createNode(new Contribution("client", new File("../helloworld-client/target/itest-nodes-helloworld-client-2.0-SNAPSHOT.jar").toURI().toString()));
+        clientNode = factory.createNode(new Contribution("client", getJar("../helloworld-client/target")));
         clientNode.start();
     }
 
+    /**
+     * Get the jar in the target folder without being dependent on the version name to 
+     * make tuscany releases easier
+     */
+    private static String getJar(String targetDirectory) {
+        File f = new File(targetDirectory);
+        for (File file : f.listFiles()) {
+            if (file.getName().endsWith(".jar")) {
+                return file.toURI().toString();
+            }
+        }
+        throw new IllegalStateException("Can't find jar in: " + targetDirectory);
+    }
+    
     @Test
     public void testCalculator() throws Exception {
         Helloworld service = serviceNode.getService(Helloworld.class, "HelloworldService");
