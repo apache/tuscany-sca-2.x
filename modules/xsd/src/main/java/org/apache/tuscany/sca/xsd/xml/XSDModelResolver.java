@@ -89,7 +89,8 @@ public class XSDModelResolver implements ModelResolver {
         String namespace = definition.getNamespace();
         XSDefinition resolved = null;
         
-        // Lookup a definition for the given namespace, from imports
+        // FIXME - We should not be using import resolvers for inline schema.
+        /* // Lookup a definition for the given namespace, from imports
         List<String> locations = new ArrayList<String>();
         // Collection of namespace imports with location
         Map<String, NamespaceImport> locationMap = new HashMap<String, NamespaceImport>();
@@ -110,7 +111,8 @@ public class XSDModelResolver implements ModelResolver {
                 		locations.add(namespaceImport.getLocation());
                     }
                 }
-            } else if (import_ instanceof DefaultImport) {
+            }            
+            else if (import_ instanceof DefaultImport) {
 
                 // Delegate the resolution to the default import resolver
                 resolved =
@@ -130,9 +132,9 @@ public class XSDModelResolver implements ModelResolver {
             if (!resolved.isUnresolved()) {
                 return modelClass.cast(resolved);
             }
-        }
+        } */
         
-        // Not found, lookup a definition for the given namespace, within the contribution
+        // Lookup a definition for the given namespace, within the contribution
         List<XSDefinition> list = map.get(namespace);
         XSDefinition modelXSD = null;
         if (list != null && definition.getDocument() != null) {
