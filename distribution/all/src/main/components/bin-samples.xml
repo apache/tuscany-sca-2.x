@@ -35,6 +35,11 @@
                 <include>implementation-java-calculator/**/*</include>
                 <include>dosgi-calculator/**/*</include>
                 <include>dosgi-calculator-operations/**/*</include>
+                <include>webapps/helloworld/**/*</include>
+                <include>webapps/helloworld-bpel/**/*</include>
+                <include>webapps/helloworld-jsf/**/*</include>
+                <include>webapps/helloworld-jsp/**/*</include>
+                <include>webapps/helloworld-stripes/**/*</include>
             </includes>
             <excludes>
                 <!-- General file/folders to exclude -->
@@ -64,6 +69,11 @@
                 <exclude>*/target/surefire-reports/**/*</exclude>
                 <exclude>*/target/surefire-osgi-reports</exclude>
                 <exclude>*/target/surefire-osgi-reports/**/*</exclude>
+                <exclude>webapps/helloworld/target/**/*</exclude>
+                <exclude>webapps/helloworld-bpel/target/**/*</exclude>
+                <exclude>webapps/helloworld-jsf/target/**/*</exclude>
+                <exclude>webapps/helloworld-jsp/target/**/*</exclude>
+                <exclude>webapps/helloworld-stripes/target/**/*</exclude>
             </excludes>
         </fileSet>
     </fileSets>
