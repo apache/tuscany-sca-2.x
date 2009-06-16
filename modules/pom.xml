@@ -33,7 +33,6 @@
         <module>assembly</module>
         <module>assembly-xml</module>
         <module>assembly-xsd</module>
-        <module>binding-jsonp</module>
         <module>binding-rmi</module>
         <module>binding-rmi-runtime</module>
         <module>binding-sca-runtime</module>
