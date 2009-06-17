@@ -19,10 +19,13 @@
 
 package org.apache.tuscany.sca.node.impl;
 
+import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.management.MBeanServer;
 
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentService;
@@ -39,6 +42,7 @@ import org.apache.tuscany.sca.node.Client;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFinder;
 import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
+import org.apache.tuscany.sca.node.management.NodeManager;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentContext;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
@@ -61,6 +65,10 @@ public class NodeImpl implements Node, Client {
         super();
         this.configuration = configuration;
         this.manager = manager;
+    }
+
+    public String getURI() {
+        return getConfiguration().getURI();
     }
 
     public void destroy() {
@@ -88,6 +96,21 @@ public class NodeImpl implements Node, Client {
 
             NodeFinder.addNode(NodeUtil.createURI(configuration.getDomainURI()), this);
 
+            MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
+            try {
+                NodeManager mbean = new NodeManager(this);
+                mBeanServer.registerMBean(mbean, NodeManager.getName(this));
+                /*
+                LocateRegistry.createRegistry(9999);
+                JMXServiceURL url =
+                    new JMXServiceURL("service:jmx:rmi:///jndi/rmi://localhost:9999/server");
+                JMXConnectorServer connectorServer = JMXConnectorServerFactory.newJMXConnectorServer(url, null, mBeanServer);
+                connectorServer.start();
+                */
+            } catch (Exception e) {
+                logger.log(Level.SEVERE, e.getMessage(), e);
+            }
+
             return this;
 
         } catch (Exception e) {
@@ -103,6 +126,13 @@ public class NodeImpl implements Node, Client {
             if (compositeActivator == null) {
                 return;
             }
+            MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
+            try {
+                mBeanServer.unregisterMBean(NodeManager.getName(this));
+            } catch (Exception e) {
+                logger.log(Level.SEVERE, e.getMessage(), e);
+            }
+
             NodeFinder.removeNode(this);
             if( compositeActivator.getDomainComposite() != null ) {
 	            List<Composite> composites = compositeActivator.getDomainComposite().getIncludes();
