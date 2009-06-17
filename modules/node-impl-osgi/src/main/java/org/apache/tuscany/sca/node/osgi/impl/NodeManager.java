@@ -68,7 +68,7 @@ public class NodeManager implements SynchronousBundleListener, ServiceListener {
         if (headers.get("SCA-Composite") != null) {
             return true;
         }
-        Enumeration<?> entries = bundle.findEntries("OSGI-INF/sca", "*", false);
+        Enumeration<?> entries = bundle.findEntries("OSGI-INF/sca", "*.composite", false);
         if (entries != null && entries.hasMoreElements()) {
             return true;
         }

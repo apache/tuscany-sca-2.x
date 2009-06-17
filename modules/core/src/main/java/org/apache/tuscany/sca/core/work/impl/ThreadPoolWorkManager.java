@@ -6,21 +6,21 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.tuscany.sca.core.work.impl;
 
-import java.rmi.server.UID;
 import java.util.Collection;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -28,7 +28,6 @@ import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadFactory;
 
 import org.apache.tuscany.sca.work.WorkSchedulerException;
-import org.oasisopen.sca.annotation.Destroy;
 
 /**
  * A thread-pool based implementation for the JSR-237 work manager.
@@ -51,24 +50,24 @@ public class ThreadPoolWorkManager {
     /**
      * Initializes the thread-pool.
      *
-     * @param threadPoolSize Thread-pool size.
-     * @throws IllegalArgumentException if threadPoolSize < 1
+     * @param threadPoolSize Thread-pool size. If the size <1, then a cached pool is created
      */
     public ThreadPoolWorkManager(int threadPoolSize) {
-        if (threadPoolSize < 1) {
-            throw new IllegalArgumentException("Invalid threadPoolSize of " 
-                    + threadPoolSize + ". It must be >= 1");
-        }
-
-        // Creates a new Executor, use a custom ThreadFactory that
-        // creates daemon threads.
-        executor = Executors.newFixedThreadPool(threadPoolSize, new ThreadFactory() {
+        ThreadFactory factory = new ThreadFactory() {
             public Thread newThread(Runnable r) {
                 Thread thread = new Thread(r);
                 thread.setDaemon(true);
                 return thread;
             }
-        });
+        };
+        if (threadPoolSize <= 0) {
+
+            // Creates a new Executor, use a custom ThreadFactory that
+            // creates daemon threads.
+            executor = Executors.newCachedThreadPool(factory);
+        } else {
+            executor = Executors.newFixedThreadPool(threadPoolSize);
+        }
     }
 
     /**
@@ -77,7 +76,7 @@ public class ThreadPoolWorkManager {
      * @param work Work that needs to be scheduled.
      * @return Work Work item representing the asynchronous work
      */
-    public WorkItem schedule(Work<?> work) throws IllegalArgumentException {
+    public WorkItem schedule(Work work) throws IllegalArgumentException {
         return schedule(work, null);
     }
 
@@ -88,9 +87,9 @@ public class ThreadPoolWorkManager {
      * @param workListener Work listener for callbacks.
      * @return Work Work item representing the asynchronous work
      */
-    public WorkItem schedule(Work<?> work, WorkListener workListener) throws IllegalArgumentException {
+    public WorkItem schedule(Work work, WorkListener workListener) throws IllegalArgumentException {
 
-        WorkItem workItem = new WorkItem(new UID().toString(), work);
+        WorkItem workItem = new WorkItem(UUID.randomUUID().toString(), work);
         if (workListener != null) {
             workItems.put(workItem, workListener);
         }
@@ -112,7 +111,7 @@ public class ThreadPoolWorkManager {
      * @param works   Units of the work that need to finish.
      * @param timeout Timeout for waiting for the units of work to finish.
      */
-    public boolean waitForAll(Collection<Work<?>> works, long timeout) {
+    public boolean waitForAll(Collection works, long timeout) {
         throw new UnsupportedOperationException("waitForAll not supported");
     }
 
@@ -122,7 +121,7 @@ public class ThreadPoolWorkManager {
      * @param works   Units of the work that need to finish.
      * @param timeout Timeout for waiting for the units of work to finish.
      */
-    public Collection<Work<?>> waitForAny(Collection<Work<?>> works, long timeout) {
+    public Collection waitForAny(Collection works, long timeout) {
         throw new UnsupportedOperationException("waitForAny not supported");
     }
 
@@ -132,7 +131,7 @@ public class ThreadPoolWorkManager {
      * @param workItem Work item representing the work that was accepted.
      * @param work     Work that was accepted.
      */
-    private void workAccepted(final WorkItem workItem, final Work<?> work) {
+    private void workAccepted(final WorkItem workItem, final Work work) {
         WorkListener listener = workItems.get(workItem);
         if (listener != null) {
             workItem.setStatus(WorkEvent.WORK_ACCEPTED);
@@ -144,7 +143,7 @@ public class ThreadPoolWorkManager {
     /*
      * Method to indicate a work start.
      */
-    private void workStarted(final WorkItem workItem, final Work<?> work) {
+    private void workStarted(final WorkItem workItem, final Work work) {
         WorkListener listener = workItems.get(workItem);
         if (listener != null) {
             workItem.setStatus(WorkEvent.WORK_STARTED);
@@ -156,14 +155,14 @@ public class ThreadPoolWorkManager {
     /*
      * Method to indicate a work completion.
      */
-    private void workCompleted(final WorkItem workItem, final Work<?> work) {
+    private void workCompleted(final WorkItem workItem, final Work work) {
         workCompleted(workItem, work, null);
     }
 
     /*
      * Method to indicate a work completion.
      */
-    private void workCompleted(final WorkItem workItem, final Work<?> work, final WorkSchedulerException exception) {
+    private void workCompleted(final WorkItem workItem, final Work work, final WorkSchedulerException exception) {
         WorkListener listener = workItems.get(workItem);
         if (listener != null) {
             workItem.setStatus(WorkEvent.WORK_COMPLETED);
@@ -178,7 +177,7 @@ public class ThreadPoolWorkManager {
     /*
      * Schedules the work using the ThreadPool.
      */
-    private boolean scheduleWork(final Work<?> work, final WorkItem workItem) {
+    private boolean scheduleWork(final Work work, final WorkItem workItem) {
         try {
             executor.execute(new DecoratingWork(workItem, work));
             return true;
@@ -221,9 +220,9 @@ public class ThreadPoolWorkManager {
 
     }
 
-    @Destroy
     public void destroy() {
         executor.shutdown();
     }
 
 }
+

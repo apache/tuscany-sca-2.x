@@ -6,21 +6,22 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.tuscany.sca.core.work.impl;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
+import org.apache.tuscany.sca.core.LifeCycleListener;
 import org.apache.tuscany.sca.work.NotificationListener;
 import org.apache.tuscany.sca.work.WorkScheduler;
 import org.apache.tuscany.sca.work.WorkSchedulerException;
@@ -36,7 +37,7 @@ import org.apache.tuscany.sca.work.WorkSchedulerException;
  *
  * @version $Rev$ $Date$
  */
-public class DefaultWorkScheduler implements WorkScheduler {
+public class DefaultWorkScheduler implements WorkScheduler, LifeCycleListener {
 
     /**
      * Underlying JSR-237 work manager
@@ -62,7 +63,7 @@ public class DefaultWorkScheduler implements WorkScheduler {
 //            // ignore
 //        }
         if (jsr237WorkManager == null) {
-            jsr237WorkManager = new ThreadPoolWorkManager(10);
+            jsr237WorkManager = new ThreadPoolWorkManager(0);
         }
         return jsr237WorkManager;
     }
@@ -110,7 +111,10 @@ public class DefaultWorkScheduler implements WorkScheduler {
 
     }
 
-    public void destroy() {
+    public void start() {
+    }
+
+    public void stop() {
         if (jsr237WorkManager instanceof ThreadPoolWorkManager) {
             // Allow privileged access to modify threads. Requires RuntimePermission in security
             // policy.

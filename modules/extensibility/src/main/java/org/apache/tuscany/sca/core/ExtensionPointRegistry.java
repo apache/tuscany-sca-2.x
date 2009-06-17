@@ -27,7 +27,7 @@ package org.apache.tuscany.sca.core;
  *
  * @version $Rev$ $Date$
  */
-public interface ExtensionPointRegistry {
+public interface ExtensionPointRegistry extends LifeCycleListener {
 
     /**
      * Add an extension point to the registry
@@ -53,9 +53,4 @@ public interface ExtensionPointRegistry {
      * @throws IllegalArgumentException if extensionPoint is null
      */
     void removeExtensionPoint(Object extensionPoint);
-
-    /**
-     * Destroy the extension point registry
-     */
-    void destroy();
 }

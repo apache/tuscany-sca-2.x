@@ -155,7 +155,7 @@ public class DefaultRMIHost implements RMIHost {
         }
     }
 
-    public void destroy() {
+    public void stop() {
         for (Registry registry : rmiRegistries.values()) {
             try {
                 UnicastRemoteObject.unexportObject(registry, false);

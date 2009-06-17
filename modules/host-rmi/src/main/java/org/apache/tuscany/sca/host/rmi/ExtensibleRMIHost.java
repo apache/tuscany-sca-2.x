@@ -59,9 +59,4 @@ public class ExtensibleRMIHost implements RMIHost {
     protected RMIHost getDefaultHost() {
         return rmiHosts.getRMIHosts().get(0);
     }
-
-    public void destroy() {
-        getDefaultHost().destroy();
-    }
-
 }

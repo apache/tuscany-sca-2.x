@@ -43,7 +43,6 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.core.ModuleActivatorExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.CompositeActivator;
@@ -88,10 +87,7 @@ public class EndpointTestCase {
         modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
 
         // Initialize the Tuscany module activators
-        ModuleActivatorExtensionPoint moduleActivators = extensionPoints.getExtensionPoint(ModuleActivatorExtensionPoint.class);
-        for (ModuleActivator activator: moduleActivators.getModuleActivators()) {
-            activator.start(extensionPoints);
-        }
+        extensionPoints.getExtensionPoint(ModuleActivatorExtensionPoint.class);
 
         // Get XML input/output factories
 

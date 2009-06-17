@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.core.conversation.impl;
@@ -31,6 +31,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.tuscany.sca.core.LifeCycleListener;
 import org.apache.tuscany.sca.core.conversation.ConversationExt;
 import org.apache.tuscany.sca.core.conversation.ConversationListener;
 import org.apache.tuscany.sca.core.conversation.ConversationManager;
@@ -39,7 +40,7 @@ import org.apache.tuscany.sca.core.conversation.ConversationState;
 /**
  * @version $Rev$ $Date$
  */
-public class ConversationManagerImpl implements ConversationManager {
+public class ConversationManagerImpl implements ConversationManager, LifeCycleListener {
 
     private List<ConversationListener> listeners = Collections.synchronizedList(new ArrayList<ConversationListener>());
     private Map<Object, ConversationExt> conversations = new ConcurrentHashMap<Object, ConversationExt>();
@@ -174,8 +175,8 @@ public class ConversationManagerImpl implements ConversationManager {
      */
     public synchronized void stopReaper() {
 
-        // Prevent the scheduler from submitting any additional reapers, 
-        // initiate an orderly shutdown if a reaper task is in progress. 
+        // Prevent the scheduler from submitting any additional reapers,
+        // initiate an orderly shutdown if a reaper task is in progress.
         this.scheduler.shutdown();
     }
 
@@ -215,4 +216,15 @@ public class ConversationManagerImpl implements ConversationManager {
     public long getMaxAge() {
         return maxAge;
     }
+
+    public void stop() {
+        // REVIEW: A more graceful way?
+        scheduler.shutdownNow();
+        this.listeners.clear();
+        this.conversations.clear();
+    }
+
+    public void start() {
+    }
+
 }

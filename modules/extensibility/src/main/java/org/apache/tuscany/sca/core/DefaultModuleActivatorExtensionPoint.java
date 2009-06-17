@@ -40,11 +40,14 @@ public class DefaultModuleActivatorExtensionPoint implements ModuleActivatorExte
     private final static Logger logger = Logger.getLogger(DefaultModuleActivatorExtensionPoint.class.getName());
     private List<ModuleActivator> activators = new ArrayList<ModuleActivator>();
     private boolean loadedActivators;
+    private boolean started;
+    private ExtensionPointRegistry registry;
 
     /**
      * Constructs a new extension point.
      */
-    public DefaultModuleActivatorExtensionPoint() {
+    public DefaultModuleActivatorExtensionPoint(ExtensionPointRegistry registry) {
+        this.registry = registry;
     }
 
     public void addModuleActivator(ModuleActivator activator) {
@@ -56,8 +59,10 @@ public class DefaultModuleActivatorExtensionPoint implements ModuleActivatorExte
         return activators;
     }
 
-    public void removeModuleActivator(Object activator) {
-        activators.remove(activator);
+    public void removeModuleActivator(ModuleActivator activator) {
+        if (activators.remove(activator)) {
+            activator.stop(registry);
+        }
     }
 
     /**
@@ -107,6 +112,37 @@ public class DefaultModuleActivatorExtensionPoint implements ModuleActivatorExte
         }
 
         loadedActivators = true;
+    }
+
+    public void start() {
+        if (started) {
+            return;
+        }
+        getModuleActivators();
+        for (ModuleActivator activator : activators) {
+            try {
+                activator.start(registry);
+            } catch (Throwable e) {
+                // Ignore the failing module for now
+                logger.log(Level.SEVERE, e.getMessage(), e);
+            }
+        }
+        started = true;
+    }
+
+    public void stop() {
+        if (!started) {
+            return;
+        }
+        for (int i = activators.size() - 1; i >= 0; i--) {
+            try {
+                activators.get(i).stop(registry);
+            } catch (Throwable e) {
+                // Ignore the failing module for now
+                logger.log(Level.SEVERE, e.getMessage(), e);
+            }
+        }
+        started = false;
     }
 
 }

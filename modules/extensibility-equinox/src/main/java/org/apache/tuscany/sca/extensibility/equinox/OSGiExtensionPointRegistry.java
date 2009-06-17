@@ -102,7 +102,7 @@ public class OSGiExtensionPointRegistry extends DefaultExtensionPointRegistry {
     }
 
     @Override
-    public void destroy() {
+    public void stop() {
         // Get a unique map as an extension point may exist in the map by different keys
         Map<ModuleActivator, ModuleActivator> map = new IdentityHashMap<ModuleActivator, ModuleActivator>();
         for (ServiceRegistration reg : services.values()) {

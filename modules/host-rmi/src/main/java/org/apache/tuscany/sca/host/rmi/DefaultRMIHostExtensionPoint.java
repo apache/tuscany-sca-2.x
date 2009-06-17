@@ -22,15 +22,14 @@ package org.apache.tuscany.sca.host.rmi;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.core.ModuleActivator;
+import org.apache.tuscany.sca.core.LifeCycleListener;
 
 /**
  * Default implementation of an RMI host extension point.
  *
  * @version $Rev$ $Date$
  */
-public class DefaultRMIHostExtensionPoint implements RMIHostExtensionPoint, ModuleActivator {
+public class DefaultRMIHostExtensionPoint implements RMIHostExtensionPoint, LifeCycleListener {
 
     private List<RMIHost> rmiHosts = new ArrayList<RMIHost>();
 
@@ -40,6 +39,9 @@ public class DefaultRMIHostExtensionPoint implements RMIHostExtensionPoint, Modu
 
     public void addRMIHost(RMIHost rmiHost) {
         rmiHosts.add(rmiHost);
+        if(rmiHost instanceof LifeCycleListener) {
+            ((LifeCycleListener) rmiHost).start();
+        }
     }
 
     public void removeRMIHost(RMIHost rmiHost) {
@@ -50,12 +52,14 @@ public class DefaultRMIHostExtensionPoint implements RMIHostExtensionPoint, Modu
         return rmiHosts;
     }
 
-    public void start(ExtensionPointRegistry registry) {
+    public void start() {
     }
 
-    public void stop(ExtensionPointRegistry registry) {
+    public void stop() {
         for (RMIHost host : rmiHosts) {
-            host.destroy();
+            if(host instanceof LifeCycleListener) {
+                ((LifeCycleListener) host).stop();
+            }
         }
     }
 }

@@ -234,32 +234,36 @@ public class EndpointReferenceBuilderImpl implements CompositeBuilder, EndpointR
         if ((endpointReference.getReference().getBindings().size() == 0) ||
              ((endpointReference.getReference().getBindings().size() == 1) &&
               (endpointReference.getReference().getBindings().get(0) instanceof SCABinding))){
-            // OAISIS - choose a binding from the service side 
+            // OAISIS - choose a binding from the service side
             //          (could have been specified as part of the target string)
             //           last part of this test that is looking for binding SCA is
             //          bogus. Just a temporary fix until we get rid of the OSOA
-            //          style reference side bindings. 
-            
-            // retrieve the user specified binding name. 
+            //          style reference side bindings.
+
+            // retrieve the user specified binding name.
             // TODO - EPR - we don't support this yet
-            
+
             // otherwise pick the first binding from the service
-            endpointReference.setTargetEndpoint(endpoint.getService().getEndpoints().get(0));
+            if (local) {
+                endpointReference.setTargetEndpoint(endpoint.getService().getEndpoints().get(0));
+            } else {
+                endpointReference.setTargetEndpoint(endpoint);
+            }
             endpointReference.setBinding(endpointReference.getTargetEndpoint().getBinding());
             endpointReference.setUnresolved(false);
             return;
-   
+
         } else {
-            // OAISIS - this is an error 
+            // OAISIS - this is an error
             //          (for now let it match bindings while we rewrite OSOA tests)
             for (Binding referenceBinding : endpointReference.getReference().getBindings()) {
                 if (local) {
                     for (Endpoint serviceEndpoint : endpoint.getService().getEndpoints()) {
-    
+
                         if (referenceBinding.getClass() == serviceEndpoint.getBinding().getClass() && hasCompatiblePolicySets(referenceBinding,
                                                                                                                               serviceEndpoint
                                                                                                                                   .getBinding())) {
-    
+
                             matchedReferenceBinding.add(referenceBinding);
                             matchedServiceEndpoint.add(serviceEndpoint);
                         }
@@ -269,10 +273,10 @@ public class EndpointReferenceBuilderImpl implements CompositeBuilder, EndpointR
                     if (referenceBinding.getClass() == serviceEndpoint.getBinding().getClass() && hasCompatiblePolicySets(referenceBinding,
                                                                                                                           serviceEndpoint
                                                                                                                               .getBinding())) {
-    
+
                         matchedReferenceBinding.add(referenceBinding);
                         matchedServiceEndpoint.add(serviceEndpoint);
-    
+
                     }
                 }
             }
@@ -353,39 +357,39 @@ public class EndpointReferenceBuilderImpl implements CompositeBuilder, EndpointR
         List<EndpointReference> callbackEndpointReferences = endpoint.getCallbackEndpointReferences();
 
         List<Endpoint> matchedEndpoint = new ArrayList<Endpoint>();
-        
+
         // Find the corresponding bindings from callback service side
         if ((callbackEndpointReferences.get(0).getReference().getBindings().size() == 0) ||
              ((callbackEndpointReferences.get(0).getReference().getBindings().size() == 1) &&
               (callbackEndpointReferences.get(0).getReference().getBindings().get(0) instanceof SCABinding))){
-            // OAISIS - choose a binding from the service side 
+            // OAISIS - choose a binding from the service side
             //          (could have been specified as part of the target string)
             //           last part of this test that is looking for binding SCA is
             //          bogus. Just a temporary fix until we get rid of the OSOA
-            //          style reference side bindings. 
-            
-            // retrieve the user specified binding name. 
+            //          style reference side bindings.
+
+            // retrieve the user specified binding name.
             // TODO - EPR - we don't support this yet
-            
+
             // otherwise pick the first binding from the service
             //endpointReference.setTargetEndpoint(endpoint.getService().getEndpoints().get(0));
             //endpointReference.setBinding(endpointReference.getTargetEndpoint().getBinding());
             endpointReference.setCallbackEndpoint(callbackEndpoints.get(0));
             endpointReference.setUnresolved(false);
             return;
-   
+
         } else {
-            // OAISIS - this is an error 
+            // OAISIS - this is an error
             //          (for now let it match bindings while we rewrite OSOA tests)
 
             if ((callbackEndpoints != null) &&  (callbackEndpointReferences != null)){
                 // Find the corresponding bindings from the service side
                 for (EndpointReference epr : callbackEndpointReferences) {
                     for (Endpoint ep : callbackEndpoints) {
-    
+
                         if (epr.getBinding().getClass() == ep.getBinding().getClass() &&
                             hasCompatiblePolicySets(epr.getBinding(), ep.getBinding())) {
-    
+
                             matchedEndpoint.add(ep);
                         }
                     }

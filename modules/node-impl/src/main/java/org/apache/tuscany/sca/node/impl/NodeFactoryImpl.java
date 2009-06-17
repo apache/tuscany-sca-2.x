@@ -72,7 +72,6 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.core.ModuleActivatorExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.RuntimeAssemblyFactory;
@@ -121,12 +120,10 @@ public class NodeFactoryImpl extends NodeFactory {
     private XMLInputFactory inputFactory;
     protected FactoryExtensionPoint modelFactories;
     private ModelResolverExtensionPoint modelResolvers;
-    private List<ModuleActivator> moduleActivators = new ArrayList<ModuleActivator>();
     private Monitor monitor;
     protected ProxyFactory proxyFactory;
     private Contribution systemContribution;
     private Definitions systemDefinitions;
-    private WorkScheduler workScheduler;
     private StAXArtifactProcessorExtensionPoint xmlProcessors;
 
     /**
@@ -198,14 +195,7 @@ public class NodeFactoryImpl extends NodeFactory {
                 node.destroy();
             }
             nodes.clear();
-            // Stop the runtime modules in the reverse order
-            for (int i = moduleActivators.size() - 1; i >= 0; i--) {
-                moduleActivators.get(i).stop(extensionPoints);
-            }
-
-            // Stop and destroy the work manager
-            workScheduler.destroy();
-            extensionPoints.destroy();
+            extensionPoints.stop();
             inited = false;
         }
     }
@@ -377,6 +367,7 @@ public class NodeFactoryImpl extends NodeFactory {
 
         // Create extension point registry
         extensionPoints = createExtensionPointRegistry();
+        extensionPoints.start();
 
         // Enable schema validation only of the logger level is FINE or higher
         if (isSchemaValidationEnabled()) {
@@ -398,16 +389,8 @@ public class NodeFactoryImpl extends NodeFactory {
         monitor = monitorFactory.createMonitor();
 
         // Initialize the Tuscany module activators
-        ModuleActivatorExtensionPoint activators = extensionPoints.getExtensionPoint(ModuleActivatorExtensionPoint.class);
-        for (ModuleActivator moduleActivator: activators.getModuleActivators()) {
-            try {
-                moduleActivator.start(extensionPoints);
-                moduleActivators.add(moduleActivator);
-            } catch (Throwable e) {
-                // Ignore the failing module for now
-                logger.log(Level.SEVERE, e.getMessage(), e);
-            }
-        }
+        // The module activators will be started
+        extensionPoints.getExtensionPoint(ModuleActivatorExtensionPoint.class);
 
         // Get XML input/output factories
         inputFactory = modelFactories.getFactory(XMLInputFactory.class);
@@ -440,7 +423,7 @@ public class NodeFactoryImpl extends NodeFactory {
         ProxyFactoryExtensionPoint proxyFactories = extensionPoints.getExtensionPoint(ProxyFactoryExtensionPoint.class);
         proxyFactory = new ExtensibleProxyFactory(proxyFactories);
 
-        workScheduler = utilities.getUtility(WorkScheduler.class);
+        utilities.getUtility(WorkScheduler.class);
 
         DefinitionsFactory definitionsFactory = modelFactories.getFactory(DefinitionsFactory.class);
         systemDefinitions = definitionsFactory.createDefinitions();

@@ -33,17 +33,17 @@ import org.apache.catalina.tribes.group.GroupChannel;
 import org.apache.catalina.tribes.membership.McastService;
 import org.apache.catalina.tribes.tipis.AbstractReplicatedMap;
 import org.apache.catalina.tribes.tipis.ReplicatedMap;
-import org.apache.catalina.tribes.tipis.AbstractReplicatedMap.MapEntry;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.LifeCycleListener;
 import org.apache.tuscany.sca.runtime.EndpointListener;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
 
 /**
  * A replicated EndpointRegistry based on Apache Tomcat Tribes
  */
-public class ReplicatedEndpointRegistry implements EndpointRegistry {
+public class ReplicatedEndpointRegistry implements EndpointRegistry, LifeCycleListener {
     private final static Logger logger = Logger.getLogger(ReplicatedEndpointRegistry.class.getName());
     private static final String MULTICAST_ADDRESS = "228.0.0.100";
     private static final int MULTICAST_PORT = 50000;
@@ -113,15 +113,18 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry {
         if (timeoutStr != null) {
             timeout = Integer.parseInt(timeoutStr);
         }
-        start();
+        // start();
     }
 
     public ReplicatedEndpointRegistry(String domainURI) {
         this.domainURI = domainURI;
-        start();
+        // start();
     }
 
     public void start() {
+        if (map != null) {
+            throw new IllegalStateException("The registry has already been started");
+        }
         map =
             new ReplicatedMap(null, createChannel(address, port, bind), timeout, this.domainURI,
                               new ClassLoader[] {ReplicatedEndpointRegistry.class.getClassLoader()});
@@ -133,12 +136,15 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry {
     }
 
     public void stop() {
-        Channel channel = map.getChannel();
-        map.breakdown();
-        try {
-            channel.stop(Channel.DEFAULT);
-        } catch (ChannelException e) {
-            throw new IllegalStateException(e);
+        if (map != null) {
+            Channel channel = map.getChannel();
+            map.breakdown();
+            try {
+                channel.stop(Channel.DEFAULT);
+            } catch (ChannelException e) {
+                throw new IllegalStateException(e);
+            }
+            map = null;
         }
     }
 
@@ -214,10 +220,10 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry {
                 Endpoint endpoint = (Endpoint)v;
                 // TODO: implement more complete matching
                 if (matches(targetEndpoint.getURI(), endpoint.getURI())) {
-                    MapEntry entry = map.getInternal(endpoint.getURI());
-                    if (!entry.isPrimary()) {
+                    // MapEntry entry = map.getInternal(endpoint.getURI());
+                    // if (!entry.isPrimary()) {
                         endpoint.setExtensionPointRegistry(registry);
-                    }
+                    // }
                     foundEndpoints.add(endpoint);
                     logger.info("EndpointRegistry: Found endpoint with matching service  - " + endpoint);
                 }

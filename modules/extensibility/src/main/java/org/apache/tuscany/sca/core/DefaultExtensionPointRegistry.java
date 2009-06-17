@@ -65,8 +65,8 @@ public class DefaultExtensionPointRegistry implements ExtensionPointRegistry {
         if (extensionPoint == null) {
             throw new IllegalArgumentException("Cannot register null as an ExtensionPoint");
         }
-        if (extensionPoint instanceof ModuleActivator) {
-            ((ModuleActivator)extensionPoint).start(this);
+        if (extensionPoint instanceof LifeCycleListener) {
+            ((LifeCycleListener)extensionPoint).start();
         }
         Set<Class<?>> interfaces = getAllInterfaces(extensionPoint.getClass());
         for (Class<?> i : interfaces) {
@@ -170,8 +170,8 @@ public class DefaultExtensionPointRegistry implements ExtensionPointRegistry {
             throw new IllegalArgumentException("Cannot remove null as an ExtensionPoint");
         }
 
-        if (extensionPoint instanceof ModuleActivator) {
-            ((ModuleActivator)extensionPoint).stop(this);
+        if (extensionPoint instanceof LifeCycleListener) {
+            ((LifeCycleListener)extensionPoint).stop();
         }
 
         Set<Class<?>> interfaces = getAllInterfaces(extensionPoint.getClass());
@@ -208,17 +208,21 @@ public class DefaultExtensionPointRegistry implements ExtensionPointRegistry {
         }
     }
 
-    public void destroy() {
+    public void start() {
+        // Do nothing
+    }
+
+    public void stop() {
         // Get a unique map as an extension point may exist in the map by different keys
-        Map<ModuleActivator, ModuleActivator> map = new IdentityHashMap<ModuleActivator, ModuleActivator>();
+        Map<LifeCycleListener, LifeCycleListener> map = new IdentityHashMap<LifeCycleListener, LifeCycleListener>();
         for (Object extp : extensionPoints.values()) {
-            if (extp instanceof ModuleActivator) {
-                ModuleActivator activator = (ModuleActivator)extp;
-                map.put(activator, activator);
+            if (extp instanceof LifeCycleListener) {
+                LifeCycleListener listener = (LifeCycleListener)extp;
+                map.put(listener, listener);
             }
         }
-        for (ModuleActivator activator : map.values()) {
-            activator.stop(this);
+        for (LifeCycleListener listener : map.values()) {
+            listener.stop();
         }
         extensionPoints.clear();
     }

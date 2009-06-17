@@ -57,9 +57,4 @@ public interface RMIHost {
      * @throws RMIHostRuntimeException
      */
     Remote findService(String uri) throws RMIHostException, RMIHostRuntimeException;
-
-    /**
-     * Destroy the host. It can be used to unbind the RMI registry
-     */
-    void destroy();
 }

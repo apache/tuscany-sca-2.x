@@ -23,7 +23,10 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -40,6 +43,7 @@ public class DefaultUtilityExtensionPoint implements UtilityExtensionPoint {
     private Map<Class<?>, Object> utilities = new ConcurrentHashMap<Class<?>, Object>();
 
     private ExtensionPointRegistry extensionPoints;
+    private List<Object> unmapped = new ArrayList<Object>();
 
     /**
      * Constructs a new extension point.
@@ -61,6 +65,9 @@ public class DefaultUtilityExtensionPoint implements UtilityExtensionPoint {
             throw new IllegalArgumentException("Cannot register null as a Service");
         }
 
+        if(utility instanceof LifeCycleListener) {
+            ((LifeCycleListener) utility).start();
+        }
         Set<Class<?>> interfaces = getAllInterfaces(utility.getClass());
         for (Class<?> i : interfaces) {
             utilities.put(i, utility);
@@ -108,6 +115,10 @@ public class DefaultUtilityExtensionPoint implements UtilityExtensionPoint {
     public void removeUtility(Object utility) {
         if (utility == null) {
             throw new IllegalArgumentException("Cannot remove null as a Service");
+        }
+
+        if(utility instanceof LifeCycleListener) {
+            ((LifeCycleListener) utility).stop();
         }
 
         Set<Class<?>> interfaces = getAllInterfaces(utility.getClass());
@@ -178,6 +189,9 @@ public class DefaultUtilityExtensionPoint implements UtilityExtensionPoint {
                     }
                     // Cache the loaded utility
                     addUtility(utility);
+                    if (newInstance) {
+                        unmapped.add(utility);
+                    }
                 }
             } catch (InvocationTargetException e) {
                 throw new IllegalArgumentException(e);
@@ -192,6 +206,31 @@ public class DefaultUtilityExtensionPoint implements UtilityExtensionPoint {
             }
         }
         return utilityType.cast(utility);
+    }
+
+    public void start() {
+        // NOOP
+    }
+
+    public void stop() {
+        // Get a unique map as an extension point may exist in the map by different keys
+        Map<LifeCycleListener, LifeCycleListener> map = new IdentityHashMap<LifeCycleListener, LifeCycleListener>();
+        for (Object util : utilities.values()) {
+            if (util instanceof LifeCycleListener) {
+                LifeCycleListener listener = (LifeCycleListener)util;
+                map.put(listener, listener);
+            }
+        }
+        for (Object util : unmapped) {
+            if (util instanceof LifeCycleListener) {
+                LifeCycleListener listener = (LifeCycleListener)util;
+                map.put(listener, listener);
+            }
+        }
+        for (LifeCycleListener listener : map.values()) {
+            listener.stop();
+        }
+        utilities.clear();
     }
 
 }
