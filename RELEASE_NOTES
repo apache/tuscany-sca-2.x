@@ -1,4 +1,4 @@
-Apache Tuscany SCA 2.0-M2 April 2009 Release Notes
+Apache Tuscany SCA 2.0-M3 June 2009 Release Notes
 ==================================================
 
 Apache Tuscany provides a runtime based on the Service Component
@@ -9,13 +9,14 @@ of Open Composite Services Architecture (Open CSA) - http://www.oasis-opencsa.or
 Overview
 --------
 
-     The Apache Tuscany SCA 2.0-M2 release includes implementations of the
+     The Apache Tuscany SCA 2.0-M3 release includes implementations of the
      main SCA specifications and recent updates from Open CSA drafts including:
 
         SCA Assembly Model V1.1
         SCA Policy Framework V1.1
         SCA Java Common Annotations and APIs V1.1
         SCA Java Component Implementation V1.1
+        SCA Client & Implementation: Spring
         SCA Web Services Binding V1.1
         SCA WS-BPEL Client and Implementation V1.1
         (portions of) SCA JEE Integration V1.1
