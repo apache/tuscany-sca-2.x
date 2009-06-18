@@ -35,15 +35,14 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.PosixParser;
-import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.Constants;
 
 /**
  * A launcher for SCA nodes.
  *
  * Agruments:
  * [-config <equinoxConfiguration>]: The configuration folder for Equinox
+ * [-bundles <osgiBundles>]: A list of bundles to be installed
  * [-c <compositeURI>]: The composite URI
  * [-t <ttl>]: Time to live in milliseconds before the node is started
  * contribution1 ... contributionN: A list of contribution files or URLs
@@ -128,6 +127,20 @@ public class NodeLauncher {
             if (cli.hasOption("config")) {
                 System.setProperty("osgi.configuration.area", cli.getOptionValue("config"));
             }
+
+            // if(cli.hasOption("bundles")) {
+                /**
+                 * osgi.bundles
+                 * The comma-separated list of bundles which are automatically installed and optionally started once the system is up
+                 * and running. Each entry is of the form:
+                 * <URL | simple bundle location>[@ [<start-level>] [":start"]]
+                 * If the start-level (>0 integer) is omitted then the framework will use the default start level for the bundle.
+                 * If the "start" tag is added then the bundle will be marked as started after being installed. Simple bundle locations are
+                 * interepreted as relative to the framework's parent directory. The start-level indicates the OSGi start level at which the
+                 * bundle should run. If this value is not set, the system computes an appropriate default.
+                 */
+                // System.setProperty("osgi.bundles", cli.getOptionValue("bundles"));
+            // }
             while (true) {
                 if (cli.hasOption("node")) {
                     // Create a node from a configuration URI
@@ -139,7 +152,9 @@ public class NodeLauncher {
                     equinox = launcher.equinoxHost;
 
                     node = launcher.createNode(configurationURI);
-                } else if (cli.hasOption("bundles")) {
+                }
+                /*
+                else if (cli.hasOption("bundles")) {
                     // Create a node launcher
                     NodeLauncher launcher = newInstance();
                     equinox = launcher.equinoxHost;
@@ -160,7 +175,8 @@ public class NodeLauncher {
                         }
                     }
 
-                } else {
+                } */
+                else {
                     // Create a node from a composite URI and a contribution location
                     String compositeURI = cli.getOptionValue("composite");
                     List<String> contribs = cli.getArgList();

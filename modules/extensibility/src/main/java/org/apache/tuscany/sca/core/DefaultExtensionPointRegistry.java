@@ -191,6 +191,7 @@ public class DefaultExtensionPointRegistry implements ExtensionPointRegistry {
     private static Set<Class<?>> getAllInterfaces(Class<?> clazz) {
         Set<Class<?>> implemented = new HashSet<Class<?>>();
         getAllInterfaces(clazz, implemented);
+        implemented.remove(LifeCycleListener.class);
         return implemented;
     }
 

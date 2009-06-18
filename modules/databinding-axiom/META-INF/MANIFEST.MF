@@ -18,9 +18,6 @@ Import-Package: javax.xml.namespace,
  javax.xml.stream,
  org.apache.axiom.om,
  org.apache.axiom.om.impl.builder,
- org.apache.axiom.om.impl.llom.factory;resolution:=optional,
- org.apache.axiom.soap.impl.llom.soap11;resolution:=optional,
- org.apache.axiom.soap.impl.llom.soap12;resolution:=optional,
  org.apache.tuscany.sca.databinding;version="2.0.0",
  org.apache.tuscany.sca.databinding.axiom;version="2.0.0",
  org.apache.tuscany.sca.databinding.impl;version="2.0.0",
@@ -30,6 +27,5 @@ Import-Package: javax.xml.namespace,
  org.apache.tuscany.sca.interfacedef.util;version="1.4",
  org.apache.tuscany.sca.policy;version="2.0.0"
 Bundle-SymbolicName: org.apache.tuscany.sca.databinding.axiom
-Fragment-Host: org.apache.ws.commons.axiom.axiom-api
 Bundle-DocURL: http://www.apache.org/
 Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6
