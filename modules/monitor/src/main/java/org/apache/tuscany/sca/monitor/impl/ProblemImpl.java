@@ -52,7 +52,12 @@ public class ProblemImpl implements Problem {
      * @param messageId         the id of the problem message
      * @param messageParams     the parameters of the problem message
      */
-    public ProblemImpl(String sourceClassName, String bundleName, Severity severity, Object problemObject, String messageId, Object... messageParams ) {
+    public ProblemImpl(String sourceClassName,
+                       String bundleName,
+                       Severity severity,
+                       Object problemObject,
+                       String messageId,
+                       Object... messageParams) {
         this.sourceClassName = sourceClassName;
         this.bundleName = bundleName;
         this.severity = severity;
@@ -60,7 +65,7 @@ public class ProblemImpl implements Problem {
         this.messageId = messageId;
         this.messageParams = messageParams;
     }
-    
+
     /**
      * Construct a new problem
      * 
@@ -71,31 +76,36 @@ public class ProblemImpl implements Problem {
      * @param messageId         the id of the problem message
      * @param cause             the exception which caused the problem
      */
-    public ProblemImpl(String sourceClassName, String bundleName, Severity severity, Object problemObject, String messageId, Exception cause) {
+    public ProblemImpl(String sourceClassName,
+                       String bundleName,
+                       Severity severity,
+                       Object problemObject,
+                       String messageId,
+                       Exception cause) {
         this.sourceClassName = sourceClassName;
-        this.bundleName = bundleName;   
-        this.severity = severity;        
+        this.bundleName = bundleName;
+        this.severity = severity;
         this.problemObject = problemObject;
         this.messageId = messageId;
         this.cause = cause;
-    }    
+    }
 
     public String getSourceClassName() {
         return sourceClassName;
     }
-    
+
     public String getBundleName() {
         return bundleName;
     }
-    
+
     public Severity getSeverity() {
         return severity;
     }
-    
+
     public Object getProblemObject() {
         return problemObject;
     }
-    
+
     public String getMessageId() {
         return messageId;
     }
@@ -103,20 +113,20 @@ public class ProblemImpl implements Problem {
     public Object[] getMessageParams() {
         return messageParams;
     }
-    
+
     public Exception getCause() {
         return cause;
-    }    
+    }
 
     @Override
     public String toString() {
         Logger logger = Logger.getLogger(sourceClassName, bundleName);
-        
+
         LogRecord record = new LogRecord(Level.INFO, messageId);
-        
-        if (cause == null){
+
+        if (cause == null) {
             record.setParameters(messageParams);
-            
+
         } else {
             Object[] params = new String[1];
             params[0] = cause.toString();
@@ -124,9 +134,9 @@ public class ProblemImpl implements Problem {
         }
         record.setResourceBundle(logger.getResourceBundle());
         record.setSourceClassName(sourceClassName);
- 
+
         Formatter formatter = new SimpleFormatter();
-        
+
         return formatter.formatMessage(record);
     }
 }

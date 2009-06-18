@@ -35,21 +35,21 @@ public interface Monitor {
      * @param problem
      */
     void problem(Problem problem);
-    
+
     /** 
      * Returns a list of reported problems. 
      * 
      * @return the list of problems. The list may be empty
      */
     List<Problem> getProblems();
-    
+
     /**
      * Returns the last logged problem.
      * 
      * @return
      */
     public Problem getLastProblem();
-    
+
     /**
      * Create a new problem.
      * 
@@ -61,7 +61,12 @@ public interface Monitor {
      * @param cause             the exception which caused the problem
      * @return
      */
-    Problem createProblem(String sourceClassName, String bundleName, Severity severity, Object problemObject, String messageId, Exception cause);
+    Problem createProblem(String sourceClassName,
+                          String bundleName,
+                          Severity severity,
+                          Object problemObject,
+                          String messageId,
+                          Exception cause);
 
     /**
      * Create a new problem.
@@ -74,18 +79,23 @@ public interface Monitor {
      * @param messageParams     the parameters of the problem message
      * @return
      */
-    Problem createProblem(String sourceClassName, String bundleName, Severity severity, Object problemObject, String messageId, Object... messageParams );
-    
+    Problem createProblem(String sourceClassName,
+                          String bundleName,
+                          Severity severity,
+                          Object problemObject,
+                          String messageId,
+                          Object... messageParams);
+
     /**
      * Set the name of an artifact for which errors are Monitored
      * @param artifactName the artifact name
      */
-    void setArtifactName( String artifactName );
-    
+    void setArtifactName(String artifactName);
+
     /**
      * Get the name of the artifact for which errors are Monitored
      * @return the name of the Artifact or null if no artifact name has been set
      */
     String getArtifactName();
-    
+
 }

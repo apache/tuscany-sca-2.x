@@ -30,63 +30,67 @@ import org.junit.Test;
  * @version $Rev$ $Date$
  */
 public class MonitorTestCase {
-    
+
     private static MonitorFactory monitorFactory;
-    
+
     @BeforeClass
     public static void init() throws Exception {
-        monitorFactory = new DefaultMonitorFactory();        
+        monitorFactory = new DefaultMonitorFactory();
     }
-    
+
     @AfterClass
     public static void destroy() throws Exception {
         monitorFactory = null;
     }
-    
+
     @Test
-    public void testCreateProblem() throws Exception {  
+    public void testCreateProblem() throws Exception {
         String dummyModelObject = "DUMMY MODEL OBJECT";
-        
+
         Monitor monitor = monitorFactory.createMonitor();
-        
+
         Problem problem = null;
-        
-        problem = monitor.createProblem(this.getClass().getName(), 
-                                  "tuscany-monitor-test-messages", 
-                                  Severity.WARNING, 
-                                  dummyModelObject, 
-                                  "MESSAGE1" );
+
+        problem =
+            monitor.createProblem(this.getClass().getName(),
+                                  "tuscany-monitor-test-messages",
+                                  Severity.WARNING,
+                                  dummyModelObject,
+                                  "MESSAGE1");
         monitor.problem(problem);
-        
+
         String param = "Some Parameter";
-        
-        problem = monitor.createProblem(this.getClass().getName(), 
-                                  "tuscany-monitor-test-messages", 
-                                  Severity.WARNING, 
-                                  dummyModelObject, 
+
+        problem =
+            monitor.createProblem(this.getClass().getName(),
+                                  "tuscany-monitor-test-messages",
+                                  Severity.WARNING,
+                                  dummyModelObject,
                                   "MESSAGE2",
                                   param);
         monitor.problem(problem);
-        
-        problem = monitor.createProblem(this.getClass().getName(), 
-                                  "tuscany-monitor-test-messages", 
-                                  Severity.WARNING, 
-                                  dummyModelObject, 
+
+        problem =
+            monitor.createProblem(this.getClass().getName(),
+                                  "tuscany-monitor-test-messages",
+                                  Severity.WARNING,
+                                  dummyModelObject,
                                   "MESSAGE3",
-                                  8, 
-                                  9, 
+                                  8,
+                                  9,
                                   4);
         monitor.problem(problem);
-        
+
         Exception ex = new IllegalStateException("TEST_MESSAGE");
-        
-        problem = monitor.createProblem(this.getClass().getName(), 
-                                  "tuscany-monitor-test-messages", 
-                                  Severity.ERROR, 
-                                  dummyModelObject, 
+
+        problem =
+            monitor.createProblem(this.getClass().getName(),
+                                  "tuscany-monitor-test-messages",
+                                  Severity.ERROR,
+                                  dummyModelObject,
                                   "MESSAGE4",
                                   ex);
-        monitor.problem(problem);          
-        
+        monitor.problem(problem);
+
     }
 }

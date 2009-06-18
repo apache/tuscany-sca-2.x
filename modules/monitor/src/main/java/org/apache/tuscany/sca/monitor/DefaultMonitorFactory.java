@@ -21,21 +21,20 @@ package org.apache.tuscany.sca.monitor;
 
 import org.apache.tuscany.sca.monitor.impl.MonitorImpl;
 
-
 /**
  * A factory for creating validation monitors
  *
  * @version $Rev$ $Date$
  */
 public class DefaultMonitorFactory implements MonitorFactory {
-    
+
     private Monitor monitor = null;
 
     public Monitor createMonitor() {
         if (monitor == null) {
             monitor = new MonitorImpl();
         }
-        return monitor ;
+        return monitor;
     }
 
 }

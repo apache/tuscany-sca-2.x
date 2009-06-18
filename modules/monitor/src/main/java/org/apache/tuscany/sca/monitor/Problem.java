@@ -19,31 +19,28 @@
 
 package org.apache.tuscany.sca.monitor;
 
-
 /**
  * Records an validation problem. 
  *
  * @version $Rev$ $Date$
  */
 public interface Problem {
-    
+
     public enum Severity {
-        INFO,
-        WARNING,
-        ERROR
+        INFO, WARNING, ERROR
     }
-    
+
     String getSourceClassName();
-    
+
     String getBundleName();
-    
-    Severity getSeverity();    
-    
+
+    Severity getSeverity();
+
     Object getProblemObject();
-    
+
     String getMessageId();
-    
+
     Exception getCause();
-    
+
     Object[] getMessageParams();
 }

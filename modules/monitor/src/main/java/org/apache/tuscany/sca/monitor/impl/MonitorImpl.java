@@ -35,69 +35,79 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
  */
 public class MonitorImpl implements Monitor {
     private static final Logger logger = Logger.getLogger(MonitorImpl.class.getName());
-    
+
     // Cache all the problem reported to monitor for further analysis
     private List<Problem> problemCache = new ArrayList<Problem>();
-    
+
     // Name of an artifact for which problems are being Monitored
     private String artifactName = null;
 
     public void problem(Problem problem) {
-        
+
         Logger problemLogger = Logger.getLogger(problem.getSourceClassName(), problem.getBundleName());
-        
-        if (problemLogger == null){
-            logger.severe("Can't get logger " + problem.getSourceClassName()+ " with bundle " + problem.getBundleName());
+
+        if (problemLogger == null) {
+            logger.severe("Can't get logger " + problem.getSourceClassName()
+                + " with bundle "
+                + problem.getBundleName());
         }
-        
+
         if (problem.getSeverity() == Severity.INFO) {
-        	problemCache.add(problem);
-            problemLogger.logp(Level.INFO, problem.getSourceClassName(), null, 
-            		              problem.getMessageId(), problem.getMessageParams());
-        } 
-        else if (problem.getSeverity() == Severity.WARNING) {
             problemCache.add(problem);
-            problemLogger.logp(Level.WARNING, problem.getSourceClassName(), null, 
-            		              problem.getMessageId(), problem.getMessageParams());
-        } 
-        else if (problem.getSeverity() == Severity.ERROR) {
+            problemLogger.logp(Level.INFO, problem.getSourceClassName(), null, problem.getMessageId(), problem
+                .getMessageParams());
+        } else if (problem.getSeverity() == Severity.WARNING) {
+            problemCache.add(problem);
+            problemLogger.logp(Level.WARNING, problem.getSourceClassName(), null, problem.getMessageId(), problem
+                .getMessageParams());
+        } else if (problem.getSeverity() == Severity.ERROR) {
             if (problem.getCause() != null) {
                 problemCache.add(problem);
-                problemLogger.logp(Level.SEVERE, problem.getSourceClassName(), 
-                    		        null, problem.getMessageId(), problem.getCause().toString());
+                problemLogger.logp(Level.SEVERE, problem.getSourceClassName(), null, problem.getMessageId(), problem
+                    .getCause().toString());
 
             } else {
                 problemCache.add(problem);
-                problemLogger.logp(Level.SEVERE, problem.getSourceClassName(), null, 
-                		           problem.getMessageId(), problem.getMessageParams());
+                problemLogger.logp(Level.SEVERE, problem.getSourceClassName(), null, problem.getMessageId(), problem
+                    .getMessageParams());
             }
         }
     }
-    
-    public List<Problem> getProblems(){
+
+    public List<Problem> getProblems() {
         return problemCache;
     }
-    
-    public Problem getLastProblem(){
+
+    public Problem getLastProblem() {
         if (problemCache.isEmpty()) {
             return null;
         }
         return problemCache.get(problemCache.size() - 1);
     }
-    
-    public Problem createProblem(String sourceClassName, String bundleName, Severity severity, Object problemObject, String messageId, Exception cause) {
+
+    public Problem createProblem(String sourceClassName,
+                                 String bundleName,
+                                 Severity severity,
+                                 Object problemObject,
+                                 String messageId,
+                                 Exception cause) {
         return new ProblemImpl(sourceClassName, bundleName, severity, problemObject, messageId, cause);
     }
-    
-    public Problem createProblem(String sourceClassName, String bundleName, Severity severity, Object problemObject, String messageId, Object... messageParams) {
+
+    public Problem createProblem(String sourceClassName,
+                                 String bundleName,
+                                 Severity severity,
+                                 Object problemObject,
+                                 String messageId,
+                                 Object... messageParams) {
         return new ProblemImpl(sourceClassName, bundleName, severity, problemObject, messageId, messageParams);
     }
 
-	public String getArtifactName() {
-		return artifactName;
-	}
+    public String getArtifactName() {
+        return artifactName;
+    }
 
-	public void setArtifactName(String artifactName) {
-		this.artifactName = artifactName;
-	}
+    public void setArtifactName(String artifactName) {
+        this.artifactName = artifactName;
+    }
 }
