@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.binding.ws.axis2;
@@ -29,6 +29,7 @@ import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -86,7 +87,6 @@ import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.axis2.Axis2ServiceClient.URIResolverImpl;
 import org.apache.tuscany.sca.binding.ws.axis2.policy.authentication.token.Axis2TokenAuthenticationPolicy;
 import org.apache.tuscany.sca.binding.ws.axis2.policy.configuration.Axis2ConfigParamPolicy;
-import org.apache.tuscany.sca.binding.ws.axis2.policy.configurator.Axis2BindingBasicAuthenticationConfigurator;
 import org.apache.tuscany.sca.binding.ws.axis2.policy.configurator.Axis2BindingHeaderConfigurator;
 import org.apache.tuscany.sca.binding.ws.axis2.policy.header.Axis2HeaderPolicy;
 import org.apache.tuscany.sca.binding.ws.axis2.policy.header.Axis2SOAPHeaderString;
@@ -102,7 +102,6 @@ import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySubject;
 import org.apache.tuscany.sca.policy.authentication.basic.BasicAuthenticationPolicy;
-import org.apache.tuscany.sca.runtime.ReferenceParameters;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
@@ -117,8 +116,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import edu.emory.mathcs.backport.java.util.Collections;
 
 public class Axis2ServiceProvider {
     public static final String IMPORT_TAG = "import";
@@ -310,7 +307,7 @@ public class Axis2ServiceProvider {
                     }
                 }
             }
-        } 
+        }
         */
     }
 
@@ -359,8 +356,8 @@ public class Axis2ServiceProvider {
             }
 
             // construct the rest of the URI based on the policy. All the details are put
-            // into the URI here rather than being place directly into the Axis configuration 
-            // as the Axis JMS sender relies on parsing the target URI      
+            // into the URI here rather than being place directly into the Axis configuration
+            // as the Axis JMS sender relies on parsing the target URI
             Axis2ConfigParamPolicy axis2ConfigParamPolicy = null;
             for (Object policy : transportJmsPolicySet.getPolicies()) {
                 if (policy instanceof Axis2ConfigParamPolicy) {
@@ -583,7 +580,7 @@ public class Axis2ServiceProvider {
         // [rfeng] Add a custom resolver to work around WSCOMMONS-228
         builder.setCustomResolver(new URIResolverImpl(def));
         builder.setBaseUri(def.getDocumentBaseURI());
-        // [rfeng]        
+        // [rfeng]
         // AxisService axisService = builder.populateService();
         // Allow privileged access to read properties. Requires PropertiesPermission read in
         // security policy.
@@ -769,8 +766,8 @@ public class Axis2ServiceProvider {
                         callbackAddress = callbackAddrElement.getText();
                     }
                 }
-                
-/* TODO - EPR - not required by OASIS                
+
+/* TODO - EPR - not required by OASIS
                 OMElement params = from.getFirstChildWithName(QNAME_WSA_REFERENCE_PARAMETERS);
                 if (params != null) {
                     OMElement convIDElement =
@@ -803,7 +800,7 @@ public class Axis2ServiceProvider {
             }
         }
 
-        //fill message with QoS context info 
+        //fill message with QoS context info
         fillQoSContext(msg, inMC);
 
         // Create a from EPR to hold the details of the callback endpoint
@@ -812,7 +809,7 @@ public class Axis2ServiceProvider {
             from = assemblyFactory.createEndpointReference();
             Endpoint fromEndpoint = assemblyFactory.createEndpoint();
             from.setTargetEndpoint(fromEndpoint);
-            msg.setFrom(from);   
+            msg.setFrom(from);
             Endpoint callbackEndpoint = assemblyFactory.createEndpoint();
             callbackEndpoint.setURI(callbackAddress);
             callbackEndpoint.setUnresolved(true);
@@ -850,7 +847,7 @@ public class Axis2ServiceProvider {
     /**
      * Return the binding for this provider as a primitive binding type
      * For use when looking up wires registered against the binding.
-     * 
+     *
      * @return the binding
      */
     protected Binding getBinding() {
@@ -862,14 +859,14 @@ public class Axis2ServiceProvider {
 
             // code to create policy handlers using a policy SPI based
             // on policy providers
-            /*            
+            /*
                         List<PolicyProvider> policyProviders = ((RuntimeComponentService)contract).getPolicyProviders(wsBinding);
-                        
+
                         for (PolicyProvider policyProvider : policyProviders){
                             policyHandler = policyProvider.createHandler();
                             if (policyHandler != null) {
                                 policyHandlerList.add(policyHandler);
-                            } 
+                            }
                         }
             */
         }
