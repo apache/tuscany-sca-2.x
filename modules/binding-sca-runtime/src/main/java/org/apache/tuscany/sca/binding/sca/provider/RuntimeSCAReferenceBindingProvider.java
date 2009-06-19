@@ -56,6 +56,7 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
 
     private static final Logger logger = Logger.getLogger(RuntimeSCAReferenceBindingProvider.class.getName());
 
+    private EndpointReference endpointReference;
     private RuntimeComponent component;
     private RuntimeComponentReference reference;
     private SCABinding binding;
@@ -66,12 +67,11 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
     private SCABindingFactory scaBindingFactory;
 
     public RuntimeSCAReferenceBindingProvider(ExtensionPointRegistry extensionPoints,
-                                              RuntimeComponent component,
-                                              RuntimeComponentReference reference,
-                                              SCABinding binding) {
-        this.component = component;
-        this.reference = reference;
-        this.binding = binding;
+                                              EndpointReference endpointReference) {
+        this.endpointReference = endpointReference;
+        this.component = (RuntimeComponent)endpointReference.getComponent();
+        this.reference = (RuntimeComponentReference)endpointReference.getReference();
+        this.binding = (SCABinding)endpointReference.getBinding();
         this.scaBindingFactory =
             extensionPoints.getExtensionPoint(FactoryExtensionPoint.class).getFactory(SCABindingFactory.class);
 
@@ -89,12 +89,9 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
     public boolean isTargetRemote() {
         boolean targetIsRemote = false;
 
-        // first look at the target service and see if this has been resolved
-        OptimizableBinding optimizableBinding = (OptimizableBinding)binding;
-
         // The decision is based on the results of the wiring process in the assembly model
         // The SCA binding is used to represent unresolved reference targets, i.e. those
-        // reference targets that need resolving at run time. We can tell by lookin if the
+        // reference targets that need resolving at run time. We can tell by looking if the
         // service to which this binding refers is resolved or not.
         //
         // TODO - When a callback is in operation. A callback reference bindings sometimes has to
@@ -107,12 +104,9 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
             } else {
                 targetIsRemote = true;
             }
-        } else if (optimizableBinding.getTargetComponentService() != null) {
-            if (optimizableBinding.getTargetComponentService().isUnresolved() == true) {
-                targetIsRemote = true;
-            } else {
-                targetIsRemote = false;
-            }
+        } if ( (endpointReference.isRemoteReference()) &&
+               (endpointReference.getTargetEndpoint().isRemoteReference())){
+            targetIsRemote = true;
         } else {
             // the case where the wire is specified by URI, e.g. callbacks or user specified bindings, and
             // look at the provided URI to decide whether it is a local or remote case
@@ -156,9 +150,18 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
                 // create the remote provider
                 DistributedSCABinding distributedBinding = scaBindingFactory.createDistributedSCABinding();
                 distributedBinding.setSCABinding(binding);
+                
+                // create a copy of the endpoint reference and change the binding
+                EndpointReference epr = null;
+                try {
+                    epr = (EndpointReference)endpointReference.clone();
+                } catch (Exception ex) {
+                    // we know we can clone endpoint references
+                }
+                epr.setBinding(distributedBinding);
 
                 distributedProvider =
-                    distributedProviderFactory.createReferenceBindingProvider(component, reference, distributedBinding);
+                    distributedProviderFactory.createReferenceBindingProvider(epr);
             }
         }
 

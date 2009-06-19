@@ -298,7 +298,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
         }
 
         for (Endpoint endpoint : service.getEndpoints()) {
-            addServiceBindingProvider(component, service, endpoint.getBinding());
+            addServiceBindingProvider(endpoint, component, service, endpoint.getBinding());
         }
         addServiceWires(component, service);
     }
@@ -314,6 +314,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
     }
 
     private ServiceBindingProvider addServiceBindingProvider(
+            Endpoint endpoint, 
             RuntimeComponent component, RuntimeComponentService service,
             Binding binding) {
         BindingProviderFactory providerFactory = (BindingProviderFactory) providerFactories
@@ -321,8 +322,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
         if (providerFactory != null) {
             @SuppressWarnings("unchecked")
             ServiceBindingProvider bindingProvider = providerFactory
-                    .createServiceBindingProvider((RuntimeComponent) component,
-                            (RuntimeComponentService) service, binding);
+                    .createServiceBindingProvider(endpoint);
             if (bindingProvider != null) {
                 ((RuntimeComponentService) service).setBindingProvider(binding,
                         bindingProvider);

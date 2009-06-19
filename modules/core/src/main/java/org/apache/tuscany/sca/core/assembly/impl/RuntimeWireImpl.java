@@ -316,7 +316,8 @@ public class RuntimeWireImpl implements RuntimeWire {
         RuntimeComponentReference runtimeRef = (RuntimeComponentReference)endpointReference.getReference();
 
         if (runtimeRef.getBindingProvider(endpointReference.getBinding()) == null) {
-            addReferenceBindingProvider((RuntimeComponent)endpointReference.getComponent(),
+            addReferenceBindingProvider(endpointReference,
+                    (RuntimeComponent)endpointReference.getComponent(),
                     runtimeRef,
                     endpointReference.getBinding());
         }
@@ -340,6 +341,7 @@ public class RuntimeWireImpl implements RuntimeWire {
     }
 
     private ReferenceBindingProvider addReferenceBindingProvider(
+            EndpointReference endpointReference, 
             RuntimeComponent component, RuntimeComponentReference reference,
             Binding binding) {
         BindingProviderFactory providerFactory = (BindingProviderFactory) providerFactories
@@ -347,9 +349,7 @@ public class RuntimeWireImpl implements RuntimeWire {
         if (providerFactory != null) {
             @SuppressWarnings("unchecked")
             ReferenceBindingProvider bindingProvider = providerFactory
-                    .createReferenceBindingProvider(
-                            (RuntimeComponent) component,
-                            (RuntimeComponentReference) reference, binding);
+                    .createReferenceBindingProvider(endpointReference);
             if (bindingProvider != null) {
                 ((RuntimeComponentReference) reference).setBindingProvider(
                         binding, bindingProvider);

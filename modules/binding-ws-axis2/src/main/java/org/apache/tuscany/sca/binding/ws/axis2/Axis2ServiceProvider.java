@@ -83,6 +83,7 @@ import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
+import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.axis2.Axis2ServiceClient.URIResolverImpl;
 import org.apache.tuscany.sca.binding.ws.axis2.policy.authentication.token.Axis2TokenAuthenticationPolicy;
@@ -835,6 +836,18 @@ public class Axis2ServiceProvider {
 
         // find the runtime wire and invoke it with the message
         RuntimeWire wire = ((RuntimeComponentService)contract).getRuntimeWire(getBinding());
+        
+        // TODO - EPR - if there is no wire then find the wire for the SCA binding
+        //              because this WS endpoint is providing remote support for the 
+        //              SCA binding
+        if (wire == null){
+            for(RuntimeWire tmpWire : ((RuntimeComponentService)contract).getRuntimeWires()){
+                if (tmpWire.getEndpoint().getBinding() instanceof SCABinding){
+                    wire = tmpWire;
+                    break;
+                }
+            }
+        }
         Object response = wire.invoke(op, msg);
 
         return response;

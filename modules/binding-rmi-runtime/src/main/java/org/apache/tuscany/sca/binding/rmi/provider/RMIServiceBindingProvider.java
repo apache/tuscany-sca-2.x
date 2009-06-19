@@ -32,6 +32,7 @@ import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 
+import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.binding.rmi.RMIBinding;
 import org.apache.tuscany.sca.host.rmi.RMIHost;
 import org.apache.tuscany.sca.host.rmi.RMIHostException;
@@ -60,10 +61,10 @@ public class RMIServiceBindingProvider implements ServiceBindingProvider {
     private RuntimeWire wire;
     private Remote rmiProxy;
 
-    public RMIServiceBindingProvider(RuntimeComponent rc, RuntimeComponentService rcs, RMIBinding binding, RMIHost rmiHost) {
-        this.component = rc;
-        this.service = rcs;
-        this.binding = binding;
+    public RMIServiceBindingProvider(Endpoint endpoint, RMIHost rmiHost) {
+        this.component = (RuntimeComponent)endpoint.getComponent();
+        this.service = (RuntimeComponentService)endpoint.getService();
+        this.binding = (RMIBinding)endpoint.getBinding();
         this.rmiHost = rmiHost;
     }
 

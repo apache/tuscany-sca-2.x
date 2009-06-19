@@ -22,6 +22,8 @@ package org.apache.tuscany.sca.binding.sca.provider;
 import java.net.URI;
 
 import org.apache.tuscany.sca.assembly.DistributedSCABinding;
+import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
@@ -43,16 +45,22 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
  */
 public class RuntimeSCAServiceBindingProvider implements ServiceBindingProvider {
 
+    private RuntimeComponent component;
     private RuntimeComponentService service;
+    private SCABinding binding;
+    
+    
     private BindingProviderFactory<DistributedSCABinding> distributedProviderFactory;
     private ServiceBindingProvider distributedProvider;
     private DistributedSCABinding distributedBinding;
+    
 
     public RuntimeSCAServiceBindingProvider(ExtensionPointRegistry extensionPoints,
-                                            RuntimeComponent component,
-                                            RuntimeComponentService service,
-                                            SCABinding binding) {
-        this.service = service;
+                                            Endpoint endpoint) {
+        this.component = (RuntimeComponent)endpoint.getComponent();
+        this.service = (RuntimeComponentService)endpoint.getService();
+        this.binding = (SCABinding)endpoint.getBinding();
+        
         // if there is potentially a wire to this service that crosses the node boundary
         if (service.getInterfaceContract().getInterface().isRemotable()) {
 
@@ -85,9 +93,18 @@ public class RuntimeSCAServiceBindingProvider implements ServiceBindingProvider 
                     //  create a nested provider to handle the remote case
                     distributedBinding = scaBindingFactory.createDistributedSCABinding();
                     distributedBinding.setSCABinding(binding);
+                    
+                    // create a copy of the endpoint and change the binding
+                    Endpoint ep = null;
+                    try {
+                        ep = (Endpoint)endpoint.clone();
+                    } catch (Exception ex) {
+                        // we know we can clone endpoint 
+                    }
+                    ep.setBinding(distributedBinding);
 
                     distributedProvider =
-                        distributedProviderFactory.createServiceBindingProvider(component, service, distributedBinding);
+                        distributedProviderFactory.createServiceBindingProvider(ep);
 
 
                 } else {

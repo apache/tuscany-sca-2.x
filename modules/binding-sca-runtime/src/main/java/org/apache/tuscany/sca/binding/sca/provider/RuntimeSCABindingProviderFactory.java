@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.binding.sca.provider;
 
+import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
@@ -42,17 +44,13 @@ public class RuntimeSCABindingProviderFactory implements BindingProviderFactory<
      
     } 
     
-    public ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component,
-                                                                   RuntimeComponentReference reference,
-                                                                   SCABinding binding) {
+    public ReferenceBindingProvider createReferenceBindingProvider(EndpointReference endpointReference) {
               
-        return  new RuntimeSCAReferenceBindingProvider(extensionPoints, component, reference, binding);
+        return  new RuntimeSCAReferenceBindingProvider(extensionPoints, endpointReference);
     }
 
-    public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component,
-                                                               RuntimeComponentService service,
-                                                               SCABinding binding) {
-        return new RuntimeSCAServiceBindingProvider(extensionPoints, component, service, binding);
+    public ServiceBindingProvider createServiceBindingProvider(Endpoint endpoint) {
+        return new RuntimeSCAServiceBindingProvider(extensionPoints, endpoint);
     }
 
     public Class<SCABinding> getModelType() {

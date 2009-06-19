@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.binding.rmi.provider;
 
+import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.binding.rmi.RMIBinding;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.host.rmi.ExtensibleRMIHost;
@@ -45,17 +47,13 @@ public class RMIBindingProviderFactory implements BindingProviderFactory<RMIBind
         this.rmiHost = new ExtensibleRMIHost(rmiHosts);
     }
     
-    public ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component,
-                                                                   RuntimeComponentReference reference,
-                                                                   RMIBinding binding) {
+    public ReferenceBindingProvider createReferenceBindingProvider(EndpointReference endpointReference) {
         
-        return new RMIReferenceBindingProvider(component, reference, binding, rmiHost);
+        return new RMIReferenceBindingProvider(endpointReference, rmiHost);
     }
 
-    public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component,
-                                                               RuntimeComponentService service,
-                                                               RMIBinding binding) {
-        return new RMIServiceBindingProvider(component, service, binding, rmiHost);
+    public ServiceBindingProvider createServiceBindingProvider(Endpoint endpoint) {
+        return new RMIServiceBindingProvider(endpoint, rmiHost);
     }
 
     public Class<RMIBinding> getModelType() {

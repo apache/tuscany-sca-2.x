@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
@@ -235,17 +237,13 @@ public class DefaultProviderFactoryExtensionPoint implements ProviderFactoryExte
         }
 
         @SuppressWarnings("unchecked")
-        public ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component,
-                                                                       RuntimeComponentReference reference,
-                                                                       Binding binding) {
-            return getFactory().createReferenceBindingProvider(component, reference, binding);
+        public ReferenceBindingProvider createReferenceBindingProvider(EndpointReference endpointReference) {
+            return getFactory().createReferenceBindingProvider(endpointReference);
         }
 
         @SuppressWarnings("unchecked")
-        public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component,
-                                                                   RuntimeComponentService service,
-                                                                   Binding binding) {
-            return getFactory().createServiceBindingProvider(component, service, binding);
+        public ServiceBindingProvider createServiceBindingProvider(Endpoint endpoint) {
+            return getFactory().createServiceBindingProvider(endpoint);
         }
 
         public Class<?> getModelType() {

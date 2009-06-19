@@ -20,9 +20,8 @@
 package org.apache.tuscany.sca.provider;
 
 import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
-import org.apache.tuscany.sca.runtime.RuntimeComponentService;
+import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 
 /**
  * A factory for creating the runtime artifacts that represent bindings.
@@ -32,29 +31,20 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 public interface BindingProviderFactory<M extends Binding> extends ProviderFactory<M> {
 
     /**
-     * Creates a new reference binding provider for the given component and
-     * reference.
+     * Creates a new reference binding provider for the given endpoint reference
      * 
-     * @param component The runtime component
-     * @param reference The reference on the runtime component
-     * @param binding The binding assembly model object
+     * @param endpointReference defines the component/reference/binding against which to create the provider
      * @return The binding provider
      */
-    ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component,
-                                                            RuntimeComponentReference reference,
-                                                            M binding);
+    ReferenceBindingProvider createReferenceBindingProvider(EndpointReference endpointReference);
 
     /**
      * Creates a new service binding provider for the given component and
      * service.
      * 
-     * @param component The runtime component
-     * @param service The service on the runtime component
-     * @param binding The binding assembly model object
+     * @param endpoint defines the component/service/binding against which to create the provider
      * @return The binding provider
      */
-    ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component,
-                                                        RuntimeComponentService service,
-                                                        M binding);
+    ServiceBindingProvider createServiceBindingProvider(Endpoint endpoint);
 
 }

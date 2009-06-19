@@ -19,6 +19,7 @@
 package org.apache.tuscany.sca.binding.ws.axis2;
 
 import org.apache.axiom.om.OMElement;
+import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
@@ -32,12 +33,13 @@ import org.oasisopen.sca.ServiceRuntimeException;
 
 public class Axis2ServiceBindingProvider implements ServiceBindingProvider {
 
+    private RuntimeComponent component;
+    private RuntimeComponentService service;
     private WebServiceBinding wsBinding;
+    
     private Axis2ServiceProvider axisProvider;
 
-    public Axis2ServiceBindingProvider(RuntimeComponent component,
-                                       RuntimeComponentService service,
-                                       WebServiceBinding wsBinding,
+    public Axis2ServiceBindingProvider(Endpoint endpoint,
                                        ServletHost servletHost,
                                        FactoryExtensionPoint modelFactories,
                                        DataBindingExtensionPoint dataBindings) {
@@ -47,7 +49,9 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider {
         }
 
         MessageFactory messageFactory = modelFactories.getFactory(MessageFactory.class); 
-        this.wsBinding = wsBinding;
+        this.wsBinding = (WebServiceBinding)endpoint.getBinding();
+        this.component = (RuntimeComponent)endpoint.getComponent();
+        this.service = (RuntimeComponentService)endpoint.getService();
 
         // A WSDL document should always be present in the binding
         if (wsBinding.getWSDLDocument() == null) {

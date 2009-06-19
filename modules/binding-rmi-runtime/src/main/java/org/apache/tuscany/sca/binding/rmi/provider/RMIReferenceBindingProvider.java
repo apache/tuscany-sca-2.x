@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.binding.rmi.provider;
 
 import java.lang.reflect.Method;
 
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.binding.rmi.RMIBinding;
 import org.apache.tuscany.sca.host.rmi.RMIHost;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
@@ -43,12 +44,10 @@ public class RMIReferenceBindingProvider implements ReferenceBindingProvider {
     private RMIBinding binding;
     private RMIHost rmiHost;
     
-    public RMIReferenceBindingProvider(RuntimeComponent component,
-                                           RuntimeComponentReference reference,
-                                           RMIBinding binding,
-                                           RMIHost rmiHost) {
-           this.reference = reference;
-           this.binding = binding;
+    public RMIReferenceBindingProvider(EndpointReference endpointReference,
+                                       RMIHost rmiHost) {
+           this.reference = (RuntimeComponentReference)endpointReference.getReference();
+           this.binding = (RMIBinding)endpointReference.getBinding();
            this.rmiHost = rmiHost;
     }
 
