@@ -27,6 +27,7 @@
     </parent>
     <artifactId>tuscany-otests</artifactId>
     <name>Apache Tuscany SCA Specification Tests</name>
+    <packaging>pom</packaging>
 
     <repositories>
         <repository>
@@ -64,9 +65,82 @@
             <scope>test</scope>
         </dependency>
 
-</dependencies>
+	</dependencies>
+	
+    <modules>
+        <module>General</module>
+        <module>General_C</module>
+        <module>General_CPP</module>
+        <module>General_Java</module>
+        <module>ASM_10001</module>
+        <module>ASM_10003</module>
+        <module>ASM_12001</module>
+        <module>ASM_12002</module>
+        <module>ASM_12003</module>
+        <module>ASM_12005</module>
+        <module>ASM_12007</module>
+        <module>ASM_12008</module>
+        <module>ASM_12009</module>
+        <module>ASM_12010</module>
+        <module>ASM_12012</module>
+        <module>ASM_12013</module>
+        <module>ASM_13001</module>
+        <module>ASM_13002</module>
+        <module>ASM_13003</module>
+        <module>ASM_13004</module>
+        <module>ASM_13005</module>
+        <module>ASM_13006</module>
+        <module>ASM_13007</module>
+        <module>ASM_13008</module>
+        <module>ASM_4002</module>
+        <module>ASM_4003</module>
+        <module>ASM_4004</module>
+        <module>ASM_4007</module>
+        <module>ASM_5004</module>
+        <module>ASM_5005</module>
+        <module>ASM_5007</module>
+        <module>ASM_5009</module>
+        <module>ASM_5023</module>
+        <module>ASM_5024</module>
+        <module>ASM_5027</module>
+        <module>ASM_5030</module>
+        <module>ASM_5035</module>
+        <module>ASM_6001</module>
+        <module>ASM_6002</module>
+        <module>ASM_6003</module>
+        <module>ASM_6005</module>
+        <module>ASM_6006</module>
+        <module>ASM_6008</module>
+        <module>ASM_6012</module>
+        <module>ASM_6021</module>
+        <module>ASM_6022</module>
+        <module>ASM_6025</module>
+        <module>ASM_6028</module>
+        <module>ASM_6029</module>
+        <module>ASM_6031</module>
+        <module>ASM_6032</module>
+        <module>ASM_6033</module>
+        <module>ASM_7001</module>
+        <module>ASM_7007</module>
+        <module>ASM_7008</module>
+        <module>ASM_7009</module>
+        <module>ASM_7010</module>
+        <module>ASM_8001</module>
+        <module>ASM_8001_Java</module>
+        <module>ASM_8003</module>
+        <module>ASM_8004</module>
+        <module>ASM_8005</module>
+        <module>ASM_8010</module>
+        <module>ASM_8011</module>
+        <module>ASM_8012</module>
+        <module>ASM_9002</module>
+        <module>Contribution1</module>
+        <module>Contribution2</module>
+        <module>tests</module>
+    </modules>
+	
     <build>
-        <plugins> 
+        <!-- plugins> 
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
               <artifactId>build-helper-maven-plugin</artifactId>
@@ -81,11 +155,14 @@
                            <sources>
                                 <source>${basedir}/src/main/resources/General</source>
                            </sources>
+                           <sources>
+                                <source>${basedir}/src/main/resources/General_Java</source>
+                           </sources>
                        </configuration>
                   </execution>
                </executions>
     
             </plugin>
-        </plugins>
+        </plugins-->
     </build>
 </project>
