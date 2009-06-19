@@ -392,7 +392,12 @@ public class JettyServer implements ServletHost {
         // Get the port object associated with the given port number
         Port port = ports.get(portNumber);
         if (port == null) {
-            throw new IllegalStateException("No servlet registered at this URI: " + suri);
+            // TODO - EPR - SL commented out exception temporarily as the runtime is shared
+            //              between multiple nodes in a VM and shutting down one node blows
+            //              up any other nodes when they shut down. 
+            //throw new IllegalStateException("No servlet registered at this URI: " + suri);
+            System.out.println("No servlet registered at this URI: " + suri);
+            return null;
         }
         
         // Remove the Servlet mapping for the given Servlet 
