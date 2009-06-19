@@ -146,7 +146,7 @@ public interface EndpointReference extends Base, PolicySubject, Cloneable, Seria
      * 
      * @return true if the endpoint is remote
      */
-    boolean getIsRemoteReference();
+    boolean isRemoteReference();
     
     /**
      * Set true if this endpoint reference refers to an endpoint that 

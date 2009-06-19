@@ -201,7 +201,7 @@ public class EndpointReferenceImpl implements EndpointReference {
         this.uri = uri;
     }
     
-    public boolean getIsRemoteReference() {
+    public boolean isRemoteReference() {
         return isRemoteReference;
     }
     
