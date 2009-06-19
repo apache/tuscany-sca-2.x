@@ -51,7 +51,7 @@ public class EndpointImpl implements Endpoint {
     protected List<EndpointReference> callbackEndpointReferences = new ArrayList<EndpointReference>();
     protected List<PolicySet> policySets = new ArrayList<PolicySet>();
     protected List<Intent> requiredIntents = new ArrayList<Intent>();
-    protected boolean isRemoteReference = false;
+    protected boolean remote = false;
 
     protected EndpointImpl(ExtensionPointRegistry registry) {
         this.registry = registry;
@@ -188,11 +188,11 @@ public class EndpointImpl implements Endpoint {
         this.registry = registry;
     }
     
-    public boolean isRemoteReference() {
-        return isRemoteReference;
+    public boolean isRemote() {
+        return remote;
     }
     
-    public void setIsRemoteReference(boolean isRemoteReference) {
-        this.isRemoteReference = isRemoteReference;
+    public void setRemote(boolean remote) {
+        this.remote = remote;
     }    
 }

@@ -36,8 +36,10 @@ import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.builder.EndpointReferenceBuilder;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.conversation.ConversationManager;
+import org.apache.tuscany.sca.core.invocation.ExtensibleWireProcessor;
 import org.apache.tuscany.sca.core.invocation.NonBlockingInterceptor;
 import org.apache.tuscany.sca.core.invocation.RuntimeWireInvoker;
 import org.apache.tuscany.sca.core.invocation.impl.InvocationChainImpl;
@@ -65,6 +67,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.apache.tuscany.sca.runtime.RuntimeWireProcessor;
+import org.apache.tuscany.sca.runtime.RuntimeWireProcessorExtensionPoint;
 import org.apache.tuscany.sca.work.WorkScheduler;
 import org.oasisopen.sca.ServiceRuntimeException;
 
@@ -134,6 +137,28 @@ public class RuntimeWireImpl implements RuntimeWire {
         this.providerFactories = extensionPoints.getExtensionPoint(ProviderFactoryExtensionPoint.class);
     }
 
+    public RuntimeWireImpl(ExtensionPointRegistry extensionPoints,
+                           boolean isReferenceWire,
+                           EndpointReference endpointReference,
+                           Endpoint endpoint) {
+       super();
+       this.extensionPoints = extensionPoints;
+       this.isReferenceWire = isReferenceWire;
+       this.endpointReference = endpointReference;
+       this.endpoint = endpoint;
+
+       UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
+       this.interfaceContractMapper = utilities.getUtility(InterfaceContractMapper.class);
+       this.workScheduler = utilities.getUtility(WorkScheduler.class);
+       this.wireProcessor = new ExtensibleWireProcessor(extensionPoints.getExtensionPoint(RuntimeWireProcessorExtensionPoint.class));
+       FactoryExtensionPoint factories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
+       this.messageFactory = factories.getFactory(MessageFactory.class);
+       this.conversationManager = utilities.getUtility(ConversationManager.class);
+       this.invoker = new RuntimeWireInvoker(this.messageFactory, this.conversationManager, this);
+
+       this.endpointReferenceBuilder = utilities.getUtility(EndpointReferenceBuilder.class);
+       this.providerFactories = extensionPoints.getExtensionPoint(ProviderFactoryExtensionPoint.class);
+   }
     public synchronized List<InvocationChain> getInvocationChains() {
         if (chains == null) {
             initInvocationChains();
@@ -240,7 +265,7 @@ public class RuntimeWireImpl implements RuntimeWire {
     private void initInvocationChains() {
         chains = new ArrayList<InvocationChain>();
         InterfaceContract sourceContract = endpointReference.getInterfaceContract();
-        // TODO - EPR why is this looking at the component types. The endpoint reference should have the right interface contract by this time 
+        // TODO - EPR why is this looking at the component types. The endpoint reference should have the right interface contract by this time
         //InterfaceContract sourceContract = getLeafInterfaceContract(endpointReference);
 
         if (isReferenceWire) {
@@ -250,7 +275,7 @@ public class RuntimeWireImpl implements RuntimeWire {
             InterfaceContract targetContract = endpoint.getInterfaceContract();
             // TODO - EPR why is this looking at the component types. The endpoint should have the right interface contract by this time
             //InterfaceContract targetContract = getLeafInterfaceContract(endpoint);
-            
+
             RuntimeComponentReference reference = (RuntimeComponentReference)endpointReference.getReference();
             Binding refBinding = endpointReference.getBinding();
             for (Operation operation : sourceContract.getInterface().getOperations()) {
@@ -446,7 +471,7 @@ public class RuntimeWireImpl implements RuntimeWire {
     // TODO - EPR remove when we convert fully over to EndpointReference2
 
     // TODO - remove. Just here during development
-/*    
+/*
     static EndpointReference epr;
 
     public EndpointReference getSource() {
@@ -488,7 +513,7 @@ public class RuntimeWireImpl implements RuntimeWire {
         // TODO - can we use the idea of setTarget to rebuild the wire?
 
     }
-*/    
+*/
 
     // ===================================================================
 
@@ -506,7 +531,7 @@ public class RuntimeWireImpl implements RuntimeWire {
     public EndpointReference getEndpointReference() {
         return endpointReference;
     }
-    
+
     public Endpoint getEndpoint() {
         return endpoint;
     }
@@ -647,7 +672,7 @@ public class RuntimeWireImpl implements RuntimeWire {
     }
 
     public synchronized RuntimeWire lookupCache(Endpoint callback) {
-        if (lastCallback != null && 
+        if (lastCallback != null &&
             callback.getURI().equals(lastCallback.getURI()) &&
             !wireReserved) {
             wireReserved = true;

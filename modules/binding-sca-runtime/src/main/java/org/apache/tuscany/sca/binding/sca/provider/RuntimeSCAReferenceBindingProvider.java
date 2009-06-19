@@ -104,8 +104,8 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
             } else {
                 targetIsRemote = true;
             }
-        } if ( (endpointReference.isRemoteReference()) &&
-               (endpointReference.getTargetEndpoint().isRemoteReference())){
+        } if ( (endpointReference.isRemote()) &&
+               (endpointReference.getTargetEndpoint().isRemote())){
             targetIsRemote = true;
         } else {
             // the case where the wire is specified by URI, e.g. callbacks or user specified bindings, and

@@ -211,7 +211,7 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
                     // add an unresolved endpoint reference with an unresolved endpoint to go with it
                     EndpointReference endpointRef = createEndpointRef( component, reference, true  );
                     endpointRef.setTargetEndpoint(createEndpoint(component, targetName));
-                    endpointRef.setIsRemoteReference(true);
+                    endpointRef.setRemote(true);
                     reference.getEndpointReferences().add(endpointRef);
                     warning(monitor, "ComponentReferenceTargetNotFound",
                             composite,
@@ -247,7 +247,7 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
                         // they are doing and mark in as already resolved. 
                         endpointRef.setTargetEndpoint(createEndpoint(false));
                     }
-                    endpointRef.setIsRemoteReference(true);
+                    endpointRef.setRemote(true);
                     reference.getEndpointReferences().add(endpointRef);
                     continue;
                 } // end if
@@ -293,7 +293,7 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
                     Endpoint endpoint = createEndpoint( false );
                     endpoint.setBinding(binding);
                     endpointRef.setTargetEndpoint(endpoint);
-                    endpointRef.setIsRemoteReference(true);
+                    endpointRef.setRemote(true);
                     reference.getEndpointReferences().add(endpointRef);
                 } // end if
             }

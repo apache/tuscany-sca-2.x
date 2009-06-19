@@ -49,7 +49,7 @@ public class EndpointReferenceImpl implements EndpointReference {
     protected List<PolicySet> policySets = new ArrayList<PolicySet>();
     protected List<Intent> requiredIntents = new ArrayList<Intent>();
     protected InterfaceContract interfaceContract;
-    protected boolean isRemoteReference = false;
+    protected boolean remote = false;
 
     // the target of the endpoint reference
     protected Endpoint targetEndpoint;
@@ -201,12 +201,12 @@ public class EndpointReferenceImpl implements EndpointReference {
         this.uri = uri;
     }
     
-    public boolean isRemoteReference() {
-        return isRemoteReference;
+    public boolean isRemote() {
+        return remote;
     }
     
-    public void setIsRemoteReference(boolean isRemoteReference) {
-        this.isRemoteReference = isRemoteReference;
+    public void setRemote(boolean remote) {
+        this.remote = remote;
     }
 
     protected void resolve() {

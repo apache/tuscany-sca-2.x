@@ -133,14 +133,14 @@ public interface Endpoint extends Base, PolicySubject, Cloneable, Serializable {
      * 
      * @return true if the endpoint is remote
      */
-    boolean isRemoteReference();
+    boolean isRemote();
     
     /**
      * Set true if this endpoint represents a serivce that is not
      * running in this JVM
      * 
-     * @param isRemoteReference set to true if the endpoint is remote
+     * @param remote set to true if the endpoint is remote
      */
-    void setIsRemoteReference(boolean isRemoteReference);    
+    void setRemote(boolean remote);    
 
 }

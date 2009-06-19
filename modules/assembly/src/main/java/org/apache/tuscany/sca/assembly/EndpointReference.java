@@ -146,15 +146,15 @@ public interface EndpointReference extends Base, PolicySubject, Cloneable, Seria
      * 
      * @return true if the endpoint is remote
      */
-    boolean isRemoteReference();
+    boolean isRemote();
     
     /**
      * Set true if this endpoint reference refers to an endpoint that 
      * is not running in this endpoint reference
      * 
-     * @param isRemoteReference set to true if the endpoint is remote
+     * @param remote set to true if the endpoint is remote
      */
-    void setIsRemoteReference(boolean isRemoteReference);
+    void setRemote(boolean remote);
 
     /**
      * Set the extension point registry against the endpoint after it is deserialized as
