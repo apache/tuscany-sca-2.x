@@ -61,6 +61,8 @@ public class NodeImpl implements Node, Client {
     private NodeConfiguration configuration;
     private NodeFactoryImpl manager;
 
+    private NodeManager mbean;
+
     public NodeImpl(NodeFactoryImpl manager, NodeConfiguration configuration) {
         super();
         this.configuration = configuration;
@@ -97,8 +99,8 @@ public class NodeImpl implements Node, Client {
 
             MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
             try {
-                NodeManager mbean = new NodeManager(this);
-                mBeanServer.registerMBean(mbean, NodeManager.getName(this));
+                mbean = new NodeManager(this);
+                mBeanServer.registerMBean(mbean, mbean.getName());
                 /*
                 LocateRegistry.createRegistry(9999);
                 JMXServiceURL url =
@@ -107,6 +109,7 @@ public class NodeImpl implements Node, Client {
                 connectorServer.start();
                 */
             } catch (Exception e) {
+                mbean = null;
                 logger.log(Level.SEVERE, e.getMessage(), e);
             }
 
@@ -125,11 +128,16 @@ public class NodeImpl implements Node, Client {
             if (compositeActivator == null) {
                 return;
             }
-            MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
-            try {
-                mBeanServer.unregisterMBean(NodeManager.getName(this));
-            } catch (Exception e) {
-                logger.log(Level.SEVERE, e.getMessage(), e);
+
+            if (mbean != null) {
+                MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
+                try {
+                    mBeanServer.unregisterMBean(mbean.getName());
+                } catch (Exception e) {
+                    logger.log(Level.SEVERE, e.getMessage(), e);
+                } finally {
+                    mbean = null;
+                }
             }
 
             NodeFinder.removeNode(this);

@@ -30,9 +30,15 @@ import org.apache.tuscany.sca.node.impl.NodeImpl;
  */
 public class NodeManager implements NodeManagerMBean {
     private NodeImpl node;
+    private ObjectName name;
 
     public NodeManager(NodeImpl node) {
         this.node = node;
+        try {
+            this.name = getName(node);
+        } catch (MalformedObjectNameException e) {
+            // Ignore
+        }
     }
 
     public String getURI() {
@@ -41,6 +47,10 @@ public class NodeManager implements NodeManagerMBean {
 
     public String getDomainURI() {
         return node.getConfiguration().getDomainURI();
+    }
+
+    public ObjectName getName() {
+        return name;
     }
 
     public static ObjectName getName(Node node) throws MalformedObjectNameException {
