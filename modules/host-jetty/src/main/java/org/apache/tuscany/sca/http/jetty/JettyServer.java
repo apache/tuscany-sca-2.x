@@ -76,7 +76,8 @@ public class JettyServer implements ServletHost {
     
     private boolean sendServerVersion;
     private WorkScheduler workScheduler;
-    private int defaultPort = 8080;
+    private int defaultPort = portDefault;
+    public static int portDefault = 8080;
 
     /**
      * Represents a port and the server that serves it.
