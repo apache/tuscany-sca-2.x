@@ -143,12 +143,20 @@ public class CallbackReferenceImpl<B> extends CallableReferenceImpl<B> {
             try {
                 // TODO - EPR - is this correct?
                                 
-                // Fluff up a new response wire based on the callback endpoint
-                RuntimeComponentReference ref =
-                    bind((RuntimeComponentReference)wire.getEndpointReference().getReference(),
-                          resolvedEndpoint);
-                
-                boundWire = ref.getRuntimeWires().get(0);
+                // test if the call back wire is manually configured
+                if ((wire.getEndpointReference().isUnresolved()== false) &&
+                    (wire.getEndpointReference().getTargetEndpoint().isUnresolved()== false)){
+                    boundWire = wire;
+                    resolvedEndpoint = wire.getEndpointReference().getTargetEndpoint();
+                } else {
+                    // Fluff up a new response wire based on the callback endpoint
+                    // that came in across the wire
+                    RuntimeComponentReference ref =
+                        bind((RuntimeComponentReference)wire.getEndpointReference().getReference(),
+                              resolvedEndpoint);
+                    
+                    boundWire = ref.getRuntimeWires().get(0);
+                }
                 
                 Binding binding = wire.getEndpointReference().getBinding();
                 

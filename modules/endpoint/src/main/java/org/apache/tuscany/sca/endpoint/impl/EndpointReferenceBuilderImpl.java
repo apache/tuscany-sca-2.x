@@ -175,7 +175,18 @@ public class EndpointReferenceBuilderImpl implements CompositeBuilder, EndpointR
         } else {
             if (endpoint.isUnresolved() == false){
                 // Wired - service resolved - binding matched
-                // The service is in the same composite
+                // The service is in the same composite or the 
+                // binding is remote and has a full URI
+                
+                // still need to check that the callback endpoint is set correctly
+                if ((endpointReference.getCallbackEndpoint() != null) &&
+                    (endpointReference.getCallbackEndpoint().isUnresolved() == false)){
+                    return;
+                } 
+                
+                matchCallbackBinding(endpointReference,
+                                     monitor);
+                
                 return;
             }
 
@@ -359,9 +370,10 @@ public class EndpointReferenceBuilderImpl implements CompositeBuilder, EndpointR
         List<Endpoint> matchedEndpoint = new ArrayList<Endpoint>();
 
         // Find the corresponding bindings from callback service side
-        if ((callbackEndpointReferences.get(0).getReference().getBindings().size() == 0) ||
-             ((callbackEndpointReferences.get(0).getReference().getBindings().size() == 1) &&
-              (callbackEndpointReferences.get(0).getReference().getBindings().get(0) instanceof SCABinding))){
+        if ((callbackEndpointReferences.size() ==0) ||
+            (callbackEndpointReferences.get(0).getReference().getBindings().size() == 0) ||
+            ((callbackEndpointReferences.get(0).getReference().getBindings().size() == 1) &&
+             (callbackEndpointReferences.get(0).getReference().getBindings().get(0) instanceof SCABinding))){
             // OAISIS - choose a binding from the service side
             //          (could have been specified as part of the target string)
             //           last part of this test that is looking for binding SCA is

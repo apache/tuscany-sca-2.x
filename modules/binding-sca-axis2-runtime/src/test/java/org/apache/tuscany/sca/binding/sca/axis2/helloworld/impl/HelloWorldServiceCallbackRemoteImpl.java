@@ -27,6 +27,10 @@ public class HelloWorldServiceCallbackRemoteImpl implements HelloWorldServiceCal
     
     @Callback
     protected HelloWorldCallbackRemote theCallback;
+    
+    public HelloWorldServiceCallbackRemoteImpl() {
+        System.out.println("Constructor");
+    }
 
     public String getGreetingsRemote(String s) {
         return "Hello " + theCallback.getGreetingsCallbackRemote(s);

@@ -19,6 +19,9 @@
 
 package itest.nodes;
 
+import org.oasisopen.sca.annotation.Remotable;
+
+@Remotable
 public interface Helloworld {
     
     String sayHello(String name);

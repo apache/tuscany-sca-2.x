@@ -20,6 +20,8 @@
 package org.apache.tuscany.sca.binding.sca.axis2.impl;
 
 import org.apache.tuscany.sca.assembly.DistributedSCABinding;
+import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
@@ -41,18 +43,12 @@ public class Axis2SCABindingProviderFactory implements BindingProviderFactory<Di
         this.extensionPoints = extensionPoints;
     }    
 
-    public ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component,
-                                                                   RuntimeComponentReference reference,
-                                                                   DistributedSCABinding binding) {
-        return new Axis2SCAReferenceBindingProvider(component, reference, binding,
-                                                    extensionPoints);
+    public ReferenceBindingProvider createReferenceBindingProvider(EndpointReference endpointReference) {
+        return new Axis2SCAReferenceBindingProvider(endpointReference, extensionPoints);
     }
 
-    public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component,
-                                                               RuntimeComponentService service,
-                                                               DistributedSCABinding binding) {
-        return new Axis2SCAServiceBindingProvider(component, service, binding,
-                                                  extensionPoints);
+    public ServiceBindingProvider createServiceBindingProvider(Endpoint endpoint) {
+        return new Axis2SCAServiceBindingProvider(endpoint, extensionPoints);
     }
 
     public Class<DistributedSCABinding> getModelType() {

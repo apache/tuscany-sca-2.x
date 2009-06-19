@@ -26,6 +26,7 @@ import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class PromotionTestCase {
@@ -62,6 +63,7 @@ public class PromotionTestCase {
     }     
     
     @Test
+    @Ignore
     public void testHelloWorldPromotion() throws Exception {  
         HelloWorldClient helloWorldClientA;
         helloWorldClientA = nodeA.getService(HelloWorldClient.class, "AHelloWorldClientRemotePromotion");

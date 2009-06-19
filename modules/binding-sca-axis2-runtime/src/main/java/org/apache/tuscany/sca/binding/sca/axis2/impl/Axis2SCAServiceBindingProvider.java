@@ -23,10 +23,11 @@ import java.util.logging.Logger;
 
 import org.apache.axiom.om.OMElement;
 import org.apache.tuscany.sca.assembly.DistributedSCABinding;
+import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.WebServiceBindingFactory;
-import org.apache.tuscany.sca.binding.ws.axis2.Axis2ServiceProvider;
 import org.apache.tuscany.sca.binding.ws.wsdlgen.BindingWSDLGenerator;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
@@ -34,6 +35,8 @@ import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.invocation.MessageFactory;
+import org.apache.tuscany.sca.provider.BindingProviderFactory;
+import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
@@ -48,16 +51,17 @@ public class Axis2SCAServiceBindingProvider implements ServiceBindingProvider {
     
     private static final Logger logger = Logger.getLogger(Axis2SCAServiceBindingProvider.class.getName());
 
+    private RuntimeComponent component;
+    private RuntimeComponentService service;
     private SCABinding binding;
-    private Axis2ServiceProvider axisProvider;
+    
+    private ServiceBindingProvider axisProvider;
     private WebServiceBinding wsBinding;
     
     private boolean started = false;
 
 
-    public Axis2SCAServiceBindingProvider(RuntimeComponent component,
-                                          RuntimeComponentService service,
-                                          DistributedSCABinding binding,
+    public Axis2SCAServiceBindingProvider(Endpoint endpoint,
                                           ExtensionPointRegistry extensionPoints) {
 
         ServletHostExtensionPoint servletHosts = extensionPoints.getExtensionPoint(ServletHostExtensionPoint.class);
@@ -65,7 +69,9 @@ public class Axis2SCAServiceBindingProvider implements ServiceBindingProvider {
         FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         MessageFactory messageFactory = modelFactories.getFactory(MessageFactory.class); 
 
-        this.binding = binding.getSCABinding();
+        this.component = (RuntimeComponent)endpoint.getComponent();
+        this.service = (RuntimeComponentService)endpoint.getService();
+        this.binding = ((DistributedSCABinding)endpoint.getBinding()).getSCABinding();
         
         // create a ws binding model
         wsBinding = modelFactories.getFactory(WebServiceBindingFactory.class).createWebServiceBinding();
@@ -79,14 +85,22 @@ public class Axis2SCAServiceBindingProvider implements ServiceBindingProvider {
         InterfaceContract contract = wsBinding.getBindingInterfaceContract();
         contract.getInterface().resetDataBinding(OMElement.class.getName());
         
+        // create a copy of the endpoint  but with the web service binding in
+        Endpoint ep = null;
+        try {
+            ep = (Endpoint)endpoint.clone();
+        } catch (Exception ex){
+            // we know we can clone endpoint references
+        }
+        ep.setBinding(wsBinding);
+        
         // create the real Axis2 service provider
-        axisProvider = new Axis2SCAServiceProvider(component, 
-                                                   service, 
-                                                   this.binding,
-                                                   wsBinding,
-                                                   servletHost,
-                                                   messageFactory,
-                                                   modelFactories);
+        ProviderFactoryExtensionPoint providerFactories = 
+            extensionPoints.getExtensionPoint(ProviderFactoryExtensionPoint.class);
+        BindingProviderFactory providerFactory = 
+            (BindingProviderFactory) providerFactories.getProviderFactory(WebServiceBinding.class);
+        axisProvider = providerFactory.createServiceBindingProvider(ep);
+                                                          
     }
 
     public InterfaceContract getBindingInterfaceContract() {

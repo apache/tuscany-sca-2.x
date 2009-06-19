@@ -23,10 +23,10 @@ import java.util.logging.Logger;
 
 import org.apache.axiom.om.OMElement;
 import org.apache.tuscany.sca.assembly.DistributedSCABinding;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.WebServiceBindingFactory;
-import org.apache.tuscany.sca.binding.ws.axis2.Axis2ReferenceBindingProvider;
 import org.apache.tuscany.sca.binding.ws.wsdlgen.BindingWSDLGenerator;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
@@ -34,6 +34,8 @@ import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.provider.BindingProviderFactory;
+import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
@@ -50,20 +52,19 @@ public class Axis2SCAReferenceBindingProvider implements ReferenceBindingProvide
     private RuntimeComponent component;
     private RuntimeComponentReference reference;
     private SCABinding binding;
-    private Axis2ReferenceBindingProvider axisReferenceBindingProvider;
+    
+    private ReferenceBindingProvider axisReferenceBindingProvider;
     private WebServiceBinding wsBinding;
 
-    public Axis2SCAReferenceBindingProvider(RuntimeComponent component,
-                                            RuntimeComponentReference reference,
-                                            DistributedSCABinding binding,
+    public Axis2SCAReferenceBindingProvider(EndpointReference endpointReference,
                                             ExtensionPointRegistry extensionPoints) {
 
         FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         DataBindingExtensionPoint dataBindings = extensionPoints.getExtensionPoint(DataBindingExtensionPoint.class);
 
-        this.component = component;
-        this.reference = reference;
-        this.binding = binding.getSCABinding();
+        this.component = (RuntimeComponent)endpointReference.getComponent();
+        this.reference = (RuntimeComponentReference)endpointReference.getReference();
+        this.binding = ((DistributedSCABinding)endpointReference.getBinding()).getSCABinding();
         
         // build a ws binding model
         wsBinding = modelFactories.getFactory(WebServiceBindingFactory.class).createWebServiceBinding();
@@ -76,12 +77,21 @@ public class Axis2SCAReferenceBindingProvider implements ReferenceBindingProvide
         InterfaceContract contract = wsBinding.getBindingInterfaceContract();
         contract.getInterface().resetDataBinding(OMElement.class.getName());
         
+        // create a copy of the endpoint reference but with the web service binding in
+        EndpointReference epr = null;
+        try {
+            epr = (EndpointReference)endpointReference.clone();
+        } catch (Exception ex){
+            // we know we can clone endpoint references
+        }
+        epr.setBinding(wsBinding);
+        
         // create the real Axis2 reference binding provider
-        axisReferenceBindingProvider = new Axis2ReferenceBindingProvider(component,
-                                                                         reference,
-                                                                         wsBinding,
-                                                                         modelFactories,
-                                                                         dataBindings);
+        ProviderFactoryExtensionPoint providerFactories = 
+            extensionPoints.getExtensionPoint(ProviderFactoryExtensionPoint.class);
+        BindingProviderFactory providerFactory = 
+            (BindingProviderFactory) providerFactories.getProviderFactory(WebServiceBinding.class);
+        axisReferenceBindingProvider = providerFactory.createReferenceBindingProvider(epr);
     }
 
     public InterfaceContract getBindingInterfaceContract() {

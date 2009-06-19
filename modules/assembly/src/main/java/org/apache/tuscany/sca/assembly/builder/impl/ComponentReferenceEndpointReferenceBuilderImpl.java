@@ -38,6 +38,7 @@ import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
+import org.apache.tuscany.sca.assembly.impl.SCABindingImpl;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
@@ -237,7 +238,15 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
                 	// signify that this reference is pointing at some unwired endpoint
                     EndpointReference endpointRef = createEndpointRef( component, reference,
                     		binding, null, false  );
-                    endpointRef.setTargetEndpoint(createEndpoint(false));
+                    if (binding instanceof SCABinding){
+                        // Assume that the system need to resolve this binding later as
+                        // it's the SCA binding
+                        endpointRef.setTargetEndpoint(createEndpoint(true));
+                    } else {
+                        // The user has configured a binding so assume they know what 
+                        // they are doing and mark in as already resolved. 
+                        endpointRef.setTargetEndpoint(createEndpoint(false));
+                    }
                     endpointRef.setIsRemoteReference(true);
                     reference.getEndpointReferences().add(endpointRef);
                     continue;
@@ -278,9 +287,12 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
                     }
                 } else {
                     // create endpoint reference for manually configured bindings with resolved endpoint
-                	// to signify that this reference is pointing at some unwired endpoint
+                	// to signify that this reference is pointing at some unwired endpoint. The endpoint
+                    // is given the configured binding as a representation of the endpoint configuration. 
                     EndpointReference endpointRef = createEndpointRef( component, reference, binding, null, false  );
-                    endpointRef.setTargetEndpoint(createEndpoint( false ));
+                    Endpoint endpoint = createEndpoint( false );
+                    endpoint.setBinding(binding);
+                    endpointRef.setTargetEndpoint(endpoint);
                     endpointRef.setIsRemoteReference(true);
                     reference.getEndpointReferences().add(endpointRef);
                 } // end if

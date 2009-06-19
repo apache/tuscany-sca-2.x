@@ -24,8 +24,8 @@ import org.apache.tuscany.sca.assembly.SCABinding;
 
 /**
  * Represents an SCA binding used in the distributed runtime.
- * At the moment just provides us with a sensibly named type 
- * against which the distributed sca binding providers can be registered
+ * It provides us with a sensibly named type against which  
+ * distributed sca binding providers can be registered
  * 
  * @version $Rev: 556322 $ $Date: 2007-07-14 19:53:15 +0100 (Sat, 14 Jul 2007) $
  */
