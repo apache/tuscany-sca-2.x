@@ -84,15 +84,14 @@ public class NodeImpl implements Node, Client {
             manager.extensionPoints.getExtensionPoint(UtilityExtensionPoint.class).getUtility(CompositeActivator.class,
                                                                                               true);
         try {
-
+            // get the top level composite for this node
             compositeActivator.setDomainComposite(manager.configureNode(configuration));
-            for (Composite composite : compositeActivator.getDomainComposite().getIncludes()) {
-                // Activate the composite
-                compositeActivator.activate(composite);
 
-                // Start the composite
-                compositeActivator.start(composite);
-            }
+            // Activate the composite
+            compositeActivator.activate(compositeActivator.getDomainComposite());
+
+            // Start the composite
+            compositeActivator.start(compositeActivator.getDomainComposite());
 
             NodeFinder.addNode(NodeUtil.createURI(configuration.getDomainURI()), this);
 
@@ -135,17 +134,13 @@ public class NodeImpl implements Node, Client {
 
             NodeFinder.removeNode(this);
             if( compositeActivator.getDomainComposite() != null ) {
-	            List<Composite> composites = compositeActivator.getDomainComposite().getIncludes();
-	            for (Composite composite : composites) {
 
-	                // Stop the composite
-	                compositeActivator.stop(composite);
+                // Stop the composite
+                compositeActivator.stop(compositeActivator.getDomainComposite());
 
-	                // Deactivate the composite
-	                compositeActivator.deactivate(composite);
+                // Deactivate the composite
+                compositeActivator.deactivate(compositeActivator.getDomainComposite());
 
-	            } // end for
-	            composites.clear();
             } // end if
 
             manager.removeNode(configuration);
@@ -190,11 +185,9 @@ public class NodeImpl implements Node, Client {
         // Lookup the component
         Component component = null;
 
-        for (Composite composite : compositeActivator.getDomainComposite().getIncludes()) {
-            for (Component compositeComponent : composite.getComponents()) {
-                if (compositeComponent.getName().equals(componentName)) {
-                    component = compositeComponent;
-                }
+        for (Component compositeComponent : compositeActivator.getDomainComposite().getComponents()) {
+            if (compositeComponent.getName().equals(componentName)) {
+                component = compositeComponent;
             }
         }
 
@@ -248,14 +241,12 @@ public class NodeImpl implements Node, Client {
         if (compositeActivator != null) {
             Composite domainComposite = compositeActivator.getDomainComposite();
             if (domainComposite != null) {
-                for (Composite composite : domainComposite.getIncludes()) {
-                    for (Component component : composite.getComponents()) {
-                        for (Service service : component.getServices()) {
-                               // MJE 28/05/2009 - changed to RuntimeComponentService from RuntimeComponentServiceImpl
-                               // - no need to access the Impl directly here
-                            if (service instanceof RuntimeComponentService) {
-                                endpoints.addAll(((RuntimeComponentService)service).getEndpoints());
-                            }
+                for (Component component : domainComposite.getComponents()) {
+                    for (Service service : component.getServices()) {
+                           // MJE 28/05/2009 - changed to RuntimeComponentService from RuntimeComponentServiceImpl
+                           // - no need to access the Impl directly here
+                        if (service instanceof RuntimeComponentService) {
+                            endpoints.addAll(((RuntimeComponentService)service).getEndpoints());
                         }
                     }
                 }

@@ -591,22 +591,18 @@ public class NodeFactoryImpl extends NodeFactory {
 
         for (Contribution contribution : contributions) {
             for (Composite composite : contribution.getDeployables()) {
-
-                // Build the composite and wire the components included in it
-                compositeBuilder.build(composite, systemDefinitions, monitor);
-                analyzeProblems();
-
-                // build the endpoint references
-                endpointReferenceBuilder.build(composite, systemDefinitions, monitor);
-                analyzeProblems();
-
                 // Include the node composite in the top-level composite
                 tempComposite.getIncludes().add(composite);
-
             }
-
         }
-
+        
+        // build the top level composite
+        compositeBuilder.build(tempComposite, systemDefinitions, monitor);
+        analyzeProblems();
+        
+        endpointReferenceBuilder.build(tempComposite, systemDefinitions, monitor);
+        analyzeProblems();
+        
         return tempComposite;
 
     }
