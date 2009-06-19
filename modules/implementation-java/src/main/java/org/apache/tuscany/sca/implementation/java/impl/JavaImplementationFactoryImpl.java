@@ -56,6 +56,13 @@ public abstract class JavaImplementationFactoryImpl implements JavaImplementatio
     }
 
     public void addClassVisitor(JavaClassVisitor visitor) {
+        for (JavaClassVisitor tmpVisitor : visitors){
+            if (tmpVisitor.getClass() == visitor.getClass()){
+                // trying to add a duplicate visitor so
+                // ignore it 
+                return;
+            }
+        }
         visitors.add(visitor);
     }
 
