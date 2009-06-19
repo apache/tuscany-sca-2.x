@@ -19,6 +19,7 @@
  -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
 	       xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1"
+           targetNamespace="http://itest"
            name="HelloWorldComposite">
            
     <component name="HelloWorldComponent">

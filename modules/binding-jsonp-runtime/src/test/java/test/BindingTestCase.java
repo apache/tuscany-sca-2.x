@@ -18,9 +18,15 @@
  */
 package test;
 
-import helloworld.HelloWorldService;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import junit.framework.Assert;
 
+import org.apache.tuscany.sca.http.jetty.JettyServer;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.AfterClass;
@@ -30,19 +36,22 @@ import org.junit.Test;
 public class BindingTestCase {
 
     private static Node node;
-    private static HelloWorldService helloWorldService;
 
     @Test
-    public void testService() {
-//        Assert.assertEquals("Hello Petra", helloWorldService.sayHello("Petra"));
+    public void testService() throws MalformedURLException, IOException {
+        URL url = new URL("http://localhost:8085/HelloWorldService/sayHello?name=petra&callback=foo");
+        BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
+        String response = br.readLine();
+        Assert.assertEquals("foo(\"Hello petra\");", response);
+
     }
 
     @BeforeClass
     public static void init() throws Exception {
+        JettyServer.portDefault = 8085;
         node = NodeFactory.newInstance().createNode("helloworld.composite").start();
-        helloWorldService = node.getService(HelloWorldService.class, "HelloWorldComponent");
     }
-
+    
     @AfterClass
     public static void destroy() throws Exception {
         if (node != null) {
