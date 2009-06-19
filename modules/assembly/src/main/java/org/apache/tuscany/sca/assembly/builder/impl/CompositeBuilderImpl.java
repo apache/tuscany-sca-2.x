@@ -112,7 +112,7 @@ public class CompositeBuilderImpl implements CompositeBuilder {
                                 InterfaceContractMapper interfaceContractMapper) {
            
         
-        compositeIncludeBuilder = new CompositeIncludeBuilderImpl(); 
+        compositeIncludeBuilder = new CompositeIncludeBuilderImpl(assemblyFactory); 
         componentReferenceWireBuilder = new ComponentReferenceWireBuilderImpl(assemblyFactory, interfaceContractMapper);
         //componentReferencePromotionWireBuilder = new ComponentReferencePromotionWireBuilderImpl(assemblyFactory, endpointFactory);
         componentReferencePromotionBuilder = new ComponentReferencePromotionBuilderImpl(assemblyFactory);

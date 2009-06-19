@@ -24,6 +24,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
@@ -39,14 +41,14 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
  *
  * @version $Rev$ $Date$
  */
-public class CompositeIncludeBuilderImpl implements CompositeBuilder {   
+public class CompositeIncludeBuilderImpl implements CompositeBuilder {
+    
+    private AssemblyFactory assemblyFactory;
         
-    public CompositeIncludeBuilderImpl(FactoryExtensionPoint factories, InterfaceContractMapper mapper) {
+    public CompositeIncludeBuilderImpl(AssemblyFactory assemblyFactory) {
+        this.assemblyFactory = assemblyFactory;
     }
-      
-    public CompositeIncludeBuilderImpl() {
-    }
-      
+            
     public String getID() {
         return "org.apache.tuscany.sca.assembly.builder.CompositeIncludeBuilder";
     }
@@ -63,57 +65,76 @@ public class CompositeIncludeBuilderImpl implements CompositeBuilder {
     }
 
     /**
-     * Collect all includes in a graph of includes.
-     * 
-     * @param composite
-     * @param includes
-     */
-    private void collectIncludes(Composite composite, List<Composite> includes,
-                                 Set<Composite> visited, Monitor monitor) {
-        for (Composite include : composite.getIncludes()) {
-            if (visited.contains(include)) {
-                warning(monitor, "CompositeAlreadyIncluded", composite, include.getName().toString());
-                continue;
-            }
-                        
-            includes.add(include);
-            visited.add(include);
-            collectIncludes(include, includes, visited, monitor);
-        }
-    }
-
-    /**
      * Copy a list of includes into a composite.
      * 
      * @param composite
      */
     private void fuseIncludes(Composite composite, Monitor monitor) {
-    
-        // First collect all includes
-        List<Composite> includes = new ArrayList<Composite>();
+        
         Set<Composite> visited = new HashSet<Composite>();
         visited.add(composite);
-        collectIncludes(composite, includes, visited, monitor);
         
-        // Then clone them
-        for (Composite include : includes) {
-            Composite clone;
-            try {
-                clone = (Composite)include.clone();
-            } catch (CloneNotSupportedException e) {
-                throw new RuntimeException(e);
+        for (Composite included : composite.getIncludes()) {
+            Composite fusedComposite = fuseInclude(included, visited, monitor);
+            if (fusedComposite != null) {
+                composite.getComponents().addAll(fusedComposite.getComponents());
+                composite.getServices().addAll(fusedComposite.getServices());
+                composite.getReferences().addAll(fusedComposite.getReferences());
+                composite.getProperties().addAll(fusedComposite.getProperties());
+                composite.getWires().addAll(fusedComposite.getWires());
+                composite.getPolicySets().addAll(fusedComposite.getPolicySets());
+                composite.getRequiredIntents().addAll(fusedComposite.getRequiredIntents());
             }
-            composite.getComponents().addAll(clone.getComponents());
-            composite.getServices().addAll(clone.getServices());
-            composite.getReferences().addAll(clone.getReferences());
-            composite.getProperties().addAll(clone.getProperties());
-            composite.getWires().addAll(clone.getWires());
-            composite.getPolicySets().addAll(clone.getPolicySets());
-            composite.getRequiredIntents().addAll(clone.getRequiredIntents());
         }
-    
-        // Clear the list of includes
+        
+        // Clear the list of includes as all of the included components 
+        // have now been added into the top level composite
         composite.getIncludes().clear();
     }
-
+    
+    private Composite fuseInclude(Composite include,
+                                  Set<Composite> visited, 
+                                  Monitor monitor) {
+        
+        if (visited.contains(include)) {
+            warning(monitor, "CompositeAlreadyIncluded", include, include.getName().toString());
+            return null;
+        }
+        
+        visited.add(include);
+        
+        Composite clone;
+        try {
+            clone = (Composite)include.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
+        
+        // get the components etc. from any included composites
+        for (Composite included : include.getIncludes()) {
+            Composite fusedComposite = fuseInclude(included, visited, monitor);
+            if (fusedComposite != null) {
+                clone.getComponents().addAll(fusedComposite.getComponents());
+                clone.getServices().addAll(fusedComposite.getServices());
+                clone.getReferences().addAll(fusedComposite.getReferences());
+                clone.getProperties().addAll(fusedComposite.getProperties());
+                clone.getWires().addAll(fusedComposite.getWires());
+                clone.getPolicySets().addAll(fusedComposite.getPolicySets());
+                clone.getRequiredIntents().addAll(fusedComposite.getRequiredIntents());
+            }
+        }
+        
+        // apply the autowire flag on this composite to any inline 
+        // components - Assembly 5.6 point 4
+        if (include.getAutowire() == Boolean.TRUE){
+            for ( Component component : clone.getComponents()){
+                if (component.getAutowire() == null){
+                    component.setAutowire(true);
+                }
+            }
+        }
+        
+        // return the fused composite we have built up so far
+        return clone;
+    }
 }
