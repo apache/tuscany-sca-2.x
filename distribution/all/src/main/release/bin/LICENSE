@@ -221,6 +221,7 @@ The following components come under Apache Software License 2.0
 
  activeio-2.0-r118.jar
  addressing-1.3.mar
+ aopalliance-1.0.jar
  annogen-0.1.0.jar
  axiom-api-1.2.7.jar
  axiom-dom-1.2.7.jar
@@ -237,12 +238,13 @@ The following components come under Apache Software License 2.0
  commons-collections-3.1.jar
  commons-codec-1.3.jar
  commons-digester-1.8.jar
+ commons-discovery-0.2.jar
  commons-fileupload-1.2.jar
  commons-httpclient-3.1.jar
  commons-io-1.4.jar
  commons-jexl-1.1.jar
  commons-lang-2.1.jar
- commons-logging-1.0.4.jar
+ commons-logging-1.1.1.jar
  commons-primitives-1.0.jar
  derby-10.3.1.4.jar
  geronimo-activation_1.1_spec-1.0.1.jar
@@ -267,7 +269,6 @@ The following components come under Apache Software License 2.0
  geronimo-naming-1.2-beta.jar
  geronimo-security-1.2-beta.jar
  geronimo-spec-j2ee-connector-1.5-rc4.jar
- geronimo-spec-jta-1.0.1B-rc4.jar
  geronimo-stax-api_1.0_spec-1.0.1.jar
  geronimo-system-1.2-beta.jar
  geronimo-transaction-1.2-beta.jar
@@ -277,6 +278,7 @@ The following components come under Apache Software License 2.0
  httpcore-nio-4.0-beta1.jar
  jetty-6.1.15.jar
  jetty-util-6.1.15.jar
+ juli-6.0.18.jar
  log4j-1.2.13.jar
  mex-1.41-impl.jar
  myfaces-api-1.2.2.jar
@@ -301,8 +303,12 @@ The following components come under Apache Software License 2.0
  rampart-policy-1.4.jar
  rampart-trust-1.4.jar
  regexp-1.3.jar
+ spring-beans-2.5.5.jar
+ spring-context-2.5.5.jar
+ spring-core-2.5.5.jar
  stripes-1.5.jar
  tranql-connector-1.1.jar
+ tribes-6.0.18.jar
  woden-api-1.0M8.jar
  woden-impl-dom-1.0M8.jar
  wss4j-1.5.4.jar
@@ -310,10 +316,8 @@ The following components come under Apache Software License 2.0
  xalan-2.7.0.jar
  xbean-naming-2.7.jar
  xercesImpl-2.8.1.jar
- xml-apis-1.3.02.jar
  xml-resolver-1.1.jar
  xmlbeans-2.3.0.jar
- xmlParserAPIs-2.6.0.jar
  xmlsec-1.4.2.jar
  XmlSchema-1.4.2.jar
 
@@ -459,6 +463,7 @@ OF THE POSSIBILITY OF SUCH DAMAGE.
 ===============================================================================
 The Equinox OSGi Runtime jars;
    osgi-3.4.0-v20080605-1900.jar
+   services-3.1.200-v20071203.jar
 
 Eclipse Public License - v 1.0
 
@@ -720,7 +725,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 The jars; 
 activation-1.1.jar, 
 jaxb-api-2.1.jar, 
-jaxb-impl-2.1.9.jar, 
+jaxb-impl-2.1.11.jar, 
 jaxws-api-2.1.jar, 
 jsr181-api-1.0-MR1.jar, 
 jsr250-api-1.0.jar, 
@@ -1205,7 +1210,7 @@ This Agreement is governed by the laws of the State of New York and the intellec
 
 ===============================================================================
 
-backport-util-concurrent-2.2.jar :
+backport-util-concurrent-3.1.jar :
 
 The software comprising backport-util-concurrent is based in large
 part on the code from JSR166, and the package dl.util.concurrent.
