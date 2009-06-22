@@ -34,7 +34,7 @@
     </listener>
     <context-param>
         <param-name>org.apache.myfaces.config.annotation.LifecycleProvider</param-name>
-        <param-value>org.apache.tuscany.myfaces.TuscanyAnnotationLifecycleProvider</param-value>
+        <param-value>org.apache.tuscany.sca.myfaces.TuscanyAnnotationLifecycleProvider</param-value>
     </context-param>
 
     <!--optional: context-param>
