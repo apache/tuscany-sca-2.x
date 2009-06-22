@@ -28,12 +28,12 @@
     <name>Apache Tuscany SCA Specification Tests ASM Contribution1</name> 
 
     <build>
-        <sourceDirectory>../src/main/resources/ASM_Contribution1</sourceDirectory>
+        <sourceDirectory>../src/main/resources/Contribution1</sourceDirectory>
         <resources>
           <resource>
-            <directory>../src/main/resources/ASM_Contribution1</directory>
+            <directory>../src/main/resources/Contribution1</directory>
           </resource>
         </resources>
-        <outputDirectory>../tests/target/ASM_Contribution1</outputDirectory>
+        <outputDirectory>../tests/target/Contribution1</outputDirectory>
     </build>
 </project>

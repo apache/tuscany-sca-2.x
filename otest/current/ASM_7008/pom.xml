@@ -28,12 +28,12 @@
     <name>Apache Tuscany SCA Specification Tests ASM ASM_7008</name> 
 
     <build>
-        <sourceDirectory>../src/main/resources/ASM_ASM_7008</sourceDirectory>
+        <sourceDirectory>../src/main/resources/ASM_7008</sourceDirectory>
         <resources>
           <resource>
-            <directory>../src/main/resources/ASM_ASM_7008</directory>
+            <directory>../src/main/resources/ASM_7008</directory>
           </resource>
         </resources>
-        <outputDirectory>../tests/target/ASM_ASM_7008</outputDirectory>
+        <outputDirectory>../tests/target/ASM_7008</outputDirectory>
     </build>
 </project>

@@ -28,12 +28,12 @@
     <name>Apache Tuscany SCA Specification Tests ASM General_CPP</name> 
 
     <build>
-        <sourceDirectory>../src/main/resources/ASM_General_CPP</sourceDirectory>
+        <sourceDirectory>../src/main/resources/General_CPP</sourceDirectory>
         <resources>
           <resource>
-            <directory>../src/main/resources/ASM_General_CPP</directory>
+            <directory>../src/main/resources/General_CPP</directory>
           </resource>
         </resources>
-        <outputDirectory>../tests/target/ASM_General_CPP</outputDirectory>
+        <outputDirectory>../tests/target/General_CPP</outputDirectory>
     </build>
 </project>

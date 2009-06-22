@@ -28,12 +28,12 @@
     <name>Apache Tuscany SCA Specification Tests ASM ASM_8012</name> 
 
     <build>
-        <sourceDirectory>../src/main/resources/ASM_ASM_8012</sourceDirectory>
+        <sourceDirectory>../src/main/resources/ASM_8012</sourceDirectory>
         <resources>
           <resource>
-            <directory>../src/main/resources/ASM_ASM_8012</directory>
+            <directory>../src/main/resources/ASM_8012</directory>
           </resource>
         </resources>
-        <outputDirectory>../tests/target/ASM_ASM_8012</outputDirectory>
+        <outputDirectory>../tests/target/ASM_8012</outputDirectory>
     </build>
 </project>

@@ -28,12 +28,12 @@
     <name>Apache Tuscany SCA Specification Tests ASM ASM_5007</name> 
 
     <build>
-        <sourceDirectory>../src/main/resources/ASM_ASM_5007</sourceDirectory>
+        <sourceDirectory>../src/main/resources/ASM_5007</sourceDirectory>
         <resources>
           <resource>
-            <directory>../src/main/resources/ASM_ASM_5007</directory>
+            <directory>../src/main/resources/ASM_5007</directory>
           </resource>
         </resources>
-        <outputDirectory>../tests/target/ASM_ASM_5007</outputDirectory>
+        <outputDirectory>../tests/target/ASM_5007</outputDirectory>
     </build>
 </project>

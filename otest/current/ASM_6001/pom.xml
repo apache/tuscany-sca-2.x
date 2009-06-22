@@ -28,12 +28,12 @@
     <name>Apache Tuscany SCA Specification Tests ASM ASM_6001</name> 
 
     <build>
-        <sourceDirectory>../src/main/resources/ASM_ASM_6001</sourceDirectory>
+        <sourceDirectory>../src/main/resources/ASM_6001</sourceDirectory>
         <resources>
           <resource>
-            <directory>../src/main/resources/ASM_ASM_6001</directory>
+            <directory>../src/main/resources/ASM_6001</directory>
           </resource>
         </resources>
-        <outputDirectory>../tests/target/ASM_ASM_6001</outputDirectory>
+        <outputDirectory>../tests/target/ASM_6001</outputDirectory>
     </build>
 </project>

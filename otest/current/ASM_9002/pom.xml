@@ -28,12 +28,12 @@
     <name>Apache Tuscany SCA Specification Tests ASM ASM_9002</name> 
 
     <build>
-        <sourceDirectory>../src/main/resources/ASM_ASM_9002</sourceDirectory>
+        <sourceDirectory>../src/main/resources/ASM_9002</sourceDirectory>
         <resources>
           <resource>
-            <directory>../src/main/resources/ASM_ASM_9002</directory>
+            <directory>../src/main/resources/ASM_9002</directory>
           </resource>
         </resources>
-        <outputDirectory>../tests/target/ASM_ASM_9002</outputDirectory>
+        <outputDirectory>../tests/target/ASM_9002</outputDirectory>
     </build>
 </project>

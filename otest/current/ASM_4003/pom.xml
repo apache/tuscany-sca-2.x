@@ -28,12 +28,12 @@
     <name>Apache Tuscany SCA Specification Tests ASM ASM_4003</name> 
 
     <build>
-        <sourceDirectory>../src/main/resources/ASM_ASM_4003</sourceDirectory>
+        <sourceDirectory>../src/main/resources/ASM_4003</sourceDirectory>
         <resources>
           <resource>
-            <directory>../src/main/resources/ASM_ASM_4003</directory>
+            <directory>../src/main/resources/ASM_4003</directory>
           </resource>
         </resources>
-        <outputDirectory>../tests/target/ASM_ASM_4003</outputDirectory>
+        <outputDirectory>../tests/target/ASM_4003</outputDirectory>
     </build>
 </project>

@@ -28,12 +28,12 @@
     <name>Apache Tuscany SCA Specification Tests ASM ASM_5035</name> 
 
     <build>
-        <sourceDirectory>../src/main/resources/ASM_ASM_5035</sourceDirectory>
+        <sourceDirectory>../src/main/resources/ASM_5035</sourceDirectory>
         <resources>
           <resource>
-            <directory>../src/main/resources/ASM_ASM_5035</directory>
+            <directory>../src/main/resources/ASM_5035</directory>
           </resource>
         </resources>
-        <outputDirectory>../tests/target/ASM_ASM_5035</outputDirectory>
+        <outputDirectory>../tests/target/ASM_5035</outputDirectory>
     </build>
 </project>

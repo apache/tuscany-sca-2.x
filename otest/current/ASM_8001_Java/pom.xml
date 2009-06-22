@@ -28,12 +28,12 @@
     <name>Apache Tuscany SCA Specification Tests ASM ASM_8001_Java</name> 
 
     <build>
-        <sourceDirectory>../src/main/resources/ASM_ASM_8001_Java</sourceDirectory>
+        <sourceDirectory>../src/main/resources/ASM_8001_Java</sourceDirectory>
         <resources>
           <resource>
-            <directory>../src/main/resources/ASM_ASM_8001_Java</directory>
+            <directory>../src/main/resources/ASM_8001_Java</directory>
           </resource>
         </resources>
-        <outputDirectory>../tests/target/ASM_ASM_8001_Java</outputDirectory>
+        <outputDirectory>../tests/target/ASM_8001_Java</outputDirectory>
     </build>
 </project>
