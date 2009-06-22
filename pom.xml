@@ -479,6 +479,13 @@
                     <include>MANIFEST.MF</include>
                 </includes>
             </resource>
+            <resource>
+                <directory>${basedir}/OSGI-INF</directory>
+                <targetPath>OSGI-INF</targetPath>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+            </resource>
         </resources>
 
         <pluginManagement>
