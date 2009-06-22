@@ -22,8 +22,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.apache.tuscany.sca.core.assembly.impl.RuntimeWireImpl;
-import org.apache.tuscany.sca.core.context.impl.CallableReferenceImpl;
-import org.apache.tuscany.sca.core.conversation.ConversationState;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
@@ -62,30 +60,6 @@ public class JDKCallbackInvocationHandler extends JDKInvocationHandler {
         // is specified for the reference that this wire belongs to
         // TODO - EPR - not required for OASIS
         //initConversational(wire);
-
-        // set the conversation id into the conversation object. This is
-        // a special case for callbacks as, unless otherwise set manually,
-        // the callback should use the same conversation id as was received
-        // on the incoming call to this component
-        if (conversational) {
-
-            if (conversation == null || conversation.getState() == ConversationState.ENDED) {
-                conversation = null;
-            }
-            Object convID = conversation == null ? null : conversation.getConversationID();
-
-            // create a conversation id if one doesn't exist 
-            // already, i.e. the conversation is just starting
-            if (convID == null) {
-                convID = ((CallbackReferenceImpl)callableReference).getConvID();
-                if (convID != null) {
-                    conversation = ((RuntimeWireImpl)wire).getConversationManager().getConversation(convID);
-                    if (callableReference != null) {
-                        ((CallableReferenceImpl)callableReference).attachConversation(conversation);
-                    }
-                }
-            }
-        }
 
         setEndpoint(((CallbackReferenceImpl)callableReference).getResolvedEndpoint());
 

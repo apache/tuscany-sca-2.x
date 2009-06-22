@@ -26,38 +26,22 @@ import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
-import org.apache.tuscany.sca.core.assembly.impl.RuntimeWireImpl;
 import org.apache.tuscany.sca.core.context.CallableReferenceExt;
-import org.apache.tuscany.sca.core.context.impl.CallableReferenceImpl;
-import org.apache.tuscany.sca.core.conversation.ConversationExt;
-import org.apache.tuscany.sca.core.conversation.ConversationManager;
-import org.apache.tuscany.sca.core.conversation.ConversationState;
 import org.apache.tuscany.sca.core.factory.InstanceWrapper;
 import org.apache.tuscany.sca.core.invocation.ThreadMessageContext;
-import org.apache.tuscany.sca.core.scope.Scope;
-import org.apache.tuscany.sca.core.scope.ScopeContainer;
-import org.apache.tuscany.sca.core.scope.ScopedRuntimeComponent;
-import org.apache.tuscany.sca.core.scope.TargetDestructionException;
 import org.apache.tuscany.sca.core.scope.TargetResolutionException;
-import org.apache.tuscany.sca.interfacedef.ConversationSequence;
 import org.apache.tuscany.sca.interfacedef.DataType;
-import org.apache.tuscany.sca.interfacedef.Interface;
-import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
-import org.apache.tuscany.sca.runtime.ReferenceParameters;
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.oasisopen.sca.CallableReference;
-import org.oasisopen.sca.ConversationEndedException;
 import org.oasisopen.sca.ServiceReference;
 import org.oasisopen.sca.ServiceRuntimeException;
 
@@ -68,7 +52,6 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
     private static final long serialVersionUID = -3366410500152201371L;
 
     protected boolean conversational;
-    protected ConversationExt conversation;
     protected MessageFactory messageFactory;
     protected EndpointReference source;
     protected Endpoint target;
@@ -92,7 +75,6 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
         this.callableReference = callableReference;
         if (callableReference != null) {
             this.businessInterface = callableReference.getBusinessInterface();
-            this.conversation = (ConversationExt)callableReference.getConversation();
             this.wire = ((CallableReferenceExt<?>)callableReference).getRuntimeWire();
             if (wire != null) {
                 init(wire);
@@ -125,14 +107,6 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
     protected Object getCallbackID() {
         if (callableReference != null) {
             return callableReference.getCallbackID();
-        } else {
-            return null;
-        }
-    }
-
-    protected Object getConversationID() {
-        if (callableReference != null && callableReference instanceof ServiceReference) {
-            return ((ServiceReference)callableReference).getConversationID();
         } else {
             return null;
         }

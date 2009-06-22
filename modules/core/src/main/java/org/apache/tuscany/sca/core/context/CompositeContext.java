@@ -33,7 +33,6 @@ import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.assembly.CompositeActivator;
-import org.apache.tuscany.sca.core.conversation.ConversationManager;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ThreadMessageContext;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
@@ -207,8 +206,6 @@ public abstract class CompositeContext {
     }
 
     public abstract ExtensionPointRegistry getExtensionPointRegistry();
-
-    public abstract ConversationManager getConversationManager();
 
     /**
      * Get the java interface factory

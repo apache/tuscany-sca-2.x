@@ -31,21 +31,6 @@ public interface CallableReference<B> {
     Class<B> getBusinessInterface();
 
     /**
-     * Returns true if this reference is conversational.
-     *
-     * @return true if this reference is conversational
-     */
-    boolean isConversational();
-
-    /**
-     * Returns the conversation associated with this reference.
-     * Returns null if no conversation is currently active.
-     *
-     * @return the conversation associated with this reference; may be null
-     */
-    Conversation getConversation();
-
-    /**
      * Returns the callback ID.
      *
      * @return the callback ID

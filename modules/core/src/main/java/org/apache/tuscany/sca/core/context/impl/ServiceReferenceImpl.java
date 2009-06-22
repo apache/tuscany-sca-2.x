@@ -20,19 +20,14 @@ package org.apache.tuscany.sca.core.context.impl;
 
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.core.assembly.CompositeActivator;
-import org.apache.tuscany.sca.core.context.CallableReferenceExt;
 import org.apache.tuscany.sca.core.context.ServiceReferenceExt;
-import org.apache.tuscany.sca.core.conversation.ConversationState;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
-import org.apache.tuscany.sca.runtime.ReferenceParameters;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.oasisopen.sca.CallableReference;
-import org.oasisopen.sca.ServiceReference;
 
 /**
  * Default implementation of a ServiceReference.
@@ -83,22 +78,6 @@ public class ServiceReferenceImpl<B> extends CallableReferenceImpl<B> implements
                                 ProxyFactory proxyFactory,
                                 CompositeActivator compositeActivator) {
         super(businessInterface, component, reference, endpointReference, proxyFactory, compositeActivator);
-    }
-
-    public Object getConversationID() {
-        return conversationID;
-    }
-
-    public void setConversationID(Object conversationID) throws IllegalStateException {
-        if (conversation == null || conversation.getState() != ConversationState.ENDED) {
-            this.conversationID = conversationID;
-            this.conversation = null;
-        } else {
-            throw new IllegalStateException("Trying to set the conversationId on a service reference but the state of the conversation " 
-                + conversation.getConversationID()
-                + " is "
-                + conversation.getState());
-        }
     }
 
     public void setCallbackID(Object callbackID) {

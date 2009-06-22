@@ -38,7 +38,6 @@ import org.apache.tuscany.sca.assembly.builder.EndpointReferenceBuilder;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
-import org.apache.tuscany.sca.core.conversation.ConversationManager;
 import org.apache.tuscany.sca.core.invocation.ExtensibleWireProcessor;
 import org.apache.tuscany.sca.core.invocation.NonBlockingInterceptor;
 import org.apache.tuscany.sca.core.invocation.RuntimeWireInvoker;
@@ -86,7 +85,6 @@ public class RuntimeWireImpl implements RuntimeWire {
     private transient InterfaceContractMapper interfaceContractMapper;
     private transient WorkScheduler workScheduler;
     private transient MessageFactory messageFactory;
-    private transient ConversationManager conversationManager;
     private transient RuntimeWireInvoker invoker;
 
     // the following is a very simple cache that avoids re-cloning a wire
@@ -118,8 +116,7 @@ public class RuntimeWireImpl implements RuntimeWire {
                             InterfaceContractMapper interfaceContractMapper,
                             WorkScheduler workScheduler,
                             RuntimeWireProcessor wireProcessor,
-                            MessageFactory messageFactory,
-                            ConversationManager conversationManager) {
+                            MessageFactory messageFactory) {
         super();
         this.extensionPoints = extensionPoints;
         this.isReferenceWire = isReferenceWire;
@@ -129,8 +126,7 @@ public class RuntimeWireImpl implements RuntimeWire {
         this.workScheduler = workScheduler;
         this.wireProcessor = wireProcessor;
         this.messageFactory = messageFactory;
-        this.conversationManager = conversationManager;
-        this.invoker = new RuntimeWireInvoker(this.messageFactory, this.conversationManager, this);
+        this.invoker = new RuntimeWireInvoker(this.messageFactory, this);
 
         UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
         this.endpointReferenceBuilder = utilities.getUtility(EndpointReferenceBuilder.class);
@@ -153,8 +149,7 @@ public class RuntimeWireImpl implements RuntimeWire {
        this.wireProcessor = new ExtensibleWireProcessor(extensionPoints.getExtensionPoint(RuntimeWireProcessorExtensionPoint.class));
        FactoryExtensionPoint factories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
        this.messageFactory = factories.getFactory(MessageFactory.class);
-       this.conversationManager = utilities.getUtility(ConversationManager.class);
-       this.invoker = new RuntimeWireInvoker(this.messageFactory, this.conversationManager, this);
+       this.invoker = new RuntimeWireInvoker(this.messageFactory, this);
 
        this.endpointReferenceBuilder = utilities.getUtility(EndpointReferenceBuilder.class);
        this.providerFactories = extensionPoints.getExtensionPoint(ProviderFactoryExtensionPoint.class);
@@ -659,16 +654,9 @@ public class RuntimeWireImpl implements RuntimeWire {
         RuntimeWireImpl copy = (RuntimeWireImpl)super.clone();
         copy.endpointReference = (EndpointReference)endpointReference.clone();
         copy.endpoint = copy.endpointReference.getTargetEndpoint();
-        copy.invoker = new RuntimeWireInvoker(copy.messageFactory, copy.conversationManager, copy);
+        copy.invoker = new RuntimeWireInvoker(copy.messageFactory, copy);
         copy.cachedWire = null; // TUSCANY-2630
         return copy;
-    }
-
-    /**
-     * @return the conversationManager
-     */
-    public ConversationManager getConversationManager() {
-        return conversationManager;
     }
 
     public synchronized RuntimeWire lookupCache(Endpoint callback) {

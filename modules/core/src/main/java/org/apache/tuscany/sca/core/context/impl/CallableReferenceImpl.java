@@ -36,9 +36,7 @@ import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.assembly.Reference;
-import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.Service;
-import org.apache.tuscany.sca.assembly.builder.BindingBuilderExtension;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.CompositeActivator;
@@ -48,9 +46,6 @@ import org.apache.tuscany.sca.core.assembly.impl.ReferenceParametersImpl;
 import org.apache.tuscany.sca.core.context.CallableReferenceExt;
 import org.apache.tuscany.sca.core.context.ComponentContextExt;
 import org.apache.tuscany.sca.core.context.CompositeContext;
-import org.apache.tuscany.sca.core.conversation.ConversationExt;
-import org.apache.tuscany.sca.core.conversation.ConversationManager;
-import org.apache.tuscany.sca.core.conversation.ConversationState;
 import org.apache.tuscany.sca.core.factory.ObjectCreationException;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.interfacedef.Interface;
@@ -60,7 +55,6 @@ import org.apache.tuscany.sca.runtime.ReferenceParameters;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
-import org.oasisopen.sca.Conversation;
 import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
@@ -76,10 +70,6 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
     protected transient Class<B> businessInterface;
     protected transient Object proxy;
 
-    // if the wire targets a conversational service this holds the conversation state 
-    protected transient ConversationManager conversationManager;
-    protected transient ConversationExt conversation;
-    protected transient Object conversationID;
     protected Object callbackID; // The callbackID should be serializable
 
     protected transient RuntimeComponent component;
@@ -150,7 +140,6 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
         // FIXME: Should we normalize the componentName/serviceName URI into an absolute SCA URI in the SCA binding?
         // sca:component1/component11/component112/service1?
         this.compositeActivator = compositeActivator;
-        this.conversationManager = this.compositeActivator.getCompositeContext().getConversationManager();
         initCallbackID();
     }
 
@@ -179,7 +168,6 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
             this.reference = (RuntimeComponentReference)wire.getEndpointReference().getReference();
             this.endpointReference = wire.getEndpointReference();
             this.compositeActivator = ((ComponentContextExt)component.getComponentContext()).getCompositeActivator();
-            this.conversationManager = this.compositeActivator.getCompositeContext().getConversationManager();
             initCallbackID();
         }
     }
@@ -238,22 +226,6 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
         }
     }
 
-    public Conversation getConversation() {
-        try {
-            // resolve from XML just in case this CallableReference is the result of
-            // passing a CallableReference as a parameter
-            resolve();
-
-            if (conversation == null || conversation.getState() == ConversationState.ENDED) {
-                conversation = null;
-            }
-            return conversation;
-
-        } catch (Exception e) {
-            throw new ServiceRuntimeException(e);
-        }
-    }
-
     public Object getCallbackID() {
         try {
             resolve();
@@ -285,7 +257,6 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
             CompositeContext componentContextHelper = CompositeContext.getCurrentCompositeContext();
             if (componentContextHelper != null) {
                 this.compositeActivator = CompositeContext.getCurrentCompositeActivator();
-                this.conversationManager = componentContextHelper.getConversationManager();
                 Component c;
                 if (xmlReader != null) {
                     c = componentContextHelper.fromXML(xmlReader);
@@ -309,7 +280,6 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
                 if (parameters != null) {
                     refParams = parameters;
                     this.callbackID = parameters.getCallbackID();
-                    attachConversation(parameters.getConversationID());
                 }
 
                 // TODO - EPR all needs sorting out for endpoint references
@@ -467,9 +437,6 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
                 clonedRef.getExtensions().add(refParams);
             }
             refParams.setCallbackID(callbackID);
-            if (conversation != null) {
-                refParams.setConversationID(conversation.getConversationID());
-            }
             return ((CompositeActivatorImpl)compositeActivator).getCompositeContext().toXML(component, clonedRef);
         } else {
             return scdl;
@@ -489,32 +456,9 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
         this.callbackID = callbackID;
     }
 
-    public void attachConversationID(Object conversationID) {
-        this.conversationID = conversationID;
-    }
-
-    public void attachConversation(ConversationExt conversation) {
-        this.conversation = conversation;
-    }
-
-    public void attachConversation(Object conversationID) {
-        if (conversationID != null) {
-            ConversationExt conversation = conversationManager.getConversation(conversationID);
-            if (conversation == null) {
-                conversation = conversationManager.startConversation(conversationID);
-            }
-            this.conversation = conversation;
-        } else {
-            this.conversation = null;
-        }
-    }
-
     protected ReferenceParameters getReferenceParameters() {
         ReferenceParameters parameters = new ReferenceParametersImpl();
         parameters.setCallbackID(callbackID);
-        if (getConversation() != null) {
-            parameters.setConversationID(conversation.getConversationID());
-        }
         return parameters;
     }
 

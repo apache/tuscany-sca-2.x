@@ -35,7 +35,7 @@ import org.oasisopen.sca.annotation.Service;
  * Sample Event Processor Service Implementation 
  */
 @Service(EventProcessorService.class)
-@Scope("CONVERSATION")
+@Scope("COMPOSITE")
 public class EventProcessorServiceImpl implements EventProcessorService {
 
     /**

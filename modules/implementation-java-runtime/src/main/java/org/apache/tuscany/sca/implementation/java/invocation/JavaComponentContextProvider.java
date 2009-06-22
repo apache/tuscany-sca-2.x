@@ -21,7 +21,6 @@ package org.apache.tuscany.sca.implementation.java.invocation;
 import java.lang.annotation.ElementType;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
@@ -53,8 +52,6 @@ import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.implementation.java.JavaConstructorImpl;
 import org.apache.tuscany.sca.implementation.java.JavaElementImpl;
 import org.apache.tuscany.sca.implementation.java.JavaResourceImpl;
-import org.apache.tuscany.sca.implementation.java.injection.ConversationIDObjectFactory;
-import org.apache.tuscany.sca.implementation.java.injection.InvalidAccessorException;
 import org.apache.tuscany.sca.implementation.java.injection.JavaPropertyValueObjectFactory;
 import org.apache.tuscany.sca.implementation.java.introspect.JavaIntrospectionHelper;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -64,7 +61,6 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.oasisopen.sca.CallableReference;
-import org.oasisopen.sca.annotation.ConversationID;
 
 /**
  * The runtime instantiation of Java component implementations
@@ -273,24 +269,6 @@ public class JavaComponentContextProvider {
         }
 
         instanceFactoryProvider.setObjectFactory(resource.getElement(), factory);
-    }
-
-    void addConversationIDFactories(List<Member> names) {
-        ObjectFactory<String> factory = new ConversationIDObjectFactory();
-        for (Member name : names) {
-            if (name instanceof Field) {
-                JavaElementImpl element = new JavaElementImpl((Field)name);
-                element.setClassifer(ConversationID.class);
-                instanceFactoryProvider.setObjectFactory(element, factory);
-            } else if (name instanceof Method) {
-                JavaElementImpl element = new JavaElementImpl((Method)name, 0);
-                element.setName(JavaIntrospectionHelper.toPropertyName(name.getName()));
-                element.setClassifer(ConversationID.class);
-                instanceFactoryProvider.setObjectFactory(element, factory);
-            } else {
-                throw new InvalidAccessorException("Member must be a field or method: " + name.getName());
-            }
-        }
     }
 
     Object createInstance() throws ObjectCreationException {

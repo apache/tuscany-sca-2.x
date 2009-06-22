@@ -34,7 +34,6 @@ import java.util.Set;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.interfacedef.ConversationSequence;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.InvalidCallbackException;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
@@ -48,8 +47,6 @@ import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
 import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceVisitor;
 import org.apache.tuscany.sca.interfacedef.util.JavaXMLMapper;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
-import org.oasisopen.sca.annotation.Conversational;
-import org.oasisopen.sca.annotation.EndsConversation;
 import org.oasisopen.sca.annotation.OneWay;
 import org.oasisopen.sca.annotation.Remotable;
 
@@ -96,9 +93,6 @@ public class JavaInterfaceIntrospectorImpl {
 
         javaInterface.setRemotable(remotable);
 
-        boolean conversational = clazz.isAnnotationPresent(Conversational.class);
-        javaInterface.setConversational(conversational);
-
         Class<?> callbackClass = null;
         org.oasisopen.sca.annotation.Callback callback = clazz.getAnnotation(org.oasisopen.sca.annotation.Callback.class);
         if (callback != null && !Void.class.equals(callback.value())) {
@@ -118,7 +112,7 @@ public class JavaInterfaceIntrospectorImpl {
         javaInterface.setCallbackClass(callbackClass);
 
         String ns = JavaXMLMapper.getNamespace(clazz);
-        javaInterface.getOperations().addAll(getOperations(clazz, remotable, conversational, ns));
+        javaInterface.getOperations().addAll(getOperations(clazz, remotable, ns));
 
         for (JavaInterfaceVisitor extension : visitors) {
             extension.visitInterface(javaInterface);
@@ -146,7 +140,6 @@ public class JavaInterfaceIntrospectorImpl {
 
     private <T> List<Operation> getOperations(Class<T> clazz,
                                               boolean remotable,
-                                              boolean conversational,
                                               String ns) throws InvalidInterfaceException {
 
         Set<Type> genericInterfaces = new HashSet<Type>();
@@ -201,18 +194,6 @@ public class JavaInterfaceIntrospectorImpl {
                 }
             }
 
-            ConversationSequence conversationSequence = ConversationSequence.CONVERSATION_NONE;
-            if (method.isAnnotationPresent(EndsConversation.class)) {
-                if (!conversational) {
-                    throw new InvalidOperationException(
-                                                        "Method is marked as end conversation but contract is not conversational",
-                                                        method);
-                }
-                conversationSequence = ConversationSequence.CONVERSATION_END;
-            } else if (conversational) {
-                conversationSequence = ConversationSequence.CONVERSATION_CONTINUE;
-            }
-
             // Set outputType to null for void
             XMLType xmlReturnType = new XMLType(new QName(ns, "return"), null);
             DataType<XMLType> returnDataType =
@@ -249,7 +230,6 @@ public class JavaInterfaceIntrospectorImpl {
             operation.setInputType(inputType);
             operation.setOutputType(returnDataType);
             operation.setFaultTypes(faultDataTypes);
-            operation.setConversationSequence(conversationSequence);
             operation.setNonBlocking(nonBlocking);
             operation.setJavaMethod(method);
             operations.add(operation);

@@ -40,7 +40,6 @@ import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Endpoint;
-import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.assembly.Reference;
@@ -52,7 +51,6 @@ import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.CompositeActivator;
 import org.apache.tuscany.sca.core.context.CompositeContext;
-import org.apache.tuscany.sca.core.conversation.ConversationManager;
 import org.apache.tuscany.sca.core.invocation.ExtensibleProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactoryExtensionPoint;
@@ -331,10 +329,6 @@ public class CompositeContextImpl extends CompositeContext {
 
     public ExtensionPointRegistry getExtensionPointRegistry() {
         return extensionPointRegistry;
-    }
-
-    public ConversationManager getConversationManager() {
-        return utilityExtensionPoint.getUtility(ConversationManager.class);
     }
 
     /**

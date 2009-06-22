@@ -29,8 +29,6 @@ import org.apache.tuscany.sca.implementation.java.introspect.impl.AllowsPassByRe
 import org.apache.tuscany.sca.implementation.java.introspect.impl.ComponentNameProcessor;
 import org.apache.tuscany.sca.implementation.java.introspect.impl.ConstructorProcessor;
 import org.apache.tuscany.sca.implementation.java.introspect.impl.ContextProcessor;
-import org.apache.tuscany.sca.implementation.java.introspect.impl.ConversationIDProcessor;
-import org.apache.tuscany.sca.implementation.java.introspect.impl.ConversationProcessor;
 import org.apache.tuscany.sca.implementation.java.introspect.impl.DestroyProcessor;
 import org.apache.tuscany.sca.implementation.java.introspect.impl.EagerInitProcessor;
 import org.apache.tuscany.sca.implementation.java.introspect.impl.HeuristicPojoProcessor;
@@ -62,8 +60,6 @@ public class JavaImplementationActivator implements ModuleActivator {
                                         new AllowsPassByReferenceProcessor(assemblyFactory),
                                         new ComponentNameProcessor(assemblyFactory),
                                         new ContextProcessor(assemblyFactory),
-                                        new ConversationIDProcessor(assemblyFactory),
-                                        new ConversationProcessor(assemblyFactory),
                                         new DestroyProcessor(assemblyFactory), new EagerInitProcessor(assemblyFactory),
                                         new InitProcessor(assemblyFactory), new PropertyProcessor(assemblyFactory),
                                         new ReferenceProcessor(assemblyFactory, javaFactory),

@@ -21,7 +21,6 @@ package org.apache.tuscany.sca.implementation.java.invocation;
 
 import java.lang.reflect.Method;
 
-import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.context.ComponentContextFactory;
 import org.apache.tuscany.sca.context.PropertyValueFactory;
 import org.apache.tuscany.sca.context.RequestContextFactory;
@@ -77,29 +76,6 @@ public class JavaImplementationProvider implements ScopedImplementationProvider 
                                                  requestContextFactory);
 
             Scope scope = getScope();
-
-            if (scope == Scope.SYSTEM || scope == Scope.COMPOSITE) {
-                // Nothing
-            } else {
-                // Check for conversational contract if conversational scope
-                if (scope == Scope.CONVERSATION) {
-                    boolean hasConversationalContract = false;
-                    for (Service serviceDef : implementation.getServices()) {
-                        if (serviceDef.getInterfaceContract().getInterface().isConversational()) {
-                            hasConversationalContract = true;
-                            break;
-                        }
-                    }
-                    if (!hasConversationalContract) {
-                        String name = implementation.getJavaClass().getName();
-                        throw new NoConversationalContractException(name);
-                    }
-                }
-            }
-
-            if (implementation.getConversationIDMembers().size() > 0) {
-                componentContextProvider.addConversationIDFactories(implementation.getConversationIDMembers());
-            }
 
             componentContextProvider.configureProperties(component.getProperties());
             handleResources(implementation, proxyService);

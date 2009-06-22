@@ -22,45 +22,28 @@ package org.apache.tuscany.sca.core.invocation;
 import java.lang.reflect.InvocationTargetException;
 
 import org.apache.tuscany.sca.assembly.EndpointReference;
-import org.apache.tuscany.sca.core.conversation.ConversationExt;
-import org.apache.tuscany.sca.core.conversation.ConversationManager;
-import org.apache.tuscany.sca.core.conversation.ConversationState;
 import org.apache.tuscany.sca.core.factory.InstanceWrapper;
-import org.apache.tuscany.sca.core.scope.Scope;
-import org.apache.tuscany.sca.core.scope.ScopeContainer;
-import org.apache.tuscany.sca.core.scope.ScopedRuntimeComponent;
-import org.apache.tuscany.sca.core.scope.TargetDestructionException;
-import org.apache.tuscany.sca.core.scope.TargetResolutionException;
-import org.apache.tuscany.sca.interfacedef.ConversationSequence;
-import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
-import org.apache.tuscany.sca.runtime.ReferenceParameters;
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
-import org.oasisopen.sca.ConversationEndedException;
 import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
  * @version $Rev$ $Date$
  */
 public class RuntimeWireInvoker implements Invoker{
-    protected ConversationManager conversationManager;
-    protected boolean conversational;
-    protected ConversationExt conversation;
     protected MessageFactory messageFactory;
     protected Object conversationID;
     protected Object callbackID;
     protected Object callbackObject;
     protected RuntimeWire wire;
 
-    public RuntimeWireInvoker(MessageFactory messageFactory, ConversationManager conversationManager, RuntimeWire wire) {
+    public RuntimeWireInvoker(MessageFactory messageFactory, RuntimeWire wire) {
         this.messageFactory = messageFactory;
         this.wire = wire;
-        this.conversationManager = conversationManager;
         //init(wire);
     }
 
