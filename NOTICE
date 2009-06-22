@@ -21,6 +21,12 @@ Oracle Corporation, Primeton Technologies Ltd., Rogue Wave Software, SAP AG.,
 Software AG., Sun Microsystems, Sybase Inc., Xcalia, Zend Technologies, 
 2005, 2006. All rights reserved.
 
+This product includes software under the OASIS specification License
+with the following copyright:
+
+Copyright(C) OASIS(R) 2005,2009. All Rights Reserved. 
+OASIS trademark, IPR and other policies apply.
+
 This product includes software under the W3C(c) Software License
 with the following copyright:
     
@@ -31,5 +37,19 @@ the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the impl
 warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 [1] http://www.w3.org/Consortium/Legal/2002/copyright-software-20021231
+
+This product includes software under the W3C(c) Software License
+with the following copyright:
+
+Copyright 2001 The Internet Society and W3C (Massachusetts Institute
+of Technology, Institut National de Recherche en Informatique et en
+Automatique, Keio University). All Rights Reserved.
+http://www.w3.org/Consortium/Legal/
+
+This document is governed by the W3C Software License [1] as described
+in the FAQ [2].
+
+[1] http://www.w3.org/Consortium/Legal/copyright-software-19980720
+[2] http://www.w3.org/Consortium/Legal/IPR-FAQ-20000620.html#DTD
 
 
