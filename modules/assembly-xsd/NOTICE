@@ -9,6 +9,7 @@ This product also includes software under the OASIS license
 copyright:
 
 Copyright (C) OASIS(R) 2005, 2009. All Rights Reserved.
+OASIS trademark, IPR and other policies apply.
 
 This product also includes software under the W3C(r) Software License
 (see the LICENSE file contained in this distribution), with the following
@@ -21,3 +22,17 @@ in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the i
 warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
     [1] http://www.w3.org/Consortium/Legal/2002/copyright-software-20021231
+
+This product also includes software under the W3C(c) Software License
+with the following copyright:
+
+Copyright 2001 The Internet Society and W3C (Massachusetts Institute
+of Technology, Institut National de Recherche en Informatique et en
+Automatique, Keio University). All Rights Reserved.
+http://www.w3.org/Consortium/Legal/
+
+This document is governed by the W3C Software License [1] as described
+in the FAQ [2].
+
+[1] http://www.w3.org/Consortium/Legal/copyright-software-19980720
+[2] http://www.w3.org/Consortium/Legal/IPR-FAQ-20000620.html#DTD

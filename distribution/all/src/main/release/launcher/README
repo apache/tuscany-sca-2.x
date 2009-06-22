@@ -15,7 +15,7 @@ for help enter use the "/?" parameter, eg:
 To simplify the use of the script add the absolute file path of the bin 
 folder to your environment path:
 
-set PATH=%PATH%;\Tuscany\tuscany-sca-2.0-M1\bin
+set PATH=%PATH%;\Tuscany\tuscany-sca-2.0-M3\bin
 
 and that enables running the script by just "tuscany", for example, in the 
 implementation-java-calculator sample again you can enter:
