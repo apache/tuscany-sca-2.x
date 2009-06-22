@@ -28,12 +28,12 @@
     <name>Apache Tuscany SCA Specification Tests ASM General_Java</name> 
 
     <build>
-        <sourceDirectory>../src/main/resources/ASM_General_Java</sourceDirectory>
+        <sourceDirectory>../src/main/resources/General_Java</sourceDirectory>
         <resources>
           <resource>
-            <directory>../src/main/resources/ASM_General_Java</directory>
+            <directory>../src/main/resources/General_Java</directory>
           </resource>
         </resources>
-        <outputDirectory>../tests/target/ASM_General_Java</outputDirectory>
+        <outputDirectory>../tests/target/General_Java</outputDirectory>
     </build>
 </project>
