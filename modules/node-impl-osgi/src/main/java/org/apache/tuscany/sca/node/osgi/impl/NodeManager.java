@@ -19,8 +19,8 @@
 
 package org.apache.tuscany.sca.node.osgi.impl;
 
+import java.net.URL;
 import java.util.Dictionary;
-import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -68,12 +68,27 @@ public class NodeManager implements SynchronousBundleListener, ServiceListener {
         if (headers.get("SCA-Composite") != null) {
             return true;
         }
-        Enumeration<?> entries = bundle.findEntries("OSGI-INF/sca", "*.composite", false);
+
+        URL bundleComposite = bundle.getResource("OSGI-INF/sca/bundle.composite");
+        if (bundleComposite != null) {
+            return true;
+        }
+
+        /* FIXME: What if there is a META-INF/sca-contribution.xml? There are two cases:
+         * 1. The file contains deployable elements
+         * 2. The file doesn't contain deployable elements
+        */
+
+        /*
+         * FIXME: Do we want to use all of the .composite files under OSGI-INF/sca?
+         */
+
+        /*
+        Enumeration<?> entries = bundle.findEntries("OSGI-INF/sca", "bundle.composite", false);
         if (entries != null && entries.hasMoreElements()) {
             return true;
         }
 
-        /*
         // OSGi Declarative Services
         if (headers.get("Service-Component") != null) {
             return true;
