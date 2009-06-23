@@ -6,19 +6,23 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.tuscany.sca.databinding.jaxb;
 
 import java.awt.Image;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.ref.SoftReference;
 import java.net.URI;
 import java.security.AccessController;
@@ -27,6 +31,7 @@ import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -92,7 +97,7 @@ public class JAXBContextCache {
     protected LRUCache<Object, JAXBContext> cache;
     protected Pool<JAXBContext, Marshaller>  mpool;
     protected Pool<JAXBContext, Unmarshaller> upool;
-    
+
     // protected JAXBContext commonContext;
     protected JAXBContext defaultContext;
 
@@ -106,7 +111,7 @@ public class JAXBContextCache {
         upool = new Pool<JAXBContext, Unmarshaller>();
         defaultContext = getDefaultJAXBContext();
     }
-    
+
     private static JAXBContext newJAXBContext(final Class<?>... classesToBeBound) throws JAXBException {
         try {
             return AccessController.doPrivileged(new PrivilegedExceptionAction<JAXBContext>() {
@@ -130,8 +135,8 @@ public class JAXBContextCache {
         } catch (PrivilegedActionException e) {
             throw (JAXBException)e.getException();
         }
-    }    
-    
+    }
+
     public static JAXBContext getDefaultJAXBContext() {
         try {
             return newJAXBContext();
@@ -175,53 +180,16 @@ public class JAXBContextCache {
         return cl;
     }
 
-    /**
-     * @param p  Package
-     * @param cl
-     * @return true if each package has a ObjectFactory class or package-info
-     */
-    public static boolean checkPackage(String p, ClassLoader cl) {
-
-        // Each package must have an ObjectFactory
-        try {
-            Class<?> cls = forName(p + ".ObjectFactory", false, cl);
-            if (cls != null) {
-                return true;
-            }
-            //Catch Throwable as ClassLoader can throw an NoClassDefFoundError that
-            //does not extend Exception. So we will absorb any Throwable exception here.
-        } catch (Throwable e) {
-            // Ignore
-        }
-
-        // [rfeng] If no ObjectFactory or jaxb.index is present, JAXBContext.newInstance(contextPath, classloader)
-        // will fail
-        /*
-        try {
-            Class<?> cls = forName(p + ".package-info", false, cl);
-            if (cls != null) {
-                return cls.isAnnotationPresent(XmlSchema.class);
-            }
-            //Catch Throwable as ClassLoader can throw an NoClassDefFoundError that
-            //does not extend Exception. So we will absorb any Throwable exception here.
-        } catch (Throwable e) {
-            // Ignore
-        }
-        */
-
-        return false;
-    }
-
     public Marshaller getMarshaller(JAXBContext context) throws JAXBException {
         Marshaller marshaller = mpool.get(context);
         if (marshaller == null) {
             marshaller = context.createMarshaller();
         }
-        marshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE); 
+        marshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
         return marshaller;
     }
 
-    public void releaseJAXBMarshaller(JAXBContext context, Marshaller marshaller) {   
+    public void releaseJAXBMarshaller(JAXBContext context, Marshaller marshaller) {
         if (marshaller != null) {
             marshaller.setAttachmentMarshaller(null);
             mpool.put(context, marshaller);
@@ -229,7 +197,7 @@ public class JAXBContextCache {
             // doing the next get.
         }
     }
-    
+
     public Unmarshaller getUnmarshaller(JAXBContext context) throws JAXBException {
         Unmarshaller unmarshaller = upool.get(context);
         if (unmarshaller == null) {
@@ -238,13 +206,13 @@ public class JAXBContextCache {
         return unmarshaller;
     }
 
-    public void releaseJAXBUnmarshaller(JAXBContext context, Unmarshaller unmarshaller) {   
+    public void releaseJAXBUnmarshaller(JAXBContext context, Unmarshaller unmarshaller) {
         if (unmarshaller != null) {
             unmarshaller.setAttachmentUnmarshaller(null);
             upool.put(context, unmarshaller);
         }
     }
-    
+
     public LRUCache<Object, JAXBContext> getCache() {
         return cache;
     }
@@ -253,29 +221,7 @@ public class JAXBContextCache {
         if (BUILTIN_CLASSES_SET.contains(cls)) {
             return defaultContext;
         }
-        synchronized (cache) {
-            JAXBContext context = cache.get(cls);
-            if (context != null) {
-                return context;
-            }
-            Package pkg = cls.getPackage();
-            if (pkg != null) {
-                context = cache.get(pkg);
-                if (context != null) {
-                    return context;
-                }
-            }
-
-            if (pkg != null && checkPackage(pkg.getName(), cls.getClassLoader())) {
-                context = newJAXBContext(pkg.getName(), cls.getClassLoader());
-                cache.put(pkg, context);
-            } else {
-                context = newJAXBContext(cls);
-                cache.put(cls, context);
-            }
-            return context;
-
-        }
+        return getJAXBContext(new Class<?>[] {cls});
     }
 
     public JAXBContext getJAXBContext(Class<?>[] classes) throws JAXBException {
@@ -284,10 +230,10 @@ public class JAXBContextCache {
     }
 
     public JAXBContext getJAXBContext(Set<Class<?>> classes) throws JAXBException {
-        // Remove the JAXB built-in types to maximize the cache hit 
+        // Remove the JAXB built-in types to maximize the cache hit
         Set<Class<?>> classSet = new HashSet<Class<?>>(classes);
         classSet.removeAll(BUILTIN_CLASSES_SET);
-        
+
         // FIXME: [rfeng] Remove java classes that are mapped to the same XSD type to avoid
         // conflicts
         if (classSet.contains(Date[].class)) {
@@ -301,16 +247,14 @@ public class JAXBContextCache {
         if (classSet.contains(Source[].class)) {
             classSet.remove(Image[].class);
             classSet.remove(DataHandler[].class);
-        } 
-        
+        }
+
+        classSet = getJAXBClasses(classSet);
+
         if(classSet.isEmpty()) {
             return defaultContext;
         }
-        
-        // For single class
-        if (classSet.size() == 1) {
-            return getJAXBContext(classSet.iterator().next());
-        }
+
         synchronized (cache) {
             JAXBContext context = cache.get(classSet);
             if (context != null) {
@@ -342,7 +286,7 @@ public class JAXBContextCache {
     // without other dependencies so we might be better off copying it and avoiding a new
     // Axis2 dependency here.
     //
-    
+
     /**
      * Pool a list of items for a specific key
      *
@@ -350,14 +294,14 @@ public class JAXBContextCache {
      * @param <V> Pooled object
      */
     private static class Pool<K,V> {
-        private SoftReference<Map<K,List<V>>> softMap = 
+        private SoftReference<Map<K,List<V>>> softMap =
             new SoftReference<Map<K,List<V>>>(
                     new ConcurrentHashMap<K, List<V>>());
 
         // The maps are freed up when a LOAD FACTOR is hit
         private static final int MAX_LIST_FACTOR = 50;
         private static final int MAX_LOAD_FACTOR = 32;  // Maximum number of JAXBContext to store
-        
+
         /**
          * @param key
          * @return removed item from pool or null.
@@ -368,7 +312,7 @@ public class JAXBContextCache {
                 if (values.size()>0) {
                     V v = values.remove(values.size()-1);
                     return v;
-                    
+
                 }
             }
             return null;
@@ -410,7 +354,7 @@ public class JAXBContextCache {
                 if (values == null) {
                     if (map == null) {
                         map = new ConcurrentHashMap<K, List<V>>();
-                        softMap = 
+                        softMap =
                             new SoftReference<Map<K,List<V>>>(map);
                     }
                     values = new ArrayList<V>();
@@ -420,12 +364,12 @@ public class JAXBContextCache {
                 return values;
             }
         }
-        
+
         /**
          * AdjustSize
          * When the number of keys exceeds the maximum load, half
          * of the entries are deleted.
-         * 
+         *
          * The assumption is that the JAXBContexts, UnMarshallers, Marshallers, etc. require
          * a large footprint.
          */
@@ -445,4 +389,149 @@ public class JAXBContextCache {
             }
         }
     }
+
+    /**
+     * Find the JAXB classes (looking into packages) to be bound
+     * @param classes A collection of classes
+     * @return A set of classes that include the ObjectFactory and indexed JAXB classes
+     * @throws JAXBException
+     */
+    private static Set<Class<?>> getJAXBClasses(Collection<Class<?>> classes) throws JAXBException {
+        Set<Class<?>> classSet = new HashSet<Class<?>>();
+        // Index the packages
+        Map<Package, ClassLoader> pkgs = getPackages(classes);
+        Set<Package> nonJAXBPackages = new HashSet<Package>();
+        for (Map.Entry<Package, ClassLoader> p : pkgs.entrySet()) {
+            Package pkg = p.getKey();
+            if (pkg == null) {
+                continue;
+            }
+            Set<Class<?>> set = getJAXBClasses(pkg.getName(), p.getValue());
+            if (set.isEmpty()) {
+                // No JAXB package
+                nonJAXBPackages.add(pkg);
+            } else {
+                // Add JAXB ObjectFactory and indexed classes
+                classSet.addAll(set);
+            }
+        }
+        // Adding classes that are not part of JAXB packages
+        for (Class<?> cls : classes) {
+            Package pkg = getPackage(cls);
+            if (pkg == null || nonJAXBPackages.contains(pkg)) {
+                classSet.add(cls);
+            }
+        }
+        return classSet;
+    }
+
+    /**
+     * Get the package for a class, taking array into account
+     * @param cls
+     * @return
+     */
+    private static Package getPackage(Class<?> cls) {
+        Class<?> type = cls;
+        while (type.isArray()) {
+            type = type.getComponentType();
+        }
+        return type.getPackage();
+    }
+
+    /**
+     * Get a map of packages
+     * @param classes
+     * @return
+     */
+    private static Map<Package, ClassLoader> getPackages(Collection<Class<?>> classes) {
+        Map<Package, ClassLoader> pkgs = new HashMap<Package, ClassLoader>();
+        for (Class<?> cls : classes) {
+            Package pkg = getPackage(cls);
+            if (pkg != null) {
+                pkgs.put(pkg, cls.getClassLoader());
+            }
+        }
+        return pkgs;
+    }
+
+    /**
+     * Find ObjectFactory and indexed JAXB classes for the package
+     * @param pkg
+     * @param classLoader
+     * @return
+     * @throws JAXBException
+     */
+    private static Set<Class<?>> getJAXBClasses(String pkg, ClassLoader classLoader) throws JAXBException {
+        Set<Class<?>> classes = new HashSet<Class<?>>();
+        List<Class<?>> indexedClasses;
+
+        // look for ObjectFactory and load it
+        final Class<?> o;
+        try {
+            o = forName(pkg + ".ObjectFactory", false, classLoader);
+            classes.add(o);
+        } catch (ClassNotFoundException e) {
+            // not necessarily an error
+        }
+
+        // look for jaxb.index and load the list of classes
+        try {
+            indexedClasses = loadIndexedClasses(pkg, classLoader);
+        } catch (IOException e) {
+            throw new JAXBException(e);
+        }
+        if (indexedClasses != null) {
+            classes.addAll(indexedClasses);
+        }
+
+        return classes;
+    }
+
+    /**
+     * Look for jaxb.index file in the specified package and load it's contents
+     *
+     * @param pkg package name to search in
+     * @param classLoader ClassLoader to search in
+     * @return a List of Class objects to load, null if there weren't any
+     * @throws IOException if there is an error reading the index file
+     * @throws JAXBException if there are any errors in the index file
+     */
+    private static List<Class<?>> loadIndexedClasses(String pkg, ClassLoader classLoader) throws IOException,
+        JAXBException {
+        if (classLoader == null) {
+            return null;
+        }
+        final String resource = pkg.replace('.', '/') + "/jaxb.index";
+        final InputStream resourceAsStream = classLoader.getResourceAsStream(resource);
+
+        if (resourceAsStream == null) {
+            return null;
+        }
+
+        BufferedReader in = new BufferedReader(new InputStreamReader(resourceAsStream, "UTF-8"));
+        try {
+            List<Class<?>> classes = new ArrayList<Class<?>>();
+            String className = in.readLine();
+            while (className != null) {
+                className = className.trim();
+                if (className.startsWith("#") || (className.length() == 0)) {
+                    className = in.readLine();
+                    continue;
+                }
+
+                try {
+                    classes.add(forName(pkg + '.' + className, false, classLoader));
+                } catch (ClassNotFoundException e) {
+                    throw new JAXBException(e);
+                }
+
+                className = in.readLine();
+            }
+            return classes;
+        } finally {
+            in.close();
+        }
+    }
+
 }
+
