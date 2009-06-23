@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.assembly.builder.impl;
@@ -80,10 +80,10 @@ public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements C
     public void build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
         configureBindingURIsAndNames(composite, definitions, monitor);
     }
-    
+
     /**
      * Called by CompositeBindingURIBuilderImpl
-     *  
+     *
      * @param composite the composite to be configured
      */
     protected void configureBindingURIsAndNames(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
@@ -93,9 +93,9 @@ public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements C
 
     /**
      * Fully resolve the binding URIs based on available information. This includes information
-     * from the ".composite" files, from resources associated with the binding, e.g. WSDL files, 
+     * from the ".composite" files, from resources associated with the binding, e.g. WSDL files,
      * from any associated policies and from the default information for each binding type.
-     *  
+     *
      * @param composite the composite to be configured
      * @param defaultBindings list of default binding configurations
      */
@@ -104,12 +104,12 @@ public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements C
                                         Monitor monitor) throws CompositeBuilderException {
         configureBindingURIs(composite, null, definitions, defaultBindings, monitor);
     }
-       
+
      /**
       * Fully resolve the binding URIs based on available information. This includes information
-      * from the ".composite" files, from resources associated with the binding, e.g. WSDL files, 
+      * from the ".composite" files, from resources associated with the binding, e.g. WSDL files,
       * from any associated policies and from the default information for each binding type.
-      * 
+      *
       * NOTE: This method repeats some of the processing performed by the configureComponents()
       *       method above.  The duplication is needed because NodeConfigurationServiceImpl
       *       calls this method without previously calling configureComponents().  In the
@@ -120,7 +120,7 @@ public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements C
       *       although keeping the configureComponents() methods signature as is because when
       *       a composite is actually build in a node the node default information is currently
       *       available
-      *  
+      *
       * @param composite the composite to be configured
       * @param uri the path to the composite provided through any nested composite component implementations
       * @param defaultBindings list of default binding configurations
@@ -128,9 +128,9 @@ public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements C
     private void configureBindingURIs(Composite composite, String uri,
                                       Definitions definitions, List<Binding> defaultBindings,
                                       Monitor monitor) throws CompositeBuilderException {
-        
+
         String parentComponentURI = uri;
-        
+
         // Process nested composites recursively
         for (Component component : composite.getComponents()) {
 
@@ -149,29 +149,29 @@ public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements C
                 // Process nested composite
                 configureBindingURIs((Composite)implementation, componentURI, definitions, defaultBindings, monitor);
             }
-        }  
-        
+        }
+
         // Initialize composite service binding URIs
         List<Service> compositeServices = composite.getServices();
         for (Service service : compositeServices) {
-            // Set default binding names 
-            
+            // Set default binding names
+
             // Create default SCA binding
             if (service.getBindings().isEmpty()) {
                 SCABinding scaBinding = createSCABinding(definitions);
                 service.getBindings().add(scaBinding);
             }
-    
+
             // Initialize binding names and URIs
-            for (Binding binding : service.getBindings()) {  
+            for (Binding binding : service.getBindings()) {
                 constructBindingName(service, binding, monitor);
                 constructBindingURI(parentComponentURI, composite, service, binding, defaultBindings, monitor);
             }
         }
-        
+
         // Initialize component service binding URIs
         for (Component component : composite.getComponents()) {
-            
+
             // Index properties, services and references
             Map<String, Service> services = new HashMap<String, Service>();
             Map<String, Reference> references = new HashMap<String, Reference>();
@@ -203,22 +203,22 @@ public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements C
             reconcileServices(component, services, componentServices, monitor);
             reconcileReferences(component, references, componentReferences, monitor);
             reconcileProperties(component, properties, componentProperties, monitor);
-            
+
             for (ComponentService service : component.getServices()) {
-    
+
                 // Create default SCA binding
                 if (service.getBindings().isEmpty()) {
                     SCABinding scaBinding = createSCABinding(definitions);
                     service.getBindings().add(scaBinding);
                 }
-    
+
                 // Initialize binding names and URIs
                 for (Binding binding : service.getBindings()) {
-                    
+
                     constructBindingName(service, binding, monitor);
                     constructBindingURI(component, service, binding, defaultBindings, monitor);
                 }
-            } 
+            }
         }
     }
 
@@ -228,7 +228,7 @@ public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements C
      * by NodeConfigurationServiceImpl as well as by CompositeBuilderImpl.
      */
     private void configureBindingNames(Composite composite, Monitor monitor) {
-        
+
         // Process nested composites recursively
         for (Component component : composite.getComponents()) {
 
@@ -238,8 +238,8 @@ public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements C
                 // Process nested composite
                 configureBindingNames((Composite)implementation, monitor);
             }
-        }  
-        
+        }
+
         // Initialize composite service callback binding names
         for (Service service : composite.getServices()) {
 
@@ -249,11 +249,11 @@ public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements C
                 }
             }
         }
-        
+
         // Initialize composite reference binding names
         for (Reference reference : composite.getReferences()) {
 
-            for (Binding binding : reference.getBindings()) {  
+            for (Binding binding : reference.getBindings()) {
                 constructBindingName(reference, binding, monitor);
             }
 
@@ -263,7 +263,7 @@ public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements C
                 }
             }
         }
-        
+
         // Initialize component service and reference binding names
         for (Component component : composite.getComponents()) {
 
@@ -275,13 +275,13 @@ public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements C
                         constructBindingName(service, binding, monitor);
                     }
                 }
-            } 
-        
+            }
+
             // Initialize component reference binding names
             for (ComponentReference reference : component.getReferences()) {
 
                 // Initialize binding names
-                for (Binding binding : reference.getBindings()) {  
+                for (Binding binding : reference.getBindings()) {
                     constructBindingName(reference, binding, monitor);
                 }
 
@@ -293,22 +293,22 @@ public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements C
             }
         }
     }
-    
+
     /**
      * If a binding name is not provided by the user, construct it based on the service
      * or reference name
-     * 
+     *
      * @param contract the service or reference
      * @param binding
      */
     private void constructBindingName(Contract contract, Binding binding, Monitor monitor) {
-        
-        // set the default binding name if one is required        
-        // if there is no name on the binding then set it to the service or reference name 
+
+        // set the default binding name if one is required
+        // if there is no name on the binding then set it to the service or reference name
         if (binding.getName() == null){
             binding.setName(contract.getName());
         }
-            
+
         // Check that multiple bindings do not have the same name
         for (Binding otherBinding : contract.getBindings()) {
             if (otherBinding == binding) {
@@ -328,10 +328,10 @@ public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements C
 
     /**
      * URI construction for composite bindings based on Assembly Specification section 1.7.2, This method
-     * assumes that the component URI part of the binding URI is formed from the part to the 
-     * composite in question and just calls the generic constructBindingURI method with this 
+     * assumes that the component URI part of the binding URI is formed from the part to the
+     * composite in question and just calls the generic constructBindingURI method with this
      * information
-     * 
+     *
      * @param parentComponentURI
      * @param composite
      * @param service
@@ -339,7 +339,7 @@ public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements C
      * @param defaultBindings
      */
     private void constructBindingURI(String parentComponentURI, Composite composite, Service service,
-                                     Binding binding, List<Binding> defaultBindings, Monitor monitor) 
+                                     Binding binding, List<Binding> defaultBindings, Monitor monitor)
     throws CompositeBuilderException{
         // This is a composite service so there is no component to provide a component URI
         // The path to this composite (through nested composites) is used.
@@ -363,10 +363,10 @@ public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements C
         boolean includeBindingName = component.getServices().size() != 1;
         constructBindingURI(component.getURI(), service, binding, includeBindingName, defaultBindings, monitor);
     }
-            
+
     /**
      * Generic URI construction for bindings based on Assembly Specification section 1.7.2
-     * 
+     *
      * @param componentURIString the string version of the URI part that comes from the component name
      * @param service the service in question
      * @param binding the binding for which the URI is being constructed
@@ -375,9 +375,9 @@ public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements C
      * @throws CompositeBuilderException
      */
     private void constructBindingURI(String componentURIString, Service service, Binding binding,
-                                     boolean includeBindingName, List<Binding> defaultBindings, Monitor monitor) 
+                                     boolean includeBindingName, List<Binding> defaultBindings, Monitor monitor)
         throws CompositeBuilderException{
-        
+
         try {
             // calculate the service binding URI
             URI bindingURI;
@@ -392,29 +392,30 @@ public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements C
             } else {
                 bindingURI = null;
             }
-            
+
+            String serviceName = service.getName();
             // Get the service binding name
-            URI bindingName;
+            String bindingName;
             if (binding.getName() != null) {
-                bindingName = new URI(binding.getName());
+                bindingName = binding.getName();
             } else {
-                bindingName = new URI("");
+                bindingName = serviceName;
             }
-            
-            // calculate the component URI  
+
+            // calculate the component URI
             URI componentURI;
             if (componentURIString != null) {
                 componentURI = new URI(addSlashToPath(componentURIString));
             } else {
                 componentURI = null;
             }
-            
+
             // if the user has provided an absolute component URI then use it
             if (componentURI != null && componentURI.isAbsolute()){
-                binding.setURI(constructBindingURI(null, componentURI, bindingURI, includeBindingName, bindingName));
+                binding.setURI(constructBindingURI(null, componentURI, bindingURI, serviceName, includeBindingName, bindingName));
                 return;
-            }         
-            
+            }
+
             // calculate the base URI
             URI baseURI = null;
             if (defaultBindings != null) {
@@ -425,18 +426,18 @@ public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements C
                     }
                 }
             }
-            
-            binding.setURI(constructBindingURI(baseURI, componentURI, bindingURI, includeBindingName, bindingName));
+
+            binding.setURI(constructBindingURI(baseURI, componentURI, bindingURI, serviceName, includeBindingName, bindingName));
         } catch (URISyntaxException ex) {
             error(monitor, "URLSyntaxException", binding, componentURIString, service.getName(), binding.getName());
-        }      
+        }
     }
-    
+
     /**
      * Use to ensure that URI paths end in "/" as here we want to maintain the
      * last path element of an base URI when other URI are resolved against it. This is
      * not the default behaviour of URI resolution as defined in RFC 2369
-     * 
+     *
      * @param path the path string to which the "/" is to be added
      * @return the resulting path with a "/" added if it not already there
      */
@@ -447,10 +448,10 @@ public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements C
             return path + "/";
         }
     }
-    
+
     /**
      * Concatenate binding URI parts together based on Assembly Specification section 1.7.2
-     * 
+     *
      * @param baseURI the base of the binding URI
      * @param componentURI the middle part of the binding URI derived from the component name
      * @param bindingURI the end part of the binding URI
@@ -458,25 +459,27 @@ public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements C
      * @param bindingName the binding name
      * @return the resulting URI as a string
      */
-    private static String constructBindingURI(URI baseURI, URI componentURI, URI bindingURI, boolean includeBindingName, URI bindingName){        
+    private static String constructBindingURI(URI baseURI,
+                                              URI componentURI,
+                                              URI bindingURI,
+                                              String serviceName,
+                                              boolean includeBindingName,
+                                              String bindingName) {
+        String name = includeBindingName ? serviceName + "/" + bindingName : serviceName;
         String uriString;
-        
+
         if (baseURI == null) {
             if (componentURI == null){
                 if (bindingURI != null ) {
                     uriString = bindingURI.toString();
                 } else {
-                    uriString = bindingName.toString();
+                    uriString = name;
                 }
             } else {
                 if (bindingURI != null ) {
                     uriString = componentURI.resolve(bindingURI).toString();
                 } else {
-                    if (includeBindingName) {
-                        uriString = componentURI.resolve(bindingName).toString();
-                    } else {
-                        uriString = componentURI.toString();
-                    }
+                    uriString = componentURI.resolve(name).toString();
                 }
             }
         } else {
@@ -484,30 +487,22 @@ public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements C
                 if (bindingURI != null ) {
                     uriString = basedURI(baseURI, bindingURI).toString();
                 } else {
-                    if (includeBindingName) {
-                        uriString = basedURI(baseURI, bindingName).toString();
-                    } else {
-                        uriString = baseURI.toString();
-                    }
+                    uriString = basedURI(baseURI, URI.create(name)).toString();
                 }
             } else {
                 if (bindingURI != null ) {
                     uriString = basedURI(baseURI, componentURI.resolve(bindingURI)).toString();
                 } else {
-                    if (includeBindingName) {
-                        uriString = basedURI(baseURI, componentURI.resolve(bindingName)).toString();
-                    } else {
-                        uriString = basedURI(baseURI, componentURI).toString();
-                    }
+                    uriString = basedURI(baseURI, componentURI.resolve(name)).toString();
                 }
             }
         }
-        
+
         // tidy up by removing any trailing "/"
         if (uriString.endsWith("/")){
-            uriString = uriString.substring(0, uriString.length()-1);   
+            uriString = uriString.substring(0, uriString.length()-1);
         }
-        
+
         URI uri = URI.create(uriString);
         if (!uri.isAbsolute()) {
             uri = URI.create("/").resolve(uri);
@@ -517,7 +512,7 @@ public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements C
 
     /**
      * Combine a URI with a base URI.
-     * 
+     *
      * @param baseURI
      * @param uri
      * @return
@@ -531,6 +526,6 @@ public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements C
             str = str.substring(1);
         }
         return URI.create(baseURI.toString() + str).normalize();
-    }    
-    
+    }
+
 }
