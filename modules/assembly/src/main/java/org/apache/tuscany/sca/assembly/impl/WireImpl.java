@@ -80,11 +80,11 @@ public class WireImpl extends ExtensibleImpl implements Wire, Cloneable {
         return policySets;
     }
 
-    public ExtensionType getType() {
+    public ExtensionType getExtensionType() {
         return null;
     }
 
-    public void setType(ExtensionType type) {
+    public void setExtensionType(ExtensionType type) {
     }
     
     public void setPolicySets(List<PolicySet> policySets) {

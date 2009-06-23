@@ -231,11 +231,11 @@ public class InterfaceImpl implements Interface {
         return requiredIntents;
     }
 
-    public ExtensionType getType() {
+    public ExtensionType getExtensionType() {
         return type;
     }
 
-    public void setType(ExtensionType type) {
+    public void setExtensionType(ExtensionType type) {
         this.type = type;
     }
 

@@ -53,11 +53,11 @@ public class CallbackImpl extends ExtensibleImpl implements Callback {
         return bindings;
     }
     
-    public ExtensionType getType() {
+    public ExtensionType getExtensionType() {
         return null;
     }
 
-    public void setType(ExtensionType type) {
+    public void setExtensionType(ExtensionType type) {
     }
     
     public void setRequiredIntents(List<Intent> intents) {

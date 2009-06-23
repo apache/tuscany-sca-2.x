@@ -315,7 +315,7 @@ public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements C
                 // Skip the current binding
                 continue;
             }
-            if (binding.getClass() != otherBinding.getClass()) {
+            if (!binding.getType().equals(otherBinding.getType())) {
                 // Look for a binding of the same type
                 continue;
             }
@@ -420,7 +420,7 @@ public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements C
             URI baseURI = null;
             if (defaultBindings != null) {
                 for (Binding defaultBinding : defaultBindings){
-                    if (binding.getClass() == defaultBinding.getClass()){
+                    if (binding.getType().equals(defaultBinding.getType())){
                         baseURI = new URI(addSlashToPath(defaultBinding.getURI()));
                         break;
                     }

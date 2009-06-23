@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.assembly.xml;
@@ -28,7 +28,6 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
-import org.apache.tuscany.sca.assembly.xml.PolicySubjectProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
@@ -46,14 +45,14 @@ import org.apache.tuscany.sca.policy.PolicySubject;
  */
 
 public class SCABindingProcessor implements StAXArtifactProcessor<SCABinding> {
-	private static final String NAME = "name";
-	private static final String URI = "uri";
-	
-	private static final String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200903";
+    private static final String NAME = "name";
+    private static final String URI = "uri";
+
+    private static final String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200903";
     private static final String BINDING_SCA = "binding.sca";
     private static final QName BINDING_SCA_QNAME = new QName(SCA11_NS, BINDING_SCA);
-    
-    private PolicyFactory policyFactory;       
+
+    private PolicyFactory policyFactory;
     private SCABindingFactory scaBindingFactory;
     private PolicySubjectProcessor policyProcessor;
     private PolicyFactory  intentAttachPointTypeFactory;
@@ -79,11 +78,11 @@ public class SCABindingProcessor implements StAXArtifactProcessor<SCABinding> {
         ExtensionType bindingType = intentAttachPointTypeFactory.createBindingType();
         bindingType.setType(getArtifactType());
         bindingType.setUnresolved(true);
-        ((PolicySubject)scaBinding).setType(bindingType);
-        
+        ((PolicySubject)scaBinding).setExtensionType(bindingType);
+
         // Read policies
         policyProcessor.readPolicies(scaBinding, reader);
-        
+
         // Read binding name
         String name = reader.getAttributeValue(null, NAME);
         if (name != null) {
@@ -104,10 +103,10 @@ public class SCABindingProcessor implements StAXArtifactProcessor<SCABinding> {
         }
         return scaBinding;
     }
-    
+
     public void resolve(SCABinding model, ModelResolver resolver) throws ContributionResolveException {
         policyProcessor.resolvePolicies(model, resolver);
-    }    
+    }
 
     public void write(SCABinding scaBinding, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
 
@@ -120,13 +119,13 @@ public class SCABindingProcessor implements StAXArtifactProcessor<SCABinding> {
         if (scaBinding.getName() != null) {
             writer.writeAttribute(NAME, scaBinding.getName());
         }
-        
+
         // Write binding URI
         if (scaBinding.getURI() != null) {
             writer.writeAttribute(URI, scaBinding.getURI());
         }
-        
+
         writer.writeEndElement();
     }
-    
+
 }

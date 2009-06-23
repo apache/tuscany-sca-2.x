@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.binding.ws.impl;
@@ -55,7 +55,7 @@ class WebServiceBindingImpl implements WebServiceBinding, PolicySubject, Extensi
     private List<Extension> attributeExtensions = new ArrayList<Extension>();
     private List<Intent> requiredIntents = new ArrayList<Intent>();
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
-    private ExtensionType intentAttachPointType;
+    private ExtensionType extensionType;
     private String location;
     private Binding binding;
     private Service service;
@@ -71,17 +71,17 @@ class WebServiceBindingImpl implements WebServiceBinding, PolicySubject, Extensi
     private Element endPointReference;
     private Definition generatedWSDLDocument;
     private BindingBuilder builder;
-    
+
     protected WebServiceBindingImpl() {
     }
-    
+
     /**
      * Provide a meaningful representation of this Binding
      */
     public String toString() {
     	return "Web Service Binding: " + name;
     } // end method toString
-    
+
     public String getName() {
         return name;
     }
@@ -101,7 +101,7 @@ class WebServiceBindingImpl implements WebServiceBinding, PolicySubject, Extensi
     public boolean isUnresolved() {
         return unresolved;
     }
-    
+
     public void setUnresolved(boolean unresolved) {
         this.unresolved = unresolved;
     }
@@ -109,20 +109,20 @@ class WebServiceBindingImpl implements WebServiceBinding, PolicySubject, Extensi
     @Override
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
-    } 
-    
+    }
+
     public List<Object> getExtensions() {
         return extensions;
     }
-    
+
     public List<Extension> getAttributeExtensions() {
         return attributeExtensions;
-    }    
-    
+    }
+
     public String getLocation() {
         return location;
     }
-    
+
     public void setLocation(String location) {
         this.location = location;
     }
@@ -156,7 +156,7 @@ class WebServiceBindingImpl implements WebServiceBinding, PolicySubject, Extensi
             return null;
         }
     }
-    
+
     public Port getEndpoint() {
         return endpoint;
     }
@@ -199,7 +199,7 @@ class WebServiceBindingImpl implements WebServiceBinding, PolicySubject, Extensi
         }
         this.bindingName = bindingName;
     }
-    
+
     public void setEndpoint(Port endpoint) {
         this.endpoint = endpoint;
     }
@@ -262,21 +262,21 @@ class WebServiceBindingImpl implements WebServiceBinding, PolicySubject, Extensi
     public void setBindingInterfaceContract(InterfaceContract bindingInterfaceContract) {
         this.bindingInterfaceContract = bindingInterfaceContract;
     }
-    
+
     public List<PolicySet> getPolicySets() {
         return policySets;
     }
-    
+
     public List<Intent> getRequiredIntents() {
         return requiredIntents;
     }
 
-    public ExtensionType getType() {
-        return intentAttachPointType;
+    public ExtensionType getExtensionType() {
+        return extensionType;
     }
-    
-    public void setType(ExtensionType intentAttachPointType) {
-        this.intentAttachPointType = intentAttachPointType;
+
+    public void setExtensionType(ExtensionType intentAttachPointType) {
+        this.extensionType = intentAttachPointType;
     }
 
     public Element getEndPointReference() {
@@ -301,5 +301,9 @@ class WebServiceBindingImpl implements WebServiceBinding, PolicySubject, Extensi
 
     public void setBuilder(BindingBuilder builder) {
         this.builder = builder;
+    }
+
+    public QName getType() {
+        return TYPE;
     }
 }

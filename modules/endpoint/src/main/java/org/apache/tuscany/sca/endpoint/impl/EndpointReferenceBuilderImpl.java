@@ -175,18 +175,18 @@ public class EndpointReferenceBuilderImpl implements CompositeBuilder, EndpointR
         } else {
             if (endpoint.isUnresolved() == false){
                 // Wired - service resolved - binding matched
-                // The service is in the same composite or the 
+                // The service is in the same composite or the
                 // binding is remote and has a full URI
-                
+
                 // still need to check that the callback endpoint is set correctly
                 if ((endpointReference.getCallbackEndpoint() != null) &&
                     (endpointReference.getCallbackEndpoint().isUnresolved() == false)){
                     return;
-                } 
-                
+                }
+
                 matchCallbackBinding(endpointReference,
                                      monitor);
-                
+
                 return;
             }
 
@@ -271,7 +271,7 @@ public class EndpointReferenceBuilderImpl implements CompositeBuilder, EndpointR
                 if (local) {
                     for (Endpoint serviceEndpoint : endpoint.getService().getEndpoints()) {
 
-                        if (referenceBinding.getClass() == serviceEndpoint.getBinding().getClass() && hasCompatiblePolicySets(referenceBinding,
+                        if (referenceBinding.getType().equals(serviceEndpoint.getBinding().getType()) && hasCompatiblePolicySets(referenceBinding,
                                                                                                                               serviceEndpoint
                                                                                                                                   .getBinding())) {
 
@@ -281,7 +281,7 @@ public class EndpointReferenceBuilderImpl implements CompositeBuilder, EndpointR
                     }
                 } else {
                     Endpoint serviceEndpoint = endpoint;
-                    if (referenceBinding.getClass() == serviceEndpoint.getBinding().getClass() && hasCompatiblePolicySets(referenceBinding,
+                    if (referenceBinding.getType().equals(serviceEndpoint.getBinding().getType()) && hasCompatiblePolicySets(referenceBinding,
                                                                                                                           serviceEndpoint
                                                                                                                               .getBinding())) {
 
@@ -399,7 +399,7 @@ public class EndpointReferenceBuilderImpl implements CompositeBuilder, EndpointR
                 for (EndpointReference epr : callbackEndpointReferences) {
                     for (Endpoint ep : callbackEndpoints) {
 
-                        if (epr.getBinding().getClass() == ep.getBinding().getClass() &&
+                        if (epr.getBinding().getType().equals(ep.getBinding().getType()) &&
                             hasCompatiblePolicySets(epr.getBinding(), ep.getBinding())) {
 
                             matchedEndpoint.add(ep);

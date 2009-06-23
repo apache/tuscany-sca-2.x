@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.tuscany.sca.implementation.bpel.impl;
 
@@ -35,7 +35,7 @@ import org.apache.tuscany.sca.implementation.bpel.BPELProcessDefinition;
 
 /**
  * The model representing a BPEL implementation in an SCA assembly model.
- * 
+ *
  * @version $Rev$ $Date$
  */
 class BPELImplementationImpl extends ImplementationImpl implements BPELImplementation {
@@ -45,10 +45,14 @@ class BPELImplementationImpl extends ImplementationImpl implements BPELImplement
     private ComponentType componentType;
     private ModelResolver modelResolver;
 
+    protected BPELImplementationImpl() {
+        super(TYPE);
+    }
+
     public QName getProcess() {
         return processName;
     }
-    
+
     public void setProcess(QName processName) {
         this.processName = processName;
     }
@@ -83,7 +87,7 @@ class BPELImplementationImpl extends ImplementationImpl implements BPELImplement
         // The BPEL implementation does not support properties
         return Collections.emptyList();
     }
-    
+
     public ComponentType getComponentType() {
         return componentType;
     }
@@ -91,15 +95,15 @@ class BPELImplementationImpl extends ImplementationImpl implements BPELImplement
     public void setComponentType(ComponentType componentType) {
         this.componentType = componentType;
     }
-    
+
     public ModelResolver getModelResolver() {
         return modelResolver;
     }
-    
+
     public void setModelResolver(ModelResolver modelResolver) {
         this.modelResolver = modelResolver;
     }
-    
+
     @Override
     public List<Service> getServices() {
         return componentType.getServices();
@@ -109,7 +113,7 @@ class BPELImplementationImpl extends ImplementationImpl implements BPELImplement
     public List<Reference> getReferences() {
         return componentType.getReferences();
     }
-    
+
     @Override
     public int hashCode() {
         return String.valueOf(this.getProcess()).hashCode();

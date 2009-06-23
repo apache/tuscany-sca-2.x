@@ -141,14 +141,14 @@ public class EndpointReferenceImpl implements EndpointReference {
         return requiredIntents;
     }
 
-    public ExtensionType getType() {
+    public ExtensionType getExtensionType() {
         if (binding instanceof PolicySubject) {
-            return ((PolicySubject)binding).getType();
+            return ((PolicySubject)binding).getExtensionType();
         }
         return null;
     }
 
-    public void setType(ExtensionType type) {
+    public void setExtensionType(ExtensionType type) {
         throw new UnsupportedOperationException();
     }
 
@@ -200,11 +200,11 @@ public class EndpointReferenceImpl implements EndpointReference {
     public void setURI(String uri) {
         this.uri = uri;
     }
-    
+
     public boolean isRemote() {
         return remote;
     }
-    
+
     public void setRemote(boolean remote) {
         this.remote = remote;
     }

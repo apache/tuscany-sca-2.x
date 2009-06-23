@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.tuscany.sca.core.context.impl;
 
@@ -59,7 +59,7 @@ import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
  * Base class for implementations of service and callback references.
- * 
+ *
  * @version $Rev$ $Date$
  * @param <B> the type of the business interface
  */
@@ -81,7 +81,7 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
     private transient RuntimeComponentReference clonedRef;
     private transient ReferenceParameters refParams;
     private transient XMLStreamReader xmlReader;
-    
+
     private FactoryExtensionPoint modelFactories;
     protected RuntimeAssemblyFactory assemblyFactory;
 
@@ -111,29 +111,29 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
         this.component = component;
         this.reference = reference;
         this.endpointReference = endpointReference;
-        
+
         ExtensionPointRegistry registry = compositeActivator.getCompositeContext().getExtensionPointRegistry();
         this.modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
         this.assemblyFactory = (RuntimeAssemblyFactory)modelFactories.getFactory(AssemblyFactory.class);
 
-        
-        // FIXME: The SCA Specification is not clear how we should handle multiplicity 
+
+        // FIXME: The SCA Specification is not clear how we should handle multiplicity
         // for CallableReference
         if (this.endpointReference == null) {
-            
+
             // TODO - EPR - If no endpoint reference specified assume the first one
-            //        This will happen when a self reference is created in which case the 
-            //        the reference should only have on endpointReference so use that 
+            //        This will happen when a self reference is created in which case the
+            //        the reference should only have on endpointReference so use that
             if (this.reference.getEndpointReferences().size() == 0){
-                throw new ServiceRuntimeException("The reference " + reference.getName() + " in component " + 
+                throw new ServiceRuntimeException("The reference " + reference.getName() + " in component " +
                         component.getName() + " has no endpoint references");
             }
-            
+
             if (this.reference.getEndpointReferences().size() > 1){
-                throw new ServiceRuntimeException("The reference " + reference.getName() + " in component " + 
+                throw new ServiceRuntimeException("The reference " + reference.getName() + " in component " +
                         component.getName() + " has more than one endpoint reference");
             }
-            
+
             this.endpointReference = this.reference.getEndpointReferences().get(0);
         }
 
@@ -251,7 +251,7 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
      * @throws IOException
      */
  // TODO - EPR all needs sorting out for endpoint references
-    
+
     private synchronized void resolve() throws Exception {
         if ((scdl != null || xmlReader != null) && component == null && reference == null) {
             CompositeContext componentContextHelper = CompositeContext.getCurrentCompositeContext();
@@ -308,7 +308,7 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
                         optimizableBinding.setTargetComponentService(targetService);
                         if (targetService != null) {
                             for (Binding serviceBinding : targetService.getBindings()) {
-                                if (serviceBinding.getClass() == binding.getClass()) {
+                                if (serviceBinding.getType().equals(binding.getType())) {
                                     optimizableBinding.setTargetBinding(serviceBinding);
                                     break;
                                 }
@@ -317,7 +317,7 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
                     }
                 }
 /*
-                // FIXME: The SCA Specification is not clear how we should handle multiplicity 
+                // FIXME: The SCA Specification is not clear how we should handle multiplicity
                 // for CallableReference
                 if (binding == null) {
                     binding = reference.getBinding(SCABinding.class);
@@ -326,7 +326,7 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
                     }
                 }
 */
-                
+
                 Interface i = reference.getInterfaceContract().getInterface();
                 if (i instanceof JavaInterface) {
                     JavaInterface javaInterface = (JavaInterface)i;
@@ -348,7 +348,7 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
                     }
                     this.businessInterface = (Class<B>)javaInterface.getJavaClass();
                 }
-/*                
+/*
                 if (binding instanceof BindingBuilderExtension) {
                     ((BindingBuilderExtension)binding).getBuilder().build(component, reference, binding, null);
                 }
@@ -366,7 +366,7 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
     /**
      * Follow a service promotion chain down to the inner most (non composite)
      * component service.
-     * 
+     *
      * @param topCompositeService
      * @return
      */
@@ -421,7 +421,7 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
             if (refParams == null) {
                 refParams = new ReferenceParametersImpl();
 
-                // remove any existing reference parameters from the clone                
+                // remove any existing reference parameters from the clone
                 Object toRemove = null;
                 for (Object extension : clonedRef.getExtensions()) {
                     if (extension instanceof ReferenceParameters) {
@@ -445,7 +445,7 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
 
     /**
      * Create a callback id
-     * 
+     *
      * @return the callback id
      */
     private String createCallbackID() {
@@ -472,16 +472,16 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
             InterfaceContract sourceContract =
                 componentTypeRef == null ? reference.getInterfaceContract() : componentTypeRef.getInterfaceContract();
             sourceContract = sourceContract.makeUnidirectional(false);
-            
+
             EndpointReference epr = assemblyFactory.createEndpointReference();
             epr.setComponent(component);
             epr.setReference(reference);
             //epr.setBinding(binding);
             epr.setInterfaceContract(sourceContract);
-            
+
             Endpoint endpoint = assemblyFactory.createEndpoint();
             epr.setTargetEndpoint(endpoint);
-            
+
             return epr;
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);
@@ -499,7 +499,7 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
      * <li>URI containing just Composite name(s) (i.e. no Service name specified)
      * <li>URI containing Composite name(s) and a Service Name
      * </ul>
-     * 
+     *
      * @param componentURI The URI of the Component to resolve
      * @return The Component for the specified URI or null if not founds
      */
@@ -530,7 +530,7 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
     /**
      * Examines the Services on the specified Component and returns the Service that matches the
      * specified Binding URI.
-     * 
+     *
      * @param bindingURI The Binding URI to resolve on the Component
      * @param targetComponent The Component containing the Services
      * @return The Service with the specified serviceName or null if no such Service found.

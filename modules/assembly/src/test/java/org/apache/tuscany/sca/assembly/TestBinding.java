@@ -18,16 +18,20 @@
  */
 package org.apache.tuscany.sca.assembly;
 
-import org.apache.tuscany.sca.assembly.impl.BindingImpl;
+import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.assembly.impl.BindingImpl;
 
 /**
  * A test interface model.
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class TestBinding extends BindingImpl implements Binding {
+    private final static QName TYPE = new QName("http://test", "binding.test");
+
     public TestBinding(AssemblyFactory factory) {
+        super(TYPE);
     }
 
     public String getName() {
@@ -37,7 +41,7 @@ public class TestBinding extends BindingImpl implements Binding {
     public String getURI() {
         return "http://test";
     }
-    
+
     public boolean isUnresolved() {
         return false;
     }

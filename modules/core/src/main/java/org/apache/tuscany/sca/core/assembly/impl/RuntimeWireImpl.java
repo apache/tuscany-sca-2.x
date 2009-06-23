@@ -361,7 +361,7 @@ public class RuntimeWireImpl implements RuntimeWire {
     }
 
     private ReferenceBindingProvider addReferenceBindingProvider(
-            EndpointReference endpointReference, 
+            EndpointReference endpointReference,
             RuntimeComponent component, RuntimeComponentReference reference,
             Binding binding) {
         BindingProviderFactory providerFactory = (BindingProviderFactory) providerFactories
@@ -387,8 +387,8 @@ public class RuntimeWireImpl implements RuntimeWire {
             return bindingProvider;
         } else {
             throw new IllegalStateException(
-                    "Provider factory not found for class: "
-                            + binding.getClass().getName());
+                    "Provider factory not found for binding: "
+                            + binding.getType());
         }
     }
 

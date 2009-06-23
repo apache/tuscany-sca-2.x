@@ -126,10 +126,10 @@ public class ComponentTypeImpl extends ExtensibleImpl implements ComponentType, 
         return policySets;
     }
 
-    public ExtensionType getType() {
+    public ExtensionType getExtensionType() {
         return null;
     }
 
-    public void setType(ExtensionType type) {
+    public void setExtensionType(ExtensionType type) {
     }
 }

@@ -97,6 +97,7 @@ public class EndpointProcessor extends BaseAssemblyProcessor implements StAXArti
         try {
             Composite composite = assemblyFactory.createComposite();
             composite.setName(ENDPOINT_QNAME);
+            composite.setLocal(false);
             Component component = (Component)endpoint.getComponent().clone();
             composite.getComponents().add(component);
             component.getReferences().clear();

@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.sca.binding.rmi.impl;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.sca.binding.rmi.RMIBinding;
 
 /**
@@ -43,7 +45,7 @@ public class RMIBindingImpl implements RMIBinding {
     }
 
     public void setUnresolved(boolean unresolved) {
-        // The sample binding is always resolved
+        // The binding is always resolved
     }
 
     @Override
@@ -57,6 +59,10 @@ public class RMIBindingImpl implements RMIBinding {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public QName getType() {
+        return TYPE;
     }
 
 

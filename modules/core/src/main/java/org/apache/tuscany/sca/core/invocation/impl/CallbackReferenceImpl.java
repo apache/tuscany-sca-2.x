@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.tuscany.sca.core.invocation.impl;
 
@@ -26,10 +26,8 @@ import java.util.List;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentService;
-import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
-import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.core.assembly.impl.RuntimeComponentReferenceImpl;
 import org.apache.tuscany.sca.core.assembly.impl.RuntimeWireImpl;
 import org.apache.tuscany.sca.core.context.CompositeContext;
@@ -124,8 +122,8 @@ public class CallbackReferenceImpl<B> extends CallableReferenceImpl<B> {
 
         // if no match, look for callback binding with same type as service binding
         for (RuntimeWire wire : wires) {
-            if (wire.getEndpointReference().getBinding().getClass() == to.getBinding().getClass()) {
-			    return wire;
+            if (wire.getEndpointReference().getBinding().getType().equals(to.getBinding().getType())) {
+                return wire;
             }
         }
 
@@ -142,7 +140,7 @@ public class CallbackReferenceImpl<B> extends CallableReferenceImpl<B> {
             }
             try {
                 // TODO - EPR - is this correct?
-                                
+
                 // test if the call back wire is manually configured
                 if ((wire.getEndpointReference().isUnresolved()== false) &&
                     (wire.getEndpointReference().getTargetEndpoint().isUnresolved()== false)){
@@ -154,12 +152,12 @@ public class CallbackReferenceImpl<B> extends CallableReferenceImpl<B> {
                     RuntimeComponentReference ref =
                         bind((RuntimeComponentReference)wire.getEndpointReference().getReference(),
                               resolvedEndpoint);
-                    
+
                     boundWire = ref.getRuntimeWires().get(0);
                 }
-                
+
                 Binding binding = wire.getEndpointReference().getBinding();
-                
+
                 ((RuntimeWireImpl)wire).addToCache(resolvedEndpoint, boundWire);
             } catch (CloneNotSupportedException e) {
                 // will not happen
@@ -171,24 +169,24 @@ public class CallbackReferenceImpl<B> extends CallableReferenceImpl<B> {
     // TODO - EPR - why static?
     private static RuntimeComponentReference bind(RuntimeComponentReference reference,
                                                   Endpoint callbackEndpoint) throws CloneNotSupportedException {
-        
+
         // clone the callback reference ready to configure it for this callback endpoint
         RuntimeComponentReference ref = (RuntimeComponentReference)reference.clone();
         ref.getTargets().clear();
         ref.getBindings().clear();
         ref.getEndpointReferences().clear();
-        
+
         // no access to the assembly factory so clone an existing epr
         EndpointReference callbackEndpointReference = (EndpointReference)reference.getEndpointReferences().get(0).clone();
 
         callbackEndpointReference.setReference(ref);
         callbackEndpointReference.setTargetEndpoint(callbackEndpoint);
         callbackEndpointReference.setUnresolved(true);
-       
-        // The callback endpoint will be resolved with the registry 
+
+        // The callback endpoint will be resolved with the registry
         // when the wire chains are created
         ref.getEndpointReferences().add(callbackEndpointReference);
-        
+
         return ref;
     }
 
@@ -218,7 +216,7 @@ public class CallbackReferenceImpl<B> extends CallableReferenceImpl<B> {
         // Copy the Java Interface from the Service
         final JavaInterface ji = (JavaInterface) targetServiceIfaceContract.getInterface();
         this.businessInterface = (Class<B>) ji.getJavaClass();
-        
+
         // We need to re-create the callback wire. We need to do this on a clone of the Service
         // wire since we need to change some details on it.
         // FIXME: Is this the best way to do this?
@@ -229,7 +227,7 @@ public class CallbackReferenceImpl<B> extends CallableReferenceImpl<B> {
             throw new IOException(e.toString());
         }
 
-        // TODO - EPR - This doesn't sound right to me. 
+        // TODO - EPR - This doesn't sound right to me.
         // Setup the reference on the cloned wire
         final RuntimeComponentReference ref = new RuntimeComponentReferenceImpl();
         ref.setComponent((RuntimeComponent) targetComponent);
@@ -245,7 +243,7 @@ public class CallbackReferenceImpl<B> extends CallableReferenceImpl<B> {
         super.writeExternal(out);
         out.writeObject(this.callbackID);
         out.writeObject(this.convID);
-        
+
         // TODO - EPR - What to do about URI?
         out.writeUTF(this.resolvedEndpoint.getBinding().getURI());
     }

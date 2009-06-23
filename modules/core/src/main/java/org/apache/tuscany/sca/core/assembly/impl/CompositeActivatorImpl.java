@@ -49,7 +49,6 @@ import org.apache.tuscany.sca.core.context.CompositeContext;
 import org.apache.tuscany.sca.core.context.impl.CompositeContextImpl;
 import org.apache.tuscany.sca.core.invocation.ExtensibleWireProcessor;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
-import org.apache.tuscany.sca.core.scope.Scope;
 import org.apache.tuscany.sca.core.scope.ScopeContainer;
 import org.apache.tuscany.sca.core.scope.ScopeRegistry;
 import org.apache.tuscany.sca.core.scope.ScopedRuntimeComponent;
@@ -303,7 +302,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
     }
 
     private ServiceBindingProvider addServiceBindingProvider(
-            Endpoint endpoint, 
+            Endpoint endpoint,
             RuntimeComponent component, RuntimeComponentService service,
             Binding binding) {
         BindingProviderFactory providerFactory = (BindingProviderFactory) providerFactories
@@ -327,8 +326,8 @@ public class CompositeActivatorImpl implements CompositeActivator {
             return bindingProvider;
         } else {
             throw new IllegalStateException(
-                    "Provider factory not found for class: "
-                            + binding.getClass().getName());
+                    "Provider factory not found for binding: "
+                            + binding.getType());
         }
     }
 
@@ -459,8 +458,8 @@ public class CompositeActivatorImpl implements CompositeActivator {
             return bindingProvider;
         } else {
             throw new IllegalStateException(
-                    "Provider factory not found for class: "
-                            + binding.getClass().getName());
+                    "Provider factory not found for binding: "
+                            + binding.getClass().getType());
         }
     }
 */
@@ -531,7 +530,6 @@ public class CompositeActivatorImpl implements CompositeActivator {
             }
             RuntimeComponentService runtimeService = (RuntimeComponentService)service;
             for (Endpoint endpoint : service.getEndpoints()) {
-                endpointRegistry.addEndpoint(endpoint);
                 final ServiceBindingProvider bindingProvider = runtimeService.getBindingProvider(endpoint.getBinding());
                 if (bindingProvider != null) {
                     // bindingProvider.start();
@@ -542,6 +540,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
                             return null;
                           }
                     });
+                    endpointRegistry.addEndpoint(endpoint);
                 }
             }
         }

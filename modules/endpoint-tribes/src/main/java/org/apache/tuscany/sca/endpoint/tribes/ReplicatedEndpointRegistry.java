@@ -19,11 +19,9 @@
 
 package org.apache.tuscany.sca.endpoint.tribes;
 
-import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Logger;
 
@@ -31,8 +29,8 @@ import org.apache.catalina.tribes.Channel;
 import org.apache.catalina.tribes.ChannelException;
 import org.apache.catalina.tribes.group.GroupChannel;
 import org.apache.catalina.tribes.membership.McastService;
-import org.apache.catalina.tribes.tipis.AbstractReplicatedMap;
 import org.apache.catalina.tribes.tipis.ReplicatedMap;
+import org.apache.catalina.tribes.tipis.AbstractReplicatedMap.MapEntry;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
@@ -220,7 +218,10 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry, LifeCycleLi
                 Endpoint endpoint = (Endpoint)v;
                 // TODO: implement more complete matching
                 if (matches(targetEndpoint.getURI(), endpoint.getURI())) {
-                    // MapEntry entry = map.getInternal(endpoint.getURI());
+                    MapEntry entry = map.getInternal(endpoint.getURI());
+                    if (!entry.getPrimary().equals(map.getChannel().getLocalMember(false))) {
+                        endpoint.setRemote(true);
+                    }
                     // if (!entry.isPrimary()) {
                         endpoint.setExtensionPointRegistry(registry);
                     // }
@@ -279,35 +280,6 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry, LifeCycleLi
         for (EndpointListener listener : listeners) {
             listener.endpointUpdated(oldEndpoint, endpoint);
         }
-    }
-
-    public static void main(String[] args) throws Exception {
-        //create a channel
-        GroupChannel channel = new GroupChannel();
-        McastService mcastService = (McastService)channel.getMembershipService();
-        mcastService.setPort(MULTICAST_PORT);
-        mcastService.setAddress(MULTICAST_ADDRESS);
-
-        InetAddress localhost = InetAddress.getLocalHost();
-
-        // REVIEW: In my case, there are multiple IP addresses
-        // One for the WIFI and the other one for VPN. For some reason the VPN one doesn't support
-        // Multicast
-        mcastService.setBind("192.168.1.100");
-        channel.start(Channel.DEFAULT);
-        ReplicatedMap map = new ReplicatedMap(null, channel, 50, "01", null);
-        map.put(UUID.randomUUID().toString(), localhost.getHostAddress());
-        for (int i = 0; i < 5; i++) {
-            Thread.sleep(2000);
-            System.out.println(localhost + ": " + map.keySet());
-        }
-        for (Object e : map.entrySetFull()) {
-            Map.Entry en = (Map.Entry)e;
-            AbstractReplicatedMap.MapEntry entry = (AbstractReplicatedMap.MapEntry)en.getValue();
-            System.out.println(entry);
-        }
-        map.breakdown();
-        channel.stop(Channel.DEFAULT);
     }
 
 }

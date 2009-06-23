@@ -131,14 +131,14 @@ public class EndpointImpl implements Endpoint {
         return requiredIntents;
     }
 
-    public ExtensionType getType() {
+    public ExtensionType getExtensionType() {
         if (binding instanceof PolicySubject) {
-            return ((PolicySubject)binding).getType();
+            return ((PolicySubject)binding).getExtensionType();
         }
         return null;
     }
 
-    public void setType(ExtensionType type) {
+    public void setExtensionType(ExtensionType type) {
         throw new UnsupportedOperationException();
     }
 
@@ -187,12 +187,12 @@ public class EndpointImpl implements Endpoint {
     public void setExtensionPointRegistry(ExtensionPointRegistry registry) {
         this.registry = registry;
     }
-    
+
     public boolean isRemote() {
         return remote;
     }
-    
+
     public void setRemote(boolean remote) {
         this.remote = remote;
-    }    
+    }
 }

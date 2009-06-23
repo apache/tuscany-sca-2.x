@@ -27,7 +27,7 @@ import org.apache.tuscany.sca.binding.jsonp.JSONPBindingFactory;
  */
 public class JSONPBindingFactoryImpl implements JSONPBindingFactory {
 
-    public JSONPBinding createRMIBinding() {
+    public JSONPBinding createJSONPBinding() {
         return new JSONPBindingImpl();
     }
 

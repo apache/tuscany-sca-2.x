@@ -137,11 +137,11 @@ public class ComponentImpl extends ExtensibleImpl implements Component, Cloneabl
         return autowire;
     }
 
-    public ExtensionType getType() {
+    public ExtensionType getExtensionType() {
         return type;
     }
 
-    public void setType(ExtensionType type) {
+    public void setExtensionType(ExtensionType type) {
         this.type = type;
     }
 

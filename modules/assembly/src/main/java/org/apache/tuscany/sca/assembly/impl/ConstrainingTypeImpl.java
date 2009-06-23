@@ -98,11 +98,11 @@ public class ConstrainingTypeImpl extends ExtensibleImpl implements Constraining
         }
     }
     
-    public ExtensionType getType() {
+    public ExtensionType getExtensionType() {
         return null;
     }
 
-    public void setType(ExtensionType type) {
+    public void setExtensionType(ExtensionType type) {
     }
     
 }

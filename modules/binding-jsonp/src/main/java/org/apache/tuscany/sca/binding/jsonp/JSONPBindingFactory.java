@@ -27,5 +27,5 @@ public interface JSONPBindingFactory {
     /**
      * Create JSONPBinding model
      */
-    JSONPBinding createRMIBinding();
+    JSONPBinding createJSONPBinding();
 }

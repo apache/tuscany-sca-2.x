@@ -24,12 +24,12 @@ import org.apache.tuscany.sca.assembly.impl.ImplementationImpl;
 
 /**
  * A test component implementation model.
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class TestImplementation extends ImplementationImpl implements Implementation {
     public TestImplementation(AssemblyFactory factory) {
-
+        super(new QName("http://test", "implementation.test"));
         Property p = factory.createProperty();
         p.setName("currency");
         p.setValue("USD");

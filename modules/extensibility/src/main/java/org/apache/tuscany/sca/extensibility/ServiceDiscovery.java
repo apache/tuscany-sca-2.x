@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Service discovery for Tuscany based on J2SE Jar service provider spec.
@@ -35,6 +36,7 @@ import java.util.List;
  * @version $Rev$ $Date$
  */
 public final class ServiceDiscovery implements ServiceDiscoverer {
+    private final static Logger logger = Logger.getLogger(ServiceDiscovery.class.getName());
     private final static ServiceDiscovery INSTANCE = new ServiceDiscovery();
 
     private ServiceDiscoverer discoverer;
@@ -86,6 +88,18 @@ public final class ServiceDiscovery implements ServiceDiscoverer {
         }
         if (!declarations.isEmpty()) {
             List<ServiceDeclaration> declarationList = new ArrayList<ServiceDeclaration>(declarations);
+            /*
+            for (ServiceDeclaration sd1 : declarations) {
+                for (Iterator<ServiceDeclaration> i = declarationList.iterator(); i.hasNext();) {
+                    ServiceDeclaration sd2 = i.next();
+                    if (sd1 != sd2 && sd1.getAttributes().equals(sd2.getAttributes())) {
+                        logger
+                            .warning("Duplicate service declarations: " + sd1.getLocation() + "," + sd2.getLocation());
+                        i.remove();
+                    }
+                }
+            }
+            */
             Collections.sort(declarationList, ServiceComparator.DESCENDING_ORDER);
             return declarationList;
         } else {

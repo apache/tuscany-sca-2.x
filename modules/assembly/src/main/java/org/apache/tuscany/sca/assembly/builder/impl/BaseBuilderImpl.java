@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.assembly.builder.impl;
@@ -49,7 +49,7 @@ import org.apache.tuscany.sca.policy.ExtensionType;
 import org.apache.tuscany.sca.policy.PolicySubject;
 
 /**
- * Base class for Builder implementations 
+ * Base class for Builder implementations
  *
  * @version $Rev$ $Date$
  */
@@ -76,10 +76,10 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
         this.transformerFactory = transformerFactory;
         this.interfaceContractMapper = interfaceContractMapper;
     }
-    
+
     /**
      * Report a warning.
-     * 
+     *
      * @param monitor
      * @param problems
      * @param message
@@ -91,10 +91,10 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
             monitor.problem(problem);
         }
     }
-    
+
     /**
      * Report a error.
-     * 
+     *
      * @param monitor
      * @param problems
      * @param message
@@ -105,11 +105,11 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
             Problem problem = monitor.createProblem(this.getClass().getName(), "assembly-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
             monitor.problem(problem);
         }
-    }  
-    
+    }
+
     /**
      * Report a exception.
-     * 
+     *
      * @param problems
      * @param message
      * @param model
@@ -120,11 +120,11 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
             problem = monitor.createProblem(this.getClass().getName(), "assembly-validation-messages", Severity.ERROR, model, message, ex);
             monitor.problem(problem);
         }
-    }   
-       
+    }
+
     /**
      * Index components inside a composite
-     * 
+     *
      * @param composite
      * @param componentServices
 
@@ -134,12 +134,12 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
         for (Component component : composite.getComponents()) {
             // Index components by name
             components.put(component.getName(), component);
-        }    
+        }
     }
-    
+
     /**
      * Index services inside a composite
-     * 
+     *
      * @param composite
      * @param componentServices
      */
@@ -147,18 +147,18 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
                                  Map<String, ComponentService> componentServices) {
 
         for (Component component : composite.getComponents()) {
-            
+
             ComponentService nonCallbackService = null;
             int nonCallbackServiceCount = 0;
-            
-            for (ComponentService componentService : component.getServices()) {                 
+
+            for (ComponentService componentService : component.getServices()) {
                 // Index component services by component name / service name
                 String uri = component.getName() + '/' + componentService.getName();
                 componentServices.put(uri, componentService);
-                
+
                 // count how many non-callback there are
-                if (!componentService.isCallback()) {                            
-                    
+                if (!componentService.isCallback()) {
+
                     if (nonCallbackServiceCount == 0) {
                         nonCallbackService = componentService;
                     }
@@ -170,9 +170,9 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
                 // component name as well
                 componentServices.put(component.getName(), nonCallbackService);
             }
-        }    
-    }    
-    
+        }
+    }
+
 
     /**
      * Index components, services and references inside a composite.
@@ -187,28 +187,28 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
                                                         Map<String, ComponentReference> componentReferences) {
 
         for (Component component : composite.getComponents()) {
-            
+
             // Index components by name
             components.put(component.getName(), component);
-            
+
             ComponentService nonCallbackService = null;
             int nonCallbackServices = 0;
             for (ComponentService componentService : component.getServices()) {
-                                  
+
                 // Index component services by component name / service name
                 String uri = component.getName() + '/' + componentService.getName();
                 componentServices.put(uri, componentService);
-                
+
                 // TODO - EPR - $promoted$ no longer used but it doesn't do any harm here
                 boolean promotedService = false;
                 if (componentService.getName() != null && componentService.getName().indexOf("$promoted$") > -1) {
                     promotedService = true;
                 }
-                
+
                 // count how many non-callback, non-promoted services there are
                 // if there is only one the component name also acts as the service name
-                if ((!componentService.isCallback()) && (!promotedService)) {                            
-                    
+                if ((!componentService.isCallback()) && (!promotedService)) {
+
                     // Check how many non callback non-promoted services we have
                     if (nonCallbackServices == 0) {
                         nonCallbackService = componentService;
@@ -217,13 +217,13 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
                 }
 
             }
-            
+
             if (nonCallbackServices == 1) {
                 // If we have a single non callback service, index it by
                 // component name as well
                 componentServices.put(component.getName(), nonCallbackService);
             }
-            
+
             // Index references by component name / reference name
             for (ComponentReference componentReference : component.getReferences()) {
                 String uri = component.getName() + '/' + componentReference.getName();
@@ -231,7 +231,7 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
             }
         }
     }
-    
+
     protected void indexComponentPropertiesServicesAndReferences(
             Component component,
             Map<String, ComponentService> componentServices,
@@ -319,12 +319,12 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
             }
         }
 
-    }    
-    
+    }
+
     /**
      * Reconcile component properties and the properties defined by the
      * component type.
-     * 
+     *
      * @param component
      * @param properties
      * @param componentProperties
@@ -379,7 +379,7 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
                 if (componentProperty.getValue() == null) {
                     componentProperty.setValue(property.getValue());
                 }
-                
+
                 // Override the property value for the composite
                 if(component.getImplementation() instanceof Composite) {
                     property.setValue(componentProperty.getValue());
@@ -419,7 +419,7 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
     /**
      * Reconcile component references with the references defined on the
      * component type.
-     * 
+     *
      * @param component
      * @param references
      * @param componentReferences
@@ -488,11 +488,11 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
                     componentReference.setInterfaceContract(interfaceContract);
                 }
 
-                // Reconcile bindings 
+                // Reconcile bindings
                 if (componentReference.getBindings().isEmpty()) {
                     componentReference.getBindings().addAll(reference.getBindings());
                 }
-                
+
                 // Reconcile callback bindings
                 if (componentReference.getCallback() == null) {
                     componentReference.setCallback(reference.getCallback());
@@ -506,7 +506,7 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
                     componentReference.getCallback().getBindings().addAll(reference.getCallback()
                         .getBindings());
                 }
-                
+
                 // Propagate autowire setting from the component
                 if (componentReference.getAutowire() == null) {
                     componentReference.setAutowire(component.getAutowire());
@@ -522,7 +522,7 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
 
     /**
      * Reconcile component services and services defined on the component type.
-     * 
+     *
      * @param component
      * @param services
      * @param componentServices
@@ -583,7 +583,7 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
                 if (componentService.getBindings().isEmpty()) {
                     componentService.getBindings().addAll(service.getBindings());
                 }
-                
+
                 // Reconcile callback bindings
                 if (componentService.getCallback() == null) {
                     componentService.setCallback(service.getCallback());
@@ -598,25 +598,25 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
                 }
             }
         }
-    }    
-    
+    }
+
     protected SCABinding createSCABinding(Definitions definitions) {
         SCABinding scaBinding = scaBindingFactory.createSCABinding();
-        
-        // mark the bindings that are added automatically so that they can 
+
+        // mark the bindings that are added automatically so that they can
         // be disregarded for overriding purposes
         if (scaBinding instanceof AutomaticBinding){
             ((AutomaticBinding)scaBinding).setIsAutomatic(true);
         }
-        
+
         if ( definitions != null ) {
             for ( ExtensionType attachPointType : definitions.getBindingTypes() ) {
                 if ( attachPointType.getType().equals(BINDING_SCA_QNAME)) {
-                    ((PolicySubject)scaBinding).setType(attachPointType);
+                    ((PolicySubject)scaBinding).setExtensionType(attachPointType);
                 }
             }
         }
-        
+
         return scaBinding;
-    }    
+    }
 }

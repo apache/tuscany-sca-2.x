@@ -74,11 +74,11 @@ public class ContractImpl extends ExtensibleImpl implements AbstractContract {
         this.isCallback = isCallback;
     }
 
-    public ExtensionType getType() {
+    public ExtensionType getExtensionType() {
         return null;
     }
 
-    public void setType(ExtensionType type) {
+    public void setExtensionType(ExtensionType type) {
     }
    
     public List<PolicySet> getPolicySets() {

@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.tuscany.sca.assembly.xml;
 
@@ -36,18 +36,18 @@ import org.apache.tuscany.sca.policy.PolicySubject;
 
 /**
  * A test cheel for the SCA binding.
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class TestSCABindingImpl implements SCABinding, OptimizableBinding, PolicySubject {
     private String name;
     private String uri;
     private List<Object> extensions = new ArrayList<Object>();
-    
+
     private Component targetComponent;
     private ComponentService targetComponentService;
     private Binding targetBinding;
-    
+
     private List<Intent> requiredIntents = new ArrayList<Intent>();
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
     private ExtensionType bindingType = new TestSCABindingType();
@@ -57,7 +57,7 @@ public class TestSCABindingImpl implements SCABinding, OptimizableBinding, Polic
      */
     protected TestSCABindingImpl() {
     }
-    
+
     public String getName() {
         return name;
     }
@@ -77,11 +77,11 @@ public class TestSCABindingImpl implements SCABinding, OptimizableBinding, Polic
     public List<Object> getExtensions() {
         return extensions;
     }
-    
+
     public boolean isUnresolved() {
         return false;
     }
-    
+
     public void setUnresolved(boolean unresolved) {
     }
 
@@ -134,7 +134,7 @@ public class TestSCABindingImpl implements SCABinding, OptimizableBinding, Polic
     public void setTargetBinding(Binding targetBinding) {
         this.targetBinding = targetBinding;
     }
-    
+
     public List<PolicySet> getPolicySets() {
         // TODO Auto-generated method stub
         return policySets;
@@ -145,15 +145,19 @@ public class TestSCABindingImpl implements SCABinding, OptimizableBinding, Polic
         return requiredIntents;
     }
 
-    public ExtensionType getType() {
+    public ExtensionType getExtensionType() {
         // TODO Auto-generated method stub
         return bindingType;
     }
 
-    public void setType(ExtensionType type) {
+    public void setExtensionType(ExtensionType type) {
         this.bindingType = type;
     }
-    
+
+    public QName getType() {
+        return TYPE;
+    }
+
     private class TestSCABindingType implements ExtensionType {
         private QName name = new QName("http://docs.oasis-open.org/ns/opencsa/sca/200903","binding");
         public QName getBaseType() {
@@ -182,5 +186,5 @@ public class TestSCABindingImpl implements SCABinding, OptimizableBinding, Polic
         public void setUnresolved(boolean unresolved) {
         }
     }
-    
+
 }
