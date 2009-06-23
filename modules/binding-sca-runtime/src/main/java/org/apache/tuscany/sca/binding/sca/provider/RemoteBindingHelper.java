@@ -32,7 +32,7 @@ public class RemoteBindingHelper {
             Class.forName("org.apache.tuscany.sca.binding.sca.jms.JMSSCABindingProviderFactory");
             alwaysRemote = true;
         } catch (ClassNotFoundException e) {
-            alwaysRemote = true;
+            alwaysRemote = false;
         }
     }
 
