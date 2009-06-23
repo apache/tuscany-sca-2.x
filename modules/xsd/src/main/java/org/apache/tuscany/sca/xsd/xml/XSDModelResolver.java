@@ -21,6 +21,8 @@ package org.apache.tuscany.sca.xsd.xml;
 
 import java.io.IOException;
 import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,6 +40,7 @@ import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.xsd.DefaultXSDFactory;
 import org.apache.tuscany.sca.xsd.XSDFactory;
 import org.apache.tuscany.sca.xsd.XSDefinition;
+import org.apache.tuscany.sca.xsd.impl.XSDefinitionImpl;
 import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.apache.ws.commons.schema.XmlSchemaInclude;
@@ -88,51 +91,6 @@ public class XSDModelResolver implements ModelResolver {
     	XSDefinition definition = (XSDefinition)unresolved;        
         String namespace = definition.getNamespace();
         XSDefinition resolved = null;
-        
-        // FIXME - We should not be using import resolvers for inline schema.
-        /* // Lookup a definition for the given namespace, from imports
-        List<String> locations = new ArrayList<String>();
-        // Collection of namespace imports with location
-        Map<String, NamespaceImport> locationMap = new HashMap<String, NamespaceImport>();
-        for (Import import_ : this.contribution.getImports()) {
-            if (import_ instanceof NamespaceImport) {
-                NamespaceImport namespaceImport = (NamespaceImport)import_;
-                if (namespaceImport.getNamespace().equals(namespace)) {
-                	if (namespaceImport.getLocation() == null) {
-	                    // Delegate the resolution to the namespace import resolver
-	                    resolved =
-	                        namespaceImport.getModelResolver().resolveModel(XSDefinition.class, (XSDefinition)unresolved);
-	                    if (!resolved.isUnresolved()) {
-	                        return modelClass.cast(resolved);
-	                    }
-                    } else {
-                    	// We might have multiple imports for the same namespace,
-                		// need to search them in lexical order.
-                		locations.add(namespaceImport.getLocation());
-                    }
-                }
-            }            
-            else if (import_ instanceof DefaultImport) {
-
-                // Delegate the resolution to the default import resolver
-                resolved =
-                    import_.getModelResolver().resolveModel(XSDefinition.class, (XSDefinition)unresolved);
-                if (!resolved.isUnresolved()) {
-                    return modelClass.cast(resolved);
-                }
-            }
-        }        
-        // Search namespace imports with location in lexical order
-        Collections.sort(locations);
-        for (String location : locations) {
-        	NamespaceImport namespaceImport = (NamespaceImport)locationMap.get(location);
-        	// Delegate the resolution to the namespace import resolver
-            resolved =
-                namespaceImport.getModelResolver().resolveModel(XSDefinition.class, (XSDefinition)unresolved);
-            if (!resolved.isUnresolved()) {
-                return modelClass.cast(resolved);
-            }
-        } */
         
         // Lookup a definition for the given namespace, within the contribution
         List<XSDefinition> list = map.get(namespace);
@@ -276,11 +234,64 @@ public class XSDModelResolver implements ModelResolver {
         public org.xml.sax.InputSource resolveEntity(java.lang.String targetNamespace,
                                                      java.lang.String schemaLocation,
                                                      java.lang.String baseUri) {
-            try {
+            try 
+            {
                 if (schemaLocation == null) {
                     return null;
                 }
                 URL url = null;
+                
+                // Delegate the resolution to namespace imports
+                XSDefinition resolved = null;                
+                XSDefinition unresolved = new XSDefinitionImpl();
+                unresolved.setUnresolved(true);
+                unresolved.setLocation(new URI(schemaLocation));
+                unresolved.setNamespace(targetNamespace);
+                
+                // Collection of namespace imports with location
+                List<String> locations = new ArrayList<String>();                
+                Map<String, NamespaceImport> locationMap = new HashMap<String, NamespaceImport>();                
+                for (Import import_ : this.contribution.getImports()) {
+                    if (import_ instanceof NamespaceImport) {
+                        NamespaceImport namespaceImport = (NamespaceImport)import_;
+                        if (namespaceImport.getNamespace().equals(targetNamespace)) {
+                        	if (namespaceImport.getLocation() == null) {
+        	                    // Delegate the resolution to the namespace import resolver
+        	                    resolved =
+        	                        namespaceImport.getModelResolver().resolveModel(XSDefinition.class, (XSDefinition)unresolved);
+        	                    if (!resolved.isUnresolved()) {
+        	                        return XMLDocumentHelper.getInputSource(resolved.getLocation().toURL());
+        	                    }
+                        	} else {
+                        		// We might have multiple imports for the same namespace,
+                        		// need to search them in lexical order.
+                        		locations.add(namespaceImport.getLocation());
+                        		locationMap.put(namespaceImport.getLocation(), namespaceImport);
+                        	}
+                        }
+                    } else if (import_ instanceof DefaultImport) {
+                        // Delegate the resolution to the default import resolver
+                        resolved =
+                            import_.getModelResolver().resolveModel(XSDefinition.class, (XSDefinition)unresolved);
+                        if (!resolved.isUnresolved()) {
+                        	return XMLDocumentHelper.getInputSource(resolved.getLocation().toURL());
+                        }
+                    }
+                }                
+                // Search namespace imports with location in lexical order
+                Collections.sort(locations);
+                for (String location : locations) {
+                	NamespaceImport namespaceImport = (NamespaceImport)locationMap.get(location);
+                	// Delegate the resolution to the namespace import resolver
+                    resolved =
+                        namespaceImport.getModelResolver().resolveModel(XSDefinition.class, (XSDefinition)unresolved);
+                    if (!resolved.isUnresolved()) {
+                    	return XMLDocumentHelper.getInputSource(resolved.getLocation().toURL());
+                    }
+                }
+                
+                // Not found, lookup a definition for the given namespace
+                // within the current contribution.
                 if (schemaLocation.startsWith("/")) {
                     // The URI is relative to the contribution
                     String uri = schemaLocation.substring(1);
@@ -295,7 +306,13 @@ public class XSDModelResolver implements ModelResolver {
                 }
                 return XMLDocumentHelper.getInputSource(url);
             } catch (IOException e) {
-                return null;
+            	// Invalid URI; return a default InputSource so that the
+                // XmlSchema code will produce a useful diagnostic
+                return new InputSource(schemaLocation);
+            } catch (URISyntaxException e) {
+            	// Invalid URI; return a default InputSource so that the
+                // XmlSchema code will produce a useful diagnostic
+                return new InputSource(schemaLocation);
             }
         }
     }

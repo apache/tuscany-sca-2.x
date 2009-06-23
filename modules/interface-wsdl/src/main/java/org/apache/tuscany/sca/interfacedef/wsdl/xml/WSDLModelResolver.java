@@ -182,6 +182,8 @@ public class WSDLModelResolver implements ModelResolver {
                 if (importLocation == null) {
                     throw new IllegalArgumentException("Required attribute 'location' is missing.");
                 }
+                if (importLocation.trim().equals(""))
+                	throw new IllegalArgumentException("Required attribute 'location' is empty.");
 
                 URL url = null;
                 if (importLocation.startsWith("/")) {
@@ -311,6 +313,7 @@ public class WSDLModelResolver implements ModelResolver {
                     	// We might have multiple imports for the same namespace,
                 		// need to search them in lexical order.
                 		locations.add(namespaceImport.getLocation());
+                		locationMap.put(namespaceImport.getLocation(), namespaceImport);
                     }
                 }
             } else if (import_ instanceof DefaultImport) {
