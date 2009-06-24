@@ -16,23 +16,18 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<project name="itest-samples" default="run">
+<project name="server" default="run">
+
+	<!--echo>${runtime_classpath}</echo-->
 	
-    <target name="run"> 
-    	
-       <parallel>
-
-            <daemons>
-               <ant antfile="server.xml"/>
-            </daemons>
-
-            <sequential>
-                <sleep seconds="4"/>
-                <ant antfile="client.xml"/>
-            </sequential>
-
-       </parallel>    	
-
-    </target>
+	<target name="run">
+		<java classpath="${runtime_classpath}" classname="org.apache.tuscany.sca.node.launcher.NodeMain" fork="true">
+			<!--jvmarg value="-Djava.util.logging.config.file=../logging.properties"/-->
+			<arg value="-ttl"/>
+			<arg value="0"/>
+			<arg value="-node"/>
+			<arg value="file:./client-config.xml"/>
+		</java>
+	</target>
 
 </project>

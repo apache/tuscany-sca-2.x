@@ -30,9 +30,9 @@
 
     <!-- Configure a list of contributions -->
     <contribution uri="iface" location="file:../helloworld-iface/target/itest-nodes-helloworld-iface-2.0-SNAPSHOT.jar"/>
-    <contribution uri="service" location="file:../helloworld-service/target/itest-nodes-helloworld-service-2.0-SNAPSHOT.jar">
+    <contribution uri="client" location="file:../helloworld-client/target/itest-nodes-helloworld-client-2.0-SNAPSHOT.jar">
         <!-- doesn't pick up the deployable composite properly without this?-->
-        <deploymentComposite location="helloworld-service.composite"/>
+        <deploymentComposite location="helloworld-client.composite"/>
     </contribution>
 
 </node>

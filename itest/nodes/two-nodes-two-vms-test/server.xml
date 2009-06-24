@@ -18,15 +18,15 @@
 -->
 <project name="server" default="run">
 
-	<echo>${runtime_classpath}</echo>
+	<!--echo>${runtime_classpath}</echo-->
 	
 	<target name="run">
 		<java classpath="${runtime_classpath}" classname="org.apache.tuscany.sca.node.launcher.NodeMain" fork="true">
-			<jvmarg value="-Djava.util.logging.config.file=../logging.properties"/>
-			<!--arg value="-ttl"/>
-			<arg value="0"/-->
+			<!--jvmarg value="-Djava.util.logging.config.file=../logging.properties"/-->
+			<arg value="-ttl"/>
+			<arg value="0"/>
 			<arg value="-node"/>
-			<arg value="file://./server-config.xml"/>
+			<arg value="file:./server-config.xml"/>
 		</java>
 	</target>
 

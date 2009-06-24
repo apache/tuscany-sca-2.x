@@ -39,6 +39,7 @@
     <module>helloworld-client</module>
     <module>one-node-test</module>
     <module>two-nodes-test</module>
+    <module>two-nodes-two-vms-test</module>
   </modules>
 
 </project>
