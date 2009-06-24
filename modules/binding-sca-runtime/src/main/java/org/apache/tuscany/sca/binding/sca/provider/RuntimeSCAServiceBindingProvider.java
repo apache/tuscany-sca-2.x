@@ -62,6 +62,7 @@ public class RuntimeSCAServiceBindingProvider implements ServiceBindingProvider 
         this.binding = (SCABinding)endpoint.getBinding();
         
         // if there is potentially a wire to this service that crosses the node boundary
+        // then we need to create a remote endpoint 
         if (service.getInterfaceContract().getInterface().isRemotable()) {
 
             // look to see if a distributed SCA binding implementation has
@@ -73,59 +74,27 @@ public class RuntimeSCAServiceBindingProvider implements ServiceBindingProvider 
                 (BindingProviderFactory<DistributedSCABinding>)factoryExtensionPoint
                     .getProviderFactory(DistributedSCABinding.class);
 
-            // Check the things that will generally be required to set up a
-            // distributed sca domain reference provider. I.e. make sure that we have a
-            // - distributed implementation of the sca binding available
-            // - remotable interface on the service
             if (distributedProviderFactory != null) {
 
-                URI serviceURI = null;
+                SCABindingFactory scaBindingFactory =
+                    extensionPoints.getExtensionPoint(FactoryExtensionPoint.class).getFactory(SCABindingFactory.class);
+
+                //  create a nested provider to handle the remote case
+                distributedBinding = scaBindingFactory.createDistributedSCABinding();
+                distributedBinding.setSCABinding(binding);
+                
+                // create a copy of the endpoint and change the binding
+                Endpoint ep = null;
                 try {
-                    serviceURI = new URI(binding.getURI());
-                } catch(Exception ex) {
-
+                    ep = (Endpoint)endpoint.clone();
+                } catch (Exception ex) {
+                    // we know we can clone endpoint 
                 }
+                ep.setBinding(distributedBinding);
 
-                if (RemoteBindingHelper.isTargetRemote() || ((serviceURI != null) && (serviceURI.isAbsolute()))) {
-                    SCABindingFactory scaBindingFactory =
-                        extensionPoints.getExtensionPoint(FactoryExtensionPoint.class).getFactory(SCABindingFactory.class);
-
-                    //  create a nested provider to handle the remote case
-                    distributedBinding = scaBindingFactory.createDistributedSCABinding();
-                    distributedBinding.setSCABinding(binding);
-                    
-                    // create a copy of the endpoint and change the binding
-                    Endpoint ep = null;
-                    try {
-                        ep = (Endpoint)endpoint.clone();
-                    } catch (Exception ex) {
-                        // we know we can clone endpoint 
-                    }
-                    ep.setBinding(distributedBinding);
-
-                    distributedProvider =
-                        distributedProviderFactory.createServiceBindingProvider(ep);
-
-
-                } else {
-                     /* do nothing at the moment as only apps using the node implementation
-                      * will currently have the distributed domain set.
-                      *
-                    throw new IllegalStateException("No distributed domain available for component: "+
-                            component.getName() +
-                            " and service: " +
-                            service.getName());
-                    */
-                }
-            } else {
-                /* do nothing at the moment as all services with remotable interfaces
-                 * are marked as remote
-                throw new IllegalStateException("No distributed SCA binding available for component: "+
-                        component.getName() +
-                        " and service: " +
-                        service.getName());
-                */
-            }
+                distributedProvider =
+                    distributedProviderFactory.createServiceBindingProvider(ep);
+            } 
         }
     }
 

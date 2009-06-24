@@ -90,15 +90,16 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
         boolean targetIsRemote = false;
 
         // The decision is based on the results of the wiring process in the assembly model
-        // The SCA binding is used to represent unresolved reference targets, i.e. those
-        // reference targets that need resolving at run time. We can tell by looking if the
-        // service to which this binding refers is resolved or not.
-        //
-        // TODO - When a callback is in operation. A callback reference bindings sometimes has to
-        //        act as though there is a local wire and sometimes as if there is a remote wire
-        //        what are the implications of this here?
+        // and there are three possibilities
+        // 1 - target service is running in a separate node in a separate JVM
+        // 2 - target service is running in a seaprate node in the same JVM
+        // 3 - target service is running in the same node
+        
+        // TODO - EPR - the method needs to be able to indicate the three cases
+        
 
         if (RemoteBindingHelper.isTargetRemote()) {
+        	// TODO - EPR - what is this RemoteBindingHelper for?
             if (reference.getInterfaceContract() != null) {
                 targetIsRemote = reference.getInterfaceContract().getInterface().isRemotable();
             } else {
@@ -106,24 +107,14 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
             }
         } if ( (endpointReference.isRemote()) &&
                (endpointReference.getTargetEndpoint().isRemote())){
+        	// case 1
             targetIsRemote = true;
+        } else if (endpointReference.isRemote()) {
+        	// case 2
+        	targetIsRemote = false;
         } else {
-            // the case where the wire is specified by URI, e.g. callbacks or user specified bindings, and
-            // look at the provided URI to decide whether it is a local or remote case
-            try {
-                if (binding.getURI() != null) {
-                    URI uri = new URI(binding.getURI());
-                    if (uri.isAbsolute()) {
-                        targetIsRemote = true;
-                    } else {
-                        targetIsRemote = false;
-                    }
-                } else {
-                    targetIsRemote = false;
-                }
-            } catch (Exception ex) {
-                targetIsRemote = false;
-            }
+        	// case 3
+        	targetIsRemote = false;
         }
         return targetIsRemote;
     }
