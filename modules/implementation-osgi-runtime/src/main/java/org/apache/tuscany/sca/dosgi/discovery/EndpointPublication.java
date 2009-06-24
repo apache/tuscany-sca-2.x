@@ -19,6 +19,12 @@
 
 package org.apache.tuscany.sca.dosgi.discovery;
 
+import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Map;
+
+import org.apache.tuscany.sca.assembly.Endpoint;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.discovery.ServicePublication;
 
@@ -26,6 +32,7 @@ import org.osgi.service.discovery.ServicePublication;
  * Publication of an SCA endpoint
  */
 public class EndpointPublication implements ServicePublication {
+    private Endpoint endpoint;
     private ServiceReference reference;
 
     /**
@@ -33,13 +40,23 @@ public class EndpointPublication implements ServicePublication {
      * @param reference The OSGi service reference for the given endpoint. The SCA endpoint
      * is pointing to a local service in the OSGi service registry
      */
-    public EndpointPublication(ServiceReference reference) {
+    public EndpointPublication(ServiceReference reference, Endpoint endpoint) {
         super();
         this.reference = reference;
+        this.endpoint = endpoint;
     }
 
     public ServiceReference getReference() {
         return reference;
+    }
+
+    public Dictionary<String, Object> getProperties() {
+        Dictionary<String, Object> props = new Hashtable<String, Object>();
+        Map<String, Object> serviceProps = new HashMap<String, Object>();
+        serviceProps.put(ENDPOINT_LOCATION, endpoint.getURI());
+        props.put(SERVICE_PROPERTIES, serviceProps);
+        // TODO: Populate the properties from the Endpoint object
+        return props;
     }
 
 }

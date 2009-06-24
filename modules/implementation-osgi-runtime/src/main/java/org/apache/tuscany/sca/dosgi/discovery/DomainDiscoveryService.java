@@ -76,7 +76,7 @@ public class DomainDiscoveryService extends AbstractDiscoveryService implements 
                 // Ignore
             }
             if (ref != null) {
-                localServicePublished(ref);
+                localServicePublished(ref, endpoint);
             }
         } else {
             // Remote endpoints

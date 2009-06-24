@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
+import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -314,10 +315,9 @@ public abstract class AbstractDiscoveryService implements Discovery {
         }
     }
 
-    protected void localServicePublished(ServiceReference ref) {
-        EndpointPublication publication = new EndpointPublication(ref);
-        Hashtable props = new Hashtable();
-        ref.getBundle().getBundleContext().registerService(ServicePublication.class.getName(), publication, props);
+    protected void localServicePublished(ServiceReference ref, Endpoint endpoint) {
+        EndpointPublication publication = new EndpointPublication(ref, endpoint);
+        ref.getBundle().getBundleContext().registerService(ServicePublication.class.getName(), publication, publication.getProperties());
     }
 
 }
