@@ -115,15 +115,16 @@ public class ContributionContentProcessor implements ExtendedURLArtifactProcesso
         // Create a contribution scanner
         ContributionScanner scanner = scanners.getContributionScanner(contributionURL.getProtocol());
         if (scanner == null) {
-            try {
-                if ("file".equals(contributionURL.getProtocol()) && new File(contributionURL.toURI().getPath()).isDirectory()) {
+            //try {
+                if ("file".equals(contributionURL.getProtocol()) && 
+                    new File(contributionURL.getFile()).isDirectory()) {
                     scanner = new DirectoryContributionScanner();
                 } else {
                     scanner = new JarContributionScanner();
                 }
-            } catch (URISyntaxException e) {
-                throw new ContributionReadException(e);
-            }
+            //} catch (URISyntaxException e) {
+            //    throw new ContributionReadException(e);
+            //}
         }
 
         // Scan the contribution and list the artifacts contained in it

@@ -38,7 +38,7 @@ public class ContributionHelper {
         List<URL> urls = new ArrayList<URL>();
         boolean isZipContribution = contribution.getLocation().endsWith(".zip");
         URI uri = URI.create(contribution.getLocation());
-        boolean isFolderContribution = !isZipContribution && uri.getScheme().equals("file") && new File(uri).isDirectory();
+        boolean isFolderContribution = !isZipContribution && uri.getScheme().equals("file") && new File(uri.getSchemeSpecificPart()).isDirectory();
         if (isZipContribution || isFolderContribution) {
             for (Artifact a : contribution.getArtifacts()) {
                 if (a.getLocation().endsWith(".jar")) {
