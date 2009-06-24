@@ -19,33 +19,29 @@
 
 package org.apache.tuscany.sca.binding.jsonp.runtime;
 
-import org.apache.tuscany.sca.binding.jsonp.JSONPBinding;
+import org.apache.tuscany.sca.assembly.ComponentService;
+import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 
 public class JSONPServiceBindingProvider implements ServiceBindingProvider {
 
-    private RuntimeComponentService service;
-    private JSONPBinding binding;
+    private Endpoint endpoint;
     private ServletHost servletHost;
 
-    public JSONPServiceBindingProvider(RuntimeComponent component,
-                                       RuntimeComponentService service,
-                                       JSONPBinding binding,
-                                       ServletHost servletHost) {
-        this.service = service;
-        this.binding = binding;
+    public JSONPServiceBindingProvider(Endpoint endpoint, ServletHost servletHost) {
+        this.endpoint = endpoint;
         this.servletHost = servletHost;
     }
 
     public void start() {
-        RuntimeWire wire = service.getRuntimeWire(binding);
+        ComponentService service = endpoint.getService();
+        RuntimeWire wire = ((RuntimeComponentService)service).getRuntimeWire(endpoint.getBinding());
         Interface serviceInterface = service.getInterfaceContract().getInterface();
         for (Operation op : serviceInterface.getOperations()) {
             JSONPServlet servlet = new JSONPServlet(wire, op);
@@ -55,6 +51,7 @@ public class JSONPServiceBindingProvider implements ServiceBindingProvider {
     }
 
     public void stop() {
+        ComponentService service = endpoint.getService();
         Interface serviceInterface = service.getInterfaceContract().getInterface();
         for (Operation op : serviceInterface.getOperations()) {
             String path = service.getName() + "/" + op.getName();

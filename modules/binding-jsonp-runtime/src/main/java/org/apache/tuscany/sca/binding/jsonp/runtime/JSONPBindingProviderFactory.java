@@ -21,6 +21,8 @@ package org.apache.tuscany.sca.binding.jsonp.runtime;
 
 import java.util.List;
 
+import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.binding.jsonp.JSONPBinding;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.host.http.ServletHost;
@@ -28,9 +30,6 @@ import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
-import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
 public class JSONPBindingProviderFactory implements BindingProviderFactory<JSONPBinding> {
 
@@ -44,20 +43,17 @@ public class JSONPBindingProviderFactory implements BindingProviderFactory<JSONP
         }
     }
 
-    public ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component,
-                                                                   RuntimeComponentReference reference,
-                                                                   JSONPBinding binding) {
+    public Class<JSONPBinding> getModelType() {
+        return JSONPBinding.class;
+    }
+
+    public ReferenceBindingProvider createReferenceBindingProvider(EndpointReference arg0) {
+        // TODO Auto-generated method stub
         return null;
     }
 
-    public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component,
-                                                               RuntimeComponentService service,
-                                                               JSONPBinding binding) {
-        return new JSONPServiceBindingProvider(component, service, binding, servletHost);
-    }
-
-    public Class<JSONPBinding> getModelType() {
-        return JSONPBinding.class;
+    public ServiceBindingProvider createServiceBindingProvider(Endpoint endpoint) {
+        return new JSONPServiceBindingProvider(endpoint, servletHost);
     }
 
 }
