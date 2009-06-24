@@ -55,13 +55,6 @@
                 <module>callback-complex-type</module>
                 <module>callback-multiple-wires</module>
                 <module>callback-separatethread</module>
-
-                <!-- not supported in OASIS 
-                <module>callback-id</module>
-                <module>callback-set-callback</module>
-                <module>callback-set-conversation</module>
-                <module>conversations</module>
-                -->
                 <module>component-type</module>
                 <module>contribution-folder</module>
                 <module>contribution-zip</module>
