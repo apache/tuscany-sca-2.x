@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.sca.assembly.builder.impl;
 
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -28,6 +30,7 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
+import org.apache.tuscany.sca.assembly.builder.CompositeBuilderTmp;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
@@ -40,7 +43,7 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
  * 
  * @version $Rev$ $Date$
  */
-public class CompositeBuilderImpl implements CompositeBuilder {
+public class CompositeBuilderImpl implements CompositeBuilder, CompositeBuilderTmp {
     private static final Logger logger = Logger.getLogger(CompositeBuilderImpl.class.getName());
     private CompositeBuilder compositeIncludeBuilder;
     private CompositeBuilder componentReferenceWireBuilder;
@@ -137,8 +140,12 @@ public class CompositeBuilderImpl implements CompositeBuilder {
     public String getID() {
         return "org.apache.tuscany.sca.assembly.builder.CompositeBuilder";
     }
-
+    
     public void build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
+    	build(composite, definitions, null, monitor);
+    }
+    
+    public void build(Composite composite, Definitions definitions, Map<Class<?>, List<String>> bindingMap, Monitor monitor) throws CompositeBuilderException {
 
     	try {
 	    	// Collect and fuse includes
@@ -163,7 +170,7 @@ public class CompositeBuilderImpl implements CompositeBuilder {
 	
 	        // Configure service binding URIs and names. Creates an SCA defined URI based
 	        // on the scheme base URI, the component name and the binding name
-	        compositeBindingURIBuilder.build(composite, definitions, monitor);
+	        ((CompositeBuilderTmp)compositeBindingURIBuilder).build(composite, definitions, bindingMap, monitor);
 	
 	        // Create $promoted$ component services on bottom level components
 	        // to represent promoted services

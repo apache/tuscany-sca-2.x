@@ -70,7 +70,8 @@ public class CompositeBindingConfigurationBuilderImpl extends CompositeBindingUR
                 defaultBindings = (List<Binding>)x;
             }
         }
-        configureBindingURIs(composite, definitions, defaultBindings, monitor);
+        // TODO - EPR - is this ever used?
+        //configureBindingURIs(composite, definitions, defaultBindings, monitor);
     }
     
 }

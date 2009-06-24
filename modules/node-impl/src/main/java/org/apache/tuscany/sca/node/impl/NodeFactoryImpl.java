@@ -34,6 +34,7 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -52,6 +53,7 @@ import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderExtensionPoint;
+import org.apache.tuscany.sca.assembly.builder.CompositeBuilderTmp;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
@@ -90,6 +92,7 @@ import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
+import org.apache.tuscany.sca.node.configuration.BindingConfiguration;
 import org.apache.tuscany.sca.node.configuration.ContributionConfiguration;
 import org.apache.tuscany.sca.node.configuration.DeploymentComposite;
 import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
@@ -596,8 +599,17 @@ public class NodeFactoryImpl extends NodeFactory {
             }
         }
         
+        // TODO - EPR - create a binding map to pass down into the builders
+        //              for use during URI calculation. 
+        Map<Class<?>, List<String>> bindingMap = new HashMap<Class<?>, List<String>>();
+        for (BindingConfiguration config : configuration.getBindings()){
+        	StAXArtifactProcessor<?> processor = xmlProcessors.getProcessor(config.getBindingType());
+        	Class<?> bindingClass = processor.getModelType();
+        	bindingMap.put(bindingClass, config.getBaseURIs());
+        }
+        
         // build the top level composite
-        compositeBuilder.build(tempComposite, systemDefinitions, monitor);
+        ((CompositeBuilderTmp)compositeBuilder).build(tempComposite, systemDefinitions, bindingMap, monitor);
         analyzeProblems();
         
         endpointReferenceBuilder.build(tempComposite, systemDefinitions, monitor);

@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.assembly.builder;
 import java.lang.reflect.Constructor;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.sca.assembly.Composite;
@@ -96,7 +97,7 @@ public class DefaultCompositeBuilderExtensionPoint implements CompositeBuilderEx
      * A wrapper around a composite builder allowing lazy
      * loading and initialization of implementation providers.
      */
-    private static class LazyCompositeBuilder implements CompositeBuilder {
+    private static class LazyCompositeBuilder implements CompositeBuilder, CompositeBuilderTmp {
 
         private ExtensionPointRegistry registry;
         private FactoryExtensionPoint factories;
@@ -122,6 +123,11 @@ public class DefaultCompositeBuilderExtensionPoint implements CompositeBuilderEx
 
         public void build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
             getBuilder().build(composite, definitions, monitor);
+        }
+        
+        public void build(Composite composite, Definitions definitions, Map<Class<?>, List<String>> bindingMap, Monitor monitor)
+        		throws CompositeBuilderException {
+            ((CompositeBuilderTmp)getBuilder()).build(composite, definitions, bindingMap, monitor);
         }
 
         private CompositeBuilder getBuilder() {
