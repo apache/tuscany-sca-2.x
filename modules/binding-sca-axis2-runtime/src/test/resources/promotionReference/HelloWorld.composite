@@ -26,9 +26,7 @@
     <!-- composite hierarchy -->
     <component name="AHelloWorldClientRemotePromotion">
 		<implementation.composite name="sample:HelloWorldComponent" />
-		<reference name="AHelloWorldClientRemoteReference">
-		    <binding.sca uri="http://localhost:8085/BHelloWorldServiceRemotePromotion"/>
-		</reference>
+		<reference name="AHelloWorldClientRemoteReference" target="BHelloWorldServiceRemotePromotion"/>
     </component>
     
 

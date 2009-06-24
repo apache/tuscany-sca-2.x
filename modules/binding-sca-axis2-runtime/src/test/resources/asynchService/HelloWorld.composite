@@ -29,7 +29,7 @@
         <service name="HelloWorldServiceCallbackOnewayRemote">
             <binding.sca uri="http://localhost:8085/BHelloWorldServiceCallbackRemote"/>
             <callback>
-                <binding.sca uri="http://localhost:8084/AHelloWorldClientCallbackRemote"/>
+                <binding.sca/>
             </callback>            
         </service>
     </component>

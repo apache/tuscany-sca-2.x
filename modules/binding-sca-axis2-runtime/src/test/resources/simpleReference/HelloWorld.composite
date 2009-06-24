@@ -42,33 +42,25 @@
     <!-- local and remote wires -->    
     <component name="AHelloWorldClientLocalAndRemote">
 		<implementation.java class="org.apache.tuscany.sca.binding.sca.axis2.helloworld.impl.HelloWorldClientRemoteImpl" />
-        <reference name="helloWorldService">
-            <binding.sca uri="http://localhost:8085/BHelloWorldServiceLocalAndRemote"/>
-        </reference>
+        <reference name="helloWorldService" target="BHelloWorldServiceLocalAndRemote"/>
     </component>  
     
     <!-- multiple services -->
     <component name="AHelloWorldClientMultipleServices">
 		<implementation.java class="org.apache.tuscany.sca.binding.sca.axis2.helloworld.impl.HelloWorldClientRemoteImpl" />
-        <reference name="helloWorldService">
-            <binding.sca uri="http://localhost:8085/BHelloWorldServiceMultipleServices/HelloWorldServiceRemote"/>
-        </reference>
+        <reference name="helloWorldService" target="BHelloWorldServiceMultipleServices/HelloWorldServiceRemote"/>
     </component>  
     
     <component name="AHelloWorldClientMultipleServices2">
 		<implementation.java class="org.apache.tuscany.sca.binding.sca.axis2.helloworld.impl.HelloWorldClientRemote2Impl" />
-        <reference name="helloWorldService">
-            <binding.sca uri="http://localhost:8085/BHelloWorldServiceMultipleServices/HelloWorldServiceRemote2"/>
-        </reference>        
+        <reference name="helloWorldService" target="BHelloWorldServiceMultipleServices/HelloWorldServiceRemote2"/>       
     </component> 
     
     <!-- multiple bindings -->   
     <component name="AHelloWorldClientMultipleBindings">
 		<implementation.java class="org.apache.tuscany.sca.binding.sca.axis2.helloworld.impl.HelloWorldClientRemoteImpl" />
-        <reference name="helloWorldService" >
+        <reference name="helloWorldService" target="BHelloWorldMultipleBindings/HelloWorldServiceRemote/scaBinding">
             <interface.java interface="org.apache.tuscany.sca.binding.sca.axis2.helloworld.HelloWorldServiceRemote" />        
-            <binding.sca uri="http://localhost:8085/BHelloWorldMultipleBindings/HelloWorldServiceRemote-scabinding"/>
-            <binding.ws/>
         </reference>
     </component>
     

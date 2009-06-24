@@ -70,8 +70,8 @@
         <implementation.java class="org.apache.tuscany.sca.binding.sca.axis2.helloworld.impl.HelloWorldServiceRemoteImpl" />
         <service name="HelloWorldServiceRemote">
             <interface.java interface="org.apache.tuscany.sca.binding.sca.axis2.helloworld.HelloWorldServiceRemote" />
-            <binding.ws uri="http://localhost:8085/BHelloWorldMultipleBindings/HelloWorldServiceRemote-wsbinding"/>
-            <binding.sca uri="http://localhost:8085/BHelloWorldMultipleBindings/HelloWorldServiceRemote-scabinding"/>
+            <binding.ws name="wsBinding" uri="http://localhost:8085/BHelloWorldMultipleBindings/HelloWorldServiceRemote-wsbinding"/>
+            <binding.sca name="scaBinding" uri="http://localhost:8085/BHelloWorldMultipleBindings/HelloWorldServiceRemote-scabinding"/>
         </service>
     </component>
      
