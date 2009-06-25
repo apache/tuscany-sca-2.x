@@ -369,10 +369,13 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
         Contribution[] contributions = getContributions(locations);
         return createNode(contributions);
     }
-    
+
+    private volatile static int count =0;
     private NodeConfiguration createConfiguration(Contribution... contributions) {
         NodeConfigurationFactory factory = this;
         NodeConfiguration configuration = factory.createNodeConfiguration();
+        // Make sure a unique node URI is created for the same node factory
+        configuration.setURI(Node.DEFAULT_NODE_URI+(count++));
         if (contributions != null) {
             for (Contribution c : contributions) {
                 configuration.addContribution(c.getURI(), c.getLocation());
