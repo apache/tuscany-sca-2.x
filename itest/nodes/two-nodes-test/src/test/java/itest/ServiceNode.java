@@ -21,6 +21,8 @@ package itest;
 
 import java.io.File;
 
+import org.apache.tuscany.sca.assembly.SCABinding;
+import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
@@ -30,20 +32,22 @@ import org.junit.BeforeClass;
 /**
  * This shows how to test the Calculator service component.
  */
-public class ServiceNode{
+public class ServiceNode {
 
     private static Node serviceNode;
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        System.setProperty("org.apache.tuscany.sca.contribution.processor.ValidationSchemaExtensionPoint.enabled", "false");
+        System.setProperty("org.apache.tuscany.sca.contribution.processor.ValidationSchemaExtensionPoint.enabled",
+                           "false");
         NodeFactory factory = NodeFactory.newInstance();
         NodeConfiguration conf =
             factory.createNodeConfiguration().setURI("serviceNode")
+                .addBinding(SCABinding.TYPE, "http://localhost:8087/sca")
+                .addBinding(WebServiceBinding.TYPE, "http://localhost:8088/ws")
                 .addContribution("service", new File("../helloworld-service/target/classes").toURI().toString());
         serviceNode = factory.createNode(conf).start();
     }
-
 
     @AfterClass
     public static void tearDownAfterClass() throws Exception {

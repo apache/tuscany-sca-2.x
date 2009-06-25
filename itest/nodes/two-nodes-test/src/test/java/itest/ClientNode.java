@@ -25,6 +25,8 @@ import itest.nodes.Helloworld;
 
 import java.io.File;
 
+import org.apache.tuscany.sca.assembly.SCABinding;
+import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
@@ -38,7 +40,7 @@ import org.oasisopen.sca.client.SCAClientFactory;
 /**
  * This shows how to test the Calculator service component.
  */
-public class ClientNode{
+public class ClientNode {
 
     private static Node clientNode;
     private static TestCaseRunner runner;
@@ -47,10 +49,13 @@ public class ClientNode{
     public static void setUpBeforeClass() throws Exception {
         runner = new TestCaseRunner(ServiceNode.class);
         runner.beforeClass();
-        System.setProperty("org.apache.tuscany.sca.contribution.processor.ValidationSchemaExtensionPoint.enabled", "false");
+        System.setProperty("org.apache.tuscany.sca.contribution.processor.ValidationSchemaExtensionPoint.enabled",
+                           "false");
         NodeFactory factory = NodeFactory.newInstance();
         NodeConfiguration conf =
-            factory.createNodeConfiguration().setURI("clientNode")
+            factory.createNodeConfiguration().setURI("clientNode").
+                addBinding(SCABinding.TYPE, "http://localhost:8085/sca https://localhost:9085/sca")
+                .addBinding(WebServiceBinding.TYPE, "http://localhost:8086/ws")
                 .addContribution("client", new File("../helloworld-client/target/classes").toURI().toString());
         clientNode = factory.createNode(conf).start();
         Thread.sleep(1000);
@@ -82,7 +87,7 @@ public class ClientNode{
         if (clientNode != null) {
             clientNode.stop();
         }
-        if(runner!=null) {
+        if (runner != null) {
             runner.afterClass();
         }
     }

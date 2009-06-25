@@ -40,7 +40,7 @@ public class NodeConfigurationImpl implements NodeConfiguration {
     private String domainURI = DEFAULT_DOMAIN_URI;
     private List<ContributionConfiguration> contributions = new ArrayList<ContributionConfiguration>();
     private List<BindingConfiguration> bindings = new ArrayList<BindingConfiguration>();
-    private List<Object> extensions =new ArrayList<Object>();
+    private List<Object> extensions = new ArrayList<Object>();
 
     public String getURI() {
         return uri;
@@ -69,6 +69,13 @@ public class NodeConfigurationImpl implements NodeConfiguration {
     }
 
     public NodeConfiguration addBinding(BindingConfiguration bindingConfiguration) {
+        for (BindingConfiguration bc : bindings) {
+            // Try to merge first by QName
+            if (bc.getBindingType().equals(bindingConfiguration.getBindingType())) {
+                bc.getBaseURIs().addAll(bindingConfiguration.getBaseURIs());
+                return this;
+            }
+        }
         bindings.add(bindingConfiguration);
         return this;
     }
@@ -81,7 +88,12 @@ public class NodeConfigurationImpl implements NodeConfiguration {
     public NodeConfiguration addBinding(QName bindingType, String... baseURIs) {
         BindingConfiguration binding = new BindingConfigurationImpl().setBindingType(bindingType);
         for (String u : baseURIs) {
-            binding.addBaseURI(u);
+            String[] uris = u.split("(\\s)+");
+            for (String uri : uris) {
+                if (uri.length() > 0) {
+                    binding.addBaseURI(uri);
+                }
+            }
         }
         return addBinding(binding);
     }
