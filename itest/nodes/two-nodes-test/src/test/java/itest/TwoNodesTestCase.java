@@ -25,9 +25,9 @@ import itest.nodes.Helloworld;
 
 import java.io.File;
 
-import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
+import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -37,23 +37,30 @@ import org.oasisopen.sca.client.SCAClientFactory;
 /**
  * This shows how to test the Calculator service component.
  */
-public class TwoNodesTestCase{
+public class TwoNodesTestCase {
 
     private static Node serviceNode;
     private static Node clientNode;
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        System.setProperty("org.apache.tuscany.sca.contribution.processor.ValidationSchemaExtensionPoint.enabled", "false");
+        System.setProperty("org.apache.tuscany.sca.contribution.processor.ValidationSchemaExtensionPoint.enabled",
+                           "false");
         NodeFactory factory = NodeFactory.newInstance();
-        serviceNode = factory.createNode(new Contribution("service", getJar("../helloworld-service/target")));
-        serviceNode.start();
-        clientNode = factory.createNode(new Contribution("client", getJar("../helloworld-client/target")));
+        NodeConfiguration configuration1 =
+            factory.createNodeConfiguration().setURI("serviceNode")
+                .addContribution("service", getJar("../helloworld-service/target"));
+        serviceNode = factory.createNode(configuration1).start();
+
+        NodeConfiguration configuration2 =
+            factory.createNodeConfiguration().setURI("clientNode")
+                .addContribution("client", getJar("../helloworld-client/target"));
+        clientNode = factory.createNode(configuration2).start();
         clientNode.start();
     }
 
     /**
-     * Get the jar in the target folder without being dependent on the version name to 
+     * Get the jar in the target folder without being dependent on the version name to
      * make tuscany releases easier
      */
     private static String getJar(String targetDirectory) {
@@ -65,7 +72,7 @@ public class TwoNodesTestCase{
         }
         throw new IllegalStateException("Can't find jar in: " + targetDirectory);
     }
-    
+
     @Test
     public void testCalculator() throws Exception {
         Helloworld service = serviceNode.getService(Helloworld.class, "HelloworldService");
