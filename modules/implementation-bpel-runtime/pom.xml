@@ -83,90 +83,107 @@
             <artifactId>tuscany-interface-wsdl</artifactId>
             <version>2.0-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-interface-wsdl-xml</artifactId>
+            <version>2.0-SNAPSHOT</version>
+        </dependency>
 
         <!-- ODE Jars -->
         <dependency>
             <groupId>org.apache.ode</groupId>
             <artifactId>ode-bpel-epr</artifactId>
-            <version>1.1.1</version>
+            <version>1.3.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.ode</groupId>
             <artifactId>ode-bpel-store</artifactId>
-            <version>1.1.1</version>
+            <version>1.3.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.ode</groupId>
             <artifactId>ode-bpel-dao</artifactId>
-            <version>1.1.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.ode</groupId>
-            <artifactId>ode-bpel-dao</artifactId>
-            <version>1.1.1</version>
+            <version>1.3.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.ode</groupId>
             <artifactId>ode-dao-jpa</artifactId>
-            <version>1.1.1</version>
+            <version>1.3.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.ode</groupId>
             <artifactId>ode-dao-jpa-ojpa-derby</artifactId>
-            <version>1.1.1</version>
+            <version>1.3.2</version>
             <type>zip</type>
         </dependency>
         <dependency>
             <groupId>org.apache.ode</groupId>
             <artifactId>ode-bpel-runtime</artifactId>
-            <version>1.1.1</version>
+            <version>1.3.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.ode</groupId>
             <artifactId>ode-bpel-api</artifactId>
-            <version>1.1.1</version>
+            <version>1.3.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.ode</groupId>
             <artifactId>ode-scheduler-simple</artifactId>
-            <version>1.1.1</version>
+            <version>1.3.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.ode</groupId>
             <artifactId>ode-utils</artifactId>
-            <version>1.1.1</version>
+            <version>1.3.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.ode</groupId>
             <artifactId>ode-bpel-compiler</artifactId>
-            <version>1.1.1</version>
+            <version>1.3.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.ode</groupId>
             <artifactId>ode-bpel-schemas</artifactId>
-            <version>1.1.1</version>
+            <version>1.3.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.ode</groupId>
             <artifactId>ode-bpel-obj</artifactId>
-            <version>1.1.1</version>
+            <version>1.3.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.ode</groupId>
             <artifactId>ode-jacob</artifactId>
-            <version>1.1.1</version>
+            <version>1.3.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.ode</groupId>
             <artifactId>ode-jacob-ap</artifactId>
-            <version>1.1.1</version>
+            <version>1.3.2</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.ode</groupId>
+            <artifactId>ode-agents</artifactId>
+            <version>1.3.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ode</groupId>
+            <artifactId>ode-dao-hibernate</artifactId>
+            <version>1.3.2</version>
+        </dependency>
+
+	  <!-- implementation-bpel non-sca dependencies -->
+	  <dependency>
+		<groupId>org.eclipse.equinox</groupId>
+            <artifactId>common</artifactId>
+            <version>3.3.0-v20070426</version>
+	  </dependency>
 
         <!-- ODE Dependencies -->
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
-            <version>2.1</version>
+            <version>2.3</version>
         </dependency>
         <dependency>
             <groupId>commons-collections</groupId>
@@ -176,12 +193,12 @@
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-jta_1.1_spec</artifactId>
-            <version>1.1.1</version>
+            <version>1.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.geronimo.modules</groupId>
             <artifactId>geronimo-kernel</artifactId>
-            <version>1.2-beta</version>
+            <version>2.0.1</version>
             <exclusions>
                 <exclusion>
                     <groupId>mx4j</groupId>
@@ -202,9 +219,9 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>org.apache.geronimo.modules</groupId>
+            <groupId>org.apache.geronimo.components</groupId>
             <artifactId>geronimo-transaction</artifactId>
-            <version>1.2-beta</version>
+            <version>2.0.1</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.geronimo.specs</groupId>
@@ -226,13 +243,13 @@
         </dependency>
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-ejb_3.0_spec</artifactId>
-            <version>1.0</version>
+            <artifactId>geronimo-ejb_2.1_spec</artifactId>
+            <version>1.1</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.geronimo.modules</groupId>
+            <groupId>org.apache.geronimo.components</groupId>
             <artifactId>geronimo-connector</artifactId>
-            <version>1.2-beta</version>
+            <version>2.0.1</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.geronimo.specs</groupId>
@@ -251,7 +268,7 @@
         <dependency>
             <groupId>org.apache.derby</groupId>
             <artifactId>derby</artifactId>
-            <version>10.3.1.4</version>
+            <version>10.4.1.3</version>
         </dependency>
         <dependency>
             <groupId>tranql</groupId>
@@ -259,19 +276,40 @@
             <version>1.1</version>
             <exclusions>
                 <exclusion>
-                    <groupId>geronimo-spec</groupId>
-                    <artifactId>geronimo-spec-jta</artifactId>
-                </exclusion>
-                <exclusion>
                     <groupId>junit</groupId>
                     <artifactId>junit</artifactId>
                 </exclusion>
+    		<exclusion>
+      		<groupId>geronimo-spec</groupId>
+      		<artifactId>geronimo-spec-j2ee-connector</artifactId>
+    		</exclusion>
+    <exclusion>
+      <groupId>geronimo-spec</groupId>
+      <artifactId>geronimo-spec-jta</artifactId>
+    </exclusion>
+    <exclusion>
+      <groupId>axion</groupId>
+      <artifactId>axion</artifactId>
+    </exclusion>
+    <exclusion>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+    </exclusion>
+    <exclusion>
+      <groupId>commons-collections</groupId>
+      <artifactId>commons-collections</artifactId>
+    </exclusion>
+    <exclusion>
+      <groupId>commons-primitives</groupId>
+      <artifactId>commons-primitives</artifactId>
+    </exclusion>
             </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.openjpa</groupId>
-            <artifactId>openjpa-all</artifactId>
-            <version>0.9.7-incubating</version>
+            <artifactId>openjpa</artifactId>
+            <version>1.3.0-SNAPSHOT</version>
+<!--
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.openjpa</groupId>
@@ -306,11 +344,12 @@
                     <artifactId>junit</artifactId>
                 </exclusion>
             </exclusions>
+-->
         </dependency>
         <dependency>
             <groupId>net.sourceforge.serp</groupId>
             <artifactId>serp</artifactId>
-            <version>1.12.0</version>
+            <version>1.13.1</version>
             <exclusions>
                 <exclusion>
                     <groupId>junit</groupId>
@@ -330,7 +369,7 @@
                 <exclusion>
                     <groupId>xml-apis</groupId>
                     <artifactId>xml-apis</artifactId>
-                </exclusion>
+                </exclusion>                
             </exclusions>
         </dependency>
         <dependency>
@@ -347,13 +386,13 @@
         <dependency>
             <groupId>xerces</groupId>
             <artifactId>xercesImpl</artifactId>
-            <version>2.8.1</version>
+            <version>2.9.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>xml-apis</groupId>
                     <artifactId>xml-apis</artifactId>
                 </exclusion>
-            </exclusions>
+            </exclusions>                        
         </dependency>
         <dependency>
             <groupId>org.apache.xmlbeans</groupId>
@@ -369,19 +408,22 @@
         <dependency>
             <groupId>net.sf.saxon</groupId>
             <artifactId>saxon</artifactId>
-            <version>8.7</version>
-            <!--version>9.0.0.2</version-->
+            <version>9.x</version>
         </dependency>
         <dependency>
             <groupId>net.sf.saxon</groupId>
             <artifactId>saxon-dom</artifactId>
-            <version>8.7</version>
-            <!--version>9.0.0.2</version-->
+            <version>9.x</version>
         </dependency>
         <dependency>
             <groupId>net.sf.saxon</groupId>
             <artifactId>saxon-xpath</artifactId>
-            <version>8.7</version>
+            <version>9.x</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.saxon</groupId>
+            <artifactId>saxon-xqj</artifactId>
+            <version>9.x</version>
         </dependency>
         <dependency>
             <groupId>commons-codec</groupId>
@@ -429,7 +471,7 @@
                                 <artifactItem>
                                     <groupId>org.apache.ode</groupId>
                                     <artifactId>ode-dao-jpa-ojpa-derby</artifactId>
-                                    <version>1.1.1</version>
+                                    <version>1.3.2</version>
                                     <type>zip</type>
                                     <overWrite>true</overWrite>
                                     <outputDirectory>${project.build.directory}/test-classes/
