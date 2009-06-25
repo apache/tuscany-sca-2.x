@@ -19,12 +19,22 @@
 
 package itest.nodes;
 
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Scope;
 
+@EagerInit
+@Scope("COMPOSITE")
 public class HelloworldImpl implements Helloworld {
 
     @Reference
     public Helloworld service;
+    
+    @Init
+    public void initialize(){
+    	System.out.println(">>>>>> " + sayHello("init"));
+    }
     
     public String sayHello(String name) {
         return "Hi " + service.sayHello(name);
