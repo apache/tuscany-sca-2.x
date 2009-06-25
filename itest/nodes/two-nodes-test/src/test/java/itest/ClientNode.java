@@ -25,9 +25,9 @@ import itest.nodes.Helloworld;
 
 import java.io.File;
 
-import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
+import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -49,9 +49,11 @@ public class ClientNode{
         runner.beforeClass();
         System.setProperty("org.apache.tuscany.sca.contribution.processor.ValidationSchemaExtensionPoint.enabled", "false");
         NodeFactory factory = NodeFactory.newInstance();
-        clientNode = factory.createNode(new Contribution("client", new File("../helloworld-client/target/itest-nodes-helloworld-client-2.0-SNAPSHOT.jar").toURI().toString()));
-        clientNode.start();
-        Thread.sleep(2000);
+        NodeConfiguration conf =
+            factory.createNodeConfiguration().setURI("clientNode")
+                .addContribution("client", new File("../helloworld-client/target/classes").toURI().toString());
+        clientNode = factory.createNode(conf).start();
+        Thread.sleep(1000);
     }
 
     @Test

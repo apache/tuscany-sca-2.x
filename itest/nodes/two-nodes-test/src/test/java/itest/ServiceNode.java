@@ -21,9 +21,9 @@ package itest;
 
 import java.io.File;
 
-import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
+import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
@@ -38,8 +38,10 @@ public class ServiceNode{
     public static void setUpBeforeClass() throws Exception {
         System.setProperty("org.apache.tuscany.sca.contribution.processor.ValidationSchemaExtensionPoint.enabled", "false");
         NodeFactory factory = NodeFactory.newInstance();
-        serviceNode = factory.createNode(new Contribution("service", new File("../helloworld-service/target/itest-nodes-helloworld-service-2.0-SNAPSHOT.jar").toURI().toString()));
-        serviceNode.start();
+        NodeConfiguration conf =
+            factory.createNodeConfiguration().setURI("serviceNode")
+                .addContribution("service", new File("../helloworld-service/target/classes").toURI().toString());
+        serviceNode = factory.createNode(conf).start();
     }
 
 
