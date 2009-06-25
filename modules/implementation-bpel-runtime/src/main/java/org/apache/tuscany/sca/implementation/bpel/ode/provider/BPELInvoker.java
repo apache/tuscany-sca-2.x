@@ -237,6 +237,10 @@ public class BPELInvoker implements Invoker {
      * @return
      */
     private Element processResponse(Element response) {
-        return (Element) DOMUtils.findChildByName(response, new QName("",bpelOperationOutputPart.getName()));
+    	return (Element) DOMUtils.findChildByName(response, new QName("",bpelOperationOutputPart.getName())).getFirstChild();
+    	
+    	// MJE, 12/06/2009 - changed to return the message without the PART wrapper element, since this element is not
+    	// transmitted in the SOAP messages on the wire
+    	//return (Element) DOMUtils.findChildByName(response, new QName("",bpelOperationOutputPart.getName()));
     }
 }

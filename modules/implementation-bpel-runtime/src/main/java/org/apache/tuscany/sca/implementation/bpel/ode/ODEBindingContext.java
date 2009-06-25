@@ -76,4 +76,16 @@ public class ODEBindingContext implements BindingContext {
         String processName = pid.getLocalPart().substring(0, pid.getLocalPart().lastIndexOf("-"));
         return new QName(pid.getNamespaceURI(), processName);
     }
+
+    /**
+     * Calculate the size of the service that this endpoint references.
+     * @param epr the endpoint reference for the service
+     * @returns the size of the service
+     */
+	public long calculateSizeofService(EndpointReference epr) {
+		// TODO It is not at all clear from the ODE code what "size" means
+		// eg number of service operations? size of the process in bytes?
+		// So for the present, return a fixed random value...
+		return 10000;
+	}
 }

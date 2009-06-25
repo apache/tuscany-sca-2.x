@@ -27,12 +27,17 @@ import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 
 import javax.transaction.TransactionManager;
 import javax.xml.namespace.QName;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+//import org.apache.ode.axis2.BindingContextImpl;
+//import org.apache.ode.axis2.EndpointReferenceContextImpl;
+//import org.apache.ode.axis2.MessageExchangeContextImpl;
+//import org.apache.ode.axis2.EndpointReferenceContextImpl;
 import org.apache.ode.bpel.dao.BpelDAOConnectionFactoryJDBC;
 import org.apache.ode.bpel.engine.BpelServerImpl;
 import org.apache.ode.bpel.engine.CountLRUDehydrationPolicy;
@@ -45,6 +50,9 @@ import org.apache.ode.scheduler.simple.SimpleScheduler;
 import org.apache.ode.utils.GUID;
 import org.apache.tuscany.sca.implementation.bpel.BPELImplementation;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
+import org.eclipse.core.runtime.FileLocator;
+
+
 
 /**
  * Embedded ODE process server
@@ -86,12 +94,10 @@ public class EmbeddedODEServer {
         confProps.put("openjpa.jdbc.SynchronizeMappings", "buildSchema(ForeignKeys=false)");
         _config = new OdeConfigProperties(confProps, "ode-sca");
 
-        // Setting work root as the directory containing our database (wherever in the classpath)
-        URL dbLocation = getClass().getClassLoader().getResource("jpadb");
-        if (dbLocation == null)
-            throw new ODEInitializationException("Couldn't find database in the classpath");
+        // Setting work root as the directory containing our database
         try {
-            _workRoot = new File(dbLocation.toURI()).getParentFile();
+        	_workRoot = getDatabaseLocationAsFile();
+            //_workRoot = new File(dbLocation.toURI()).getParentFile();
         } catch (URISyntaxException e) {
             throw new ODEInitializationException(e);
         }
@@ -107,10 +113,41 @@ public class EmbeddedODEServer {
             __log.error(errmsg, ex);
             throw new ODEInitializationException(errmsg, ex);
         }
+        
+        // Added MJE, 24/06/2009 - for 1.3.2 version of ODE
+        _scheduler.start();
+        // end of addition
 
         __log.info("ODE BPEL server started.");
         _initialized = true;
     }
+    
+    /**
+     * Gets the location of the database used for the ODE BPEL engine as a File object for
+     * the directory containing the database
+     * @return
+     * @throws ODEInitializationException
+     * @throws URISyntaxException
+     */
+    private File getDatabaseLocationAsFile() throws ODEInitializationException,
+                                                    URISyntaxException {
+    	File locationFile = null;
+    	// TODO - provide a system property / environment variable to set the path to the DB
+    	
+        URL dbLocation = getClass().getClassLoader().getResource("jpadb");
+        // Handle OSGI bundle case
+        if( dbLocation.getProtocol() == "bundleresource" ) {
+        	try {
+	        	dbLocation = FileLocator.toFileURL( dbLocation );
+        	} catch (Exception ce ) {
+        		throw new ODEInitializationException("Couldn't find database in the OSGi bundle");
+        	} // end try
+        } // end if 
+        if (dbLocation == null)
+            throw new ODEInitializationException("Couldn't find database in the classpath");
+        locationFile = new File(dbLocation.toURI()).getParentFile();
+    	return locationFile;
+    } // end method getDatabaseLocationAsFile
 
     private void initTxMgr() {
         if(_txMgr == null) {
@@ -138,32 +175,64 @@ public class EmbeddedODEServer {
             throw new ODEInitializationException(errmsg, ex);
         }
     }
-
+  
     private void initBpelServer() {
         if (__log.isDebugEnabled()) {
             __log.debug("ODE initializing");
         }
+        ThreadFactory threadFactory = new ThreadFactory() {
+            int threadNumber = 0;
+            public Thread newThread(Runnable r) {
+                threadNumber += 1;
+                Thread t = new Thread(r, "ODEServer-"+threadNumber);
+                t.setDaemon(true);
+                return t;
+            }
+        };
+
+        _executorService = Executors.newCachedThreadPool(threadFactory);
         
-        //FIXME: externalize the configuration for ThreadPoolMaxSize
-        _executorService = Executors.newCachedThreadPool();
-       
+        // executor service for long running bulk transactions
+        ExecutorService _polledRunnableExecutorService = Executors.newCachedThreadPool(new ThreadFactory() {
+            int threadNumber = 0;
+            public Thread newThread(Runnable r) {
+                threadNumber += 1;
+                Thread t = new Thread(r, "PolledRunnable-"+threadNumber);
+                t.setDaemon(true);
+                return t;
+            }
+        });
+
         _bpelServer = new BpelServerImpl();
         _scheduler = createScheduler();
         _scheduler.setJobProcessor(_bpelServer);
+        
+        BpelServerImpl.PolledRunnableProcessor polledRunnableProcessor = new BpelServerImpl.PolledRunnableProcessor();
+        polledRunnableProcessor.setPolledRunnableExecutorService(_polledRunnableExecutorService);
+        polledRunnableProcessor.setContexts(_bpelServer.getContexts());
+        _scheduler.setPolledRunnableProcesser(polledRunnableProcessor);
 
         _bpelServer.setDaoConnectionFactory(_daoCF);
         _bpelServer.setInMemDaoConnectionFactory(new BpelDAOConnectionFactoryImpl(_scheduler));
-        // _bpelServer.setEndpointReferenceContext(new EndpointReferenceContextImpl(this));
+        
+        //_bpelServer.setEndpointReferenceContext(eprContext);
         _bpelServer.setMessageExchangeContext(new ODEMessageExchangeContext(this));
         _bpelServer.setBindingContext(new ODEBindingContext());
         _bpelServer.setScheduler(_scheduler);
         if (_config.isDehydrationEnabled()) {
             CountLRUDehydrationPolicy dehy = new CountLRUDehydrationPolicy();
+            dehy.setProcessMaxAge(_config.getDehydrationMaximumAge());
+            dehy.setProcessMaxCount(_config.getDehydrationMaximumCount());
             _bpelServer.setDehydrationPolicy(dehy);
         }
-
+        _bpelServer.setConfigProperties(_config.getProperties());
         _bpelServer.init();
-    } // end InitBpelServer
+        _bpelServer.setInstanceThrottledMaximumCount(_config.getInstanceThrottledMaximumCount());
+        _bpelServer.setProcessThrottledMaximumCount(_config.getProcessThrottledMaximumCount());
+        _bpelServer.setProcessThrottledMaximumSize(_config.getProcessThrottledMaximumSize());
+        _bpelServer.setHydrationLazy(_config.isHydrationLazy());
+        _bpelServer.setHydrationLazyMinimumSize(_config.getHydrationLazyMinimumSize());
+    }
 
     public void stop() throws ODEShutdownException {
         if(_bpelServer != null) {
@@ -217,7 +286,16 @@ public class EmbeddedODEServer {
     }
 
     protected Scheduler createScheduler() {
-        SimpleScheduler scheduler = new SimpleScheduler(new GUID().toString(),new JdbcDelegate(_db.getDataSource()));
+    	Properties odeProperties = new Properties();
+    	// TODO Find correct values for these properties - MJE 22/06/2009
+    	odeProperties.put("ode.scheduler.queueLength", "100" );
+    	odeProperties.put("ode.scheduler.immediateInterval", "30000" );
+    	odeProperties.put("ode.scheduler.nearFutureInterval", "600000" );
+    	odeProperties.put("ode.scheduler.staleInterval", "100000" );
+    	
+        SimpleScheduler scheduler = new SimpleScheduler(new GUID().toString(),
+        		                                        new JdbcDelegate(_db.getDataSource()),
+                                                        odeProperties );
         scheduler.setTransactionManager(_txMgr);
 
         return scheduler;

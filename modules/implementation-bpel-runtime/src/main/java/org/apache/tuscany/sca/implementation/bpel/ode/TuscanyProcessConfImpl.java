@@ -30,6 +30,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.wsdl.Definition;
 import javax.xml.namespace.QName;
@@ -39,6 +40,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.ode.bpel.compiler.BpelC;
 import org.apache.ode.bpel.evt.BpelEvent.TYPE;
 import org.apache.ode.bpel.iapi.Endpoint;
+import org.apache.ode.bpel.iapi.EndpointReference;
 import org.apache.ode.bpel.iapi.ProcessConf;
 import org.apache.ode.bpel.iapi.ProcessState;
 import org.apache.tuscany.sca.assembly.Reference;
@@ -112,21 +114,10 @@ public class TuscanyProcessConfImpl implements ProcessConf {
      */
     public InputStream getCBPInputStream() {
         //System.out.println("getCBPInputStream called");
-        // Find the CBP file - it has the same name as the BPEL process and lives in the same
-        // directory as the process file
-        String cbpFileName = null;
-        try {
-            String fileName = getRelativePath( getDirectory(), getBPELFile() );
-            cbpFileName = fileName.substring(0, fileName.lastIndexOf(".")) + ".cbp";
-        } catch (Exception e ) {
-        	// IOException trying to fetch the BPEL file name
-            if(__log.isDebugEnabled()) {
-                __log.debug("Unable to calculate the file name for BPEL process: " +
-                                   implementation.getProcessDefinition().getName(), e);
-                return null;
-            } // end if
-        } // end try
-        File cbpFile = new File( getDirectory(), cbpFileName );
+
+        File cbpFile = getCBPFile();
+        if( cbpFile == null ) return null;
+
         if( cbpFile.exists() ) {
             // Create an InputStream from the cbp file...
             try {
@@ -147,6 +138,29 @@ public class TuscanyProcessConfImpl implements ProcessConf {
         // TODO - need better exception handling if we can't open the cbp file for any reason
         return null;
     } // end getCBPInputStream
+    
+    /**
+     * Gets the File object for the CBP file for this BPEL Process
+     * @return - the File object for the CBP file
+     */
+    private File getCBPFile() {
+        // Find the CBP file - it has the same name as the BPEL process and lives in the same
+        // directory as the process file
+        String cbpFileName = null;
+        try {
+            String fileName = getRelativePath( getDirectory(), getBPELFile() );
+            cbpFileName = fileName.substring(0, fileName.lastIndexOf(".")) + ".cbp";
+        } catch (Exception e ) {
+        	// IOException trying to fetch the BPEL file name
+            if(__log.isDebugEnabled()) {
+                __log.debug("Unable to calculate the file name for BPEL process: " +
+                                   implementation.getProcessDefinition().getName(), e);
+                return null;
+            } // end if
+        } // end try
+        File cbpFile = new File( getDirectory(), cbpFileName );
+    	return cbpFile;
+    } // end getCBPFile
 
     /**
      * Return the WSDL Definition for a given PortType
@@ -438,5 +452,42 @@ public class TuscanyProcessConfImpl implements ProcessConf {
     }
     // end of other public APIs
     //-----------------------------------------------------------------------------
+
+    /**
+     * Get the size in bytes of the CBP file
+     * @return - this size in bytes of the CBP file, 0 if the file cannot be found
+     */
+	public long getCBPFileSize() {
+        File cbpFile = getCBPFile();
+        if( cbpFile == null ) return 0;
+        
+		return cbpFile.length();
+	} // end getCBPFileSize
+
+	public Set<CLEANUP_CATEGORY> getCleanupCategories(boolean instanceSucceeded) {
+		// TODO Is null acceptable or is an empty Set the correct response?
+		return null;
+	}
+
+	public Map<String, String> getEndpointProperties(EndpointReference epr) {
+		// TODO Is null acceptable or is an empty Map the correct response?
+		return null;
+	}
+
+	public Map<QName, Node> getProcessProperties() {
+		// TODO Is null acceptable or is an empty Map the correct response?
+		return null;
+	}
+
+	public boolean isCleanupCategoryEnabled(boolean instanceSucceeded,
+			CLEANUP_CATEGORY category) {
+		// TODO Currently returns false - should this be changed for some categories?
+		return false;
+	}
+
+	public boolean isSharedService(QName serviceName) {
+		// Tuscany does not share the service
+		return false;
+	}
 
 } // end class TuscanyProcessConfImpl
