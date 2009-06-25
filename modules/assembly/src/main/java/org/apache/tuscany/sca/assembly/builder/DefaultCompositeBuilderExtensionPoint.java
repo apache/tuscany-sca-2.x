@@ -25,6 +25,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
@@ -125,9 +127,9 @@ public class DefaultCompositeBuilderExtensionPoint implements CompositeBuilderEx
             getBuilder().build(composite, definitions, monitor);
         }
         
-        public void build(Composite composite, Definitions definitions, Map<Class<?>, List<String>> bindingMap, Monitor monitor)
+        public void build(Composite composite, Definitions definitions, Map<QName, List<String>> bindingBaseURIs, Monitor monitor)
         		throws CompositeBuilderException {
-            ((CompositeBuilderTmp)getBuilder()).build(composite, definitions, bindingMap, monitor);
+            ((CompositeBuilderTmp)getBuilder()).build(composite, definitions, bindingBaseURIs, monitor);
         }
 
         private CompositeBuilder getBuilder() {

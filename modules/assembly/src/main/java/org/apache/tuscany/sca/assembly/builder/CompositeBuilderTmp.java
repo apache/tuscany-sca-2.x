@@ -22,6 +22,8 @@ package org.apache.tuscany.sca.assembly.builder;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.monitor.Monitor;
@@ -49,6 +51,6 @@ public interface CompositeBuilderTmp {
      * @param monitor
      * @throws CompositeBuilderException
      */
-    void build(Composite composite, Definitions definitions, Map<Class<?>, List<String>> bindingMap, Monitor monitor) throws CompositeBuilderException;
+    void build(Composite composite, Definitions definitions, Map<QName, List<String>> bindingBaseURIs, Monitor monitor) throws CompositeBuilderException;
     
 }

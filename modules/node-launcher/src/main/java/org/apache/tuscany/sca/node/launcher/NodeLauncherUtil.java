@@ -371,9 +371,16 @@ final class NodeLauncherUtil {
         Object node;
         if (configurationURI != null) {
 
+            URL url = null;
+            URI uri = URI.create(configurationURI);
+            if (uri.getScheme() == null) {
+                uri = new File(configurationURI).toURI();
+            }
+            url = uri.toURL();
+
             // NodeFactory.createNode(URL)
             Method create = bootstrapClass.getMethod("createNode", URL.class);
-            node = create.invoke(nodeFactory, new URL(configurationURI));
+            node = create.invoke(nodeFactory, url);
 
         } else if (contributionClassLoader != null) {
 

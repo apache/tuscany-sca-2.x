@@ -598,23 +598,21 @@ public class NodeFactoryImpl extends NodeFactory {
                 tempComposite.getIncludes().add(composite);
             }
         }
-        
+
         // TODO - EPR - create a binding map to pass down into the builders
-        //              for use during URI calculation. 
-        Map<Class<?>, List<String>> bindingMap = new HashMap<Class<?>, List<String>>();
-        for (BindingConfiguration config : configuration.getBindings()){
-        	StAXArtifactProcessor<?> processor = xmlProcessors.getProcessor(config.getBindingType());
-        	Class<?> bindingClass = processor.getModelType();
-        	bindingMap.put(bindingClass, config.getBaseURIs());
+        //              for use during URI calculation.
+        Map<QName, List<String>> bindingMap = new HashMap<QName, List<String>>();
+        for (BindingConfiguration config : configuration.getBindings()) {
+            bindingMap.put(config.getBindingType(), config.getBaseURIs());
         }
-        
+
         // build the top level composite
         ((CompositeBuilderTmp)compositeBuilder).build(tempComposite, systemDefinitions, bindingMap, monitor);
         analyzeProblems();
-        
+
         endpointReferenceBuilder.build(tempComposite, systemDefinitions, monitor);
         analyzeProblems();
-        
+
         return tempComposite;
 
     }

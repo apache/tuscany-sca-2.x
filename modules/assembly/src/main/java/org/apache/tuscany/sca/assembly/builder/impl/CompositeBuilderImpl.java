@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.TransformerFactory;
 
@@ -145,7 +146,7 @@ public class CompositeBuilderImpl implements CompositeBuilder, CompositeBuilderT
     	build(composite, definitions, null, monitor);
     }
     
-    public void build(Composite composite, Definitions definitions, Map<Class<?>, List<String>> bindingMap, Monitor monitor) throws CompositeBuilderException {
+    public void build(Composite composite, Definitions definitions, Map<QName, List<String>> bindingBaseURIs, Monitor monitor) throws CompositeBuilderException {
 
     	try {
 	    	// Collect and fuse includes
@@ -170,7 +171,7 @@ public class CompositeBuilderImpl implements CompositeBuilder, CompositeBuilderT
 	
 	        // Configure service binding URIs and names. Creates an SCA defined URI based
 	        // on the scheme base URI, the component name and the binding name
-	        ((CompositeBuilderTmp)compositeBindingURIBuilder).build(composite, definitions, bindingMap, monitor);
+	        ((CompositeBuilderTmp)compositeBindingURIBuilder).build(composite, definitions, bindingBaseURIs, monitor);
 	
 	        // Create $promoted$ component services on bottom level components
 	        // to represent promoted services

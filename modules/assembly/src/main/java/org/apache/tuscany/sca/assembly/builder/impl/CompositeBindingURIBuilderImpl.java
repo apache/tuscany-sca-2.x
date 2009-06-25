@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.TransformerFactory;
 
@@ -81,10 +82,10 @@ public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements C
     public void build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
         configureBindingURIsAndNames(composite, definitions, monitor);
     }
-    
-    public void build(Composite composite, Definitions definitions, Map<Class<?>, List<String>> bindingMap, Monitor monitor)
+
+    public void build(Composite composite, Definitions definitions, Map<QName, List<String>> bindingBaseURIs, Monitor monitor)
     		throws CompositeBuilderException {
-        configureBindingURIs(composite, null, definitions, bindingMap, monitor);
+        configureBindingURIs(composite, null, definitions, bindingBaseURIs, monitor);
         configureBindingNames(composite, monitor);
     }
 
@@ -107,7 +108,7 @@ public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements C
      * @param defaultBindings list of default binding configurations
      */
     protected void configureBindingURIs(Composite composite,
-                                        Definitions definitions, Map<Class<?>, List<String>> defaultBindings,
+                                        Definitions definitions, Map<QName, List<String>> defaultBindings,
                                         Monitor monitor) throws CompositeBuilderException {
         configureBindingURIs(composite, null, definitions, defaultBindings, monitor);
     }
@@ -133,7 +134,7 @@ public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements C
       * @param defaultBindings list of default binding configurations
       */
     private void configureBindingURIs(Composite composite, String uri,
-                                      Definitions definitions, Map<Class<?>, List<String>> defaultBindings,
+                                      Definitions definitions, Map<QName, List<String>> defaultBindings,
                                       Monitor monitor) throws CompositeBuilderException {
 
         String parentComponentURI = uri;
@@ -346,7 +347,7 @@ public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements C
      * @param defaultBindings
      */
     private void constructBindingURI(String parentComponentURI, Composite composite, Service service,
-                                     Binding binding, Map<Class<?>, List<String>> defaultBindings, Monitor monitor)
+                                     Binding binding, Map<QName, List<String>> defaultBindings, Monitor monitor)
     throws CompositeBuilderException{
         // This is a composite service so there is no component to provide a component URI
         // The path to this composite (through nested composites) is used.
@@ -365,7 +366,7 @@ public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements C
       * @param defaultBindings the list of default binding configurations
       */
     private void constructBindingURI(Component component, Service service,
-                                     Binding binding, Map<Class<?>, List<String>> defaultBindings, Monitor monitor)
+                                     Binding binding, Map<QName, List<String>> defaultBindings, Monitor monitor)
         throws CompositeBuilderException{
         boolean includeBindingName = component.getServices().size() != 1;
         constructBindingURI(component.getURI(), service, binding, includeBindingName, defaultBindings, monitor);
@@ -382,7 +383,7 @@ public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements C
      * @throws CompositeBuilderException
      */
     private void constructBindingURI(String componentURIString, Service service, Binding binding,
-                                     boolean includeBindingName, Map<Class<?>, List<String>> defaultBindings, Monitor monitor)
+                                     boolean includeBindingName, Map<QName, List<String>> defaultBindings, Monitor monitor)
         throws CompositeBuilderException{
 
         try {
@@ -426,15 +427,9 @@ public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements C
             // calculate the base URI
             URI baseURI = null;
             if (defaultBindings != null) {
-                for (Class<?> bindingClass : defaultBindings.keySet()){
-                    if (bindingClass.isInstance(binding)){
-                    	List<String> uris = defaultBindings.get(bindingClass);
-                    	if (uris.size() > 0){
-                    		baseURI = new URI(addSlashToPath(uris.get(0)));
-                    	}
-
-                        break;
-                    }
+                List<String> uris = defaultBindings.get(binding.getType());
+                if (uris != null && uris.size() > 0) {
+                    baseURI = new URI(addSlashToPath(uris.get(0)));
                 }
             }
 
