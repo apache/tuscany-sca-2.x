@@ -20,11 +20,14 @@
 package org.apache.tuscany.sca.endpoint.tribes;
 
 import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.catalina.tribes.Channel;
@@ -72,26 +75,11 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry, LifeCycleLi
         // REVIEW: In my case, there are multiple IP addresses
         // One for the WIFI and the other one for VPN. For some reason the VPN one doesn't support
         // Multicast
-        /*
-        try {
-            Enumeration<NetworkInterface> nis = NetworkInterface.getNetworkInterfaces();
-            while (nis.hasMoreElements()) {
-                NetworkInterface ni = nis.nextElement();
-                if (ni.isLoopback() || !ni.isUp() || !ni.supportsMulticast()) {
-                    continue;
-                }
-                Enumeration<InetAddress> ips = ni.getInetAddresses();
-                while (ips.hasMoreElements()) {
-                    InetAddress addr = ips.nextElement();
-                    System.out.println(addr.getHostAddress());
-                }
-            }
-        } catch (SocketException e) {
-            e.printStackTrace();
-        }
-        */
+
         if (bindAddress != null) {
             mcastService.setBind(bindAddress);
+        } else {
+            mcastService.setBind(getBindAddress());
         }
 
         return channel;
@@ -336,8 +324,9 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry, LifeCycleLi
         // REVIEW: In my case, there are multiple IP addresses
         // One for the WIFI and the other one for VPN. For some reason the VPN one doesn't support
         // Multicast
+
         // You can use "route add 228.0.0.0 mask 252.0.0.0 192.168.1.100"
-        // mcastService.setBind("192.168.1.100");
+        mcastService.setBind(getBindAddress());
         channel.start(Channel.DEFAULT);
         ReplicatedMap map = new ReplicatedMap(null, channel, 50, "01", null);
         map.put(UUID.randomUUID().toString(), localhost.getHostAddress());
@@ -354,5 +343,34 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry, LifeCycleLi
         channel.stop(Channel.DEFAULT);
     }
 
+    private static String getBindAddress() {
+        try {
+            Enumeration<NetworkInterface> nis = NetworkInterface.getNetworkInterfaces();
+            while (nis.hasMoreElements()) {
+                NetworkInterface ni = nis.nextElement();
+                // The following APIs require JDK 1.6
+                /*
+                if (ni.isLoopback() || !ni.isUp() || !ni.supportsMulticast()) {
+                    continue;
+                }
+                */
+                Enumeration<InetAddress> ips = ni.getInetAddresses();
+                if (!ips.hasMoreElements()) {
+                    continue;
+                }
+                while (ips.hasMoreElements()) {
+                    InetAddress addr = ips.nextElement();
+                    if (addr.isLoopbackAddress()) {
+                        continue;
+                    }
+                    return addr.getHostAddress();
+                }
+            }
+            return InetAddress.getLocalHost().getHostAddress();
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, e.getMessage(), e);
+            return null;
+        }
+    }
 
 }
