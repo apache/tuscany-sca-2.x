@@ -25,12 +25,14 @@ import static org.osgi.service.discovery.DiscoveredServiceNotification.AVAILABLE
 import static org.osgi.service.discovery.DiscoveredServiceNotification.UNAVAILABLE;
 
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.implementation.osgi.ServiceDescriptions;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
@@ -72,6 +74,16 @@ public class LocalDiscoveryService extends AbstractDiscoveryService implements B
     }
 
     private void discover(Bundle b) {
+        String path = (String)b.getHeaders().get(ServiceDescriptions.REMOTE_SERVICE_HEADER);
+        if (path == null) {
+            Enumeration files = b.findEntries(ServiceDescriptions.REMOTE_SERVICE_FOLDER, "*.xml", false);
+            if (files == null || !files.hasMoreElements()) {
+                return;
+            }
+        }
+
+        ServiceDescriptions descriptions = null;
+
         // TODO: Use SCA contribution to load the service discription files
         List<ServiceEndpointDescription> refs = Collections.emptyList();
         for (ServiceEndpointDescription sed : refs) {

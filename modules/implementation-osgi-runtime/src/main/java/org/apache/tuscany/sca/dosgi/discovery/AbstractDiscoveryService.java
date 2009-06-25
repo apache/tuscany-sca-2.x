@@ -41,6 +41,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.discovery.DiscoveredServiceTracker;
 import org.osgi.service.discovery.Discovery;
 import org.osgi.service.discovery.ServiceEndpointDescription;
@@ -103,7 +104,7 @@ public abstract class AbstractDiscoveryService implements Discovery {
         ServiceTracker tracker = new ServiceTracker(context, ExtensionPointRegistry.class.getName(), null);
         tracker.open();
         // tracker.waitForService(1000);
-        ExtensionPointRegistry extensionPointRegistry = (ExtensionPointRegistry) tracker.getService();
+        ExtensionPointRegistry extensionPointRegistry = (ExtensionPointRegistry)tracker.getService();
         tracker.close();
         return extensionPointRegistry;
     }
@@ -315,9 +316,13 @@ public abstract class AbstractDiscoveryService implements Discovery {
         }
     }
 
-    protected void localServicePublished(ServiceReference ref, Endpoint endpoint) {
+    protected ServiceRegistration localServicePublished(ServiceReference ref, Endpoint endpoint) {
         EndpointPublication publication = new EndpointPublication(ref, endpoint);
-        ref.getBundle().getBundleContext().registerService(ServicePublication.class.getName(), publication, publication.getProperties());
+        ServiceRegistration registration =
+            ref.getBundle().getBundleContext().registerService(ServicePublication.class.getName(),
+                                                               publication,
+                                                               publication.getProperties());
+        return registration;
     }
 
 }

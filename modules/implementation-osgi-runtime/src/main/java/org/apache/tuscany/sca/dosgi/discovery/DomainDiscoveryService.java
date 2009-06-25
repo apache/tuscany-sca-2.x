@@ -22,6 +22,11 @@ package org.apache.tuscany.sca.dosgi.discovery;
 import static org.osgi.service.discovery.DiscoveredServiceNotification.AVAILABLE;
 import static org.osgi.service.discovery.DiscoveredServiceNotification.UNAVAILABLE;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
@@ -34,13 +39,18 @@ import org.apache.tuscany.sca.runtime.EndpointRegistry;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.discovery.ServiceEndpointDescription;
+import org.osgi.service.discovery.ServicePublication;
 
 /**
  * Discovery service based on the distributed SCA domain
  */
 public class DomainDiscoveryService extends AbstractDiscoveryService implements EndpointListener {
     private EndpointRegistry endpointRegistry;
+
+    private Map<String, ServiceRegistration> endpointRegistrations =
+        new ConcurrentHashMap<String, ServiceRegistration>();
 
     public DomainDiscoveryService(BundleContext context) {
         super(context);
@@ -60,8 +70,7 @@ public class DomainDiscoveryService extends AbstractDiscoveryService implements 
         OSGiImplementation osgiImpl = (OSGiImplementation)impl;
         BundleContext bundleContext = osgiImpl.getBundle().getBundleContext();
 
-        boolean local = true;
-        if (local) {
+        if (!endpoint.isRemote()) {
 
             Interface intf = endpoint.getService().getInterfaceContract().getInterface();
             JavaInterface javaInterface = (JavaInterface)intf;
@@ -76,7 +85,8 @@ public class DomainDiscoveryService extends AbstractDiscoveryService implements 
                 // Ignore
             }
             if (ref != null) {
-                localServicePublished(ref, endpoint);
+                ServiceRegistration registration = localServicePublished(ref, endpoint);
+                endpointRegistrations.put(endpoint.getURI(), registration);
             }
         } else {
             // Remote endpoints
@@ -85,14 +95,13 @@ public class DomainDiscoveryService extends AbstractDiscoveryService implements 
         }
     }
 
-    private boolean isLocal(Endpoint endpoint) {
-        // FIXME: To be implemented
-        return true;
-    }
-
     public void endpointRemoved(Endpoint endpoint) {
-        if (isLocal(endpoint)) {
+        if (!endpoint.isRemote()) {
             // unregister the ServicePublication here
+            ServiceRegistration registration = endpointRegistrations.get(endpoint.getURI());
+            if (registration != null) {
+                registration.unregister();
+            }
         } else {
             // Remote endpoints
             ServiceEndpointDescription description = getServiceEndpointDescription(endpoint);
@@ -101,6 +110,9 @@ public class DomainDiscoveryService extends AbstractDiscoveryService implements 
     }
 
     public void endpointUpdated(Endpoint oldEndpoint, Endpoint newEndpoint) {
+        // FIXME: This is a quick and dirty way for the update
+        endpointRemoved(oldEndpoint);
+        endpointAdded(newEndpoint);
     }
 
     public void stop() {
@@ -108,7 +120,19 @@ public class DomainDiscoveryService extends AbstractDiscoveryService implements 
         super.stop();
     }
 
+    public Map<String, Object> getServiceProperties(Endpoint endpoint) {
+        Map<String, Object> serviceProps = new HashMap<String, Object>();
+        serviceProps.put(ServicePublication.ENDPOINT_LOCATION, endpoint.getURI());
+        // TODO: Populate the properties from the Endpoint object
+        return serviceProps;
+    }
+
     private ServiceEndpointDescription getServiceEndpointDescription(Endpoint endpoint) {
-        return null;
+        Interface interface1 = endpoint.getService().getInterfaceContract().getInterface();
+        JavaInterface javaInterface = (JavaInterface)interface1;
+        ServiceEndpointDescription description =
+            new ServiceEndpointDescriptionImpl(Collections.singleton(javaInterface.getName()),
+                                               getServiceProperties(endpoint));
+        return description;
     }
 }
