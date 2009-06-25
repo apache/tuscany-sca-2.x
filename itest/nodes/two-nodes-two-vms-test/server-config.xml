@@ -29,8 +29,8 @@
     <binding name="sca:binding.ws" baseURIs="http://localhost:8082/ws https://localhost:8082/ws"/>
 
     <!-- Configure a list of contributions -->
-    <contribution uri="iface" location="file:../helloworld-iface/target/itest-nodes-helloworld-iface-2.0-SNAPSHOT.jar"/>
-    <contribution uri="service" location="file:../helloworld-service/target/itest-nodes-helloworld-service-2.0-SNAPSHOT.jar">
+    <contribution uri="iface" location="../helloworld-iface/target/classes"/>
+    <contribution uri="service" location="../helloworld-service/target/classes">
         <!-- doesn't pick up the deployable composite properly without this?-->
         <deploymentComposite location="helloworld-service.composite"/>
     </contribution>
