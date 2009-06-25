@@ -46,12 +46,12 @@ public class EndpointRegistryImpl implements EndpointRegistry {
         for (EndpointListener listener : listeners) {
             listener.endpointAdded(endpoint);
         }
-        logger.info("EndpointRegistry: Add endpoint - " + endpoint.toString());
+        logger.info("Add endpoint - " + endpoint.toString());
     }
 
     public void addEndpointReference(EndpointReference endpointReference) {
         endpointreferences.add(endpointReference);
-        logger.info("EndpointRegistry: Add endpoint reference - " + endpointReference.toString());
+        logger.info("Add endpoint reference - " + endpointReference.toString());
     }
 
     /**
@@ -101,7 +101,7 @@ public class EndpointRegistryImpl implements EndpointRegistry {
     public List<Endpoint> findEndpoint(EndpointReference endpointReference) {
         List<Endpoint> foundEndpoints = new ArrayList<Endpoint>();
 
-        logger.info("EndpointRegistry: Find endpoint for reference - " + endpointReference.toString());
+        logger.info("Find endpoint for reference - " + endpointReference.toString());
 
         if (endpointReference.getReference() != null) {
             Endpoint targetEndpoint = endpointReference.getTargetEndpoint();
@@ -109,7 +109,7 @@ public class EndpointRegistryImpl implements EndpointRegistry {
                 // TODO: implement more complete matching
                 if (matches(targetEndpoint.getURI(), endpoint.getURI())) {
                     foundEndpoints.add(endpoint);
-                    logger.info("EndpointRegistry: Found endpoint with matching service  - " + endpoint);
+                    logger.info("Found endpoint with matching service  - " + endpoint);
                 }
                 // else the service name doesn't match
             }
@@ -127,12 +127,12 @@ public class EndpointRegistryImpl implements EndpointRegistry {
         for (EndpointListener listener : listeners) {
             listener.endpointRemoved(endpoint);
         }
-        logger.info("EndpointRegistry: Remove endpoint - " + endpoint.toString());
+        logger.info("Remove endpoint - " + endpoint.toString());
     }
 
     public void removeEndpointReference(EndpointReference endpointReference) {
         endpointreferences.remove(endpointReference);
-        logger.info("EndpointRegistry: Remove endpoint reference - " + endpointReference.toString());
+        logger.info("Remove endpoint reference - " + endpointReference.toString());
     }
 
     public List<EndpointReference> getEndpointRefereneces() {
