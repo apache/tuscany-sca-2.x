@@ -42,6 +42,7 @@ import org.osgi.framework.Filter;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.discovery.DiscoveredServiceNotification;
 import org.osgi.service.discovery.DiscoveredServiceTracker;
 import org.osgi.service.discovery.Discovery;
 import org.osgi.service.discovery.ServiceEndpointDescription;
@@ -191,9 +192,10 @@ public abstract class AbstractDiscoveryService implements Discovery {
             + (isFilter ? " matches " : " contained by ")
             + sd.getProvidedInterfaces());
 
-        EndpointNotification notification =
-            isFilter ? (filterMatches(toMatch, sd) ? new EndpointNotification(sd, true, toMatch, type) : null) : (sd
-                .getProvidedInterfaces().contains(toMatch) ? new EndpointNotification(sd, false, toMatch, type) : null);
+        DiscoveredServiceNotification notification =
+            isFilter ? (filterMatches(toMatch, sd) ? new DiscoveredServiceNotificationImpl(sd, true, toMatch, type)
+                : null) : (sd.getProvidedInterfaces().contains(toMatch)
+                ? new DiscoveredServiceNotificationImpl(sd, false, toMatch, type) : null);
 
         if (notification != null) {
             tracker.serviceChanged(notification);

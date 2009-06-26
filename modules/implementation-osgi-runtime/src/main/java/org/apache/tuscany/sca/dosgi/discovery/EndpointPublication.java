@@ -19,8 +19,8 @@
 
 package org.apache.tuscany.sca.dosgi.discovery;
 
+import java.util.Collections;
 import java.util.Dictionary;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -52,10 +52,11 @@ public class EndpointPublication implements ServicePublication {
 
     public Dictionary<String, Object> getProperties() {
         Dictionary<String, Object> props = new Hashtable<String, Object>();
-        Map<String, Object> serviceProps = new HashMap<String, Object>();
-        serviceProps.put(ENDPOINT_LOCATION, endpoint.getURI());
+        Map<String, Object> serviceProps = EndpointDescription.getServiceProperties(endpoint);
         props.put(SERVICE_PROPERTIES, serviceProps);
         // TODO: Populate the properties from the Endpoint object
+        String name = EndpointDescription.getInterfaceName(endpoint);
+        props.put(ENDPOINT_INTERFACE_NAME, Collections.singleton(name));
         return props;
     }
 

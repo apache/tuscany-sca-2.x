@@ -22,8 +22,6 @@ package org.apache.tuscany.sca.dosgi.discovery;
 import static org.osgi.service.discovery.DiscoveredServiceNotification.AVAILABLE;
 import static org.osgi.service.discovery.DiscoveredServiceNotification.UNAVAILABLE;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -41,7 +39,6 @@ import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.discovery.ServiceEndpointDescription;
-import org.osgi.service.discovery.ServicePublication;
 
 /**
  * Discovery service based on the distributed SCA domain
@@ -90,7 +87,7 @@ public class DomainDiscoveryService extends AbstractDiscoveryService implements 
             }
         } else {
             // Remote endpoints
-            ServiceEndpointDescription description = getServiceEndpointDescription(endpoint);
+            ServiceEndpointDescription description = new EndpointDescription(endpoint);
             discoveredServiceChanged(description, AVAILABLE);
         }
     }
@@ -104,7 +101,7 @@ public class DomainDiscoveryService extends AbstractDiscoveryService implements 
             }
         } else {
             // Remote endpoints
-            ServiceEndpointDescription description = getServiceEndpointDescription(endpoint);
+            ServiceEndpointDescription description = new EndpointDescription(endpoint);
             discoveredServiceChanged(description, UNAVAILABLE);
         }
     }
@@ -120,19 +117,4 @@ public class DomainDiscoveryService extends AbstractDiscoveryService implements 
         super.stop();
     }
 
-    public Map<String, Object> getServiceProperties(Endpoint endpoint) {
-        Map<String, Object> serviceProps = new HashMap<String, Object>();
-        serviceProps.put(ServicePublication.ENDPOINT_LOCATION, endpoint.getURI());
-        // TODO: Populate the properties from the Endpoint object
-        return serviceProps;
-    }
-
-    private ServiceEndpointDescription getServiceEndpointDescription(Endpoint endpoint) {
-        Interface interface1 = endpoint.getService().getInterfaceContract().getInterface();
-        JavaInterface javaInterface = (JavaInterface)interface1;
-        ServiceEndpointDescription description =
-            new ServiceEndpointDescriptionImpl(Collections.singleton(javaInterface.getName()),
-                                               getServiceProperties(endpoint));
-        return description;
-    }
 }

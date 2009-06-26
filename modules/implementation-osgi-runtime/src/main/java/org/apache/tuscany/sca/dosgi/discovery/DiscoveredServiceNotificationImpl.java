@@ -27,14 +27,14 @@ import java.util.HashSet;
 import org.osgi.service.discovery.DiscoveredServiceNotification;
 import org.osgi.service.discovery.ServiceEndpointDescription;
 
-class EndpointNotification implements DiscoveredServiceNotification {
+public class DiscoveredServiceNotificationImpl implements DiscoveredServiceNotification {
 
     private ServiceEndpointDescription discription;
     private Collection<String> interfaces;
     private Collection<String> filters;
     private int type;
 
-    EndpointNotification(ServiceEndpointDescription sd, boolean isFilter, String match, int type) {
+    public DiscoveredServiceNotificationImpl(ServiceEndpointDescription sd, boolean isFilter, String match, int type) {
         this.discription = sd;
         if (isFilter) {
             filters = new ArrayList<String>();
