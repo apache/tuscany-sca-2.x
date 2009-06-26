@@ -116,7 +116,18 @@
            <snapshots>
                <enabled>false</enabled>
            </snapshots>
-        </repository>        
+        </repository> 
+        <!-- for Saxon 9.x -->
+        <repository>
+            <id>intalio.org</id>
+            <url>http://www.intalio.org/public/maven2</url>
+           <releases>
+               <enabled>true</enabled>
+           </releases>
+           <snapshots>
+               <enabled>false</enabled>
+           </snapshots>
+        </repository>     
     </repositories>
 
     <pluginRepositories>
