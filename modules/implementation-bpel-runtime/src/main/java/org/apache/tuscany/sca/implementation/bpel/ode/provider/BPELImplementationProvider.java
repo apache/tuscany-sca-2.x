@@ -25,8 +25,8 @@ import javax.transaction.TransactionManager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.tuscany.sca.assembly.Endpoint2;
-import org.apache.tuscany.sca.assembly.EndpointReference2;
+import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.databinding.xml.DOMDataBinding;
@@ -72,14 +72,14 @@ public class BPELImplementationProvider implements ImplementationProvider {
         	//TODO - MJE, 06/06/2009 - we can eventually remove the reset of the service interface
         	// contract and leave it to the Endpoints only
             service.getInterfaceContract().getInterface().resetDataBinding(DOMDataBinding.NAME);
-            for( Endpoint2 endpoint : service.getEndpoints() ) {
+            for( Endpoint endpoint : service.getEndpoints() ) {
             	endpoint.getInterfaceContract().getInterface().resetDataBinding(DOMDataBinding.NAME);
             } // end for
         } // end for
        
         for (Reference reference: component.getReferences()) {
             reference.getInterfaceContract().getInterface().resetDataBinding(DOMDataBinding.NAME);
-            /* for( EndpointReference2 epr : reference.getEndpointReferences() ) {
+            /* for( EndpointReference epr : reference.getEndpointReferences() ) {
             	epr.getInterfaceContract().getInterface().resetDataBinding(DOMDataBinding.NAME);
             } // end for */
         } // end for
