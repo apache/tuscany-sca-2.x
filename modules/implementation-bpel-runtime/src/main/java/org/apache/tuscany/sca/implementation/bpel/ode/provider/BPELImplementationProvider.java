@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.tuscany.sca.implementation.bpel.ode.provider;
 
@@ -26,7 +26,6 @@ import javax.transaction.TransactionManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.tuscany.sca.assembly.Endpoint;
-import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.databinding.xml.DOMDataBinding;
@@ -42,18 +41,18 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
 /**
  * BPEL Implementation provider
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class BPELImplementationProvider implements ImplementationProvider {
     private final Log __log = LogFactory.getLog(getClass());
-    
+
     private RuntimeComponent component;
     private BPELImplementation implementation;
-    
+
     private EmbeddedODEServer odeServer;
     private TransactionManager txMgr;
-    
+
     /**
      * Constructs a new BPEL Implementation.
      */
@@ -65,7 +64,7 @@ public class BPELImplementationProvider implements ImplementationProvider {
         this.implementation = implementation;
         this.odeServer = odeServer;
         this.txMgr = txMgr;
-        
+
         // Configure the service and reference interfaces to use a DOM databinding
         // as it's what ODE expects
         for (Service service: component.getServices()) {
@@ -73,24 +72,26 @@ public class BPELImplementationProvider implements ImplementationProvider {
         	// contract and leave it to the Endpoints only
             service.getInterfaceContract().getInterface().resetDataBinding(DOMDataBinding.NAME);
             for( Endpoint endpoint : service.getEndpoints() ) {
-            	endpoint.getInterfaceContract().getInterface().resetDataBinding(DOMDataBinding.NAME);
+                if (endpoint.getInterfaceContract() != null) {
+                    endpoint.getInterfaceContract().getInterface().resetDataBinding(DOMDataBinding.NAME);
+                }
             } // end for
         } // end for
-       
+
         for (Reference reference: component.getReferences()) {
             reference.getInterfaceContract().getInterface().resetDataBinding(DOMDataBinding.NAME);
             /* for( EndpointReference epr : reference.getEndpointReferences() ) {
             	epr.getInterfaceContract().getInterface().resetDataBinding(DOMDataBinding.NAME);
             } // end for */
         } // end for
-        
+
     }
 
     public Invoker createInvoker(RuntimeComponentService service, Operation operation) {
         BPELInvoker invoker = new BPELInvoker(component, service, operation, odeServer, txMgr);
         return invoker;
     }
-    
+
     public boolean supportsOneWayInvocation() {
         return false;
     }
@@ -99,7 +100,7 @@ public class BPELImplementationProvider implements ImplementationProvider {
         if(__log.isInfoEnabled()) {
             __log.info("Starting " + component.getName());
         }
-        
+
         try {
             if (!odeServer.isInitialized()) {
                 // start ode server
@@ -108,9 +109,9 @@ public class BPELImplementationProvider implements ImplementationProvider {
 
             String location = this.implementation.getProcessDefinition().getLocation();
             URI deployURI = new URI(null, location, null);
-            
+
             File deploymentDir = new File(deployURI).getParentFile();
-            
+
             if(__log.isInfoEnabled()) {
                 __log.info(">>> Deploying : " + deploymentDir.toString());
             }
@@ -129,7 +130,7 @@ public class BPELImplementationProvider implements ImplementationProvider {
                     //txMgr.rollback();
                 }
             }
-            
+
         } catch (ODEInitializationException inite) {
             throw new RuntimeException("BPEL Component Type Implementation : Error initializing embedded ODE server " + inite.getMessage(), inite);
         } catch(Exception e) {
@@ -141,12 +142,12 @@ public class BPELImplementationProvider implements ImplementationProvider {
         if(__log.isInfoEnabled()) {
             __log.info("Stopping " + component.getName());
         }
-        
+
         if (odeServer.isInitialized()) {
             // start ode server
             odeServer.stop();
         }
-        
+
         txMgr = null;
 
         if(__log.isInfoEnabled()) {
