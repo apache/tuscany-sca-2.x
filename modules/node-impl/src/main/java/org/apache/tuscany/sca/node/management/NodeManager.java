@@ -53,12 +53,12 @@ public class NodeManager implements NodeManagerMBean {
         return name;
     }
 
-    public static ObjectName getName(Node node) throws MalformedObjectNameException {
+    private static ObjectName getName(NodeImpl node) throws MalformedObjectNameException {
         String name =
-            Node.class.getPackage().getName() + ":Type="
+            Node.class.getPackage().getName() + ":type="
                 + Node.class.getSimpleName()
-                + ",ID="
-                + System.identityHashCode(node);
+                + ",uri="
+                + ObjectName.quote(node.getURI());
         return ObjectName.getInstance(name);
 
     }
