@@ -25,8 +25,8 @@ import itest.nodes.Helloworld;
 
 import java.io.File;
 
-import org.apache.tuscany.sca.assembly.SCABinding;
-import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
@@ -41,7 +41,7 @@ import org.oasisopen.sca.client.SCAClientFactory;
  * This shows how to test the Calculator service component.
  */
 public class ClientNode {
-
+    private final static String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200903";
     private static Node clientNode;
     private static TestCaseRunner runner;
 
@@ -54,8 +54,8 @@ public class ClientNode {
         NodeFactory factory = NodeFactory.newInstance();
         NodeConfiguration conf =
             factory.createNodeConfiguration().setURI("clientNode").
-                addBinding(SCABinding.TYPE, "http://localhost:8085/sca https://localhost:9085/sca")
-                .addBinding(WebServiceBinding.TYPE, "http://localhost:8086/ws")
+                addBinding(new QName(SCA11_NS, "binding.sca"), "http://localhost:8085/sca https://localhost:9085/sca")
+                .addBinding(new QName(SCA11_NS, "binding.ws"), "http://localhost:8086/ws")
                 .addContribution("client", new File("../helloworld-client/target/classes").toURI().toString());
         clientNode = factory.createNode(conf).start();
         Thread.sleep(1000);

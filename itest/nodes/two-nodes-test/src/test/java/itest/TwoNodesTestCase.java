@@ -56,7 +56,6 @@ public class TwoNodesTestCase {
             factory.createNodeConfiguration().setURI("clientNode")
                 .addContribution("client", getJar("../helloworld-client/target"));
         clientNode = factory.createNode(configuration2).start();
-        clientNode.start();
     }
 
     /**
