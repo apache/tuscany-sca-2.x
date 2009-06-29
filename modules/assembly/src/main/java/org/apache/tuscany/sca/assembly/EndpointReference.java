@@ -32,6 +32,13 @@ import org.apache.tuscany.sca.policy.PolicySubject;
  * @version $Rev$ $Date$
  */
 public interface EndpointReference extends Base, PolicySubject, Cloneable, Serializable {
+    
+    public static final int NOT_CONFIGURED = 0;
+    public static final int RESOLVED_BINDING = 1;
+    public static final int WIRED_TARGET_NOT_FOUND = 2;
+    public static final int WIRED_TARGET_FOUND_BUT_NOT_MATCHED = 3;
+    public static final int WIRED_TARGET_FOUND_AND_MATCHED = 4;
+    
     /**
      * Get the structural URI of the reference binding
      * @return The structural URI of the reference/binding
@@ -163,4 +170,20 @@ public interface EndpointReference extends Base, PolicySubject, Cloneable, Seria
      * @param registry
      */
     void setExtensionPointRegistry(ExtensionPointRegistry registry);
+    
+    /**
+     * Rather than relying on combinations of unresolved flags and 
+     * other data we maintain a status enumeration
+     * 
+     * @return status
+     */
+    int getStatus();
+   
+    /**
+     * Rather than relying on combinations of unresolved flags and 
+     * other data we maintain a status enumeration
+     * 
+     * @param status the new status
+     */
+    void setStatus(int status);
 }

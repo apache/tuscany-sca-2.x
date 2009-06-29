@@ -39,7 +39,10 @@ import org.apache.tuscany.sca.policy.PolicySubject;
  * @version $Rev$ $Date$
  */
 public class EndpointReferenceImpl implements EndpointReference {
-    private static final long serialVersionUID = 8838066441709300972L;
+	private static final long serialVersionUID = 8838066441709300972L;
+	
+
+    
     protected ExtensionPointRegistry registry;
     protected boolean unresolved = true;
     protected String uri;
@@ -50,6 +53,7 @@ public class EndpointReferenceImpl implements EndpointReference {
     protected List<Intent> requiredIntents = new ArrayList<Intent>();
     protected InterfaceContract interfaceContract;
     protected boolean remote = false;
+    protected int status;
 
     // the target of the endpoint reference
     protected Endpoint targetEndpoint;
@@ -168,9 +172,23 @@ public class EndpointReferenceImpl implements EndpointReference {
         if (getURI() != null) {
             output += " URI = " + uri;
         }
-
-        if (unresolved) {
-            output += " [Unresolved]";
+        
+        switch (status) {
+            case 0:
+                output += " NOT_CONFIGURED ";
+                break;
+            case 1:
+                output += " RESOLVED_BINDING ";
+                break;
+            case 2:
+                output += " WIRED_TARGET_NOT_FOUND ";
+                break;
+            case 3:
+                output += " WIRED_TARGET_FOUND_BUT_NOT_MATCHED ";
+                break;
+            case 4:
+                output += " WIRED_TARGET_FOUND_AND_MATCHED ";
+                break;
         }
 
         if (targetEndpoint != null) {
@@ -218,5 +236,13 @@ public class EndpointReferenceImpl implements EndpointReference {
 
     public void setExtensionPointRegistry(ExtensionPointRegistry registry) {
         this.registry = registry;
+    }
+    
+    public int getStatus() {
+        return status;
+    }
+    
+    public void setStatus(int status) {
+    	this.status = status;
     }
 }

@@ -153,7 +153,9 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
                         // are matched and bindings are configured later
                         EndpointReference endpointRef = createEndpointRef( component, reference, false  );
                         endpointRef.setTargetEndpoint( createEndpoint(targetComponent, targetComponentService, true) );
+                        endpointRef.setStatus(EndpointReference.WIRED_TARGET_FOUND_BUT_NOT_MATCHED);
                         reference.getEndpointReferences().add(endpointRef);
+                        
 
                         // Stop with the first match for 0..1 and 1..1 references
                         if (multiplicity == Multiplicity.ZERO_ONE ||
@@ -199,6 +201,7 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
                         // are matched and bindings are configured later
                         EndpointReference endpointRef = createEndpointRef( component, reference, false  );
                         endpointRef.setTargetEndpoint(createEndpoint(targetComponent, targetComponentService, true));
+                        endpointRef.setStatus(EndpointReference.WIRED_TARGET_FOUND_BUT_NOT_MATCHED);
                         reference.getEndpointReferences().add(endpointRef);
                     } else {
                         warning(monitor, "ReferenceIncompatibleInterface",
@@ -212,6 +215,7 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
                     EndpointReference endpointRef = createEndpointRef( component, reference, true  );
                     endpointRef.setTargetEndpoint(createEndpoint(component, targetName));
                     endpointRef.setRemote(true);
+                    endpointRef.setStatus(EndpointReference.WIRED_TARGET_NOT_FOUND);
                     reference.getEndpointReferences().add(endpointRef);
                     warning(monitor, "ComponentReferenceTargetNotFound",
                             composite,
@@ -242,10 +246,12 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
                         // Assume that the system need to resolve this binding later as
                         // it's the SCA binding
                         endpointRef.setTargetEndpoint(createEndpoint(true));
+                        endpointRef.setStatus(EndpointReference.NOT_CONFIGURED);
                     } else {
                         // The user has configured a binding so assume they know what 
                         // they are doing and mark in as already resolved. 
                         endpointRef.setTargetEndpoint(createEndpoint(false));
+                        endpointRef.setStatus(EndpointReference.RESOLVED_BINDING);
                     }
                     endpointRef.setRemote(true);
                     reference.getEndpointReferences().add(endpointRef);
@@ -277,6 +283,7 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
                         // are matched and bindings are configured later
                         EndpointReference endpointRef = createEndpointRef( component, reference, binding, null, false  );
                         endpointRef.setTargetEndpoint(createEndpoint(targetComponent, targetComponentService, true));
+                        endpointRef.setStatus(EndpointReference.WIRED_TARGET_FOUND_BUT_NOT_MATCHED);
                         reference.getEndpointReferences().add(endpointRef);
                     } else {
                         warning(monitor, "ReferenceIncompatibleInterface",
@@ -294,6 +301,7 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
                     endpoint.setBinding(binding);
                     endpointRef.setTargetEndpoint(endpoint);
                     endpointRef.setRemote(true);
+                    endpointRef.setStatus(EndpointReference.RESOLVED_BINDING);
                     reference.getEndpointReferences().add(endpointRef);
                 } // end if
             }
