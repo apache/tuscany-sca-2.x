@@ -76,7 +76,14 @@ Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Axis2-based WS Binding Extensio
  n
 Eclipse-RegisterBuddy: org.apache.axis2.kernel
-Import-Package: javax.security.auth.callback;resolution:=optional,
+Import-Package: javax.xml.stream,
+ javax.xml.transform,
+ javax.xml.transform.dom,
+ javax.xml.parsers,
+ org.w3c.dom,
+ javax.activation;resolution:=optional,
+ org.xml.sax, 
+ javax.security.auth.callback;resolution:=optional,
  javax.servlet,
  javax.servlet.http,
  javax.wsdl,
@@ -86,9 +93,6 @@ Import-Package: javax.security.auth.callback;resolution:=optional,
  javax.wsdl.factory;resolution:=optional,
  javax.wsdl.xml;resolution:=optional,
  javax.xml.namespace,
- javax.xml.stream,
- javax.xml.transform,
- javax.xml.transform.dom,
  org.apache.axiom.om,
  org.apache.axiom.om.impl.builder,
  org.apache.axiom.om.util,
@@ -112,6 +116,7 @@ Import-Package: javax.security.auth.callback;resolution:=optional,
  org.apache.axis2.util.threadpool,
  org.apache.commons.httpclient,
  org.apache.commons.httpclient.params,
+ org.apache.commons.logging;resolution:=optional,
  org.apache.neethi,
  org.apache.tuscany.sca.assembly;version="2.0.0",
  org.apache.tuscany.sca.binding.ws;version="2.0.0",
@@ -144,12 +149,8 @@ Import-Package: javax.security.auth.callback;resolution:=optional,
  org.apache.ws.security,
  org.apache.ws.security.handler,
  org.oasisopen.sca;version="2.0.0",
- org.oasisopen.sca.annotation;version="2.0.0";resolution:=optional,
- org.w3c.dom,
- javax.activation;resolution:=optional,
- org.xml.sax
+ org.oasisopen.sca.annotation;version="2.0.0";resolution:=optional
 Bundle-SymbolicName: org.apache.tuscany.sca.binding.ws.axis2
-Fragment-Host: org.apache.axis2.kernel
 Bundle-DocURL: http://www.apache.org/
 Bundle-RequiredExecutionEnvironment: J2SE-1.5,
  JavaSE-1.6

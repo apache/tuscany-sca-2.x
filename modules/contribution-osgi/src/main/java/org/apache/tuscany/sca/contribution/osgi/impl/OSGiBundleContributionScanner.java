@@ -37,6 +37,7 @@ import org.apache.tuscany.sca.contribution.processor.ContributionException;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.scanner.ContributionScanner;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.Constants;
 
 /**
  * Bundle Contribution package processor.
@@ -123,19 +124,30 @@ public class OSGiBundleContributionScanner implements ContributionScanner {
         }
 
         List<String> artifacts = new ArrayList<String>();
+        Set<String> bundleClassPath = new HashSet<String>();
+        String cp = (String)bundle.getHeaders().get(Constants.BUNDLE_CLASSPATH);
+        if (cp != null) {
+            String[] paths = cp.split(",");
+            for (String path : paths) {
+                bundleClassPath.add(path.trim());
+            }
+        }
 
         try {
             Enumeration<?> entries = bundle.findEntries("/", "*", true);
             while (entries.hasMoreElements()) {
                 URL entry = (URL)entries.nextElement();
                 String entryName = entry.getPath();
+                if (entryName.contains("/.svn/")) {
+                    // Ignore .svn files
+                    continue;
+                }
                 if (entryName.startsWith("/")) {
                     entryName = entryName.substring(1);
                 }
                 artifacts.add(entryName);
 
-                // FIXME: We probably should honor Bundle-ClassPath headers to deal with inner jars
-                if (entryName.endsWith(".jar")) {
+                if (entryName.endsWith(".jar") && bundleClassPath.contains(entryName)) {
                     artifacts.addAll(getJarArtifacts(entry, entry.openStream()));
                 }
 

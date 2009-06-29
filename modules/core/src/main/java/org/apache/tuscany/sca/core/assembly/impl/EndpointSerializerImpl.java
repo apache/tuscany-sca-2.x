@@ -61,7 +61,7 @@ public class EndpointSerializerImpl implements EndpointSerializer {
             endpoint.setBinding(result.getBinding());
             endpoint.setInterfaceContract(result.getService().getInterfaceContract());
         } catch (Exception e) {
-            throw new IOException(e);
+            throw new IOException(e.getMessage());
         }
 
     }
@@ -75,7 +75,7 @@ public class EndpointSerializerImpl implements EndpointSerializer {
             writer.close();
             return sw.toString();
         } catch (Exception e) {
-            throw new IOException(e);
+            throw new IOException(e.getMessage());
         }
     }
 
@@ -89,7 +89,7 @@ public class EndpointSerializerImpl implements EndpointSerializer {
             endpointReference.setBinding(result.getBinding());
             endpointReference.setInterfaceContract(result.getReference().getInterfaceContract());
         } catch (Exception e) {
-            throw new IOException(e);
+            throw new IOException(e.getMessage());
         }
     }
 
@@ -102,7 +102,7 @@ public class EndpointSerializerImpl implements EndpointSerializer {
             writer.close();
             return sw.toString();
         } catch (Exception e) {
-            throw new IOException(e);
+            throw new IOException(e.getMessage());
         }
     }
 }
