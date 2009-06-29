@@ -49,6 +49,7 @@ Import-Package: javax.xml.namespace,
  org.apache.tuscany.sca.monitor;version="2.0.0",
  org.apache.tuscany.sca.policy;version="2.0.0",
  org.w3c.dom,
+ org.w3c.dom.ls,
  org.xml.sax,
  org.xml.sax.helpers
 Bundle-SymbolicName: org.apache.tuscany.sca.contribution
