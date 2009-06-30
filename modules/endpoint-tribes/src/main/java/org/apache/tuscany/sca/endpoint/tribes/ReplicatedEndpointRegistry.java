@@ -139,9 +139,6 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry, LifeCycleLi
 
     public void addEndpoint(Endpoint endpoint) {
         map.put(endpoint.getURI(), endpoint);
-        for (EndpointListener listener : listeners) {
-            listener.endpointAdded(endpoint);
-        }
         logger.info("Add endpoint - " + endpoint);
     }
 
@@ -251,9 +248,6 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry, LifeCycleLi
 
     public void removeEndpoint(Endpoint endpoint) {
         map.remove(endpoint.getURI());
-        for (EndpointListener listener : listeners) {
-            listener.endpointRemoved(endpoint);
-        }
         logger.info("Remove endpoint - " + endpoint);
     }
 
@@ -272,9 +266,6 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry, LifeCycleLi
             throw new IllegalArgumentException("Endpoint is not found: " + uri);
         }
         map.put(endpoint.getURI(), endpoint);
-        for (EndpointListener listener : listeners) {
-            listener.endpointUpdated(oldEndpoint, endpoint);
-        }
     }
 
     public void entryAdded(Object key, Object value) {
