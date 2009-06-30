@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.implementation.osgi.runtime;
@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import org.apache.tuscany.sca.core.factory.InstanceWrapper;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -42,13 +41,12 @@ import org.osgi.framework.ServiceReference;
 /**
  * The Invoker looks up the corresponding OSGi service from the OSGi service registry
  * and delegate the call to it.
- *  
+ *
  * @version $Rev$ $Date$
  */
-public class OSGiTargetInvoker<T> implements Invoker {
+public class OSGiTargetInvoker implements Invoker {
 
     private Operation operation;
-    protected InstanceWrapper<T> target;
 
     private final OSGiImplementationProvider provider;
     private final RuntimeComponent component;
@@ -175,7 +173,7 @@ public class OSGiTargetInvoker<T> implements Invoker {
 
     /**
      * Return the method on the implementation class that matches the operation.
-     * 
+     *
      * @param implClass the implementation class or interface
      * @param operation the operation to match
      * @return the method described by the operation
@@ -197,7 +195,7 @@ public class OSGiTargetInvoker<T> implements Invoker {
                 }
             }
 
-            // TUSCANY-2180 If there is only one method then we just match on the name 
+            // TUSCANY-2180 If there is only one method then we just match on the name
             // (this is the same as the existing behaviour)
             if (matchingMethods.size() == 1) {
                 return matchingMethods.get(0);

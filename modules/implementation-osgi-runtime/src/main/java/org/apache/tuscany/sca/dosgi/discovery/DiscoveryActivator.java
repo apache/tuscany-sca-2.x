@@ -37,8 +37,12 @@ public class DiscoveryActivator implements BundleActivator {
         discoveryServices.add(new DomainDiscoveryService(context));
 
         for (AbstractDiscoveryService service : discoveryServices) {
+            Hashtable<String, Object> props = new Hashtable<String, Object>();
+            props.put(Discovery.PRODUCT_NAME, "Apache Tuscany SCA");
+            props.put(Discovery.PRODUCT_VERSION, "2.0.0");
+            props.put(Discovery.VENDOR_NAME, "Apache Software Foundation");
             ServiceRegistration registration =
-                context.registerService(Discovery.class.getName(), service, new Hashtable<String, Object>());
+                context.registerService(Discovery.class.getName(), service, props);
             discoveryServiceRegistrations.add(registration);
         }
     }

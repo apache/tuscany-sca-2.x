@@ -90,7 +90,7 @@ public class LocalDiscoveryService extends AbstractDiscoveryService implements B
             servicesInfo.put(sed, b);
             serviceDescriptionAdded(sed);
         }
-        throw new RuntimeException("To be implemented");
+        // throw new RuntimeException("To be implemented");
     }
 
     private void removeServicesDeclaredInBundle(Bundle bundle) {

@@ -318,6 +318,14 @@ public abstract class AbstractDiscoveryService implements Discovery {
         }
     }
 
+    /**
+     * Publish the OSGi services that are exposed to SCA. For SCA, the replicated endpoint registry
+     * serves are the discovery protocol. The OSGi services are added to endpoint registry first before
+     * the ServicePublication services are registered so that othe Discovery services can see them.
+     * @param ref
+     * @param endpoint
+     * @return
+     */
     protected ServiceRegistration localServicePublished(ServiceReference ref, Endpoint endpoint) {
         EndpointPublication publication = new EndpointPublication(ref, endpoint);
         ServiceRegistration registration =
