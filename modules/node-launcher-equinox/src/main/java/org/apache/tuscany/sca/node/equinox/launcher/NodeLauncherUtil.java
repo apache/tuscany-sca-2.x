@@ -767,8 +767,8 @@ final class NodeLauncherUtil {
                     count++;
                 }
             }
-            if (count != 0) {
-                logger.info("Runtime classpath: " + count
+            if (count != 0 && logger.isLoggable(Level.FINE)) {
+                logger.fine("Runtime classpath: " + count
                     + " classes folder"
                     + (count > 1 ? "s" : "")
                     + " from "
@@ -814,6 +814,11 @@ final class NodeLauncherUtil {
                 collectClasspathEntries(libDirectory, jarURLs, filter, true);
             }
         }
+    }
+
+    private static boolean isMavenTestMode() {
+        return getProperty("surefire.test.class.path") != null || getProperty("surefire.real.class.path") != null
+            || getProperty("localRepository") != null;
     }
 
     /**
@@ -873,8 +878,7 @@ final class NodeLauncherUtil {
             // Development mode, we're running off classes in a workspace
             // and not from Maven surefire, collect all bundles in the workspace
             if (useModulesDirectory) {
-                ClassLoader cl = NodeLauncherUtil.class.getClassLoader();
-                if (!cl.getClass().getName().startsWith("org.apache.maven.surefire")) {
+                if (!isMavenTestMode()) {
                     File file = new File(uri);
                     if (file.exists()) {
                         File moduleDirectory = file.getParentFile().getParentFile();
@@ -982,8 +986,8 @@ final class NodeLauncherUtil {
                 }
                 count = urls.size() - count;
 
-                if (count != 0) {
-                    logger.info("Runtime classpath: " + count
+                if (count != 0 && logger.isLoggable(Level.FINE)) {
+                    logger.fine("Runtime classpath: " + count
                         + " JAR"
                         + (count > 1 ? "s" : "")
                         + " from application classpath.");

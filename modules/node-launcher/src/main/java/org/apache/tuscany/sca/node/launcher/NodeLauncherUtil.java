@@ -236,7 +236,7 @@ final class NodeLauncherUtil {
                     count++;
                 }
             }
-            if (count != 0) {
+            if (count != 0 && logger.isLoggable(Level.FINE)) {
                 logger.fine("Runtime classpath: "+ count + " JAR" + (count > 1? "s":"")+ " from " + directory.toString());
             }
         }
