@@ -58,7 +58,7 @@ public class JarsInLICENSETestCase {
 
         List<String> bad1 = getJarsNotInLICENSE(jars, licenseFile);
         if (bad1.size() > 0) {
-            System.err.println("Jars not in distribution but not in LICENSE: " + bad1);
+            System.err.println("Jars in distribution but not in LICENSE: " + bad1);
         }
         
         if (bad1.size() > 0 || bad2.size() > 0) {
