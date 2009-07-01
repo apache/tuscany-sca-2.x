@@ -32,7 +32,7 @@
    <partnerLinks>
       <partnerLink name="helloPartnerLink" partnerLinkType="test:HelloPartnerLinkType" myRole="me" />
    </partnerLinks>
-    
+
    <variables>
      <variable name="myVar" messageType="test:HelloMessage"/>
      <variable name="tmpVar" type="xsd:string"/>
@@ -49,17 +49,29 @@
 
       <assign name="assign1">
           <copy>
-              <from variable="myVar" part="TestPart"/>
+              <from>concat($myVar.TestPart/test:message/text(), ' World')</from>
               <to variable="tmpVar"/>
           </copy>
+          <!--
           <copy>
-              <from>concat($tmpVar,' World')</from>
+              <from>
+                  <literal>
+                      <test:hello>
+                          <test:message>$tmpVar</test:message>
+                      </test:hello>
+                  </literal>
+              </from>
               <to variable="myVar" part="TestPart"/>
           </copy>
+          -->
+          <copy>
+              <from>$tmpVar</from>
+              <to>$myVar.TestPart/test:message</to>
+          </copy>
       </assign>
-       <reply name="end"  
+       <reply name="end"
               partnerLink="helloPartnerLink"
-              portType="test:HelloPortType" 
+              portType="test:HelloPortType"
               operation="hello"
               variable="myVar"/>
    </sequence>
