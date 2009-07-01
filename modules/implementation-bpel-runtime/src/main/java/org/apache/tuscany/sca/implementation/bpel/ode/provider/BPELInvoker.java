@@ -33,6 +33,7 @@ import org.apache.ode.bpel.iapi.MyRoleMessageExchange;
 import org.apache.ode.bpel.iapi.MessageExchange.Status;
 import org.apache.ode.utils.DOMUtils;
 import org.apache.ode.utils.GUID;
+import org.apache.ode.utils.Properties;
 import org.apache.tuscany.sca.implementation.bpel.ode.EmbeddedODEServer;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -126,7 +127,7 @@ public class BPELInvoker implements Invoker {
             mex = odeServer.getBpelServer().getEngine().createMessageExchange(new GUID().toString(),
                                                                               bpelServiceName,
                                                                               bpelOperationName);
-            
+            mex.setProperty("isTwoWay", "true");
             onhold = mex.invoke(createInvocationMessage(mex, args));
             
             txMgr.commit();
@@ -156,16 +157,34 @@ public class BPELInvoker implements Invoker {
             // be sure we have the "freshest" one.
             mex = (MyRoleMessageExchange)odeServer.getBpelServer().getEngine().getMessageExchange(mex.getMessageExchangeId());
 
+            Status status = mex.getStatus();
+            
             if (__log.isDebugEnabled()) {
-                Status status = mex.getStatus();
                 Element invocationResponse = mex.getResponse().getMessage();
                 __log.debug(">>>Invocation status:" + status.name());
                 __log.debug(">>>Response:\n" + DOMUtils.domToString(invocationResponse));
                 __log.debug(">>>Response:\n" + DOMUtils.domToString(invocationResponse));
-            }
-                
-            //process the method invocation result
-            response = processResponse(mex.getResponse().getMessage());
+            } // end if
+            
+            switch (status) {
+            case FAULT:
+                if (__log.isDebugEnabled())
+                    __log.debug("Fault response message: " + mex.getFault());
+                throw new ODEInvocationException("FAULT received from BPEL process : " + mex.getFault());
+            case ASYNC:
+            case RESPONSE:
+                //process the method invocation result
+                response = processResponse(mex.getResponse().getMessage());
+                if (__log.isDebugEnabled())
+                    __log.debug("Response message " + response);
+                break;
+            case FAILURE:
+                if (__log.isDebugEnabled())
+                    __log.debug("Failure response message: " + mex.getFault());
+                break;
+            default:
+                throw new ODEInvocationException("FAILURE received from BPEL process : " + mex.getFault());
+            } // end switch
             
             txMgr.commit();
             // end of transaction two

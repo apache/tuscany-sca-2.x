@@ -27,7 +27,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -43,6 +45,7 @@ import org.apache.ode.bpel.iapi.Endpoint;
 import org.apache.ode.bpel.iapi.EndpointReference;
 import org.apache.ode.bpel.iapi.ProcessConf;
 import org.apache.ode.bpel.iapi.ProcessState;
+import org.apache.ode.bpel.iapi.ProcessConf.CLEANUP_CATEGORY;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.implementation.bpel.BPELImplementation;
@@ -463,20 +466,23 @@ public class TuscanyProcessConfImpl implements ProcessConf {
         
 		return cbpFile.length();
 	} // end getCBPFileSize
+	
+	private final Set<CLEANUP_CATEGORY> successCategories = EnumSet.noneOf(CLEANUP_CATEGORY.class);
+	private final Set<CLEANUP_CATEGORY> failureCategories = EnumSet.noneOf(CLEANUP_CATEGORY.class);
 
 	public Set<CLEANUP_CATEGORY> getCleanupCategories(boolean instanceSucceeded) {
-		// TODO Is null acceptable or is an empty Set the correct response?
-		return null;
+		if( instanceSucceeded ) return successCategories;
+		else return failureCategories;
 	}
 
+	private final Map<String, String> emptyPropertyMap = new Hashtable<String, String>();
 	public Map<String, String> getEndpointProperties(EndpointReference epr) {
-		// TODO Is null acceptable or is an empty Map the correct response?
-		return null;
+		return emptyPropertyMap;
 	}
-
+	
+	private final Map<QName, Node> emptyProcessProperties = new Hashtable<QName, Node>();
 	public Map<QName, Node> getProcessProperties() {
-		// TODO Is null acceptable or is an empty Map the correct response?
-		return null;
+		return emptyProcessProperties;
 	}
 
 	public boolean isCleanupCategoryEnabled(boolean instanceSucceeded,

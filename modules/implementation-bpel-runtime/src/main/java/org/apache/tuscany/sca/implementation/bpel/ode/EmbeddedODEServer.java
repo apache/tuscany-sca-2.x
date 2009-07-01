@@ -92,6 +92,9 @@ public class EmbeddedODEServer {
 
         Properties confProps = new Properties();
         confProps.put("openjpa.jdbc.SynchronizeMappings", "buildSchema(ForeignKeys=false)");
+        // MJE 30/06/2009 - testing - limit the thread pools to max = 1 thread
+        confProps.put("ode-scathreads.pool.size", "1" );
+        
         _config = new OdeConfigProperties(confProps, "ode-sca");
 
         // Setting work root as the directory containing our database
@@ -135,6 +138,8 @@ public class EmbeddedODEServer {
     	// TODO - provide a system property / environment variable to set the path to the DB
     	
         URL dbLocation = getClass().getClassLoader().getResource("jpadb");
+        if (dbLocation == null)
+            throw new ODEInitializationException("Couldn't find database in the classpath");
         // Handle OSGI bundle case
         if( dbLocation.getProtocol() == "bundleresource" ) {
         	try {
@@ -143,8 +148,7 @@ public class EmbeddedODEServer {
         		throw new ODEInitializationException("Couldn't find database in the OSGi bundle");
         	} // end try
         } // end if 
-        if (dbLocation == null)
-            throw new ODEInitializationException("Couldn't find database in the classpath");
+
         locationFile = new File(dbLocation.toURI()).getParentFile();
     	return locationFile;
     } // end method getDatabaseLocationAsFile
@@ -210,7 +214,7 @@ public class EmbeddedODEServer {
         BpelServerImpl.PolledRunnableProcessor polledRunnableProcessor = new BpelServerImpl.PolledRunnableProcessor();
         polledRunnableProcessor.setPolledRunnableExecutorService(_polledRunnableExecutorService);
         polledRunnableProcessor.setContexts(_bpelServer.getContexts());
-        _scheduler.setPolledRunnableProcesser(polledRunnableProcessor);
+        //_scheduler.setPolledRunnableProcesser(polledRunnableProcessor);
 
         _bpelServer.setDaoConnectionFactory(_daoCF);
         _bpelServer.setInMemDaoConnectionFactory(new BpelDAOConnectionFactoryImpl(_scheduler));
@@ -225,6 +229,11 @@ public class EmbeddedODEServer {
             dehy.setProcessMaxCount(_config.getDehydrationMaximumCount());
             _bpelServer.setDehydrationPolicy(dehy);
         }
+        
+        System.out.println("TuscanyODEServer: threads.pool.size = " +
+        		           _config.getThreadPoolMaxSize() );
+        
+        
         _bpelServer.setConfigProperties(_config.getProperties());
         _bpelServer.init();
         _bpelServer.setInstanceThrottledMaximumCount(_config.getInstanceThrottledMaximumCount());
