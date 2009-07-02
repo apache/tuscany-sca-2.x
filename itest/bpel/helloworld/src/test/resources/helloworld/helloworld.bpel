@@ -50,12 +50,12 @@
 
       <assign name="assign1">
           <copy>
-              <from variable="helloMessage" part="TestPart"/>
+              <from>concat($helloMessage.TestPart/test:message/text(), ' World')</from>
               <to variable="tmpVar"/>
           </copy>
           <copy>
-              <from>concat($tmpVar,' World')</from>
-              <to variable="helloMessageResponse" part="TestResponse"/>
+              <from>$tmpVar</from>
+              <to>$helloMessageResponse.TestResponse/test:messageResponse</to>
           </copy>
       </assign>
        <reply name="end"  
