@@ -202,6 +202,10 @@
             <version>2.0.1</version>
             <exclusions>
                 <exclusion>
+                    <groupId>asm</groupId>
+                    <artifactId>asm-commons</artifactId>
+                </exclusion>
+                <exclusion>
                     <groupId>mx4j</groupId>
                     <artifactId>mx4j</artifactId>
                 </exclusion>
