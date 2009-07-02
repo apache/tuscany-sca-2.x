@@ -38,6 +38,7 @@
     <module>binding-ws-calculator</module>
     <module>calculator-rmi</module>
     <module>implementation-java-calculator</module>
+    <module>legal-checks</module>
     <module>webapp-helloworld</module>
     <module>webapp-helloworld-bpel</module>
     <module>webapp-helloworld-jsp</module>
