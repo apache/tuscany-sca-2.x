@@ -102,6 +102,20 @@ public class ContributionContentProcessor implements ExtendedURLArtifactProcesso
         return Contribution.class;
     }
 
+    private File toFile(URL url) {
+        if("file".equalsIgnoreCase(url.getProtocol())) {
+            try {
+                return new File(url.toURI());
+            } catch(URISyntaxException e) {
+                return new File(url.getPath());
+            } catch(IllegalArgumentException e) {
+                // Hack for file:./a.txt or file:../a/c.wsdl
+                return new File(url.getPath());
+            }
+        }
+        return null;
+    }
+
     public Contribution read(URL parentURL, URI contributionURI, URL contributionURL) throws ContributionReadException {
 
         // Create contribution model
@@ -115,16 +129,12 @@ public class ContributionContentProcessor implements ExtendedURLArtifactProcesso
         // Create a contribution scanner
         ContributionScanner scanner = scanners.getContributionScanner(contributionURL.getProtocol());
         if (scanner == null) {
-            //try {
-                if ("file".equals(contributionURL.getProtocol()) && 
-                    new File(contributionURL.getFile()).isDirectory()) {
-                    scanner = new DirectoryContributionScanner();
-                } else {
-                    scanner = new JarContributionScanner();
-                }
-            //} catch (URISyntaxException e) {
-            //    throw new ContributionReadException(e);
-            //}
+            File file = toFile(contributionURL);
+            if (file != null && file.isDirectory()) {
+                scanner = new DirectoryContributionScanner();
+            } else {
+                scanner = new JarContributionScanner();
+            }
         }
 
         // Scan the contribution and list the artifacts contained in it
