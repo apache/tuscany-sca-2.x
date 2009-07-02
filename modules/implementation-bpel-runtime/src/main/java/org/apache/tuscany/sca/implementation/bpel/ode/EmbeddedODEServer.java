@@ -138,8 +138,9 @@ public class EmbeddedODEServer {
     	// TODO - provide a system property / environment variable to set the path to the DB
     	
         URL dbLocation = getClass().getClassLoader().getResource("jpadb");
-        if (dbLocation == null)
+        if (dbLocation == null) {
             throw new ODEInitializationException("Couldn't find database in the classpath");
+        }
         // Handle OSGI bundle case
         if( dbLocation.getProtocol() == "bundleresource" ) {
         	try {

@@ -158,13 +158,6 @@ public class BPELInvoker implements Invoker {
 
             Status status = mex.getStatus();
 
-            if (__log.isDebugEnabled()) {
-                Element invocationResponse = mex.getResponse().getMessage();
-                __log.debug(">>>Invocation status:" + status.name());
-                __log.debug(">>>Response:\n" + DOMUtils.domToString(invocationResponse));
-                __log.debug(">>>Response:\n" + DOMUtils.domToString(invocationResponse));
-            } // end if
-
             switch (status) {
             case FAULT:
                 if (__log.isDebugEnabled())
@@ -184,7 +177,7 @@ public class BPELInvoker implements Invoker {
                     __log.debug("Failure response message: " + mex.getFault());
                 break;
             default:
-                throw new ODEInvocationException("FAILURE received from BPEL process : " + mex.getFault());
+                throw new ODEInvocationException("FAILURE received from BPEL process : " + mex.getStatus() + " - " + mex.getFault());
             } // end switch
 
             txMgr.commit();
