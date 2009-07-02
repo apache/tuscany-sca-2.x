@@ -30,31 +30,34 @@
     <packaging>pom</packaging>
     <name>Apache Tuscany SCA Tomcat Integration Testing Download Tomcat</name>
 
+    <properties>
+        <tomcat.version>6.0.18</tomcat.version>
+    </properties>
+
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <executions>
-                    <execution> 
-                        <id>download-tomcat</id>                       
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <tasks>
-                                <ant antfile="./build.xml" target="unzip-files">
-                                    <property name="tomcat.version" value="6.0.18"/>
-                                    <property name="localRepository" value="${settings.localRepository}"/>
-                                </ant>
-                            </tasks>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin> 
+           <plugin>
+              <groupId>org.codehaus.mojo</groupId>
+              <artifactId>wagon-maven-plugin</artifactId>
+              <version>1.0-beta-1</version>
+              <executions>
+                 <execution>
+                    <id>download-tomcat</id>
+                    <phase>pre-integration-test</phase>
+                    <goals>
+                       <goal>download-single</goal>
+                    </goals>
+                    <configuration>
+                       <!-- Note: the url should be "archive.apache.org" but that is truncating the file at 4808k, 
+                                 no idea why but it sounds like an infra problem - https://issues.apache.org/jira/browse/LOG4NET-197 -->
+                       <url>http://www.eu.apache.org</url>
+                       <fromFile>dist/tomcat/tomcat-6/v${tomcat.version}/bin/apache-tomcat-${tomcat.version}.zip</fromFile>
+                       <toDir>download</toDir>
+                    </configuration>
+                 </execution>
+              </executions>
+           </plugin>
         </plugins>
    </build>
 
 </project>
-
