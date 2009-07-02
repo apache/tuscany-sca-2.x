@@ -25,7 +25,7 @@
     xmlns:helloworld="http://helloworld"
     xmlns:greetings="http://greetings"
     queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0"
-    expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0">
+    expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0" xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable">
 
   <import location="helloworld.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"
      namespace="http://helloworld"/>
@@ -40,7 +40,7 @@
     
    <variables>
      <variable name="helloMessage" messageType="helloworld:HelloMessage"/>
-     <variable name="helloResponse" messageType="helloworld:HelloMessage"/>
+     <variable name="helloMessageResponse" messageType="helloworld:HelloMessageResponse"/>
      <variable name="greetingsRequest" messageType="greetings:getGreetingsRequest"/>
      <variable name="greetingsResponse" messageType="greetings:getGreetingsResponse"/>
    </variables>
@@ -71,7 +71,7 @@
        <assign name="assignToHelloResponse">
           <copy>
               <from>$greetingsResponse.parameters/greetings:getGreetingsReturn</from>
-              <to>$helloResponse.TestPart</to>
+              <to>$helloMessageResponse.TestPart</to>
           </copy>
        </assign>
 
@@ -79,6 +79,6 @@
               operation="hello"
               partnerLink="helloPartnerLink"
               portType="helloworld:HelloWorld" 
-              variable="helloResponse"/>
+              variable="helloMessageResponse"/>
    </sequence>
 </process>
