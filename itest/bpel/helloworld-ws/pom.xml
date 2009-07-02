@@ -50,7 +50,7 @@
 
 		<dependency>
 			<groupId>org.apache.tuscany.sca</groupId>
-			<artifactId>tuscany-implementation-bpel-ode</artifactId>
+			<artifactId>tuscany-implementation-bpel-runtime</artifactId>
 			<version>2.0-SNAPSHOT</version>
 			<scope>runtime</scope>
 		</dependency>
@@ -60,12 +60,6 @@
 			<artifactId>tuscany-binding-ws-axis2</artifactId>
 			<version>2.0-SNAPSHOT</version>
 			<scope>runtime</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.tuscany.sdo</groupId>
-			<artifactId>tuscany-sdo-impl</artifactId>
-			<version>1.1.1</version>
 		</dependency>
 
 		<dependency>
