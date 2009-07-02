@@ -49,7 +49,7 @@
                     </goals>
                     <configuration>
                        <!-- Note: the url should be "archive.apache.org" but that is truncating the file at 4808k, 
-                                 no idea why but it sounds like an infra problem - https://issues.apache.org/jira/browse/LOG4NET-197 -->
+                                 no idea why but it sounds like an infra problem - https://issues.apache.org/jira/browse/INFRA-1910 -->
                        <url>http://www.eu.apache.org</url>
                        <fromFile>dist/tomcat/tomcat-6/v${tomcat.version}/bin/apache-tomcat-${tomcat.version}.zip</fromFile>
                        <toDir>download</toDir>
