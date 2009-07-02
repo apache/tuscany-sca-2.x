@@ -27,6 +27,7 @@ import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  * Tests the BPEL Helloworld Service
@@ -34,15 +35,15 @@ import org.junit.BeforeClass;
  * @version $Rev$ $Date$
  */
 public class HelloWorldTestCase {
-	private Node node;
+	private static Node node;
     
     /**
      * @throws java.lang.Exception
      */
     @BeforeClass
-    protected void setUp() throws Exception {
+    public static void setUp() throws Exception {
     	String location = ContributionLocationHelper.getContributionLocation("helloworld/helloworld.composite");
-		node = NodeFactory.newInstance().createNode("CallBackApiTest.composite", new Contribution("c1", location));
+		node = NodeFactory.newInstance().createNode("helloworld/helloworld.composite", new Contribution("c1", location));
 		node.start();
     }
 
@@ -50,10 +51,11 @@ public class HelloWorldTestCase {
      * @throws java.lang.Exception
      */
     @AfterClass
-    protected void tearDown() throws Exception {
+    public static void tearDown() throws Exception {
         node.stop();
     }
     
+    @Test
     public void testServiceInvocation() {
         HelloWorldService bpelService = node.getService(HelloWorldService.class, "HelloWorldService");
         String response = bpelService.hello("Luciano");

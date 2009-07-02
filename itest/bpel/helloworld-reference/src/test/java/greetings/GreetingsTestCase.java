@@ -36,15 +36,15 @@ import org.junit.Test;
  */
 public class GreetingsTestCase {
 
-	private Node node;
+	private static Node node;
 
 	/**
 	 * @throws java.lang.Exception
 	 */
 	@BeforeClass
-	protected void setUp() throws Exception {
+	public static void setUp() throws Exception {
 		String location = ContributionLocationHelper.getContributionLocation("greetings/greetings.composite");
-		node = NodeFactory.newInstance().createNode("CallBackApiTest.composite", new Contribution("c1", location));
+		node = NodeFactory.newInstance().createNode("greetings/greetings.composite", new Contribution("c1", location));
 		node.start();
 	}
 
@@ -52,7 +52,7 @@ public class GreetingsTestCase {
 	 * @throws java.lang.Exception
 	 */
 	@AfterClass
-	protected void tearDown() throws Exception {
+	public static void tearDown() throws Exception {
 		node.stop();
 	}
 
