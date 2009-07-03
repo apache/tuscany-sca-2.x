@@ -9,6 +9,7 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.net.URL;
 import java.util.Properties;
 
@@ -55,7 +56,7 @@ public class SCAClientFactoryFinder {
      * @throws SCARuntimeException Failed to create SCAClientFactory
      *                 implementation.
      */
-    public static SCAClientFactory find(Properties properties, ClassLoader classLoader) {
+    public static SCAClientFactory find(Properties properties, ClassLoader classLoader, URI domainURI) {
         if (classLoader == null) {
             classLoader = getThreadContextClassLoader();
             if (classLoader == null) {
@@ -64,7 +65,7 @@ public class SCAClientFactoryFinder {
         }
         final String factoryImplClassName = discoverProviderFactoryImplClass(properties, classLoader);
         final Class<? extends SCAClientFactory> factoryImplClass = loadProviderFactoryClass(factoryImplClassName, classLoader);
-        final SCAClientFactory factory = instantiateSCAClientFactoryClass(factoryImplClass);
+        final SCAClientFactory factory = instantiateSCAClientFactoryClass(factoryImplClass, domainURI);
         return factory;
     }
 
@@ -207,16 +208,18 @@ public class SCAClientFactoryFinder {
      * 
      * @param factoryImplClass The SCAClientFactory implementation class to
      *                instantiate.
+     * @param domainURI 
      * @return An instance of the SCAClientFactory implementation class
      * @throws SCARuntimeException Failed to instantiate the specified specified
      *                 SCAClientFactory implementation class
      */
-    private static SCAClientFactory instantiateSCAClientFactoryClass(Class<? extends SCAClientFactory> factoryImplClass) throws SCARuntimeException {
+    private static SCAClientFactory instantiateSCAClientFactoryClass(Class<? extends SCAClientFactory> factoryImplClass, URI domainURI) throws SCARuntimeException {
 
         try {
-            final SCAClientFactory provider = factoryImplClass.newInstance();
+            final SCAClientFactory provider = factoryImplClass.getConstructor(URI.class).newInstance(domainURI);
             return provider;
         } catch (Throwable ex) {
+            ex.printStackTrace();
             throw new SCARuntimeException("Failed to instantiate SCAClientFactory implementation class " + factoryImplClass, ex);
         }
     }

@@ -9,26 +9,22 @@ import org.oasisopen.sca.NoSuchDomainException;
 import org.oasisopen.sca.NoSuchServiceException;
 
 /**
- * Client side interface that can be used to lookup SCA Services within a SCA
- * Domain.
- * <p>
- * The SCAClientFactory is used to obtain an implementation instance of the
- * SCAClient.
+ * Client side helper that can be used to lookup SCA Services within a SCA Domain.
  * 
  * @see SCAClientFactory
- * @author OASIS Open
  */
-public interface SCAClient {
+public class SCAClient {
 
     /**
      * Returns a reference proxy that implements the business interface <T> of a
      * service in a domain
      * 
-     * @param serviceURI the relative URI of the target service. Takes the form
-     *                componentName/serviceName. Can also take the extended form
-     *                componentName/serviceName/bindingName to use a specific
-     *                binding of the target service
-     * @param domainURI the URI of an SCA Domain.
+     * @param uri the URI of the target service. Takes the form domainURI/componentName/serviceName. 
+     *           The domainURI can be left off and defaults to the implementation specific default domain
+     *           The service can also take the extended form
+     *                domainURI/componentName/serviceName (or /componentName/serviceName). 
+     *            Can also take the extended form domainURI/componentName/serviceName/bindingName 
+     *            (or /componentName/serviceName/bindingName) to use a specific binding of the target service
      * @param interfaze The business interface class of the service in the
      *                domain
      * @param <T> The business interface class of the service in the domain
@@ -37,5 +33,21 @@ public interface SCAClient {
      * @throws NoSuchServiceException Service requested was not found
      * @throws NoSuchDomainException Domain requested was not found
      */
-    <T> T getService(Class<T> interfaze, String serviceURI, URI domainURI) throws NoSuchServiceException, NoSuchDomainException;
+    public static <T> T getService(Class<T> interfaze, String uri) throws NoSuchServiceException, NoSuchDomainException {
+        URI domainURI = null;
+        String serviceURI;
+        int i = uri.indexOf('/');
+        if (i == -1) {
+            domainURI = null;
+            serviceURI = uri;
+        } else {
+            serviceURI = uri.substring(i+1);
+            if (i > 0) {
+                domainURI = URI.create(uri.substring(0, i));
+            } else {
+                domainURI = null;
+            }
+        }
+        return SCAClientFactory.newInstance(domainURI).getService(interfaze, serviceURI);       
+    }
 }

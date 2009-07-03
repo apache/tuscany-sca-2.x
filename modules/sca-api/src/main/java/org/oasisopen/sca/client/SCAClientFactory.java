@@ -4,8 +4,11 @@
  */
 package org.oasisopen.sca.client;
 
+import java.net.URI;
 import java.util.Properties;
 
+import org.oasisopen.sca.NoSuchDomainException;
+import org.oasisopen.sca.NoSuchServiceException;
 import org.oasisopen.sca.client.impl.SCAClientFactoryFinder;
 
 /**
@@ -17,7 +20,28 @@ import org.oasisopen.sca.client.impl.SCAClientFactoryFinder;
  * @author OASIS Open
  */
 public abstract class SCAClientFactory {
+    
+    private URI domainURI;
 
+    private SCAClientFactory() {
+    }
+
+    /**
+     * Constructor used by concrete subclasses
+     * @param domainURI - The Domain URI of the Domain accessed via this SCAClientFactory
+     */
+    protected SCAClientFactory(URI domainURI) {
+        this.domainURI = domainURI;
+    }
+
+    /**
+     * Gets the Domain URI of the Domain accessed via this SCAClientFactory
+     * @return - the URI for the Domain
+     */
+    protected URI getDomainURI() {
+        return domainURI;
+    }
+    
     /**
      * The default implementation of the SCAClientFactory. A Vendor may use
      * reflection to inject a default SCAClientFactory instance that will be
@@ -32,8 +56,8 @@ public abstract class SCAClientFactory {
      * 
      * @return A new SCAClient
      */
-    public static SCAClient newInstance() {
-        return newInstance(null, null);
+    public static SCAClientFactory newInstance(URI domainURI) throws NoSuchDomainException {
+        return newInstance(null, null, domainURI);
     }
 
     /**
@@ -44,8 +68,8 @@ public abstract class SCAClientFactory {
      *                instance of the SCAClient
      * @return A new SCAClient instance
      */
-    public static SCAClient newInstance(Properties properties) {
-        return newInstance(properties, null);
+    public static SCAClientFactory newInstance(Properties properties, URI domainURI) {
+        return newInstance(properties, null, domainURI);
     }
 
     /**
@@ -56,8 +80,8 @@ public abstract class SCAClientFactory {
      *                instance of the SCAClient
      * @return A new SCAClient instance
      */
-    public static SCAClient newInstance(ClassLoader classLoader) {
-        return newInstance(null, classLoader);
+    public static SCAClientFactory newInstance(ClassLoader classLoader, URI domainURI) {
+        return newInstance(null, classLoader, domainURI);
     }
 
     /**
@@ -70,20 +94,33 @@ public abstract class SCAClientFactory {
      *                instance of the SCAClient
      * @return A new SCAClient instance
      */
-    public static SCAClient newInstance(Properties properties, ClassLoader classLoader) {
+    public static SCAClientFactory newInstance(Properties properties, ClassLoader classLoader, URI domainURI) {
         final SCAClientFactory factory;
         if (defaultFactory == null) {
-            factory = SCAClientFactoryFinder.find(properties, classLoader);
+            factory = SCAClientFactoryFinder.find(properties, classLoader, domainURI);
         } else {
             factory = defaultFactory;
         }
-        return factory.createSCAClient();
+        return factory;
     }
 
     /**
-     * This method is invoked to create a new SCAClient instance.
-     * 
-     * @return A new SCAClient instance
+     * Returns a reference proxy that implements the business interface <T>
+     * of a service in the SCA Domain handled by this SCAClientFactory
+     *
+     * @param serviceURI the relative URI of the target service. Takes the
+     * form componentName/serviceName.
+     * Can also take the extended form componentName/serviceName/bindingName
+     * to use a specific binding of the target service
+     *
+     * @param interfaze The business interface class of the service in the
+     * domain
+     * @param <T> The business interface class of the service in the domain
+     *
+     * @return a proxy to the target service, in the specified SCA Domain
+     * that implements the business interface <B>.
+     * @throws NoSuchServiceException Service requested was not found
+     * @throws NoSuchDomainException Domain requested was not found
      */
-    protected abstract SCAClient createSCAClient();
+     public abstract <T> T getService(Class<T> interfaze, String serviceURI) throws NoSuchServiceException, NoSuchDomainException;
 }
