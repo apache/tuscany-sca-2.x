@@ -20,13 +20,11 @@
 package test.scaclient;
 
 import itest.HelloworldService;
-
-import java.net.URI;
-
 import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
+import org.oasisopen.sca.client.SCAClient;
 import org.oasisopen.sca.client.SCAClientFactory;
 
 /**
@@ -46,9 +44,12 @@ public class SCAClientTestCase extends TestCase {
 
     public void testInvoke() throws Exception {
         HelloworldService service =
-            SCAClientFactory.newInstance().getService(HelloworldService.class,
-                                                      "HelloworldComponent",
-                                                      URI.create(Node.DEFAULT_DOMAIN_URI));
+            SCAClientFactory.newInstance(null).getService(HelloworldService.class, "HelloworldComponent");
+        assertEquals("Hello petra", service.sayHello("petra"));
+    }
+
+    public void testSimpleAPI() throws Exception {
+        HelloworldService service = SCAClient.getService(HelloworldService.class, "/HelloworldComponent");
         assertEquals("Hello petra", service.sayHello("petra"));
     }
 
