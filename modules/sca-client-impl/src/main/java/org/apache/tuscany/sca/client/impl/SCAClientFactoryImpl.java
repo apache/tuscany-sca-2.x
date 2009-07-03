@@ -19,14 +19,41 @@
 
 package org.apache.tuscany.sca.client.impl;
 
-import org.oasisopen.sca.client.SCAClient;
+import java.net.URI;
+import java.util.List;
+
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFinder;
+import org.oasisopen.sca.NoSuchDomainException;
+import org.oasisopen.sca.NoSuchServiceException;
+import org.oasisopen.sca.ServiceUnavailableException;
 import org.oasisopen.sca.client.SCAClientFactory;
 
 public class SCAClientFactoryImpl extends SCAClientFactory {
 
-    @Override
-    protected SCAClient createSCAClient() {
-        return new SCAClientImpl();
+    public SCAClientFactoryImpl(URI domainURI) {
+        super(domainURI);
     }
 
+    @Override
+    public <T> T getService(Class<T> serviceInterface, String serviceName) throws NoSuchServiceException, NoSuchDomainException {
+        URI domainURI = getDomainURI();
+        if (domainURI == null) {
+            domainURI = URI.create(Node.DEFAULT_DOMAIN_URI);
+        }
+        List<Node> nodes = NodeFinder.getNodes(domainURI);
+        if (nodes == null || nodes.size() < 1) {
+            throw new NoSuchDomainException(domainURI.toString());
+        }
+
+        for (Node n : nodes) {
+            try {
+                return n.getService(serviceInterface, serviceName);
+            } catch(ServiceUnavailableException e) {
+                // Ingore and continue
+            }
+        }
+
+        throw new NoSuchServiceException(serviceName);
+    }
 }
