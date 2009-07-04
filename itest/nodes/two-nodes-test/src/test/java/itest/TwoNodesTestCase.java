@@ -32,7 +32,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.oasisopen.sca.client.SCAClient;
-import org.oasisopen.sca.client.SCAClientFactory;
 
 /**
  * This shows how to test the Calculator service component.
@@ -85,12 +84,11 @@ public class TwoNodesTestCase {
 
     @Test
     public void testCalculatorClientAPI() throws Exception {
-        SCAClient scaClient = SCAClientFactory.newInstance();
-        Helloworld service = scaClient.getService(Helloworld.class, "HelloworldService", null);
+        Helloworld service = SCAClient.getService(Helloworld.class, "HelloworldService");
         assertNotNull(service);
         assertEquals("Hello Petra", service.sayHello("Petra"));
 
-        Helloworld client = scaClient.getService(Helloworld.class, "HelloworldClient", null);
+        Helloworld client = SCAClient.getService(Helloworld.class, "HelloworldClient");
         assertNotNull(client);
         assertEquals("Hi Hello Petra", client.sayHello("Petra"));
     }
