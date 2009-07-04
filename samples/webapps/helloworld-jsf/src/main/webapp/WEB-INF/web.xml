@@ -24,6 +24,16 @@
 
     <description>MyProject web.xml</description>
 
+    <!-- The only web.xml change to the MyFaces Helloworld sample is to add
+         the Tuscany listener and annotation processor context parameter -->
+    <listener>
+       <listener-class>org.apache.tuscany.sca.host.webapp.TuscanyContextListener</listener-class>
+    </listener>
+    <context-param>
+        <param-name>org.apache.myfaces.config.annotation.LifecycleProvider</param-name>
+        <param-value>org.apache.tuscany.sca.myfaces.TuscanyAnnotationLifecycleProvider</param-value>
+    </context-param>
+
     <!--optional: context-param>
         <description>Comma separated list of URIs of (additional) faces config files.
             (e.g. /WEB-INF/my-config.xml)
