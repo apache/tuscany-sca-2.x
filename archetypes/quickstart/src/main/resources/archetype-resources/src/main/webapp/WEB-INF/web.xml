@@ -24,6 +24,7 @@
 
   <display-name>${artifactId}</display-name>
 
+#if($includeTuscanyRuntime == "Y")
   <filter>
     <filter-name>tuscany.${artifactId}</filter-name> 
     <filter-class>org.apache.tuscany.sca.host.webapp.TuscanyServletFilter</filter-class> 
@@ -34,6 +35,7 @@
     <url-pattern>/*</url-pattern> 
   </filter-mapping>
 
+#end
   <welcome-file-list id="WelcomeFileList">
     <welcome-file>hello.jsp</welcome-file>
   </welcome-file-list>

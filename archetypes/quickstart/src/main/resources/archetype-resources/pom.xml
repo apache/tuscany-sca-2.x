@@ -25,9 +25,7 @@
 	<artifactId>${artifactId}</artifactId>
 	<packaging>war</packaging>
 	<version>${version}</version>
-	#literal()<!-- TODO project name  -->
 	<name>quickstart</name>
-	<description></description>
 
 	<dependencies>
 		<!--  TUSCANY DEPENDENCIES -->
@@ -35,13 +33,22 @@
                <groupId>org.apache.tuscany.sca</groupId>
                <artifactId>tuscany-sca-api</artifactId>
                <version>${tuscany.version}</version>
+#if(${includeTuscanyRuntime} == "Y")
+               <scope>compile</scope>
+#else
+               <scope>provided</scope>
+#end
             </dependency>
 
             <dependency>
                <groupId>org.apache.tuscany.sca</groupId>
                <artifactId>tuscany-implementation-web-runtime</artifactId>
                <version>${tuscany.version}</version>
+#if( $includeTuscanyRuntime == "Y")
                <scope>runtime</scope>
+#else
+               <scope>provided</scope>
+#end
             </dependency>
 
 		<!--  JUNIT DEPENDENCY FOR TESTING -->
@@ -133,5 +140,4 @@
 		<tuscany.version>2.0-SNAPSHOT</tuscany.version>
 		<jetty.version>6.1.18</jetty.version>
 	</properties>
-	#end
 </project>
