@@ -40,7 +40,6 @@ import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
-import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
@@ -168,10 +167,7 @@ public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements C
             // Set default binding names
 
             // Create default SCA binding
-            if (service.getBindings().isEmpty()) {
-                SCABinding scaBinding = createSCABinding(definitions);
-                service.getBindings().add(scaBinding);
-            }
+            attachSCABinding(service, definitions);
 
             // Initialize binding names and URIs
             for (Binding binding : service.getBindings()) {
@@ -211,10 +207,7 @@ public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements C
             for (ComponentService service : component.getServices()) {
 
                 // Create default SCA binding
-                if (service.getBindings().isEmpty()) {
-                    SCABinding scaBinding = createSCABinding(definitions);
-                    service.getBindings().add(scaBinding);
-                }
+                attachSCABinding(service, definitions);
 
                 // Initialize binding names and URIs
                 for (Binding binding : service.getBindings()) {

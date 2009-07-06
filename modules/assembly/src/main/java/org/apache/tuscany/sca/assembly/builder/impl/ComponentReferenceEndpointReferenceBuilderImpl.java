@@ -228,7 +228,7 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
                 if (uri == null) {
                     // Regular forward references are UNWIRED with no endpoint if they have an SCABinding with NO targets
                     // and NO URI set - but Callbacks with an SCABinding are wired and need an endpoint
-                    if (!reference.isCallback() && (binding instanceof SCABinding))
+                    if (!reference.isForCallback() && (binding instanceof SCABinding))
                         continue;
 
                     // create endpoint reference for manually configured bindings with a resolved endpoint to
@@ -423,7 +423,7 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
                                                   Map<String, ComponentService> componentServices,
                                                   List<Endpoint> endpoints) {
         // Only if this reference is a callback are there any endpoints of this kind
-        if (reference.isCallback()) {
+        if (reference.isForCallback()) {
             // add an unresolved endpoint reference with an unresolved endpoint to go with it
             // there will be one of these for each binding on the reference
             for (Binding binding : reference.getBindings()) {
@@ -549,7 +549,7 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
                 if (uri == null) {
                     // Regular forward references are UNWIRED with no endpoint if they have an SCABinding with NO targets
                     // and NO URI set - but Callbacks with an SCABinding are wired and need an endpoint
-                    if (!reference.isCallback() && (binding instanceof SCABinding))
+                    if (!reference.isForCallback() && (binding instanceof SCABinding))
                         continue;
 
                     // create an unwired endpoint containing the binding

@@ -30,7 +30,6 @@ import org.apache.tuscany.sca.assembly.Extensible;
 import org.apache.tuscany.sca.assembly.Extension;
 import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.assembly.SCABinding;
-import org.apache.tuscany.sca.assembly.builder.AutomaticBinding;
 import org.apache.tuscany.sca.policy.ExtensionType;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySet;
@@ -41,7 +40,7 @@ import org.apache.tuscany.sca.policy.PolicySubject;
  *
  * @version $Rev$ $Date$
  */
-public class SCABindingImpl implements SCABinding, Extensible, PolicySubject, OptimizableBinding, AutomaticBinding {
+public class SCABindingImpl implements SCABinding, Extensible, PolicySubject, OptimizableBinding {
     private String name;
     private String uri;
     private List<Object> extensions = new ArrayList<Object>();
@@ -54,8 +53,6 @@ public class SCABindingImpl implements SCABinding, Extensible, PolicySubject, Op
     private ComponentService targetComponentService;
     private Binding targetBinding;
     private List<PolicySet> applicablePolicySets = new ArrayList<PolicySet>();
-
-    private boolean isAutomatic = false;
 
     public List<PolicySet> getApplicablePolicySets() {
         return applicablePolicySets;
@@ -158,14 +155,6 @@ public class SCABindingImpl implements SCABinding, Extensible, PolicySubject, Op
 
     public void setRequiredIntents(List<Intent> intents) {
         this.requiredIntents = intents;
-    }
-
-    public void setIsAutomatic(boolean isAutomatic) {
-        this.isAutomatic = isAutomatic;
-    }
-
-    public boolean getIsAutomatic() {
-        return this.isAutomatic;
     }
 
     @Override

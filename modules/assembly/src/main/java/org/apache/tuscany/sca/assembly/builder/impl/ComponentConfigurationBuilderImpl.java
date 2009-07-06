@@ -38,7 +38,6 @@ import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
-import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.builder.ComponentPreProcessor;
@@ -127,19 +126,13 @@ public class ComponentConfigurationBuilderImpl extends BaseBuilderImpl implement
             // Set default binding names 
 
             // Create default SCA binding
-            if (service.getBindings().isEmpty()) {
-                SCABinding scaBinding = createSCABinding(definitions);
-                service.getBindings().add(scaBinding);
-            }
+            attachSCABinding(service, definitions);
         }
 
         // Initialize reference bindings
         for (Reference reference : composite.getReferences()) {
             // Create default SCA binding
-            if (reference.getBindings().isEmpty()) {
-                SCABinding scaBinding = createSCABinding(definitions);
-                reference.getBindings().add(scaBinding);
-            }
+            attachSCABinding(reference, definitions);
         }
 
         // Initialize all component services and references
@@ -199,20 +192,14 @@ public class ComponentConfigurationBuilderImpl extends BaseBuilderImpl implement
             for (ComponentService componentService : component.getServices()) {
 
                 // Create default SCA binding
-                if (componentService.getBindings().isEmpty()) {
-                    SCABinding scaBinding = createSCABinding(definitions);
-                    componentService.getBindings().add(scaBinding);
-                }
+                attachSCABinding(componentService, definitions);
             }
 
             // Initialize reference bindings
             for (ComponentReference componentReference : component.getReferences()) {
 
                 // Create default SCA binding
-                if (componentReference.getBindings().isEmpty()) {
-                    SCABinding scaBinding = createSCABinding(definitions);
-                    componentReference.getBindings().add(scaBinding);
-                }
+                attachSCABinding(componentReference, definitions);
             }
         }
     }
@@ -250,7 +237,7 @@ public class ComponentConfigurationBuilderImpl extends BaseBuilderImpl implement
      */
     private ComponentService createCallbackService(Component component, ComponentReference reference) {
         ComponentService componentService = assemblyFactory.createComponentService();
-        componentService.setIsCallback(true);
+        componentService.setForCallback(true);
         componentService.setName(reference.getName());
         try {
             InterfaceContract contract = (InterfaceContract)reference.getInterfaceContract().clone();
@@ -273,12 +260,12 @@ public class ComponentConfigurationBuilderImpl extends BaseBuilderImpl implement
                 // Set the promoted component from the promoted component of the composite reference
                 implCompService
                     .setPromotedComponent(((CompositeReference)implReference).getPromotedComponents().get(0));
-                implCompService.setIsCallback(true);
+                implCompService.setForCallback(true);
                 // Set the promoted service
                 ComponentService promotedService = assemblyFactory.createComponentService();
                 promotedService.setName(((CompositeReference)implReference).getPromotedReferences().get(0).getName());
                 promotedService.setUnresolved(true);
-                promotedService.setIsCallback(true);
+                promotedService.setForCallback(true);
                 implCompService.setPromotedService(promotedService);
                 implService = implCompService;
                 // Add the composite service to the composite implementation artifact
@@ -343,7 +330,7 @@ public class ComponentConfigurationBuilderImpl extends BaseBuilderImpl implement
      */
     private ComponentReference createCallbackReference(Component component, ComponentService service) {
         ComponentReference componentReference = assemblyFactory.createComponentReference();
-        componentReference.setIsCallback(true);
+        componentReference.setForCallback(true);
         componentReference.setName(service.getName());
         try {
             InterfaceContract contract = (InterfaceContract)service.getInterfaceContract().clone();

@@ -65,13 +65,13 @@ public interface AbstractContract extends Base, Extensible, PolicySubject {
      * 
      * @return true for a callback contract, false otherwise
      */
-    boolean isCallback();
+    boolean isForCallback();
 
     /**
      * Sets a flag indicating whether this is a callback contract.
      * 
      * @param isCallback true for a callback contract, false otherwise
      */
-    void setIsCallback(boolean isCallback);
+    void setForCallback(boolean isCallback);
 
 }

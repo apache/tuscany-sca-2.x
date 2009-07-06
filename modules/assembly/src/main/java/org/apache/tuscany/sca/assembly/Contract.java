@@ -91,5 +91,20 @@ public interface Contract extends AbstractContract, PolicySubject, Cloneable {
      * @return the interface contract
      */
     InterfaceContract getInterfaceContract(Binding binding);
+    
+    /**
+     * A flag to tell if there are any binding elements specified for this service or reference. 
+     * If true, they override the the bindings in the corresponding reference/service in the 
+     * component type or promoted reference/service.  
+     * @return
+     */
+    boolean isOverridingBindings();
+    
+    /**
+     * Set the flag depending on if there are any binding elements specified for this service or 
+     * reference.
+     * @param overridingBindings true if there are binding elements specified
+     */
+    void setOverridingBindings(boolean overridingBindings);
 
 }

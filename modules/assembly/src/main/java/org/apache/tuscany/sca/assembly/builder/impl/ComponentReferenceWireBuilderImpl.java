@@ -100,7 +100,7 @@ public class ComponentReferenceWireBuilderImpl extends BaseBuilderImpl implement
                             break;
                         }
                     }
-                    if (!promoted && !componentReference.isCallback()) {
+                    if (!promoted && !componentReference.isForCallback()) {
                         warning(monitor,
                                 "ReferenceWithoutTargets",
                                 composite,

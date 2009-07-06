@@ -19,17 +19,16 @@
 
 package org.apache.tuscany.sca.assembly.builder.impl;
 
-import java.util.List;
-
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.assembly.Callback;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeService;
+import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Service;
-import org.apache.tuscany.sca.assembly.builder.AutomaticBinding;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.definitions.Definitions;
@@ -66,8 +65,7 @@ public class CompositeServiceConfigurationBuilderImpl implements CompositeBuilde
             if (promotedService != null) {
 
                 // Set the bindings using the top level bindings to override the lower level bindings
-                if (!bindingsSpecifiedManually(compositeService.getBindings()) && bindingsSpecifiedManually(promotedService
-                    .getBindings())) {
+                if (!compositeService.isOverridingBindings() && promotedService.isOverridingBindings()) {
                     compositeService.getBindings().clear();
                     for (Binding binding : promotedService.getBindings()) {
                         try {
@@ -79,9 +77,8 @@ public class CompositeServiceConfigurationBuilderImpl implements CompositeBuilde
                 }
                 if (compositeService.getInterfaceContract() != null && compositeService.getInterfaceContract()
                     .getCallbackInterface() != null) {
-                    if (!(compositeService.getCallback() != null && bindingsSpecifiedManually(compositeService
-                        .getCallback().getBindings())) && promotedService.getCallback() != null
-                        && bindingsSpecifiedManually(promotedService.getCallback().getBindings())) {
+                    if (!isCallbackOverridingBindings(compositeService) 
+                        && isCallbackOverridingBindings(promotedService)) {
                         if (compositeService.getCallback() != null) {
                             compositeService.getCallback().getBindings().clear();
                         } else {
@@ -121,8 +118,7 @@ public class CompositeServiceConfigurationBuilderImpl implements CompositeBuilde
                         if (promotedService != null) {
 
                             // Set the bindings using the top level bindings to override the lower level bindings
-                            if (!bindingsSpecifiedManually(compositeService.getBindings()) && bindingsSpecifiedManually(promotedService
-                                .getBindings())) {
+                            if (!compositeService.isOverridingBindings() && promotedService.isOverridingBindings()) {
                                 compositeService.getBindings().clear();
                                 for (Binding binding : promotedService.getBindings()) {
                                     try {
@@ -132,16 +128,14 @@ public class CompositeServiceConfigurationBuilderImpl implements CompositeBuilde
                                     }
                                 }
                             }
-                            if (!bindingsSpecifiedManually(componentService.getBindings()) && bindingsSpecifiedManually(compositeService
-                                .getBindings())) {
+                            if (!componentService.isOverridingBindings() && compositeService.isOverridingBindings()) {
                                 componentService.getBindings().clear();
                                 componentService.getBindings().addAll(compositeService.getBindings());
                             }
                             if (componentService.getInterfaceContract() != null && componentService
                                 .getInterfaceContract().getCallbackInterface() != null) {
-                                if (!(compositeService.getCallback() != null && bindingsSpecifiedManually(compositeService
-                                    .getCallback().getBindings())) && promotedService.getCallback() != null
-                                    && bindingsSpecifiedManually(promotedService.getCallback().getBindings())) {
+                                if (!isCallbackOverridingBindings(compositeService) 
+                                    && isCallbackOverridingBindings(promotedService)) {
                                     if (compositeService.getCallback() != null) {
                                         compositeService.getCallback().getBindings().clear();
                                     } else {
@@ -155,9 +149,7 @@ public class CompositeServiceConfigurationBuilderImpl implements CompositeBuilde
                                         }
                                     }
                                 }
-                                if (!(componentService.getCallback() != null && bindingsSpecifiedManually(componentService
-                                    .getCallback().getBindings())) && compositeService.getCallback() != null
-                                    && bindingsSpecifiedManually(compositeService.getCallback().getBindings())) {
+                                if (!(isCallbackOverridingBindings(componentService)) && isCallbackOverridingBindings(compositeService)) {
                                     if (componentService.getCallback() != null) {
                                         componentService.getCallback().getBindings().clear();
                                     } else {
@@ -173,26 +165,10 @@ public class CompositeServiceConfigurationBuilderImpl implements CompositeBuilde
             }
         }
     }
-
-    /**
-     * If the bindings are specified in the composite file return true as they should 
-     * otherwise return false
-     *  
-     * @param bindings
-     * @return true if the bindings were specified manually
-     */
-    private boolean bindingsSpecifiedManually(List<Binding> bindings) {
-
-        if (bindings.size() > 1) {
-            return true;
-        } else if (bindings.size() == 1 && bindings.get(0) instanceof AutomaticBinding
-            && ((AutomaticBinding)bindings.get(0)).getIsAutomatic()) {
-            return false;
-        } else if (bindings.size() == 1) {
-            return true;
-        } else {
-            return false;
-        }
+    
+    private boolean isCallbackOverridingBindings(Contract contract) {
+        Callback callback = contract.getCallback();
+        return callback != null && !callback.getBindings().isEmpty();
     }
 
 }

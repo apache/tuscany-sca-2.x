@@ -31,13 +31,13 @@ import org.apache.tuscany.sca.assembly.ComponentProperty;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.Service;
-import org.apache.tuscany.sca.assembly.builder.AutomaticBinding;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
@@ -172,7 +172,7 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
                 componentServices.put(uri, componentService);
 
                 // count how many non-callback there are
-                if (!componentService.isCallback()) {
+                if (!componentService.isForCallback()) {
 
                     if (nonCallbackServiceCount == 0) {
                         nonCallbackService = componentService;
@@ -221,7 +221,7 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
 
                 // count how many non-callback, non-promoted services there are
                 // if there is only one the component name also acts as the service name
-                if ((!componentService.isCallback()) && (!promotedService)) {
+                if ((!componentService.isForCallback()) && (!promotedService)) {
 
                     // Check how many non callback non-promoted services we have
                     if (nonCallbackServices == 0) {
@@ -450,7 +450,7 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
 
         // Connect each component reference to the corresponding reference
         for (ComponentReference componentReference : component.getReferences()) {
-            if (componentReference.getReference() != null || componentReference.isCallback()) {
+            if (componentReference.getReference() != null || componentReference.isForCallback()) {
                 continue;
             }
             Reference reference = references.get(componentReference.getName());
@@ -468,7 +468,7 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
             for (Reference reference : component.getImplementation().getReferences()) {
                 if (!componentReferences.containsKey(reference.getName())) {
                     ComponentReference componentReference = assemblyFactory.createComponentReference();
-                    componentReference.setIsCallback(reference.isCallback());
+                    componentReference.setForCallback(reference.isForCallback());
                     componentReference.setName(reference.getName());
                     componentReference.setReference(reference);
                     component.getReferences().add(componentReference);
@@ -557,7 +557,7 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
 
         // Connect each component service to the corresponding service
         for (ComponentService componentService : component.getServices()) {
-            if (componentService.getService() != null || componentService.isCallback()) {
+            if (componentService.getService() != null || componentService.isForCallback()) {
                 continue;
             }
             Service service = services.get(componentService.getName());
@@ -574,7 +574,7 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
             for (Service service : component.getImplementation().getServices()) {
                 if (!componentServices.containsKey(service.getName())) {
                     ComponentService componentService = assemblyFactory.createComponentService();
-                    componentService.setIsCallback(service.isCallback());
+                    componentService.setForCallback(service.isForCallback());
                     String name = service.getName();
                     componentService.setName(name);
                     componentService.setService(service);
@@ -625,14 +625,22 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
         }
     }
 
-    protected SCABinding createSCABinding(Definitions definitions) {
-        SCABinding scaBinding = scaBindingFactory.createSCABinding();
-
-        // mark the bindings that are added automatically so that they can
-        // be disregarded for overriding purposes
-        if (scaBinding instanceof AutomaticBinding) {
-            ((AutomaticBinding)scaBinding).setIsAutomatic(true);
+    protected void attachSCABinding(Contract contract, Definitions definitions) {
+        if (!contract.getBindings().isEmpty()) {
+            contract.setOverridingBindings(true);
+            // No need to set binding.sca
+            return;
         }
+        contract.setOverridingBindings(false);
+        
+        // Only add binding.sca for services
+        // FIXME: The latest OASIS spec only adds binding.sca to services
+        /*
+        if (!(contract instanceof Service)) {
+            return;
+        }
+        */
+        SCABinding scaBinding = scaBindingFactory.createSCABinding();
 
         if (definitions != null) {
             for (ExtensionType attachPointType : definitions.getBindingTypes()) {
@@ -642,6 +650,6 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
             }
         }
 
-        return scaBinding;
+        contract.getBindings().add(scaBinding);
     }
 }

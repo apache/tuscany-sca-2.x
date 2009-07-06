@@ -308,7 +308,7 @@ public class CompositeContextImpl extends CompositeContext {
         List<ComponentService> services = component.getServices();
         List<ComponentService> regularServices = new ArrayList<ComponentService>();
         for (ComponentService service : services) {
-            if (service.isCallback()) {
+            if (service.isForCallback()) {
                 continue;
             }
             String name = service.getName();

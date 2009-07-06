@@ -35,6 +35,7 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContract;
  */
 public class ServiceImpl extends AbstractServiceImpl implements Service, Cloneable {
     private List<Binding> bindings = new ArrayList<Binding>();
+    private boolean overridingBindings;
     private Callback callback;
     private List<Endpoint> endpoints = new ArrayList<Endpoint>();
 
@@ -93,5 +94,13 @@ public class ServiceImpl extends AbstractServiceImpl implements Service, Cloneab
 
     public List<Endpoint> getEndpoints() {
         return endpoints;
+    }
+
+    public boolean isOverridingBindings() {
+        return overridingBindings;
+    }
+
+    public void setOverridingBindings(boolean overridingBindings) {
+        this.overridingBindings = overridingBindings;
     }
 }

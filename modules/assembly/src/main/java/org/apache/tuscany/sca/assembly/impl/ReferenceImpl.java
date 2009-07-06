@@ -41,6 +41,7 @@ public class ReferenceImpl extends AbstractReferenceImpl implements Reference, C
     private List<ComponentService> targets = new ArrayList<ComponentService>();
     private Callback callback;
     private boolean promotionOverride;
+    private boolean overridingBindings;
     private List<EndpointReference> endpointReferences = new ArrayList<EndpointReference>();
 
     /**
@@ -131,5 +132,13 @@ public class ReferenceImpl extends AbstractReferenceImpl implements Reference, C
 
     public String toString() {
         return getName();
+    }
+
+    public boolean isOverridingBindings() {
+        return overridingBindings;
+    }
+
+    public void setOverridingBindings(boolean overridingBindings) {
+        this.overridingBindings = overridingBindings;
     }
 }

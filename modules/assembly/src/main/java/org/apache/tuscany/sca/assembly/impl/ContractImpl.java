@@ -66,11 +66,11 @@ public class ContractImpl extends ExtensibleImpl implements AbstractContract {
         return requiredIntents;
     }
 
-    public boolean isCallback() {
+    public boolean isForCallback() {
         return isCallback;
     }
 
-    public void setIsCallback(boolean isCallback) {
+    public void setForCallback(boolean isCallback) {
         this.isCallback = isCallback;
     }
 
