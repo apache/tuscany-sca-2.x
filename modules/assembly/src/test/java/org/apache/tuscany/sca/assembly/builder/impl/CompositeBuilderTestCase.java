@@ -38,14 +38,14 @@ import org.junit.Test;
  * @version $Rev$ $Date$
  */
 public class CompositeBuilderTestCase {
-    
+
     private static AssemblyFactory assemblyFactory;
-    
+
     @BeforeClass
     public static void setUp() throws Exception {
         assemblyFactory = new DefaultAssemblyFactory();
     }
-    
+
     @Test
     public void testFuseIncludes() throws Exception {
         Composite c1 = assemblyFactory.createComposite();
@@ -66,19 +66,19 @@ public class CompositeBuilderTestCase {
         Component b = assemblyFactory.createComponent();
         b.setName("b");
         c2.getComponents().add(b);
-        
+
         Composite c = assemblyFactory.createComposite();
         c.setName(new QName("http://foo", "C"));
         c.getIncludes().add(c1);
-        
+
         new CompositeIncludeBuilderImpl(null).build(c, null, null);
-        
+
         assertTrue(c.getComponents().get(0).getName().equals("a"));
         assertTrue(c.getComponents().get(1).getName().equals("b"));
         assertTrue(c.getServices().get(0).getName().equals("s"));
         assertTrue(c.getReferences().get(0).getName().equals("r"));
     }
-    
+
     @Test
     public void testExpandComposites() throws Exception {
         Composite c1 = assemblyFactory.createComposite();
@@ -98,7 +98,7 @@ public class CompositeBuilderTestCase {
         Component b = assemblyFactory.createComponent();
         b.setName("b");
         c2.getComponents().add(b);
-        
+
         Composite c = assemblyFactory.createComposite();
         c.setName(new QName("http://foo", "C"));
         Component x = assemblyFactory.createComponent();
@@ -113,9 +113,9 @@ public class CompositeBuilderTestCase {
         z.setName("z");
         z.setImplementation(c1);
         c.getComponents().add(z);
-        
+
         new CompositeCloneBuilderImpl().build(c, null, null);
-        
+
         assertTrue(c.getComponents().get(0).getImplementation() != c1);
         assertTrue(c.getComponents().get(1).getImplementation() != c2);
         assertTrue(c.getComponents().get(2).getImplementation() != c1);

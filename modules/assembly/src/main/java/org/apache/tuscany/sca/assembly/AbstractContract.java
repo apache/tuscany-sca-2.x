@@ -50,7 +50,7 @@ public interface AbstractContract extends Base, Extensible, PolicySubject {
      * @return the interface contract
      */
     InterfaceContract getInterfaceContract();
-    
+
     /**
      * Sets the interface contract defining the interface and callback
      * interface for the contract.

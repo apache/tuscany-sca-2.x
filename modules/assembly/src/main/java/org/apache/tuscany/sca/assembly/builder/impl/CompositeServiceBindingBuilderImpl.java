@@ -49,9 +49,9 @@ public class CompositeServiceBindingBuilderImpl implements CompositeBuilder {
     public void build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
         buildServiceBindings(composite, monitor);
     }
-    
+
     private void buildServiceBindings(Composite composite, Monitor monitor) {
-        
+
         // build bindings recursively
         for (Component component : composite.getComponents()) {
             Implementation implementation = component.getImplementation();

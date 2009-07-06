@@ -30,7 +30,7 @@ import org.apache.tuscany.sca.monitor.Monitor;
  * @version $Rev$ $Date$
  */
 public interface BindingBuilder {
-    
+
     /**
      * Configure a binding.
      * 
@@ -38,5 +38,5 @@ public interface BindingBuilder {
      * @param contract The binding's service or reference
      */
     void build(Component component, AbstractContract contract, Binding binding, Monitor monitor);
-    
+
 }

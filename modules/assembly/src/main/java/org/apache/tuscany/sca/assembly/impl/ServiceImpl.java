@@ -38,13 +38,12 @@ public class ServiceImpl extends AbstractServiceImpl implements Service, Cloneab
     private Callback callback;
     private List<Endpoint> endpoints = new ArrayList<Endpoint>();
 
-
     /**
      * Constructs a new service.
      */
     protected ServiceImpl() {
     }
-    
+
     @Override
     public Object clone() throws CloneNotSupportedException {
         ServiceImpl clone = (ServiceImpl)super.clone();
@@ -84,13 +83,13 @@ public class ServiceImpl extends AbstractServiceImpl implements Service, Cloneab
     public void setCallback(Callback callback) {
         this.callback = callback;
     }
-    
+
     /**
      * By default return the interface contract for the service
      */
-    public InterfaceContract getInterfaceContract(Binding binding){
+    public InterfaceContract getInterfaceContract(Binding binding) {
         return getInterfaceContract();
-    }     
+    }
 
     public List<Endpoint> getEndpoints() {
         return endpoints;

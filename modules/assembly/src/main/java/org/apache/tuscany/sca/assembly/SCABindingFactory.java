@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.sca.assembly;
 
-
 /**
  * A factory for the SCA binding model
  *

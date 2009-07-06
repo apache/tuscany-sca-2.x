@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.sca.assembly;
 
-
 /**
  * Base interface for all assembly model objects.
  *

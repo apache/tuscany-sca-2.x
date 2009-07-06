@@ -33,7 +33,7 @@ public interface Extensible extends Base {
      * @return a list of extension objects container in this model object
      */
     List<Object> getExtensions();
-    
+
     /**
      * Returns a list of attribute extensions contained in this model object
      * 

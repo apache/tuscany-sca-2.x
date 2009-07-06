@@ -36,7 +36,7 @@ public class ComponentServiceImpl extends ServiceImpl implements ComponentServic
     private Service service;
     private List<CompositeService> promotedAs = new ArrayList<CompositeService>();
     private ComponentReference callbackReference;
-    
+
     /**
      * Constructs a new component service.
      */
@@ -47,7 +47,7 @@ public class ComponentServiceImpl extends ServiceImpl implements ComponentServic
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
-    
+
     public Service getService() {
         return service;
     }

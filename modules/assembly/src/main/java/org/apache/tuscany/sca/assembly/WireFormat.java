@@ -18,12 +18,11 @@
  */
 package org.apache.tuscany.sca.assembly;
 
-
 /**
  * Represents a wireFormat.
  * 
  * @version $Rev$ $Date$
  */
 public interface WireFormat extends Base, Cloneable {
-  
+
 }

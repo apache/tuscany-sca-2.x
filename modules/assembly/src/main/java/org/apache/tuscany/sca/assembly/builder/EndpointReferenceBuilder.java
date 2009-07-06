@@ -30,7 +30,7 @@ import org.apache.tuscany.sca.monitor.Monitor;
  * @version $Rev$ $Date$
  */
 public interface EndpointReferenceBuilder {
-    
+
     /**
      * Build an endpoint reference matching reference bindings 
      * with service bindings.
@@ -39,5 +39,5 @@ public interface EndpointReferenceBuilder {
      * @param monitor
      */
     void build(EndpointReference endpointReference, Monitor monitor);
-    
+
 }

@@ -26,13 +26,13 @@ package org.apache.tuscany.sca.assembly.builder.impl;
  */
 public class PolicyConfigurationException extends Exception {
     private static final long serialVersionUID = 506979037642587755L;
-    
+
     public PolicyConfigurationException(String message) {
         super(message);
     }
-    
+
     public PolicyConfigurationException(Throwable e) {
         super(e);
     }
-    
+
 }

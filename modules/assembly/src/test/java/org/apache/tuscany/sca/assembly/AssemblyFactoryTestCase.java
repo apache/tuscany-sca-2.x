@@ -23,7 +23,6 @@ import javax.xml.namespace.QName;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-
 /**
  * Test building of assembly model instances using the assembly factory.
  * 

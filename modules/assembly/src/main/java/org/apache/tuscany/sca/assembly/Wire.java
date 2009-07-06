@@ -54,7 +54,7 @@ public interface Wire extends Base, Extensible, PolicySubject, Cloneable {
      * @param target the target of the wire
      */
     void setTarget(ComponentService target);
-    
+
     /**
      * A boolean value, with the default of "false". When a wire element has
      * @replace="false", the wire is added to the set of wires which apply to 
@@ -67,7 +67,7 @@ public interface Wire extends Base, Extensible, PolicySubject, Cloneable {
      * @return
      */
     boolean isReplace();
-    
+
     /**
      * Set the replace flag for the wire 
      * @param replace

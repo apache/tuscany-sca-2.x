@@ -65,11 +65,11 @@ public class CompositeServicePromotionBuilderImpl implements CompositeBuilder {
                 newComponentService.setService(promotedService.getService());
                 newComponentService.getBindings().addAll(compositeService.getBindings());
                 newComponentService.setInterfaceContract(compositeService.getInterfaceContract());
-                if (compositeService.getInterfaceContract() != null &&
-                    compositeService.getInterfaceContract().getCallbackInterface() != null) {
+                if (compositeService.getInterfaceContract() != null && compositeService.getInterfaceContract()
+                    .getCallbackInterface() != null) {
                     newComponentService.setCallback(assemblyFactory.createCallback());
                     newComponentService.getCallback().getBindings()
-                            .addAll(compositeService.getCallback().getBindings());
+                        .addAll(compositeService.getCallback().getBindings());
                 }
 
                 // Change the composite service to now promote the newly

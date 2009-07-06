@@ -37,10 +37,10 @@ import org.apache.tuscany.sca.monitor.Monitor;
  * @version $Rev$ $Date$
  */
 public class CompositeCloneBuilderImpl implements CompositeBuilder {
-    
+
     public CompositeCloneBuilderImpl() {
     }
-    
+
     public void build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
         expandCompositeImplementations(composite);
     }
@@ -59,7 +59,7 @@ public class CompositeCloneBuilderImpl implements CompositeBuilder {
         for (Component component : composite.getComponents()) {
             Implementation implementation = component.getImplementation();
             if (implementation instanceof Composite) {
-    
+
                 Composite compositeImplementation = (Composite)implementation;
                 Composite clone;
                 try {
@@ -96,21 +96,21 @@ public class CompositeCloneBuilderImpl implements CompositeBuilder {
      * @param composite
      */
     private void fuseCompositeImplementations(Composite composite) {
-    
+
         // First collect all nested composites
         List<Composite> nested = new ArrayList<Composite>();
         collectNestedComposites(composite, nested);
-    
+
         // Then add all the non-composite components they contain 
         for (Composite nestedComposite : nested) {
-            for (Component component: nestedComposite.getComponents()) {
+            for (Component component : nestedComposite.getComponents()) {
                 Implementation implementation = component.getImplementation();
                 if (!(implementation instanceof Composite)) {
                     composite.getComponents().add(component);
                 }
             }
         }
-    
+
         // Clear the initial list of composite components
         for (Iterator<Component> i = composite.getComponents().iterator(); i.hasNext();) {
             Component component = i.next();

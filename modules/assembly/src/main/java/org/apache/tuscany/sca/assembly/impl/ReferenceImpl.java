@@ -57,8 +57,8 @@ public class ReferenceImpl extends AbstractReferenceImpl implements Reference, C
         // clone the endpoint references themselves and set the reference pointer back to 
         // this new refrence
         clone.endpointReferences = new ArrayList<EndpointReference>();
-        
-        for (EndpointReference epr : endpointReferences){
+
+        for (EndpointReference epr : endpointReferences) {
             EndpointReference eprClone = (EndpointReference)epr.clone();
             eprClone.setReference((ComponentReference)clone);
             clone.endpointReferences.add(eprClone);

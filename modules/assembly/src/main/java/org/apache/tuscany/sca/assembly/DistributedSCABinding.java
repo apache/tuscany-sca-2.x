@@ -20,7 +20,6 @@ package org.apache.tuscany.sca.assembly;
 
 import javax.xml.namespace.QName;
 
-
 /**
  * Represents an SCA binding used in the distributed runtime.
  * It provides us with a sensibly named type against which

@@ -73,22 +73,25 @@ public class ComponentServicePromotionBuilderImpl implements CompositeBuilder {
                         ComponentService promotedService =
                             ServiceConfigurationUtil.getPromotedComponentService(compositeService);
                         if (promotedService != null) {
-                            Component promotedComponent = ServiceConfigurationUtil.getPromotedComponent(compositeService);
+                            Component promotedComponent =
+                                ServiceConfigurationUtil.getPromotedComponent(compositeService);
 
                             // Create a new component service to represent this
                             // component service on the promoted component
                             ComponentService newComponentService = assemblyFactory.createComponentService();
-                            newComponentService.setName("$promoted$" + component.getName() + "$slash$" + componentService.getName());
+                            newComponentService.setName("$promoted$" + component.getName()
+                                + "$slash$"
+                                + componentService.getName());
                             promotedComponent.getServices().add(newComponentService);
                             newComponentService.setService(promotedService.getService());
                             newComponentService.getBindings().addAll(componentService.getBindings());
                             newComponentService.setInterfaceContract(componentService.getInterfaceContract());
-                            
-                            if (componentService.getInterfaceContract() != null && 
-                                componentService.getInterfaceContract().getCallbackInterface() != null) {
+
+                            if (componentService.getInterfaceContract() != null && componentService
+                                .getInterfaceContract().getCallbackInterface() != null) {
                                 newComponentService.setCallback(assemblyFactory.createCallback());
-                                newComponentService.getCallback().getBindings()
-                                        .addAll(componentService.getCallback().getBindings());
+                                newComponentService.getCallback().getBindings().addAll(componentService.getCallback()
+                                    .getBindings());
                             }
 
                             // Change the composite service to now promote the

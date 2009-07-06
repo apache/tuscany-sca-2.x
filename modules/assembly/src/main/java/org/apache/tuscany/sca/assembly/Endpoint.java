@@ -46,6 +46,7 @@ public interface Endpoint extends Base, PolicySubject, Cloneable, Serializable {
      * or &lt;componentURI&gt;#service(serviceName)
      */
     void setURI(String uri);
+
     /**
      * Supports endpoint cloning
      *
@@ -126,7 +127,7 @@ public interface Endpoint extends Base, PolicySubject, Cloneable, Serializable {
      * @param registry
      */
     void setExtensionPointRegistry(ExtensionPointRegistry registry);
-    
+
     /**
      * Returns true if this endpoint represents a serivce that is not
      * running in this JVM
@@ -134,13 +135,13 @@ public interface Endpoint extends Base, PolicySubject, Cloneable, Serializable {
      * @return true if the endpoint is remote
      */
     boolean isRemote();
-    
+
     /**
      * Set true if this endpoint represents a serivce that is not
      * running in this JVM
      * 
      * @param remote set to true if the endpoint is remote
      */
-    void setRemote(boolean remote);    
+    void setRemote(boolean remote);
 
 }

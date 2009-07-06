@@ -24,7 +24,6 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.policy.PolicySubject;
 
-
 /**
  * Represents a composite.
  *
@@ -32,6 +31,7 @@ import org.apache.tuscany.sca.policy.PolicySubject;
  */
 public interface Composite extends Implementation, Extensible, Cloneable, PolicySubject {
     QName TYPE = new QName(SCA11_NS, "implementation.composite");
+
     /**
      * Returns the spec version of the composite used to build this model
      *
@@ -111,7 +111,6 @@ public interface Composite extends Implementation, Extensible, Cloneable, Policy
      * @param autowire whether component references should be autowired
      */
     void setAutowire(Boolean autowire);
-
 
     /**
      * Returns a clone of the component type.

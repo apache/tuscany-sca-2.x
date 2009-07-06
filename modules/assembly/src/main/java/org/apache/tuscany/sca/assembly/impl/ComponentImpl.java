@@ -48,6 +48,7 @@ public class ComponentImpl extends ExtensibleImpl implements Component, Cloneabl
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
     private Boolean autowire;
     private ExtensionType type;
+
     /**
      * Constructs a new component.
      */
@@ -132,7 +133,7 @@ public class ComponentImpl extends ExtensibleImpl implements Component, Cloneabl
     public void setAutowire(Boolean autowire) {
         this.autowire = autowire;
     }
-    
+
     public Boolean getAutowire() {
         return autowire;
     }

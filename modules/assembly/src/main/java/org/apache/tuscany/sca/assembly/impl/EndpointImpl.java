@@ -116,7 +116,7 @@ public class EndpointImpl implements Endpoint {
      *
      * @return callbackEndpoint the reference callback endpoint
      */
-    public List<EndpointReference> getCallbackEndpointReferences(){
+    public List<EndpointReference> getCallbackEndpointReferences() {
         resolve();
         return callbackEndpointReferences;
     }
@@ -142,10 +142,10 @@ public class EndpointImpl implements Endpoint {
         throw new UnsupportedOperationException();
     }
 
-    public String toString(){
-        String output =  "Endpoint: ";
+    public String toString() {
+        String output = "Endpoint: ";
 
-        if (getURI() != null){
+        if (getURI() != null) {
             output += " URI = " + uri;
         }
 

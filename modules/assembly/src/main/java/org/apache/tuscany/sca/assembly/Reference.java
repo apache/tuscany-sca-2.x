@@ -70,7 +70,7 @@ public interface Reference extends AbstractReference, Contract {
      * @return the targets of this reference.
      */
     List<ComponentService> getTargets();
-    
+
     /**
      * Returns the endpoint references implied by this reference.
      *  
@@ -82,6 +82,6 @@ public interface Reference extends AbstractReference, Contract {
      *   
      * @return the endpoint references implied by this reference
      */
-    List<EndpointReference> getEndpointReferences(); 
+    List<EndpointReference> getEndpointReferences();
 
 }

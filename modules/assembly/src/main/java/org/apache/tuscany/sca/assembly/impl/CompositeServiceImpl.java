@@ -50,13 +50,13 @@ public class CompositeServiceImpl extends ServiceImpl implements CompositeServic
     public void setPromotedService(ComponentService promotedService) {
         this.promotedService = promotedService;
     }
-    
+
     public Component getPromotedComponent() {
         return promotedComponent;
     }
-    
+
     public void setPromotedComponent(Component promotedComponent) {
         this.promotedComponent = promotedComponent;
     }
-    
+
 }

@@ -41,31 +41,27 @@ import org.apache.tuscany.sca.monitor.Monitor;
  *
  * @version $Rev$ $Date$
  */
-public class CompositeBindingConfigurationBuilderImpl extends CompositeBindingURIBuilderImpl implements CompositeBuilder {
+public class CompositeBindingConfigurationBuilderImpl extends CompositeBindingURIBuilderImpl implements
+    CompositeBuilder {
 
     public CompositeBindingConfigurationBuilderImpl(FactoryExtensionPoint factories, InterfaceContractMapper mapper) {
-        super(factories.getFactory(AssemblyFactory.class),
-              factories.getFactory(SCABindingFactory.class),
-              null, null,
+        super(factories.getFactory(AssemblyFactory.class), factories.getFactory(SCABindingFactory.class), null, null,
               mapper);
     }
-    
+
     public CompositeBindingConfigurationBuilderImpl(AssemblyFactory assemblyFactory,
-                                    SCABindingFactory scaBindingFactory,
-                                    InterfaceContractMapper interfaceContractMapper) {
-        super(assemblyFactory,
-              scaBindingFactory,
-              null, null,
-              interfaceContractMapper);
+                                                    SCABindingFactory scaBindingFactory,
+                                                    InterfaceContractMapper interfaceContractMapper) {
+        super(assemblyFactory, scaBindingFactory, null, null, interfaceContractMapper);
     }
-    
+
     public String getID() {
         return "org.apache.tuscany.sca.assembly.builder.CompositeServiceBindingBuilder";
     }
 
     public void build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
         List<Binding> defaultBindings = null;
-        for (Object x: composite.getExtensions()) {
+        for (Object x : composite.getExtensions()) {
             if (x instanceof List) {
                 defaultBindings = (List<Binding>)x;
             }
@@ -73,5 +69,5 @@ public class CompositeBindingConfigurationBuilderImpl extends CompositeBindingUR
         // TODO - EPR - is this ever used?
         //configureBindingURIs(composite, definitions, defaultBindings, monitor);
     }
-    
+
 }

@@ -44,8 +44,9 @@ import org.apache.tuscany.sca.monitor.Monitor;
  * @version $Rev$ $Date$
  */
 public class ComponentReferenceWireBuilderImpl extends BaseBuilderImpl implements CompositeBuilder {
-   
-    public ComponentReferenceWireBuilderImpl(AssemblyFactory assemblyFactory, InterfaceContractMapper interfaceContractMapper) {
+
+    public ComponentReferenceWireBuilderImpl(AssemblyFactory assemblyFactory,
+                                             InterfaceContractMapper interfaceContractMapper) {
         super(assemblyFactory, null, null, null, interfaceContractMapper);
     }
 
@@ -56,7 +57,7 @@ public class ComponentReferenceWireBuilderImpl extends BaseBuilderImpl implement
     public void build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
         wireComponentReferences(composite, monitor);
     }
-    
+
     /**
      * Wire component references to component services and connect promoted
      * services/references to component services/references inside a composite.
@@ -82,12 +83,12 @@ public class ComponentReferenceWireBuilderImpl extends BaseBuilderImpl implement
         // Connect component references as described in wires
         connectWires(composite, componentServices, componentReferences, monitor);
 
-
         // Validate that references are wired or promoted, according
         // to their multiplicity
         for (ComponentReference componentReference : componentReferences.values()) {
-            if (!ReferenceConfigurationUtil.validateMultiplicityAndTargets(componentReference.getMultiplicity(), componentReference
-                .getTargets(), componentReference.getBindings())) {
+            if (!ReferenceConfigurationUtil.validateMultiplicityAndTargets(componentReference.getMultiplicity(),
+                                                                           componentReference.getTargets(),
+                                                                           componentReference.getBindings())) {
                 if (componentReference.getTargets().isEmpty()) {
 
                     // No warning if the reference is promoted out of the current composite
@@ -100,22 +101,25 @@ public class ComponentReferenceWireBuilderImpl extends BaseBuilderImpl implement
                         }
                     }
                     if (!promoted && !componentReference.isCallback()) {
-                        warning(monitor, "ReferenceWithoutTargets", composite, composite.getName().toString(), 
-                        		componentReference.getName());
+                        warning(monitor,
+                                "ReferenceWithoutTargets",
+                                composite,
+                                composite.getName().toString(),
+                                componentReference.getName());
                     }
                 } else {
                     warning(monitor, "TooManyReferenceTargets", composite, componentReference.getName());
                 }
             }
         }
-        
+
         // Finally clear the original reference target lists as we now have
         // bindings to represent the targets
-      //  for (ComponentReference componentReference : componentReferences.values()) {
-      //      componentReference.getTargets().clear();
-      //  }
-    }  
-    
+        //  for (ComponentReference componentReference : componentReferences.values()) {
+        //      componentReference.getTargets().clear();
+        //  }
+    }
+
     /**
      * Resolve wires and connect the sources to their targets
      * 
@@ -128,16 +132,16 @@ public class ComponentReferenceWireBuilderImpl extends BaseBuilderImpl implement
                               Map<String, ComponentService> componentServices,
                               Map<String, ComponentReference> componentReferences,
                               Monitor monitor) {
-    
+
         // For each wire, resolve the source reference, the target service, and
         // add it to the list of targets of the reference
         List<Wire> wires = composite.getWires();
         for (int i = 0, n = wires.size(); i < n; i++) {
             Wire wire = wires.get(i);
-    
+
             ComponentReference resolvedReference;
             ComponentService resolvedService;
-    
+
             // Resolve the source reference
             ComponentReference source = wire.getSource();
             if (source != null && source.isUnresolved()) {
@@ -150,7 +154,7 @@ public class ComponentReferenceWireBuilderImpl extends BaseBuilderImpl implement
             } else {
                 resolvedReference = wire.getSource();
             }
-    
+
             // Resolve the target service
             ComponentService target = wire.getTarget();
             if (target != null && target.isUnresolved()) {
@@ -163,7 +167,7 @@ public class ComponentReferenceWireBuilderImpl extends BaseBuilderImpl implement
             } else {
                 resolvedService = wire.getTarget();
             }
-    
+
             // Add the target service to the list of targets of the
             // reference
             if (resolvedReference != null && resolvedService != null) {
@@ -172,7 +176,7 @@ public class ComponentReferenceWireBuilderImpl extends BaseBuilderImpl implement
                 // the component reference interface
                 if (resolvedReference.getInterfaceContract() == null || interfaceContractMapper
                     .isCompatible(resolvedReference.getInterfaceContract(), resolvedService.getInterfaceContract())) {
-    
+
                     //resolvedReference.getTargets().add(resolvedService);
                     resolvedReference.getTargets().add(wire.getTarget());
                 } else {
@@ -180,9 +184,9 @@ public class ComponentReferenceWireBuilderImpl extends BaseBuilderImpl implement
                 }
             }
         }
-    
+
         // Clear the list of wires
         composite.getWires().clear();
     }
-    
+
 }

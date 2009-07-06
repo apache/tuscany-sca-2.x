@@ -43,7 +43,7 @@ public class ConstrainingTypeImpl extends ExtensibleImpl implements Constraining
     private List<AbstractService> services = new ArrayList<AbstractService>();
     private List<Intent> requiredIntents = new ArrayList<Intent>();
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
-    
+
     /**
      * Constructs a new ConstrainingType
      */
@@ -73,7 +73,7 @@ public class ConstrainingTypeImpl extends ExtensibleImpl implements Constraining
     public List<Intent> getRequiredIntents() {
         return requiredIntents;
     }
-    
+
     public List<PolicySet> getPolicySets() {
         return policySets;
     }
@@ -82,7 +82,7 @@ public class ConstrainingTypeImpl extends ExtensibleImpl implements Constraining
     public int hashCode() {
         return String.valueOf(getName()).hashCode();
     }
-    
+
     @Override
     public boolean equals(Object obj) {
         if (obj == this) {
@@ -97,12 +97,12 @@ public class ConstrainingTypeImpl extends ExtensibleImpl implements Constraining
             return false;
         }
     }
-    
+
     public ExtensionType getExtensionType() {
         return null;
     }
 
     public void setExtensionType(ExtensionType type) {
     }
-    
+
 }

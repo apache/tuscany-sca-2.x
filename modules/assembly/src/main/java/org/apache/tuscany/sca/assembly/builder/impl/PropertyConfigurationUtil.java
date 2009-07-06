@@ -59,9 +59,11 @@ import org.xml.sax.InputSource;
  * @version $Rev$ $Date$
  */
 abstract class PropertyConfigurationUtil {
-    
-    private static Document evaluate(Document node, XPathExpression expression, DocumentBuilderFactory documentBuilderFactory)
-        throws XPathExpressionException, ParserConfigurationException {
+
+    private static Document evaluate(Document node,
+                                     XPathExpression expression,
+                                     DocumentBuilderFactory documentBuilderFactory) throws XPathExpressionException,
+        ParserConfigurationException {
 
         Node value = node.getDocumentElement();
         Node result = (Node)expression.evaluate(value, XPathConstants.NODE);
@@ -80,9 +82,9 @@ abstract class PropertyConfigurationUtil {
             return document;
         }
     }
-    
-    private static Document loadFromFile(String file, TransformerFactory transformerFactory) throws MalformedURLException, IOException,
-        TransformerException, ParserConfigurationException {
+
+    private static Document loadFromFile(String file, TransformerFactory transformerFactory)
+        throws MalformedURLException, IOException, TransformerException, ParserConfigurationException {
         URI uri = URI.create(file);
         // URI resolution for relative URIs is done when the composite is resolved.
         URL url = uri.toURL();
@@ -91,14 +93,14 @@ abstract class PropertyConfigurationUtil {
         InputStream is = null;
         try {
             is = connection.getInputStream();
-    
+
             Source streamSource = new SAXSource(new InputSource(is));
             DOMResult result = new DOMResult();
             javax.xml.transform.Transformer transformer = transformerFactory.newTransformer();
             transformer.transform(streamSource, result);
-            
+
             Document document = (Document)result.getNode();
-            
+
             // TUSCANY-2377, Add a fake value element so it's consistent with
             // the DOM tree loaded from inside SCDL
             Element root = document.createElementNS(null, "value");
@@ -111,15 +113,12 @@ abstract class PropertyConfigurationUtil {
             }
         }
     }
-    
+
     static void sourceComponentProperties(Map<String, Property> compositeProperties,
-                                                 Component componentDefinition,
-                                                 DocumentBuilderFactory documentBuilderFactory,
-                                                 TransformerFactory transformerFactory) throws CompositeBuilderException,
-                                                                               ParserConfigurationException,
-                                                                               XPathExpressionException,
-                                                                               TransformerException,
-                                                                               IOException {
+                                          Component componentDefinition,
+                                          DocumentBuilderFactory documentBuilderFactory,
+                                          TransformerFactory transformerFactory) throws CompositeBuilderException,
+        ParserConfigurationException, XPathExpressionException, TransformerException, IOException {
 
         List<ComponentProperty> componentProperties = componentDefinition.getProperties();
         for (ComponentProperty aProperty : componentProperties) {
@@ -137,13 +136,15 @@ abstract class PropertyConfigurationUtil {
                     String name = source.substring(1, index);
                     Property compositeProp = compositeProperties.get(name);
                     if (compositeProp == null) {
-                        throw new CompositeBuilderException("The 'source' cannot be resolved to a composite property: " + source);
+                        throw new CompositeBuilderException(
+                                                            "The 'source' cannot be resolved to a composite property: " + source);
                     }
 
                     Document compositePropDefValues = (Document)compositeProp.getValue();
 
                     // FIXME: How to deal with namespaces?
-                    Document node = evaluate(compositePropDefValues, aProperty.getSourceXPathExpression(), documentBuilderFactory);
+                    Document node =
+                        evaluate(compositePropDefValues, aProperty.getSourceXPathExpression(), documentBuilderFactory);
 
                     if (node != null) {
                         aProperty.setValue(node);
@@ -157,7 +158,7 @@ abstract class PropertyConfigurationUtil {
             }
         }
     }
-    
+
     private static class DOMNamespaceContext implements NamespaceContext {
         private Node node;
 
@@ -209,5 +210,5 @@ abstract class PropertyConfigurationUtil {
         }
 
     }
-    
+
 }

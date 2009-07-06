@@ -38,11 +38,11 @@ public abstract class ExtensibleImpl extends BaseImpl implements Extensible {
      */
     protected ExtensibleImpl() {
     }
-    
+
     public List<Object> getExtensions() {
         return extensions;
     }
-    
+
     public List<Extension> getAttributeExtensions() {
         return attributeExtensions;
     }

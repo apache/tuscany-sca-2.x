@@ -86,9 +86,9 @@ public class WireImpl extends ExtensibleImpl implements Wire, Cloneable {
 
     public void setExtensionType(ExtensionType type) {
     }
-    
+
     public void setPolicySets(List<PolicySet> policySets) {
-        this.policySets = policySets; 
+        this.policySets = policySets;
     }
 
     public void setRequiredIntents(List<Intent> intents) {

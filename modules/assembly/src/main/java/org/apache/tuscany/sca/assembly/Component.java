@@ -29,14 +29,14 @@ import org.apache.tuscany.sca.policy.PolicySubject;
  * @version $Rev$ $Date$
  */
 public interface Component extends Base, Extensible, PolicySubject, Cloneable {
-    
+
     /**
      * Returns the URI of the component.
      *  
      * @return the URI of the component
      */
     String getURI();
-    
+
     /**
      * Sets the URI of the component.
      * 
@@ -119,7 +119,6 @@ public interface Component extends Base, Extensible, PolicySubject, Cloneable {
      * @param autowire whether component references should be autowired
      */
     void setAutowire(Boolean autowire);
-    
 
     /**
      * Returns a clone of the component.

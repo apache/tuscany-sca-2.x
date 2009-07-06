@@ -22,7 +22,7 @@ package org.apache.tuscany.sca.assembly.builder;
 /**
  * An extension point for Composite builders.
  *
- * @version $Rev: $ $Date: $
+ * @version $Rev$ $Date$
  */
 public interface CompositeBuilderExtensionPoint {
 
@@ -32,14 +32,14 @@ public interface CompositeBuilderExtensionPoint {
      * @param compositeBuilder
      */
     void addCompositeBuilder(CompositeBuilder compositeBuilder);
-    
+
     /**
      * Removes a composite builder.
      *  
      * @param compositeBuilder
      */
     void removeCompositeBuilder(CompositeBuilder compositeBuilder);
-    
+
     /**
      * Returns the composite builder with the given id.
      * 
@@ -47,5 +47,5 @@ public interface CompositeBuilderExtensionPoint {
      * @return
      */
     CompositeBuilder getCompositeBuilder(String id);
-    
+
 }

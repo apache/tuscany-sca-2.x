@@ -20,9 +20,6 @@ package org.apache.tuscany.sca.assembly;
 
 import javax.xml.namespace.QName;
 
-
-
-
 /**
  * Represents a binding.
  *

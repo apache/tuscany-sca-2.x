@@ -44,24 +44,27 @@ public class ComponentReferenceBindingBuilderImpl implements CompositeBuilder {
     public void build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
         buildReferenceBindings(composite, monitor);
     }
-    
+
     public String getID() {
         return "org.apache.tuscany.sca.assembly.builder.ComponentReferenceBindingBuilder";
     }
 
     private void buildReferenceBindings(Composite composite, Monitor monitor) {
-    
+
         // find all the component reference bindings (starting at top level)     
         for (Component component : composite.getComponents()) {
             for (ComponentReference componentReference : component.getReferences()) {
                 for (Binding binding : componentReference.getBindings()) {
                     if (binding instanceof BindingBuilderExtension) {
-                        ((BindingBuilderExtension)binding).getBuilder().build(component, componentReference, binding, monitor);
+                        ((BindingBuilderExtension)binding).getBuilder().build(component,
+                                                                              componentReference,
+                                                                              binding,
+                                                                              monitor);
                     }
                 }
             }
         }
-        
+
         // build bindings recursively
         for (Component component : composite.getComponents()) {
             Implementation implementation = component.getImplementation();

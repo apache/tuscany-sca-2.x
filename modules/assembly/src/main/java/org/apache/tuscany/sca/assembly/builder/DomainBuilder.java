@@ -31,7 +31,7 @@ import org.apache.tuscany.sca.assembly.Service;
  * @version $Rev: 563358 $ $Date: 2007-08-07 01:26:27 +0100 (Tue, 07 Aug 2007) $
  */
 public interface DomainBuilder {
-    
+
     /**
      * Wire up the references and service in a domain returning a list
      * of the composites that have changed
@@ -41,7 +41,7 @@ public interface DomainBuilder {
      * @throws CompositeBuilderException
      */
     List<Composite> wireDomain(Composite domainLevelComposite);
-    
+
     /**
      * Locates the referenced service and updates the URI on the identified binding
      * 
@@ -50,8 +50,11 @@ public interface DomainBuilder {
      * @param bindingClassName
      * @param URI
      */
-    void updateDomainLevelServiceURI(Composite domainLevelComposite, String referenceName, String bindingClassName, String URI);
-    
+    void updateDomainLevelServiceURI(Composite domainLevelComposite,
+                                     String referenceName,
+                                     String bindingClassName,
+                                     String URI);
+
     /**
      * Get the component name out of the reference name that might look like Component/Service
      * 
@@ -59,7 +62,7 @@ public interface DomainBuilder {
      * @return
      */
     String getComponentNameFromReference(String referenceName);
-    
+
     /**
      * Get the service name out of the reference name that might look like Component/Service
      * 
@@ -67,7 +70,7 @@ public interface DomainBuilder {
      * @return
      */
     String getServiceNameFromReference(String referenceName);
-    
+
     /**
      * Find the service object given a reference name
      * 
@@ -76,5 +79,5 @@ public interface DomainBuilder {
      * @return
      */
     Service findServiceForReference(Composite composite, String referenceName);
-    
+
 }

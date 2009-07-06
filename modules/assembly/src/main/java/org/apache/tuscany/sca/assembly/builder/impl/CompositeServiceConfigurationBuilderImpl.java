@@ -66,8 +66,8 @@ public class CompositeServiceConfigurationBuilderImpl implements CompositeBuilde
             if (promotedService != null) {
 
                 // Set the bindings using the top level bindings to override the lower level bindings
-                if (!bindingsSpecifiedManually(compositeService.getBindings()) &&
-                    bindingsSpecifiedManually(promotedService.getBindings())) {
+                if (!bindingsSpecifiedManually(compositeService.getBindings()) && bindingsSpecifiedManually(promotedService
+                    .getBindings())) {
                     compositeService.getBindings().clear();
                     for (Binding binding : promotedService.getBindings()) {
                         try {
@@ -75,14 +75,13 @@ public class CompositeServiceConfigurationBuilderImpl implements CompositeBuilde
                         } catch (CloneNotSupportedException ex) {
                             // this binding can't be used in the promoted service
                         }
-                    }                    
+                    }
                 }
-                if (compositeService.getInterfaceContract() != null &&
-                    compositeService.getInterfaceContract().getCallbackInterface() != null) {
-                    if (!(compositeService.getCallback() != null &&
-                          bindingsSpecifiedManually(compositeService.getCallback().getBindings())) &&
-                        promotedService.getCallback() != null &&
-                        bindingsSpecifiedManually(promotedService.getCallback().getBindings())) {
+                if (compositeService.getInterfaceContract() != null && compositeService.getInterfaceContract()
+                    .getCallbackInterface() != null) {
+                    if (!(compositeService.getCallback() != null && bindingsSpecifiedManually(compositeService
+                        .getCallback().getBindings())) && promotedService.getCallback() != null
+                        && bindingsSpecifiedManually(promotedService.getCallback().getBindings())) {
                         if (compositeService.getCallback() != null) {
                             compositeService.getCallback().getBindings().clear();
                         } else {
@@ -94,7 +93,7 @@ public class CompositeServiceConfigurationBuilderImpl implements CompositeBuilde
                             } catch (CloneNotSupportedException ex) {
                                 // this binding can't be used in the promoted service
                             }
-                        }                          
+                        }
                     }
                 }
             }
@@ -122,8 +121,8 @@ public class CompositeServiceConfigurationBuilderImpl implements CompositeBuilde
                         if (promotedService != null) {
 
                             // Set the bindings using the top level bindings to override the lower level bindings
-                            if (!bindingsSpecifiedManually(compositeService.getBindings()) &&
-                                bindingsSpecifiedManually(promotedService.getBindings()) ) {
+                            if (!bindingsSpecifiedManually(compositeService.getBindings()) && bindingsSpecifiedManually(promotedService
+                                .getBindings())) {
                                 compositeService.getBindings().clear();
                                 for (Binding binding : promotedService.getBindings()) {
                                     try {
@@ -131,19 +130,18 @@ public class CompositeServiceConfigurationBuilderImpl implements CompositeBuilde
                                     } catch (CloneNotSupportedException ex) {
                                         // this binding can't be used in the promoted service
                                     }
-                                }                    
+                                }
                             }
-                            if (!bindingsSpecifiedManually(componentService.getBindings()) &&
-                                bindingsSpecifiedManually(compositeService.getBindings()) ) {
+                            if (!bindingsSpecifiedManually(componentService.getBindings()) && bindingsSpecifiedManually(compositeService
+                                .getBindings())) {
                                 componentService.getBindings().clear();
                                 componentService.getBindings().addAll(compositeService.getBindings());
                             }
-                            if (componentService.getInterfaceContract() != null &&
-                                componentService.getInterfaceContract().getCallbackInterface() != null) {
-                                if (!(compositeService.getCallback() != null &&
-                                      bindingsSpecifiedManually(compositeService.getCallback().getBindings())) &&
-                                    promotedService.getCallback() != null &&
-                                    bindingsSpecifiedManually(promotedService.getCallback().getBindings())) {
+                            if (componentService.getInterfaceContract() != null && componentService
+                                .getInterfaceContract().getCallbackInterface() != null) {
+                                if (!(compositeService.getCallback() != null && bindingsSpecifiedManually(compositeService
+                                    .getCallback().getBindings())) && promotedService.getCallback() != null
+                                    && bindingsSpecifiedManually(promotedService.getCallback().getBindings())) {
                                     if (compositeService.getCallback() != null) {
                                         compositeService.getCallback().getBindings().clear();
                                     } else {
@@ -155,19 +153,18 @@ public class CompositeServiceConfigurationBuilderImpl implements CompositeBuilde
                                         } catch (CloneNotSupportedException ex) {
                                             // this binding can't be used in the promoted service
                                         }
-                                    }                          
+                                    }
                                 }
-                                if (!(componentService.getCallback() != null &&
-                                      bindingsSpecifiedManually(componentService.getCallback().getBindings())) &&
-                                    compositeService.getCallback() != null &&
-                                    bindingsSpecifiedManually(compositeService.getCallback().getBindings())) {
+                                if (!(componentService.getCallback() != null && bindingsSpecifiedManually(componentService
+                                    .getCallback().getBindings())) && compositeService.getCallback() != null
+                                    && bindingsSpecifiedManually(compositeService.getCallback().getBindings())) {
                                     if (componentService.getCallback() != null) {
                                         componentService.getCallback().getBindings().clear();
                                     } else {
                                         componentService.setCallback(assemblyFactory.createCallback());
                                     }
-                                    componentService.getCallback().getBindings().addAll(
-                                            compositeService.getCallback().getBindings());
+                                    componentService.getCallback().getBindings().addAll(compositeService.getCallback()
+                                        .getBindings());
                                 }
                             }
                         }
@@ -188,9 +185,8 @@ public class CompositeServiceConfigurationBuilderImpl implements CompositeBuilde
 
         if (bindings.size() > 1) {
             return true;
-        } else if (bindings.size() == 1 &&
-                   bindings.get(0) instanceof AutomaticBinding &&
-                   ((AutomaticBinding)bindings.get(0)).getIsAutomatic()) {
+        } else if (bindings.size() == 1 && bindings.get(0) instanceof AutomaticBinding
+            && ((AutomaticBinding)bindings.get(0)).getIsAutomatic()) {
             return false;
         } else if (bindings.size() == 1) {
             return true;
@@ -198,5 +194,5 @@ public class CompositeServiceConfigurationBuilderImpl implements CompositeBuilde
             return false;
         }
     }
-    
+
 }

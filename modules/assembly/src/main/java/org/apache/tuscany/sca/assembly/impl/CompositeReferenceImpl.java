@@ -40,7 +40,7 @@ public class CompositeReferenceImpl extends ReferenceImpl implements CompositeRe
      */
     protected CompositeReferenceImpl() {
     }
-    
+
     @Override
     public Object clone() throws CloneNotSupportedException {
         CompositeReferenceImpl copy = (CompositeReferenceImpl)super.clone();
@@ -56,7 +56,7 @@ public class CompositeReferenceImpl extends ReferenceImpl implements CompositeRe
     public List<Component> getPromotedComponents() {
         return promotedComponents;
     }
-    
+
     public String toString() {
         return getName();
     }

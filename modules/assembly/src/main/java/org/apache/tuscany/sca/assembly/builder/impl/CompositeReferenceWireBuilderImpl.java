@@ -54,7 +54,7 @@ public class CompositeReferenceWireBuilderImpl implements CompositeBuilder {
      * @param composite
      */
     public void build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
-    
+
         // Process composite references declared in this composite
         for (Reference reference : composite.getReferences()) {
             CompositeReference compositeReference = (CompositeReference)reference;
@@ -68,10 +68,12 @@ public class CompositeReferenceWireBuilderImpl implements CompositeBuilder {
                 List<ComponentReference> promotedReferences =
                     ReferenceConfigurationUtil.getPromotedComponentReferences(compositeReference);
                 for (ComponentReference promotedReference : promotedReferences) {
-                    ReferenceConfigurationUtil.reconcileReferenceBindings(
-                            compositeReference, promotedReference, assemblyFactory, monitor);
+                    ReferenceConfigurationUtil.reconcileReferenceBindings(compositeReference,
+                                                                          promotedReference,
+                                                                          assemblyFactory,
+                                                                          monitor);
                     if (compositeReference.getInterfaceContract() != null && // can be null in unit tests
-                        compositeReference.getInterfaceContract().getCallbackInterface() != null) {
+                    compositeReference.getInterfaceContract().getCallbackInterface() != null) {
                         SCABinding scaCallbackBinding = promotedReference.getCallbackBinding(SCABinding.class);
                         if (promotedReference.getCallback() != null) {
                             promotedReference.getCallback().getBindings().clear();

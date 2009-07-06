@@ -37,5 +37,5 @@ public interface Service extends AbstractService, Contract {
      * 
      * @return the endpoints implied by this service
      */
-    List<Endpoint> getEndpoints(); 
+    List<Endpoint> getEndpoints();
 }

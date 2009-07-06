@@ -25,13 +25,13 @@ package org.apache.tuscany.sca.assembly.builder;
  * @version $Rev$ $Date$
  * 
  */
-public interface AutomaticBinding extends Cloneable  {
+public interface AutomaticBinding extends Cloneable {
 
     /**
      * @param isAutomatic
      */
     void setIsAutomatic(boolean isAutomatic);
-    
+
     /**
      * @return isAutomatic
      */

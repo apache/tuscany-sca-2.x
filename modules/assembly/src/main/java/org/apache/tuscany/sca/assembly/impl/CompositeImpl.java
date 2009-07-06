@@ -157,7 +157,7 @@ public class CompositeImpl extends ImplementationImpl implements Composite, Clon
     }
 
     @Override
-    public String toString(){
-    	return ( this.name != null ) ? getName().toString() : "null";
+    public String toString() {
+        return (this.name != null) ? getName().toString() : "null";
     }
 }

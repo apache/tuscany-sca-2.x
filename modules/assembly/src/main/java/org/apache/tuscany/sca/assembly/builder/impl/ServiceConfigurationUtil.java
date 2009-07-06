@@ -42,17 +42,17 @@ abstract class ServiceConfigurationUtil {
         if (componentService != null) {
             Service service = componentService.getService();
             if (componentService.getName() != null && service instanceof CompositeService) {
-    
+
                 // Continue to follow the service promotion chain
                 return getPromotedComponentService((CompositeService)service);
-    
+
             } else {
-    
+
                 // Found a non-composite service
                 return componentService;
             }
         } else {
-    
+
             // No promoted service
             return null;
         }

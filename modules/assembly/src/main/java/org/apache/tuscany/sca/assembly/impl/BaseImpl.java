@@ -33,7 +33,7 @@ public abstract class BaseImpl implements Base {
      */
     protected BaseImpl() {
     }
-    
+
     public boolean isUnresolved() {
         return unresolved;
     }

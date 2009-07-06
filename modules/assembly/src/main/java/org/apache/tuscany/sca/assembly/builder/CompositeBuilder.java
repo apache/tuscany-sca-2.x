@@ -37,7 +37,7 @@ public interface CompositeBuilder {
      * @return
      */
     String getID();
-    
+
     /**
      * Build a composite.
      * 
@@ -47,5 +47,5 @@ public interface CompositeBuilder {
      * @throws CompositeBuilderException
      */
     void build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException;
-    
+
 }

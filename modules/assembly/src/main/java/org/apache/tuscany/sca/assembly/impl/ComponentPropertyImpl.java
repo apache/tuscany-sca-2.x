@@ -34,18 +34,18 @@ public class ComponentPropertyImpl extends PropertyImpl implements ComponentProp
     private Property property;
     private String source;
     private XPathExpression sourceXPathExpression;
-    
+
     /**
      * Constructs a new component property.
      */
     protected ComponentPropertyImpl() {
     }
-    
+
     @Override
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
-    
+
     // FIXME getValue should not delegate to property.getValue()
     // Doing this violates the setValue/getValue semantics, as you
     // can call setValue() then get a different value from getValue()
@@ -57,7 +57,7 @@ public class ComponentPropertyImpl extends PropertyImpl implements ComponentProp
             return super.getValue();
         }
     }
- 
+
     public String getFile() {
         return file;
     }

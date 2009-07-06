@@ -60,9 +60,7 @@ public class ComponentConfigurationBuilderImpl extends BaseBuilderImpl implement
     public ComponentConfigurationBuilderImpl(AssemblyFactory assemblyFactory,
                                              SCABindingFactory scaBindingFactory,
                                              InterfaceContractMapper interfaceContractMapper) {
-        super(assemblyFactory, scaBindingFactory,
-              null, null,
-              interfaceContractMapper);
+        super(assemblyFactory, scaBindingFactory, null, null, interfaceContractMapper);
     }
 
     public ComponentConfigurationBuilderImpl(AssemblyFactory assemblyFactory,
@@ -70,11 +68,9 @@ public class ComponentConfigurationBuilderImpl extends BaseBuilderImpl implement
                                              DocumentBuilderFactory documentBuilderFactory,
                                              TransformerFactory transformerFactory,
                                              InterfaceContractMapper interfaceContractMapper) {
-        super(assemblyFactory, scaBindingFactory,
-              documentBuilderFactory, transformerFactory,
-              interfaceContractMapper);
+        super(assemblyFactory, scaBindingFactory, documentBuilderFactory, transformerFactory, interfaceContractMapper);
     }
-    
+
     public String getID() {
         return "org.apache.tuscany.sca.assembly.builder.ComponentConfigurationBuilder";
     }
@@ -82,18 +78,19 @@ public class ComponentConfigurationBuilderImpl extends BaseBuilderImpl implement
     public void build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
         configureComponents(composite, definitions, monitor);
     }
-    
+
     /**
      * Configure components in the composite.
      * 
      * @param composite
      * @param monitor
      */
-    protected void configureComponents(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
+    protected void configureComponents(Composite composite, Definitions definitions, Monitor monitor)
+        throws CompositeBuilderException {
         configureComponents(composite, null, definitions, monitor);
         configureSourcedProperties(composite, null);
-    }    
-    
+    }
+
     /**
      * Configure components in the composite.
      * 
@@ -128,7 +125,7 @@ public class ComponentConfigurationBuilderImpl extends BaseBuilderImpl implement
         List<Service> compositeServices = composite.getServices();
         for (Service service : compositeServices) {
             // Set default binding names 
-            
+
             // Create default SCA binding
             if (service.getBindings().isEmpty()) {
                 SCABinding scaBinding = createSCABinding(definitions);
@@ -169,11 +166,7 @@ public class ComponentConfigurationBuilderImpl extends BaseBuilderImpl implement
             Map<String, Service> services = new HashMap<String, Service>();
             Map<String, Reference> references = new HashMap<String, Reference>();
             Map<String, Property> properties = new HashMap<String, Property>();
-            indexImplementationPropertiesServicesAndReferences(component,
-                                                               services,
-                                                               references,
-                                                               properties,
-                                                               monitor);
+            indexImplementationPropertiesServicesAndReferences(component, services, references, properties, monitor);
 
             // Index component services, references and properties
             // Also check for duplicates
@@ -222,22 +215,20 @@ public class ComponentConfigurationBuilderImpl extends BaseBuilderImpl implement
                 }
             }
         }
-    }    
-    
+    }
+
     /**
      * For all the references with callbacks, create a corresponding callback
      * service.
      * 
      * @param component
      */
-    private void configureCallbackServices(Component component,
-                                           Map<String, ComponentService> componentServices) {
+    private void configureCallbackServices(Component component, Map<String, ComponentService> componentServices) {
         for (ComponentReference reference : component.getReferences()) {
             if (reference.getInterfaceContract() != null && // can be null in
-                                                            // unit tests
-                reference.getInterfaceContract().getCallbackInterface() != null) {
-                ComponentService service =
-                    componentServices.get(reference.getName());
+            // unit tests
+            reference.getInterfaceContract().getCallbackInterface() != null) {
+                ComponentService service = componentServices.get(reference.getName());
                 if (service == null) {
                     service = createCallbackService(component, reference);
                 }
@@ -262,8 +253,7 @@ public class ComponentConfigurationBuilderImpl extends BaseBuilderImpl implement
         componentService.setIsCallback(true);
         componentService.setName(reference.getName());
         try {
-            InterfaceContract contract =
-                (InterfaceContract)reference.getInterfaceContract().clone();
+            InterfaceContract contract = (InterfaceContract)reference.getInterfaceContract().clone();
             contract.setInterface(contract.getCallbackInterface());
             contract.setCallbackInterface(null);
             componentService.setInterfaceContract(contract);
@@ -272,38 +262,38 @@ public class ComponentConfigurationBuilderImpl extends BaseBuilderImpl implement
         }
         Reference implReference = reference.getReference();
         if (implReference != null) {
-        	// If the implementation reference is a CompositeReference, ensure that the Service that is 
-        	// created is a CompositeService, otherwise create a Service
-        	Service implService;
-        	if( implReference instanceof CompositeReference ) {
-        		CompositeService implCompService = assemblyFactory.createCompositeService();
-        		// TODO The reality here is that the composite reference which has the callback COULD promote more than
-        		// one component reference - and there must be a separate composite callback service for each of these component
-        		// references
-        		// Set the promoted component from the promoted component of the composite reference
-        		implCompService.setPromotedComponent(((CompositeReference) implReference).getPromotedComponents().get(0));
-        		implCompService.setIsCallback(true);
-        		// Set the promoted service
-        		ComponentService promotedService = assemblyFactory.createComponentService();
-        		promotedService.setName(((CompositeReference)implReference).getPromotedReferences().get(0).getName());
-        		promotedService.setUnresolved(true);
-        		promotedService.setIsCallback(true);
-        		implCompService.setPromotedService(promotedService);
-        		implService = implCompService;
-        		// Add the composite service to the composite implementation artifact
-        		Implementation implementation = component.getImplementation();
-        		if( implementation != null && implementation instanceof Composite) {
-        			((Composite)implementation).getServices().add(implCompService);
-        		} // end if
-        		//
-        	} else {
-        		implService = assemblyFactory.createService();
-        	} // end if
-        	//
+            // If the implementation reference is a CompositeReference, ensure that the Service that is 
+            // created is a CompositeService, otherwise create a Service
+            Service implService;
+            if (implReference instanceof CompositeReference) {
+                CompositeService implCompService = assemblyFactory.createCompositeService();
+                // TODO The reality here is that the composite reference which has the callback COULD promote more than
+                // one component reference - and there must be a separate composite callback service for each of these component
+                // references
+                // Set the promoted component from the promoted component of the composite reference
+                implCompService
+                    .setPromotedComponent(((CompositeReference)implReference).getPromotedComponents().get(0));
+                implCompService.setIsCallback(true);
+                // Set the promoted service
+                ComponentService promotedService = assemblyFactory.createComponentService();
+                promotedService.setName(((CompositeReference)implReference).getPromotedReferences().get(0).getName());
+                promotedService.setUnresolved(true);
+                promotedService.setIsCallback(true);
+                implCompService.setPromotedService(promotedService);
+                implService = implCompService;
+                // Add the composite service to the composite implementation artifact
+                Implementation implementation = component.getImplementation();
+                if (implementation != null && implementation instanceof Composite) {
+                    ((Composite)implementation).getServices().add(implCompService);
+                } // end if
+                //
+            } else {
+                implService = assemblyFactory.createService();
+            } // end if
+            //
             implService.setName(implReference.getName());
             try {
-                InterfaceContract implContract =
-                    (InterfaceContract)implReference.getInterfaceContract().clone();
+                InterfaceContract implContract = (InterfaceContract)implReference.getInterfaceContract().clone();
                 implContract.setInterface(implContract.getCallbackInterface());
                 implContract.setCallbackInterface(null);
                 implService.setInterfaceContract(implContract);
@@ -322,23 +312,22 @@ public class ComponentConfigurationBuilderImpl extends BaseBuilderImpl implement
      * @param component
      * @param componentReferences
      */
-    private void configureCallbackReferences(Component component,
-                                             Map<String, ComponentReference> componentReferences) {
+    private void configureCallbackReferences(Component component, Map<String, ComponentReference> componentReferences) {
         for (ComponentService service : component.getServices()) {
             if (service.getInterfaceContract() != null && // can be null in unit tests
-                service.getInterfaceContract().getCallbackInterface() != null) {
+            service.getInterfaceContract().getCallbackInterface() != null) {
                 ComponentReference reference = componentReferences.get(service.getName());
                 if (reference == null) {
                     reference = createCallbackReference(component, service);
                 } // end if
                 // Set the bindings of the callback reference
-                if ( reference.getBindings().isEmpty() ) {
-                	// If there are specific callback bindings set, use them
-	                if (service.getCallback() != null) {
+                if (reference.getBindings().isEmpty()) {
+                    // If there are specific callback bindings set, use them
+                    if (service.getCallback() != null) {
                         reference.getBindings().addAll(service.getCallback().getBindings());
                     } else {
-                    	// otherwise use the bindings on the forward service
-                    	reference.getBindings().addAll(service.getBindings());
+                        // otherwise use the bindings on the forward service
+                        reference.getBindings().addAll(service.getBindings());
                     } // end if
                 } // end if
                 service.setCallbackReference(reference);
@@ -366,36 +355,36 @@ public class ComponentConfigurationBuilderImpl extends BaseBuilderImpl implement
         }
         Service implService = service.getService();
         if (implService != null) {
-            
-        	// If the implementation service is a CompositeService, ensure that the Reference that is 
-        	// created is a CompositeReference, otherwise create a Reference
-        	Reference implReference;
-        	if( implService instanceof CompositeService ) {
-        		CompositeReference implCompReference = assemblyFactory.createCompositeReference();
-        		// Set the promoted component from the promoted component of the composite service
-        		implCompReference.getPromotedComponents().add(((CompositeService) implService).getPromotedComponent());
-        		// Set the promoted service
-        		ComponentReference promotedReference = assemblyFactory.createComponentReference();
-        		String promotedRefName = ((CompositeService) implService).getPromotedComponent().getName() + "/" +
-        			((CompositeService)implService).getPromotedService().getName();
-        		promotedReference.setName(promotedRefName);
-        		promotedReference.setUnresolved(true);
-        		implCompReference.getPromotedReferences().add(promotedReference);
-        		implReference = implCompReference;
-        		// Add the composite reference to the composite implementation artifact
-        		Implementation implementation = component.getImplementation();
-        		if( implementation != null && implementation instanceof Composite) {
-        			((Composite)implementation).getReferences().add(implCompReference);
-        		} // end if
-        	} else {
-        		implReference = assemblyFactory.createReference();
-        	} // end if
-        	//
-            
+
+            // If the implementation service is a CompositeService, ensure that the Reference that is 
+            // created is a CompositeReference, otherwise create a Reference
+            Reference implReference;
+            if (implService instanceof CompositeService) {
+                CompositeReference implCompReference = assemblyFactory.createCompositeReference();
+                // Set the promoted component from the promoted component of the composite service
+                implCompReference.getPromotedComponents().add(((CompositeService)implService).getPromotedComponent());
+                // Set the promoted service
+                ComponentReference promotedReference = assemblyFactory.createComponentReference();
+                String promotedRefName =
+                    ((CompositeService)implService).getPromotedComponent().getName() + "/"
+                        + ((CompositeService)implService).getPromotedService().getName();
+                promotedReference.setName(promotedRefName);
+                promotedReference.setUnresolved(true);
+                implCompReference.getPromotedReferences().add(promotedReference);
+                implReference = implCompReference;
+                // Add the composite reference to the composite implementation artifact
+                Implementation implementation = component.getImplementation();
+                if (implementation != null && implementation instanceof Composite) {
+                    ((Composite)implementation).getReferences().add(implCompReference);
+                } // end if
+            } else {
+                implReference = assemblyFactory.createReference();
+            } // end if
+            //
+
             implReference.setName(implService.getName());
             try {
-                InterfaceContract implContract =
-                    (InterfaceContract)implService.getInterfaceContract().clone();
+                InterfaceContract implContract = (InterfaceContract)implService.getInterfaceContract().clone();
                 implContract.setInterface(implContract.getCallbackInterface());
                 implContract.setCallbackInterface(null);
                 implReference.setInterfaceContract(implContract);
@@ -423,11 +412,13 @@ public class ComponentConfigurationBuilderImpl extends BaseBuilderImpl implement
                 compositeProperties.put(p.getName(), p);
             }
         }
-    
+
         for (Component component : composite.getComponents()) {
             try {
-                PropertyConfigurationUtil.sourceComponentProperties(compositeProperties, component,
-                                                                    documentBuilderFactory, transformerFactory);
+                PropertyConfigurationUtil.sourceComponentProperties(compositeProperties,
+                                                                    component,
+                                                                    documentBuilderFactory,
+                                                                    transformerFactory);
             } catch (Exception e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -448,5 +439,5 @@ public class ComponentConfigurationBuilderImpl extends BaseBuilderImpl implement
             }
         }
         return null;
-    }    
+    }
 }

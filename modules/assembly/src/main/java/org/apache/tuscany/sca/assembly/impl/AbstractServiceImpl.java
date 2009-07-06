@@ -26,11 +26,11 @@ import org.apache.tuscany.sca.assembly.AbstractService;
  * @version $Rev$ $Date$
  */
 public class AbstractServiceImpl extends ContractImpl implements AbstractService {
-    
+
     /**
      * Constructs a new abstract service.
      */
     protected AbstractServiceImpl() {
     }
-    
+
 }

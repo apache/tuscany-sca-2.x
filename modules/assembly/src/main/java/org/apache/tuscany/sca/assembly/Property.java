@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.sca.assembly;
 
-
 /**
  * A property allows for the configuration of an implementation with externally
  * set data values. An implementation can have zero or more properties. Each
@@ -28,7 +27,7 @@ package org.apache.tuscany.sca.assembly;
  * @version $Rev$ $Date$
  */
 public interface Property extends AbstractProperty, Cloneable {
-    
+
     /**
      * Returns a clone of the property.
      * 

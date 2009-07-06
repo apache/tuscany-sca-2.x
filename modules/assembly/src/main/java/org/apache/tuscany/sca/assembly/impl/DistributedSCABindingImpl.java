@@ -34,34 +34,34 @@ public class DistributedSCABindingImpl implements DistributedSCABinding {
 
     private SCABinding scaBinding;
 
-    public SCABinding getSCABinding(){
+    public SCABinding getSCABinding() {
         return scaBinding;
     }
 
-    public void setSCABinding(SCABinding scaBinding){
+    public void setSCABinding(SCABinding scaBinding) {
         this.scaBinding = scaBinding;
     }
 
-    public String getURI(){
+    public String getURI() {
         return null;
     }
 
-    public void setURI(String uri){
+    public void setURI(String uri) {
     }
 
-    public String getName(){
+    public String getName() {
         return null;
     }
 
-    public void setName(String name){
+    public void setName(String name) {
 
     }
 
-    public boolean isUnresolved(){
+    public boolean isUnresolved() {
         return false;
     }
 
-    public void setUnresolved(boolean unresolved){
+    public void setUnresolved(boolean unresolved) {
 
     }
 

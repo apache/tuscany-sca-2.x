@@ -31,27 +31,27 @@ public interface OptimizableBinding extends Binding, Cloneable {
      * @param component
      */
     void setTargetComponent(Component component);
-    
+
     /**
      * @param service
      */
     void setTargetComponentService(ComponentService service);
-    
+
     /**
      * @param binding
      */
     void setTargetBinding(Binding binding);
-    
+
     /**
      * @return
      */
     Binding getTargetBinding();
-    
+
     /**
      * @return
      */
     Component getTargetComponent();
-    
+
     /**
      * @return
      */

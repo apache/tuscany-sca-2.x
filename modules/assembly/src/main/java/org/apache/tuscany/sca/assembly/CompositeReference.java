@@ -40,5 +40,5 @@ public interface CompositeReference extends Reference {
      * @return the promoted component references
      */
     List<ComponentReference> getPromotedReferences();
-    
+
 }

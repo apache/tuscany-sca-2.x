@@ -50,6 +50,7 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 public abstract class AssemblyFactoryImpl implements AssemblyFactory {
 
     protected ExtensionPointRegistry registry;
+
     protected AssemblyFactoryImpl(ExtensionPointRegistry registry) {
         super();
         this.registry = registry;

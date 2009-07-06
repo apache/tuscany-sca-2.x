@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.sca.assembly;
 
-
 /**
  * An addressable instance of a service associated with a particular component.
  * 

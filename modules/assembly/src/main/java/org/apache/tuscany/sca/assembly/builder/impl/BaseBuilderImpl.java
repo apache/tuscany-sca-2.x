@@ -64,7 +64,6 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
     protected DocumentBuilderFactory documentBuilderFactory;
     protected TransformerFactory transformerFactory;
 
-
     protected BaseBuilderImpl(AssemblyFactory assemblyFactory,
                               SCABindingFactory scaBindingFactory,
                               DocumentBuilderFactory documentBuilderFactory,
@@ -87,7 +86,13 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
      */
     protected void warning(Monitor monitor, String message, Object model, String... messageParameters) {
         if (monitor != null) {
-            Problem problem = monitor.createProblem(this.getClass().getName(), "assembly-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
+            Problem problem =
+                monitor.createProblem(this.getClass().getName(),
+                                      "assembly-validation-messages",
+                                      Severity.WARNING,
+                                      model,
+                                      message,
+                                      (Object[])messageParameters);
             monitor.problem(problem);
         }
     }
@@ -102,7 +107,13 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
      */
     protected void error(Monitor monitor, String message, Object model, String... messageParameters) {
         if (monitor != null) {
-            Problem problem = monitor.createProblem(this.getClass().getName(), "assembly-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
+            Problem problem =
+                monitor.createProblem(this.getClass().getName(),
+                                      "assembly-validation-messages",
+                                      Severity.ERROR,
+                                      model,
+                                      message,
+                                      (Object[])messageParameters);
             monitor.problem(problem);
         }
     }
@@ -117,7 +128,13 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
     protected void error(Monitor monitor, String message, Object model, Exception ex) {
         if (monitor != null) {
             Problem problem = null;
-            problem = monitor.createProblem(this.getClass().getName(), "assembly-validation-messages", Severity.ERROR, model, message, ex);
+            problem =
+                monitor.createProblem(this.getClass().getName(),
+                                      "assembly-validation-messages",
+                                      Severity.ERROR,
+                                      model,
+                                      message,
+                                      ex);
             monitor.problem(problem);
         }
     }
@@ -129,8 +146,7 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
      * @param componentServices
 
      */
-    protected void indexComponents(Composite composite,
-                                 Map<String, Component> components) {
+    protected void indexComponents(Composite composite, Map<String, Component> components) {
         for (Component component : composite.getComponents()) {
             // Index components by name
             components.put(component.getName(), component);
@@ -143,8 +159,7 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
      * @param composite
      * @param componentServices
      */
-    protected void indexServices(Composite composite,
-                                 Map<String, ComponentService> componentServices) {
+    protected void indexServices(Composite composite, Map<String, ComponentService> componentServices) {
 
         for (Component component : composite.getComponents()) {
 
@@ -172,7 +187,6 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
             }
         }
     }
-
 
     /**
      * Index components, services and references inside a composite.
@@ -232,48 +246,46 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
         }
     }
 
-    protected void indexComponentPropertiesServicesAndReferences(
-            Component component,
-            Map<String, ComponentService> componentServices,
-            Map<String, ComponentReference> componentReferences,
-            Map<String, ComponentProperty> componentProperties, Monitor monitor) {
+    protected void indexComponentPropertiesServicesAndReferences(Component component,
+                                                                 Map<String, ComponentService> componentServices,
+                                                                 Map<String, ComponentReference> componentReferences,
+                                                                 Map<String, ComponentProperty> componentProperties,
+                                                                 Monitor monitor) {
         for (ComponentService componentService : component.getServices()) {
             if (componentServices.containsKey(componentService.getName())) {
-            	// [MJE 13/05/2009] Changed to "error" since allowing these violates the OASIS spec
-                error(monitor, "DuplicateComponentServiceName", component,
-                        component.getName(), componentService.getName());
+                // [MJE 13/05/2009] Changed to "error" since allowing these violates the OASIS spec
+                error(monitor, "DuplicateComponentServiceName", component, component.getName(), componentService
+                    .getName());
             } else {
-                componentServices.put(componentService.getName(),
-                        componentService);
+                componentServices.put(componentService.getName(), componentService);
             }
         }
         for (ComponentReference componentReference : component.getReferences()) {
             if (componentReferences.containsKey(componentReference.getName())) {
-            	// [MJE 13/05/2009] Changed to "error" since allowing these violates the OASIS spec
-                error(monitor, "DuplicateComponentReferenceName", component,
-                        component.getName(), componentReference.getName());
+                // [MJE 13/05/2009] Changed to "error" since allowing these violates the OASIS spec
+                error(monitor, "DuplicateComponentReferenceName", component, component.getName(), componentReference
+                    .getName());
             } else {
-                componentReferences.put(componentReference.getName(),
-                        componentReference);
+                componentReferences.put(componentReference.getName(), componentReference);
             }
         }
         for (ComponentProperty componentProperty : component.getProperties()) {
             if (componentProperties.containsKey(componentProperty.getName())) {
-            	// [MJE 13/05/2009] Changed to "error" since allowing these violates the OASIS spec
-                error(monitor, "DuplicateComponentPropertyName", component,
-                        component.getName(), componentProperty.getName());
+                // [MJE 13/05/2009] Changed to "error" since allowing these violates the OASIS spec
+                error(monitor, "DuplicateComponentPropertyName", component, component.getName(), componentProperty
+                    .getName());
             } else {
-                componentProperties.put(componentProperty.getName(),
-                        componentProperty);
+                componentProperties.put(componentProperty.getName(), componentProperty);
             }
         }
 
     }
 
-    protected void indexImplementationPropertiesServicesAndReferences(
-            Component component, Map<String, Service> services,
-            Map<String, Reference> references,
-            Map<String, Property> properties, Monitor monitor) {
+    protected void indexImplementationPropertiesServicesAndReferences(Component component,
+                                                                      Map<String, Service> services,
+                                                                      Map<String, Reference> references,
+                                                                      Map<String, Property> properties,
+                                                                      Monitor monitor) {
         // First check that the component has a resolved implementation
         Implementation implementation = component.getImplementation();
         if (implementation == null) {
@@ -283,8 +295,7 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
         } else if (implementation.isUnresolved()) {
 
             // The implementation must be fully resolved
-            error(monitor, "UnresolvedComponentImplementation", component,
-                    component.getName(), implementation.getURI());
+            error(monitor, "UnresolvedComponentImplementation", component, component.getName(), implementation.getURI());
 
         } else {
 
@@ -292,27 +303,27 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
             // duplicates
             for (Property property : implementation.getProperties()) {
                 if (properties.containsKey(property.getName())) {
-                	// [MJE 13/05/2009] Changed to "error" since allowing these violates the OASIS spec
-                    error(monitor, "DuplicateImplementationPropertyName",
-                            component, component.getName(), property.getName());
+                    // [MJE 13/05/2009] Changed to "error" since allowing these violates the OASIS spec
+                    error(monitor, "DuplicateImplementationPropertyName", component, component.getName(), property
+                        .getName());
                 } else {
                     properties.put(property.getName(), property);
                 }
             }
             for (Service service : implementation.getServices()) {
                 if (services.containsKey(service.getName())) {
-                	// [MJE 13/05/2009] Changed to "error" since allowing these violates the OASIS spec
-                    error(monitor, "DuplicateImplementationServiceName",
-                            component, component.getName(), service.getName());
+                    // [MJE 13/05/2009] Changed to "error" since allowing these violates the OASIS spec
+                    error(monitor, "DuplicateImplementationServiceName", component, component.getName(), service
+                        .getName());
                 } else {
                     services.put(service.getName(), service);
                 }
             }
             for (Reference reference : implementation.getReferences()) {
                 if (references.containsKey(reference.getName())) {
-                	// [MJE 13/05/2009] Changed to "error" since allowing these violates the OASIS spec
-                    error(monitor, "DuplicateImplementationReferenceName",
-                            component, component.getName(), reference.getName());
+                    // [MJE 13/05/2009] Changed to "error" since allowing these violates the OASIS spec
+                    error(monitor, "DuplicateImplementationReferenceName", component, component.getName(), reference
+                        .getName());
                 } else {
                     references.put(reference.getName(), reference);
                 }
@@ -331,9 +342,9 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
      * @param problems
      */
     protected void reconcileProperties(Component component,
-                                     Map<String, Property> properties,
-                                     Map<String, ComponentProperty> componentProperties,
-                                     Monitor monitor) {
+                                       Map<String, Property> properties,
+                                       Map<String, ComponentProperty> componentProperties,
+                                       Monitor monitor) {
 
         // Connect component properties to their properties
         for (ComponentProperty componentProperty : component.getProperties()) {
@@ -368,7 +379,11 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
                 // Check that a component property does not override the
                 // mustSupply attribute
                 if (!property.isMustSupply() && componentProperty.isMustSupply()) {
-                    warning(monitor, "PropertyMustSupplyIncompatible", component, component.getName(), componentProperty.getName());
+                    warning(monitor,
+                            "PropertyMustSupplyIncompatible",
+                            component,
+                            component.getName(),
+                            componentProperty.getName());
                 }
 
                 // Default to the mustSupply attribute specified on the property
@@ -381,20 +396,22 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
                 }
 
                 // Override the property value for the composite
-                if(component.getImplementation() instanceof Composite) {
+                if (component.getImplementation() instanceof Composite) {
                     property.setValue(componentProperty.getValue());
                 }
 
                 // Check that a value is supplied
                 if (componentProperty.getValue() == null && property.isMustSupply()) {
-                    warning(monitor, "PropertyMustSupplyNull", component, component.getName(), componentProperty.getName());
+                    warning(monitor, "PropertyMustSupplyNull", component, component.getName(), componentProperty
+                        .getName());
                 }
 
                 // Check that a a component property does not override the
                 // many attribute
                 if (!property.isMany() && componentProperty.isMany()) {
 
-                    warning(monitor, "PropertyOverrideManyAttribute", component, component.getName(), componentProperty.getName());
+                    warning(monitor, "PropertyOverrideManyAttribute", component, component.getName(), componentProperty
+                        .getName());
                 }
 
                 // Default to the many attribute defined on the property
@@ -410,7 +427,8 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
 
                 // Check that a type or element are specified
                 if (componentProperty.getXSDElement() == null && componentProperty.getXSDType() == null) {
-                    warning(monitor, "NoTypeForComponentProperty", component, component.getName(), componentProperty.getName());
+                    warning(monitor, "NoTypeForComponentProperty", component, component.getName(), componentProperty
+                        .getName());
                 }
             }
         }
@@ -426,9 +444,9 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
      * @param monitor
      */
     protected void reconcileReferences(Component component,
-                                     Map<String, Reference> references,
-                                     Map<String, ComponentReference> componentReferences,
-                                     Monitor monitor) {
+                                       Map<String, Reference> references,
+                                       Map<String, ComponentReference> componentReferences,
+                                       Monitor monitor) {
 
         // Connect each component reference to the corresponding reference
         for (ComponentReference componentReference : component.getReferences()) {
@@ -449,8 +467,7 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
         if (component.getImplementation() != null) {
             for (Reference reference : component.getImplementation().getReferences()) {
                 if (!componentReferences.containsKey(reference.getName())) {
-                    ComponentReference componentReference =
-                        assemblyFactory.createComponentReference();
+                    ComponentReference componentReference = assemblyFactory.createComponentReference();
                     componentReference.setIsCallback(reference.isCallback());
                     componentReference.setName(reference.getName());
                     componentReference.setReference(reference);
@@ -466,9 +483,12 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
                 // Reconcile multiplicity
                 if (componentReference.getMultiplicity() != null) {
                     if (!ReferenceConfigurationUtil.isValidMultiplicityOverride(reference.getMultiplicity(),
-                                                                   componentReference
-                                                                       .getMultiplicity())) {
-                        warning(monitor, "ReferenceIncompatibleMultiplicity", component, component.getName(), componentReference.getName());
+                                                                                componentReference.getMultiplicity())) {
+                        warning(monitor,
+                                "ReferenceIncompatibleMultiplicity",
+                                component,
+                                component.getName(),
+                                componentReference.getName());
                     }
                 } else {
                     componentReference.setMultiplicity(reference.getMultiplicity());
@@ -481,7 +501,11 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
                         .getInterfaceContract())) {
                         if (!interfaceContractMapper.isCompatible(componentReference.getInterfaceContract(),
                                                                   interfaceContract)) {
-                            warning(monitor, "ReferenceIncompatibleComponentInterface", component, component.getName(), componentReference.getName());
+                            warning(monitor,
+                                    "ReferenceIncompatibleComponentInterface",
+                                    component,
+                                    component.getName(),
+                                    componentReference.getName());
                         }
                     }
                 } else {
@@ -501,10 +525,8 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
                         componentReference.setCallback(assemblyFactory.createCallback());
                     }
 
-                } else if (componentReference.getCallback().getBindings().isEmpty() && reference
-                    .getCallback() != null) {
-                    componentReference.getCallback().getBindings().addAll(reference.getCallback()
-                        .getBindings());
+                } else if (componentReference.getCallback().getBindings().isEmpty() && reference.getCallback() != null) {
+                    componentReference.getCallback().getBindings().addAll(reference.getCallback().getBindings());
                 }
 
                 // Propagate autowire setting from the component
@@ -529,9 +551,9 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
      * @param monitor
      */
     protected void reconcileServices(Component component,
-                                   Map<String, Service> services,
-                                   Map<String, ComponentService> componentServices,
-                                   Monitor monitor) {
+                                     Map<String, Service> services,
+                                     Map<String, ComponentService> componentServices,
+                                     Monitor monitor) {
 
         // Connect each component service to the corresponding service
         for (ComponentService componentService : component.getServices()) {
@@ -542,7 +564,8 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
             if (service != null) {
                 componentService.setService(service);
             } else {
-                warning(monitor, "ServiceNotFoundForComponentService", component, component.getName(), componentService.getName());
+                warning(monitor, "ServiceNotFoundForComponentService", component, component.getName(), componentService
+                    .getName());
             }
         }
 
@@ -571,8 +594,12 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
                     if (interfaceContract != null && !componentService.getInterfaceContract().equals(interfaceContract)) {
                         if (!interfaceContractMapper.isCompatible(componentService.getInterfaceContract(),
                                                                   interfaceContract)) {
-                        	// MJE, 16/05/2009 - Upgraded from "warning" to "error" since this is a fatal problem - TUSCANY-3036
-                            error(monitor, "ServiceIncompatibleComponentInterface", component, component.getName(), componentService.getName());
+                            // MJE, 16/05/2009 - Upgraded from "warning" to "error" since this is a fatal problem - TUSCANY-3036
+                            error(monitor,
+                                  "ServiceIncompatibleComponentInterface",
+                                  component,
+                                  component.getName(),
+                                  componentService.getName());
                         }
                     }
                 } else {
@@ -591,10 +618,8 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
                         // Create an empty callback to avoid null check
                         componentService.setCallback(assemblyFactory.createCallback());
                     }
-                } else if (componentService.getCallback().getBindings().isEmpty() && service
-                    .getCallback() != null) {
-                    componentService.getCallback().getBindings().addAll(service.getCallback()
-                        .getBindings());
+                } else if (componentService.getCallback().getBindings().isEmpty() && service.getCallback() != null) {
+                    componentService.getCallback().getBindings().addAll(service.getCallback().getBindings());
                 }
             }
         }
@@ -605,13 +630,13 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
 
         // mark the bindings that are added automatically so that they can
         // be disregarded for overriding purposes
-        if (scaBinding instanceof AutomaticBinding){
+        if (scaBinding instanceof AutomaticBinding) {
             ((AutomaticBinding)scaBinding).setIsAutomatic(true);
         }
 
-        if ( definitions != null ) {
-            for ( ExtensionType attachPointType : definitions.getBindingTypes() ) {
-                if ( attachPointType.getType().equals(BINDING_SCA_QNAME)) {
+        if (definitions != null) {
+            for (ExtensionType attachPointType : definitions.getBindingTypes()) {
+                if (attachPointType.getType().equals(BINDING_SCA_QNAME)) {
                     ((PolicySubject)scaBinding).setExtensionType(attachPointType);
                 }
             }

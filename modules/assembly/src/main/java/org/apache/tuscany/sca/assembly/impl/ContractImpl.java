@@ -37,15 +37,15 @@ public class ContractImpl extends ExtensibleImpl implements AbstractContract {
     private String name;
     private List<Intent> requiredIntents = new ArrayList<Intent>();
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
-    
+
     private boolean isCallback = false;
-    
+
     /**
      * Constructs a new contract.
      */
     protected ContractImpl() {
     }
-    
+
     public String getName() {
         return name;
     }
@@ -57,11 +57,11 @@ public class ContractImpl extends ExtensibleImpl implements AbstractContract {
     public InterfaceContract getInterfaceContract() {
         return interfaceContract;
     }
-    
+
     public void setInterfaceContract(InterfaceContract interfaceContract) {
         this.interfaceContract = interfaceContract;
     }
-    
+
     public List<Intent> getRequiredIntents() {
         return requiredIntents;
     }
@@ -80,7 +80,7 @@ public class ContractImpl extends ExtensibleImpl implements AbstractContract {
 
     public void setExtensionType(ExtensionType type) {
     }
-   
+
     public List<PolicySet> getPolicySets() {
         return policySets;
     }

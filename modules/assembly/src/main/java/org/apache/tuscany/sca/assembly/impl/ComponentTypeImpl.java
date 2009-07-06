@@ -43,6 +43,7 @@ public class ComponentTypeImpl extends ExtensibleImpl implements ComponentType, 
     private List<Service> services = new ArrayList<Service>();
     private List<Intent> requiredIntents = new ArrayList<Intent>();
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
+
     /**
      * Constructs a new component type.
      */

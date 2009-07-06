@@ -35,12 +35,12 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContract;
  * @version $Rev$ $Date$
  */
 public class ComponentReferenceImpl extends ReferenceImpl implements ComponentReference, Cloneable {
-    private Reference 					reference;
-    private Boolean 					autowire;
-    private boolean 					nonOverridable;
-    private List<CompositeReference> 	promotedAs = new ArrayList<CompositeReference>();
-    private ComponentService 			callbackService;
-    private boolean 					isPromoted = false;
+    private Reference reference;
+    private Boolean autowire;
+    private boolean nonOverridable;
+    private List<CompositeReference> promotedAs = new ArrayList<CompositeReference>();
+    private ComponentService callbackService;
+    private boolean isPromoted = false;
 
     /**
      * Constructs a new component reference.
@@ -54,7 +54,7 @@ public class ComponentReferenceImpl extends ReferenceImpl implements ComponentRe
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
-    
+
     public Reference getReference() {
         return reference;
     }
@@ -70,7 +70,7 @@ public class ComponentReferenceImpl extends ReferenceImpl implements ComponentRe
     public void setAutowire(Boolean autowire) {
         this.autowire = autowire;
     }
-    
+
     public Boolean getAutowire() {
         return autowire;
     }
@@ -86,17 +86,16 @@ public class ComponentReferenceImpl extends ReferenceImpl implements ComponentRe
     public void setCallbackService(ComponentService callbackService) {
         this.callbackService = callbackService;
     }
-    
-    
+
     /**
      * Use endpoint information to work out what the interface contract for the
      * binding is. 
      */
     @Override
-    public InterfaceContract getInterfaceContract(Binding binding){
+    public InterfaceContract getInterfaceContract(Binding binding) {
         InterfaceContract interfaceContract = null;
-        
-        if (interfaceContract == null){
+
+        if (interfaceContract == null) {
             interfaceContract = getInterfaceContract();
         }
         return interfaceContract;
@@ -108,13 +107,13 @@ public class ComponentReferenceImpl extends ReferenceImpl implements ComponentRe
 
     public void setNonOverridable(boolean nonOverridable) {
         this.nonOverridable = nonOverridable;
-    } 
-    
-    public void setPromoted( boolean isPromoted ) {
-    	this.isPromoted = isPromoted;
+    }
+
+    public void setPromoted(boolean isPromoted) {
+        this.isPromoted = isPromoted;
     } // end method setPromoted
-    
+
     public boolean isPromoted() {
-    	return isPromoted;
+        return isPromoted;
     }
 } // end class ComponentReferenceImpl

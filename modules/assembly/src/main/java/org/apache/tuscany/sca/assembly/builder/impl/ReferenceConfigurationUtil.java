@@ -51,7 +51,13 @@ abstract class ReferenceConfigurationUtil {
      */
     private static void warning(Monitor monitor, String message, Object model, String... messageParameters) {
         if (monitor != null) {
-            Problem problem = monitor.createProblem(ReferenceConfigurationUtil.class.getName(), "assembly-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
+            Problem problem =
+                monitor.createProblem(ReferenceConfigurationUtil.class.getName(),
+                                      "assembly-validation-messages",
+                                      Severity.WARNING,
+                                      model,
+                                      message,
+                                      (Object[])messageParameters);
             monitor.problem(problem);
         }
     }
@@ -70,19 +76,18 @@ abstract class ReferenceConfigurationUtil {
             return true;
         }
     }
-    
-    static boolean validateMultiplicityAndTargets(Multiplicity multiplicity,
-                                                         List<?> targets, List<Binding> bindings) {
-        
+
+    static boolean validateMultiplicityAndTargets(Multiplicity multiplicity, List<?> targets, List<Binding> bindings) {
+
         // Count targets
         int count = targets.size();
-        
+
         //FIXME workaround, this validation is sometimes invoked too early
         // before we get a chance to init the multiplicity attribute
         if (multiplicity == null) {
             return true;
         }
-        
+
         switch (multiplicity) {
             case ZERO_N:
                 break;
@@ -94,8 +99,8 @@ abstract class ReferenceConfigurationUtil {
             case ONE_ONE:
                 if (count != 1) {
                     if (count == 0) {
-                        for (Binding binding: bindings) {
-                            if (!(binding instanceof OptimizableBinding) || binding.getURI()!=null) {
+                        for (Binding binding : bindings) {
+                            if (!(binding instanceof OptimizableBinding) || binding.getURI() != null) {
                                 return true;
                             }
                         }
@@ -106,8 +111,8 @@ abstract class ReferenceConfigurationUtil {
             case ONE_N:
                 if (count < 1) {
                     if (count == 0) {
-                        for (Binding binding: bindings) {
-                            if (!(binding instanceof OptimizableBinding) || binding.getURI()!=null) {
+                        for (Binding binding : bindings) {
+                            if (!(binding instanceof OptimizableBinding) || binding.getURI() != null) {
                                 return true;
                             }
                         }
@@ -145,12 +150,12 @@ abstract class ReferenceConfigurationUtil {
         for (ComponentReference componentReference : compositeReference.getPromotedReferences()) {
             Reference reference = componentReference.getReference();
             if (reference instanceof CompositeReference) {
-    
+
                 // Continue to follow the reference promotion chain
                 collectPromotedComponentReferences((CompositeReference)reference, componentReferences);
-    
+
             } else if (reference != null) {
-    
+
                 // Found a non-composite reference
                 componentReferences.add(componentReference);
             }
@@ -167,24 +172,23 @@ abstract class ReferenceConfigurationUtil {
                                            ComponentReference promotedReference,
                                            AssemblyFactory assemblyFactory,
                                            Monitor monitor) {
-              
-        if (reference.getEndpointReferences().size() > 0){
-            if (promotedReference.getMultiplicity() == Multiplicity.ONE_ONE ||
-                    promotedReference.getMultiplicity() == Multiplicity.ZERO_ONE) {
-            	// Override any existing wires for 0..1 and 1..1 multiplicity
-            	promotedReference.getEndpointReferences().clear();
-            	// For 0..1 and 1..1, there should not be more than 1 endpoint reference
+
+        if (reference.getEndpointReferences().size() > 0) {
+            if (promotedReference.getMultiplicity() == Multiplicity.ONE_ONE || promotedReference.getMultiplicity() == Multiplicity.ZERO_ONE) {
+                // Override any existing wires for 0..1 and 1..1 multiplicity
+                promotedReference.getEndpointReferences().clear();
+                // For 0..1 and 1..1, there should not be more than 1 endpoint reference
                 if (reference.getEndpointReferences().size() > 1) {
-                    warning(monitor, "ComponentReferenceMoreWire", promotedReference, promotedReference.getName());                
+                    warning(monitor, "ComponentReferenceMoreWire", promotedReference, promotedReference.getName());
                 } // end if
             } // end if
             // Clone the EndpointReferences from the outer level and add to the promoted reference
-            for( EndpointReference epRef : reference.getEndpointReferences()){
-            	EndpointReference epRefClone = copyHigherReference( epRef, promotedReference );
-            	promotedReference.getEndpointReferences().add(epRefClone);
+            for (EndpointReference epRef : reference.getEndpointReferences()) {
+                EndpointReference epRefClone = copyHigherReference(epRef, promotedReference);
+                promotedReference.getEndpointReferences().add(epRefClone);
             } // end for
         } // end if
-        
+
         Set<Binding> callbackBindings = new HashSet<Binding>();
         if (promotedReference.getCallback() != null) {
             callbackBindings.addAll(promotedReference.getCallback().getBindings());
@@ -199,25 +203,25 @@ abstract class ReferenceConfigurationUtil {
             } // end if
         } // end for
     } // end method reconcileReferenceBindings
-    
+
     /**
      * Copy a higher level EndpointReference down to a lower level reference which it promotes 
      * @param epRef - the endpoint reference
      * @param promotedReference - the promoted reference
      * @return - a copy of the EndpointReference with data merged from the promoted reference
      */
-    private static EndpointReference copyHigherReference( EndpointReference epRef, ComponentReference promotedReference ) {
-    	EndpointReference epRefClone = null;
-    	try {
-    		epRefClone = (EndpointReference) epRef.clone();
-    	} catch (Exception e) {
-    		// Ignore (we know that EndpointReference2 can be cloned)
-    	} // end try
-    	// Copy across details of the inner reference
-    	ComponentReference ref = epRefClone.getReference();
-    	//FIXME
-    	epRefClone.setReference(promotedReference);
-    	return epRefClone;
+    private static EndpointReference copyHigherReference(EndpointReference epRef, ComponentReference promotedReference) {
+        EndpointReference epRefClone = null;
+        try {
+            epRefClone = (EndpointReference)epRef.clone();
+        } catch (Exception e) {
+            // Ignore (we know that EndpointReference2 can be cloned)
+        } // end try
+        // Copy across details of the inner reference
+        ComponentReference ref = epRefClone.getReference();
+        //FIXME
+        epRefClone.setReference(promotedReference);
+        return epRefClone;
     } // end copyHigherReference
 
 } // end class

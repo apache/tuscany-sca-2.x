@@ -30,7 +30,7 @@ import org.apache.tuscany.sca.assembly.SCABindingFactory;
  */
 public class SCABindingFactoryImpl implements SCABindingFactory {
 
-    public SCABindingFactoryImpl (){
+    public SCABindingFactoryImpl() {
 
     }
 

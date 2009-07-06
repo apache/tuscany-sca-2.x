@@ -18,12 +18,11 @@
  */
 package org.apache.tuscany.sca.assembly;
 
-
 /**
  * Represents an operationSelector
  * 
  * @version $Rev$ $Date$
  */
 public interface OperationSelector extends Base, Cloneable {
-  
+
 }

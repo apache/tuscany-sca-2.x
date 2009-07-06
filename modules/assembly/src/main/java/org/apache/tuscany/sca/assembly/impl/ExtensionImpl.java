@@ -45,7 +45,7 @@ public class ExtensionImpl implements Extension {
     }
 
     public <T> T getValue() {
-        return (T) value;
+        return (T)value;
     }
 
     public <T> void setValue(T value) {

@@ -42,7 +42,7 @@ public interface CompositeBuilderTmp {
      * @return
      */
     String getID();
-    
+
     /**
      * Build a composite.
      * 
@@ -51,6 +51,7 @@ public interface CompositeBuilderTmp {
      * @param monitor
      * @throws CompositeBuilderException
      */
-    void build(Composite composite, Definitions definitions, Map<QName, List<String>> bindingBaseURIs, Monitor monitor) throws CompositeBuilderException;
-    
+    void build(Composite composite, Definitions definitions, Map<QName, List<String>> bindingBaseURIs, Monitor monitor)
+        throws CompositeBuilderException;
+
 }

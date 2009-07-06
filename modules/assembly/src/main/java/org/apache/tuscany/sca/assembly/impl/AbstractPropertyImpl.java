@@ -41,7 +41,7 @@ public class AbstractPropertyImpl extends ExtensibleImpl implements AbstractProp
      */
     protected AbstractPropertyImpl() {
     }
-    
+
     public Object getValue() {
         return value;
     }

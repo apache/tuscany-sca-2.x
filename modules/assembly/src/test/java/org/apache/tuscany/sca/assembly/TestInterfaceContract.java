@@ -29,7 +29,7 @@ import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractImpl;
 public class TestInterfaceContract extends InterfaceContractImpl implements InterfaceContract {
 
     public TestInterfaceContract(AssemblyFactory factory) {
-        
+
         TestInterface testInterface = new TestInterface(factory);
         setInterface(testInterface);
 

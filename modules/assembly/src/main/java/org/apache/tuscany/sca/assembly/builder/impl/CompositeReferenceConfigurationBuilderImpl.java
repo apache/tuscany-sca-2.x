@@ -70,7 +70,7 @@ public class CompositeReferenceConfigurationBuilderImpl implements CompositeBuil
                     // Set the bindings using the top level bindings to override the lower level bindings
                     if (bindingsSpecifiedManually(compositeReference.getBindings())) {
                         compositeReference.setPromotionOverride(true);
-                    } else if (bindingsSpecifiedManually(promotedReference.getBindings()) ) {
+                    } else if (bindingsSpecifiedManually(promotedReference.getBindings())) {
                         compositeReference.getBindings().clear();
                         for (Binding binding : promotedReference.getBindings()) {
                             try {
@@ -80,13 +80,13 @@ public class CompositeReferenceConfigurationBuilderImpl implements CompositeBuil
                             }
                         }
                     }
-                    if (compositeReference.getInterfaceContract() != null &&
-                        compositeReference.getInterfaceContract().getCallbackInterface() != null) {
-                        if (compositeReference.getCallback() != null &&
-                            bindingsSpecifiedManually(compositeReference.getCallback().getBindings())) {
+                    if (compositeReference.getInterfaceContract() != null && compositeReference.getInterfaceContract()
+                        .getCallbackInterface() != null) {
+                        if (compositeReference.getCallback() != null && bindingsSpecifiedManually(compositeReference
+                            .getCallback().getBindings())) {
                             compositeReference.setPromotionOverride(true);
-                        } else if (promotedReference.getCallback() != null &&
-                                   bindingsSpecifiedManually(promotedReference.getCallback().getBindings())) {
+                        } else if (promotedReference.getCallback() != null && bindingsSpecifiedManually(promotedReference
+                            .getCallback().getBindings())) {
                             if (compositeReference.getCallback() != null) {
                                 compositeReference.getCallback().getBindings().clear();
                             } else {
@@ -106,9 +106,9 @@ public class CompositeReferenceConfigurationBuilderImpl implements CompositeBuil
                     // Because the component reference bindings can all be different, we don't
                     // copy any of them up to this composite reference, which will therefore always
                     // have its own binding, even if it's only the default SCA binding.
-                    if (bindingsSpecifiedManually(compositeReference.getBindings()) ||
-                        (compositeReference.getCallback() != null &&
-                         bindingsSpecifiedManually(compositeReference.getCallback().getBindings()))) {
+                    if (bindingsSpecifiedManually(compositeReference.getBindings()) || (compositeReference
+                        .getCallback() != null && bindingsSpecifiedManually(compositeReference.getCallback()
+                        .getBindings()))) {
                         compositeReference.setPromotionOverride(true);
                     }
                 }
@@ -139,8 +139,8 @@ public class CompositeReferenceConfigurationBuilderImpl implements CompositeBuil
                                 ComponentReference promotedReference = promotedRefs.get(0);
 
                                 // Set the bindings using the top level bindings to override the lower level bindings
-                                if (!bindingsSpecifiedManually(compositeReference.getBindings()) &&
-                                    bindingsSpecifiedManually(promotedReference.getBindings()) ) {
+                                if (!bindingsSpecifiedManually(compositeReference.getBindings()) && bindingsSpecifiedManually(promotedReference
+                                    .getBindings())) {
                                     compositeReference.getBindings().clear();
                                     for (Binding binding : promotedReference.getBindings()) {
                                         try {
@@ -152,29 +152,28 @@ public class CompositeReferenceConfigurationBuilderImpl implements CompositeBuil
                                 }
                                 if (bindingsSpecifiedManually(componentReference.getBindings())) {
                                     componentReference.setPromotionOverride(true);
-                                } else if (bindingsSpecifiedManually(compositeReference.getBindings()) ) {
+                                } else if (bindingsSpecifiedManually(compositeReference.getBindings())) {
                                     componentReference.getBindings().clear();
                                     componentReference.getBindings().addAll(compositeReference.getBindings());
                                 }
-                                if (componentReference.getInterfaceContract() != null &&
-                                    componentReference.getInterfaceContract().getCallbackInterface() != null) {
-                                    if (!(compositeReference.getCallback() != null &&
-                                          bindingsSpecifiedManually(compositeReference.getCallback().getBindings())) &&
-                                        promotedReference.getCallback() != null &&
-                                        bindingsSpecifiedManually(promotedReference.getCallback().getBindings())) {
+                                if (componentReference.getInterfaceContract() != null && componentReference
+                                    .getInterfaceContract().getCallbackInterface() != null) {
+                                    if (!(compositeReference.getCallback() != null && bindingsSpecifiedManually(compositeReference
+                                        .getCallback().getBindings())) && promotedReference.getCallback() != null
+                                        && bindingsSpecifiedManually(promotedReference.getCallback().getBindings())) {
                                         if (compositeReference.getCallback() != null) {
                                             compositeReference.getCallback().getBindings().clear();
                                         } else {
                                             compositeReference.setCallback(assemblyFactory.createCallback());
                                         }
-                                        compositeReference.getCallback().getBindings().addAll(
-                                                promotedReference.getCallback().getBindings());
+                                        compositeReference.getCallback().getBindings().addAll(promotedReference
+                                            .getCallback().getBindings());
                                     }
-                                    if (componentReference.getCallback() != null &&
-                                        bindingsSpecifiedManually(componentReference.getCallback().getBindings())) {
+                                    if (componentReference.getCallback() != null && bindingsSpecifiedManually(componentReference
+                                        .getCallback().getBindings())) {
                                         componentReference.setPromotionOverride(true);
-                                    } else if (compositeReference.getCallback() != null &&
-                                               bindingsSpecifiedManually(compositeReference.getCallback().getBindings())) {
+                                    } else if (compositeReference.getCallback() != null && bindingsSpecifiedManually(compositeReference
+                                        .getCallback().getBindings())) {
                                         if (componentReference.getCallback() != null) {
                                             componentReference.getCallback().getBindings().clear();
                                         } else {
@@ -182,7 +181,8 @@ public class CompositeReferenceConfigurationBuilderImpl implements CompositeBuil
                                         }
                                         for (Binding binding : compositeReference.getCallback().getBindings()) {
                                             try {
-                                                componentReference.getCallback().getBindings().add((Binding)binding.clone());
+                                                componentReference.getCallback().getBindings().add((Binding)binding
+                                                    .clone());
                                             } catch (CloneNotSupportedException ex) {
                                                 // this binding can't be used in the promoted reference
                                             }
@@ -194,9 +194,9 @@ public class CompositeReferenceConfigurationBuilderImpl implements CompositeBuil
                                 // Because the lower-level component reference bindings can all be different,
                                 // we don't copy any of them up to this component reference, which will therefore
                                 // always have its own binding, even if it's only the default SCA binding.
-                                if (bindingsSpecifiedManually(componentReference.getBindings()) ||
-                                    (componentReference.getCallback() != null &&
-                                     bindingsSpecifiedManually(componentReference.getCallback().getBindings()))) {
+                                if (bindingsSpecifiedManually(componentReference.getBindings()) || (componentReference
+                                    .getCallback() != null && bindingsSpecifiedManually(componentReference
+                                    .getCallback().getBindings()))) {
                                     componentReference.setPromotionOverride(true);
                                 }
                             }
@@ -218,9 +218,8 @@ public class CompositeReferenceConfigurationBuilderImpl implements CompositeBuil
 
         if (bindings.size() > 1) {
             return true;
-        } else if (bindings.size() == 1 &&
-                   bindings.get(0) instanceof AutomaticBinding &&
-                   ((AutomaticBinding)bindings.get(0)).getIsAutomatic()) {
+        } else if (bindings.size() == 1 && bindings.get(0) instanceof AutomaticBinding
+            && ((AutomaticBinding)bindings.get(0)).getIsAutomatic()) {
             return false;
         } else if (bindings.size() == 1) {
             return true;
@@ -228,5 +227,5 @@ public class CompositeReferenceConfigurationBuilderImpl implements CompositeBuil
             return false;
         }
     }
-    
+
 }

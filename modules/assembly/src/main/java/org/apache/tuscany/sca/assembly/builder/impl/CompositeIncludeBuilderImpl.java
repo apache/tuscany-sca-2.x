@@ -19,9 +19,7 @@
 
 package org.apache.tuscany.sca.assembly.builder.impl;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
@@ -29,9 +27,7 @@ import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
-import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.definitions.Definitions;
-import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
@@ -42,13 +38,13 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
  * @version $Rev$ $Date$
  */
 public class CompositeIncludeBuilderImpl implements CompositeBuilder {
-    
+
     private AssemblyFactory assemblyFactory;
-        
+
     public CompositeIncludeBuilderImpl(AssemblyFactory assemblyFactory) {
         this.assemblyFactory = assemblyFactory;
     }
-            
+
     public String getID() {
         return "org.apache.tuscany.sca.assembly.builder.CompositeIncludeBuilder";
     }
@@ -58,8 +54,14 @@ public class CompositeIncludeBuilderImpl implements CompositeBuilder {
     }
 
     private void warning(Monitor monitor, String message, Object model, String... messageParameters) {
-        if (monitor != null){
-            Problem problem = monitor.createProblem(this.getClass().getName(), "assembly-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
+        if (monitor != null) {
+            Problem problem =
+                monitor.createProblem(this.getClass().getName(),
+                                      "assembly-validation-messages",
+                                      Severity.WARNING,
+                                      model,
+                                      message,
+                                      (Object[])messageParameters);
             monitor.problem(problem);
         }
     }
@@ -70,10 +72,10 @@ public class CompositeIncludeBuilderImpl implements CompositeBuilder {
      * @param composite
      */
     private void fuseIncludes(Composite composite, Monitor monitor) {
-        
+
         Set<Composite> visited = new HashSet<Composite>();
         visited.add(composite);
-        
+
         for (Composite included : composite.getIncludes()) {
             Composite fusedComposite = fuseInclude(included, visited, monitor);
             if (fusedComposite != null) {
@@ -86,30 +88,28 @@ public class CompositeIncludeBuilderImpl implements CompositeBuilder {
                 composite.getRequiredIntents().addAll(fusedComposite.getRequiredIntents());
             }
         }
-        
+
         // Clear the list of includes as all of the included components 
         // have now been added into the top level composite
         composite.getIncludes().clear();
     }
-    
-    private Composite fuseInclude(Composite include,
-                                  Set<Composite> visited, 
-                                  Monitor monitor) {
-        
+
+    private Composite fuseInclude(Composite include, Set<Composite> visited, Monitor monitor) {
+
         if (visited.contains(include)) {
             warning(monitor, "CompositeAlreadyIncluded", include, include.getName().toString());
             return null;
         }
-        
+
         visited.add(include);
-        
+
         Composite clone;
         try {
             clone = (Composite)include.clone();
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException(e);
         }
-        
+
         // get the components etc. from any included composites
         for (Composite included : include.getIncludes()) {
             Composite fusedComposite = fuseInclude(included, visited, monitor);
@@ -123,17 +123,17 @@ public class CompositeIncludeBuilderImpl implements CompositeBuilder {
                 clone.getRequiredIntents().addAll(fusedComposite.getRequiredIntents());
             }
         }
-        
+
         // apply the autowire flag on this composite to any inline 
         // components - Assembly 5.6 point 4
-        if (include.getAutowire() == Boolean.TRUE){
-            for ( Component component : clone.getComponents()){
-                if (component.getAutowire() == null){
+        if (include.getAutowire() == Boolean.TRUE) {
+            for (Component component : clone.getComponents()) {
+                if (component.getAutowire() == null) {
                     component.setAutowire(true);
                 }
             }
         }
-        
+
         // return the fused composite we have built up so far
         return clone;
     }

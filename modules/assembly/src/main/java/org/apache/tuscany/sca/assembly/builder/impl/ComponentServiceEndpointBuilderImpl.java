@@ -29,9 +29,7 @@ import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.Endpoint;
-import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.Implementation;
-import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
@@ -48,10 +46,10 @@ import org.apache.tuscany.sca.policy.PolicySet;
  */
 public class ComponentServiceEndpointBuilderImpl implements CompositeBuilder {
     private AssemblyFactory assemblyFactory;
-    
-	// Testing
-	//boolean useNew = true;
-	boolean useNew = false;
+
+    // Testing
+    //boolean useNew = true;
+    boolean useNew = false;
 
     public ComponentServiceEndpointBuilderImpl(AssemblyFactory assemblyFactory) {
         this.assemblyFactory = assemblyFactory;
@@ -69,19 +67,19 @@ public class ComponentServiceEndpointBuilderImpl implements CompositeBuilder {
      * @param monitor - a Monitor for logging errors
      */
     public void build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
-    
+
         // process component services
-    	if( !useNew ) {
-    		processComponentServices(composite);
-    	} // end if
-        processComponentServices2( composite );
- 
+        if (!useNew) {
+            processComponentServices(composite);
+        } // end if
+        processComponentServices2(composite);
+
     } // end method build
-       
+
     private void processComponentServices(Composite composite) {
 
         for (Component component : composite.getComponents()) {
-           
+
             // recurse for composite implementations
             Implementation implementation = component.getImplementation();
             if (implementation instanceof Composite) {
@@ -90,10 +88,10 @@ public class ComponentServiceEndpointBuilderImpl implements CompositeBuilder {
 
             // create an endpoint for each component service binding
             for (ComponentService service : component.getServices()) {
-                
+
                 Component endpointComponent = component;
                 ComponentService endpointService = service;
-                
+
                 // TODO - EPR - We maintain all endpoints at the right level now
                 //              but endpoints for promoting services must point down
                 //              to the services they promote. 
@@ -102,8 +100,8 @@ public class ComponentServiceEndpointBuilderImpl implements CompositeBuilder {
                     endpointService = ServiceConfigurationUtil.getPromotedComponentService(compositeService);
                     endpointComponent = ServiceConfigurationUtil.getPromotedComponent(compositeService);
                 } // end if
-                               
-                for (Binding binding : service.getBindings()){
+
+                for (Binding binding : service.getBindings()) {
                     Endpoint endpoint = assemblyFactory.createEndpoint();
                     endpoint.setComponent(endpointComponent);
                     endpoint.setService(endpointService);
@@ -114,20 +112,20 @@ public class ComponentServiceEndpointBuilderImpl implements CompositeBuilder {
             }
         }
     } // end method processComponentServices
-    
+
     /**
      * @param composite - the composite which contains the component services
      */
     private void processComponentServices2(Composite composite) {
-    	for( Component component : composite.getComponents() ) {
-    		for( ComponentService service : component.getServices() ) {
-    			EndpointInfo theInfo = scanComponentService( component, service, null );
-            	
-            	List<Binding> theBindings = theInfo.getBindings();
-            	// Create an endpoint for each binding which applies to this service
-            	// and copy across the information relating to the endpoint.
-            	for( Binding binding : theBindings ) {
-        			Endpoint endpoint = assemblyFactory.createEndpoint();
+        for (Component component : composite.getComponents()) {
+            for (ComponentService service : component.getServices()) {
+                EndpointInfo theInfo = scanComponentService(component, service, null);
+
+                List<Binding> theBindings = theInfo.getBindings();
+                // Create an endpoint for each binding which applies to this service
+                // and copy across the information relating to the endpoint.
+                for (Binding binding : theBindings) {
+                    Endpoint endpoint = assemblyFactory.createEndpoint();
                     endpoint.setComponent(theInfo.getComponent());
                     endpoint.setService(theInfo.getComponentService());
                     endpoint.setBinding(binding);
@@ -136,28 +134,28 @@ public class ComponentServiceEndpointBuilderImpl implements CompositeBuilder {
                     endpoint.getPolicySets().addAll(theInfo.getPolicySets());
                     endpoint.setUnresolved(false);
                     // Add the endpoint to the component service
-                    if( useNew ) {
-                    	// Add to top level and leaf level services, if different
-                    	service.getEndpoints().add(endpoint);
-                    	ComponentService leafService = theInfo.getComponentService();
-                    	if( service != leafService ) {
-                    		leafService.getEndpoints().add(endpoint);
-                    	} // end if 
+                    if (useNew) {
+                        // Add to top level and leaf level services, if different
+                        service.getEndpoints().add(endpoint);
+                        ComponentService leafService = theInfo.getComponentService();
+                        if (service != leafService) {
+                            leafService.getEndpoints().add(endpoint);
+                        } // end if 
                     } // end if
                     // debug
                     // disabled for the time being - SL
                     //System.out.println( "Endpoint created for Component = " + component.getName() + " Leaf component = " + 
                     //		endpoint.getComponent().getName() + " service = " + 
                     //		endpoint.getService().getName() + " binding = " + endpoint.getBinding() );
-            	} // end for	
-    		} // end for
-    		// Handle composites as implementations
-    		if( component.getImplementation() instanceof Composite ) {
-    			processComponentServices2( (Composite) component.getImplementation() );
-    		} // end if
-    	} // end for
+                } // end for	
+            } // end for
+            // Handle composites as implementations
+            if (component.getImplementation() instanceof Composite) {
+                processComponentServices2((Composite)component.getImplementation());
+            } // end if
+        } // end for
     } // end method processComponentServices2
-    
+
     /**
      * Scan a component service for endpoint information, recursing down to the leafmost promoted service if the component service is
      * implemented by a Composite service
@@ -166,102 +164,101 @@ public class ComponentServiceEndpointBuilderImpl implements CompositeBuilder {
      * @param theInfo - an EndpointInfo object in which the endpoint information is accumulated. If null on entry, a new EndpointInfo object is created
      * @return - the EndpointInfo object containing the information about the component service
      */
-    private EndpointInfo scanComponentService( Component component, ComponentService service, EndpointInfo theInfo ) {
-    	if( theInfo == null ) { 
-    		theInfo = new EndpointInfo(); 
-    	} // end if
-    	
+    private EndpointInfo scanComponentService(Component component, ComponentService service, EndpointInfo theInfo) {
+        if (theInfo == null) {
+            theInfo = new EndpointInfo();
+        } // end if
+
         theInfo.setBindings(service.getBindings());
-    	theInfo.setInterfaceContract(service.getInterfaceContract());
-    	theInfo.setIntents(service.getRequiredIntents());
-    	theInfo.setPolicySets(service.getPolicySets());
-    	
-    	Service implService = service.getService();
-    	if( implService instanceof CompositeService ) {
-    		// If it is implemented by a Composite, scan through the promoted service
+        theInfo.setInterfaceContract(service.getInterfaceContract());
+        theInfo.setIntents(service.getRequiredIntents());
+        theInfo.setPolicySets(service.getPolicySets());
+
+        Service implService = service.getService();
+        if (implService instanceof CompositeService) {
+            // If it is implemented by a Composite, scan through the promoted service
             ComponentService promotedService = ((CompositeService)implService).getPromotedService();
             Component promotedComponent = ((CompositeService)implService).getPromotedComponent();
             if (promotedService != null) {
-            	scanComponentService( promotedComponent, promotedService, theInfo );
+                scanComponentService(promotedComponent, promotedService, theInfo);
             } else {
-            	// If its a composite service with no promoted component service, it's an error
+                // If its a composite service with no promoted component service, it's an error
             } // end if
-    	} else {
-    		// Otherwise the component and service are the ones at this level
-        	theInfo.setComponent(component);
-        	theInfo.setComponentService(service);
-    	} //end if
-    	
+        } else {
+            // Otherwise the component and service are the ones at this level
+            theInfo.setComponent(component);
+            theInfo.setComponentService(service);
+        } //end if
+
         return theInfo;
     } // end method scanPromotedComponentService
-    
+
     private class EndpointInfo {
-    	private Component 			leafComponent = null;
-    	private ComponentService 	leafComponentService = null;
-    	private List<Binding>		bindings = null;
-    	private InterfaceContract	contract;
-    	private List<Intent>		intents = new Vector<Intent>();
-    	private List<PolicySet>		policySets = null;
-    	
-    	void setComponent( Component component ){
-    		leafComponent = component;
-    	} // end method
-    	
-    	Component getComponent() {
-    		return leafComponent;
-    	} // end method
-    	
-    	void setComponentService( ComponentService service ) {
-    		leafComponentService = service;
-    	} // end method
-    	
-    	ComponentService getComponentService() {
-    		return leafComponentService;
-    	} // end method
-    	
-    	void setBindings( List<Binding> theBindings ) {
-    		// RULE: Bindings from higher in the hierarchy take precedence
-    		if( bindings == null ) {
-    			bindings = theBindings;
-    		} // end if
-    	} // end method
-    	
-    	List<Binding> getBindings() {
-    		return bindings;
-    	} // end method
-    	
-    	void setInterfaceContract( InterfaceContract theInterface ) {
-    		// RULE: Interface contract from higher in the hierarchy takes precedence
-    		if( contract == null ) {
-    			contract = theInterface;
-    		} // end if
-    	} // end method
-    	
-    	InterfaceContract getInterfaceContract() {
-    		return contract;
-    	} // end method
+        private Component leafComponent = null;
+        private ComponentService leafComponentService = null;
+        private List<Binding> bindings = null;
+        private InterfaceContract contract;
+        private List<Intent> intents = new Vector<Intent>();
+        private List<PolicySet> policySets = null;
 
-		List<Intent> getIntents() {
-			return intents;
-		} // end method
+        void setComponent(Component component) {
+            leafComponent = component;
+        } // end method
 
-		void setIntents(List<Intent> intents) {
-			// RULE: Intents accumulate from all levels in the hierarchy
-			this.intents.addAll( intents );
-		} // end method
+        Component getComponent() {
+            return leafComponent;
+        } // end method
 
-		List<PolicySet> getPolicySets() {
-			return policySets;
-		} // end method
+        void setComponentService(ComponentService service) {
+            leafComponentService = service;
+        } // end method
 
-		void setPolicySets(List<PolicySet> policySets) {
-			// RULE: Policy Sets from higher in the hierarchy override those lower
-			if( this.policySets == null ) {
-				this.policySets = policySets;
-			} // end if
-		} // end method
-    	
-    	
+        ComponentService getComponentService() {
+            return leafComponentService;
+        } // end method
+
+        void setBindings(List<Binding> theBindings) {
+            // RULE: Bindings from higher in the hierarchy take precedence
+            if (bindings == null) {
+                bindings = theBindings;
+            } // end if
+        } // end method
+
+        List<Binding> getBindings() {
+            return bindings;
+        } // end method
+
+        void setInterfaceContract(InterfaceContract theInterface) {
+            // RULE: Interface contract from higher in the hierarchy takes precedence
+            if (contract == null) {
+                contract = theInterface;
+            } // end if
+        } // end method
+
+        InterfaceContract getInterfaceContract() {
+            return contract;
+        } // end method
+
+        List<Intent> getIntents() {
+            return intents;
+        } // end method
+
+        void setIntents(List<Intent> intents) {
+            // RULE: Intents accumulate from all levels in the hierarchy
+            this.intents.addAll(intents);
+        } // end method
+
+        List<PolicySet> getPolicySets() {
+            return policySets;
+        } // end method
+
+        void setPolicySets(List<PolicySet> policySets) {
+            // RULE: Policy Sets from higher in the hierarchy override those lower
+            if (this.policySets == null) {
+                this.policySets = policySets;
+            } // end if
+        } // end method
+
     } // end class EndpointInfo
 
 } // end class

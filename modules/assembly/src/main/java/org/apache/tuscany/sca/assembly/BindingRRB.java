@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.sca.assembly;
 
-
 /**
  * TODO RRB experiment. 
  * Represents a binding implemented using Request/Response binding chains
@@ -29,15 +28,15 @@ package org.apache.tuscany.sca.assembly;
 public interface BindingRRB extends Binding {
 
     WireFormat getRequestWireFormat();
-    
+
     void setRequestWireFormat(WireFormat wireFormat);
-    
+
     WireFormat getResponseWireFormat();
-    
-    void setResponseWireFormat(WireFormat wireFormat);    
-    
+
+    void setResponseWireFormat(WireFormat wireFormat);
+
     OperationSelector getOperationSelector();
-    
+
     void setOperationSelector(OperationSelector operationSelector);
 
 }

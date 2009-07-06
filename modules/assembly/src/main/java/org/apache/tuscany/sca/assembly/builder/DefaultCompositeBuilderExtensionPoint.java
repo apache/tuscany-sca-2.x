@@ -87,10 +87,11 @@ public class DefaultCompositeBuilderExtensionPoint implements CompositeBuilderEx
         }
 
         for (ServiceDeclaration builderDeclaration : builderDeclarations) {
-        Map<String, String> attributes = builderDeclaration.getAttributes();
+            Map<String, String> attributes = builderDeclaration.getAttributes();
             String id = attributes.get("id");
 
-            CompositeBuilder builder = new LazyCompositeBuilder(registry, id, builderDeclaration, this, factories, mapper);
+            CompositeBuilder builder =
+                new LazyCompositeBuilder(registry, id, builderDeclaration, this, factories, mapper);
             builders.put(id, builder);
         }
     }
@@ -109,8 +110,12 @@ public class DefaultCompositeBuilderExtensionPoint implements CompositeBuilderEx
         private CompositeBuilder builder;
         private CompositeBuilderExtensionPoint builders;
 
-        private LazyCompositeBuilder(ExtensionPointRegistry registry, String id, ServiceDeclaration factoryDeclaration,
-                                     CompositeBuilderExtensionPoint builders, FactoryExtensionPoint factories, InterfaceContractMapper mapper) {
+        private LazyCompositeBuilder(ExtensionPointRegistry registry,
+                                     String id,
+                                     ServiceDeclaration factoryDeclaration,
+                                     CompositeBuilderExtensionPoint builders,
+                                     FactoryExtensionPoint factories,
+                                     InterfaceContractMapper mapper) {
             this.registry = registry;
             this.id = id;
             this.builderDeclaration = factoryDeclaration;
@@ -123,12 +128,15 @@ public class DefaultCompositeBuilderExtensionPoint implements CompositeBuilderEx
             return id;
         }
 
-        public void build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
+        public void build(Composite composite, Definitions definitions, Monitor monitor)
+            throws CompositeBuilderException {
             getBuilder().build(composite, definitions, monitor);
         }
-        
-        public void build(Composite composite, Definitions definitions, Map<QName, List<String>> bindingBaseURIs, Monitor monitor)
-        		throws CompositeBuilderException {
+
+        public void build(Composite composite,
+                          Definitions definitions,
+                          Map<QName, List<String>> bindingBaseURIs,
+                          Monitor monitor) throws CompositeBuilderException {
             ((CompositeBuilderTmp)getBuilder()).build(composite, definitions, bindingBaseURIs, monitor);
         }
 
@@ -137,14 +145,19 @@ public class DefaultCompositeBuilderExtensionPoint implements CompositeBuilderEx
                 try {
                     Class<CompositeBuilder> builderClass = (Class<CompositeBuilder>)builderDeclaration.loadClass();
                     try {
-                        Constructor<CompositeBuilder> constructor = builderClass.getConstructor(FactoryExtensionPoint.class, InterfaceContractMapper.class);
+                        Constructor<CompositeBuilder> constructor =
+                            builderClass.getConstructor(FactoryExtensionPoint.class, InterfaceContractMapper.class);
                         builder = constructor.newInstance(factories, mapper);
                     } catch (NoSuchMethodException e) {
                         try {
-                            Constructor<CompositeBuilder> constructor = builderClass.getConstructor(CompositeBuilderExtensionPoint.class, FactoryExtensionPoint.class, InterfaceContractMapper.class);
+                            Constructor<CompositeBuilder> constructor =
+                                builderClass.getConstructor(CompositeBuilderExtensionPoint.class,
+                                                            FactoryExtensionPoint.class,
+                                                            InterfaceContractMapper.class);
                             builder = constructor.newInstance(builders, factories, mapper);
                         } catch (NoSuchMethodException ex) {
-                            Constructor<CompositeBuilder> constructor = builderClass.getConstructor(ExtensionPointRegistry.class);
+                            Constructor<CompositeBuilder> constructor =
+                                builderClass.getConstructor(ExtensionPointRegistry.class);
                             builder = constructor.newInstance(registry);
                         }
                     }

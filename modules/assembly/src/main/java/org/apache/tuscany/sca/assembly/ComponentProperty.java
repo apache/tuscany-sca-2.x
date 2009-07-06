@@ -58,13 +58,13 @@ public interface ComponentProperty extends Property {
      *            composite
      */
     void setSource(String source);
-    
+
     /**
      * Get the XPath expression for the source attribute
      * @return the XPath expression for the source attribute
      */
     XPathExpression getSourceXPathExpression();
-    
+
     /**
      * Set the XPath expression for the source attribute
      * @param sourceXPathExpression the XPath expression for the source attribute
@@ -84,5 +84,5 @@ public interface ComponentProperty extends Property {
      * @param file a URI to a file containing the property value
      */
     void setFile(String file);
-    
+
 }

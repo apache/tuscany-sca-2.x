@@ -34,7 +34,7 @@ public class AbstractReferenceImpl extends ContractImpl implements AbstractRefer
      */
     protected AbstractReferenceImpl() {
     }
-    
+
     public Multiplicity getMultiplicity() {
         return multiplicity;
     }

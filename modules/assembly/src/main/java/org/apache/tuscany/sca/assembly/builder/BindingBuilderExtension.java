@@ -41,4 +41,3 @@ public interface BindingBuilderExtension {
     void setBuilder(BindingBuilder builder);
 
 }
-

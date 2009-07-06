@@ -55,7 +55,7 @@ import org.junit.Test;
 public class PrintUtilTestCase {
 
     private AssemblyFactory factory = new DefaultAssemblyFactory();
-    
+
     /**
      * Create a composite
      */
@@ -225,5 +225,5 @@ public class PrintUtilTestCase {
         PrintUtil p = new PrintUtil(new PrintWriter(sw), false);
         p.print(composite);
         // System.out.println(sw.toString());
-    }    
+    }
 }

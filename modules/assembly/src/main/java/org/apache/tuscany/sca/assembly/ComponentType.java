@@ -28,13 +28,13 @@ import org.apache.tuscany.sca.policy.PolicySubject;
  * @version $Rev$ $Date$
  */
 public interface ComponentType extends Base, PolicySubject {
-    
+
     /**
      * Returns the URI of this component type.
      * @return the URI of the component type
      */
     String getURI();
-    
+
     /**
      * Sets the URI of this component type.
      * @param uri the URI of the component type

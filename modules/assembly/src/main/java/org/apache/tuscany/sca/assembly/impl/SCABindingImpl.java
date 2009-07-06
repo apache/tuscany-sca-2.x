@@ -100,7 +100,7 @@ public class SCABindingImpl implements SCABinding, Extensible, PolicySubject, Op
     }
 
     public boolean isUnresolved() {
-        if (targetComponentService == null){
+        if (targetComponentService == null) {
             return true;
         } else {
             return targetComponentService.isUnresolved();
@@ -160,11 +160,11 @@ public class SCABindingImpl implements SCABinding, Extensible, PolicySubject, Op
         this.requiredIntents = intents;
     }
 
-    public void setIsAutomatic(boolean isAutomatic){
+    public void setIsAutomatic(boolean isAutomatic) {
         this.isAutomatic = isAutomatic;
     }
 
-    public boolean getIsAutomatic(){
+    public boolean getIsAutomatic() {
         return this.isAutomatic;
     }
 

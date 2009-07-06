@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.assembly.builder.impl;
 
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,7 +48,8 @@ import org.apache.tuscany.sca.monitor.Monitor;
  */
 public class CompositePromotionBuilderImpl extends BaseBuilderImpl implements CompositeBuilder {
 
-    public CompositePromotionBuilderImpl(AssemblyFactory assemblyFactory, InterfaceContractMapper interfaceContractMapper) {
+    public CompositePromotionBuilderImpl(AssemblyFactory assemblyFactory,
+                                         InterfaceContractMapper interfaceContractMapper) {
         super(assemblyFactory, null, null, null, interfaceContractMapper);
     }
 
@@ -60,7 +60,7 @@ public class CompositePromotionBuilderImpl extends BaseBuilderImpl implements Co
     public void build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
         connectCompositeReferencesAndServices(composite, monitor);
     }
-    
+
     /**
      * Connect composite references and services to the reference and services that they promote.
      * 
@@ -68,7 +68,7 @@ public class CompositePromotionBuilderImpl extends BaseBuilderImpl implements Co
      * @param componentServices
      * @param problems
      */
-    protected void connectCompositeReferencesAndServices(Composite composite, Monitor monitor){
+    protected void connectCompositeReferencesAndServices(Composite composite, Monitor monitor) {
         // Wire nested composites recursively
         for (Component component : composite.getComponents()) {
             Implementation implementation = component.getImplementation();
@@ -88,7 +88,7 @@ public class CompositePromotionBuilderImpl extends BaseBuilderImpl implements Co
         connectCompositeServices(composite, components, componentServices, monitor);
         connectCompositeReferences(composite, components, componentReferences, monitor);
     }
-            
+
     /**
      * Connect composite services to the component services that they promote.
      * 
@@ -100,7 +100,7 @@ public class CompositePromotionBuilderImpl extends BaseBuilderImpl implements Co
                                           Map<String, Component> components,
                                           Map<String, ComponentService> componentServices,
                                           Monitor monitor) {
-    
+
         // Propagate interfaces from inner composite components' services to
         // their component services
         for (Component component : composite.getComponents()) {
@@ -115,35 +115,35 @@ public class CompositePromotionBuilderImpl extends BaseBuilderImpl implements Co
                 }
             }
         }
-    
+
         // Connect composite services to the component services that they promote
         for (Service service : composite.getServices()) {
             CompositeService compositeService = (CompositeService)service;
             ComponentService componentService = compositeService.getPromotedService();
             if (componentService != null && componentService.isUnresolved()) {
-                
-                String promotedComponentName = compositeService.getPromotedComponent().getName(); 
+
+                String promotedComponentName = compositeService.getPromotedComponent().getName();
                 String promotedServiceName;
                 if (componentService.getName() != null) {
-                	if( compositeService.isCallback() ) {
-                		// For callbacks the name already has the form "componentName"/"servicename"
-                		promotedServiceName = componentService.getName();
-                	} else {
-                		promotedServiceName = promotedComponentName + '/' + componentService.getName();
-                	}
+                    if (compositeService.isCallback()) {
+                        // For callbacks the name already has the form "componentName"/"servicename"
+                        promotedServiceName = componentService.getName();
+                    } else {
+                        promotedServiceName = promotedComponentName + '/' + componentService.getName();
+                    }
                 } else {
                     promotedServiceName = promotedComponentName;
                 }
                 ComponentService promotedService = componentServices.get(promotedServiceName);
                 if (promotedService != null) {
-    
+
                     // Point to the resolved component
                     Component promotedComponent = components.get(promotedComponentName);
                     compositeService.setPromotedComponent(promotedComponent);
-                    
+
                     // Point to the resolved component service
                     compositeService.setPromotedService(promotedService);
-    
+
                     // Use the interface contract from the component service if
                     // none is specified on the composite service
                     InterfaceContract compositeServiceInterfaceContract = compositeService.getInterfaceContract();
@@ -152,19 +152,25 @@ public class CompositePromotionBuilderImpl extends BaseBuilderImpl implements Co
                         compositeService.setInterfaceContract(promotedServiceInterfaceContract);
                     } else if (promotedServiceInterfaceContract != null) {
                         // Check the compositeServiceInterfaceContract and promotedServiceInterfaceContract
-                        boolean isCompatible = interfaceContractMapper.isCompatible(compositeServiceInterfaceContract, promotedServiceInterfaceContract);
-                        if(!isCompatible){
+                        boolean isCompatible =
+                            interfaceContractMapper.isCompatible(compositeServiceInterfaceContract,
+                                                                 promotedServiceInterfaceContract);
+                        if (!isCompatible) {
                             warning(monitor, "ServiceInterfaceNotSubSet", compositeService, promotedServiceName);
                         }
                     }
-    
+
                 } else {
-                	// MJE 15/05/2005 - Priority raised from "warning" to "error" to fix TUSCANY-3034
-                    error(monitor, "PromotedServiceNotFound", composite, composite.getName().toString(), promotedServiceName);
+                    // MJE 15/05/2005 - Priority raised from "warning" to "error" to fix TUSCANY-3034
+                    error(monitor,
+                          "PromotedServiceNotFound",
+                          composite,
+                          composite.getName().toString(),
+                          promotedServiceName);
                 }
             }
         }
-    
+
     }
 
     /**
@@ -176,8 +182,9 @@ public class CompositePromotionBuilderImpl extends BaseBuilderImpl implements Co
      */
     private void connectCompositeReferences(Composite composite,
                                             Map<String, Component> components,
-                                            Map<String, ComponentReference> componentReferences, Monitor monitor) {
-    
+                                            Map<String, ComponentReference> componentReferences,
+                                            Monitor monitor) {
+
         // Propagate interfaces from inner composite components' references to
         // their component references
         for (Component component : composite.getComponents()) {
@@ -192,7 +199,7 @@ public class CompositePromotionBuilderImpl extends BaseBuilderImpl implements Co
                 }
             }
         }
-    
+
         // Connect composite references to the component references that they promote
         for (Reference reference : composite.getReferences()) {
             CompositeReference compositeReference = (CompositeReference)reference;
@@ -207,30 +214,41 @@ public class CompositePromotionBuilderImpl extends BaseBuilderImpl implements Co
                         Component promotedComponent = compositeReference.getPromotedComponents().get(i);
                         promotedComponent = components.get(promotedComponent.getName());
                         compositeReference.getPromotedComponents().set(i, promotedComponent);
-                        
-                        componentReference.setPromoted( true );
-                        
+
+                        componentReference.setPromoted(true);
+
                         // Point to the resolved component reference
                         promotedReferences.set(i, componentReference);
-    
+
                         // Use the interface contract from the component reference if none
                         // is specified on the composite reference
-                        InterfaceContract compositeReferenceInterfaceContract = compositeReference.getInterfaceContract();
-                        InterfaceContract componentReferenceInterfaceContract = componentReference.getInterfaceContract();
+                        InterfaceContract compositeReferenceInterfaceContract =
+                            compositeReference.getInterfaceContract();
+                        InterfaceContract componentReferenceInterfaceContract =
+                            componentReference.getInterfaceContract();
                         if (compositeReferenceInterfaceContract == null) {
                             compositeReference.setInterfaceContract(componentReferenceInterfaceContract);
                         } else if (componentReferenceInterfaceContract != null) {
                             // Check that the componentInterfaceContract is a subset of the compositeInterfaceContract
-                            boolean isCompatible = interfaceContractMapper.isCompatible( componentReferenceInterfaceContract, compositeReferenceInterfaceContract);
+                            boolean isCompatible =
+                                interfaceContractMapper.isCompatible(componentReferenceInterfaceContract,
+                                                                     compositeReferenceInterfaceContract);
                             if (!isCompatible) {
-                                warning(monitor, "ReferenceInterfaceNotSubSet", compositeReference, componentReferenceName);
+                                warning(monitor,
+                                        "ReferenceInterfaceNotSubSet",
+                                        compositeReference,
+                                        componentReferenceName);
                             }
                         }
                     } else {
-                        warning(monitor, "PromotedReferenceNotFound", composite, composite.getName().toString(), componentReferenceName);
+                        warning(monitor,
+                                "PromotedReferenceNotFound",
+                                composite,
+                                composite.getName().toString(),
+                                componentReferenceName);
                     }
                 }
             }
         }
-    }    
+    }
 }

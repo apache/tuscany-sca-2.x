@@ -18,9 +18,6 @@
  */
 package org.apache.tuscany.sca.assembly;
 
-
-
-
 /**
  * An instance of a reference associated with a particular component.
  *
@@ -54,7 +51,6 @@ public interface ComponentReference extends Reference {
      * @param autowire whether component references should be autowired
      */
     void setAutowire(Boolean autowire);
-
 
     /**
      * Returns the callback service created internally as a target endpoint
@@ -109,7 +105,8 @@ public interface ComponentReference extends Reference {
      * Sets whether this Component Reference is promoted
      * @param isPromoted - true if the component reference is promoted
      */
-    void setPromoted( boolean isPromoted );
+    void setPromoted(boolean isPromoted);
+
     boolean isPromoted();
 
 }

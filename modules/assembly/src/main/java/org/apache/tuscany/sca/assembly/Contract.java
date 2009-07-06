@@ -78,7 +78,7 @@ public interface Contract extends AbstractContract, PolicySubject, Cloneable {
      * @throws CloneNotSupportedException
      */
     Object clone() throws CloneNotSupportedException;
-    
+
     /**
      * Returns the interface contract given a binding. Important in the case where
      * a reference with multiplicity > 1 has been promoted and has it's list of 
@@ -90,6 +90,6 @@ public interface Contract extends AbstractContract, PolicySubject, Cloneable {
      * @param binding the binding for which the interface contract is required
      * @return the interface contract
      */
-    InterfaceContract getInterfaceContract(Binding binding);    
-    
+    InterfaceContract getInterfaceContract(Binding binding);
+
 }

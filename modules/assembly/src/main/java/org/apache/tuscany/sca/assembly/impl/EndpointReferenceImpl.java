@@ -39,10 +39,8 @@ import org.apache.tuscany.sca.policy.PolicySubject;
  * @version $Rev$ $Date$
  */
 public class EndpointReferenceImpl implements EndpointReference {
-	private static final long serialVersionUID = 8838066441709300972L;
-	
+    private static final long serialVersionUID = 8838066441709300972L;
 
-    
     protected ExtensionPointRegistry registry;
     protected boolean unresolved = true;
     protected String uri;
@@ -62,7 +60,7 @@ public class EndpointReferenceImpl implements EndpointReference {
     // will be directed toward
     protected Endpoint callbackEndpoint;
 
-    protected EndpointReferenceImpl(ExtensionPointRegistry registry){
+    protected EndpointReferenceImpl(ExtensionPointRegistry registry) {
         this.registry = registry;
     }
 
@@ -70,7 +68,7 @@ public class EndpointReferenceImpl implements EndpointReference {
     public Object clone() throws CloneNotSupportedException {
         EndpointReference cloned = (EndpointReference)super.clone();
 
-        if (targetEndpoint != null){
+        if (targetEndpoint != null) {
             cloned.setTargetEndpoint((Endpoint)targetEndpoint.clone());
         }
 
@@ -172,7 +170,7 @@ public class EndpointReferenceImpl implements EndpointReference {
         if (getURI() != null) {
             output += " URI = " + uri;
         }
-        
+
         switch (status) {
             case 0:
                 output += " NOT_CONFIGURED ";
@@ -237,12 +235,12 @@ public class EndpointReferenceImpl implements EndpointReference {
     public void setExtensionPointRegistry(ExtensionPointRegistry registry) {
         this.registry = registry;
     }
-    
+
     public int getStatus() {
         return status;
     }
-    
+
     public void setStatus(int status) {
-    	this.status = status;
+        this.status = status;
     }
 }
