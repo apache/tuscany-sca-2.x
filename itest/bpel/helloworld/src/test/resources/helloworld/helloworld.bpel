@@ -53,8 +53,19 @@
               <from>concat($helloMessage.TestPart/test:message/text(), ' World')</from>
               <to variable="tmpVar"/>
           </copy>
+          <!-- Initialize the response -->
           <copy>
-              <from>$tmpVar</from>
+              <from>
+                  <literal>
+                      <test:helloResponse>
+                          <test:messageResponse>Dummy</test:messageResponse>
+                      </test:helloResponse>
+                  </literal>        
+              </from>
+              <to variable="helloMessageResponse" part="TestResponse"/>
+          </copy>                  
+          <copy>
+              <from variable="tmpVar"/>
               <to>$helloMessageResponse.TestResponse/test:messageResponse</to>
           </copy>
       </assign>
