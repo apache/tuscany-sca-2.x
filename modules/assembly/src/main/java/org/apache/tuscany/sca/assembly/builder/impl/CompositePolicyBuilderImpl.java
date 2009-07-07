@@ -38,6 +38,7 @@ import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
@@ -53,7 +54,10 @@ import org.apache.tuscany.sca.policy.PolicySubject;
  * @version $Rev$ $Date$
  */
 public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements CompositeBuilder {
-
+    public CompositePolicyBuilderImpl(ExtensionPointRegistry registry) {
+        super(registry);
+    }
+    
     public CompositePolicyBuilderImpl(AssemblyFactory assemblyFactory, InterfaceContractMapper interfaceContractMapper) {
         super(assemblyFactory, null, null, null, interfaceContractMapper);
     }
@@ -181,15 +185,29 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
             return name2.equals(name1);
         }
     }
+    
+    private Intent resolve(Definitions definitions, Intent proxy) {
+        for(Intent i: definitions.getIntents()) {
+            if(i.equals(proxy)) {
+                return i;
+            }
+            for(Intent qi: i.getQualifiedIntents()) {
+                if(qi.equals(proxy)) {
+                    return qi;
+                }
+            }
+        }
+        return null;
+    }
 
     private void resolveAndNormalize(PolicySubject subject, Definitions definitions, Monitor monitor) {
 
         Set<Intent> intents = new HashSet<Intent>();
         if (definitions != null) {
             for (Intent i : subject.getRequiredIntents()) {
-                int index = definitions.getIntents().indexOf(i);
-                if (index != -1) {
-                    intents.add(definitions.getIntents().get(index));
+                Intent resolved = resolve(definitions, i);
+                if (resolved != null) {
+                    intents.add(resolved);
                 } else {
                     warning(monitor, "intent-not-found", subject, i.getName().toString());
                     // Intent cannot be resolved
@@ -198,8 +216,8 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
         }
 
         // Replace profile intents with their required intents
-        boolean profileIntentsFound = false;
-        while (true) {
+        while (!intents.isEmpty()) {
+            boolean profileIntentsFound = false;
             Set<Intent> copy = new HashSet<Intent>(intents);
             for (Intent i : copy) {
                 if (!i.getRequiredIntents().isEmpty()) {

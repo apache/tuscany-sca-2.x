@@ -39,6 +39,9 @@ import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
@@ -74,6 +77,20 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
         this.documentBuilderFactory = documentBuilderFactory;
         this.transformerFactory = transformerFactory;
         this.interfaceContractMapper = interfaceContractMapper;
+    }
+    
+    /**
+     * Construct a builder from the extension point registry
+     * @param registry
+     */
+    protected BaseBuilderImpl(ExtensionPointRegistry registry) {
+        FactoryExtensionPoint factoryExtensionPoint = registry.getExtensionPoint(FactoryExtensionPoint.class);
+        this.assemblyFactory = factoryExtensionPoint.getFactory(AssemblyFactory.class);
+        this.scaBindingFactory = factoryExtensionPoint.getFactory(SCABindingFactory.class);
+        this.documentBuilderFactory = factoryExtensionPoint.getFactory(DocumentBuilderFactory.class);
+        this.transformerFactory = factoryExtensionPoint.getFactory(TransformerFactory.class);
+        this.interfaceContractMapper =
+            registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(InterfaceContractMapper.class);
     }
 
     /**
