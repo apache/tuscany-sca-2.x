@@ -75,6 +75,7 @@
                 <module>scopes</module>
                 <module>services</module>
                 <module>wires</module>
+                <module>policies</module>
            </modules>
         </profile>
         
