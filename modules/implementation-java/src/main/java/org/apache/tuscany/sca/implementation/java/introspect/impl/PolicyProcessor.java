@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.implementation.java.introspect.impl;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
@@ -72,6 +73,7 @@ public class PolicyProcessor extends BaseJavaClassVisitor {
         Reference reference = null;
         if ( (reference = getReferenceByName(name, type)) != null ) {
             readIntents(field.getAnnotation(Requires.class), reference.getRequiredIntents());
+            readSpecificIntents(field.getAnnotations(), reference.getRequiredIntents());
             readPolicySets(field.getAnnotation(PolicySets.class), reference.getPolicySets());
         }
     }
@@ -81,6 +83,7 @@ public class PolicyProcessor extends BaseJavaClassVisitor {
         Reference reference = null;
         if ( (reference = getReference(method, type)) != null ) {
             readIntents(method.getAnnotation(Requires.class), reference.getRequiredIntents());
+            readSpecificIntents(method.getAnnotations(), reference.getRequiredIntents());
             readPolicySets(method.getAnnotation(PolicySets.class), reference.getPolicySets());
         } else {
             /*
@@ -178,6 +181,27 @@ public class PolicyProcessor extends BaseJavaClassVisitor {
             }
         }
     }
+    
+    private void readSpecificIntents(Annotation[] annotations, List<Intent> requiredIntents) {
+        for (Annotation a : annotations) {
+            org.oasisopen.sca.annotation.Intent intentAnnotation =
+                a.annotationType().getAnnotation(org.oasisopen.sca.annotation.Intent.class);
+            if (intentAnnotation == null) {
+                continue;
+            }
+            QName qname = null;
+            String value = intentAnnotation.value();
+            if (!value.equals("")) {
+                qname = getQName(value);
+            } else {
+                qname = new QName(intentAnnotation.targetNamespace(), intentAnnotation.localPart());
+            }
+            Intent intent = policyFactory.createIntent();
+            intent.setUnresolved(true);
+            intent.setName(qname);
+            requiredIntents.add(intent);
+        }
+    }
 
     /**
      * Read policy intents on the given interface or class 
@@ -201,6 +225,8 @@ public class PolicyProcessor extends BaseJavaClassVisitor {
             }
         }
         
+        readSpecificIntents(clazz.getAnnotations(), requiredIntents);
+
         PolicySets policySetAnnotation = clazz.getAnnotation(PolicySets.class);
         if (policySetAnnotation != null) {
             String[] policySetNames = policySetAnnotation.value();

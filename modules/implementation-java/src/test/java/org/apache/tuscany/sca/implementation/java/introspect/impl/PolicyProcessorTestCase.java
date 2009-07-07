@@ -53,28 +53,33 @@ public class PolicyProcessorTestCase {
     // This actually is a test for PolicyJavaInterfaceProcessor. It will get
     // invoked via the call to ImplementationProcessorServiceImpl.createService in
     // ServiceProcessor. Of course ServiceProcessor class has to be working.
-    public void stestSingleInterfaceWithIntentsOnInterfaceAtInterfaceLevel() throws Exception {
+    @Test
+    public void testSingleInterfaceWithIntentsOnInterfaceAtInterfaceLevel() throws Exception {
         serviceProcessor.visitClass(Service1.class, type);
         visitor.visitInterface((JavaInterface)type.getServices().get(0).getInterfaceContract().getInterface());
         policyProcessor.visitClass(Service1.class, type);
         verifyIntents(Service1.class, type);
     }
 
-    public void stestMultipleInterfacesWithIntentsOnInterfaceAtInterfaceLevel() throws Exception {
+    @Test
+    public void testMultipleInterfacesWithIntentsOnInterfaceAtInterfaceLevel() throws Exception {
         serviceProcessor.visitClass(Service2.class, type);
         visitor.visitInterface((JavaInterface)type.getServices().get(0).getInterfaceContract().getInterface());
+        visitor.visitInterface((JavaInterface)type.getServices().get(1).getInterfaceContract().getInterface());
         policyProcessor.visitClass(Service2.class, type);
         verifyIntents(Service2.class, type);
     }
 
-    public void stestSingleInterfaceWithIntentsOnImplAtClassLevel() throws Exception {
+    @Test
+    public void testSingleInterfaceWithIntentsOnImplAtClassLevel() throws Exception {
         serviceProcessor.visitClass(Service3.class, type);
         visitor.visitInterface((JavaInterface)type.getServices().get(0).getInterfaceContract().getInterface());
         policyProcessor.visitClass(Service3.class, type);
         verifyIntents(Service3.class, type);
     }
 
-    public void stestMultipleInterfacesWithIntentsOnImplAtClassLevel() throws Exception {
+    @Test
+    public void testMultipleInterfacesWithIntentsOnImplAtClassLevel() throws Exception {
         serviceProcessor.visitClass(Service4.class, type);
         visitor.visitInterface((JavaInterface)type.getServices().get(0).getInterfaceContract().getInterface());
         policyProcessor.visitClass(Service4.class, type);

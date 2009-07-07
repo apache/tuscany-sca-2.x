@@ -27,6 +27,8 @@ import org.apache.tuscany.sca.interfacedef.java.impl.PolicyJavaInterfaceVisitor;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
 import org.junit.Before;
 import org.junit.Test;
+import org.oasisopen.sca.annotation.Authentication;
+import org.oasisopen.sca.annotation.Confidentiality;
 import org.oasisopen.sca.annotation.PolicySets;
 import org.oasisopen.sca.annotation.Requires;
 
@@ -41,7 +43,7 @@ public class PolicyProcessorTestCase {
     public void testInterfaceLevel() throws Exception {
         JavaInterface type = factory.createJavaInterface(Interface1.class);
         policyProcessor.visitInterface(type);
-        assertEquals(1, type.getRequiredIntents().size());
+        assertEquals(2, type.getRequiredIntents().size());
         assertEquals(1, type.getPolicySets().size());
     }
 
@@ -61,7 +63,7 @@ public class PolicyProcessorTestCase {
     public void testInterfaceAndMethodLevel() throws Exception {
         JavaInterface type = factory.createJavaInterface(Interface3.class);
         policyProcessor.visitInterface(type);
-        assertEquals(1, type.getRequiredIntents().size());
+        assertEquals(2, type.getRequiredIntents().size());
         assertEquals(1, type.getOperations().get(0).getRequiredIntents().size());
         assertEquals(1, type.getOperations().get(1).getRequiredIntents().size());
         assertEquals(1, type.getPolicySets().size());
@@ -77,6 +79,7 @@ public class PolicyProcessorTestCase {
     // @Remotable
     @Requires( {"transaction.global"})
     @PolicySets( {"{http://ns1}PS1"})
+    @Authentication
     private interface Interface1 {
         int method1();
 
@@ -89,6 +92,7 @@ public class PolicyProcessorTestCase {
 
     private interface Interface2 {
         @Requires( {"transaction.global"})
+        @Confidentiality({"message"})
         @PolicySets( {"{http://ns1}PS1"})
         int method1();
 
@@ -99,6 +103,7 @@ public class PolicyProcessorTestCase {
 
     @Requires( {"transaction.global.Interface6"})
     @PolicySets( {"{http://ns1}PS1"})
+    @Authentication
     private interface Interface3 {
         @Requires( {"transaction.global.Interface6.method1"})
         @PolicySets( {"{http://ns1}PS2"})

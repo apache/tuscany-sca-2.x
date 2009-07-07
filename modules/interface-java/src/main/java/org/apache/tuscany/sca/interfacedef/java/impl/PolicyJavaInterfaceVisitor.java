@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.interfacedef.java.impl;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.List;
 
@@ -82,6 +83,8 @@ public class PolicyJavaInterfaceVisitor implements JavaInterfaceVisitor {
             }
         }
 
+        readSpecificIntents(clazz.getAnnotations(), requiredIntents);
+        
         PolicySets policySetAnnotation = clazz.getAnnotation(PolicySets.class);
         if (policySetAnnotation != null) {
             String[] policySetNames = policySetAnnotation.value();
@@ -153,6 +156,27 @@ public class PolicyJavaInterfaceVisitor implements JavaInterfaceVisitor {
                     readPolicySets(method.getAnnotation(PolicySets.class), op.getPolicySets());
                 }
             }
+        }
+    }
+
+    private void readSpecificIntents(Annotation[] annotations, List<Intent> requiredIntents) {
+        for (Annotation a : annotations) {
+            org.oasisopen.sca.annotation.Intent intentAnnotation =
+                a.annotationType().getAnnotation(org.oasisopen.sca.annotation.Intent.class);
+            if (intentAnnotation == null) {
+                continue;
+            }
+            QName qname = null;
+            String value = intentAnnotation.value();
+            if (!value.equals("")) {
+                qname = getQName(value);
+            } else {
+                qname = new QName(intentAnnotation.targetNamespace(), intentAnnotation.localPart());
+            }
+            Intent intent = policyFactory.createIntent();
+            intent.setUnresolved(true);
+            intent.setName(qname);
+            requiredIntents.add(intent);
         }
     }
 
