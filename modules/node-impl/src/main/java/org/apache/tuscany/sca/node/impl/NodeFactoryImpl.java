@@ -433,7 +433,7 @@ public class NodeFactoryImpl extends NodeFactory {
 
         DefinitionsExtensionPoint definitionsExtensionPoint = extensionPoints.getExtensionPoint(DefinitionsExtensionPoint.class);
         for(Definitions defs: definitionsExtensionPoint.getDefinitions()) {
-            DefinitionsUtil.aggregate(systemDefinitions, defs);
+            DefinitionsUtil.aggregate(defs, systemDefinitions);
         }
 
         // Load the system definitions.xml from all of the loaded extension points
