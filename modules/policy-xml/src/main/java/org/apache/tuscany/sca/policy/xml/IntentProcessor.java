@@ -363,7 +363,7 @@ public class IntentProcessor extends BaseStAXArtifactProcessor implements StAXAr
             for (Intent excludedIntent : policyIntent.getExcludedIntents()) {
                 if (excludedIntent.isUnresolved()) {
                     Intent resolvedExcludedIntent = resolver.resolveModel(Intent.class, excludedIntent);
-                    if (!resolvedExcludedIntent.isUnresolved()) {
+                    if (!resolvedExcludedIntent.isUnresolved() || resolvedExcludedIntent != excludedIntent) {
                         excludedIntents.add(resolvedExcludedIntent);
                     } else {
                         error("ExcludedIntentNotFound", resolver, excludedIntent, policyIntent);
