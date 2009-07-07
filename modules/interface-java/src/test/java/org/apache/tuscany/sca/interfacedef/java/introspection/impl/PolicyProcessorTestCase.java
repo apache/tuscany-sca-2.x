@@ -52,7 +52,7 @@ public class PolicyProcessorTestCase {
         JavaInterface type = factory.createJavaInterface(Interface2.class);
         policyProcessor.visitInterface(type);
         assertEquals(0, type.getRequiredIntents().size());
-        assertEquals(1, type.getOperations().get(0).getRequiredIntents().size());
+        assertEquals(3, type.getOperations().get(0).getRequiredIntents().size());
         assertEquals(1, type.getOperations().get(1).getRequiredIntents().size());
         assertEquals(0, type.getPolicySets().size());
         assertEquals(1, type.getOperations().get(0).getPolicySets().size());
@@ -92,7 +92,7 @@ public class PolicyProcessorTestCase {
 
     private interface Interface2 {
         @Requires( {"transaction.global"})
-        @Confidentiality({"message"})
+        @Confidentiality({"message", "transport"})
         @PolicySets( {"{http://ns1}PS1"})
         int method1();
 

@@ -21,7 +21,10 @@ package org.apache.tuscany.sca.implementation.java.introspect.impl;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.namespace.QName;
 
@@ -41,6 +44,7 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySubject;
 import org.oasisopen.sca.annotation.PolicySets;
+import org.oasisopen.sca.annotation.Qualifier;
 import org.oasisopen.sca.annotation.Requires;
 
 /**
@@ -196,10 +200,32 @@ public class PolicyProcessor extends BaseJavaClassVisitor {
             } else {
                 qname = new QName(intentAnnotation.targetNamespace(), intentAnnotation.localPart());
             }
-            Intent intent = policyFactory.createIntent();
-            intent.setUnresolved(true);
-            intent.setName(qname);
-            requiredIntents.add(intent);
+            Set<String> qualifiers = new HashSet<String>();
+            for(Method m: a.annotationType().getMethods()) {
+                Qualifier qualifier = m.getAnnotation(Qualifier.class);
+                if (qualifier != null && m.getReturnType() == String[].class) {
+                    try {
+                        qualifiers.addAll(Arrays.asList((String[]) m.invoke(a)));
+                    } catch (Throwable e) {
+                        e.printStackTrace();
+                    } 
+                }
+            }
+            qualifiers.remove("");
+            if (qualifiers.isEmpty()) {
+                Intent intent = policyFactory.createIntent();
+                intent.setUnresolved(true);
+                intent.setName(qname);
+                requiredIntents.add(intent);
+            } else {
+                for (String q : qualifiers) {
+                    Intent intent = policyFactory.createIntent();
+                    intent.setUnresolved(true);
+                    qname = new QName(qname.getNamespaceURI(), qname.getLocalPart() + "." + q);
+                    intent.setName(qname);
+                    requiredIntents.add(intent);
+                }
+            }
         }
     }
 
