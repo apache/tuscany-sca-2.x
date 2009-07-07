@@ -202,7 +202,7 @@
         </sca:intent>
 
         <!-- Miscellaneous intents -->
-        <sca:intent name="asyncInvocation" constrains="sca:Binding"
+        <sca:intent name="asyncInvocation" constrains="sca:binding"
                 intentType="interaction">
                 <sca:description>
                         Indicates that request/response operations for the
