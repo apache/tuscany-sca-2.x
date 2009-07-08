@@ -77,7 +77,7 @@ public class NodeImpl implements Node, Client {
     }
 
     public Node start() {
-        logger.log(Level.INFO, "Starting node: " + configuration.getURI());
+        logger.log(Level.INFO, "Starting node: " + configuration.getURI() + " domain: " + configuration.getDomainName());
 
         manager.init();
         manager.addNode(configuration, this);
