@@ -55,6 +55,16 @@ public class NodeConfigurationImpl implements NodeConfiguration {
         return domainURI;
     }
 
+    public String getDomainName() {
+        if (domainURI != null) {
+            URI uri = URI.create(domainURI);
+            if (uri.getHost() != null) {
+                return uri.getHost();
+            }
+        }
+        return domainURI;
+    }
+
     public NodeConfiguration setDomainURI(String domainURI) {
         this.domainURI = domainURI;
         return this;
