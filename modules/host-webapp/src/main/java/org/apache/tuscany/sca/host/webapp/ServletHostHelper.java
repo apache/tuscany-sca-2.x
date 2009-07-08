@@ -40,6 +40,7 @@ import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
 import org.apache.tuscany.sca.node.impl.NodeImpl;
 
 public class ServletHostHelper {
+    public static final String DOMAIN_NAME_ATTR = "org.apache.tuscany.sca.domain.name";
     public static final String SCA_NODE_ATTRIBUTE = Node.class.getName();
     private static NodeFactory factory;
 
@@ -85,6 +86,7 @@ public class ServletHostHelper {
             configuration = factory.loadConfiguration(openStream(servletContext, nodeConfigURI));
         } else {
             configuration = factory.createNodeConfiguration();
+            configuration.setDomainURI(factory.getDomainURI());
             Enumeration<String> names = servletContext.getInitParameterNames();
             while (names.hasMoreElements()) {
                 String name = names.nextElement();
@@ -120,7 +122,12 @@ public class ServletHostHelper {
         Node node = (Node)servletContext.getAttribute(SCA_NODE_ATTRIBUTE);
         if (node == null) {
             try {
-                factory = NodeFactory.newInstance();
+                String domainName = (String)servletContext.getAttribute(DOMAIN_NAME_ATTR);
+                if (domainName != null) {
+                    factory = NodeFactory.getInstance(domainName);
+                } else {
+                    factory = NodeFactory.newInstance();
+                }
                 node = createNode(servletContext);
                 servletContext.setAttribute(SCA_NODE_ATTRIBUTE, node);
                 getServletHost(node).init(new ServletConfig() {
