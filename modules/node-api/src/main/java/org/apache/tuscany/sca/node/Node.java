@@ -49,6 +49,4 @@ public interface Node extends Client {
      */
     void destroy();
 
-    // NodeConfiguration getConfiguration();
-
 }
