@@ -136,7 +136,11 @@ public class IntentProcessor extends BaseStAXArtifactProcessor implements StAXAr
                 case START_ELEMENT: {
                     name = reader.getName();
                     if (DESCRIPTION_QNAME.equals(name)) {
-                        current.setDescription(reader.getElementText());
+                        String text = reader.getElementText();
+                        if (text != null) {
+                            text = text.trim();
+                        }
+                        current.setDescription(text);
                     } else if (INTENT_QUALIFIER_QNAME.equals(name)) {
                         String qualifierName = reader.getAttributeValue(null, NAME);
                         String defaultQ = reader.getAttributeValue(null, DEFAULT);
