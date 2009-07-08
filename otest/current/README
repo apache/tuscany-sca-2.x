@@ -1,0 +1,26 @@
+Running the otests with Tuscany using Maven
+===========================================
+
+cd otest/current
+mvn
+
+should build and run all of the otests
+
+
+Running the otests with Tuscany using Eclipse
+=============================================
+
+cd otest/current
+mvn eclipse:eclipse
+
+import otest/current/tests into eclipse
+
+this gives you all the unit tests. The imported project won't be 
+linked to the source correctly. What you need to do is open the 
+project properties. Remove the source dir and add a link to 
+otest/current/src/test/java
+
+We don't have a good way to generate the eclipse project files
+to inlcude this link automatically currently and we are looking
+to see what the most appropriate approach is to make this process
+as painless as possible. 
