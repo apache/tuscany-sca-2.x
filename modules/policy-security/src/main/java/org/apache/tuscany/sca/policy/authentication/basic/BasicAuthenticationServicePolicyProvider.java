@@ -21,39 +21,29 @@ package org.apache.tuscany.sca.policy.authentication.basic;
 
 import java.util.List;
 
-import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.invocation.Interceptor;
-import org.apache.tuscany.sca.invocation.Phase;
+import org.apache.tuscany.sca.invocation.PhasedInterceptor;
 import org.apache.tuscany.sca.policy.PolicySet;
-import org.apache.tuscany.sca.policy.PolicySubject;
 import org.apache.tuscany.sca.provider.PolicyProvider;
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
 /**
  * @version $Rev$ $Date$
  */
 public class BasicAuthenticationServicePolicyProvider implements PolicyProvider {
-    private RuntimeComponent component;
-    private RuntimeComponentService service;
-    private Binding binding;
+    private Endpoint endpoint;
 
-    public BasicAuthenticationServicePolicyProvider(RuntimeComponent component, RuntimeComponentService service, Binding binding) {
+    public BasicAuthenticationServicePolicyProvider(Endpoint endpoint) {
         super();
-        this.component = component;
-        this.service = service;
-        this.binding = binding;
+        this.endpoint = endpoint;
     }
 
     private PolicySet findPolicySet() {
-        if (binding instanceof PolicySubject) {
-            List<PolicySet> policySets = ((PolicySubject)binding).getPolicySets();
-            for (PolicySet ps : policySets) {
-                for (Object p : ps.getPolicies()) {
-                    if (BasicAuthenticationPolicy.class.isInstance(p)) {
-                        return ps;
-                    }
+        List<PolicySet> policySets = endpoint.getPolicySets();
+        for (PolicySet ps : policySets) {
+            for (Object p : ps.getPolicies()) {
+                if (BasicAuthenticationPolicy.class.isInstance(p)) {
+                    return ps;
                 }
             }
         }
@@ -61,27 +51,21 @@ public class BasicAuthenticationServicePolicyProvider implements PolicyProvider 
     }
 
     private String getContext() {
-        return "component.service: " + component.getURI()
-            + "#"
-            + service.getName()
-            + "("
-            + binding.getClass().getName()
-            + ")";
+        return endpoint.getURI();
     }
 
     /**
      * @see org.apache.tuscany.sca.provider.PolicyProvider#createInterceptor(org.apache.tuscany.sca.interfacedef.Operation)
      */
-    public Interceptor createInterceptor(Operation operation) {
+    public PhasedInterceptor createInterceptor(Operation operation) {
         PolicySet ps = findPolicySet();
         return ps == null ? null : new BasicAuthenticationServicePolicyInterceptor(getContext(), operation, ps);
     }
+    
+    public void start() {
+    }
 
-    /**
-     * @see org.apache.tuscany.sca.provider.PolicyProvider#getPhase()
-     */
-    public String getPhase() {
-        return Phase.SERVICE_POLICY;
+    public void stop() {
     }
 
 }

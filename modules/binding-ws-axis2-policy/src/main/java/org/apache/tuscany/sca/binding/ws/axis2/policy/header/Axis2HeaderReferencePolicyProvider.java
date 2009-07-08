@@ -21,42 +21,29 @@ package org.apache.tuscany.sca.binding.ws.axis2.policy.header;
 
 import java.util.List;
 
-import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.invocation.Interceptor;
-import org.apache.tuscany.sca.invocation.Phase;
+import org.apache.tuscany.sca.invocation.PhasedInterceptor;
 import org.apache.tuscany.sca.policy.PolicySet;
-import org.apache.tuscany.sca.policy.PolicySubject;
 import org.apache.tuscany.sca.provider.PolicyProvider;
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 
 /**
  * @version $Rev$ $Date$
  */
 public class Axis2HeaderReferencePolicyProvider implements PolicyProvider {
-    private RuntimeComponent component;
-    private RuntimeComponentReference reference;
-    private Binding binding;
+    private EndpointReference endpointReference;
 
-    public Axis2HeaderReferencePolicyProvider(RuntimeComponent component,
-                                             RuntimeComponentReference reference,
-                                             Binding binding) {
+    public Axis2HeaderReferencePolicyProvider(EndpointReference endpointReference) {
         super();
-        this.component = component;
-        this.reference = reference;
-        this.binding = binding;
+        this.endpointReference = endpointReference;
     }
 
-    // FIXME: Need to use the endpoint with effective policies
     private PolicySet findPolicySet() {
-        if (binding instanceof PolicySubject) {
-            List<PolicySet> policySets = ((PolicySubject)binding).getPolicySets();
-            for (PolicySet ps : policySets) {
-                for (Object p : ps.getPolicies()) {
-                    if (Axis2HeaderPolicy.class.isInstance(p)) {
-                        return ps;
-                    }
+        List<PolicySet> policySets = endpointReference.getPolicySets();
+        for (PolicySet ps : policySets) {
+            for (Object p : ps.getPolicies()) {
+                if (Axis2HeaderPolicy.class.isInstance(p)) {
+                    return ps;
                 }
             }
         }
@@ -64,27 +51,21 @@ public class Axis2HeaderReferencePolicyProvider implements PolicyProvider {
     }
 
     private String getContext() {
-        return "component.reference: " + component.getURI()
-            + "#"
-            + reference.getName()
-            + "("
-            + binding.getClass().getName()
-            + ")";
+        return endpointReference.getURI();
     }
     
     /**
      * @see org.apache.tuscany.sca.provider.PolicyProvider#createInterceptor(org.apache.tuscany.sca.interfacedef.Operation)
      */
-    public Interceptor createInterceptor(Operation operation) {
+    public PhasedInterceptor createInterceptor(Operation operation) {
         PolicySet ps = findPolicySet();
         return ps == null ? null : new Axis2HeaderReferencePolicyInterceptor(getContext(), operation, ps);
     }
 
-    /**
-     * @see org.apache.tuscany.sca.provider.PolicyProvider#getPhase()
-     */
-    public String getPhase() {
-        return Phase.REFERENCE_POLICY;
+    public void start() {
+    }
+
+    public void stop() {
     }
 
 }

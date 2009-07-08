@@ -23,8 +23,7 @@ import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.invocation.Interceptor;
-import org.apache.tuscany.sca.invocation.Phase;
+import org.apache.tuscany.sca.invocation.PhasedInterceptor;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.provider.PolicyProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -36,10 +35,10 @@ public class SecurityIdentityImplementationPolicyProvider implements PolicyProvi
     private RuntimeComponent component;
     private Implementation implementation;
 
-    public SecurityIdentityImplementationPolicyProvider(RuntimeComponent component, Implementation implementation) {
+    public SecurityIdentityImplementationPolicyProvider(RuntimeComponent component) {
         super();
         this.component = component;
-        this.implementation = implementation;
+        this.implementation = component.getImplementation();
     }
 
     private List<SecurityIdentityPolicy> findPolicies(Operation op) {
@@ -73,7 +72,7 @@ public class SecurityIdentityImplementationPolicyProvider implements PolicyProvi
         return polices;
     }
 
-    public Interceptor createInterceptor(Operation operation) {
+    public PhasedInterceptor createInterceptor(Operation operation) {
         List<SecurityIdentityPolicy> policies = findPolicies(operation);
         if (policies == null || policies.isEmpty()) {
             return null;
@@ -82,7 +81,9 @@ public class SecurityIdentityImplementationPolicyProvider implements PolicyProvi
         }
     }
 
-    public String getPhase() {
-        return Phase.IMPLEMENTATION_POLICY;
+    public void start() {
+    }
+
+    public void stop() {
     }
 }

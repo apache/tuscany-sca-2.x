@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.core.assembly.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -153,7 +154,12 @@ public class RuntimeComponentServiceImpl extends ComponentServiceImpl implements
     }
 
     public List<PolicyProvider> getPolicyProviders(Binding binding) {
-        return policyProviders.get(binding);
+        List<PolicyProvider> providers = policyProviders.get(binding);
+        if (providers == null) {
+            return Collections.emptyList();
+        } else {
+            return providers;
+        }
     }
 
     @Override

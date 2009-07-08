@@ -230,7 +230,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
                 .getName());
         }
         for (PolicyProviderFactory f : providerFactories.getPolicyProviderFactories()) {
-            PolicyProvider policyProvider = f.createImplementationPolicyProvider(component, implementation);
+            PolicyProvider policyProvider = f.createImplementationPolicyProvider(component);
             if (policyProvider != null) {
                 component.addPolicyProvider(policyProvider);
             }
@@ -315,10 +315,8 @@ public class CompositeActivatorImpl implements CompositeActivator {
                 ((RuntimeComponentService) service).setBindingProvider(binding,
                         bindingProvider);
             }
-            for (PolicyProviderFactory f : providerFactories
-                    .getPolicyProviderFactories()) {
-                PolicyProvider policyProvider = f.createServicePolicyProvider(
-                        component, service, binding);
+            for (PolicyProviderFactory f : providerFactories.getPolicyProviderFactories()) {
+                PolicyProvider policyProvider = f.createServicePolicyProvider(endpoint);
                 if (policyProvider != null) {
                     service.addPolicyProvider(binding, policyProvider);
                 }
@@ -530,6 +528,11 @@ public class CompositeActivatorImpl implements CompositeActivator {
             }
             RuntimeComponentService runtimeService = (RuntimeComponentService)service;
             for (Endpoint endpoint : service.getEndpoints()) {
+                // FIXME: Should the policy providers be started before the endpoint is started?
+                for (PolicyProvider policyProvider : runtimeService.getPolicyProviders(endpoint.getBinding())) {
+                    policyProvider.start();
+                }
+
                 final ServiceBindingProvider bindingProvider = runtimeService.getBindingProvider(endpoint.getBinding());
                 if (bindingProvider != null) {
                     // bindingProvider.start();
@@ -549,6 +552,9 @@ public class CompositeActivatorImpl implements CompositeActivator {
         if (implementation instanceof Composite) {
             start((Composite)implementation);
         } else {
+            for (PolicyProvider policyProvider : runtimeComponent.getPolicyProviders()) {
+                policyProvider.start();
+            }
             ImplementationProvider implementationProvider = runtimeComponent.getImplementationProvider();
             if (implementationProvider != null) {
                 implementationProvider.start();
@@ -588,6 +594,10 @@ public class CompositeActivatorImpl implements CompositeActivator {
                           }
                     });
                 }
+                for (PolicyProvider policyProvider : ((RuntimeComponentService)service).getPolicyProviders(endpoint
+                    .getBinding())) {
+                    policyProvider.stop();
+                }
             }
         }
         for (ComponentReference reference : component.getReferences()) {
@@ -607,6 +617,11 @@ public class CompositeActivatorImpl implements CompositeActivator {
                           }
                     });
                 }
+                for (PolicyProvider policyProvider : ((RuntimeComponentReference)reference)
+                    .getPolicyProviders(endpointReference.getBinding())) {
+                    policyProvider.stop();
+                }
+
             }
         }
         Implementation implementation = component.getImplementation();
@@ -622,6 +637,9 @@ public class CompositeActivatorImpl implements CompositeActivator {
                         return null;
                       }
                 });
+            }
+            for (PolicyProvider policyProvider : ((RuntimeComponent)component).getPolicyProviders()) {
+                policyProvider.stop();
             }
         }
 
@@ -721,6 +739,10 @@ public class CompositeActivatorImpl implements CompositeActivator {
             ReferenceBindingProvider bindingProvider = runtimeRef.getBindingProvider(endpointReference.getBinding());
             if (bindingProvider != null) {
                 bindingProvider.stop();
+            }
+            for (PolicyProvider policyProvider : ((RuntimeComponentReference)reference)
+                .getPolicyProviders(endpointReference.getBinding())) {
+                policyProvider.stop();
             }
         }
     }

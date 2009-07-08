@@ -19,14 +19,12 @@
 
 package org.apache.tuscany.sca.policy.security.jaas;
 
-import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.assembly.Implementation;
+import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.provider.PolicyProvider;
 import org.apache.tuscany.sca.provider.PolicyProviderFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
-import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
 /**
  * @version $Rev$ $Date$
@@ -37,28 +35,18 @@ public class JaasAuthenticationPolicyProviderFactory implements PolicyProviderFa
         super();
     }
 
-    /**
-     * @see org.apache.tuscany.sca.provider.PolicyProviderFactory#createImplementationPolicyProvider(org.apache.tuscany.sca.runtime.RuntimeComponent, org.apache.tuscany.sca.assembly.Implementation)
-     */
-    public PolicyProvider createImplementationPolicyProvider(RuntimeComponent component, Implementation implementation) {
-        return new JaasAuthenticationImplementationPolicyProvider(component, implementation);
+    public PolicyProvider createImplementationPolicyProvider(RuntimeComponent component) {
+        return new JaasAuthenticationImplementationPolicyProvider(component);
     }
 
-    /**
-     * @see org.apache.tuscany.sca.provider.PolicyProviderFactory#createReferencePolicyProvider(org.apache.tuscany.sca.runtime.RuntimeComponent, org.apache.tuscany.sca.runtime.RuntimeComponentReference, org.apache.tuscany.sca.assembly.Binding)
-     */
-    public PolicyProvider createReferencePolicyProvider(RuntimeComponent component,
-                                                        RuntimeComponentReference reference,
-                                                        Binding binding) {
+    public PolicyProvider createReferencePolicyProvider(EndpointReference endpointReference) {
         return null;
     }
 
     /**
      * @see org.apache.tuscany.sca.provider.PolicyProviderFactory#createServicePolicyProvider(org.apache.tuscany.sca.runtime.RuntimeComponent, org.apache.tuscany.sca.runtime.RuntimeComponentService, org.apache.tuscany.sca.assembly.Binding)
      */
-    public PolicyProvider createServicePolicyProvider(RuntimeComponent component,
-                                                      RuntimeComponentService service,
-                                                      Binding binding) {
+    public PolicyProvider createServicePolicyProvider(Endpoint endpoint) {
         return null;
     }
 

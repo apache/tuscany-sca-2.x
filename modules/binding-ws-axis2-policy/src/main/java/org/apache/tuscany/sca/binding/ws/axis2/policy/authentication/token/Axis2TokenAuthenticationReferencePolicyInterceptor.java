@@ -20,9 +20,10 @@ package org.apache.tuscany.sca.binding.ws.axis2.policy.authentication.token;
 
 import org.apache.tuscany.sca.binding.ws.axis2.policy.header.Axis2SOAPHeaderString;
 import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
+import org.apache.tuscany.sca.invocation.Phase;
+import org.apache.tuscany.sca.invocation.PhasedInterceptor;
 import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
@@ -31,7 +32,7 @@ import org.apache.tuscany.sca.policy.PolicySet;
  *
  * @version $Rev: 698457 $ $Date: 2008-09-24 09:13:02 +0100 (Wed, 24 Sep 2008) $
  */
-public class Axis2TokenAuthenticationReferencePolicyInterceptor implements Interceptor {
+public class Axis2TokenAuthenticationReferencePolicyInterceptor implements PhasedInterceptor {
 
     private Invoker next;
     private Operation operation;
@@ -81,4 +82,9 @@ public class Axis2TokenAuthenticationReferencePolicyInterceptor implements Inter
     public void setNext(Invoker next) {
         this.next = next;
     }
+
+    public String getPhase() {
+        return Phase.REFERENCE_POLICY;
+    }
+    
 }

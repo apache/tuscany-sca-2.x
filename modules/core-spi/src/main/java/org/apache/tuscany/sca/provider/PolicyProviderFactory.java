@@ -19,11 +19,9 @@
 
 package org.apache.tuscany.sca.provider;
 
-import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.assembly.Implementation;
+import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
-import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
 /**
  * @version $Rev$ $Date$
@@ -31,32 +29,23 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 public interface PolicyProviderFactory<M> extends ProviderFactory<M> {
     /**
      * Create policy provider for a given reference binding
-     * @param component
-     * @param reference
-     * @param binding
-     * @return
+     * @param endpointReference The endpoint reference 
+     * @return A policy provider for the endpoint reference
      */
-    PolicyProvider createReferencePolicyProvider(RuntimeComponent component,
-                                                 RuntimeComponentReference reference,
-                                                 Binding binding);
+    PolicyProvider createReferencePolicyProvider(EndpointReference endpointReference);
 
     /**
      * Create policy provider for a given service binding
-     * @param component
-     * @param service
-     * @param binding
-     * @return
+     * @param endpoint The endpoint
+     * @return A policy provider for the endpoint
      */
-    PolicyProvider createServicePolicyProvider(RuntimeComponent component,
-                                               RuntimeComponentService service,
-                                               Binding binding);
+    PolicyProvider createServicePolicyProvider(Endpoint endpoint);
 
     /**
      * Create policy provider for a given component implementation
      * @param component
-     * @param implementation
-     * @return
+     * @return A policy provider for the implementation 
      */
-    PolicyProvider createImplementationPolicyProvider(RuntimeComponent component, Implementation implementation);
+    PolicyProvider createImplementationPolicyProvider(RuntimeComponent component);
 
 }

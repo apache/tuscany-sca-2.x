@@ -349,21 +349,16 @@ public class DefaultProviderFactoryExtensionPoint implements ProviderFactoryExte
             return factory;
         }
 
-        public PolicyProvider createImplementationPolicyProvider(RuntimeComponent component,
-                                                                 Implementation implementation) {
-            return getFactory().createImplementationPolicyProvider(component, implementation);
+        public PolicyProvider createImplementationPolicyProvider(RuntimeComponent component) {
+            return getFactory().createImplementationPolicyProvider(component);
         }
 
-        public PolicyProvider createReferencePolicyProvider(RuntimeComponent component,
-                                                            RuntimeComponentReference reference,
-                                                            Binding binding) {
-            return getFactory().createReferencePolicyProvider(component, reference, binding);
+        public PolicyProvider createReferencePolicyProvider(EndpointReference endpointReference) {
+            return getFactory().createReferencePolicyProvider(endpointReference);
         }
 
-        public PolicyProvider createServicePolicyProvider(RuntimeComponent component,
-                                                          RuntimeComponentService service,
-                                                          Binding binding) {
-            return getFactory().createServicePolicyProvider(component, service, binding);
+        public PolicyProvider createServicePolicyProvider(Endpoint endpoint) {
+            return getFactory().createServicePolicyProvider(endpoint);
         }
 
         public Class<?> getModelType() {

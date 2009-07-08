@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.provider;
 
-import org.apache.tuscany.sca.invocation.Interceptor;
+import org.apache.tuscany.sca.invocation.PhasedInterceptor;
 
 /**
  * TODO RRB experiment
@@ -32,6 +32,6 @@ public interface PolicyProviderRRB extends PolicyProvider {
      * Create a binding interceptor 
      * @return An interceptor that realize the policySet
      */
-    Interceptor createBindingInterceptor();
+    PhasedInterceptor createBindingInterceptor();
 
 }

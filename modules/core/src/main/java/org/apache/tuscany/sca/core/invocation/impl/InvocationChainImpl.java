@@ -28,6 +28,7 @@ import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Phase;
+import org.apache.tuscany.sca.invocation.PhasedInterceptor;
 
 /**
  * Default implementation of an invocation chain
@@ -45,9 +46,6 @@ public class InvocationChainImpl implements InvocationChain {
     private boolean allowsPassByReference;
 
     public InvocationChainImpl(Operation sourceOperation, Operation targetOperation, boolean forReference) {
-        // TODO - binding invocation chain doesn't provide operations
-        //assert sourceOperation != null;
-        //assert targetOperation != null;
         this.targetOperation = targetOperation;
         this.sourceOperation = sourceOperation;
         this.forReference = forReference;
@@ -62,21 +60,31 @@ public class InvocationChainImpl implements InvocationChain {
     }
 
     public void addInterceptor(Interceptor interceptor) {
+        if (interceptor instanceof PhasedInterceptor) {
+            PhasedInterceptor pi = (PhasedInterceptor)interceptor;
+            if (pi.getPhase() != null) {
+                addInvoker(pi.getPhase(), pi);
+                return;
+            }
+        }
         String phase = forReference ? Phase.REFERENCE : Phase.SERVICE;
         addInterceptor(phase, interceptor);
     }
 
     public void addInvoker(Invoker invoker) {
+        if (invoker instanceof PhasedInterceptor) {
+            PhasedInterceptor pi = (PhasedInterceptor)invoker;
+            if (pi.getPhase() != null) {
+                addInvoker(pi.getPhase(), pi);
+                return;
+            }
+        }
         String phase = forReference ? Phase.REFERENCE_BINDING : Phase.IMPLEMENTATION;
         addInvoker(phase, invoker);
     }
 
     public Invoker getHeadInvoker() {
         return nodes.isEmpty() ? null : nodes.get(0).getInvoker();
-    }
-
-    public Invoker getTailInvoker() {
-        return nodes.isEmpty() ? null : nodes.get(nodes.size() - 1).getInvoker();
     }
 
     /**
@@ -91,10 +99,6 @@ public class InvocationChainImpl implements InvocationChain {
      */
     public void setSourceOperation(Operation sourceOperation) {
         this.sourceOperation = sourceOperation;
-    }
-
-    public void addInterceptor(int index, Interceptor interceptor) {
-        addInterceptor(interceptor);
     }
 
     public void addInterceptor(String phase, Interceptor interceptor) {

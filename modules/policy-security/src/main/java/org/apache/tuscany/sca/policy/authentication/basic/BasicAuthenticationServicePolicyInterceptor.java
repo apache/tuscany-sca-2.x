@@ -23,9 +23,10 @@ import javax.security.auth.Subject;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
+import org.apache.tuscany.sca.invocation.Phase;
+import org.apache.tuscany.sca.invocation.PhasedInterceptor;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.security.SecurityUtil;
 
@@ -36,7 +37,7 @@ import org.apache.tuscany.sca.policy.security.SecurityUtil;
  *
  * @version $Rev$ $Date$
  */
-public class BasicAuthenticationServicePolicyInterceptor implements Interceptor {
+public class BasicAuthenticationServicePolicyInterceptor implements PhasedInterceptor {
     private static final String SCA10_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.1";
     public static final QName policySetQName = new QName(SCA10_TUSCANY_NS, "wsBasicAuthentication");
 
@@ -93,4 +94,9 @@ public class BasicAuthenticationServicePolicyInterceptor implements Interceptor 
     public void setNext(Invoker next) {
         this.next = next;
     }
+
+    public String getPhase() {
+        return Phase.SERVICE_POLICY;
+    }
+    
 }

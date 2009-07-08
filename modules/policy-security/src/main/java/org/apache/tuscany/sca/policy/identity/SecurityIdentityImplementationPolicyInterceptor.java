@@ -23,16 +23,17 @@ import java.util.List;
 
 import javax.security.auth.Subject;
 
-import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
+import org.apache.tuscany.sca.invocation.Phase;
+import org.apache.tuscany.sca.invocation.PhasedInterceptor;
 import org.apache.tuscany.sca.policy.security.SecurityUtil;
 import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
  * @version $Rev$ $Date$
  */
-public class SecurityIdentityImplementationPolicyInterceptor implements Interceptor {
+public class SecurityIdentityImplementationPolicyInterceptor implements PhasedInterceptor {
     private List<SecurityIdentityPolicy> securityIdentityPolicies;
     private Invoker next;
 
@@ -54,6 +55,11 @@ public class SecurityIdentityImplementationPolicyInterceptor implements Intercep
     public void setNext(Invoker next) {
         this.next = next;
     }
+    
+    public String getPhase() {
+        return Phase.IMPLEMENTATION_POLICY;
+    }
+
 
     /**
      * @see org.apache.tuscany.sca.invocation.Invoker#invoke(org.apache.tuscany.sca.invocation.Message)

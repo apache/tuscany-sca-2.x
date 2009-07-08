@@ -45,8 +45,6 @@ public class InvocationChainImplTestCase {
         Interceptor head = (Interceptor)chain.getHeadInvoker();
         assertEquals(inter1, head);
         assertEquals(inter2, head.getNext());
-        assertEquals(inter2, chain.getTailInvoker());
-
     }
 
     @Test
@@ -66,7 +64,6 @@ public class InvocationChainImplTestCase {
         assertEquals(inter2, inter1.getNext());
         assertEquals(inter3, inter2.getNext());
         assertEquals(inter4, inter3.getNext());
-        assertEquals(inter4, chain.getTailInvoker());
     }
 
     private class MockInterceptor implements Interceptor {

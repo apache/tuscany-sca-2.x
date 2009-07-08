@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.core.assembly.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -43,7 +44,7 @@ import org.apache.tuscany.sca.runtime.RuntimeWire;
 public class RuntimeComponentReferenceImpl extends ComponentReferenceImpl implements RuntimeComponentReference {
     private ArrayList<RuntimeWire> wires;
     private HashMap<Binding, ReferenceBindingProvider> bindingProviders =
-        new HashMap<Binding, ReferenceBindingProvider>(); 
+        new HashMap<Binding, ReferenceBindingProvider>();
     private HashMap<Binding, List<PolicyProvider>> policyProviders = new HashMap<Binding, List<PolicyProvider>>();
 
     private RuntimeComponent component;
@@ -134,7 +135,12 @@ public class RuntimeComponentReferenceImpl extends ComponentReferenceImpl implem
     }
 
     public List<PolicyProvider> getPolicyProviders(Binding binding) {
-        return policyProviders.get(binding);
+        List<PolicyProvider> providers = policyProviders.get(binding);
+        if (providers == null) {
+            return Collections.emptyList();
+        } else {
+            return providers;
+        }
     }
 
     @Override

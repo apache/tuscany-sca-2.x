@@ -20,9 +20,10 @@ package org.apache.tuscany.sca.binding.ws.axis2.policy.header;
 
 
 import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
+import org.apache.tuscany.sca.invocation.Phase;
+import org.apache.tuscany.sca.invocation.PhasedInterceptor;
 import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
@@ -31,7 +32,7 @@ import org.apache.tuscany.sca.policy.PolicySet;
  *
  * @version $Rev$ $Date$
  */
-public class Axis2HeaderServicePolicyInterceptor implements Interceptor {
+public class Axis2HeaderServicePolicyInterceptor implements PhasedInterceptor {
     private Invoker next;
     private Operation operation;
     private PolicySet policySet = null;
@@ -70,4 +71,9 @@ public class Axis2HeaderServicePolicyInterceptor implements Interceptor {
     public void setNext(Invoker next) {
         this.next = next;
     }
+
+    public String getPhase() {
+        return Phase.SERVICE_POLICY;
+    }
+    
 }

@@ -26,9 +26,10 @@ import javax.security.auth.Subject;
 import org.apache.tuscany.sca.binding.ws.axis2.policy.header.Axis2HeaderPolicyUtil;
 import org.apache.tuscany.sca.binding.ws.axis2.policy.header.Axis2SOAPHeaderString;
 import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
+import org.apache.tuscany.sca.invocation.Phase;
+import org.apache.tuscany.sca.invocation.PhasedInterceptor;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.authentication.token.TokenPrincipal;
 import org.apache.tuscany.sca.policy.security.SecurityUtil;
@@ -39,7 +40,7 @@ import org.apache.tuscany.sca.policy.security.SecurityUtil;
  *
  * @version $Rev: 721811 $ $Date: 2008-11-30 13:46:51 +0000 (Sun, 30 Nov 2008) $
  */
-public class Axis2TokenAuthenticationServicePolicyInterceptor implements Interceptor {
+public class Axis2TokenAuthenticationServicePolicyInterceptor implements PhasedInterceptor {
     private Invoker next;
     private Operation operation;
     private PolicySet policySet = null;
@@ -90,4 +91,8 @@ public class Axis2TokenAuthenticationServicePolicyInterceptor implements Interce
     public void setNext(Invoker next) {
         this.next = next;
     }
+    
+    public String getPhase() {
+        return Phase.SERVICE_POLICY;
+    }    
 }

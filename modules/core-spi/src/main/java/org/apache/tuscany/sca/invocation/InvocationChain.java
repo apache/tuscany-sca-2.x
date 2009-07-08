@@ -74,25 +74,6 @@ public interface InvocationChain {
     Invoker getHeadInvoker();
 
     /**
-     * @deprecated This method is not used
-     * Returns the last invoker in the chain.
-     *
-     * @return The last invoker in the chain
-     */
-    @Deprecated
-    Invoker getTailInvoker();
-
-    /**
-     * @deprecated Please use <code>void addInterceptor(String phase, Interceptor interceptor);</code>
-     * Adds an interceptor at the given position in the interceptor stack
-     *
-     * @param index       The position in the interceptor stack to add the interceptor
-     * @param interceptor The interceptor to add
-     */
-    @Deprecated
-    void addInterceptor(int index, Interceptor interceptor);
-    
-    /**
      * Add an interceptor to the given phase
      * @param phase
      * @param interceptor

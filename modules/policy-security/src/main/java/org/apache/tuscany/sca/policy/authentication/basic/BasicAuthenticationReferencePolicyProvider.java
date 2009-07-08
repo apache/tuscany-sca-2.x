@@ -21,41 +21,29 @@ package org.apache.tuscany.sca.policy.authentication.basic;
 
 import java.util.List;
 
-import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.invocation.Interceptor;
-import org.apache.tuscany.sca.invocation.Phase;
+import org.apache.tuscany.sca.invocation.PhasedInterceptor;
 import org.apache.tuscany.sca.policy.PolicySet;
-import org.apache.tuscany.sca.policy.PolicySubject;
 import org.apache.tuscany.sca.provider.PolicyProvider;
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 
 /**
  * @version $Rev$ $Date$
  */
 public class BasicAuthenticationReferencePolicyProvider implements PolicyProvider {
-    private RuntimeComponent component;
-    private RuntimeComponentReference reference;
-    private Binding binding;
+    private EndpointReference endpointReference;
 
-    public BasicAuthenticationReferencePolicyProvider(RuntimeComponent component,
-                                             RuntimeComponentReference reference,
-                                             Binding binding) {
+    public BasicAuthenticationReferencePolicyProvider(EndpointReference endpointReference) {
         super();
-        this.component = component;
-        this.reference = reference;
-        this.binding = binding;
+        this.endpointReference = endpointReference;
     }
 
     private PolicySet findPolicySet() {
-        if (binding instanceof PolicySubject) {
-            List<PolicySet> policySets = ((PolicySubject)binding).getPolicySets();
-            for (PolicySet ps : policySets) {
-                for (Object p : ps.getPolicies()) {
-                    if (BasicAuthenticationPolicy.class.isInstance(p)) {
-                        return ps;
-                    }
+        List<PolicySet> policySets = endpointReference.getPolicySets();
+        for (PolicySet ps : policySets) {
+            for (Object p : ps.getPolicies()) {
+                if (BasicAuthenticationPolicy.class.isInstance(p)) {
+                    return ps;
                 }
             }
         }
@@ -63,27 +51,21 @@ public class BasicAuthenticationReferencePolicyProvider implements PolicyProvide
     }
 
     private String getContext() {
-        return "component.reference: " + component.getURI()
-            + "#"
-            + reference.getName()
-            + "("
-            + binding.getClass().getName()
-            + ")";
+        return endpointReference.getURI();
     }
     
     /**
      * @see org.apache.tuscany.sca.provider.PolicyProvider#createInterceptor(org.apache.tuscany.sca.interfacedef.Operation)
      */
-    public Interceptor createInterceptor(Operation operation) {
+    public PhasedInterceptor createInterceptor(Operation operation) {
         PolicySet ps = findPolicySet();
         return ps == null ? null : new BasicAuthenticationReferencePolicyInterceptor(getContext(), operation, ps);
     }
 
-    /**
-     * @see org.apache.tuscany.sca.provider.PolicyProvider#getPhase()
-     */
-    public String getPhase() {
-        return Phase.REFERENCE_POLICY;
+    public void start() {
+    }
+
+    public void stop() {
     }
 
 }

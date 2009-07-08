@@ -20,7 +20,7 @@
 package org.apache.tuscany.sca.provider;
 
 import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.invocation.Interceptor;
+import org.apache.tuscany.sca.invocation.PhasedInterceptor;
 
 /**
  * @version $Rev$ $Date$
@@ -31,11 +31,15 @@ public interface PolicyProvider {
      * @param operation
      * @return An interceptor that realize the policySet
      */
-    Interceptor createInterceptor(Operation operation);
-
+    PhasedInterceptor createInterceptor(Operation operation);
+    
     /**
-     * Get the phase that the interceptor should be added
-     * @return The phase that this interceptor belongs to
+     * Start the provider
      */
-    String getPhase();
+    void start();
+    
+    /**
+     * Stop the provider
+     */
+    void stop();
 }

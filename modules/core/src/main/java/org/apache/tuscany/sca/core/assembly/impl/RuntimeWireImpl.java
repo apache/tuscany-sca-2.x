@@ -354,6 +354,9 @@ public class RuntimeWireImpl implements RuntimeWire {
                   }
             });
         }
+        for (PolicyProvider policyProvider : runtimeRef.getPolicyProviders(endpointReference.getBinding())) {
+            policyProvider.start();
+        }
 
         InterfaceContract bindingContract = getInterfaceContract(endpointReference.getReference(), endpointReference.getBinding());
         Endpoint endpoint = endpointReference.getTargetEndpoint();
@@ -377,8 +380,7 @@ public class RuntimeWireImpl implements RuntimeWire {
             for (PolicyProviderFactory f : providerFactories
                     .getPolicyProviderFactories()) {
                 PolicyProvider policyProvider = f
-                        .createReferencePolicyProvider(component, reference,
-                                binding);
+                        .createReferencePolicyProvider(endpointReference);
                 if (policyProvider != null) {
                     reference.addPolicyProvider(binding, policyProvider);
                 }
@@ -425,7 +427,7 @@ public class RuntimeWireImpl implements RuntimeWire {
                 if (p instanceof PolicyProviderRRB) {
                     Interceptor interceptor = ((PolicyProviderRRB)p).createBindingInterceptor();
                     if (interceptor != null) {
-                        bindingInvocationChain.addInterceptor(p.getPhase(), interceptor);
+                        bindingInvocationChain.addInterceptor(interceptor);
                     }
                 }
             }
@@ -449,7 +451,7 @@ public class RuntimeWireImpl implements RuntimeWire {
                 if (p instanceof PolicyProviderRRB) {
                     Interceptor interceptor = ((PolicyProviderRRB)p).createBindingInterceptor();
                     if (interceptor != null) {
-                        bindingInvocationChain.addInterceptor(p.getPhase(), interceptor);
+                        bindingInvocationChain.addInterceptor(interceptor);
                     }
                 }
             }
@@ -555,7 +557,7 @@ public class RuntimeWireImpl implements RuntimeWire {
             for (PolicyProvider p : pps) {
                 Interceptor interceptor = p.createInterceptor(operation);
                 if (interceptor != null) {
-                    chain.addInterceptor(p.getPhase(), p.createInterceptor(operation));
+                    chain.addInterceptor(p.createInterceptor(operation));
                 }
             }
         }
@@ -578,7 +580,7 @@ public class RuntimeWireImpl implements RuntimeWire {
             for (PolicyProvider p : pps) {
                 Interceptor interceptor = p.createInterceptor(operation);
                 if (interceptor != null) {
-                    chain.addInterceptor(p.getPhase(), p.createInterceptor(operation));
+                    chain.addInterceptor(p.createInterceptor(operation));
                 }
             }
         }
@@ -640,7 +642,7 @@ public class RuntimeWireImpl implements RuntimeWire {
             for (PolicyProvider p : pps) {
                 Interceptor interceptor = p.createInterceptor(operation);
                 if (interceptor != null) {
-                    chain.addInterceptor(p.getPhase(), p.createInterceptor(operation));
+                    chain.addInterceptor(p.createInterceptor(operation));
                 }
             }
         }
