@@ -43,8 +43,10 @@ import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.IntentMap;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySubject;
+import org.apache.tuscany.sca.policy.Qualifier;
 
 /**
  * A composite builder that computes policy sets based on attached intents and policy sets.
@@ -269,6 +271,28 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
             List<Intent> provided = policySet.getProvidedIntents();
             // FIXME: Check if required intents are provided by the policy sets
         }
+        
+        for (Intent intent : subject.getRequiredIntents()) {
+            loop: for (PolicySet ps : definitions.getPolicySets()) {
+                // FIXME: We will have to check the policy references and intentMap too
+                // as well as the appliesTo
+                if (ps.getProvidedIntents().contains(intent)) {
+                    policySets.add(ps);
+                    break;
+                }
+                for (IntentMap map : ps.getIntentMaps()) {
+                    for (Qualifier q : map.getQualifiers()) {
+                        if (intent.equals(q.getIntent())) {
+                            policySets.add(ps);
+                            break loop;
+                        }
+                    }
+                }
+            }
+        }
+        
+        subject.getPolicySets().clear();
+        subject.getPolicySets().addAll(policySets);
 
     }
 
