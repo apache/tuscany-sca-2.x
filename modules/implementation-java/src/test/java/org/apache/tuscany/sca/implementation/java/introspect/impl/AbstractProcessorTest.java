@@ -19,6 +19,7 @@
 package org.apache.tuscany.sca.implementation.java.introspect.impl;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
@@ -39,8 +40,8 @@ public abstract class AbstractProcessorTest {
     protected AssemblyFactory factory;
     protected JavaInterfaceFactory javaFactory;
     protected ConstructorProcessor constructorProcessor;
-    private ReferenceProcessor referenceProcessor;
-    private PropertyProcessor propertyProcessor;
+    protected ReferenceProcessor referenceProcessor;
+    protected PropertyProcessor propertyProcessor;
     private ResourceProcessor resourceProcessor;
 
 
@@ -63,6 +64,7 @@ public abstract class AbstractProcessorTest {
             definition = new JavaConstructorImpl<T>(constructor);
             type.getConstructors().put(constructor, definition);
         }
+        
         JavaParameterImpl[] parameters = definition.getParameters();
         for (int i = 0; i < parameters.length; i++) {
             referenceProcessor.visitConstructorParameter(parameters[i], type);
@@ -71,4 +73,6 @@ public abstract class AbstractProcessorTest {
             // monitorProcessor.visitConstructorParameter(parameters[i], type);
         }
     }
+    
+ 
 }

@@ -20,6 +20,7 @@ package org.apache.tuscany.sca.implementation.java.introspect.impl;
 
 import static org.apache.tuscany.sca.implementation.java.introspect.JavaIntrospectionHelper.getBaseType;
 
+import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -60,27 +61,39 @@ public class ReferenceProcessor extends BaseJavaClassVisitor {
     @Override
     public void visitMethod(Method method, JavaImplementation type) throws IntrospectionException {
         Reference annotation = method.getAnnotation(Reference.class);
-        if (annotation == null) {
-            return; // Not a reference annotation.
+        if (annotation != null) {
+	
+	        if (!JavaIntrospectionHelper.isSetter(method)) {
+	            throw new IllegalReferenceException("Annotated method is not a setter: " + method, method);
+	        }
+	        String name = annotation.name();
+	        if ("".equals(name)) {
+	            name = JavaIntrospectionHelper.toPropertyName(method.getName());
+	        }
+	        JavaElementImpl ref = type.getReferenceMembers().get(name);
+	        // Setter override field
+	        if (ref != null && ref.getElementType() != ElementType.FIELD) {
+	            throw new DuplicateReferenceException(name);
+	        }
+	        removeReference(ref, type);
+	
+	        JavaElementImpl element = new JavaElementImpl(method, 0);
+	        org.apache.tuscany.sca.assembly.Reference reference = createReference(element, name);
+	        type.getReferences().add(reference);
+	        type.getReferenceMembers().put(name, element);
         }
-        if (!JavaIntrospectionHelper.isSetter(method)) {
-            throw new IllegalReferenceException("Annotated method is not a setter: " + method, method);
-        }
-        String name = annotation.name();
-        if ("".equals(name)) {
-            name = JavaIntrospectionHelper.toPropertyName(method.getName());
-        }
-        JavaElementImpl ref = type.getReferenceMembers().get(name);
-        // Setter override field
-        if (ref != null && ref.getElementType() != ElementType.FIELD) {
-            throw new DuplicateReferenceException(name);
-        }
-        removeReference(ref, type);
-
-        JavaElementImpl element = new JavaElementImpl(method, 0);
-        org.apache.tuscany.sca.assembly.Reference reference = createReference(element, name);
-        type.getReferences().add(reference);
-        type.getReferenceMembers().put(name, element);
+        
+        // enforce the constraint that an ordinary method's argument can not be a reference
+        Annotation paramsAnnotations[][] = method.getParameterAnnotations();
+        for (int i = 0; i < paramsAnnotations.length; i++) {
+        	Annotation argAnnotations[] = paramsAnnotations[i];
+        	for (int j = 0; j < argAnnotations.length; j++) {
+        		Annotation ann = argAnnotations[j];
+        		if(argAnnotations[j].annotationType() == Reference.class) {
+        			throw new IllegalReferenceException("Argument " + (i+1) + " of method " + method.getName() + " in class " + method.getDeclaringClass() + " can not be a Reference");
+        		}
+        	}
+		}
     }
 
 

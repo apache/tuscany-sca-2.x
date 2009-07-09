@@ -24,14 +24,21 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
+import org.apache.tuscany.sca.implementation.java.JavaConstructorImpl;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
+import org.apache.tuscany.sca.implementation.java.JavaParameterImpl;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
+
+import com.sun.xml.internal.ws.model.JavaMethodImpl;
 
 /**
  * @version $Rev$ $Date$
@@ -110,6 +117,21 @@ public class ConstructorReferenceTestCase extends AbstractProcessorTest {
             // expected
         }
     }
+    
+    @Test
+    public void testClassWithBadMethodArgReference() throws Exception {
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
+        Method meth = BadFoo2.class.getMethod("BadFoo2Method", String.class);
+
+        try {
+        	referenceProcessor.visitMethod(meth, type);
+        	
+            fail();
+        } catch (IllegalReferenceException e) {
+        	e.printStackTrace();
+        	System.out.println("Exception successfully received");
+        }
+    }
 
 //    public void testMultiplicityRequired() throws Exception {
     // TODO multiplicity
@@ -168,6 +190,20 @@ public class ConstructorReferenceTestCase extends AbstractProcessorTest {
 
         }
 
+    }
+    
+    private static class BadFoo2 {
+
+        @org.oasisopen.sca.annotation.Constructor()
+        public BadFoo2(@Property(name = "myProp", required = true)String prop) {
+
+        }
+        
+        /** Java can't tell that the @reference argument is disallowed by SCA, but the run time must reject it*/
+        public void BadFoo2Method(@Reference(name = "badMethodArgRef")String methArg) 
+        {}
+
+ 
     }
 
 }
