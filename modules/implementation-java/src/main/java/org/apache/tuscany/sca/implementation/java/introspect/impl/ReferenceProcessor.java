@@ -88,7 +88,6 @@ public class ReferenceProcessor extends BaseJavaClassVisitor {
         for (int i = 0; i < paramsAnnotations.length; i++) {
         	Annotation argAnnotations[] = paramsAnnotations[i];
         	for (int j = 0; j < argAnnotations.length; j++) {
-        		Annotation ann = argAnnotations[j];
         		if(argAnnotations[j].annotationType() == Reference.class) {
         			throw new IllegalReferenceException("Argument " + (i+1) + " of method " + method.getName() + " in class " + method.getDeclaringClass() + " can not be a Reference");
         		}

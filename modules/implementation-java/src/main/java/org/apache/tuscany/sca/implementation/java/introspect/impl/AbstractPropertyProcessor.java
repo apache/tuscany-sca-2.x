@@ -67,40 +67,51 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Ba
     @Override
     public void visitMethod(Method method, JavaImplementation type) throws IntrospectionException {
         A annotation = method.getAnnotation(annotationClass);
-        if (annotation == null) {
-            return;
+        if (annotation != null) {
+        	
+	        if (!JavaIntrospectionHelper.isSetter(method)) {
+	            throw new IllegalPropertyException("Annotated method is not a setter: " + method, method);
+	        }
+	
+	        String name = getName(annotation);
+	        if (name == null || "".equals(name)) {
+	            name = method.getName();
+	            if (name.startsWith("set")) {
+	                name = JavaIntrospectionHelper.toPropertyName(method.getName());
+	            }
+	        }
+	
+	        Map<String, JavaElementImpl> properties = type.getPropertyMembers();
+	        JavaElementImpl prop = properties.get(name);
+	        // Setter override field
+	        if (prop != null && prop.getElementType() != ElementType.FIELD) {
+	            throw new DuplicatePropertyException(name);
+	        }
+	
+	        removeProperty(prop, type);
+	        
+	        JavaElementImpl element = new JavaElementImpl(method, 0);
+	        Property property = createProperty(name, element);
+	
+	        // add databinding available as annotations, as extensions
+	
+	        initProperty(property, annotation);
+	        type.getProperties().add(property);
+	        properties.put(name, element);
         }
-
-        if (!JavaIntrospectionHelper.isSetter(method)) {
-            throw new IllegalPropertyException("Annotated method is not a setter: " + method, method);
-        }
-
-        String name = getName(annotation);
-        if (name == null || "".equals(name)) {
-            name = method.getName();
-            if (name.startsWith("set")) {
-                name = JavaIntrospectionHelper.toPropertyName(method.getName());
-            }
-        }
-
-        Map<String, JavaElementImpl> properties = type.getPropertyMembers();
-        JavaElementImpl prop = properties.get(name);
-        // Setter override field
-        if (prop != null && prop.getElementType() != ElementType.FIELD) {
-            throw new DuplicatePropertyException(name);
-        }
-
-        removeProperty(prop, type);
         
-        JavaElementImpl element = new JavaElementImpl(method, 0);
-        Property property = createProperty(name, element);
-
-        // add databinding available as annotations, as extensions
-
-        initProperty(property, annotation);
-        type.getProperties().add(property);
-        properties.put(name, element);
+        // enforce the constraint that an ordinary method's argument can not be a Property
+        Annotation paramsAnnotations[][] = method.getParameterAnnotations();
+        for (int i = 0; i < paramsAnnotations.length; i++) {
+        	Annotation argAnnotations[] = paramsAnnotations[i];
+        	for (int j = 0; j < argAnnotations.length; j++) {
+        		if(argAnnotations[j].annotationType() == org.oasisopen.sca.annotation.Property.class) {
+        			throw new IllegalPropertyException("Argument " + (i+1) + " of method " + method.getName() + " in class " + method.getDeclaringClass() + " can not be a Property");
+        		}
+        	}
+		}
     }
+
 
     @Override
     public void visitField(Field field, JavaImplementation type) throws IntrospectionException {
