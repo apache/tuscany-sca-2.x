@@ -26,10 +26,14 @@ import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.assembly.Component;
+import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.PhasedInterceptor;
+import org.apache.tuscany.sca.policy.PolicySubject;
 
 /**
  * Policy handler to handle PolicySet related to Logging with the QName
@@ -45,23 +49,36 @@ public class JDKLoggingPolicyInterceptor implements PhasedInterceptor {
     private Invoker next;
     private Operation operation;
     private List<JDKLoggingPolicy> policies;
+    private PolicySubject subject;
     private String context;
     private String phase;
 
-    public JDKLoggingPolicyInterceptor(String context,
+    public JDKLoggingPolicyInterceptor(PolicySubject subject,
+                                       String context,
                                        Operation operation,
                                        List<JDKLoggingPolicy> policies,
                                        String phase) {
         super();
         this.operation = operation;
         this.policies = policies;
-        this.context = context;
+        this.subject = subject;
         this.phase = phase;
+        this.context = getContext();
         init();
     }
 
-    public void start() {
-        init();
+    private String getContext() {
+        if (subject instanceof Endpoint) {
+            Endpoint endpoint = (Endpoint)subject;
+            return endpoint.getURI();
+        } else if (subject instanceof EndpointReference) {
+            EndpointReference endpointReference = (EndpointReference)subject;
+            return endpointReference.getURI();
+        } else if (subject instanceof Component) {
+            Component component = (Component)subject;
+            return component.getURI();
+        }
+        return null;
     }
 
     private void init() {
@@ -83,31 +100,38 @@ public class JDKLoggingPolicyInterceptor implements PhasedInterceptor {
             consoleHandler.setLevel(Level.ALL);
             logger.addHandler(consoleHandler);
         }
+
+        if (logger.isLoggable(Level.FINE)) {
+            logger.logp(Level.FINE, context, "", "Intents: {0}", subject.getRequiredIntents());
+            logger.logp(Level.FINE, context, "", "PolicySets: {0}", subject.getPolicySets());
+        }
     }
 
     public Message invoke(Message msg) {
         if (logger == null) {
             return getNext().invoke(msg);
         }
+        logger.logp(Level.INFO, context, "", "Invoking operation - " + operation.getName());
         Object msgBody = msg.getBody();
         if (msgBody instanceof Object[]) {
-            logger.logp(Level.INFO, context, "", "Invoking operation - " + operation.getName());
 
-            StringBuffer sb = new StringBuffer();
-            if (msgBody == null) {
-                sb.append("");
-            } else {
-                Object[] args = (Object[])msgBody;
-                for (int i = 0; i < args.length; i++) {
-                    sb.append(args[i]);
-                    if (i != args.length - 1) {
-                        sb.append(", ");
+            if (logger.isLoggable(Level.FINE)) {
+                StringBuffer sb = new StringBuffer();
+                if (msgBody == null) {
+                    sb.append("");
+                } else {
+                    Object[] args = (Object[])msgBody;
+                    for (int i = 0; i < args.length; i++) {
+                        sb.append(args[i]);
+                        if (i != args.length - 1) {
+                            sb.append(", ");
+                        }
                     }
                 }
-            }
 
-            Object[] logParams = new Object[] {operation.getName(), sb.toString()};
-            logger.logp(Level.FINER, context, "", "Invoking operation {0} with arguments {1}", logParams);
+                Object[] logParams = new Object[] {operation.getName(), sb.toString()};
+                logger.logp(Level.FINE, context, "", "Invoking operation {0} with arguments {1}", logParams);
+            }
         }
 
         Message responseMsg = null;
@@ -119,9 +143,15 @@ public class JDKLoggingPolicyInterceptor implements PhasedInterceptor {
             throw e;
         } finally {
             if (responseMsg != null) {
-                Object[] logParams = new Object[] {operation.getName(), responseMsg.getBody()};
                 logger.logp(Level.INFO, context, "", "Returned from operation - " + operation.getName());
-                logger.logp(Level.FINER, context, "", "Returning from operation {0} with return value {1}", logParams);
+                if (logger.isLoggable(Level.FINE)) {
+                    Object[] logParams = new Object[] {operation.getName(), responseMsg.getBody()};
+                    logger.logp(Level.FINE,
+                                context,
+                                "",
+                                "Returning from operation {0} with return value {1}",
+                                logParams);
+                }
             }
         }
     }

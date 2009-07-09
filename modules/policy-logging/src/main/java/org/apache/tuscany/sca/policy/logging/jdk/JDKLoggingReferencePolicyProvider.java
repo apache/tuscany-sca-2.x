@@ -38,8 +38,8 @@ public class JDKLoggingReferencePolicyProvider extends BasePolicyProvider<JDKLog
 
     public PhasedInterceptor createInterceptor(Operation operation) {
         List<JDKLoggingPolicy> policies = findPolicies();
-        return policies.isEmpty() ? null : new JDKLoggingPolicyInterceptor(getContext(), operation, policies,
-                                                                           Phase.REFERENCE_POLICY);
+        return policies.isEmpty() ? null : new JDKLoggingPolicyInterceptor(subject, getContext(), operation,
+                                                                           policies, Phase.REFERENCE_POLICY);
     }
 
 }
