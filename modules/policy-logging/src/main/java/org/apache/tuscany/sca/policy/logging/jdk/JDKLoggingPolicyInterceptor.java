@@ -39,7 +39,7 @@ import org.apache.tuscany.sca.policy.PolicySet;
  */
 public class JDKLoggingPolicyInterceptor implements PhasedInterceptor {
     public static final String loggingPolicy = "JDKLoggingPolicy";
-    public static final QName policySetQName = new QName(JDKLoggingPolicy.SCA10_TUSCANY_NS, loggingPolicy);
+    public static final QName policySetQName = new QName(JDKLoggingPolicy.SCA11_TUSCANY_NS, loggingPolicy);
     private Logger logger = null;
 
     private Invoker next;

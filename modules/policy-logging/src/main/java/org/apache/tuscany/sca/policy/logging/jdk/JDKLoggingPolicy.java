@@ -22,6 +22,8 @@ import java.util.logging.Level;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.assembly.Base;
+
 /**
  * Implementation for policies that could be injected as parameter
  * into the axis2config.
@@ -29,9 +31,9 @@ import javax.xml.namespace.QName;
  * @version $Rev$ $Date$
  */
 public class JDKLoggingPolicy {
-    static final String SCA10_NS = "http://www.osoa.org/xmlns/sca/1.0";
-    static final String SCA10_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.0";
-    private static final QName JDK_LOGGING_POLICY_QNAME = new QName(SCA10_TUSCANY_NS, "jdkLogger");
+    static final String SCA11_NS = Base.SCA11_NS;
+    static final String SCA11_TUSCANY_NS = Base.SCA11_TUSCANY_NS;
+    private static final QName JDK_LOGGING_POLICY_QNAME = new QName(SCA11_TUSCANY_NS, "jdkLogger");
 
     private String loggerName;
     private String resourceBundleName;

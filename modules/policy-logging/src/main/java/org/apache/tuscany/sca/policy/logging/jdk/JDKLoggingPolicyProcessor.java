@@ -41,12 +41,11 @@ import org.apache.tuscany.sca.monitor.Monitor;
  * @version $Rev$ $Date$
  */
 public class JDKLoggingPolicyProcessor implements StAXArtifactProcessor<JDKLoggingPolicy> {
-    private static final QName JDK_LOGGING_POLICY_QNAME = new QName(JDKLoggingPolicy.SCA10_TUSCANY_NS, "jdkLogger");
+    private static final QName JDK_LOGGING_POLICY_QNAME = new QName(JDKLoggingPolicy.SCA11_TUSCANY_NS, "jdkLogger");
     private static final String LOG_LEVEL = "logLevel";
     private static final String RESOURCE_BUNDLE = "resourceBundle";
     private static final String USE_PARENT_HANDLERS = "useParentHandlers";
-    private static final String TUSACNY_NS = "http://tuscany.apache.org/xmlns/sca/1.0";
-        
+    
     public QName getArtifactType() {
         return JDK_LOGGING_POLICY_QNAME;
     }
@@ -101,7 +100,7 @@ public class JDKLoggingPolicyProcessor implements StAXArtifactProcessor<JDKLoggi
         writer.writeStartElement(prefix, 
                                  JDK_LOGGING_POLICY_QNAME.getLocalPart(),
                                  JDK_LOGGING_POLICY_QNAME.getNamespaceURI());
-        writer.writeNamespace("tuscany", JDKLoggingPolicy.SCA10_TUSCANY_NS);
+        writer.writeNamespace("tuscany", JDKLoggingPolicy.SCA11_TUSCANY_NS);
         
         if (policy.getLoggerName() != null) {
             writer.writeAttribute("name", policy.getLoggerName());

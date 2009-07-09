@@ -17,15 +17,25 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<definitions xmlns="http://www.osoa.org/xmlns/sca/1.0"
- 			targetNamespace="http://tuscany.apache.org/xmlns/sca/1.0"
- 			xmlns:sca="http://www.osoa.org/xmlns/sca/1.0"
- 			xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0">
+<definitions xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+            targetNamespace="http://tuscany.apache.org/xmlns/sca/1.1"
+            xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+            xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1">
 
 	<!-- Policy Intents Defined by the SCA Runtime -->
-	<intent name="logging" constrains="sca:implementation.java sca:implementation.spring">
+	<intent name="logging" constrains="sca:implementation sca:binding">
 		<description>
 			All messages to and from this implementation must be logged
 		</description>
 	</intent>
+    
+    <policySet name="JDKLoggingPolicy" 
+               provides="tuscany:logging" 
+               appliesTo="sca:binding sca:implementation">
+        <tuscany:jdkLogger name="test.logger">
+            <tuscany:logLevel>INFO</tuscany:logLevel>
+            <tuscany:resourceBundle>Trace_Messages.properties</tuscany:resourceBundle>
+        </tuscany:jdkLogger>
+    </policySet>
+    
 </definitions>
