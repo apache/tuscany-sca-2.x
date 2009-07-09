@@ -18,24 +18,13 @@
  * under the License.    
 -->
 <definitions xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
-            targetNamespace="http://tuscany.apache.org/xmlns/sca/1.1"
-            xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200903"
-            xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1">
+            targetNamespace="http://tuscany.apache.org/xmlns/sca/1.1">
 
 	<!-- Policy Intents Defined by the SCA Runtime -->
-	<intent name="logging" constrains="sca:implementation sca:binding">
+	<intent name="logging" constrains="implementation binding">
 		<description>
 			All messages to and from this implementation must be logged
 		</description>
 	</intent>
-    
-    <policySet name="JDKLoggingPolicy" 
-               provides="tuscany:logging" 
-               appliesTo="sca:binding sca:implementation">
-        <tuscany:jdkLogger name="test.logger">
-            <tuscany:logLevel>INFO</tuscany:logLevel>
-            <tuscany:resourceBundle>Trace_Messages.properties</tuscany:resourceBundle>
-        </tuscany:jdkLogger>
-    </policySet>
     
 </definitions>
