@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.policy.logging.jdk;
 
+import java.util.List;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -29,7 +30,6 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.PhasedInterceptor;
-import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
  * Policy handler to handle PolicySet related to Logging with the QName
@@ -44,39 +44,44 @@ public class JDKLoggingPolicyInterceptor implements PhasedInterceptor {
 
     private Invoker next;
     private Operation operation;
-    private PolicySet policySet = null;
+    private List<JDKLoggingPolicy> policies;
     private String context;
     private String phase;
 
-    public JDKLoggingPolicyInterceptor(String context, Operation operation, PolicySet policySet, String phase) {
+    public JDKLoggingPolicyInterceptor(String context,
+                                       Operation operation,
+                                       List<JDKLoggingPolicy> policies,
+                                       String phase) {
         super();
         this.operation = operation;
-        this.policySet = policySet;
+        this.policies = policies;
         this.context = context;
         this.phase = phase;
         init();
     }
 
+    public void start() {
+        init();
+    }
+
     private void init() {
-        if (policySet != null) {
-            JDKLoggingPolicy policy = (JDKLoggingPolicy)policySet.getPolicies().get(0);
-            logger = Logger.getLogger(policy.getLoggerName());
-            logger.setLevel(policy.getLogLevel());
-            logger.setUseParentHandlers(policy.isUseParentHandlers());
+        JDKLoggingPolicy policy = policies.get(0);
+        logger = Logger.getLogger(policy.getLoggerName());
+        logger.setLevel(policy.getLogLevel());
+        logger.setUseParentHandlers(policy.isUseParentHandlers());
 
-            boolean found = false;
-            for (Handler handler : logger.getHandlers()) {
-                if (handler instanceof ConsoleHandler) {
-                    found = true;
-                    break;
-                }
+        boolean found = false;
+        for (Handler handler : logger.getHandlers()) {
+            if (handler instanceof ConsoleHandler) {
+                found = true;
+                break;
             }
+        }
 
-            if (!found) {
-                ConsoleHandler consoleHandler = new ConsoleHandler();
-                consoleHandler.setLevel(Level.ALL);
-                logger.addHandler(consoleHandler);
-            }
+        if (!found) {
+            ConsoleHandler consoleHandler = new ConsoleHandler();
+            consoleHandler.setLevel(Level.ALL);
+            logger.addHandler(consoleHandler);
         }
     }
 
@@ -132,5 +137,5 @@ public class JDKLoggingPolicyInterceptor implements PhasedInterceptor {
     public String getPhase() {
         return phase;
     }
-    
+
 }

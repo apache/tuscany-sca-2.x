@@ -61,9 +61,8 @@ public class JDKLoggingPolicyProviderFactory implements PolicyProviderFactory<JD
     /**
      * @see org.apache.tuscany.sca.provider.ProviderFactory#getModelType()
      */
-    public Class getModelType() {
-        // TODO Auto-generated method stub
-        return null;
+    public Class<JDKLoggingPolicy> getModelType() {
+        return JDKLoggingPolicy.class;
     }
 
 }

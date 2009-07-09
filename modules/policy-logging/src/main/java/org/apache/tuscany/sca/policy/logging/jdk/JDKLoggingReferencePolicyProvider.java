@@ -19,22 +19,27 @@
 
 package org.apache.tuscany.sca.policy.logging.jdk;
 
-import org.apache.tuscany.sca.assembly.Binding;
+import java.util.List;
+
 import org.apache.tuscany.sca.assembly.EndpointReference;
+import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.invocation.Phase;
+import org.apache.tuscany.sca.invocation.PhasedInterceptor;
 import org.apache.tuscany.sca.provider.BasePolicyProvider;
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 
 /**
  * @version $Rev$ $Date$
  */
 public class JDKLoggingReferencePolicyProvider extends BasePolicyProvider<JDKLoggingPolicy> {
-    private RuntimeComponent component;
-    private RuntimeComponentReference reference;
-    private Binding binding;
 
     public JDKLoggingReferencePolicyProvider(EndpointReference endpointReference) {
         super(JDKLoggingPolicy.class, endpointReference);
+    }
+
+    public PhasedInterceptor createInterceptor(Operation operation) {
+        List<JDKLoggingPolicy> policies = findPolicies();
+        return policies.isEmpty() ? null : new JDKLoggingPolicyInterceptor(getContext(), operation, policies,
+                                                                           Phase.REFERENCE_POLICY);
     }
 
 }

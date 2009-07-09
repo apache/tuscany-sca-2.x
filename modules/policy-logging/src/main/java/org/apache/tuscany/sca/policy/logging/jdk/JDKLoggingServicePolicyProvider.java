@@ -19,11 +19,12 @@
 
 package org.apache.tuscany.sca.policy.logging.jdk;
 
+import java.util.List;
+
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Phase;
 import org.apache.tuscany.sca.invocation.PhasedInterceptor;
-import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.provider.BasePolicyProvider;
 
 /**
@@ -36,8 +37,8 @@ public class JDKLoggingServicePolicyProvider extends BasePolicyProvider<JDKLoggi
     }
 
     public PhasedInterceptor createInterceptor(Operation operation) {
-        PolicySet ps = findPolicySet();
-        return ps == null ? null : new JDKLoggingPolicyInterceptor(getContext(), operation, ps, Phase.SERVICE_POLICY);
+        List<JDKLoggingPolicy> policies = findPolicies();
+        return policies.isEmpty() ? null : new JDKLoggingPolicyInterceptor(getContext(), operation, policies, Phase.SERVICE_POLICY);
     }
 
 }
