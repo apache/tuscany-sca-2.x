@@ -21,6 +21,7 @@
     xmlns:p="http://payment"
     xmlns:c="http://customer"
     xmlns:sca = "http://docs.oasis-open.org/ns/opencsa/sca/200903"
+    xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1"
     requires = "sca:authorization" 
     targetNamespace="http://payment"
     name="Payment">
@@ -28,10 +29,10 @@
     <component name="Payment">
         <implementation.java class="org.apache.tuscany.sca.itest.policies.impl.PaymentImpl" />
         <reference name="creditCardPayment" target="CreditCardPayment">
-            <binding.sca requires="sca:integrity">
+            <binding.sca requires="sca:integrity tuscany:logging">
             </binding.sca>
         </reference>
-        <reference name="customerRegistry" target="Customer/Registry" requires="sca:suspendsTransaction"/>
+        <reference name="customerRegistry" target="Customer/Registry" requires="sca:suspendsTransaction tuscany:logging"/>
     </component>
 
     <component name="CreditCardPayment">

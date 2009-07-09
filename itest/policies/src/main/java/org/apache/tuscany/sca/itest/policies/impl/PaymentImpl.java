@@ -24,6 +24,7 @@ import org.apache.tuscany.sca.itest.policies.CreditCardPayment;
 import org.apache.tuscany.sca.itest.policies.Customer;
 import org.apache.tuscany.sca.itest.policies.CustomerRegistry;
 import org.apache.tuscany.sca.itest.policies.Payment;
+import org.apache.tuscany.sca.policy.logging.Logging;
 import org.oasisopen.sca.annotation.Authentication;
 import org.oasisopen.sca.annotation.Confidentiality;
 import org.oasisopen.sca.annotation.Reference;
@@ -32,6 +33,7 @@ import org.oasisopen.sca.annotation.Requires;
 /**
  * 
  */
+@Logging
 public class PaymentImpl implements Payment {
 
     @Reference

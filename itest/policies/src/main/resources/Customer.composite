@@ -19,11 +19,11 @@
 -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903" 
     xmlns:c="http://customer"
-    xmlns:sca = "http://docs.oasis-open.org/ns/opencsa/sca/200903" 
     targetNamespace="http://customer"
+    xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1"
     name="Customer">
 
-    <service name="Registry" promote="CustomerRegistry">
+    <service name="Registry" promote="CustomerRegistry" requires="tuscany:logging">
         <binding.sca/>
     </service>
     

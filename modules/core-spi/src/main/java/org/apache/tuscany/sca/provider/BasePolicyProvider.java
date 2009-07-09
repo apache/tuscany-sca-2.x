@@ -29,6 +29,7 @@ import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.PhasedInterceptor;
+import org.apache.tuscany.sca.policy.PolicyExpression;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySubject;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
@@ -55,6 +56,13 @@ public abstract class BasePolicyProvider<T> implements PolicyProvider {
                 if (policyType.isInstance(p)) {
                     policies.add(policyType.cast(p));
                 }
+                if (p instanceof PolicyExpression) {
+                    PolicyExpression exp = (PolicyExpression)p;
+                    if (policyType.isInstance(exp.getPolicy())) {
+                        policies.add(policyType.cast(exp.getPolicy()));
+                    }
+                }
+
             }
         }
         return policies;
@@ -68,6 +76,12 @@ public abstract class BasePolicyProvider<T> implements PolicyProvider {
                 if (policyType.isInstance(p)) {
                     policies.add(ps);
                 }
+                if (p instanceof PolicyExpression) {
+                    PolicyExpression exp = (PolicyExpression)p;
+                    if (policyType.isInstance(exp.getPolicy())) {
+                        policies.add(ps);
+                    }
+                }
             }
         }
         return policies;
@@ -79,6 +93,12 @@ public abstract class BasePolicyProvider<T> implements PolicyProvider {
             for (Object p : ps.getPolicies()) {
                 if (policyType.isInstance(p)) {
                     return ps;
+                }
+                if (p instanceof PolicyExpression) {
+                    PolicyExpression exp = (PolicyExpression)p;
+                    if (policyType.isInstance(exp.getPolicy())) {
+                        return ps;
+                    }
                 }
             }
         }
