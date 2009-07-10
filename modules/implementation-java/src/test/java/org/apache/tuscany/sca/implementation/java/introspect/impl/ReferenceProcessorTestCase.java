@@ -24,6 +24,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
 
+import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.List;
 
@@ -36,6 +37,7 @@ import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.junit.Before;
 import org.junit.Test;
+import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -121,6 +123,24 @@ public class ReferenceProcessorTestCase {
             // expected
         }
     }
+    
+    @Test
+    public void testClassWithBadMethodArgReference() throws Exception {
+        Method meth = BadMethAnn.class.getMethod("BadMethod", String.class);
+
+        try {
+        	processor.visitMethod(meth, type);
+        	
+            fail("reference annotation on ordinary method arg should be rejected");
+        } catch (IllegalReferenceException e) {
+//        	e.printStackTrace();
+//        	System.out.println("Exception successfully received");
+        }
+    	catch (Exception e) {
+			fail("Wrong exception detected");
+			e.printStackTrace();
+		}
+    }
 
     @Before
     public void setUp() throws Exception {
@@ -193,6 +213,29 @@ public class ReferenceProcessorTestCase {
         }
 
     }
+    
+    private static class BadStaticRefs {
+    	
+    	@Reference(name="badstaticfield")static int stint;
+    	
+    	@Reference(name="badstaticfield")static void setStint(int theStint) {
+    		stint = theStint;
+    	}
+    }
+    
+    
+    private static class BadMethAnn {
+
+        @org.oasisopen.sca.annotation.Constructor()
+        public BadMethAnn(@Property(name = "myProp", required = true)String prop) {
+
+        }
+        
+        /** Java can't tell that the @reference argument is disallowed by SCA, but the run time must reject it*/
+        public void BadMethod(@Reference(name = "badMethodArgRef")String methArg) 
+        {}
+
+    }
 
     @Test
     public void testMultiplicity1ToN() throws Exception {
@@ -232,6 +275,37 @@ public class ReferenceProcessorTestCase {
         assertSame(Ref.class, ((JavaInterface)ref.getInterfaceContract().getInterface()).getJavaClass());
         assertEquals(Multiplicity.ZERO_N, ref.getMultiplicity());
         // assertFalse(ref.isMustSupply());
+    }
+    
+    @Test
+    public void testRejectStaticFieldReference() throws Exception {
+    	try {
+    		processor.visitField(BadStaticRefs.class.getDeclaredField("stint"), type);
+    		fail("Processor should not accept a static field with Property annotation");
+    	}
+    	catch (IllegalReferenceException e) {
+			// System.out.println("Caught expected exception");
+		}
+    	catch (Exception e) {
+			fail("Wrong exception detected");
+			e.printStackTrace();
+		}
+    }
+    	
+    @Test
+    public void testRejectStaticMethodReference() throws Exception {
+    	try {
+    		processor.visitMethod(BadStaticRefs.class.getDeclaredMethod("setStint",int.class), type);
+    		fail("Processor should not accept a static method with Property annotation");
+    	}
+    	catch (IllegalPropertyException e) {
+			// System.out.println("Caught expected exception");
+		}
+    	catch (Exception e) {
+			fail("Wrong exception detected");
+			e.printStackTrace();
+		}
+
     }
 
 }

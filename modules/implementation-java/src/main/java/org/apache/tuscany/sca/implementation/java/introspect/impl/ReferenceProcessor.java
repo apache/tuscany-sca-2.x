@@ -24,6 +24,7 @@ import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.List;
@@ -66,6 +67,11 @@ public class ReferenceProcessor extends BaseJavaClassVisitor {
 	        if (!JavaIntrospectionHelper.isSetter(method)) {
 	            throw new IllegalReferenceException("Annotated method is not a setter: " + method, method);
 	        }
+	       
+	        if(Modifier.isStatic(method.getModifiers())) {
+	        	throw new IllegalPropertyException("Static method " + method.getName() +" in class " + method.getDeclaringClass().getName() + " can not be annotated as a Reference");
+	        }
+	        
 	        String name = annotation.name();
 	        if ("".equals(name)) {
 	            name = JavaIntrospectionHelper.toPropertyName(method.getName());
@@ -101,6 +107,10 @@ public class ReferenceProcessor extends BaseJavaClassVisitor {
         Reference annotation = field.getAnnotation(Reference.class);
         if (annotation == null) {
             return;
+        }
+        
+        if(Modifier.isStatic(field.getModifiers())) {
+        	throw new IllegalReferenceException("Static field " + field.getName() +" in class " + field.getDeclaringClass().getName() + " can not be annotated as Reference");
         }
         String name = annotation.name();
         if ("".equals(name)) {

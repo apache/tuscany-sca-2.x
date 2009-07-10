@@ -118,20 +118,6 @@ public class ConstructorReferenceTestCase extends AbstractProcessorTest {
         }
     }
     
-    @Test
-    public void testClassWithBadMethodArgReference() throws Exception {
-        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
-        Method meth = BadFoo2.class.getMethod("BadFoo2Method", String.class);
-
-        try {
-        	referenceProcessor.visitMethod(meth, type);
-        	
-            fail();
-        } catch (IllegalReferenceException e) {
-        	e.printStackTrace();
-        	System.out.println("Exception successfully received");
-        }
-    }
 
 //    public void testMultiplicityRequired() throws Exception {
     // TODO multiplicity
@@ -192,18 +178,7 @@ public class ConstructorReferenceTestCase extends AbstractProcessorTest {
 
     }
     
-    private static class BadFoo2 {
 
-        @org.oasisopen.sca.annotation.Constructor()
-        public BadFoo2(@Property(name = "myProp", required = true)String prop) {
 
-        }
-        
-        /** Java can't tell that the @reference argument is disallowed by SCA, but the run time must reject it*/
-        public void BadFoo2Method(@Reference(name = "badMethodArgRef")String methArg) 
-        {}
-
- 
-    }
 
 }

@@ -24,6 +24,7 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.List;
 
@@ -185,6 +186,29 @@ public class PropertyProcessorTestCase {
         }
 
     }
+    
+    private static class BadMethodProps {
+
+        @org.oasisopen.sca.annotation.Constructor()
+        public BadMethodProps(@Property(name = "myProp", required = true)String prop) {
+
+        }
+        
+        /** Java can't tell that the @reference argument is disallowed by SCA, but the run time must reject it*/
+        public void BadMethod(@Property(name = "badMethodArgProp")String methArg) 
+        {}
+
+ 
+    }
+    
+    private static class BadStaticProps {
+    	
+    	@Property(name="badstaticfield")static int stint;
+    	
+    	@Property(name="badstaticfield")static void setStint(int theStint) {
+    		stint = theStint;
+    	}
+    }
 
     private Class<?> getBaseType(JavaElementImpl element) {
         return JavaIntrospectionHelper.getBaseType(element.getType(), element.getGenericType());
@@ -224,6 +248,55 @@ public class PropertyProcessorTestCase {
         assertNotNull(prop);
         assertSame(String.class, getBaseType(type.getPropertyMembers().get(prop.getName())));
         assertTrue(prop.isMany());
+    }
+    
+    @Test
+    public void testRejectStaticFieldProperty() throws Exception {
+    	try {
+    		processor.visitField(BadStaticProps.class.getDeclaredField("stint"), type);
+    		fail("Processor should not accept a static field with Property annotation");
+    	}
+    	catch (IllegalPropertyException e) {
+			// System.out.println("Caught expected exception");
+		}
+    	catch (Exception e) {
+			fail("Wrong exception detected");
+		}
+    }
+    	
+    @Test
+    public void testRejectStaticMethodProperty() throws Exception {
+    	try {
+    		processor.visitMethod(BadStaticProps.class.getDeclaredMethod("setStint",int.class), type);
+    		fail("Processor should not accept a static method with Property annotation");
+    	}
+    	catch (IllegalPropertyException e) {
+			// System.out.println("Caught expected exception");
+		}
+    	catch (Exception e) {
+			fail("Wrong exception detected");
+			e.printStackTrace();
+		}
+
+    }
+    
+    @Test
+    public void testClassWithBadMethodArgProperty() throws Exception {
+        Method meth = BadMethodProps.class.getMethod("BadMethod", String.class);
+
+        try {
+        	processor.visitMethod(meth, type);
+        	
+            fail("Method with @Property annotated args should be rejected");
+        } catch (IllegalPropertyException e) {
+//        	e.printStackTrace();
+//        	System.out.println("Exception successfully received");
+        }
+        catch (Exception e) {
+			fail("Wrong exception received");
+			e.printStackTrace();
+		}
+
     }
 
 }

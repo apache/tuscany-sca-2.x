@@ -22,6 +22,7 @@ import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -72,6 +73,10 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Ba
 	        if (!JavaIntrospectionHelper.isSetter(method)) {
 	            throw new IllegalPropertyException("Annotated method is not a setter: " + method, method);
 	        }
+	        
+	        if(Modifier.isStatic(method.getModifiers())) {
+	        	throw new IllegalPropertyException("Static method " + method.getName() +" in class " + method.getDeclaringClass().getName() + " can not be annotated as a Property");
+	        }
 	
 	        String name = getName(annotation);
 	        if (name == null || "".equals(name)) {
@@ -119,6 +124,10 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Ba
         A annotation = field.getAnnotation(annotationClass);
         if (annotation == null) {
             return;
+        }
+        
+        if(Modifier.isStatic(field.getModifiers())) {
+        	throw new IllegalPropertyException("Static field " + field.getName() +" in class " + field.getDeclaringClass().getName() + " can not be annotated as a Property");
         }
 
         String name = getName(annotation);

@@ -120,21 +120,7 @@ public class ConstructorPropertyTestCase extends AbstractProcessorTest {
     // TODO multiplicity
 //    }
 
-    @Test
-    public void testClassWithBadMethodArgProperty() throws Exception {
-        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
-        Method meth = BadFoo2.class.getMethod("BadFoo2Method", String.class);
 
-        try {
-        	propertyProcessor.visitMethod(meth, type);
-        	
-            fail();
-        } catch (IllegalPropertyException e) {
-        	e.printStackTrace();
-        	System.out.println("Exception successfully received");
-        }
-
-    }
     
     private static class Foo {
 
@@ -183,18 +169,6 @@ public class ConstructorPropertyTestCase extends AbstractProcessorTest {
 
     }
     
-    private static class BadFoo2 {
 
-        @org.oasisopen.sca.annotation.Constructor()
-        public BadFoo2(@Property(name = "myProp", required = true)String prop) {
-
-        }
-        
-        /** Java can't tell that the @reference argument is disallowed by SCA, but the run time must reject it*/
-        public void BadFoo2Method(@Property(name = "badMethodArgProp")String methArg) 
-        {}
-
- 
-    }
 
 }
