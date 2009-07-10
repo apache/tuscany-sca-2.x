@@ -23,7 +23,7 @@
 
     <policySet name="JDKLoggingPolicy" 
                provides="tuscany:logging" 
-               appliesTo="binding|implementation">
+               appliesTo="//binding | //implementation">
         <tuscany:jdkLogger name="test.logger">
             <tuscany:logLevel>FINE</tuscany:logLevel>
             <tuscany:resourceBundle>LoggingMessages.properties</tuscany:resourceBundle>
