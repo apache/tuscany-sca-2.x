@@ -41,7 +41,7 @@ import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import org.oasisopen.sca.CallableReference;
+import org.oasisopen.sca.ServiceReference;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -191,7 +191,7 @@ public class ReferenceProcessor extends BaseJavaClassVisitor {
         }
         Type genericType = element.getGenericType();
         Class<?> baseType = getBaseType(rawType, genericType);
-        if (CallableReference.class.isAssignableFrom(baseType)) {
+        if (ServiceReference.class.isAssignableFrom(baseType)) {
             if (Collection.class.isAssignableFrom(rawType)) {
                 genericType = JavaIntrospectionHelper.getParameterType(genericType);
             }

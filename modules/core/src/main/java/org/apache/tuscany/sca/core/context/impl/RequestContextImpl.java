@@ -24,21 +24,18 @@ import javax.security.auth.Subject;
 
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.core.context.CallableReferenceExt;
 import org.apache.tuscany.sca.core.invocation.ExtensibleProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.invocation.ThreadMessageContext;
-import org.apache.tuscany.sca.core.invocation.impl.CallbackReferenceImpl;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.invocation.Message;
-import org.apache.tuscany.sca.runtime.ReferenceParameters;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
-import org.oasisopen.sca.CallableReference;
 import org.oasisopen.sca.RequestContext;
+import org.oasisopen.sca.ServiceReference;
 
 /**
  * @version $Rev$ $Date$
@@ -68,14 +65,14 @@ public class RequestContextImpl implements RequestContext {
         return ThreadMessageContext.getMessageContext().getTo().getService().getName();
     }
 
-    public <B> CallableReference<B> getServiceReference() {
+    public <B> ServiceReference<B> getServiceReference() {
         Message msgContext = ThreadMessageContext.getMessageContext();
         // FIXME: [rfeng] Is this the service reference matching the caller side?
         Endpoint to = msgContext.getTo();
         RuntimeComponentService service = (RuntimeComponentService) to.getService();
         RuntimeComponent component = (RuntimeComponent) to.getComponent();
         
-        CallableReference<B> callableReference = component.getComponentContext().getCallableReference(null, component, service);
+        ServiceReference<B> callableReference = component.getComponentContext().getCallableReference(null, component, service);
         
         //TODO - EPR - not required for OASIS
         //ReferenceParameters parameters = msgContext.getFrom().getReferenceParameters();
@@ -86,7 +83,7 @@ public class RequestContextImpl implements RequestContext {
     }
 
     public <CB> CB getCallback() {
-        CallableReference<CB> cb = getCallbackReference(); 
+        ServiceReference<CB> cb = getCallbackReference(); 
         if (cb == null) {
             return null;
         }
@@ -94,7 +91,7 @@ public class RequestContextImpl implements RequestContext {
     }
 
     @SuppressWarnings("unchecked")
-    public <CB> CallableReference<CB> getCallbackReference() {
+    public <CB> ServiceReference<CB> getCallbackReference() {
         Message msgContext = ThreadMessageContext.getMessageContext();
         Endpoint to = msgContext.getTo();
         RuntimeComponentService service = (RuntimeComponentService) to.getService();
@@ -106,7 +103,7 @@ public class RequestContextImpl implements RequestContext {
         Class<CB> javaClass = (Class<CB>)javaInterface.getJavaClass();
         List<RuntimeWire> wires = callbackReference.getRuntimeWires();
         ProxyFactory proxyFactory = new ExtensibleProxyFactory(proxyFactoryExtensionPoint);
-        CallbackReferenceImpl ref = CallbackReferenceImpl.newInstance(javaClass, proxyFactory, wires);
+        ServiceReferenceImpl ref = new ServiceReferenceImpl(javaClass, wires.get(0), proxyFactory);
         if (ref != null) {  
             //ref.resolveTarget();
             // TODO - EPR - not required for OASIS

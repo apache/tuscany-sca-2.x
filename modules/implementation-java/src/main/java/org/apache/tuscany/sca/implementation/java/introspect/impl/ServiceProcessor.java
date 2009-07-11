@@ -41,7 +41,7 @@ import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import org.oasisopen.sca.CallableReference;
+import org.oasisopen.sca.ServiceReference;
 import org.oasisopen.sca.annotation.Callback;
 import org.oasisopen.sca.annotation.Remotable;
 
@@ -168,7 +168,7 @@ public class ServiceProcessor extends BaseJavaClassVisitor {
         Class<?> callbackClass = element.getType();
         Type genericType = element.getGenericType();
         Class<?> baseType = callbackClass;
-        if(CallableReference.class.isAssignableFrom(baseType)) {
+        if(ServiceReference.class.isAssignableFrom(baseType)) {
             // @Callback protected CallableReference<MyCallback> callback;
             // The base type will be MyCallback
             baseType = JavaIntrospectionHelper.getBusinessInterface(baseType, genericType);

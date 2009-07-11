@@ -21,9 +21,9 @@ package org.apache.tuscany.sca.core.invocation;
 
 import java.util.List;
 
-import org.apache.tuscany.sca.core.invocation.impl.CallbackReferenceImpl;
+import org.apache.tuscany.sca.core.context.impl.ServiceReferenceImpl;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
-import org.oasisopen.sca.CallableReference;
+import org.oasisopen.sca.ServiceReference;
 
 /**
  * An extensible proxy factory.
@@ -42,7 +42,7 @@ public class ExtensibleProxyFactory implements ProxyFactory {
      * @see org.apache.tuscany.sca.core.invocation.ProxyFactory#cast(java.lang.Object)
      */
     @SuppressWarnings("unchecked")
-    public <B, R extends CallableReference<B>> R cast(B target) throws IllegalArgumentException {
+    public <B, R extends ServiceReference<B>> R cast(B target) throws IllegalArgumentException {
         ProxyFactory interfaceFactory = proxyFactories.getInterfaceProxyFactory();
         ProxyFactory classFactory = proxyFactories.getClassProxyFactory();
         if (interfaceFactory.isProxyClass(target.getClass())) {
@@ -68,7 +68,7 @@ public class ExtensibleProxyFactory implements ProxyFactory {
         }
     }
 
-    public <T> T createProxy(CallableReference<T> callableReference) throws ProxyCreationException {
+    public <T> T createProxy(ServiceReference<T> callableReference) throws ProxyCreationException {
         ProxyFactory interfaceFactory = proxyFactories.getInterfaceProxyFactory();
         ProxyFactory classFactory = proxyFactories.getClassProxyFactory();
         if (callableReference.getBusinessInterface().isInterface()) {
@@ -78,7 +78,7 @@ public class ExtensibleProxyFactory implements ProxyFactory {
         }
     }
 
-    public <T> T createCallbackProxy(CallbackReferenceImpl<T> callbackReference) throws ProxyCreationException {
+    public <T> T createCallbackProxy(ServiceReferenceImpl<T> callbackReference) throws ProxyCreationException {
         ProxyFactory interfaceFactory = proxyFactories.getInterfaceProxyFactory();
         ProxyFactory classFactory = proxyFactories.getClassProxyFactory();
         if (callbackReference.getBusinessInterface().isInterface()) {

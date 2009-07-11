@@ -46,7 +46,6 @@ import org.apache.tuscany.sca.node.management.NodeManager;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentContext;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
-import org.oasisopen.sca.CallableReference;
 import org.oasisopen.sca.ServiceReference;
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.oasisopen.sca.ServiceUnavailableException;
@@ -162,7 +161,7 @@ public class NodeImpl implements Node, Client {
     }
 
     @SuppressWarnings("unchecked")
-    public <B, R extends CallableReference<B>> R cast(B target) throws IllegalArgumentException {
+    public <B, R extends ServiceReference<B>> R cast(B target) throws IllegalArgumentException {
         return (R)proxyFactory.cast(target);
     }
 

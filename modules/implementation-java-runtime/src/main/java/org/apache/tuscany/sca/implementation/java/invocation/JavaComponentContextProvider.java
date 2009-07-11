@@ -60,7 +60,7 @@ import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
-import org.oasisopen.sca.CallableReference;
+import org.oasisopen.sca.ServiceReference;
 
 /**
  * The runtime instantiation of Java component implementations
@@ -162,7 +162,7 @@ public class JavaComponentContextProvider {
                 for(JavaElementImpl element : entry.getValue()) {
                     Class<?> businessInterface = element.getType();
                     ObjectFactory<?> factory = null;
-                    if (CallableReference.class.isAssignableFrom(element.getType())) {
+                    if (ServiceReference.class.isAssignableFrom(element.getType())) {
                         businessInterface =
                             JavaIntrospectionHelper.getBusinessInterface(element.getType(), element.getGenericType());
                         factory =
@@ -208,7 +208,7 @@ public class JavaComponentContextProvider {
                         JavaIntrospectionHelper.getBaseType(element.getType(), element.getGenericType());
                     for (int i = 0; i < wireList.size(); i++) {
                         ObjectFactory<?> factory = null;
-                        if (CallableReference.class.isAssignableFrom(baseType)) {
+                        if (ServiceReference.class.isAssignableFrom(baseType)) {
                             Type callableRefType = JavaIntrospectionHelper.getParameterType(element.getGenericType());
                             // Type businessType = JavaIntrospectionHelper.getParameterType(callableRefType);
                             Class<?> businessInterface =
@@ -236,7 +236,7 @@ public class JavaComponentContextProvider {
                     }
                     if (wireList != null && !wireList.isEmpty()) {
                         ObjectFactory<?> factory = null;
-                        if (CallableReference.class.isAssignableFrom(element.getType())) {
+                        if (ServiceReference.class.isAssignableFrom(element.getType())) {
                             Class<?> businessInterface =
                                 JavaIntrospectionHelper.getBusinessInterface(element.getType(), element
                                     .getGenericType());

@@ -7,6 +7,8 @@
  */
 package org.oasisopen.sca;
 
+import java.io.Serializable;
+
 
 /**
  * A ServiceReference represents a client's perspective of a reference to another service.
@@ -14,25 +16,7 @@ package org.oasisopen.sca;
  * @version $Rev$ $Date$
  * @param <B> the Java interface associated with this reference
  */
-public interface ServiceReference<B> extends CallableReference<B> {
-    /**
-     * Sets the callback ID.
-     *
-     * @param callbackID the callback ID
-     */
-    void setCallbackID(Object callbackID);
-
-    /**
-     * Returns the callback object.
-     *
-     * @return the callback object
-     */
-    Object getCallback();
-
-    /**
-     * Sets the callback object.
-     *
-     * @param callback the callback object
-     */
-    void setCallback(Object callback);
+public interface ServiceReference<B> extends Serializable {
+    B getService();
+    Class<B> getBusinessInterface();    
 }

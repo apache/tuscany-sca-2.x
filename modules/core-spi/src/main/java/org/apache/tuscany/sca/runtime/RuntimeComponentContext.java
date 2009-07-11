@@ -23,11 +23,9 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 
-import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.oasisopen.sca.CallableReference;
 import org.oasisopen.sca.ComponentContext;
 import org.oasisopen.sca.ServiceReference;
 
@@ -91,7 +89,7 @@ public interface RuntimeComponentContext extends ComponentContext {
      * @param service
      * @return
      */
-    <B> CallableReference<B> getCallableReference(Class<B> businessInterface,
+    <B> ServiceReference<B> getCallableReference(Class<B> businessInterface,
                                                   RuntimeComponent component,
                                                   RuntimeComponentService service);
 

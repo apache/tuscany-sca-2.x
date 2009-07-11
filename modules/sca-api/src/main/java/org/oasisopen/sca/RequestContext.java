@@ -35,7 +35,7 @@ public interface RequestContext {
      * @param <B> the Java type of the business interface for the reference
      * @return a CallableReference for the service that was invoked by the caller
      */
-    <B> CallableReference<B> getServiceReference();
+    <B> ServiceReference<B> getServiceReference();
 
     /**
      * Returns a type-safe reference to the callback provided by the caller.
@@ -51,5 +51,5 @@ public interface RequestContext {
      * @param <CB> the Java type of the business interface for the callback
      * @return a CallableReference to the callback provided by the caller
      */
-    <CB> CallableReference<CB> getCallbackReference();
+    <CB> ServiceReference<CB> getCallbackReference();
 }

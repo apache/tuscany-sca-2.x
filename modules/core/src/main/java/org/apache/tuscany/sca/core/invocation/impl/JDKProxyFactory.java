@@ -31,7 +31,6 @@ import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
-import org.oasisopen.sca.CallableReference;
 import org.oasisopen.sca.ServiceReference;
 
 /**
@@ -57,7 +56,7 @@ public class JDKProxyFactory implements ProxyFactory {
         return createProxy(serviceReference);
     }
     
-    public <T> T createProxy(CallableReference<T> callableReference) throws ProxyCreationException {
+    public <T> T createProxy(ServiceReference<T> callableReference) throws ProxyCreationException {
         assert callableReference != null;
         final Class<T> interfaze = callableReference.getBusinessInterface();
         InvocationHandler handler = new JDKInvocationHandler(messageFactory, callableReference);
@@ -73,11 +72,11 @@ public class JDKProxyFactory implements ProxyFactory {
     }
 
     public <T> T createCallbackProxy(Class<T> interfaze, List<RuntimeWire> wires) throws ProxyCreationException {
-        CallbackReferenceImpl<T> callbackReference = CallbackReferenceImpl.newInstance(interfaze, this, wires);
+        ServiceReferenceImpl<T> callbackReference = new ServiceReferenceImpl(interfaze, wires.get(0), null);
         return callbackReference != null ? createCallbackProxy(callbackReference) : null;
     }
 
-    public <T> T createCallbackProxy(CallbackReferenceImpl<T> callbackReference) throws ProxyCreationException {
+    public <T> T createCallbackProxy(ServiceReferenceImpl<T> callbackReference) throws ProxyCreationException {
         assert callbackReference != null;
         Class<T> interfaze = callbackReference.getBusinessInterface();
         InvocationHandler handler = new JDKCallbackInvocationHandler(messageFactory, callbackReference);
@@ -87,7 +86,7 @@ public class JDKProxyFactory implements ProxyFactory {
         return interfaze.cast(proxy);
     }
 
-    public <B, R extends CallableReference<B>> R cast(B target) throws IllegalArgumentException {
+    public <B, R extends ServiceReference<B>> R cast(B target) throws IllegalArgumentException {
         InvocationHandler handler = CachedProxy.getInvocationHandler(target);
         if (handler instanceof JDKInvocationHandler) {
             return (R)((JDKInvocationHandler)handler).getCallableReference();

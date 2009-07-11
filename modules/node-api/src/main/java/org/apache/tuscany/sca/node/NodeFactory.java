@@ -39,7 +39,6 @@ import java.util.Map.Entry;
 import org.apache.tuscany.sca.node.configuration.DefaultNodeConfigurationFactory;
 import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
 import org.apache.tuscany.sca.node.configuration.NodeConfigurationFactory;
-import org.oasisopen.sca.CallableReference;
 import org.oasisopen.sca.ServiceReference;
 import org.oasisopen.sca.ServiceRuntimeException;
 
@@ -85,7 +84,7 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
             }
         }
 
-        public <B, R extends CallableReference<B>> R cast(B target) throws IllegalArgumentException {
+        public <B, R extends ServiceReference<B>> R cast(B target) throws IllegalArgumentException {
             try {
                 return (R)node.getClass().getMethod("cast", Object.class).invoke(node, target);
             } catch (Throwable e) {

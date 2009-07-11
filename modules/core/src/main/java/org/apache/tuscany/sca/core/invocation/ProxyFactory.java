@@ -20,9 +20,9 @@ package org.apache.tuscany.sca.core.invocation;
 
 import java.util.List;
 
-import org.apache.tuscany.sca.core.invocation.impl.CallbackReferenceImpl;
+import org.apache.tuscany.sca.core.context.impl.ServiceReferenceImpl;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
-import org.oasisopen.sca.CallableReference;
+import org.oasisopen.sca.ServiceReference;
 
 /**
  * Creates proxies that implement Java interfaces and invocation handlers for fronting wires
@@ -49,7 +49,7 @@ public interface ProxyFactory {
      * @return the proxy
      * @throws ProxyCreationException
      */
-    <T> T createProxy(CallableReference<T> callableReference) throws ProxyCreationException;
+    <T> T createProxy(ServiceReference<T> callableReference) throws ProxyCreationException;
 
     /**
      * Creates a Java proxy for the service contract callback
@@ -67,7 +67,7 @@ public interface ProxyFactory {
      * @return the proxy
      * @throws ProxyCreationException
      */
-    <T> T createCallbackProxy(CallbackReferenceImpl<T> callbackReference) throws ProxyCreationException;
+    <T> T createCallbackProxy(ServiceReferenceImpl<T> callbackReference) throws ProxyCreationException;
 
     /**
      * Cast a proxy to a CallableReference.
@@ -76,7 +76,7 @@ public interface ProxyFactory {
      * @return a CallableReference (or subclass) equivalent to this proxy
      * @throws IllegalArgumentException if the object supplied is not a proxy
      */
-    <B, R extends CallableReference<B>> R cast(B target) throws IllegalArgumentException;
+    <B, R extends ServiceReference<B>> R cast(B target) throws IllegalArgumentException;
     
     /**
      * Test if a given class is a generated proxy class by this factory

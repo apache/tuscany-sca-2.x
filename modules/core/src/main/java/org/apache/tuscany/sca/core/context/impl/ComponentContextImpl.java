@@ -59,7 +59,6 @@ import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
-import org.oasisopen.sca.CallableReference;
 import org.oasisopen.sca.RequestContext;
 import org.oasisopen.sca.ServiceReference;
 import org.oasisopen.sca.ServiceRuntimeException;
@@ -103,7 +102,7 @@ public class ComponentContextImpl implements ComponentContextExt {
         return component.getURI();
     }
 
-    public <B, R extends CallableReference<B>> R cast(B target) throws IllegalArgumentException {
+    public <B, R extends ServiceReference<B>> R cast(B target) throws IllegalArgumentException {
         return (R)proxyFactory.cast(target);
     }
 
@@ -285,7 +284,7 @@ public class ComponentContextImpl implements ComponentContextExt {
         }
     }
 
-    public <B> CallableReference<B> getCallableReference(Class<B> businessInterface,
+    public <B> ServiceReference<B> getCallableReference(Class<B> businessInterface,
                                                          RuntimeComponent component,
                                                          RuntimeComponentService service) {
         try {

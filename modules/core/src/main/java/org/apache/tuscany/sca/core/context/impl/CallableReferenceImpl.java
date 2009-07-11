@@ -43,6 +43,7 @@ import org.apache.tuscany.sca.core.assembly.CompositeActivator;
 import org.apache.tuscany.sca.core.assembly.RuntimeAssemblyFactory;
 import org.apache.tuscany.sca.core.assembly.impl.CompositeActivatorImpl;
 import org.apache.tuscany.sca.core.assembly.impl.ReferenceParametersImpl;
+import org.apache.tuscany.sca.core.assembly.impl.RuntimeWireImpl;
 import org.apache.tuscany.sca.core.context.CallableReferenceExt;
 import org.apache.tuscany.sca.core.context.ComponentContextExt;
 import org.apache.tuscany.sca.core.context.CompositeContext;
@@ -146,7 +147,11 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
     public CallableReferenceImpl(Class<B> businessInterface, RuntimeWire wire, ProxyFactory proxyFactory) {
         this.proxyFactory = proxyFactory;
         this.businessInterface = businessInterface;
+        ExtensionPointRegistry registry = ((RuntimeWireImpl)wire).getExtensionPoints();
+        this.modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
+        this.assemblyFactory = (RuntimeAssemblyFactory)modelFactories.getFactory(AssemblyFactory.class);
         bind(wire);
+        
     }
 
     public RuntimeWire getRuntimeWire() {
@@ -480,6 +485,7 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
             epr.setInterfaceContract(sourceContract);
 
             Endpoint endpoint = assemblyFactory.createEndpoint();
+            endpoint.setService(component.getServices().get(0));
             epr.setTargetEndpoint(endpoint);
 
             return epr;

@@ -26,12 +26,12 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
-import org.oasisopen.sca.CallableReference;
+import org.oasisopen.sca.ServiceReference;
 
 /**
  * Extended version of CallableReference
  */
-public interface CallableReferenceExt<B> extends CallableReference<B>, Externalizable {
+public interface CallableReferenceExt<B> extends ServiceReference<B>, Externalizable {
     /**
      * @return
      */

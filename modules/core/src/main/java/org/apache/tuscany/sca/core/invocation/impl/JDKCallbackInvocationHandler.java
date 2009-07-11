@@ -22,10 +22,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.apache.tuscany.sca.core.assembly.impl.RuntimeWireImpl;
+import org.apache.tuscany.sca.core.context.impl.ServiceReferenceImpl;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
-import org.oasisopen.sca.NoRegisteredCallbackException;
 import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
@@ -37,7 +37,7 @@ import org.oasisopen.sca.ServiceRuntimeException;
 public class JDKCallbackInvocationHandler extends JDKInvocationHandler {
     private static final long serialVersionUID = -3350283555825935609L;
 
-    public JDKCallbackInvocationHandler(MessageFactory messageFactory, CallbackReferenceImpl ref) {
+    public JDKCallbackInvocationHandler(MessageFactory messageFactory, ServiceReferenceImpl ref) {
         super(messageFactory, ref);
         this.fixedWire = false;
     }
@@ -50,7 +50,7 @@ public class JDKCallbackInvocationHandler extends JDKInvocationHandler {
         }
 
         // obtain a dedicated wire to be used for this callback invocation
-        RuntimeWire wire = ((CallbackReferenceImpl)callableReference).getCallbackWire();
+        RuntimeWire wire = ((ServiceReferenceImpl)callableReference).getRuntimeWire();
         if (wire == null) {
             //FIXME: need better exception
             throw new ServiceRuntimeException("No callback wire found");
@@ -61,7 +61,7 @@ public class JDKCallbackInvocationHandler extends JDKInvocationHandler {
         // TODO - EPR - not required for OASIS
         //initConversational(wire);
 
-        setEndpoint(((CallbackReferenceImpl)callableReference).getResolvedEndpoint());
+        setEndpoint(((ServiceReferenceImpl)callableReference).getEndpointReference().getTargetEndpoint());
 
         InvocationChain chain = getInvocationChain(method, wire);
         if (chain == null) {
@@ -72,9 +72,6 @@ public class JDKCallbackInvocationHandler extends JDKInvocationHandler {
             return invoke(chain, args, wire, wire.getEndpointReference());
         } catch (InvocationTargetException e) {
             Throwable t = e.getCause();
-            if (t instanceof NoRegisteredCallbackException) {
-                throw t;
-            }
             throw e;
         } finally {
             // allow the cloned wire to be reused by subsequent callbacks

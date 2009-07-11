@@ -30,13 +30,11 @@ import net.sf.cglib.proxy.MethodProxy;
 
 import org.apache.tuscany.sca.core.context.impl.CallableReferenceImpl;
 import org.apache.tuscany.sca.core.context.impl.ServiceReferenceImpl;
-import org.apache.tuscany.sca.core.invocation.impl.CallbackReferenceImpl;
 import org.apache.tuscany.sca.core.invocation.impl.JDKCallbackInvocationHandler;
 import org.apache.tuscany.sca.core.invocation.impl.JDKInvocationHandler;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
-import org.oasisopen.sca.CallableReference;
 import org.oasisopen.sca.ServiceReference;
 
 /**
@@ -61,7 +59,7 @@ public class CglibProxyFactory implements ProxyFactory {
      * create the proxy with cglib. use the same JDKInvocationHandler as
      * JDKProxyService.
      */
-    public <T> T createProxy(CallableReference<T> callableReference) throws ProxyCreationException {
+    public <T> T createProxy(ServiceReference<T> callableReference) throws ProxyCreationException {
         Enhancer enhancer = new Enhancer();
         Class<T> interfaze = callableReference.getBusinessInterface();
         enhancer.setSuperclass(interfaze);
@@ -76,7 +74,7 @@ public class CglibProxyFactory implements ProxyFactory {
      * JDKCallbackInvocationHandler as JDKProxyService.
      */
     public <T> T createCallbackProxy(Class<T> interfaze, final List<RuntimeWire> wires) throws ProxyCreationException {
-        CallbackReferenceImpl<T> callbackReference = CallbackReferenceImpl.newInstance(interfaze, this, wires);
+        ServiceReferenceImpl<T> callbackReference = new ServiceReferenceImpl(interfaze, wires.get(0), this);
         return callbackReference != null ? createCallbackProxy(callbackReference) : null;
     }
 
@@ -84,7 +82,7 @@ public class CglibProxyFactory implements ProxyFactory {
      * create the callback proxy with cglib. use the same
      * JDKCallbackInvocationHandler as JDKProxyService.
      */
-    public <T> T createCallbackProxy(CallbackReferenceImpl<T> callbackReference) throws ProxyCreationException {
+    public <T> T createCallbackProxy(ServiceReferenceImpl<T> callbackReference) throws ProxyCreationException {
         Enhancer enhancer = new Enhancer();
         Class<T> interfaze = callbackReference.getBusinessInterface();
         enhancer.setSuperclass(interfaze);
@@ -95,7 +93,7 @@ public class CglibProxyFactory implements ProxyFactory {
     }
 
     @SuppressWarnings("unchecked")
-    public <B, R extends CallableReference<B>> R cast(B target) throws IllegalArgumentException {
+    public <B, R extends ServiceReference<B>> R cast(B target) throws IllegalArgumentException {
         if (isProxyClass(target.getClass())) {
             Factory factory = (Factory)target;
             Callback[] callbacks = factory.getCallbacks();
@@ -119,11 +117,11 @@ public class CglibProxyFactory implements ProxyFactory {
     private class CglibMethodInterceptor<T> implements MethodInterceptor {
         private JDKInvocationHandler invocationHandler;
 
-        public CglibMethodInterceptor(CallableReference<T> callableReference) {
+        public CglibMethodInterceptor(ServiceReference<T> callableReference) {
             invocationHandler = new JDKInvocationHandler(messageFactory, callableReference);
         }
 
-        public CglibMethodInterceptor(CallbackReferenceImpl<T> callbackReference) {
+        public CglibMethodInterceptor(ServiceReferenceImpl<T> callbackReference) {
             invocationHandler = new JDKCallbackInvocationHandler(messageFactory, callbackReference);
         }
 

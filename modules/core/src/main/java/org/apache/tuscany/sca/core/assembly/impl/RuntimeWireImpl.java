@@ -692,4 +692,8 @@ public class RuntimeWireImpl implements RuntimeWire {
     private void setClonedFrom(RuntimeWireImpl wire) {
         clonedFrom = wire;
     }
+    
+    public ExtensionPointRegistry getExtensionPoints() {
+        return extensionPoints;
+    }
 }

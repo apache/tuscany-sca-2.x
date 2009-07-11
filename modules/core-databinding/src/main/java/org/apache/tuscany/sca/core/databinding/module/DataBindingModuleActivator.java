@@ -26,7 +26,6 @@ import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.databinding.processor.DataBindingJavaInterfaceProcessor;
 import org.apache.tuscany.sca.core.databinding.processor.WrapperJavaInterfaceProcessor;
 import org.apache.tuscany.sca.core.databinding.transformers.Array2ArrayTransformer;
-import org.apache.tuscany.sca.core.databinding.transformers.CallableReferenceXMLAdapter;
 import org.apache.tuscany.sca.core.databinding.transformers.Exception2ExceptionTransformer;
 import org.apache.tuscany.sca.core.databinding.transformers.Input2InputTransformer;
 import org.apache.tuscany.sca.core.databinding.transformers.Output2OutputTransformer;
@@ -41,7 +40,6 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.jaxws.JAXWSJavaInterfaceProcessor;
 import org.apache.tuscany.sca.interfacedef.java.jaxws.WebServiceInterfaceProcessor;
 import org.apache.tuscany.sca.runtime.RuntimeWireProcessorExtensionPoint;
-import org.oasisopen.sca.CallableReference;
 
 /**
  * @version $Rev$ $Date$
@@ -53,7 +51,6 @@ public class DataBindingModuleActivator implements ModuleActivator {
         TransformerExtensionPoint transformers = registry.getExtensionPoint(TransformerExtensionPoint.class);
 
         XMLAdapterExtensionPoint xmlAdapterExtensionPoint = registry.getExtensionPoint(XMLAdapterExtensionPoint.class);
-        xmlAdapterExtensionPoint.addAdapter(CallableReference.class, CallableReferenceXMLAdapter.class);
         
         FaultExceptionMapper faultExceptionMapper = registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(FaultExceptionMapper.class);
         

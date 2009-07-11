@@ -41,7 +41,6 @@ import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
-import org.oasisopen.sca.CallableReference;
 import org.oasisopen.sca.ServiceReference;
 import org.oasisopen.sca.ServiceRuntimeException;
 
@@ -56,7 +55,7 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
     protected EndpointReference source;
     protected Endpoint target;
     protected RuntimeWire wire;
-    protected CallableReference<?> callableReference;
+    protected ServiceReference<?> callableReference;
     protected Class<?> businessInterface;
 
     protected boolean fixedWire = true;
@@ -70,7 +69,7 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
         init(this.wire);
     }
 
-    public JDKInvocationHandler(MessageFactory messageFactory, CallableReference<?> callableReference) {
+    public JDKInvocationHandler(MessageFactory messageFactory, ServiceReference<?> callableReference) {
         this.messageFactory = messageFactory;
         this.callableReference = callableReference;
         if (callableReference != null) {
@@ -105,16 +104,16 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
     */
 
     protected Object getCallbackID() {
-        if (callableReference != null) {
-            return callableReference.getCallbackID();
-        } else {
+//        if (callableReference != null) {
+//            return callableReference.getCallbackID();
+//        } else {
             return null;
-        }
+//        }
     }
 
     protected Object getCallbackObject() {
         if (callableReference != null && callableReference instanceof ServiceReference) {
-            return ((ServiceReference)callableReference).getCallback();
+            return ((ServiceReference)callableReference).getService();
         } else {
             return null;
         }
@@ -485,14 +484,14 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
     /**
      * @return the callableReference
      */
-    public CallableReference<?> getCallableReference() {
+    public ServiceReference<?> getCallableReference() {
         return callableReference;
     }
 
     /**
      * @param callableReference the callableReference to set
      */
-    public void setCallableReference(CallableReference<?> callableReference) {
+    public void setCallableReference(ServiceReference<?> callableReference) {
         this.callableReference = callableReference;
     }
 

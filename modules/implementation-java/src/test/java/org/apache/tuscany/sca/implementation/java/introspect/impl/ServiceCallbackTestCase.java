@@ -36,7 +36,7 @@ import org.apache.tuscany.sca.interfacedef.InvalidCallbackException;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.junit.Before;
 import org.junit.Test;
-import org.oasisopen.sca.CallableReference;
+import org.oasisopen.sca.ServiceReference;
 import org.oasisopen.sca.annotation.Callback;
 import org.oasisopen.sca.annotation.Service;
 
@@ -162,7 +162,7 @@ public class ServiceCallbackTestCase {
     @Service(Foo.class)
     private static class FooImpl1 implements Foo {
         @Callback
-        protected CallableReference<FooCallback> callbackRef;
+        protected ServiceReference<FooCallback> callbackRef;
     }    
 
     private static class BadBarImpl implements Foo {

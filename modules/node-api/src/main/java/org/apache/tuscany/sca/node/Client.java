@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.node;
 
-import org.oasisopen.sca.CallableReference;
 import org.oasisopen.sca.ServiceReference;
 
 
@@ -43,7 +42,7 @@ public interface Client {
      * @throws IllegalArgumentException if the supplied instance is not a
      *             reference supplied by the SCA runtime
      */
-    <B, R extends CallableReference<B>> R cast(B target) throws IllegalArgumentException;
+    <B, R extends ServiceReference<B>> R cast(B target) throws IllegalArgumentException;
 
     /**
      * Returns a proxy for a service provided by a component in the SCA domain.

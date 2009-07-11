@@ -39,7 +39,7 @@ public interface ComponentContext {
      * @return a CallableReference equivalent for the proxy
      * @throws IllegalArgumentException if the supplied instance is not a reference supplied by the SCA runtime
      */
-    <B, R extends CallableReference<B>> R cast(B target) throws IllegalArgumentException;
+    <B, R extends ServiceReference<B>> R cast(B target) throws IllegalArgumentException;
 
     /**
      * Returns a proxy for a reference defined by this component.

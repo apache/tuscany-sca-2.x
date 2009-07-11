@@ -41,7 +41,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import org.oasisopen.sca.CallableReference;
+import org.oasisopen.sca.ServiceReference;
 
 /**
  * Implements various reflection-related operations
@@ -372,7 +372,7 @@ public final class JavaIntrospectionHelper {
     }
 
     public static Class<?> getBusinessInterface(Class<?> cls, Type callableReferenceType) {
-        if (CallableReference.class.isAssignableFrom(cls) && callableReferenceType instanceof ParameterizedType) {
+        if (ServiceReference.class.isAssignableFrom(cls) && callableReferenceType instanceof ParameterizedType) {
             // Collection<BaseType>
             ParameterizedType parameterizedType = (ParameterizedType)callableReferenceType;
             Type baseType = parameterizedType.getActualTypeArguments()[0];

@@ -18,20 +18,19 @@
  */
 package org.apache.tuscany.sca.core.invocation;
 
-import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.core.factory.ObjectCreationException;
 import org.apache.tuscany.sca.core.factory.ObjectFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
-import org.oasisopen.sca.CallableReference;
+import org.oasisopen.sca.ServiceReference;
 
 /**
  * Uses a wire to return a CallableReference
  * 
  * @version $Rev$ $Date$
  */
-public class CallableReferenceObjectFactory implements ObjectFactory<CallableReference<?>> {
+public class CallableReferenceObjectFactory implements ObjectFactory<ServiceReference<?>> {
     private Class<?> businessInterface;
     private RuntimeComponent component;
     private RuntimeComponentReference reference;
@@ -57,7 +56,7 @@ public class CallableReferenceObjectFactory implements ObjectFactory<CallableRef
         this.endpointReference = endpointReference;
     }
 
-    public CallableReference<?> getInstance() throws ObjectCreationException {
+    public ServiceReference<?> getInstance() throws ObjectCreationException {
         return component.getComponentContext().getServiceReference(businessInterface, reference, endpointReference);
     }
 

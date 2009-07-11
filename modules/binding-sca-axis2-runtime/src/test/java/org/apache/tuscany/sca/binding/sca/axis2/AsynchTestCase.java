@@ -31,6 +31,7 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore("TUSCANY-3138")
 public class AsynchTestCase {
         
     public static Node nodeA;

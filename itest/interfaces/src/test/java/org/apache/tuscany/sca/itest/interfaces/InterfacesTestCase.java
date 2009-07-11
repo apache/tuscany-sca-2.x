@@ -28,8 +28,10 @@ import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore("TUSCANY-3138")
 public class InterfacesTestCase {
     private static Node node;
 
