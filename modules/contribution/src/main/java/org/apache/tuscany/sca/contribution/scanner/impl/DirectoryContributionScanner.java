@@ -98,10 +98,15 @@ public class DirectoryContributionScanner implements ContributionScanner {
 
     private static File directory(Contribution contribution) throws ContributionReadException {
         File file;
+        URI uri = null;
         try {
-            file = new File(new URI(contribution.getLocation()));
+            uri = new URI(contribution.getLocation());
+            file = new File(uri);
         } catch (URISyntaxException e) {
             throw new ContributionReadException(e);
+        } catch(IllegalArgumentException e) {
+            // Hack for file:./a.txt or file:../a/c.wsdl
+            return new File(uri.getPath());
         }
         if (!file.exists() || !file.isDirectory()) {
             throw new ContributionReadException(contribution.getLocation());
