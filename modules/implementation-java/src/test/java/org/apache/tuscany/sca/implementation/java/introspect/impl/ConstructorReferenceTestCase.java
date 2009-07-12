@@ -38,7 +38,7 @@ import org.junit.Test;
 import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
 
-import com.sun.xml.internal.ws.model.JavaMethodImpl;
+//import com.sun.xml.internal.ws.model.JavaMethodImpl;
 
 /**
  * @version $Rev$ $Date$
