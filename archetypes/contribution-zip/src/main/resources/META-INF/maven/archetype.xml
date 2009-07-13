@@ -20,11 +20,11 @@
 <archetype>
   <id>tuscany-contribution-zip</id>
   <sources>
-    <source>src\main\java\AddImpl.java</source>
-    <source>src\main\java\AddService.java</source>
+    <source>src/main/java/AddImpl.java</source>
+    <source>src/main/java/AddService.java</source>
   </sources>
   <resources>
-    <resource>src\main\resources\add.composite</resource>
-    <resource>src\main\resources\META-INF\sca-contribution.xml</resource>
+    <resource>src/main/resources/add.composite</resource>
+    <resource>src/main/resources/META-INF/sca-contribution.xml</resource>
   </resources>
 </archetype>

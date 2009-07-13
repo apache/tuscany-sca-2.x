@@ -20,19 +20,19 @@
 <archetype>
   <id>quickstart-stripes</id>
   <sources>
-    <source>src\main\java\sample\stripes\action\BaseActionBean.java</source>
-    <source>src\main\java\sample\stripes\action\HomeActionBean.java</source>
-    <source>src\main\java\sample\sca\HelloworldService.java</source>
-    <source>src\main\java\sample\sca\HelloworldServiceImpl.java</source>
+    <source>src/main/java/sample/stripes/action/BaseActionBean.java</source>
+    <source>src/main/java/sample/stripes/action/HomeActionBean.java</source>
+    <source>src/main/java/sample/sca/HelloworldService.java</source>
+    <source>src/main/java/sample/sca/HelloworldServiceImpl.java</source>
   </sources>
   <resources>
-    <resource>src\main\resources\log4j.properties</resource>
-    <resource>src\main\resources\StripesResources.properties</resource>
-    <resource>src\main\webapp\index.html</resource>
-    <resource>src\main\webapp\WEB-INF\jsp\home.jsp</resource>
-    <resource>src\main\webapp\WEB-INF\jsp\layout.jsp</resource>
-    <resource>src\main\webapp\WEB-INF\jsp\taglibs.jsp</resource>
-    <resource>src\main\webapp\WEB-INF\web.composite</resource>
-    <resource>src\main\webapp\WEB-INF\web.xml</resource>
+    <resource>src/main/resources/log4j.properties</resource>
+    <resource>src/main/resources/StripesResources.properties</resource>
+    <resource>src/main/webapp/index.html</resource>
+    <resource>src/main/webapp/WEB-INF/jsp/home.jsp</resource>
+    <resource>src/main/webapp/WEB-INF/jsp/layout.jsp</resource>
+    <resource>src/main/webapp/WEB-INF/jsp/taglibs.jsp</resource>
+    <resource>src/main/webapp/WEB-INF/web.composite</resource>
+    <resource>src/main/webapp/WEB-INF/web.xml</resource>
   </resources>
 </archetype>

@@ -20,14 +20,14 @@
 <archetype>
   <id>tuscany-quickstart</id>
   <sources>
-    <source>src\main\java\HelloworldImpl.java</source>
-    <source>src\main\java\HelloworldService.java</source>
+    <source>src/main/java/HelloworldImpl.java</source>
+    <source>src/main/java/HelloworldService.java</source>
   </sources>
   <resources>
-    <source>src\main\resources\helloworld.bpel</source>
-    <source>src\main\resources\helloworld.wsdl</source>
-    <resource>src\main\webapp\hello.jsp</resource>
-    <resource>src\main\webapp\WEB-INF\web.composite</resource>
-    <resource>src\main\webapp\WEB-INF\web.xml</resource>
+    <source>src/main/resources/helloworld.bpel</source>
+    <source>src/main/resources/helloworld.wsdl</source>
+    <resource>src/main/webapp/hello.jsp</resource>
+    <resource>src/main/webapp/WEB-INF/web.composite</resource>
+    <resource>src/main/webapp/WEB-INF/web.xml</resource>
   </resources>
 </archetype>

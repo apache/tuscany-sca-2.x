@@ -20,11 +20,11 @@
 <archetype>
   <id>tuscany-contribution-jar</id>
   <sources>
-    <source>src\main\java\HelloworldImpl.java</source>
-    <source>src\main\java\HelloworldService.java</source>
+    <source>src/main/java/HelloworldImpl.java</source>
+    <source>src/main/java/HelloworldService.java</source>
   </sources>
   <resources>
-    <resource>src\main\hello.composite</resource>
-    <resource>src\main\webapp\META-INF\sca-contribution.xml</resource>
+    <resource>src/main/hello.composite</resource>
+    <resource>src/main/webapp/META-INF/sca-contribution.xml</resource>
   </resources>
 </archetype>
