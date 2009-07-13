@@ -18,9 +18,9 @@
  */
 package org.apache.tuscany.sca.test;
 
-import org.oasisopen.sca.CallableReference;
 import org.oasisopen.sca.ComponentContext;
 import org.oasisopen.sca.RequestContext;
+import org.oasisopen.sca.ServiceReference;
 import org.oasisopen.sca.annotation.Callback;
 import org.oasisopen.sca.annotation.Context;
 import org.oasisopen.sca.annotation.Service;
@@ -36,7 +36,7 @@ public class CallBackApiServiceImpl implements CallBackApiService {
     private CallBackApiCallBack callback;
 
     @Callback
-    protected CallableReference<CallBackApiCallBack> callbackRef;
+    protected ServiceReference<CallBackApiCallBack> callbackRef;
 
     /**
      * This function get an object of CallBackApiServiceImpl by calling getCallBackInterface function and calls the

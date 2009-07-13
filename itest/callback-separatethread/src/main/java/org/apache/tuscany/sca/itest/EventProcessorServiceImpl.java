@@ -25,7 +25,7 @@ import java.util.TimerTask;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.oasisopen.sca.CallableReference;
+import org.oasisopen.sca.ServiceReference;
 import org.oasisopen.sca.annotation.Callback;
 import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.Scope;
@@ -42,12 +42,12 @@ public class EventProcessorServiceImpl implements EventProcessorService {
      * Reference to the call back
      */
     @Callback
-    protected CallableReference<EventProcessorCallBack> clientCallback;
+    protected ServiceReference<EventProcessorCallBack> clientCallback;
 
     /**
      * This map contains the call backs for each of the registered Event names
      */
-    private final Map<String, CallableReference<EventProcessorCallBack>> eventListeners;
+    private final Map<String, ServiceReference<EventProcessorCallBack>> eventListeners;
 
     /**
      * The list of all Event Generators we create
@@ -58,7 +58,7 @@ public class EventProcessorServiceImpl implements EventProcessorService {
      * Constructor. Starts the Event Generators
      */
     public EventProcessorServiceImpl() {
-        eventListeners = new ConcurrentHashMap<String, CallableReference<EventProcessorCallBack>>();
+        eventListeners = new ConcurrentHashMap<String, ServiceReference<EventProcessorCallBack>>();
 
         // We will simulate an Event generator
         allEventGenerators = new EventGenerator[2];
@@ -99,7 +99,7 @@ public class EventProcessorServiceImpl implements EventProcessorService {
      */
     private void receiveEvent(String aEventName, Object aEventData) {
         // Get the listener for the Event
-        final CallableReference<EventProcessorCallBack> callback = eventListeners.get(aEventName);
+        final ServiceReference<EventProcessorCallBack> callback = eventListeners.get(aEventName);
         if (callback == null) {
             //System.out.println("No registered listeners for " + aEventName);
             return;
