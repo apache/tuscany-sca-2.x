@@ -20,7 +20,6 @@
 package org.apache.tuscany.sca.assembly.builder.impl;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
@@ -267,11 +266,6 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
             }
         }
 
-        for (PolicySet policySet : policySets) {
-            List<Intent> provided = policySet.getProvidedIntents();
-            // FIXME: Check if required intents are provided by the policy sets
-        }
-        
         for (Intent intent : subject.getRequiredIntents()) {
             loop: for (PolicySet ps : definitions.getPolicySets()) {
                 // FIXME: We will have to check the policy references and intentMap too
