@@ -38,7 +38,7 @@
         <dependency>
             <groupId>org.mortbay.jetty</groupId>
             <artifactId>jetty</artifactId>
-            <version>6.1.15</version>
+            <version>6.1.19</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.mortbay.jetty</groupId>
@@ -50,7 +50,7 @@
         <dependency>
             <groupId>org.mortbay.jetty</groupId>
             <artifactId>jetty-util</artifactId>
-            <version>6.1.15</version>
+            <version>6.1.19</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.mortbay.jetty</groupId>
