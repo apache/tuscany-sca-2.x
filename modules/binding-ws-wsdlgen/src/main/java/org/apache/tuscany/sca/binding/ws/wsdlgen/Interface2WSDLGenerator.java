@@ -600,8 +600,8 @@ public class Interface2WSDLGenerator {
                 outputMsg.addPart(generateWrapperPart(definition, op, helpers, wrappers, false));
             } else {
                 DataType outputType = op.getOutputType();
-                outputMsg.addPart(generatePart(definition, outputType, "return"));
                 if (outputType != null) {
+                    outputMsg.addPart(generatePart(definition, outputType, "return"));
                     elements = new ArrayList<ElementInfo>();
                     ElementInfo element = getElementInfo(outputType.getPhysical(), outputType, null, helpers);
                     elements.add(element);

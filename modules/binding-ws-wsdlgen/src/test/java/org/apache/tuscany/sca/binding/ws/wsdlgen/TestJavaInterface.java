@@ -21,6 +21,8 @@ package org.apache.tuscany.sca.binding.ws.wsdlgen;
 
 import javax.jws.WebMethod;
 import javax.jws.WebService;
+import javax.jws.soap.SOAPBinding;
+import javax.jws.soap.SOAPBinding.ParameterStyle;
 
 import org.oasisopen.sca.annotation.OneWay;
 import org.oasisopen.sca.annotation.Remotable;
@@ -54,4 +56,12 @@ public interface TestJavaInterface {
 
     @WebMethod
     void m7(TestJavaClass info) throws TestFault;
+    
+    @WebMethod
+    @SOAPBinding(parameterStyle=ParameterStyle.BARE)
+    void m8(String str);
+    
+    @WebMethod
+    @SOAPBinding(parameterStyle=ParameterStyle.BARE)
+    int m9(String str);
 }
