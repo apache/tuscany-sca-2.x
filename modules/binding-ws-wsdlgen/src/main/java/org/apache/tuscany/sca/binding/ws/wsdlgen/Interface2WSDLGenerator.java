@@ -437,17 +437,30 @@ public class Interface2WSDLGenerator {
         if (!"".equals(nsURI)) {
             imp.setAttribute("namespace", nsURI);
         }
-        NodeList childNodes = schema.getChildNodes();
+        // Scan all xs:import elements to match namespace
+        NodeList childNodes = schema.getElementsByTagNameNS(SCHEMA_NS, "import");
         for (int i = 0; i < childNodes.getLength(); i++) {
             Node childNode = childNodes.item(i);
             if (childNode instanceof Element) {
-                schema.insertBefore(imp, childNode);
-                imp = null;
-                break;
+                String ns = ((Element)childNode).getAttributeNS(SCHEMA_NS, "namespace");
+                if (nsURI.equals(ns)) {
+                    // The xs:import with the same namespace has been declared
+                    return;
+                }
             }
         }
-        if (imp != null) {
+        // Try to find the first node after the import elements
+        Node firstNodeAfterImport = null;
+        if (childNodes.getLength() > 0) {
+            firstNodeAfterImport = childNodes.item(childNodes.getLength() - 1).getNextSibling();
+        } else {
+            firstNodeAfterImport = schema.getFirstChild();
+        }
+
+        if (firstNodeAfterImport == null) {
             schema.appendChild(imp);
+        } else {
+            schema.insertBefore(imp, firstNodeAfterImport);
         }
     }
 
