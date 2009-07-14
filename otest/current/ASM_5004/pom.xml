@@ -26,14 +26,8 @@
     </parent>
     <artifactId>tuscany-otests-asm-ASM_5004</artifactId>
     <name>Apache Tuscany SCA Specification Tests ASM ASM_5004</name> 
-
+    
     <build>
-        <sourceDirectory>../src/main/resources/ASM_5004</sourceDirectory>
-        <resources>
-          <resource>
-            <directory>../src/main/resources/ASM_5004</directory>
-          </resource>
-        </resources>
-        <outputDirectory>../tests/target/ASM_5004</outputDirectory>
+        <finalName>${artifactId}</finalName>
     </build>
 </project>
