@@ -25,6 +25,7 @@ import javax.wsdl.PortType;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.Base;
+import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.implementation.bpel.xml.BPELImportElement;
 import org.apache.tuscany.sca.implementation.bpel.xml.BPELPartnerLinkElement;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
@@ -104,4 +105,10 @@ public interface BPELProcessDefinition extends Base {
      * @return
      */
     public List<WSDLInterface> getInterfaces() ;
+    
+    /**
+     * Return a collection of (SCA) Properties associated with this process
+     * @return - a List of SCA Property objects
+     */
+    public List<Property> getProperties();
 }

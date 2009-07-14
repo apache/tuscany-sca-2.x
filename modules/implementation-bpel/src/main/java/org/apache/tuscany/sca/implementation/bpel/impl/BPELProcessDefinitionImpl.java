@@ -25,6 +25,7 @@ import java.util.List;
 import javax.wsdl.PortType;
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.implementation.bpel.BPELProcessDefinition;
 import org.apache.tuscany.sca.implementation.bpel.xml.BPELImportElement;
 import org.apache.tuscany.sca.implementation.bpel.xml.BPELPartnerLinkElement;
@@ -36,14 +37,15 @@ import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
  * @version $Rev$ $Date$
  */
 class BPELProcessDefinitionImpl implements BPELProcessDefinition {
-    private QName name;
-    private String uri;
-    private String location;
+    private QName 	name;
+    private String 	uri;
+    private String 	location;
     private boolean unresolved;
-    private List<BPELPartnerLinkElement> partnerLinks = new ArrayList<BPELPartnerLinkElement>();
-    private List<BPELImportElement> imports = new ArrayList<BPELImportElement>();
-    private List<PortType> thePortTypes = new ArrayList<PortType>();
-    private List<WSDLInterface> theInterfaces = new ArrayList<WSDLInterface>();
+    private List<BPELPartnerLinkElement> 	partnerLinks 	= new ArrayList<BPELPartnerLinkElement>();
+    private List<BPELImportElement> 		imports 		= new ArrayList<BPELImportElement>();
+    private List<PortType> 					thePortTypes 	= new ArrayList<PortType>();
+    private List<WSDLInterface> 			theInterfaces 	= new ArrayList<WSDLInterface>();
+    private List<Property> 					theProperties 	= new ArrayList<Property>();
     
     public QName getName() {
         return name;
@@ -112,4 +114,8 @@ class BPELProcessDefinitionImpl implements BPELProcessDefinition {
             return false;
         }
     }
+
+	public List<Property> getProperties() {
+		return theProperties;
+	} // end method getProperties
 }

@@ -183,8 +183,7 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
         componentType.setUnresolved(true);
         impl.setComponentType(componentType);
 
-        // Each partner link in the process represents either a service or a
-        // reference
+        // Each partner link in the process represents either a service or a reference
         // - or both, in the sense of involving a callback
         BPELProcessDefinition theProcess = impl.getProcessDefinition();
         List<BPELPartnerLinkElement> partnerLinks = theProcess.getPartnerLinks();
@@ -201,6 +200,11 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
                     componentType.getServices().add(generateService(scaName, pLink.getMyRolePortType(), pLink.getPartnerRolePortType(), theProcess.getInterfaces()));
                 } // end if
             } // end if
+        } // end for
+        
+        // Each SCA Property in the process becomes a Property in the ComponentType
+        for( Property property : theProcess.getProperties() ) {
+        	componentType.getProperties().add(property);
         } // end for
 
     } // end getComponentType
@@ -350,6 +354,11 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
     } // end generateService
     
     /**
+     * TODO: Remove this function completely as the OASIS BPEL Implementation spec forbids
+     * the use of componentType side files and requires the componentType of a BPEL process to
+     * be found entirely via introspection.
+     * MJE 02 June 2009
+     * 
      * Merge the componentType from introspection and from external file
      * 
      * Note the setting of the DataBinding for both Services and References to DOM, since this is

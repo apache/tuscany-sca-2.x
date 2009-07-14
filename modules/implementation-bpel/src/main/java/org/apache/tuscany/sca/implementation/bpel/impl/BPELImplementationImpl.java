@@ -84,8 +84,7 @@ class BPELImplementationImpl extends ImplementationImpl implements BPELImplement
 
     @Override
     public List<Property> getProperties() {
-        // The BPEL implementation does not support properties
-        return Collections.emptyList();
+        return componentType.getProperties();
     }
 
     public ComponentType getComponentType() {
