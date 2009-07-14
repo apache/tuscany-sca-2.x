@@ -26,7 +26,8 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>tuscany-otests</artifactId>
-    <name>Apache Tuscany SCA Specification Tests</name>
+    <name>Apache Tuscany SCA Specification Tests Assembly Unit tests</name>
+    <!--packaging>jar</packaging-->
     <packaging>pom</packaging>
 
     <repositories>
@@ -69,9 +70,8 @@
 	
     <modules>
         <module>General</module>
-        <module>General_C</module>
-        <module>General_CPP</module>
         <module>General_Java</module>
+<!--
         <module>ASM_10001</module>
         <module>ASM_10003</module>
         <module>ASM_12001</module>
@@ -136,33 +136,9 @@
         <module>ASM_9002</module>
         <module>Contribution1</module>
         <module>Contribution2</module>
+-->
+        <module>ASM_5004</module>
         <module>tests</module>
     </modules>
-	
-    <build>
-        <!-- plugins> 
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-              <artifactId>build-helper-maven-plugin</artifactId>
-               <executions>
-                  <execution>
-                       <id>add-source</id>
-                       <phase>generate-sources</phase>
-                       <goals>
-                          <goal>add-source</goal>
-                       </goals>
-                       <configuration>
-                           <sources>
-                                <source>${basedir}/src/main/resources/General</source>
-                           </sources>
-                           <sources>
-                                <source>${basedir}/src/main/resources/General_Java</source>
-                           </sources>
-                       </configuration>
-                  </execution>
-               </executions>
-    
-            </plugin>
-        </plugins-->
-    </build>
+
 </project>
