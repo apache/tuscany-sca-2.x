@@ -97,9 +97,6 @@ import org.apache.tuscany.sca.node.configuration.ContributionConfiguration;
 import org.apache.tuscany.sca.node.configuration.DeploymentComposite;
 import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
 import org.apache.tuscany.sca.node.configuration.xml.NodeConfigurationProcessor;
-import org.apache.tuscany.sca.provider.DefinitionsProvider;
-import org.apache.tuscany.sca.provider.DefinitionsProviderException;
-import org.apache.tuscany.sca.provider.DefinitionsProviderExtensionPoint;
 import org.apache.tuscany.sca.work.WorkScheduler;
 import org.oasisopen.sca.ServiceRuntimeException;
 
@@ -436,6 +433,7 @@ public class NodeFactoryImpl extends NodeFactory {
             DefinitionsUtil.aggregate(defs, systemDefinitions);
         }
 
+        /*
         // Load the system definitions.xml from all of the loaded extension points
         DefinitionsProviderExtensionPoint definitionsProviders = extensionPoints.getExtensionPoint(DefinitionsProviderExtensionPoint.class);
 
@@ -447,6 +445,7 @@ public class NodeFactoryImpl extends NodeFactory {
         } catch (DefinitionsProviderException e) {
             throw new IllegalStateException(e);
         }
+        */
 
         // create a system contribution to hold the definitions. The contribution
         // will be extended later with definitions from application contributions

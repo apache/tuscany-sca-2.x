@@ -34,6 +34,14 @@ public interface UtilityExtensionPoint extends LifeCycleListener {
      * @throws IllegalArgumentException if utility is null
      */
     void addUtility(Object utility);
+    
+    /**
+     * Add a utility to the extension point for a given key
+     * @param utility The instance of the utility
+     *
+     * @throws IllegalArgumentException if utility is null
+     */
+    void addUtility(Object key, Object utility);
 
     /**
      * Get the utility by the interface
@@ -45,14 +53,15 @@ public interface UtilityExtensionPoint extends LifeCycleListener {
     <T> T getUtility(Class<T> utilityType);
 
     /**
-     * Get a new instance of the utility by the interface
+     * Get an instance of the utility by the interface and key
      * @param utilityType The lookup key (utility interface)
-     * @param newInstance A new instance is required
+     * @param key A key associated with the utility, if it is null,
+     * then the utilityType is used as the key
      * @return The instance of the utility
      *
      * @throws IllegalArgumentException if utilityType is null
      */
-    <T> T getUtility(Class<T> utilityType, boolean newInstance);
+    <T> T getUtility(Class<T> utilityType, Object key);
 
     /**
      * Remove a utility

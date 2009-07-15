@@ -83,7 +83,7 @@ public class NodeImpl implements Node, Client {
         this.proxyFactory = manager.proxyFactory;
         this.compositeActivator =
             manager.extensionPoints.getExtensionPoint(UtilityExtensionPoint.class).getUtility(CompositeActivator.class,
-                                                                                              true);
+                                                                                              this);
         try {
             // get the top level composite for this node
             compositeActivator.setDomainComposite(manager.configureNode(configuration));
@@ -151,6 +151,7 @@ public class NodeImpl implements Node, Client {
             } // end if
 
             manager.removeNode(configuration);
+            manager.extensionPoints.getExtensionPoint(UtilityExtensionPoint.class).removeUtility(compositeActivator);
             this.compositeActivator = null;
             this.proxyFactory = null;
 

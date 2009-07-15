@@ -23,10 +23,9 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
-import java.util.List;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -40,11 +39,9 @@ import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
  * @version $Rev$ $Date$
  */
 public class DefaultUtilityExtensionPoint implements UtilityExtensionPoint {
-    private Map<Class<?>, Object> utilities = new ConcurrentHashMap<Class<?>, Object>();
+    private Map<Object, Object> utilities = new ConcurrentHashMap<Object, Object>();
 
     private ExtensionPointRegistry extensionPoints;
-    private List<Object> unmapped = new ArrayList<Object>();
-
     /**
      * Constructs a new extension point.
      */
@@ -61,16 +58,25 @@ public class DefaultUtilityExtensionPoint implements UtilityExtensionPoint {
      * @throws IllegalArgumentException if utility is null
      */
     public void addUtility(Object utility) {
+        addUtility(null, utility);
+    }
+    
+    public void addUtility(Object key, Object utility) {
         if (utility == null) {
             throw new IllegalArgumentException("Cannot register null as a Service");
         }
 
-        if(utility instanceof LifeCycleListener) {
-            ((LifeCycleListener) utility).start();
+        if (utility instanceof LifeCycleListener) {
+            ((LifeCycleListener)utility).start();
         }
-        Set<Class<?>> interfaces = getAllInterfaces(utility.getClass());
-        for (Class<?> i : interfaces) {
-            utilities.put(i, utility);
+
+        if (key == null) {
+            Set<Class<?>> interfaces = getAllInterfaces(utility.getClass());
+            for (Class<?> i : interfaces) {
+                utilities.put(i, utility);
+            }
+        } else {
+            utilities.put(key, utility);
         }
     }
 
@@ -102,7 +108,7 @@ public class DefaultUtilityExtensionPoint implements UtilityExtensionPoint {
      * @throws IllegalArgumentException if utilityType is null
      */
     public <T> T getUtility(Class<T> utilityType) {
-        return getUtility(utilityType, false);
+        return getUtility(utilityType, null);
     }
 
     /**
@@ -120,10 +126,12 @@ public class DefaultUtilityExtensionPoint implements UtilityExtensionPoint {
         if(utility instanceof LifeCycleListener) {
             ((LifeCycleListener) utility).stop();
         }
-
-        Set<Class<?>> interfaces = getAllInterfaces(utility.getClass());
-        for (Class<?> i : interfaces) {
-            utilities.remove(i);
+        
+        for (Iterator<Map.Entry<Object, Object>> i = utilities.entrySet().iterator(); i.hasNext();) {
+            Map.Entry<Object, Object> entry = i.next();
+            if (entry.getValue() == utility) {
+                i.remove();
+            }
         }
     }
 
@@ -134,6 +142,7 @@ public class DefaultUtilityExtensionPoint implements UtilityExtensionPoint {
     private static Set<Class<?>> getAllInterfaces(Class<?> clazz) {
         Set<Class<?>> implemented = new HashSet<Class<?>>();
         getAllInterfaces(clazz, implemented);
+        implemented.remove(LifeCycleListener.class);
         return implemented;
     }
 
@@ -151,15 +160,17 @@ public class DefaultUtilityExtensionPoint implements UtilityExtensionPoint {
         }
     }
 
-    public <T> T getUtility(Class<T> utilityType, boolean newInstance) {
+    public <T> T getUtility(Class<T> utilityType, Object key) {
         if (utilityType == null) {
             throw new IllegalArgumentException("Cannot lookup Service of type null");
         }
-
-        Object utility = null;
-        if (!newInstance) {
-            utility = utilities.get(utilityType);
+        
+        if (key == null) {
+            key = utilityType;
         }
+
+        Object utility = utilities.get(key);
+   
         if (utility == null) {
 
             // Dynamically load a utility class declared under META-INF/services/"utilityType"
@@ -188,9 +199,10 @@ public class DefaultUtilityExtensionPoint implements UtilityExtensionPoint {
                         }
                     }
                     // Cache the loaded utility
-                    addUtility(utility);
-                    if (newInstance) {
-                        unmapped.add(utility);
+                    if (key == utilityType) {
+                        addUtility(utility);
+                    } else {
+                        addUtility(key, utility);
                     }
                 }
             } catch (InvocationTargetException e) {
@@ -206,8 +218,7 @@ public class DefaultUtilityExtensionPoint implements UtilityExtensionPoint {
             }
         }
         return utilityType.cast(utility);
-    }
-
+    }    
     public void start() {
         // NOOP
     }
@@ -216,12 +227,6 @@ public class DefaultUtilityExtensionPoint implements UtilityExtensionPoint {
         // Get a unique map as an extension point may exist in the map by different keys
         Map<LifeCycleListener, LifeCycleListener> map = new IdentityHashMap<LifeCycleListener, LifeCycleListener>();
         for (Object util : utilities.values()) {
-            if (util instanceof LifeCycleListener) {
-                LifeCycleListener listener = (LifeCycleListener)util;
-                map.put(listener, listener);
-            }
-        }
-        for (Object util : unmapped) {
             if (util instanceof LifeCycleListener) {
                 LifeCycleListener listener = (LifeCycleListener)util;
                 map.put(listener, listener);
