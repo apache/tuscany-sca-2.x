@@ -29,6 +29,9 @@ import java.io.File;
 public class ODEDeployment {
     /** The directory containing the deploy.xml and artifacts. */
     public File deployDir;
+    
+    // The Tuscany version of the ODE Process Conf implementation
+    private TuscanyProcessConfImpl conf;
 
     /** If non-null the type of exception we expect to get when we deploy. */
     public Class<?> expectedException = null;
@@ -40,5 +43,13 @@ public class ODEDeployment {
     @Override
     public String toString() {
         return "Deployment#" + deployDir;
+    }
+    
+    public void setProcessConf( TuscanyProcessConfImpl conf ) {
+    	this.conf = conf;
+    }
+    
+    public TuscanyProcessConfImpl getProcessConf() {
+    	return conf;
     }
 }

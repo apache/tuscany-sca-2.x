@@ -81,7 +81,7 @@ public class EmbeddedODEServer {
     protected ExecutorService _executorService;
 
     private Map<QName, RuntimeComponent> tuscanyRuntimeComponents = new ConcurrentHashMap<QName, RuntimeComponent>();
-    
+       
     public EmbeddedODEServer(TransactionManager txMgr) {
         _txMgr = txMgr;
     }
@@ -230,11 +230,7 @@ public class EmbeddedODEServer {
             dehy.setProcessMaxCount(_config.getDehydrationMaximumCount());
             _bpelServer.setDehydrationPolicy(dehy);
         }
-        
-        System.out.println("TuscanyODEServer: threads.pool.size = " +
-        		           _config.getThreadPoolMaxSize() );
-        
-        
+              
         _bpelServer.setConfigProperties(_config.getProperties());
         _bpelServer.init();
         _bpelServer.setInstanceThrottledMaximumCount(_config.getInstanceThrottledMaximumCount());
@@ -327,22 +323,39 @@ public class EmbeddedODEServer {
     	return _executorService;
     }
 
-    // Updated by Mike Edwards, 23/05/2008
-    public void deploy(ODEDeployment d, BPELImplementation implementation) {
+    /**
+     * Deploy the BPEL process implementation to the ODE Engine
+     * @param d - ODEDeployment structure
+     * @param implementation - the BPEL Implementation 
+     * @param component - the SCA component which uses the implementation
+     */
+    public void deploy(ODEDeployment d, BPELImplementation implementation, RuntimeComponent component ) {
         try {
-        	TuscanyProcessConfImpl processConf = new TuscanyProcessConfImpl( implementation );
+        	TuscanyProcessConfImpl processConf = new TuscanyProcessConfImpl( implementation, component );
         	_bpelServer.register(processConf);
+        	d.setProcessConf(processConf);
         	__log.debug("Completed calling new Process deployment code...");
         } catch (Exception ex) {
-            String errMsg = ">>> DEPLOY: Unexpected exception: " + ex.getMessage();
+            String errMsg = ">>> DEPLOY: Unexpected exception during deploy of BPEL. /n Component = " 
+            	             + component.getName()
+            	             + " implementation = "
+            	             + implementation.getProcess()
+            	             + ex.getMessage();
             __log.debug(errMsg, ex);
             throw new ODEDeploymentException(errMsg,ex);
         }
     }
 
+    /**
+     * Undeploy the BPEL process implementation from the ODE Engine
+     * @param d - ODEDeployment structure
+     */
     public void undeploy(ODEDeployment d) {
-        //TODO
-    }
+    	TuscanyProcessConfImpl processConf = d.getProcessConf();
+    	if( processConf != null ) {
+    		processConf.stop();
+    	} // end if
+    } // end method undeploy
     
     public void registerTuscanyRuntimeComponent(QName processName,RuntimeComponent componentContext) {
         tuscanyRuntimeComponents.put(processName, componentContext);
