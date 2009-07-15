@@ -61,14 +61,16 @@ public class BPELInvoker implements Invoker {
     private TransactionManager txMgr;
 
     private RuntimeComponentService service;
-    private Operation operation;
-    private QName bpelServiceName;
-    private String bpelOperationName;
-    private Part bpelOperationInputPart;
-    private Part bpelOperationOutputPart;
+    private Operation 				operation;
+    private QName 					bpelServiceName;
+    private String 					bpelOperationName;
+    private Part 					bpelOperationInputPart;
+    private Part 					bpelOperationOutputPart;
+    private RuntimeComponent 		component;
 
     public BPELInvoker(RuntimeComponent component, RuntimeComponentService service, Operation operation, EmbeddedODEServer odeServer, TransactionManager txMgr) {
         this.service = service;
+        this.component = component;
         this.operation = operation;
         this.bpelOperationName = operation.getName();
         this.odeServer = odeServer;
@@ -91,8 +93,9 @@ public class BPELInvoker implements Invoker {
             // Service serviceDefinition = (Service) wsdlInterface.getWsdlDefinition().getDefinition().getAllServices().values().iterator().next();
             // bpelServiceName = serviceDefinition.getQName();
             //
-            // Fetch the service name from the service object
-            bpelServiceName = new QName( "http://tuscany.apache.org", service.getName() );
+            // Fetch the service name from the service object - including the componentURI guarantees a unique service name
+            String componentURI = component.getURI();
+            bpelServiceName = new QName( "http://tuscany.apache.org", componentURI + service.getName() );
 
             bpelOperationInputPart = (Part) wsdlInterface.getPortType().getOperation(bpelOperationName,null,null).getInput().getMessage().getParts().values().iterator().next();
             bpelOperationOutputPart = (Part) wsdlInterface.getPortType().getOperation(bpelOperationName,null,null).getOutput().getMessage().getParts().values().iterator().next();
