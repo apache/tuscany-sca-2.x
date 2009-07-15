@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.implementation.bpel.ode;
 
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -36,6 +37,16 @@ import java.util.Set;
 
 import javax.wsdl.Definition;
 import javax.xml.namespace.QName;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -46,12 +57,18 @@ import org.apache.ode.bpel.iapi.EndpointReference;
 import org.apache.ode.bpel.iapi.ProcessConf;
 import org.apache.ode.bpel.iapi.ProcessState;
 import org.apache.ode.bpel.iapi.ProcessConf.CLEANUP_CATEGORY;
+import org.apache.tuscany.sca.assembly.ComponentProperty;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.implementation.bpel.BPELImplementation;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
+import org.apache.tuscany.sca.runtime.RuntimeComponent;
+import org.apache.tuscany.sca.databinding.impl.SimpleTypeMapperImpl;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * A Tuscany implementation of the ODE Process Conf
@@ -62,21 +79,28 @@ public class TuscanyProcessConfImpl implements ProcessConf {
     private final Log __log = LogFactory.getLog(getClass());
 
     private BPELImplementation implementation;
+    private RuntimeComponent component;
     private Map<String, Endpoint> invokeEndpoints = null;
     private Map<String, Endpoint> provideEndpoints = null;
     private Map<QName, Node> properties = null;
     private ProcessState processState;
     private Date deployDate;
+    
+    private File theBPELFile;
+    // Marks whether the BPEL file was rewritten (eg for initializer statements)
+    private boolean rewritten = false;
 
     private final String TUSCANY_NAMESPACE = "http://tuscany.apache.org";
 
     /**
      * Constructor for the ProcessConf implementation
      * @param theImplementation the BPEL implementation for which this is the ProcessConf
+     * @param component - the SCA component which uses the implementation
      */
-    public TuscanyProcessConfImpl( BPELImplementation theImplementation ) {
+    public TuscanyProcessConfImpl( BPELImplementation theImplementation, RuntimeComponent component ) {
         //System.out.println("New TuscanyProcessConfImpl...");
         this.implementation = theImplementation;
+        this.component = component;
 
         processState = ProcessState.ACTIVE;
         deployDate = new Date();
@@ -84,6 +108,15 @@ public class TuscanyProcessConfImpl implements ProcessConf {
         // Compile the process
         compile( getBPELFile() );
     } // end TuscanyProcessConfImpl constructor
+    
+    public void stop() {
+    	// If the BPEL file was rewritten, destroy the rewritten version of it so that
+    	// it is not used again.
+    	if( rewritten ) {
+    		theBPELFile.delete();
+    	} // end if
+    	
+    } // end method stop
 
     /**
      * Returns the URI for the directory containing the BPEL process
@@ -296,13 +329,16 @@ public class TuscanyProcessConfImpl implements ProcessConf {
         //System.out.println("getProvideEndpoints called");
         if( provideEndpoints == null ) {
             provideEndpoints = new HashMap<String, Endpoint>();
+            String componentURI = component.getURI();
             // Get a collection of the references
             List<Service> theServices = implementation.getServices();
             // Create an endpoint for each reference, using the reference name as the "service"
             // name, combined with http://tuscany.apache.org to make a QName
             for( Service service : theServices ) {
+            	// MJE 14/07/2009 - added componentURI to the service name to get unique service name
                 provideEndpoints.put( service.getName(), 
-                                      new Endpoint( new QName( TUSCANY_NAMESPACE, service.getName() ), "ServicePort"));
+                                      new Endpoint( new QName( TUSCANY_NAMESPACE, componentURI + service.getName() ), 
+                                    		        "ServicePort"));
             } // end for
         } // end if
         return provideEndpoints;
@@ -374,6 +410,9 @@ public class TuscanyProcessConfImpl implements ProcessConf {
         compileProps.put( BpelC.PROCESS_CUSTOM_PROPERTIES, processProps );
         compiler.setCompileProperties( compileProps );
         compiler.setBaseDirectory( getDirectory() );
+        
+        // Inject any property values
+        bpelFile = injectPropertyValues( bpelFile );
 
         // Run the compiler and generate the CBP file into the given directory
         try {
@@ -385,6 +424,207 @@ public class TuscanyProcessConfImpl implements ProcessConf {
             // TODO - need better exception handling here
         } // end try
     } // end compile
+    
+    /**
+     * Adds the values for SCA declared properties to the BPEL process.
+     * The values for the properties are held in the SCA RuntimeComponent supplied to this
+     * TuscanyProcessConfImpl.
+     * The properties map to <variable/> declarations in the BPEL process that are specifically
+     * marked with @sca-bpel:property="yes"
+     * @param bpelFile the file containing the BPEL process
+     * @return the (updated) file containing the BPEL process
+     */
+    private File injectPropertyValues( File bpelFile ) {
+    	// Get the properties
+    	List<ComponentProperty> properties = component.getProperties();
+    	
+    	// If there are no properties, we're done!
+    	if( properties.size() == 0 ) return bpelFile;
+    	
+    	Document bpelDOM = readDOMFromProcess( bpelFile );
+    	
+    	for( ComponentProperty property : properties ) {
+    		System.out.println("BPEL: Property - name = " + property.getName() );
+    		insertSCAPropertyInitializer( bpelDOM, property );
+    	} // end for
+    	
+    	File bpelFile2 = writeProcessFromDOM( bpelDOM, 
+    			                              getTransformedBPELFile( bpelFile) );
+    	if( bpelFile2 != null ) {
+    		theBPELFile = bpelFile2;
+    		rewritten = true;
+    		return bpelFile2;
+    	} // end if 
+    	
+    	return bpelFile;
+    } // end injectPropertyValues
+    
+    /**
+     * Insert an initializer which supplies the value of an SCA property as specified by the
+     * SCA Component using the BPEL process
+     * @param bpelDOM - a DOM model representation of the BPEL process
+     * @param property - an SCA ComponentProperty element for the property
+     * This DOM model is updated, with an initializer being added for the BPEL variable
+     * corresponding to the SCA property
+     */
+    private void insertSCAPropertyInitializer( Document bpelDOM, ComponentProperty property ) {
+    	// Only insert a Property initializer where there is a value for the Property
+    	if( property.getValue() == null ) return;
+    	
+    	Element insertionElement = findInitializerInsertionPoint( bpelDOM );
+    	if( insertionElement == null ) return;
+    	
+    	Element initializer = getInitializerSequence( bpelDOM, property );
+    	if( initializer == null ) return;
+    	
+    	// Insert the initializer sequence as the immediate child of the insertion point
+    	insertionElement.insertBefore( initializer, insertionElement.getFirstChild() );
+    	
+    } // end insertSCAPropertyInitializer
+    
+    /**
+     * Gets the variable initializer DOM sequence for a given property, in the context of a supplied
+     * DOM model of the BPEL process
+     * @param bpelDOM - DOM representation of the BPEL process
+     * @param property - SCA Property which relates to one of the variables in the BPEL process
+     * @return - a DOM model representation of the XML statements required to initialize the
+     * BPEL variable with the value of the SCA property.
+     */
+    private Element getInitializerSequence( Document bpelDOM, ComponentProperty property ) {
+    	// For an XML simple type (string, int, etc), the BPEL initializer sequence is:
+    	// <assign><copy><from><literal>value</literal></from><to variable="variableName"/></copy></assign>
+    	QName type = property.getXSDType();
+    	if( type != null ) {
+    		if( SimpleTypeMapperImpl.isSimpleXSDType( type ) ) {
+    			// Simple types
+    			String NS_URI = bpelDOM.getDocumentElement().getNamespaceURI();
+    			String valueText = getPropertyValueText( property.getValue() );
+    			Element literalElement = bpelDOM.createElement("literal");
+    			literalElement.setTextContent(valueText);
+    			Element fromElement = bpelDOM.createElement("from");
+    			fromElement.appendChild(literalElement);
+    			Element toElement = bpelDOM.createElement("to");
+    			Attr variableAttribute = bpelDOM.createAttribute("variable");
+    			variableAttribute.setValue( property.getName() );
+    			toElement.setAttributeNode( variableAttribute );
+    			Element copyElement = bpelDOM.createElement("copy");
+    			copyElement.appendChild(fromElement);
+    			copyElement.appendChild(toElement);
+    			Element assignElement = bpelDOM.createElement("assign");
+    			assignElement.appendChild(copyElement);
+    			return assignElement;
+    		} // end if
+    		// TODO Deal with Properties which have a non-simple type
+    	} else {
+    		// TODO Deal with Properties which have an element as the type
+    	} // end if
+	
+    	return null;
+    } // end method getInitializerSequence
+    
+    /**
+     * Gets the text value of a property that is a simple type
+     * @param propValue - the SCA Property value
+     * @return - the text content of the Property value, as a String
+     */
+    private String getPropertyValueText( Object propValue ) {
+    	String text = null;
+    	if( propValue instanceof Document ) {
+    		Element docElement = ((Document)propValue).getDocumentElement();
+    		if( docElement != null ){
+    			Element valueElement = (Element)docElement.getFirstChild();
+    			if( valueElement != null ) {
+    				text = valueElement.getTextContent();
+    			} // end if
+    		} // end if
+    	} // end if
+    	
+    	return text;
+    } // end method getPropertyValueText
+     
+    private Element findInitializerInsertionPoint( Document bpelDOM ) {
+    	// The concept is to find the first Activity child element of the BPEL process document
+    	Element docElement = bpelDOM.getDocumentElement();
+    	NodeList elements = docElement.getElementsByTagName("*");
+    	
+    	Element element;
+    	for ( int i = 0 ; i < elements.getLength() ; i++ ) {
+    		element = (Element)elements.item(i);
+    		if( isInsertableActivityElement( element ) ) {
+    			return element;
+    		} // end if
+    	} // end for
+    	
+    	return null;
+    } // end method findInitializerInsertionPoint
+    
+    private static String	SEQUENCE_ELEMENT = "sequence";
+    /**
+     * Determine if an Element is a BPEL Activity element which can have an Assign
+     * inserted following it
+     * @param element - the Element
+     * @return - true if the Element is a BPEL Activity element, false otherwise
+     */
+    private boolean isInsertableActivityElement( Element element ) {
+    	String name = element.getTagName();
+    	// For the present, only <sequence/> elements count 
+    	// TODO - extend this to cover other insertable cases
+    	if( SEQUENCE_ELEMENT.equalsIgnoreCase(name) ) return true;
+    	return false;
+    } // end method isActivityElement
+    
+    /**
+     * Reads a BPEL Process file into a DOM Document structure
+     * @param bpelFile - a File object referencing the BPEL process document
+     * @return - a DOM Document structure representing the same BPEL process
+     */
+    private Document readDOMFromProcess( File bpelFile ) {
+    	try {
+	    	DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+	    	DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+	    	
+	    	Document bpelDOM = docBuilder.parse( bpelFile );
+	    	return bpelDOM;
+    	} catch (Exception e) {
+    		return null;
+    	} // end try
+    } // end method
+    
+    /**
+     * Writes a BPEL Process file from a DOM Document structure representing the Process
+     * @param bpelDOM - the DOM Document representation of the BPEL process
+     * @param file - a File object to which the BPEL Process is to be written
+     * @return
+     */
+    private File writeProcessFromDOM( Document bpelDOM, File file ) {
+    	try {
+	        // Prepare the DOM document for writing
+	        Source source = new DOMSource( bpelDOM );
+	
+	        // Prepare the output file
+	        Result result = new StreamResult(file);
+	
+	        // Write the DOM document to the file
+	        Transformer xformer = TransformerFactory.newInstance().newTransformer();
+	        xformer.transform(source, result);
+	    } catch (TransformerConfigurationException e) {
+	    } catch (TransformerException e) {
+	    	return null;
+	    }
+    	return file;
+    } // end writeProcessFromDOM
+    
+    private File getTransformedBPELFile( File bpelFile ) {
+    	String name = bpelFile.getName();
+    	File parent = bpelFile.getParentFile();
+    	File bpelFile2 = null;
+    	try {
+    		bpelFile2 = File.createTempFile(name, ".bpel_tmp", parent);
+    	} catch (Exception e ){
+    		
+    	} // end try
+    	return bpelFile2;
+    } // end getTransformedBPELFile
 
     /** 
      * Gets the directory containing the BPEL process
@@ -400,6 +640,7 @@ public class TuscanyProcessConfImpl implements ProcessConf {
      * @return - the File object containing the BPEL process
      */
     private File getBPELFile() {
+    	if( theBPELFile != null ) return theBPELFile;
         try {
             String location = this.implementation.getProcessDefinition().getLocation();
             URI locationURI;
@@ -409,6 +650,7 @@ public class TuscanyProcessConfImpl implements ProcessConf {
                  locationURI = new URI(null, location, null);
              }
             File theProcess = new File(locationURI);
+            theBPELFile = theProcess;
             return theProcess;
         } catch( Exception e ) {
             if(__log.isDebugEnabled()) {
