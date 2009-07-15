@@ -52,6 +52,8 @@ public class BPELImplementationProvider implements ImplementationProvider {
 
     private EmbeddedODEServer odeServer;
     private TransactionManager txMgr;
+    
+    private ODEDeployment deployment;
 
     /**
      * Constructs a new BPEL Implementation.
@@ -67,7 +69,15 @@ public class BPELImplementationProvider implements ImplementationProvider {
 
         // Configure the service and reference interfaces to use a DOM databinding
         // as it's what ODE expects
-        for (Service service: component.getServices()) {
+        for(Service service: implementation.getServices() ){
+            service.getInterfaceContract().getInterface().resetDataBinding(DOMDataBinding.NAME);
+        } // end for
+        
+        for(Reference reference: implementation.getReferences() ) {
+            reference.getInterfaceContract().getInterface().resetDataBinding(DOMDataBinding.NAME);
+        } // end for
+
+       for (Service service: component.getServices()) {
         	//TODO - MJE, 06/06/2009 - we can eventually remove the reset of the service interface
         	// contract and leave it to the Endpoints only
             service.getInterfaceContract().getInterface().resetDataBinding(DOMDataBinding.NAME);
@@ -118,23 +128,20 @@ public class BPELImplementationProvider implements ImplementationProvider {
 
             // deploy the process
             if (odeServer.isInitialized()) {
+            	deployment = new ODEDeployment( deploymentDir );
                 try {
-                    //txMgr.begin();
                     odeServer.registerTuscanyRuntimeComponent(implementation.getProcess(), component);
-                    // Replaced by Mike Edwards 23/05/2008
-                    //odeServer.deploy(new ODEDeployment(deploymentDir));
-                    odeServer.deploy(new ODEDeployment(deploymentDir), implementation );
-                    //txMgr.commit();
+
+                    odeServer.deploy(deployment, implementation, component );
                 } catch (Exception e) {
                     e.printStackTrace();
-                    //txMgr.rollback();
                 }
             }
 
         } catch (ODEInitializationException inite) {
             throw new RuntimeException("BPEL Component Type Implementation : Error initializing embedded ODE server " + inite.getMessage(), inite);
         } catch(Exception e) {
-            throw new RuntimeException("BPEl Component Type Implementation initialization failure : " + e.getMessage(), e);
+            throw new RuntimeException("BPEL Component Type Implementation initialization failure : " + e.getMessage(), e);
         }
     }
 
@@ -143,8 +150,10 @@ public class BPELImplementationProvider implements ImplementationProvider {
             __log.info("Stopping " + component.getName());
         }
 
+        odeServer.undeploy(deployment);
+        
         if (odeServer.isInitialized()) {
-            // start ode server
+            // stop ode server
             odeServer.stop();
         }
 
