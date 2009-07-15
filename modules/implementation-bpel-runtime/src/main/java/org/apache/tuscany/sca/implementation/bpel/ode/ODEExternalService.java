@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.implementation.bpel.ode;
 
+import java.util.List;
 import java.util.concurrent.Callable;
 
 import javax.wsdl.Part;
@@ -71,10 +72,8 @@ public class ODEExternalService {
                     if (!success)
                         return;
 
-                    // The invocation must happen in a separate thread, holding
-                    // on the afterCompletion
-                    // blocks other operations that could have been listed there
-                    // as well.
+                    // The invocation must happen in a separate thread, holding on the afterCompletion
+                    // blocks other operations that could have been listed there as well.
                     _server.getExecutor().submit(new Callable<Object>() {
                         public Object call() throws Exception {
                             try {
@@ -89,8 +88,7 @@ public class ODEExternalService {
                                 RuntimeComponentReference runtimeComponentReference =
                                     (RuntimeComponentReference)tuscanyRuntimeComponent.getReferences().get(0);
                                 RuntimeWire runtimeWire =
-                                    runtimeComponentReference.getRuntimeWire(runtimeComponentReference.getBindings().get(0));
-
+                                	runtimeComponentReference.getRuntimeWire(runtimeComponentReference.getEndpointReferences().get(0));
                                 // convert operations
                                 Operation operation =
                                     findOperation(partnerRoleMessageExchange.getOperation().getName(), runtimeComponentReference);
@@ -145,13 +143,7 @@ public class ODEExternalService {
                                     }
 
                                     // two way invocation
-                                    // process results based on type of message
-                                    // invocation
-
-                                    // Message response =
-                                    // createResponseMessage(partnerRoleMessageExchange,
-                                    // (Element) result);
-                                    // partnerRoleMessageExchange.reply(response);
+                                    // process results based on type of message invocation
                                     replyTwoWayInvocation(partnerRoleMessageExchange.getMessageExchangeId(), 
                                                           operation, 
                                                           (Element)result);
@@ -209,20 +201,30 @@ public class ODEExternalService {
     }
     
     /**
-     * Get paylod from a given ODEMessage
-     * @param odeMessage
-     * @return
+     * Get payload from a given ODEMessage
+     * @param odeMessage - the ODE message
+     * @return the payload of the Message, as a DOM Element
      */
     private Element getPayload(Message odeMessage) {
         Element payload = null;
-        Element parameters = odeMessage.getPart("parameters");
+        
+        // Get the message parts - these correspond to the message parts for the invocation
+        // as defined in the WSDL for the service operation being invoked
+        List<String> parts = odeMessage.getParts();
+        if( parts.size() == 0 ) return null;
+        
+        // For the present, just deal with the ** FIRST ** part
+        // TODO Deal with operations that have messages with multiple parts
+        // - that will require returning an array of Elements, one for each part      
+        Element part = odeMessage.getPart(parts.get(0));
 
-        if (parameters != null && parameters.hasChildNodes()) {
-            payload = (Element)parameters.getFirstChild();
+        // Get the payload which is the First child 
+        if (part != null && part.hasChildNodes()) {
+            payload = (Element)part.getFirstChild();
         }
 
         return payload;
-    }
+    } // end getPayload
     
 
     private void replyTwoWayInvocation(final String odeMexId, final Operation operation, final Element result) {
