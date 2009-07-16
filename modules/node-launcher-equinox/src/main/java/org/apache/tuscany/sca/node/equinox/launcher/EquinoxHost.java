@@ -33,7 +33,6 @@ import static org.apache.tuscany.sca.node.equinox.launcher.NodeLauncherUtil.thir
 import static org.apache.tuscany.sca.node.equinox.launcher.NodeLauncherUtil.thisBundleLocation;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -55,17 +54,36 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.eclipse.core.runtime.adaptor.EclipseStarter;
-import org.eclipse.core.runtime.adaptor.LocationManager;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
+import org.osgi.framework.launch.Framework;
 
 /**
  * Wraps the Equinox runtime.
  */
 public class EquinoxHost {
+    static final String PROP_OSGI_CONTEXT_CLASS_LOADER_PARENT = "osgi.contextClassLoaderParent";
+
+    static final String PROP_OSGI_CLEAN = "osgi.clean";
+
+    static final String PROP_USER_NAME = "user.name";
+
     private static Logger logger = Logger.getLogger(EquinoxHost.class.getName());
+
+    static final String PROP_INSTALL_AREA = "osgi.install.area";
+    static final String PROP_CONFIG_AREA = "osgi.configuration.area";
+    static final String PROP_CONFIG_AREA_DEFAULT = "osgi.configuration.area.default";
+    static final String PROP_SHARED_CONFIG_AREA = "osgi.sharedConfiguration.area";
+    static final String PROP_INSTANCE_AREA = "osgi.instance.area";
+    static final String PROP_INSTANCE_AREA_DEFAULT = "osgi.instance.area.default";
+    static final String PROP_USER_AREA = "osgi.user.area";
+    static final String PROP_USER_AREA_DEFAULT = "osgi.user.area.default";
+
+    /**
+     * If the class is loaded inside OSGi, then the bundle context will be injected by the activator
+     */
+    static BundleContext injectedBundleContext;
 
     static {
         if (getSystemProperty("osgi.debug") != null) {
@@ -75,7 +93,6 @@ public class EquinoxHost {
 
     private BundleContext bundleContext;
     private Bundle launcherBundle;
-    private boolean startedEclipse;
     private List<URL> bundleFiles = new ArrayList<URL>();
     private List<String> bundleNames = new ArrayList<String>();
     private Collection<URL> jarFiles = new HashSet<URL>();
@@ -84,6 +101,9 @@ public class EquinoxHost {
 
     private Set<URL> bundleLocations;
     private boolean aggregateThirdPartyJars = false;
+
+    private FrameworkLauncher frameworkLauncher = new FrameworkLauncher();
+    private Framework framework;
 
     public EquinoxHost() {
         super();
@@ -132,7 +152,7 @@ public class EquinoxHost {
      */
     public BundleContext start() {
         try {
-            if (!EclipseStarter.isRunning()) {
+            if (injectedBundleContext == null) {
 
                 String version = getSystemProperty("java.specification.version");
                 String profile = "J2SE-1.5.profile";
@@ -151,10 +171,10 @@ public class EquinoxHost {
                 // Configure Eclipse properties
 
                 // Use the boot classloader as the parent classloader
-                put(props, "osgi.contextClassLoaderParent", "app");
+                put(props, PROP_OSGI_CONTEXT_CLASS_LOADER_PARENT, "app");
 
                 // Set startup properties
-                put(props, EclipseStarter.PROP_CLEAN, "true");
+                put(props, PROP_OSGI_CLEAN, "true");
 
                 // Set location properties
                 // FIXME Use proper locations
@@ -163,7 +183,7 @@ public class EquinoxHost {
                 // Add user name as the prefix. For multiple users on the same Lunix,
                 // there will be permission issue if one user creates the .tuscany folder
                 // first under /tmp with no write permission for others.
-                String userName = getSystemProperty("user.name");
+                String userName = getSystemProperty(PROP_USER_NAME);
                 if (userName != null) {
                     root = new File(root, userName);
                 }
@@ -172,39 +192,17 @@ public class EquinoxHost {
                     logger.fine("Equinox location: " + root);
                 }
 
-                put(props, LocationManager.PROP_INSTANCE_AREA_DEFAULT, new File(root, "workspace").toURI().toString());
-                put(props, LocationManager.PROP_INSTALL_AREA, new File(root, "install").toURI().toString());
-                put(props, LocationManager.PROP_CONFIG_AREA_DEFAULT, new File(root, "config").toURI().toString());
-                put(props, LocationManager.PROP_USER_AREA_DEFAULT, new File(root, "user").toURI().toString());
+                put(props, PROP_INSTANCE_AREA_DEFAULT, new File(root, "workspace").toURI().toString());
+                put(props, PROP_INSTALL_AREA, new File(root, "install").toURI().toString());
+                put(props, PROP_CONFIG_AREA_DEFAULT, new File(root, "config").toURI().toString());
+                put(props, PROP_USER_AREA_DEFAULT, new File(root, "user").toURI().toString());
 
-                EclipseStarter.setInitialProperties(props);
-
-                // Test if the configuration/config.ini or osgi.bundles has been set
-                // If yes, try to avoid discovery of bundles
-                if (bundleLocations == null) {
-                    if (props.getProperty("osgi.bundles") != null) {
-                        bundleLocations = Collections.emptySet();
-                    } else {
-                        String config = props.getProperty(LocationManager.PROP_CONFIG_AREA);
-                        File ini = new File(config, "config.ini");
-                        if (ini.isFile()) {
-                            Properties iniProps = new Properties();
-                            iniProps.load(new FileInputStream(ini));
-                            if (iniProps.getProperty("osgi.bundles") != null) {
-                                bundleLocations = Collections.emptySet();
-                            }
-                        }
-                    }
-                }
-
-                // Start Eclipse
-                bundleContext = EclipseStarter.startup(new String[] {}, null);
-                startedEclipse = true;
+                startFramework(props);
 
             } else {
 
                 // Get bundle context from the running Eclipse instance
-                bundleContext = EclipseStarter.getSystemBundleContext();
+                bundleContext = injectedBundleContext;
             }
 
             // Determine the runtime classpath entries
@@ -274,7 +272,7 @@ public class EquinoxHost {
             }
 
             // Install all the other bundles that are not already installed
-            for (URL bundleFile: bundleFiles) {
+            for (URL bundleFile : bundleFiles) {
                 fixupBundle(bundleFile.toString());
             }
             for (int i = 0, n = bundleFiles.size(); i < n; i++) {
@@ -321,30 +319,30 @@ public class EquinoxHost {
             throw new IllegalStateException(e);
         }
     }
-    
+
     /**
      * Start all the bundles as a check for class loading issues
      * @param bundleContext - the bundle context
      */
-    private void startBundles( BundleContext bundleContext ) {
-    	
-        for (Bundle bundle: bundleContext.getBundles()) {
-        //    if (bundle.getSymbolicName().startsWith("org.apache.tuscany.sca")) {
-                if ((bundle.getState() & Bundle.ACTIVE) == 0) {
-                    if (logger.isLoggable(Level.FINE)) {
-                        logger.fine("Starting bundle: " + string(bundle, false));
-                    } // end if
-                    try {
-                        bundle.start();
-                    } catch (Exception e) {
-                        logger.log(Level.SEVERE, e.getMessage(), e);
-                        // throw e;
-                    } // end try
-                    if (logger.isLoggable(Level.FINE)) {
-                        logger.fine("Bundle: " + string(bundle, false));
-                    } // end if
-                } //  end if
-        //    } // end if
+    private void startBundles(BundleContext bundleContext) {
+
+        for (Bundle bundle : bundleContext.getBundles()) {
+            //    if (bundle.getSymbolicName().startsWith("org.apache.tuscany.sca")) {
+            if ((bundle.getState() & Bundle.ACTIVE) == 0) {
+                if (logger.isLoggable(Level.FINE)) {
+                    logger.fine("Starting bundle: " + string(bundle, false));
+                } // end if
+                try {
+                    bundle.start();
+                } catch (Exception e) {
+                    logger.log(Level.SEVERE, e.getMessage(), e);
+                    // throw e;
+                } // end try
+                if (logger.isLoggable(Level.FINE)) {
+                    logger.fine("Bundle: " + string(bundle, false));
+                } // end if
+            } //  end if
+            //    } // end if
         } // end for
         logger.fine("Tuscany bundles are started.");
         return;
@@ -379,7 +377,7 @@ public class EquinoxHost {
         if (bundle == null) {
             long installStart = currentTimeMillis();
             String location = bundleFile.toString();
-            if ("file".equals(bundleFile.getProtocol())) {
+            if (frameworkLauncher.isEquinox() && "file".equals(bundleFile.getProtocol())) {
                 File target = file(bundleFile);
                 // Use a special "reference" scheme to install the bundle as a reference
                 // instead of copying the bundle
@@ -410,12 +408,13 @@ public class EquinoxHost {
             InputStream is = thirdPartyLibraryBundle(Collections.singleton(jarFile), symbolicName, version);
             // try/catch and output message added 10/04/2009 Mike Edwards
             try {
-            bundle = bundleContext.installBundle(symbolicName, is);
-            allBundles.put(symbolicName, bundle);
-            installedBundles.add(bundle);
+                bundle = bundleContext.installBundle(symbolicName, is);
+                allBundles.put(symbolicName, bundle);
+                installedBundles.add(bundle);
             } catch (BundleException e) {
-            	System.out.println("EquinoxHost:installAsBundle - BundleException raised when dealing with jar " + symbolicName);
-            	throw (e);
+                System.out
+                    .println("EquinoxHost:installAsBundle - BundleException raised when dealing with jar " + symbolicName);
+                throw (e);
             } // end try
             // end of addition
         }
@@ -424,7 +423,7 @@ public class EquinoxHost {
 
     private Set<URL> findBundleLocations() throws FileNotFoundException, URISyntaxException, MalformedURLException {
         if (bundleLocations == null) {
-            if (!startedEclipse) {
+            if (injectedBundleContext != null) {
 
                 // Use classpath entries from a distribution if there is one and the modules
                 // directories available in a dev environment for example
@@ -433,10 +432,10 @@ public class EquinoxHost {
 
                 // Use classpath entries from a distribution if there is one and the classpath
                 // entries on the current application's classloader
-            	// *** Changed by Mike Edwards, 9th April 2009 ***
-            	// -- this place is reached when starting from within Eclipse so why use the classpath??
-            	// bundleLocations = runtimeClasspathEntries(true, true, false);
-            	// Instead search the modules directory
+                // *** Changed by Mike Edwards, 9th April 2009 ***
+                // -- this place is reached when starting from within Eclipse so why use the classpath??
+                // bundleLocations = runtimeClasspathEntries(true, true, false);
+                // Instead search the modules directory
                 bundleLocations = runtimeClasspathEntries(true, true, true);
             }
         }
@@ -463,16 +462,66 @@ public class EquinoxHost {
             }
             installedBundles.clear();
 
-            // Shutdown Eclipse if we started it ourselves
-            if (startedEclipse) {
-                startedEclipse = false;
-                EclipseStarter.shutdown();
-            }
+            stopFramework();
 
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
     }
+
+    /*
+    private void startFramework(Properties props) throws Exception {
+        EclipseStarter.setInitialProperties(props);
+
+        // Test if the configuration/config.ini or osgi.bundles has been set
+        // If yes, try to avoid discovery of bundles
+        if (bundleLocations == null) {
+            if (props.getProperty("osgi.bundles") != null) {
+                bundleLocations = Collections.emptySet();
+            } else {
+                String config = props.getProperty(PROP_CONFIG_AREA);
+                File ini = new File(config, "config.ini");
+                if (ini.isFile()) {
+                    Properties iniProps = new Properties();
+                    iniProps.load(new FileInputStream(ini));
+                    if (iniProps.getProperty("osgi.bundles") != null) {
+                        bundleLocations = Collections.emptySet();
+                    }
+                }
+            }
+        }
+
+        // Start Eclipse
+        bundleContext = EclipseStarter.startup(new String[] {}, null);
+    }
+
+    private void stopFramework() throws Exception {
+        // Shutdown Eclipse if we started it ourselves
+        if (injectedBundleContext == null) {
+            EclipseStarter.shutdown();
+        }
+    }
+    */
+    
+    private void startFramework(Map configuration) throws Exception {
+        if (framework != null) {
+            throw new IllegalStateException("The OSGi framework has been started");
+        }
+        framework = frameworkLauncher.newFramework(configuration);
+        framework.start();
+        this.bundleContext = framework.getBundleContext();
+    }
+
+    private void stopFramework() throws Exception {
+        // Shutdown Eclipse if we started it ourselves
+        if (injectedBundleContext == null) {
+            framework.stop();
+            framework.waitForStop(5000);
+            framework = null;
+            bundleContext = null;
+        }
+    }    
+    
 
     public void setBundleLocations(Set<URL> bundleLocations) {
         this.bundleLocations = bundleLocations;

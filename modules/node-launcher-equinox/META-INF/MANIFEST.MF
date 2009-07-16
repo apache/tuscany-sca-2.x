@@ -13,10 +13,11 @@ Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Node Equinox OSGi Launcher
 Import-Package: org.apache.commons.cli;resolution:=optional,
  org.apache.tuscany.sca.node.equinox.launcher;version="2.0.0",
- org.eclipse.core.runtime.adaptor,
- org.eclipse.osgi.framework.console,
- org.osgi.framework;version="1.4"
-Bundle-Activator: org.apache.tuscany.sca.node.equinox.launcher.NodeLauncherCommand
+ org.eclipse.core.runtime.adaptor;resolution:=optional,
+ org.eclipse.osgi.framework.console;resolution:=optional,
+ org.osgi.framework;version="1.4",
+ org.osgi.framework.launch;version="1.0.0"
+Bundle-Activator: org.apache.tuscany.sca.node.equinox.launcher.FrameworkLauncher
 Bundle-SymbolicName: org.apache.tuscany.sca.node.launcher.equinox
 Bundle-DocURL: http://www.apache.org/
 Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6

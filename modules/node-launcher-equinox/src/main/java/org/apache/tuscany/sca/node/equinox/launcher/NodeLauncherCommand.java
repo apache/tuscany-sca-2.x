@@ -20,19 +20,16 @@
 package org.apache.tuscany.sca.node.equinox.launcher;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
 
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 import org.eclipse.osgi.framework.console.CommandProvider;
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
 
 /**
  * An Equinox console command extension for Tuscany
  * http://www.ibm.com/developerworks/library/os-ecl-osgiconsole/index.html
  */
-public class NodeLauncherCommand implements CommandProvider, BundleActivator {
+public class NodeLauncherCommand implements CommandProvider {
 
     public String getHelp() {
         return "---Apache Tuscany Commands for Equinox---\n"
@@ -55,13 +52,6 @@ public class NodeLauncherCommand implements CommandProvider, BundleActivator {
             args.add(arg);
         }
         NodeLauncher.main(args.toArray(new String[args.size()]));
-    }
-
-    public void start(BundleContext context) throws Exception {
-        context.registerService(CommandProvider.class.getName(), this, new Hashtable());
-    }
-
-    public void stop(BundleContext context) throws Exception {
     }
 
 }
