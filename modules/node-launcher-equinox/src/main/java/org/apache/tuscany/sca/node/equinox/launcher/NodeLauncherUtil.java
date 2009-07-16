@@ -90,7 +90,6 @@ final class NodeLauncherUtil {
     private static final String NODE_IMPLEMENTATION_DAEMON_BOOTSTRAP =
         "org.apache.tuscany.sca.implementation.node.launcher.NodeImplementationDaemonBootstrap";
 
-
     private static final String TUSCANY_HOME = "TUSCANY_HOME";
     private static final String TUSCANY_PATH = "TUSCANY_PATH";
 
@@ -551,11 +550,34 @@ final class NodeLauncherUtil {
         if (file != null) {
             return file.toURI();
         } else {
-            try {
-                return url.toURI();
-            } catch (URISyntaxException e) {
-                throw new IllegalArgumentException(e);
-            }
+            return createURI(url.toString());
+        }
+    }
+
+    /**
+     * Escape the space in URL string
+     * @param uri
+     * @return
+     */
+    static URI createURI(String uri) {
+        if (uri == null) {
+            return null;
+        }
+        if (uri.indexOf('%') != -1) {
+            // Avoid double-escaping
+            return URI.create(uri);
+        }
+        int index = uri.indexOf(':');
+        String scheme = null;
+        String ssp = uri;
+        if (index != -1) {
+            scheme = uri.substring(0, index);
+            ssp = uri.substring(index + 1);
+        }
+        try {
+            return new URI(scheme, ssp, null);
+        } catch (URISyntaxException e) {
+            throw new IllegalArgumentException(e);
         }
     }
 
