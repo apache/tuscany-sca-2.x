@@ -19,6 +19,10 @@
 
 package org.apache.tuscany.sca.node.equinox.launcher;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.logging.Level;
@@ -44,20 +48,46 @@ public class FrameworkLauncher implements BundleActivator {
         if (factory == null) {
             // Use reflection APIs to call ServiceDiscovery to avoid hard dependency to tuscany-extensibility
             try {
-                Class<?> discoveryClass = Class.forName("org.apache.tuscany.sca.extensibility.ServiceDiscovery");
-                Object instance = discoveryClass.getMethod("getInstance").invoke(null);
-                Object factoryDeclaration =
-                    discoveryClass.getMethod("getServiceDeclaration", String.class).invoke(instance,
-                                                                                           FrameworkFactory.class
-                                                                                               .getName());
-                if (factoryDeclaration != null) {
+                ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+                InputStream is =
+                    classLoader.getResourceAsStream("META-INF/services/" + FrameworkFactory.class.getName());
+                if (is == null) {
+                    classLoader = FrameworkFactory.class.getClassLoader();
+                    is = classLoader.getResourceAsStream("META-INF/services/" + FrameworkFactory.class.getName());
+                }
+                if (is == null) {
+                    return null;
+                }
+                BufferedReader reader = null;
+                String line = null;
+                try {
+                    reader = new BufferedReader(new InputStreamReader(is));
+                    while (true) {
+                        line = reader.readLine();
+                        if (line == null)
+                            break;
+                        line = line.trim();
+                        if (!line.startsWith("#") && !"".equals(line)) {
+                            break;
+                        }
+                    }
+                } finally {
+                    if (reader != null) {
+                        try {
+                            reader.close();
+                        } catch (IOException e) {
+                            // Ignore
+                        }
+                    }
+                }
+                if (line != null) {
                     Class<? extends FrameworkFactory> factoryImplClass =
-                        (Class<? extends FrameworkFactory>)factoryDeclaration.getClass().getMethod("loadClass")
-                            .invoke(factoryDeclaration);
+                        (Class<? extends FrameworkFactory>)Class.forName(line, false, classLoader);
                     factory = factoryImplClass.newInstance();
                     if (factory != null && factory.getClass().getName().startsWith("org.eclipse.osgi.")) {
                         isEquinox = true;
                     }
+
                 }
             } catch (Throwable e) {
                 logger.log(Level.SEVERE, e.getMessage(), e);
@@ -68,6 +98,9 @@ public class FrameworkLauncher implements BundleActivator {
 
     public Framework newFramework(Map properties) {
         FrameworkFactory factory = loadFrameworkFactory();
+        if (factory == null) {
+            return null;
+        }
         return factory.newFramework(properties);
     }
 
