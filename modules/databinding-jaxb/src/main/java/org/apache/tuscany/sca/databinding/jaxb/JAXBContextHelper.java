@@ -40,6 +40,7 @@ import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.databinding.SimpleTypeMapper;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
 import org.apache.tuscany.sca.databinding.impl.SimpleTypeMapperImpl;
@@ -61,6 +62,7 @@ public final class JAXBContextHelper {
     // public static final String JAXB_CONTEXT_PATH = "jaxb.contextPath";
 
     private static final JAXBContextCache cache = new JAXBContextCache();
+    private static final SimpleTypeMapper SIMPLE_TYPE_MAPPER = new SimpleTypeMapperImpl();
 
     private JAXBContextHelper() {
     }
@@ -344,7 +346,7 @@ public final class JAXBContextHelper {
         }
         if (type == Object.class && dataType.getLogical() instanceof XMLType) {
             XMLType xType = (XMLType)dataType.getLogical();
-            Class javaType = SimpleTypeMapperImpl.getJavaType(xType.getTypeName());
+            Class javaType = SIMPLE_TYPE_MAPPER.getJavaType(xType.getTypeName());
             if (javaType != null) {
                 type = javaType;
             }

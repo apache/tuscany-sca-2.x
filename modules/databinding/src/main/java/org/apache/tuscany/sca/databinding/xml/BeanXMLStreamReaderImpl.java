@@ -37,6 +37,7 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.databinding.SimpleTypeMapper;
 import org.apache.tuscany.sca.databinding.impl.SimpleTypeMapperImpl;
 import org.apache.tuscany.sca.interfacedef.util.TypeInfo;
 
@@ -52,7 +53,7 @@ public class BeanXMLStreamReaderImpl extends XmlTreeStreamReaderImpl {
 
     public static class BeanXmlNodeImpl extends SimpleXmlNodeImpl implements XmlNode {
         private static final Object[] NULL = null;
-        private static final SimpleTypeMapperImpl MAPPER = new SimpleTypeMapperImpl();
+        private static final SimpleTypeMapper MAPPER = new SimpleTypeMapperImpl();
 
         public BeanXmlNodeImpl(Object bean) {
             super(getName(bean == null ? null : bean.getClass()), bean);
@@ -63,14 +64,14 @@ public class BeanXMLStreamReaderImpl extends XmlTreeStreamReaderImpl {
         }
 
         private static boolean isSimpleType(Class<?> javaType) {
-            return SimpleTypeMapperImpl.getXMLType(javaType) != null;
+            return MAPPER.getXMLType(javaType) != null;
         }
 
         private static String getStringValue(Object o) {
             if (o == null) {
                 return null;
             }
-            TypeInfo info = SimpleTypeMapperImpl.getXMLType(o.getClass());
+            TypeInfo info = MAPPER.getXMLType(o.getClass());
             if (info != null) {
                 return MAPPER.toXMLLiteral(info.getQName(), o, null);
             } else {

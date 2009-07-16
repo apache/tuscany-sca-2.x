@@ -21,6 +21,8 @@ package org.apache.tuscany.sca.databinding;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.interfacedef.util.TypeInfo;
+
 /**
  * Type Mapper between XML schema simple data types and java objects
  *
@@ -43,4 +45,25 @@ public interface SimpleTypeMapper {
      * @return The XML lexical representation
      */
     String toXMLLiteral(QName simpleType, Object obj, TransformationContext context);
+
+    /**
+     * Get the java type for a simple xml type
+     * @param xmlType
+     * @return
+     */
+    Class<?> getJavaType(QName xmlType);
+
+    /**
+     * Get the xml type for a java type
+     * @param javaType
+     * @return
+     */
+    TypeInfo getXMLType(Class<?> javaType);
+
+    /**
+     * Check if an xml type is a simple type
+     * @param xmlType
+     * @return
+     */
+    boolean isSimpleXSDType(QName xmlType);
 }

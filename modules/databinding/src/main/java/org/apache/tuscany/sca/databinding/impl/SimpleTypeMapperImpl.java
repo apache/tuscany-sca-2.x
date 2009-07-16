@@ -229,7 +229,7 @@ public class SimpleTypeMapperImpl extends XSDDataTypeConverter implements Simple
         }
     }
 
-    public static Class getJavaType(QName xmlType) {
+    public Class<?> getJavaType(QName xmlType) {
          if (xmlType != null && URI_2001_SCHEMA_XSD.equals(xmlType.getNamespaceURI())) {
             return XML2JAVA.get(xmlType.getLocalPart());
         } else {
@@ -237,7 +237,7 @@ public class SimpleTypeMapperImpl extends XSDDataTypeConverter implements Simple
         }
     }
 
-    public static TypeInfo getXMLType(Class javaType) {
+    public TypeInfo getXMLType(Class javaType) {
         return XSD_SIMPLE_TYPES.get(JAVA2XML.get(javaType));
     }
 
@@ -390,7 +390,7 @@ public class SimpleTypeMapperImpl extends XSDDataTypeConverter implements Simple
         return obj.toString();
     }
 
-    public static boolean isSimpleXSDType(QName typeName) {
+    public boolean isSimpleXSDType(QName typeName) {
         if (typeName == null) {
             return false;
         }

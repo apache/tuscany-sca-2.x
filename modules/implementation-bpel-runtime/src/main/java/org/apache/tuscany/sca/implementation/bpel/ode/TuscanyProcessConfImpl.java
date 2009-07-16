@@ -56,14 +56,15 @@ import org.apache.ode.bpel.iapi.Endpoint;
 import org.apache.ode.bpel.iapi.EndpointReference;
 import org.apache.ode.bpel.iapi.ProcessConf;
 import org.apache.ode.bpel.iapi.ProcessState;
-import org.apache.ode.bpel.iapi.ProcessConf.CLEANUP_CATEGORY;
+import org.apache.tuscany.sca.assembly.Base;
 import org.apache.tuscany.sca.assembly.ComponentProperty;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.databinding.SimpleTypeMapper;
+import org.apache.tuscany.sca.databinding.impl.SimpleTypeMapperImpl;
 import org.apache.tuscany.sca.implementation.bpel.BPELImplementation;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.databinding.impl.SimpleTypeMapperImpl;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -90,7 +91,8 @@ public class TuscanyProcessConfImpl implements ProcessConf {
     // Marks whether the BPEL file was rewritten (eg for initializer statements)
     private boolean rewritten = false;
 
-    private final String TUSCANY_NAMESPACE = "http://tuscany.apache.org";
+    private final SimpleTypeMapper mapper = new SimpleTypeMapperImpl();
+    private final String TUSCANY_NAMESPACE = Base.SCA11_TUSCANY_NS;
 
     /**
      * Constructor for the ProcessConf implementation
@@ -495,7 +497,7 @@ public class TuscanyProcessConfImpl implements ProcessConf {
     	// <assign><copy><from><literal>value</literal></from><to variable="variableName"/></copy></assign>
     	QName type = property.getXSDType();
     	if( type != null ) {
-    		if( SimpleTypeMapperImpl.isSimpleXSDType( type ) ) {
+    		if( mapper.isSimpleXSDType( type ) ) {
     			// Simple types
     			String NS_URI = bpelDOM.getDocumentElement().getNamespaceURI();
     			String valueText = getPropertyValueText( property.getValue() );

@@ -70,7 +70,7 @@ public abstract class XML2JavaBeanTransformer<T> extends BaseTransformer<T, Obje
     }
 
     public Object toJavaObject(QName xmlType, T xmlElement, TransformationContext context) {
-        if (xmlType != null && SimpleTypeMapperImpl.isSimpleXSDType(xmlType)) {
+        if (xmlType != null && mapper.isSimpleXSDType(xmlType)) {
             return mapper.toJavaObject(xmlType, getText(xmlElement), context);
         } else {
             Class<?> javaType = (Class<?>)context.getTargetDataType().getPhysical();
@@ -82,7 +82,7 @@ public abstract class XML2JavaBeanTransformer<T> extends BaseTransformer<T, Obje
     private <L> L createJavaObject(T element, Class<L> javaType, TransformationContext context) 
         throws XML2JavaMapperException {
         if (isTextOnly(element)) {
-            return (L) mapper.toJavaObject(SimpleTypeMapperImpl.getXMLType(javaType).getQName(),
+            return (L) mapper.toJavaObject(mapper.getXMLType(javaType).getQName(),
                                                  getText(element),
                                                  context);
         } else {

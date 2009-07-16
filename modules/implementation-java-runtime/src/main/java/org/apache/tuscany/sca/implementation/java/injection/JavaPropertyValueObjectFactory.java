@@ -52,10 +52,13 @@ import org.w3c.dom.NodeList;
  */
 public class JavaPropertyValueObjectFactory implements PropertyValueFactory {
     private Mediator mediator = null;
+    private SimpleTypeMapper simpleTypeMapper;
     private boolean isSimpleType;
 
     public JavaPropertyValueObjectFactory(ExtensionPointRegistry registry) {
-        this.mediator = registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(Mediator.class);
+        UtilityExtensionPoint utilityExtensionPoint = registry.getExtensionPoint(UtilityExtensionPoint.class);
+        this.mediator = utilityExtensionPoint.getUtility(Mediator.class);
+        this.simpleTypeMapper = utilityExtensionPoint.getUtility(SimpleTypeMapper.class);
     }
 
     public JavaPropertyValueObjectFactory(Mediator mediator) {
@@ -130,7 +133,7 @@ public class JavaPropertyValueObjectFactory implements PropertyValueFactory {
                                           new XMLType(null, this.property.getXSDType()));
             TypeInfo typeInfo = null;
             if (this.property.getXSDType() != null) {
-                if (SimpleTypeMapperImpl.isSimpleXSDType(this.property.getXSDType())) {
+                if (simpleTypeMapper.isSimpleXSDType(this.property.getXSDType())) {
                     typeInfo = new TypeInfo(property.getXSDType(), true, null);
                 } else {
                     typeInfo = new TypeInfo(property.getXSDType(), false, null);
@@ -264,9 +267,9 @@ public class JavaPropertyValueObjectFactory implements PropertyValueFactory {
      * @param property
      * @return
      */
-    private static boolean isSimpleType(Property property) {
+    private boolean isSimpleType(Property property) {
         if (property.getXSDType() != null) {
-            return SimpleTypeMapperImpl.isSimpleXSDType(property.getXSDType());
+            return simpleTypeMapper.isSimpleXSDType(property.getXSDType());
         } else {
             if (property instanceof Document) {
                 Document doc = (Document)property;

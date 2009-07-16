@@ -22,6 +22,8 @@ package org.apache.tuscany.sca.databinding.javabeans;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.databinding.SimpleTypeMapper;
 import org.apache.tuscany.sca.databinding.impl.BaseDataBinding;
 import org.apache.tuscany.sca.databinding.impl.SimpleTypeMapperImpl;
 import org.apache.tuscany.sca.databinding.xml.XMLStringDataBinding;
@@ -37,9 +39,12 @@ import org.apache.tuscany.sca.interfacedef.util.XMLType;
  */
 public class SimpleJavaDataBinding extends BaseDataBinding {
     public static final String NAME = "java:simpleType";
+    private SimpleTypeMapper simpleTypeMapper = new SimpleTypeMapperImpl();
 
-    public SimpleJavaDataBinding() {
+    public SimpleJavaDataBinding(ExtensionPointRegistry registry) {
         super(NAME, Object.class);
+//        UtilityExtensionPoint utilityExtensionPoint = registry.getExtensionPoint(UtilityExtensionPoint.class);
+//        this.simpleTypeMapper = utilityExtensionPoint.getUtility(SimpleTypeMapper.class);
     }
 
     @Override
@@ -68,7 +73,7 @@ public class SimpleJavaDataBinding extends BaseDataBinding {
             if (logical instanceof XMLType) {
                 elementName = ((XMLType)logical).getElementName();
             }
-            TypeInfo typeInfo = SimpleTypeMapperImpl.getXMLType(cls);
+            TypeInfo typeInfo = simpleTypeMapper.getXMLType(cls);
             type.setLogical(new XMLType(elementName, typeInfo == null ? null : typeInfo.getQName()));
             return true;
         } else {
