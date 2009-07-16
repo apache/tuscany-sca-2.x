@@ -89,5 +89,9 @@ public class ComponentPropertyImpl extends PropertyImpl implements ComponentProp
     public void setSourceXPathExpression(XPathExpression sourceXPathExpression) {
         this.sourceXPathExpression = sourceXPathExpression;
     }
+    
+    public String toString() {
+    	return "Property: " + getName() + " Value: " + getValue();
+    } // end method toString
 
 }
