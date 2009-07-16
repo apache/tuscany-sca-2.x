@@ -42,7 +42,7 @@ import org.apache.tuscany.sca.implementation.bpel.BPELImplementation;
  * 
  * <deploy xmlns="http://www.apache.org/ode/schemas/dd/2007/03"
  *  xmlns:tns="http://helloworld"
- *  xmlns:tus="http://tuscany.apache.org">
+ *  xmlns:tus="http://tuscany.apache.org/xmlns/sca/1.1">
  *
  *  <process name="tns:HelloWorld">
  *      <active>true</active>

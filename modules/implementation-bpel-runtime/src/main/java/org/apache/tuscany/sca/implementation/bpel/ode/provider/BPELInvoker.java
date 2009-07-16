@@ -33,6 +33,7 @@ import org.apache.ode.bpel.iapi.MyRoleMessageExchange;
 import org.apache.ode.bpel.iapi.MessageExchange.Status;
 import org.apache.ode.utils.DOMUtils;
 import org.apache.ode.utils.GUID;
+import org.apache.tuscany.sca.assembly.Base;
 import org.apache.tuscany.sca.implementation.bpel.ode.EmbeddedODEServer;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -95,7 +96,7 @@ public class BPELInvoker implements Invoker {
             //
             // Fetch the service name from the service object - including the componentURI guarantees a unique service name
             String componentURI = component.getURI();
-            bpelServiceName = new QName( "http://tuscany.apache.org", componentURI + service.getName() );
+            bpelServiceName = new QName( Base.SCA11_TUSCANY_NS, componentURI + service.getName() );
 
             bpelOperationInputPart = (Part) wsdlInterface.getPortType().getOperation(bpelOperationName,null,null).getInput().getMessage().getParts().values().iterator().next();
             bpelOperationOutputPart = (Part) wsdlInterface.getPortType().getOperation(bpelOperationName,null,null).getOutput().getMessage().getParts().values().iterator().next();
