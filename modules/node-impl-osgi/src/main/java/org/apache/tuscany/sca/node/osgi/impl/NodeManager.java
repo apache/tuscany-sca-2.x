@@ -39,7 +39,7 @@ import org.osgi.framework.SynchronousBundleListener;
 public class NodeManager implements SynchronousBundleListener, ServiceListener {
     private static final Logger logger = Logger.getLogger(NodeManager.class.getName());
     private BundleContext bundleContext;
-    private OSGiNodeFactoryImpl factory;
+    OSGiNodeFactoryImpl factory;
 
     public NodeManager(BundleContext bundleContext) {
         super();

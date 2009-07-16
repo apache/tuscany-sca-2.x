@@ -36,6 +36,8 @@ import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.node.NodeFactory;
+import org.apache.tuscany.sca.node.impl.NodeFactoryImpl;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
@@ -56,6 +58,8 @@ public abstract class AbstractDiscoveryService implements Discovery {
     private final static Logger logger = Logger.getLogger(AbstractDiscoveryService.class.getName());
 
     protected BundleContext context;
+    protected ExtensionPointRegistry registry;
+
     private Map<String, List<DiscoveredServiceTracker>> filtersToTrackers =
         new HashMap<String, List<DiscoveredServiceTracker>>();
     private Map<String, List<DiscoveredServiceTracker>> interfacesToTrackers =
@@ -102,12 +106,14 @@ public abstract class AbstractDiscoveryService implements Discovery {
     }
 
     protected ExtensionPointRegistry getExtensionPointRegistry() {
+        NodeFactoryImpl factory = (NodeFactoryImpl) NodeFactory.newInstance();
+        factory.init();
         ServiceTracker tracker = new ServiceTracker(context, ExtensionPointRegistry.class.getName(), null);
         tracker.open();
         // tracker.waitForService(1000);
-        ExtensionPointRegistry extensionPointRegistry = (ExtensionPointRegistry)tracker.getService();
+        registry = (ExtensionPointRegistry)tracker.getService();
         tracker.close();
-        return extensionPointRegistry;
+        return registry;
     }
 
     private synchronized void cacheTracker(ServiceReference reference, Object service) {

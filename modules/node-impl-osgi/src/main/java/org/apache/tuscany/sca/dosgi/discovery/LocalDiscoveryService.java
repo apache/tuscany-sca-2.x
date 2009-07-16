@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.implementation.osgi.ServiceDescriptions;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -40,12 +39,15 @@ import org.osgi.framework.BundleListener;
 import org.osgi.service.discovery.ServiceEndpointDescription;
 
 public class LocalDiscoveryService extends AbstractDiscoveryService implements BundleListener {
-    private ExtensionPointRegistry registry;
 
     public LocalDiscoveryService(BundleContext context) {
         super(context);
+        init();
+    }
+
+    private void init() {
         context.addBundleListener(this);
-        this.registry = getExtensionPointRegistry();
+        getExtensionPointRegistry();
         processExistingBundles();
     }
 

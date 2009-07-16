@@ -26,4 +26,6 @@ public interface ServiceDescriptionsFactory {
     ServiceDescriptions createServiceDescriptions();
 
     ServiceDescription createServiceDescription();
+
+    BindingDescriptions createBindingDescriptions();
 }

@@ -24,10 +24,13 @@ import static org.apache.tuscany.sca.node.impl.NodeUtil.createURI;
 import static org.apache.tuscany.sca.node.impl.NodeUtil.openStream;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.security.AccessController;
@@ -433,20 +436,6 @@ public class NodeFactoryImpl extends NodeFactory {
             DefinitionsUtil.aggregate(defs, systemDefinitions);
         }
 
-        /*
-        // Load the system definitions.xml from all of the loaded extension points
-        DefinitionsProviderExtensionPoint definitionsProviders = extensionPoints.getExtensionPoint(DefinitionsProviderExtensionPoint.class);
-
-        // aggregate all the definitions into a single definitions model
-        try {
-            for (DefinitionsProvider definitionsProvider : definitionsProviders.getDefinitionsProviders()) {
-                DefinitionsUtil.aggregate(definitionsProvider.getDefinitions(), systemDefinitions);
-            }
-        } catch (DefinitionsProviderException e) {
-            throw new IllegalStateException(e);
-        }
-        */
-
         // create a system contribution to hold the definitions. The contribution
         // will be extended later with definitions from application contributions
         systemContribution = contributionFactory.createContribution();
@@ -477,63 +466,12 @@ public class NodeFactoryImpl extends NodeFactory {
         return new DefaultExtensionPointRegistry();
     }
 
-    Composite configureNode(NodeConfiguration configuration) throws Exception {
-
-        List<Contribution> contributions = new ArrayList<Contribution>();
-
-        // Load the specified contributions
-        for (ContributionConfiguration contrib : configuration.getContributions()) {
-            URI contributionURI = createURI(contrib.getURI());
-
-            URI uri = createURI(contrib.getLocation());
-            if (uri.getScheme() == null) {
-                uri = new File(contrib.getLocation()).toURI();
-            }
-            URL contributionURL = uri.toURL();
-
-            // Load the contribution
-            logger.log(Level.INFO, "Loading contribution: " + contributionURL);
-            Contribution contribution = contributionProcessor.read(null, contributionURI, contributionURL);
-            contributions.add(contribution);
-
-            boolean attached = false;
-            for (DeploymentComposite dc : contrib.getDeploymentComposites()) {
-                if (dc.getContent() != null) {
-                    Reader xml = new StringReader(dc.getContent());
-                    attached = attachDeploymentComposite(contribution, xml, null, attached);
-                } else if (dc.getLocation() != null) {
-                    URI dcURI = createURI(dc.getLocation());
-                    if (!dcURI.isAbsolute()) {
-                        Composite composite = null;
-                        // The location is pointing to an artifact within the contribution
-                        for (Artifact a : contribution.getArtifacts()) {
-                            if (dcURI.toString().equals(a.getURI())) {
-                                composite = (Composite)a.getModel();
-                                if (!attached) {
-                                    contribution.getDeployables().clear();
-                                    attached = true;
-                                }
-                                contribution.getDeployables().add(composite);
-                                break;
-                            }
-                        }
-                        if (composite == null) {
-                            // Not found
-                            throw new ServiceRuntimeException("Deployment composite " + dcURI
-                                + " cannot be found within contribution "
-                                + contribution.getLocation());
-                        }
-                    } else {
-                        URL url = dcURI.toURL();
-                        InputStream is = openStream(url);
-                        Reader xml = new InputStreamReader(is, "UTF-8");
-                        attached = attachDeploymentComposite(contribution, xml, url.toString(), attached);
-                    }
-                }
-            }
-            analyzeProblems();
+    protected Composite configureNode(NodeConfiguration configuration, List<Contribution> contributions)
+        throws Exception {
+        if (contributions == null) {
+            // Load contributions
+            contributions = loadContributions(configuration);
         }
-
         // Build an aggregated SCA definitions model. Must be done before we try and
         // resolve any contributions or composites as they may depend on the full
         // definitions.xml picture
@@ -613,7 +551,65 @@ public class NodeFactoryImpl extends NodeFactory {
         analyzeProblems();
 
         return tempComposite;
+    }
 
+    private List<Contribution> loadContributions(NodeConfiguration configuration) throws MalformedURLException,
+        ContributionReadException, XMLStreamException, IOException, UnsupportedEncodingException, Exception {
+        List<Contribution> contributions = new ArrayList<Contribution>();
+
+        // Load the specified contributions
+        for (ContributionConfiguration contrib : configuration.getContributions()) {
+            URI contributionURI = createURI(contrib.getURI());
+
+            URI uri = createURI(contrib.getLocation());
+            if (uri.getScheme() == null) {
+                uri = new File(contrib.getLocation()).toURI();
+            }
+            URL contributionURL = uri.toURL();
+
+            // Load the contribution
+            logger.log(Level.INFO, "Loading contribution: " + contributionURL);
+            Contribution contribution = contributionProcessor.read(null, contributionURI, contributionURL);
+            contributions.add(contribution);
+
+            boolean attached = false;
+            for (DeploymentComposite dc : contrib.getDeploymentComposites()) {
+                if (dc.getContent() != null) {
+                    Reader xml = new StringReader(dc.getContent());
+                    attached = attachDeploymentComposite(contribution, xml, null, attached);
+                } else if (dc.getLocation() != null) {
+                    URI dcURI = createURI(dc.getLocation());
+                    if (!dcURI.isAbsolute()) {
+                        Composite composite = null;
+                        // The location is pointing to an artifact within the contribution
+                        for (Artifact a : contribution.getArtifacts()) {
+                            if (dcURI.toString().equals(a.getURI())) {
+                                composite = (Composite)a.getModel();
+                                if (!attached) {
+                                    contribution.getDeployables().clear();
+                                    attached = true;
+                                }
+                                contribution.getDeployables().add(composite);
+                                break;
+                            }
+                        }
+                        if (composite == null) {
+                            // Not found
+                            throw new ServiceRuntimeException("Deployment composite " + dcURI
+                                + " cannot be found within contribution "
+                                + contribution.getLocation());
+                        }
+                    } else {
+                        URL url = dcURI.toURL();
+                        InputStream is = openStream(url);
+                        Reader xml = new InputStreamReader(is, "UTF-8");
+                        attached = attachDeploymentComposite(contribution, xml, url.toString(), attached);
+                    }
+                }
+            }
+            analyzeProblems();
+        }
+        return contributions;
     }
 
     protected static class NodeKey {

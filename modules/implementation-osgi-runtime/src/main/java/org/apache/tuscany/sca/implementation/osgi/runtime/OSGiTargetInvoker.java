@@ -29,14 +29,12 @@ import java.util.List;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
+import org.osgi.framework.Constants;
 
 /**
  * The Invoker looks up the corresponding OSGi service from the OSGi service registry
@@ -69,14 +67,7 @@ public class OSGiTargetInvoker implements Invoker {
         }
 
         try {
-            BundleContext bundleContext = provider.getImplementation().getBundle().getBundleContext();
-            JavaInterface javaInterface = (JavaInterface)op.getInterface();
-            // String filter = getOSGiFilter(provider.getOSGiProperties(service));
-            // FIXME: What is the filter?
-            String filter = "(!(sca.reference=*))";
-            // "(sca.service=" + component.getURI() + "#service-name\\(" + service.getName() + "\\))";
-            ServiceReference ref = bundleContext.getServiceReferences(javaInterface.getName(), filter)[0];
-            Object instance = bundleContext.getService(ref);
+            Object instance = provider.getOSGiService(service);
             Method m = findMethod(instance.getClass(), operation);
 
             Object ret = invokeMethod(instance, m, msg);
@@ -119,15 +110,16 @@ public class OSGiTargetInvoker implements Invoker {
     }
 
     private String getOSGiFilter(Hashtable<String, Object> props) {
+        Object serviceID = props.get(Constants.SERVICE_ID);
+        if (serviceID != null) {
+            return "(" + Constants.SERVICE_ID + "=" + serviceID + ")";
+        }
 
         String filter = "";
 
         if (props != null && props.size() > 0) {
             int propCount = 0;
             for (String propName : props.keySet()) {
-                if (propName.equals("service.pid")) {
-                    continue;
-                }
                 String value = String.valueOf(props.get(propName));
                 StringBuffer buf = new StringBuffer();
                 for (char c : value.toCharArray()) {

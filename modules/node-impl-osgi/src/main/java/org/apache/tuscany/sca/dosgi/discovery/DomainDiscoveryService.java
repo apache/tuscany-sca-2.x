@@ -27,7 +27,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.Implementation;
-import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.implementation.osgi.OSGiImplementation;
 import org.apache.tuscany.sca.interfacedef.Interface;
@@ -51,8 +50,11 @@ public class DomainDiscoveryService extends AbstractDiscoveryService implements 
 
     public DomainDiscoveryService(BundleContext context) {
         super(context);
+        init();
+    }
 
-        ExtensionPointRegistry registry = getExtensionPointRegistry();
+    private void init() {
+        getExtensionPointRegistry();
         this.endpointRegistry =
             registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(EndpointRegistry.class);
         this.endpointRegistry.addListener(this);

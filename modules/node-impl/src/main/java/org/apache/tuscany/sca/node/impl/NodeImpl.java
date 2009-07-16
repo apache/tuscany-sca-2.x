@@ -33,6 +33,7 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.ActivationException;
@@ -59,13 +60,31 @@ public class NodeImpl implements Node, Client {
     private CompositeActivator compositeActivator;
     private NodeConfiguration configuration;
     private NodeFactoryImpl manager;
-
+    private List<Contribution> contributions;
     private NodeManager mbean;
 
+    /**
+     * Create a node from the configuration
+     * @param manager
+     * @param configuration
+     */
     public NodeImpl(NodeFactoryImpl manager, NodeConfiguration configuration) {
         super();
         this.configuration = configuration;
         this.manager = manager;
+    }
+    
+    /**
+     * Create a node from the configuration and loaded contributions
+     * @param manager
+     * @param configuration
+     * @param contributions
+     */
+    public NodeImpl(NodeFactoryImpl manager, NodeConfiguration configuration, List<Contribution> contributions) {
+        super();
+        this.configuration = configuration;
+        this.manager = manager;
+        this.contributions = new ArrayList<Contribution>(contributions);
     }
 
     public String getURI() {
@@ -83,10 +102,12 @@ public class NodeImpl implements Node, Client {
         this.proxyFactory = manager.proxyFactory;
         this.compositeActivator =
             manager.extensionPoints.getExtensionPoint(UtilityExtensionPoint.class).getUtility(CompositeActivator.class,
-                                                                                              this);
+                                                                                              manager.getNodeKey(configuration));
         try {
+            Composite composite = manager.configureNode(configuration, contributions);
+            
             // get the top level composite for this node
-            compositeActivator.setDomainComposite(manager.configureNode(configuration));
+            compositeActivator.setDomainComposite(composite);
 
             // Activate the composite
             compositeActivator.activate(compositeActivator.getDomainComposite());

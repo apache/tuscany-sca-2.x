@@ -19,3 +19,4 @@
 org.apache.tuscany.sca.implementation.osgi.xml.OSGiImplementationProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.1#implementation.osgi,model=org.apache.tuscany.sca.implementation.osgi.OSGiImplementation
 org.apache.tuscany.sca.implementation.osgi.xml.ServiceDescriptionsProcessor;qname=http://www.osgi.org/xmlns/sd/v1.0.0#service-descriptions,model=org.apache.tuscany.sca.implementation.osgi.ServiceDescriptions
 org.apache.tuscany.sca.implementation.osgi.xml.OSGiPropertyProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.1#osgi.property,model=org.apache.tuscany.sca.implementation.osgi.OSGiProperty
+org.apache.tuscany.sca.implementation.osgi.xml.BindingDescriptionsProcessor;qname=http://www.osgi.org/xmlns/sd/v1.0.0#bindings,model=org.apache.tuscany.sca.implementation.osgi.BindingDescriptions

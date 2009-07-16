@@ -20,14 +20,14 @@
 package org.apache.tuscany.sca.xsd.xml;
 
 import java.io.IOException;
-import java.net.URL;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Collections;
 
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
@@ -148,14 +148,19 @@ public class XSDModelResolver implements ModelResolver {
                 return;
             }
             // Read an XSD document
-            InputSource xsd = XMLDocumentHelper.getInputSource(definition.getLocation().toURL());
+            XmlSchema schema = null;
             for (XmlSchema d : schemaCollection.getXmlSchemas()) {
                 if (d.getTargetNamespace().equals(definition.getNamespace())) {
-                    if (d.getSourceURI().equals(definition.getLocation().toString()))
-                        return;
+                    if (d.getSourceURI().equals(definition.getLocation().toString())) {
+                        schema = d;
+                        break;
+                    }
                 }
             }
-            XmlSchema schema = schemaCollection.read(xsd, null);
+            if (schema == null) {
+                InputSource xsd = XMLDocumentHelper.getInputSource(definition.getLocation().toURL());
+                schema = schemaCollection.read(xsd, null);
+            }
             definition.setSchemaCollection(schemaCollection);
             definition.setSchema(schema);
         }

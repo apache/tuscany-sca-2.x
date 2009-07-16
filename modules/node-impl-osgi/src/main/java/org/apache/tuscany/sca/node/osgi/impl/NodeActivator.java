@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.node.osgi.impl;
 
 import static org.apache.tuscany.sca.node.osgi.impl.NodeManager.isSCABundle;
 
+import org.apache.tuscany.sca.dosgi.discovery.DiscoveryActivator;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -34,6 +35,9 @@ public class NodeActivator implements BundleActivator, SynchronousBundleListener
     private static BundleContext bundleContext;
     private boolean inited;
     private NodeManager manager;
+    
+    private DiscoveryActivator discoveryActivator = new DiscoveryActivator();
+    private OSGiServiceExporter exporter;
 
     private void init() {
         synchronized (this) {
@@ -49,6 +53,15 @@ public class NodeActivator implements BundleActivator, SynchronousBundleListener
 
     public void start(BundleContext context) throws Exception {
         bundleContext = context;
+
+        // FIXME: We should try to avoid aggressive initialization
+        init();
+        
+        exporter = new OSGiServiceExporter(context);
+        exporter.start();
+        
+        discoveryActivator.start(context);
+        
         boolean found = false;
         for (Bundle b : context.getBundles()) {
             if (isSCABundle(b)) {
@@ -67,6 +80,10 @@ public class NodeActivator implements BundleActivator, SynchronousBundleListener
     public void stop(BundleContext context) throws Exception {
         context.removeBundleListener(this);
         bundleContext = null;
+        exporter.stop();
+        exporter = null;
+        discoveryActivator.stop(context);
+        discoveryActivator = null;
     }
 
     public static BundleContext getBundleContext() {
