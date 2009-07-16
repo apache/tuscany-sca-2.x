@@ -127,6 +127,12 @@ public class ContributionLocationHelper {
         } else if ("jar".equals(protocol) || "wsjar".equals(protocol) || "zip".equals(protocol)) {
             // jar contribution
             location = url.substring(protocol.length() + 1, url.lastIndexOf("!/"));
+        } else if (url.endsWith(resourceName)) {
+            location = url.substring(0, url.lastIndexOf(resourceName));
+        } else {
+            throw new IllegalArgumentException("The root of the resource cannot be determined: " + resourceURL
+                + ","
+                + resourceName);
         }
         return location;
     }
