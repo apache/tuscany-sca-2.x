@@ -56,13 +56,16 @@
                 
                 <module>implementation-java-calculator</module>
                 <module>binding-ws-calculator</module>
-                <!-- module>host-webapp-calculator</module -->
 
                 <module>webapps/helloworld</module>
                 <module>webapps/helloworld-bpel</module>
                 <module>webapps/helloworld-jsp</module>
                 <module>webapps/helloworld-stripes</module>
-
+                <module>webapps/helloworld-servlet</module>
+<!--
+                <module>webapps/helloworld-rest</module>
+                <module>webapps/helloworld-wicket</module>
+-->
             </modules>
         </profile>
     </profiles>    

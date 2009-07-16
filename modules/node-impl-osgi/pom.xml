@@ -45,13 +45,13 @@
         <dependency>
             <groupId>org.eclipse</groupId>
             <artifactId>osgi</artifactId>
-            <version>3.4.0-v20080605-1900</version>
+            <version>3.5.0-v20090520</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.osgi</groupId>
             <artifactId>services</artifactId>
-            <version>3.1.200-v20071203</version>
+            <version>3.2.0-v20090520-1800</version>
             <scope>test</scope>
         </dependency>
 
@@ -59,14 +59,14 @@
         <dependency>
             <groupId>org.eclipse.equinox</groupId>
             <artifactId>ds</artifactId>
-            <version>1.0.0-v20080427-0830</version>
+            <version>1.1.0-v20090601</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.eclipse.equinox</groupId>
             <artifactId>util</artifactId>
-            <version>1.0.0-v20080414</version>
+            <version>1.0.100-v20090520-1800</version>
             <scope>test</scope>
         </dependency>
 
@@ -100,7 +100,7 @@
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-osgi</artifactId>
             <version>2.0-SNAPSHOT</version>
-            <scope>test</scope>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
