@@ -130,6 +130,7 @@ public class EquinoxServiceDiscovererTestCase {
             testBundle.uninstall();
         }
         host.stop();
+        System.out.println("Done");
     }
 
     @Test

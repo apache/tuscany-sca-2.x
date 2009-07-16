@@ -23,67 +23,40 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.core.runtime.adaptor.EclipseStarter;
-import org.eclipse.core.runtime.adaptor.LocationManager;
+import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
+import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.launch.Framework;
+import org.osgi.framework.launch.FrameworkFactory;
 
 /**
  * A test host that starts/stops Equinox.
  *
  * @version $Rev: $ $Date: $
  */
-public class TestEquinoxHost  {
+public class TestEquinoxHost {
+    private Framework framework;
 
-    private final static String systemPackages =
-        "org.osgi.framework; version=1.3.0," + "org.osgi.service.packageadmin; version=1.2.0, "
-            + "org.osgi.service.startlevel; version=1.0.0, "
-            + "org.osgi.service.url; version=1.0.0, "
-            + "org.osgi.util.tracker; version=1.3.2, "
-            + "javax.xml, "
-            + "javax.xml.datatype, "
-            + "javax.xml.namespace, "
-            + "javax.xml.parsers, "
-            + "javax.xml.transform, "
-            + "javax.xml.transform.dom, "
-            + "javax.xml.transform.sax, "
-            + "javax.xml.transform.stream, "
-            + "javax.xml.validation, "
-            + "javax.xml.xpath, "
-            // Force the classes to be imported from the system bundle
-            + "javax.xml.stream, "
-            + "javax.xml.stream.util, "
-            + "javax.sql,"
-            + "org.w3c.dom, "
-            + "org.xml.sax, "
-            + "org.xml.sax.ext, "
-            + "org.xml.sax.helpers, "
-            + "javax.security.auth, "
-            + "javax.security.cert, "
-            + "javax.security.auth.login, "
-            + "javax.security.auth.callback, "
-            + "javax.naming, "
-            + "javax.naming.spi, "
-            + "javax.naming.directory, "
-            + "javax.management, "
-            + "javax.imageio, "
-            + "sun.misc, "
-            + "javax.net, "
-            + "javax.net.ssl, "
-            + "javax.crypto, "
-            + "javax.rmi, "
-            + "javax.transaction, "
-            + "javax.transaction.xa";
+    private BundleContext init() throws Exception {
+        if (framework != null) {
+            throw new IllegalStateException("The framework is started already");
+        }
+        ServiceDeclaration sd = ServiceDiscovery.getInstance().getServiceDeclaration(FrameworkFactory.class.getName());
+        Class<?> factoryCls = sd.loadClass();
+        FrameworkFactory factory = (FrameworkFactory)factoryCls.newInstance();
+        Map<Object, Object> props = new HashMap<Object, Object>();
+        props.put("osgi.clean", "true");
+        props.put("osgi.instance.area", new File("target/workspace").toURI().toString());
+        props.put("osgi.install.area", new File("target/eclipse").toURI().toString());
+        props.put("osgi.configuration.area", new File("target/eclipse").toURI().toString());
+        framework = factory.newFramework(props);
+        framework.start();
+        return framework.getBundleContext();
+    }
 
     public BundleContext start() {
         try {
-            Map<Object, Object> props = new HashMap<Object, Object>();
-            props.put("org.osgi.framework.system.packages", systemPackages);
-            props.put(EclipseStarter.PROP_CLEAN, "true");
-            props.put(LocationManager.PROP_INSTANCE_AREA, new File("target/workspace").toURI().toString());
-            props.put(LocationManager.PROP_INSTALL_AREA, new File("target/eclipse").toURI().toString());
-            EclipseStarter.setInitialProperties(props);
-            BundleContext context = EclipseStarter.startup(new String[]{}, null);
-            return context;
+            return init();
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
@@ -91,7 +64,10 @@ public class TestEquinoxHost  {
 
     public void stop() {
         try {
-            EclipseStarter.shutdown();
+            if (framework != null) {
+                framework.stop();
+                framework = null;
+            }
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
