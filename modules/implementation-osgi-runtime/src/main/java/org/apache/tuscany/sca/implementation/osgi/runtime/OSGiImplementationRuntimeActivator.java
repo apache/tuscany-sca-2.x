@@ -22,29 +22,22 @@ package org.apache.tuscany.sca.implementation.osgi.runtime;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
-import org.osgi.service.distribution.DistributionProvider;
 
 /**
  * Bundle activator to receive the BundleContext
  */
 public class OSGiImplementationRuntimeActivator implements BundleActivator {
     private static BundleContext bundleContext;
-//    private DiscoveryActivator discoveryActivator;
     private ServiceRegistration distributionProvider;
 
     public void start(BundleContext context) throws Exception {
         bundleContext = context;
-//        discoveryActivator = new DiscoveryActivator();
-//        discoveryActivator.start(context);
         OSGiDistributionProvider provider = new OSGiDistributionProvider(bundleContext);
-        distributionProvider = bundleContext.registerService(DistributionProvider.class.getName(), provider, provider.getProperties());
+        distributionProvider =
+            bundleContext.registerService(OSGiDistributionProvider.class.getName(), provider, provider.getProperties());
     }
 
     public void stop(BundleContext context) throws Exception {
-//        if (discoveryActivator != null) {
-//            discoveryActivator.stop(context);
-//        }
-//        discoveryActivator = null;
         if (distributionProvider != null) {
             distributionProvider.unregister();
         }

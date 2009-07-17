@@ -19,47 +19,68 @@
 
 package org.apache.tuscany.sca.implementation.osgi.runtime;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Hashtable;
-import java.util.Map;
 
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
-import org.osgi.service.distribution.DistributionProvider;
+import org.osgi.framework.Constants;
 
 /**
- * OSGi distribution provider
+ * OSGi distribution provider for remote services
  */
-public class OSGiDistributionProvider implements DistributionProvider {
+public class OSGiDistributionProvider {
+    /**
+     * Registered by the distribution provider on one of its services to indicate the 
+     * supported configuration types.
+     */
+    public static final String REMOTE_CONFIGS_SUPPORTED = "remote.configs.supported"; // String+
+
+    /**
+     * Registered by the distribution provider on one of its services to indicate the vocabulary 
+     * of implemented intents.
+     */
+    public static final String REMOTE_INTENTS_SUPPORTED = "remote.intents.supported"; // String+ 
+
+    /**
+     * Service Registration property for the name of the Distribution Provider
+     * product.
+     * <p>
+     * The value of this property is of type String.
+     */
+    static final String PRODUCT_NAME = "osgi.remote.distribution.product";
+
+    /**
+     * Service Registration property for the version of the Distribution
+     * Provider product.
+     * <p>
+     * The value of this property is of type String.
+     */
+    static final String PRODUCT_VERSION = "osgi.remote.distribution.product.version";
+
+    /**
+     * Service Registration property for the Distribution Provider product
+     * vendor name.
+     * <p>
+     * The value of this property is of type String.
+     */
+    static final String VENDOR_NAME = "osgi.remote.distribution.vendor";
+
     private BundleContext bundleContext;
-    private Collection<ServiceReference> exposedServices = new ArrayList<ServiceReference>();
-    private Collection<ServiceReference> remoteServices = new ArrayList<ServiceReference>();
 
     public OSGiDistributionProvider(BundleContext bundleContext) {
         super();
         this.bundleContext = bundleContext;
     }
 
-    public Map<String, String> getExposedProperties(ServiceReference sr) {
-        return Collections.emptyMap();
-    }
-
-    public Collection<ServiceReference> getExposedServices() {
-        return exposedServices;
-    }
-
-    public Collection<ServiceReference> getRemoteServices() {
-        return remoteServices;
-    }
-
     public Dictionary<String, Object> getProperties() {
+        Dictionary headers = bundleContext.getBundle().getHeaders();
         Hashtable<String, Object> props = new Hashtable<String, Object>();
         props.put(PRODUCT_NAME, "Apache Tuscany SCA");
-        props.put(PRODUCT_VERSION, "2.0.0");
-        props.put(VENDOR_NAME, "Apache Software Foundation");
+        props.put(PRODUCT_VERSION, headers.get(Constants.BUNDLE_VERSION));
+        props.put(VENDOR_NAME, headers.get(Constants.BUNDLE_VENDOR));
+        props.put(REMOTE_CONFIGS_SUPPORTED, new String[] {"sca"});
+        // FIXME: We need to populate the list of intents from the SCA definitions
+        props.put(REMOTE_INTENTS_SUPPORTED, new String[] {});
         return props;
     }
 }
