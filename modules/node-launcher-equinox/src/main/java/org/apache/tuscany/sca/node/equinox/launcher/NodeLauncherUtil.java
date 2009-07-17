@@ -459,7 +459,7 @@ final class NodeLauncherUtil {
                     importPackage = pkg.substring(0, index);
                 }
                 if (!importPackages.contains(importPackage)) {
-                    imports.append(importPackage);
+                    imports.append(pkg);
                     imports.append(',');
                     importPackages.add(importPackage);
                     exports.append(pkg);
