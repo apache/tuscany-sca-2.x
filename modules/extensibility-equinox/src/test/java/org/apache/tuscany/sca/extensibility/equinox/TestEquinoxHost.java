@@ -66,6 +66,7 @@ public class TestEquinoxHost {
         try {
             if (framework != null) {
                 framework.stop();
+                framework.waitForStop(2000);
                 framework = null;
             }
         } catch (Exception e) {
