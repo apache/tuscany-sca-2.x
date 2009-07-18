@@ -19,6 +19,10 @@
 
 package org.apache.tuscany.sca.implementation.osgi.runtime;
 
+import static org.apache.tuscany.sca.implementation.osgi.OSGiProperty.REMOTE_CONFIG_SCA;
+import static org.apache.tuscany.sca.implementation.osgi.OSGiProperty.SCA_REFERENCE;
+import static org.apache.tuscany.sca.implementation.osgi.OSGiProperty.SERVICE_IMPORTED;
+import static org.apache.tuscany.sca.implementation.osgi.OSGiProperty.SERVICE_IMPORTED_CONFIGS;
 import static org.osgi.framework.Constants.SERVICE_RANKING;
 
 import java.security.AccessController;
@@ -91,18 +95,17 @@ public class OSGiImplementationProvider implements ImplementationProvider {
             JavaInterface javaInterface = (JavaInterface)interfaceContract.getInterface();
             final Class<?> interfaceClass = javaInterface.getJavaClass();
 
-//            final Hashtable<String, Object> props = new Hashtable<String, Object>();
-//            props.put(FILTER_MATCH_CRITERIA, "");
-//            Collection<String> interfaceNames = new ArrayList<String>();
-//            props.put(INTERFACE_MATCH_CRITERIA, interfaceNames);
-//            interfaceNames.add(interfaceClass.getName());
+            //            final Hashtable<String, Object> props = new Hashtable<String, Object>();
+            //            props.put(FILTER_MATCH_CRITERIA, "");
+            //            Collection<String> interfaceNames = new ArrayList<String>();
+            //            props.put(INTERFACE_MATCH_CRITERIA, interfaceNames);
+            //            interfaceNames.add(interfaceClass.getName());
 
             final Hashtable<String, Object> osgiProps = getOSGiProperties(reference);
             osgiProps.put(SERVICE_RANKING, Integer.MAX_VALUE);
-            osgiProps.put("sca.reference", component.getURI() + "#reference(" + ref.getName() + ")");
-            osgiProps.put(OSGiProperty.OSGI_REMOTE, "true");
-            osgiProps.put(OSGiProperty.OSGI_REMOTE_CONFIGURATION_TYPE, "sca");
-            osgiProps.put(OSGiProperty.OSGI_REMOTE_INTERFACES, new String[] {interfaceClass.getName()});
+            osgiProps.put(SCA_REFERENCE, component.getURI() + "#reference(" + ref.getName() + ")");
+            osgiProps.put(SERVICE_IMPORTED, "true");
+            osgiProps.put(SERVICE_IMPORTED_CONFIGS, new String[] {REMOTE_CONFIG_SCA});
 
             ProxyFactory proxyService = proxyFactoryExtensionPoint.getInterfaceProxyFactory();
             if (!interfaceClass.isInterface()) {
@@ -119,8 +122,8 @@ public class OSGiImplementationProvider implements ImplementationProvider {
                             ServiceRegistration registration =
                                 context.registerService(interfaceClass.getName(), proxy, osgiProps);
                             // Create a DiscoveredServiceTracker to track the status of the remote service
-//                            RemoteServiceTracker tracker = new RemoteServiceTracker(registration);
-//                            context.registerService(DiscoveredServiceTracker.class.getName(), tracker, props);
+                            //                            RemoteServiceTracker tracker = new RemoteServiceTracker(registration);
+                            //                            context.registerService(DiscoveredServiceTracker.class.getName(), tracker, props);
                             return registration;
                         }
                     });
@@ -163,12 +166,12 @@ public class OSGiImplementationProvider implements ImplementationProvider {
         }
         return props;
     }
-    
+
     protected Object getOSGiService(ComponentService service) {
         JavaInterface javaInterface = (JavaInterface)service.getInterfaceContract().getInterface();
         // String filter = getOSGiFilter(provider.getOSGiProperties(service));
         // FIXME: What is the filter?
-        String filter = "(!(sca.reference=*))";
+        String filter = "(!(" + SERVICE_IMPORTED + "=*))";
         // "(sca.service=" + component.getURI() + "#service-name\\(" + service.getName() + "\\))";
         BundleContext bundleContext = osgiBundle.getBundleContext();
         ServiceReference ref;
@@ -193,23 +196,23 @@ public class OSGiImplementationProvider implements ImplementationProvider {
         return implementation;
     }
 
-//    private class RemoteServiceTracker implements DiscoveredServiceTracker {
-//        private ServiceRegistration referenceRegistration;
-//
-//        private RemoteServiceTracker(ServiceRegistration referenceRegistration) {
-//            super();
-//            this.referenceRegistration = referenceRegistration;
-//        }
-//
-//        public void serviceChanged(DiscoveredServiceNotification notification) {
-//            ServiceEndpointDescription description = notification.getServiceEndpointDescription();
-//            switch(notification.getType()) {
-//                case UNAVAILABLE:
-//                case AVAILABLE:
-//                case MODIFIED:
-//                case MODIFIED_ENDMATCH:
-//            }
-//        }
-//    }
+    //    private class RemoteServiceTracker implements DiscoveredServiceTracker {
+    //        private ServiceRegistration referenceRegistration;
+    //
+    //        private RemoteServiceTracker(ServiceRegistration referenceRegistration) {
+    //            super();
+    //            this.referenceRegistration = referenceRegistration;
+    //        }
+    //
+    //        public void serviceChanged(DiscoveredServiceNotification notification) {
+    //            ServiceEndpointDescription description = notification.getServiceEndpointDescription();
+    //            switch(notification.getType()) {
+    //                case UNAVAILABLE:
+    //                case AVAILABLE:
+    //                case MODIFIED:
+    //                case MODIFIED_ENDMATCH:
+    //            }
+    //        }
+    //    }
 
 }

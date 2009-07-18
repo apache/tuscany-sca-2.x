@@ -47,9 +47,9 @@ public class CalculatorServiceImpl implements CalculatorService {
         Filter remoteFilter = null, localFilter = null;
         try {
             remoteFilter =
-                context.createFilter("(&(" + OBJECTCLASS + "=calculator.dosgi.operations.*) (sca.reference=*))");
+                context.createFilter("(&(" + OBJECTCLASS + "=calculator.dosgi.operations.*) (service.imported=*))");
             localFilter =
-                context.createFilter("(&(" + OBJECTCLASS + "=calculator.dosgi.operations.*) (!(sca.reference=*)))");
+                context.createFilter("(&(" + OBJECTCLASS + "=calculator.dosgi.operations.*) (!(service.imported=*)))");
         } catch (InvalidSyntaxException e) {
             e.printStackTrace();
         }

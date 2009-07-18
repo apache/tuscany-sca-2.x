@@ -19,6 +19,10 @@
 
 package org.apache.tuscany.sca.node.osgi.impl;
 
+import static org.apache.tuscany.sca.implementation.osgi.OSGiProperty.SERVICE_EXPORTED_CONFIGS;
+import static org.apache.tuscany.sca.implementation.osgi.OSGiProperty.SERVICE_EXPORTED_INTERFACES;
+import static org.apache.tuscany.sca.implementation.osgi.OSGiProperty.SERVICE_IMPORTED;
+
 import java.util.Collections;
 
 import org.apache.tuscany.sca.contribution.Contribution;
@@ -30,6 +34,7 @@ import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
 import org.apache.tuscany.sca.node.impl.NodeFactoryImpl;
 import org.apache.tuscany.sca.node.impl.NodeImpl;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
 import org.osgi.framework.Filter;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
@@ -64,7 +69,13 @@ public class OSGiServiceExporter implements ServiceTrackerCustomizer {
     }
 
     public void start() {
-        String filterStr = "(& (osgi.remote.configuration.type=sca) (osgi.remote.interfaces=*) (!(osgi.remote=true)) )";
+        String filterStr =
+            "(& (" + SERVICE_EXPORTED_CONFIGS
+                + "=sca) ("
+                + SERVICE_EXPORTED_INTERFACES
+                + "=*) (!("
+                + SERVICE_IMPORTED
+                + "=*)) )";
         try {
             Filter filter = context.createFilter(filterStr);
             serviceTracker = new ServiceTracker(context, filter, this);
@@ -88,7 +99,7 @@ public class OSGiServiceExporter implements ServiceTrackerCustomizer {
             if (contribution != null) {
 
                 NodeConfiguration configuration = nodeFactory.createNodeConfiguration();
-                configuration.setURI(String.valueOf(reference.getProperty("service.id")));
+                configuration.setURI("osgi.service." + String.valueOf(reference.getProperty(Constants.SERVICE_ID)));
                 configuration.getExtensions().add(reference.getBundle());
                 // FIXME: Configure the domain and node URI
                 NodeImpl node = new NodeImpl(nodeFactory, configuration, Collections.singletonList(contribution));

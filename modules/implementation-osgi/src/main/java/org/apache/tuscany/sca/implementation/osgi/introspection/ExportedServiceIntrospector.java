@@ -20,11 +20,12 @@
 package org.apache.tuscany.sca.implementation.osgi.introspection;
 
 import static org.apache.tuscany.sca.assembly.Base.SCA11_TUSCANY_NS;
-import static org.apache.tuscany.sca.implementation.osgi.OSGiProperty.OSGI_REMOTE_CONFIGURATION_TYPE;
-import static org.apache.tuscany.sca.implementation.osgi.OSGiProperty.OSGI_REMOTE_CONFIGURATION_TYPE_SCA;
-import static org.apache.tuscany.sca.implementation.osgi.OSGiProperty.OSGI_REMOTE_INTENTS;
-import static org.apache.tuscany.sca.implementation.osgi.OSGiProperty.OSGI_REMOTE_INTERFACES;
+import static org.apache.tuscany.sca.implementation.osgi.OSGiProperty.REMOTE_CONFIG_SCA;
 import static org.apache.tuscany.sca.implementation.osgi.OSGiProperty.SCA_BINDINGS;
+import static org.apache.tuscany.sca.implementation.osgi.OSGiProperty.SERVICE_EXPORTED_INTENTS;
+import static org.apache.tuscany.sca.implementation.osgi.OSGiProperty.SERVICE_EXPORTED_INTENTS_EXTRA;
+import static org.apache.tuscany.sca.implementation.osgi.OSGiProperty.SERVICE_EXPORTED_INTERFACES;
+import static org.apache.tuscany.sca.implementation.osgi.OSGiProperty.SERVICE_IMPORTED_CONFIGS;
 import static org.osgi.framework.Constants.OBJECTCLASS;
 import static org.osgi.framework.Constants.SERVICE_ID;
 
@@ -34,6 +35,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Dictionary;
 import java.util.HashMap;
@@ -236,9 +238,9 @@ public class ExportedServiceIntrospector {
         component.setImplementation(implementation);
         implementation.setUnresolved(false);
 
-        String[] remoteInterfaces = (String[])reference.getProperty(OSGI_REMOTE_INTERFACES);
+        String[] remoteInterfaces = getStrings(reference.getProperty(SERVICE_EXPORTED_INTERFACES));
         if (remoteInterfaces == null || remoteInterfaces.length > 0 && "*".equals(remoteInterfaces[0])) {
-            remoteInterfaces = (String[])reference.getProperty(OBJECTCLASS);
+            remoteInterfaces = getStrings(reference.getProperty(OBJECTCLASS));
         } else {
             remoteInterfaces = parse(remoteInterfaces);
         }
@@ -261,18 +263,22 @@ public class ExportedServiceIntrospector {
             implementation.getServices().add(service);
 
             ComponentService componentService = assemblyFactory.createComponentService();
+            componentService.setName(service.getName());
             component.getServices().add(componentService);
             componentService.setService(service);
         }
 
-        String[] requiredIntents = (String[])properties.get(OSGI_REMOTE_INTENTS);
+        String[] requiredIntents = getStrings(properties.get(SERVICE_EXPORTED_INTENTS));
         List<Intent> intents = getIntents(requiredIntents);
+        String[] requiredIntentsExtra = getStrings(properties.get(SERVICE_EXPORTED_INTENTS_EXTRA));
+        List<Intent> extraIntents = getIntents(requiredIntentsExtra);
 
-        String[] bindingDocuments = (String[])properties.get(SCA_BINDINGS);
+        String[] bindingDocuments = getStrings(properties.get(SCA_BINDINGS));
         List<Binding> bindings = loadBindings(reference.getBundle(), bindingDocuments);
 
         for (ComponentService componentService : component.getServices()) {
             componentService.getRequiredIntents().addAll(intents);
+            componentService.getRequiredIntents().addAll(extraIntents);
             componentService.getBindings().addAll(bindings);
         }
 
@@ -286,7 +292,7 @@ public class ExportedServiceIntrospector {
         contribution.setUnresolved(true);
         return contribution;
     }
-    
+
     /**
      * Introspect an OSGi filter to create an SCA reference
      * 
@@ -304,9 +310,10 @@ public class ExportedServiceIntrospector {
             e.printStackTrace();
             return null;
         }
+
         Dictionary<String, Object> props = new Hashtable<String, Object>();
-        props.put(OSGI_REMOTE_CONFIGURATION_TYPE, OSGI_REMOTE_CONFIGURATION_TYPE_SCA);
-        if(!filter.match(props)) {
+        props.put(SERVICE_IMPORTED_CONFIGS, new String[] {REMOTE_CONFIG_SCA});
+        if (!filter.match(props)) {
             return null;
         }
         String id = "osgi.reference." + UUID.randomUUID();
@@ -325,9 +332,9 @@ public class ExportedServiceIntrospector {
         component.setImplementation(implementation);
         implementation.setUnresolved(false);
 
-        String[] remoteInterfaces = (String[])properties.get(OSGiProperty.OSGI_REMOTE_INTERFACES);
+        String[] remoteInterfaces = getStrings(properties.get(SERVICE_EXPORTED_INTERFACES));
         if (remoteInterfaces == null || remoteInterfaces.length > 0 && "*".equals(remoteInterfaces[0])) {
-            remoteInterfaces = (String[])properties.get(OBJECTCLASS);
+            remoteInterfaces = getStrings(properties.get(OBJECTCLASS));
         } else {
             remoteInterfaces = parse(remoteInterfaces);
         }
@@ -355,10 +362,10 @@ public class ExportedServiceIntrospector {
             componentReference.setWiredByImpl(true);
         }
 
-        String[] requiredIntents = (String[])properties.get(OSGI_REMOTE_INTENTS);
+        String[] requiredIntents = getStrings(properties.get(SERVICE_EXPORTED_INTENTS));
         List<Intent> intents = getIntents(requiredIntents);
 
-        String[] bindingDocuments = (String[])properties.get(SCA_BINDINGS);
+        String[] bindingDocuments = getStrings(properties.get(SCA_BINDINGS));
         List<Binding> bindings = loadBindings(bundle, bindingDocuments);
 
         for (ComponentReference componentReference : component.getReferences()) {
@@ -417,6 +424,25 @@ public class ExportedServiceIntrospector {
             return uri.toURL();
         }
         return bundle.getEntry(location);
+    }
+
+    /**
+     * In OSGi, the value of String+ can be a single String, String[] or Collection<String>
+     * @param value
+     * @return
+     */
+    private String[] getStrings(Object value) {
+        if (value == null) {
+            return null;
+        }
+        if (value instanceof String) {
+            return new String[] {(String)value};
+        } else if (value instanceof Collection) {
+            Collection<String> collection = (Collection)value;
+            return collection.toArray(new String[collection.size()]);
+        }
+        return (String[])value;
+
     }
 
 }
