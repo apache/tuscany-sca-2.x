@@ -35,7 +35,8 @@ import org.w3c.dom.NodeList;
 /**
  * A WSDL extension processor for extension elements introduced by BPEL - in particular
  * the <partnerLinkType.../> elements
- *
+ * 
+ * Handles both BPEL 1.1 and BPEL 2.0 version of the <partnerLinkType/>
  * @version $Rev$ $Date$
  */
 public class BPELExtensionHandler implements ExtensionSerializer, ExtensionDeserializer {

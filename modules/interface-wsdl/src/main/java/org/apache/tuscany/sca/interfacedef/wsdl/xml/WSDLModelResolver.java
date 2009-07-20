@@ -100,6 +100,8 @@ public class WSDLModelResolver implements ModelResolver {
     public static final String ELEM_PLINKTYPE = "partnerLinkType";
     public static final String NS_BPEL_1_1 = "http://schemas.xmlsoap.org/ws/2004/03/partner-link/";
     public static final QName BPEL_PLINKTYPE = new QName( NS_BPEL_1_1, ELEM_PLINKTYPE );
+    public static final String NS_BPEL_2_0 = "http://docs.oasis-open.org/wsbpel/2.0/plnktype";
+    public static final QName BPEL_PLINKTYPE_2_0 = new QName( NS_BPEL_2_0, ELEM_PLINKTYPE );
     // ---- end of BPEL extension stuff
 
     private Contribution contribution;
@@ -141,6 +143,8 @@ public class WSDLModelResolver implements ModelResolver {
         deserializer = new BPELExtensionHandler();
         wsdlExtensionRegistry.registerSerializer(Definition.class, BPEL_PLINKTYPE, serializer);
         wsdlExtensionRegistry.registerDeserializer(Definition.class, BPEL_PLINKTYPE, deserializer);
+        wsdlExtensionRegistry.registerSerializer(Definition.class, BPEL_PLINKTYPE_2_0, serializer);
+        wsdlExtensionRegistry.registerDeserializer(Definition.class, BPEL_PLINKTYPE_2_0, deserializer);
         // ---- end of BPEL additions
     }
 
