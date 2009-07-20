@@ -32,6 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.WeakHashMap;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlElement;
@@ -44,7 +45,14 @@ import javax.xml.namespace.QName;
 /**
  * 
  */
-public final class XMLRootElementUtil {
+public class XMLRootElementUtil {
+
+    /**
+     * TUSCANY-3167
+     * Cache for property descriptors
+     */
+    private static Map<Class<?>, Map<String, JAXBPropertyDescriptor>> PROPERTY_MAP =
+        new WeakHashMap<Class<?>, Map<String, JAXBPropertyDescriptor>>();
 
     /** Constructor is intentionally private.  This class only provides static utility methods */
     private XMLRootElementUtil() {
@@ -158,11 +166,16 @@ public final class XMLRootElementUtil {
      * @param jaxbClass
      * @return map
      */
-    public static Map<String, JAXBPropertyDescriptor> createPropertyDescriptorMap(Class<?> jaxbClass)
+    public synchronized static Map<String, JAXBPropertyDescriptor> createPropertyDescriptorMap(Class<?> jaxbClass)
         throws NoSuchFieldException, IntrospectionException {
 
+        Map<String, JAXBPropertyDescriptor> map = PROPERTY_MAP.get(jaxbClass);
+        if (map != null) {
+            return map;
+        }
+
+        map = new HashMap<String, JAXBPropertyDescriptor>();
         PropertyDescriptor[] pds = Introspector.getBeanInfo(jaxbClass).getPropertyDescriptors();
-        Map<String, JAXBPropertyDescriptor> map = new HashMap<String, JAXBPropertyDescriptor>();
 
         // Unfortunately the element names are stored on the fields.
         // Get all of the fields in the class and super classes
@@ -217,8 +230,8 @@ public final class XMLRootElementUtil {
                 map.put(xmlName, new JAXBPropertyDescriptor(pd, xmlName, index));
                 index++;
             }
-
         }
+        PROPERTY_MAP.put(jaxbClass, map);
         return map;
     }
 
@@ -228,7 +241,7 @@ public final class XMLRootElementUtil {
      * @param beanClass
      * @return
      */
-    private static List<Field> getFields(final Class<?> beanClass) {
+    static private List<Field> getFields(final Class<?> beanClass) {
         // This class must remain private due to Java 2 Security concerns
         List<Field> fields = AccessController.doPrivileged(new PrivilegedAction<List<Field>>() {
             public List<Field> run() {
@@ -273,7 +286,7 @@ public final class XMLRootElementUtil {
     /**
      * Get an annotation.  This is wrappered to avoid a Java2Security violation.
      * @param cls Class that contains annotation 
-     * @param annotation Class of requested Annotation
+     * @param annotation Class of requrested Annotation
      * @return annotation or null
      */
     private static <T extends Annotation> T getAnnotation(final AnnotatedElement element, final Class<T> annotation) {
