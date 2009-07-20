@@ -220,7 +220,7 @@ public class EmbeddedODEServer {
         _bpelServer.setDaoConnectionFactory(_daoCF);
         _bpelServer.setInMemDaoConnectionFactory(new BpelDAOConnectionFactoryImpl(_scheduler));
         
-        //_bpelServer.setEndpointReferenceContext(eprContext);
+        _bpelServer.setEndpointReferenceContext( new ODEEprContext() );
         _bpelServer.setMessageExchangeContext(new ODEMessageExchangeContext(this));
         _bpelServer.setBindingContext(new ODEBindingContext());
         _bpelServer.setScheduler(_scheduler);

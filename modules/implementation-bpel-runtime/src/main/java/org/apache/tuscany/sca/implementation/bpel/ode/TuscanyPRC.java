@@ -25,9 +25,6 @@ import javax.xml.namespace.QName;
 import org.apache.ode.bpel.iapi.Endpoint;
 import org.apache.ode.bpel.iapi.EndpointReference;
 import org.apache.ode.bpel.iapi.PartnerRoleChannel;
-import org.apache.ode.utils.DOMUtils;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /**
  * Tuscany Partner Role Channel for ODE Integration
@@ -35,14 +32,20 @@ import org.w3c.dom.Element;
  * @version $Rev$ $Date$
  */
 public class TuscanyPRC implements PartnerRoleChannel {
-    private final QName processName;
+    private final QName 	processName;
+    private final Endpoint	endpoint;
     
     public TuscanyPRC(QName processName, QName pid, PortType portType, Endpoint endpoint){
-        this.processName = processName;
+        this.processName 	= processName;
+        this.endpoint		= endpoint;
     }
     
     public QName getProcessName() {
         return this.processName;
+    }
+    
+    public Endpoint getEndpoint() {
+    	return this.endpoint;
     }
 
     public void close() {
@@ -50,16 +53,8 @@ public class TuscanyPRC implements PartnerRoleChannel {
     }
     
     public EndpointReference getInitialEndpointReference() {
-        final Document doc = DOMUtils.newDocument();
-        Element serviceref = doc.createElementNS(EndpointReference.SERVICE_REF_QNAME.getNamespaceURI(),
-                                                 EndpointReference.SERVICE_REF_QNAME.getLocalPart());
-        doc.appendChild(serviceref);
-        
-        return new EndpointReference() {
-            public Document toXML() {
-                return doc;
-            }
-        };
-    }
+    	
+    	return new ODEEndpointReference( this.endpoint );
+    } // end method getInitialEndpointReference
 
 }

@@ -58,6 +58,7 @@ import org.apache.ode.bpel.iapi.ProcessConf;
 import org.apache.ode.bpel.iapi.ProcessState;
 import org.apache.tuscany.sca.assembly.Base;
 import org.apache.tuscany.sca.assembly.ComponentProperty;
+import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.databinding.SimpleTypeMapper;
@@ -271,20 +272,25 @@ public class TuscanyProcessConfImpl implements ProcessConf {
     /**
      * Returns a Map containing all the "invoke endpoints" - for which read "SCA references"
      * The map is keyed by partnerLink name and holds Endpoint objects 
-     * 
+     * 0..1 multiplicity references are not included in the returned Map (it is as if the reference is not there...)
+     * TODO deal with multiplicity 0..n and 1..n
      * TODO deal with service callbacks on bidirectional services
      */
     public Map<String, Endpoint> getInvokeEndpoints() {
-        //System.out.println("getInvokeEndpoints called");
         if( invokeEndpoints == null ) {
             invokeEndpoints = new HashMap<String, Endpoint>();
             // Get a collection of the references
-            List<Reference> theReferences = implementation.getReferences();
+            List<ComponentReference> theReferences = component.getReferences();
+            //List<Reference> theReferences = implementation.getReferences();
             // Create an endpoint for each reference, using the reference name as the "service"
             // name, combined with http://tuscany.apache.org to make a QName
             for( Reference reference : theReferences ) {
+            	// Check that there is at least 1 configured SCA endpointReference for the reference, since it is
+            	// possible for 0..1 multiplicity references to have no SCA endpointReferences configured
+            	List<org.apache.tuscany.sca.assembly.EndpointReference> eprs = reference.getEndpointReferences();
+            	String eprCount =  Integer.toString( eprs.size() );
                 invokeEndpoints.put( reference.getName(), 
-                                     new Endpoint( new QName( TUSCANY_NAMESPACE, reference.getName() ), "ReferencePort"));
+                                     new Endpoint( new QName( TUSCANY_NAMESPACE, reference.getName() ), eprCount)); 
             } // end for
         } // end if
         return invokeEndpoints;

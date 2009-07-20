@@ -85,6 +85,8 @@ public class ODEExternalService {
                                 TuscanyPRC channel = (TuscanyPRC) partnerRoleMessageExchange.getChannel();
                                 RuntimeComponent tuscanyRuntimeComponent = _server.getTuscanyRuntimeComponent(channel.getProcessName());
 
+                                // MJE 17/07/2009 - the get(0) here is totally bogus - if the component has >1 reference, this will fail
+                                // miserably.  We should be fetching the reference BY NAME - and this name must be stored in the PRC
                                 RuntimeComponentReference runtimeComponentReference =
                                     (RuntimeComponentReference)tuscanyRuntimeComponent.getReferences().get(0);
                                 RuntimeWire runtimeWire =
