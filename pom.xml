@@ -53,6 +53,16 @@
 
     <repositories>
        <repository>
+          <id>maven.central</id>
+          <url>http://repo2.maven.org/maven2</url>
+           <releases>
+               <enabled>true</enabled>
+           </releases>
+           <snapshots>
+               <enabled>false</enabled>
+           </snapshots>
+       </repository>
+       <repository>
           <id>apache.incubator</id>
           <url>http://people.apache.org/repo/m2-incubating-repository</url>
            <releases>
