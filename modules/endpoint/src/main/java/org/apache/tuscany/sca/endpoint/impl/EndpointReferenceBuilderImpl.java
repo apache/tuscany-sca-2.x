@@ -133,34 +133,6 @@ public class EndpointReferenceBuilderImpl implements CompositeBuilder, EndpointR
         // Not used now
     }
 
-    /*
-    private void populateEndpointRegistry(Composite composite, Monitor monitor) {
-
-        // register endpoints (and endpoint references) for each component
-        for (Component component : composite.getComponents()) {
-            // recurse for composite implementations
-            Implementation implementation = component.getImplementation();
-            if (implementation instanceof Composite) {
-                populateEndpointRegistry((Composite)implementation, monitor);
-            }
-
-            // register endpoints
-            for (ComponentService service : component.getServices()) {
-                for (Endpoint2 endpoint : service.getEndpoints()){
-                    endpointRegistry.addEndpoint(endpoint);
-                }
-            }
-
-            // register endpoint references
-            for (ComponentReference reference : component.getReferences()) {
-                for (EndpointReference2 endpointReference : reference.getEndpointReferences()){
-                    endpointRegistry.addEndpointReference(endpointReference);
-                }
-            }
-        }
-    }
-    */
-
     /**
      * Build a single endpoint reference
      *
@@ -207,7 +179,7 @@ public class EndpointReferenceBuilderImpl implements CompositeBuilder, EndpointR
                 // find the service in the endpoint registry
                 List<Endpoint> endpoints = endpointRegistry.findEndpoint(endpointReference);
 
-                // TODO - do we exepect to find more than one endpoint in
+                // TODO - do we expect to find more than one endpoint in
                 //        anything other than the autowire case?
                 if (endpoints.size() == 0) {
                     throw new SCARuntimeException("No endpoints found for EndpointReference " + endpointReference.toString());
