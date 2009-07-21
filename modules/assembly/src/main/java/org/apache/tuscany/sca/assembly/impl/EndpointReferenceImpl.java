@@ -168,7 +168,7 @@ public class EndpointReferenceImpl implements EndpointReference {
         String output = "Endpoint Reference: ";
 
         if (getURI() != null) {
-            output += " URI = " + uri;
+            output += " URI = " + getURI();
         }
 
         switch (status) {

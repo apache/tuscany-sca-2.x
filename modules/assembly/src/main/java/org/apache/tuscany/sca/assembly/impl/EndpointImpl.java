@@ -146,7 +146,7 @@ public class EndpointImpl implements Endpoint {
         String output = "Endpoint: ";
 
         if (getURI() != null) {
-            output += " URI = " + uri;
+            output += " URI = " + getURI();
         }
 
         if (unresolved) {
