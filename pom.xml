@@ -230,7 +230,6 @@
 <!--
                 <module>stest</module>
                 <module>vtest</module>
-                <module>tutorials</module>
 -->
             </modules>
         </profile>
@@ -241,13 +240,12 @@
                 <module>modules</module>
                 <module>samples</module>
                 <module>itest</module>
-<!-- 
-                <module>vtest</module>
-                <module>tutorials</module>
-                <module>demos</module>
--->
                 <module>features</module>
                 <module>distribution</module>
+                <module>archetypes</module>
+<!-- 
+                <module>vtest</module>
+-->
             </modules>
         </profile>
 
