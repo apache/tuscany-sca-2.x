@@ -19,11 +19,33 @@
 
 package org.apache.tuscany.sca.core.context;
 
+import java.io.Externalizable;
+import java.io.IOException;
+
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+
+import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
+import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.oasisopen.sca.ServiceReference;
 
 /**
  * Extended ServiceReference
  */
-public interface ServiceReferenceExt<B> extends CallableReferenceExt<B>, ServiceReference<B> {
+public interface ServiceReferenceExt<B> extends ServiceReference<B>, Externalizable {
+    /**
+     * @return
+     */
+    RuntimeWire getRuntimeWire(); 
 
+    /**
+     * @param callbackID
+     */
+    void attachCallbackID(Object callbackID);
+
+    /**
+     * @return
+     */
+    XMLStreamReader getXMLReader();
 }

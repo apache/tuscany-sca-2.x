@@ -78,6 +78,7 @@ TUSCANY-3138 -->
                 <module>scaclient-api</module>
                 <module>scopes</module>
                 <module>services</module>
+                <module>service-reference</module>
                 <module>wires</module>
                 <module>policies</module>
            </modules>

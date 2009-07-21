@@ -65,7 +65,7 @@ public class CglibProxyFactory implements ProxyFactory {
         enhancer.setSuperclass(interfaze);
         enhancer.setCallback(new CglibMethodInterceptor<T>(callableReference));
         Object proxy = enhancer.create();
-		((CallableReferenceImpl)callableReference).setProxy(proxy);
+		((ServiceReferenceImpl)callableReference).setProxy(proxy);
         return interfaze.cast(proxy);
     }
 

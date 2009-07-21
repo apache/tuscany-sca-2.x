@@ -61,7 +61,8 @@ public class JDKCallbackInvocationHandler extends JDKInvocationHandler {
         // TODO - EPR - not required for OASIS
         //initConversational(wire);
 
-        setEndpoint(((ServiceReferenceImpl)callableReference).getEndpointReference().getTargetEndpoint());
+// TODO - EPR - Fix up callbacks now callable reference has gone
+//        setEndpoint(((ServiceReferenceImpl)callableReference).getEndpointReference().getTargetEndpoint());
 
         InvocationChain chain = getInvocationChain(method, wire);
         if (chain == null) {

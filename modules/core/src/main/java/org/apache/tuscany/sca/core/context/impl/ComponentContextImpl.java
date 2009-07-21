@@ -295,7 +295,7 @@ public class ComponentContextImpl implements ComponentContextExt {
             RuntimeComponentReference ref =
                 (RuntimeComponentReference)createSelfReference(component, service, businessInterface);
             ref.setComponent(component);
-            return new CallableReferenceImpl<B>(businessInterface, component, ref, null, proxyFactory,
+            return new ServiceReferenceImpl<B>(businessInterface, component, ref, null, proxyFactory,
                                                 compositeActivator);
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);
@@ -348,7 +348,8 @@ public class ComponentContextImpl implements ComponentContextExt {
                 .createEndpointReference();
         endpointReference.setComponent(component);
         endpointReference.setReference(componentReference);
-         endpointReference.setUnresolved(false);
+        endpointReference.setUnresolved(false);
+        endpointReference.setStatus(EndpointReference.WIRED_TARGET_FOUND_BUT_NOT_MATCHED);
 
         // create endpoint. 
         Endpoint endpoint = assemblyFactory.createEndpoint();

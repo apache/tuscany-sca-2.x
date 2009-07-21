@@ -29,7 +29,7 @@ import java.util.Map;
 
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
-import org.apache.tuscany.sca.core.context.CallableReferenceExt;
+import org.apache.tuscany.sca.core.context.ServiceReferenceExt;
 import org.apache.tuscany.sca.core.factory.InstanceWrapper;
 import org.apache.tuscany.sca.core.invocation.ThreadMessageContext;
 import org.apache.tuscany.sca.core.scope.TargetResolutionException;
@@ -74,7 +74,7 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
         this.callableReference = callableReference;
         if (callableReference != null) {
             this.businessInterface = callableReference.getBusinessInterface();
-            this.wire = ((CallableReferenceExt<?>)callableReference).getRuntimeWire();
+            this.wire = ((ServiceReferenceExt<?>)callableReference).getRuntimeWire();
             if (wire != null) {
                 init(wire);
             }
@@ -111,6 +111,7 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
 //        }
     }
 
+    /* TODO - EPR - Not reqiured for OASIS
     protected Object getCallbackObject() {
         if (callableReference != null && callableReference instanceof ServiceReference) {
             return ((ServiceReference)callableReference).getService();
@@ -118,6 +119,7 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
             return null;
         }
     }
+    */
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         if (Object.class == method.getDeclaringClass()) {

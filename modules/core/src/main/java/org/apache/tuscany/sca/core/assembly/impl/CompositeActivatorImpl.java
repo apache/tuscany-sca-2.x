@@ -355,6 +355,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
             EndpointReference endpointReference = assemblyFactory.createEndpointReference();
             endpointReference.setBinding(endpoint.getBinding());
             endpointReference.setTargetEndpoint(endpoint);
+            endpointReference.setStatus(EndpointReference.WIRED_TARGET_FOUND_AND_MATCHED);
 
             // create the interface contract for the binding and service ends of the wire
             // that are created as forward only contracts
@@ -840,7 +841,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
 
 
    // Utility functions
-   // TODO - can we get rid of these?
+   // TODO - EPR - can we get rid of these?
 
     public CompositeContext getCompositeContext() {
         return compositeContext;
@@ -854,6 +855,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
         this.domainComposite = domainComposite;
     }
 
+    /* TODO - EPR - Resolved via registry now
     public Component resolve(String componentURI) {
         for (Composite composite : domainComposite.getIncludes()) {
             Component component = resolve(composite, componentURI);
@@ -863,6 +865,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
         }
         return null;
     }
+    
 
     public Component resolve(Composite composite, String componentURI) {
         for (Component component : composite.getComponents()) {
@@ -880,5 +883,5 @@ public class CompositeActivatorImpl implements CompositeActivator {
         }
         return null;
     }
-
+   */
 }

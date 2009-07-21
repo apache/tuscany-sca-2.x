@@ -116,13 +116,6 @@ public interface CompositeActivator {
     void configureComponentContext(RuntimeComponent component);
 
     /**
-     * Resolve a component by URI in the domain
-     * @param componentURI
-     * @return
-     */
-    Component resolve(String componentURI);
-
-    /**
      * Set the domain composite
      * @param domainComposite
      */

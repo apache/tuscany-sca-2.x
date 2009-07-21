@@ -67,7 +67,7 @@ public class JDKProxyFactory implements ProxyFactory {
             }
         });
         Object proxy = CachedProxy.newProxyInstance(cl, new Class[] {interfaze}, handler);
-        ((CallableReferenceImpl)callableReference).setProxy(proxy);
+        ((ServiceReferenceImpl)callableReference).setProxy(proxy);
         return interfaze.cast(proxy);
     }
 

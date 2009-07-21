@@ -34,7 +34,7 @@ import org.apache.tuscany.sca.runtime.RuntimeWire;
  * @version $Rev$ $Date$
  * @param <B> the type of the business interface
  */
-public class ServiceReferenceImpl<B> extends CallableReferenceImpl<B> implements ServiceReferenceExt<B> {
+public class ServiceReferenceImpl<B> extends CallableReferenceImpl<B> {
     private static final long serialVersionUID = 6763709434194361540L;
 
     protected transient Object callback;
@@ -49,6 +49,7 @@ public class ServiceReferenceImpl<B> extends CallableReferenceImpl<B> implements
     /*
      * Public constructor for use by XMLStreamReader2CallableReference
      */
+    // TODO - EPR - is this required
     public ServiceReferenceImpl(XMLStreamReader xmlReader) throws Exception {
         super(xmlReader);
     }
@@ -78,30 +79,4 @@ public class ServiceReferenceImpl<B> extends CallableReferenceImpl<B> implements
                                 CompositeActivator compositeActivator) {
         super(businessInterface, component, reference, endpointReference, proxyFactory, compositeActivator);
     }
-
-//    public void setCallbackID(Object callbackID) {
-//        this.callbackID = callbackID;
-//    }
-//
-//    public Object getCallback() {
-//        return callback;
-//    }
-
-/* TODO - EPR - not required in OASIS
-    @Override
-    protected ReferenceParameters getReferenceParameters() {
-        ReferenceParameters parameters = super.getReferenceParameters();
-        if (callback != null) {
-            if (callback instanceof ServiceReference) {
-                EndpointReference callbackRef = ((CallableReferenceExt)callback).getEndpointReference();
-                parameters.setCallbackReference(callbackRef);
-            } else {
-                EndpointReference callbackRef = getRuntimeWire().getSource().getCallbackEndpoint();
-                parameters.setCallbackReference(callbackRef);
-                parameters.setCallbackObjectID(callback);
-            }
-        }
-        return parameters;
-    }
-*/
 }

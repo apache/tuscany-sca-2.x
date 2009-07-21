@@ -21,36 +21,41 @@ package org.apache.tuscany.sca.core.context.impl;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.UUID;
 
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.CompositeService;
-import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
-import org.apache.tuscany.sca.assembly.OptimizableBinding;
-import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.assembly.builder.BindingBuilderExtension;
+import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
+import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.CompositeActivator;
 import org.apache.tuscany.sca.core.assembly.RuntimeAssemblyFactory;
-import org.apache.tuscany.sca.core.assembly.impl.CompositeActivatorImpl;
 import org.apache.tuscany.sca.core.assembly.impl.ReferenceParametersImpl;
 import org.apache.tuscany.sca.core.assembly.impl.RuntimeWireImpl;
-import org.apache.tuscany.sca.core.context.CallableReferenceExt;
 import org.apache.tuscany.sca.core.context.ComponentContextExt;
 import org.apache.tuscany.sca.core.context.CompositeContext;
+import org.apache.tuscany.sca.core.context.ServiceReferenceExt;
 import org.apache.tuscany.sca.core.factory.ObjectCreationException;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.interfacedef.Interface;
-import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.runtime.ReferenceParameters;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -59,14 +64,16 @@ import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
- * Base class for implementations of service and callback references.
+ * The old base class for implementations of service and callback references. We have maintained
+ * this in Tuscany 2.x for the time being even though SCA 1.1 only defines service references and 
+ * not callable reference
  *
  * @version $Rev$ $Date$
  * @param <B> the type of the business interface
  */
-public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
+public class CallableReferenceImpl<B> implements ServiceReferenceExt<B> {
     static final long serialVersionUID = -521548304761848325L;
-    protected transient CompositeActivator compositeActivator;
+    
     protected transient ProxyFactory proxyFactory;
     protected transient Class<B> businessInterface;
     protected transient Object proxy;
@@ -83,8 +90,14 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
     private transient ReferenceParameters refParams;
     private transient XMLStreamReader xmlReader;
 
+    protected transient CompositeActivator compositeActivator;
+    private ExtensionPointRegistry registry;
     private FactoryExtensionPoint modelFactories;
     protected RuntimeAssemblyFactory assemblyFactory;
+    private StAXArtifactProcessorExtensionPoint staxProcessors;
+    private StAXArtifactProcessor<EndpointReference> staxProcessor; 
+    private XMLInputFactory xmlInputFactory;
+    private XMLOutputFactory xmlOutputFactory;
 
     /*
      * Public constructor for Externalizable serialization/deserialization
@@ -96,6 +109,7 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
     /*
      * Public constructor for use by XMLStreamReader2CallableReference
      */
+    // TODO - EPR - Is this required
     public CallableReferenceImpl(XMLStreamReader xmlReader) throws Exception {
         this.xmlReader = xmlReader;
         resolve();
@@ -112,11 +126,9 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
         this.component = component;
         this.reference = reference;
         this.endpointReference = endpointReference;
-
-        ExtensionPointRegistry registry = compositeActivator.getCompositeContext().getExtensionPointRegistry();
-        this.modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
-        this.assemblyFactory = (RuntimeAssemblyFactory)modelFactories.getFactory(AssemblyFactory.class);
-
+        this.compositeActivator = compositeActivator;
+        
+        getExtensions();
 
         // FIXME: The SCA Specification is not clear how we should handle multiplicity
         // for CallableReference
@@ -124,7 +136,7 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
 
             // TODO - EPR - If no endpoint reference specified assume the first one
             //        This will happen when a self reference is created in which case the
-            //        the reference should only have on endpointReference so use that
+            //        the reference should only have one endpointReference so use that
             if (this.reference.getEndpointReferences().size() == 0){
                 throw new ServiceRuntimeException("The reference " + reference.getName() + " in component " +
                         component.getName() + " has no endpoint references");
@@ -142,6 +154,16 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
         // sca:component1/component11/component112/service1?
         this.compositeActivator = compositeActivator;
         initCallbackID();
+    }
+    
+    private void getExtensions() {
+        this.registry = compositeActivator.getCompositeContext().getExtensionPointRegistry();
+        this.modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
+        this.assemblyFactory = (RuntimeAssemblyFactory)modelFactories.getFactory(AssemblyFactory.class);
+        this.xmlInputFactory = modelFactories.getFactory(XMLInputFactory.class);
+        this.xmlOutputFactory = modelFactories.getFactory(XMLOutputFactory.class);
+        this.staxProcessors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        this.staxProcessor = staxProcessors.getProcessor(EndpointReference.class);
     }
 
     public CallableReferenceImpl(Class<B> businessInterface, RuntimeWire wire, ProxyFactory proxyFactory) {
@@ -241,134 +263,6 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
     }
 
     /**
-     * @see java.io.Externalizable#readExternal(java.io.ObjectInput)
-     */
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        final boolean hasSCDL = in.readBoolean();
-        if (hasSCDL) {
-            this.scdl = in.readUTF();
-        } else {
-            this.scdl = null;
-        }
-    }
-
-    /**
-     * @throws IOException
-     */
- // TODO - EPR all needs sorting out for endpoint references
-
-    private synchronized void resolve() throws Exception {
-        if ((scdl != null || xmlReader != null) && component == null && reference == null) {
-            CompositeContext componentContextHelper = CompositeContext.getCurrentCompositeContext();
-            if (componentContextHelper != null) {
-                this.compositeActivator = CompositeContext.getCurrentCompositeActivator();
-                Component c;
-                if (xmlReader != null) {
-                    c = componentContextHelper.fromXML(xmlReader);
-                    xmlReader = null; // OK to GC this now
-                } else {
-                    c = componentContextHelper.fromXML(scdl);
-                    scdl = null; // OK to GC this now
-                }
-                this.component = (RuntimeComponent)c;
-                compositeActivator.configureComponentContext(this.component);
-                this.reference = (RuntimeComponentReference)c.getReferences().get(0);
-                this.reference.setComponent(this.component);
-                clonedRef = reference;
-                ReferenceParameters parameters = null;
-                for (Object ext : reference.getExtensions()) {
-                    if (ext instanceof ReferenceParameters) {
-                        parameters = (ReferenceParameters)ext;
-                        break;
-                    }
-                }
-                if (parameters != null) {
-                    refParams = parameters;
-                    this.callbackID = parameters.getCallbackID();
-                }
-
-                // TODO - EPR all needs sorting out for endpoint references
-                for (Binding binding : reference.getBindings()) {
-                    if (binding instanceof OptimizableBinding) {
-                        // Resolve the Component
-                        final String bindingURI = binding.getURI();
-                        final Component targetComponent = resolveComponentURI(bindingURI);
-
-                        // Find the Service
-                        ComponentService targetService = resolveServiceURI(bindingURI, targetComponent);
-
-                        // if the target service is a promoted service then find the
-                        // service it promotes
-                        if ((targetService != null) && (targetService.getService() instanceof CompositeService)) {
-                            CompositeService compositeService = (CompositeService)targetService.getService();
-                            // Find the promoted component service
-                            ComponentService promotedComponentService = getPromotedComponentService(compositeService);
-                            if (promotedComponentService != null && !promotedComponentService.isUnresolved()) {
-                                targetService = promotedComponentService;
-                            }
-                        }
-
-                        OptimizableBinding optimizableBinding = (OptimizableBinding)binding;
-                        optimizableBinding.setTargetComponent(targetComponent);
-                        optimizableBinding.setTargetComponentService(targetService);
-                        if (targetService != null) {
-                            for (Binding serviceBinding : targetService.getBindings()) {
-                                if (serviceBinding.getType().equals(binding.getType())) {
-                                    optimizableBinding.setTargetBinding(serviceBinding);
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-/*
-                // FIXME: The SCA Specification is not clear how we should handle multiplicity
-                // for CallableReference
-                if (binding == null) {
-                    binding = reference.getBinding(SCABinding.class);
-                    if (binding == null) {
-                        binding = reference.getBindings().get(0);
-                    }
-                }
-*/
-
-                Interface i = reference.getInterfaceContract().getInterface();
-                if (i instanceof JavaInterface) {
-                    JavaInterface javaInterface = (JavaInterface)i;
-                    if (javaInterface.isUnresolved()) {
-                        // Allow privileged access to get ClassLoader. Requires RuntimePermission in
-                        // security policy.
-                        ClassLoader classLoader = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
-                            public ClassLoader run() {
-                                return Thread.currentThread().getContextClassLoader();
-                            }
-                        });
-                        javaInterface.setJavaClass(classLoader.loadClass(javaInterface.getName()));
-                        compositeActivator.getCompositeContext().getJavaInterfaceFactory()
-                            .createJavaInterface(javaInterface, javaInterface.getJavaClass());
-                        //FIXME: If the interface needs XSDs to be loaded (e.g., for static SDO),
-                        // this needs to be done here.  We usually search for XSDs in the current
-                        // contribution at resolve time.  Is it possible to locate the current
-                        // contribution at runtime?
-                    }
-                    this.businessInterface = (Class<B>)javaInterface.getJavaClass();
-                }
-/*
-                if (binding instanceof BindingBuilderExtension) {
-                    ((BindingBuilderExtension)binding).getBuilder().build(component, reference, binding, null);
-                }
-*/
-                this.proxyFactory = compositeActivator.getCompositeContext().getProxyFactory();
-            }
-        } else {
-            this.compositeActivator = CompositeContext.getCurrentCompositeActivator();
-            if (this.compositeActivator != null) {
-                this.proxyFactory = this.compositeActivator.getCompositeContext().getProxyFactory();
-            }
-        }
-    }
-
-    /**
      * Follow a service promotion chain down to the inner most (non composite)
      * component service.
      *
@@ -396,12 +290,22 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
         }
     }
 
+    // ============ WRITE AND READ THE REFERENCE TO EXTERNAL XML ========================
+    
     /**
+     * write the reference to a stream
+     * 
      * @see java.io.Externalizable#writeExternal(java.io.ObjectOutput)
      */
     public void writeExternal(ObjectOutput out) throws IOException {
         try {
-            final String xml = toXMLString();
+            String xml = null;
+            if (scdl == null){
+                xml = toXMLString();
+            } else {
+                xml = scdl;
+            }
+            
             if (xml == null) {
                 out.writeBoolean(false);
             } else {
@@ -412,41 +316,124 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
             // e.printStackTrace();
             throw new IOException(e.toString());
         }
-    }
-
-    public String toXMLString() throws IOException {
-        if (reference != null) {
-            if (clonedRef == null) {
-                try {
-                    clonedRef = (RuntimeComponentReference)reference.clone();
-                } catch (CloneNotSupportedException e) {
-                    // will not happen
-                }
-            }
-            if (refParams == null) {
-                refParams = new ReferenceParametersImpl();
-
-                // remove any existing reference parameters from the clone
-                Object toRemove = null;
-                for (Object extension : clonedRef.getExtensions()) {
-                    if (extension instanceof ReferenceParameters) {
-                        toRemove = extension;
-                    }
-                }
-
-                if (toRemove != null) {
-                    clonedRef.getExtensions().remove(toRemove);
-                }
-
-                // add the new reference parameter object
-                clonedRef.getExtensions().add(refParams);
-            }
-            refParams.setCallbackID(callbackID);
-            return ((CompositeActivatorImpl)compositeActivator).getCompositeContext().toXML(component, clonedRef);
+    }  
+    
+    /**
+     * write the endpoint reference into an xml string
+     */
+    public String toXMLString() throws IOException, XMLStreamException, ContributionWriteException{
+        StringWriter writer = new StringWriter();
+        XMLStreamWriter streamWriter = xmlOutputFactory.createXMLStreamWriter(writer);
+        staxProcessor.write(endpointReference, streamWriter);
+        return writer.toString();
+    }   
+    
+    /**
+     * Read the reference from a stream
+     * 
+     * @see java.io.Externalizable#readExternal(java.io.ObjectInput)
+     */
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        final boolean hasSCDL = in.readBoolean();
+        if (hasSCDL) {
+            this.scdl = in.readUTF();
         } else {
-            return scdl;
+            this.scdl = null;
         }
+    }  
+    
+    /**
+     * Read xml string into the endpoint reference
+     */
+    public void fromXMLString() throws IOException, XMLStreamException, ContributionReadException {
+        
+        XMLStreamReader streamReader = xmlReader;
+        
+        if (scdl != null ){
+            Reader reader = new StringReader(scdl);
+            
+            if (xmlInputFactory == null){
+                // this is a reference being read from a external stream
+                // so set up enough of the reference in order to resolved the
+                // xml being read
+                CompositeContext componentContextHelper = CompositeContext.getCurrentCompositeContext();
+                this.compositeActivator = CompositeContext.getCurrentCompositeActivator();
+                getExtensions();
+            }
+            
+            streamReader = xmlInputFactory.createXMLStreamReader(reader);
+        }
+        
+        endpointReference = staxProcessor.read(streamReader);
+        
+        // ok to GC
+        xmlReader = null;
+        scdl = null;
     }
+    
+    /**
+     * @throws IOException
+     */
+    private synchronized void resolve() throws Exception {
+        if ((scdl != null || xmlReader != null) && component == null && reference == null) {
+            fromXMLString();
+            
+            this.component = (RuntimeComponent)endpointReference.getComponent();
+            compositeActivator.configureComponentContext(this.component);
+            
+            this.reference = (RuntimeComponentReference)endpointReference.getReference();
+            this.reference.setComponent(this.component);
+            clonedRef = reference;
+            
+            ReferenceParameters parameters = null;
+            for (Object ext : reference.getExtensions()) {
+                if (ext instanceof ReferenceParameters) {
+                    parameters = (ReferenceParameters)ext;
+                    break;
+                }
+            }
+            
+            if (parameters != null) {
+                refParams = parameters;
+                this.callbackID = parameters.getCallbackID();
+            }
+
+            Interface i = reference.getInterfaceContract().getInterface();
+            if (i instanceof JavaInterface) {
+                JavaInterface javaInterface = (JavaInterface)i;
+                if (javaInterface.isUnresolved()) {
+                    // Allow privileged access to get ClassLoader. Requires RuntimePermission in
+                    // security policy.
+                    ClassLoader classLoader = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+                        public ClassLoader run() {
+                            return Thread.currentThread().getContextClassLoader();
+                        }
+                    });
+                    javaInterface.setJavaClass(classLoader.loadClass(javaInterface.getName()));
+                    compositeActivator.getCompositeContext().getJavaInterfaceFactory()
+                        .createJavaInterface(javaInterface, javaInterface.getJavaClass());
+                    //FIXME: If the interface needs XSDs to be loaded (e.g., for static SDO),
+                    // this needs to be done here.  We usually search for XSDs in the current
+                    // contribution at resolve time.  Is it possible to locate the current
+                    // contribution at runtime?
+                }
+                this.businessInterface = (Class<B>)javaInterface.getJavaClass();
+            }
+            
+            if (endpointReference.getBinding() instanceof BindingBuilderExtension) {
+                ((BindingBuilderExtension)endpointReference.getBinding()).getBuilder().build(component, reference, endpointReference.getBinding(), null);
+            }            
+
+            this.proxyFactory = compositeActivator.getCompositeContext().getProxyFactory();       
+        } else {
+            this.compositeActivator = CompositeContext.getCurrentCompositeActivator();
+            if (this.compositeActivator != null) {
+                this.proxyFactory = this.compositeActivator.getCompositeContext().getProxyFactory();
+            }
+        }        
+    }
+    
+    // ==================================================================================
 
     /**
      * Create a callback id
@@ -467,111 +454,8 @@ public class CallableReferenceImpl<B> implements CallableReferenceExt<B> {
         return parameters;
     }
 
-    // TODO - EPR - needs sorting out for new endpoint references
-    public EndpointReference getEndpointReference() {
-        try {
-            resolve();
-
-            // Use the interface contract of the reference on the component type
-            Reference componentTypeRef = reference.getReference();
-            InterfaceContract sourceContract =
-                componentTypeRef == null ? reference.getInterfaceContract() : componentTypeRef.getInterfaceContract();
-            sourceContract = sourceContract.makeUnidirectional(false);
-
-            EndpointReference epr = assemblyFactory.createEndpointReference();
-            epr.setComponent(component);
-            epr.setReference(reference);
-            //epr.setBinding(binding);
-            epr.setInterfaceContract(sourceContract);
-
-            Endpoint endpoint = assemblyFactory.createEndpoint();
-            endpoint.setService(component.getServices().get(0));
-            epr.setTargetEndpoint(endpoint);
-
-            return epr;
-        } catch (Exception e) {
-            throw new ServiceRuntimeException(e);
-        }
-    }
-
     public XMLStreamReader getXMLReader() {
         return xmlReader;
     }
 
-    /**
-     * Resolves the specified URI to a Component using the compositeActivator.
-     * There are two cases that we need to handle:
-     * <ul>
-     * <li>URI containing just Composite name(s) (i.e. no Service name specified)
-     * <li>URI containing Composite name(s) and a Service Name
-     * </ul>
-     *
-     * @param componentURI The URI of the Component to resolve
-     * @return The Component for the specified URI or null if not founds
-     */
-    protected Component resolveComponentURI(String componentURI) {
-        // If the URI has come from a binding, it may well start with a '/'. We will need
-        // to remove this so we can match it to the composite names.
-        if (componentURI.startsWith("/")) {
-            componentURI = componentURI.substring(1);
-        }
-
-        // First assume that we are dealing with a Component URI without a Service Name
-        Component component = compositeActivator.resolve(componentURI);
-        if (component != null) {
-            return component;
-        }
-
-        // Perhaps we have a ComponentURI that has a ServiceName on the end of it
-        final int index = componentURI.lastIndexOf('/');
-        if (index > -1) {
-            componentURI = componentURI.substring(0, index);
-            return compositeActivator.resolve(componentURI);
-        }
-
-        // We could not resolve the Component URI
-        return null;
-    }
-
-    /**
-     * Examines the Services on the specified Component and returns the Service that matches the
-     * specified Binding URI.
-     *
-     * @param bindingURI The Binding URI to resolve on the Component
-     * @param targetComponent The Component containing the Services
-     * @return The Service with the specified serviceName or null if no such Service found.
-     */
-    protected ComponentService resolveServiceURI(String bindingURI, Component targetComponent) {
-
-        ComponentService targetService = null;
-
-        if (targetComponent != null) {
-            if (bindingURI.startsWith("/")) {
-                bindingURI = bindingURI.substring(1);
-            }
-
-            final String componentURI = targetComponent.getURI();
-            final String serviceName;
-            if (componentURI.equals(bindingURI)) {
-                // No service specified
-                serviceName = "";
-            } else {
-                // Get the Service name from the Binding URI
-                serviceName = bindingURI.substring(componentURI.length() + 1);
-            }
-
-            if ("".equals(serviceName)) {
-                targetService = CompositeContext.getSingleService(targetComponent);
-            } else {
-                for (ComponentService service : targetComponent.getServices()) {
-                    if (service.getName().equals(serviceName)) {
-                        targetService = service;
-                        break;
-                    }
-                }
-            }
-        }
-
-        return targetService;
-    }
 }
