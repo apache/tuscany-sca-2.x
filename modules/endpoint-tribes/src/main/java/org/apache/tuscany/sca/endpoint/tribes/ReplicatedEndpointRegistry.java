@@ -205,6 +205,7 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry, LifeCycleLi
             for (Object v : map.values()) {
                 Endpoint endpoint = (Endpoint)v;
                 // TODO: implement more complete matching
+                logger.info("Matching against - " + endpoint);
                 if (matches(targetEndpoint.getURI(), endpoint.getURI())) {
                     MapEntry entry = map.getInternal(endpoint.getURI());
                     if (!isLocal(entry)) {
