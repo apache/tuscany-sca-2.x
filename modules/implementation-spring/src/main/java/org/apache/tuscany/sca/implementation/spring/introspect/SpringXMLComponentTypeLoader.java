@@ -78,7 +78,7 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
  * component type information.
  *
  *
- * @version $Rev: 512919 $ $Date: 2007-02-28 19:32:56 +0000 (Wed, 28 Feb 2007) $
+ * @version $Rev$ $Date$
  */
 public class SpringXMLComponentTypeLoader {
 

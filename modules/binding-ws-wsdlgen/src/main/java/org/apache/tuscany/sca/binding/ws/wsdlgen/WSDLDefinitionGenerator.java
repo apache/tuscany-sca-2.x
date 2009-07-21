@@ -55,7 +55,7 @@ import org.w3c.dom.Element;
 
 /**
  * 
- * @version $Rev: 668025 $ $Date: 2008-06-16 01:06:34 +0100 (Mon, 16 Jun 2008) $
+ * @version $Rev$ $Date$
  */
 public class WSDLDefinitionGenerator {
     private static final String SOAP_NS = "http://schemas.xmlsoap.org/wsdl/soap/";

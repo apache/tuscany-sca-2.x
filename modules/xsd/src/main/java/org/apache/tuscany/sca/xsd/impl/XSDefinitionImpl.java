@@ -38,7 +38,7 @@ import org.w3c.dom.Document;
 /**
  * Represents a XML schema definition.
  *
- * @version $Rev: 582399 $ $Date: 2007-10-05 22:28:30 +0100 (Fri, 05 Oct 2007) $
+ * @version $Rev$ $Date$
  */
 public class XSDefinitionImpl implements XSDefinition {
     private XmlSchemaCollection schemaCollection = new XmlSchemaCollection();

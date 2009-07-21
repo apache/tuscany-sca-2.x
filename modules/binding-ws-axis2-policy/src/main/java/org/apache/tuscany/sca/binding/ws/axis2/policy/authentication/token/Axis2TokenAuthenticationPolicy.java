@@ -24,7 +24,7 @@ import javax.xml.namespace.QName;
  * Implementation for policies that could be injected as parameter
  * into the axis2config.
  *
- * @version $Rev: 695374 $ $Date: 2008-09-15 09:07:58 +0100 (Mon, 15 Sep 2008) $
+ * @version $Rev$ $Date$
  */
 public class Axis2TokenAuthenticationPolicy {
     private static final String SCA11_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.1";

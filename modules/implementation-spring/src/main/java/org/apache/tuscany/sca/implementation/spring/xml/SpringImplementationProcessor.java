@@ -48,7 +48,7 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
  * SpringArtifactProcessor is responsible for processing the XML of an <implementation.spring.../>
  * element in an SCA SCDL file.
  *
- * @version $Rev: 511195 $ $Date: 2007-02-24 02:29:46 +0000 (Sat, 24 Feb 2007) $
+ * @version $Rev$ $Date$
  */
 public class SpringImplementationProcessor implements StAXArtifactProcessor<SpringImplementation> {
 

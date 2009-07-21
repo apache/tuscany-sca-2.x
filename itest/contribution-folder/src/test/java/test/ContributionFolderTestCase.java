@@ -30,7 +30,7 @@ import calculator.CalculatorService;
 /**
  * Test SCADomain.newInstance and invocation of a service.
  *
- * @version $Rev: 608205 $ $Date: 2008-01-02 20:29:05 +0000 (Wed, 02 Jan 2008) $
+ * @version $Rev$ $Date$
  */
 public class ContributionFolderTestCase extends TestCase {
 

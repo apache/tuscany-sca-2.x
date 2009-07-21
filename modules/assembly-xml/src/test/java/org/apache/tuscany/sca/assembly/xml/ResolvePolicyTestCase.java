@@ -45,7 +45,7 @@ import org.junit.Test;
 /**
  * Test reading SCA XML assembly documents.
  *
- * @version $Rev: 561254 $ $Date: 2007-07-31 13:16:27 +0530 (Tue, 31 Jul 2007) $
+ * @version $Rev$ $Date$
  */
 public class ResolvePolicyTestCase {
 

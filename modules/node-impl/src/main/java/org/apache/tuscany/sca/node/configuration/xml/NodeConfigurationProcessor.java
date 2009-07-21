@@ -49,7 +49,7 @@ import org.apache.tuscany.sca.node.configuration.NodeConfigurationFactory;
 /**
  * Implements a StAX artifact processor for node implementations.
  *
- * @version $Rev: 750323 $ $Date: 2009-03-04 21:52:01 -0800 (Wed, 04 Mar 2009) $
+ * @version $Rev$ $Date$
  */
 public class NodeConfigurationProcessor extends BaseStAXArtifactProcessor implements
     StAXArtifactProcessor<NodeConfiguration> {

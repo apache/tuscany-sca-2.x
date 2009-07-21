@@ -32,7 +32,7 @@ import org.osgi.framework.launch.FrameworkFactory;
 /**
  * A test host that starts/stops Equinox.
  *
- * @version $Rev: $ $Date: $
+ * @version $Rev$ $Date$
  */
 public class TestEquinoxHost {
     private Framework framework;

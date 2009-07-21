@@ -45,7 +45,7 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
 
 /**
  *
- * @version $Rev: 750323 $ $Date: 2009-03-05 05:52:01 +0000 (Thu, 05 Mar 2009) $
+ * @version $Rev$ $Date$
  */
 public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfaceContract>, WSDLConstants {
 

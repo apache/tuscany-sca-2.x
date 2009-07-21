@@ -25,7 +25,7 @@ import javax.xml.namespace.QName;
  * It provides us with a sensibly named type against which
  * distributed sca binding providers can be registered
  *
- * @version $Rev: 556322 $ $Date: 2007-07-14 19:53:15 +0100 (Sat, 14 Jul 2007) $
+ * @version $Rev$ $Date$
  */
 public interface DistributedSCABinding extends Binding {
     QName TYPE = SCABinding.TYPE;

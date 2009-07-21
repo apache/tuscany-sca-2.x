@@ -25,7 +25,7 @@ import org.apache.tuscany.sca.binding.jsonp.JSONPBinding;
 /**
  * Represents a binding to an RMI service.
  *
- * @version $Rev: 718858 $ $Date: 2008-11-19 05:27:58 +0000 (Wed, 19 Nov 2008) $
+ * @version $Rev$ $Date$
  */
 public class JSONPBindingImpl implements JSONPBinding {
 

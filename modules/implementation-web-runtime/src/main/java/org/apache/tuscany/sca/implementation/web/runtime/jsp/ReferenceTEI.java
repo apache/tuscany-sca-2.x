@@ -27,7 +27,7 @@ import javax.servlet.jsp.tagext.VariableInfo;
  * TagExtraInfo class for the SCA reference tags
  * <sca:reference name="service" type="test.MyService" scope="1" />
  *
- * @version $Rev: 685532 $ $Date: 2008-08-13 14:03:50 +0100 (Wed, 13 Aug 2008) $
+ * @version $Rev$ $Date$
  */
 public class ReferenceTEI extends TagExtraInfo {
 

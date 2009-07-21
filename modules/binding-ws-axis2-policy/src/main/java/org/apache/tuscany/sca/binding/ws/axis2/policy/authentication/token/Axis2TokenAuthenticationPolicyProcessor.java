@@ -38,7 +38,7 @@ import org.apache.tuscany.sca.monitor.Monitor;
 /**
  *
  * Adjusted for 2.0 environment, Mike Edwards, 4th Dec 2008
- * @version $Rev: 695374 $ $Date: 2008-09-15 09:07:58 +0100 (Mon, 15 Sep 2008) $
+ * @version $Rev$ $Date$
  */
 public class Axis2TokenAuthenticationPolicyProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<Axis2TokenAuthenticationPolicy> {
     private static final String SCA11_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.1";

@@ -29,7 +29,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
 /**
  * A provider class for runtime Spring implementation instances
- * @version $Rev: 511195 $ $Date: 2007-02-24 02:29:46 +0000 (Sat, 24 Feb 2007) $ 
+ * @version $Rev$ $Date$ 
  */
 public class SpringImplementationProvider implements ImplementationProvider {
     private RuntimeComponent component;

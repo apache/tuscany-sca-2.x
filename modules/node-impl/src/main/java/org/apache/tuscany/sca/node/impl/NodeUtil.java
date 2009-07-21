@@ -32,7 +32,7 @@ import org.apache.tuscany.sca.contribution.ContributionFactory;
 /**
  * NodeUtil
  *
- * @version $Rev: $ $Date: $
+ * @version $Rev$ $Date$
  */
 public class NodeUtil {
 

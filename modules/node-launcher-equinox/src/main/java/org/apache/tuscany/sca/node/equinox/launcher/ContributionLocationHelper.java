@@ -29,7 +29,7 @@ import org.osgi.framework.Bundle;
 /**
  * ContributionLocationHelper
  *
- * @version $Rev: $ $Date: $
+ * @version $Rev$ $Date$
  */
 public class ContributionLocationHelper {
     

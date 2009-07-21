@@ -41,7 +41,7 @@ import org.junit.Test;
 /**
  * Test reading/write WSDL interfaces.
  * 
- * @version $Rev: 723270 $ $Date: 2008-12-04 09:48:12 +0000 (Thu, 04 Dec 2008) $
+ * @version $Rev$ $Date$
  */
 public class WriteTestCase {
 

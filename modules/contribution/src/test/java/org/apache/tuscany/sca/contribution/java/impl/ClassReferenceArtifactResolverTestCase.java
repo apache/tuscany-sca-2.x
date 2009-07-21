@@ -34,7 +34,7 @@ import org.junit.Test;
 /**
  * Test ClassReferenceArtifactResolver.
  *
- * @version $Rev: 560435 $ $Date: 2007-07-27 18:26:55 -0700 (Fri, 27 Jul 2007) $
+ * @version $Rev$ $Date$
  */
 public class ClassReferenceArtifactResolverTestCase {
     private static ExtensibleModelResolver resolver;

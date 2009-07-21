@@ -39,7 +39,7 @@ import org.junit.Test;
 /**
  * Test case for InterfaceWSDLIntrospectorImpl.
  *
- * @version $Rev: 665985 $ $Date: 2008-06-10 06:35:33 +0100 (Tue, 10 Jun 2008) $
+ * @version $Rev$ $Date$
  */
 public class WSDLPolicyAnnotatedInterfaceIntrospectorTestCase extends AbstractWSDLTestCase {
     private static final QName PORTTYPE_NAME = new QName("http://example.com/stockquote.wsdl", "StockQuotePortType");

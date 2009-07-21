@@ -38,7 +38,7 @@ import org.apache.tuscany.sca.policy.security.SecurityUtil;
  * Policy handler to handle PolicySet related to Logging with the QName
  * {http://tuscany.apache.org/xmlns/sca/1.1/impl/java}LoggingPolicy
  *
- * @version $Rev: 721811 $ $Date: 2008-11-30 13:46:51 +0000 (Sun, 30 Nov 2008) $
+ * @version $Rev$ $Date$
  */
 public class Axis2TokenAuthenticationServicePolicyInterceptor implements PhasedInterceptor {
     private Invoker next;

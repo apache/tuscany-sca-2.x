@@ -28,7 +28,7 @@ import org.apache.tuscany.sca.assembly.SCABinding;
  * just used to locate the remote binding extension and pass the SCA binding to the remote
  * extension. It isn't used in the model itself
  *
- * @version $Rev: 564307 $ $Date: 2007-08-09 18:48:29 +0100 (Thu, 09 Aug 2007) $
+ * @version $Rev$ $Date$
  */
 public class DistributedSCABindingImpl implements DistributedSCABinding {
 

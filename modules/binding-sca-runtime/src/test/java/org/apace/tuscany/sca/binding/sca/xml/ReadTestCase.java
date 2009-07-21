@@ -43,7 +43,7 @@ import org.junit.Test;
 /**
  * Test reading WSDL interfaces.
  * 
- * @version $Rev: 722930 $ $Date: 2008-12-03 15:27:31 +0000 (Wed, 03 Dec 2008) $
+ * @version $Rev$ $Date$
  */
 public class ReadTestCase {
 

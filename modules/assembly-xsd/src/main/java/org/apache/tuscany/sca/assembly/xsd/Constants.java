@@ -24,7 +24,7 @@ import javax.xml.namespace.QName;
 /**
  * Constants used in SCA assembly XML files.
  *
- * @version $Rev: 750765 $ $Date: 2009-03-06 04:36:04 +0000 (Fri, 06 Mar 2009) $
+ * @version $Rev$ $Date$
  */
 public interface Constants {
     String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200903";

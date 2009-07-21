@@ -79,7 +79,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * @version $Rev: 670103 $ $Date: 2008-06-21 01:35:00 +0100 (Sat, 21 Jun 2008) $
+ * @version $Rev$ $Date$
  */
 public class Interface2WSDLGenerator {
     private static final Logger logger = Logger.getLogger(Interface2WSDLGenerator.class.getName());

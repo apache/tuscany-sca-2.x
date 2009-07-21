@@ -77,7 +77,7 @@ import org.oasisopen.sca.annotation.Remotable;
  * interface implemented by the class then the service interface will be defined
  * in terms of that interface.
  * 
- * @version $Rev: 689426 $ $Date: 2008-08-27 14:56:06 +0530 (Wed, 27 Aug 2008) $
+ * @version $Rev$ $Date$
  */
 public class SpringBeanPojoProcessor extends BaseJavaClassVisitor {
     private JavaInterfaceFactory javaFactory;

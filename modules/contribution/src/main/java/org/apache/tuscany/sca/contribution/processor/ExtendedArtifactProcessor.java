@@ -23,7 +23,7 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 /**
  * Interface for extended Artifact Processors which require a pre-resolve phase prior to the resolve phase
  * 
- * @version $Rev: 704156 $ $Date: 2008-10-13 17:31:59 +0100 (Mon, 13 Oct 2008) $
+ * @version $Rev$ $Date$
  */
 public interface ExtendedArtifactProcessor<M> extends ArtifactProcessor<M> {
     

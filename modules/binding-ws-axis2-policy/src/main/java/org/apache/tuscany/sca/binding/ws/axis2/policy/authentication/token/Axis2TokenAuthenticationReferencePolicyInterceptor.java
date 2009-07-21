@@ -30,7 +30,7 @@ import org.apache.tuscany.sca.policy.PolicySet;
  * Policy handler to handle PolicySet related to Logging with the QName
  * {http://tuscany.apache.org/xmlns/sca/1.1/impl/java}LoggingPolicy
  *
- * @version $Rev: 698457 $ $Date: 2008-09-24 09:13:02 +0100 (Wed, 24 Sep 2008) $
+ * @version $Rev$ $Date$
  */
 public class Axis2TokenAuthenticationReferencePolicyInterceptor implements PhasedInterceptor {
 

@@ -31,7 +31,7 @@ import org.oasisopen.sca.ServiceReference;
  * Tag to handle SCA references
  * <sca:reference name="service" type="test.MyService" scope="1" />
  *
- * @version $Rev: 738490 $ $Date: 2009-01-28 14:07:54 +0000 (Wed, 28 Jan 2009) $
+ * @version $Rev$ $Date$
  */
 public class ReferenceTag extends TagSupport {
     private static final long serialVersionUID = 1L;

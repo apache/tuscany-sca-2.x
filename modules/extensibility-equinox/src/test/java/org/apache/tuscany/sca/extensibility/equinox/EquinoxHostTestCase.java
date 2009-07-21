@@ -30,7 +30,7 @@ import org.osgi.framework.BundleContext;
 /**
  * Test start/stop the Equinox runtime.
  * 
- * @version $Rev: $ $Date: $
+ * @version $Rev$ $Date$
  */
 public class EquinoxHostTestCase {
     @Test

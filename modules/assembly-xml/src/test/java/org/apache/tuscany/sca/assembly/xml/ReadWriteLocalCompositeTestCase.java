@@ -44,7 +44,7 @@ import org.junit.Test;
 /**
  * Test reading SCA XML assemblies.
  * 
- * @version $Rev: 711584 $ $Date: 2008-11-05 15:07:03 +0000 (Wed, 05 Nov 2008) $
+ * @version $Rev$ $Date$
  */
 public class ReadWriteLocalCompositeTestCase {
 

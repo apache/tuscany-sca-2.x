@@ -33,7 +33,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * @version $Rev: 723274 $ $Date: 2008-12-04 10:14:09 +0000 (Thu, 04 Dec 2008) $
+ * @version $Rev$ $Date$
  */
 public class WSDLDocumentProcessorTestCase extends AbstractWSDLTestCase {
 

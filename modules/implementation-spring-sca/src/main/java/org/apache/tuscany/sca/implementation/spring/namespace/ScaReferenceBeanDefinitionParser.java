@@ -24,7 +24,7 @@ import org.w3c.dom.Element;
 /**
  * Parser for the &lt;sca:reference&gt; element
  *
- * @version $Rev: 511195 $ $Date: 2007-02-24 02:29:46 +0000 (Sat, 24 Feb 2007) $
+ * @version $Rev$ $Date$
  */
 public class ScaReferenceBeanDefinitionParser implements BeanDefinitionParser {
 

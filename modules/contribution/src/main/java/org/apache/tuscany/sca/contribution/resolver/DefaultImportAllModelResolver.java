@@ -29,7 +29,7 @@ import org.apache.tuscany.sca.contribution.Import;
 /**
  * A model resolver implementation that considers Exports in a list of contributions.
  *
- * @version $Rev: 560435 $ $Date: 2007-07-27 18:26:55 -0700 (Fri, 27 Jul 2007) $
+ * @version $Rev$ $Date$
  */
 public class DefaultImportAllModelResolver implements ModelResolver {
     

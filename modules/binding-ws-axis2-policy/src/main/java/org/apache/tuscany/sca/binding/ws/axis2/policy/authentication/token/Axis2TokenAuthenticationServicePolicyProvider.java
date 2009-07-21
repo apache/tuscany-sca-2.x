@@ -28,7 +28,7 @@ import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.provider.PolicyProvider;
 
 /**
- * @version $Rev: 695374 $ $Date: 2008-09-15 09:07:58 +0100 (Mon, 15 Sep 2008) $
+ * @version $Rev$ $Date$
  */
 public class Axis2TokenAuthenticationServicePolicyProvider implements PolicyProvider {
     private Endpoint endpoint;

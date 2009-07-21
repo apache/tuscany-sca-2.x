@@ -20,7 +20,7 @@
 package mock;
 
 /**
- * @version $Rev: 536115 $ $Date: 2007-05-08 09:04:20 +0100 (Tue, 08 May 2007) $
+ * @version $Rev$ $Date$
  */
 public interface TestReference {
     String echo(String msg);

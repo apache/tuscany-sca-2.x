@@ -39,7 +39,7 @@ import org.apache.tuscany.sca.monitor.Monitor;
 /**
  * A composite builder that handles the configuration of composite references.
  *
- * @version $Rev: 651179 $ $Date: 2008-04-24 08:21:13 +0100 (Thu, 24 Apr 2008) $
+ * @version $Rev$ $Date$
  */
 public class CompositeReferenceConfigurationBuilderImpl implements CompositeBuilder {
     private AssemblyFactory assemblyFactory;

@@ -31,7 +31,7 @@ import org.osgi.framework.BundleContext;
 /**
  * A launcher for SCA nodes.
  *  
- * @version $Rev: 720905 $ $Date: 2008-11-26 15:47:28 +0000 (Wed, 26 Nov 2008) $
+ * @version $Rev$ $Date$
  */
 public class NodeLauncher2 {
 

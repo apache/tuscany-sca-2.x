@@ -29,7 +29,7 @@ import org.osgi.framework.Bundle;
  *
  * Utility class to create OSGi bundles
  *
- * @version $Rev: 758877 $ $Date: 2009-03-26 14:51:19 -0700 (Thu, 26 Mar 2009) $
+ * @version $Rev$ $Date$
  */
 public class OSGiTestUtils {
     private static class InvocationHandlerImpl implements InvocationHandler {

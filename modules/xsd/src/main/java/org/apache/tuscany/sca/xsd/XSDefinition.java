@@ -34,7 +34,7 @@ import org.w3c.dom.Document;
 /**
  * Represents an XML Schema definition.
  *
- * @version $Rev: 633545 $ $Date: 2008-03-04 16:52:24 +0000 (Tue, 04 Mar 2008) $
+ * @version $Rev$ $Date$
  */
 public interface XSDefinition extends Base {
     XmlSchemaCollection getSchemaCollection();

@@ -26,7 +26,7 @@ import org.springframework.beans.factory.xml.NamespaceHandler;
  * {@link ScaNamespaceHandler} instead of requiring a value to be supplied in a
  * Spring configuration
  * 
- * @version $Rev: 511195 $ $Date: 2007-02-24 02:29:46 +0000 (Sat, 24 Feb 2007) $
+ * @version $Rev$ $Date$
  */
 public class SCANamespaceHandlerResolver extends DefaultNamespaceHandlerResolver {
     private static final String SCA_NAMESPACE = "http://www.springframework.org/schema/sca";

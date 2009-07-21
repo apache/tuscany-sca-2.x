@@ -23,7 +23,7 @@ package org.apache.tuscany.sca.contribution.processor;
 /**
  * An extended artifact processor that can read models from a URL.
  * 
- * @version $Rev: 704156 $ $Date: 2008-10-13 17:31:59 +0100 (Mon, 13 Oct 2008) $
+ * @version $Rev$ $Date$
  */
 public interface ExtendedURLArtifactProcessor<M> extends ExtendedArtifactProcessor<M>, URLArtifactProcessor<M> {
 

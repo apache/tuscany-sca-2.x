@@ -21,7 +21,7 @@ package org.apache.tuscany.sca.implementation.spring;
 /**
  * Represents an <sca:property> element in a Spring application-context
  * - this has name and type attributes
- * @version $Rev: 511195 $ $Date: 2007-02-24 02:29:46 +0000 (Sat, 24 Feb 2007) $ 
+ * @version $Rev$ $Date$ 
  */
 public class SpringSCAPropertyElement {
 

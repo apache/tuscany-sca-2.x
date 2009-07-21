@@ -41,7 +41,7 @@ import org.junit.Test;
 /**
  * Test case for WSDLOperation.
  *
- * @version $Rev: 660340 $ $Date: 2008-05-27 01:08:32 +0100 (Tue, 27 May 2008) $
+ * @version $Rev$ $Date$
  */
 public class WSDLOperationIntrospectorTestCase extends AbstractWSDLTestCase {
     private static final QName PORTTYPE_NAME =

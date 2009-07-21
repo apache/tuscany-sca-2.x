@@ -25,7 +25,7 @@ import java.util.List;
  * Represents a <constructor-arg> element in a Spring application-context
  * - this has ref attribute
  * 
- * @version $Rev: 512919 $ $Date: 2007-02-28 19:32:56 +0000 (Wed, 28 Feb 2007) $
+ * @version $Rev$ $Date$
  */
 public class SpringConstructorArgElement {
     

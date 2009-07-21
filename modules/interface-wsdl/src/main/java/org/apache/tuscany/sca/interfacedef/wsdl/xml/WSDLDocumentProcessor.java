@@ -49,7 +49,7 @@ import org.apache.tuscany.sca.xsd.XSDefinition;
 /**
  * An ArtifactProcessor for WSDL documents.
  *
- * @version $Rev: 709339 $ $Date: 2008-10-31 04:01:44 +0000 (Fri, 31 Oct 2008) $
+ * @version $Rev$ $Date$
  */
 public class WSDLDocumentProcessor implements URLArtifactProcessor<WSDLDefinition> {
 

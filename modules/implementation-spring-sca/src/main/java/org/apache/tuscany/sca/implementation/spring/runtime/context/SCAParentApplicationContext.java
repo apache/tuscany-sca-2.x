@@ -43,7 +43,7 @@ import org.springframework.core.io.Resource;
  * context that must provide Spring beans that correspond to the property or reference, as derived
  * from the SCA composite in which the Spring application context is an implementation.
  *
- * @version $Rev: 511195 $ $Date: 2007-02-24 02:29:46 +0000 (Sat, 24 Feb 2007) $
+ * @version $Rev$ $Date$
  */
 class SCAParentApplicationContext implements ApplicationContext {
 

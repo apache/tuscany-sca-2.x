@@ -29,7 +29,7 @@ import org.oasisopen.sca.ServiceReference;
 /**
  * Uses a wire to return a CallableReference
  * 
- * @version $Rev: 574648 $ $Date: 2007-09-11 18:45:36 +0100 (Tue, 11 Sep 2007) $
+ * @version $Rev$ $Date$
  */
 public class CallbackReferenceObjectFactory implements ObjectFactory<ServiceReference<?>> {
     private Class<?> businessInterface;

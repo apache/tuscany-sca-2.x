@@ -73,7 +73,7 @@ import org.xml.sax.InputSource;
 /**
  * A Model Resolver for WSDL models.
  * 
- * @version $Rev: 557916 $ $Date: 2007-07-20 01:04:40 -0700 (Fri, 20 Jul 2007) $
+ * @version $Rev$ $Date$
  */
 public class WSDLModelResolver implements ModelResolver {
     //Schema element names

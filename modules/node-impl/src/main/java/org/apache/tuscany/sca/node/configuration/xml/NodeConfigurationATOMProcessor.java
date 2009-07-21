@@ -42,7 +42,7 @@ import org.apache.tuscany.sca.node.configuration.NodeConfigurationFactory;
 /**
  * Implements a StAX artifact processor for configured node implementations.
  *
- * @version $Rev: 704156 $ $Date: 2008-10-13 09:31:59 -0700 (Mon, 13 Oct 2008) $
+ * @version $Rev$ $Date$
  */
 public class NodeConfigurationATOMProcessor extends BaseStAXArtifactProcessor implements
     StAXArtifactProcessor<NodeConfiguration> {

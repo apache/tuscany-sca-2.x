@@ -27,7 +27,7 @@ import org.apache.tuscany.sca.definitions.Definitions;
 /**
  * An extension point for built-in SCA intent/policySet definition files
  *
- * @version $Rev: 758911 $ $Date: 2009-03-26 15:52:27 -0700 (Thu, 26 Mar 2009) $
+ * @version $Rev$ $Date$
  */
 public interface DefinitionsExtensionPoint {
     String DEFINITIONS_FILE = "org.apache.tuscany.sca.definitions.xml.Definitions";

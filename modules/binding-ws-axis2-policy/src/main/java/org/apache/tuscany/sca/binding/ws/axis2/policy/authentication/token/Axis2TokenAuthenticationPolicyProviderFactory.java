@@ -27,7 +27,7 @@ import org.apache.tuscany.sca.provider.PolicyProviderFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
 /**
- * @version $Rev: 695374 $ $Date: 2008-09-15 09:07:58 +0100 (Mon, 15 Sep 2008) $
+ * @version $Rev$ $Date$
  */
 public class Axis2TokenAuthenticationPolicyProviderFactory implements PolicyProviderFactory<Axis2TokenAuthenticationPolicy> {
     private ExtensionPointRegistry registry;

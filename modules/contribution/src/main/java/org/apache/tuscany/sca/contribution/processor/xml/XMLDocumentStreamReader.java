@@ -33,7 +33,7 @@ import javax.xml.stream.XMLStreamReader;
  * create a XMLStreamReader representing a document and it will produce
  * START_DOCUMENT, END_DOCUMENT events.
  *
- * @version $Rev: 659153 $ $Date: 2008-05-22 09:43:58 -0700 (Thu, 22 May 2008) $
+ * @version $Rev$ $Date$
  */
 public class XMLDocumentStreamReader implements XMLStreamReader {
     private static final int STATE_COMPLETE_AT_NEXT = 2; // The wrapper

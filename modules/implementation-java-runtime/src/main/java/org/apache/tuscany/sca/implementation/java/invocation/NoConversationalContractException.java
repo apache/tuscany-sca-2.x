@@ -22,7 +22,7 @@ package org.apache.tuscany.sca.implementation.java.invocation;
 /**
  * Raised when a component has conversational scope but no conversational contract
  *
- * @version $Rev: 487877 $ $Date: 2006-12-16 15:32:16 -0500 (Sat, 16 Dec 2006) $
+ * @version $Rev$ $Date$
  */
 public class NoConversationalContractException extends Exception {
     private static final long serialVersionUID = -1157790036638157539L;

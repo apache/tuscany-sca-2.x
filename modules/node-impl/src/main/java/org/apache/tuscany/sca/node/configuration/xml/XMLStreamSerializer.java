@@ -28,7 +28,7 @@ import javax.xml.stream.XMLStreamWriter;
 /**
  * The XMLStreamSerializer pulls events from the XMLStreamReader and dumps into the XMLStreamWriter
  *
- * @version $Rev: 656146 $ $Date: 2008-05-14 01:22:08 -0700 (Wed, 14 May 2008) $
+ * @version $Rev$ $Date$
  */
 public class XMLStreamSerializer implements XMLStreamConstants {
     public static final String NAMESPACE_PREFIX = "ns";

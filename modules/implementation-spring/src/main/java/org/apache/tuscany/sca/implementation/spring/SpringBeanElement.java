@@ -26,7 +26,7 @@ import java.util.List;
  * - this has id and className attributes
  * - plus zero or more property elements as children
  *
- * @version $Rev: 512919 $ $Date: 2007-02-28 19:32:56 +0000 (Wed, 28 Feb 2007) $
+ * @version $Rev$ $Date$
  */
 public class SpringBeanElement {
 

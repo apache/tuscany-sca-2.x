@@ -40,7 +40,7 @@ import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 /**
  * Default implementation of an extension point for XML definitionss.
  *
- * @version $Rev: 758911 $ $Date: 2009-03-26 15:52:27 -0700 (Thu, 26 Mar 2009) $
+ * @version $Rev$ $Date$
  */
 public class DefaultDefinitionsExtensionPoint implements DefinitionsExtensionPoint {
     private static final Logger logger = Logger.getLogger(DefaultDefinitionsExtensionPoint.class.getName());

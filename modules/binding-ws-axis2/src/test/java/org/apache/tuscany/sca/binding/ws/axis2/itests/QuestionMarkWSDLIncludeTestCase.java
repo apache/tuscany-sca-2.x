@@ -44,7 +44,7 @@ import org.apache.tuscany.sca.node.NodeFactory;
 /**
  * Test ?wsdl works and that the returned WSDL has the correct endpoint
  *
- * @version $Rev: 660340 $ $Date: 2008-05-27 01:08:32 +0100 (Tue, 27 May 2008) $
+ * @version $Rev$ $Date$
  */
 public class QuestionMarkWSDLIncludeTestCase extends TestCase {
 

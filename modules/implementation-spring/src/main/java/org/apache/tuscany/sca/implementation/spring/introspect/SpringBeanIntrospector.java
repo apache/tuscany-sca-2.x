@@ -48,7 +48,7 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
  * Provides introspection functions for Spring beans
  * This version leans heavily on the implementation-java classes
  *
- * @version $Rev: 512919 $ $Date: 2007-02-28 19:32:56 +0000 (Wed, 28 Feb 2007) $
+ * @version $Rev$ $Date$
  */
 public class SpringBeanIntrospector {
 

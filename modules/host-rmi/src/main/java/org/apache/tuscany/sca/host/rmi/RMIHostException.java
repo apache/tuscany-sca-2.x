@@ -22,7 +22,7 @@ package org.apache.tuscany.sca.host.rmi;
 /**
  * This exception will relate to situations where the end applicaition's input is the cause of the exception
  *
- * @version $Rev: 486986 $ $Date: 2006-12-14 11:48:28 +0530 (Thu, 14 Dec 2006) $
+ * @version $Rev$ $Date$
  */
 public class RMIHostException extends RuntimeException {
  

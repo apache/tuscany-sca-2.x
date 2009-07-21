@@ -19,7 +19,7 @@ package calculator.security;
 import java.security.Principal;
 
 /**
- * @version $Rev: 637276 $ $Date: 2008-03-15 03:05:34 +0530 (Sat, 15 Mar 2008) $
+ * @version $Rev$ $Date$
  */
 public class UserPrincipal implements Principal {
 

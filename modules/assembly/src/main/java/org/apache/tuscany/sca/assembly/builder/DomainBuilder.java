@@ -28,7 +28,7 @@ import org.apache.tuscany.sca.assembly.Service;
  * A builder that handles the configuration of the components inside a
  * composite and the wiring of component references to component services.
  *
- * @version $Rev: 563358 $ $Date: 2007-08-07 01:26:27 +0100 (Tue, 07 Aug 2007) $
+ * @version $Rev$ $Date$
  */
 public interface DomainBuilder {
 

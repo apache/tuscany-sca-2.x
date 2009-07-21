@@ -61,7 +61,7 @@ import org.junit.Test;
 /**
  * Test reading SCA XML assembly documents.
  * 
- * @version $Rev: 551296 $ $Date: 2007-06-28 01:18:35 +0530 (Thu, 28 Jun 2007) $
+ * @version $Rev$ $Date$
  */
 public class ReadDocumentTestCase {
 

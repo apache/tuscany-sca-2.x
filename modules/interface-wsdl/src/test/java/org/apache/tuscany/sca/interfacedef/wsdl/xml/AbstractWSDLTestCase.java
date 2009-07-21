@@ -37,7 +37,7 @@ import org.junit.Before;
 /**
  * Test case for WSDLOperation.
  *
- * @version $Rev: 723274 $ $Date: 2008-12-04 10:14:09 +0000 (Thu, 04 Dec 2008) $
+ * @version $Rev$ $Date$
  */
 public abstract class AbstractWSDLTestCase {
     protected URLArtifactProcessor<Object> documentProcessor;
