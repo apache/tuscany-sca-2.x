@@ -149,7 +149,7 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
                         // are matched and bindings are configured later
                         EndpointReference endpointRef = createEndpointRef(component, reference, false);
                         endpointRef.setTargetEndpoint(createEndpoint(targetComponent, targetComponentService, true));
-                        endpointRef.setStatus(EndpointReference.WIRED_TARGET_FOUND_BUT_NOT_MATCHED);
+                        endpointRef.setStatus(EndpointReference.WIRED_TARGET_FOUND_READY_FOR_MATCHING);
                         reference.getEndpointReferences().add(endpointRef);
 
                         // Stop with the first match for 0..1 and 1..1 references
@@ -191,7 +191,7 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
                         // are matched and bindings are configured later
                         EndpointReference endpointRef = createEndpointRef(component, reference, false);
                         endpointRef.setTargetEndpoint(createEndpoint(targetComponent, targetComponentService, true));
-                        endpointRef.setStatus(EndpointReference.WIRED_TARGET_FOUND_BUT_NOT_MATCHED);
+                        endpointRef.setStatus(EndpointReference.WIRED_TARGET_FOUND_READY_FOR_MATCHING);
                         reference.getEndpointReferences().add(endpointRef);
                     } else {
                         warning(monitor,
@@ -274,7 +274,7 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
                         // are matched and bindings are configured later
                         EndpointReference endpointRef = createEndpointRef(component, reference, binding, null, false);
                         endpointRef.setTargetEndpoint(createEndpoint(targetComponent, targetComponentService, true));
-                        endpointRef.setStatus(EndpointReference.WIRED_TARGET_FOUND_BUT_NOT_MATCHED);
+                        endpointRef.setStatus(EndpointReference.WIRED_TARGET_FOUND_READY_FOR_MATCHING);
                         reference.getEndpointReferences().add(endpointRef);
                     } else {
                         warning(monitor,

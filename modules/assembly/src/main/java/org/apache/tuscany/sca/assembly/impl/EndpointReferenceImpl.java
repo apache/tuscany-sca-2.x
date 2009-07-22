@@ -182,7 +182,7 @@ public class EndpointReferenceImpl implements EndpointReference {
                 output += " WIRED_TARGET_NOT_FOUND ";
                 break;
             case 3:
-                output += " WIRED_TARGET_FOUND_BUT_NOT_MATCHED ";
+                output += " WIRED_TARGET_FOUND_READY_FOR_MATCHING ";
                 break;
             case 4:
                 output += " WIRED_TARGET_FOUND_AND_MATCHED ";

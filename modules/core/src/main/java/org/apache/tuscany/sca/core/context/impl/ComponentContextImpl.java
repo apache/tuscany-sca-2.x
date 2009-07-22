@@ -349,7 +349,7 @@ public class ComponentContextImpl implements ComponentContextExt {
         endpointReference.setComponent(component);
         endpointReference.setReference(componentReference);
         endpointReference.setUnresolved(false);
-        endpointReference.setStatus(EndpointReference.WIRED_TARGET_FOUND_BUT_NOT_MATCHED);
+        endpointReference.setStatus(EndpointReference.WIRED_TARGET_FOUND_READY_FOR_MATCHING);
 
         // create endpoint. 
         Endpoint endpoint = assemblyFactory.createEndpoint();
