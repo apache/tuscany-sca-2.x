@@ -140,4 +140,9 @@ public class SpringImplementationTie {
     public Object getPropertyValueTie() {
         return new PropertyValueTie(component, propertyFactory);
     }
+    
+    public ClassLoader getClassLoader() {
+    	return implementation.getClassLoader();
+    }
+
 }

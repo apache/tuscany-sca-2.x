@@ -77,54 +77,51 @@ public class SpringContextTie {
     /**
      * Include BeanPostProcessor to deal with SCA Annotations in Spring Bean
      */
-//    private Object createApplicationContext(SCAParentApplicationContext scaParentContext) {
-
     private AbstractApplicationContext createApplicationContext(SCAParentApplicationContext scaParentContext, URL resource) {
 
         XmlBeanFactory beanFactory = new XmlBeanFactory(new UrlResource(resource));
+        beanFactory.setBeanClassLoader(implementation.getClassLoader());
         AbstractApplicationContext appContext = null;
         
         for (String bean : beanFactory.getBeanDefinitionNames()) {
-                String beanClassName = (beanFactory.getType(bean)).getName();
-                if (beanClassName.indexOf(".ClassPathXmlApplicationContext") != -1 || 
-                                beanClassName.indexOf(".FileSystemXmlApplicationContext") != -1) 
-                {
-                        BeanDefinition beanDef = beanFactory.getBeanDefinition(bean);                           
-                        String[] listValues = null;
-                        List<ConstructorArgumentValues.ValueHolder> conArgs = 
-                                beanDef.getConstructorArgumentValues().getGenericArgumentValues();
-                        for (ConstructorArgumentValues.ValueHolder conArg : conArgs) {
-                                if (conArg.getValue() instanceof TypedStringValue) {
-                                        TypedStringValue value = (TypedStringValue) conArg.getValue();
-                                        if (value.getValue().indexOf(".xml") != -1)
-                                                listValues = new String[]{value.getValue()};
-                                }
-                                if (conArg.getValue() instanceof ManagedList) {
-                                        Iterator itml = ((ManagedList)conArg.getValue()).iterator();
-                                        StringBuffer values = new StringBuffer();
-                                        while (itml.hasNext()) {
-                                                TypedStringValue next = (TypedStringValue)itml.next();
-                                                if (next.getValue().indexOf(".xml") != -1) {
-                                                        values.append(next.getValue());
-                                                        values.append("~");
-                                                }
-                                        }
-                                        listValues = (values.toString()).split("~");                                    
-                                }
+	        String beanClassName = (beanFactory.getType(bean)).getName();
+	        if (beanClassName.indexOf(".ClassPathXmlApplicationContext") != -1 || 
+	                        beanClassName.indexOf(".FileSystemXmlApplicationContext") != -1) 
+	        {
+                BeanDefinition beanDef = beanFactory.getBeanDefinition(bean);                           
+                String[] configLocations = null;
+                List<ConstructorArgumentValues.ValueHolder> conArgs = 
+                        beanDef.getConstructorArgumentValues().getGenericArgumentValues();
+                for (ConstructorArgumentValues.ValueHolder conArg : conArgs) {
+                    if (conArg.getValue() instanceof TypedStringValue) {
+                        TypedStringValue value = (TypedStringValue) conArg.getValue();
+                        if (value.getValue().indexOf(".xml") != -1)
+                        	configLocations = new String[]{value.getValue()};
+                    }
+                    if (conArg.getValue() instanceof ManagedList) {
+                        Iterator itml = ((ManagedList)conArg.getValue()).iterator();
+                        StringBuffer values = new StringBuffer();
+                        while (itml.hasNext()) {
+                            TypedStringValue next = (TypedStringValue)itml.next();
+                            if (next.getValue().indexOf(".xml") != -1) {
+                            	values.append(implementation.getClassLoader().getResource(next.getValue()).toString());
+                                values.append("~");
+                            }
                         }
-                        
-                        if (beanClassName.indexOf(".ClassPathXmlApplicationContext") != -1) {                                                                   
-                                appContext = new ClassPathXmlApplicationContext(listValues, false, scaParentContext);                                   
-                                appContext.refresh(); // TODO why is this needed here now?
-                                includeAnnotationProcessors(appContext.getBeanFactory());
-                                return appContext;
-                        } else {
-                                appContext = new FileSystemXmlApplicationContext(listValues, false, scaParentContext);                                  
-                                appContext.refresh(); // TODO why is this needed here now?
-                                includeAnnotationProcessors(appContext.getBeanFactory());
-                                return appContext;
-                        }
-                }               
+                        configLocations = (values.toString()).split("~");                                    
+                    }
+                }
+                
+                if (beanClassName.indexOf(".ClassPathXmlApplicationContext") != -1) {                                                                   
+                    appContext = new ClassPathXmlApplicationContext(configLocations, true, scaParentContext);                    
+                    includeAnnotationProcessors(appContext.getBeanFactory());
+                    return appContext;
+                } else {
+                    appContext = new FileSystemXmlApplicationContext(configLocations, true, scaParentContext);
+                    includeAnnotationProcessors(appContext.getBeanFactory());
+                    return appContext;
+                }
+	        }               
         }
         
         // use the generic application context as default 

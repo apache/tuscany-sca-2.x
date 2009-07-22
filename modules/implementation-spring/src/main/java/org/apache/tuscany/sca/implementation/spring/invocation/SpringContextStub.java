@@ -85,6 +85,7 @@ public class SpringContextStub {
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         } catch (InvocationTargetException e) {
+        	e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
@@ -97,6 +98,7 @@ public class SpringContextStub {
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         } catch (InvocationTargetException e) {
+        	e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
@@ -109,6 +111,7 @@ public class SpringContextStub {
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         } catch (InvocationTargetException e) {
+        	e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
@@ -123,6 +126,7 @@ public class SpringContextStub {
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         } catch (InvocationTargetException e) {
+        	e.printStackTrace();
             throw new RuntimeException(e);
         }
     }

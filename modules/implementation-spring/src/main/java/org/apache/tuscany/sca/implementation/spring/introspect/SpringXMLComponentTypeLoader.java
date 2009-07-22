@@ -27,7 +27,11 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -76,7 +80,6 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
 /**
  * Introspects a Spring XML application-context configuration file to create <implementation-spring../>
  * component type information.
- *
  *
  * @version $Rev$ $Date$
  */
@@ -158,6 +161,8 @@ public class SpringXMLComponentTypeLoader {
         try {
             resource = resolveLocation(resolver, contextPath);
             resource = getApplicationContextResource(resource);
+            
+            implementation.setClassLoader(new ContextClassLoader(resolver));
             implementation.setResource(resource);
             // The URI is used to uniquely identify the Implementation
             implementation.setURI(resource.toString());
@@ -687,12 +692,13 @@ public class SpringXMLComponentTypeLoader {
                             }
                         }
                     }
+                    // Look for the default applicaiton-context.xml file, when MANIFEST.MF is absent.
                     je = jf.getJarEntry("META-INF" + "/" + "spring" + "/" + SpringImplementationConstants.APPLICATION_CONTEXT);
                     if (je != null) {
-                        return new URL("jar:" + locationFile.toURI().toURL() + "!/" + SpringImplementationConstants.APPLICATION_CONTEXT);
+                        return new URL("jar:" + locationFile.toURI().toURL() + "!/" +
+                        		"META-INF" + "/" + "spring" + "/" + SpringImplementationConstants.APPLICATION_CONTEXT);
                     }
                 } catch (IOException e) {
-                    // bad archive
                     // TODO: create a more appropriate exception type
                     throw new ContributionReadException("SpringXMLLoader getApplicationContextResource: "
                     												+ " IO exception reading context file.", e);
@@ -706,8 +712,8 @@ public class SpringXMLComponentTypeLoader {
         			// Deal with the directory inside a jar file, in case the contribution itself is a JAR file.
         			try {
 	        			if (locationFile.getPath().indexOf(".jar") > 0) {
-	        				String jarEntry = url.getPath().substring(6, url.getPath().indexOf("!"));
-	        				JarFile jf = new JarFile(jarEntry);
+	        				String jarPath = url.getPath().substring(6, url.getPath().indexOf("!"));
+	        				JarFile jf = new JarFile(jarPath);
 	        				JarEntry je = jf.getJarEntry(url.getPath().substring(url.getPath().indexOf("!/")+2)
 	        												+ "/" + "META-INF" + "/" + "MANIFEST.MF");
 	        			    if (je != null) {
@@ -721,6 +727,13 @@ public class SpringXMLComponentTypeLoader {
 	                                }
 	                            }
 	        				}
+	        			    // Look for the default applicaiton-context.xml file, when MANIFEST.MF is absent.
+        			    	je = jf.getJarEntry(url.getPath().substring(url.getPath().indexOf("!/")+2) + "/" + 
+                        			"META-INF" + "/" + "spring" + "/" + SpringImplementationConstants.APPLICATION_CONTEXT);
+                            if (je != null) {
+                                return new URL("jar:" + url.getPath() + "/" + 
+                                	"META-INF" + "/" + "spring" + "/" + SpringImplementationConstants.APPLICATION_CONTEXT);
+                            }
 	        			}
             		} catch (IOException e) {
                         throw new ContributionReadException("Error reading manifest " + manifestFile);
@@ -777,5 +790,39 @@ public class SpringXMLComponentTypeLoader {
         }
 
         return reference;
+    }
+    
+    private class ContextClassLoader extends ClassLoader {
+    	public ContextClassLoader(ModelResolver resolver) {
+    		super();
+    		this.resolver = resolver;
+    	}
+
+		private ModelResolver resolver;
+		
+		@Override
+		protected Class<?> findClass(String name) throws ClassNotFoundException {
+			return SpringXMLComponentTypeLoader.this.resolveClass(resolver, name);
+		}
+		
+		@Override
+		protected URL findResource(String name) {
+			try {
+				return resolveLocation(resolver, name);
+			} catch (Exception e) {
+				return null;
+			}
+		}
+		
+		@Override
+		protected Enumeration<URL> findResources(String name) throws IOException {
+			URL url = findResource(name);
+			if (url != null) {
+				return Collections.enumeration(Arrays.asList(url));
+			} else {
+				Collection<URL> urls = Collections.emptyList();
+				return Collections.enumeration(urls);
+			}
+		}
     }
 } // end class SpringXMLComponentTypeLoader

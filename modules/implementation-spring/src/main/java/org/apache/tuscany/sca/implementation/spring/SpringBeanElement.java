@@ -33,6 +33,9 @@ public class SpringBeanElement {
     private String id;
     private String className;
     private boolean innerBean = false;
+    private boolean abstractBean = false;
+    private boolean refParentBean = false;
+    private boolean reffactoryBean = false;
     private List<SpringPropertyElement> properties = new ArrayList<SpringPropertyElement>();
     private List<SpringConstructorArgElement> constructorargs = new ArrayList<SpringConstructorArgElement>();
 
@@ -71,6 +74,14 @@ public class SpringBeanElement {
     
     public void setInnerBean(boolean innerBean) {
         this.innerBean = innerBean;
+    }
+    
+    public boolean isAbstractBean() {
+        return abstractBean;
+    }
+    
+    public void setAbstractBean(boolean abstractBean) {
+        this.abstractBean = abstractBean;
     }
 
 } // end class SpringBeanElement

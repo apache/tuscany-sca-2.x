@@ -55,6 +55,7 @@ public class SpringImplementation extends ImplementationImpl implements Implemen
     private Hashtable<String, Class<?>> propertyMap;
     // List of unresolved bean property references
     private Hashtable<String, Reference> unresolvedBeanRef;
+    private ClassLoader classLoader;
 
     public SpringImplementation() {
         super(TYPE);
@@ -216,5 +217,13 @@ public class SpringImplementation extends ImplementationImpl implements Implemen
             throw new AssertionError(e); // should not ever happen
         }
         return newProperty;
+    }
+    
+    public ClassLoader getClassLoader() {
+    	return classLoader;
+    }
+
+    public void setClassLoader(ClassLoader classLoader) {
+    	this.classLoader = classLoader;
     }
 }
