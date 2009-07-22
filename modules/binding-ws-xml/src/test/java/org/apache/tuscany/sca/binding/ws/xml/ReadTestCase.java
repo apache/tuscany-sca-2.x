@@ -38,6 +38,9 @@ import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProce
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -51,6 +54,7 @@ public class ReadTestCase {
     private static XMLInputFactory inputFactory;
     private static StAXArtifactProcessor<Object> staxProcessor;
     private static CompositeBuilder compositeBuilder;
+    private static Monitor monitor;
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -59,6 +63,10 @@ public class ReadTestCase {
         StAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(extensionPoints);
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null, null);
         compositeBuilder = extensionPoints.getExtensionPoint(CompositeBuilderExtensionPoint.class).getCompositeBuilder("org.apache.tuscany.sca.assembly.builder.CompositeBuilder");
+        
+        UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
+        MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
+        monitor = monitorFactory.createMonitor();
     }
 
     @Test
@@ -76,7 +84,7 @@ public class ReadTestCase {
         Composite composite = (Composite)staxProcessor.read(reader);
         assertNotNull(composite);
 
-        compositeBuilder.build(composite, null, null);
+        compositeBuilder.build(composite, null, monitor);
     }
     
     @Test
@@ -86,7 +94,7 @@ public class ReadTestCase {
         Composite composite = (Composite)staxProcessor.read(reader);
         assertNotNull(composite);
 
-        compositeBuilder.build(composite, null, null);
+        compositeBuilder.build(composite, null, monitor);
 
     }
 

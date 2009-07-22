@@ -36,6 +36,9 @@ import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtens
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.junit.Assert;
 import org.junit.Before;
@@ -54,6 +57,7 @@ public class SCABindingTestCase {
     private CompositeModelResolver resolver;
     private CompositeBuilder compositeBuilder;
     private ExtensionPointRegistry extensionPoints;
+    private Monitor monitor;
 
     @Before
     public void init() throws Exception {
@@ -71,6 +75,10 @@ public class SCABindingTestCase {
         PolicyFactory attachPointTypeFactory = modelFactories.getFactory(PolicyFactory.class);
 
         compositeBuilder = extensionPoints.getExtensionPoint(CompositeBuilderExtensionPoint.class).getCompositeBuilder("org.apache.tuscany.sca.assembly.builder.CompositeBuilder");
+        
+        UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
+        MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
+        monitor = monitorFactory.createMonitor();
 
     }
 
@@ -98,7 +106,7 @@ public class SCABindingTestCase {
 
 	        staxProcessor.resolve(composite, resolver);
 
-	        compositeBuilder.build(composite, null, null);
+	        compositeBuilder.build(composite, null, monitor);
 
 	        SCABinding referenceSCABinding = (SCABinding) composite.getComponents().get(0).getReferences().get(0).getBindings().get(0);
 	        SCABinding serviceSCABinding   = (SCABinding) composite.getComponents().get(1).getServices().get(0).getBindings().get(0);

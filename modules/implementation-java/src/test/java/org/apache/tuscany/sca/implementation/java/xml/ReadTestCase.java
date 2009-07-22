@@ -41,7 +41,10 @@ import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.definitions.Definitions;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySubject;
@@ -60,6 +63,7 @@ public class ReadTestCase {
     private static StAXArtifactProcessor<Object> staxProcessor;
     private static URLArtifactProcessor<Definitions> policyDefinitionsProcessor;
     private static CompositeBuilder compositeBuilder;
+    private static Monitor monitor;
     
     @BeforeClass
     public static void setUp() throws Exception {
@@ -72,6 +76,10 @@ public class ReadTestCase {
         
         URLArtifactProcessorExtensionPoint documentProcessors = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class); 
         policyDefinitionsProcessor = documentProcessors.getProcessor(Definitions.class);
+        
+        UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
+        MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
+        monitor = monitorFactory.createMonitor();
     }
 
     @Test
@@ -81,7 +89,7 @@ public class ReadTestCase {
         Composite composite = (Composite)staxProcessor.read(reader);
         assertNotNull(composite);
 
-        compositeBuilder.build(composite, null, null);
+        compositeBuilder.build(composite, null, monitor);
 
     }
 
@@ -102,7 +110,7 @@ public class ReadTestCase {
         staxProcessor.resolve(scaDefns, resolver);
         staxProcessor.resolve(composite, resolver);
 
-        compositeBuilder.build(composite, null, null);
+        compositeBuilder.build(composite, null, monitor);
         
         //intents are computed and aggregate intents from ancestor elements
         assertEquals(((PolicySubject)composite.getComponents().get(0)).getRequiredIntents().size(), 3);
@@ -176,7 +184,7 @@ public class ReadTestCase {
         staxProcessor.resolve(policyDefinitions, resolver);
         staxProcessor.resolve(composite, resolver);
 
-        compositeBuilder.build(composite, null, null);
+        compositeBuilder.build(composite, null, monitor);
         
         //test for determination of policysets for implementation
         assertEquals(((PolicySubject)composite.getComponents().get(0)).getPolicySets().size(), 1);
