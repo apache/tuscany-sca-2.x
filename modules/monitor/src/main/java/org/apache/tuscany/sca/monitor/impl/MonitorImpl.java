@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.monitor.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -33,8 +34,11 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
  *
  * @version $Rev$ $Date$
  */
-public class MonitorImpl implements Monitor {
+public class MonitorImpl extends Monitor {
     private static final Logger logger = Logger.getLogger(MonitorImpl.class.getName());
+    
+    // stack of context information that is printed alongside each problem
+    private Stack<String> contextStack = new Stack<String>();
 
     // Cache all the problem reported to monitor for further analysis
     private List<Problem> problemCache = new ArrayList<Problem>();
@@ -54,21 +58,21 @@ public class MonitorImpl implements Monitor {
 
         if (problem.getSeverity() == Severity.INFO) {
             problemCache.add(problem);
-            problemLogger.logp(Level.INFO, problem.getSourceClassName(), null, problem.getMessageId(), problem
+            problemLogger.logp(Level.INFO, problem.getSourceClassName(), problem.getContext(), problem.getMessageId(), problem
                 .getMessageParams());
         } else if (problem.getSeverity() == Severity.WARNING) {
             problemCache.add(problem);
-            problemLogger.logp(Level.WARNING, problem.getSourceClassName(), null, problem.getMessageId(), problem
+            problemLogger.logp(Level.WARNING, problem.getSourceClassName(), problem.getContext(), problem.getMessageId(), problem
                 .getMessageParams());
         } else if (problem.getSeverity() == Severity.ERROR) {
             if (problem.getCause() != null) {
                 problemCache.add(problem);
-                problemLogger.logp(Level.SEVERE, problem.getSourceClassName(), null, problem.getMessageId(), problem
+                problemLogger.logp(Level.SEVERE, problem.getSourceClassName(), problem.getContext(), problem.getMessageId(), problem
                     .getCause().toString());
 
             } else {
                 problemCache.add(problem);
-                problemLogger.logp(Level.SEVERE, problem.getSourceClassName(), null, problem.getMessageId(), problem
+                problemLogger.logp(Level.SEVERE, problem.getSourceClassName(), problem.getContext(), problem.getMessageId(), problem
                     .getMessageParams());
             }
         }
@@ -91,7 +95,7 @@ public class MonitorImpl implements Monitor {
                                  Object problemObject,
                                  String messageId,
                                  Exception cause) {
-        return new ProblemImpl(sourceClassName, bundleName, severity, problemObject, messageId, cause);
+        return new ProblemImpl(sourceClassName, bundleName, severity, contextStack.toString(), problemObject, messageId, cause);
     }
 
     public Problem createProblem(String sourceClassName,
@@ -100,7 +104,7 @@ public class MonitorImpl implements Monitor {
                                  Object problemObject,
                                  String messageId,
                                  Object... messageParams) {
-        return new ProblemImpl(sourceClassName, bundleName, severity, problemObject, messageId, messageParams);
+        return new ProblemImpl(sourceClassName, bundleName, severity, contextStack.toString(), problemObject, messageId, messageParams);
     }
 
     public String getArtifactName() {
@@ -109,5 +113,15 @@ public class MonitorImpl implements Monitor {
 
     public void setArtifactName(String artifactName) {
         this.artifactName = artifactName;
+    }
+    
+    @Override
+    public void pushContext(String context) {
+        contextStack.push(context);
+    }
+    
+    @Override
+    public void popContext() {
+        contextStack.pop();
     }
 }

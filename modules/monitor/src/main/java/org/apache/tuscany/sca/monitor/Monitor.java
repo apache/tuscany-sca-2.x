@@ -28,27 +28,27 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
  *
  * @version $Rev$ $Date$
  */
-public interface Monitor {
+public abstract class Monitor {
     /**
      * Reports a build problem.
      * 
      * @param problem
      */
-    void problem(Problem problem);
+    public abstract void problem(Problem problem);
 
     /** 
      * Returns a list of reported problems. 
      * 
      * @return the list of problems. The list may be empty
      */
-    List<Problem> getProblems();
+    public abstract List<Problem> getProblems();
 
     /**
      * Returns the last logged problem.
      * 
      * @return
      */
-    public Problem getLastProblem();
+    public abstract Problem getLastProblem();
 
     /**
      * Create a new problem.
@@ -61,12 +61,12 @@ public interface Monitor {
      * @param cause             the exception which caused the problem
      * @return
      */
-    Problem createProblem(String sourceClassName,
-                          String bundleName,
-                          Severity severity,
-                          Object problemObject,
-                          String messageId,
-                          Exception cause);
+    public abstract Problem createProblem(String sourceClassName,
+                                          String bundleName,
+                                          Severity severity,
+                                          Object problemObject,
+                                          String messageId,
+                                          Exception cause);
 
     /**
      * Create a new problem.
@@ -79,23 +79,74 @@ public interface Monitor {
      * @param messageParams     the parameters of the problem message
      * @return
      */
-    Problem createProblem(String sourceClassName,
-                          String bundleName,
-                          Severity severity,
-                          Object problemObject,
-                          String messageId,
-                          Object... messageParams);
+    public abstract Problem createProblem(String sourceClassName,
+                                   String bundleName,
+                                   Severity severity,
+                                   Object problemObject,
+                                   String messageId,
+                                   Object... messageParams);
 
     /**
      * Set the name of an artifact for which errors are Monitored
      * @param artifactName the artifact name
      */
-    void setArtifactName(String artifactName);
+    public abstract void setArtifactName(String artifactName);
 
     /**
      * Get the name of the artifact for which errors are Monitored
      * @return the name of the Artifact or null if no artifact name has been set
      */
-    String getArtifactName();
-
+    public abstract String getArtifactName();
+    
+    // =====================================================
+    // TUSCANY-3132 - new approach to monitoring errors
+    //           
+    
+    /**
+     * Add a context string to the context stack
+     * @param context the context string to add
+     */
+    public abstract void pushContext(String context);
+    
+    /**
+     * Remove the most recent context string from the 
+     * context stack
+     */
+    public abstract void popContext();
+    
+    public static void warning (Monitor monitor, 
+                                Object reportingObject,
+                                String messageBundle,
+                                String messageId, 
+                                String... messageParameters){
+        if (monitor != null) {
+            Problem problem =
+                monitor.createProblem(reportingObject.getClass().getName(),
+                                      messageBundle,
+                                      Severity.WARNING,
+                                      null,
+                                      messageId,
+                                      (Object[])messageParameters);
+            monitor.problem(problem);
+        }
+    }
+   
+    public static void error (Monitor monitor, 
+                              Object reportingObject,
+                              String messageBundle,
+                              String messageId, 
+                              String... messageParameters){
+        if (monitor != null) {
+            Problem problem =
+                monitor.createProblem(reportingObject.getClass().getName(),
+                                      messageBundle,
+                                      Severity.ERROR,
+                                      null,
+                                      messageId,
+                                      (Object[])messageParameters);
+            monitor.problem(problem);
+        }
+    }
+    
+    // =====================================================
 }

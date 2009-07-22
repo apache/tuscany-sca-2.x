@@ -37,6 +37,7 @@ public class ProblemImpl implements Problem {
     private String sourceClassName;
     private String bundleName;
     private Severity severity;
+    private String context;
     private Object problemObject;
     private String messageId;
     private Object[] messageParams;
@@ -48,6 +49,7 @@ public class ProblemImpl implements Problem {
      * @param sourceClassName   the class name reporting the problem
      * @param bundleName        the name of the message bundle to use
      * @param severity          the severity of the problem
+     * @param context           the string indicating where the error occurred
      * @param problemObject     the model object for which the problem is being reported
      * @param messageId         the id of the problem message
      * @param messageParams     the parameters of the problem message
@@ -55,12 +57,14 @@ public class ProblemImpl implements Problem {
     public ProblemImpl(String sourceClassName,
                        String bundleName,
                        Severity severity,
+                       String context,
                        Object problemObject,
                        String messageId,
                        Object... messageParams) {
         this.sourceClassName = sourceClassName;
         this.bundleName = bundleName;
         this.severity = severity;
+        this.context = context;
         this.problemObject = problemObject;
         this.messageId = messageId;
         this.messageParams = messageParams;
@@ -72,6 +76,7 @@ public class ProblemImpl implements Problem {
      * @param sourceClassName   the class name reporting the problem
      * @param bundleName        the name of the message bundle to use
      * @param severity          the severity of the problem
+     * @param context           the string indicating where the error occurred
      * @param problemObject     the model object for which the problem is being reported
      * @param messageId         the id of the problem message
      * @param cause             the exception which caused the problem
@@ -79,12 +84,14 @@ public class ProblemImpl implements Problem {
     public ProblemImpl(String sourceClassName,
                        String bundleName,
                        Severity severity,
+                       String context,
                        Object problemObject,
                        String messageId,
                        Exception cause) {
         this.sourceClassName = sourceClassName;
         this.bundleName = bundleName;
         this.severity = severity;
+        this.context = context;
         this.problemObject = problemObject;
         this.messageId = messageId;
         this.cause = cause;
@@ -100,6 +107,10 @@ public class ProblemImpl implements Problem {
 
     public Severity getSeverity() {
         return severity;
+    }
+    
+    public String getContext() {
+        return context;
     }
 
     public Object getProblemObject() {
@@ -137,6 +148,6 @@ public class ProblemImpl implements Problem {
 
         Formatter formatter = new SimpleFormatter();
 
-        return formatter.formatMessage(record);
+        return context + " - " + formatter.formatMessage(record);
     }
 }

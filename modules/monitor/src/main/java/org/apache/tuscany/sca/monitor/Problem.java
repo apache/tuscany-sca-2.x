@@ -35,6 +35,8 @@ public interface Problem {
     String getBundleName();
 
     Severity getSeverity();
+    
+    String getContext();
 
     Object getProblemObject();
 

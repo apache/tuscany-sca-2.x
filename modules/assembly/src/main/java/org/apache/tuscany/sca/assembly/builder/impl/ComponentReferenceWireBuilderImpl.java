@@ -66,6 +66,8 @@ public class ComponentReferenceWireBuilderImpl extends BaseBuilderImpl implement
      */
     protected void wireComponentReferences(Composite composite, Monitor monitor) {
 
+        monitor.pushContext(composite.getName().toString());
+        
         // Wire nested composites recursively
         for (Component component : composite.getComponents()) {
             Implementation implementation = component.getImplementation();
@@ -108,7 +110,14 @@ public class ComponentReferenceWireBuilderImpl extends BaseBuilderImpl implement
                                 componentReference.getName());
                     }
                 } else {
-                    warning(monitor, "TooManyReferenceTargets", composite, componentReference.getName());
+// ---------------------------                    
+// TUSCANY-3132  first example of updated error handling                  
+                    Monitor.error(monitor,
+                                  this,
+                                  "assembly-validation-messages",
+                                  "TooManyReferenceTargets", 
+                                  componentReference.getName());
+// ---------------------------                    
                 }
             }
         }
@@ -118,6 +127,8 @@ public class ComponentReferenceWireBuilderImpl extends BaseBuilderImpl implement
         //  for (ComponentReference componentReference : componentReferences.values()) {
         //      componentReference.getTargets().clear();
         //  }
+        
+        monitor.popContext();
     }
 
     /**
