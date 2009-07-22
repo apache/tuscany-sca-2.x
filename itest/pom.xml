@@ -47,16 +47,12 @@
             <modules>
                 <!--module>builder</module-->
                 <module>bpel</module>
-
-<!-- TUSCANY-3138 comment out callback tests until that function fixed in trunk 
-
                 <module>callback-api</module>
                 <module>callback-basic</module>
                 <module>callback-basic-ws</module>
                 <module>callback-complex-type</module>
                 <module>callback-multiple-wires</module>
                 <module>callback-separatethread</module>
-TUSCANY-3138 -->
                 <module>component-type</module>
                 <module>contribution-folder</module>
                 <module>contribution-zip</module>
