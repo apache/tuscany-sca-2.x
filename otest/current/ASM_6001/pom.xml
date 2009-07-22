@@ -24,16 +24,44 @@
         <version>2.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>tuscany-otests-asm-ASM_6001</artifactId>
-    <name>Apache Tuscany SCA Specification Tests ASM ASM_6001</name> 
+    <artifactId>ASM_6001</artifactId>
+    <name>Apache Tuscany SCA Specification Tests ASM_6001</name> 
 
     <build>
-        <sourceDirectory>../src/main/resources/ASM_6001</sourceDirectory>
-        <resources>
-          <resource>
-            <directory>../src/main/resources/ASM_6001</directory>
-          </resource>
-        </resources>
-        <outputDirectory>../tests/target/ASM_6001</outputDirectory>
+       <finalName>${artifactId}</finalName>
+       <plugins>
+           <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.3</version>
+
+                <dependencies>
+                    <dependency>
+                        <groupId>ant</groupId>
+                        <artifactId>ant-trax</artifactId>
+                        <version>1.6.5</version>
+                    </dependency>
+                </dependencies>
+
+                <executions>
+                    <execution>
+                        <id>copy-files-from-svn</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <property name="from.dir" value="../src/main/resources/${artifactId}"/>
+                                <property name="to.dir" value="src/main/resources"/>
+                                <ant antfile="../build.xml">
+                                    <target name="copyDir"/>
+                                </ant>
+                            </tasks>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>            
+        </plugins>
     </build>
 </project>
