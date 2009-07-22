@@ -71,27 +71,6 @@
     <modules>
         <module>General</module>
         <module>General_Java</module>
-<!--
-        <module>ASM_10001</module>
-        <module>ASM_10003</module>
-        <module>ASM_12001</module>
-        <module>ASM_12002</module>
-        <module>ASM_12003</module>
-        <module>ASM_12005</module>
-        <module>ASM_12007</module>
-        <module>ASM_12008</module>
-        <module>ASM_12009</module>
-        <module>ASM_12010</module>
-        <module>ASM_12012</module>
-        <module>ASM_12013</module>
-        <module>ASM_13001</module>
-        <module>ASM_13002</module>
-        <module>ASM_13003</module>
-        <module>ASM_13004</module>
-        <module>ASM_13005</module>
-        <module>ASM_13006</module>
-        <module>ASM_13007</module>
-        <module>ASM_13008</module>
         <module>ASM_4002</module>
         <module>ASM_4003</module>
         <module>ASM_4004</module>
@@ -125,19 +104,39 @@
         <module>ASM_7008</module>
         <module>ASM_7009</module>
         <module>ASM_7010</module>
+<!--
         <module>ASM_8001</module>
         <module>ASM_8001_Java</module>
         <module>ASM_8003</module>
         <module>ASM_8004</module>
         <module>ASM_8005</module>
+-->
         <module>ASM_8010</module>
         <module>ASM_8011</module>
         <module>ASM_8012</module>
         <module>ASM_9002</module>
+        <module>ASM_10001</module>
+        <module>ASM_10003</module>
+        <module>ASM_12001</module>
+        <module>ASM_12002</module>
+        <module>ASM_12003</module>
+        <module>ASM_12005</module>
+        <module>ASM_12007</module>
+        <module>ASM_12008</module>
+        <module>ASM_12009</module>
+        <module>ASM_12010</module>
+        <module>ASM_12012</module>
+        <module>ASM_12013</module>
+        <module>ASM_13001</module>
+        <module>ASM_13002</module>
+        <module>ASM_13003</module>
+        <module>ASM_13004</module>
+        <module>ASM_13005</module>
+        <module>ASM_13006</module>
+        <module>ASM_13007</module>
+        <module>ASM_13008</module>
         <module>Contribution1</module>
         <module>Contribution2</module>
--->
-        <module>ASM_5004</module>
         <module>tests</module>
     </modules>
 
