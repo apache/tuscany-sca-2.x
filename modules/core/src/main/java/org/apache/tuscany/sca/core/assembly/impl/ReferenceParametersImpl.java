@@ -27,7 +27,6 @@ import org.apache.tuscany.sca.runtime.ReferenceParameters;
  */
 public class ReferenceParametersImpl implements ReferenceParameters {
     private Object callbackID;
-    private Object conversationID;
     private EndpointReference callbackReference;
     private Object callbackObjectID;
     
@@ -42,18 +41,6 @@ public class ReferenceParametersImpl implements ReferenceParameters {
      */
     public void setCallbackID(Object callbackID) {
         this.callbackID = callbackID;
-    }
-    /**
-     * @return the conversationID
-     */
-    public Object getConversationID() {
-        return conversationID;
-    }
-    /**
-     * @param conversationID the conversationID to set
-     */
-    public void setConversationID(Object conversationID) {
-        this.conversationID = conversationID;
     }
 
     /**
@@ -99,7 +86,6 @@ public class ReferenceParametersImpl implements ReferenceParameters {
         result = prime * result + ((callbackID == null) ? 0 : callbackID.hashCode());
         result = prime * result + ((callbackObjectID == null) ? 0 : callbackObjectID.hashCode());
         result = prime * result + ((callbackReference == null) ? 0 : callbackReference.hashCode());
-        result = prime * result + ((conversationID == null) ? 0 : conversationID.hashCode());
         return result;
     }
     /**
@@ -129,11 +115,7 @@ public class ReferenceParametersImpl implements ReferenceParameters {
                 return false;
         } else if (!callbackReference.equals(other.callbackReference))
             return false;
-        if (conversationID == null) {
-            if (other.conversationID != null)
-                return false;
-        } else if (!conversationID.equals(other.conversationID))
-            return false;
+
         return true;
     }
 }

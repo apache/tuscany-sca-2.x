@@ -62,7 +62,6 @@ public class ReferenceParameterProcessor implements StAXArtifactProcessor<Refere
      */
     public ReferenceParameters read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
         ReferenceParameters parameters = new ReferenceParametersImpl();
-        parameters.setConversationID(reader.getAttributeValue(null, "conversationID"));
         parameters.setCallbackID(reader.getAttributeValue(null, "callbackID"));
         return parameters;
     }
@@ -76,9 +75,7 @@ public class ReferenceParameterProcessor implements StAXArtifactProcessor<Refere
                                  REFERENCE_PARAMETERS.getLocalPart(),
                                  REFERENCE_PARAMETERS.getNamespaceURI());
         writer.writeNamespace(REFERENCE_PARAMETERS.getPrefix(), REFERENCE_PARAMETERS.getNamespaceURI());
-        if (model.getConversationID() != null) {
-            writer.writeAttribute("conversationID", model.getConversationID().toString());
-        }
+
         if (model.getCallbackID() != null) {
             writer.writeAttribute("callbackID", model.getCallbackID().toString());
         }

@@ -40,18 +40,6 @@ public interface ReferenceParameters extends Cloneable {
     void setCallbackID(Object callbackID);
 
     /**
-     * Get the conversation ID
-     * @return the conversationID
-     */
-    Object getConversationID();
-
-    /**
-     * Set the conversation ID
-     * @param conversationID the conversationID to set
-     */
-    void setConversationID(Object conversationID);
-
-    /**
      * Get the ID for the non-ServiceReference callback object
      * @return
      */
