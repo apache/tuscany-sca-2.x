@@ -24,7 +24,7 @@
         <version>2.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>ASM_4004</artifactId>
+    <artifactId>tuscany-otests-asm-ASM_4004</artifactId>
     <name>Apache Tuscany SCA Specification Tests ASM_4004</name> 
 
     <build>
@@ -46,13 +46,13 @@
                 <executions>
                     <execution>
                         <id>copy-files-from-svn</id>
-                        <phase>verify</phase>
+                        <phase>generate-resources</phase>
                         <goals>
                             <goal>run</goal>
                         </goals>
                         <configuration>
                             <tasks>
-                                <property name="from.dir" value="../src/main/resources/${artifactId}"/>
+                                <property name="from.dir" value="../src/main/resources/ASM_4004"/>
                                 <property name="to.dir" value="src/main/resources"/>
                                 <ant antfile="../build.xml">
                                     <target name="copyDir"/>
