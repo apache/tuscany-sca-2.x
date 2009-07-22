@@ -21,7 +21,9 @@ package org.apache.tuscany.sca.core.invocation.impl;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+
 import org.apache.tuscany.sca.core.assembly.impl.RuntimeWireImpl;
+import org.apache.tuscany.sca.core.context.impl.CallbackServiceReferenceImpl;
 import org.apache.tuscany.sca.core.context.impl.ServiceReferenceImpl;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.MessageFactory;
@@ -45,24 +47,19 @@ public class JDKCallbackInvocationHandler extends JDKInvocationHandler {
     @Override
     @SuppressWarnings( {"unchecked"})
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        
         if (Object.class == method.getDeclaringClass()) {
             return invokeObjectMethod(method, args);
         }
-
+   
         // obtain a dedicated wire to be used for this callback invocation
-        RuntimeWire wire = ((ServiceReferenceImpl)callableReference).getRuntimeWire();
+        RuntimeWire wire = ((CallbackServiceReferenceImpl)callableReference).getCallbackWire();
         if (wire == null) {
             //FIXME: need better exception
             throw new ServiceRuntimeException("No callback wire found");
         }
 
-        // set the conversational state based on the interface that
-        // is specified for the reference that this wire belongs to
-        // TODO - EPR - not required for OASIS
-        //initConversational(wire);
-
-// TODO - EPR - Fix up callbacks now callable reference has gone
-//        setEndpoint(((ServiceReferenceImpl)callableReference).getEndpointReference().getTargetEndpoint());
+        setEndpoint(((CallbackServiceReferenceImpl)callableReference).getResolvedEndpoint());
 
         InvocationChain chain = getInvocationChain(method, wire);
         if (chain == null) {

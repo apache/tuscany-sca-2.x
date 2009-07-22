@@ -169,11 +169,10 @@ public class CallableReferenceImpl<B> implements ServiceReferenceExt<B> {
     public CallableReferenceImpl(Class<B> businessInterface, RuntimeWire wire, ProxyFactory proxyFactory) {
         this.proxyFactory = proxyFactory;
         this.businessInterface = businessInterface;
-        ExtensionPointRegistry registry = ((RuntimeWireImpl)wire).getExtensionPoints();
-        this.modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
-        this.assemblyFactory = (RuntimeAssemblyFactory)modelFactories.getFactory(AssemblyFactory.class);
+        //ExtensionPointRegistry registry = ((RuntimeWireImpl)wire).getExtensionPoints();
+        //this.modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
+        //this.assemblyFactory = (RuntimeAssemblyFactory)modelFactories.getFactory(AssemblyFactory.class);
         bind(wire);
-        
     }
 
     public RuntimeWire getRuntimeWire() {
@@ -187,6 +186,10 @@ public class CallableReferenceImpl<B> implements ServiceReferenceExt<B> {
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);
         }
+    }
+    
+    public EndpointReference getEndpointReference() {
+        return endpointReference;
     }
 
     protected void bind(RuntimeWire wire) {

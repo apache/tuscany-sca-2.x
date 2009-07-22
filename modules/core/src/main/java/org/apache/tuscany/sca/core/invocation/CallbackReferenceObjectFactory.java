@@ -20,6 +20,7 @@ package org.apache.tuscany.sca.core.invocation;
 
 import java.util.List;
 
+import org.apache.tuscany.sca.core.context.impl.CallbackServiceReferenceImpl;
 import org.apache.tuscany.sca.core.context.impl.ServiceReferenceImpl;
 import org.apache.tuscany.sca.core.factory.ObjectCreationException;
 import org.apache.tuscany.sca.core.factory.ObjectFactory;
@@ -43,7 +44,7 @@ public class CallbackReferenceObjectFactory implements ObjectFactory<ServiceRefe
     }
 
     public ServiceReference<?> getInstance() throws ObjectCreationException {
-        return new ServiceReferenceImpl(businessInterface, wires.get(0), proxyFactory);
+        return new CallbackServiceReferenceImpl(businessInterface, wires, proxyFactory);
     }
 
 }

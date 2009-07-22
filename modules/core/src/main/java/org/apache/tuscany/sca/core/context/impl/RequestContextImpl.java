@@ -103,7 +103,7 @@ public class RequestContextImpl implements RequestContext {
         Class<CB> javaClass = (Class<CB>)javaInterface.getJavaClass();
         List<RuntimeWire> wires = callbackReference.getRuntimeWires();
         ProxyFactory proxyFactory = new ExtensibleProxyFactory(proxyFactoryExtensionPoint);
-        ServiceReferenceImpl ref = new ServiceReferenceImpl(javaClass, wires.get(0), proxyFactory);
+        ServiceReferenceImpl ref = new CallbackServiceReferenceImpl(javaClass, wires, proxyFactory);
         if (ref != null) {  
             //ref.resolveTarget();
             // TODO - EPR - not required for OASIS

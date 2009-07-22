@@ -24,6 +24,7 @@ import java.security.PrivilegedAction;
 import java.util.List;
 
 import org.apache.tuscany.sca.core.context.impl.CallableReferenceImpl;
+import org.apache.tuscany.sca.core.context.impl.CallbackServiceReferenceImpl;
 import org.apache.tuscany.sca.core.context.impl.ServiceReferenceImpl;
 import org.apache.tuscany.sca.core.invocation.CachedProxy;
 import org.apache.tuscany.sca.core.invocation.ProxyCreationException;
@@ -72,7 +73,7 @@ public class JDKProxyFactory implements ProxyFactory {
     }
 
     public <T> T createCallbackProxy(Class<T> interfaze, List<RuntimeWire> wires) throws ProxyCreationException {
-        ServiceReferenceImpl<T> callbackReference = new ServiceReferenceImpl(interfaze, wires.get(0), null);
+        ServiceReferenceImpl<T> callbackReference = new CallbackServiceReferenceImpl(interfaze, wires, this);
         return callbackReference != null ? createCallbackProxy(callbackReference) : null;
     }
 

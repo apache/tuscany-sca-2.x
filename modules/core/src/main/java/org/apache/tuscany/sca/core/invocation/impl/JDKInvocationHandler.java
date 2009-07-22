@@ -55,7 +55,7 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
     protected EndpointReference source;
     protected Endpoint target;
     protected RuntimeWire wire;
-    protected ServiceReference<?> callableReference;
+    protected ServiceReferenceExt<?> callableReference;
     protected Class<?> businessInterface;
 
     protected boolean fixedWire = true;
@@ -71,7 +71,7 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
 
     public JDKInvocationHandler(MessageFactory messageFactory, ServiceReference<?> callableReference) {
         this.messageFactory = messageFactory;
-        this.callableReference = callableReference;
+        this.callableReference = (ServiceReferenceExt<?>)callableReference;
         if (callableReference != null) {
             this.businessInterface = callableReference.getBusinessInterface();
             this.wire = ((ServiceReferenceExt<?>)callableReference).getRuntimeWire();
@@ -494,7 +494,7 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
      * @param callableReference the callableReference to set
      */
     public void setCallableReference(ServiceReference<?> callableReference) {
-        this.callableReference = callableReference;
+        this.callableReference = (ServiceReferenceExt<?>)callableReference;
     }
 
     /**

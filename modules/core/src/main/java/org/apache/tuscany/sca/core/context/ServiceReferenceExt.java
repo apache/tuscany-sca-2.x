@@ -25,6 +25,7 @@ import java.io.IOException;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
@@ -35,16 +36,28 @@ import org.oasisopen.sca.ServiceReference;
  */
 public interface ServiceReferenceExt<B> extends ServiceReference<B>, Externalizable {
     /**
-     * @return
+     * Return the wire that sits behind this service reference
+     * @return wire
      */
     RuntimeWire getRuntimeWire(); 
-
+    
     /**
+     * Return the EndpointReference that sits behind this service reference
+     * @return endpoint reference
+     */
+    EndpointReference getEndpointReference();
+
+    // TODO - EPR - the the following still required?
+    /**
+     * TBD
+     * 
      * @param callbackID
      */
     void attachCallbackID(Object callbackID);
 
     /**
+     * TBD
+     * 
      * @return
      */
     XMLStreamReader getXMLReader();
