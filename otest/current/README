@@ -14,13 +14,39 @@ cd otest/current
 mvn eclipse:eclipse
 
 import otest/current/tests into eclipse
+import otest/current/General into eclipse
+import otest/current/General_Java into eclipse
 
-this gives you all the unit tests. The imported project won't be 
-linked to the source correctly. What you need to do is open the 
-project properties. Remove the source dir and add a link to 
-otest/current/src/test/java
+import which ever other contributions you need into eclipse (depends on which tests you are running)
+  
+Stricture of the otests
+======================
 
-We don't have a good way to generate the eclipse project files
-to inlcude this link automatically currently and we are looking
-to see what the most appropriate approach is to make this process
-as painless as possible. 
+The otest directory, once checked out, contains files from both OASIS and Tuscany svn. As follows
+
+otest/
+  current/               - the latest otests
+    src/                 - the latest otest source pulled directly from OASIS svn via svn:externals
+    tests/               - the latest otest unit tests pulled directly from OASIS svn via svn:externals
+    General_Java/        - the general Java contribution pulled from Tuscany svn 
+      src/main/          - the general Java classes pulled directly from OASIS svn via svn:externals
+    General              - the general contribution pulled from Tuscany svn 
+      src/main/resources - code copied from otest/current/src/resources/General
+    ASM_****
+      src/main/resources - code copied from otest/current/src/resources/AMS_****
+
+The code is copied from src/main/resources to the appropriate contribution each 
+time maven is used to compile the contribution in question. There is a build setting
+in each contribution pom that does the copy. 
+
+This all seems a bit complicated but is structured like this because the OASIS tests
+don't come with a build system. We want to be able to build in both maven and eclipse
+in the same way as we do with the rest of our code
+
+You will note that there are a lot of contributions and it would seem to be a big job
+if we need to make changes to the build across all the contributions. However there
+is an ant script that sets up the contribution modules. 
+
+otest/current/ant fixUpContributions
+
+Creates the src/main/resource directory and copies in the pom from the template-pom.xml file
