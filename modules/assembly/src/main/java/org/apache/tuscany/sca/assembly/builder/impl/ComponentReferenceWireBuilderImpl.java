@@ -87,39 +87,45 @@ public class ComponentReferenceWireBuilderImpl extends BaseBuilderImpl implement
 
         // Validate that references are wired or promoted, according
         // to their multiplicity
-        for (ComponentReference componentReference : componentReferences.values()) {
-            if (!ReferenceConfigurationUtil.validateMultiplicityAndTargets(componentReference.getMultiplicity(),
-                                                                           componentReference.getTargets(),
-                                                                           componentReference.getBindings())) {
-                if (componentReference.getTargets().isEmpty()) {
-
-                    // No warning if the reference is promoted out of the current composite
-                    boolean promoted = false;
-                    for (Reference reference : composite.getReferences()) {
-                        CompositeReference compositeReference = (CompositeReference)reference;
-                        if (compositeReference.getPromotedReferences().contains(componentReference)) {
-                            promoted = true;
-                            break;
+        for (Component component: components.values()){
+            monitor.pushContext(component.getName());
+            for (ComponentReference componentReference : component.getReferences()) {
+                monitor.pushContext(componentReference.getName());
+                if (!ReferenceConfigurationUtil.validateMultiplicityAndTargets(componentReference.getMultiplicity(),
+                                                                               componentReference.getTargets(),
+                                                                               componentReference.getBindings())) {
+                    if (componentReference.getTargets().isEmpty()) {
+    
+                        // No warning if the reference is promoted out of the current composite
+                        boolean promoted = false;
+                        for (Reference reference : composite.getReferences()) {
+                            CompositeReference compositeReference = (CompositeReference)reference;
+                            if (compositeReference.getPromotedReferences().contains(componentReference)) {
+                                promoted = true;
+                                break;
+                            }
                         }
-                    }
-                    if (!promoted && !componentReference.isForCallback()) {
-                        warning(monitor,
-                                "ReferenceWithoutTargets",
-                                composite,
-                                composite.getName().toString(),
-                                componentReference.getName());
-                    }
-                } else {
+                        if (!promoted && !componentReference.isForCallback()) {
+                            warning(monitor,
+                                    "ReferenceWithoutTargets",
+                                    composite,
+                                    composite.getName().toString(),
+                                    componentReference.getName());
+                        }
+                    } else {
 // ---------------------------                    
 // TUSCANY-3132  first example of updated error handling                  
-                    Monitor.error(monitor,
-                                  this,
-                                  "assembly-validation-messages",
-                                  "TooManyReferenceTargets", 
-                                  componentReference.getName());
+                        Monitor.error(monitor,
+                                      this,
+                                      "assembly-validation-messages",
+                                      "TooManyReferenceTargets", 
+                                      componentReference.getName());
 // ---------------------------                    
+                    }
                 }
+                monitor.popContext();
             }
+            monitor.popContext();
         }
 
         // Finally clear the original reference target lists as we now have
