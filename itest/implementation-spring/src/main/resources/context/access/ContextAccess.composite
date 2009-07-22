@@ -24,7 +24,7 @@
            xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1">
 
     <component name="CalculatorServiceComponent">
-        <implementation.spring location="META-INF/sca/context-access/CalculatorService-context.xml"/>
+        <implementation.spring location="CalculatorService-context.xml"/>
         <reference name="addService" target="AddServiceComponent" />
         <reference name="subtractService" target="SubtractServiceComponent" />
         <reference name="multiplyService" target="MultiplyServiceComponent" />

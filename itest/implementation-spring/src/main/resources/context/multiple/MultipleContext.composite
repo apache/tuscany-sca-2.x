@@ -29,7 +29,7 @@
     </service>
 
     <component name="StockQuoteServiceComponent">
-        <implementation.spring location="META-INF/sca/context-multiple/beanRefContext.xml"/>
+        <implementation.spring location="META-INF/spring/beanRefContext.xml"/>
     </component>
 
 </composite>

@@ -28,4 +28,8 @@ package org.apache.tuscany.sca.itest.spring;
  */
 public class SpringDelegationHelloWorldTestCase extends AbstractHelloWorldTestCase {
     // super class does it all getting composite based on this class name
+	
+	public SpringDelegationHelloWorldTestCase() {
+        super("SpringDelegationHelloWorld.composite", "org/apache/tuscany/sca/itest/spring/");        
+    }
 }

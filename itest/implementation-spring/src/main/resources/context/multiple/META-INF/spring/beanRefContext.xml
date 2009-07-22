@@ -27,8 +27,8 @@
     <bean id="beanRefFactory" class="org.springframework.context.support.ClassPathXmlApplicationContext">
 	   <constructor-arg>
 		  <list>
-			 <value>META-INF/sca/context-multiple/StockQuoteService-context.xml</value>
-			 <value>META-INF/sca/context-multiple/SpringHelloWorld-context.xml</value>
+			 <value>META-INF/spring/StockQuoteService-context.xml</value>
+			 <value>META-INF/spring/SpringHelloWorld-context.xml</value>
 		  </list>
 	   </constructor-arg>
     </bean>

@@ -19,10 +19,11 @@
 
 package implementation.policies;
 
+import java.io.File;
+
 import javax.security.auth.login.Configuration;
 import org.apache.tuscany.sca.node.Client;
 import org.apache.tuscany.sca.node.Contribution;
-import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 import calculator.CalculatorService;
@@ -41,9 +42,10 @@ public class CalculatorClient {
                 .getResource("implementation/policies/CalculatorJass.config").toString());
         }
 
-        String location = ContributionLocationHelper.getContributionLocation("implementation/policies/ImplementationPolicies.composite");
-        Node node = NodeFactory.newInstance().createNode("implementation/policies/ImplementationPolicies.composite", new Contribution("c1", location));
-        node.start();   
+        NodeFactory factory = NodeFactory.newInstance();
+        Node node = factory.createNode(new File("src/main/resources/implementation/policies/ImplementationPolicies.composite").toURI().toURL().toString(),
+                new Contribution("TestContribution", new File("src/main/resources/implementation/policies/").toURI().toURL().toString()));
+        node.start();
               
         CalculatorService calculatorService = 
             ((Client)node).getService(CalculatorService.class, "CalculatorServiceComponent");

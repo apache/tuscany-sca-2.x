@@ -26,7 +26,7 @@
     </component>
 
     <component name="HelloWorldComponent">
-        <implementation.spring location="META-INF/sca/SpringDelegationHelloWorld-context.xml"/>
+        <implementation.spring location="META-INF/spring/SpringDelegationHelloWorld-context.xml"/>
     </component>
 
 </composite>

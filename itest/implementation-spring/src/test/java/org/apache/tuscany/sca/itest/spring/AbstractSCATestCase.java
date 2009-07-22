@@ -19,7 +19,10 @@
 
 package org.apache.tuscany.sca.itest.spring;
 
+import java.io.File;
 import junit.framework.TestCase;
+import java.net.MalformedURLException;
+
 import org.apache.tuscany.sca.node.Client;
 import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.ContributionLocationHelper;
@@ -30,12 +33,20 @@ public abstract class AbstractSCATestCase<T> extends TestCase {
 
     protected Node node;
     protected T service;
+    protected String compositeName;
+    protected String contributionLocation;
 
+    public AbstractSCATestCase(String compositeName, String contributionLocation) {
+        super();
+        this.compositeName = compositeName;
+        this.contributionLocation = contributionLocation;        
+    }
+    
     @Override
     protected void setUp() throws Exception {
     	NodeFactory factory = NodeFactory.newInstance();    	
-    	String location = ContributionLocationHelper.getContributionLocation(getCompositeName());
-        node = factory.createNode(getCompositeName(), new Contribution("c1", location));        
+    	node = factory.createNode(new File("src/main/resources/" + contributionLocation + compositeName).toURI().toURL().toString(),
+                new Contribution("TestContribution", new File("src/main/resources/" + contributionLocation).toURI().toURL().toString()));      
     	node.start();
         service = ((Client)node).getService(getServiceClass(), "ClientComponent");
     }
@@ -46,12 +57,4 @@ public abstract class AbstractSCATestCase<T> extends TestCase {
     protected void tearDown() throws Exception {
         node.stop();
     }
-
-    protected String getCompositeName() {
-        String className = this.getClass().getName();
-        String compositeName = className.substring(0, className.length() - 8).replace('.', '/') + ".composite";
-        System.out.println("Using composite: " + compositeName);
-        return compositeName;
-    }
-
 }

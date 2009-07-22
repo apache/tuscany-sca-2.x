@@ -19,9 +19,10 @@
 
 package spring.annotations;
 
+import java.io.File;
+
 import org.apache.tuscany.sca.node.Client;
 import org.apache.tuscany.sca.node.Contribution;
-import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 import calculator.CalculatorService;
@@ -34,9 +35,10 @@ import calculator.CalculatorService;
 public class CalculatorClient {
     public static void main(String[] args) throws Exception {        
 
-    	String location = ContributionLocationHelper.getContributionLocation("spring/annotations/Calculator.composite");
-        Node node = NodeFactory.newInstance().createNode("spring/annotations/Calculator.composite", new Contribution("c1", location));
-        node.start();        
+    	NodeFactory factory = NodeFactory.newInstance();
+        Node node = factory.createNode(new File("src/main/resources/spring/annotations/Calculator.composite").toURI().toURL().toString(),
+                new Contribution("TestContribution", new File("src/main/resources/spring/annotations/").toURI().toURL().toString()));
+        node.start(); 
               
         CalculatorService calculatorService = 
             ((Client)node).getService(CalculatorService.class, "CalculatorServiceComponent");
@@ -45,14 +47,6 @@ public class CalculatorClient {
         System.out.println("3 - 2=" + calculatorService.subtract(3, 2));
         System.out.println("3 * 2=" + calculatorService.multiply(3, 2));
         System.out.println("3 / 2=" + calculatorService.divide(3, 2));
-        
-        /*calculatorService = 
-            ((SCAClient)node).getService(CalculatorService.class, "AnotherCalculatorServiceComponent");
-
-        System.out.println("3 + 2=" + calculatorService.add(3, 2));
-        System.out.println("3 - 2=" + calculatorService.subtract(3, 2));
-        System.out.println("3 * 2=" + calculatorService.multiply(3, 2));
-        System.out.println("3 / 2=" + calculatorService.divide(3, 2));*/
 
         node.stop();
         System.out.println("Bye");

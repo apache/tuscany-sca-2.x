@@ -32,7 +32,7 @@
     </component>
 
     <component name="HelloWorldComponent">
-        <implementation.spring location="META-INF/sca/location-folder"/>
+        <implementation.spring location="springapp"/>
         <property name="TestProperty">Hello</property>
     </component>
 

@@ -19,8 +19,8 @@
 
 package context.access;
 
+import java.io.File;
 import org.apache.tuscany.sca.node.Client;
-import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 import org.apache.tuscany.sca.node.Contribution;
@@ -36,8 +36,9 @@ import calculator.CalculatorService;
 public class CalculatorClient {
     public static void main(String[] args) throws Exception {        
         
-    	String location = ContributionLocationHelper.getContributionLocation("context/access/ContextAccess.composite");
-        Node node = NodeFactory.newInstance().createNode("context/access/ContextAccess.composite", new Contribution("c1", location));
+    	NodeFactory factory = NodeFactory.newInstance();
+        Node node = factory.createNode(new File("src/main/resources/context/access/ContextAccess.composite").toURI().toURL().toString(),
+                new Contribution("TestContribution", new File("src/main/resources/context/access/").toURI().toURL().toString()));
         node.start();
         
         // Code: To access the Spring Application Context instance

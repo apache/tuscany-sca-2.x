@@ -18,6 +18,8 @@
  */
 package context.multiple;
 
+import java.io.File;
+
 import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;
@@ -33,10 +35,9 @@ public class StockQuoteServer {
 
     public static void main(String[] args) throws Exception {
 
-        System.out.println("Starting the Sample SCA StockQuote Service...");
-
-        String location = ContributionLocationHelper.getContributionLocation("context/multiple/MultipleContext.composite");
-        Node node = NodeFactory.newInstance().createNode("context/multiple/MultipleContext.composite", new Contribution("c1", location));
+    	NodeFactory factory = NodeFactory.newInstance();
+        Node node = factory.createNode(new File("src/main/resources/context/multiple/MultipleContext.composite").toURI().toURL().toString(),
+                new Contribution("TestContribution", new File("src/main/resources/context/multiple/").toURI().toURL().toString()));
         node.start();
         
         // Method 1: To access the Spring Application Context instance

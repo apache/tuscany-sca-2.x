@@ -39,6 +39,10 @@ import org.apache.tuscany.sca.itest.spring.AbstractHelloWorldTestCase;
  */
 public class SpringImplicitReferenceTestCase extends AbstractHelloWorldTestCase {
     // super class does it all getting composite based on this class name
+	
+	public SpringImplicitReferenceTestCase() {
+        super("SpringImplicitReference.composite", "sca/references/");        
+    }
 }
 
 

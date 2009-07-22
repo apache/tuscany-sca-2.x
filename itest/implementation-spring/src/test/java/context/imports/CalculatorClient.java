@@ -19,8 +19,9 @@
 
 package context.imports;
 
+import java.io.File;
+
 import org.apache.tuscany.sca.node.Client;
-import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 import org.apache.tuscany.sca.node.Contribution;
@@ -33,9 +34,10 @@ import calculator.CalculatorService;
 public class CalculatorClient {
     public static void main(String[] args) throws Exception {        
         
-    	String location = ContributionLocationHelper.getContributionLocation("context/imports/ContextImports.composite");
-        Node node = NodeFactory.newInstance().createNode("context/imports/ContextImports.composite", new Contribution("c1", location));
-        node.start();       
+    	NodeFactory factory = NodeFactory.newInstance();
+        Node node = factory.createNode(new File("src/main/resources/context/imports/ContextImports.composite").toURI().toURL().toString(),
+                new Contribution("TestContribution", new File("src/main/resources/context/imports/").toURI().toURL().toString()));
+        node.start(); 
               
         CalculatorService calculatorService = 
             ((Client)node).getService(CalculatorService.class, "CalculatorServiceComponent");

@@ -28,7 +28,7 @@
            name="SpringImplicitReference">
 
     <component name="ClientComponent">
-        <implementation.spring location="META-INF/sca/sca-references/SpringImplicitReference-context.xml"/>
+        <implementation.spring location="META-INF/spring/SpringImplicitReference-context.xml"/>
         <reference name="testReference" target="ImplicitReferenceComponent"/>
     </component>
 

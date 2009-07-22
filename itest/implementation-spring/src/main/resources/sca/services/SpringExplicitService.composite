@@ -27,7 +27,7 @@
     </component>
 
     <component name="ExplicitServiceComponent">
-        <implementation.spring location="META-INF/sca/sca-services/SpringExplicitService-context.xml"/>
+        <implementation.spring location="META-INF/spring/SpringExplicitService-context.xml"/>
     </component>
 
 </composite>

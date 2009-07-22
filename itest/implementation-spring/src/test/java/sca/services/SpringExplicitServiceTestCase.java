@@ -33,4 +33,8 @@ import org.apache.tuscany.sca.itest.spring.AbstractHelloWorldTestCase;
  */
 public class SpringExplicitServiceTestCase extends AbstractHelloWorldTestCase {
     // super class does it all getting composite based on this class name
+	
+	public SpringExplicitServiceTestCase() {
+        super("SpringExplicitService.composite", "sca/services/");        
+    }
 }

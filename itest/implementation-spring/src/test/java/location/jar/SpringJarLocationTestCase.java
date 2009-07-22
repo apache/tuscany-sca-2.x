@@ -37,5 +37,9 @@ import org.apache.tuscany.sca.itest.spring.AbstractHelloWorldTestCase;
  */
 public class SpringJarLocationTestCase extends AbstractHelloWorldTestCase {
     // super class does it all getting composite based on this class name
+	
+	public SpringJarLocationTestCase() {
+        super("SpringJarLocation.composite", "location/jar/");        
+    }
 }
 
