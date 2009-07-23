@@ -134,6 +134,7 @@ public class OSGiBundleContributionScanner implements ContributionScanner {
         }
 
         try {
+            // FIXME: The entries can come from fragments. Do we need to have a way to differentiate the entries?
             Enumeration<?> entries = bundle.findEntries("/", "*", true);
             while (entries.hasMoreElements()) {
                 URL entry = (URL)entries.nextElement();
