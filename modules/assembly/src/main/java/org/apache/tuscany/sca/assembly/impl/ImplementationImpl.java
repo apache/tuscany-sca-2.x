@@ -19,15 +19,10 @@
 
 package org.apache.tuscany.sca.assembly.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.policy.ExtensionType;
-import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySubject;
 
 /**
@@ -38,20 +33,10 @@ import org.apache.tuscany.sca.policy.PolicySubject;
 public abstract class ImplementationImpl extends ComponentTypeImpl implements Implementation, PolicySubject {
     private QName type;
     private ExtensionType extensionType;
-    private List<PolicySet> policySets = new ArrayList<PolicySet>();
-    private List<Intent> requiredIntents = new ArrayList<Intent>();
 
     protected ImplementationImpl(QName type) {
         super();
         this.type = type;
-    }
-
-    public List<PolicySet> getPolicySets() {
-        return policySets;
-    }
-
-    public List<Intent> getRequiredIntents() {
-        return requiredIntents;
     }
 
     public ExtensionType getExtensionType() {

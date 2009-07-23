@@ -66,6 +66,8 @@ public class ComponentTypeImpl extends ExtensibleImpl implements ComponentType, 
         for (Property property : getProperties()) {
             clone.properties.add((Property)property.clone());
         }
+        clone.requiredIntents = new ArrayList<Intent>(requiredIntents);
+        clone.policySets = new ArrayList<PolicySet>(policySets);
         return clone;
     }
 
