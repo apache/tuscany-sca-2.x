@@ -104,7 +104,7 @@ public abstract class BaseStAXArtifactProcessor {
         if (value != null) {
             List<QName> qnames = new ArrayList<QName>();
             for (StringTokenizer tokens = new StringTokenizer(value); tokens.hasMoreTokens();) {
-                qnames.add(getQName(reader, tokens.nextToken()));
+                qnames.add(getQNameValue(reader, tokens.nextToken()));
             }
             return qnames;
         } else {
