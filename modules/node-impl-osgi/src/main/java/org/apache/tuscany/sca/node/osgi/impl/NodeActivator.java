@@ -21,7 +21,9 @@ package org.apache.tuscany.sca.node.osgi.impl;
 
 import static org.apache.tuscany.sca.node.osgi.impl.NodeManager.isSCABundle;
 
-import org.apache.tuscany.sca.dosgi.discovery.DiscoveryActivator;
+import org.apache.tuscany.sca.osgi.service.discovery.impl.DiscoveryActivator;
+import org.apache.tuscany.sca.osgi.service.remoteadmin.impl.RemoteAdminImpl;
+import org.apache.tuscany.sca.osgi.service.remoteadmin.impl.RemoteControllerImpl;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -37,7 +39,8 @@ public class NodeActivator implements BundleActivator, SynchronousBundleListener
     private NodeManager manager;
     
     private DiscoveryActivator discoveryActivator = new DiscoveryActivator();
-    private OSGiServiceExporter exporter;
+    private RemoteAdminImpl remoteAdmin;
+    private RemoteControllerImpl controller;
 
     private void init() {
         synchronized (this) {
@@ -57,8 +60,14 @@ public class NodeActivator implements BundleActivator, SynchronousBundleListener
         // FIXME: We should try to avoid aggressive initialization
         init();
         
-        exporter = new OSGiServiceExporter(context);
-        exporter.start();
+        remoteAdmin = new RemoteAdminImpl(context);
+        remoteAdmin.start();
+        
+        controller = new RemoteControllerImpl(context);
+        controller.start();
+        
+//        exporter = new OSGiServiceExporter(context);
+//        exporter.start();
         
         discoveryActivator.start(context);
         
@@ -80,10 +89,15 @@ public class NodeActivator implements BundleActivator, SynchronousBundleListener
     public void stop(BundleContext context) throws Exception {
         context.removeBundleListener(this);
         bundleContext = null;
-        exporter.stop();
-        exporter = null;
+        controller.stop();
+        controller = null;
+//        exporter.stop();
+//        exporter = null;
         discoveryActivator.stop(context);
         discoveryActivator = null;
+        
+        remoteAdmin.stop();
+        remoteAdmin = null;
     }
 
     public static BundleContext getBundleContext() {

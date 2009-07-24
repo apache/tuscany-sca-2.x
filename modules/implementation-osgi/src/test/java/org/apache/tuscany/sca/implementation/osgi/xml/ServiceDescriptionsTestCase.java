@@ -25,8 +25,11 @@ import java.util.List;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
-import org.apache.tuscany.sca.core.DefaultFactoryExtensionPoint;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.implementation.osgi.ServiceDescription;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -40,7 +43,7 @@ public class ServiceDescriptionsTestCase {
     private static final String xml =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" 
             + "<service-descriptions xmlns=\"http://www.osgi.org/xmlns/sd/v1.0.0\" "
-            +"xmlns:sca=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\">"
+            + "xmlns:sca=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\">"
             + "<service-description>"
             + "<provide interface=\"calculator.operations.AddService\"/>"
             + "<property name=\"service.intents\">sca:SOAP sca:HTTP</property>"
@@ -62,9 +65,10 @@ public class ServiceDescriptionsTestCase {
             + "<property name=\"osgi.remote.configuration.sca.reference\">"
             + "subtractService"
             + "</property>"
-            + "</service-description>"            
+            + "</service-description>"
             + "</service-descriptions>";
 
+    private static ServiceDescriptionsProcessor processor;
     private static XMLStreamReader reader;
 
     /**
@@ -72,15 +76,20 @@ public class ServiceDescriptionsTestCase {
      */
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
+        ExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
+
         XMLInputFactory factory = XMLInputFactory.newInstance();
+        StAXArtifactProcessorExtensionPoint staxProcessors =
+            extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        StAXArtifactProcessor staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, factory, null, null);
+
+        processor = new ServiceDescriptionsProcessor(extensionPoints, staxProcessor, null);
+
         reader = factory.createXMLStreamReader(new StringReader(xml));
     }
 
     @Test
     public void testLoad() throws Exception {
-        ServiceDescriptionsProcessor processor =
-            new ServiceDescriptionsProcessor(new DefaultFactoryExtensionPoint(new DefaultExtensionPointRegistry()),
-                                             null);
         List<ServiceDescription> descriptions = processor.read(reader);
         Assert.assertEquals(2, descriptions.size());
         System.out.println(descriptions);

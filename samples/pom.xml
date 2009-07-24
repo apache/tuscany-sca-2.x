@@ -51,6 +51,9 @@
 
                 <module>dosgi-calculator</module>
                 <module>dosgi-calculator-operations</module>
+
+                <module>dosgi-dynamic-calculator</module>
+                <module>dosgi-dynamic-calculator-operations</module>
                 
                 <module>helloworld-bpel</module>
                 

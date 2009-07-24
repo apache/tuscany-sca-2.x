@@ -44,7 +44,7 @@ public class OperationsActivator implements BundleActivator {
         logger.info("Starting " + context.getBundle());
 
         Dictionary<String, Object> props = new Hashtable<String, Object>();
-
+        
         logger.info("Registering " + AddService.class.getName());
         props.put("sca.service", "AddComponent#service-name(Add)");
         context.registerService(AddService.class.getName(), new AddServiceImpl(), props);

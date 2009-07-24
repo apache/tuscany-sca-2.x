@@ -19,16 +19,21 @@
 
 package org.apache.tuscany.sca.implementation.osgi.xml;
 
+import java.util.StringTokenizer;
+
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.implementation.osgi.ServiceDescription;
 import org.apache.tuscany.sca.implementation.osgi.ServiceDescriptions;
@@ -56,16 +61,22 @@ import org.apache.tuscany.sca.monitor.Monitor;
     </service-description>
 </service-descriptions>
 */
-public class ServiceDescriptionsProcessor implements StAXArtifactProcessor<ServiceDescriptions> {
+public class ServiceDescriptionsProcessor extends BaseStAXArtifactProcessor implements
+    StAXArtifactProcessor<ServiceDescriptions> {
     private ServiceDescriptionsFactory factory;
+    private StAXArtifactProcessor processor;
     private Monitor monitor;
 
-    public ServiceDescriptionsProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
+    public ServiceDescriptionsProcessor(ExtensionPointRegistry registry,
+                                        StAXArtifactProcessor processor,
+                                        Monitor monitor) {
         this.monitor = monitor;
+        this.processor = processor;
+        FactoryExtensionPoint modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
         this.factory = modelFactories.getFactory(ServiceDescriptionsFactory.class);
     }
 
-    public ServiceDescriptions read(XMLStreamReader reader) throws XMLStreamException {
+    public ServiceDescriptions read(XMLStreamReader reader) throws XMLStreamException, ContributionReadException {
         int event = reader.getEventType();
         ServiceDescriptions sds = factory.createServiceDescriptions();
         ServiceDescription sd = null;
@@ -112,7 +123,18 @@ public class ServiceDescriptionsProcessor implements StAXArtifactProcessor<Servi
                         } else if ("Boolean".equals(propType)) {
                             prop = Boolean.valueOf(propValue);
                         }
+                        if (propName.endsWith(".intents")) {
+                            prop = toQNames(reader, propValue);
+                        }
                         sd.getProperties().put(propName, prop);
+                    } else {
+                        name = reader.getName();
+                        if (!ServiceDescriptions.SERVICE_DESCRIPTIONS_QNAME.equals(name)) {
+                            Object ext = processor.read(reader);
+                            if (sd != null) {
+                                sd.getProperties().put(name.toString(), ext);
+                            }
+                        }
                     }
                     break;
                 case XMLStreamConstants.END_ELEMENT:
@@ -132,6 +154,24 @@ public class ServiceDescriptionsProcessor implements StAXArtifactProcessor<Servi
                 return sds;
             }
         }
+    }
+
+    /**
+     * Convert ns1:e1 ns2:e2 to {http://ns1}e1 {http://ns2}e2
+     * @param reader
+     * @param value
+     * @return
+     */
+    private String toQNames(XMLStreamReader reader, String value) {
+        if (value == null) {
+            return null;
+        }
+        StringBuffer sb = new StringBuffer();
+        for (StringTokenizer tokens = new StringTokenizer(value, " \t\n\r\f,"); tokens.hasMoreTokens();) {
+            QName qname = getQNameValue(reader, tokens.nextToken());
+            sb.append(qname.toString()).append(' ');
+        }
+        return sb.toString().trim();
     }
 
     public QName getArtifactType() {

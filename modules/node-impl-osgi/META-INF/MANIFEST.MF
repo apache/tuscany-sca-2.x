@@ -23,13 +23,13 @@ Import-Package: javax.xml.namespace,
  org.apache.tuscany.sca.definitions.xml;version="2.0.0",
  org.apache.tuscany.sca.extensibility.equinox;version="2.0.0",
  org.apache.tuscany.sca.implementation.osgi;version="2.0.0",
- org.apache.tuscany.sca.implementation.osgi.introspection;version="2.0.0",
  org.apache.tuscany.sca.interfacedef;version="2.0.0",
  org.apache.tuscany.sca.interfacedef.java;version="2.0.0",
  org.apache.tuscany.sca.monitor;version="2.0.0",
  org.apache.tuscany.sca.node;version="2.0.0",
  org.apache.tuscany.sca.node.configuration;version="2.0.0",
  org.apache.tuscany.sca.node.impl;version="2.0.0",
+ org.apache.tuscany.sca.osgi.service.remoteadmin;version="2.0.0",
  org.apache.tuscany.sca.policy;version="2.0.0",
  org.apache.tuscany.sca.provider;version="2.0.0",
  org.apache.tuscany.sca.runtime;version="2.0.0",
@@ -44,4 +44,4 @@ Bundle-SymbolicName: org.apache.tuscany.sca.node.osgi.impl
 Bundle-DocURL: http://www.apache.org/
 Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6
 Bundle-ActivationPolicy: lazy
-Export-Package: org.osgi.service.discovery;version="1.0"
+Export-Package: org.apache.tuscany.sca.osgi.service.remoteadmin;version="2.0.0"

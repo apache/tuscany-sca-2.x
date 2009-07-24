@@ -19,24 +19,27 @@
 
 package org.apache.tuscany.sca.node.osgi.impl;
 
-import static org.apache.tuscany.sca.implementation.osgi.OSGiProperty.SERVICE_EXPORTED_CONFIGS;
-import static org.apache.tuscany.sca.implementation.osgi.OSGiProperty.SERVICE_EXPORTED_INTERFACES;
-import static org.apache.tuscany.sca.implementation.osgi.OSGiProperty.SERVICE_IMPORTED;
-
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
+import org.apache.tuscany.sca.assembly.Component;
+import org.apache.tuscany.sca.assembly.ComponentService;
+import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.implementation.osgi.introspection.ExportedServiceIntrospector;
-import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.core.LifeCycleListener;
 import org.apache.tuscany.sca.node.NodeFactory;
 import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
 import org.apache.tuscany.sca.node.impl.NodeFactoryImpl;
 import org.apache.tuscany.sca.node.impl.NodeImpl;
+import org.apache.tuscany.sca.osgi.service.remoteadmin.EndpointDescription;
+import org.apache.tuscany.sca.osgi.service.remoteadmin.ExportRegistration;
+import org.apache.tuscany.sca.osgi.service.remoteadmin.impl.EndpointDescriptionImpl;
+import org.apache.tuscany.sca.osgi.service.remoteadmin.impl.EndpointIntrospector;
+import org.apache.tuscany.sca.osgi.service.remoteadmin.impl.ExportRegistrationImpl;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
-import org.osgi.framework.Filter;
-import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
@@ -44,12 +47,12 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 /**
  * Watching and exporting OSGi services 
  */
-public class OSGiServiceExporter implements ServiceTrackerCustomizer {
+public class OSGiServiceExporter implements ServiceTrackerCustomizer, LifeCycleListener {
     private ExtensionPointRegistry registry;
     private BundleContext context;
     private ServiceTracker serviceTracker;
     private NodeFactoryImpl nodeFactory;
-    private ExportedServiceIntrospector introspector;
+    private EndpointIntrospector introspector;
 
     /**
      * @param context
@@ -64,11 +67,13 @@ public class OSGiServiceExporter implements ServiceTrackerCustomizer {
         if (nodeFactory == null) {
             this.nodeFactory = (NodeFactoryImpl)NodeFactory.newInstance();
             this.nodeFactory.init();
-            this.introspector = new ExportedServiceIntrospector(getExtensionPointRegistry());
+            this.introspector = new EndpointIntrospector(context, getExtensionPointRegistry());
         }
     }
 
     public void start() {
+        init();
+        /*
         String filterStr =
             "(& (" + SERVICE_EXPORTED_CONFIGS
                 + "=sca) ("
@@ -83,17 +88,23 @@ public class OSGiServiceExporter implements ServiceTrackerCustomizer {
         } catch (InvalidSyntaxException e) {
             // Ignore
         }
+        */
     }
 
     public void stop() {
+        /*
         if (serviceTracker != null) {
             serviceTracker.close();
             serviceTracker = null;
         }
+        */
     }
 
     public Object addingService(ServiceReference reference) {
-        init();
+        return exportService(reference);
+    }
+
+    public List<ExportRegistration> exportService(ServiceReference reference) {
         try {
             Contribution contribution = introspector.introspect(reference);
             if (contribution != null) {
@@ -103,7 +114,17 @@ public class OSGiServiceExporter implements ServiceTrackerCustomizer {
                 configuration.getExtensions().add(reference.getBundle());
                 // FIXME: Configure the domain and node URI
                 NodeImpl node = new NodeImpl(nodeFactory, configuration, Collections.singletonList(contribution));
-                return node.start();
+                node.start();
+                List<ExportRegistration> exportedServices = new ArrayList<ExportRegistration>();
+                Component component = contribution.getDeployables().get(0).getComponents().get(0);
+                ComponentService service = component.getServices().get(0);
+                for (Endpoint endpoint : service.getEndpoints()) {
+                    EndpointDescription endpointDescription = new EndpointDescriptionImpl(endpoint);
+                    ExportRegistration exportRegistration =
+                        new ExportRegistrationImpl(node, reference, endpointDescription);
+                    exportedServices.add(exportRegistration);
+                }
+                return exportedServices;
             } else {
                 return null;
             }
@@ -114,14 +135,15 @@ public class OSGiServiceExporter implements ServiceTrackerCustomizer {
     }
 
     public void modifiedService(ServiceReference reference, Object service) {
-        Node node = (Node)service;
-        node.stop();
-        node.start();
+        removedService(reference, service);
+        exportService(reference);
     }
 
     public void removedService(ServiceReference reference, Object service) {
-        Node node = (Node)service;
-        node.stop();
+        List<ExportRegistration> exportedServices = (List<ExportRegistration>)service;
+        for(ExportRegistration exportRegistration: exportedServices) {
+            exportRegistration.close();
+        }
     }
 
     protected ExtensionPointRegistry getExtensionPointRegistry() {

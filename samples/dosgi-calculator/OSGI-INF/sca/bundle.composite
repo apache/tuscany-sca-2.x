@@ -40,17 +40,6 @@
         <reference name="divideService">
             <tuscany:binding.rmi uri="rmi://localhost:8085/DivideService"/>
         </reference>
-
-        <!--
-        <reference name="addService" target="OperationsComponent/AddService">
-        </reference>
-        <reference name="subtractService" target="OperationsComponent/SubtractService">
-        </reference>
-        <reference name="multiplyService" target="OperationsComponent/MultiplyService">
-        </reference>
-        <reference name="divideService" target="OperationsComponent/DivideService">
-        </reference>
-         -->
     </component>
 
 </composite>
