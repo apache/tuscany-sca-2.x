@@ -428,12 +428,12 @@ public class CallableReferenceImpl<B> implements ServiceReferenceExt<B> {
             }            
 
             this.proxyFactory = compositeActivator.getCompositeContext().getProxyFactory();       
-        } else {
+        } else if (compositeActivator == null) {
             this.compositeActivator = CompositeContext.getCurrentCompositeActivator();
             if (this.compositeActivator != null) {
                 this.proxyFactory = this.compositeActivator.getCompositeContext().getProxyFactory();
             }
-        }        
+        }       
     }
     
     // ==================================================================================
