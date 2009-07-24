@@ -21,7 +21,6 @@ package org.apache.tuscany.sca.itest.serviceref;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
 
-import org.apache.tuscany.sca.databinding.impl.XSDDataTypeConverter.Base64Binary;
 import org.oasisopen.sca.ComponentContext;
 import org.oasisopen.sca.ServiceReference;
 import org.oasisopen.sca.annotation.Context;
