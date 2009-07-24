@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.node.osgi.impl;
+package org.apache.tuscany.sca.osgi.service.remoteadmin.impl;
 
 import java.util.Collections;
 
@@ -33,8 +33,6 @@ import org.apache.tuscany.sca.node.impl.NodeFactoryImpl;
 import org.apache.tuscany.sca.node.impl.NodeImpl;
 import org.apache.tuscany.sca.osgi.service.remoteadmin.EndpointDescription;
 import org.apache.tuscany.sca.osgi.service.remoteadmin.ImportRegistration;
-import org.apache.tuscany.sca.osgi.service.remoteadmin.impl.EndpointIntrospector;
-import org.apache.tuscany.sca.osgi.service.remoteadmin.impl.ImportRegistrationImpl;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -79,7 +77,7 @@ public class OSGiServiceImporter implements LifeCycleListener {
             if (contribution != null) {
 
                 NodeConfiguration configuration = nodeFactory.createNodeConfiguration();
-                configuration.setURI("osgi.reference." + endpointDescription.getURI());
+                configuration.setURI(contribution.getURI());
                 configuration.getExtensions().add(bundle);
                 // FIXME: Configure the domain and node URI
                 NodeImpl node = new NodeImpl(nodeFactory, configuration, Collections.singletonList(contribution));

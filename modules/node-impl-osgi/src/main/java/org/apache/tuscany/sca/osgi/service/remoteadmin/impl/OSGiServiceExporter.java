@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.node.osgi.impl;
+package org.apache.tuscany.sca.osgi.service.remoteadmin.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,11 +35,7 @@ import org.apache.tuscany.sca.node.impl.NodeFactoryImpl;
 import org.apache.tuscany.sca.node.impl.NodeImpl;
 import org.apache.tuscany.sca.osgi.service.remoteadmin.EndpointDescription;
 import org.apache.tuscany.sca.osgi.service.remoteadmin.ExportRegistration;
-import org.apache.tuscany.sca.osgi.service.remoteadmin.impl.EndpointDescriptionImpl;
-import org.apache.tuscany.sca.osgi.service.remoteadmin.impl.EndpointIntrospector;
-import org.apache.tuscany.sca.osgi.service.remoteadmin.impl.ExportRegistrationImpl;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
@@ -50,7 +46,6 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 public class OSGiServiceExporter implements ServiceTrackerCustomizer, LifeCycleListener {
     private ExtensionPointRegistry registry;
     private BundleContext context;
-    private ServiceTracker serviceTracker;
     private NodeFactoryImpl nodeFactory;
     private EndpointIntrospector introspector;
 
@@ -73,31 +68,10 @@ public class OSGiServiceExporter implements ServiceTrackerCustomizer, LifeCycleL
 
     public void start() {
         init();
-        /*
-        String filterStr =
-            "(& (" + SERVICE_EXPORTED_CONFIGS
-                + "=sca) ("
-                + SERVICE_EXPORTED_INTERFACES
-                + "=*) (!("
-                + SERVICE_IMPORTED
-                + "=*)) )";
-        try {
-            Filter filter = context.createFilter(filterStr);
-            serviceTracker = new ServiceTracker(context, filter, this);
-            serviceTracker.open(true);
-        } catch (InvalidSyntaxException e) {
-            // Ignore
-        }
-        */
     }
 
     public void stop() {
-        /*
-        if (serviceTracker != null) {
-            serviceTracker.close();
-            serviceTracker = null;
-        }
-        */
+        this.introspector = null;
     }
 
     public Object addingService(ServiceReference reference) {
@@ -110,7 +84,7 @@ public class OSGiServiceExporter implements ServiceTrackerCustomizer, LifeCycleL
             if (contribution != null) {
 
                 NodeConfiguration configuration = nodeFactory.createNodeConfiguration();
-                configuration.setURI("osgi.service." + String.valueOf(reference.getProperty(Constants.SERVICE_ID)));
+                configuration.setURI(contribution.getURI());
                 configuration.getExtensions().add(reference.getBundle());
                 // FIXME: Configure the domain and node URI
                 NodeImpl node = new NodeImpl(nodeFactory, configuration, Collections.singletonList(contribution));
