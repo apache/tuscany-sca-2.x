@@ -30,7 +30,9 @@
     <name>Apache Tuscany SCA BPEL Integration Tests</name>
 
     <modules>
+       <!-- TUSCANY-3134
        <module>helloworld</module>
+       -->
        <!--
        <module>helloworld-reference</module>
        <module>helloworld-ws</module>
