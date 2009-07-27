@@ -54,6 +54,7 @@ import org.mortbay.jetty.servlet.ServletHandler;
 import org.mortbay.jetty.servlet.ServletHolder;
 import org.mortbay.jetty.servlet.ServletMapping;
 import org.mortbay.jetty.servlet.SessionHandler;
+import org.mortbay.log.Log;
 import org.mortbay.thread.ThreadPool;
 
 /**
@@ -103,14 +104,17 @@ public class JettyServer implements ServletHost {
     private Map<Integer, Port> ports = new HashMap<Integer, Port>();
 
     private String contextPath = "/";
-
-    static {
-        // Hack to replace the static Jetty logger
-        System.setProperty("org.mortbay.log.class", JettyLogger.class.getName());
-    }
+    private org.mortbay.log.Logger jettyLogger;
 
     public JettyServer(WorkScheduler workScheduler) {
         this.workScheduler = workScheduler;
+        try {
+            jettyLogger = Log.getLog();
+        } catch (Throwable e) {
+            // Ignore
+        } finally {
+            Log.setLog(new JettyLogger());
+        }
         AccessController.doPrivileged(new PrivilegedAction<Object>() {
             public Object run() {
                 trustStore = System.getProperty("javax.net.ssl.trustStore");
@@ -153,6 +157,11 @@ public class JettyServer implements ServletHost {
             }
         } catch (Exception e) {
             throw new ServletMappingException(e);
+        } finally {
+            if (jettyLogger != null) {
+                Log.setLog(jettyLogger);
+                jettyLogger = null;
+            }
         }
     }
     
