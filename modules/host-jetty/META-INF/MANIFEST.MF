@@ -12,19 +12,18 @@ Bundle-Description: Apache Tuscany SCA Jetty Servlet Host Extension
 Import-Package: javax.net.ssl;resolution:=optional,
  javax.servlet,
  javax.servlet.http;resolution:=optional,
- 
  org.apache.tuscany.sca.core;version="2.0.0",
  org.apache.tuscany.sca.host.http;version="2.0.0",
  org.apache.tuscany.sca.work;version="2.0.0",
- org.mortbay.component;version="6.1.15",
- org.mortbay.jetty;version="6.1.15",
- org.mortbay.jetty.handler;version="6.1.15",
- org.mortbay.jetty.nio;version="6.1.15",
- org.mortbay.jetty.security;version="6.1.15",
- org.mortbay.jetty.servlet;version="6.1.15",
- org.mortbay.log;version="6.1.15",
- org.mortbay.resource;version="6.1.15",
- org.mortbay.thread;version="6.1.15"
+ org.mortbay.component;version="6.1.19",
+ org.mortbay.jetty;version="6.1.19",
+ org.mortbay.jetty.handler;version="6.1.19",
+ org.mortbay.jetty.nio;version="6.1.19",
+ org.mortbay.jetty.security;version="6.1.19",
+ org.mortbay.jetty.servlet;version="6.1.19",
+ org.mortbay.log;version="6.1.19",
+ org.mortbay.resource;version="6.1.19",
+ org.mortbay.thread;version="6.1.19"
 Bundle-SymbolicName: org.apache.tuscany.sca.host.jetty
 Bundle-DocURL: http://www.apache.org/
 Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6
