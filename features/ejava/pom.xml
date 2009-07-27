@@ -115,7 +115,7 @@
         <dependency>
             <groupId>org.eclipse.osgi</groupId>
             <artifactId>services</artifactId>
-            <version>3.1.200-v20071203</version>
+            <version>3.2.0-v20090520-1800</version>
         </dependency>
 
 
