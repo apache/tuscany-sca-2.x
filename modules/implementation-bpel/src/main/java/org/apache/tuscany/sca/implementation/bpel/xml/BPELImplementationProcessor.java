@@ -20,6 +20,8 @@ package org.apache.tuscany.sca.implementation.bpel.xml;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -47,6 +49,7 @@ import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.implementation.bpel.BPELFactory;
 import org.apache.tuscany.sca.implementation.bpel.BPELImplementation;
 import org.apache.tuscany.sca.implementation.bpel.BPELProcessDefinition;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
@@ -126,6 +129,7 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
     	    implementation.setModelResolver(resolver);
     	    
             BPELProcessDefinition processDefinition = resolveBPELProcessDefinition(implementation, resolver);
+            //resolveBPELImports(processDefinition, resolver);
             if(processDefinition.isUnresolved()) {
             	error("BPELProcessNotFound", implementation, processDefinition.getName());
             } else {            
@@ -168,6 +172,36 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
         
         return resolver.resolveModel(BPELProcessDefinition.class, processDefinition);
     } // end resolveBPELProcessDefinition
+    
+    private void resolveBPELImports(BPELProcessDefinition processDefinition, ModelResolver resolver) throws ContributionResolveException {
+    	for (BPELImportElement bpelImport : processDefinition.getImports()) {
+    		String namespace = bpelImport.getNamespace();
+    		String location = bpelImport.getLocation();
+    		
+    		WSDLDefinition wsdl = bpelImport.getWSDLDefinition();
+    		if (wsdl == null) {
+        			try {
+        				wsdl = wsdlFactory.createWSDLDefinition();
+        				wsdl.setUnresolved(true);
+        				wsdl.setNamespace(bpelImport.getNamespace());
+						wsdl.setLocation(new URI(null, bpelImport.getLocation(), null));
+						wsdl = resolver.resolveModel(WSDLDefinition.class, wsdl);
+						
+						if(! wsdl.isUnresolved()) {
+							bpelImport.setWSDLDefinition(wsdl);
+						} else {
+							//error("BPELProcessNotFound", implementation, processDefinition.getName());
+						}
+					} catch (URISyntaxException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
+    		}
+    		
+    	}
+    }
+
     
     /**
      * Calculates the component type of the supplied implementation and attaches it to the
