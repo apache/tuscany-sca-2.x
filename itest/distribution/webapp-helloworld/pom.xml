@@ -39,7 +39,7 @@
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>sample-helloworld</artifactId>
+            <artifactId>sample-webapp-helloworld</artifactId>
             <type>war</type>
             <version>2.0-SNAPSHOT</version>
         </dependency>        
@@ -107,7 +107,7 @@
                         <deployables>
                            <deployable>
                               <groupId>org.apache.tuscany.sca</groupId>
-                              <artifactId>sample-helloworld</artifactId>
+                              <artifactId>sample-webapp-helloworld</artifactId>
                               <type>war</type>
                               <pingURL>http://localhost:8085/helloworld</pingURL>
                            </deployable>
