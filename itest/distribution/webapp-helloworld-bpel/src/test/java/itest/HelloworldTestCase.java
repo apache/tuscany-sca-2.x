@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.Iterator;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
@@ -38,7 +37,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlParagraph;
 public class HelloworldTestCase {
 
     @Test
-	@Ignore("TUSCANY-3134")
     public void testA() throws FailingHttpStatusCodeException, MalformedURLException, IOException {
         HtmlPage page = (HtmlPage)new WebClient().getPage("http://localhost:8085/helloworld-bpel");
         Iterator<?> ss = page.getAllHtmlChildElements();
