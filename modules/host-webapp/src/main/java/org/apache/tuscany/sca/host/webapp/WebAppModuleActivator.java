@@ -46,6 +46,12 @@ public class WebAppModuleActivator implements ModuleActivator {
     }
 
     public void stop(ExtensionPointRegistry registry) {
+    	// as we know we are running in a webapp remove all of the servlet
+    	// hosts. There will just be one - see start method
+        ServletHostExtensionPoint servletHosts =
+        	registry.getExtensionPoint(ServletHostExtensionPoint.class);
+        List<ServletHost> hosts = servletHosts.getServletHosts();
+        hosts.clear();
     }
 
 }

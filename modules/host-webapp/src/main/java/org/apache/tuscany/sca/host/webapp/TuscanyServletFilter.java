@@ -52,6 +52,7 @@ public class TuscanyServletFilter implements Filter {
 
     public void destroy() {
         ServletHostHelper.stop(context);
+        servletHost = null;
     }
 
     public void doFilter(ServletRequest request, ServletResponse response, javax.servlet.FilterChain chain)

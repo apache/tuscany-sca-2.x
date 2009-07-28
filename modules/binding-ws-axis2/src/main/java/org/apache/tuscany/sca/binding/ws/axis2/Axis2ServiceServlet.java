@@ -20,6 +20,7 @@ package org.apache.tuscany.sca.binding.ws.axis2;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.SocketException;
 import java.net.URI;
@@ -29,6 +30,7 @@ import java.util.Enumeration;
 import java.util.Set;
 import java.util.Vector;
 
+import javax.servlet.GenericServlet;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.Servlet;
 import javax.servlet.ServletConfig;
@@ -38,8 +40,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.axis2.AxisFault;
+import org.apache.axis2.Constants;
 import org.apache.axis2.addressing.EndpointReference;
 import org.apache.axis2.context.ConfigurationContext;
+import org.apache.axis2.description.TransportInDescription;
+import org.apache.axis2.engine.ListenerManager;
 import org.apache.axis2.transport.http.AxisServlet;
 import org.apache.axis2.transport.http.ListingAgent;
 import org.apache.axis2.transport.http.server.HttpUtils;
@@ -59,13 +64,16 @@ public class Axis2ServiceServlet extends AxisServlet {
     private static final long serialVersionUID = 1L;
     private static final ServletConfig DUMMY_CONFIG = createDummyServletConfig();
     
+    private boolean initCalled = false;
+    
 //JIRA TUSCANY-1561 Port to Axis2 1.3    
     private ConfigurationContext tmpconfigContext;
 
     public void init(ConfigurationContext configContext) {
         this.tmpconfigContext = configContext;
         try {
-            super.init(DUMMY_CONFIG);
+            //super.init(DUMMY_CONFIG);
+        	init(DUMMY_CONFIG);
         } catch (ServletException e) {
             throw new RuntimeException(e);
         }
@@ -85,7 +93,55 @@ public class Axis2ServiceServlet extends AxisServlet {
     public void init(ServletConfig config) throws ServletException {
         ServletContext servletContext = config.getServletContext();
         servletContext.setAttribute(CONFIGURATION_CONTEXT, tmpconfigContext);
-        super.init(config);
+       
+        //super.init(config);
+        
+        // A copy of the init method from the base class because we need to replace the 
+        // version of the ListenerManager that is used so that we can get it's 
+        // shutdown hook removed properly. 
+        
+        // prevent this method from being called more than once per instance
+        if (initCalled == false) {
+	        initCalled = true;
+	        // We can't call super.init() as it will just call the AxisServlet version
+	        // which we are replacing here. So reflect on the base class and
+	        // set the private config field in the base class. 
+	        //super.init(config);
+	        try {
+	        	Field field = GenericServlet.class.getDeclaredField("config");
+	        	field.setAccessible(true);
+	        	field.set(this, config);
+	        } catch (Exception ex){
+	        	ex.printStackTrace();
+	        }
+	        
+	        try {
+	            this.servletConfig = config;
+	            //ServletContext servletContext = servletConfig.getServletContext();
+	            this.configContext =
+	                    (ConfigurationContext) servletContext.getAttribute(CONFIGURATION_CONTEXT);
+	            if(configContext == null){
+	                configContext = initConfigContext(config);
+	                config.getServletContext().setAttribute(CONFIGURATION_CONTEXT, configContext);
+	            }
+	            axisConfiguration = configContext.getAxisConfiguration();
+	
+	            ListenerManager listenerManager = new TuscanyListenerManager();
+	            listenerManager.init(configContext);
+	            TransportInDescription transportInDescription = new TransportInDescription(
+	                    Constants.TRANSPORT_HTTP);
+	            transportInDescription.setReceiver(this);
+	            listenerManager.addListener(transportInDescription, true);
+	            listenerManager.start();
+	            ListenerManager.defaultConfigurationContext = configContext;
+	            super.agent = new ListingAgent(configContext);
+	
+	            initParams();
+	
+	        } catch (Exception e) {
+	            throw new ServletException(e);
+	        }
+        }
     }
 
     /**
@@ -237,9 +293,14 @@ public class Axis2ServiceServlet extends AxisServlet {
     public void destroy() {
         try {
             super.destroy();
+            servletConfig = null;
+            if (tmpconfigContext.getListenerManager() != null){
+            	tmpconfigContext.getListenerManager().destroy();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
+    
     }
 
     /**
