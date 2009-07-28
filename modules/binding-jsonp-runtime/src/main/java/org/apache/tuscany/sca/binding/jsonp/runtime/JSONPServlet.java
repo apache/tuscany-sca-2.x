@@ -69,7 +69,7 @@ public class JSONPServlet extends GenericServlet {
                     jsonRequest += ", ";
                 }
                 //jsonRequest += name + ":" + servletRequest.getParameter(name);
-                jsonRequest += "\""+ servletRequest.getParameter(name) + "\"";
+                jsonRequest += servletRequest.getParameter(name);
             }
         }
         jsonRequest += "]";
