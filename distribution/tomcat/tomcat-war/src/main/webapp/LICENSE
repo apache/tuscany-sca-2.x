@@ -239,6 +239,8 @@ The following components come under Apache Software License 2.0
  geronimo-stax-api_1.0_spec-1.0.1.jar
  httpcore-4.0-beta1.jar
  httpcore-nio-4.0-beta1.jar
+ jackson-core-asl-1.0.1.jar
+ jackson-mapper-asl-1.0.1.jar
  log4j-1.2.15.jar
  mex-1.41-impl.jar
  neethi-2.0.4.jar
