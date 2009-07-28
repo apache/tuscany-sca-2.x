@@ -31,10 +31,10 @@ public final class ThreadMessageContext {
     private static final ThreadLocal<Message> CONTEXT = new ThreadLocal<Message>() {
         @Override
         protected synchronized Message initialValue() {
-            Message msg =  new MessageImpl();
+            //Message msg =  new MessageImpl();
             // TODO - EPR - What to set as default?
             //msg.setFrom(new EndpointReferenceImpl("/"));
-            return msg;
+            return null;//msg;
         }
     };
 
@@ -70,4 +70,12 @@ public final class ThreadMessageContext {
     public static Message getMessageContext() {
         return CONTEXT.get();
     }
+    
+    /**
+     * Removes and state from the current thread to ensure that
+     * any associated classloaders can be GCd
+     */
+    public static void removeMessageContext() {
+        CONTEXT.remove();
+    }    
 }

@@ -39,6 +39,7 @@ import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.ActivationException;
 import org.apache.tuscany.sca.core.assembly.CompositeActivator;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
+import org.apache.tuscany.sca.core.invocation.ThreadMessageContext;
 import org.apache.tuscany.sca.node.Client;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFinder;
@@ -175,6 +176,8 @@ public class NodeImpl implements Node, Client {
             manager.extensionPoints.getExtensionPoint(UtilityExtensionPoint.class).removeUtility(compositeActivator);
             this.compositeActivator = null;
             this.proxyFactory = null;
+            
+            ThreadMessageContext.removeMessageContext();
 
         } catch (ActivationException e) {
             throw new IllegalStateException(e);
