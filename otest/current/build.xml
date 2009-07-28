@@ -70,13 +70,12 @@
         <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_7008"/></antcall>
         <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_7009"/></antcall>
         <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_7010"/></antcall>
-<!--
+
         <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_8001"/></antcall>
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_8001_Java"/></antcall>
+        <antcall target="fixUpContribution-Java"><param name="contrib" value="ASM_8001_Java"/></antcall>
         <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_8003"/></antcall>
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_8004"/></antcall>
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_8005"/></antcall>
--->
+        <antcall target="fixUpContribution-Java"><param name="contrib" value="ASM_8004"/></antcall>
+        <antcall target="fixUpContribution-Java"><param name="contrib" value="ASM_8005"/></antcall>
         <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_8010"/></antcall>
         <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_8011"/></antcall>
         <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_8012"/></antcall>

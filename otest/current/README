@@ -50,3 +50,8 @@ is an ant script that sets up the contribution modules.
 otest/current/ant fixUpContributions
 
 Creates the src/main/resource directory and copies in the pom from the template-pom.xml file
+
+
+Extra dependencies that are required
+
+ASM_8004 -> ASM_8005
