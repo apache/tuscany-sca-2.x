@@ -39,7 +39,7 @@
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>sample-webapp-helloworld-stripes</artifactId>
+            <artifactId>helloworld-stripes</artifactId>
             <type>war</type>
             <version>2.0-SNAPSHOT</version>
         </dependency>        
@@ -108,7 +108,7 @@
                         <deployables>
                            <deployable>
                               <groupId>org.apache.tuscany.sca</groupId>
-                              <artifactId>sample-webapp-helloworld-stripes</artifactId>
+                              <artifactId>helloworld-stripes</artifactId>
                               <type>war</type>
                               <properties>
                                  <context>helloworld-stripes</context>

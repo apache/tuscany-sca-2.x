@@ -39,7 +39,7 @@
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>sample-webapp-helloworld-jsp</artifactId>
+            <artifactId>helloworld-jsp</artifactId>
             <type>war</type>
             <version>2.0-SNAPSHOT</version>
         </dependency>
@@ -172,7 +172,7 @@
                         <deployables>
                             <deployable>
                                 <groupId>org.apache.tuscany.sca</groupId>
-                                <artifactId>sample-webapp-helloworld-jsp</artifactId>
+                                <artifactId>helloworld-jsp</artifactId>
                                 <type>war</type>
                                 <properties>
                                     <context>helloworld-jsp</context>
