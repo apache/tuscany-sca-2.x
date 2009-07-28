@@ -54,9 +54,8 @@
 
                 <module>dosgi-dynamic-calculator</module>
 
-<!-- TUSCANY-3182
                 <module>dosgi-dynamic-calculator-operations</module>
--->                
+
                 <module>helloworld-bpel</module>
                 
                 <module>implementation-java-calculator</module>
