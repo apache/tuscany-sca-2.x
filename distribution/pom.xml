@@ -30,26 +30,9 @@
     <packaging>pom</packaging>
     <name>Apache Tuscany SCA Distributions</name>
 
-    <profiles>
-        <profile>
-            <id>default</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <modules>
-                <module>all</module>
-            </modules>
-        </profile>
-
-        <profile>
-            <id>distribution</id>
-            <modules>
-                <module>all</module>
-                <module>tomcat</module>
-            </modules>
-        </profile>
-
-    </profiles>
-
+    <modules>
+        <module>all</module>
+        <module>tomcat</module>
+    </modules>
 
 </project>

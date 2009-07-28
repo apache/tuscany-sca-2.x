@@ -33,6 +33,7 @@
     <modules>
         <module>helloworld-service-contribution</module>
         <module>helloworld-client-webapp</module>
+        <module>legal-checks</module>
     </modules>
 
 </project>

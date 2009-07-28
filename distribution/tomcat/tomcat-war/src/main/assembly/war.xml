@@ -20,6 +20,7 @@
   <id>war</id>
   <formats>
     <format>war</format>
+    <format>dir</format>
   </formats>
   <includeBaseDirectory>false</includeBaseDirectory>
   <fileSets>
