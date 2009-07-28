@@ -46,6 +46,15 @@ public class BindingTestCase {
 
     }
 
+    @Test
+    public void testTwoArgs() throws MalformedURLException, IOException {
+        URL url = new URL("http://localhost:8085/HelloWorldService/sayHello2?first=petra&last=arnold&callback=foo");
+        BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
+        String response = br.readLine();
+        Assert.assertEquals("foo(\"Hello petra arnold\");", response);
+
+    }
+
     @BeforeClass
     public static void init() throws Exception {
         JettyServer.portDefault = 8085;

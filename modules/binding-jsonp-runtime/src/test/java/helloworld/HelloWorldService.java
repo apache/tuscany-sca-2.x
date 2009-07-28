@@ -25,4 +25,6 @@ public interface HelloWorldService {
 
     String sayHello(String name);
 
+    String sayHello2(String firstName, String lastName);
+
 }

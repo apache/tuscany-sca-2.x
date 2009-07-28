@@ -24,5 +24,9 @@ public class HelloWorldImpl implements HelloWorldService {
     public String sayHello(String name) {
         return "Hello " + name;
     }
+
+    public String sayHello2(String firstName, String lastName) {
+        return "Hello " + firstName + " " + lastName;
+    }
     
 }
