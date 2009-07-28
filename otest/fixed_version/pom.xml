@@ -64,29 +64,45 @@
             <scope>test</scope>
         </dependency>
 
-</dependencies>
+    </dependencies>
     <build>
-        <plugins> 
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <excludes>
+                    <exclude>General/**</exclude>
+                    <exclude>*_Java/**</exclude>
+                    <exclude>ASM_8004/**</exclude>
+                    <exclude>ASM_8005/**</exclude>
+                </excludes>
+            </resource>
+        </resources>
+        <plugins>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
-              <artifactId>build-helper-maven-plugin</artifactId>
-               <executions>
-                  <execution>
-                       <id>add-source</id>
-                       <phase>generate-sources</phase>
-                       <goals>
-                          <goal>add-source</goal>
-                       </goals>
-                       <configuration>
-                           <sources>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.4</version>
+                <executions>
+                    <execution>
+                        <id>add-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
                                 <source>${basedir}/src/main/resources/General</source>
-                           </sources>
-                       </configuration>
-                  </execution>
-               </executions>
-    
+                                <source>${basedir}/src/main/resources/General_Java</source>
+                                <source>${basedir}/src/main/resources/ASM_8001_Java</source>
+                                <source>${basedir}/src/main/resources/ASM_8004</source>
+                                <source>${basedir}/src/main/resources/ASM_8005</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+
             </plugin>
         </plugins>
     </build>
-    
+
 </project>
