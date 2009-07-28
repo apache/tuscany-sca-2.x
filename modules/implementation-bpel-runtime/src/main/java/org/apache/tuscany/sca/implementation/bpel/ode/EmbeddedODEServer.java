@@ -92,15 +92,12 @@ public class EmbeddedODEServer {
 
         Properties confProps = new Properties();
         confProps.put("openjpa.jdbc.SynchronizeMappings", "buildSchema(ForeignKeys=false)");
-        // MJE 30/06/2009 - testing - limit the thread pools to max = 1 thread
-        confProps.put("ode-scathreads.pool.size", "1" );
         
         _config = new OdeConfigProperties(confProps, "ode-sca");
 
         // Setting work root as the directory containing our database
         try {
         	_workRoot = getDatabaseLocationAsFile();
-            //_workRoot = new File(dbLocation.toURI()).getParentFile();
         } catch (URISyntaxException e) {
             throw new ODEInitializationException(e);
         }
