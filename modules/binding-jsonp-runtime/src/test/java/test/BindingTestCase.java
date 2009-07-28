@@ -39,7 +39,7 @@ public class BindingTestCase {
 
     @Test
     public void testService() throws MalformedURLException, IOException {
-        URL url = new URL("http://localhost:8085/HelloWorldService/sayHello?name=\"petra\"&callback=foo");
+        URL url = new URL("http://localhost:8085/HelloWorldService/sayHello?name=petra&callback=foo");
         BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
         String response = br.readLine();
         Assert.assertEquals("foo(\"Hello petra\");", response);

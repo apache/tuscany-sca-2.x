@@ -23,12 +23,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Enumeration;
+import java.util.List;
 
 import javax.servlet.GenericServlet;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
+import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.codehaus.jackson.JsonParseException;
@@ -62,14 +64,23 @@ public class JSONPServlet extends GenericServlet {
      */
     protected String getJSONRequest(ServletRequest servletRequest) throws IOException, JsonParseException, JsonMappingException {
         String jsonRequest = "[";
+        
+        List<DataType> types = operation.getInputType().getLogical();
+        int typesIndex = 0;
+        
         for (Enumeration<?> ns = servletRequest.getParameterNames(); ns.hasMoreElements(); ) {
             String name = (String) ns.nextElement();
             if (!name.startsWith("_") && !"callback".equals(name)) {
                 if (jsonRequest.length() > 1) {
                     jsonRequest += ", ";
                 }
-                //jsonRequest += name + ":" + servletRequest.getParameter(name);
-                jsonRequest += servletRequest.getParameter(name);
+                
+                if (typesIndex < types.size() && String.class.equals(types.get(typesIndex).getGenericType())) {
+                    jsonRequest += "\"" + servletRequest.getParameter(name) + "\"";
+                } else {
+                    jsonRequest += servletRequest.getParameter(name);
+                }
+                
             }
         }
         jsonRequest += "]";
