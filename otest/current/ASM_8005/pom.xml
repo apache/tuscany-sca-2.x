@@ -25,15 +25,56 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>tuscany-otests-asm-ASM_8005</artifactId>
-    <name>Apache Tuscany SCA Specification Tests ASM ASM_8005</name> 
+    <name>Apache Tuscany SCA Specification Tests ASM_8005</name> 
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-otests-asm-General_Java</artifactId>
+            <version>2.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 
     <build>
-        <sourceDirectory>../src/main/resources/ASM_8005</sourceDirectory>
+       <finalName>${artifactId}</finalName>
         <resources>
           <resource>
-            <directory>../src/main/resources/ASM_8005</directory>
+            <directory>src/main/java</directory>
           </resource>
         </resources>
-        <outputDirectory>../tests/target/ASM_8005</outputDirectory>
+       <plugins>
+           <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.3</version>
+
+                <dependencies>
+                    <dependency>
+                        <groupId>ant</groupId>
+                        <artifactId>ant-trax</artifactId>
+                        <version>1.6.5</version>
+                    </dependency>
+                </dependencies>
+
+                <executions>
+                    <execution>
+                        <id>copy-files-from-svn</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <property name="from.dir" value="../src/main/resources/ASM_8005"/>
+                                <property name="to.dir" value="src/main/java"/>
+                                <ant antfile="../build.xml">
+                                    <target name="copyDir"/>
+                                </ant>
+                            </tasks>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>            
+        </plugins>
     </build>
 </project>
