@@ -6,6 +6,10 @@ mvn
 
 should build and run all of the otests
 
+The file otest\current\tests\src\test\resources\oasis-sca-tests.properties configures the 
+test environment. Currently you can run in either the Java standalone or OSGi runtimes
+which is configured by the org.oasis.sca.tests.assembly.runtime_bridge property.
+
 
 Running the otests with Tuscany using Eclipse
 =============================================
