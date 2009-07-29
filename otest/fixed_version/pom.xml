@@ -68,15 +68,20 @@
     <build>
         <resources>
             <resource>
+                <directory>src/test/resources</directory>
+            </resource>
+        </resources>
+    
+        <testResources>
+            <testResource>
                 <directory>src/main/resources</directory>
                 <excludes>
-                    <exclude>General/**</exclude>
                     <exclude>*_Java/**</exclude>
                     <exclude>ASM_8004/**</exclude>
                     <exclude>ASM_8005/**</exclude>
                 </excludes>
-            </resource>
-        </resources>
+            </testResource>
+        </testResources>
         <plugins>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -87,11 +92,10 @@
                         <id>add-source</id>
                         <phase>generate-sources</phase>
                         <goals>
-                            <goal>add-source</goal>
+                            <goal>add-test-source</goal>
                         </goals>
                         <configuration>
                             <sources>
-                                <source>${basedir}/src/main/resources/General</source>
                                 <source>${basedir}/src/main/resources/General_Java</source>
                                 <source>${basedir}/src/main/resources/ASM_8001_Java</source>
                                 <source>${basedir}/src/main/resources/ASM_8004</source>
