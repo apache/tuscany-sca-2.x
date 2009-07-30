@@ -110,7 +110,7 @@ public class ProblemImpl implements Problem {
     }
     
     public String getContext() {
-        return context;
+        return context + " (" + messageId + ")"; 
     }
 
     public Object getProblemObject() {
