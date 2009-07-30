@@ -200,12 +200,16 @@ public class EndpointRegistryImpl implements EndpointRegistry, LifeCycleListener
 
     public void stop() {
         List<Endpoint> localEndpoints = endpoints.remove(this);
-        for (Endpoint endpoint : localEndpoints) {
-            removeEndpoint(endpoint);
+        if (localEndpoints != null) {
+            for (Endpoint endpoint : localEndpoints) {
+                removeEndpoint(endpoint);
+            }
         }
         List<EndpointReference> localEndpointReferences = endpointreferences.remove(this);
-        for (EndpointReference endpointReference : localEndpointReferences) {
-            removeEndpointReference(endpointReference);
+        if (localEndpointReferences != null) {
+            for (EndpointReference endpointReference : localEndpointReferences) {
+                removeEndpointReference(endpointReference);
+            }
         }
         listeners.clear();
     }
