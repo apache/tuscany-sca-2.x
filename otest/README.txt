@@ -1,1 +1,3 @@
 Tests are pulled into the fixed_version and currrent subdirectories using svn:externals to extract the tests directly from oasis. As we don't have control over changes in the OASIS build structure, the extraction into the fixed_version will be a selected OASIS svn repository version, intended to be stable (though not necessarily all tests passing)
+
+(the fixed_version directory has been removed for the time being) 
