@@ -607,11 +607,12 @@ public class CompositeActivatorImpl implements CompositeActivator {
         }
         for (ComponentReference reference : component.getReferences()) {
             if (logger.isLoggable(Level.FINE)) {
-                logger.fine("Starting component reference: " + component.getURI() + "#" + reference.getName());
+                logger.fine("Stopping component reference: " + component.getURI() + "#" + reference.getName());
             }
             RuntimeComponentReference runtimeRef = ((RuntimeComponentReference)reference);
 
             for (EndpointReference endpointReference : reference.getEndpointReferences()) {
+                endpointRegistry.removeEndpointReference(endpointReference);
                 final ReferenceBindingProvider bindingProvider = runtimeRef.getBindingProvider(endpointReference.getBinding());
                 if (bindingProvider != null) {
                     // Allow bindings to read properties. Requires PropertyPermission read in security policy.
