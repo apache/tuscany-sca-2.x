@@ -152,7 +152,9 @@ public class JettyServer implements ServletHost {
             Set<Entry<Integer, Port>> entries = new HashSet<Entry<Integer, Port>>(ports.entrySet());
             for (Entry<Integer, Port> entry: entries) {
                 Port port = entry.getValue();
-                port.getServer().stop();
+                Server server = port.getServer();
+                server.stop();
+                server.setStopAtShutdown(false);
                 ports.remove(entry.getKey());
             }
         } catch (Exception e) {
@@ -442,7 +444,9 @@ public class JettyServer implements ServletHost {
             // Stop the port if there are no servlet mappings on it anymore
             if (mappings.size() == 0) {
                 try {
-                    port.getServer().stop();
+                    Server server = port.getServer();
+                    server.stop();
+                    server.setStopAtShutdown(false);
                 } catch (Exception e) {
                     throw new IllegalStateException(e);
                 }
