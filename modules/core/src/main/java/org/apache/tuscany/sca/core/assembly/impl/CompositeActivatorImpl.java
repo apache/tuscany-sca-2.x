@@ -377,7 +377,11 @@ public class CompositeActivatorImpl implements CompositeActivator {
                                                     wireProcessor,
                                                     messageFactory);
 
-            runtimeService.getRuntimeWires().add(wire);
+            // TODO - EPR - TUSCANY-3187 - keep and eye on this as to code
+            //      has been reported to be working without this fix in some 
+            //      environments
+            //runtimeService.getRuntimeWires().add(wire);
+            ((RuntimeComponentService)endpoint.getService()).getRuntimeWires().add(wire);
         }
     }
 
