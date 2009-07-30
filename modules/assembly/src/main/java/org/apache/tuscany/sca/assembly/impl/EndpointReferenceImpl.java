@@ -165,7 +165,7 @@ public class EndpointReferenceImpl implements EndpointReference {
     }
 
     public String toString() {
-        String output = "Endpoint Reference: ";
+        String output = "EndpointReference(@" + this.hashCode() + "): ";
 
         if (getURI() != null) {
             output += " URI = " + getURI();

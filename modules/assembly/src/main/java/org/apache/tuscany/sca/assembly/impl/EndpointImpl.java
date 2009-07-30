@@ -143,8 +143,8 @@ public class EndpointImpl implements Endpoint {
     }
 
     public String toString() {
-        String output = "Endpoint: ";
-
+        String output = "Endpoint(@" + this.hashCode() + "): ";
+        
         if (getURI() != null) {
             output += " URI = " + getURI();
         }
