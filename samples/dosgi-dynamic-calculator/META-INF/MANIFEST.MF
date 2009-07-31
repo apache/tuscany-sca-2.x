@@ -16,5 +16,5 @@ Bundle-ActivationPolicy: lazy
 Eclipse-LazyStart: true
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-DocURL: http://www.apache.org/
-Service-Component: OSGI-INF/calculator-component.xml
+Service-Component-Disabled: OSGI-INF/calculator-component.xml
 Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6
