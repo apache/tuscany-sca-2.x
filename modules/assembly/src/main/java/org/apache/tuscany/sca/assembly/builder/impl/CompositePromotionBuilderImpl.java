@@ -156,7 +156,7 @@ public class CompositePromotionBuilderImpl extends BaseBuilderImpl implements Co
                             interfaceContractMapper.isCompatible(compositeServiceInterfaceContract,
                                                                  promotedServiceInterfaceContract);
                         if (!isCompatible) {
-                            warning(monitor, "ServiceInterfaceNotSubSet", compositeService, promotedServiceName);
+                            error(monitor, "ServiceInterfaceNotSubSet", compositeService, promotedServiceName);
                         }
                     }
 
