@@ -218,6 +218,18 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
             // Shortcut for performance
             return true;
         }
+        
+        if (source == null || target == null){
+            return false;
+        }
+        
+        if (source.getInterface() == target.getInterface()){
+            return true;
+        }
+        
+        if (source.getInterface() == null || target.getInterface() == null){
+            return false;
+        }
 
         if (source.getInterface().isDynamic() || target.getInterface().isDynamic()) {
             return true;
