@@ -121,6 +121,10 @@ public class ContextClassLoaderServiceDiscoverer implements ServiceDiscoverer {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         this.classLoaderReference = new WeakReference<ClassLoader>(classLoader);
     }
+    
+    public ClassLoader getContextClassLoader() {
+        return classLoaderReference.get();
+    }
 
     private List<URL> getResources(final String name) throws IOException {
         try {

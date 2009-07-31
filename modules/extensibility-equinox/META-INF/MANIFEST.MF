@@ -19,6 +19,12 @@ Import-Package: org.apache.tuscany.sca.core;version="2.0.0",
  org.apache.tuscany.sca.extensibility;version="2.0.0",
  org.osgi.framework;version="1.4",
  org.osgi.framework.launch;version="1.0.0";resolution:=optional
+Tuscany-Comment2: The system bundle exports javax.transaction* packages that only
+ contains a subset of the classes
+DynamicImport-Package: org.apache.tuscany.sca.extensibility.equinox,
+ javax.transaction;version="1.1",
+ javax.transaction.xa;version="1.1",
+ * 
 Bundle-SymbolicName: org.apache.tuscany.sca.extensibility.equinox
 Bundle-DocURL: http://www.apache.org/
 Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6

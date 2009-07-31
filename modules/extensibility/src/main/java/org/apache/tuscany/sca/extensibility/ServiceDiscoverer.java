@@ -46,4 +46,9 @@ public interface ServiceDiscoverer {
      */
     public ServiceDeclaration getServiceDeclaration(String name) throws IOException;
     
+    /**
+     * Get a classloader that can be used for thread context loader
+     * @return A classloader that can provide access to public classes and resources
+     */
+    public ClassLoader getContextClassLoader();
 }

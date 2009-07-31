@@ -355,7 +355,7 @@ public class EquinoxHost {
     private boolean isServiceProvider(Bundle bundle, Set<String> serviceProviders) {
         if (bundle != null) {
             String export = (String)bundle.getHeaders().get(Constants.EXPORT_PACKAGE);
-            if (export != null && export.contains("META-INF.services")) {
+            if (export != null && export.contains(NodeLauncherUtil.META_INF_SERVICES)) {
                 serviceProviders.add(bundle.getSymbolicName());
                 return true;
             }

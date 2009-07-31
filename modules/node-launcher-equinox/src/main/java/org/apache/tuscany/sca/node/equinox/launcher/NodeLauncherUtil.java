@@ -89,6 +89,7 @@ final class NodeLauncherUtil {
 
     private static final Logger logger = Logger.getLogger(NodeLauncherUtil.class.getName());
 
+    static final String META_INF_SERVICES = "META-INF.services;partial=true;mandatory:=partial";
     static final String LAUNCHER_EQUINOX_LIBRARIES = "org.apache.tuscany.sca.node.launcher.equinox.libraries";
     static final String GATEWAY_BUNDLE = "org.apache.tuscany.sca.gateway";
     
@@ -347,7 +348,7 @@ final class NodeLauncherUtil {
                 pkg = pkg.replace('/', '.') + version;
                 // Export META-INF.services
                 if ("META-INF.services".equals(pkg)) {
-                    packages.add("META-INF.services" + ";partial=true;mandatory:=partial");
+                    packages.add(META_INF_SERVICES);
                 } else {
                     packages.add(pkg);
                 }

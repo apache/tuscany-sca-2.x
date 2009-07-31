@@ -182,4 +182,8 @@ public final class ServiceDiscovery implements ServiceDiscoverer {
         }
     }
 
+    public ClassLoader getContextClassLoader() {
+        return discoverer.getContextClassLoader();
+    }
+
 }

@@ -91,9 +91,9 @@ import org.apache.tuscany.sca.binding.ws.axis2.policy.configuration.Axis2ConfigP
 import org.apache.tuscany.sca.binding.ws.axis2.policy.configurator.Axis2BindingHeaderConfigurator;
 import org.apache.tuscany.sca.binding.ws.axis2.policy.header.Axis2HeaderPolicy;
 import org.apache.tuscany.sca.binding.ws.axis2.policy.header.Axis2SOAPHeaderString;
-import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.RuntimeAssemblyFactory;
+import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -250,7 +250,7 @@ public class Axis2ServiceProvider {
                 public ConfigurationContext run() throws AxisFault {
                     ClassLoader cl0 = getClass().getClassLoader();
                     ClassLoader cl1 = URLBasedAxisConfigurator.class.getClassLoader();
-                    ClassLoader cl2 = ExtensionPointRegistry.class.getClassLoader();
+                    ClassLoader cl2 = ServiceDiscovery.getInstance().getContextClassLoader();
 //                    ClassLoader cl3 =
 //                        modelFactories.getFactory(DocumentBuilderFactory.class).getClass().getClassLoader();
                     ClassLoader tccl = Thread.currentThread().getContextClassLoader();

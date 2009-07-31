@@ -310,5 +310,10 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
         }
         return descriptors;
     }
+    
+    public ClassLoader getContextClassLoader() {
+        // Get the bundle classloader for the extensibility bundle that has DynamicImport-Package *
+        return getClass().getClassLoader();
+    }
 
 }
