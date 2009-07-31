@@ -28,6 +28,7 @@ import javax.wsdl.PortType;
 import javax.wsdl.WSDLException;
 import javax.wsdl.xml.WSDLWriter;
 import javax.xml.namespace.QName;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.tuscany.sca.assembly.AbstractContract;
 import org.apache.tuscany.sca.assembly.Component;
@@ -188,6 +189,7 @@ public class BindingWSDLGenerator {
         DataBindingExtensionPoint dataBindings = extensionPoints.getExtensionPoint(DataBindingExtensionPoint.class);
         WSDLFactory wsdlFactory = modelFactories.getFactory(WSDLFactory.class);
         XSDFactory xsdFactory = modelFactories.getFactory(XSDFactory.class);
+        DocumentBuilderFactory documentBuilderFactory = modelFactories.getFactory(DocumentBuilderFactory.class);
 
         if (((Contract)contract).getInterfaceContract(wsBinding) == null) {
             // can happen if incorrect component service name
@@ -207,6 +209,7 @@ public class BindingWSDLGenerator {
                                     dataBindings,
                                     wsdlFactory,
                                     xsdFactory,
+                                    documentBuilderFactory,
                                     monitor);
             } else {
                 try {
@@ -289,6 +292,7 @@ public class BindingWSDLGenerator {
                                                                        DataBindingExtensionPoint dataBindings,
                                                                        WSDLFactory wsdlFactory,
                                                                        XSDFactory xsdFactory,
+                                                                       DocumentBuilderFactory documentBuilderFactory, 
                                                                        Monitor monitor) {
 
         WSDLInterfaceContract wsdlContract = wsdlFactory.createWSDLInterfaceContract();
@@ -301,7 +305,7 @@ public class BindingWSDLGenerator {
         Definition def = null;
         try {
             Interface2WSDLGenerator wsdlGenerator =
-                new Interface2WSDLGenerator(requiresSOAP12, resolver, dataBindings, xsdFactory, monitor);
+                new Interface2WSDLGenerator(requiresSOAP12, resolver, dataBindings, xsdFactory, documentBuilderFactory, monitor);
             def = wsdlGenerator.generate(iface, wsdlDefinition);
         } catch (WSDLException e) {
             throw new WSDLGenerationException(e);

@@ -23,6 +23,7 @@ import java.io.StringWriter;
 
 import javax.wsdl.Definition;
 import javax.wsdl.xml.WSDLWriter;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.DefaultFactoryExtensionPoint;
@@ -56,9 +57,10 @@ public class Interface2WSDLGeneratorTestCase {
         new DataBindingJavaInterfaceProcessor(dataBindings).visitInterface(iface);
         DefaultFactoryExtensionPoint modelFactories = new DefaultFactoryExtensionPoint(new DefaultExtensionPointRegistry());
         WSDLFactory wFactory = new DefaultWSDLFactory(modelFactories);
+        DocumentBuilderFactory documentBuilderFactory = modelFactories.getFactory(DocumentBuilderFactory.class);
         WSDLDefinition wsdlDefinition = wFactory.createWSDLDefinition();
         XSDFactory factory = new DefaultXSDFactory();
-        Interface2WSDLGenerator generator = new Interface2WSDLGenerator(false, new XSDModelResolver(null, null), dataBindings, factory, null);
+        Interface2WSDLGenerator generator = new Interface2WSDLGenerator(false, new XSDModelResolver(null, null), dataBindings, factory, documentBuilderFactory, null);
         Definition definition = generator.generate(iface, wsdlDefinition);
 
         // print the generated WSDL file and inline schemas

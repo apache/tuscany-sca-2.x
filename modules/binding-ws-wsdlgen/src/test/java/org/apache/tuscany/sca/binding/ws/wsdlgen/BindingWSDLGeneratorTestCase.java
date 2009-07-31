@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.sca.binding.ws.wsdlgen;
 
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
@@ -48,6 +50,7 @@ public class BindingWSDLGeneratorTestCase extends TestCase {
         org.apache.tuscany.sca.core.FactoryExtensionPoint modelFactories = new DefaultFactoryExtensionPoint(new DefaultExtensionPointRegistry());
         WSDLFactory wsdlFactory = modelFactories.getFactory(WSDLFactory.class);
         XSDFactory xsdFactory = modelFactories.getFactory(XSDFactory.class);
+        DocumentBuilderFactory documentBuilderFactory = modelFactories.getFactory(DocumentBuilderFactory.class);
         JavaInterfaceFactory factory = new DefaultJavaInterfaceFactory();
         JavaInterfaceContract javaIC = factory.createJavaInterfaceContract();
         JavaInterface iface = factory.createJavaInterface(HelloWorld.class);
@@ -56,7 +59,7 @@ public class BindingWSDLGeneratorTestCase extends TestCase {
         new JAXWSJavaInterfaceProcessor(dataBindings, faultExceptionMapper, null).visitInterface(iface);
         new DataBindingJavaInterfaceProcessor(dataBindings).visitInterface(iface);
         javaIC.setInterface(iface);
-        WSDLInterfaceContract wsdlIC = BindingWSDLGenerator.createWSDLInterfaceContract(javaIC, false, new XSDModelResolver(null, null), dataBindings, wsdlFactory, xsdFactory, null);
+        WSDLInterfaceContract wsdlIC = BindingWSDLGenerator.createWSDLInterfaceContract(javaIC, false, new XSDModelResolver(null, null), dataBindings, wsdlFactory, xsdFactory, documentBuilderFactory, null);
         assertNotNull(wsdlIC);
         WSDLInterface wsdlInterface = (WSDLInterface)wsdlIC.getInterface();
         assertNotNull(wsdlInterface);
@@ -69,7 +72,7 @@ public class BindingWSDLGeneratorTestCase extends TestCase {
         new JAXWSJavaInterfaceProcessor(dataBindings, faultExceptionMapper, null).visitInterface(iface2);
         new DataBindingJavaInterfaceProcessor(dataBindings).visitInterface(iface2);
         javaIC2.setInterface(iface2);
-        WSDLInterfaceContract wsdlIC2 = BindingWSDLGenerator.createWSDLInterfaceContract(javaIC2, false, new XSDModelResolver(null, null), dataBindings, wsdlFactory, xsdFactory, null);
+        WSDLInterfaceContract wsdlIC2 = BindingWSDLGenerator.createWSDLInterfaceContract(javaIC2, false, new XSDModelResolver(null, null), dataBindings, wsdlFactory, xsdFactory, documentBuilderFactory, null);
         assertNotNull(wsdlIC2);
     }
 

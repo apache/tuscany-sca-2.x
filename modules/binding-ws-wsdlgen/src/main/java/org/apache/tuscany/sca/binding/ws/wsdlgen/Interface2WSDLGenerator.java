@@ -95,6 +95,7 @@ public class Interface2WSDLGenerator {
     private WSDLFactory factory;
     private DataBindingExtensionPoint dataBindings;
     private WSDLDefinitionGenerator definitionGenerator;
+    private DocumentBuilderFactory documentBuilderFactory;
     private boolean requiresSOAP12;
     private ModelResolver resolver;
     private XSDFactory xsdFactory;
@@ -104,10 +105,12 @@ public class Interface2WSDLGenerator {
                                    ModelResolver resolver,
                                    DataBindingExtensionPoint dataBindings,
                                    XSDFactory xsdFactory,
+                                   DocumentBuilderFactory documentBuilderFactory,
                                    Monitor monitor) throws WSDLException {
         super();
         this.requiresSOAP12 = requiresSOAP12; 
-        this.resolver = resolver; 
+        this.resolver = resolver;
+        this.documentBuilderFactory = documentBuilderFactory;
         definitionGenerator = new WSDLDefinitionGenerator(requiresSOAP12);
         this.dataBindings = dataBindings;
         this.xsdFactory = xsdFactory;
@@ -534,8 +537,6 @@ public class Interface2WSDLGenerator {
     public Schema createSchema(Definition definition) throws WSDLException {
         return (Schema)definition.getExtensionRegistry().createExtension(Types.class, SCHEMA_QNAME);
     }
-
-    private DocumentBuilderFactory documentBuilderFactory;
 
     public Document createDocument() {
         Document document;
