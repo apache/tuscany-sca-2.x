@@ -234,10 +234,10 @@ public class CompositePromotionBuilderImpl extends BaseBuilderImpl implements Co
                                 interfaceContractMapper.isCompatible(componentReferenceInterfaceContract,
                                                                      compositeReferenceInterfaceContract);
                             if (!isCompatible) {
-                                warning(monitor,
-                                        "ReferenceInterfaceNotSubSet",
-                                        compositeReference,
-                                        componentReferenceName);
+                                error(monitor,
+                                      "ReferenceInterfaceNotSubSet",
+                                      compositeReference,
+                                      componentReferenceName);
                             }
                         }
                     } else {
