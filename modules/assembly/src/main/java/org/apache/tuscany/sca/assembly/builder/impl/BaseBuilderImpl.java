@@ -518,11 +518,11 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
                         .getInterfaceContract())) {
                         if (!interfaceContractMapper.isCompatible(componentReference.getInterfaceContract(),
                                                                   interfaceContract)) {
-                            warning(monitor,
-                                    "ReferenceIncompatibleComponentInterface",
-                                    component,
-                                    component.getName(),
-                                    componentReference.getName());
+                            error(monitor,
+                                  "ReferenceIncompatibleComponentInterface",
+                                  component,
+                                  component.getName(),
+                                  componentReference.getName());
                         }
                     }
                 } else {
