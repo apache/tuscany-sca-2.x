@@ -52,6 +52,7 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceFactory;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 
@@ -107,23 +108,15 @@ public class OSGiImplementationProvider implements ImplementationProvider {
             osgiProps.put(SERVICE_IMPORTED, "true");
             osgiProps.put(SERVICE_IMPORTED_CONFIGS, new String[] {REMOTE_CONFIG_SCA});
 
-            ProxyFactory proxyService = proxyFactoryExtensionPoint.getInterfaceProxyFactory();
-            if (!interfaceClass.isInterface()) {
-                proxyService = proxyFactoryExtensionPoint.getClassProxyFactory();
-            }
-
             for (RuntimeWire wire : reference.getRuntimeWires()) {
-                final Object proxy = proxyService.createProxy(interfaceClass, wire);
+                final OSGiServiceFactory serviceFactory = new OSGiServiceFactory(interfaceClass.getName(), wire);
                 ServiceRegistration registration =
                     AccessController.doPrivileged(new PrivilegedAction<ServiceRegistration>() {
                         public ServiceRegistration run() {
                             // Register the proxy as OSGi service
                             BundleContext context = osgiBundle.getBundleContext();
                             ServiceRegistration registration =
-                                context.registerService(interfaceClass.getName(), proxy, osgiProps);
-                            // Create a DiscoveredServiceTracker to track the status of the remote service
-                            //                            RemoteServiceTracker tracker = new RemoteServiceTracker(registration);
-                            //                            context.registerService(DiscoveredServiceTracker.class.getName(), tracker, props);
+                                context.registerService(interfaceClass.getName(), serviceFactory, osgiProps);
                             return registration;
                         }
                     });
@@ -196,23 +189,39 @@ public class OSGiImplementationProvider implements ImplementationProvider {
         return implementation;
     }
 
-    //    private class RemoteServiceTracker implements DiscoveredServiceTracker {
-    //        private ServiceRegistration referenceRegistration;
-    //
-    //        private RemoteServiceTracker(ServiceRegistration referenceRegistration) {
-    //            super();
-    //            this.referenceRegistration = referenceRegistration;
-    //        }
-    //
-    //        public void serviceChanged(DiscoveredServiceNotification notification) {
-    //            ServiceEndpointDescription description = notification.getServiceEndpointDescription();
-    //            switch(notification.getType()) {
-    //                case UNAVAILABLE:
-    //                case AVAILABLE:
-    //                case MODIFIED:
-    //                case MODIFIED_ENDMATCH:
-    //            }
-    //        }
-    //    }
+    public class OSGiServiceFactory implements ServiceFactory {
+        private RuntimeWire wire;
+        private String interfaceName;
+
+        /**
+         * @param interfaceName
+         * @param wire
+         */
+        public OSGiServiceFactory(String interfaceName, RuntimeWire wire) {
+            super();
+            this.interfaceName = interfaceName;
+            this.wire = wire;
+        }
+
+        public Object getService(Bundle bundle, ServiceRegistration registration) {
+            Class<?> interfaceClass = null;
+            try {
+                interfaceClass = bundle.loadClass(interfaceName);
+            } catch (ClassNotFoundException e) {
+                return null;
+            }
+            ProxyFactory proxyService = proxyFactoryExtensionPoint.getInterfaceProxyFactory();
+            if (!interfaceClass.isInterface()) {
+                proxyService = proxyFactoryExtensionPoint.getClassProxyFactory();
+            }
+            Object proxy = proxyService.createProxy(interfaceClass, wire);
+            return proxy;
+        }
+
+        public void ungetService(Bundle bundle, ServiceRegistration registration, Object service) {
+            // Do we need to release the proxy?
+        }
+
+    }
 
 }
