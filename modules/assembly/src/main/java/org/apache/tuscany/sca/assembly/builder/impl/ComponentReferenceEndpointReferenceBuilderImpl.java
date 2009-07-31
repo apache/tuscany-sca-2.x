@@ -170,7 +170,7 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
             // Check that the component reference does not mix the use of endpoint references
             // specified via the target attribute with the presence of binding elements
             if (bindingsIdentifyTargets(reference)) {
-                warning(monitor, "ReferenceEndPointMixWithTarget", composite, composite.getName().toString(), component
+                error(monitor, "ReferenceEndPointMixWithTarget", composite, composite.getName().toString(), component
                     .getName(), reference.getName());
             }
 

@@ -24,7 +24,6 @@
         <reference name="bReference" target="BComponent" />
         <reference name="cReference" target="CComponent/CComponentImpl">
         <!-- reference name="cReference" target="CComponent"-->
-            <binding.sca uri="DComponent"/>
         </reference>
         <reference name="dReference1" >
             <binding.sca uri="DComponent"/>
