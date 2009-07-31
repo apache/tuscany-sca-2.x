@@ -255,6 +255,8 @@ The following components come under Apache Software License 2.0
  geronimo-transaction-2.0.1.jar
  httpcore-4.0-beta1.jar
  httpcore-nio-4.0-beta1.jar
+ jackson-core-asl-1.0.1.jar
+ jackson-mapper-asl-1.0.1.jar
  jetty-6.1.19.jar
  jetty-util-6.1.19.jar
  juli-6.0.18.jar
