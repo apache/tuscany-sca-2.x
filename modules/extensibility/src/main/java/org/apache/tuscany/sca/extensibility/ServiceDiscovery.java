@@ -24,7 +24,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -44,6 +46,7 @@ public final class ServiceDiscovery implements ServiceDiscoverer {
     private ServiceDiscovery() {
         super();
     }
+
     /**
      * Get an instance of Service discovery, one instance is created per
      * ClassLoader that this class is loaded from
@@ -112,15 +115,49 @@ public final class ServiceDiscovery implements ServiceDiscoverer {
      * be returned.
      */
     public ServiceDeclaration getServiceDeclaration(final String name) throws IOException {
-        //        ServiceDeclaration service = getServiceDiscoverer().getFirstServiceDeclaration(name);
-        //        return service;
         Collection<ServiceDeclaration> declarations = getServiceDeclarations(name, true);
         if (!declarations.isEmpty()) {
-            List<ServiceDeclaration> declarationList = new ArrayList<ServiceDeclaration>(declarations);
-            Collections.sort(declarationList, ServiceComparator.DESCENDING_ORDER);
-            return declarationList.get(0);
+            // List<ServiceDeclaration> declarationList = new ArrayList<ServiceDeclaration>(declarations);
+            // Collections.sort(declarationList, ServiceComparator.DESCENDING_ORDER);
+            return declarations.iterator().next();
         } else {
             return null;
+        }
+    }
+
+    /**
+     * Get service declarations that are filtered by the service type. In an OSGi runtime, there
+     * might be different versions of the services 
+     * @param serviceType
+     * @return
+     * @throws IOException
+     */
+    public Collection<ServiceDeclaration> getServiceDeclarations(Class<?> serviceType, boolean byRanking)
+        throws IOException {
+        Collection<ServiceDeclaration> sds = getServiceDeclarations(serviceType.getName(), byRanking);
+        for (Iterator<ServiceDeclaration> i = sds.iterator(); i.hasNext();) {
+            ServiceDeclaration sd = i.next();
+            if (!sd.isAssignableTo(serviceType)) {
+                logger.log(Level.WARNING, "Service provider {0} is not a type of {1}", new Object[] {
+                                                                                                     sd,
+                                                                                                     serviceType
+                                                                                                         .getName()});
+                i.remove();
+            }
+        }
+        return sds;
+    }
+
+    public Collection<ServiceDeclaration> getServiceDeclarations(Class<?> serviceType) throws IOException {
+        return getServiceDeclarations(serviceType, false);
+    }
+
+    public ServiceDeclaration getServiceDeclaration(Class<?> serviceType) throws IOException {
+        Collection<ServiceDeclaration> sds = getServiceDeclarations(serviceType, true);
+        if (sds.isEmpty()) {
+            return null;
+        } else {
+            return sds.iterator().next();
         }
     }
 

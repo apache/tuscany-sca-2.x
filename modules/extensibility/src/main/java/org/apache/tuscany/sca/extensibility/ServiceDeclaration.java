@@ -50,8 +50,19 @@ public interface ServiceDeclaration {
      */
     Map<String, String> getAttributes();
     
+    /**
+     * Check if the service implementation class is a type of the service
+     * @param serviceType The java class of the service SPI
+     * @return true if the implementation class is a type of the service
+     */
+    boolean isAssignableTo(Class<?> serviceType);
+    
     URL getLocation();
     
+    /**
+     * Return the class name for the service provider
+     * @return
+     */
     String getClassName();
     
     URL getResource(String name);

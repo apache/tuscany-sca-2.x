@@ -108,6 +108,7 @@ public class EquinoxServiceDiscovererTestCase {
         for (Bundle b : bundles) {
             b.start();
             System.out.println("Started "+b.getSymbolicName() + " [" + getState(b) + "]");
+            /*
             // Get the Platform.getExtensionRegistry()
             if ("org.eclipse.core.runtime".equals(b.getSymbolicName())) {
                 // The Platform class loaded by the bundle is different that the one
@@ -117,6 +118,7 @@ public class EquinoxServiceDiscovererTestCase {
                 Object reg = m.invoke(cls);
                 System.out.println(reg);
             }
+            */
         }
     }
 

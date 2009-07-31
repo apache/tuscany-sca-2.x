@@ -19,8 +19,6 @@
 
 package org.apache.tuscany.sca.extensibility.equinox;
 
-import java.util.logging.Logger;
-
 import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -31,12 +29,12 @@ import org.osgi.framework.BundleContext;
  * @version $Rev$ $Date$
  */
 public class EquinoxServiceDiscoveryActivator implements BundleActivator {
-    private static final Logger logger = Logger.getLogger(EquinoxServiceDiscoveryActivator.class.getName());
+    // private static final Logger logger = Logger.getLogger(EquinoxServiceDiscoveryActivator.class.getName());
 
     public void start(BundleContext context) throws Exception {
         EquinoxServiceDiscoverer discoverer = new EquinoxServiceDiscoverer(context);
         ServiceDiscovery.getInstance().setServiceDiscoverer(discoverer);
-        logger.info("Equinox-based service discoverer is now configured.");
+        // logger.info("Equinox-based service discoverer is now configured.");
     }
 
     public void stop(BundleContext context) throws Exception {

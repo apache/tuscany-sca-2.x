@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.extensibility;
 
+import static org.apache.tuscany.sca.extensibility.ServiceDeclarationParser.parseDeclaration;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,7 +39,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -104,6 +105,14 @@ public class ContextClassLoaderServiceDiscoverer implements ServiceDiscoverer {
             });
         }
 
+        public boolean isAssignableTo(Class<?> serviceType) {
+            try {
+                loadClass();
+            } catch (ClassNotFoundException e) {
+                // Ignore 
+            }
+            return (javaClass != null && serviceType.isAssignableFrom(javaClass));
+        }
     }
 
     private WeakReference<ClassLoader> classLoaderReference;
@@ -124,41 +133,6 @@ public class ContextClassLoaderServiceDiscoverer implements ServiceDiscoverer {
         } catch (PrivilegedActionException e) {
             throw (IOException)e.getException();
         }
-    }
-
-    /**
-     * Parse a service declaration in the form class;attr=value,attr=value and
-     * return a map of attributes
-     *
-     * @param declaration
-     * @return a map of attributes
-     */
-    private static Map<String, String> parseServiceDeclaration(String declaration) {
-        Map<String, String> attributes = new HashMap<String, String>();
-        int index = declaration.indexOf(';');
-        if (index != -1) {
-            attributes.put("class", declaration.substring(0, index).trim());
-            declaration = declaration.substring(index);
-        } else {
-            int j = declaration.indexOf('=');
-            if (j == -1) {
-                attributes.put("class", declaration.trim());
-                return attributes;
-            } else {
-                declaration = ";" + declaration;
-            }
-        }
-        StringTokenizer tokens = new StringTokenizer(declaration);
-        for (; tokens.hasMoreTokens();) {
-            String key = tokens.nextToken("=").substring(1).trim();
-            if (key == null)
-                break;
-            String value = tokens.nextToken(",").substring(1).trim();
-            if (value == null)
-                break;
-            attributes.put(key, value);
-        }
-        return attributes;
     }
 
     public ServiceDeclaration getServiceDeclaration(String name) throws IOException {
@@ -212,7 +186,7 @@ public class ContextClassLoaderServiceDiscoverer implements ServiceDiscoverer {
                         String key = (String)e.getKey();
                         String value = (String)e.getValue();
                         // Unfortunately, the xalan file only has the classname
-                        if ("".equals(value)) {
+                        if (value == null || "".equals(value)) {
                             value = key;
                             key = "";
                         }
@@ -220,7 +194,7 @@ public class ContextClassLoaderServiceDiscoverer implements ServiceDiscoverer {
                             attributes.put(key, value);
                             attributes.put("uri", key);
                         }
-                        attributes.put("class", value);
+                        attributes.putAll(parseDeclaration(value));
                         ServiceDeclarationImpl descriptor = new ServiceDeclarationImpl(url, value, attributes);
                         descriptors.add(descriptor);
                     }
@@ -241,7 +215,7 @@ public class ContextClassLoaderServiceDiscoverer implements ServiceDiscoverer {
                                 logger.fine("Registering service provider: " + reg);
                             }
 
-                            Map<String, String> attributes = parseServiceDeclaration(reg);
+                            Map<String, String> attributes = parseDeclaration(reg);
                             String className = attributes.get("class");
                             if (className == null) {
                                 // Add a unique class name to prevent equals() from returning true
