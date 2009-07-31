@@ -19,12 +19,22 @@
 
 package org.apache.tuscany.sca.node.equinox.launcher;
 
+import static org.osgi.framework.Constants.ACTIVATION_LAZY;
+import static org.osgi.framework.Constants.BUNDLE_ACTIVATIONPOLICY;
 import static org.osgi.framework.Constants.BUNDLE_CLASSPATH;
 import static org.osgi.framework.Constants.BUNDLE_MANIFESTVERSION;
+import static org.osgi.framework.Constants.BUNDLE_NAME;
 import static org.osgi.framework.Constants.BUNDLE_SYMBOLICNAME;
+import static org.osgi.framework.Constants.BUNDLE_VENDOR;
+import static org.osgi.framework.Constants.BUNDLE_VERSION;
 import static org.osgi.framework.Constants.DYNAMICIMPORT_PACKAGE;
 import static org.osgi.framework.Constants.EXPORT_PACKAGE;
 import static org.osgi.framework.Constants.IMPORT_PACKAGE;
+import static org.osgi.framework.Constants.REQUIRE_BUNDLE;
+import static org.osgi.framework.Constants.RESOLUTION_DIRECTIVE;
+import static org.osgi.framework.Constants.RESOLUTION_OPTIONAL;
+import static org.osgi.framework.Constants.VISIBILITY_DIRECTIVE;
+import static org.osgi.framework.Constants.VISIBILITY_REEXPORT;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -81,7 +91,8 @@ final class NodeLauncherUtil {
     private static final Logger logger = Logger.getLogger(NodeLauncherUtil.class.getName());
 
     static final String LAUNCHER_EQUINOX_LIBRARIES = "org.apache.tuscany.sca.node.launcher.equinox.libraries";
-
+    static final String GATEWAY_BUNDLE = "org.apache.tuscany.sca.gateway";
+    
     private static final String NODE_FACTORY = "org.apache.tuscany.sca.node.NodeFactory";
 
     private static final String DOMAIN_MANAGER_LAUNCHER_BOOTSTRAP =
@@ -335,13 +346,22 @@ final class NodeLauncherUtil {
                 }
                 String pkg = cls.substring(0, index);
                 pkg = pkg.replace('/', '.') + version;
-                packages.add(pkg);
+                // Export META-INF.services
+                if ("META-INF.services".equals(pkg)) {
+                    packages.add("META-INF.services" + ";partial=true;mandatory:=partial");
+                } else {
+                    packages.add(pkg);
+                }
             }
         } else if (file.isFile()) {
             ZipInputStream is = new ZipInputStream(new FileInputStream(file));
             ZipEntry entry;
             while ((entry = is.getNextEntry()) != null) {
                 String entryName = entry.getName();
+                // Export split packages for META-INF/services
+                if(entryName.startsWith("META-INF/services/")) {
+                    packages.add("META-INF.services" + ";partial=true;mandatory:=partial");
+                }
                 if (!entry.isDirectory() && entryName != null
                     && entryName.length() > 0
                     && !entryName.startsWith(".")
@@ -358,6 +378,10 @@ final class NodeLauncherUtil {
     private static List<String> listClassFiles(File directory) {
         List<String> artifacts = new ArrayList<String>();
         traverse(artifacts, directory, directory);
+        // Add META-INF/services to be exported
+        if (new File(directory, "META-INF/services").isDirectory()) {
+            artifacts.add("META-INF/services/");
+        }
         return artifacts;
     }
 
@@ -426,16 +450,6 @@ final class NodeLauncherUtil {
                                                             String bundleSymbolicName,
                                                             String bundleVersion) throws IllegalStateException {
         try {
-            // Added by Mike Edwards, 12/04/2009 - to handle the third party JAR files in the distribution that
-            // have separate OSGi manifest files provided alongside them
-            // In some cases a single JAR file is already accompanied by a MANIFEST.MF file, sitting in
-            // a META-INF directory alongside the JAR
-            //if( jarFiles.size() == 1 ){
-            //	URL theJar = jarFiles.iterator().next();
-            //	Manifest theManifest = findOSGiManifest( theJar );
-            //	if( theManifest != null ) return theManifest;
-            //} // end if
-            // End of addition
 
             // List exported packages and bundle classpath entries
             StringBuffer classpath = new StringBuffer();
@@ -459,8 +473,11 @@ final class NodeLauncherUtil {
                     importPackage = pkg.substring(0, index);
                 }
                 if (!importPackages.contains(importPackage)) {
-                    imports.append(pkg);
-                    imports.append(',');
+                    // Exclude META-INF.services
+                    if (!"META-INF.services".equals(importPackage)) {
+                        imports.append(pkg);
+                        imports.append(',');
+                    }
                     importPackages.add(importPackage);
                     exports.append(pkg);
                     exports.append(',');
@@ -492,7 +509,8 @@ final class NodeLauncherUtil {
             if (classpath.length() > 0) {
                 attributes.putValue(BUNDLE_CLASSPATH, classpath.substring(0, classpath.length() - 1));
             }
-            attributes.putValue(DYNAMICIMPORT_PACKAGE, "*");
+            // The system bundle has incomplete javax.transaction* packages exported
+            attributes.putValue(DYNAMICIMPORT_PACKAGE, "javax.transaction;version=\"1.1\",javax.transaction.xa;version=\"1.1\",*");
 
             return manifest;
         } catch (IOException e) {
@@ -1258,5 +1276,50 @@ final class NodeLauncherUtil {
             collectClasspathEntries(libsDirectory, jarURLs, new DistributionLibsFileNameFilter(), true);
         } // end if
     } // end collectDevelopmentLibraryEntries
+
+    /**
+     * Generate a gateway bundle that aggregate other bundles to handle split packages
+     * @param bundleSymbolicNames
+     * @throws FileNotFoundException
+     * @throws IOException
+     */
+    static InputStream generateGatewayBundle(Collection<String> bundleSymbolicNames, String bundleVersion, boolean reexport)
+        throws IOException {
+        Manifest manifest = new Manifest();
+        Attributes attrs = manifest.getMainAttributes();
+        StringBuffer requireBundle = new StringBuffer();
+        for (String name : new HashSet<String>(bundleSymbolicNames)) {
+            requireBundle.append(name).append(";").append(RESOLUTION_DIRECTIVE).append(":=")
+                .append(RESOLUTION_OPTIONAL);
+            if (reexport) {
+                requireBundle.append(";").append(VISIBILITY_DIRECTIVE).append(":=").append(VISIBILITY_REEXPORT);
+            }
+            requireBundle.append(",");
+        }
+        int len = requireBundle.length();
+        if (len > 0 && requireBundle.charAt(len - 1) == ',') {
+            requireBundle.deleteCharAt(len - 1);
+            attrs.putValue(REQUIRE_BUNDLE, requireBundle.toString());
+            attrs.putValue("Manifest-Version", "1.0");
+            attrs.putValue("Implementation-Vendor", "The Apache Software Foundation");
+            attrs.putValue("Implementation-Vendor-Id", "org.apache");
+            if (bundleVersion != null) {
+                attrs.putValue(BUNDLE_VERSION, bundleVersion);
+            }
+            attrs.putValue(BUNDLE_MANIFESTVERSION, "2");
+            attrs.putValue(BUNDLE_SYMBOLICNAME, GATEWAY_BUNDLE);
+            attrs.putValue(BUNDLE_NAME, "Apache Tuscany SCA Gateway Bundle");
+            attrs.putValue(BUNDLE_VENDOR, "The Apache Software Foundation");
+            attrs.putValue(EXPORT_PACKAGE, "META-INF.services");
+            attrs.putValue(DYNAMICIMPORT_PACKAGE, "*");
+            attrs.putValue(BUNDLE_ACTIVATIONPOLICY, ACTIVATION_LAZY);
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            JarOutputStream jos = new JarOutputStream(bos, manifest);
+            jos.close();
+            return new ByteArrayInputStream(bos.toByteArray());
+        } else {
+            return null;
+        }
+    }
 
 }

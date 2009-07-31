@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.node.equinox.launcher;
 
 import static java.lang.System.currentTimeMillis;
 import static java.lang.System.setProperty;
+import static org.apache.tuscany.sca.node.equinox.launcher.NodeLauncherUtil.GATEWAY_BUNDLE;
 import static org.apache.tuscany.sca.node.equinox.launcher.NodeLauncherUtil.LAUNCHER_EQUINOX_LIBRARIES;
 import static org.apache.tuscany.sca.node.equinox.launcher.NodeLauncherUtil.artifactId;
 import static org.apache.tuscany.sca.node.equinox.launcher.NodeLauncherUtil.bundleName;
@@ -33,6 +34,7 @@ import static org.apache.tuscany.sca.node.equinox.launcher.NodeLauncherUtil.thir
 import static org.apache.tuscany.sca.node.equinox.launcher.NodeLauncherUtil.thisBundleLocation;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -57,6 +59,7 @@ import java.util.logging.Logger;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
+import org.osgi.framework.Constants;
 import org.osgi.framework.launch.Framework;
 
 /**
@@ -155,6 +158,11 @@ public class EquinoxHost {
             if (injectedBundleContext == null) {
 
                 String version = getSystemProperty("java.specification.version");
+                
+                /**
+                 * [rfeng] I have to remove javax.transaction.* packages from the system bundle
+                 * See: http://www.mail-archive.com/dev@geronimo.apache.org/msg70761.html
+                 */
                 String profile = "J2SE-1.5.profile";
                 if (version.startsWith("1.6")) {
                     profile = "JavaSE-1.6.profile";
@@ -197,6 +205,23 @@ public class EquinoxHost {
                 put(props, PROP_CONFIG_AREA_DEFAULT, new File(root, "config").toURI().toString());
                 put(props, PROP_USER_AREA_DEFAULT, new File(root, "user").toURI().toString());
 
+                // Test if the configuration/config.ini or osgi.bundles has been set
+                // If yes, try to avoid discovery of bundles
+                if (bundleLocations == null) {
+                    if (props.getProperty("osgi.bundles") != null) {
+                        bundleLocations = Collections.emptySet();
+                    } else {
+                        String config = props.getProperty(PROP_CONFIG_AREA);
+                        File ini = new File(config, "config.ini");
+                        if (ini.isFile()) {
+                            Properties iniProps = new Properties();
+                            iniProps.load(new FileInputStream(ini));
+                            if (iniProps.getProperty("osgi.bundles") != null) {
+                                bundleLocations = Collections.emptySet();
+                            }
+                        }
+                    }
+                }
                 startFramework(props);
 
             } else {
@@ -259,13 +284,20 @@ public class EquinoxHost {
                 logger.fine("Generating third-party library bundle.");
             }
             long libraryStart = currentTimeMillis();
+            
+            Set<String> serviceProviders = new HashSet<String>();
             if (!aggregateThirdPartyJars) {
                 for (URL jarFile : jarFiles) {
-                    installAsBundle(jarFile, null);
+                    Bundle bundle = installAsBundle(jarFile, null);
+                    isServiceProvider(bundle, serviceProviders);
                 }
             } else {
-                installAsBundle(jarFiles, LAUNCHER_EQUINOX_LIBRARIES);
+                Bundle bundle = installAsBundle(jarFiles, LAUNCHER_EQUINOX_LIBRARIES);
+                isServiceProvider(bundle, serviceProviders);
             }
+            
+            installGatewayBundle(serviceProviders);
+            
             if (logger.isLoggable(Level.FINE)) {
                 logger
                     .fine("Third-party library bundle installed in " + (currentTimeMillis() - libraryStart) + " ms: ");
@@ -317,6 +349,32 @@ public class EquinoxHost {
 
         } catch (Exception e) {
             throw new IllegalStateException(e);
+        }
+    }
+
+    private boolean isServiceProvider(Bundle bundle, Set<String> serviceProviders) {
+        if (bundle != null) {
+            String export = (String)bundle.getHeaders().get(Constants.EXPORT_PACKAGE);
+            if (export != null && export.contains("META-INF.services")) {
+                serviceProviders.add(bundle.getSymbolicName());
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void installGatewayBundle(Set<String> bundles) throws IOException, BundleException {
+        if (allBundles.containsKey(GATEWAY_BUNDLE)) {
+            return;
+        }
+        if (bundles == null) {
+            bundles = allBundles.keySet();
+        }
+        InputStream gateway = NodeLauncherUtil.generateGatewayBundle(bundles, null, false);
+        if (gateway != null) {
+            Bundle gatewayBundle = bundleContext.installBundle(GATEWAY_BUNDLE, gateway);
+            allBundles.put(NodeLauncherUtil.GATEWAY_BUNDLE, gatewayBundle);
+            installedBundles.add(gatewayBundle);
         }
     }
 

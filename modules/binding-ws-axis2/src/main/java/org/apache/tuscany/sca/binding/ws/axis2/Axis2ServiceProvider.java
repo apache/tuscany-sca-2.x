@@ -29,6 +29,7 @@ import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -49,8 +50,6 @@ import javax.wsdl.extensions.UnknownExtensibilityElement;
 import javax.wsdl.extensions.soap.SOAPAddress;
 import javax.wsdl.extensions.soap12.SOAP12Address;
 import javax.xml.namespace.QName;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.stream.XMLInputFactory;
 
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
@@ -62,6 +61,7 @@ import org.apache.axis2.Constants.Configuration;
 import org.apache.axis2.addressing.AddressingConstants;
 import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.context.MessageContext;
+import org.apache.axis2.deployment.URLBasedAxisConfigurator;
 import org.apache.axis2.deployment.util.Utils;
 import org.apache.axis2.description.AxisEndpoint;
 import org.apache.axis2.description.AxisOperation;
@@ -91,6 +91,7 @@ import org.apache.tuscany.sca.binding.ws.axis2.policy.configuration.Axis2ConfigP
 import org.apache.tuscany.sca.binding.ws.axis2.policy.configurator.Axis2BindingHeaderConfigurator;
 import org.apache.tuscany.sca.binding.ws.axis2.policy.header.Axis2HeaderPolicy;
 import org.apache.tuscany.sca.binding.ws.axis2.policy.header.Axis2SOAPHeaderString;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.RuntimeAssemblyFactory;
 import org.apache.tuscany.sca.host.http.ServletHost;
@@ -170,7 +171,7 @@ public class Axis2ServiceProvider {
      * This classloader is used in OSGi to work around XXXFactory.newInstance()
      */
     private static class MultiParentClassLoader extends ClassLoader {
-        private final Set<ClassLoader> classLoaders = new HashSet<ClassLoader>();
+        private final Collection<ClassLoader> classLoaders = new ArrayList<ClassLoader>();
 
         /**
          * @param parent The parent classloaders
@@ -180,7 +181,7 @@ public class Axis2ServiceProvider {
             super(parent);
             if (loaders != null) {
                 for (ClassLoader cl : loaders) {
-                    if (cl != null && cl != parent) {
+                    if (cl != null && cl != parent && !classLoaders.contains(cl)) {
                         this.classLoaders.add(cl);
                     }
                 }
@@ -247,13 +248,15 @@ public class Axis2ServiceProvider {
             // security policy.
             configContext = AccessController.doPrivileged(new PrivilegedExceptionAction<ConfigurationContext>() {
                 public ConfigurationContext run() throws AxisFault {
-                    ClassLoader cl1 = modelFactories.getFactory(XMLInputFactory.class).getClass().getClassLoader();
-                    ClassLoader cl2 =
-                        modelFactories.getFactory(DocumentBuilderFactory.class).getClass().getClassLoader();
+                    ClassLoader cl0 = getClass().getClassLoader();
+                    ClassLoader cl1 = URLBasedAxisConfigurator.class.getClassLoader();
+                    ClassLoader cl2 = ExtensionPointRegistry.class.getClassLoader();
+//                    ClassLoader cl3 =
+//                        modelFactories.getFactory(DocumentBuilderFactory.class).getClass().getClassLoader();
                     ClassLoader tccl = Thread.currentThread().getContextClassLoader();
                     ClassLoader newTccl = tccl;
-                    if (cl1 != tccl || cl2 != tccl) {
-                        newTccl = new MultiParentClassLoader(null, new ClassLoader[] {cl1, cl2});
+                    if (cl0 != tccl || cl1 != tccl || cl2 != tccl) {
+                        newTccl = new MultiParentClassLoader(null, new ClassLoader[] {cl0, cl1, cl2, tccl});
                     }
                     if (newTccl != null && newTccl != tccl) {
                         Thread.currentThread().setContextClassLoader(newTccl);

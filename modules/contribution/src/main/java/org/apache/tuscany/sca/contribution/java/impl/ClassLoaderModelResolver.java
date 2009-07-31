@@ -60,7 +60,8 @@ public class ClassLoaderModelResolver extends URLClassLoader implements ModelRes
             }
         }
         if (parentClassLoader == null) {
-            parentClassLoader = ServiceDiscovery.getInstance().getServiceDiscoverer().getClass().getClassLoader();
+            // The extensibility bundle has DynamicImport-Package = *
+            parentClassLoader = ServiceDiscovery.class.getClassLoader();
         }
 
         return parentClassLoader;

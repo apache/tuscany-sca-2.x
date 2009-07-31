@@ -15,8 +15,8 @@ Import-Package: org.apache.commons.cli;resolution:=optional,
  org.apache.tuscany.sca.node.equinox.launcher;version="2.0.0",
  org.eclipse.core.runtime.adaptor;resolution:=optional,
  org.eclipse.osgi.framework.console;resolution:=optional,
- org.osgi.framework;version="1.4",
- org.osgi.framework.launch;version="1.0.0"
+ org.osgi.framework;version="[1.4, 2.0)",
+ org.osgi.framework.launch;version="[1.0.0, 2.0.0)"
 Bundle-Activator: org.apache.tuscany.sca.node.equinox.launcher.FrameworkLauncher
 Bundle-SymbolicName: org.apache.tuscany.sca.node.launcher.equinox
 Bundle-DocURL: http://www.apache.org/

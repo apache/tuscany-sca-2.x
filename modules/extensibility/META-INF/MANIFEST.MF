@@ -1,11 +1,17 @@
 Manifest-Version: 1.0
+Tuscany-Comment: Expoprt the META-INF.services under an "internal" attribute 
+ so that it can be seen only by the bundle itself without following the 
+ DynamicImport-Package * 
 Export-Package: org.apache.tuscany.sca.core;uses:="org.apache.tuscany.
  sca.extensibility";version="2.0.0",org.apache.tuscany.sca.extensibility
- ;version="2.0.0"
+ ;version="2.0.0",META-INF.services;internal=true;mandatory:=internal
 Tool: Bnd-0.0.255
 Bundle-Name: Apache Tuscany SCA Extensibility
 Created-By: 1.6.0_07 (Sun Microsystems Inc.)
-DynamicImport-Package: org.apache.tuscany.sca.extensibility.equinox
+DynamicImport-Package: org.apache.tuscany.sca.extensibility.equinox,
+ javax.transaction;version="1.1",
+ javax.transaction.xa;version="1.1",
+ *
 Bundle-Vendor: The Apache Software Foundation
 Bundle-Version: 2.0.0
 Bnd-LastModified: 1225397079296
