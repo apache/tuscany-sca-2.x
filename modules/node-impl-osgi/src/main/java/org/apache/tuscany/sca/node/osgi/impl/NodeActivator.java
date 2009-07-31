@@ -88,16 +88,20 @@ public class NodeActivator implements BundleActivator, SynchronousBundleListener
 
     public void stop(BundleContext context) throws Exception {
         context.removeBundleListener(this);
-        bundleContext = null;
         controller.stop();
         controller = null;
-//        exporter.stop();
-//        exporter = null;
+
         discoveryActivator.stop(context);
         discoveryActivator = null;
         
         remoteAdmin.stop();
         remoteAdmin = null;
+        
+        manager.stop();
+        bundleContext.removeBundleListener(manager);
+        manager = null;
+        bundleContext = null;
+        inited = false;
     }
 
     public static BundleContext getBundleContext() {

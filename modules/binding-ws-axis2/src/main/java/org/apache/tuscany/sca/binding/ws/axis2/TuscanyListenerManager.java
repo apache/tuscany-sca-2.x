@@ -84,7 +84,15 @@ public class TuscanyListenerManager extends ListenerManager {
     
     public synchronized void stop() throws AxisFault {
     	super.stop();
-    	Runtime.getRuntime().removeShutdownHook(shutdownThread);
+        try {
+            if (shutdownThread != null) {
+                Runtime.getRuntime().removeShutdownHook(shutdownThread);
+                shutdownThread = null;
+            }
+        } catch (IllegalStateException e) {
+            // Ignore
+            shutdownThread = null;
+        }
     }
     
     static class ListenerManagerShutdownThread extends Thread {
