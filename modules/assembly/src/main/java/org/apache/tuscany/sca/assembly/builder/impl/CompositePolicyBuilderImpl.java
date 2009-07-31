@@ -351,7 +351,7 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
             for (ComponentReference componentReference : component.getReferences()) {
                 isMutualExclusive(componentReference, componentReference.getReference());
 
-                if (componentReference.getInterfaceContract() != null) {
+                if (componentReference.getInterfaceContract() != null && componentReference.getReference() != null) {
                     isMutualExclusive(componentReference.getInterfaceContract().getInterface(), componentReference
                         .getReference().getInterfaceContract().getInterface());
                     isMutualExclusive(componentReference.getInterfaceContract().getCallbackInterface(),
