@@ -29,7 +29,6 @@ import static org.osgi.framework.Constants.BUNDLE_VENDOR;
 import static org.osgi.framework.Constants.BUNDLE_VERSION;
 import static org.osgi.framework.Constants.DYNAMICIMPORT_PACKAGE;
 import static org.osgi.framework.Constants.EXPORT_PACKAGE;
-import static org.osgi.framework.Constants.IMPORT_PACKAGE;
 import static org.osgi.framework.Constants.REQUIRE_BUNDLE;
 import static org.osgi.framework.Constants.RESOLUTION_DIRECTIVE;
 import static org.osgi.framework.Constants.RESOLUTION_OPTIONAL;
@@ -503,9 +502,11 @@ final class NodeLauncherUtil {
             if (exports.length() > 0) {
                 attributes.putValue(EXPORT_PACKAGE, exports.substring(0, exports.length() - 1));
             }
+            /*
             if (imports.length() > 0) {
                 attributes.putValue(IMPORT_PACKAGE, imports.substring(0, imports.length() - 1));
             }
+            */
             if (classpath.length() > 0) {
                 attributes.putValue(BUNDLE_CLASSPATH, classpath.substring(0, classpath.length() - 1));
             }
