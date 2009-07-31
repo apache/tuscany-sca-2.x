@@ -79,6 +79,8 @@
         <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_8010"/></antcall>
         <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_8011"/></antcall>
         <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_8012"/></antcall>
+        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_8017"/></antcall>
+        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_8019"/></antcall>
 
         <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_9002"/></antcall>
 

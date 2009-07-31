@@ -112,6 +112,8 @@
         <module>ASM_8010</module>
         <module>ASM_8011</module>
         <module>ASM_8012</module>
+        <module>ASM_8017</module>
+        <module>ASM_8019</module>
         <module>ASM_9002</module>
         <module>ASM_10001</module>
         <module>ASM_10003</module>
