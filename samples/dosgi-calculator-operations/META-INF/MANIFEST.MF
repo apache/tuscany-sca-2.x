@@ -15,7 +15,7 @@ Bundle-ActivationPolicy: lazy
 Eclipse-LazyStart: true
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-DocURL: http://www.apache.org/
-Service-Component: OSGI-INF/add-component.xml,
+Service-Component-Disabled: OSGI-INF/add-component.xml,
  OSGI-INF/subtract-component.xml,
  OSGI-INF/multiply-component.xml,
  OSGI-INF/divide-component.xml
