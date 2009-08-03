@@ -18,13 +18,6 @@
  */
 package calculator;
 
-import org.apache.tuscany.sca.node.Node;
-import org.apache.tuscany.sca.node.equinox.launcher.Contribution;
-import org.apache.tuscany.sca.node.equinox.launcher.ContributionLocationHelper;
-import org.apache.tuscany.sca.node.equinox.launcher.NodeLauncher;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import sample.SampleClientImpl;
