@@ -124,4 +124,9 @@ public class MonitorImpl extends Monitor {
     public void popContext() {
         contextStack.pop();
     }
+    
+    @Override
+    public void clearContext() {
+        contextStack.clear();  
+    }
 }

@@ -114,6 +114,22 @@ public abstract class Monitor {
      */
     public abstract void popContext();
     
+    /**
+     * Remove all of the context strings from the 
+     * context stack
+     */
+    public abstract void clearContext();
+    
+    /**
+     * A utility function for raising a warning. It creates the problem and 
+     * adds it to the monitor
+     * 
+     * @param monitor
+     * @param reportingObject
+     * @param messageBundle
+     * @param messageId
+     * @param messageParameters
+     */
     public static void warning (Monitor monitor, 
                                 Object reportingObject,
                                 String messageBundle,
@@ -131,6 +147,16 @@ public abstract class Monitor {
         }
     }
    
+    /**
+     * A utility function for raising an error. It creates the problem and 
+     * adds it to the monitor
+     * 
+     * @param monitor
+     * @param reportingObject
+     * @param messageBundle
+     * @param messageId
+     * @param messageParameters
+     */
     public static void error (Monitor monitor, 
                               Object reportingObject,
                               String messageBundle,
