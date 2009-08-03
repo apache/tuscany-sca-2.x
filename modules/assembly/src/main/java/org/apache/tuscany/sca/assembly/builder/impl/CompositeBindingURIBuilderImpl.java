@@ -312,12 +312,9 @@ public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements C
                 // Skip the current binding
                 continue;
             }
-            if (!binding.getType().equals(otherBinding.getType())) {
-                // Look for a binding of the same type
-                continue;
-            }
+
             if (binding.getName().equals(otherBinding.getName())) {
-                warning(monitor, contract instanceof Service ? "MultipleBindingsForService"
+                error(monitor, contract instanceof Service ? "MultipleBindingsForService"
                     : "MultipleBindingsForReference", binding, contract.getName(), binding.getName());
             }
         }
