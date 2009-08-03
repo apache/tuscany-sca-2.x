@@ -31,6 +31,7 @@ public interface WSDLConstants {
     QName INTERFACE_WSDL_QNAME = new QName(SCA11_NS, "interface.wsdl");
     String INTERFACE = "interface";
     String CALLBACK_INTERFACE = "callbackInterface";
+    String REMOTABLE = "remotable";
     String WSDL_LOCATION = "wsdlLocation";
     String WSDLI_NS = "http://www.w3.org/2004/08/wsdl-instance";
     QName WSDL_LOCATION_QNAME = new QName(WSDLI_NS, WSDL_LOCATION); 

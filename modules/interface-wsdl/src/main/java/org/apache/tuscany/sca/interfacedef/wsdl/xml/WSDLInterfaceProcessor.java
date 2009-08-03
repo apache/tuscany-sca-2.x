@@ -176,6 +176,17 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
             if (wsdlCallbackInterface != null)
                 wsdlInterfaceContract.setCallbackInterface(wsdlCallbackInterface);
         }
+        
+        String remotable = reader.getAttributeValue(null, REMOTABLE);
+        if (remotable != null &&
+            !remotable.equals("true")){
+            Monitor.error(monitor,
+                          this,
+                          "interface-wsdlxml-validation-messages",
+                          "InvalidRemotableValue", 
+                          ((WSDLInterface)wsdlInterfaceContract.getInterface()).getName().toString(),
+                          remotable);
+        }
             
         // Skip to end element
         while (reader.hasNext()) {
