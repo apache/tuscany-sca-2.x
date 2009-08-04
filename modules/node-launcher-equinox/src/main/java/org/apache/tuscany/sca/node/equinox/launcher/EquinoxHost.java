@@ -53,6 +53,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
+import java.util.jar.Manifest;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -98,7 +99,7 @@ public class EquinoxHost {
     private Bundle launcherBundle;
     private List<URL> bundleFiles = new ArrayList<URL>();
     private List<String> bundleNames = new ArrayList<String>();
-    private Collection<URL> jarFiles = new HashSet<URL>();
+    private Map<URL, Manifest> jarFiles = new HashMap<URL, Manifest>();
     private Map<String, Bundle> allBundles = new HashMap<String, Bundle>();
     private List<Bundle> installedBundles = new ArrayList<Bundle>();
 
@@ -145,6 +146,34 @@ public class EquinoxHost {
     private static void put(Properties props, String key, String value) {
         if (!props.contains(key)) {
             props.put(key, value);
+        }
+    }
+
+    
+    /**
+     * Search for org/apache/tuscany/sca/node/equinox/launcher for customized MANIFEST.MF
+     * for a given artifact. For example, a-1.0.MF for a-1.0.jar.
+     * 
+     * @param fileName
+     * @return
+     * @throws IOException
+     */
+    private Manifest getCustomizedMF(String fileName) throws IOException {
+        int index = fileName.lastIndexOf('.');
+        if (index == -1) {
+            return null;
+        }
+        String mf = fileName.substring(0, index) + ".MF";
+        InputStream is = getClass().getResourceAsStream(mf);
+        if (is == null) {
+            return null;
+        } else {
+            try {
+                Manifest manifest = new Manifest(is);
+                return manifest;
+            } finally {
+                is.close();
+            }
         }
     }
 
@@ -238,13 +267,21 @@ public class EquinoxHost {
             // regular JARs
             for (URL url : urls) {
                 File file = file(url);
-                String bundleName = bundleName(file);
+                Manifest manifest = getCustomizedMF(file.getName());
+                String bundleName = null;
+                if (manifest == null) {
+                    bundleName = bundleName(file);
+                } else {
+                    if (manifest.getMainAttributes().getValue(Constants.BUNDLE_SYMBOLICNAME) == null) {
+                        manifest = null;
+                    }
+                }
                 if (bundleName != null) {
                     bundleFiles.add(url);
                     bundleNames.add(bundleName);
                 } else {
                     if (file.isFile()) {
-                        jarFiles.add(url);
+                        jarFiles.put(url, manifest);
                     }
                 }
             }
@@ -287,12 +324,19 @@ public class EquinoxHost {
             
             Set<String> serviceProviders = new HashSet<String>();
             if (!aggregateThirdPartyJars) {
-                for (URL jarFile : jarFiles) {
-                    Bundle bundle = installAsBundle(jarFile, null);
+                for (Map.Entry<URL, Manifest> entry : jarFiles.entrySet()) {
+                    URL jarFile = entry.getKey();
+                    Manifest manifest = entry.getValue();
+                    Bundle bundle = null;
+                    if (manifest == null) {
+                        bundle = installAsBundle(jarFile, null);
+                    } else {
+                        bundle = installAsBundle(Collections.singleton(jarFile), manifest);
+                    }
                     isServiceProvider(bundle, serviceProviders);
                 }
             } else {
-                Bundle bundle = installAsBundle(jarFiles, LAUNCHER_EQUINOX_LIBRARIES);
+                Bundle bundle = installAsBundle(jarFiles.keySet(), LAUNCHER_EQUINOX_LIBRARIES);
                 isServiceProvider(bundle, serviceProviders);
             }
             
@@ -414,6 +458,24 @@ public class EquinoxHost {
             InputStream library = thirdPartyLibraryBundle(jarFiles, libraryBundleName, null);
             libraryBundle = bundleContext.installBundle(libraryBundleName, library);
             allBundles.put(libraryBundleName, libraryBundle);
+            installedBundles.add(libraryBundle);
+        } else {
+            if (logger.isLoggable(Level.FINE)) {
+                logger.fine("Third-party library bundle is already installed: " + string(libraryBundle, false));
+            }
+        }
+        return libraryBundle;
+    }
+    
+    public Bundle installAsBundle(Collection<URL> jarFiles, Manifest manifest) throws IOException, BundleException {
+        String bundleName = manifest.getMainAttributes().getValue(Constants.BUNDLE_SYMBOLICNAME);
+
+        // Install a single 'library' bundle for the third-party JAR files
+        Bundle libraryBundle = allBundles.get(bundleName);
+        if (libraryBundle == null) {
+            InputStream library = thirdPartyLibraryBundle(jarFiles, manifest);
+            libraryBundle = bundleContext.installBundle(bundleName, library);
+            allBundles.put(bundleName, libraryBundle);
             installedBundles.add(libraryBundle);
         } else {
             if (logger.isLoggable(Level.FINE)) {

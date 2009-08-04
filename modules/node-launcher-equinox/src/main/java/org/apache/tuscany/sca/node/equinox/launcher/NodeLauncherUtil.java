@@ -537,6 +537,24 @@ final class NodeLauncherUtil {
         jos.close();
         return new ByteArrayInputStream(bos.toByteArray());
     }
+    
+    static InputStream thirdPartyLibraryBundle(Collection<URL> jarFiles, Manifest manifest) throws IOException {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        StringBuffer classpath = new StringBuffer();
+        for (URL jarFile : jarFiles) {
+            classpath.append("\"external:");
+            classpath.append(file(jarFile).getPath().replace(File.separatorChar, '/'));
+            classpath.append("\",");
+        }
+
+        if (classpath.length() > 0) {
+            manifest.getMainAttributes().putValue(BUNDLE_CLASSPATH, classpath.substring(0, classpath.length() - 1));
+        }
+
+        JarOutputStream jos = new JarOutputStream(bos, manifest);
+        jos.close();
+        return new ByteArrayInputStream(bos.toByteArray());
+    }
 
     /**
      * Returns the location of this bundle.
