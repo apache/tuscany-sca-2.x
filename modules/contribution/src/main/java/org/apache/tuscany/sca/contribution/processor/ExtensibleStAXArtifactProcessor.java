@@ -50,7 +50,7 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
 public class ExtensibleStAXArtifactProcessor implements StAXArtifactProcessor<Object> {
     private static final Logger logger = Logger.getLogger(ExtensibleStAXArtifactProcessor.class.getName());
 
-    private static final QName ANY_ELEMENT = new QName(Constants.XMLSCHEMA_NS, "anyElement");
+    private static final QName ANY_ELEMENT = new QName(Constants.XMLSCHEMA_NS, "any");
 
     private XMLInputFactory inputFactory;
     private XMLOutputFactory outputFactory;

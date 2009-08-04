@@ -27,6 +27,7 @@ import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.util.StreamReaderDelegate;
 import javax.xml.validation.Schema;
 import javax.xml.validation.ValidatorHandler;
 
@@ -46,11 +47,10 @@ import org.xml.sax.helpers.AttributesImpl;
  *
  * @version $Rev$ $Date$
  */
-class ValidatingXMLStreamReader extends TuscanyXMLStreamReader implements XMLStreamReader {
+class ValidatingXMLStreamReader extends StreamReaderDelegate implements XMLStreamReader {
 
     private static final Logger logger = Logger.getLogger(ValidatingXMLStreamReader.class.getName());
     
-    private int level;
     private ValidatorHandler handler;
     private final Monitor monitor;
     
@@ -158,11 +158,9 @@ class ValidatingXMLStreamReader extends TuscanyXMLStreamReader implements XMLStr
         try {
             switch (event) {
                 case XMLStreamConstants.START_DOCUMENT:
-                    level++;
                     handler.startDocument();
                     break;
                 case XMLStreamConstants.START_ELEMENT:
-                    level++;
                     handleStartElement();
                     break;
                 case XMLStreamConstants.PROCESSING_INSTRUCTION:
@@ -176,7 +174,6 @@ class ValidatingXMLStreamReader extends TuscanyXMLStreamReader implements XMLStr
                     break;
                 case XMLStreamConstants.END_ELEMENT:
                     handleEndElement();
-                    level--;
                     break;
                 case XMLStreamConstants.END_DOCUMENT:
                     handler.endDocument();
@@ -201,13 +198,10 @@ class ValidatingXMLStreamReader extends TuscanyXMLStreamReader implements XMLStr
             try {
                 switch (event) {
                     case XMLStreamConstants.START_DOCUMENT:
-                        level++;
                         handler.startDocument();
                         break;
                     case XMLStreamConstants.START_ELEMENT:
-                        level++;
                         handleStartElement();
-                        pushContext();
                         return event;
                     case XMLStreamConstants.PROCESSING_INSTRUCTION:
                         handler.processingInstruction(super.getPITarget(), super.getPIData());
@@ -220,8 +214,6 @@ class ValidatingXMLStreamReader extends TuscanyXMLStreamReader implements XMLStr
                         break;
                     case XMLStreamConstants.END_ELEMENT:
                         handleEndElement();
-                        level--;
-                        popContext();
                         return event;
                     case XMLStreamConstants.END_DOCUMENT:
                         handler.endDocument();

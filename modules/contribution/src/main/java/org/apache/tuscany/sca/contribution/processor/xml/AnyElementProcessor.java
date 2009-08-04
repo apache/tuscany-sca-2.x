@@ -18,25 +18,18 @@
  */
 package org.apache.tuscany.sca.contribution.processor.xml;
 
-import static javax.xml.stream.XMLStreamConstants.CDATA;
-import static javax.xml.stream.XMLStreamConstants.CHARACTERS;
-import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
-import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+import java.io.StringReader;
+import java.io.StringWriter;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
-import javax.xml.stream.events.XMLEvent;
 
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.Extension;
 import org.apache.tuscany.sca.contribution.Constants;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
@@ -45,16 +38,21 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.monitor.Monitor;
 
-public class AnyElementProcessor implements StAXArtifactProcessor<Object> {
-    private static final QName ANY_ELEMENT = new QName(Constants.XMLSCHEMA_NS, "anyElement");
+public class AnyElementProcessor implements StAXArtifactProcessor<Extension> {
+    private static final QName ANY_ELEMENT = new QName(Constants.XMLSCHEMA_NS, "any");
 
+    private AssemblyFactory assemblyFactory;
     private XMLInputFactory xmlInputFactory;
+    private XMLOutputFactory xmlOutputFactory;
+    
     @SuppressWarnings("unused")
     private Monitor monitor;
 
 
     public AnyElementProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
+        assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         xmlInputFactory = modelFactories.getFactory(XMLInputFactory.class);
+        xmlOutputFactory = modelFactories.getFactory(XMLOutputFactory.class);
         this.monitor = monitor;
     }
 
@@ -62,8 +60,8 @@ public class AnyElementProcessor implements StAXArtifactProcessor<Object> {
         return ANY_ELEMENT;
     }
 
-    public Class<Object> getModelType() {
-        return Object.class;
+    public Class<Extension> getModelType() {
+        return Extension.class;
     }
 
     /**
@@ -74,43 +72,19 @@ public class AnyElementProcessor implements StAXArtifactProcessor<Object> {
      * @return
      * @throws XMLStreamException
      */
-    @SuppressWarnings("unchecked")
-    public Object read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
-
-        // Custom variables
-        String currentElement = null;
-        List eventsList = new ArrayList();
-
-        Map<String, NamespaceContext> eventContext = new HashMap<String, NamespaceContext>();
-
-        try {
-            // Cast the block of unknown elements into document
-            XMLDocumentStreamReader docReader = new XMLDocumentStreamReader(reader);
-
-            XMLEventReader xmlEventReader = xmlInputFactory.createXMLEventReader(docReader);
-
-            while (xmlEventReader.hasNext()) {
-                XMLEvent event = xmlEventReader.nextEvent();
-
-                // Populate the eventContext map with the current element's name
-                // and corresponding NamesapceContext
-                if (currentElement != null && !(eventContext.containsKey(currentElement))) {
-                    eventContext.put(currentElement, reader.getNamespaceContext());
-                }
-
-                // Populate the list with the XMLEvents
-                eventsList.add(event);
-                if (event.isStartElement()) {
-                    currentElement = reader.getName().getLocalPart();
-                }
-                if (event.isEndDocument()) {
-                    return new XMLEventsStreamReader(eventsList, eventContext);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
+    public Extension read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+        QName name = reader.getName();
+        XMLStreamSerializer serializer = new XMLStreamSerializer();
+        StringWriter sw = new StringWriter();
+        XMLStreamWriter writer = xmlOutputFactory.createXMLStreamWriter(sw);
+        serializer.serialize(reader, writer);
+        writer.flush();
+        
+        Extension ext = assemblyFactory.createExtension();
+        ext.setQName(name);
+        ext.setValue(sw.toString());
+        
+        return ext;
     }
 
     /**
@@ -119,43 +93,19 @@ public class AnyElementProcessor implements StAXArtifactProcessor<Object> {
      * @param model
      * @param writer
      */
-    public void write(Object model, XMLStreamWriter writer) throws XMLStreamException {
-        if (!(model instanceof XMLStreamReader)) {
+    public void write(Extension model, XMLStreamWriter writer) throws XMLStreamException {
+        Object value = model.getValue();
+        if (!(value instanceof String)) {
             return;
         }
-        XMLStreamReader reader = (XMLStreamReader)model;
-
-        int event = reader.getEventType();
-        while (reader.hasNext()) {
-            switch (event) {
-                case START_ELEMENT:
-
-                    writer.writeStartElement(reader.getPrefix(), reader.getLocalName(), reader.getNamespaceURI());
-                    for (int i = 1; i <= reader.getAttributeCount(); i++) {
-                        writer.writeAttribute(reader.getAttributePrefix(i), reader.getAttributeNamespace(i), reader
-                            .getAttributeLocalName(i), reader.getAttributeValue(i));
-                    }
-                    break;
-
-                case CHARACTERS:
-                    writer.writeCharacters(reader.getText());
-                    break;
-
-                case CDATA:
-                    writer.writeCData(reader.getText());
-                    break;
-
-                case END_ELEMENT:
-                    writer.writeEndElement();
-                    break;
-            }
-            if (reader.hasNext()) {
-                event = reader.next();
-            }
-        }
+        String xml = (String) value;
+        XMLStreamReader reader = xmlInputFactory.createXMLStreamReader(new StringReader(xml));
+        // Position the reader to the root element
+        reader.nextTag();
+        XMLStreamSerializer serializer = new XMLStreamSerializer();
+        serializer.serialize(reader, writer);
     }
 
-    public void resolve(Object model, ModelResolver resolver) throws ContributionResolveException {
-
+    public void resolve(Extension model, ModelResolver resolver) throws ContributionResolveException {
     }
 }

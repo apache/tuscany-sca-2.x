@@ -74,7 +74,7 @@ public class AnyAttributeProcessor extends BaseStAXArtifactProcessor implements 
     	                                                                  // are just the string representation fo the attribute
     } 
 
-    public void resolve(Extension arg0, ModelResolver arg1) throws ContributionResolveException {
+    public void resolve(Extension model, ModelResolver modelResolver) throws ContributionResolveException {
     	
     }
 }

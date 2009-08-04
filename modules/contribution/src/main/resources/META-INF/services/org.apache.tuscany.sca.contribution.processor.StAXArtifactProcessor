@@ -17,7 +17,7 @@
 
 # Implementation class for the artifact processor extension
 org.apache.tuscany.sca.contribution.xml.ContributionMetadataProcessor;qname=http://docs.oasis-open.org/ns/opencsa/sca/200903#contribution,model=org.apache.tuscany.sca.contribution.ContributionMetadata
-org.apache.tuscany.sca.contribution.processor.xml.AnyElementProcessor;qname=http://www.w3.org/2001/XMLSchema#anyElement,model=java.lang.Object
+org.apache.tuscany.sca.contribution.processor.xml.AnyElementProcessor;qname=http://www.w3.org/2001/XMLSchema#any,model=org.apache.tuscany.sca.assembly.Extension
 org.apache.tuscany.sca.contribution.namespace.impl.NamespaceImportProcessor;qname=http://docs.oasis-open.org/ns/opencsa/sca/200903#import,model=org.apache.tuscany.sca.contribution.namespace.NamespaceImport
 org.apache.tuscany.sca.contribution.namespace.impl.NamespaceExportProcessor;qname=http://docs.oasis-open.org/ns/opencsa/sca/200903#export,model=org.apache.tuscany.sca.contribution.namespace.NamespaceExport
 org.apache.tuscany.sca.contribution.java.impl.JavaImportProcessor;qname=http://docs.oasis-open.org/ns/opencsa/sca/200903#import.java,model=org.apache.tuscany.sca.contribution.java.JavaImport
