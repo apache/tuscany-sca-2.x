@@ -71,13 +71,18 @@ public class TestUtils {
 
     protected static String getPortAddress(Port port) {
         Object ext = port.getExtensibilityElements().get(0);
+        String returnAddress = null;
         if (ext instanceof SOAPAddress) {
-            return ((SOAPAddress)ext).getLocationURI();
+            returnAddress = ((SOAPAddress)ext).getLocationURI();
         }
         if (ext instanceof SOAP12Address) {
-            return ((SOAP12Address)ext).getLocationURI();
+            returnAddress = ((SOAP12Address)ext).getLocationURI();
         }
-        return null;
+        
+        returnAddress = returnAddress.substring(returnAddress.indexOf("//") + 2);
+        returnAddress = returnAddress.substring(returnAddress.indexOf("/"));
+        
+        return returnAddress;
     }
 
     protected static Component getComponent(Composite composite, String name) {
@@ -202,6 +207,40 @@ public class TestUtils {
         }
     }
     
+    protected static void writeWSDL(Definition definition) {
+        try {
+            WSDLWriter writer =  WSDLFactory.newInstance().newWSDLWriter();
+            writer.writeWSDL(definition, System.out);
+        } catch (WSDLException e) {
+            // ignore
+        }
+    }
+    
+    protected static String printStructure(Composite composite, String indent){
+        String structure = "";
+        for (Component component : composite.getComponents()){
+            structure += indent + "Component URI - " + component.getURI() + "\n";
+            
+            // recurse for composite implementations
+            Implementation implementation = component.getImplementation();
+            if (implementation instanceof Composite) {
+                structure += printStructure((Composite)implementation, indent + "  ");
+            }
+            
+            for (Service service : component.getServices()){
+                for (Endpoint endpoint : service.getEndpoints()){
+                    structure += indent + endpoint + " " + endpoint.getBinding().getClass().getName() + "\n";
+                }
+            }
+            for (Reference reference : component.getReferences()){
+                for (EndpointReference endpointReference : reference.getEndpointReferences()){
+                    structure += indent + endpointReference + " " + endpointReference.getBinding().getClass().getName() + "\n";
+                }
+            }
+        }
+        return structure;
+    }    
+/*    
     protected static String printEndpoints(Composite composite){
         return printEndpoints(composite, "");
     }
@@ -272,5 +311,5 @@ public class TestUtils {
         
         return buffer;
     }    
-
+*/
 }

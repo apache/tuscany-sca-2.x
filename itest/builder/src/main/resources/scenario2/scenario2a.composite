@@ -17,10 +17,10 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-        targetNamespace="http://scenario2"
-        xmlns:tns="http://scenario2"
-        name="CompositeC">
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+           targetNamespace="http://scenario2"
+           xmlns:tns="http://scenario2"
+           name="CompositeC">
 
     <service name="Service2" promote="ComponentD/Service3">
         <!-- bindings and/or interfaces may or may not be specified explicitly here -->

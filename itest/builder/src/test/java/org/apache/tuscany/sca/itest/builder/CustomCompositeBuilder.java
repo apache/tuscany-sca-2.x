@@ -49,7 +49,8 @@ public class CustomCompositeBuilder {
     }
     
     public void loadContribution(String compositeURL, String sourceURI, String sourceURL) throws Exception {
-        node = NodeFactory.newInstance().createNode(compositeURL, new Contribution(sourceURI, sourceURL));
+        NodeFactory nodeFactory = NodeFactory.newInstance();
+        node = nodeFactory.createNode(compositeURL, new Contribution(sourceURI, sourceURL));
         node.start();
         
         // get some things out of the extension registry
@@ -87,7 +88,7 @@ public class CustomCompositeBuilder {
      * @return the domain composite model object
      */
     public Composite getDomainComposite() {
-        return (Composite) domainComposite.getIncludes().get(0);
+        return (Composite) ((NodeImpl)node).getDomainComposite();
     }
     
     /**

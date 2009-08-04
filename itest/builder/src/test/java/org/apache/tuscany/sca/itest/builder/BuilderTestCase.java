@@ -28,6 +28,9 @@ import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
+import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
@@ -54,6 +57,8 @@ public class BuilderTestCase {
     public void tearDown() throws Exception {
     }
 
+ /* OASIS doesn't take notice of top level composite services
+  * 
     // Scenario 1: <binding.ws> on outer composite service CompositeA/Service1
     @Ignore
     @Test
@@ -152,8 +157,10 @@ public class BuilderTestCase {
         
         Assert.assertEquals(expectedEndpoints, actualEndpoints);
     }
-/*
+*/
+
     // Scenario 2: <binding.ws> on outer component service ComponentB/Service2
+    @Test
     public void testScenario2() throws Exception {
         System.out.println("====>Running testScenario2");
         customBuilder = new CustomCompositeBuilder(false);
@@ -171,14 +178,29 @@ public class BuilderTestCase {
         TestUtils.checkProblems(customBuilder);
         checkScenario2and3Results("http://scenario2", true);
     }
-
+    
     private void checkScenario2and3Results(String namespace, boolean nonWiring) {
         Composite domainComposite = customBuilder.getDomainComposite();
+        
+        // Test that endpoint structure matches expected
+        String structure = TestUtils.printStructure(domainComposite, "");
+        System.out.println(structure);
+        
+        String expectedStructure = "Component URI - ComponentB\n" +
+        "  Component URI - ComponentB/ComponentD\n" +
+        "  Endpoint:  URI = ComponentB/ComponentD#service-binding(Service3/Service3) org.apache.tuscany.sca.assembly.impl.SCABindingImpl\n" +
+        "  Endpoint:  URI = ComponentB/ComponentD#service-binding(Service3a/Service3a) org.apache.tuscany.sca.assembly.impl.SCABindingImpl\n" +
+        "Endpoint:  URI = ComponentB#service-binding(Service3/Service2) org.apache.tuscany.sca.binding.ws.impl.WebServiceBindingImpl\n" +
+        "Endpoint:  URI = ComponentB#service-binding(Service3a/Service2a) org.apache.tuscany.sca.assembly.impl.SCABindingImpl\n";
 
+        Assert.assertEquals(expectedStructure, structure);
+        
+        // Test that generated WSDL matches expected
         // Should create WSDL document for ComponentB/Service2 with endpoint uri="/ComponentB/Service2"
         // No other services on ComponentB should have <binding.ws>
         Component componentB = TestUtils.getComponent(domainComposite, "ComponentB");
         WebServiceBinding wsBinding = null;
+    
         for (ComponentService service : componentB.getServices()) {
             WebServiceBinding wsb = service.getBinding(WebServiceBinding.class);
             if ("Service2".equals(service.getName())) {
@@ -187,91 +209,16 @@ public class BuilderTestCase {
                 assert wsb == null;
             }
         }
+       
         Definition def = wsBinding.getWSDLDocument();
+        TestUtils.writeWSDL(def);
+        
         javax.wsdl.Service svc = def.getService(new QName("http://builder.itest.sca.tuscany.apache.org/", "Service3Service")); 
         Port port = svc.getPort("Service3Port");
-        assert "/ComponentB/Service2".equals(TestUtils.getPortAddress(port));
-
-        Component componentD = TestUtils.getComponent(domainComposite, "ComponentD");
-        if (!nonWiring) {
-            // Should create component service $promoted$ComponentB$slash$Service2 on innermost component
-            //  ComponentD, with <binding.ws> and uri="/ComponentB/Service2"
-            wsBinding = null;
-            for (ComponentService service : componentD.getServices()) {
-                if ("$promoted$ComponentB$slash$Service2".equals(service.getName())) {
-                    wsBinding = service.getBinding(WebServiceBinding.class);
-                }
-            }
-            assert "/ComponentB/Service2".equals(wsBinding.getURI());
-
-            // Should create WSDL document for ComponentD/$promoted$ComponentB$slash$Service2 with endpoint uri="/ComponentB/Service2"
-            def = wsBinding.getWSDLDocument();
-            svc = def.getService(new QName("http://builder.itest.sca.tuscany.apache.org/", "Service3Service")); 
-            port = svc.getPort("Service3Port");
-            assert "/ComponentB/Service2".equals(TestUtils.getPortAddress(port));
-        } else {
-            // Should not create component service $promoted$ComponentB$slash$Service2 on innermost component ComponentD
-            for (ComponentService service : componentD.getServices()) {
-                assert !"$promoted$ComponentB$slash$Service2".equals(service.getName());
-            }
-        }
-
-        // Should add <binding.ws> to outer composite service CompositeA/Service1 
-        wsBinding = null;
-        for (Service service : domainComposite.getServices()) {
-            if ("Service1".equals(service.getName())) {
-                wsBinding = service.getBinding(WebServiceBinding.class);
-            }
-        }
-        assert wsBinding != null;
-        if (nonWiring) {
-            // Should not add a WSDL document to domain composite service Service1
-            assert wsBinding.getWSDLDocument() == null;
-        }
-
-        if (!nonWiring) {
-            // Should create component service $promoted$Service1 on innermost component
-            //  ComponentD, with <binding.ws> and uri="/Service1"
-            wsBinding = null;
-            for (ComponentService service : componentD.getServices()) {
-                if ("$promoted$Service1".equals(service.getName())) {
-                    wsBinding = service.getBinding(WebServiceBinding.class);
-                }
-            }
-            assert "/Service1".equals(wsBinding.getURI());
-
-            // Should create WSDL document for ComponentD/$promoted$Service1 with endpoint uri="/Service1"
-            def = wsBinding.getWSDLDocument();
-            svc = def.getService(new QName("http://builder.itest.sca.tuscany.apache.org/", "Service3Service")); 
-            port = svc.getPort("Service3Port");
-            assert "/Service1".equals(TestUtils.getPortAddress(port));
-        } else {
-            // Should not create component service $promoted$.Service1 on innermost component ComponentD
-            for (ComponentService service : componentD.getServices()) {
-                assert !"$promoted$Service1".equals(service.getName());
-            }
-        }
-
-        // No services on ComponentD should have <binding.ws>, except for $promoted$Service1
-        // and $promoted$ComponentB$slash$Service2  
-        for (ComponentService service : componentD.getServices()) {
-            if (!"$promoted$Service1".equals(service.getName()) &&
-                !"$promoted$ComponentB$slash$Service2".equals(service.getName())) {
-                assert service.getBinding(WebServiceBinding.class) == null;
-            }
-        }
-
-        // No services on CompositeC should have <binding.ws>, except for Service2 in Scenario 3
-        Composite compositeC = TestUtils.getComposite(domainComposite, new QName(namespace, "CompositeC"));
-        for (Service service : compositeC.getServices()) {
-            if ("http://scenario3".equals(namespace) && "Service2".equals(service.getName())) {
-                assert service.getBinding(WebServiceBinding.class) != null;
-            } else {
-                assert service.getBinding(WebServiceBinding.class) == null;
-            }
-        }
+        Assert.assertEquals("/ComponentB/Service2",TestUtils.getPortAddress(port));
+     
     }
-
+/*
     // Scenario 3: <binding.ws> on inner composite service CompositeC/Service2
     public void testScenario3() throws Exception {
         System.out.println("====>Running testScenario3");
@@ -514,9 +461,10 @@ public class BuilderTestCase {
         
         Assert.assertEquals(expectedEndpoints, actualEndpoints);        
     }
-*/
+
     
     // Scenario 6: <binding.ws> and <interface.wsdl> on outer component reference ComponentB/reference2
+    @Ignore
     @Test
     public void testScenario6() throws Exception {
         System.out.println("====>Running testScenario6");
@@ -646,7 +594,7 @@ public class BuilderTestCase {
         
         Assert.assertEquals(expectedEndpoints, actualEndpoints);        
     }
-/*
+
     // Scenario 7: <binding.ws> and <interface.wsdl> on inner composite reference CompositeC/reference2
     public void testScenario7() throws Exception {
         System.out.println("====>Running testScenario7");
