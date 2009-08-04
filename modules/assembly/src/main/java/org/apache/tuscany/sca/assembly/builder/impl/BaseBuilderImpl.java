@@ -379,7 +379,9 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
                 if (!componentProperties.containsKey(property.getName())) {
                     ComponentProperty componentProperty = assemblyFactory.createComponentProperty();
                     componentProperty.setName(property.getName());
+                    componentProperty.setValue(property.getValue());
                     componentProperty.setMany(property.isMany());
+                    componentProperty.setMustSupply(property.isMustSupply());
                     componentProperty.setXSDElement(property.getXSDElement());
                     componentProperty.setXSDType(property.getXSDType());
                     componentProperty.setProperty(property);
@@ -419,7 +421,7 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
 
                 // Check that a value is supplied
                 if (componentProperty.getValue() == null && property.isMustSupply()) {
-                    warning(monitor, "PropertyMustSupplyNull", component, component.getName(), componentProperty
+                    error(monitor, "PropertyMustSupplyNull", component, component.getName(), componentProperty
                         .getName());
                 }
 

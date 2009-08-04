@@ -581,6 +581,13 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
                         break;
                     }
                     isTextForProperty = false;
+                    
+                    // CONFORMANCE: ASM50033
+                    // A property <value/> subelement MUST NOT be used when the @value attribute is used 
+                    // to specify the value for that property.
+                    if (valueAttr != null) {
+                        error("ASM50033: value attribute exists for the property element", name, name);
+                    }
                     // Read <value>
                     if (VALUE_QNAME.equals(name)) {
                         loadElement(reader, root);
