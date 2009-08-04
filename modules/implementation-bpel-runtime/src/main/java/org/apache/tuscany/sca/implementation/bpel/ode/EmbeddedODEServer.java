@@ -87,39 +87,49 @@ public class EmbeddedODEServer {
     }
     
     public void init() throws ODEInitializationException {
-        Properties p = System.getProperties();
-        p.put("derby.system.home", "target");
-
-        Properties confProps = new Properties();
-        confProps.put("openjpa.jdbc.SynchronizeMappings", "buildSchema(ForeignKeys=false)");
-        
-        _config = new OdeConfigProperties(confProps, "ode-sca");
-
-        // Setting work root as the directory containing our database
-        try {
-        	_workRoot = getDatabaseLocationAsFile();
-        } catch (URISyntaxException e) {
-            throw new ODEInitializationException(e);
-        }
-
-        initTxMgr();
-        initPersistence();
-        initBpelServer();
-
-        try {
-            _bpelServer.start();
-        } catch (Exception ex) {
-            String errmsg = "An error occured during the ODE BPEL server startup.";
-            __log.error(errmsg, ex);
-            throw new ODEInitializationException(errmsg, ex);
-        }
-        
-        // Added MJE, 24/06/2009 - for 1.3.2 version of ODE
-        _scheduler.start();
-        // end of addition
-
-        __log.info("ODE BPEL server started.");
-        _initialized = true;
+    	ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+    	ClassLoader bpelcl = this.getClass().getClassLoader();
+    	try{
+    		// Switch TCCL - under OSGi this causes the TCCL to be set to the Bundle
+    		// classloader - this is then used by 3rd party code from ODE and its dependencies
+    		if( bpelcl != tccl ) Thread.currentThread().setContextClassLoader(bpelcl);
+	        Properties p = System.getProperties();
+	        p.put("derby.system.home", "target");
+	
+	        Properties confProps = new Properties();
+	        confProps.put("openjpa.jdbc.SynchronizeMappings", "buildSchema(ForeignKeys=false)");
+	        
+	        _config = new OdeConfigProperties(confProps, "ode-sca");
+	
+	        // Setting work root as the directory containing our database
+	        try {
+	        	_workRoot = getDatabaseLocationAsFile();
+	        } catch (URISyntaxException e) {
+	            throw new ODEInitializationException(e);
+	        }
+	
+	        initTxMgr();
+	        initPersistence();
+	        initBpelServer();
+	
+	        try {
+	            _bpelServer.start();
+	        } catch (Exception ex) {
+	            String errmsg = "An error occured during the ODE BPEL server startup.";
+	            __log.error(errmsg, ex);
+	            throw new ODEInitializationException(errmsg, ex);
+	        }
+	        
+	        // Added MJE, 24/06/2009 - for 1.3.2 version of ODE
+	        _scheduler.start();
+	        // end of addition
+	
+	        __log.info("ODE BPEL server started.");
+	        _initialized = true;
+    	} finally {
+    		// Restore the TCCL if we changed it
+    		if( bpelcl != tccl ) Thread.currentThread().setContextClassLoader(tccl);
+    	}
     }
     
     /**
