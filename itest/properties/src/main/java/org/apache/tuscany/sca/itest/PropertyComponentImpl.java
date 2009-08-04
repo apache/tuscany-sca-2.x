@@ -27,9 +27,6 @@ import org.oasisopen.sca.annotation.Property;
 
 import test.jaxb.props.ReturnCodeProperties;
 
-import com.example.customer.sdo.impl.CustomerImpl;
-import commonj.sdo.DataObject;
-
 /**
  * This class Implements the interface PropertyComponent and gives implementation for all methods which are declared in
  * that interface.
@@ -37,12 +34,6 @@ import commonj.sdo.DataObject;
 public class PropertyComponentImpl implements PropertyComponent {
     @Context
     protected ComponentContext context;
-
-    @Property
-    protected CustomerImpl customerSdo;
-
-    @Property
-    protected DataObject sdoProperty;
 
     @Property
     protected ComplexPropertyBean complexPropertyOne;
@@ -73,10 +64,7 @@ public class PropertyComponentImpl implements PropertyComponent {
 
     @Property(name = "intNumbers")
     protected int[] intNumbers;
-
-    @Property(name = "sdoArray")
-    protected DataObject[] sdoArray;
-
+ 
     @Property
     protected ReturnCodeProperties complexJAXBPropertyOne;
 
@@ -115,29 +103,6 @@ public class PropertyComponentImpl implements PropertyComponent {
         return complexPropertyFive;
     }
 
-    public DataObject getSdoProperty() {
-        return sdoProperty;
-    }
-
-    /**
-     * It is a method which injects the property value to the variable 'sdoProperty' from the SCA runtime environment.
-     */
-    public void setSdoProperty(DataObject sdoProperty) {
-        System.out.println("Reached here da machi");
-        this.sdoProperty = sdoProperty;
-    }
-
-    public CustomerImpl getCustomerSdo() {
-        return customerSdo;
-    }
-
-    /**
-     * It is a method which injects the property value to the variable 'customerSdo' from the SCA runtime environment.
-     */
-    public void setCustomerSdo(CustomerImpl customerSdo) {
-        this.customerSdo = customerSdo;
-    }
-
     /**
      * This method is used to test injecting an Array
      * 
@@ -163,15 +128,6 @@ public class PropertyComponentImpl implements PropertyComponent {
      */
     public int[] getIntNumbers() {
         return intNumbers;
-    }
-
-    /**
-     * This method is used to test injecting an Object Array
-     * 
-     * @return The injected array
-     */
-    public DataObject[] getSdoArrayProperty() {
-        return sdoArray;
     }
 
     public String getLocationFromComponentContext() {

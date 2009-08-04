@@ -16,27 +16,27 @@
  * specific language governing permissions and limitations
  * under the License.
 -->
-<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
-       xmlns:foo="http://foo"
-       targetNamespace="http://foo"
-       name="OuterPropertyTest"
-		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-           
-	<component name="OuterComponent">
-        <implementation.composite name="foo:PropertyTest"/>
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903" 
+           xmlns:foo="http://foo" 
+           targetNamespace="http://foo"
+           name="OuterPropertyTest" 
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+    <component name="OuterComponent">
+        <implementation.composite name="foo:PropertyTest" />
         <property name="number">125</property>
         <property name="complex" type="foo:MyComplexType">
-	        <foo:MyComplexValue xsi:type="foo:MyComplexType" >
-	            <foo:a>Overriden A</foo:a>
-	            <foo:b>Overriden B</foo:b>
-	            <foo:c>Overriden C</foo:c>
-	            <foo:d>Overriden D</foo:d>
-	            <foo:x>
-	                <foo:y>Overriden Y</foo:y>
-	                <foo:z>Overriden Z</foo:z>
-	            </foo:x>
-	        </foo:MyComplexValue>
-    	</property>
-    </component>           
+            <foo:MyComplexValue xsi:type="foo:MyComplexType">
+                <foo:a>Overriden A</foo:a>
+                <foo:b>Overriden B</foo:b>
+                <foo:c>Overriden C</foo:c>
+                <foo:d>Overriden D</foo:d>
+                <foo:x>
+                    <foo:y>Overriden Y</foo:y>
+                    <foo:z>Overriden Z</foo:z>
+                </foo:x>
+            </foo:MyComplexValue>
+        </property>
+    </component>
 </composite>
 

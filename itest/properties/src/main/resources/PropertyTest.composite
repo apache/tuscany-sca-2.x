@@ -19,7 +19,6 @@
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903" 
        xmlns:foo="http://foo" 
        xmlns:cust="http://www.example.com/Customer"
-       xmlns:dbsdo="http://tuscany.apache.org/xmlns/sca/databinding/sdo/1.0"
        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
        xmlns:rcp="http://test.sca.jaxb/rcprops"
        targetNamespace="http://foo"
@@ -29,9 +28,6 @@
     <service name="ProperterTestService" promote="ABComponent">
         <interface.java interface="org.apache.tuscany.sca.itest.ABComponent"/>
     </service>           
-           
-    <dbsdo:import.sdo location="customer.xsd" />
-    <!-- dbsdo:import.sdo factory="com.example.customer.sdo.SdoFactory" / -->
                
     <property name="number" type="xsd:int">1</property>
     <property name="complex" type="foo:MyComplexType" >
@@ -98,8 +94,16 @@
         <property name="f" source="$complex/foo:MyComplexValue/foo:a">f</property>
         <property name="xpath" source="$complex/foo:MyComplexValue/foo:x/*[local-name()='z']"/>
         <property name="one" source="$number"/>
-        <property name="foobar" many="true">"Apache" "Tuscany" "Java SCA"</property>
-        <property name="fooInts" many="true">123 456 789</property>
+        <property name="foobar" many="true">
+            <value>Apache</value>
+            <value>Tuscany</value>
+            <value>Java SCA</value>
+        </property>
+        <property name="fooInts" many="true">
+            <value>123</value> 
+            <value>456</value> 
+            <value>789</value>
+        </property>
     </component>
     
 
@@ -206,42 +210,43 @@
             </PropertyFourElement>
         </property>
         <property name="complexPropertyFive" source="$complexFoo"/>
-        <property name="sdoProperty" type="cust:Customer">	
-        	<value>
-        		<cust:firstName>Firstly Name</cust:firstName>
-        		<cust:middleName>Middler Name</cust:middleName>
-        		<cust:lastName>Lasting Name</cust:lastName>
-       		</value>
-        </property>
-        <property name="customerSdo" type="cust:Customer">	
-        	<value>
-        		<cust:firstName>Sdo Firstly Name</cust:firstName>
-        		<cust:middleName>Sdo Middler Name</cust:middleName>
-        		<cust:lastName>Sdo Lasting Name</cust:lastName>
-       		</value>
-        </property>
         <property name="location" type="xsd:string">RTP</property>	
         <property name="year" type="xsd:string">2006</property>	
-        <property name="daysOfTheWeek" many="true" type="xsd:string">"Monday" "Tuesday" "Wednesday" "Thursday" "Friday" "Saturday" "Sunday"</property>
-        <property name="integerNumbers" many="true" type="xsd:int">1 2 3 4 5 6 7 8 9 10</property>
-        <property name="intNumbers" many="true" type="xsd:int">10 9 8 7 6 5 4 3 2 1 0</property>
-        <property name="sdoArray" many="true" type="cust:Customer">
-            <value>
-                <cust:firstName>Firstly Name 1</cust:firstName>
-                <cust:middleName>Middler Name 1</cust:middleName>
-                <cust:lastName>Lasting Name 1</cust:lastName>
-            </value>
-            <value>
-                <cust:firstName>Firstly Name 2</cust:firstName>
-                <cust:middleName>Middler Name 2</cust:middleName>
-                <cust:lastName>Lasting Name 2</cust:lastName>
-            </value>
-            <value>
-                <cust:firstName>Firstly Name 3</cust:firstName>
-                <cust:middleName>Middler Name 3</cust:middleName>
-                <cust:lastName>Lasting Name 3</cust:lastName>
-            </value>
+        <property name="daysOfTheWeek" many="true" type="xsd:string">
+            <value>Monday</value>
+            <value>Tuesday</value> 
+            <value>Wednesday</value> 
+            <value>Thursday</value> 
+            <value>Friday</value> 
+            <value>Saturday</value> 
+            <value>Sunday</value>
         </property>
+        <property name="integerNumbers" many="true" type="xsd:int">
+            <value>1</value>
+            <value>2</value>
+            <value>3</value>
+            <value>4</value>
+            <value>5</value>
+            <value>6</value>
+            <value>7</value>
+            <value>8</value>
+            <value>9</value>
+            <value>10</value>
+        </property>
+        <property name="intNumbers" many="true" type="xsd:int">
+            <value>10</value>
+            <value>9</value>
+            <value>8</value>
+            <value>7</value>
+            <value>6</value>
+            <value>5</value>
+            <value>4</value>
+            <value>3</value>
+            <value>2</value>
+            <value>1</value>
+            <value>0</value>
+        </property>
+
         <property name="complexJAXBPropertyOne" type="rcp:ReturnCodeProperties">
             <MyRCProps xmlns="http://test.sca.jaxb/rcprops">
                 <AInt>10</AInt>

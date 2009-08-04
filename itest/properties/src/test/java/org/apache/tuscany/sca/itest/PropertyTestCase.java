@@ -37,8 +37,6 @@ import org.junit.Test;
 
 import test.jaxb.props.ReturnCodeProperties;
 
-import commonj.sdo.DataObject;
-
 /**
  * This is a class which makes user of JUnit Framework, all tests are written using JUnit notation. These tests are used
  * to test different property values returned from the SCA Runtime Environment which is initialized with the composite
@@ -337,38 +335,6 @@ public class PropertyTestCase {
         assertEquals(200, propBean.getIntArray()[1]);
     }
 
-    /**
-     * Method annotated with
-     * 
-     * @Test is a test method where testing logic is written using various assert methods. This test verifies the
-     *       property values obtained using a service from the SCA runtime environment with the expected string values
-     *       'Firstly Name' , 'Middler Name' and 'Lasting Name' respectively
-     */
-    @Test
-    public void testSDOProperty1() {
-        DataObject dataObject = propertyService.getSdoProperty();
-        assertNotNull(dataObject);
-        assertEquals("Firstly Name", dataObject.get("firstName"));
-        assertEquals("Middler Name", dataObject.getString("middleName"));
-        assertEquals("Lasting Name", dataObject.getString("lastName"));
-    }
-
-    /**
-     * Method annotated with
-     * 
-     * @Test is a test method where testing logic is written using various assert methods. This test verifies the
-     *       property value obtained using a service from the SCA runtime environment with the expected string values
-     *       'Sdo Firstly Name', 'Sdo Middler Name' and 'Sdo Lasting Name' respectively
-     */
-    @Test
-    public void testSDOProperty2() {
-        DataObject dataObject = propertyService.getCustomerSdo();
-        assertNotNull(dataObject);
-        assertEquals("Sdo Firstly Name", dataObject.get("firstName"));
-        assertEquals("Sdo Middler Name", dataObject.getString("middleName"));
-        assertEquals("Sdo Lasting Name", dataObject.getString("lastName"));
-    }
-
     @Test
     public void testGetLocationFromComponentContext() {
         String location = propertyService.getLocation();
@@ -403,19 +369,6 @@ public class PropertyTestCase {
 
         int[] expected = {10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0};
         Assert.assertTrue(Arrays.equals(expected, numbers));
-    }
-
-    @Test
-    public void testGetInjectedSdoArrayProperty() {
-        DataObject[] sdos = propertyService.getSdoArrayProperty();
-        assertNotNull(sdos);
-
-        for (int i = 1; i <= 3; i++) {
-            DataObject dataObject = sdos[i - 1];
-            assertEquals("Firstly Name " + i, dataObject.get("firstName"));
-            assertEquals("Middler Name " + i, dataObject.getString("middleName"));
-            assertEquals("Lasting Name " + i, dataObject.getString("lastName"));
-        }
     }
 
     @Test
