@@ -169,9 +169,10 @@ public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements C
             // Create default SCA binding
             attachSCABinding(service, definitions);
 
+            constructBindingNames(service, monitor);
+            
             // Initialize binding names and URIs
             for (Binding binding : service.getBindings()) {
-                constructBindingName(service, binding, monitor);
                 constructBindingURI(parentComponentURI, composite, service, binding, defaultBindings, monitor);
             }
         }
@@ -209,10 +210,10 @@ public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements C
                 // Create default SCA binding
                 attachSCABinding(service, definitions);
 
+                constructBindingNames(service, monitor);
+                
                 // Initialize binding names and URIs
                 for (Binding binding : service.getBindings()) {
-
-                    constructBindingName(service, binding, monitor);
                     constructBindingURI(component, service, binding, defaultBindings, monitor);
                 }
             }
@@ -239,26 +240,12 @@ public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements C
 
         // Initialize composite service callback binding names
         for (Service service : composite.getServices()) {
-
-            if (service.getCallback() != null) {
-                for (Binding binding : service.getCallback().getBindings()) {
-                    constructBindingName(service, binding, monitor);
-                }
-            }
+            constructBindingNames(service, monitor);
         }
 
         // Initialize composite reference binding names
         for (Reference reference : composite.getReferences()) {
-
-            for (Binding binding : reference.getBindings()) {
-                constructBindingName(reference, binding, monitor);
-            }
-
-            if (reference.getCallback() != null) {
-                for (Binding binding : reference.getCallback().getBindings()) {
-                    constructBindingName(reference, binding, monitor);
-                }
-            }
+            constructBindingNames(reference, monitor);
         }
 
         // Initialize component service and reference binding names
@@ -266,27 +253,13 @@ public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements C
 
             // Initialize component service callback binding names
             for (ComponentService service : component.getServices()) {
-
-                if (service.getCallback() != null) {
-                    for (Binding binding : service.getCallback().getBindings()) {
-                        constructBindingName(service, binding, monitor);
-                    }
-                }
+                constructBindingNames(service, monitor);
             }
 
             // Initialize component reference binding names
             for (ComponentReference reference : component.getReferences()) {
-
                 // Initialize binding names
-                for (Binding binding : reference.getBindings()) {
-                    constructBindingName(reference, binding, monitor);
-                }
-
-                if (reference.getCallback() != null) {
-                    for (Binding binding : reference.getCallback().getBindings()) {
-                        constructBindingName(reference, binding, monitor);
-                    }
-                }
+                constructBindingNames(reference, monitor);
             }
         }
     }
@@ -296,26 +269,39 @@ public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements C
      * or reference name
      *
      * @param contract the service or reference
-     * @param binding
      */
-    private void constructBindingName(Contract contract, Binding binding, Monitor monitor) {
-
-        // set the default binding name if one is required
-        // if there is no name on the binding then set it to the service or reference name
-        if (binding.getName() == null) {
-            binding.setName(contract.getName());
-        }
-
-        // Check that multiple bindings do not have the same name
-        for (Binding otherBinding : contract.getBindings()) {
-            if (otherBinding == binding) {
-                // Skip the current binding
-                continue;
+    private void constructBindingNames(Contract contract, Monitor monitor) {
+        List<Binding> bindings = contract.getBindings();
+        Map<String, Binding> bindingMap = new HashMap<String, Binding>();
+        for (Binding binding : bindings) {
+            // set the default binding name if one is required
+            // if there is no name on the binding then set it to the service or reference name
+            if (binding.getName() == null) {
+                binding.setName(contract.getName());
             }
-
-            if (binding.getName().equals(otherBinding.getName())) {
+            Binding existed = bindingMap.put(binding.getName(), binding);
+            // Check that multiple bindings do not have the same name
+            if (existed != null && existed != binding) {
                 error(monitor, contract instanceof Service ? "MultipleBindingsForService"
                     : "MultipleBindingsForReference", binding, contract.getName(), binding.getName());
+            }
+        }
+        
+        if (contract.getCallback() != null) {
+            bindings = contract.getCallback().getBindings();
+            bindingMap.clear();
+            for (Binding binding : bindings) {
+                // set the default binding name if one is required
+                // if there is no name on the binding then set it to the service or reference name
+                if (binding.getName() == null) {
+                    binding.setName(contract.getName());
+                }
+                Binding existed = bindingMap.put(binding.getName(), binding);
+                // Check that multiple bindings do not have the same name
+                if (existed != null && existed != binding) {
+                    error(monitor, contract instanceof Service ? "MultipleBindingsForServiceCallback"
+                        : "MultipleBindingsForReferenceCallback", binding, contract.getName(), binding.getName());
+                }
             }
         }
     }
