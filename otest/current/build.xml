@@ -17,11 +17,24 @@
  * under the License.    
 -->
 <project name="copy-files-from-svn"> 
-    <target name="copyDir"> 
+    <target name="copySourceDir"> 
         <copy todir="${to.dir}">
-            <fileset dir="${from.dir}"/>
+            <fileset dir="${from.dir}">
+                <include name="**/*.java"/>
+                <exclude name="**/.svn/**/*"/>
+            </fileset>
         </copy>
     </target>
+
+    <target name="copyResourceDir"> 
+        <copy todir="${to.dir}">
+            <fileset dir="${from.dir}">
+                <exclude name="**/*.java"/>
+                <exclude name="**/.svn/**/*"/>
+            </fileset>
+        </copy>
+    </target>
+
 
     <target name="copyFile"> 
         <copy file="${from.file}"
@@ -29,94 +42,88 @@
     </target>
 
     <target name="fixUpContributions"> 
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="General"/></antcall>
-<!--
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="General_Java"/></antcall>
--->
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_4002"/></antcall>
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_4003"/></antcall>
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_4004"/></antcall>
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_4005"/></antcall>
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_4007"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="General"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="General_Java"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_4002"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_4003"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_4004"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_4005"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_4007"/></antcall>
 
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_5004"/></antcall>
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_5005"/></antcall>
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_5007"/></antcall>
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_5009"/></antcall>
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_5023"/></antcall>
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_5024"/></antcall>
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_5027"/></antcall>
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_5030"/></antcall>
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_5035"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_5004"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_5005"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_5007"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_5009"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_5023"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_5024"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_5027"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_5030"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_5035"/></antcall>
 
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_6001"/></antcall>
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_6002"/></antcall>
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_6003"/></antcall>
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_6005"/></antcall>
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_6006"/></antcall>
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_6008"/></antcall>
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_6012"/></antcall>
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_6021"/></antcall>
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_6022"/></antcall>
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_6025"/></antcall>
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_6028"/></antcall>
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_6029"/></antcall>
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_6031"/></antcall>
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_6032"/></antcall>
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_6033"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_6001"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_6002"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_6003"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_6005"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_6006"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_6008"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_6012"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_6021"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_6022"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_6025"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_6028"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_6029"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_6031"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_6032"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_6033"/></antcall>
 
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_7001"/></antcall>
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_7007"/></antcall>
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_7008"/></antcall>
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_7009"/></antcall>
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_7010"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_7001"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_7007"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_7008"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_7009"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_7010"/></antcall>
 
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_8001"/></antcall>
-        <antcall target="fixUpContribution-Java"><param name="contrib" value="ASM_8001_Java"/></antcall>
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_8003"/></antcall>
-        <antcall target="fixUpContribution-Java"><param name="contrib" value="ASM_8004"/></antcall>
-        <antcall target="fixUpContribution-Java"><param name="contrib" value="ASM_8005"/></antcall>
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_8010"/></antcall>
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_8011"/></antcall>
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_8012"/></antcall>
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_8017"/></antcall>
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_8019"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_8001"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_8001_Java"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_8003"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_8004"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_8005"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_8010"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_8011"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_8012"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_8017"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_8019"/></antcall>
 
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_9002"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_9002"/></antcall>
 
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_10001"/></antcall>
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_10003"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_10001"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_10003"/></antcall>
 
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_12001"/></antcall>
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_12002"/></antcall>
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_12003"/></antcall>
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_12005"/></antcall>
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_12007"/></antcall>
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_12008"/></antcall>
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_12009"/></antcall>
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_12010"/></antcall>
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_12012"/></antcall>
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_12013"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_12001"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_12002"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_12003"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_12005"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_12007"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_12008"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_12009"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_12010"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_12012"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_12013"/></antcall>
 
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_13001"/></antcall>
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_13002"/></antcall>
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_13003"/></antcall>
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_13004"/></antcall>
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_13005"/></antcall>
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_13006"/></antcall>
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_13007"/></antcall>
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="ASM_13008"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_13001"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_13002"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_13003"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_13004"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_13005"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_13006"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_13007"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="ASM_13008"/></antcall>
 
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="Contribution1"/></antcall>
-        <antcall target="fixUpContribution-Resource"><param name="contrib" value="Contribution2"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="Contribution1"/></antcall>
+        <antcall target="fixUpContribution"><param name="contrib" value="Contribution2"/></antcall>
     </target>
 
 
-    <target name="fixUpContribution-Resource"> 
-       <!-- create dir -->
-
-       <!-- create resources dir -->
-       <mkdir dir="${contrib}/src/main/resources"/>
+    <target name="fixUpContribution"> 
 
        <!-- copy in pom -->
        <antcall target="copyTemplatePom">
@@ -124,32 +131,6 @@
            <param name="to.file" value="${contrib}/pom.xml"/>
        </antcall>
 
-       <!-- could use texen to set up the pom -->
-
-       <!-- clear resources dir - so that updated contrib structure can be easily checked in -->
-       <delete quiet="true" includeemptydirs="true"> 
-           <fileset dir="${contrib}/src/main/resources" includes="**/*"/> 
-       </delete> 
-    </target>
-
-    <target name="fixUpContribution-Java"> 
-       <!-- create dir -->
-
-       <!-- create resources dir -->
-       <mkdir dir="${contrib}/src/main/java"/>
-
-       <!-- copy in pom -->
-       <antcall target="copyTemplatePom">
-           <param name="from.file" value="./template-pom-java.xml"/>
-           <param name="to.file" value="${contrib}/pom.xml"/>
-       </antcall>
-
-       <!-- could use texen to set up the pom -->
-
-       <!-- clear java dir - so that updated contrib structure can be easily checked in -->
-       <delete quiet="true" includeemptydirs="true"> 
-           <fileset dir="${contrib}/src/main/java" includes="**/*"/> 
-       </delete> 
     </target>
 
     <target name="copyTemplatePom"> 
