@@ -267,7 +267,7 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
                 } else {
                 	// If we get here, the WSDLDefinition is unresolved...
                 	ContributionResolveException ce = new ContributionResolveException("WSDLDefinition unresolved " + 
-                			wsdlInterface.getName().getNamespaceURI() );
+                			wsdlInterface.getName() );
                     error("ContributionResolveException", wsdlFactory, ce);
                 }// end if
             } // end if
