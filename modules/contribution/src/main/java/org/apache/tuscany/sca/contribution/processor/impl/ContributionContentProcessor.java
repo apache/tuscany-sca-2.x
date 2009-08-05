@@ -215,30 +215,36 @@ public class ContributionContentProcessor implements ExtendedURLArtifactProcesso
 
     public void resolve(Contribution contribution, ModelResolver resolver) throws ContributionResolveException {
 
-    	if( !preResolved ) preResolve( contribution, resolver);
-    	ModelResolver contributionResolver = contribution.getModelResolver();
-
-        // Resolve all artifact models
-        for (Artifact artifact : contribution.getArtifacts()) {
-            Object model = artifact.getModel();
-            if (model != null) {
-                try {
-                   artifactProcessor.resolve(model, contributionResolver);
-                } catch (Throwable e) {
-                    throw new ContributionResolveException(e);
-                }
-            }
-        }
-
-        // Resolve deployable composites
-        List<Composite> deployables = contribution.getDeployables();
-        for (int i = 0, n = deployables.size(); i < n; i++) {
-            Composite deployable = deployables.get(i);
-            Composite resolved = (Composite)contributionResolver.resolveModel(Composite.class, deployable);
-            if (resolved != deployable) {
-                deployables.set(i, resolved);
-            }
-        } // end for
+    	try {
+    		monitor.pushContext("Contribution: " + contribution.getURI());
+    		
+	    	if( !preResolved ) preResolve( contribution, resolver);
+	    	ModelResolver contributionResolver = contribution.getModelResolver();
+	
+	        // Resolve all artifact models
+	        for (Artifact artifact : contribution.getArtifacts()) {
+	            Object model = artifact.getModel();
+	            if (model != null) {
+	                try {
+	                   artifactProcessor.resolve(model, contributionResolver);
+	                } catch (Throwable e) {
+	                    throw new ContributionResolveException(e);
+	                }
+	            }
+	        }
+	
+	        // Resolve deployable composites
+	        List<Composite> deployables = contribution.getDeployables();
+	        for (int i = 0, n = deployables.size(); i < n; i++) {
+	            Composite deployable = deployables.get(i);
+	            Composite resolved = (Composite)contributionResolver.resolveModel(Composite.class, deployable);
+	            if (resolved != deployable) {
+	                deployables.set(i, resolved);
+	            }
+	        } // end for
+    	} finally {
+    		monitor.popContext();
+    	} // end try
     } // end method resolve
 
     /**
