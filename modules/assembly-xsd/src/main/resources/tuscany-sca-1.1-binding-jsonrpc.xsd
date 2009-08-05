@@ -23,7 +23,7 @@
     xmlns:t="http://tuscany.apache.org/xmlns/sca/1.1" 
     elementFormDefault="qualified">
 
-    <import namespace="http://docs.oasis-open.org/ns/opencsa/sca/200903" schemaLocation="sca-1.1-cd03.xsd"/>
+    <import namespace="http://docs.oasis-open.org/ns/opencsa/sca/200903" schemaLocation="sca-1.1-cd04.xsd"/>
 
     <element name="binding.jsonrpc" type="t:JSONRPCBinding"/>
     

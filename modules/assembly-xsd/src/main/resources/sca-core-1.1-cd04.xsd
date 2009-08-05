@@ -54,7 +54,7 @@
       <complexContent>
          <extension base="sca:CommonExtensionBase">
             <sequence>
-               <element name="include" type="anyURI" minOccurs="0" 
+               <element ref="sca:include" minOccurs="0" 
                         maxOccurs="unbounded"/>
                <choice minOccurs="0" maxOccurs="unbounded">
                   <element name="service" type="sca:Service"/>
@@ -145,7 +145,8 @@
    <!-- Property -->
    <complexType name="SCAPropertyBase" mixed="true">
       <sequence>
-         <any namespace="##any" processContents="lax" minOccurs="0"/>
+         <any namespace="##any" processContents="lax" minOccurs="0"
+              maxOccurs="unbounded"/>
          <!-- NOT an extension point; This any exists to accept
              the element-based or complex type property
              i.e. no element-based extension point under "sca:property" -->
@@ -481,7 +482,17 @@
         as having a callback interface defined in terms of a second port 
         type. -->
    <attribute name="callback" type="anyURI"/>
-
+   
+   <!-- Value type definition for property values -->
+   <element name="value" type="sca:ValueType"/> 
+   <complexType name="ValueType" mixed="true">
+      <sequence> 
+         <any namespace="##any" processContents="lax" minOccurs="0" maxOccurs='unbounded'/> 
+      </sequence> 
+      <!-- mixed="true" to handle simple type --> 
+      <anyAttribute namespace="##any" processContents="lax"/> 
+   </complexType> 
+   
    <!-- Miscellaneous simple type definitions -->
    <simpleType name="Multiplicity">
       <restriction base="string">
@@ -507,5 +518,12 @@
    <simpleType name="listOfAnyURIs">
       <list itemType="anyURI"/>
    </simpleType>
-
+	
+	<simpleType name="CreateResource">
+		<restriction base="string">
+			<enumeration value="always" />
+			<enumeration value="never" />
+			<enumeration value="ifnotexist" />
+		</restriction>
+	</simpleType>
 </schema>

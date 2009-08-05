@@ -6,7 +6,7 @@
    targetNamespace="http://docs.oasis-open.org/ns/opencsa/sca/200903" 
    elementFormDefault="qualified">
 
-   <include schemaLocation="sca-core-1.1-cd03.xsd"/>
+   <include schemaLocation="sca-core-1.1-cd04.xsd"/>
 
    <!-- Contribution -->
    <element name="contribution" type="sca:ContributionType"/>
@@ -46,13 +46,15 @@
       <complexContent>
          <extension base="sca:CommonExtensionBase">
             <sequence>
-               <any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+               <any namespace="##other" processContents="lax" minOccurs="0" 
+                    maxOccurs="unbounded"/>
             </sequence>
          </extension>
       </complexContent>   
    </complexType>
    
-   <element name="import" type="sca:ImportType" substitutionGroup="sca:importBase"/>
+   <element name="import" type="sca:ImportType" 
+            substitutionGroup="sca:importBase"/>
    <complexType name="ImportType">
       <complexContent>
          <extension base="sca:Import">
@@ -68,13 +70,15 @@
       <complexContent>
          <extension base="sca:CommonExtensionBase">
             <sequence>
-               <any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+               <any namespace="##other" processContents="lax" minOccurs="0" 
+                    maxOccurs="unbounded"/>
             </sequence>
          </extension>
       </complexContent>      
    </complexType>
    
-   <element name="export" type="sca:ExportType" substitutionGroup="sca:exportBase"/>
+   <element name="export" type="sca:ExportType" 
+            substitutionGroup="sca:exportBase"/>
    <complexType name="ExportType">
       <complexContent>
          <extension base="sca:Export">

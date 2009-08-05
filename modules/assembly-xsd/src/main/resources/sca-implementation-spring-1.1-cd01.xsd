@@ -6,7 +6,7 @@
   elementFormDefault="qualified"
   targetNamespace="http://docs.oasis-open.org/ns/opencsa/sca/200903">  
 	
-	<include schemaLocation="sca-core-1.1-cd03.xsd"/>
+	<include schemaLocation="sca-core-1.1-cd04.xsd"/>
 	<element name="implementation.spring" type="sca:SpringImplementation" substitutionGroup="sca:implementation"/>
 	<complexType name="SpringImplementation">
 		<complexContent>
@@ -15,7 +15,6 @@
 					<any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
 				</sequence>
 				<attribute name="location" type="anyURI" use="required"/>
-				<anyAttribute namespace="##any" processContents="lax"/>
 			</extension>
 		</complexContent>
 	</complexType>
