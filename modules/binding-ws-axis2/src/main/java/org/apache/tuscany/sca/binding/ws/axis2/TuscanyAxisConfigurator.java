@@ -26,8 +26,14 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.Constants;
@@ -43,6 +49,8 @@ import org.apache.axis2.description.Parameter;
 import org.apache.axis2.engine.AxisConfiguration;
 import org.apache.axis2.engine.AxisConfigurator;
 import org.apache.axis2.i18n.Messages;
+import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
  * Helps configure Axis2 from a resource in binding.ws.axis2 instead of Axis2.xml 
@@ -324,7 +332,5 @@ public class TuscanyAxisConfigurator extends URLBasedAxisConfigurator implements
             throw new DeploymentException(e);
         }
     }
-    
-    /************** end of fix *************************************************************/
 
 }

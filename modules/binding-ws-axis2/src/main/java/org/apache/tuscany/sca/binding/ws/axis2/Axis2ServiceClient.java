@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.binding.ws.axis2;
 
+import static org.apache.tuscany.sca.binding.ws.axis2.Axis2ConfiguratorHelper.getAxis2ConfigurationContext;
 import static org.apache.tuscany.sca.binding.ws.axis2.AxisPolicyHelper.SOAP12_INTENT;
 import static org.apache.tuscany.sca.binding.ws.axis2.AxisPolicyHelper.isIntentRequired;
 
@@ -77,7 +78,6 @@ import org.apache.tuscany.sca.policy.PolicySubject;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.xsd.xml.XMLDocumentHelper;
 import org.apache.ws.commons.schema.resolver.URIResolver;
-import org.oasisopen.sca.ServiceRuntimeException;
 
 public class Axis2ServiceClient {
 
@@ -126,31 +126,10 @@ public class Axis2ServiceClient {
      * Create an Axis2 ServiceClient
      */
     protected ServiceClient createServiceClient() {
-    	ClassLoader tccl = Thread.currentThread().getContextClassLoader();
-    	ClassLoader axiscl = this.getClass().getClassLoader();
-
-    	try {
-    		if( axiscl != tccl ) Thread.currentThread().setContextClassLoader(axiscl);
-    		
+        try {
             final boolean isRampartRequired = AxisPolicyHelper.isRampartRequired(wsBinding);
-            ConfigurationContext configContext;
-            
-            try {
-                // TuscanyAxisConfigurator tuscanyAxisConfigurator = new TuscanyAxisConfigurator();
-                // Allow privileged access to read properties. Requires PropertyPermission read in
-                // security policy.
-                TuscanyAxisConfigurator tuscanyAxisConfigurator =
-                    AccessController.doPrivileged(new PrivilegedExceptionAction<TuscanyAxisConfigurator>() {
-                        public TuscanyAxisConfigurator run() throws AxisFault {
-                            return new TuscanyAxisConfigurator(isRampartRequired);
-                        }
-                    });
-                configContext = tuscanyAxisConfigurator.getConfigurationContext();
-                // deployRampartModule();
-                // configureSecurity();
-            } catch (PrivilegedActionException e) {
-                throw new ServiceRuntimeException(e.getException());
-            } // end try
+            ConfigurationContext configContext =
+                getAxis2ConfigurationContext(isRampartRequired);
 
             createPolicyHandlers();
 
@@ -176,7 +155,7 @@ public class Axis2ServiceClient {
                         }
                     }
                 }
-            } // end if
+            }
             AxisService axisService =
                 createClientSideAxisService(definition, serviceQName, port.getName(), new Options());
 
@@ -193,7 +172,7 @@ public class Axis2ServiceClient {
                 configContext.setThreadPool(new ThreadPool(1, 5));
                 configContext.setProperty(HTTPConstants.REUSE_HTTP_CLIENT, Boolean.TRUE);
                 configContext.setProperty(HTTPConstants.CACHED_HTTP_CLIENT, httpClient);
-            } // end if
+            }
 
             return new ServiceClient(configContext, axisService);
 
@@ -205,11 +184,8 @@ public class Axis2ServiceClient {
             throw new RuntimeException(e);
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
-        } finally {
-        	// Restore the Thread Context ClassLoader...
-    		if( axiscl != tccl ) Thread.currentThread().setContextClassLoader(tccl);
-        } // end try
-    } // end method createServiceClient
+        }
+    }
 
     /**
      * URI resolver implementation for XML schema
