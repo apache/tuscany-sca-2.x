@@ -141,9 +141,9 @@ public class EndpointImpl implements Endpoint {
     public void setExtensionType(ExtensionType type) {
         throw new UnsupportedOperationException();
     }
-
-    public String toString() {
-        String output = "Endpoint(@" + this.hashCode() + "): ";
+    
+    public String toStringWithoutHash() {
+        String output = "Endpoint: ";
         
         if (getURI() != null) {
             output += " URI = " + getURI();
@@ -154,6 +154,10 @@ public class EndpointImpl implements Endpoint {
         }
 
         return output;
+    }
+
+    public String toString() {
+        return "(@" + this.hashCode() + ")" + toStringWithoutHash();
     }
 
     public String getURI() {
