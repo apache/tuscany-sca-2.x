@@ -91,6 +91,49 @@
     <build>
         <finalName>${artifactId}</finalName>
         <plugins>
+           <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.3</version>
+
+                <dependencies>
+                    <dependency>
+                        <groupId>ant</groupId>
+                        <artifactId>ant-trax</artifactId>
+                        <version>1.6.5</version>
+                    </dependency>
+                </dependencies>
+
+                <executions>
+                    <execution>
+                        <id>copy-files-from-svn</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <ant antfile="../build.xml">
+                                    <property name="from.dir" value="../src/test/java"/>
+                                    <property name="to.dir" value="src/test/resources"/>
+                                    <target name="copyResourceDir"/>
+                                </ant>
+                                <ant antfile="../build.xml">
+                                    <property name="from.dir" value="../src/test/resources"/>
+                                    <property name="to.dir" value="src/test/resources"/>
+                                    <target name="copyResourceDir"/>
+                                </ant>                                
+                                <ant antfile="../build.xml">
+                                    <property name="from.dir" value="../src/test/java"/>
+                                    <property name="to.dir" value="src/test/java"/>
+                                    <target name="copySourceDir"/>
+                                </ant>
+                            </tasks>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+                        
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
