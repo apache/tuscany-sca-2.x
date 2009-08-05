@@ -8,18 +8,18 @@
    
    <include schemaLocation="sca-core-1.1-cd03.xsd"/>
    
-   <!-- Java Interface -->
-   <element name="interface.java" type="sca:JavaInterface" 
+   <!-- WSDL Interface -->
+   <element name="interface.wsdl" type="sca:WSDLPortType" 
             substitutionGroup="sca:interface"/>
-   <complexType name="JavaInterface">
+   <complexType name="WSDLPortType">
       <complexContent>
          <extension base="sca:Interface">
             <sequence>
                <any namespace="##other" processContents="lax" minOccurs="0" 
                     maxOccurs="unbounded"/>
             </sequence>
-            <attribute name="interface" type="NCName" use="required"/>
-            <attribute name="callbackInterface" type="NCName" 
+            <attribute name="interface" type="anyURI" use="required"/>
+            <attribute name="callbackInterface" type="anyURI" 
                        use="optional"/>
             <anyAttribute namespace="##other" processContents="lax"/>
          </extension>

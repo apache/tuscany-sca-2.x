@@ -5,21 +5,28 @@
    targetNamespace="http://docs.oasis-open.org/ns/opencsa/sca/200903" 
    xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200903">
    
-   <include schemaLocation="sca-core-1.1-cd03.xsd"/>
+   <!-- Updated 5th August 2009 to point to updated versions of the OASIS XSDs
+        - done because the new files fix errors in the older files which cause
+          problems in Tuscany
+        - this file will be replaced as a whole when OASIS updates this file
+    -->
+   
+   <include schemaLocation="sca-core-1.1-cd04.xsd"/>						<!-- Was CD03 -->
 
    <include schemaLocation="sca-interface-java-1.1-cd03.xsd"/>
-   <include schemaLocation="sca-interface-wsdl-1.1-cd03.xsd"/>
+   <include schemaLocation="sca-interface-wsdl-1.1-cd04.xsd"/>				<!-- Was CD03 -->
    <include schemaLocation="sca-interface-cpp-1.1-cd02.xsd"/>
    <include schemaLocation="sca-interface-c-1.1-cd02.xsd"/>
 
-   <include schemaLocation="sca-implementation-java-1.1-cd01.xsd"/>
+   <include schemaLocation="sca-implementation-java-1.1-cd03.xsd"/>			<!-- Was CD01 -->
    <include schemaLocation="sca-implementation-composite-1.1-cd03.xsd"/>
    <include schemaLocation="sca-implementation-cpp-1.1-cd02.xsd"/>
    <include schemaLocation="sca-implementation-c-1.1-cd02.xsd"/>
-   <include schemaLocation="sca-implementation-bpel-1.1-cd02.xsd"/>
+   <include schemaLocation="sca-implementation-bpel-1.1-cd03.xsd"/>			<!-- Was CD02 -->
    <include schemaLocation="sca-implementation-spring-1.1.xsd"/>
 
    <include schemaLocation="sca-binding-ws-1.1-cd02.xsd"/>
+   <include schemaLocation="sca-binding-ws-callback-1.1-cd04.xsd"/> 		<!-- New -->  
    <include schemaLocation="sca-binding-jms-1.1-cd02.xsd"/>
    <include schemaLocation="sca-binding-jca-1.1-cd02.xsd"/>   
    <include schemaLocation="sca-binding-sca-1.1-cd03.xsd"/>
