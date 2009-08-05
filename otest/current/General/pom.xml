@@ -53,9 +53,13 @@
                         <configuration>
                             <tasks>
                                 <property name="from.dir" value="../src/main/resources/General"/>
-                                <property name="to.dir" value="src/main/resources"/>
                                 <ant antfile="../build.xml">
-                                    <target name="copyDir"/>
+                                    <property name="to.dir" value="src/main/resources"/>
+                                    <target name="copyResourceDir"/>
+                                </ant>
+                                <ant antfile="../build.xml">
+                                    <property name="to.dir" value="src/main/java"/>
+                                    <target name="copySourceDir"/>
                                 </ant>
                             </tasks>
                         </configuration>
