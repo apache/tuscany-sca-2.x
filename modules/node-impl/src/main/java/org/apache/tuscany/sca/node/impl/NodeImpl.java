@@ -286,4 +286,8 @@ public class NodeImpl implements Node, Client {
         }
         return endpoints;
     }
+    
+    public Composite getDomainComposite() {
+        return compositeActivator.getDomainComposite();
+    }    
 }
