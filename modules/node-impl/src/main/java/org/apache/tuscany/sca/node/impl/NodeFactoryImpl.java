@@ -275,7 +275,7 @@ public class NodeFactoryImpl extends NodeFactory {
      */
     private void analyzeProblems() throws Exception {
         for (Problem problem : monitor.getProblems()) {
-            if ((problem.getSeverity() == Severity.ERROR) && (!problem.getMessageId().equals("SchemaError"))) {
+            if ((problem.getSeverity() == Severity.ERROR)) {
                 if (problem.getCause() != null) {
                     throw problem.getCause();
                 } else {
