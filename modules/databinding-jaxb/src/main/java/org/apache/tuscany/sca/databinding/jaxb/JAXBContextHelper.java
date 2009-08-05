@@ -37,6 +37,7 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchema;
+import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
@@ -99,6 +100,15 @@ public final class JAXBContextHelper {
         DataType<?> dataType = source ? tContext.getSourceDataType() : tContext.getTargetDataType();
         return createJAXBContext(dataType);
 
+    }
+    
+    private Class<?>[] getSeeAlso(Class<?> interfaze) {
+        XmlSeeAlso seeAlso = interfaze.getAnnotation(XmlSeeAlso.class);
+        if (seeAlso == null) {
+            return null;
+        } else {
+            return seeAlso.value();
+        }
     }
 
     public static JAXBContext createJAXBContext(DataType dataType) throws JAXBException {

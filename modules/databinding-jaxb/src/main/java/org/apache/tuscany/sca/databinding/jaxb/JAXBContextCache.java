@@ -55,6 +55,8 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.transform.Source;
 
 import org.apache.tuscany.sca.databinding.util.LRUCache;
+import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
+import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 
 /**
  * @version $Rev$ $Date$
@@ -116,12 +118,34 @@ public class JAXBContextCache {
         upool = new Pool<JAXBContext, Unmarshaller>();
         defaultContext = getDefaultJAXBContext();
     }
-
+    
     private static JAXBContext newJAXBContext(final Class<?>... classesToBeBound) throws JAXBException {
         try {
             return AccessController.doPrivileged(new PrivilegedExceptionAction<JAXBContext>() {
                 public JAXBContext run() throws JAXBException {
-                    return JAXBContext.newInstance(classesToBeBound);
+                    // Try to set up TCCL so that JAXBContext service discovery works in OSGi
+                    ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+                    ClassLoader newTccl = tccl;
+                    try {
+                        ServiceDeclaration sd =
+                            ServiceDiscovery.getInstance().getServiceDeclaration(JAXBContext.class.getName());
+                        if (sd != null) {
+                            newTccl = sd.loadClass().getClassLoader();
+                        }
+                    } catch (Exception e) {
+                        // Ignore
+                    }
+                    if (newTccl != tccl) {
+                        Thread.currentThread().setContextClassLoader(newTccl);
+                    }
+                    try {
+                        JAXBContext context = JAXBContext.newInstance(classesToBeBound);
+                        return context;
+                    } finally {
+                        if (newTccl != tccl) {
+                            Thread.currentThread().setContextClassLoader(newTccl);
+                        }
+                    }
                 }
             });
         } catch (PrivilegedActionException e) {
@@ -129,18 +153,6 @@ public class JAXBContextCache {
         }
     }
 
-    private static JAXBContext newJAXBContext(final String contextPath, final ClassLoader classLoader)
-        throws JAXBException {
-        try {
-            return AccessController.doPrivileged(new PrivilegedExceptionAction<JAXBContext>() {
-                public JAXBContext run() throws JAXBException {
-                    return JAXBContext.newInstance(contextPath, classLoader);
-                }
-            });
-        } catch (PrivilegedActionException e) {
-            throw (JAXBException)e.getException();
-        }
-    }
 
     public static JAXBContext getDefaultJAXBContext() {
         try {
