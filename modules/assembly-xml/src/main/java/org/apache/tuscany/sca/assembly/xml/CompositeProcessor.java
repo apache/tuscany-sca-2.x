@@ -932,81 +932,89 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
 
     public void resolve(Composite composite, ModelResolver resolver) throws ContributionResolveException {
 
-        // Resolve constraining type
-        ConstrainingType constrainingType = composite.getConstrainingType();
-        if (constrainingType != null) {
-            constrainingType = resolver.resolveModel(ConstrainingType.class, constrainingType);
-            composite.setConstrainingType(constrainingType);
-        }
-
-        // Resolve includes in the composite
-        for (int i = 0, n = composite.getIncludes().size(); i < n; i++) {
-            Composite include = composite.getIncludes().get(i);
-            if (include != null) {
-                include = resolver.resolveModel(Composite.class, include);
-                composite.getIncludes().set(i, include);
-            }
-        }
-
-        // Resolve extensions
-        for (Object extension : composite.getExtensions()) {
-            if (extension != null) {
-                extensionProcessor.resolve(extension, resolver);
-            }
-        }
-
-        //Resolve composite services and references
-        resolveContracts(composite, composite.getServices(), resolver);
-        resolveContracts(composite, composite.getReferences(), resolver);
-
-        // Resolve component implementations, services and references
-        for (Component component : composite.getComponents()) {
-            constrainingType = component.getConstrainingType();
-            if (constrainingType != null) {
-                constrainingType = resolver.resolveModel(ConstrainingType.class, constrainingType);
-                component.setConstrainingType(constrainingType);
-            }
-
-            //resolve component services and references
-            resolveContracts(component, component.getServices(), resolver);
-            resolveContracts(component, component.getReferences(), resolver);
-
-            for (ComponentProperty componentProperty : component.getProperties()) {
-                if (componentProperty.getFile() != null) {
-                    Artifact artifact = contributionFactory.createArtifact();
-                    artifact.setURI(componentProperty.getFile());
-                    artifact = resolver.resolveModel(Artifact.class, artifact);
-                    if (artifact.getLocation() != null) {
-                        componentProperty.setFile(artifact.getLocation());
-                    }
-                }
-            }
-
-            //resolve component implementation
-            Implementation implementation = component.getImplementation();
-            if (implementation != null) {
-                //now resolve the implementation so that even if there is a shared instance
-                //for this that is resolved, the specified intents and policysets are safe in the
-                //component and not lost
-                implementation = resolveImplementation(implementation, resolver);
-
-                component.setImplementation(implementation);
-            }
-
-            //add model resolver to component
-            if (component instanceof ResolverExtension) {
-                ((ResolverExtension)component).setModelResolver(resolver);
-            }
-        }
-
-        // Add model resolver to promoted components
-        for (Service service : composite.getServices()) {
-            CompositeService compositeService = (CompositeService)service;
-            Component promotedComponent = compositeService.getPromotedComponent();
-            if (promotedComponent instanceof ResolverExtension) {
-                ((ResolverExtension)promotedComponent).setModelResolver(resolver);
-            }
-        }
+    	try {
+    		this.monitor.pushContext("Composite: " + composite.getName());
+	    	
+	        // Resolve constraining type
+	        ConstrainingType constrainingType = composite.getConstrainingType();
+	        if (constrainingType != null) {
+	            constrainingType = resolver.resolveModel(ConstrainingType.class, constrainingType);
+	            composite.setConstrainingType(constrainingType);
+	        }
+	
+	        // Resolve includes in the composite
+	        for (int i = 0, n = composite.getIncludes().size(); i < n; i++) {
+	            Composite include = composite.getIncludes().get(i);
+	            if (include != null) {
+	                include = resolver.resolveModel(Composite.class, include);
+	                composite.getIncludes().set(i, include);
+	            }
+	        }
+	
+	        // Resolve extensions
+	        for (Object extension : composite.getExtensions()) {
+	            if (extension != null) {
+	                extensionProcessor.resolve(extension, resolver);
+	            }
+	        }
+	
+	        //Resolve composite services and references
+	        resolveContracts(composite, composite.getServices(), resolver);
+	        resolveContracts(composite, composite.getReferences(), resolver);
+	
+	        // Resolve component implementations, services and references
+	        for (Component component : composite.getComponents()) {
+	            constrainingType = component.getConstrainingType();
+	            if (constrainingType != null) {
+	                constrainingType = resolver.resolveModel(ConstrainingType.class, constrainingType);
+	                component.setConstrainingType(constrainingType);
+	            }
+	
+	            //resolve component services and references
+	            resolveContracts(component, component.getServices(), resolver);
+	            resolveContracts(component, component.getReferences(), resolver);
+	
+	            for (ComponentProperty componentProperty : component.getProperties()) {
+	                if (componentProperty.getFile() != null) {
+	                    Artifact artifact = contributionFactory.createArtifact();
+	                    artifact.setURI(componentProperty.getFile());
+	                    artifact = resolver.resolveModel(Artifact.class, artifact);
+	                    if (artifact.getLocation() != null) {
+	                        componentProperty.setFile(artifact.getLocation());
+	                    }
+	                }
+	            }
+	
+	            //resolve component implementation
+	            Implementation implementation = component.getImplementation();
+	            if (implementation != null) {
+	                //now resolve the implementation so that even if there is a shared instance
+	                //for this that is resolved, the specified intents and policysets are safe in the
+	                //component and not lost
+	                implementation = resolveImplementation(implementation, resolver);
+	
+	                component.setImplementation(implementation);
+	            }
+	
+	            //add model resolver to component
+	            if (component instanceof ResolverExtension) {
+	                ((ResolverExtension)component).setModelResolver(resolver);
+	            }
+	        }
+	
+	        // Add model resolver to promoted components
+	        for (Service service : composite.getServices()) {
+	            CompositeService compositeService = (CompositeService)service;
+	            Component promotedComponent = compositeService.getPromotedComponent();
+	            if (promotedComponent instanceof ResolverExtension) {
+	                ((ResolverExtension)promotedComponent).setModelResolver(resolver);
+	            }
+	        } // end for
+        
+    	} finally {
+    		// Pop context
+    		this.monitor.popContext();
+    	} // end try 
     }
 
     public QName getArtifactType() {

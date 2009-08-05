@@ -106,7 +106,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
     protected StAXArtifactProcessor<Object> extensionProcessor;
     protected PolicySubjectProcessor policyProcessor;
     private DocumentBuilderFactory documentBuilderFactory;
-    private Monitor monitor;
+    protected Monitor monitor;
 
     /**
      * Constructs a new BaseArtifactProcessor.
