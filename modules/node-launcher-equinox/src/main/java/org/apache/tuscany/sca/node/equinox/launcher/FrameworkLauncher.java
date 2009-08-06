@@ -38,6 +38,8 @@ import org.osgi.framework.launch.FrameworkFactory;
  * Launcher for the OSGi framework using the framework launch APIs
  */
 public class FrameworkLauncher implements BundleActivator {
+    private static final String FACTORY_RESOURCE = "META-INF/services/" + FrameworkFactory.class.getName();
+
     private static final Logger logger = Logger.getLogger(FrameworkLauncher.class.getName());
 
     private FrameworkFactory factory;
@@ -46,14 +48,12 @@ public class FrameworkLauncher implements BundleActivator {
     @SuppressWarnings("unchecked")
     private synchronized FrameworkFactory loadFrameworkFactory() {
         if (factory == null) {
-            // Use reflection APIs to call ServiceDiscovery to avoid hard dependency to tuscany-extensibility
             try {
-                ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-                InputStream is =
-                    classLoader.getResourceAsStream("META-INF/services/" + FrameworkFactory.class.getName());
+                ClassLoader classLoader = FrameworkFactory.class.getClassLoader();
+                InputStream is = classLoader.getResourceAsStream(FACTORY_RESOURCE);
                 if (is == null) {
-                    classLoader = FrameworkFactory.class.getClassLoader();
-                    is = classLoader.getResourceAsStream("META-INF/services/" + FrameworkFactory.class.getName());
+                    classLoader = Thread.currentThread().getContextClassLoader();
+                    is = classLoader.getResourceAsStream(FACTORY_RESOURCE);
                 }
                 if (is == null) {
                     return null;
@@ -61,7 +61,7 @@ public class FrameworkLauncher implements BundleActivator {
                 BufferedReader reader = null;
                 String line = null;
                 try {
-                    reader = new BufferedReader(new InputStreamReader(is));
+                    reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
                     while (true) {
                         line = reader.readLine();
                         if (line == null)

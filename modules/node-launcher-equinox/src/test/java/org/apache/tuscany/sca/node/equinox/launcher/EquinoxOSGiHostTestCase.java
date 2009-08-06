@@ -23,16 +23,14 @@ import java.util.Dictionary;
 import java.util.Enumeration;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
 
 /**
- * 
+ * Test case for equinox host
  */
-@Ignore
 public class EquinoxOSGiHostTestCase {
 
     @Test
