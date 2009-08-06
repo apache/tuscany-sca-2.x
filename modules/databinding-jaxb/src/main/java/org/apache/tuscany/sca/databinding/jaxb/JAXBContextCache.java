@@ -143,7 +143,7 @@ public class JAXBContextCache {
                         return context;
                     } finally {
                         if (newTccl != tccl) {
-                            Thread.currentThread().setContextClassLoader(newTccl);
+                            Thread.currentThread().setContextClassLoader(tccl);
                         }
                     }
                 }
