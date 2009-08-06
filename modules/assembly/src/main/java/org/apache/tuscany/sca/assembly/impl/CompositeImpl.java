@@ -99,6 +99,18 @@ public class CompositeImpl extends ImplementationImpl implements Composite, Clon
     public List<Component> getComponents() {
         return components;
     }
+    
+    public Component getComponent(String name) {
+        Component component = null;
+        
+        for (Component tmp : getComponents()){
+            if (tmp.getName().equals(name)){
+                component = tmp;
+                break;
+            }
+        }
+        return component;
+    }
 
     public List<Composite> getIncludes() {
         return includes;

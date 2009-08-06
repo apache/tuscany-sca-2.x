@@ -73,7 +73,12 @@ public interface Composite extends Implementation, Extensible, Cloneable, Policy
      * @return a list of components contained in this composite
      */
     List<Component> getComponents();
-
+    
+    /**
+     * Returns a component by name
+     */
+    Component getComponent(String name);
+    
     /**
      * Returns a list of wires contained in this composite.
      *
