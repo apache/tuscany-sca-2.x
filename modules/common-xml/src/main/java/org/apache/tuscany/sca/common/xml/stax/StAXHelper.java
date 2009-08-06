@@ -67,13 +67,14 @@ public final class StAXHelper {
         return inputFactory.createXMLStreamReader(source);
     }
 
-    /*
     public XMLStreamReader createXMLStreamReader(Node node) throws XMLStreamException {
+        /*
         // DOMSource is not supported by the XMLInputFactory from JDK 6
         DOMSource source = new DOMSource(node);
         return createXMLStreamReader(source);
+        */
+        return new DOMXMLStreamReader(node);
     }
-    */
 
     public XMLStreamReader createXMLStreamReader(String string) throws XMLStreamException {
         StringReader reader = new StringReader(string);

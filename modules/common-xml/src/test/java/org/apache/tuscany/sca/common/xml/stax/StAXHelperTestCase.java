@@ -48,9 +48,10 @@ public class StAXHelperTestCase {
         assertNotNull(reader);
 
         Node node = helper.saveAsNode(reader);
-        // reader = helper.createXMLStreamReader(node);
         assertNotNull(node.getFirstChild());
-
+        reader = helper.createXMLStreamReader(node);
+        xml = helper.saveAsString(reader);
+        XMLAssert.assertXMLEqual(XML, xml);
     }
 
 }

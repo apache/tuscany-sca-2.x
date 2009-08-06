@@ -27,6 +27,7 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.common.xml.dom.DOMHelper;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
@@ -109,14 +110,7 @@ public class DOMXmlNodeImpl implements XmlNode {
     }
 
     private static QName getQName(Node node) {
-        int type = node.getNodeType();
-        if (type == Node.ELEMENT_NODE || type == Node.ATTRIBUTE_NODE) {
-            String ns = node.getNamespaceURI();
-            String prefix = node.getPrefix();
-            String localName = node.getLocalName();
-            return new QName(ns == null ? "" : ns, localName, prefix == null ? "" : prefix);
-        }
-        return null;
+        return DOMHelper.getQName(node);
     }
 
     /**

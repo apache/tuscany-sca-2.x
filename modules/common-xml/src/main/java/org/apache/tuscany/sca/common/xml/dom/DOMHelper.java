@@ -60,10 +60,18 @@ public final class DOMHelper {
 
     public static QName getQName(Node node) {
         String ns = node.getNamespaceURI();
+        String prefix = node.getPrefix();
+        String localName = node.getLocalName();
+        if (localName == null) {
+            localName = node.getNodeName();
+        }
         if (ns == null) {
             ns = "";
         }
-        return new QName(ns, node.getNodeName());
+        if (prefix == null) {
+            prefix = "";
+        }
+        return new QName(ns, localName, prefix);
     }
 
     public static Element createElement(Document document, QName name) {
