@@ -34,6 +34,10 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.sca.common.xml.stax.impl.XMLStreamSerializer;
+import org.apache.tuscany.sca.common.xml.stax.reader.XmlNode;
+import org.apache.tuscany.sca.common.xml.stax.reader.XmlNodeIterator;
+import org.apache.tuscany.sca.common.xml.stax.reader.XmlTreeStreamReaderImpl;
 import org.custommonkey.xmlunit.XMLAssert;
 import org.junit.Assert;
 import org.junit.Before;
@@ -154,35 +158,35 @@ public class XmlTreeStreamReaderTestCase {
         private Object value = "123";
 
         /**
-         * @see org.apache.tuscany.sca.databinding.xml.XmlNode#attributes()
+         * @see org.apache.tuscany.sca.common.xml.stax.reader.databinding.xml.XmlNode#attributes()
          */
         public List<XmlNode> attributes() {
             return attrs;
         }
 
         /**
-         * @see org.apache.tuscany.sca.databinding.xml.XmlNode#children()
+         * @see org.apache.tuscany.sca.common.xml.stax.reader.databinding.xml.XmlNode#children()
          */
         public Iterator<XmlNode> children() {
             return children.iterator();
         }
 
         /**
-         * @see org.apache.tuscany.sca.databinding.xml.XmlNode#getName()
+         * @see org.apache.tuscany.sca.common.xml.stax.reader.databinding.xml.XmlNode#getName()
          */
         public QName getName() {
             return name;
         }
 
         /**
-         * @see org.apache.tuscany.sca.databinding.xml.XmlNode#getValue()
+         * @see org.apache.tuscany.sca.common.xml.stax.reader.databinding.xml.XmlNode#getValue()
          */
         public <T> T getValue() {
             return (T)value;
         }
 
         /**
-         * @see org.apache.tuscany.sca.databinding.xml.XmlNode#namespaces()
+         * @see org.apache.tuscany.sca.common.xml.stax.reader.databinding.xml.XmlNode#namespaces()
          */
         public Map<String, String> namespaces() {
             return namespaces;

@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.common.xml.stax;
+package org.apache.tuscany.sca.common.xml.stax.reader;
 
 import java.util.NoSuchElementException;
 

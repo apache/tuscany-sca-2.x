@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.common.xml.stax;
+package org.apache.tuscany.sca.common.xml.stax.reader;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -66,7 +66,7 @@ public class DOMXmlNodeImpl implements XmlNode {
     }
 
     /**
-     * @see org.apache.tuscany.sca.common.xml.stax.databinding.xml.XmlNode#attributes()
+     * @see org.apache.tuscany.sca.common.xml.stax.reader.databinding.xml.XmlNode#attributes()
      */
     public List<XmlNode> attributes() {
         if (type != Type.ELEMENT) {
@@ -84,7 +84,7 @@ public class DOMXmlNodeImpl implements XmlNode {
     }
 
     /**
-     * @see org.apache.tuscany.sca.common.xml.stax.databinding.xml.XmlNode#children()
+     * @see org.apache.tuscany.sca.common.xml.stax.reader.databinding.xml.XmlNode#children()
      */
     public Iterator<XmlNode> children() {
         if (type != Type.ELEMENT) {
@@ -103,7 +103,7 @@ public class DOMXmlNodeImpl implements XmlNode {
     }
 
     /**
-     * @see org.apache.tuscany.sca.common.xml.stax.databinding.xml.XmlNode#getName()
+     * @see org.apache.tuscany.sca.common.xml.stax.reader.databinding.xml.XmlNode#getName()
      */
     public QName getName() {
         return getQName(node);
@@ -114,14 +114,14 @@ public class DOMXmlNodeImpl implements XmlNode {
     }
 
     /**
-     * @see org.apache.tuscany.sca.common.xml.stax.databinding.xml.XmlNode#getValue()
+     * @see org.apache.tuscany.sca.common.xml.stax.reader.databinding.xml.XmlNode#getValue()
      */
     public String getValue() {
         return node.getNodeValue();
     }
 
     /**
-     * @see org.apache.tuscany.sca.common.xml.stax.databinding.xml.XmlNode#namespaces()
+     * @see org.apache.tuscany.sca.common.xml.stax.reader.databinding.xml.XmlNode#namespaces()
      */
     public Map<String, String> namespaces() {
         if (type != Type.ELEMENT) {

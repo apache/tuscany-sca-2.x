@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.common.xml.stax;
+package org.apache.tuscany.sca.common.xml.stax.reader;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamReader;

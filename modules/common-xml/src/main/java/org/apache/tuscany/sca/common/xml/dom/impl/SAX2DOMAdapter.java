@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-package org.apache.tuscany.sca.common.xml.dom;
+package org.apache.tuscany.sca.common.xml.dom.impl;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
+import org.apache.tuscany.sca.common.xml.dom.DOMHelper;
+import org.apache.tuscany.sca.common.xml.dom.DOMHelper.NodeContentHandler;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.w3c.dom.Comment;

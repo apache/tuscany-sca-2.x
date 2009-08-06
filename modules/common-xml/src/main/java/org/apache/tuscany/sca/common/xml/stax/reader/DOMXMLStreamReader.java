@@ -16,44 +16,21 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+package org.apache.tuscany.sca.common.xml.stax.reader;
 
-package org.apache.tuscany.sca.common.xml.stax;
+import org.w3c.dom.Node;
 
-import java.util.Map;
+public class DOMXMLStreamReader extends XmlTreeStreamReaderImpl {
 
-import javax.xml.namespace.QName;
-
-/**
- * A named property
- * 
- * @version $Rev$ $Date$
- */
-public class NamedProperty implements Map.Entry<QName, Object> {
-    private QName key;
-
-    private Object value;
-
-    public NamedProperty(QName key, Object value) {
-        this.key = key;
-        this.value = value;
-    }
-
-    public NamedProperty(String key, Object value) {
-        this.key = new QName(key);
-        this.value = value;
-    }
-    
-    public QName getKey() {
-        return key;
-    }
-
-    public Object getValue() {
-        return value;
-    }
-
-    public Object setValue(Object value) {
-        Object v = this.value;
-        this.value = value;
-        return v;
+    public DOMXMLStreamReader(Node node) {
+        super(new DOMXmlNodeImpl(node));
+        switch (node.getNodeType()) {
+            case Node.DOCUMENT_NODE:
+                break;
+            case Node.ELEMENT_NODE:
+                break;
+            default:
+                throw new IllegalArgumentException("Illegal node type: " + node);
+        }
     }
 }

@@ -35,11 +35,16 @@ import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMResult;
 
 import org.apache.tuscany.sca.common.xml.dom.DOMHelper;
+import org.apache.tuscany.sca.common.xml.stax.impl.StAX2SAXAdapter;
+import org.apache.tuscany.sca.common.xml.stax.impl.XMLStreamSerializer;
+import org.apache.tuscany.sca.common.xml.stax.reader.DOMXMLStreamReader;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.SAXException;
 
 public final class StAXHelper {
     private final XMLInputFactory inputFactory;
@@ -127,6 +132,11 @@ public final class StAXHelper {
         XMLStreamSerializer serializer = new XMLStreamSerializer();
         serializer.serialize(reader, writer);
         writer.flush();
+    }
+
+    public void saveAsSAX(XMLStreamReader reader, ContentHandler contentHandler) throws XMLStreamException,
+        SAXException {
+        new StAX2SAXAdapter(false).parse(reader, contentHandler);
     }
 
 }
