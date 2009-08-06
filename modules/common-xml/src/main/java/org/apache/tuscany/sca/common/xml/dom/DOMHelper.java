@@ -18,10 +18,21 @@
  */
 package org.apache.tuscany.sca.common.xml.dom;
 
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
+
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.sax.SAXResult;
+import javax.xml.transform.stream.StreamResult;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
@@ -30,6 +41,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.ext.LexicalHandler;
 
 /**
  * Helper for DOM
@@ -38,11 +53,13 @@ import org.w3c.dom.Node;
  */
 public final class DOMHelper {
     private DocumentBuilderFactory documentBuilderFactory;
+    private TransformerFactory transformerFactory;
 
     public DOMHelper(ExtensionPointRegistry registry) {
         FactoryExtensionPoint factories = registry.getExtensionPoint(FactoryExtensionPoint.class);
         documentBuilderFactory = factories.getFactory(DocumentBuilderFactory.class);
         documentBuilderFactory.setNamespaceAware(true);
+        transformerFactory = factories.getFactory(TransformerFactory.class);
     }
 
     public Document newDocument() {
@@ -54,6 +71,51 @@ public final class DOMHelper {
         try {
             return documentBuilderFactory.newDocumentBuilder();
         } catch (ParserConfigurationException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    public Document load(String xmlString) throws IOException, SAXException {
+        DocumentBuilder builder = newDocumentBuilder();
+        InputSource is = new InputSource(new StringReader(xmlString));
+        return builder.parse(is);
+    }
+
+    public NodeContentHandler createContentHandler(Node root) {
+        if (root == null) {
+            root = newDocument();
+        }
+        return new SAX2DOMAdapter(root);
+    }
+
+    public String saveAsString(Node node) {
+        Transformer transformer = newTransformer();
+        StringWriter sw = new StringWriter();
+        StreamResult result = new StreamResult(sw);
+        try {
+            transformer.transform(new DOMSource(node), result);
+        } catch (TransformerException e) {
+            throw new IllegalArgumentException(e);
+        }
+        return result.getWriter().toString();
+    }
+
+    private Transformer newTransformer() {
+        Transformer transformer = null;
+        try {
+            transformer = transformerFactory.newTransformer();
+        } catch (TransformerConfigurationException e) {
+            throw new IllegalArgumentException(e);
+        }
+        return transformer;
+    }
+
+    public void saveAsSAX(Node node, ContentHandler contentHandler) {
+        Transformer transformer = newTransformer();
+        SAXResult result = new SAXResult(contentHandler);
+        try {
+            transformer.transform(new DOMSource(node), result);
+        } catch (TransformerException e) {
             throw new IllegalArgumentException(e);
         }
     }
@@ -114,6 +176,10 @@ public final class DOMHelper {
             parent = parent.getParentNode();
         }
         return doc;
+    }
+
+    public static interface NodeContentHandler extends ContentHandler, LexicalHandler {
+        Node getNode();
     }
 
 }

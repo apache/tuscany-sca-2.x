@@ -20,8 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.w3c.dom.Comment;
@@ -31,17 +29,15 @@ import org.w3c.dom.Node;
 import org.w3c.dom.ProcessingInstruction;
 import org.w3c.dom.Text;
 import org.xml.sax.Attributes;
-import org.xml.sax.ContentHandler;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
-import org.xml.sax.ext.LexicalHandler;
 
 /**
  * SAX2DOM adapter
  *
  * @version $Rev$ $Date$
  */
-public class SAX2DOMAdapter implements ContentHandler, LexicalHandler {
+public class SAX2DOMAdapter implements DOMHelper.NodeContentHandler {
     public static final String EMPTYSTRING = "";
     public static final String XML_PREFIX = "xml";
     public static final String XMLNS_PREFIX = "xmlns";
@@ -67,7 +63,7 @@ public class SAX2DOMAdapter implements ContentHandler, LexicalHandler {
         this.root = document;
     }
 
-    public SAX2DOMAdapter(Node root, Node nextSibling) throws ParserConfigurationException {
+    public SAX2DOMAdapter(Node root, Node nextSibling) {
         this.root = root;
         if (root instanceof Document) {
             this.document = (Document)root;
@@ -78,11 +74,11 @@ public class SAX2DOMAdapter implements ContentHandler, LexicalHandler {
         this.nextSibling = nextSibling;
     }
 
-    public SAX2DOMAdapter(Node root) throws ParserConfigurationException {
+    public SAX2DOMAdapter(Node root) {
         this(root, null);
     }
 
-    public Node getDOM() {
+    public Node getNode() {
         return root;
     }
 
