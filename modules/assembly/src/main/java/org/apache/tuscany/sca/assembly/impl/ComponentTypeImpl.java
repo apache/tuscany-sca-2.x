@@ -86,14 +86,53 @@ public class ComponentTypeImpl extends ExtensibleImpl implements ComponentType, 
     public List<Property> getProperties() {
         return properties;
     }
+    
+    public Property getProperty(String name){
+        Property property = null;
+        
+        for (Property tmp : properties){
+            if (tmp.getName().equals(name)){
+                property = tmp;
+                break;
+            }
+        }
+        
+        return property;
+    }
 
     public List<Reference> getReferences() {
         return references;
     }
+    
+    public Reference getReference(String name){
+        Reference reference = null;
+        
+        for (Reference tmp : references){
+            if (tmp.getName().equals(name)){
+                reference = tmp;
+                break;
+            }
+        }
+        
+        return reference;
+    }    
 
     public List<Service> getServices() {
         return services;
     }
+    
+    public Service getService(String name){
+        Service service = null;
+        
+        for (Service tmp : services){
+            if (tmp.getName().equals(name)){
+                service = tmp;
+                break;
+            }
+        }
+        
+        return service;
+    }  
 
     public void setConstrainingType(ConstrainingType constrainingType) {
         this.constrainingType = constrainingType;

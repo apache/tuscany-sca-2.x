@@ -47,13 +47,29 @@ public interface ComponentType extends Base, PolicySubject {
      * @return a list of services that are offered
      */
     List<Service> getServices();
-
+    
+    /**
+     * Return a service by name
+     * 
+     * @param name the service name
+     * @return service the service
+     */
+    Service getService(String name);
+   
     /**
      * Returns the list of reference types that are used.
      * 
      * @return the list of reference types that are used
      */
     List<Reference> getReferences();
+    
+    /**
+     * Return a reference by name
+     * 
+     * @param name the reference name
+     * @return reference the reference
+     */
+    Reference getReference(String name);
 
     /**
      * Returns the list of properties that can be set.
@@ -61,6 +77,14 @@ public interface ComponentType extends Base, PolicySubject {
      * @return the list of properties that can be set
      */
     List<Property> getProperties();
+    
+    /**
+     * Return a property by name
+     * 
+     * @param name the property name
+     * @return property the property
+     */
+    Property getProperty(String name);
 
     /**
      * Returns a constraining type defining the shape of the implementation.

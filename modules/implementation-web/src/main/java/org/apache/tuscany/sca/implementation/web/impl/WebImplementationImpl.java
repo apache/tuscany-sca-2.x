@@ -124,14 +124,6 @@ class WebImplementationImpl extends ImplementationImpl implements WebImplementat
         }
     }
 
-    protected Reference getReference(String name) {
-        for (Reference reference : getReferences()) {
-            if (reference.getName().equals(name)) {
-                return reference;
-            }
-        }
-        return null;
-    }
 
     protected Reference createReference(Reference reference) {
         Reference newReference;
@@ -143,14 +135,6 @@ class WebImplementationImpl extends ImplementationImpl implements WebImplementat
         return newReference;
     }
 
-    protected Property getProperty(String name) {
-        for (Property property : getProperties()) {
-            if (property.getName().equals(name)) {
-                return property;
-            }
-        }
-        return null;
-    }
 
     protected Property createProperty(Property property) {
         Property newProperty;
