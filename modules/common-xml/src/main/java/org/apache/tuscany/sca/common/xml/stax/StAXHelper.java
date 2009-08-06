@@ -46,7 +46,10 @@ import org.w3c.dom.Node;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
-public final class StAXHelper {
+/**
+ * Helper class for StAX
+ */
+public class StAXHelper {
     private final XMLInputFactory inputFactory;
     private final XMLOutputFactory outputFactory;
     private final DOMHelper domHelper;
@@ -58,6 +61,18 @@ public final class StAXHelper {
         outputFactory = factories.getFactory(XMLOutputFactory.class);
         UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
         domHelper = utilities.getUtility(DOMHelper.class);
+    }
+
+    /**
+     * @param inputFactory
+     * @param outputFactory
+     * @param domHelper
+     */
+    public StAXHelper(XMLInputFactory inputFactory, XMLOutputFactory outputFactory, DOMHelper domHelper) {
+        super();
+        this.inputFactory = inputFactory;
+        this.outputFactory = outputFactory;
+        this.domHelper = domHelper;
     }
 
     public XMLStreamReader createXMLStreamReader(InputStream inputStream) throws XMLStreamException {

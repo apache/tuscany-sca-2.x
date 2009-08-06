@@ -52,7 +52,7 @@ import org.xml.sax.ext.LexicalHandler;
  *
  * @version $Rev$ $Date$
  */
-public final class DOMHelper {
+public class DOMHelper {
     private DocumentBuilderFactory documentBuilderFactory;
     private TransformerFactory transformerFactory;
 
@@ -61,6 +61,16 @@ public final class DOMHelper {
         documentBuilderFactory = factories.getFactory(DocumentBuilderFactory.class);
         documentBuilderFactory.setNamespaceAware(true);
         transformerFactory = factories.getFactory(TransformerFactory.class);
+    }
+
+    /**
+     * @param documentBuilderFactory
+     * @param transformerFactory
+     */
+    public DOMHelper(DocumentBuilderFactory documentBuilderFactory, TransformerFactory transformerFactory) {
+        super();
+        this.documentBuilderFactory = documentBuilderFactory;
+        this.transformerFactory = transformerFactory;
     }
 
     public Document newDocument() {

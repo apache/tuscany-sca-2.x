@@ -34,10 +34,18 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
 /**
- * 
+ * Helper class for SAX parsing
  */
 public class SAXHelper {
-    private SAXParserFactory saxParserFactory;
+    private final SAXParserFactory saxParserFactory;
+
+    /**
+     * @param saxParserFactory
+     */
+    public SAXHelper(SAXParserFactory saxParserFactory) {
+        super();
+        this.saxParserFactory = saxParserFactory;
+    }
 
     public SAXHelper(ExtensionPointRegistry registry) {
         FactoryExtensionPoint factories = registry.getExtensionPoint(FactoryExtensionPoint.class);
