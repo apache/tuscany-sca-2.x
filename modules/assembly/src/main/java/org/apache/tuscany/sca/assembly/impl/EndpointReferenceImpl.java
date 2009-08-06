@@ -163,9 +163,9 @@ public class EndpointReferenceImpl implements EndpointReference {
         this.callbackEndpoint = callbackEndpoint;
         reset();
     }
-
-    public String toString() {
-        String output = "EndpointReference(@" + this.hashCode() + "): ";
+    
+    public String toStringWithoutHash() {
+        String output = "EndpointReference: ";
 
         if (getURI() != null) {
             output += " URI = " + getURI();
@@ -194,6 +194,10 @@ public class EndpointReferenceImpl implements EndpointReference {
         }
 
         return output;
+    }
+
+    public String toString() {
+        return "(@" + this.hashCode() + ")" + toStringWithoutHash();
     }
 
     public String getURI() {
