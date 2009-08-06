@@ -15,21 +15,5 @@
 # specific language governing permissions and limitations
 # under the License. 
 
-org.apache.tuscany.sca.assembly.builder.impl.ComponentConfigurationBuilderImpl;id=org.apache.tuscany.sca.assembly.builder.ComponentConfigurationBuilder
-org.apache.tuscany.sca.assembly.builder.impl.ComponentReferenceBindingBuilderImpl;id=org.apache.tuscany.sca.assembly.builder.ComponentReferenceBindingBuilder
-org.apache.tuscany.sca.assembly.builder.impl.ComponentReferencePromotionWireBuilderImpl;id=org.apache.tuscany.sca.assembly.builder.ComponentReferencePromotionWireBuilder
-org.apache.tuscany.sca.assembly.builder.impl.ComponentReferenceWireBuilderImpl;id=org.apache.tuscany.sca.assembly.builder.ComponentReferenceWireBuilder
-org.apache.tuscany.sca.assembly.builder.impl.ComponentServiceBindingBuilderImpl;id=org.apache.tuscany.sca.assembly.builder.ComponentServiceBindingBuilder
-org.apache.tuscany.sca.assembly.builder.impl.ComponentServicePromotionBuilderImpl;id=org.apache.tuscany.sca.assembly.builder.ComponentServicePromotionBuilder
-org.apache.tuscany.sca.assembly.builder.impl.CompositeBindingURIBuilderImpl;id=org.apache.tuscany.sca.assembly.builder.CompositeBindingURIBuilder
+#org.apache.tuscany.sca.assembly.builder.impl.ModelBuilderImpl;id=org.apache.tuscany.sca.assembly.builder.CompositeBuilder
 org.apache.tuscany.sca.assembly.builder.impl.CompositeBuilderImpl;id=org.apache.tuscany.sca.assembly.builder.CompositeBuilder
-org.apache.tuscany.sca.assembly.builder.impl.CompositeCloneBuilderImpl;id=org.apache.tuscany.sca.assembly.builder.CompositeCloneBuilder
-org.apache.tuscany.sca.assembly.builder.impl.CompositeIncludeBuilderImpl;id=org.apache.tuscany.sca.assembly.builder.CompositeIncludeBuilder
-org.apache.tuscany.sca.assembly.builder.impl.CompositePolicyBuilderImpl;id=org.apache.tuscany.sca.assembly.builder.CompositePolicyBuilder
-org.apache.tuscany.sca.assembly.builder.impl.CompositePromotionBuilderImpl;id=org.apache.tuscany.sca.assembly.builder.CompositePromotionBuilder
-org.apache.tuscany.sca.assembly.builder.impl.CompositeReferenceConfigurationBuilderImpl;id=org.apache.tuscany.sca.assembly.builder.CompositeReferenceConfigurationBuilder
-org.apache.tuscany.sca.assembly.builder.impl.CompositeReferenceWireBuilderImpl;id=org.apache.tuscany.sca.assembly.builder.CompositeReferenceWireBuilder
-org.apache.tuscany.sca.assembly.builder.impl.CompositeServiceBindingBuilderImpl;id=org.apache.tuscany.sca.assembly.builder.CompositeServiceBindingBuilder
-org.apache.tuscany.sca.assembly.builder.impl.CompositeServiceConfigurationBuilderImpl;id=org.apache.tuscany.sca.assembly.builder.CompositeServiceConfigurationBuilder
-org.apache.tuscany.sca.assembly.builder.impl.CompositeServicePromotionBuilderImpl;id=org.apache.tuscany.sca.assembly.builder.CompositeServicePromotionBuilder
-org.apache.tuscany.sca.assembly.builder.impl.CompositeBindingConfigurationBuilderImpl;id=org.apache.tuscany.assembly.builder.CompositeBindingConfigurationBuilder
