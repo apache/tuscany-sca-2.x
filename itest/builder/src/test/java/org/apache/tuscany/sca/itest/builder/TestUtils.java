@@ -43,6 +43,8 @@ import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.assembly.impl.EndpointImpl;
+import org.apache.tuscany.sca.assembly.impl.EndpointReferenceImpl;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.monitor.Monitor;
@@ -229,12 +231,12 @@ public class TestUtils {
             
             for (Service service : component.getServices()){
                 for (Endpoint endpoint : service.getEndpoints()){
-                    structure += indent + endpoint + " " + endpoint.getBinding().getClass().getName() + "\n";
+                    structure += indent + ((EndpointImpl)endpoint).toStringWithoutHash() + " " + endpoint.getBinding().getClass().getName() + "\n";
                 }
             }
             for (Reference reference : component.getReferences()){
                 for (EndpointReference endpointReference : reference.getEndpointReferences()){
-                    structure += indent + endpointReference + " " + endpointReference.getBinding().getClass().getName() + "\n";
+                    structure += indent + ((EndpointReferenceImpl)endpointReference).toStringWithoutHash() + " " + endpointReference.getBinding().getClass().getName() + "\n";
                 }
             }
         }
