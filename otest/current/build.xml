@@ -18,21 +18,21 @@
 -->
 <project name="copy-files-from-svn"> 
     <target name="copySourceDir"> 
-        <copy todir="${to.dir}">
+        <sync todir="${to.dir}" verbose="true">
             <fileset dir="${from.dir}">
                 <include name="**/*.java"/>
                 <exclude name="**/.svn/**/*"/>
             </fileset>
-        </copy>
+        </sync>
     </target>
 
     <target name="copyResourceDir"> 
-        <copy todir="${to.dir}">
+        <sync todir="${to.dir}" verbose="true">
             <fileset dir="${from.dir}">
                 <exclude name="**/*.java"/>
                 <exclude name="**/.svn/**/*"/>
             </fileset>
-        </copy>
+        </sync>
     </target>
 
 

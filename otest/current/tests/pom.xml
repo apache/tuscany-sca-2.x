@@ -113,16 +113,18 @@
                         </goals>
                         <configuration>
                             <tasks>
+                                <!-- 
+                                <ant antfile="../build.xml">
+                                    <property name="from.dir" value="../src/test/resources"/>
+                                    <property name="to.dir" value="src/test/resources"/>
+                                    <target name="copyResourceDir"/>
+                                </ant>
+                                -->                                
                                 <ant antfile="../build.xml">
                                     <property name="from.dir" value="../src/test/java"/>
                                     <property name="to.dir" value="src/test/resources"/>
                                     <target name="copyResourceDir"/>
                                 </ant>
-                                <ant antfile="../build.xml">
-                                    <property name="from.dir" value="../src/test/resources"/>
-                                    <property name="to.dir" value="src/test/resources"/>
-                                    <target name="copyResourceDir"/>
-                                </ant>                                
                                 <ant antfile="../build.xml">
                                     <property name="from.dir" value="../src/test/java"/>
                                     <property name="to.dir" value="src/test/java"/>
