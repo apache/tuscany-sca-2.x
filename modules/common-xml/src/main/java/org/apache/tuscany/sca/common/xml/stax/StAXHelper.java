@@ -24,9 +24,16 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.StringTokenizer;
 
+import javax.xml.XMLConstants;
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
@@ -170,6 +177,123 @@ public class StAXHelper {
     public void saveAsSAX(XMLStreamReader reader, ContentHandler contentHandler) throws XMLStreamException,
         SAXException {
         new StAX2SAXAdapter(false).parse(reader, contentHandler);
+    }
+
+    /**
+     * Returns the boolean value of an attribute.
+     * @param reader
+     * @param name
+     * @return
+     */
+    public static Boolean getAttributeAsBoolean(XMLStreamReader reader, String name) {
+        String value = reader.getAttributeValue(null, name);
+        if (value == null) {
+            return null;
+        }
+        return Boolean.valueOf(value);
+    }
+
+    /**
+     * Returns the QName value of an attribute.
+     * @param reader
+     * @param name
+     * @return
+     */
+    public static QName getAttributeAsQName(XMLStreamReader reader, String name) {
+        String qname = reader.getAttributeValue(null, name);
+        return getValueAsQName(reader, qname);
+    }
+
+    /**
+     * Returns the value of an attribute as a list of QNames.
+     * @param reader
+     * @param name
+     * @return
+     */
+    public static List<QName> getAttributeAsQNames(XMLStreamReader reader, String name) {
+        String value = reader.getAttributeValue(null, name);
+        if (value != null) {
+            List<QName> qnames = new ArrayList<QName>();
+            for (StringTokenizer tokens = new StringTokenizer(value); tokens.hasMoreTokens();) {
+                qnames.add(getValueAsQName(reader, tokens.nextToken()));
+            }
+            return qnames;
+        } else {
+            return Collections.emptyList();
+        }
+    }
+
+    /**
+     * Returns a QName from a string.
+     * @param reader
+     * @param value
+     * @return
+     */
+    public static QName getValueAsQName(XMLStreamReader reader, String value) {
+        if (value != null) {
+            int index = value.indexOf(':');
+            String prefix = index == -1 ? "" : value.substring(0, index);
+            String localName = index == -1 ? value : value.substring(index + 1);
+            String ns = reader.getNamespaceContext().getNamespaceURI(prefix);
+            if (ns == null) {
+                ns = "";
+            }
+            return new QName(ns, localName, prefix);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Returns the string value of an attribute.
+     * @param reader
+     * @param name
+     * @return
+     */
+    public static String getAttributeAsString(XMLStreamReader reader, String name) {
+        return reader.getAttributeValue(null, name);
+    }
+
+    /**
+     * Returns the value of xsi:type attribute
+     * @param reader The XML stream reader
+     * @return The QName of the type, if the attribute is not present, null is
+     *         returned.
+     */
+    public static QName getXSIType(XMLStreamReader reader) {
+        String qname = reader.getAttributeValue(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "type");
+        return getValueAsQName(reader, qname);
+    }
+
+    /**
+     * Test if an attribute is explicitly set
+     * @param reader
+     * @param name
+     * @return
+     */
+    public static boolean isAttributePresent(XMLStreamReader reader, String name) {
+        return reader.getAttributeValue(null, name) != null;
+    }
+
+    /**
+     * Advance the stream to the next END_ELEMENT event skipping any nested
+     * content.
+     * @param reader the reader to advance
+     * @throws XMLStreamException if there was a problem reading the stream
+     */
+    public static void skipToEndElement(XMLStreamReader reader) throws XMLStreamException {
+        int depth = 0;
+        while (reader.hasNext()) {
+            int event = reader.next();
+            if (event == XMLStreamConstants.START_ELEMENT) {
+                depth++;
+            } else if (event == XMLStreamConstants.END_ELEMENT) {
+                if (depth == 0) {
+                    return;
+                }
+                depth--;
+            }
+        }
     }
 
 }
