@@ -27,6 +27,7 @@ import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.DefaultDataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.jaxb.DefaultXMLAdapterExtensionPoint;
@@ -49,7 +50,7 @@ public class JAXWSJavaInterfaceProcessorTestCase {
 
     @Before
     public void setUp() throws Exception {
-        DataBindingExtensionPoint db = new DefaultDataBindingExtensionPoint();
+        DataBindingExtensionPoint db = new DefaultDataBindingExtensionPoint(new DefaultExtensionPointRegistry());
         XMLAdapterExtensionPoint xa = new DefaultXMLAdapterExtensionPoint();
         interfaceProcessor = new JAXWSJavaInterfaceProcessor(db, new JAXWSFaultExceptionMapper(db, xa), xa);
     }
