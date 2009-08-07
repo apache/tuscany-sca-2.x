@@ -17,7 +17,7 @@
                   maxOccurs="unbounded"/>
             </sequence>
             <attribute name="ejb-link" type="string" use="required"/>
-            <anyAttribute namespace="##any" processContents="lax"/>
+            <anyAttribute namespace="##other" processContents="lax"/>
         </extension>
       </complexContent>
 	</complexType>
@@ -31,7 +31,7 @@
                   maxOccurs="unbounded"/>
             </sequence>
             <attribute name="web-uri" type="string" use="required"/>
-            <anyAttribute namespace="##any" processContents="lax"/>
+            <anyAttribute namespace="##other" processContents="lax"/>
          </extension>
       </complexContent>
 	</complexType>
@@ -45,7 +45,7 @@
                   maxOccurs="unbounded"/>
             </sequence>
             <attribute name="archive" type="string" use="required"/>
-            <anyAttribute namespace="##any" processContents="lax"/>
+            <anyAttribute namespace="##other" processContents="lax"/>
          </extension>
       </complexContent>
 	</complexType>
