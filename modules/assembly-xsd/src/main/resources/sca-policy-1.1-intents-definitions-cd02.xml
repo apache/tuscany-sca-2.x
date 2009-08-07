@@ -203,7 +203,7 @@
 	</intent>
 	
 	<!-- Miscellaneous intents -->	
-	<intent name="asyncInvocation" constrains="sca:Binding" 
+	<intent name="asyncInvocation" constrains="sca:binding" 
 		intentType="interaction">
 		<description>
 			Indicates that request/response operations for the 
@@ -212,7 +212,7 @@
 		</description>
 	</intent>
 	
-	<intent name="SOAP" constrains="sca:binding" intentType="interaction">
+	<intent name="SOAP" constrains="sca:binding" intentType="interaction" mutuallyExclusive="true">
 		<description>
 		Specifies that the SOAP messaging model is used for delivering 
 		messages.
