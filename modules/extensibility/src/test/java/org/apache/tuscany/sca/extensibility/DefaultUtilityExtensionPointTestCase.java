@@ -67,6 +67,12 @@ public class DefaultUtilityExtensionPointTestCase {
         ep.removeUtility(my);
         u1= ep.getUtility(Utility1.class, "1");
         Assert.assertNull(u1);
+        
+        u1 = ep.getUtility(MyUtilityImpl.class);
+        Assert.assertNotNull(u1);
+        u2 = ep.getUtility(Utility2.class);
+        Assert.assertSame(u1, u2);
+        ep.removeUtility(u1);
     }
 
     /**

@@ -71,9 +71,13 @@ public class DefaultUtilityExtensionPoint implements UtilityExtensionPoint {
         }
 
         if (key == null) {
-            Set<Class<?>> interfaces = getAllInterfaces(utility.getClass());
+            Class<?> cls = utility.getClass();
+            Set<Class<?>> interfaces = getAllInterfaces(cls);
             for (Class<?> i : interfaces) {
                 utilities.put(i, utility);
+            }
+            if (interfaces.isEmpty() || isConcreteClass(cls)) {
+                utilities.put(cls, utility);
             }
         } else {
             utilities.put(key, utility);
@@ -182,6 +186,7 @@ public class DefaultUtilityExtensionPoint implements UtilityExtensionPoint {
                     utilityClass = utilityDeclaration.loadClass();
                 } else if (isConcreteClass(utilityType)) {
                     utilityClass = utilityType;
+                    key = utilityType;
                 }
                 if (utilityClass != null) {
                     // Construct the utility
