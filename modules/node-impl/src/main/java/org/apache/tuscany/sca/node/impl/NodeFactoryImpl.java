@@ -248,13 +248,12 @@ public class NodeFactoryImpl extends NodeFactory {
 
                             // Now add the dependencies of that contribution
                             addContributionDependencies(dependency, contributions, dependencies, set, monitor);
-                        }
-                    }
-                }
-            }
+                        } // end if
+                    } // end if 
+                } // end for
+            } // end for
 
             if (resolved) {
-
                 // Initialize the import's model resolver with a delegating model
                 // resolver which will delegate to the matching exports
                 import_.setModelResolver(new DefaultImportModelResolver(matchingExports));
@@ -262,9 +261,11 @@ public class NodeFactoryImpl extends NodeFactory {
             } else {
                 // Record import resolution issue
                 if (!(import_ instanceof DefaultImport)) {
+                	// Add the (empty) matchingExports List and report a warning
+                	import_.setModelResolver(new DefaultImportModelResolver(matchingExports));
                     warning(monitor, "UnresolvedImport", import_, import_);
                 }
-            }
+            } // end if
         }
     }
 
