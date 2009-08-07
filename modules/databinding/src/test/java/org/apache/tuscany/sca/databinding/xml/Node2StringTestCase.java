@@ -18,7 +18,8 @@
  */
 package org.apache.tuscany.sca.databinding.xml;
 
-import org.apache.tuscany.sca.databinding.impl.DOMHelper;
+import org.apache.tuscany.sca.common.xml.dom.DOMHelper;
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -31,7 +32,7 @@ public class Node2StringTestCase {
     
     @Test
     public void testTransformation() throws Exception {
-        Document document = DOMHelper.newDocument();
+        Document document = DOMHelper.getInstance(new DefaultExtensionPointRegistry()).newDocument();
         Element element = document.createElementNS("http://ns1", "test");
         document.appendChild(element);
 

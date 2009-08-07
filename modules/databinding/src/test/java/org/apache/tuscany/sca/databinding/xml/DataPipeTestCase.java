@@ -25,9 +25,10 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
 
+import org.apache.tuscany.sca.common.xml.dom.DOMHelper;
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.databinding.DataPipe;
 import org.apache.tuscany.sca.databinding.DataPipeTransformer;
-import org.apache.tuscany.sca.databinding.impl.DOMHelper;
 import org.apache.tuscany.sca.databinding.impl.PipedTransformer;
 import org.junit.Assert;
 import org.junit.Test;
@@ -79,7 +80,7 @@ public class DataPipeTestCase {
         Writer2ReaderDataPipe pipe = new Writer2ReaderDataPipe();
         PipedTransformer<Node, Writer, Reader> transformer =
             new PipedTransformer<Node, Writer, Reader>(node2Writer, pipe);
-        Document document = DOMHelper.newDocument();
+        Document document = DOMHelper.getInstance(new DefaultExtensionPointRegistry()).newDocument();
         Element element = document.createElementNS("http://ns1", "root");
         document.appendChild(element);
         Reader reader = transformer.transform(document, null);

@@ -21,11 +21,13 @@ package org.apache.tuscany.sca.databinding.jaxb;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 
+import org.apache.tuscany.sca.common.xml.dom.DOMHelper;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
 import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
-import org.apache.tuscany.sca.databinding.impl.DOMHelper;
+import org.apache.tuscany.sca.databinding.xml.DOMDataBinding;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -34,7 +36,13 @@ import org.w3c.dom.Node;
  * @version $Rev$ $Date$
  */
 public class JAXB2Node extends BaseTransformer<Object, Node> implements PullTransformer<Object, Node> {
-
+    private DOMHelper helper;
+    
+    public JAXB2Node(ExtensionPointRegistry registry) {
+        super();
+        helper = DOMHelper.getInstance(registry);
+    }
+    
     public Node transform(Object source, TransformationContext tContext) {
 //        if (source == null) {
 //            return null;
@@ -44,10 +52,10 @@ public class JAXB2Node extends BaseTransformer<Object, Node> implements PullTran
             Marshaller marshaller = context.createMarshaller();
             // FIXME: The default Marshaller doesn't support
             // marshaller.getNode()
-            Document document = DOMHelper.newDocument();
+            Document document = helper.newDocument();
             Object jaxbElement = JAXBContextHelper.createJAXBElement(context, tContext.getSourceDataType(), source);
             marshaller.marshal(jaxbElement, document);
-            return DOMHelper.adjustElementName(tContext, document.getDocumentElement());
+            return DOMDataBinding.adjustElementName(tContext, document.getDocumentElement());
         } catch (Exception e) {
             throw new TransformationException(e);
         }

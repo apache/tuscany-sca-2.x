@@ -25,11 +25,9 @@ import java.util.List;
 import java.util.Set;
 
 import javax.xml.namespace.QName;
-import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.tuscany.sca.databinding.TransformationException;
+import org.apache.tuscany.sca.common.xml.dom.DOMHelper;
 import org.apache.tuscany.sca.databinding.WrapperHandler;
-import org.apache.tuscany.sca.databinding.impl.DOMHelper;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
@@ -41,22 +39,21 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public class DOMWrapperHandler implements WrapperHandler<Node> {
-
-    public DOMWrapperHandler() {
+    private DOMHelper domHelper;
+    
+    public DOMWrapperHandler(DOMHelper domHelper) {
         super();
+        this.domHelper = domHelper;
     }
 
     public Node create(Operation operation, boolean input) {
-        try {
-            WrapperInfo wrapperInfo = operation.getWrapper();
-            ElementInfo element = input ? wrapperInfo.getInputWrapperElement() : wrapperInfo.getOutputWrapperElement();
-            // Class<?> wrapperClass = input ? wrapperInfo.getInputWrapperClass() : wrapperInfo.getOutputWrapperClass();
-            Document document = DOMHelper.newDocument();
-            QName name = element.getQName();
-            return DOMHelper.createElement(document, name);
-        } catch (ParserConfigurationException e) {
-            throw new TransformationException(e);
-        }
+
+        WrapperInfo wrapperInfo = operation.getWrapper();
+        ElementInfo element = input ? wrapperInfo.getInputWrapperElement() : wrapperInfo.getOutputWrapperElement();
+        // Class<?> wrapperClass = input ? wrapperInfo.getInputWrapperClass() : wrapperInfo.getOutputWrapperClass();
+        Document document = domHelper.newDocument();
+        QName name = element.getQName();
+        return DOMHelper.createElement(document, name);
     }
 
     public void setChildren(Node wrapper,

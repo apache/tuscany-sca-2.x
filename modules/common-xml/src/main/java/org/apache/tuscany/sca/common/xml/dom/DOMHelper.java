@@ -26,10 +26,12 @@ import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamResult;
@@ -96,6 +98,17 @@ public class DOMHelper {
         DocumentBuilder builder = newDocumentBuilder();
         InputSource is = new InputSource(new StringReader(xmlString));
         return builder.parse(is);
+    }
+    
+    public Document load(Source source) {
+        Transformer transformer = newTransformer();
+        DOMResult result = new DOMResult(newDocument());
+        try {
+            transformer.transform(source, result);
+        } catch (TransformerException e) {
+            throw new IllegalArgumentException(e);
+        }
+        return (Document)result.getNode();
     }
 
     public NodeContentHandler createContentHandler(Node root) {

@@ -25,6 +25,7 @@ import static org.junit.Assert.assertTrue;
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
@@ -46,7 +47,7 @@ public class JAXBDataBindingTestCase {
 
     @Before
     public void setUp() throws Exception {
-        binding = new JAXBDataBinding();
+        binding = new JAXBDataBinding(new DefaultExtensionPointRegistry());
     }
 
     /**

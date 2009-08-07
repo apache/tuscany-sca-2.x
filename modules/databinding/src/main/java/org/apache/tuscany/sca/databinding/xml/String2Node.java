@@ -18,25 +18,25 @@
  */
 package org.apache.tuscany.sca.databinding.xml;
 
-import java.io.StringReader;
-
-import javax.xml.parsers.DocumentBuilder;
-
+import org.apache.tuscany.sca.common.xml.dom.DOMHelper;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
 import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
-import org.apache.tuscany.sca.databinding.impl.DOMHelper;
 import org.w3c.dom.Node;
-import org.xml.sax.InputSource;
 
 public class String2Node extends BaseTransformer<String, Node> implements PullTransformer<String, Node> {
-
+    private DOMHelper helper;
+    
+    public String2Node(ExtensionPointRegistry registry) {
+        super();
+        helper = DOMHelper.getInstance(registry);
+    }
+    
     public Node transform(String source, TransformationContext context) {
         try {
-            DocumentBuilder builder = DOMHelper.newDocumentBuilder();
-            InputSource inputSource = new InputSource(new StringReader(source));
-            return builder.parse(inputSource);
+            return helper.load(source);
         } catch (Exception e) {
             throw new TransformationException(e);
         }

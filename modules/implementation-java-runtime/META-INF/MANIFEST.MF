@@ -28,6 +28,7 @@ Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Java Implementation Model
 Import-Package: javax.xml.namespace,
  org.apache.tuscany.sca.assembly;version="2.0.0",
+ org.apache.tuscany.sca.common.xml.dom;version="2.0.0",
  org.apache.tuscany.sca.context;version="2.0.0",
  org.apache.tuscany.sca.core;version="2.0.0",
  org.apache.tuscany.sca.core.context;version="2.0.0",

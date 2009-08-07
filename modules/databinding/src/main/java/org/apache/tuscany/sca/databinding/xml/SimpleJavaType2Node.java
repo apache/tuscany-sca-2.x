@@ -19,12 +19,11 @@
 package org.apache.tuscany.sca.databinding.xml;
 
 import javax.xml.namespace.QName;
-import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.tuscany.sca.common.xml.dom.DOMHelper;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.databinding.TransformationContext;
-import org.apache.tuscany.sca.databinding.impl.DOMHelper;
 import org.apache.tuscany.sca.databinding.impl.Java2SimpleTypeTransformer;
-import org.apache.tuscany.sca.databinding.javabeans.Java2XMLMapperException;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -35,23 +34,19 @@ import org.w3c.dom.Node;
  * @version $Rev$ $Date$
  */
 public class SimpleJavaType2Node extends Java2SimpleTypeTransformer<Node> {
-
-    private Document factory;
-
-    public SimpleJavaType2Node() {
+    private DOMHelper helper;
+    
+    public SimpleJavaType2Node(ExtensionPointRegistry registry) {
         super();
-        try {
-            factory = DOMHelper.newDocument();
-        } catch (ParserConfigurationException e) {
-            throw new Java2XMLMapperException(e);
-        }
+        helper = DOMHelper.getInstance(registry);
     }
-
+    
     @Override
     protected Node createElement(QName element, String text, TransformationContext context) {
         if (element == null) {
             element = DOMDataBinding.ROOT_ELEMENT;
         }
+        Document factory = helper.newDocument();
         Node root = DOMHelper.createElement(factory, element);
         if (text != null) {
             root.appendChild(factory.createTextNode(text));

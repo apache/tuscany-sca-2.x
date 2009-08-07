@@ -26,6 +26,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.impl.TransformationContextImpl;
 import org.apache.tuscany.sca.databinding.jaxb.JAXB2Node;
@@ -69,7 +70,7 @@ public class JAXB2OMTestCase {
         System.out.println(sw.toString());
 
         start = System.currentTimeMillis();
-        Node node = new JAXB2Node().transform(po, tContext);
+        Node node = new JAXB2Node(new DefaultExtensionPointRegistry()).transform(po, tContext);
         XMLStreamReader reader = new Node2XMLStreamReader().transform(node, null);
         om = new StAXOMBuilder(reader).getDocumentElement();
         sw = new StringWriter();

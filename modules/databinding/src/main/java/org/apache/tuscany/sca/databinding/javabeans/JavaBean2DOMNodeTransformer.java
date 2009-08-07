@@ -19,9 +19,9 @@
 package org.apache.tuscany.sca.databinding.javabeans;
 
 import javax.xml.namespace.QName;
-import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.tuscany.sca.databinding.impl.DOMHelper;
+import org.apache.tuscany.sca.common.xml.dom.DOMHelper;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -34,15 +34,11 @@ import org.w3c.dom.Node;
 public class JavaBean2DOMNodeTransformer extends JavaBean2XMLTransformer<Node> {
 
     public static final String COLON = ":";
-    private Document factory;
+    private DOMHelper helper;
     
-    public JavaBean2DOMNodeTransformer() {
+    public JavaBean2DOMNodeTransformer(ExtensionPointRegistry registry) {
         super();
-        try {
-            factory = DOMHelper.newDocument(); 
-        } catch (ParserConfigurationException e) {
-            throw new Java2XMLMapperException(e);
-        }
+        helper = DOMHelper.getInstance(registry);
     }
     
     @Override
@@ -55,16 +51,17 @@ public class JavaBean2DOMNodeTransformer extends JavaBean2XMLTransformer<Node> {
         String qualifedName =
             (qName.getPrefix() == null || qName.getPrefix().length() <= 0) ? qName.getLocalPart()
                 : qName.getPrefix() + COLON + qName.getLocalPart();
-        return factory.createElementNS(qName.getNamespaceURI(), qualifedName);
+        return helper.newDocument().createElementNS(qName.getNamespaceURI(), qualifedName);
     }
 
     @Override
     public void appendText(Node parentElement, String textData) throws Java2XMLMapperException {
+        Document document = helper.newDocument();
         Node textNode;
         if (textData != null) {
-            textNode = factory.createTextNode(textData);
+            textNode = document.createTextNode(textData);
         } else {
-            Attr nil = factory.createAttributeNS("http://www.w3.org/2001/XMLSchema-instance", "xsi:nil");
+            Attr nil = document.createAttributeNS("http://www.w3.org/2001/XMLSchema-instance", "xsi:nil");
             nil.setValue("true");
             textNode = nil;
         }

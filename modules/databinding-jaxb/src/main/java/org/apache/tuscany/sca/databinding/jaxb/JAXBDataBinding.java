@@ -26,10 +26,11 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.common.xml.dom.DOMHelper;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.databinding.WrapperHandler;
 import org.apache.tuscany.sca.databinding.XMLTypeHelper;
 import org.apache.tuscany.sca.databinding.impl.BaseDataBinding;
-import org.apache.tuscany.sca.databinding.impl.DOMHelper;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
@@ -49,11 +50,13 @@ public class JAXBDataBinding extends BaseDataBinding {
     
     private JAXBWrapperHandler wrapperHandler;
     private JAXBTypeHelper xmlTypeHelper;
+    private DOMHelper domHelper;
     
-    public JAXBDataBinding() {
+    public JAXBDataBinding(ExtensionPointRegistry registry) {
         super(NAME, JAXBElement.class);
         this.wrapperHandler = new JAXBWrapperHandler();
         this.xmlTypeHelper = new JAXBTypeHelper();
+        this.domHelper = DOMHelper.getInstance(registry);
     }
 
     @Override
@@ -105,7 +108,7 @@ public class JAXBDataBinding extends BaseDataBinding {
             }
             JAXBContext context = JAXBContextHelper.createJAXBContext(dataType);
             arg = JAXBContextHelper.createJAXBElement(context, dataType, arg);
-            Document doc = DOMHelper.newDocument();
+            Document doc = domHelper.newDocument();
             context.createMarshaller().marshal(arg, doc);
             Object value = context.createUnmarshaller().unmarshal(doc, dataType.getPhysical());
             if (isElement && value instanceof JAXBElement) {

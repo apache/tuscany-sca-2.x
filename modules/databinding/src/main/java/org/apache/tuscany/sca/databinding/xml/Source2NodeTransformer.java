@@ -19,14 +19,13 @@
 package org.apache.tuscany.sca.databinding.xml;
 
 import javax.xml.transform.Source;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMResult;
 
+import org.apache.tuscany.sca.common.xml.dom.DOMHelper;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
 import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
-import org.apache.tuscany.sca.databinding.impl.DOMHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -37,15 +36,17 @@ import org.w3c.dom.Node;
  */
 public class Source2NodeTransformer extends BaseTransformer<Source, Node> implements
     PullTransformer<Source, Node> {
-    private static final TransformerFactory FACTORY = TransformerFactory.newInstance();
-
+    private DOMHelper helper;
+    
+    public Source2NodeTransformer(ExtensionPointRegistry registry) {
+        super();
+        helper = DOMHelper.getInstance(registry);
+    }
+    
     public Node transform(Source source, TransformationContext context) {
         try {
-            javax.xml.transform.Transformer transformer = FACTORY.newTransformer();
-            DOMResult result = new DOMResult();
-            transformer.transform(source, result);
-            Document doc = (Document) result.getNode();
-            return DOMHelper.adjustElementName(context, doc.getDocumentElement());
+            Document doc = helper.load(source);
+            return DOMDataBinding.adjustElementName(context, doc.getDocumentElement());
         } catch (Exception e) {
             throw new TransformationException(e);
         }

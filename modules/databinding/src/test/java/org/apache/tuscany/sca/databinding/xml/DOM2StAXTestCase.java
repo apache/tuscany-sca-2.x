@@ -78,7 +78,7 @@ public class DOM2StAXTestCase {
     
     @Test
     public void testTransformation() throws Exception {
-        String2Node t1 = new String2Node();
+        String2Node t1 = new String2Node(registry);
         Node node = t1.transform(IPO_XML, null);
         Node2XMLStreamReader t2 = new Node2XMLStreamReader();
         XMLStreamReader reader = t2.transform(node, null);
@@ -90,7 +90,7 @@ public class DOM2StAXTestCase {
 
     @Test
     public void testTransformation2() throws Exception {
-        String2Node t1 = new String2Node();
+        String2Node t1 = new String2Node(registry);
         Node node = t1.transform(CRAZY_XML, null);
         Node2XMLStreamReader t2 = new Node2XMLStreamReader();
         XMLStreamReader reader = t2.transform(node, null);
@@ -103,7 +103,7 @@ public class DOM2StAXTestCase {
 
     @Test
     public void testTransformation3() throws Exception {
-        String2Node t1 = new String2Node();
+        String2Node t1 = new String2Node(registry);
         Node node = t1.transform(IPO_XML, null);
         DOMXmlNodeImpl element = new DOMXmlNodeImpl(node);
         XmlTreeStreamReaderImpl reader = new XmlTreeStreamReaderImpl(element);

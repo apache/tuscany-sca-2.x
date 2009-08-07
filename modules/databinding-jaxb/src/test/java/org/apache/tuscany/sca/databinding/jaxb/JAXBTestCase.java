@@ -22,6 +22,8 @@ import java.io.StringReader;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.impl.TransformationContextImpl;
 import org.apache.tuscany.sca.interfacedef.DataType;
@@ -68,6 +70,8 @@ public class JAXBTestCase {
             + "    </item>"
             + "  </items>"
             + "</ipo:purchaseOrder>";
+    
+    private static ExtensionPointRegistry registry = new DefaultExtensionPointRegistry();
 
     @Test
     public void testTransform() throws Exception {
@@ -85,7 +89,7 @@ public class JAXBTestCase {
         TransformationContext tContext1 = new TransformationContextImpl();
         tContext1.setSourceDataType(sourceDataType);
 
-        JAXB2Node t1 = new JAXB2Node();
+        JAXB2Node t1 = new JAXB2Node(registry);
         Node node = t1.transform(object1, tContext1);
 
         Assert.assertNotNull(node);
@@ -114,7 +118,7 @@ public class JAXBTestCase {
         TransformationContext tContext1 = new TransformationContextImpl();
         tContext1.setSourceDataType(sourceDataType);
 
-        JAXB2Node t1 = new JAXB2Node();
+        JAXB2Node t1 = new JAXB2Node(registry);
         Node node = t1.transform(object1, tContext1);
 
         Assert.assertNotNull(node);
@@ -134,7 +138,7 @@ public class JAXBTestCase {
         tContext1.setSourceDataType(sourceDataType);
 
 
-        JAXB2Node t1 = new JAXB2Node();
+        JAXB2Node t1 = new JAXB2Node(registry);
         PurchaseOrderType po = new ObjectFactory().createPurchaseOrderType();
         Node node = t1.transform(po, tContext1);
 
