@@ -177,9 +177,13 @@ public class DefaultUtilityExtensionPoint implements UtilityExtensionPoint {
             try {
                 ServiceDeclaration utilityDeclaration =
                     ServiceDiscovery.getInstance().getServiceDeclaration(utilityType.getName());
+                Class<?> utilityClass = null;
                 if (utilityDeclaration != null) {
-                    Class<?> utilityClass = utilityDeclaration.loadClass();
-
+                    utilityClass = utilityDeclaration.loadClass();
+                } else if (isConcreteClass(utilityType)) {
+                    utilityClass = utilityType;
+                }
+                if (utilityClass != null) {
                     // Construct the utility
                     Constructor<?>[] constructors = utilityClass.getConstructors();
                     Constructor<?> constructor = getConstructor(constructors, ExtensionPointRegistry.class, Map.class);
@@ -218,7 +222,13 @@ public class DefaultUtilityExtensionPoint implements UtilityExtensionPoint {
             }
         }
         return utilityType.cast(utility);
-    }    
+    }
+
+    private boolean isConcreteClass(Class<?> utilityType) {
+        int modifiers = utilityType.getModifiers();
+        return !utilityType.isInterface() && Modifier.isPublic(modifiers) && !Modifier.isAbstract(modifiers);
+    }
+
     public void start() {
         // NOOP
     }
