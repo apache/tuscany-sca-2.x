@@ -32,7 +32,6 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
-import javax.xml.transform.dom.DOMResult;
 
 import org.apache.tuscany.sca.common.xml.dom.DOMHelper;
 import org.apache.tuscany.sca.common.xml.stax.impl.StAX2SAXAdapter;
@@ -136,6 +135,10 @@ public class StAXHelper {
     }
 
     public Node saveAsNode(XMLStreamReader reader) throws XMLStreamException {
+        // woodstox 3.2.4 fails due to http://jira.codehaus.org/browse/WSTX-144
+        // this issue has been fixed in woodstox 3.2.9
+        // We can use the commented code once we move to woodstox 3.2.9
+        /*
         XMLStreamSerializer serializer = new XMLStreamSerializer();
         Document document = domHelper.newDocument();
         DOMResult result = new DOMResult(document);
@@ -143,6 +146,15 @@ public class StAXHelper {
         serializer.serialize(reader, streamWriter);
         streamWriter.flush();
         return result.getNode();
+        */
+        Document root = domHelper.newDocument();
+        ContentHandler handler = domHelper.createContentHandler(root);
+        try {
+            saveAsSAX(reader, handler);
+        } catch (SAXException e) {
+            throw new XMLStreamException(e);
+        }
+        return root;
     }
 
     public XMLStreamWriter createXMLStreamWriter(Result result) throws XMLStreamException {
