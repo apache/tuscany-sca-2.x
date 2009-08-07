@@ -20,11 +20,14 @@
 package org.apache.tuscany.sca.common.xml.dom;
 
 import static org.junit.Assert.assertNotNull;
+import junit.framework.Assert;
 
 import org.apache.tuscany.sca.common.xml.sax.SAXHelper;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.custommonkey.xmlunit.XMLAssert;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.xml.sax.ContentHandler;
@@ -39,16 +42,33 @@ public class DOMHelperTestCase {
         "<a:foo xmlns:a='http://a' name='foo'><bar name='bar'>" + "<doo a:name='doo' xmlns:a='http://doo'/>"
             + "</bar></a:foo>";
 
+    private static ExtensionPointRegistry registry;
+
+    @BeforeClass
+    public static void init() {
+        registry = new DefaultExtensionPointRegistry();
+        registry.start();
+    }
+
+    @AfterClass
+    public static void destroy() {
+        if (registry != null) {
+            registry.stop();
+        }
+    }
+
     @Test
     public void testHelper() throws Exception {
-        ExtensionPointRegistry registry = new DefaultExtensionPointRegistry();
-        DOMHelper helper = new DOMHelper(registry);
+        DOMHelper helper = DOMHelper.getInstance(registry);
         Document document = helper.load(XML);
         String xml = helper.saveAsString(document);
         XMLAssert.assertXMLEqual(XML, xml);
 
         Document root = helper.newDocument();
         ContentHandler handler = helper.createContentHandler(root);
+
+        DOMHelper helper2 = DOMHelper.getInstance(registry);
+        Assert.assertSame(helper, helper2);
 
         SAXHelper saxHelper = new SAXHelper(registry);
         saxHelper.parse(XML, handler);

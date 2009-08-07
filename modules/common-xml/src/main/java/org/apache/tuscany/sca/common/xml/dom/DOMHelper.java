@@ -37,6 +37,7 @@ import javax.xml.transform.stream.StreamResult;
 import org.apache.tuscany.sca.common.xml.dom.impl.SAX2DOMAdapter;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -56,6 +57,11 @@ public class DOMHelper {
     private DocumentBuilderFactory documentBuilderFactory;
     private TransformerFactory transformerFactory;
 
+    public static DOMHelper getInstance(ExtensionPointRegistry registry) {
+        UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
+        return utilities.getUtility(DOMHelper.class);
+    }
+    
     public DOMHelper(ExtensionPointRegistry registry) {
         FactoryExtensionPoint factories = registry.getExtensionPoint(FactoryExtensionPoint.class);
         documentBuilderFactory = factories.getFactory(DocumentBuilderFactory.class);

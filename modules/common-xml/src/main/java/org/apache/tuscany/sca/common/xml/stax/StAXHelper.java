@@ -62,6 +62,12 @@ public class StAXHelper {
         UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
         domHelper = utilities.getUtility(DOMHelper.class);
     }
+    
+    public static StAXHelper getInstance(ExtensionPointRegistry registry) {
+        UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
+        return utilities.getUtility(StAXHelper.class);
+    }
+
 
     /**
      * @param inputFactory

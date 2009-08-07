@@ -28,6 +28,7 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -46,11 +47,16 @@ public class SAXHelper {
         super();
         this.saxParserFactory = saxParserFactory;
     }
-
+    
     public SAXHelper(ExtensionPointRegistry registry) {
         FactoryExtensionPoint factories = registry.getExtensionPoint(FactoryExtensionPoint.class);
         saxParserFactory = factories.getFactory(SAXParserFactory.class);
         saxParserFactory.setNamespaceAware(true);
+    }
+    
+    public SAXHelper getInstance(ExtensionPointRegistry registry) {
+        UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
+        return utilities.getUtility(SAXHelper.class);
     }
 
     public SAXParser newSAXParser() throws SAXException {
