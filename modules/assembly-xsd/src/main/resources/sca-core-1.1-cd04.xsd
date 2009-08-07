@@ -200,6 +200,7 @@
                        default="false"/>
             <attribute name="source" type="string" use="optional"/>
             <attribute name="file" type="anyURI" use="optional"/>
+            <attribute name="value" type="string" use="optional"/>
             <anyAttribute namespace="##other" processContents="lax"/>
          </extension>
          <!-- an extension point ; attribute-based only -->
