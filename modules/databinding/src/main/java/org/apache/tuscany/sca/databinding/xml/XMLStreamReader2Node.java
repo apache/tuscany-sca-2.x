@@ -20,6 +20,7 @@ package org.apache.tuscany.sca.databinding.xml;
 
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.databinding.DataPipe;
 import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
@@ -38,11 +39,17 @@ import org.xml.sax.ContentHandler;
 public class XMLStreamReader2Node extends BaseTransformer<XMLStreamReader, Node> implements
     PullTransformer<XMLStreamReader, Node> {
 
-    private XMLStreamReader2SAX stax2sax = new XMLStreamReader2SAX();
+    private XMLStreamReader2SAX stax2sax;
+    private SAX2DOMPipe sax2domPipe;
+    
+    public XMLStreamReader2Node(ExtensionPointRegistry registry) {
+        stax2sax = new XMLStreamReader2SAX(registry);
+        sax2domPipe = new SAX2DOMPipe(registry);
+    }
 
     public Node transform(XMLStreamReader source, TransformationContext context) {
         try {
-            DataPipe<ContentHandler, Node> pipe = new SAX2DOMPipe().newInstance();
+            DataPipe<ContentHandler, Node> pipe = sax2domPipe.newInstance();
             stax2sax.transform(source, pipe.getSink(), context);
             Node node = pipe.getResult();
             source.close();

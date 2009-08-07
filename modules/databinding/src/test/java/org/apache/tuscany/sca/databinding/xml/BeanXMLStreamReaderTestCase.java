@@ -27,6 +27,7 @@ import java.util.Map;
 
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.custommonkey.xmlunit.Diff;
 import org.junit.Test;
 
@@ -68,7 +69,7 @@ public class BeanXMLStreamReaderTestCase {
         bean.map.put("key1", "value1");
         bean.map.put("key2", "value2");
         XMLStreamReader reader = new BeanXMLStreamReaderImpl(null, bean);
-        XMLStreamReader2String t3 = new XMLStreamReader2String();
+        XMLStreamReader2String t3 = new XMLStreamReader2String(new DefaultExtensionPointRegistry());
         String xml = t3.transform(reader, null);
         Diff diff = new Diff(XML_RESULT, xml);
         Diff diff1 = new Diff(XML_RESULT1, xml);

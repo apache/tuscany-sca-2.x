@@ -37,6 +37,9 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.common.xml.stax.reader.SimpleXmlNodeImpl;
+import org.apache.tuscany.sca.common.xml.stax.reader.XmlNode;
+import org.apache.tuscany.sca.common.xml.stax.reader.XmlTreeStreamReaderImpl;
 import org.apache.tuscany.sca.databinding.SimpleTypeMapper;
 import org.apache.tuscany.sca.databinding.impl.SimpleTypeMapperImpl;
 import org.apache.tuscany.sca.interfacedef.util.TypeInfo;

@@ -22,7 +22,12 @@ import static org.junit.Assert.assertTrue;
 
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.sca.common.xml.stax.reader.DOMXmlNodeImpl;
+import org.apache.tuscany.sca.common.xml.stax.reader.XmlTreeStreamReaderImpl;
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.custommonkey.xmlunit.XMLAssert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.w3c.dom.Node;
 
@@ -64,13 +69,20 @@ public class DOM2StAXTestCase {
     private static final String CRAZY_XML =
         "<p:e1 xmlns=\"http://ns0\" xmlns:p=\"http://p1\">" + "<p:e2 xmlns:p=\"http://p2\"/><e3/><e4 xmlns=\"\">E4</e4></p:e1>";
 
+    private static ExtensionPointRegistry registry;
+    
+    @BeforeClass
+    public static void init() {
+        registry = new DefaultExtensionPointRegistry();
+    }
+    
     @Test
     public void testTransformation() throws Exception {
         String2Node t1 = new String2Node();
         Node node = t1.transform(IPO_XML, null);
         Node2XMLStreamReader t2 = new Node2XMLStreamReader();
         XMLStreamReader reader = t2.transform(node, null);
-        XMLStreamReader2String t3 = new XMLStreamReader2String();
+        XMLStreamReader2String t3 = new XMLStreamReader2String(registry);
         String xml = t3.transform(reader, null);
         XMLAssert.assertXMLEqual(IPO_XML, xml);
         // assertTrue(xml != null && xml.indexOf("<shipDate>1999-12-05</shipDate>") != -1);
@@ -82,7 +94,7 @@ public class DOM2StAXTestCase {
         Node node = t1.transform(CRAZY_XML, null);
         Node2XMLStreamReader t2 = new Node2XMLStreamReader();
         XMLStreamReader reader = t2.transform(node, null);
-        XMLStreamReader2String t3 = new XMLStreamReader2String();
+        XMLStreamReader2String t3 = new XMLStreamReader2String(registry);
         String xml = t3.transform(reader, null);
         // System.out.println(xml);
         XMLAssert.assertXMLEqual(CRAZY_XML, xml);
@@ -95,7 +107,7 @@ public class DOM2StAXTestCase {
         Node node = t1.transform(IPO_XML, null);
         DOMXmlNodeImpl element = new DOMXmlNodeImpl(node);
         XmlTreeStreamReaderImpl reader = new XmlTreeStreamReaderImpl(element);
-        XMLStreamReader2String t3 = new XMLStreamReader2String();
+        XMLStreamReader2String t3 = new XMLStreamReader2String(registry);
         String xml = t3.transform(reader, null);
         XMLAssert.assertXMLEqual(IPO_XML, xml);
         // assertTrue(xml != null && xml.indexOf("<shipDate>1999-12-05</shipDate>") != -1);

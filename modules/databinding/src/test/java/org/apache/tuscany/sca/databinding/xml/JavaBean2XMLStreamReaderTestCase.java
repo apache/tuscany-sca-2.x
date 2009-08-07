@@ -20,6 +20,7 @@ package org.apache.tuscany.sca.databinding.xml;
 
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.databinding.javabeans.JavaBean2XMLStreamReaderTransformer;
 import org.custommonkey.xmlunit.XMLAssert;
 import org.junit.Test;
@@ -45,7 +46,7 @@ public class JavaBean2XMLStreamReaderTestCase {
         bean.bean = new AnotherBean();
         bean.bean.setName("Name");
         XMLStreamReader reader = t2.transform(bean, null);
-        XMLStreamReader2String t3 = new XMLStreamReader2String();
+        XMLStreamReader2String t3 = new XMLStreamReader2String(new DefaultExtensionPointRegistry());
         String xml = t3.transform(reader, null);
         XMLAssert.assertXMLEqual(XML_RESULT, xml);
 

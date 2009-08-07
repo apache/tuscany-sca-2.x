@@ -20,6 +20,8 @@ package org.apache.tuscany.sca.databinding.xml;
 
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.sca.common.xml.stax.StAXHelper;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.databinding.PushTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
@@ -33,7 +35,13 @@ import org.xml.sax.ContentHandler;
  */
 public class XMLStreamReader2SAX extends BaseTransformer<XMLStreamReader, ContentHandler> implements
     PushTransformer<XMLStreamReader, ContentHandler> {
-
+    
+    private StAXHelper helper;
+    
+    public XMLStreamReader2SAX(ExtensionPointRegistry registry) {
+        helper = StAXHelper.getInstance(registry);
+    }
+    
     @Override
     protected Class<ContentHandler> getTargetType() {
         return ContentHandler.class;
@@ -58,9 +66,8 @@ public class XMLStreamReader2SAX extends BaseTransformer<XMLStreamReader, Conten
      *      org.apache.tuscany.sca.databinding.TransformationContext)
      */
     public void transform(XMLStreamReader source, ContentHandler sink, TransformationContext context) {
-        StAX2SAXAdapter adapter = new StAX2SAXAdapter(false);
         try {
-            adapter.parse(source, sink);
+            helper.saveAsSAX(source, sink);
             source.close();
         } catch (Exception e) {
             throw new TransformationException(e);

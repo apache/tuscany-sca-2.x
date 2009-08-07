@@ -21,6 +21,8 @@ package org.apache.tuscany.sca.databinding.impl;
 import java.io.StringWriter;
 import java.io.Writer;
 
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.DefaultDataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.DefaultTransformerExtensionPoint;
@@ -79,11 +81,12 @@ public class MediatorImplTestCase {
 
     @Before
     public void setUp() throws Exception {
-        DataBindingExtensionPoint dataBindingRegistry = new DefaultDataBindingExtensionPoint();
-        TransformerExtensionPoint registry = new DefaultTransformerExtensionPoint(null);
+        ExtensionPointRegistry extensionPointRegistry = new DefaultExtensionPointRegistry();
+        DataBindingExtensionPoint dataBindingRegistry = new DefaultDataBindingExtensionPoint(extensionPointRegistry);
+        TransformerExtensionPoint registry = new DefaultTransformerExtensionPoint(extensionPointRegistry);
 
         registry.addTransformer(new String2SAX(), true);
-        registry.addTransformer(new SAX2DOMPipe(), true);
+        registry.addTransformer(new SAX2DOMPipe(extensionPointRegistry), true);
         registry.addTransformer(new Node2String(), true);
         registry.addTransformer(new Node2Writer(), true);
 

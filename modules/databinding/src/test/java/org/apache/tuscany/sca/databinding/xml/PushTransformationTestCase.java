@@ -20,6 +20,8 @@ package org.apache.tuscany.sca.databinding.xml;
 
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.databinding.impl.PipedTransformer;
 import org.junit.Assert;
 import org.junit.Test;
@@ -63,11 +65,12 @@ public class PushTransformationTestCase {
 
     @Test
     public void testTransformation() {
-        String2XMLStreamReader t1 = new String2XMLStreamReader();
+        ExtensionPointRegistry registry = new DefaultExtensionPointRegistry();
+        String2XMLStreamReader t1 = new String2XMLStreamReader(registry);
         XMLStreamReader reader = t1.transform(IPO_XML, null);
-        XMLStreamReader2SAX t2 = new XMLStreamReader2SAX();
+        XMLStreamReader2SAX t2 = new XMLStreamReader2SAX(registry);
         PipedTransformer<XMLStreamReader, ContentHandler, Node> t3 =
-            new PipedTransformer<XMLStreamReader, ContentHandler, Node>(t2, new SAX2DOMPipe());
+            new PipedTransformer<XMLStreamReader, ContentHandler, Node>(t2, new SAX2DOMPipe(registry));
         Node node = t3.transform(reader, null);
         Assert.assertNotNull(node);
         Node2String t4 = new Node2String();

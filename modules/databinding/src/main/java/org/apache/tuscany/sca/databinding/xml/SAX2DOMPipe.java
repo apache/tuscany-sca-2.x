@@ -18,8 +18,8 @@
  */
 package org.apache.tuscany.sca.databinding.xml;
 
-import javax.xml.parsers.ParserConfigurationException;
-
+import org.apache.tuscany.sca.common.xml.dom.DOMHelper;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.databinding.DataPipe;
 import org.apache.tuscany.sca.databinding.DataPipeTransformer;
 import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
@@ -27,12 +27,13 @@ import org.w3c.dom.Node;
 import org.xml.sax.ContentHandler;
 
 public class SAX2DOMPipe extends BaseTransformer<ContentHandler, Node> implements DataPipeTransformer<ContentHandler, Node> {
-
+    private DOMHelper domHelper;
     /**
      * 
      */
-    public SAX2DOMPipe() {
+    public SAX2DOMPipe(ExtensionPointRegistry registry) {
         super();
+        domHelper = DOMHelper.getInstance(registry);
     }
 
     /**
@@ -57,20 +58,16 @@ public class SAX2DOMPipe extends BaseTransformer<ContentHandler, Node> implement
         return 30;
     }
 
-    private static class Pipe implements DataPipe<ContentHandler, Node> {
-        private SAX2DOM pipe;
+    private class Pipe implements DataPipe<ContentHandler, Node> {
+        private DOMHelper.NodeContentHandler pipe;
 
         public Pipe() {
             super();
-            try {
-                this.pipe = new SAX2DOM();
-            } catch (ParserConfigurationException e) {
-                throw new IllegalArgumentException(e);
-            }
+            this.pipe = domHelper.createContentHandler(null);
         }
 
         public Node getResult() {
-            return pipe.getDOM();
+            return pipe.getNode();
         }
 
         public ContentHandler getSink() {

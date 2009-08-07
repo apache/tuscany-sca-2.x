@@ -21,6 +21,8 @@ package org.apache.tuscany.sca.databinding.xml;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.sca.common.xml.stax.StAXHelper;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
@@ -28,10 +30,15 @@ import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
 
 public class XMLStreamReader2String extends BaseTransformer<XMLStreamReader, String> implements
     PullTransformer<XMLStreamReader, String> {
-
+    private StAXHelper helper;
+    
+    public XMLStreamReader2String(ExtensionPointRegistry registry) {
+        helper = StAXHelper.getInstance(registry);
+    }
+    
     public String transform(XMLStreamReader source, TransformationContext context) {
         try {
-            String str = StAXHelper.save(source);
+            String str = helper.saveAsString(source);
             source.close();
             return str;
         } catch (XMLStreamException e) {

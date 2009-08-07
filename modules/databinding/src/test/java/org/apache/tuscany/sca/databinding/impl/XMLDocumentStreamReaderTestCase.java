@@ -22,11 +22,13 @@ package org.apache.tuscany.sca.databinding.impl;
 import java.io.StringReader;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.sca.databinding.xml.XMLDocumentStreamReader;
+import org.apache.tuscany.sca.common.xml.stax.StAXHelper;
+import org.apache.tuscany.sca.common.xml.stax.reader.XMLDocumentStreamReader;
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.databinding.xml.XMLStreamReader2String;
 import org.junit.Assert;
 
@@ -38,13 +40,15 @@ public class XMLDocumentStreamReaderTestCase {
 
     @org.junit.Test
     public void testReader() throws Exception {
-        XMLInputFactory factory = XMLInputFactory.newInstance();
-        XMLStreamReader r1 = factory.createXMLStreamReader(new StringReader(xml));
+        ExtensionPointRegistry extensionPointRegistry = new DefaultExtensionPointRegistry();
+
+        StAXHelper helper = StAXHelper.getInstance(extensionPointRegistry);
+        XMLStreamReader r1 = helper.createXMLStreamReader(new StringReader(xml));
         XMLDocumentStreamReader r2 = new XMLDocumentStreamReader(r1);
-        XMLStreamReader2String t1 = new XMLStreamReader2String();
+        XMLStreamReader2String t1 = new XMLStreamReader2String(extensionPointRegistry);
         String result = t1.transform(r2, null);
         System.out.println(result);
-        XMLStreamReader r3 = factory.createXMLStreamReader(new StringReader(xml));
+        XMLStreamReader r3 = helper.createXMLStreamReader(new StringReader(xml));
         r3.nextTag();
         r3.nextTag();
         Assert.assertEquals(XMLStreamConstants.START_ELEMENT, r3.getEventType());
