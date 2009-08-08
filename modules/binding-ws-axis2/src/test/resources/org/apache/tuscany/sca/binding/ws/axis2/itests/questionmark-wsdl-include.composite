@@ -23,7 +23,7 @@
 
     <component name="AccountService">
 		<implementation.java class="org.apache.tuscany.sca.binding.ws.axis2.itests.AccountService" />
-		<service name="Account" promote="AccountService">
+		<service name="Account">
 	        <binding.ws wsdlElement="http://accounts#wsdl.port(AccountService/AccountSoapPort)" />
 	    </service>
     </component>
