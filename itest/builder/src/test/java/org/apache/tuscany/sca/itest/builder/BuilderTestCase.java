@@ -190,8 +190,8 @@ public class BuilderTestCase {
         "  Component URI - ComponentB/ComponentD\n" +
         "  Endpoint:  URI = ComponentB/ComponentD#service-binding(Service3/Service3) org.apache.tuscany.sca.assembly.impl.SCABindingImpl\n" +
         "  Endpoint:  URI = ComponentB/ComponentD#service-binding(Service3a/Service3a) org.apache.tuscany.sca.assembly.impl.SCABindingImpl\n" +
-        "Endpoint:  URI = ComponentB#service-binding(Service3/Service2) org.apache.tuscany.sca.binding.ws.impl.WebServiceBindingImpl\n" +
-        "Endpoint:  URI = ComponentB#service-binding(Service3a/Service2a) org.apache.tuscany.sca.assembly.impl.SCABindingImpl\n";
+        "Endpoint:  URI = ComponentB#service-binding(Service2/Service2) org.apache.tuscany.sca.binding.ws.impl.WebServiceBindingImpl\n" +
+        "Endpoint:  URI = ComponentB#service-binding(Service2a/Service2a) org.apache.tuscany.sca.assembly.impl.SCABindingImpl\n";
 
         Assert.assertEquals(expectedStructure, structure);
         

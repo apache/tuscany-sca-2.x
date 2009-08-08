@@ -66,7 +66,9 @@ public class TestUtils {
             if (problem.getCause() != null) {
                 problem.getCause().printStackTrace();
             }
-            problems = true;
+            if (problem.getSeverity() == Problem.Severity.ERROR){
+                problems = true;
+            }
         }
         assert !problems;
     }
