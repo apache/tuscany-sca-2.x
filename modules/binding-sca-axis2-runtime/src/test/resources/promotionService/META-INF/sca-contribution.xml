@@ -18,7 +18,6 @@
     * under the License.    
 -->
 <contribution xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
-	      targetNamespace="http://sample"
               xmlns:sample="http://sample">
    <deployable composite="sample:HelloWorld"/>
 </contribution>
