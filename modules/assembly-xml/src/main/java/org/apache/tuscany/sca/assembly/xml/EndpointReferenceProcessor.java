@@ -98,7 +98,7 @@ public class EndpointReferenceProcessor extends BaseAssemblyProcessor implements
                 // the endpoint registry will be consulted
                 endpoint.setUnresolved(true);
                 endpoint.setURI(reference.getTargets().get(0).getName());
-                endpointReference.setStatus(EndpointReference.WIRED_TARGET_FOUND_READY_FOR_MATCHING);
+                endpointReference.setStatus(EndpointReference.WIRED_TARGET_NOT_FOUND);
                 endpointReference.setUnresolved(true);
             } else {
                 endpoint.setUnresolved(false);
