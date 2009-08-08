@@ -54,7 +54,7 @@ import org.oasisopen.sca.SCARuntimeException;
  *
  * @version $Rev$ $Date$
  */
-public class EndpointReferenceBuilderImpl implements CompositeBuilder, EndpointReferenceBuilder {
+public class EndpointReferenceBuilderImpl implements EndpointReferenceBuilder {
 
     protected ExtensionPointRegistry extensionPoints;
     protected AssemblyFactory assemblyFactory;
@@ -73,64 +73,19 @@ public class EndpointReferenceBuilderImpl implements CompositeBuilder, EndpointR
 
         this.endpointRegistry = utils.getUtility(EndpointRegistry.class);
     }
-
-    public String getID() {
-        return "org.apache.tuscany.sca.assembly.builder.EndpointReferenceBuilder";
-    }
-
+    
     /**
-     * Report a warning.
+     * Build a composite
      *
+     * @param endpoint
      * @param monitor
-     * @param problems
-     * @param message
-     * @param model
      */
-    protected void warning(Monitor monitor, String message, Object model, String... messageParameters) {
-        if (monitor != null) {
-            Problem problem = monitor.createProblem(this.getClass().getName(), "assembly-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
-            monitor.problem(problem);
-        }
-    }
-
-    /**
-     * Report a error.
-     *
-     * @param monitor
-     * @param problems
-     * @param message
-     * @param model
-     */
-    protected void error(Monitor monitor, String message, Object model, String... messageParameters) {
-        if (monitor != null) {
-            Problem problem = monitor.createProblem(this.getClass().getName(), "assembly-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
-            monitor.problem(problem);
-        }
-    }
-
-    /**
-     * Report a exception.
-     *
-     * @param problems
-     * @param message
-     * @param model
-     */
-    protected void error(Monitor monitor, String message, Object model, Exception ex) {
-        if (monitor != null) {
-            Problem problem = null;
-            problem = monitor.createProblem(this.getClass().getName(), "assembly-validation-messages", Severity.ERROR, model, message, ex);
-            monitor.problem(problem);
-        }
-    }
-
-    /**
-     * Build all the endpoint references
-     *
-     * @param composite
-     */
-    public void build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException
-    {
-        // Not used now
+    public void buildtimeBuild(Composite composite) { 
+        // TODO - ready for reorganization of the builders
+        //        build all the endpoint references in a composite
+        //        that it is possible to build in order to get any
+        //        errors out as early as possible. Any that can't
+        //        be built now must wait until runtime
     }
 
     /**
@@ -139,193 +94,78 @@ public class EndpointReferenceBuilderImpl implements CompositeBuilder, EndpointR
      * @param endpoint
      * @param monitor
      */
-    public void build(EndpointReference endpointReference, Monitor monitor) {
-        Endpoint endpoint = endpointReference.getTargetEndpoint();
+    public void runtimeBuild(EndpointReference endpointReference) {
 
-        if (endpoint == null){
-            // an error?
-        } else {
-            if (endpoint.isUnresolved() == false){
-                // Wired - service resolved - binding matched
-                // The service is in the same composite or the
-                // binding is remote and has a full URI
-
-                // still need to check that the callback endpoint is set correctly
-                if ((endpointReference.getCallbackEndpoint() != null) &&
-                    (endpointReference.getCallbackEndpoint().isUnresolved() == false)){
-                    return;
-                }
-
-                matchCallbackBinding(endpointReference,
-                                     monitor);
-
+        if ( endpointReference.getStatus() == EndpointReference.WIRED_TARGET_FOUND_AND_MATCHED ||
+             endpointReference.getStatus() == EndpointReference.RESOLVED_BINDING ) {
+            // The endpoint reference is already resolved to either
+            // a service endpoint local to this composite or it has
+            // a remote binding
+            
+            // still need to check that the callback endpoint is set correctly
+            if ((endpointReference.getCallbackEndpoint() != null) &&
+                (endpointReference.getCallbackEndpoint().isUnresolved() == false)){
                 return;
             }
 
-            if (endpointReference.isUnresolved() == false ){
-                // Wired - service resolved - binding not matched
-                // The service is in the same composite
-                // TODO - How do we get to here?
-                matchForwardBinding(endpointReference,
-                                    true,
-                                    monitor);
+            selectCallbackBinding(endpointReference);
+            
+        } else if (endpointReference.getStatus() == EndpointReference.WIRED_TARGET_FOUND_READY_FOR_MATCHING ){
+            // The endpoint reference is already resolved to either
+            // a service endpoint but no binding was specified in the 
+            // target URL            
 
-                matchCallbackBinding(endpointReference,
-                                     monitor);
-            } else {
-                // Wired - service specified but unresolved
-                // The service is in a remote composite somewhere else in the domain
+            // TODO - EPR - endpoint selection
+            //              just use the first one
+            endpointReference.setTargetEndpoint(endpointReference.getTargetEndpoint().getService().getEndpoints().get(0));
+            
+            selectForwardBinding(endpointReference);
 
-                // find the service in the endpoint registry
-                List<Endpoint> endpoints = endpointRegistry.findEndpoint(endpointReference);
+            selectCallbackBinding(endpointReference);
+            
+        } else if (endpointReference.getStatus() == EndpointReference.WIRED_TARGET_NOT_FOUND ||
+                   endpointReference.getStatus() == EndpointReference.NOT_CONFIGURED){
+            // The service is in a remote composite somewhere else in the domain
 
-                // TODO - do we expect to find more than one endpoint in
-                //        anything other than the autowire case?
-                if (endpoints.size() == 0) {
-                    throw new SCARuntimeException("No endpoints found for EndpointReference " + endpointReference.toString());
-                }
+            // find the service in the endpoint registry
+            List<Endpoint> endpoints = endpointRegistry.findEndpoint(endpointReference);
 
-                if (endpoints.size() > 1) {
-                    throw new SCARuntimeException("More than one endpoint found for EndpointReference" + endpointReference.toString());
-                }
-
-                endpointReference.setTargetEndpoint(endpoints.get(0));
-
-                matchForwardBinding(endpointReference, false, monitor);
-
-                matchCallbackBinding(endpointReference, monitor);
+            if (endpoints.size() == 0) {
+                throw new SCARuntimeException("No endpoints found for EndpointReference " + endpointReference.toString());
             }
+            
+            // TODO - EPR - endpoint selection
+            //              just use the first one
+            endpointReference.setTargetEndpoint(endpoints.get(0));
+
+            selectForwardBinding(endpointReference);
+
+            selectCallbackBinding(endpointReference);
+            
+        } else {
+            // endpointReference.getStatus() == EndpointReference.NOT_CONFIGURED
+            // An error as we shouldn't get here
+            throw new SCARuntimeException("EndpointReference can't be resolved " + endpointReference.toString());
         }
 
-        if (endpointReference.isUnresolved()){
-            throw new SCARuntimeException("Can't resolve " + endpointReference.toString());
+        if (endpointReference.getStatus() != EndpointReference.WIRED_TARGET_FOUND_AND_MATCHED &&
+            endpointReference.getStatus() != EndpointReference.RESOLVED_BINDING){
+            throw new SCARuntimeException("EndpointReference can't be resolved " + endpointReference.toString());
         }
     }
 
-    // TODO - EPR - In OASIS case there are no bindings to match with on the
-    //        reference side.
-    private void matchForwardBinding(EndpointReference endpointReference,
-                                     boolean local,
-                                     Monitor monitor) {
+    private void selectForwardBinding(EndpointReference endpointReference) {
 
         Endpoint endpoint = endpointReference.getTargetEndpoint();
-
-        List<Binding> matchedReferenceBinding = new ArrayList<Binding>();
-        List<Endpoint> matchedServiceEndpoint = new ArrayList<Endpoint>();
-
-        // Find the corresponding bindings from the service side
-        if ((endpointReference.getReference().getBindings().size() == 0) ||
-             ((endpointReference.getReference().getBindings().size() == 1) &&
-              (endpointReference.getReference().getBindings().get(0) instanceof SCABinding))){
-            // OAISIS - choose a binding from the service side
-            //          (could have been specified as part of the target string)
-            //           last part of this test that is looking for binding SCA is
-            //          bogus. Just a temporary fix until we get rid of the OSOA
-            //          style reference side bindings.
-
-            // retrieve the user specified binding name.
-            // TODO - EPR - we don't support this yet
-
-            // otherwise pick the first binding from the service
-            if (local) {
-                endpointReference.setTargetEndpoint(endpoint.getService().getEndpoints().get(0));
-            } else {
-                endpointReference.setTargetEndpoint(endpoint);
-            }
-            endpointReference.setBinding(endpointReference.getTargetEndpoint().getBinding());
-            endpointReference.setUnresolved(false);
-            return;
-
-        } else {
-            // OAISIS - this is an error
-            //          (for now let it match bindings while we rewrite OSOA tests)
-            for (Binding referenceBinding : endpointReference.getReference().getBindings()) {
-                if (local) {
-                    for (Endpoint serviceEndpoint : endpoint.getService().getEndpoints()) {
-
-                        if (referenceBinding.getType().equals(serviceEndpoint.getBinding().getType()) && hasCompatiblePolicySets(referenceBinding,
-                                                                                                                              serviceEndpoint
-                                                                                                                                  .getBinding())) {
-
-                            matchedReferenceBinding.add(referenceBinding);
-                            matchedServiceEndpoint.add(serviceEndpoint);
-                        }
-                    }
-                } else {
-                    Endpoint serviceEndpoint = endpoint;
-                    if (referenceBinding.getType().equals(serviceEndpoint.getBinding().getType()) && hasCompatiblePolicySets(referenceBinding,
-                                                                                                                          serviceEndpoint
-                                                                                                                              .getBinding())) {
-
-                        matchedReferenceBinding.add(referenceBinding);
-                        matchedServiceEndpoint.add(serviceEndpoint);
-
-                    }
-                }
-            }
-        }
-
-        if (matchedReferenceBinding.isEmpty()) {
-            // No matching binding
-            endpointReference.setBinding(null);
-            endpointReference.setUnresolved(true);
-            warning(monitor,
-                    "NoMatchingBinding",
-                    endpointReference.getReference(),
-                    endpointReference.getReference().getName(),
-                    endpoint.getService().getName());
-            return;
-        } else {
-            // default to using the first matched binding
-            int selectedBinding = 0;
-
-            for (int i = 0; i < matchedReferenceBinding.size(); i++) {
-                // If binding.sca is present, use it
-                if (SCABinding.class.isInstance(matchedReferenceBinding.get(i))) {
-                    selectedBinding = i;
-                }
-            }
-
-            Binding referenceBinding = matchedReferenceBinding.get(selectedBinding);
-            Endpoint serviceEndpoint = matchedServiceEndpoint.get(selectedBinding);
-
-            // populate the endpoint reference
-            try {
-
-                Binding clonedBinding = (Binding) referenceBinding.clone();
-
-                // Set the binding URI to the URI of the target service
-                // that has been matched
-                if (referenceBinding.getURI() == null) {
-                    clonedBinding.setURI(serviceEndpoint.getBinding().getURI());
-                }
-
-                // TODO - EPR can we remove this?
-                if (clonedBinding instanceof OptimizableBinding) {
-                    OptimizableBinding optimizableBinding = (OptimizableBinding)clonedBinding;
-                    optimizableBinding.setTargetComponent(serviceEndpoint.getComponent());
-                    optimizableBinding.setTargetComponentService(serviceEndpoint.getService());
-                    optimizableBinding.setTargetBinding(serviceEndpoint.getBinding());
-                }
-
-                endpointReference.setBinding(clonedBinding);
-
-                Endpoint clonedEndpoint = (Endpoint)serviceEndpoint.clone();
-
-                endpointReference.setTargetEndpoint(clonedEndpoint);
-                endpointReference.setUnresolved(false);
-
-            } catch (Exception ex) {
-                // do nothing
-            }
-        }
+        
+        endpointReference.setBinding(endpointReference.getTargetEndpoint().getBinding());
+        endpointReference.setStatus(EndpointReference.WIRED_TARGET_FOUND_AND_MATCHED);
+        endpointReference.setUnresolved(false);
+        
+        return;
     }
 
-    // TODO - EPR
-    // Find the callback endpoint for the endpoint reference by matching
-    // callback bindings between reference and service
-    private void matchCallbackBinding(EndpointReference endpointReference,
-                                     Monitor monitor) {
+    private void selectCallbackBinding(EndpointReference endpointReference) {
 
         // if no callback on the interface or we are creating a self reference do nothing
         if (endpointReference.getReference().getInterfaceContract() == null ||
@@ -337,94 +177,10 @@ public class EndpointReferenceBuilderImpl implements CompositeBuilder, EndpointR
         Endpoint endpoint = endpointReference.getTargetEndpoint();
 
         List<Endpoint> callbackEndpoints = endpointReference.getReference().getCallbackService().getEndpoints();
-        List<EndpointReference> callbackEndpointReferences = endpoint.getCallbackEndpointReferences();
-
-        List<Endpoint> matchedEndpoint = new ArrayList<Endpoint>();
-
-        // Find the corresponding bindings from callback service side
-        if ((callbackEndpointReferences.size() ==0) ||
-            (callbackEndpointReferences.get(0).getReference().getBindings().size() == 0) ||
-            ((callbackEndpointReferences.get(0).getReference().getBindings().size() == 1) &&
-             (callbackEndpointReferences.get(0).getReference().getBindings().get(0) instanceof SCABinding))){
-            // OAISIS - choose a binding from the service side
-            //          (could have been specified as part of the target string)
-            //           last part of this test that is looking for binding SCA is
-            //          bogus. Just a temporary fix until we get rid of the OSOA
-            //          style reference side bindings.
-
-            // retrieve the user specified binding name.
-            // TODO - EPR - we don't support this yet
-
-            // otherwise pick the first binding from the service
-            //endpointReference.setTargetEndpoint(endpoint.getService().getEndpoints().get(0));
-            //endpointReference.setBinding(endpointReference.getTargetEndpoint().getBinding());
-            endpointReference.setCallbackEndpoint(callbackEndpoints.get(0));
-            endpointReference.setUnresolved(false);
-            return;
-
-        } else {
-            // OAISIS - this is an error
-            //          (for now let it match bindings while we rewrite OSOA tests)
-
-            if ((callbackEndpoints != null) &&  (callbackEndpointReferences != null)){
-                // Find the corresponding bindings from the service side
-                for (EndpointReference epr : callbackEndpointReferences) {
-                    for (Endpoint ep : callbackEndpoints) {
-
-                        if (epr.getBinding().getType().equals(ep.getBinding().getType()) &&
-                            hasCompatiblePolicySets(epr.getBinding(), ep.getBinding())) {
-
-                            matchedEndpoint.add(ep);
-                        }
-                    }
-                }
-            }
-        }
-
-        if (matchedEndpoint.isEmpty()) {
-            // No matching binding
-            endpointReference.setCallbackEndpoint(null);
-            endpointReference.setUnresolved(true);
-            warning(monitor,
-                    "NoMatchingCallbackBinding",
-                    endpointReference.getReference(),
-                    endpointReference.getReference().getName(),
-                    endpoint.getService().getName());
-            return;
-        } else {
-            // default to using the first matched binding
-            int selectedEndpoint = 0;
-
-            for (int i = 0; i < matchedEndpoint.size(); i++){
-                // If binding.sca is present, use it
-                if (SCABinding.class.isInstance(matchedEndpoint.get(i).getBinding())) {
-                    selectedEndpoint = i;
-                }
-            }
-
-            endpointReference.setCallbackEndpoint(matchedEndpoint.get(selectedEndpoint));
-            endpointReference.setUnresolved(false);
-        }
+        
+        endpointReference.setCallbackEndpoint(callbackEndpoints.get(0));
+        endpointReference.setStatus(EndpointReference.WIRED_TARGET_FOUND_AND_MATCHED);
+        endpointReference.setUnresolved(false);
     }
 
-    private boolean hasCompatiblePolicySets(Binding refBinding, Binding svcBinding) {
-        boolean isCompatible = true;
-        if ( refBinding instanceof PolicySubject && svcBinding instanceof PolicySubject ) {
-            //TODO : need to add more compatibility checks at the policy attachment levels
-            for ( PolicySet svcPolicySet : ((PolicySubject)svcBinding).getPolicySets() ) {
-                isCompatible = false;
-                for ( PolicySet refPolicySet : ((PolicySubject)refBinding).getPolicySets() ) {
-                    if ( svcPolicySet.equals(refPolicySet) ) {
-                        isCompatible = true;
-                        break;
-                    }
-                }
-                //if there exists no matching policy set in the reference binding
-                if ( !isCompatible ) {
-                    return isCompatible;
-                }
-            }
-        }
-        return isCompatible;
-    }
 }

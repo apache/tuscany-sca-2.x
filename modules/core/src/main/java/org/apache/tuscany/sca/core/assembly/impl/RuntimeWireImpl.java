@@ -34,6 +34,7 @@ import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
+import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.builder.EndpointReferenceBuilder;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
@@ -328,7 +329,7 @@ public class RuntimeWireImpl implements RuntimeWire {
      * is first used
      */
     private void resolveEndpointReference(){
-        endpointReferenceBuilder.build(endpointReference, null);
+        endpointReferenceBuilder.runtimeBuild(endpointReference);
 
         // set the endpoint based on the resolved endpoint
         endpoint = endpointReference.getTargetEndpoint();
@@ -631,12 +632,24 @@ public class RuntimeWireImpl implements RuntimeWire {
                                               ComponentService service,
                                               InvocationChain chain,
                                               Operation operation) {
+
+       
+        
+        if (service.getService() instanceof CompositeService){
+            CompositeService compositeService = (CompositeService)service.getService();
+            component = getPromotedComponent(compositeService);
+            service = getPromotedComponentService(compositeService);
+        }
+        
         ImplementationProvider provider = ((RuntimeComponent)component).getImplementationProvider();
-        if (provider != null) {
+        
+        if (provider != null) {            
             Invoker invoker = null;
             invoker = provider.createInvoker((RuntimeComponentService)service, operation);
             chain.addInvoker(invoker);
         }
+        // TODO - EPR - don't we need to get the policy from the right level in the 
+        //              model rather than the leafmost level
         List<PolicyProvider> pps = ((RuntimeComponent)component).getPolicyProviders();
         if (pps != null) {
             for (PolicyProvider p : pps) {
@@ -696,4 +709,59 @@ public class RuntimeWireImpl implements RuntimeWire {
     public ExtensionPointRegistry getExtensionPoints() {
         return extensionPoints;
     }
+    
+    /**
+     * Follow a service promotion chain down to the inner most (non composite)
+     * component service.
+     * 
+     * @param topCompositeService
+     * @return
+     */
+    private ComponentService getPromotedComponentService(CompositeService compositeService) {
+        ComponentService componentService = compositeService.getPromotedService();
+        if (componentService != null) {
+            Service service = componentService.getService();
+            if (componentService.getName() != null && service instanceof CompositeService) {
+
+                // Continue to follow the service promotion chain
+                return getPromotedComponentService((CompositeService)service);
+
+            } else {
+
+                // Found a non-composite service
+                return componentService;
+            }
+        } else {
+
+            // No promoted service
+            return null;
+        }
+    }
+
+    /**
+     * Follow a service promotion chain down to the innermost (non-composite) component.
+     * 
+     * @param compositeService
+     * @return
+     */
+    private Component getPromotedComponent(CompositeService compositeService) {
+        ComponentService componentService = compositeService.getPromotedService();
+        if (componentService != null) {
+            Service service = componentService.getService();
+            if (componentService.getName() != null && service instanceof CompositeService) {
+
+                // Continue to follow the service promotion chain
+                return getPromotedComponent((CompositeService)service);
+
+            } else {
+
+                // Found a non-composite service
+                return compositeService.getPromotedComponent();
+            }
+        } else {
+
+            // No promoted service
+            return null;
+        }
+    }    
 }

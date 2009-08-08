@@ -19,8 +19,8 @@
 
 package org.apache.tuscany.sca.assembly.builder;
 
+import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.EndpointReference;
-import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  * A builder that handles the configuration of endpoint references
@@ -30,6 +30,15 @@ import org.apache.tuscany.sca.monitor.Monitor;
  * @version $Rev$ $Date$
  */
 public interface EndpointReferenceBuilder {
+    
+    /**
+     * Build an endpoint reference matching reference bindings 
+     * with service bindings.
+     * 
+     * @param endpointReference
+     * @param monitor
+     */
+    void buildtimeBuild(Composite composite);
 
     /**
      * Build an endpoint reference matching reference bindings 
@@ -38,6 +47,6 @@ public interface EndpointReferenceBuilder {
      * @param endpointReference
      * @param monitor
      */
-    void build(EndpointReference endpointReference, Monitor monitor);
+    void runtimeBuild(EndpointReference endpointReference);
 
 }

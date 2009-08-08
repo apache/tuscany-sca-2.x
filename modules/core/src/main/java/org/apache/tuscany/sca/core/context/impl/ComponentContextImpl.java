@@ -361,7 +361,7 @@ public class ComponentContextImpl implements ComponentContextExt {
         componentReference.getEndpointReferences().add(endpointReference);
         
         // do binding matching
-        endpointReferenceBuilder.build(endpointReference, monitor);
+        endpointReferenceBuilder.runtimeBuild(endpointReference);
         
         return componentReference;
     }

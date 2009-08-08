@@ -57,6 +57,7 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderExtensionPoint;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderTmp;
+import org.apache.tuscany.sca.assembly.builder.EndpointReferenceBuilder;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
@@ -118,7 +119,7 @@ public class NodeFactoryImpl extends NodeFactory {
     private StAXArtifactProcessor<Composite> compositeProcessor;
     private ContributionFactory contributionFactory;
     private ExtendedURLArtifactProcessor<Contribution> contributionProcessor;
-    private CompositeBuilder endpointReferenceBuilder;
+    private EndpointReferenceBuilder endpointReferenceBuilder;
     protected ExtensionPointRegistry extensionPoints;
     private XMLInputFactory inputFactory;
     protected FactoryExtensionPoint modelFactories;
@@ -417,9 +418,8 @@ public class NodeFactoryImpl extends NodeFactory {
         CompositeBuilderExtensionPoint compositeBuilders = extensionPoints.getExtensionPoint(CompositeBuilderExtensionPoint.class);
         compositeBuilder = compositeBuilders.getCompositeBuilder("org.apache.tuscany.sca.assembly.builder.CompositeBuilder");
 
-        // Get endpoint builders
-        // TODO - new extension point?
-        endpointReferenceBuilder = compositeBuilders.getCompositeBuilder("org.apache.tuscany.sca.endpoint.impl.EndpointReferenceBuilderImpl");
+        // Get endpoint builder
+        endpointReferenceBuilder = utilities.getUtility(EndpointReferenceBuilder.class);
 
         // Initialize runtime
 
@@ -548,7 +548,7 @@ public class NodeFactoryImpl extends NodeFactory {
         ((CompositeBuilderTmp)compositeBuilder).build(tempComposite, systemDefinitions, bindingMap, monitor);
         analyzeProblems();
 
-        endpointReferenceBuilder.build(tempComposite, systemDefinitions, monitor);
+        endpointReferenceBuilder.buildtimeBuild(tempComposite);
         analyzeProblems();
 
         return tempComposite;
