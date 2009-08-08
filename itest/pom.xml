@@ -45,7 +45,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-                <!--module>builder</module-->
+                <module>builder</module>
                 <module>bpel</module>
                 <module>callback-api</module>
                 <module>callback-basic</module>
@@ -56,19 +56,20 @@
                 <module>component-type</module>
                 <module>contribution-folder</module>
                 <module>contribution-zip</module>
-                
-                <!--module>definitions-multiple</module-->
+<!-- why commented out?              
+                <module>definitions-multiple</module>
+-->
                 <module>distribution</module>
                 <module>exceptions</module>
                 <module>implementation-spring</module>
                 <module>interfaces</module>
                 <module>nodes</module>
-<!--
+<!-- why commented out?
                 <module>operation-overloading</module>
 -->
-                <!-- wait until databinding-sdo is in
+<!-- wait until databinding-sdo is in
                 <module>properties</module>
-                -->
+-->
                 <module>recursive-multi-level</module>
                 <module>references</module>
                 <module>scaclient-api</module>
