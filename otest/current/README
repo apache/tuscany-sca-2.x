@@ -38,6 +38,9 @@ otest/
       src/main/resources - code copied from otest/current/src/resources/General
     ASM_****
       src/main/resources - code copied from otest/current/src/resources/AMS_****
+                           these independent contributions are contributions with
+                           errors in them. The rest of the top-level otest contributions
+                           can be found in General
 
 The code is copied from src/main/resources to the appropriate contribution each 
 time maven is used to compile the contribution in question. There is a build setting
