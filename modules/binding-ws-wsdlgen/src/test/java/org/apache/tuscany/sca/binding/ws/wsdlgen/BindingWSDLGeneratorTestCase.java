@@ -24,6 +24,7 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.DefaultFactoryExtensionPoint;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.databinding.processor.DataBindingJavaInterfaceProcessor;
 import org.apache.tuscany.sca.databinding.DefaultDataBindingExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
@@ -47,14 +48,15 @@ import org.oasisopen.sca.annotation.Remotable;
 public class BindingWSDLGeneratorTestCase extends TestCase {
 
     public void testCreateWSDLInterfaceContract() throws InvalidInterfaceException {
-        org.apache.tuscany.sca.core.FactoryExtensionPoint modelFactories = new DefaultFactoryExtensionPoint(new DefaultExtensionPointRegistry());
+        ExtensionPointRegistry registry = new DefaultExtensionPointRegistry();
+        org.apache.tuscany.sca.core.FactoryExtensionPoint modelFactories = new DefaultFactoryExtensionPoint(registry);
         WSDLFactory wsdlFactory = modelFactories.getFactory(WSDLFactory.class);
         XSDFactory xsdFactory = modelFactories.getFactory(XSDFactory.class);
         DocumentBuilderFactory documentBuilderFactory = modelFactories.getFactory(DocumentBuilderFactory.class);
         JavaInterfaceFactory factory = new DefaultJavaInterfaceFactory();
         JavaInterfaceContract javaIC = factory.createJavaInterfaceContract();
         JavaInterface iface = factory.createJavaInterface(HelloWorld.class);
-        DefaultDataBindingExtensionPoint dataBindings = new DefaultDataBindingExtensionPoint();
+        DefaultDataBindingExtensionPoint dataBindings = new DefaultDataBindingExtensionPoint(registry);
         JAXWSFaultExceptionMapper faultExceptionMapper = new JAXWSFaultExceptionMapper(dataBindings, null);
         new JAXWSJavaInterfaceProcessor(dataBindings, faultExceptionMapper, null).visitInterface(iface);
         new DataBindingJavaInterfaceProcessor(dataBindings).visitInterface(iface);
