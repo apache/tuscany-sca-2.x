@@ -92,7 +92,7 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
         // The decision is based on the results of the wiring process in the assembly model
         // and there are three possibilities
         // 1 - target service is running in a separate node in a separate JVM
-        // 2 - target service is running in a seaprate node in the same JVM
+        // 2 - target service is running in a separate node in the same JVM
         // 3 - target service is running in the same node
         
         // TODO - EPR - the method needs to be able to indicate the three cases
