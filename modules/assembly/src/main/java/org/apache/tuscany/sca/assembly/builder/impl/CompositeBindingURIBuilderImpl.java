@@ -326,7 +326,7 @@ public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements C
                                      Monitor monitor) throws CompositeBuilderException {
         // This is a composite service so there is no component to provide a component URI
         // The path to this composite (through nested composites) is used.
-        boolean includeBindingName = composite.getServices().size() != 1;
+        boolean includeBindingName = service.getEndpoints().size() > 1;
         constructBindingURI(parentComponentURI, service, binding, includeBindingName, defaultBindings, monitor);
     }
 
@@ -345,7 +345,7 @@ public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements C
                                      Binding binding,
                                      Map<QName, List<String>> defaultBindings,
                                      Monitor monitor) throws CompositeBuilderException {
-        boolean includeBindingName = component.getServices().size() != 1;
+        boolean includeBindingName = service.getEndpoints().size() > 1;
         constructBindingURI(component.getURI(), service, binding, includeBindingName, defaultBindings, monitor);
     }
 
