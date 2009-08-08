@@ -89,6 +89,9 @@ public class ComponentServiceEndpointBuilderImpl implements CompositeBuilder {
             // create an endpoint for each component service binding
             for (ComponentService service : component.getServices()) {
 
+                /* change to finding the promoted component and service
+                 * when the wire is created as storing them here leads to 
+                 * the wrong URI being calculated
                 Component endpointComponent = component;
                 ComponentService endpointService = service;
 
@@ -100,11 +103,12 @@ public class ComponentServiceEndpointBuilderImpl implements CompositeBuilder {
                     endpointService = ServiceConfigurationUtil.getPromotedComponentService(compositeService);
                     endpointComponent = ServiceConfigurationUtil.getPromotedComponent(compositeService);
                 } // end if
+                */
 
                 for (Binding binding : service.getBindings()) {
                     Endpoint endpoint = assemblyFactory.createEndpoint();
-                    endpoint.setComponent(endpointComponent);
-                    endpoint.setService(endpointService);
+                    endpoint.setComponent(component);
+                    endpoint.setService(service);
                     endpoint.setBinding(binding);
                     endpoint.setUnresolved(false);
                     service.getEndpoints().add(endpoint);
