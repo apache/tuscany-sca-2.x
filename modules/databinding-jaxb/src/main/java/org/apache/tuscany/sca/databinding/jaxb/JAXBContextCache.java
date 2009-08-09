@@ -52,10 +52,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.datatype.DatatypeFactory;
 import javax.xml.transform.Source;
 
 import org.apache.tuscany.sca.databinding.util.LRUCache;
-import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
 import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 
 /**
@@ -124,25 +124,15 @@ public class JAXBContextCache {
             return AccessController.doPrivileged(new PrivilegedExceptionAction<JAXBContext>() {
                 public JAXBContext run() throws JAXBException {
                     // Try to set up TCCL so that JAXBContext service discovery works in OSGi
-                    ClassLoader tccl = Thread.currentThread().getContextClassLoader();
-                    ClassLoader newTccl = tccl;
-                    try {
-                        ServiceDeclaration sd =
-                            ServiceDiscovery.getInstance().getServiceDeclaration(JAXBContext.class.getName());
-                        if (sd != null) {
-                            newTccl = sd.loadClass().getClassLoader();
-                        }
-                    } catch (Exception e) {
-                        // Ignore
-                    }
-                    if (newTccl != tccl) {
-                        Thread.currentThread().setContextClassLoader(newTccl);
-                    }
+                    ClassLoader tccl =
+                        ServiceDiscovery.getInstance().setContextClassLoader(JAXBContextCache.class.getClassLoader(),
+                                                                             JAXBContext.class.getName(),
+                                                                             DatatypeFactory.class.getName());
                     try {
                         JAXBContext context = JAXBContext.newInstance(classesToBeBound);
                         return context;
                     } finally {
-                        if (newTccl != tccl) {
+                        if (tccl != null) {
                             Thread.currentThread().setContextClassLoader(tccl);
                         }
                     }
