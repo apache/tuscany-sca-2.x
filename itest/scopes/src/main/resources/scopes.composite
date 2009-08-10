@@ -18,7 +18,8 @@
  * under the License.
 -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
-       name="Scopes">
+           targetNamespace="http://Scopes"
+           name="Scopes">
 
     <!-- Components used to test scopes. -->
 
