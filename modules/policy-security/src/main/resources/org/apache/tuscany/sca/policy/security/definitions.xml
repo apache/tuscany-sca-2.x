@@ -28,28 +28,8 @@
     <policySet name="rolesAllowed" appliesTo="sca:implementation.java"/>
     <policySet name="permitAll" appliesTo="sca:implementation.java"/>
     <policySet name="denyAll" appliesTo="sca:implementation.java"/>
+
+    <!-- see the file sca-policy-1.1-intents-definitions.xml in the -->
+    <!-- assembly-xsd module for spec defined intents               -->
     
-	<!-- Policy Intents Defined by the SCA Runtime -->
-	<intent name="authentication" 
-	 		constrains="sca:binding">
-		<description>
-			Specifying this intent on references requires necessary authentication information
-			to be sent along with outgoing messages. Specifying this intent on service requires
-			incoming messages to be authenticated
-		</description>
-	</intent>
-	
-	<intent name="confidentiality" 
-	 		constrains="sca:binding">
-		<description>
-			Specifying this intent requires message exchanged to be encrypted
-		</description>
-	</intent>
-	
-	<intent name="integrity" 
-	 		constrains="sca:binding">
-		<description>
-			Specifying this intent requires message exchanged to be signed
-		</description>
-	</intent>
 </definitions>
