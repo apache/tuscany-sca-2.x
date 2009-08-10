@@ -25,6 +25,7 @@
  * by a plain Java POJO.
 -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+           targetNamespace="http://SpringImplicitReference"
            name="SpringImplicitReference">
 
     <component name="ClientComponent">

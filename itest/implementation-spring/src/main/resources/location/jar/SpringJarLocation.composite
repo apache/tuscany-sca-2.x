@@ -24,6 +24,7 @@
  * the ClientComponent.
  -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+           targetNamespace="http://SpringJarLocation"
            name="SpringJarLocation">
     
     <component name="ClientComponent">
