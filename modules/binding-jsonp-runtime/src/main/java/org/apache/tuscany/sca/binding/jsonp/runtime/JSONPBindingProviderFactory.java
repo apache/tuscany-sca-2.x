@@ -47,9 +47,8 @@ public class JSONPBindingProviderFactory implements BindingProviderFactory<JSONP
         return JSONPBinding.class;
     }
 
-    public ReferenceBindingProvider createReferenceBindingProvider(EndpointReference arg0) {
-        // TODO Auto-generated method stub
-        return null;
+    public ReferenceBindingProvider createReferenceBindingProvider(EndpointReference endpoint) {
+        return new JSONPReferenceBindingProvider(endpoint);
     }
 
     public ServiceBindingProvider createServiceBindingProvider(Endpoint endpoint) {
