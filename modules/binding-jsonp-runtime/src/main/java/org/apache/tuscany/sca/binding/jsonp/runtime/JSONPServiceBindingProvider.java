@@ -45,7 +45,7 @@ public class JSONPServiceBindingProvider implements ServiceBindingProvider {
         Interface serviceInterface = service.getInterfaceContract().getInterface();
         for (Operation op : serviceInterface.getOperations()) {
             JSONPServlet servlet = new JSONPServlet(wire, op);
-            String path = service.getName() + "/" + op.getName();
+            String path = endpoint.getBinding().getURI() + "/" + op.getName();
             servletHost.addServletMapping(path, servlet);
         }
     }
