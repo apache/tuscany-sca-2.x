@@ -21,10 +21,16 @@ package org.apache.tuscany.sca.common.xml.stax;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.net.URL;
+import java.util.List;
+
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.sca.common.xml.stax.StAXHelper.Attribute;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.custommonkey.xmlunit.XMLAssert;
+import org.junit.Assert;
 import org.junit.Test;
 import org.w3c.dom.Node;
 
@@ -37,6 +43,9 @@ public class StAXHelperTestCase {
     private static final String XML =
         "<a:foo xmlns:a='http://a' name='foo'><bar name='bar'>" + "<doo a:name='doo' xmlns:a='http://doo'/>"
             + "</bar></a:foo>";
+    public static final QName WSDL11 = new QName("http://schemas.xmlsoap.org/wsdl/", "definitions");
+    public static final QName WSDL20 = new QName("http://www.w3.org/ns/wsdl", "description");
+    public static final QName XSD = new QName("http://www.w3.org/2001/XMLSchema", "schema");
 
     @Test
     public void testHelper() throws Exception {
@@ -52,6 +61,40 @@ public class StAXHelperTestCase {
         reader = helper.createXMLStreamReader(node);
         xml = helper.saveAsString(reader);
         XMLAssert.assertXMLEqual(XML, xml);
+    }
+
+    @Test
+    public void testIndex() throws Exception {
+        StAXHelper helper = new StAXHelper(new DefaultExtensionPointRegistry());
+        URL xsd = getClass().getResource("test.xsd");
+        String tns = helper.readAttribute(xsd, XSD, "targetNamespace");
+        Assert.assertEquals("http://www.example.org/test/", tns);
+
+        List<String> tnsList = helper.readAttributes(xsd, XSD, "targetNamespace");
+        Assert.assertEquals(1, tnsList.size());
+        Assert.assertEquals("http://www.example.org/test/", tnsList.get(0));
+
+        URL wsdl = getClass().getResource("test.wsdl");
+        tns = helper.readAttribute(wsdl, WSDL11, "targetNamespace");
+        Assert.assertEquals("http://www.example.org/test/wsdl", tns);
+
+        tns = helper.readAttribute(wsdl, XSD, "targetNamespace");
+        Assert.assertNull(tns);
+
+        tnsList = helper.readAttributes(wsdl, XSD, "targetNamespace");
+        Assert.assertEquals(2, tnsList.size());
+        Assert.assertEquals("http://www.example.org/test/xsd1", tnsList.get(0));
+        Assert.assertEquals("http://www.example.org/test/xsd2", tnsList.get(1));
+
+        Attribute attr1 = new Attribute(WSDL11, "targetNamespace");
+        Attribute attr2 = new Attribute(XSD, "targetNamespace");
+        Attribute[] attrs = helper.readAttributes(wsdl, attr1, attr2);
+
+        Assert.assertEquals(2, attrs.length);
+        Assert.assertEquals("http://www.example.org/test/wsdl", attrs[0].getValues().get(0));
+        Assert.assertEquals("http://www.example.org/test/xsd1", attrs[1].getValues().get(0));
+        Assert.assertEquals("http://www.example.org/test/xsd2", attrs[1].getValues().get(1));
+
     }
 
 }

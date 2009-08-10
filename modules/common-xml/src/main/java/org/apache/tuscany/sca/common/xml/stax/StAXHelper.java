@@ -18,12 +18,16 @@
  */
 package org.apache.tuscany.sca.common.xml.stax;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.net.JarURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -31,6 +35,7 @@ import java.util.StringTokenizer;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
+import javax.xml.stream.StreamFilter;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamConstants;
@@ -112,6 +117,24 @@ public class StAXHelper {
         StringReader reader = new StringReader(string);
         return createXMLStreamReader(reader);
     }
+    
+    private static InputStream openStream(URL url) throws IOException {
+        URLConnection connection = url.openConnection();
+        if (connection instanceof JarURLConnection) {
+            // See http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=5041014
+            connection.setUseCaches(false);
+        }
+        InputStream is = connection.getInputStream();
+        return is;
+    }
+    
+    public XMLStreamReader createXMLStreamReader(URL url) throws XMLStreamException {
+        try {
+            return createXMLStreamReader(openStream(url));
+        } catch (IOException e) {
+            throw new XMLStreamException(e);
+        }
+    }
 
     public String saveAsString(XMLStreamReader reader) throws XMLStreamException {
         StringWriter writer = new StringWriter();
@@ -179,6 +202,43 @@ public class StAXHelper {
         new StAX2SAXAdapter(false).parse(reader, contentHandler);
     }
 
+
+    /**
+     * @param url
+     * @param element
+     * @param attribute
+     * @param rootOnly
+     * @return
+     * @throws IOException
+     * @throws XMLStreamException
+     */
+    public String readAttribute(URL url, QName element, String attribute) throws IOException,
+        XMLStreamException {
+        if (attribute == null) {
+            attribute = "targetNamespace";
+        }
+        XMLStreamReader reader = createXMLStreamReader(url);
+        try {
+            return readAttributeFromRoot(reader, element, attribute);
+        } finally {
+            reader.close();
+        }
+    }
+
+    public List<String> readAttributes(URL url, QName element, String attribute) throws IOException,
+        XMLStreamException {
+        if (attribute == null) {
+            attribute = "targetNamespace";
+        }
+        XMLStreamReader reader = createXMLStreamReader(url);
+        try {
+            Attribute attr = new Attribute(element, attribute);
+            return readAttributes(reader, attr)[0].getValues();
+        } finally {
+            reader.close();
+        }
+    }
+    
     /**
      * Returns the boolean value of an attribute.
      * @param reader
@@ -294,6 +354,104 @@ public class StAXHelper {
                 depth--;
             }
         }
+    }
+
+    
+    private Attribute[] readAttributes(XMLStreamReader reader, AttributeFilter filter) throws XMLStreamException {
+        XMLStreamReader newReader = inputFactory.createFilteredReader(reader, filter);
+        while (filter.proceed() && newReader.hasNext()) {
+            newReader.next();
+        }
+        return filter.attributes;
+    }
+
+    public Attribute[] readAttributes(URL url, Attribute... attributes) throws XMLStreamException {
+        XMLStreamReader reader = createXMLStreamReader(url);
+        try {
+            return readAttributes(reader, attributes);
+        } finally {
+            reader.close();
+        }
+    }
+
+    public Attribute[] readAttributes(XMLStreamReader reader, Attribute... attributes) throws XMLStreamException {
+        return readAttributes(reader, new AttributeFilter(false, attributes));
+    }
+    
+    private String readAttributeFromRoot(XMLStreamReader reader, Attribute filter) throws XMLStreamException {
+        Attribute[] attrs = readAttributes(reader, new AttributeFilter(true, filter));
+        List<String> values = attrs[0].getValues();
+        if (values.isEmpty()) {
+            return null;
+        } else {
+            return values.get(0);
+        }
+    }
+    
+    public String readAttributeFromRoot(XMLStreamReader reader, QName element, String attributeName)
+        throws XMLStreamException {
+        Attribute filter = new Attribute(element, attributeName);
+        return readAttributeFromRoot(reader, filter);
+    }
+    
+    public static class Attribute {
+        private QName element;
+        private String name;
+        private List<String> values = new ArrayList<String>();
+
+        /**
+         * @param element
+         * @param name
+         */
+        public Attribute(QName element, String name) {
+            super();
+            this.element = element;
+            this.name = name;
+        }
+
+        public List<String> getValues() {
+            return values;
+        }
+        
+    }
+    
+    private static class AttributeFilter implements StreamFilter {
+        private boolean proceed = true;
+        private Attribute[] attributes;
+        private boolean rootOnly;
+        
+        /**
+         * @param rootOnly
+         */
+        public AttributeFilter(boolean rootOnly, Attribute...attributes) {
+            super();
+            this.rootOnly = rootOnly;
+            this.attributes = attributes;
+        }
+
+        public boolean accept(XMLStreamReader reader) {
+            if(attributes==null || attributes.length==0) {
+                proceed = false;
+                return true;
+            }
+            if(reader.getEventType() == XMLStreamConstants.START_ELEMENT) {
+                QName name = reader.getName();
+                for(Attribute attr: attributes) {
+                    if(attr.element.equals(name)) {
+                        attr.values.add(reader.getAttributeValue(null, attr.name));
+                    }
+                }
+                if (rootOnly) {
+                    proceed = false;
+                }
+            }
+            return true;
+        }
+        
+        public boolean proceed() {
+            return proceed;
+        }
+        
     }
 
 }
