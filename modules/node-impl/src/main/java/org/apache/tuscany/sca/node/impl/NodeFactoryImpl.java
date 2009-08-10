@@ -433,9 +433,11 @@ public class NodeFactoryImpl extends NodeFactory {
         systemDefinitions = definitionsFactory.createDefinitions();
 
         DefinitionsExtensionPoint definitionsExtensionPoint = extensionPoints.getExtensionPoint(DefinitionsExtensionPoint.class);
+        monitor.pushContext("Extension points definitions");
         for(Definitions defs: definitionsExtensionPoint.getDefinitions()) {
-            DefinitionsUtil.aggregate(defs, systemDefinitions);
+            DefinitionsUtil.aggregate(defs, systemDefinitions, monitor);
         }
+        monitor.popContext();
 
         // create a system contribution to hold the definitions. The contribution
         // will be extended later with definitions from application contributions
@@ -482,11 +484,14 @@ public class NodeFactoryImpl extends NodeFactory {
         // each contribution so that for unresolved items the resolution
         // processing will look in the system contribution
         for (Contribution contribution: contributions) {
+            monitor.pushContext("Contribution: " + contribution.getURI());
             // aggregate definitions
             for (Artifact artifact : contribution.getArtifacts()) {
                 Object model = artifact.getModel();
                 if (model instanceof Definitions) {
-                    DefinitionsUtil.aggregate((Definitions)model, systemDefinitions);
+                    monitor.pushContext("Definitions: " + artifact.getLocation());
+                    DefinitionsUtil.aggregate((Definitions)model, systemDefinitions, monitor);
+                    monitor.popContext();
                 }
             }
 
@@ -497,6 +502,7 @@ public class NodeFactoryImpl extends NodeFactory {
             DefaultImport defaultImport = contributionFactory.createDefaultImport();
             defaultImport.setModelResolver(systemContribution.getModelResolver());
             contribution.getImports().add(defaultImport);
+            monitor.popContext();
         }
 
         ExtensibleModelResolver modelResolver = new ExtensibleModelResolver(new Contributions(contributions), modelResolvers, modelFactories);

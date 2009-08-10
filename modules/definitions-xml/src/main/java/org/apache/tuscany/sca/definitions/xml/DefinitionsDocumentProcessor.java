@@ -145,7 +145,7 @@ public class DefinitionsDocumentProcessor implements URLArtifactProcessor<Defini
                     // QName name = reader.getName();
                     Object model = extensionProcessor.read(reader);
                     if (model instanceof Definitions) {
-                        DefinitionsUtil.aggregate((Definitions)model, definitions);
+                        DefinitionsUtil.aggregate((Definitions)model, definitions, monitor);
                         return definitions;
                     } else {
                         error("ContributionReadException", model, null);
@@ -175,27 +175,7 @@ public class DefinitionsDocumentProcessor implements URLArtifactProcessor<Defini
         }
     }
 
-    // FIXME: [rfeng] We need to validate the definitions against the Conformance Items
-    // defined by the SCA Policy Framework Spec V1.1
-    private static void stripDuplicates(Definitions definitions) {
-        Set<Intent> intents = new HashSet<Intent>(definitions.getIntents());
-        Set<PolicySet> policySets = new HashSet<PolicySet>(definitions.getPolicySets());
-
-        Set<BindingType> bindingTypes = new HashSet<BindingType>(definitions.getBindingTypes());
-        Set<ImplementationType> implementationTypes = new HashSet<ImplementationType>(definitions.getImplementationTypes());
-
-        definitions.getIntents().clear();
-        definitions.getIntents().addAll(intents);
-        definitions.getPolicySets().clear();
-        definitions.getPolicySets().addAll(policySets);
-        definitions.getBindingTypes().clear();
-        definitions.getBindingTypes().addAll(bindingTypes);
-        definitions.getImplementationTypes().clear();
-        definitions.getImplementationTypes().addAll(implementationTypes);
-    }
-
     public void resolve(Definitions scaDefinitions, ModelResolver resolver) throws ContributionResolveException {
-        stripDuplicates(scaDefinitions);
         extensionProcessor.resolve(scaDefinitions, resolver);
     }
 
