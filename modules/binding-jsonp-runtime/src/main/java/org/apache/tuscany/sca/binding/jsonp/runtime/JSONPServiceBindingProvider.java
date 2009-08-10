@@ -54,7 +54,7 @@ public class JSONPServiceBindingProvider implements ServiceBindingProvider {
         ComponentService service = endpoint.getService();
         Interface serviceInterface = service.getInterfaceContract().getInterface();
         for (Operation op : serviceInterface.getOperations()) {
-            String path = service.getName() + "/" + op.getName();
+            String path = endpoint.getBinding().getURI() + "/" + op.getName();
             servletHost.removeServletMapping(path);
         }
     }
