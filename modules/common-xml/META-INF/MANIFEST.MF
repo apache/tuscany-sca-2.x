@@ -8,9 +8,8 @@ Bnd-LastModified: 1225397108125
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Common XML
-Import-Package: javax.xml.namespace,
- javax.xml.xpath,
- javax.xml.datatype,
+Import-Package: javax.xml.datatype,
+ javax.xml.namespace,
  javax.xml.parsers,
  javax.xml.stream,
  javax.xml.stream.util,
@@ -18,19 +17,22 @@ Import-Package: javax.xml.namespace,
  javax.xml.transform.dom,
  javax.xml.transform.sax,
  javax.xml.transform.stream,
- org.w3c.dom,
- org.xml.sax,
- org.xml.sax.ext,
- org.xml.sax.helpers,
- org.apache.tuscany.sca.core;version="2.0.0",
- org.apache.tuscany.sca.extensibility;version="2.0.0",
+ javax.xml.xpath,
+ org.apache.tuscany.sca.common.xml;version="2.0.0",
  org.apache.tuscany.sca.common.xml.dom;version="2.0.0",
  org.apache.tuscany.sca.common.xml.sax;version="2.0.0",
  org.apache.tuscany.sca.common.xml.stax;version="2.0.0",
- org.apache.tuscany.sca.common.xml.stax.reader;version="2.0.0"
+ org.apache.tuscany.sca.common.xml.stax.reader;version="2.0.0",
+ org.apache.tuscany.sca.core;version="2.0.0",
+ org.apache.tuscany.sca.extensibility;version="2.0.0",
+ org.w3c.dom,
+ org.xml.sax,
+ org.xml.sax.ext,
+ org.xml.sax.helpers
 Bundle-SymbolicName: org.apache.tuscany.sca.common.xml
 Bundle-DocURL: http://www.apache.org/
-Export-Package: org.apache.tuscany.sca.common.xml.dom;version="2.0.0",
+Export-Package: org.apache.tuscany.sca.common.xml;version="2.0.0",
+ org.apache.tuscany.sca.common.xml.dom;version="2.0.0",
  org.apache.tuscany.sca.common.xml.sax;version="2.0.0",
  org.apache.tuscany.sca.common.xml.stax;version="2.0.0",
  org.apache.tuscany.sca.common.xml.stax.reader;version="2.0.0"
