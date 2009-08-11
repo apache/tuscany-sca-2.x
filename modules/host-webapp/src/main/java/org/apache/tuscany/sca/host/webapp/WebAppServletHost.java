@@ -167,7 +167,9 @@ public class WebAppServletHost implements ServletHost {
             suri = '/' + suri;
         }
 
-        suri = contextPath + suri;
+        if (contextPath != null && contextPath.length() > 0 && !"/".equals(contextPath)) {
+            suri = contextPath + suri;
+        }
 
         // Get the Servlet mapped to the given path
         Servlet servlet = servlets.get(suri);
