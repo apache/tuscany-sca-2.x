@@ -24,7 +24,6 @@ import java.util.logging.Logger;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 import javax.xml.stream.Location;
-import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.util.StreamReaderDelegate;
@@ -154,37 +153,46 @@ class ValidatingXMLStreamReader extends StreamReaderDelegate implements XMLStrea
             return super.next();
         }
 
-        int event = super.next();
+        int event = super.getEventType();
         try {
-            switch (event) {
-                case XMLStreamConstants.START_DOCUMENT:
-                    handler.startDocument();
-                    break;
-                case XMLStreamConstants.START_ELEMENT:
-                    handleStartElement();
-                    break;
-                case XMLStreamConstants.PROCESSING_INSTRUCTION:
-                    handler.processingInstruction(super.getPITarget(), super.getPIData());
-                    break;
-                case XMLStreamConstants.CHARACTERS:
-                case XMLStreamConstants.CDATA:
-                case XMLStreamConstants.SPACE:
-                case XMLStreamConstants.ENTITY_REFERENCE:
-                    handler.characters(super.getTextCharacters(), super.getTextStart(), super.getTextLength());
-                    break;
-                case XMLStreamConstants.END_ELEMENT:
-                    handleEndElement();
-                    break;
-                case XMLStreamConstants.END_DOCUMENT:
-                    handler.endDocument();
-                    break;
+            if (event == START_DOCUMENT) {
+                // We need to trigger the startDocument()
+                handler.startDocument();
             }
+            event = super.next();
+            validate(event);
         } catch (SAXException e) {
-        	XMLStreamException xse = new XMLStreamException(e.getMessage(), e);
-        	error("XMLStreamException", handler, xse);
+            XMLStreamException xse = new XMLStreamException(e.getMessage(), e);
+            error("XMLStreamException", handler, xse);
             throw xse;
         }
         return event;
+    }
+
+    private void validate(int event) throws SAXException {
+        switch (event) {
+            case START_DOCUMENT:
+                handler.startDocument();
+                break;
+            case START_ELEMENT:
+                handleStartElement();
+                break;
+            case PROCESSING_INSTRUCTION:
+                handler.processingInstruction(super.getPITarget(), super.getPIData());
+                break;
+            case CHARACTERS:
+            case CDATA:
+            case SPACE:
+            case ENTITY_REFERENCE:
+                handler.characters(super.getTextCharacters(), super.getTextStart(), super.getTextLength());
+                break;
+            case END_ELEMENT:
+                handleEndElement();
+                break;
+            case END_DOCUMENT:
+                handler.endDocument();
+                break;
+        }
     }
     
     @Override
@@ -192,39 +200,33 @@ class ValidatingXMLStreamReader extends StreamReaderDelegate implements XMLStrea
         if (handler == null) {
             return super.nextTag();
         }
-        
-        for (;;) {
+        while (true) {
             int event = super.getEventType();
             try {
-                switch (event) {
-                    case XMLStreamConstants.START_DOCUMENT:
-                        handler.startDocument();
-                        break;
-                    case XMLStreamConstants.START_ELEMENT:
-                        handleStartElement();
-                        return event;
-                    case XMLStreamConstants.PROCESSING_INSTRUCTION:
-                        handler.processingInstruction(super.getPITarget(), super.getPIData());
-                        break;
-                    case XMLStreamConstants.CHARACTERS:
-                    case XMLStreamConstants.CDATA:
-                    case XMLStreamConstants.SPACE:
-                    case XMLStreamConstants.ENTITY_REFERENCE:
-                        handler.characters(super.getTextCharacters(), super.getTextStart(), super.getTextLength());
-                        break;
-                    case XMLStreamConstants.END_ELEMENT:
-                        handleEndElement();
-                        return event;
-                    case XMLStreamConstants.END_DOCUMENT:
-                        handler.endDocument();
-                        return event;
+                if (event == START_DOCUMENT) {
+                    // We need to trigger the startDocument()
+                    handler.startDocument();
                 }
+                event = super.next();
+                validate(event);
             } catch (SAXException e) {
-            	XMLStreamException xse = new XMLStreamException(e);
-            	error("XMLStreamException", handler, xse);
+                XMLStreamException xse = new XMLStreamException(e);
+                error("XMLStreamException", handler, xse);
                 throw xse;
             }
-            super.next();
+
+            if ((event == CHARACTERS && isWhiteSpace()) // skip whitespace
+                || (event == CDATA && isWhiteSpace())
+                // skip whitespace
+                || event == SPACE
+                || event == PROCESSING_INSTRUCTION
+                || event == COMMENT) {
+                continue;
+            }
+            if (event != START_ELEMENT && event != END_ELEMENT) {
+                throw new XMLStreamException("expected start or end tag", getLocation());
+            }
+            return event;
         }
     }
     
@@ -234,7 +236,7 @@ class ValidatingXMLStreamReader extends StreamReaderDelegate implements XMLStrea
             return super.getElementText();
         }
 
-        if (getEventType() != XMLStreamConstants.START_ELEMENT) {
+        if (getEventType() != START_ELEMENT) {
             return super.getElementText();
         }
         StringBuffer text = new StringBuffer();
@@ -242,11 +244,11 @@ class ValidatingXMLStreamReader extends StreamReaderDelegate implements XMLStrea
         for (;;) {
             int event = next();
             switch (event) {
-                case XMLStreamConstants.END_ELEMENT:
+                case END_ELEMENT:
                     return text.toString();
                     
-                case XMLStreamConstants.COMMENT:
-                case XMLStreamConstants.PROCESSING_INSTRUCTION:
+                case COMMENT:
+                case PROCESSING_INSTRUCTION:
                     continue;
                     
                 case CHARACTERS:

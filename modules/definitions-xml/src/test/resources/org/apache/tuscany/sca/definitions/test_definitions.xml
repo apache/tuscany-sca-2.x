@@ -64,7 +64,7 @@
 
     <policySet name="SecureMessagingPolicies" provides="test:confidentiality" appliesTo="binding.ws"
         xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
-        <intentMap provides="test:confidentiality" default="transport">
+        <intentMap provides="test:confidentiality">
             <qualifier name="transport">
                 <wsp:PolicyAttachment>
                     <!-- policy expression and policy subject for "transport" alternative -->
@@ -81,7 +81,7 @@
 
     <policySet name="SecurityPolicy" provides="test:confidentiality" appliesTo="binding.ws"
         xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
-        <intentMap provides="test:confidentiality" default="message">
+        <intentMap provides="test:confidentiality">
             <qualifier name="message">
                 <wsp:PolicyAttachment>
                     <!-- policy attachment for body encryption -->
@@ -114,7 +114,7 @@
 
     <policySet name="ConfidentialityPolicies" provides="test:confidentiality" appliesTo="binding.ws"
         xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
-        <intentMap provides="test:confidentiality" default="transport">
+        <intentMap provides="test:confidentiality">
             <qualifier name="transport">
                 <wsp:PolicyAttachment>
                     <!-- policy expression and policy subject for "transport"

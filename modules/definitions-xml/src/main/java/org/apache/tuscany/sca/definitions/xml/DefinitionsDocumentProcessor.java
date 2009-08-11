@@ -27,8 +27,6 @@ import java.net.URLConnection;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
@@ -39,6 +37,7 @@ import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.ValidatingXMLInputFactory;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.definitions.Definitions;
@@ -47,10 +46,6 @@ import org.apache.tuscany.sca.definitions.util.DefinitionsUtil;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
-import org.apache.tuscany.sca.policy.BindingType;
-import org.apache.tuscany.sca.policy.ImplementationType;
-import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
  * A SCA Definitions Document processor.
@@ -89,7 +84,7 @@ public class DefinitionsDocumentProcessor implements URLArtifactProcessor<Defini
                                         StAXArtifactProcessor<Object> staxProcessor,
                                         Monitor monitor) {
         this.extensionProcessor = (StAXArtifactProcessor<Object>)staxProcessor;
-        this.inputFactory = modelFactories.getFactory(XMLInputFactory.class);
+        this.inputFactory = modelFactories.getFactory(ValidatingXMLInputFactory.class);
         this.definitionsFactory = modelFactories.getFactory(DefinitionsFactory.class);
         this.monitor = monitor;
     }

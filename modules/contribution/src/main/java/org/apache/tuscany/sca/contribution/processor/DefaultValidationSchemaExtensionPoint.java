@@ -36,7 +36,7 @@ import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
  * @version $Rev$ $Date$
  */
 public class DefaultValidationSchemaExtensionPoint implements ValidationSchemaExtensionPoint {
-    private boolean enabled;
+    private boolean enabled = true;
     private List<String> schemas = new ArrayList<String>();
     private boolean loaded;
 

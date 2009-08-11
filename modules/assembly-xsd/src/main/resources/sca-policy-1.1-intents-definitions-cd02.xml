@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Copyright(C) OASIS(R) 2005,2009. All Rights Reserved. 
      OASIS trademark, IPR and other policies apply.  -->
-<sca:definitions xmlns:xml="http://www.w3.org/XML/1998/namespace" 
-    xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200903" 
+<definitions xmlns:xml="http://www.w3.org/XML/1998/namespace" 
+    xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+    xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903" 
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     targetNamespace="http://docs.oasis-open.org/ns/opencsa/sca/200903">
                  
@@ -98,7 +99,7 @@
 	    </description>
 	</intent>	           
 
-	<intent name="ordered" appliesTo="sca:binding" 
+	<intent name="ordered" constrains="sca:binding" 
 	    intentType="interaction">
 		<description>
 			This intent is used to indicate that all the messages are 
@@ -217,8 +218,8 @@
 		Specifies that the SOAP messaging model is used for delivering 
 		messages.
 		</description>
-		<qualifier name="1_1" default="true"/>
-		<qualifier name="1_2"/>
+		<qualifier name="V1_1" default="true"/>
+		<qualifier name="V1_2"/>
 	</intent>	
 
 	<intent name="JMS" constrains="sca:binding" intentType="interaction">
@@ -240,4 +241,4 @@
 		</description>
 	</intent>	
 	
-</sca:definitions>
+</definitions>
