@@ -18,6 +18,10 @@
  */
 package org.apache.tuscany.sca.otest;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
 import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;
@@ -36,10 +40,19 @@ public class TuscanyRuntimeBridge implements RuntimeBridge {
 
     protected NodeFactory launcher;
     protected Node node;
+    protected Properties expectedErrorMessages;
+    
     TestConfiguration testConfiguration = null;
 
     public TuscanyRuntimeBridge() {
-
+        // read test error mapping
+        expectedErrorMessages = new Properties();
+        try {
+            InputStream propertiesStream = this.getClass().getResourceAsStream("/oasis-sca-tests-errors.properties");
+            expectedErrorMessages.load(propertiesStream);
+        } catch (IOException e) {   
+            System.out.println("Unable to read oasis-sca-tests-errors.properties file");
+        } 
     }
 
     public TestConfiguration getTestConfiguration() {
@@ -118,5 +131,35 @@ public class TuscanyRuntimeBridge implements RuntimeBridge {
     public String getContributionLocation(Class<?> testClass) {
         return ContributionLocationHelper.getContributionLocation(testConfiguration.getTestClass());
     } // end method getContributionLocation
+    
+    public boolean checkError(String testName, Throwable ex){       
+        String expectedMessage = expectedErrorMessages.getProperty(testName);
+        String receivedMessage = ex.getMessage();
+        
+        if (expectedMessage == null){
+            System.out.println("Null expected error message for test " + testName);
+            System.out.println("Please add message to oasis-sca-tests-errors.properties");
+            return false;
+        }
+        
+        if (receivedMessage == null){
+            System.out.println("Null received error message for test " + testName);
+            return false;
+        }
+        
+        int messageStart = receivedMessage.indexOf("] - ");
+        
+        if (messageStart < 0){
+            System.out.println("Message separator not found for test " + testName);
+        }
+        
+        receivedMessage = receivedMessage.substring(messageStart + 4);
+        
+        if (receivedMessage.startsWith(expectedMessage)){
+            return true;
+        } else {
+            return false;
+        }
+    }
 
 } // end class TuscanyRuntimeBridge

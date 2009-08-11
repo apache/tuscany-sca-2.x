@@ -119,5 +119,10 @@ public class TuscanyOSGiRuntimeBridge implements RuntimeBridge {
     public String getContributionLocation(Class<?> testClass) {
         return ContributionLocationHelper.getContributionLocation(testConfiguration.getTestClass());
     } // end method getContributionLocation
+    
+    public boolean checkError(String testName, Throwable exception) {
+        // TODO Auto-generated method stub
+        return true;
+    }    
 
 } // end class TuscanyRuntimeBridge
