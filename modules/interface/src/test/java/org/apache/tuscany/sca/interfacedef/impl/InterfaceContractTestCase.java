@@ -51,7 +51,9 @@ public class InterfaceContractTestCase {
     @Test
     public void testClone() throws Exception {
         InterfaceContract copy = (InterfaceContract) contract.clone();
-        Assert.assertEquals(contract, copy);
+        Assert.assertNotNull(copy);
+        Assert.assertNotSame(copy.getCallbackInterface(), contract.getCallbackInterface());
+        Assert.assertNotSame(copy.getInterface(), contract.getInterface());
     }
 
     private static class MockInterfaceContract extends InterfaceContractImpl implements InterfaceContract {

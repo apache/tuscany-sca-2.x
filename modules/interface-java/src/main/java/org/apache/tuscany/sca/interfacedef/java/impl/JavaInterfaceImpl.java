@@ -69,6 +69,9 @@ public class JavaInterfaceImpl extends InterfaceImpl implements JavaInterface {
 
     public void setJavaClass(Class<?> javaClass) {
         this.javaClass = javaClass;
+        if (javaClass != null) {
+            this.className = javaClass.getName();
+        }
     }
     
     public Class<?> getCallbackClass() {
@@ -85,28 +88,47 @@ public class JavaInterfaceImpl extends InterfaceImpl implements JavaInterface {
     }
 
     @Override
-    public int hashCode() {
-        return String.valueOf(getName()).hashCode();
-    }
-    
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        } else if (obj instanceof JavaInterface) {
-            if (getName() != null) {
-                return getName().equals(((JavaInterface)obj).getName());
-            } else {
-                return ((JavaInterface)obj).getName() == null;
-            }
-        } else {
-            return false;
-        }
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 
     @Override
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((className == null) ? 0 : className.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        JavaInterfaceImpl other = (JavaInterfaceImpl)obj;
+        if (isUnresolved() || other.isUnresolved()) {
+            if (className == null) {
+                if (other.className != null)
+                    return false;
+            } else if (!className.equals(other.className))
+                return false;
+        } else {
+            if (javaClass == null) {
+                if (other.javaClass != null)
+                    return false;
+            } else if (!javaClass.equals(other.javaClass))
+                return false;
+            if (callbackClass == null) {
+                if (other.callbackClass != null)
+                    return false;
+            } else if (!callbackClass.equals(other.callbackClass))
+                return false;
+        }
+
+        return true;
     }
 
 }

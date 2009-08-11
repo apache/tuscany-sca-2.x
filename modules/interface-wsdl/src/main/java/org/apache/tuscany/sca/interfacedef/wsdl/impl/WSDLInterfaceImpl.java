@@ -61,25 +61,8 @@ public class WSDLInterfaceImpl extends InterfaceImpl implements WSDLInterface {
 
     public void setPortType(PortType portType) {
         this.portType = portType;
-    }
-
-    @Override
-    public int hashCode() {
-        return String.valueOf(getName()).hashCode();
-    }
-    
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        } else if (obj instanceof WSDLInterface) {
-            if (getName() != null) {
-                return getName().equals(((WSDLInterface)obj).getName());
-            } else {
-                return ((WSDLInterface)obj).getName() == null;
-            }
-        } else {
-            return false;
+        if (portType != null) {
+            this.name = portType.getQName();
         }
     }
 
@@ -94,6 +77,39 @@ public class WSDLInterfaceImpl extends InterfaceImpl implements WSDLInterface {
     @Override
     public WSDLInterfaceImpl clone() throws CloneNotSupportedException {
         return (WSDLInterfaceImpl) super.clone();
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        WSDLInterfaceImpl other = (WSDLInterfaceImpl)obj;
+        if (isUnresolved() || other.isUnresolved()) {
+            if (name == null) {
+                if (other.name != null)
+                    return false;
+            } else if (!name.equals(other.name))
+                return false;
+        } else {
+            if (portType == null) {
+                if (other.portType != null)
+                    return false;
+            } else if (!portType.equals(other.portType))
+                return false;
+        }
+        return true;
     }
 
 }
