@@ -27,10 +27,12 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.server.RMISocketFactory;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
+
 
 /**
  * Default implementation of a RMI host.
@@ -39,16 +41,18 @@ import java.util.logging.Logger;
  */
 public class DefaultRMIHost implements RMIHost {
     private final static Logger logger = Logger.getLogger(DefaultRMIHost.class.getName());
+    private static final int CONNECTION_TIMEOUT = 3000; // 3 seconds
+
     // Map of RMI registries started and running
     private Map<String, Registry> rmiRegistries;
+    
+    private RMISocketFactory socketFactory;
 
     public DefaultRMIHost() {
         rmiRegistries = new ConcurrentHashMap<String, Registry>();
-        /*
-         * if (System.getSecurityManager() == null) { System.setSecurityManager(new RMISecurityManager()); }
-         */
+        this.socketFactory = new RMISocketFactoryImpl(CONNECTION_TIMEOUT);
     }
-
+    
     public void registerService(String uri, Remote serviceObject) throws RMIHostException, RMIHostRuntimeException {
         RMIURI rmiURI = new RMIURI(uri);
 
@@ -57,10 +61,11 @@ public class DefaultRMIHost implements RMIHost {
             registry = rmiRegistries.get(Integer.toString(rmiURI.port));
             if (registry == null) {
                 try {
-                    registry = LocateRegistry.getRegistry(rmiURI.port);
+                    registry = LocateRegistry.getRegistry(null, rmiURI.port, socketFactory);
+                    // FIXME: It takes about 15 seconds to time out
                     registry.lookup(rmiURI.serviceName);
                 } catch (RemoteException e) {
-                    registry = LocateRegistry.createRegistry(rmiURI.port);
+                    registry = LocateRegistry.createRegistry(rmiURI.port, socketFactory, socketFactory);
                 } catch (NotBoundException e) {
                     // Ignore
                 }
@@ -84,7 +89,7 @@ public class DefaultRMIHost implements RMIHost {
         try {
             Registry registry = rmiRegistries.get(Integer.toString(rmiURI.port));
             if (registry == null) {
-                registry = LocateRegistry.getRegistry(rmiURI.port);
+                registry = LocateRegistry.getRegistry(null, rmiURI.port, socketFactory);
                 rmiRegistries.put(Integer.toString(rmiURI.port), registry);
             }
             registry.unbind(rmiURI.serviceName);
@@ -105,7 +110,7 @@ public class DefaultRMIHost implements RMIHost {
         try {
             // Requires permission java.net.SocketPermission "host:port", "connect,accept,resolve"
             // in security policy.
-            Registry registry = LocateRegistry.getRegistry(rmiURI.host, rmiURI.port);
+            Registry registry = LocateRegistry.getRegistry(rmiURI.host, rmiURI.port, socketFactory);
 
             if (registry != null) {
                 remoteService = registry.lookup(rmiURI.serviceName);
