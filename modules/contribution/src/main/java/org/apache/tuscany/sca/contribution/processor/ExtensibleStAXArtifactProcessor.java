@@ -148,10 +148,7 @@ public class ExtensibleStAXArtifactProcessor implements StAXArtifactProcessor<Ob
         StAXArtifactProcessor<?> processor = (StAXArtifactProcessor<?>)processors.getProcessor(name);
         if (processor == null) {
             Location location = source.getLocation();
-            if (logger.isLoggable(Level.WARNING)) {
-                logger.warning("Element " + name + " cannot be processed. (" + location + ")");
-            }
-            warning("ElementCannotBeProcessed", processors, name, location);
+            error("ElementCannotBeProcessed", processors, name, location);
 
             StAXArtifactProcessor anyElementProcessor = processors.getProcessor(ANY_ELEMENT);
             if (anyElementProcessor != null) {
