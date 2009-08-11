@@ -50,6 +50,9 @@ public class ReferenceTag extends TagSupport {
 
         ServletContext servletContext = pageContext.getServletContext();
         RuntimeComponent component = (RuntimeComponent)servletContext.getAttribute("org.apache.tuscany.sca.implementation.web.RuntimeComponent");
+        if (component == null) {
+            throw new JspException("No Web component found. Is there an <implementation.web> missing?");
+        }
         
         Class<?> typeClass;
         try {
