@@ -140,10 +140,10 @@ public class XMLDocumentHelper {
     }
 
     public static InputSource getInputSource(URL url, InputStream is) throws IOException {
-        is = new BufferedInputStream(is);
-        String encoding = getEncoding(is);
+        // is = new BufferedInputStream(is);
+        // String encoding = getEncoding(is);
         InputSource inputSource = new InputSource(is);
-        inputSource.setEncoding(encoding);
+        // inputSource.setEncoding(encoding);
         // [rfeng] Make sure we set the system id as it will be used as the base URI for nested import/include 
         inputSource.setSystemId(url.toString());
         return inputSource;

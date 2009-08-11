@@ -29,6 +29,8 @@ Bundle-Description: Apache Tuscany SCA XSD Model
 Import-Package: javax.xml.namespace,
  javax.xml.stream,
  org.apache.tuscany.sca.assembly;version="2.0.0",
+ org.apache.tuscany.sca.common.xml;version="2.0.0",
+ org.apache.tuscany.sca.common.xml.stax;version="2.0.0",
  org.apache.tuscany.sca.contribution;version="2.0.0",
  org.apache.tuscany.sca.contribution.namespace;version="2.0.0",
  org.apache.tuscany.sca.contribution.processor;version="2.0.0",

@@ -25,10 +25,10 @@ import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Collections;
 
 import javax.wsdl.Definition;
 import javax.wsdl.Operation;
@@ -48,6 +48,7 @@ import javax.wsdl.xml.WSDLLocator;
 import javax.wsdl.xml.WSDLReader;
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.common.xml.XMLDocumentHelper;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
@@ -62,7 +63,6 @@ import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.xsd.XSDFactory;
 import org.apache.tuscany.sca.xsd.XSDefinition;
-import org.apache.tuscany.sca.xsd.xml.XMLDocumentHelper;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -211,7 +211,7 @@ public class WSDLModelResolver implements ModelResolver {
                     return null;
                 }
                 latestImportURI = url.toString();
-                return XMLDocumentHelper.getInputSource(url);
+                return XMLDocumentHelper.getInputSource(url); 
             } catch (Exception e) {
                 throw new ContributionRuntimeException(e);
             }

@@ -23,6 +23,7 @@ import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -189,7 +190,7 @@ public abstract class BaseStAXArtifactProcessor {
      * @param uri
      * @throws XMLStreamException
      */
-    private String writeElementPrefix(XMLStreamWriter writer, String uri) throws XMLStreamException {
+    private String setPrefix(XMLStreamWriter writer, String uri) throws XMLStreamException {
         if (uri == null) {
             return null;
         }
@@ -220,11 +221,15 @@ public abstract class BaseStAXArtifactProcessor {
      * @throws XMLStreamException
      */
     protected void writeStart(XMLStreamWriter writer, String uri, String name, XAttr... attrs) throws XMLStreamException {
-        String prefix = writeElementPrefix(writer, uri);
+//        String prefix = setPrefix(writer, uri);
         writer.writeStartElement(uri, name);
-        if (prefix != null){
-            writer.writeNamespace(prefix,uri);
-        }
+
+        // [rfeng] When the XMLStreamWriter is in the repairing namespace mode, we should not try to write namespace
+        // as it will create duplicate namespace declarations
+        
+//        if (prefix != null){
+//             writer.writeNamespace(prefix,uri);
+//        }
         writeAttributePrefixes(writer, attrs);
         writeAttributes(writer, attrs);
     }
@@ -257,7 +262,7 @@ public abstract class BaseStAXArtifactProcessor {
         writer.writeStartDocument();
         writer.setDefaultNamespace(uri);
         writeStart(writer, uri, name, attrs);
-        writer.writeDefaultNamespace(uri);
+        // writer.writeDefaultNamespace(uri);
     }
 
     /**
@@ -535,10 +540,10 @@ public abstract class BaseStAXArtifactProcessor {
                 // Write a QName
                 str = writeQNameValue(writer, (QName)value);
 
-            } else if (value instanceof List) {
+            } else if (value instanceof Collection) {
 
                 // Write a list of values
-                List<?> values = (List<?>)value;
+                Collection<?> values = (Collection<?>)value;
                 if (values.isEmpty()) {
                     return;
                 }
@@ -599,10 +604,10 @@ public abstract class BaseStAXArtifactProcessor {
                 // Write prefix for a single QName value
                 writeQNamePrefix(writer, (QName)value);
 
-            } else if (value instanceof List) {
+            } else if (value instanceof Collection) {
 
                 // Write prefixes for a list of values
-                for (Object v: (List<?>)value) {
+                for (Object v: (Collection<?>)value) {
                     if (v instanceof QName) {
                         // Write prefix for a QName value
                         writeQNamePrefix(writer, (QName)v);

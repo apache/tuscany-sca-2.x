@@ -20,7 +20,6 @@
 package org.apache.tuscany.sca.interfacedef.wsdl.xml;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 import java.util.List;
@@ -29,14 +28,16 @@ import javax.wsdl.Definition;
 import javax.wsdl.Import;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.sca.common.xml.stax.StAXHelper;
+import org.apache.tuscany.sca.common.xml.stax.StAXHelper.Attribute;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
@@ -58,16 +59,18 @@ public class WSDLDocumentProcessor implements URLArtifactProcessor<WSDLDefinitio
     public static final QName XSD = new QName("http://www.w3.org/2001/XMLSchema", "schema");
 
     private XMLInputFactory inputFactory;
-
+    private StAXHelper helper;
     private WSDLFactory factory;
     private XSDFactory xsdFactory;
     private Monitor monitor;
 
-    public WSDLDocumentProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
+    public WSDLDocumentProcessor(ExtensionPointRegistry registry, StAXArtifactProcessor processor, Monitor monitor) {
+        FactoryExtensionPoint modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
         this.factory = modelFactories.getFactory(WSDLFactory.class);
         this.xsdFactory = modelFactories.getFactory(XSDFactory.class);
         this.inputFactory = modelFactories.getFactory(XMLInputFactory.class);
         this.monitor = monitor;
+        this.helper = StAXHelper.getInstance(registry);
     }
 
     /**
@@ -191,43 +194,28 @@ public class WSDLDocumentProcessor implements URLArtifactProcessor<WSDLDefinitio
         wsdlDefinition.setUnresolved(true);
         wsdlDefinition.setLocation(doc.toURI());
 
-        InputStream is = doc.openStream();
-        try {
-            XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-            int eventType = reader.getEventType();
-            int index = 0;
-            while (true) {
-                if (eventType == XMLStreamConstants.START_ELEMENT) {
-                    if (WSDL11.equals(reader.getName())) {
-                        String tns = reader.getAttributeValue(null, "targetNamespace");
-                        wsdlDefinition.setNamespace(tns);
-                        // The definition is marked as resolved but not loaded
-                        wsdlDefinition.setUnresolved(false);
-                        wsdlDefinition.setDefinition(null);
-                    }
-                    if (XSD.equals(reader.getName())) {
-                        String tns = reader.getAttributeValue(null, "targetNamespace");
-                        XSDefinition xsd = xsdFactory.createXSDefinition();
-                        xsd.setUnresolved(true);
-                        xsd.setNamespace(tns);
-                        xsd.setLocation(URI.create(doc.toURI() + "#" + index));
-                        index++;
-                        // The definition is marked as resolved but not loaded
-                        xsd.setUnresolved(false);
-                        xsd.setSchema(null);
-                        wsdlDefinition.getXmlSchemas().add(xsd);
-                    }
-                }
-                if (reader.hasNext()) {
-                    eventType = reader.next();
-                } else {
-                    break;
-                }
-            }
-            return wsdlDefinition;
-        } finally {
-            is.close();
+        Attribute attr1 = new Attribute(WSDL11, "targetNamespace");
+        Attribute attr2 = new Attribute(XSD, "targetNamespace");
+        Attribute[] attrs = helper.readAttributes(doc, attr1, attr2);
+
+        wsdlDefinition.setNamespace(attr1.getValues().get(0));
+        // The definition is marked as resolved but not loaded
+        wsdlDefinition.setUnresolved(false);
+        wsdlDefinition.setDefinition(null);
+
+        int index = 0;
+        for (String tns : attr2.getValues()) {
+            XSDefinition xsd = xsdFactory.createXSDefinition();
+            xsd.setUnresolved(true);
+            xsd.setNamespace(tns);
+            xsd.setLocation(URI.create(doc.toURI() + "#" + index));
+            index++;
+            // The definition is marked as resolved but not loaded
+            xsd.setUnresolved(false);
+            xsd.setSchema(null);
+            wsdlDefinition.getXmlSchemas().add(xsd);
         }
+        return wsdlDefinition;
     }
 
 }

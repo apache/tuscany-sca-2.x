@@ -19,6 +19,10 @@
 
 package org.apache.tuscany.sca.assembly.xsd;
 
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.xml.namespace.QName;
 
 /**
@@ -98,4 +102,40 @@ public interface Constants {
     String ZERO_N = "0..n";
     String ONE_ONE = "1..1";
     String ONE_N = "1..n";
+    
+    /**
+     * Cache for public XSDs and DTDs
+     */
+    Map<String, URL> CACHED_XSDS = XSDCache.cache();
+
+    static class XSDCache {
+        static Map<String, URL> cache() {
+            Map<String, URL> cachedXSDs = new HashMap<String, URL>();
+            cachedXSDs.put(Constants.SCA11_NS, Constants.class.getResource("/sca-1.1-cd04.xsd"));
+            cachedXSDs
+                .put("http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd",
+                     Constants.class
+                         .getResource("/org/apache/tuscany/sca/assembly/xsd/oasis-200401-wss-wssecurity-secext-1.0.xsd"));
+            cachedXSDs
+                .put("http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd",
+                     Constants.class
+                         .getResource("/org/apache/tuscany/sca/assembly/xsd/oasis-200401-wss-wssecurity-utility-1.0.xsd"));
+            cachedXSDs.put("http://www.w3.org/2005/08/addressing", Constants.class
+                .getResource("/org/apache/tuscany/sca/assembly/xsd/ws-addr.xsd"));
+            cachedXSDs.put("http://www.w3.org/ns/ws-policy", Constants.class
+                .getResource("/org/apache/tuscany/sca/assembly/xsd/ws-policy.xsd"));
+            cachedXSDs.put("http://www.w3.org/ns/wsdl-instance", Constants.class
+                .getResource("/org/apache/tuscany/sca/assembly/xsd/wsdli.xsd"));
+            cachedXSDs.put("http://www.w3.org/XML/1998/namespace", Constants.class
+                .getResource("/org/apache/tuscany/sca/assembly/xsd/xml.xsd"));
+            cachedXSDs.put("http://www.w3.org/2000/09/xmldsig#", Constants.class
+                .getResource("/org/apache/tuscany/sca/assembly/xsd/xmldsig-core-schema.xsd"));
+
+            cachedXSDs.put("-//W3C//DTD XMLSCHEMA 200102//EN", Constants.class
+                .getResource("/org/apache/tuscany/sca/assembly/xsd/XMLSchema.dtd"));
+            cachedXSDs.put("datatypes", Constants.class
+                .getResource("/org/apache/tuscany/sca/assembly/xsd/datatypes.dtd"));
+            return cachedXSDs;
+        }
+    };
 }

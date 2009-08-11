@@ -211,7 +211,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
      * @throws XMLStreamException
      */
     protected void writeStart(XMLStreamWriter writer, String name, XAttr... attrs) throws XMLStreamException {
-        writeStart(writer, SCA11_NS, name, attrs);
+        super.writeStart(writer, SCA11_NS, name, attrs);
     }
 
     /**
@@ -220,10 +220,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
      * @throws XMLStreamException
      */
     protected void writeStartDocument(XMLStreamWriter writer, String name, XAttr... attrs) throws XMLStreamException {
-        writer.writeStartDocument();
-        writer.setDefaultNamespace(SCA11_NS);
-        writeStart(writer, SCA11_NS, name, attrs);
-        writer.writeDefaultNamespace(SCA11_NS);
+        super.writeStartDocument(writer, SCA11_NS, name, attrs);
     }
 
     /**

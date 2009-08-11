@@ -75,7 +75,7 @@ public class ExtensibleStAXAttributeProcessor implements StAXAttributeProcessor<
         this.inputFactory = inputFactory;
         this.outputFactory = outputFactory;
         if (this.outputFactory != null) {
-            this.outputFactory.setProperty("javax.xml.stream.isRepairingNamespaces", Boolean.TRUE);
+            this.outputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.TRUE);
         }
         this.monitor = monitor;
     }

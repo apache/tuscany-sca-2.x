@@ -70,13 +70,13 @@ import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
 import org.apache.tuscany.sca.assembly.AbstractContract;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.axis2.policy.configuration.Axis2ConfigParamPolicy;
+import org.apache.tuscany.sca.common.xml.XMLDocumentHelper;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySubject;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.xsd.xml.XMLDocumentHelper;
 import org.apache.ws.commons.schema.resolver.URIResolver;
 
 public class Axis2ServiceClient {
@@ -205,7 +205,7 @@ public class Axis2ServiceClient {
                     baseUri = definition.getDocumentBaseURI();
                 }
                 URL url = new URL(new URL(baseUri), schemaLocation);
-                return XMLDocumentHelper.getInputSource(url);
+                return XMLDocumentHelper.getInputSource(url); 
             } catch (IOException e) {
                 return null;
             }

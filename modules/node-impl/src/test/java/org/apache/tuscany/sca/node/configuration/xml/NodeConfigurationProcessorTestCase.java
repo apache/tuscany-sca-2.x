@@ -67,6 +67,7 @@ public class NodeConfigurationProcessorTestCase {
         NodeConfiguration config = (NodeConfiguration) processor.read(reader);
         StringWriter sw = new StringWriter();
         XMLOutputFactory xmlOutputFactory = factories.getFactory(XMLOutputFactory.class);
+        xmlOutputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.TRUE);
         XMLStreamWriter writer = xmlOutputFactory.createXMLStreamWriter(sw);
         processor.write(config, writer);
         writer.flush();

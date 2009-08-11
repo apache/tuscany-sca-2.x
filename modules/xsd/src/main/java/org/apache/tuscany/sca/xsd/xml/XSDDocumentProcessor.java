@@ -25,10 +25,13 @@ import java.net.URL;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 
+import org.apache.tuscany.sca.common.xml.stax.StAXHelper;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
@@ -42,15 +45,17 @@ import org.apache.tuscany.sca.xsd.XSDefinition;
  * @version $Rev$ $Date$
  */
 public class XSDDocumentProcessor implements URLArtifactProcessor<XSDefinition> {
-
+    private StAXHelper helper;
     private XSDFactory factory;
     private XMLInputFactory inputFactory;
     private Monitor monitor;
 
-    public XSDDocumentProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
+    public XSDDocumentProcessor(ExtensionPointRegistry registry, StAXArtifactProcessor processor, Monitor monitor) {
+        FactoryExtensionPoint modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
         this.factory = modelFactories.getFactory(XSDFactory.class);
         this.inputFactory = modelFactories.getFactory(XMLInputFactory.class);
         this.monitor = monitor;
+        this.helper = StAXHelper.getInstance(registry);
     }
     
     /**
@@ -93,7 +98,7 @@ public class XSDDocumentProcessor implements URLArtifactProcessor<XSDefinition> 
     protected XSDefinition indexRead(URL doc) throws Exception {
         XSDefinition xsd = factory.createXSDefinition();
         xsd.setUnresolved(true);
-        xsd.setNamespace(XMLDocumentHelper.readTargetNamespace(doc, XSD, true, "targetNamespace", inputFactory));
+        xsd.setNamespace(helper.readAttribute(doc, XSD, "targetNamespace"));
         xsd.setLocation(doc.toURI());
         xsd.setUnresolved(false);
         return xsd;

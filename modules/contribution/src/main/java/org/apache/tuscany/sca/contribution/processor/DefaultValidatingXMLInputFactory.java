@@ -22,16 +22,21 @@ package org.apache.tuscany.sca.contribution.processor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.io.StringReader;
 import java.net.URL;
-import java.net.URLConnection;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
 import javax.xml.XMLConstants;
+import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.EventFilter;
@@ -44,10 +49,13 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.util.XMLEventAllocator;
 import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.sax.SAXSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
+import org.apache.tuscany.sca.assembly.xsd.Constants;
+import org.apache.tuscany.sca.common.xml.XMLDocumentHelper;
+import org.apache.tuscany.sca.common.xml.stax.StAXHelper;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
@@ -59,6 +67,7 @@ import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSInput;
 import org.w3c.dom.ls.LSResourceResolver;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 /**
@@ -77,6 +86,7 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
     private boolean initialized;
     private boolean hasSchemas;
     private Schema aggregatedSchema;
+    private StAXHelper helper;
 
     public DefaultValidatingXMLInputFactory(ExtensionPointRegistry registry) {
         FactoryExtensionPoint factoryExtensionPoint = registry.getExtensionPoint(FactoryExtensionPoint.class);
@@ -85,6 +95,7 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
         this.schemas = registry.getExtensionPoint(ValidationSchemaExtensionPoint.class);
         this.monitor =
             registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(MonitorFactory.class).createMonitor();
+        this.helper = StAXHelper.getInstance(registry);
     }
 
     /**
@@ -131,12 +142,50 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
             monitor.problem(problem);
         }
     }
+    
+    public static final QName XSD = new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, "schema");
+
+    private Collection<? extends Source> aggregate(URL... urls) throws IOException, XMLStreamException {
+        if (urls.length == 1) {
+            return Collections.singletonList(new SAXSource(XMLDocumentHelper.getInputSource(urls[0])));
+        }
+        Map<String, Collection<URL>> map = new HashMap<String, Collection<URL>>();
+
+        for (URL url : urls) {
+            String tns = helper.readAttribute(url, XSD, "targetNamespace");
+            Collection<URL> collection = map.get(tns);
+            if (collection == null) {
+                collection = new HashSet<URL>();
+                map.put(tns, collection);
+            }
+            collection.add(url);
+        }
+        List<Source> sources = new ArrayList<Source>();
+        for (Map.Entry<String, Collection<URL>> e : map.entrySet()) {
+            if (e.getValue().size() == 1) {
+                sources.add(new SAXSource(XMLDocumentHelper.getInputSource(e.getValue().iterator().next())));
+            } else {
+                StringBuffer xsd = new StringBuffer("<schema xmlns=\"http://www.w3.org/2001/XMLSchema\"");
+                if (e.getKey() != null) {
+                    xsd.append(" targetNamespace=\"").append(e.getKey()).append("\"");
+                }
+                xsd.append(">");
+                for (URL url : e.getValue()) {
+                    xsd.append("<include schemaLocation=\"").append(url).append("\"/>");
+                }
+                xsd.append("</schema>");
+                SAXSource source = new SAXSource(new InputSource(new StringReader(xsd.toString())));
+                sources.add(source);
+            }
+        }
+        return sources;
+    }
 
     /**
      * Initialize the registered schemas and create an aggregated schema for
      * validation.
      */
-    private void initializeSchemas() {
+    private synchronized void initializeSchemas() {
         if (initialized) {
             return;
         }
@@ -151,41 +200,15 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
             } else {
                 hasSchemas = true;
             }
-            final Source[] sources = new Source[n];
-            for (int i =0; i < n; i++) {
-                final String uri = uris.get(i);
-                // Allow privileged access to open URL stream. Requires FilePermission in security policy.
-                final URL url = new URL( uri );
-                InputStream urlStream;
-                try {
-                    urlStream = AccessController.doPrivileged(new PrivilegedExceptionAction<InputStream>() {
-                        public InputStream run() throws IOException {
-                            URLConnection connection = url.openConnection();
-                            connection.setUseCaches(false);
-                            return connection.getInputStream();
-                        }
-                    });
-                } catch (PrivilegedActionException e) {
-                	error("PrivilegedActionException", url, (IOException)e.getException());
-                    throw (IOException)e.getException();
-                }
-                sources[i] = new StreamSource(urlStream, uri);
+            
+            URL[] urls = new URL[uris.size()];
+            for (int i = 0; i < urls.length; i++) {
+                urls[i] = new URL(uris.get(i));
             }
+            final Collection<? extends Source> sources = aggregate(urls);            
 
             // Create an aggregated validation schemas from all the XSDs
             final SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-
-            /*
-            // Set the feature to avoid DTD processing
-            try {
-                schemaFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-dtd-grammar", false);
-                schemaFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-                schemaFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-            } catch (SAXException e) {
-                // Ignore
-            }
-            */
-
             DOMImplementation impl = null;
             try {
                 impl = documentBuilderFactory.newDocumentBuilder().getDOMImplementation();
@@ -201,7 +224,7 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
             try {
                 aggregatedSchema = AccessController.doPrivileged(new PrivilegedExceptionAction<Schema>() {
                     public Schema run() throws SAXException {
-                        return schemaFactory.newSchema(sources);
+                        return schemaFactory.newSchema(sources.toArray(new Source[sources.size()]));
                     }
                 });
             } catch (PrivilegedActionException e) {
@@ -371,36 +394,6 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
         inputFactory.setXMLResolver(arg0);
     }
 
-    /**
-     * Cache for public XSDs and DTDs
-     */
-    private static Map<String, URL> cachedXSDs = new HashMap<String, URL>();
-    static {
-        cachedXSDs
-            .put("http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd",
-                 DefaultValidatingXMLInputFactory.class
-                     .getResource("/org/apache/tuscany/sca/assembly/xsd/oasis-200401-wss-wssecurity-secext-1.0.xsd"));
-        cachedXSDs
-            .put("http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd",
-                 DefaultValidatingXMLInputFactory.class
-                     .getResource("/org/apache/tuscany/sca/assembly/xsd/oasis-200401-wss-wssecurity-utility-1.0.xsd"));
-        cachedXSDs.put("http://www.w3.org/2005/08/addressing", DefaultValidatingXMLInputFactory.class
-            .getResource("/org/apache/tuscany/sca/assembly/xsd/ws-addr.xsd"));
-        cachedXSDs.put("http://www.w3.org/ns/ws-policy", DefaultValidatingXMLInputFactory.class
-            .getResource("/org/apache/tuscany/sca/assembly/xsd/ws-policy.xsd"));
-        cachedXSDs.put("http://www.w3.org/ns/wsdl-instance", DefaultValidatingXMLInputFactory.class
-            .getResource("/org/apache/tuscany/sca/assembly/xsd/wsdli.xsd"));
-        cachedXSDs.put("http://www.w3.org/XML/1998/namespace", DefaultValidatingXMLInputFactory.class
-            .getResource("/org/apache/tuscany/sca/assembly/xsd/xml.xsd"));
-        cachedXSDs.put("http://www.w3.org/2000/09/xmldsig#", DefaultValidatingXMLInputFactory.class
-            .getResource("/org/apache/tuscany/sca/assembly/xsd/xmldsig-core-schema.xsd"));
-
-        cachedXSDs.put("-//W3C//DTD XMLSCHEMA 200102//EN", DefaultValidatingXMLInputFactory.class
-            .getResource("/org/apache/tuscany/sca/assembly/xsd/XMLSchema.dtd"));
-        cachedXSDs.put("datatypes", DefaultValidatingXMLInputFactory.class
-            .getResource("/org/apache/tuscany/sca/assembly/xsd/datatypes.dtd"));
-    };
-
     public LSInput resolveResource(String type, String namespaceURI, String publicId, String systemId, String baseURI) {
         String key = null;
         if("http://www.w3.org/2001/XMLSchema".equals(type)) {
@@ -408,10 +401,12 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
         } else if("http://www.w3.org/TR/REC-xml".equals(type)) {
             key = publicId;
         }
-        URL url = cachedXSDs.get(key);
-        if (url != null) {
+        URL url = Constants.CACHED_XSDS.get(key);
+        if (url != null && !Constants.SCA11_NS.equals(namespaceURI)) {
             systemId = url.toString();
-        }
+        } else if (url != null && systemId == null) {
+            systemId = url.toString();
+        } 
 
         LSInput input = ls.createLSInput();
         input.setBaseURI(baseURI);
