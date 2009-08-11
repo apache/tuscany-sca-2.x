@@ -29,4 +29,11 @@
         </service>
     </component>   
   
+    <component name="HelloWorldClient">
+        <implementation.java class="helloworld.HelloWorldClient"/>
+        <reference name="ref" >
+            <tuscany:binding.jsonp uri="http://localhost:8085/HelloWorldComponent/HelloWorldService"/>
+        </reference>
+    </component>   
+
 </composite>

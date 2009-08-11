@@ -80,7 +80,13 @@ public class JSONPServlet extends GenericServlet {
 
                 // automatically quote string parammeters so clients work in the usual javascript way
                 if (typesIndex < types.size() && String.class.equals(types.get(typesIndex).getGenericType())) {
-                    jsonRequest += "\"" + servletRequest.getParameter(name) + "\"";
+                    String x = servletRequest.getParameter(name);
+                    // TODO: do this more properly
+                    if (!x.startsWith("\"")) {
+                        jsonRequest += "\"" + x + "\"";
+                    } else {
+                        jsonRequest += x;
+                    }
                 } else {
                     jsonRequest += servletRequest.getParameter(name);
                 }

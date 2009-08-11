@@ -19,9 +19,20 @@
 
 package org.apache.tuscany.sca.binding.jsonp.runtime;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
+import org.apache.commons.codec.EncoderException;
+import org.apache.commons.codec.net.URLCodec;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.URIUtils;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
@@ -49,12 +60,12 @@ public class JSONPInvoker implements Invoker {
 
             return doInvoke(msg);
             
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    public Message doInvoke(Message msg) throws JsonGenerationException, JsonMappingException, IOException {
+    public Message doInvoke(Message msg) throws JsonGenerationException, JsonMappingException, IOException, EncoderException {
         String uri = endpoint.getBinding().getURI() + "/" + operation.getName();
         String[] jsonArgs = objectsToJSON((Object[])msg.getBody());
 
@@ -66,9 +77,70 @@ public class JSONPInvoker implements Invoker {
         return msg;
     }
 
-    protected String invokeHTTPRequest(String uri, String[] jsonArgs) {
-        // TODO Auto-generated method stub
-        return null;
+    protected String invokeHTTPRequest(String url, String[] jsonArgs) throws IOException, EncoderException {
+        
+         HttpClient httpclient = new DefaultHttpClient();
+         
+         
+         URLCodec uc = new URLCodec();
+         for (int i=0 ; i<jsonArgs.length; i++) {
+             if (i == 0) {
+                 url += '?';
+             } else {
+                 url += '&';
+             }
+             url += "arg" + i + "=";
+             url += uc.encode(jsonArgs[i]);
+         }
+
+         HttpGet httpget = new HttpGet(url); 
+
+         HttpResponse response = httpclient.execute(httpget);
+         
+         StringBuffer responseJSON = new StringBuffer(); 
+
+         HttpEntity entity = response.getEntity();
+         
+         // If the response does not enclose an entity, there is no need
+         // to worry about connection release
+         if (entity != null) {
+             InputStream instream = entity.getContent();
+             try {
+                 
+                 BufferedReader reader = new BufferedReader(new InputStreamReader(instream));
+                 String s = null;
+                 while ((s = reader.readLine()) != null) {
+                     responseJSON.append(s);
+                 }
+                 
+             } catch (IOException ex) {
+         
+                 // In case of an IOException the connection will be released
+                 // back to the connection manager automatically
+                 throw ex;
+                 
+             } catch (RuntimeException ex) {
+         
+                 // In case of an unexpected exception you may want to abort
+                 // the HTTP request in order to shut down the underlying 
+                 // connection and release it back to the connection manager.
+                 httpget.abort();
+                 throw ex;
+                 
+             } finally {
+         
+                 // Closing the input stream will trigger connection release
+                 instream.close();
+                 
+             }
+             
+             // When HttpClient instance is no longer needed, 
+             // shut down the connection manager to ensure
+             // immediate deallocation of all system resources
+             httpclient.getConnectionManager().shutdown();        
+         }
+         
+         return responseJSON.toString();
     }
 
     protected String[] objectsToJSON(Object[] msgArgs) throws JsonGenerationException, JsonMappingException, IOException {
@@ -83,7 +155,7 @@ public class JSONPInvoker implements Invoker {
 
     protected Object[] jsonToObjects(String jsonRequest) throws JsonParseException, JsonMappingException, IOException {
         Class<?> c = new Object[0].getClass();
-        Object[] args = (Object[])mapper.readValue(jsonRequest, c);
+        Object[] args = (Object[])mapper.readValue("[" + jsonRequest +"]", c);
         return args;
     }
 

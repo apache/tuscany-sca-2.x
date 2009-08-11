@@ -18,6 +18,8 @@
  */
 package test;
 
+import helloworld.HelloWorldService;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -52,6 +54,16 @@ public class BindingTestCase {
         BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
         String response = br.readLine();
         Assert.assertEquals("foo(\"Hello petra arnold\");", response);
+
+    }
+
+    @Test
+    public void testReference() throws MalformedURLException, IOException {
+        
+        HelloWorldService client = node.getService(HelloWorldService.class, "HelloWorldClient");
+
+        Assert.assertEquals("Hello beate", client.sayHello("beate"));
+        Assert.assertEquals("Hello beate arnold", client.sayHello2("beate", "arnold"));
 
     }
 

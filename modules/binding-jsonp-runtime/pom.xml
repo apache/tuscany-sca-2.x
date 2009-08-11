@@ -28,6 +28,14 @@
     <artifactId>tuscany-binding-jsonp-runtime</artifactId>
     <name>Apache Tuscany SCA JSONP Binding Runtime</name>
 
+    <!-- Use a temp repo just until the HCC4 release gets uploaded -->
+    <repositories>
+        <repository>
+            <id>temp.hc.repo</id>
+            <url>http://people.apache.org/~antelder/httpcomponents/4.0/maven</url>
+        </repository>
+    </repositories>
+
     <dependencies>
 
         <dependency>
@@ -50,6 +58,12 @@
             <groupId>org.codehaus.jackson</groupId>
             <artifactId>jackson-mapper-asl</artifactId>
             <version>1.0.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.0</version>
         </dependency>
 
         <dependency>
