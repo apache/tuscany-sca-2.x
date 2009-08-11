@@ -174,5 +174,32 @@ public abstract class Monitor {
         }
     }
     
+    /**
+     * A utility function for raising an error. It creates the problem and 
+     * adds it to the monitor
+     * 
+     * @param monitor
+     * @param reportingObject
+     * @param messageBundle
+     * @param messageId
+     * @param exception
+     */
+    public static void error (Monitor monitor, 
+                              Object reportingObject,
+                              String messageBundle,
+                              String messageId, 
+                              Exception cause){
+        if (monitor != null) {
+            Problem problem =
+                monitor.createProblem(reportingObject.getClass().getName(),
+                                      messageBundle,
+                                      Severity.ERROR,
+                                      null,
+                                      messageId,
+                                      cause);
+            monitor.problem(problem);
+        }
+    }    
+    
     // =====================================================
 }
