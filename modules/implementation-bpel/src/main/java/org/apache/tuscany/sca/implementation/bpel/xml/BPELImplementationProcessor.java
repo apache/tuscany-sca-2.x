@@ -137,9 +137,6 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
             
                 // Get the component type from the process definition
                 generateComponentType( implementation );
-            
-                //resolve component type
-                mergeComponentType(resolver, implementation);
                         
                 //set current implementation resolved 
                 implementation.setUnresolved(false);
@@ -387,104 +384,6 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
         return service;
     } // end generateService
     
-    /**
-     * TODO: Remove this function completely as the OASIS BPEL Implementation spec forbids
-     * the use of componentType side files and requires the componentType of a BPEL process to
-     * be found entirely via introspection.
-     * MJE 02 June 2009
-     * 
-     * Merge the componentType from introspection and from external file
-     * 
-     * Note the setting of the DataBinding for both Services and References to DOM, since this is
-     * the data format expected by the ODE BPEL implementation code.
-     * 
-     * @param resolver
-     * @param impl
-     */
-    private void mergeComponentType(ModelResolver resolver, BPELImplementation impl) {
-
-        // Load the component type from a component type file, if any
-        ComponentType componentType = getComponentType(resolver, impl);
-        if (componentType != null && !componentType.isUnresolved()) {
-
-            // References...
-            Map<String, Reference> refMap = new HashMap<String, Reference>();
-            for (Reference reference : componentType.getReferences()) {
-                refMap.put(reference.getName(), reference);
-            } // end for
-
-            // For the present, overwrite anything arising from the component
-            // type sidefile if
-            // equivalent services are defined in the implementation.
-            // TODO - a more careful merge must be done, using the
-            // implementation introspection data
-            // as the master but adding any additional and non-conflicting
-            // information from the
-            // sidefile
-            for (Reference ref : impl.getReferences()) {
-                refMap.put(ref.getName(), ref);
-            } // end for
-
-            impl.getReferences().clear();
-            impl.getReferences().addAll(refMap.values());
-
-            // Services.....
-            Map<String, Service> serviceMap = new HashMap<String, Service>();
-            for (Service service : componentType.getServices()) {
-                serviceMap.put(service.getName(), service);
-            } // end for
-
-            // For the present, overwrite anything arising from the component
-            // type sidefile if
-            // equivalent services are defined in the implementation.
-            // TODO - a more careful merge must be done, using the
-            // implementation introspection data
-            // as the master but adding any additional and non-conflicting
-            // information from the
-            // sidefile
-            for (Service svc : impl.getServices()) {
-                serviceMap.put(svc.getName(), svc);
-            } // end for
-
-            impl.getServices().clear();
-            impl.getServices().addAll(serviceMap.values());
-
-            // Properties
-            Map<String, Property> propMap = new HashMap<String, Property>();
-            for (Property property : componentType.getProperties()) {
-                propMap.put(property.getName(), property);
-            } // end for
-
-            // A simple overwrite of any equivalent properties from the
-            // component type sidefile
-            for (Property prop : impl.getProperties()) {
-                propMap.put(prop.getName(), prop);
-            }
-        }
-    }
-
-
-    /**
-     * Find the componentType side file based on the BPEL implementation artifact
-     * @param resolver
-     * @param impl
-     * @return
-     */
-    private ComponentType getComponentType(ModelResolver resolver, BPELImplementation impl) {
-        String bpelProcessURI = impl.getProcessDefinition().getURI().toString();
-        
-        // Get the component type definition contained in the componentType file, if any
-        String componentTypeURI = bpelProcessURI.replace(".bpel", ".componentType");
-        ComponentType componentType = assemblyFactory.createComponentType();
-        componentType.setUnresolved(true);
-        componentType.setURI(componentTypeURI);
-        componentType = resolver.resolveModel(ComponentType.class, componentType);
-        if (!componentType.isUnresolved()) {
-            return componentType;
-        }
-        return null;
-    } // end getComponentType
-
     /**
      * Returns a QName from its string representation in a named attribute of an XML element
      * supplied in an XMLStreamReader
