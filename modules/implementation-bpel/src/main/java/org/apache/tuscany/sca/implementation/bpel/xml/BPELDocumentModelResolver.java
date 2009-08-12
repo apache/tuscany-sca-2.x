@@ -64,7 +64,7 @@ public class BPELDocumentModelResolver implements ModelResolver {
     
     private Monitor monitor;
     
-    public BPELDocumentModelResolver(Contribution contribution, FactoryExtensionPoint modelFactories) {
+    public BPELDocumentModelResolver(Contribution contribution, FactoryExtensionPoint modelFactories, Monitor monitor) {
     	this.wsdlFactory = modelFactories.getFactory(WSDLFactory.class);
         this.contribution = contribution;
     }

@@ -25,6 +25,7 @@ import java.util.Map;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  * A Model Resolver for Contribution models.
@@ -35,7 +36,7 @@ public class ContributionModelResolver implements ModelResolver {
 
     private Map<String, Contribution> map = new HashMap<String, Contribution>();
     
-    public ContributionModelResolver(Contribution contribution, FactoryExtensionPoint modelFactories) {
+    public ContributionModelResolver(Contribution contribution, FactoryExtensionPoint modelFactories, Monitor monitor) {
     }
 
     public void addModel(Object resolved) {

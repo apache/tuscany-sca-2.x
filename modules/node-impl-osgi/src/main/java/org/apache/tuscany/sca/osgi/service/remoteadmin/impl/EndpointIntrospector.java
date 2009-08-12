@@ -102,6 +102,7 @@ public class EndpointIntrospector {
     private XMLOutputFactory xmlOutputFactory;
     private JavaInterfaceFactory javaInterfaceFactory;
     private StAXArtifactProcessor processor;
+    private Monitor monitor;
 
     /**
      * @param intentName
@@ -144,7 +145,6 @@ public class EndpointIntrospector {
             registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         UtilityExtensionPoint utilities = this.registry.getExtensionPoint(UtilityExtensionPoint.class);
         MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
-        Monitor monitor = null;
         if (monitorFactory != null) {
             monitor = monitorFactory.createMonitor();
         }
@@ -285,7 +285,7 @@ public class EndpointIntrospector {
         contribution.setURI("urn:" + id);
         contribution.setLocation(bundle.getEntry("/").toString());
         contribution.getDeployables().add(composite);
-        ModelResolver modelResolver = new ExtensibleModelResolver(contribution, modelResolvers, factories);
+        ModelResolver modelResolver = new ExtensibleModelResolver(contribution, modelResolvers, factories, monitor);
         contribution.setModelResolver(modelResolver);
         contribution.setUnresolved(true);
         return contribution;
@@ -364,7 +364,7 @@ public class EndpointIntrospector {
         contribution.setURI("urn:" + id);
         contribution.setLocation(bundle.getEntry("/").toString());
         contribution.getDeployables().add(composite);
-        ModelResolver modelResolver = new ExtensibleModelResolver(contribution, modelResolvers, factories);
+        ModelResolver modelResolver = new ExtensibleModelResolver(contribution, modelResolvers, factories, monitor);
         contribution.setModelResolver(modelResolver);
         contribution.setUnresolved(true);
         return contribution;
@@ -412,7 +412,7 @@ public class EndpointIntrospector {
         contribution.setURI("urn:" + id);
         contribution.setLocation(bundle.getEntry("/").toString());
         contribution.getDeployables().add(composite);
-        ModelResolver modelResolver = new ExtensibleModelResolver(contribution, modelResolvers, factories);
+        ModelResolver modelResolver = new ExtensibleModelResolver(contribution, modelResolvers, factories, monitor);
         contribution.setModelResolver(modelResolver);
         contribution.setUnresolved(true);
         return contribution;

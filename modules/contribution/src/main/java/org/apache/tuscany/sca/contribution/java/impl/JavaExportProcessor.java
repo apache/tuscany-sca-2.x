@@ -143,6 +143,6 @@ public class JavaExportProcessor implements StAXArtifactProcessor<JavaExport> {
         
         if (javaExport.getPackage() != null)
             // Initialize the export resolver
-            javaExport.setModelResolver(new JavaExportModelResolver(javaExport, resolver));
+            javaExport.setModelResolver(new JavaExportModelResolver(javaExport, resolver, monitor));
     }
 }

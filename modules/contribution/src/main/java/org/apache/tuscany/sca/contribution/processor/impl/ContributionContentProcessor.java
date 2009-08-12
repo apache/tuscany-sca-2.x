@@ -122,7 +122,7 @@ public class ContributionContentProcessor implements ExtendedURLArtifactProcesso
         Contribution contribution = contributionFactory.createContribution();
         contribution.setURI(contributionURI.toString());
         contribution.setLocation(contributionURL.toString());
-        ModelResolver modelResolver = new ExtensibleModelResolver(contribution, modelResolvers, modelFactories);
+        ModelResolver modelResolver = new ExtensibleModelResolver(contribution, modelResolvers, modelFactories, monitor);
         contribution.setModelResolver(modelResolver);
         contribution.setUnresolved(true);
 

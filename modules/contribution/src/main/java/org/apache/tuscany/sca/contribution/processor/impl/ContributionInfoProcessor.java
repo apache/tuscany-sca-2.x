@@ -66,8 +66,10 @@ public class ContributionInfoProcessor implements URLArtifactProcessor<Contribut
     private URLArtifactProcessorExtensionPoint artifactProcessors;
     private URLArtifactProcessor<Object> artifactProcessor;
     private StAXArtifactProcessor<Object> extensionProcessor;
+    private Monitor monitor;
 
     public ContributionInfoProcessor(ExtensionPointRegistry extensionPoints, StAXArtifactProcessor<Object> extensionProcessor, Monitor monitor) {
+        this.monitor = monitor;
         this.modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         this.modelResolvers = extensionPoints.getExtensionPoint(ModelResolverExtensionPoint.class);
         hackResolvers(modelResolvers);
@@ -100,7 +102,7 @@ public class ContributionInfoProcessor implements URLArtifactProcessor<Contribut
         Contribution contribution = contributionFactory.createContribution();
         contribution.setURI(contributionURI.toString());
         contribution.setLocation(contributionURL.toString());
-        ModelResolver modelResolver = new ExtensibleModelResolver(contribution, modelResolvers, modelFactories);
+        ModelResolver modelResolver = new ExtensibleModelResolver(contribution, modelResolvers, modelFactories, monitor);
         contribution.setModelResolver(modelResolver);
         contribution.setUnresolved(true);
 

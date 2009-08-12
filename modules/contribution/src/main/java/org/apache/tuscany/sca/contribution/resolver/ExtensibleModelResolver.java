@@ -25,6 +25,7 @@ import java.util.Map;
 
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  * An implementation of an extensible model resolver which delegates to the
@@ -41,6 +42,7 @@ public class ExtensibleModelResolver implements ModelResolver {
     private final Map<Class<?>, ModelResolver> resolversByImplementationClass = new HashMap<Class<?>, ModelResolver>();
     private Map<Object, Object> map = new HashMap<Object, Object>();
     private Object lastUnresolved;
+    private Monitor monitor;
 
     /**
      * Constructs an extensible model resolver
@@ -54,7 +56,8 @@ public class ExtensibleModelResolver implements ModelResolver {
     public ExtensibleModelResolver(Contribution contribution,
                                    ModelResolverExtensionPoint resolverExtensions,
                                    FactoryExtensionPoint modelFactories,
-                                   ModelResolver defaultResolver) {
+                                   ModelResolver defaultResolver,
+                                   Monitor monitor) {
         this.contribution = contribution;
         this.resolverExtensions = resolverExtensions;
         this.modelFactories = modelFactories;
@@ -62,6 +65,7 @@ public class ExtensibleModelResolver implements ModelResolver {
         // but they should be handled by the contribution import/export mechanism instead of this
         // defaultResolver hack.
         this.defaultResolver = defaultResolver;
+        this.monitor = monitor;
     }
 
     /**
@@ -73,10 +77,12 @@ public class ExtensibleModelResolver implements ModelResolver {
      */
     public ExtensibleModelResolver(Contribution contribution,
                                    ModelResolverExtensionPoint resolverExtensions,
-                                   FactoryExtensionPoint modelFactories) {
+                                   FactoryExtensionPoint modelFactories, 
+                                   Monitor monitor) {
         this.contribution = contribution;
         this.resolverExtensions = resolverExtensions;
         this.modelFactories = modelFactories;
+        this.monitor = monitor;
     }
 
     /**
@@ -117,10 +123,10 @@ public class ExtensibleModelResolver implements ModelResolver {
                 try {
                     Constructor<? extends ModelResolver> constructor =
                         resolverClass
-                            .getConstructor(new Class[] {Contribution.class, FactoryExtensionPoint.class});
+                            .getConstructor(new Class[] {Contribution.class, FactoryExtensionPoint.class, Monitor.class});
                     if (constructor != null) {
 
-                        resolverInstance = constructor.newInstance(contribution, modelFactories);
+                        resolverInstance = constructor.newInstance(contribution, modelFactories, monitor);
                         resolversByImplementationClass.put(resolverClass, resolverInstance);
                         resolversByModelType.put(c, resolverInstance);
                         return resolverInstance;

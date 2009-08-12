@@ -24,6 +24,7 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.implementation.osgi.ServiceDescriptions;
 import org.apache.tuscany.sca.implementation.osgi.ServiceDescriptionsFactory;
+import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  * 
@@ -31,7 +32,7 @@ import org.apache.tuscany.sca.implementation.osgi.ServiceDescriptionsFactory;
 public class ServiceDescriptionsModelResolver implements ModelResolver {
     private ServiceDescriptions serviceDescriptions;
 
-    public ServiceDescriptionsModelResolver(Contribution contribution, FactoryExtensionPoint modelFactories) {
+    public ServiceDescriptionsModelResolver(Contribution contribution, FactoryExtensionPoint modelFactories, Monitor monitor) {
         ServiceDescriptionsFactory factory = modelFactories.getFactory(ServiceDescriptionsFactory.class);
         this.serviceDescriptions = factory.createServiceDescriptions();
     }

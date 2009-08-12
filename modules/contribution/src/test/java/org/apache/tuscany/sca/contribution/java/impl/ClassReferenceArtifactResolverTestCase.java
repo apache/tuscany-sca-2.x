@@ -46,7 +46,7 @@ public class ClassReferenceArtifactResolverTestCase {
         ModelResolverExtensionPoint resolvers = extensionPoints.getExtensionPoint(ModelResolverExtensionPoint.class);
         resolvers.addResolver(ClassReference.class, ClassReferenceModelResolver.class);
         FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
-        resolver = new ExtensibleModelResolver(null, resolvers, modelFactories);
+        resolver = new ExtensibleModelResolver(null, resolvers, modelFactories, null);
     }
     
     /**

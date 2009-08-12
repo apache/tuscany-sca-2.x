@@ -61,6 +61,7 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
+import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.xsd.XSDFactory;
 import org.apache.tuscany.sca.xsd.XSDefinition;
 import org.w3c.dom.Attr;
@@ -114,7 +115,7 @@ public class WSDLModelResolver implements ModelResolver {
     private ContributionFactory contributionFactory;
     private XSDFactory xsdFactory;
 
-    public WSDLModelResolver(Contribution contribution, FactoryExtensionPoint modelFactories) {
+    public WSDLModelResolver(Contribution contribution, FactoryExtensionPoint modelFactories, Monitor monitor) {
         this.contribution = contribution;
 
         this.wsdlFactory = modelFactories.getFactory(WSDLFactory.class);

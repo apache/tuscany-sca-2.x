@@ -31,6 +31,7 @@ import org.apache.tuscany.sca.contribution.resolver.ClassReference;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
+import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  * A Model Resolver for ClassReferences.
@@ -45,7 +46,7 @@ public class ClassReferenceModelResolver implements ModelResolver {
 
     private ModelResolver osgiResolver;
 
-    public ClassReferenceModelResolver(final Contribution contribution, FactoryExtensionPoint modelFactories) {
+    public ClassReferenceModelResolver(final Contribution contribution, FactoryExtensionPoint modelFactories, Monitor monitor) {
         this.contribution = contribution;
         if (this.contribution != null) {
             // Allow privileged access to get ClassLoader. Requires RuntimePermission in security policy.

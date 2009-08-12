@@ -16,6 +16,7 @@ Import-Package: org.apache.tuscany.sca.assembly;version="2.0.0",
  org.apache.tuscany.sca.contribution.resolver;version="2.0.0",
  org.apache.tuscany.sca.contribution.scanner;version="2.0.0",
  org.apache.tuscany.sca.core;version="2.0.0",
+ org.apache.tuscany.sca.monitor;version="2.0.0",
  org.osgi.framework;version="1.4.0"
 Bundle-DocURL: http://www.apache.org/
 Export-Package: org.apache.tuscany.sca.contribution.osgi;version="2.0.0"

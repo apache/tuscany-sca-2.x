@@ -28,6 +28,7 @@ import org.apache.tuscany.sca.contribution.Import;
 import org.apache.tuscany.sca.contribution.java.JavaImport;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  * A Model Resolver for ComponentType models.
@@ -38,7 +39,7 @@ public class ComponentTypeModelResolver implements ModelResolver {
 	private Contribution contribution;
     private Map<String, ComponentType> map = new HashMap<String, ComponentType>();
     
-    public ComponentTypeModelResolver(Contribution contribution, FactoryExtensionPoint modelFactories) {
+    public ComponentTypeModelResolver(Contribution contribution, FactoryExtensionPoint modelFactories, Monitor monitor) {
     	this.contribution = contribution;
     }
 

@@ -26,6 +26,7 @@ import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.DefaultImport;
 import org.apache.tuscany.sca.contribution.Import;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  * A default implementation of a model resolver based on a map.
@@ -40,7 +41,7 @@ public class DefaultModelResolver implements ModelResolver {
     public DefaultModelResolver() {
     }
     
-    public DefaultModelResolver(Contribution contribution, FactoryExtensionPoint modelFactories) {
+    public DefaultModelResolver(Contribution contribution, FactoryExtensionPoint modelFactories, Monitor monitor) {
         this.contribution = contribution;
     }    
     

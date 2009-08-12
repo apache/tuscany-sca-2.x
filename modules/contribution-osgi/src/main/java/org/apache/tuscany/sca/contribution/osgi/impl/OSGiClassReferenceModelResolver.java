@@ -23,6 +23,7 @@ import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.resolver.ClassReference;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.monitor.Monitor;
 import org.osgi.framework.Bundle;
 
 /**
@@ -34,7 +35,7 @@ public class OSGiClassReferenceModelResolver implements ModelResolver {
     // private Contribution contribution;
     private Bundle bundle;
 
-    public OSGiClassReferenceModelResolver(Contribution contribution, FactoryExtensionPoint modelFactories) {
+    public OSGiClassReferenceModelResolver(Contribution contribution, FactoryExtensionPoint modelFactories, Monitor monitor) {
         // this.contribution = contribution;
         this.bundle = OSGiBundleActivator.findBundle(contribution.getLocation());
     }

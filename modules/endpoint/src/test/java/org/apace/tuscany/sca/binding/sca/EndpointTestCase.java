@@ -108,7 +108,7 @@ public class EndpointTestCase {
 
         // Get the model resolvers
         modelResolvers = extensionPoints.getExtensionPoint(ModelResolverExtensionPoint.class);
-        modelResolver = new ExtensibleModelResolver(null, modelResolvers, modelFactories);
+        modelResolver = new ExtensibleModelResolver(null, modelResolvers, modelFactories, monitor);
 
         // Create a composite builder
         compositeBuilder = extensionPoints.getExtensionPoint(CompositeBuilderExtensionPoint.class).getCompositeBuilder("org.apache.tuscany.sca.assembly.builder.CompositeBuilder");

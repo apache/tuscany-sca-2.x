@@ -444,7 +444,7 @@ public class NodeFactoryImpl extends NodeFactory {
         systemContribution = contributionFactory.createContribution();
         systemContribution.setURI("http://tuscany.apache.org/SystemContribution");
         systemContribution.setLocation("http://tuscany.apache.org/SystemContribution");
-        ModelResolver modelResolver = new ExtensibleModelResolver(systemContribution, modelResolvers, modelFactories);
+        ModelResolver modelResolver = new ExtensibleModelResolver(systemContribution, modelResolvers, modelFactories, monitor);
         systemContribution.setModelResolver(modelResolver);
         systemContribution.setUnresolved(true);
 
@@ -505,7 +505,7 @@ public class NodeFactoryImpl extends NodeFactory {
             monitor.popContext();
         }
 
-        ExtensibleModelResolver modelResolver = new ExtensibleModelResolver(new Contributions(contributions), modelResolvers, modelFactories);
+        ExtensibleModelResolver modelResolver = new ExtensibleModelResolver(new Contributions(contributions), modelResolvers, modelFactories, monitor);
 
         // now resolve and add the system contribution
         contributionProcessor.resolve(systemContribution, modelResolver);

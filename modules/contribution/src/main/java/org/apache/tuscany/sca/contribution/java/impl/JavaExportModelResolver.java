@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.contribution.java.impl;
 import org.apache.tuscany.sca.contribution.java.JavaExport;
 import org.apache.tuscany.sca.contribution.resolver.ClassReference;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  * A model resolver for Java exports.
@@ -33,7 +34,7 @@ public class JavaExportModelResolver implements ModelResolver {
     private JavaExport export;
     private ModelResolver resolver;
     
-    public JavaExportModelResolver(JavaExport export, ModelResolver resolver) {
+    public JavaExportModelResolver(JavaExport export, ModelResolver resolver, Monitor monitor) {
         this.export = export;
         this.resolver = resolver;
     }

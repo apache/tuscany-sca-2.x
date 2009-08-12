@@ -37,6 +37,7 @@ import org.apache.tuscany.sca.contribution.resolver.DefaultDelegatingModelResolv
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
+import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  * A Model Resolver for ClassReferences.
@@ -66,7 +67,7 @@ public class ClassLoaderModelResolver extends URLClassLoader implements ModelRes
         return urls.toArray(new URL[urls.size()]);
     }
 
-    public ClassLoaderModelResolver(final Contribution contribution, FactoryExtensionPoint modelFactories) throws IOException {
+    public ClassLoaderModelResolver(final Contribution contribution, FactoryExtensionPoint modelFactories, Monitor monitor) throws IOException {
         super(getContributionURLs(contribution), parentClassLoader(contribution));
         this.contribution = contribution;
 

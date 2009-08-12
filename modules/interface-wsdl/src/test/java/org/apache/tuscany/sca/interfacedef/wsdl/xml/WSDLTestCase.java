@@ -39,6 +39,7 @@ import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
+import org.apache.tuscany.sca.monitor.Monitor;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -64,9 +65,9 @@ public class WSDLTestCase {
         contributionFactory = modelFactories.getFactory(ContributionFactory.class);
         Contribution contribution = contributionFactory.createContribution();
         ModelResolverExtensionPoint modelResolvers = extensionPoints.getExtensionPoint(ModelResolverExtensionPoint.class);
-        resolver = new ExtensibleModelResolver(contribution, modelResolvers, modelFactories);
+        resolver = new ExtensibleModelResolver(contribution, modelResolvers, modelFactories, (Monitor)null);
         contribution.setModelResolver(resolver);
-        wsdlResolver = new WSDLModelResolver(contribution, modelFactories);
+        wsdlResolver = new WSDLModelResolver(contribution, modelFactories, null);
     }
 
     @Test

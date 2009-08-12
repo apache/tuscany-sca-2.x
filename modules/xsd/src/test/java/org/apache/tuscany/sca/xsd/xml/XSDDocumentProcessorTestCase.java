@@ -60,7 +60,7 @@ public class XSDDocumentProcessorTestCase {
         FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         contributionFactory = modelFactories.getFactory(ContributionFactory.class);
         Contribution contribution = contributionFactory.createContribution();
-        resolver = new XSDModelResolver(contribution, modelFactories);
+        resolver = new XSDModelResolver(contribution, modelFactories, null);
     }
 
     @Test
