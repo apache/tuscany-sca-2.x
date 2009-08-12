@@ -25,7 +25,7 @@
 
     <import namespace="http://docs.oasis-open.org/ns/opencsa/sca/200903" schemaLocation="sca-1.1-cd04.xsd"/>
 
-    <element name="binding.rmi" type="t:RMIBinding" substitutionGroup="sca:binding"/>
+    <element name="binding.rmi" type="t:RMIBinding"/>
     
     <complexType name="RMIBinding">
         <complexContent>
