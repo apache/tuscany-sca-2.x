@@ -70,15 +70,15 @@ public class StAXHelper {
         factories.getFactory(XMLInputFactory.class);
         inputFactory = factories.getFactory(XMLInputFactory.class);
         outputFactory = factories.getFactory(XMLOutputFactory.class);
+        outputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.TRUE);
         UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
         domHelper = utilities.getUtility(DOMHelper.class);
     }
-    
+
     public static StAXHelper getInstance(ExtensionPointRegistry registry) {
         UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
         return utilities.getUtility(StAXHelper.class);
     }
-
 
     /**
      * @param inputFactory
@@ -89,6 +89,9 @@ public class StAXHelper {
         super();
         this.inputFactory = inputFactory;
         this.outputFactory = outputFactory;
+        if (outputFactory != null) {
+            this.outputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.TRUE);
+        }
         this.domHelper = domHelper;
     }
 
@@ -117,7 +120,7 @@ public class StAXHelper {
         StringReader reader = new StringReader(string);
         return createXMLStreamReader(reader);
     }
-    
+
     private static InputStream openStream(URL url) throws IOException {
         URLConnection connection = url.openConnection();
         if (connection instanceof JarURLConnection) {
@@ -127,7 +130,7 @@ public class StAXHelper {
         InputStream is = connection.getInputStream();
         return is;
     }
-    
+
     public XMLStreamReader createXMLStreamReader(URL url) throws XMLStreamException {
         try {
             return createXMLStreamReader(openStream(url));
@@ -143,10 +146,8 @@ public class StAXHelper {
     }
 
     public void save(XMLStreamReader reader, OutputStream outputStream) throws XMLStreamException {
-        XMLStreamSerializer serializer = new XMLStreamSerializer();
         XMLStreamWriter streamWriter = createXMLStreamWriter(outputStream);
-        serializer.serialize(reader, streamWriter);
-        streamWriter.flush();
+        save(reader, streamWriter);
     }
 
     public XMLStreamWriter createXMLStreamWriter(OutputStream outputStream) throws XMLStreamException {
@@ -154,10 +155,8 @@ public class StAXHelper {
     }
 
     public void save(XMLStreamReader reader, Writer writer) throws XMLStreamException {
-        XMLStreamSerializer serializer = new XMLStreamSerializer();
         XMLStreamWriter streamWriter = createXMLStreamWriter(writer);
-        serializer.serialize(reader, streamWriter);
-        streamWriter.flush();
+        save(reader, streamWriter);
     }
 
     public XMLStreamWriter createXMLStreamWriter(Writer writer) throws XMLStreamException {
@@ -192,7 +191,7 @@ public class StAXHelper {
     }
 
     public void save(XMLStreamReader reader, XMLStreamWriter writer) throws XMLStreamException {
-        XMLStreamSerializer serializer = new XMLStreamSerializer();
+        XMLStreamSerializer serializer = new XMLStreamSerializer(isReparingNamespaces());
         serializer.serialize(reader, writer);
         writer.flush();
     }
@@ -201,7 +200,6 @@ public class StAXHelper {
         SAXException {
         new StAX2SAXAdapter(false).parse(reader, contentHandler);
     }
-
 
     /**
      * @param url
@@ -212,8 +210,7 @@ public class StAXHelper {
      * @throws IOException
      * @throws XMLStreamException
      */
-    public String readAttribute(URL url, QName element, String attribute) throws IOException,
-        XMLStreamException {
+    public String readAttribute(URL url, QName element, String attribute) throws IOException, XMLStreamException {
         if (attribute == null) {
             attribute = "targetNamespace";
         }
@@ -225,8 +222,7 @@ public class StAXHelper {
         }
     }
 
-    public List<String> readAttributes(URL url, QName element, String attribute) throws IOException,
-        XMLStreamException {
+    public List<String> readAttributes(URL url, QName element, String attribute) throws IOException, XMLStreamException {
         if (attribute == null) {
             attribute = "targetNamespace";
         }
@@ -238,7 +234,7 @@ public class StAXHelper {
             reader.close();
         }
     }
-    
+
     /**
      * Returns the boolean value of an attribute.
      * @param reader
@@ -356,7 +352,6 @@ public class StAXHelper {
         }
     }
 
-    
     private Attribute[] readAttributes(XMLStreamReader reader, AttributeFilter filter) throws XMLStreamException {
         XMLStreamReader newReader = inputFactory.createFilteredReader(reader, filter);
         while (filter.proceed() && newReader.hasNext()) {
@@ -377,7 +372,7 @@ public class StAXHelper {
     public Attribute[] readAttributes(XMLStreamReader reader, Attribute... attributes) throws XMLStreamException {
         return readAttributes(reader, new AttributeFilter(false, attributes));
     }
-    
+
     private String readAttributeFromRoot(XMLStreamReader reader, Attribute filter) throws XMLStreamException {
         Attribute[] attrs = readAttributes(reader, new AttributeFilter(true, filter));
         List<String> values = attrs[0].getValues();
@@ -387,13 +382,13 @@ public class StAXHelper {
             return values.get(0);
         }
     }
-    
+
     public String readAttributeFromRoot(XMLStreamReader reader, QName element, String attributeName)
         throws XMLStreamException {
         Attribute filter = new Attribute(element, attributeName);
         return readAttributeFromRoot(reader, filter);
     }
-    
+
     public static class Attribute {
         private QName element;
         private String name;
@@ -412,32 +407,32 @@ public class StAXHelper {
         public List<String> getValues() {
             return values;
         }
-        
+
     }
-    
+
     private static class AttributeFilter implements StreamFilter {
         private boolean proceed = true;
         private Attribute[] attributes;
         private boolean rootOnly;
-        
+
         /**
          * @param rootOnly
          */
-        public AttributeFilter(boolean rootOnly, Attribute...attributes) {
+        public AttributeFilter(boolean rootOnly, Attribute... attributes) {
             super();
             this.rootOnly = rootOnly;
             this.attributes = attributes;
         }
 
         public boolean accept(XMLStreamReader reader) {
-            if(attributes==null || attributes.length==0) {
+            if (attributes == null || attributes.length == 0) {
                 proceed = false;
                 return true;
             }
-            if(reader.getEventType() == XMLStreamConstants.START_ELEMENT) {
+            if (reader.getEventType() == XMLStreamConstants.START_ELEMENT) {
                 QName name = reader.getName();
-                for(Attribute attr: attributes) {
-                    if(attr.element.equals(name)) {
+                for (Attribute attr : attributes) {
+                    if (attr.element.equals(name)) {
                         attr.values.add(reader.getAttributeValue(null, attr.name));
                     }
                 }
@@ -447,11 +442,57 @@ public class StAXHelper {
             }
             return true;
         }
-        
+
         public boolean proceed() {
             return proceed;
         }
-        
+
+    }
+
+    public XMLInputFactory getInputFactory() {
+        return inputFactory;
+    }
+
+    private boolean isReparingNamespaces() {
+        if (outputFactory == null) {
+            return Boolean.TRUE;
+        }
+        return outputFactory.getProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES) == Boolean.TRUE;
+    }
+
+    public XMLOutputFactory getOutputFactory() {
+        return outputFactory;
+    }
+
+    public String writeAttribute(XMLStreamWriter writer, QName name, String value) throws XMLStreamException {
+        return writeAttribute(writer, name.getPrefix(), name.getLocalPart(), name.getNamespaceURI(), value);
+    }
+
+    public String writeAttribute(XMLStreamWriter writer,
+                                 String prefix,
+                                 String localName,
+                                 String namespaceURI,
+                                 String value) throws XMLStreamException {
+        if (value == null) {
+            return null;
+        }
+        XMLStreamSerializer serializer = new XMLStreamSerializer(isReparingNamespaces());
+        return serializer.writeAttribute(writer, prefix, localName, namespaceURI, value);
+    }
+
+    public void writeStartElement(XMLStreamWriter writer, QName name) throws XMLStreamException {
+        writeStartElement(writer, name.getPrefix(), name.getLocalPart(), name.getNamespaceURI());
+    }
+
+    public void writeStartElement(XMLStreamWriter writer, String prefix, String localName, String namespaceURI)
+        throws XMLStreamException {
+        XMLStreamSerializer serializer = new XMLStreamSerializer(isReparingNamespaces());
+        serializer.writeStartElement(writer, prefix, localName, namespaceURI);
+    }
+
+    public String writeNamespace(XMLStreamWriter writer, String prefix, String namespaceURI) throws XMLStreamException {
+        XMLStreamSerializer serializer = new XMLStreamSerializer(isReparingNamespaces());
+        return serializer.writeNamespace(writer, prefix, namespaceURI);
     }
 
 }

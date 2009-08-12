@@ -153,7 +153,6 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
         XMLStreamException {
 
         // Write an <implementation.java>
-        policyProcessor.writePolicyPrefixes(javaImplementation, writer);
         writer.writeStartElement(SCA11_NS, IMPLEMENTATION_JAVA);
         policyProcessor.writePolicyAttributes(javaImplementation, writer);
 

@@ -19,7 +19,11 @@
 
 package org.apache.tuscany.sca.common.xml.stax.impl;
 
+import static javax.xml.XMLConstants.DEFAULT_NS_PREFIX;
+import static javax.xml.XMLConstants.NULL_NS_URI;
+
 import javax.xml.namespace.NamespaceContext;
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -44,6 +48,23 @@ public class XMLStreamSerializer implements XMLStreamConstants {
      * Field depth
      */
     private int depth;
+
+    /**
+     * A flag to tell if the writer has javax.xml.stream.isRepairingNamespaces set to true 
+     */
+    private boolean isRepairingNamespaces = true;
+
+    /**
+     * @param isRepairingNamespaces
+     */
+    public XMLStreamSerializer(boolean isRepairingNamespaces) {
+        super();
+        this.isRepairingNamespaces = isRepairingNamespaces;
+    }
+
+    public XMLStreamSerializer() {
+        this(true);
+    }
 
     /**
      * Generates a unique namespace prefix that is not in the scope of the NamespaceContext
@@ -81,60 +102,87 @@ public class XMLStreamSerializer implements XMLStreamConstants {
         int count = reader.getAttributeCount();
         String prefix;
         String namespaceName;
-        String writerPrefix;
+        String localName;
+        String value;
         for (int i = 0; i < count; i++) {
             prefix = reader.getAttributePrefix(i);
             namespaceName = reader.getAttributeNamespace(i);
-            /*
-             * Due to parser implementations returning null as the namespace URI (for the empty namespace) we need to
-             * make sure that we deal with a namespace name that is not null. The best way to work around this issue is
-             * to set the namespace URI to "" if it is null
-             */
-            if (namespaceName == null) {
-                namespaceName = "";
-            }
+            localName = reader.getAttributeLocalName(i);
+            value = reader.getAttributeValue(i);
 
-            writerPrefix = writer.getPrefix(namespaceName);
-
-            if (!"".equals(namespaceName)) {
-                // prefix has already being declared but this particular
-                // attrib has a
-                // no prefix attached. So use the prefix provided by the
-                // writer
-                if (writerPrefix != null && (prefix == null || prefix.equals(""))) {
-                    writer.writeAttribute(writerPrefix, namespaceName, reader.getAttributeLocalName(i), reader
-                        .getAttributeValue(i));
-
-                    // writer prefix is available but different from the
-                    // current
-                    // prefix of the attrib. We should be declaring the new
-                    // prefix
-                    // as a namespace declaration
-                } else if (prefix != null && !"".equals(prefix) && !prefix.equals(writerPrefix)) {
-                    writer.writeNamespace(prefix, namespaceName);
-                    writer.writeAttribute(prefix, namespaceName, reader.getAttributeLocalName(i), reader
-                        .getAttributeValue(i));
-
-                    // prefix is null (or empty), but the namespace name is
-                    // valid! it has not
-                    // being written previously also. So we need to generate
-                    // a prefix
-                    // here
-                } else if (prefix == null || prefix.equals("")) {
-                    prefix = generateUniquePrefix(writer.getNamespaceContext());
-                    writer.writeNamespace(prefix, namespaceName);
-                    writer.writeAttribute(prefix, namespaceName, reader.getAttributeLocalName(i), reader
-                        .getAttributeValue(i));
-                } else {
-                    writer.writeAttribute(prefix, namespaceName, reader.getAttributeLocalName(i), reader
-                        .getAttributeValue(i));
-                }
-            } else {
-                // empty namespace is equal to no namespace!
-                writer.writeAttribute(reader.getAttributeLocalName(i), reader.getAttributeValue(i));
-            }
+            writeAttribute(writer, prefix, localName, namespaceName, value);
 
         }
+    }
+
+    public void writeAttribute(XMLStreamWriter writer, QName name, String value) throws XMLStreamException {
+        writeAttribute(writer, name.getPrefix(), name.getLocalPart(), name.getNamespaceURI(), value);
+    }
+
+    public String writeAttribute(XMLStreamWriter writer,
+                                String prefix,
+                                String localName,
+                                String namespaceURI,
+                                String value) throws XMLStreamException {
+        String writerPrefix;
+        /*
+         * Due to parser implementations returning null as the namespace URI (for the empty namespace) we need to
+         * make sure that we deal with a namespace name that is not null. The best way to work around this issue is
+         * to set the namespace URI to "" if it is null
+         */
+        if (namespaceURI == null) {
+            namespaceURI = NULL_NS_URI;
+        }
+
+        if (prefix == null) {
+            prefix = DEFAULT_NS_PREFIX;
+        }
+
+        if (isRepairingNamespaces) {
+            writer.writeAttribute(prefix, namespaceURI, localName, value);
+            return writer.getPrefix(namespaceURI);
+        }
+
+        writerPrefix = writer.getPrefix(namespaceURI);
+
+        if (!NULL_NS_URI.equals(namespaceURI)) {
+            if (writerPrefix != null && isDefaultNSPrefix(prefix)) {
+                // prefix has already being declared but this particular attrib has a
+                // no prefix attached. So use the prefix provided by the writer
+
+                writer.writeAttribute(writerPrefix, namespaceURI, localName, value);
+                return writerPrefix;
+
+            } else if (!isDefaultNSPrefix(prefix) && !prefix.equals(writerPrefix)) {
+                // writer prefix is available but different from the current
+                // prefix of the attrib. We should be declaring the new prefix
+                // as a namespace declaration
+
+                writer.writeNamespace(prefix, namespaceURI);
+                writer.writeAttribute(prefix, namespaceURI, localName, value);
+                return prefix;
+
+            } else if (isDefaultNSPrefix(prefix)) {
+                // prefix is null (or empty), but the namespace name is valid! it has not 
+                // being written previously also. So we need to generate a prefix here
+
+                prefix = generateUniquePrefix(writer.getNamespaceContext());
+                writer.writeNamespace(prefix, namespaceURI);
+                writer.writeAttribute(prefix, namespaceURI, localName, value);
+                return prefix;
+            } else {
+                writer.writeAttribute(prefix, namespaceURI, localName, value);
+                return prefix;
+            }
+        } else {
+            // empty namespace is equal to no namespace!
+            writer.writeAttribute(localName, value);
+            return prefix;
+        }
+    }
+
+    private boolean isDefaultNSPrefix(String prefix) {
+        return (prefix == null || prefix.equals(DEFAULT_NS_PREFIX));
     }
 
     /**
@@ -165,44 +213,58 @@ public class XMLStreamSerializer implements XMLStreamConstants {
      * @throws XMLStreamException
      */
     protected void serializeElement(XMLStreamReader reader, XMLStreamWriter writer) throws XMLStreamException {
-        String prefix = reader.getPrefix();
-        String nameSpaceName = reader.getNamespaceURI();
-        if (nameSpaceName != null) {
-            String writerPrefix = writer.getPrefix(nameSpaceName);
-            if (writerPrefix != null) {
-                writer.writeStartElement(nameSpaceName, reader.getLocalName());
-            } else {
-                if (prefix != null) {
-                    writer.writeStartElement(prefix, reader.getLocalName(), nameSpaceName);
-                    writer.writeNamespace(prefix, nameSpaceName);
-                    // writer.setPrefix(prefix, nameSpaceName);
-                } else {
-                    // [rfeng] We need to set default NS 1st before calling writeStateElement
-                    writer.setDefaultNamespace(nameSpaceName);
-                    writer.writeStartElement(nameSpaceName, reader.getLocalName());
-                    writer.writeDefaultNamespace(nameSpaceName);
-                }
-            }
-        } else {
-            writer.writeStartElement(reader.getLocalName());
-        }
+        writeStartElement(writer, reader.getName());
 
         // add the namespaces
         int count = reader.getNamespaceCount();
         String namespacePrefix;
         for (int i = 0; i < count; i++) {
             namespacePrefix = reader.getNamespacePrefix(i);
-            // [rfeng] The following is commented out to allow to default ns
-            // if (namespacePrefix != null && namespacePrefix.length() == 0) {
-            // continue;
-            // }
-
             serializeNamespace(namespacePrefix, reader.getNamespaceURI(i), writer);
         }
 
         // add attributes
         serializeAttributes(reader, writer);
 
+    }
+
+    public void writeStartElement(XMLStreamWriter writer, QName name) throws XMLStreamException {
+        writeStartElement(writer, name.getPrefix(), name.getLocalPart(), name.getNamespaceURI());
+    }
+    
+    public void writeStartElement(XMLStreamWriter writer, String prefix, String localName, String namespaceURI)
+        throws XMLStreamException {
+        
+        if (namespaceURI == null) {
+            namespaceURI = NULL_NS_URI;
+        }
+        if (prefix == null) {
+            prefix = DEFAULT_NS_PREFIX;
+        }
+        
+        if (isRepairingNamespaces) {
+            writer.writeStartElement(prefix, localName, namespaceURI);
+            return;
+        }
+
+        String writerPrefix = writer.getPrefix(namespaceURI);
+        if (writerPrefix != null) {
+            // Namespace is bound
+            writer.writeStartElement(writerPrefix, localName, namespaceURI);
+        } else {
+            // Namespace is not bound
+            if (NULL_NS_URI.equals(namespaceURI)) {
+                writer.writeStartElement(localName);
+                String defaultNS = writer.getNamespaceContext().getNamespaceURI(DEFAULT_NS_PREFIX);
+                if (defaultNS != null && !NULL_NS_URI.equals(defaultNS)) {
+                    writer.writeNamespace(prefix, namespaceURI);
+                }
+            } else {
+                writer.writeStartElement(prefix, localName, namespaceURI);
+                // writeNamespace() will call setPrefix()
+                writer.writeNamespace(prefix, namespaceURI);
+            }
+        }
     }
 
     /**
@@ -224,10 +286,22 @@ public class XMLStreamSerializer implements XMLStreamConstants {
      * @throws XMLStreamException
      */
     private void serializeNamespace(String prefix, String uri, XMLStreamWriter writer) throws XMLStreamException {
+        writeNamespace(writer, prefix, uri);
+    }
+
+    public String writeNamespace(XMLStreamWriter writer, String prefix, String uri) throws XMLStreamException {
+        if (uri == null) {
+            uri = NULL_NS_URI;
+        }
         String prefix1 = writer.getPrefix(uri);
         if (prefix1 == null) {
+            if (prefix == null) {
+                prefix = DEFAULT_NS_PREFIX;
+            }
             writer.writeNamespace(prefix, uri);
-            // writer.setPrefix(prefix, uri);
+            return prefix;
+        } else {
+            return prefix1;
         }
     }
 

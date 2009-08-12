@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
-import java.net.URLConnection;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
@@ -33,6 +32,7 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.sca.common.java.io.IOHelper;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
@@ -103,9 +103,7 @@ public class DefinitionsDocumentProcessor implements URLArtifactProcessor<Defini
             try {
                 urlStream = AccessController.doPrivileged(new PrivilegedExceptionAction<InputStream>() {
                     public InputStream run() throws IOException {
-                        URLConnection connection = url.openConnection();
-                        connection.setUseCaches(false);
-                        return connection.getInputStream();
+                        return IOHelper.openStream(url);
                     }
                 });
             } catch (PrivilegedActionException e) {

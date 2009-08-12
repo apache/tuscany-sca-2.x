@@ -20,13 +20,10 @@
 package org.apache.tuscany.sca.assembly.xml;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.Collection;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -35,6 +32,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.common.java.io.IOHelper;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
@@ -84,25 +82,14 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
     		throw new ContributionReadException("Request to read composite with uri or url NULL");
     	} // end if
         InputStream scdlStream = null;
+        
         try {
-            URLConnection connection;
-            if (url.getProtocol().equals("file")) {
-            	File scdlFile = new File(url.toURI().getPath());
-            	connection = scdlFile.toURL().openConnection();
-            } else {
-            	connection = url.openConnection();
-            }
-            connection.setUseCaches(false);
-            scdlStream = connection.getInputStream();
+            scdlStream = IOHelper.openStream(url);;
         } catch (IOException e) {
             ContributionReadException ce = new ContributionReadException("Exception reading " + uri, e);
             error("ContributionReadException", url, ce);
             throw ce;
-        } catch (URISyntaxException e) {
-        	ContributionReadException ce = new ContributionReadException("Exception reading " + uri, e);
-        	error("ContributionReadException", url, ce);
-        	throw ce;
-		}
+        } 
         return read(uri, scdlStream);
     }
 

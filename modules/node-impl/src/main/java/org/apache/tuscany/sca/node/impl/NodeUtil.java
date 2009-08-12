@@ -19,13 +19,6 @@
 
 package org.apache.tuscany.sca.node.impl;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLConnection;
-
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 
@@ -45,47 +38,6 @@ public class NodeUtil {
         contribution.setLocation(c.getLocation());
         contribution.setUnresolved(true);
         return contribution;
-    }
-
-    /**
-     * Open a URL connection without cache
-     * @param url
-     * @return
-     * @throws IOException
-     */
-    static InputStream openStream(URL url) throws IOException {
-        InputStream is = null;
-        URLConnection connection = url.openConnection();
-        connection.setUseCaches(false);
-        is = connection.getInputStream();
-        return is;
-    }
-
-    /**
-     * Escape the space in URL string
-     * @param uri
-     * @return
-     */
-    static URI createURI(String uri) {
-        if (uri == null) {
-            return null;
-        }
-        if (uri.indexOf('%') != -1) {
-            // Avoid double-escaping
-            return URI.create(uri);
-        }
-        int index = uri.indexOf(':');
-        String scheme = null;
-        String ssp = uri;
-        if (index != -1) {
-            scheme = uri.substring(0, index);
-            ssp = uri.substring(index + 1);
-        }
-        try {
-            return new URI(scheme, ssp, null);
-        } catch (URISyntaxException e) {
-            throw new IllegalArgumentException(e);
-        }
     }
 
 }

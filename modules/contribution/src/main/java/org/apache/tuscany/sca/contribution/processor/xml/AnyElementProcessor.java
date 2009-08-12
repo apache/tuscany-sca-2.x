@@ -19,22 +19,21 @@
 package org.apache.tuscany.sca.contribution.processor.xml;
 
 import java.io.StringReader;
-import java.io.StringWriter;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Extension;
+import org.apache.tuscany.sca.common.xml.stax.StAXHelper;
 import org.apache.tuscany.sca.contribution.Constants;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.monitor.Monitor;
 
@@ -42,17 +41,16 @@ public class AnyElementProcessor implements StAXArtifactProcessor<Extension> {
     private static final QName ANY_ELEMENT = new QName(Constants.XMLSCHEMA_NS, "any");
 
     private AssemblyFactory assemblyFactory;
-    private XMLInputFactory xmlInputFactory;
-    private XMLOutputFactory xmlOutputFactory;
+    private StAXHelper helper;
     
     @SuppressWarnings("unused")
     private Monitor monitor;
 
 
-    public AnyElementProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
+    public AnyElementProcessor(ExtensionPointRegistry extensionPoints, StAXArtifactProcessor<Object> extensionProcessor, Monitor monitor) {
+        FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
-        xmlInputFactory = modelFactories.getFactory(XMLInputFactory.class);
-        xmlOutputFactory = modelFactories.getFactory(XMLOutputFactory.class);
+        this.helper = StAXHelper.getInstance(extensionPoints);
         this.monitor = monitor;
     }
 
@@ -74,15 +72,10 @@ public class AnyElementProcessor implements StAXArtifactProcessor<Extension> {
      */
     public Extension read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
         QName name = reader.getName();
-        XMLStreamSerializer serializer = new XMLStreamSerializer();
-        StringWriter sw = new StringWriter();
-        XMLStreamWriter writer = xmlOutputFactory.createXMLStreamWriter(sw);
-        serializer.serialize(reader, writer);
-        writer.flush();
-        
+        String xml = helper.saveAsString(reader);
         Extension ext = assemblyFactory.createExtension();
         ext.setQName(name);
-        ext.setValue(sw.toString());
+        ext.setValue(xml);
         
         return ext;
     }
@@ -99,11 +92,10 @@ public class AnyElementProcessor implements StAXArtifactProcessor<Extension> {
             return;
         }
         String xml = (String) value;
-        XMLStreamReader reader = xmlInputFactory.createXMLStreamReader(new StringReader(xml));
+        XMLStreamReader reader = helper.createXMLStreamReader(new StringReader(xml));
         // Position the reader to the root element
         reader.nextTag();
-        XMLStreamSerializer serializer = new XMLStreamSerializer();
-        serializer.serialize(reader, writer);
+        helper.save(reader, writer);
     }
 
     public void resolve(Extension model, ModelResolver resolver) throws ContributionResolveException {

@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.common.java.io;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.JarURLConnection;
@@ -29,10 +30,16 @@ import java.net.URL;
 import java.net.URLConnection;
 
 /**
- * 
+ * Helper class for I/O operations
  */
 public class IOHelper {
+    
     public static InputStream openStream(URL url) throws IOException {
+        // Handle file:<relative path> which strictly speaking is not a valid file URL  
+        File file = toFile(url);
+        if (file != null) {
+            return new FileInputStream(file);
+        }
         URLConnection connection = url.openConnection();
         if (connection instanceof JarURLConnection) {
             // See http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=5041014
@@ -40,6 +47,16 @@ public class IOHelper {
         }
         InputStream is = connection.getInputStream();
         return is;
+    }
+    
+    public static void close(InputStream is) {
+        if (is != null) {
+            try {
+                is.close();
+            } catch (IOException e) {
+                throw new IllegalStateException(e);
+            }
+        }
     }
     
     /**

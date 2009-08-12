@@ -57,7 +57,7 @@ public class ContributionMetadataProcessorTestCase {
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "<contribution xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\""
             + " xmlns:ns=\"http://ns\" ns:foo=\"extended\">"
             + "<deployable composite=\"ns:Composite1\"/>"
-            + "<deployable composite=\"ns:Composite2\"/>"
+            + "<deployable xmlns:ns2=\"http://ns2\" composite=\"ns2:Composite2\"/>"
             + "<ns:bar x=\"1\"/>"
             + "</contribution>";
 
@@ -78,6 +78,7 @@ public class ContributionMetadataProcessorTestCase {
 
         inputFactory = XMLInputFactory.newInstance();
         outputFactory = XMLOutputFactory.newInstance();
+        outputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.TRUE);
 
         // Create a monitor
         UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
@@ -142,7 +143,7 @@ public class ContributionMetadataProcessorTestCase {
         assertEquals(2, contribution.getDeployables().size());
         deployable = new QName("http://ns", "Composite1");
         assertEquals(deployable, contribution.getDeployables().get(0).getName());
-        deployable = new QName("http://ns", "Composite2");
+        deployable = new QName("http://ns2", "Composite2");
         assertEquals(deployable, contribution.getDeployables().get(1).getName());
     }
 

@@ -111,7 +111,6 @@ public class SCABindingProcessor implements StAXArtifactProcessor<SCABinding> {
     public void write(SCABinding scaBinding, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
 
         // Write <binding.sca>
-        policyProcessor.writePolicyPrefixes(scaBinding, writer);
         writer.writeStartElement(SCA11_NS, BINDING_SCA);
         policyProcessor.writePolicyAttributes(scaBinding, writer);
 

@@ -33,6 +33,7 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.common.java.io.IOHelper;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
@@ -116,7 +117,7 @@ public class NodeImpl implements Node, Client {
             // Start the composite
             compositeActivator.start(compositeActivator.getDomainComposite());
 
-            NodeFinder.addNode(NodeUtil.createURI(configuration.getDomainURI()), this);
+            NodeFinder.addNode(IOHelper.createURI(configuration.getDomainURI()), this);
 
             MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
             try {

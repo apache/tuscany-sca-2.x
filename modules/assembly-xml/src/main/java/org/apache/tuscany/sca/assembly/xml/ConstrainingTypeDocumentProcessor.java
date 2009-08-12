@@ -23,13 +23,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
-import java.net.URLConnection;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.assembly.ConstrainingType;
+import org.apache.tuscany.sca.common.java.io.IOHelper;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
@@ -64,33 +64,13 @@ public class ConstrainingTypeDocumentProcessor extends BaseAssemblyProcessor imp
         try {
             
             // Create a stream reader
-            URLConnection connection = url.openConnection();
-            connection.setUseCaches(false);
-            urlStream = connection.getInputStream();
+            urlStream = IOHelper.openStream(url);
             XMLStreamReader reader = inputFactory.createXMLStreamReader(url.toString(), urlStream);
             reader.nextTag();
             
             // Read the constrainingType model 
             ConstrainingType constrainingType = (ConstrainingType)extensionProcessor.read(reader);
-
-            // For debugging purposes, write it back to XML
-//            if (constrainingType != null) {
-//                try {
-//                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-//                    XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
-//                    outputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.TRUE);
-//                    extensionProcessor.write(constrainingType, outputFactory.createXMLStreamWriter(bos));
-//                    Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(bos.toByteArray()));
-//                    OutputFormat format = new OutputFormat();
-//                    format.setIndenting(true);
-//                    format.setIndent(2);
-//                    XMLSerializer serializer = new XMLSerializer(System.out, format);
-//                    serializer.serialize(document);
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            }
-            
+           
             return constrainingType;
             
         } catch (XMLStreamException e) {

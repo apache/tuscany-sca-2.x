@@ -22,7 +22,6 @@ package org.apache.tuscany.sca.contribution.scanner.impl;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -30,6 +29,7 @@ import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
+import org.apache.tuscany.sca.common.java.io.IOHelper;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.PackageType;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
@@ -68,9 +68,7 @@ public class JarContributionScanner implements ContributionScanner {
         // Assume the URL references a JAR file
         try {
             URL url = new URL(contribution.getLocation());
-            URLConnection connection = url.openConnection();
-            connection.setUseCaches(false);
-            JarInputStream jar = new JarInputStream(connection.getInputStream());
+            JarInputStream jar = new JarInputStream(IOHelper.openStream(url));
             try {
                 Set<String> names = new HashSet<String>();
                 while (true) {

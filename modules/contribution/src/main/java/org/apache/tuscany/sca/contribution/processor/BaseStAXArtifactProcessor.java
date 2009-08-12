@@ -22,16 +22,11 @@ package org.apache.tuscany.sca.contribution.processor;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import java.util.StringTokenizer;
 
-import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
@@ -39,6 +34,7 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Extensible;
 import org.apache.tuscany.sca.assembly.Extension;
+import org.apache.tuscany.sca.common.xml.stax.StAXHelper;
 
 
 /**
@@ -47,7 +43,10 @@ import org.apache.tuscany.sca.assembly.Extension;
  * @version $Rev$ $Date$
  */
 public abstract class BaseStAXArtifactProcessor {
-
+    /**
+     * The StAXHelper without states
+     */
+    private static final StAXHelper helper = new StAXHelper(null, null, null);
     /**
      * Returns a QName from a string.
      * @param reader
@@ -55,18 +54,7 @@ public abstract class BaseStAXArtifactProcessor {
      * @return
      */
     protected QName getQNameValue(XMLStreamReader reader, String value) {
-        if (value != null) {
-            int index = value.indexOf(':');
-            String prefix = index == -1 ? "" : value.substring(0, index);
-            String localName = index == -1 ? value : value.substring(index + 1);
-            String ns = reader.getNamespaceContext().getNamespaceURI(prefix);
-            if (ns == null) {
-                ns = "";
-            }
-            return new QName(ns, localName, prefix);
-        } else {
-            return null;
-        }
+        return StAXHelper.getValueAsQName(reader, value);
     }
 
     /**
@@ -76,11 +64,12 @@ public abstract class BaseStAXArtifactProcessor {
      * @return
      */
     protected boolean getBoolean(XMLStreamReader reader, String name) {
-        String value = reader.getAttributeValue(null, name);
-        if (value == null) {
+        Boolean attr = StAXHelper.getAttributeAsBoolean(reader, name);
+        if (attr == null) {
             return false;
+        } else {
+            return attr.booleanValue();
         }
-        return Boolean.valueOf(value);
     }
 
     /**
@@ -90,8 +79,7 @@ public abstract class BaseStAXArtifactProcessor {
      * @return
      */
     protected QName getQName(XMLStreamReader reader, String name) {
-        String qname = reader.getAttributeValue(null, name);
-        return getQNameValue(reader, qname);
+        return StAXHelper.getAttributeAsQName(reader, name);
     }
 
     /**
@@ -101,16 +89,7 @@ public abstract class BaseStAXArtifactProcessor {
      * @return
      */
     protected List<QName> getQNames(XMLStreamReader reader, String name) {
-        String value = reader.getAttributeValue(null, name);
-        if (value != null) {
-            List<QName> qnames = new ArrayList<QName>();
-            for (StringTokenizer tokens = new StringTokenizer(value); tokens.hasMoreTokens();) {
-                qnames.add(getQNameValue(reader, tokens.nextToken()));
-            }
-            return qnames;
-        } else {
-            return Collections.emptyList();
-        }
+        return StAXHelper.getAttributeAsQNames(reader, name);
     }
 
     /**
@@ -120,7 +99,7 @@ public abstract class BaseStAXArtifactProcessor {
      * @return
      */
     protected String getString(XMLStreamReader reader, String name) {
-        return reader.getAttributeValue(null, name);
+        return StAXHelper.getAttributeAsString(reader, name);
     }
 
     /**
@@ -130,7 +109,7 @@ public abstract class BaseStAXArtifactProcessor {
      * @return
      */
     protected boolean isSet(XMLStreamReader reader, String name) {
-        return reader.getAttributeValue(null, name) != null;
+        return StAXHelper.isAttributePresent(reader, name);
     }
 
     /**
@@ -140,8 +119,7 @@ public abstract class BaseStAXArtifactProcessor {
      *         returned.
      */
     protected QName getXSIType(XMLStreamReader reader) {
-        String qname = reader.getAttributeValue(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "type");
-        return getQNameValue(reader, qname);
+        return StAXHelper.getXSIType(reader);
     }
 
     /**
@@ -170,18 +148,7 @@ public abstract class BaseStAXArtifactProcessor {
      * @throws XMLStreamException if there was a problem reading the stream
      */
     protected void skipToEndElement(XMLStreamReader reader) throws XMLStreamException {
-        int depth = 0;
-        while (reader.hasNext()) {
-            int event = reader.next();
-            if (event == XMLStreamConstants.START_ELEMENT) {
-                depth++;
-            } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (depth == 0) {
-                    return;
-                }
-                depth--;
-            }
-        }
+        StAXHelper.skipToEndElement(reader);
     }
 
     /**
@@ -220,17 +187,9 @@ public abstract class BaseStAXArtifactProcessor {
      * @param attrs
      * @throws XMLStreamException
      */
-    protected void writeStart(XMLStreamWriter writer, String uri, String name, XAttr... attrs) throws XMLStreamException {
-//        String prefix = setPrefix(writer, uri);
-        writer.writeStartElement(uri, name);
-
-        // [rfeng] When the XMLStreamWriter is in the repairing namespace mode, we should not try to write namespace
-        // as it will create duplicate namespace declarations
-        
-//        if (prefix != null){
-//             writer.writeNamespace(prefix,uri);
-//        }
-        writeAttributePrefixes(writer, attrs);
+    protected void writeStart(XMLStreamWriter writer, String uri, String name, XAttr... attrs)
+        throws XMLStreamException {
+        helper.writeStartElement(writer, "", name, uri);
         writeAttributes(writer, attrs);
     }
 
@@ -295,19 +254,6 @@ public abstract class BaseStAXArtifactProcessor {
         for (XAttr attr : attrs) {
             if (attr != null)
                 attr.write(writer);
-        }
-    }
-
-    /**
-     * Write attribute prefixes to the current element.
-     * @param writer
-     * @param attrs
-     * @throws XMLStreamException
-     */
-    protected void writeAttributePrefixes(XMLStreamWriter writer, XAttr... attrs) throws XMLStreamException {
-        for (XAttr attr : attrs) {
-            if (attr != null)
-                attr.writePrefix(writer);
         }
     }
 
@@ -457,6 +403,10 @@ public abstract class BaseStAXArtifactProcessor {
         public XAttr(String name, QName value) {
             this(null, name, value);
         }
+        
+        public String toString() {
+            return uri == null ? name + "=\"" + value + "\"" : "{" + uri + "}" + name + "=\"" + value + "\"";
+        }
 
         /**
          * Writes a string from a QName and registers a prefix for its namespace.
@@ -466,66 +416,14 @@ public abstract class BaseStAXArtifactProcessor {
          */
         private String writeQNameValue(XMLStreamWriter writer, QName qname) throws XMLStreamException {
             if (qname != null) {
-                String prefix = qname.getPrefix();
-                String uri = qname.getNamespaceURI();
-                prefix = writer.getPrefix(uri);
-                if (prefix != null) {
-
-                    // Use the prefix already bound to the given URI
-                    if (prefix.length() > 0) {
-                        return prefix + ":" + qname.getLocalPart();
-                    } else {
-
-                        // Empty prefix, just return the local part of the given qname
-                        return qname.getLocalPart();
-                    }
-
+                String prefix = helper.writeNamespace(writer, qname.getPrefix(), qname.getNamespaceURI());
+                if ("".equals(prefix)) {
+                    return qname.getLocalPart();
                 } else {
-
-                    // Find an available prefix and bind it to the given URI
-                    NamespaceContext nsc = writer.getNamespaceContext();
-                    for (int i=1; ; i++) {
-                        prefix = "ns" + i;
-                        if (nsc.getNamespaceURI(prefix) == null) {
-                            break;
-                        }
-                    }
-                    writer.setPrefix(prefix, uri);
-                    writer.writeNamespace(prefix, uri);
                     return prefix + ":" + qname.getLocalPart();
                 }
-            } else {
-                return null;
             }
-        }
-
-        /**
-         * Registers a prefix for the namespace of a QName.
-         * @param reader
-         * @param value
-         * @return
-         */
-        private void writeQNamePrefix(XMLStreamWriter writer, QName qname) throws XMLStreamException {
-            if (qname != null) {
-                String prefix = qname.getPrefix();
-                String uri = qname.getNamespaceURI();
-                prefix = writer.getPrefix(uri);
-                if (prefix != null) {
-                    return;
-                } else {
-
-                    // Find an available prefix and bind it to the given URI
-                    NamespaceContext nsc = writer.getNamespaceContext();
-                    for (int i=1; ; i++) {
-                        prefix = "ns" + i;
-                        if (nsc.getNamespaceURI(prefix) == null) {
-                            break;
-                        }
-                    }
-                    writer.setPrefix(prefix, uri);
-                    writer.writeNamespace(prefix, uri);
-                }
-            }
+            return null;
         }
 
         /**
@@ -585,39 +483,7 @@ public abstract class BaseStAXArtifactProcessor {
                 return;
             }
 
-            // Write the attribute
-            if (uri != null && !uri.equals(SCA11_NS)) {
-                writer.writeAttribute(uri, name, str);
-            } else {
-                writer.writeAttribute(name,str);
-            }
-        }
-
-        /**
-         * Registers a prefix for the namespace of a QName or list of QNames
-         * @param writer
-         * @throws XMLStreamException
-         */
-        public void writePrefix(XMLStreamWriter writer) throws XMLStreamException {
-            if (value instanceof QName) {
-
-                // Write prefix for a single QName value
-                writeQNamePrefix(writer, (QName)value);
-
-            } else if (value instanceof Collection) {
-
-                // Write prefixes for a list of values
-                for (Object v: (Collection<?>)value) {
-                    if (v instanceof QName) {
-                        // Write prefix for a QName value
-                        writeQNamePrefix(writer, (QName)v);
-
-                    } else if (v instanceof XAttr) {
-                        // Write prefix for an XAttr value
-                        ((XAttr)v).writePrefix(writer);
-                    }
-                }
-            }
+            helper.writeAttribute(writer, "", name, uri, str);
         }
     }
 

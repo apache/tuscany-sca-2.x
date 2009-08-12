@@ -10,11 +10,11 @@ Bnd-LastModified: 1225397324375
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA RMI Binding Extension
-Import-Package: org.objectweb.asm,
- net.sf.cglib.core,
+Import-Package: net.sf.cglib.core,
  net.sf.cglib.proxy,
  org.apache.tuscany.sca.assembly;version="2.0.0",
  org.apache.tuscany.sca.binding.rmi;version="2.0.0",
+ org.apache.tuscany.sca.common.java.classloader;version="2.0.0",
  org.apache.tuscany.sca.core;version="2.0.0",
  org.apache.tuscany.sca.host.rmi;version="2.0.0",
  org.apache.tuscany.sca.interfacedef;version="2.0.0",
@@ -25,7 +25,8 @@ Import-Package: org.objectweb.asm,
  org.apache.tuscany.sca.provider;version="2.0.0",
  org.apache.tuscany.sca.runtime;version="2.0.0",
  org.oasisopen.sca;version="2.0.0",
- org.oasisopen.sca.annotation;version="2.0.0";resolution:=optional
+ org.oasisopen.sca.annotation;version="2.0.0";resolution:=optional,
+ org.objectweb.asm
 Bundle-SymbolicName: org.apache.tuscany.sca.binding.rmi.runtime
 Bundle-DocURL: http://www.apache.org/
 Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6

@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.node.impl;
 
+import org.apache.tuscany.sca.common.java.io.IOHelper;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -29,10 +30,10 @@ import org.junit.Test;
 public class NodeUtilTestCase {
     @Test
     public void testCreateURI() {
-        Assert.assertEquals("/a/b", NodeUtil.createURI("/a/b").toString());
-        Assert.assertEquals("/a%20b", NodeUtil.createURI("/a b").toString());
-        Assert.assertEquals("file:/a/b", NodeUtil.createURI("file:/a/b").toString());
-        Assert.assertEquals("file:/a%20b", NodeUtil.createURI("file:/a b").toString());
-        Assert.assertEquals("file:/a%20b", NodeUtil.createURI("file:/a%20b").toString());
+        Assert.assertEquals("/a/b", IOHelper.createURI("/a/b").toString());
+        Assert.assertEquals("/a%20b", IOHelper.createURI("/a b").toString());
+        Assert.assertEquals("file:/a/b", IOHelper.createURI("file:/a/b").toString());
+        Assert.assertEquals("file:/a%20b", IOHelper.createURI("file:/a b").toString());
+        Assert.assertEquals("file:/a%20b", IOHelper.createURI("file:/a%20b").toString());
     }
 }

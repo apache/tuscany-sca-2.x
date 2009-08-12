@@ -20,8 +20,8 @@
 package org.apache.tuscany.sca.node.impl;
 
 import static java.lang.System.currentTimeMillis;
-import static org.apache.tuscany.sca.node.impl.NodeUtil.createURI;
-import static org.apache.tuscany.sca.node.impl.NodeUtil.openStream;
+import static org.apache.tuscany.sca.common.java.io.IOHelper.createURI;
+import static org.apache.tuscany.sca.common.java.io.IOHelper.openStream;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,7 +48,6 @@ import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -58,6 +57,7 @@ import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderExtensionPoint;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderTmp;
 import org.apache.tuscany.sca.assembly.builder.EndpointReferenceBuilder;
+import org.apache.tuscany.sca.common.xml.stax.StAXHelper;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
@@ -100,7 +100,6 @@ import org.apache.tuscany.sca.node.configuration.BindingConfiguration;
 import org.apache.tuscany.sca.node.configuration.ContributionConfiguration;
 import org.apache.tuscany.sca.node.configuration.DeploymentComposite;
 import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
-import org.apache.tuscany.sca.node.configuration.xml.NodeConfigurationProcessor;
 import org.apache.tuscany.sca.work.WorkScheduler;
 import org.oasisopen.sca.ServiceRuntimeException;
 
@@ -171,12 +170,14 @@ public class NodeFactoryImpl extends NodeFactory {
     @Override
     public NodeConfiguration loadConfiguration(InputStream xml) {
         try {
-            XMLInputFactory inputFactory = getFactory(XMLInputFactory.class);
-            XMLOutputFactory outputFactory = getFactory(XMLOutputFactory.class);
-            XMLStreamReader reader = inputFactory.createXMLStreamReader(xml);
-            NodeConfigurationProcessor processor = new NodeConfigurationProcessor(this, inputFactory, outputFactory);
+            init();
+            StAXHelper helper = StAXHelper.getInstance(extensionPoints);
+            XMLStreamReader reader = helper.createXMLStreamReader(xml);
+            StAXArtifactProcessorExtensionPoint processors =
+                extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+            StAXArtifactProcessor processor = processors.getProcessor(NodeConfiguration.class);
             reader.nextTag();
-            NodeConfiguration config = processor.read(reader);
+            NodeConfiguration config = (NodeConfiguration)processor.read(reader);
             xml.close();
             return config;
         } catch (Throwable e) {

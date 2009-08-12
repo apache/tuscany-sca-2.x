@@ -35,9 +35,6 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.common.xml.stax.impl.XMLStreamSerializer;
-import org.apache.tuscany.sca.common.xml.stax.reader.XmlNode;
-import org.apache.tuscany.sca.common.xml.stax.reader.XmlNodeIterator;
-import org.apache.tuscany.sca.common.xml.stax.reader.XmlTreeStreamReaderImpl;
 import org.custommonkey.xmlunit.XMLAssert;
 import org.junit.Assert;
 import org.junit.Before;
@@ -144,7 +141,9 @@ public class XmlTreeStreamReaderTestCase {
         XmlTreeStreamReaderImpl reader = new XmlTreeStreamReaderImpl(root);
         XMLStreamSerializer serializer = new XMLStreamSerializer();
         StringWriter sw = new StringWriter();
-        XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(sw);
+        XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
+        outputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.TRUE);
+        XMLStreamWriter writer = outputFactory.createXMLStreamWriter(sw);
         serializer.serialize(reader, writer);
         String xml = sw.toString();
         XMLAssert.assertXMLEqual(XML_RESULT, xml);

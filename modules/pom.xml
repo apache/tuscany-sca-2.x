@@ -44,6 +44,7 @@
         <module>binding-ws-axis2-policy</module>
         <module>binding-ws-wsdlgen</module>
         <module>binding-ws-xml</module>
+        <module>common-java</module>
         <module>common-xml</module>
         <module>contribution</module>
         <module>core</module>

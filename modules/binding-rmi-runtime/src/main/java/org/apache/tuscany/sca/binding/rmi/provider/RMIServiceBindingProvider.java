@@ -34,6 +34,7 @@ import net.sf.cglib.proxy.MethodProxy;
 
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.binding.rmi.RMIBinding;
+import org.apache.tuscany.sca.common.java.classloader.ClassLoaderDelegate;
 import org.apache.tuscany.sca.host.rmi.RMIHost;
 import org.apache.tuscany.sca.host.rmi.RMIHostException;
 import org.apache.tuscany.sca.interfacedef.Interface;
@@ -140,33 +141,11 @@ public class RMIServiceBindingProvider implements ServiceBindingProvider {
         /*
          * In OSGi, the classloader for the interface cannot access the classes for the CGLIB  
          */
-        enhancer.setClassLoader(new MixedClassLoader(targetJavaInterface.getClassLoader(), getClass().getClassLoader()));
+        enhancer.setClassLoader(new ClassLoaderDelegate(targetJavaInterface.getClassLoader(), getClass().getClassLoader()));
         enhancer.setInterfaces(new Class[] {targetJavaInterface});
         return (Remote)enhancer.create();
     }
     
-    private static class MixedClassLoader extends ClassLoader {
-        private ClassLoader runtime;
-
-        public MixedClassLoader(ClassLoader parent, ClassLoader runtime) {
-            super(parent);
-            this.runtime = runtime;
-        }
-
-        @Override
-        protected Class<?> findClass(String name) throws ClassNotFoundException {
-            try {
-                return super.findClass(name);
-            } catch (ClassNotFoundException e) {
-                if (runtime != null && runtime != getParent()) {
-                    return runtime.loadClass(name);
-                } else {
-                    throw e;
-                }
-            }
-        }
-    }
-
     private Object invokeTarget(Operation op, Object[] args) throws InvocationTargetException {
         return wire.invoke(op, args);
     }

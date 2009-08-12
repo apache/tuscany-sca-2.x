@@ -172,7 +172,6 @@ public class SpringImplementationProcessor implements StAXArtifactProcessor<Spri
     public void write(SpringImplementation springImplementation, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
 
         // Write <implementation.spring>
-        policyProcessor.writePolicyPrefixes(springImplementation, writer);
         writer.writeStartElement(Constants.SCA11_NS, IMPLEMENTATION_SPRING);
         policyProcessor.writePolicyAttributes(springImplementation, writer);
 

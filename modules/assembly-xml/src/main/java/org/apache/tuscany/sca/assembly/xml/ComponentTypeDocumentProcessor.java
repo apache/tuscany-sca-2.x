@@ -23,13 +23,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
-import java.net.URLConnection;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.assembly.ComponentType;
+import org.apache.tuscany.sca.common.java.io.IOHelper;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
@@ -64,9 +64,7 @@ public class ComponentTypeDocumentProcessor extends BaseAssemblyProcessor implem
         try {
             
             // Create a stream reader
-            URLConnection connection = url.openConnection();
-            connection.setUseCaches(false);
-            urlStream = connection.getInputStream();
+            urlStream = IOHelper.openStream(url);
             XMLStreamReader reader = inputFactory.createXMLStreamReader(url.toString(), urlStream);
             reader.nextTag();
             

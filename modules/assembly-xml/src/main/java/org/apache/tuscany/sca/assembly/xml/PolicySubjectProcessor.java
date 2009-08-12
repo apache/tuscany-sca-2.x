@@ -146,15 +146,6 @@ public class PolicySubjectProcessor extends BaseStAXArtifactProcessor {
     }
 
     /**
-     * Write policies
-     * @param attachPoint
-     * @return
-     */
-    public void writePolicyPrefixes(Object attachPoint, XMLStreamWriter writer) throws XMLStreamException {
-        writePolicyPrefixes(attachPoint, (Operation)null, writer);
-    }
-
-    /**
      * Write policies associated with an operation
      * @param attachPoint
      * @param operation
@@ -175,16 +166,6 @@ public class PolicySubjectProcessor extends BaseStAXArtifactProcessor {
     public void writePolicyAttributes(Object attachPoint, Operation operation, XMLStreamWriter writer) throws XMLStreamException {
         XAttr attr = writePolicies(attachPoint, operation);
         attr.write(writer);
-    }
-
-    /**
-     * Write policies
-     * @param attachPoint
-     * @return
-     */
-    public void writePolicyPrefixes(Object attachPoint, Operation operation, XMLStreamWriter writer) throws XMLStreamException {
-        XAttr attr = writePolicies(attachPoint, operation);
-        attr.writePrefix(writer);
     }
 
     /**

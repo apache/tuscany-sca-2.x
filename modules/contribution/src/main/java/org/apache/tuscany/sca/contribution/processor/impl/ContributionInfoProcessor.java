@@ -24,10 +24,10 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.common.java.io.IOHelper;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.ContributionMetadata;
@@ -128,9 +128,7 @@ public class ContributionInfoProcessor implements URLArtifactProcessor<Contribut
             URL url = scanner.getArtifactURL(contribution, path);
             try {
                 // Check if the file actually exists before trying to read it
-                URLConnection connection = url.openConnection();
-                connection.setUseCaches(false);
-                InputStream is = connection.getInputStream();
+                InputStream is = IOHelper.openStream(url);
                 is.close();
             } catch (IOException e) {
                 continue;

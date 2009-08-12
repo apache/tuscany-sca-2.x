@@ -48,6 +48,7 @@ import javax.wsdl.xml.WSDLLocator;
 import javax.wsdl.xml.WSDLReader;
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.common.java.io.IOHelper;
 import org.apache.tuscany.sca.common.xml.XMLDocumentHelper;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
@@ -386,7 +387,7 @@ public class WSDLModelResolver implements ModelResolver {
         try {
             URL artifactURL = wsdlDef.getLocation().toURL();
             // Read a WSDL document
-            InputStream is = artifactURL.openStream();
+            InputStream is = IOHelper.openStream(artifactURL);
             WSDLReader reader = wsdl4jFactory.newWSDLReader();
             reader.setFeature("javax.wsdl.verbose", false);
             reader.setFeature("javax.wsdl.importDocuments", true);

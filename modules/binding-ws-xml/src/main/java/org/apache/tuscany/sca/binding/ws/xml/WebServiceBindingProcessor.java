@@ -232,7 +232,6 @@ public class WebServiceBindingProcessor implements StAXArtifactProcessor<WebServ
         XMLStreamException {
 
         // Write a <binding.ws>
-        policyProcessor.writePolicyPrefixes(wsBinding, writer);
         writer.writeStartElement(SCA11_NS, BINDING_WS);
         policyProcessor.writePolicyAttributes(wsBinding, writer);
 

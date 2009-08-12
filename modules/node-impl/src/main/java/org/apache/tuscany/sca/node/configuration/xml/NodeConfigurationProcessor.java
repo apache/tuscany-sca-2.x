@@ -25,19 +25,19 @@ import java.io.StringWriter;
 import java.util.StringTokenizer;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.sca.common.xml.stax.StAXHelper;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.node.configuration.BindingConfiguration;
@@ -65,25 +65,15 @@ public class NodeConfigurationProcessor extends BaseStAXArtifactProcessor implem
 
     private StAXArtifactProcessor processor;
     private NodeConfigurationFactory nodeConfigurationFactory;
-    private XMLInputFactory xmlInputFactory;
-    private XMLOutputFactory xmlOutputFactory;
+    private StAXHelper helper;
 
-    public NodeConfigurationProcessor(FactoryExtensionPoint modelFactories,
+    public NodeConfigurationProcessor(ExtensionPointRegistry registry,
                                       StAXArtifactProcessor processor,
                                       Monitor monitor) {
+        FactoryExtensionPoint modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
         this.nodeConfigurationFactory = modelFactories.getFactory(NodeConfigurationFactory.class);
         this.processor = processor;
-        this.xmlInputFactory = modelFactories.getFactory(XMLInputFactory.class);
-        this.xmlOutputFactory = modelFactories.getFactory(XMLOutputFactory.class);
-    }
-
-    public NodeConfigurationProcessor(NodeConfigurationFactory nodeConfigurationFactory,
-                                      XMLInputFactory xmlInputFactory,
-                                      XMLOutputFactory xmlOutputFactory) {
-        super();
-        this.nodeConfigurationFactory = nodeConfigurationFactory;
-        this.xmlInputFactory = xmlInputFactory;
-        this.xmlOutputFactory = xmlOutputFactory;
+        this.helper = StAXHelper.getInstance(registry);
     }
 
     public QName getArtifactType() {
@@ -153,9 +143,8 @@ public class NodeConfigurationProcessor extends BaseStAXArtifactProcessor implem
                         }
                         */
                         StringWriter sw = new StringWriter();
-                        XMLStreamWriter writer = xmlOutputFactory.createXMLStreamWriter(sw);
-                        new XMLStreamSerializer().serialize(reader, writer);
-                        writer.flush();
+                        XMLStreamWriter writer = helper.createXMLStreamWriter(sw);
+                        helper.save(reader, writer);
                         composite.setContent(sw.toString());
                     }
                     break;
@@ -207,9 +196,9 @@ public class NodeConfigurationProcessor extends BaseStAXArtifactProcessor implem
                            new XAttr("location", dc.getLocation()),
                            new XAttr("contribution", dc.getContributionURI()));
                 if (dc.getContent() != null) {
-                    XMLStreamReader reader = xmlInputFactory.createXMLStreamReader(new StringReader(dc.getContent()));
+                    XMLStreamReader reader = helper.createXMLStreamReader(new StringReader(dc.getContent()));
                     reader.nextTag(); // Move to the first element
-                    new XMLStreamSerializer().serialize(reader, writer);
+                    helper.save(reader, writer);
                     reader.close();
                 }
                 writeEnd(writer);

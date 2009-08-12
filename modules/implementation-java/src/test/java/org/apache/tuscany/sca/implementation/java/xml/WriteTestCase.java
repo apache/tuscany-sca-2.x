@@ -19,8 +19,8 @@
 
 package org.apache.tuscany.sca.implementation.java.xml;
 
-import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.io.StringWriter;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
@@ -50,6 +50,7 @@ public class WriteTestCase {
         DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
         inputFactory = XMLInputFactory.newInstance();
         outputFactory = XMLOutputFactory.newInstance();
+        outputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.TRUE);
         StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, outputFactory, null);
     }
@@ -59,8 +60,9 @@ public class WriteTestCase {
         InputStream is = getClass().getResourceAsStream("Calculator.composite");
         Composite composite = (Composite)staxProcessor.read(inputFactory.createXMLStreamReader(is));
         Assert.assertNotNull(composite);
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        staxProcessor.write(composite, outputFactory.createXMLStreamWriter(bos));
+        StringWriter sw = new StringWriter();
+        staxProcessor.write(composite, outputFactory.createXMLStreamWriter(sw));
+        System.out.println(sw.toString());
     }
 
 }

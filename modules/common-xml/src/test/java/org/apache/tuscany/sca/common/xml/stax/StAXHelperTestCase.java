@@ -25,6 +25,7 @@ import java.net.URL;
 import java.util.List;
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.common.xml.stax.StAXHelper.Attribute;
@@ -41,8 +42,8 @@ import org.w3c.dom.Node;
  */
 public class StAXHelperTestCase {
     private static final String XML =
-        "<a:foo xmlns:a='http://a' name='foo'><bar name='bar'>" + "<doo a:name='doo' xmlns:a='http://doo'/>"
-            + "</bar></a:foo>";
+        "<a:foo xmlns:a='http://foo' name='foo' xmlns='http://foo1'><bar name='bar'>" + "<doo a:name='doo' xmlns:a='http://doo'/>"
+            + "</bar><bar1 xmlns='http://bar1' name='bar1'/><bar2 xmlns='' name='bar2'/></a:foo>";
     public static final QName WSDL11 = new QName("http://schemas.xmlsoap.org/wsdl/", "definitions");
     public static final QName WSDL20 = new QName("http://www.w3.org/ns/wsdl", "description");
     public static final QName XSD = new QName("http://www.w3.org/2001/XMLSchema", "schema");
@@ -62,7 +63,18 @@ public class StAXHelperTestCase {
         xml = helper.saveAsString(reader);
         XMLAssert.assertXMLEqual(XML, xml);
     }
-
+    
+    @Test
+    public void testNoRepairingNamespaces() throws Exception {
+        StAXHelper helper = new StAXHelper(new DefaultExtensionPointRegistry());
+        helper.getOutputFactory().setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.FALSE);
+        XMLStreamReader reader = helper.createXMLStreamReader(XML);
+        String xml = helper.saveAsString(reader);
+        XMLAssert.assertXMLEqual(XML, xml);
+        reader = helper.createXMLStreamReader(xml);
+        assertNotNull(reader);
+    }
+    
     @Test
     public void testIndex() throws Exception {
         StAXHelper helper = new StAXHelper(new DefaultExtensionPointRegistry());
