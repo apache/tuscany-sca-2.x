@@ -58,21 +58,6 @@ public class DefinitionsDocumentProcessor implements URLArtifactProcessor<Defini
     private DefinitionsFactory definitionsFactory;
     private Monitor monitor;
 
-    /**
-     * Construct a new SCADefinitions processor
-     * @param assemblyFactory
-     * @param policyFactory
-     * @param staxProcessor
-     */
-    public DefinitionsDocumentProcessor(StAXArtifactProcessor<Object> staxProcessor,
-                                        XMLInputFactory inputFactory,
-                                        DefinitionsFactory definitionsFactory,
-                                        Monitor monitor) {
-        this.extensionProcessor = (StAXArtifactProcessor<Object>)staxProcessor;
-        this.inputFactory = inputFactory;
-        this.definitionsFactory = definitionsFactory;
-        this.monitor = monitor;
-    }
 
     /**
      * Constructs a new SCADefinitions processor.
@@ -111,6 +96,7 @@ public class DefinitionsDocumentProcessor implements URLArtifactProcessor<Defini
 
     public Definitions read(URL contributionURL, final URI uri, final URL url) throws ContributionReadException {
         InputStream urlStream = null;
+        monitor.pushContext("Definitions: " + url);
         try {
             // Allow privileged access to open URL stream. Add FilePermission to added to security
             // policy file.
@@ -167,6 +153,8 @@ public class DefinitionsDocumentProcessor implements URLArtifactProcessor<Defini
             } catch (IOException ioe) {
                 //ignore
             }
+            
+            monitor.popContext();
         }
     }
 
