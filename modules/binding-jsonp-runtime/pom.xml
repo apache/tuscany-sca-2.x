@@ -28,14 +28,6 @@
     <artifactId>tuscany-binding-jsonp-runtime</artifactId>
     <name>Apache Tuscany SCA JSONP Binding Runtime</name>
 
-    <!-- Use a temp repo just until the HCC4 release gets uploaded -->
-    <repositories>
-        <repository>
-            <id>temp.hc.repo</id>
-            <url>http://people.apache.org/~antelder/httpcomponents/4.0/maven</url>
-        </repository>
-    </repositories>
-
     <dependencies>
 
         <dependency>
