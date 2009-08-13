@@ -75,7 +75,6 @@ public class TuscanyRuntimeBridge implements RuntimeBridge {
             } // end for
 
             node = launcher.createNode(testConfiguration.getComposite(), contributions);
-            System.out.println("SCA Node API ClassLoader: " + node.getClass().getClassLoader());
             // Start the node
             node.start();
         } catch (Exception e) {
