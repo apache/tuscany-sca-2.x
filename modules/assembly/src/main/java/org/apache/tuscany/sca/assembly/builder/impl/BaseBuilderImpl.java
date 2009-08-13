@@ -503,7 +503,7 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
                 if (componentReference.getMultiplicity() != null) {
                     if (!ReferenceConfigurationUtil.isValidMultiplicityOverride(reference.getMultiplicity(),
                                                                                 componentReference.getMultiplicity())) {
-                        warning(monitor,
+                        error(monitor,
                                 "ReferenceIncompatibleMultiplicity",
                                 component,
                                 component.getName(),
