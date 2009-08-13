@@ -369,7 +369,7 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
             if (property != null) {
                 componentProperty.setProperty(property);
             } else {
-                warning(monitor, "PropertyNotFound", component, component.getName(), componentProperty.getName());
+                error(monitor, "PropertyNotFound", component, component.getName(), componentProperty.getName());
             }
         }
 
