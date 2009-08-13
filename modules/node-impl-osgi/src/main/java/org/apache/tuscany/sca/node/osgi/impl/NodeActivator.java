@@ -22,7 +22,7 @@ package org.apache.tuscany.sca.node.osgi.impl;
 import static org.apache.tuscany.sca.node.osgi.impl.NodeManager.isSCABundle;
 
 import org.apache.tuscany.sca.osgi.service.discovery.impl.DiscoveryActivator;
-import org.apache.tuscany.sca.osgi.service.remoteadmin.impl.RemoteAdminImpl;
+import org.apache.tuscany.sca.osgi.service.remoteadmin.impl.RemoteServiceAdminImpl;
 import org.apache.tuscany.sca.osgi.service.remoteadmin.impl.RemoteControllerImpl;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
@@ -39,7 +39,7 @@ public class NodeActivator implements BundleActivator, SynchronousBundleListener
     private NodeManager manager;
     
     private DiscoveryActivator discoveryActivator = new DiscoveryActivator();
-    private RemoteAdminImpl remoteAdmin;
+    private RemoteServiceAdminImpl remoteAdmin;
     private RemoteControllerImpl controller;
 
     private void init() {
@@ -60,7 +60,7 @@ public class NodeActivator implements BundleActivator, SynchronousBundleListener
         // FIXME: We should try to avoid aggressive initialization
         init();
         
-        remoteAdmin = new RemoteAdminImpl(context);
+        remoteAdmin = new RemoteServiceAdminImpl(context);
         remoteAdmin.start();
         
         controller = new RemoteControllerImpl(context);

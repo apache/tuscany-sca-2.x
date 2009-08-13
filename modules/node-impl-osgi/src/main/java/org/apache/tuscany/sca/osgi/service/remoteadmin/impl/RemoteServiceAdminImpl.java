@@ -27,7 +27,7 @@ import java.util.Map;
 import org.apache.tuscany.sca.osgi.service.remoteadmin.EndpointDescription;
 import org.apache.tuscany.sca.osgi.service.remoteadmin.ExportRegistration;
 import org.apache.tuscany.sca.osgi.service.remoteadmin.ImportRegistration;
-import org.apache.tuscany.sca.osgi.service.remoteadmin.RemoteAdmin;
+import org.apache.tuscany.sca.osgi.service.remoteadmin.RemoteServiceAdmin;
 import org.apache.tuscany.sca.osgi.service.remoteadmin.RemoteAdminListener;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -36,9 +36,9 @@ import org.osgi.framework.ServiceRegistration;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
- * SCA Implementation of {@link RemoteAdmin}
+ * SCA Implementation of {@link RemoteServiceAdmin}
  */
-public class RemoteAdminImpl implements RemoteAdmin {
+public class RemoteServiceAdminImpl implements RemoteServiceAdmin {
     private BundleContext context;
     private ServiceRegistration registration;
     private ServiceTracker listeners;
@@ -49,7 +49,7 @@ public class RemoteAdminImpl implements RemoteAdmin {
     private Collection<ImportRegistration> importedEndpoints = new ArrayList<ImportRegistration>();
     private Collection<ExportRegistration> exportedServices = new ArrayList<ExportRegistration>();
 
-    public RemoteAdminImpl(BundleContext context) {
+    public RemoteServiceAdminImpl(BundleContext context) {
         this.context = context;
     }
 
@@ -58,7 +58,7 @@ public class RemoteAdminImpl implements RemoteAdmin {
         this.importer = new OSGiServiceImporter(context);
         exporter.start();
         importer.start();
-        registration = context.registerService(RemoteAdmin.class.getName(), this, null);
+        registration = context.registerService(RemoteServiceAdmin.class.getName(), this, null);
         listeners = new ServiceTracker(this.context, RemoteAdminListener.class.getName(), null);
         listeners.open();
     }
@@ -91,7 +91,7 @@ public class RemoteAdminImpl implements RemoteAdmin {
     }
 
     /**
-     * @see org.apache.tuscany.sca.osgi.service.remoteadmin.RemoteAdmin#exportService(org.osgi.framework.ServiceReference)
+     * @see org.apache.tuscany.sca.osgi.service.remoteadmin.RemoteServiceAdmin#exportService(org.osgi.framework.ServiceReference)
      */
     public List<ExportRegistration> exportService(ServiceReference ref) {
         List<ExportRegistration> exportRegistrations = exporter.exportService(ref);
@@ -102,7 +102,7 @@ public class RemoteAdminImpl implements RemoteAdmin {
     }
 
     /**
-     * @see org.apache.tuscany.sca.osgi.service.remoteadmin.RemoteAdmin#exportService(org.osgi.framework.ServiceReference,
+     * @see org.apache.tuscany.sca.osgi.service.remoteadmin.RemoteServiceAdmin#exportService(org.osgi.framework.ServiceReference,
      *      java.util.Map)
      */
     public List<ExportRegistration> exportService(ServiceReference ref, Map<String, Object> properties) {
@@ -114,21 +114,21 @@ public class RemoteAdminImpl implements RemoteAdmin {
     }
 
     /**
-     * @see org.apache.tuscany.sca.osgi.service.remoteadmin.RemoteAdmin#getExportedServices()
+     * @see org.apache.tuscany.sca.osgi.service.remoteadmin.RemoteServiceAdmin#getExportedServices()
      */
     public Collection<ExportRegistration> getExportedServices() {
         return exportedServices;
     }
 
     /**
-     * @see org.apache.tuscany.sca.osgi.service.remoteadmin.RemoteAdmin#getImportedEndpoints()
+     * @see org.apache.tuscany.sca.osgi.service.remoteadmin.RemoteServiceAdmin#getImportedEndpoints()
      */
     public Collection<ImportRegistration> getImportedEndpoints() {
         return importedEndpoints;
     }
 
     /**
-     * @see org.apache.tuscany.sca.osgi.service.remoteadmin.RemoteAdmin#importService(org.apache.tuscany.sca.dosgi.discovery.EndpointDescription)
+     * @see org.apache.tuscany.sca.osgi.service.remoteadmin.RemoteServiceAdmin#importService(org.apache.tuscany.sca.dosgi.discovery.EndpointDescription)
      */
     public ImportRegistration importService(EndpointDescription endpoint) {
         Bundle bundle = (Bundle) endpoint.getProperties().get(Bundle.class.getName());

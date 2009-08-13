@@ -30,8 +30,8 @@ import org.osgi.framework.ServiceReference;
 /**
  * 
  */
-public class RemoteAdminHelper {
-    private RemoteAdminHelper() {
+public class OSGiHelper {
+    private OSGiHelper() {
     }
 
     /**

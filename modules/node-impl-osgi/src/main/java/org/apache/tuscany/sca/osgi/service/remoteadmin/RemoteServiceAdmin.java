@@ -36,7 +36,7 @@ import org.osgi.framework.ServiceReference;
  * @ThreadSafe
  */
 
-public interface RemoteAdmin {
+public interface RemoteServiceAdmin {
     /**
      * Export a service to an endpoint. The Remote Service Admin must create an
      * endpoint that can be used by other Distrbution Providers to connect to

@@ -49,7 +49,7 @@ import org.apache.tuscany.sca.osgi.service.remoteadmin.EndpointDescription;
 import org.apache.tuscany.sca.osgi.service.remoteadmin.EndpointListener;
 import org.apache.tuscany.sca.osgi.service.remoteadmin.ExportRegistration;
 import org.apache.tuscany.sca.osgi.service.remoteadmin.ImportRegistration;
-import org.apache.tuscany.sca.osgi.service.remoteadmin.RemoteAdmin;
+import org.apache.tuscany.sca.osgi.service.remoteadmin.RemoteServiceAdmin;
 import org.apache.tuscany.sca.osgi.service.remoteadmin.RemoteAdminEvent;
 import org.apache.tuscany.sca.osgi.service.remoteadmin.RemoteAdminListener;
 import org.osgi.framework.Bundle;
@@ -107,7 +107,7 @@ public class RemoteControllerImpl implements ListenerHook, RemoteAdminListener, 
         }
 
         endpointListener = context.registerService(EndpointListener.class.getName(), this, null);
-        remoteAdmins = new ServiceTracker(this.context, RemoteAdmin.class.getName(), null);
+        remoteAdmins = new ServiceTracker(this.context, RemoteServiceAdmin.class.getName(), null);
         remoteAdmins.open();
 
         // DO NOT register EventHook.class.getName() as it cannot report existing services
@@ -183,7 +183,7 @@ public class RemoteControllerImpl implements ListenerHook, RemoteAdminListener, 
             logger.warning("No RemoteAdmin services are available.");
         } else {
             for (Object ra : admins) {
-                RemoteAdmin remoteAdmin = (RemoteAdmin)ra;
+                RemoteServiceAdmin remoteAdmin = (RemoteServiceAdmin)ra;
                 List<ExportRegistration> exportRegistrations = remoteAdmin.exportService(reference);
                 if (exportRegistrations != null && !exportRegistrations.isEmpty()) {
                     exportedServices.putValue(reference, exportRegistrations);
@@ -331,7 +331,7 @@ public class RemoteControllerImpl implements ListenerHook, RemoteAdminListener, 
 
             if (admins != null) {
                 for (Object ra : admins) {
-                    RemoteAdmin remoteAdmin = (RemoteAdmin)ra;
+                    RemoteServiceAdmin remoteAdmin = (RemoteServiceAdmin)ra;
                     ImportRegistration importRegistration = remoteAdmin.importService(description);
                     if (importRegistration != null) {
                         importedServices.putValue(endpoint, importRegistration);

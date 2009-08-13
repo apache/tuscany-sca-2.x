@@ -40,7 +40,7 @@ import org.apache.tuscany.sca.node.impl.NodeFactoryImpl;
 import org.apache.tuscany.sca.osgi.service.remoteadmin.EndpointDescription;
 import org.apache.tuscany.sca.osgi.service.remoteadmin.EndpointListener;
 import org.apache.tuscany.sca.osgi.service.remoteadmin.RemoteConstants;
-import org.apache.tuscany.sca.osgi.service.remoteadmin.impl.RemoteAdminHelper;
+import org.apache.tuscany.sca.osgi.service.remoteadmin.impl.OSGiHelper;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
@@ -207,7 +207,7 @@ public abstract class AbstractDiscoveryService implements Discovery, LifeCycleLi
     }
 
     private boolean filterMatches(String filterValue, EndpointDescription sd) {
-        Filter filter = RemoteAdminHelper.createFilter(context, filterValue);
+        Filter filter = OSGiHelper.createFilter(context, filterValue);
         Hashtable<String, Object> props = new Hashtable<String, Object>(sd.getProperties());
         // Add two faked properties to make the filter match
         props.put(Constants.OBJECTCLASS, sd.getInterfaces());
@@ -242,7 +242,7 @@ public abstract class AbstractDiscoveryService implements Discovery, LifeCycleLi
                                          String property,
                                          Map<String, List<EndpointListener>> forwardMap,
                                          Map<EndpointListener, Collection<String>> reverseMap) {
-        Collection<String> collection = RemoteAdminHelper.getStringCollection(reference, property);
+        Collection<String> collection = OSGiHelper.getStringCollection(reference, property);
         if (logger.isLoggable(Level.FINE)) {
             logger.fine("adding listener: " + listener
                 + " collection: "
