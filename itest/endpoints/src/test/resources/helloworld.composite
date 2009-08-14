@@ -64,4 +64,18 @@
         </service>
     </component>   
 
+    <component name="RMIComponent6">
+        <implementation.java class="helloworld.HelloWorldImpl"/>
+        <service name="HelloWorldService" >
+            <tuscany:binding.rmi name="rmi6a" uri="rmi6b"/>
+        </service>
+    </component>   
+
+    <component name="WSComponent6">
+        <implementation.java class="helloworld.HelloWorldImpl"/>
+        <service name="HelloWorldService" >
+            <binding.ws name="ws6a" uri="ws6b"/>
+        </service>
+    </component>   
+
 </composite>
