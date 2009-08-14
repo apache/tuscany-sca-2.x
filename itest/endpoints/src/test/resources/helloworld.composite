@@ -71,6 +71,41 @@
         </service>
     </component>   
 
+    <component name="WSComponent1">
+        <implementation.java class="helloworld.HelloWorldImpl"/>
+        <service name="HelloWorldService" >
+            <binding.ws />
+        </service>
+    </component>   
+
+    <component name="WSComponent2">
+        <implementation.java class="helloworld.HelloWorldImpl"/>
+        <service name="HelloWorldService" >
+            <binding.ws name="ws2"/>
+        </service>
+    </component>   
+
+    <component name="WSComponent3">
+        <implementation.java class="helloworld.HelloWorldImpl"/>
+        <service name="HelloWorldService" >
+            <binding.ws uri="ws3"/>
+        </service>
+    </component>   
+
+    <component name="WSComponent4">
+        <implementation.java class="helloworld.HelloWorldImpl"/>
+        <service name="HelloWorldService" >
+            <binding.ws uri="/ws4"/>
+        </service>
+    </component>   
+
+    <component name="WSComponent5">
+        <implementation.java class="helloworld.HelloWorldImpl"/>
+        <service name="HelloWorldService" >
+            <binding.ws name="ws5a" uri="/ws5b"/>
+        </service>
+    </component>   
+
     <component name="WSComponent6">
         <implementation.java class="helloworld.HelloWorldImpl"/>
         <service name="HelloWorldService" >
