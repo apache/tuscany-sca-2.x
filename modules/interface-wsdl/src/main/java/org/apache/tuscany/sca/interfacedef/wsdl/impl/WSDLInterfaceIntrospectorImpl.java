@@ -102,9 +102,7 @@ public class WSDLInterfaceIntrospectorImpl {
                 //ignores conversational, as it will have it's own
                 //attribute in the wsdl interface model
                 if(! intentName.equals(POLICY_CONVERSATIONAL)) {
-                    //process the intent
-                    System.out.println(">>> Intent : " + intentName);
-                    
+
                     // Add each intent to the list
                     Intent intent = policyFactory.createIntent();
                     intent.setName(intentName);
