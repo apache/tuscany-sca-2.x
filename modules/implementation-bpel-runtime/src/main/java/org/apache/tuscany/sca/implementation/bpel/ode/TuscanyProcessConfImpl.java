@@ -452,7 +452,7 @@ public class TuscanyProcessConfImpl implements ProcessConf {
     	Document bpelDOM = readDOMFromProcess( bpelFile );
     	
     	for( ComponentProperty property : properties ) {
-    		System.out.println("BPEL: Property - name = " + property.getName() );
+    		//System.out.println("BPEL: Property - name = " + property.getName() );
     		insertSCAPropertyInitializer( bpelDOM, property );
     	} // end for
     	
