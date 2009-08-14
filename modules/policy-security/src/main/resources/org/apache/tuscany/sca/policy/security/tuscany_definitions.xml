@@ -20,13 +20,11 @@
 <definitions xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903" targetNamespace="http://tuscany.apache.org/xmlns/sca/1.1"
     xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200903" xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1">
 
-    <intent name="identity" constrains="sca:implementation.java 
-                                        sca:implementation.spring">
+    <intent name="identity" constrains="sca:implementation">
         <description>All invocations are must have an identity set</description>
     </intent>
 
-    <intent name="jaasAuthentication" constrains="sca:implementation.java 
-                                                  sca:implementation.spring">
+    <intent name="jaasAuthentication" constrains="sca:implementation.java">
         <description>All invocations to be authenticated</description>
     </intent>
 </definitions>
