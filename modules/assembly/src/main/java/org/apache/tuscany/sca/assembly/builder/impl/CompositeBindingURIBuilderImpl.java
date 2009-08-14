@@ -326,8 +326,7 @@ public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements C
                                      Monitor monitor) throws CompositeBuilderException {
         // This is a composite service so there is no component to provide a component URI
         // The path to this composite (through nested composites) is used.
-        boolean includeBindingName = service.getEndpoints().size() > 1;
-        constructBindingURI(parentComponentURI, service, binding, includeBindingName, defaultBindings, monitor);
+        constructBindingURI(parentComponentURI, service, binding, defaultBindings, monitor);
     }
 
     /**
@@ -345,8 +344,7 @@ public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements C
                                      Binding binding,
                                      Map<QName, List<String>> defaultBindings,
                                      Monitor monitor) throws CompositeBuilderException {
-        boolean includeBindingName = service.getEndpoints().size() > 1;
-        constructBindingURI(component.getURI(), service, binding, includeBindingName, defaultBindings, monitor);
+        constructBindingURI(component.getURI(), service, binding, defaultBindings, monitor);
     }
 
     /**
@@ -362,11 +360,13 @@ public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements C
     private void constructBindingURI(String componentURIString,
                                      Service service,
                                      Binding binding,
-                                     boolean includeBindingName,
                                      Map<QName, List<String>> defaultBindings,
                                      Monitor monitor) throws CompositeBuilderException {
 
         try {
+            
+            boolean includeBindingName = !service.getName().equals(binding.getName());
+            
             // calculate the service binding URI
             URI bindingURI;
             if (binding.getURI() != null) {
@@ -467,13 +467,17 @@ public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements C
         if (baseURI == null) {
             if (componentURI == null) {
                 if (bindingURI != null) {
-                    uriString = bindingURI.toString();
+                    uriString = name + "/" + bindingURI.toString();
                 } else {
                     uriString = name;
                 }
             } else {
                 if (bindingURI != null) {
-                    uriString = componentURI.resolve(bindingURI).toString();
+                    if (bindingURI.toString().startsWith("/")) {
+                        uriString = componentURI.resolve(bindingURI).toString();
+                    } else {
+                        uriString = componentURI.resolve(name + "/" + bindingURI).toString();
+                    }
                 } else {
                     uriString = componentURI.resolve(name).toString();
                 }
