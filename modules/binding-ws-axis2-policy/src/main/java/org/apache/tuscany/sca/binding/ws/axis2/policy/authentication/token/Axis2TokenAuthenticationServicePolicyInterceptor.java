@@ -71,8 +71,7 @@ public class Axis2TokenAuthenticationServicePolicyInterceptor implements PhasedI
         Axis2SOAPHeaderString header = (Axis2SOAPHeaderString)Axis2HeaderPolicyUtil.getHeader(msg, policy.getTokenName());
         
         if (header != null) {
-            System.out.println("Web service received token: " + header.getHeaderString());
-            
+
             // call out here to some 3rd party system to do whatever you 
             // need to turn header credentials into an authenticated principal  
             
