@@ -98,7 +98,6 @@ public class SpringImplementationTie {
      * @return Object - a Bean which matches the requested bean
      */
     public Object getBean(String name, Class<?> requiredType) {
-        System.out.println("Spring parent context - getBean called for name: " + name);
         // The expectation is that the requested Bean is either a reference or a property
         // from the Spring context
         for (Reference reference : implementation.getReferences()) {
