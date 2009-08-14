@@ -407,7 +407,7 @@ public class JettyServer implements ServletHost {
             //              between multiple nodes in a VM and shutting down one node blows
             //              up any other nodes when they shut down. 
             //throw new IllegalStateException("No servlet registered at this URI: " + suri);
-            System.out.println("No servlet registered at this URI: " + suri);
+            logger.warning("No servlet registered at this URI: " + suri);
             return null;
         }
         
