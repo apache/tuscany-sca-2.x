@@ -77,7 +77,6 @@ class SCAParentApplicationContext implements ApplicationContext {
 
     public boolean containsBean(String name) {
         // TODO
-        System.out.println("Spring parent context - containsBean called for name: " + name);
         return false;
     }
 
