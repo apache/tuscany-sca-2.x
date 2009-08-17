@@ -118,4 +118,11 @@ class BPELProcessDefinitionImpl implements BPELProcessDefinition {
 	public List<Property> getProperties() {
 		return theProperties;
 	} // end method getProperties
-}
+
+	/**
+	 * toString() method to produce a useful String to characterize this BPEL Process implementation during debugging
+	 */
+	public String toString() {
+		return "BPEL Process: " + name.toString();
+	}
+} // end class BPELProcessDefinitionImpl
