@@ -28,6 +28,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import javax.transaction.TransactionManager;
 import javax.xml.namespace.QName;
@@ -41,6 +44,11 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.ode.bpel.dao.BpelDAOConnectionFactoryJDBC;
 import org.apache.ode.bpel.engine.BpelServerImpl;
 import org.apache.ode.bpel.engine.CountLRUDehydrationPolicy;
+import org.apache.ode.bpel.evt.BpelEvent;
+import org.apache.ode.bpel.evt.CorrelationMatchEvent;
+import org.apache.ode.bpel.evt.NewProcessInstanceEvent;
+import org.apache.ode.bpel.evt.ProcessMessageExchangeEvent;
+import org.apache.ode.bpel.iapi.BpelEventListener;
 import org.apache.ode.bpel.iapi.Scheduler;
 import org.apache.ode.bpel.memdao.BpelDAOConnectionFactoryImpl;
 import org.apache.ode.il.config.OdeConfigProperties;
@@ -48,6 +56,8 @@ import org.apache.ode.il.dbutil.Database;
 import org.apache.ode.scheduler.simple.JdbcDelegate;
 import org.apache.ode.scheduler.simple.SimpleScheduler;
 import org.apache.ode.utils.GUID;
+import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.implementation.bpel.BPELImplementation;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.eclipse.core.runtime.FileLocator;
@@ -81,6 +91,14 @@ public class EmbeddedODEServer {
     protected ExecutorService _executorService;
 
     private Map<QName, RuntimeComponent> tuscanyRuntimeComponents = new ConcurrentHashMap<QName, RuntimeComponent>();
+    
+    private Map<String, Long> mexToProcessMap = new ConcurrentHashMap<String, Long>();
+    
+    private Map<Long, Map<String, EndpointReference>> callbackMap = new ConcurrentHashMap<Long, Map<String, EndpointReference>>();
+    
+    private final Lock metadataLock 		= new ReentrantLock();
+    private final Condition mexAdded  		= metadataLock.newCondition(); 
+    private final Condition callbackAdded  	= metadataLock.newCondition(); 
        
     public EmbeddedODEServer(TransactionManager txMgr) {
         _txMgr = txMgr;
@@ -245,7 +263,10 @@ public class EmbeddedODEServer {
         _bpelServer.setProcessThrottledMaximumSize(_config.getProcessThrottledMaximumSize());
         _bpelServer.setHydrationLazy(_config.isHydrationLazy());
         _bpelServer.setHydrationLazyMinimumSize(_config.getHydrationLazyMinimumSize());
-    }
+    
+        // Register event listener on the BPEL server
+        _bpelServer.registerBpelEventListener( new ODEEventListener( this, _bpelServer) );
+    } // end method initBpelLServer
 
     public void stop() throws ODEShutdownException {
         if(_bpelServer != null) {
@@ -371,4 +392,172 @@ public class EmbeddedODEServer {
     public RuntimeComponent getTuscanyRuntimeComponent(QName processName) {
         return tuscanyRuntimeComponents.get(processName);
     }
+    
+    /**
+     * Records a connection between a MessageExchange ID and a Process Instance ID
+     * @param mexID
+     * @param processID
+     */
+    public void addMexToProcessIDLink( String mexID, Long processID ) {
+    	System.out.println("Add mapping Mex - ProcessID = " + mexID + " " + processID.toString());
+    	if( mexID == null ) {
+    		System.out.println("Mex ID is null !");
+    		return;
+    	} // end if
+    	metadataLock.lock();
+    	try {
+    		mexToProcessMap.put(mexID, processID);
+    		mexAdded.signalAll();
+    		return;
+    	} catch (Exception e) {
+    		return;
+    	} finally {
+    		metadataLock.unlock();
+    	} // end try
+    } // end method addMexToProcessIDLink( mexID, processID )
+    
+    /**
+     * Connects from a MessageExchangeID to a Process Instance ID
+     * @param mexID - the MessageExchange ID
+     * @return - a Long which is the Process Instance ID
+     */
+    public Long getProcessIDFromMex( String mexID ) {
+    	System.out.println("Get mapping for Mex: " + mexID);
+    	metadataLock.lock();
+    	try {
+    		Long processID = mexToProcessMap.get(mexID);
+    		while( processID == null ) {
+    			mexAdded.await();
+    			processID = mexToProcessMap.get(mexID);
+    		} // end while
+    		return processID;
+    	} catch (Exception e) {
+    		return null;
+    	} finally {
+    		metadataLock.unlock();
+    	} // end try
+
+    } // end method getProcessIDFromMex
+    
+    /**
+     * Remove the connection between a Message Exchange ID and a Process Instance ID
+     * @param mexID - the Message Exchange ID
+     */
+    public void removeMexToProcessIDLink( String mexID ) {
+    	mexToProcessMap.remove(mexID);
+    } // end method removeMexToProcessIDLink
+    
+    /**
+     * Stores the metadata for a Callback
+     * @param processID - Process ID of the BPEL Process Instance for which this callback applies
+     * @param serviceName - the name of the service which has the callback
+     * @param callbackEndpoint - a Tuscany Endpoint which is the target of the callback
+     */
+    public void saveCallbackMetadata( Long processID, String serviceName, EndpointReference callbackEPR ) {
+    	System.out.println("Save callback metadata: ProcessID " + processID.toString() + " service: " + serviceName);
+    	metadataLock.lock();
+    	try {
+	    	Map<String, EndpointReference> processMap = callbackMap.get(processID);
+	    	if( processMap == null ) {
+	    		processMap = new ConcurrentHashMap<String, EndpointReference>();
+	    		callbackMap.put(processID, processMap);
+	    	} // end if
+	    	// Put the mapping of service name to callback endpoint - note that this overwrites any
+	    	// previous mapping for the same service name
+	    	processMap.put(serviceName, callbackEPR);
+	    	callbackAdded.signalAll();
+    	} finally {
+    		metadataLock.unlock();
+    	} // end try
+    } // end saveCallbackMetadata
+    
+    /**
+     * Get the metadata for a Callback, based on a BPEL Process Instance ID and a Service name
+     * @param processID - the BPEL Process Instance ID
+     * @param serviceName - the service name
+     * @return - and Endpoint which is the Callback endpoint for the service for this process instance.
+     * Returns null if there is no callback metadata for this service.
+     */
+    public EndpointReference getCallbackMetadata( Long processID, String serviceName ) {
+    	EndpointReference theEPR;
+    	System.out.println("Get callback metadata: ProcessID " + processID.toString() + " service: " + serviceName);
+    	
+    	metadataLock.lock();
+    	try {
+    		while(true) {
+		    	Map<String, EndpointReference> processMap = callbackMap.get(processID);
+		    	theEPR = processMap.get(serviceName);
+		    	if( theEPR != null ) return theEPR;
+		    	callbackAdded.await();
+    		} // end while
+    	} catch (Exception e) {
+    		return null;
+    	} finally {
+    		metadataLock.unlock();
+    	} // end try
+    } // end method getCallbackMetadata
+    
+    /**
+     * Removes the metadata for a Callback
+     * @param processID - the Process Instance ID of the process instance to which the callback metadata applies
+     * @param serviceName - the service name for the service which has a callback - can be NULL, in which case ALL
+     * callback metadata for the process instance is removed
+     */
+    public void removeCallbackMetadata( Long processID, String serviceName ) {
+    	
+    	if( serviceName == null ) {
+    		callbackMap.remove(processID);
+    	} else {
+    		Map<String, EndpointReference> processMap = callbackMap.get(processID);
+        	processMap.remove(serviceName);
+    	} // end if
+    	
+    } // end method removeCallbackMetadata
+    
+    private class ODEEventListener implements BpelEventListener {
+    	
+    	private EmbeddedODEServer ODEServer;
+    	private BpelServerImpl bpelServer;
+    	
+    	ODEEventListener( EmbeddedODEServer ODEServer, BpelServerImpl bpelServer ) {
+    		this.ODEServer 			= ODEServer;
+    		this.bpelServer 		= bpelServer;
+    	} // end constructor
+
+    	/**
+    	 * Method which receives events from the ODE Engine as processing proceeds
+    	 */
+		public void onEvent(BpelEvent bpelEvent) {
+			if( bpelEvent instanceof ProcessMessageExchangeEvent ||
+			    bpelEvent instanceof NewProcessInstanceEvent ||
+			    bpelEvent instanceof CorrelationMatchEvent ) {
+				handleProcMexEvent( (ProcessMessageExchangeEvent) bpelEvent );
+				return;
+			} // end if
+			
+		} // end method onEvent
+		
+		/**
+		 * Handle a ProcessMessageExchangeEvent
+		 * - the important aspect of this event is that it establishes a connection between a MessageExchange object 
+		 * and the BPEL Process instance to which it relates. 
+		 * @param bpelEvent - the ProcessMessageExchangeEvent
+		 */
+		private void handleProcMexEvent( ProcessMessageExchangeEvent bpelEvent) {
+			// Extract the message ID and the process instance ID - it is the connection between these
+			// that is vital to know
+			String mexID 	= bpelEvent.getMessageExchangeId();
+			Long processID 	= bpelEvent.getProcessInstanceId();
+			ODEServer.addMexToProcessIDLink( mexID, processID );
+		} // end method handleProcMexEvent
+
+		public void shutdown() {
+			// Intentionally left blank		
+		}
+
+		public void startup(Properties configProperties) {
+			// Intentionally left blank		
+		}
+    	
+    } // end Class BPELEventListener
 }

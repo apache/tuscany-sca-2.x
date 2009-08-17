@@ -33,10 +33,12 @@ import org.apache.ode.bpel.iapi.PartnerRoleChannel;
  */
 public class TuscanyPRC implements PartnerRoleChannel {
     private final QName 	processName;
+    private final QName		pid;
     private final Endpoint	endpoint;
     
     public TuscanyPRC(QName processName, QName pid, PortType portType, Endpoint endpoint){
         this.processName 	= processName;
+        this.pid 			= pid;
         this.endpoint		= endpoint;
     }
     

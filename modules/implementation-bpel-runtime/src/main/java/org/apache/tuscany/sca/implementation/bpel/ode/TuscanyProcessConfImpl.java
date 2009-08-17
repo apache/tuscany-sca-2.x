@@ -59,6 +59,7 @@ import org.apache.ode.bpel.iapi.ProcessState;
 import org.apache.tuscany.sca.assembly.Base;
 import org.apache.tuscany.sca.assembly.ComponentProperty;
 import org.apache.tuscany.sca.assembly.ComponentReference;
+import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.databinding.SimpleTypeMapper;
@@ -279,7 +280,8 @@ public class TuscanyProcessConfImpl implements ProcessConf {
     public Map<String, Endpoint> getInvokeEndpoints() {
         if( invokeEndpoints == null ) {
             invokeEndpoints = new HashMap<String, Endpoint>();
-            // Get a collection of the references
+            // Get a collection of the component references - note that this includes "pseudo-references" for any
+            // services that have a callback interface
             List<ComponentReference> theReferences = component.getReferences();
             //List<Reference> theReferences = implementation.getReferences();
             // Create an endpoint for each reference, using the reference name as the "service"
@@ -338,11 +340,13 @@ public class TuscanyProcessConfImpl implements ProcessConf {
         if( provideEndpoints == null ) {
             provideEndpoints = new HashMap<String, Endpoint>();
             String componentURI = component.getURI();
-            // Get a collection of the references
-            List<Service> theServices = implementation.getServices();
+            // Get a collection of the services - note that the Component services include additional
+            // "pseudo-services" for each reference that has a callback...
+            //List<Service> theServices = implementation.getServices();
+            List<ComponentService> theServices = component.getServices();
             // Create an endpoint for each reference, using the reference name as the "service"
             // name, combined with http://tuscany.apache.org to make a QName
-            for( Service service : theServices ) {
+            for( ComponentService service : theServices ) {
             	// MJE 14/07/2009 - added componentURI to the service name to get unique service name
                 provideEndpoints.put( service.getName(), 
                                       new Endpoint( new QName( TUSCANY_NAMESPACE, componentURI + service.getName() ), 
@@ -382,15 +386,19 @@ public class TuscanyProcessConfImpl implements ProcessConf {
      * List.  These events are "ODE Execution Events" and there is a definition of them on this
      * page:  http://ode.apache.org/user-guide.html#UserGuide-ProcessDeployment
      * 
-     * For the present Tuscany does not support manipulating the event enablement and always
-     * returns that the event is not enabled
+     * Tuscany currently uses:
+     * - instanceLifecycle events in order to establish the relationship of MessageExchange objects
+     *   to the BPEL Process instances 
      * @param scopeNames - list of BPEL process Scope names
      * @param type - the event type
      */
     public boolean isEventEnabled(List<String> scopeNames, TYPE type) {
-        //System.out.println("isEventEnabled called with scopeNames: " + 
-        //		            scopeNames + " and type: " + type );
-        return false;
+        if( type == TYPE.dataHandling ) return false;
+    	if( type == TYPE.activityLifecycle ) return false;
+    	if( type == TYPE.scopeHandling ) return true;
+    	if( type == TYPE.instanceLifecycle ) return true;
+    	if( type == TYPE.correlation ) return true;
+    	return false;
     } // end isEventEnabled
 
     /**
@@ -400,7 +408,6 @@ public class TuscanyProcessConfImpl implements ProcessConf {
      * - returning true causes problems in communicating with the BPEL process
      */
     public boolean isTransient() {
-        //System.out.println("isTransient called");
         return false;
     } // end isTransient
 

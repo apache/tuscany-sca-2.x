@@ -26,11 +26,14 @@ import javax.xml.namespace.QName;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.ode.bpel.iapi.Endpoint;
 import org.apache.ode.bpel.iapi.Message;
 import org.apache.ode.bpel.iapi.MessageExchange;
 import org.apache.ode.bpel.iapi.PartnerRoleMessageExchange;
 import org.apache.ode.bpel.iapi.Scheduler;
 import org.apache.ode.utils.DOMUtils;
+import org.apache.tuscany.sca.assembly.ComponentReference;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -55,7 +58,6 @@ public class ODEExternalService {
         this._sched = _server.getScheduler();
     }
 	
-
     public void invoke(final PartnerRoleMessageExchange partnerRoleMessageExchange) {
         boolean isTwoWay =
             partnerRoleMessageExchange.getMessageExchangePattern() == org.apache.ode.bpel.iapi.MessageExchange.MessageExchangePattern.REQUEST_RESPONSE;
@@ -69,8 +71,7 @@ public class ODEExternalService {
 
                 public void afterCompletion(boolean success) {
                     // If the TX is rolled back, then we don't send the request.
-                    if (!success)
-                        return;
+                    if (!success) return;
 
                     // The invocation must happen in a separate thread, holding on the afterCompletion
                     // blocks other operations that could have been listed there as well.
@@ -85,16 +86,13 @@ public class ODEExternalService {
                                 TuscanyPRC channel = (TuscanyPRC) partnerRoleMessageExchange.getChannel();
                                 RuntimeComponent tuscanyRuntimeComponent = _server.getTuscanyRuntimeComponent(channel.getProcessName());
 
-                                // MJE 17/07/2009 - the get(0) here is totally bogus - if the component has >1 reference, this will fail
-                                // miserably.  We should be fetching the reference BY NAME - and this name must be stored in the PRC
-                                RuntimeComponentReference runtimeComponentReference =
-                                    (RuntimeComponentReference)tuscanyRuntimeComponent.getReferences().get(0);
-                                RuntimeWire runtimeWire =
-                                	runtimeComponentReference.getRuntimeWire(runtimeComponentReference.getEndpointReferences().get(0));
+                                // Fetching the reference based on the data held in the PRC / Endpoint
+                                String refName = channel.getEndpoint().serviceName.getLocalPart();
+                                RuntimeComponentReference runtimeComponentReference = getReferenceByName( tuscanyRuntimeComponent, refName );
+                                RuntimeWire runtimeWire = getRuntimeWire( runtimeComponentReference, partnerRoleMessageExchange );
                                 // convert operations
                                 Operation operation =
                                     findOperation(partnerRoleMessageExchange.getOperation().getName(), runtimeComponentReference);
-
 
                                 /*
                                  This is how a request looks like (payload is wrapped with extra info) 
@@ -109,16 +107,14 @@ public class ODEExternalService {
                                  */
                                 Element msg = partnerRoleMessageExchange.getRequest().getMessage();
                                 if (msg != null) {
-                                    String xml = DOMUtils.domToString(msg);
-                                    
-                                    String payload =
-                                        DOMUtils.domToString(getPayload(partnerRoleMessageExchange.getRequest()));
-                                    
+    
                                     if(__log.isDebugEnabled()) {
+                                        String xml = DOMUtils.domToString(msg);
+                                        String payload = DOMUtils.domToString(getPayload(partnerRoleMessageExchange.getRequest()));
                                         __log.debug("Starting invocation of SCA Reference");
                                         __log.debug(">>> Original message: " + xml);
                                         __log.debug(">>> Payload: " + payload);
-                                    }
+                                    } // end if
                                     
                                     Object[] args = new Object[] {getPayload(partnerRoleMessageExchange.getRequest())};
 
@@ -129,32 +125,29 @@ public class ODEExternalService {
                                         result = runtimeWire.invoke(operation, args);
                                         success = true;
                                     } catch (Exception e) {
+                                    	e.printStackTrace();
                                         partnerRoleMessageExchange.replyWithFailure(MessageExchange.FailureType.OTHER,
                                                                                     e.getMessage(),
                                                                                     null);
-                                    }
-
+                                    } // end try
                                     
                                     if(__log.isDebugEnabled()) {
                                         __log.debug("SCA Reference invocation finished");
                                         __log.debug(">>> Result : " + DOMUtils.domToString((Element)result));
-                                    }
+                                    } // end if 
 
-                                    if (!success) {
-                                        return null;
-                                    }
+                                    if (!success) { return null; }
 
                                     // two way invocation
                                     // process results based on type of message invocation
                                     replyTwoWayInvocation(partnerRoleMessageExchange.getMessageExchangeId(), 
                                                           operation, 
                                                           (Element)result);
-                                }
+                                } // end if
 
                             } catch (Throwable t) {
                                 // some error
-                                String errmsg =
-                                    "Error sending message (mex=" + partnerRoleMessageExchange + "): " + t.getMessage();
+                                String errmsg = "Error sending message (mex=" + partnerRoleMessageExchange + "): " + t.getMessage();
                                 __log.error(errmsg, t);
                                 /*replyWithFailure(partnerRoleMessageExchange.getMessageExchangeId(),
                                                  MessageExchange.FailureType.COMMUNICATION_ERROR,
@@ -182,6 +175,97 @@ public class ODEExternalService {
         }
     }
 	
+    /**
+     * Gets a RuntimeComponentReference of a supplied RuntimeComponent by name
+     * @param tuscanyRuntimeComponent - the runtime component
+     * @param name - the name of the reference
+     * @return - the RuntimeComponentReference with the supplied name - null if there is no reference with that name
+     */
+    private RuntimeComponentReference getReferenceByName( RuntimeComponent tuscanyRuntimeComponent, String name ) {
+    	if( name == null ) return null;
+    	for( ComponentReference reference : tuscanyRuntimeComponent.getReferences() ) {
+    		if( name.equals(reference.getName()) ) return (RuntimeComponentReference)reference;
+    	} // end for
+    	return null;
+    } // end method getReferenceByName
+    
+    /**
+     * Get the Runtime Wire for the supplied reference
+     * @param componentReference - the reference
+     * @return - the RuntimeWire - null if it cannot be found
+     */
+    private RuntimeWire getRuntimeWire( RuntimeComponentReference componentReference,
+    									PartnerRoleMessageExchange mex) {
+    	if( componentReference.isForCallback() ) {
+    		// Where there is a callback, it is necessary to create a specialized wire, based on callback information
+    		// present on the forward call
+    		
+    		// Get the callbackEPR for the callback using the BPEL Process ID and the Reference name
+    		// - which is the same name as the service name for a callback
+    		Long processID = _server.getProcessIDFromMex(mex.getMessageExchangeId());
+    		org.apache.tuscany.sca.assembly.EndpointReference callbackEPR = 
+    			_server.getCallbackMetadata(processID, componentReference.getName());
+    		RuntimeWire wire = selectCallbackWire( callbackEPR.getTargetEndpoint(), componentReference );
+    		wire = clone_bind( componentReference, callbackEPR.getCallbackEndpoint() );
+    		return wire;
+    	} else {
+    		// No callback case...
+    		//TODO - fix the x..n multiplicity case, which needs to select the correct ONE of multiple
+    		// EndpointReferences here
+    		return componentReference.getRuntimeWire(componentReference.getEndpointReferences().get(0));
+    	} // end if
+    } // end method getRuntimeWire
+    
+    private RuntimeWire selectCallbackWire(	org.apache.tuscany.sca.assembly.Endpoint endpoint,
+    		                                RuntimeComponentReference componentReference) {
+        // Look for callback binding with same name as service binding
+        if (endpoint == null) {
+            throw new RuntimeException("Destination for forward call is not available");
+        }
+        
+        for (RuntimeWire wire : componentReference.getRuntimeWires()) {
+            if (wire.getEndpointReference().getBinding().getName().equals(endpoint.getBinding().getName())) {
+			    return wire;
+            }
+        } // end for
+
+        // if no match, look for callback binding with same type as service binding
+        for (RuntimeWire wire : componentReference.getRuntimeWires()) {
+            if (wire.getEndpointReference().getBinding().getClass() == endpoint.getBinding().getClass()) {
+			    return wire;
+            }
+        } // end for
+
+        // no suitable callback wire was found
+        return null;
+    } // end method selectCallbackWire
+    
+    private  RuntimeWire clone_bind(RuntimeComponentReference reference,
+    		org.apache.tuscany.sca.assembly.Endpoint callbackEndpoint) {
+
+		try {
+	    	// clone the callback reference ready to configure it for this callback endpoint
+			RuntimeComponentReference ref = (RuntimeComponentReference)reference.clone();
+			ref.getTargets().clear();
+			ref.getBindings().clear();
+			ref.getEndpointReferences().clear();
+			
+			// clone epr
+			EndpointReference callbackEndpointReference = (EndpointReference)reference.getEndpointReferences().get(0).clone();
+			callbackEndpointReference.setReference(ref);
+			callbackEndpointReference.setTargetEndpoint(callbackEndpoint);
+			callbackEndpointReference.setUnresolved(true);
+			
+			// The callback endpoint will be resolved when the wire chains are created
+			ref.getEndpointReferences().add(callbackEndpointReference);
+			RuntimeWire wire = ref.getRuntimeWires().get(0);
+			
+			return wire;
+		} catch ( CloneNotSupportedException e ) {
+			return null;
+		} // end try clone_bind
+		
+	} // end method 
 	
     /**
      * Find the SCA Reference operation
