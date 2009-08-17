@@ -191,17 +191,13 @@ public class BPELDocumentModelResolver implements ModelResolver {
             			                                        theImport.getNamespace(), resolver );
                 if( theWSDL != null ) {
 	            	theImport.setWSDLDefinition( theWSDL );
-	
+	            	
 	                // Find all the WSDL definitions matching the imported namespace
 	            	if( wsdlDefinitions == null ) {
 	            		wsdlDefinitions = new HashSet<Definition>();
 	            	} // end if 
 	            	
 	                wsdlDefinitions.add(theWSDL.getDefinition());
-	                // Fetch any definitions that are imported
-	                for (WSDLDefinition importedWSDL: theWSDL.getImportedDefinitions()) {
-	                    wsdlDefinitions.add(importedWSDL.getDefinition());
-	                } // end for
                 } // end if
             } // end if
         } // end for

@@ -80,6 +80,9 @@ public class BPELPartnerLinkElement {
     	if (theRole == null || theRole.length() == 0) {
             return null;
         } // end if
+    	if( pLinkType == null ) {
+    		throw new IllegalStateException("BPELPartnerLinkElement: " + this.name + " has no Partner Link type object set");
+    	} // end if 
         if (theRole.equals(pLinkType.getRole1Name())) {
             return pLinkType.getRole1pType();
         } else if (theRole.equals(pLinkType.getRole2Name())) {

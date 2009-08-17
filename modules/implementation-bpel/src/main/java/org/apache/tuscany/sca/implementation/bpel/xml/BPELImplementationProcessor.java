@@ -255,20 +255,19 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
         WSDLInterfaceContract interfaceContract = wsdlFactory.createWSDLInterfaceContract();
         reference.setInterfaceContract(interfaceContract);
 
-        // Establish whether there is just a call interface or a call + callback
-        // interface
+        // Establish whether there is just a call interface or a call + callback interface
         PortType callPT = null;
         PortType callbackPT = null;
-        if (myRolePT != null) {
-            callPT = myRolePT;
+        if (partnerRolePT != null) {
+            callPT = partnerRolePT;
             // If the 2 port types are not the same one, there is a callback...
-            if (partnerRolePT != null) {
+            if (myRolePT != null) {
                 if (!myRolePT.getQName().equals(partnerRolePT.getQName())) {
-                    callbackPT = partnerRolePT;
+                    callbackPT = myRolePT;
                 } // end if
             } // end if
-        } else if (partnerRolePT != null) {
-            callPT = partnerRolePT;
+        } else if (myRolePT != null) {
+            callPT = myRolePT;
         } // end if
 
         // No interfaces mean an error
@@ -277,8 +276,7 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
         } // end if
 
         // Set the name of the reference to the supplied name and the
-        // multiplicity of the reference
-        // to 1..1
+        // multiplicity of the reference to 1..1
         // TODO: support other multiplicities
         reference.setName(name);
         reference.setMultiplicity(Multiplicity.ONE_ONE);
@@ -294,11 +292,10 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
                 error("NoInterfaceForPortType", theInterfaces, callPT.getQName().toString());
             } else
                 reference.getInterfaceContract().setInterface(callInterface);
-        }
+        } // end if
 
         // There is a callback if the partner role is not null and if the
-        // partner role port type
-        // is not the same as the port type for my role
+        // partner role port type is not the same as the port type for my role
         if (callbackPT != null) {
             WSDLInterface callbackInterface = null;
             for (WSDLInterface anInterface : theInterfaces) {
@@ -367,8 +364,7 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
         } // end if
 
         // There is a callback if the partner role is not null and if the
-        // partner role port type
-        // is not the same as the port type for my role
+        // partner role port type is not the same as the port type for my role
         if (callbackPT != null) {
             WSDLInterface callbackInterface = null;
             for (WSDLInterface anInterface : theInterfaces) {

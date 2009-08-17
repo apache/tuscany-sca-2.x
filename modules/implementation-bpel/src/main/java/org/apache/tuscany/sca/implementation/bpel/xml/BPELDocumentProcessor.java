@@ -50,16 +50,10 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
 /**
  * BPEL document processor responsible for reading a BPEL file and producing necessary model info about it
  * 
- * TODO: The namespaces for WS-BPEL include 2 versions - only the earlier BPEL 1.1 versions are
- * supported at present - the BPEL 2.0 namespaces also need support.  This will require inspection
- * of both BPEL process files and of WSDL files for their BPEL namespaces
+ * Handles both BPEL 1.1 documents and BPEL 2.0 documents
  * @version $Rev$ $Date$
  */
 public class BPELDocumentProcessor extends BaseStAXArtifactProcessor implements URLArtifactProcessor<BPELProcessDefinition> {
-//    public final static QName BPEL_PROCESS_DEFINITION = new QName("http://schemas.xmlsoap.org/ws/2004/03/business-process/", "process");
-//    public final static QName BPEL_EXECUTABLE_DEFINITION = new QName("http://docs.oasis-open.org/wsbpel/2.0/process/executable", "process");
-
-
     
     private final static XMLInputFactory inputFactory = XMLInputFactory.newInstance();
     
@@ -83,12 +77,16 @@ public class BPELDocumentProcessor extends BaseStAXArtifactProcessor implements 
         return BPELProcessDefinition.class;
     }
 
+    /** 
+     * Read the BPEL Process definition file from the location identified by an artifact URL
+     * @param contributionURL	- URL of the Contribution containing the Process definition
+     * @param artifactURI		- URI of the artifact containing the BPEL Process definition
+     * @param artifactURL		- URL of the artifact containing the BPEL Process definition
+     * @return BPELProcessDefinition - SCA model of the BPEL Process
+     */
     public BPELProcessDefinition read(URL contributionURL, URI artifactURI, URL artifactURL) throws ContributionReadException {
         BPELProcessDefinition processDefinition = null;
         try {
-            // for now we are just using process name
-            // and relying on componentType file for service definition
-            // so it's OK to set resolved for now
             processDefinition = readProcessDefinition(artifactURL);
             processDefinition.setURI(artifactURI.toString());
             processDefinition.setUnresolved(true);

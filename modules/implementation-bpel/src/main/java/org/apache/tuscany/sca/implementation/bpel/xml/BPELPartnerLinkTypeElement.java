@@ -107,5 +107,12 @@ public class BPELPartnerLinkTypeElement implements ExtensibilityElement {
     public void setRequired(java.lang.Boolean required) {
         this.required = required;
     }
+    
+    /**
+     * toString method to return a description of this BPELPartnerLinkType useful for debugging
+     */
+    public String toString() {
+    	return "BPELPartnerLinkType: " + name.toString();
+    } // end method toString
 
 } // end BPELPartnerLinkType
