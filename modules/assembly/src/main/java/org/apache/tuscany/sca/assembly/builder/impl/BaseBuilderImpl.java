@@ -50,6 +50,7 @@ import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
 import org.apache.tuscany.sca.policy.ExtensionType;
 import org.apache.tuscany.sca.policy.PolicySubject;
+import org.w3c.dom.Document;
 
 /**
  * Base class for Builder implementations
@@ -409,8 +410,8 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
                 if (!componentProperty.isMustSupply())
                     componentProperty.setMustSupply(property.isMustSupply());
 
-                // Default to the value specified on the property
-                if (componentProperty.getValue() == null) {
+                // Default to the value specified on the component type property
+                if (!isPropertyValueSet(componentProperty)) {
                     componentProperty.setValue(property.getValue());
                 }
 
@@ -420,12 +421,12 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
                 }
 
                 // Check that a value is supplied
-                if (componentProperty.getValue() == null && property.isMustSupply()) {
+                if (!isPropertyValueSet(componentProperty) && property.isMustSupply()) {
                     error(monitor, "PropertyMustSupplyNull", component, component.getName(), componentProperty
                         .getName());
                 }
 
-                // Check that a a component property does not override the
+                // Check that a component property does not override the
                 // many attribute
                 if (!property.isMany() && componentProperty.isMany()) {
 
@@ -451,6 +452,31 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
                 }
             }
         }
+    }
+    
+    /**
+     * Look to see if any value elements have been set into the property
+     * A bit involved as the value is stored as a DOM Document
+     * 
+     * @param property the property to be tested
+     * @return true is values are present
+     */
+    private boolean isPropertyValueSet(Property property){
+        Document value = (Document)property.getValue();
+        
+        if (value == null){
+            return false;
+        }
+        
+        if (value.getFirstChild() == null){
+            return false;
+        }
+        
+        if (value.getFirstChild().getChildNodes().getLength() == 0){
+            return false;
+        }
+        
+        return true;
     }
 
     /**
