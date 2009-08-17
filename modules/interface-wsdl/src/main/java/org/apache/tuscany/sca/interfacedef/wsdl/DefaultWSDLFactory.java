@@ -20,7 +20,6 @@ package org.apache.tuscany.sca.interfacedef.wsdl;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.wsdl.impl.WSDLFactoryImpl;
-import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  * A factory for the WSDL model.
