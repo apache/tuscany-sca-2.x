@@ -27,6 +27,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.DefaultFactoryExtensionPoint;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.databinding.processor.DataBindingJavaInterfaceProcessor;
 import org.apache.tuscany.sca.databinding.DefaultDataBindingExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
@@ -55,8 +56,9 @@ public class Interface2WSDLGeneratorTestCase {
         JAXWSFaultExceptionMapper faultExceptionMapper = new JAXWSFaultExceptionMapper(dataBindings, null);
         new JAXWSJavaInterfaceProcessor(dataBindings, faultExceptionMapper, null).visitInterface(iface);
         new DataBindingJavaInterfaceProcessor(dataBindings).visitInterface(iface);
-        DefaultFactoryExtensionPoint modelFactories = new DefaultFactoryExtensionPoint(new DefaultExtensionPointRegistry());
-        WSDLFactory wFactory = new DefaultWSDLFactory(modelFactories);
+        ExtensionPointRegistry registry = new DefaultExtensionPointRegistry();
+        DefaultFactoryExtensionPoint modelFactories = new DefaultFactoryExtensionPoint(registry);
+        WSDLFactory wFactory = new DefaultWSDLFactory(registry);
         DocumentBuilderFactory documentBuilderFactory = modelFactories.getFactory(DocumentBuilderFactory.class);
         WSDLDefinition wsdlDefinition = wFactory.createWSDLDefinition();
         XSDFactory factory = new DefaultXSDFactory();
