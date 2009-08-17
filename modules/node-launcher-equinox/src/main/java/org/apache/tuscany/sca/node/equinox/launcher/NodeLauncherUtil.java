@@ -791,7 +791,7 @@ final class NodeLauncherUtil {
                 }
             }
             if (count != 0) {
-                logger.info("Runtime classpath: " + count
+                logger.fine("Runtime classpath: " + count
                     + " JAR"
                     + (count > 1 ? "s" : "")
                     + " from "
