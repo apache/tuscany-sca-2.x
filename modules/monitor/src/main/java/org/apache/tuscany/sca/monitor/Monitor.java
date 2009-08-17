@@ -144,6 +144,12 @@ public abstract class Monitor {
                                       messageId,
                                       (Object[])messageParameters);
             monitor.problem(problem);
+        } else {
+            System.out.println("Attempt to report warning with id " + 
+                               messageId + 
+                               " from class " + 
+                               reportingObject.getClass().getName() +
+                               " but the monitor object was null");
         }
     }
    
@@ -171,6 +177,12 @@ public abstract class Monitor {
                                       messageId,
                                       (Object[])messageParameters);
             monitor.problem(problem);
+        } else {
+            System.out.println("Attempt to report error with id " + 
+                    messageId + 
+                    " from class " + 
+                    reportingObject.getClass().getName() +
+                    " but the monitor object was null");
         }
     }
     
@@ -198,6 +210,12 @@ public abstract class Monitor {
                                       messageId,
                                       cause);
             monitor.problem(problem);
+        } else {
+            System.out.println("Attempt to report error with id " + 
+                    messageId + 
+                    " from class " + 
+                    reportingObject.getClass().getName() +
+                    " but the monitor object was null");
         }
     }    
     
