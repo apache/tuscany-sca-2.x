@@ -73,6 +73,15 @@ public interface InterfaceContractMapper {
     boolean isEqual(InterfaceContract source, InterfaceContract target);
 
     /**
+     * Check that two interfaces are equal. The interfaces are equal if the two interfaces have the 
+     * same set of operations, with each operation having the same signature. 
+     * @param source an interface
+     * @param target a second interface
+     * @return true if the two interfaces are equal, otherwise return false
+     */
+    public boolean isEqual(Interface source, Interface target);
+    
+    /**
      * @param source
      * @param target
      * @param ignoreCallback
