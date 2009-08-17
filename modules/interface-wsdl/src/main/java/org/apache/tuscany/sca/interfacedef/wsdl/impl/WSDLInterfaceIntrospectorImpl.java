@@ -32,7 +32,10 @@ import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.ConversationSequence;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
+import org.apache.tuscany.sca.interfacedef.wsdl.xml.WSDLInterfaceProcessor;
+import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.xsd.XSDFactory;
@@ -43,16 +46,22 @@ import org.apache.tuscany.sca.xsd.XSDFactory;
  * @version $Rev$ $Date$
  */
 public class WSDLInterfaceIntrospectorImpl {
-    private static final QName POLICY_REQUIRES = new QName("http://docs.oasis-open.org/ns/opencsa/sca/200903", "requires");
-    private static final QName POLICY_CONVERSATIONAL = new QName("http://docs.oasis-open.org/ns/opencsa/sca/200903", "conversational");
-    public static final QName POLICY_END_CONVERSATION = new QName("http://docs.oasis-open.org/ns/opencsa/sca/200903", "endsConversation");
+    private static final QName POLICY_REQUIRES 			= new QName("http://docs.oasis-open.org/ns/opencsa/sca/200903", "requires");
+    private static final QName POLICY_CONVERSATIONAL 	= new QName("http://docs.oasis-open.org/ns/opencsa/sca/200903", "conversational");
+    public  static final QName POLICY_END_CONVERSATION 	= new QName("http://docs.oasis-open.org/ns/opencsa/sca/200903", "endsConversation");
     
+    private static final QName CALLBACK_ATTRIBUTE 		= new QName("http://docs.oasis-open.org/ns/opencsa/sca/200903", "callback" );
+    
+    private WSDLFactory wsdlFactory;
     private XSDFactory xsdFactory;
     private PolicyFactory policyFactory;
+    private Monitor monitor;
     
-    public WSDLInterfaceIntrospectorImpl(FactoryExtensionPoint modelFactories) {
-        this.xsdFactory = modelFactories.getFactory(XSDFactory.class);;
-        this.policyFactory = modelFactories.getFactory(PolicyFactory.class);;
+    public WSDLInterfaceIntrospectorImpl(FactoryExtensionPoint modelFactories, WSDLFactory wsdlFactory, Monitor monitor) {
+        this.xsdFactory = modelFactories.getFactory(XSDFactory.class);
+        this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
+        this.wsdlFactory = wsdlFactory;
+        this.monitor = monitor;
     }
 
     // FIXME: Do we want to deal with document-literal wrapped style based on the JAX-WS Specification?
@@ -71,7 +80,9 @@ public class WSDLInterfaceIntrospectorImpl {
 
     public void introspectPortType(WSDLInterface wsdlInterface, PortType portType, WSDLDefinition wsdlDefinition, ModelResolver resolver) throws InvalidWSDLException {
         processIntents(wsdlInterface, portType);
+        WSDLInterface callback = processCallbackAttribute( portType, resolver );
         wsdlInterface.setPortType(portType);
+        wsdlInterface.setCallbackInterface(callback);
         wsdlInterface.getOperations().addAll(introspectOperations(portType, wsdlDefinition, resolver));
         wsdlInterface.setConversational(isConversational(portType));
     }
@@ -83,6 +94,26 @@ public class WSDLInterfaceIntrospectorImpl {
         WSDLOperationIntrospectorImpl op = new WSDLOperationIntrospectorImpl(xsdFactory, wsdlOp, wsdlDefinition, null, resolver);
         return op.getOperation();
     }
+    
+    /**
+     * Process an extension @callback attribute on a WSDL portType declaration
+     * - the callback attribute must contain the QName of another portType
+     * @param portType the portType
+     * @return
+     */
+    private WSDLInterface processCallbackAttribute( PortType portType, ModelResolver resolver ) {
+        Object o =  portType.getExtensionAttribute(CALLBACK_ATTRIBUTE);
+        if(o != null && o instanceof QName) { 
+        	WSDLInterface wsdlInterface = wsdlFactory.createWSDLInterface();
+        	wsdlInterface.setUnresolved(true);
+        	wsdlInterface.setName( (QName)o );
+        	wsdlInterface = WSDLInterfaceProcessor.resolveWSDLInterface( wsdlInterface, resolver, monitor, wsdlFactory );
+        	
+        	return wsdlInterface;
+        } else {
+        	return null;
+        } // end if 
+    } // end method processCallbackAttribute
     
     private void processIntents(WSDLInterface wsdlInterface, PortType portType) {
         Object o;

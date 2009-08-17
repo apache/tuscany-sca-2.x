@@ -18,8 +18,9 @@
  */
 package org.apache.tuscany.sca.interfacedef.wsdl;
 
-import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.wsdl.impl.WSDLFactoryImpl;
+import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  * A factory for the WSDL model.
@@ -28,8 +29,8 @@ import org.apache.tuscany.sca.interfacedef.wsdl.impl.WSDLFactoryImpl;
  */
 public class DefaultWSDLFactory extends WSDLFactoryImpl implements WSDLFactory {
 
-    public DefaultWSDLFactory(FactoryExtensionPoint modelFactories) {
-        super(modelFactories);
+    public DefaultWSDLFactory(ExtensionPointRegistry registry) {
+        super(registry);
     }
 
 }

@@ -59,6 +59,18 @@ public interface WSDLInterface extends Interface, Base {
      * @param portType the WSDL interface portType
      */
     void setPortType(PortType portType);
+    
+    /**
+     * Gets the Interface of the Callback for this WSDL interface
+     * @return the WSDLInterface of the Callback, null if there is no Callback
+     */
+    WSDLInterface getCallbackInterface();
+    
+    /**
+     * Sets the interface of the Callback for this WSDL interface
+     * @param callback - the WSDLInterface of the Callback
+     */
+    void setCallbackInterface(WSDLInterface callback);
 
     WSDLDefinition getWsdlDefinition();
 

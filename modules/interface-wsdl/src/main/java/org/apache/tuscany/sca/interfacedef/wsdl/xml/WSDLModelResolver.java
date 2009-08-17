@@ -93,18 +93,19 @@ public class WSDLModelResolver implements ModelResolver {
     public static final List<QName> XSD_QNAME_LIST =
         Arrays.asList(new QName[] {Q_ELEM_XSD_1999, Q_ELEM_XSD_2000, Q_ELEM_XSD_2001});
     
-    // ---- Policy WSDL Attachments
-    
+    // ---- SCA Policy WSDL Attachments    
     public static final QName Q_POLICY_ATTRIBUTE_EXTENSION = new QName("http://docs.oasis-open.org/ns/opencsa/sca/200903", "requires");
     public static final QName Q_POLICY_END_CONVERSATION_ATTRIBUTE_EXTENSION = new QName("http://docs.oasis-open.org/ns/opencsa/sca/200903", "endsConversation");
+    // ---- SCA Callback WSDL Extension
+    public static final QName Q_CALLBACK_ATTRIBUTE_EXTENSION = new QName("http://docs.oasis-open.org/ns/opencsa/sca/200903", "callback" );
     
-    // ---- Stuff added for BPEL extension elements ---  Mike Edwards 01/05/2008
+    // ---- BPEL extension elements ---  Mike Edwards 01/05/2008
     public static final String ELEM_PLINKTYPE = "partnerLinkType";
     public static final String NS_BPEL_1_1 = "http://schemas.xmlsoap.org/ws/2004/03/partner-link/";
     public static final QName BPEL_PLINKTYPE = new QName( NS_BPEL_1_1, ELEM_PLINKTYPE );
     public static final String NS_BPEL_2_0 = "http://docs.oasis-open.org/wsbpel/2.0/plnktype";
     public static final QName BPEL_PLINKTYPE_2_0 = new QName( NS_BPEL_2_0, ELEM_PLINKTYPE );
-    // ---- end of BPEL extension stuff
+    // ---- end of BPEL extension elements
 
     private Contribution contribution;
     private Map<String, List<WSDLDefinition>> map = new HashMap<String, List<WSDLDefinition>>();
@@ -136,6 +137,7 @@ public class WSDLModelResolver implements ModelResolver {
         try {
             wsdlExtensionRegistry.registerExtensionAttributeType(PortType.class, Q_POLICY_ATTRIBUTE_EXTENSION, AttributeExtensible.LIST_OF_QNAMES_TYPE);
             wsdlExtensionRegistry.registerExtensionAttributeType(Operation.class, Q_POLICY_END_CONVERSATION_ATTRIBUTE_EXTENSION, AttributeExtensible.STRING_TYPE);
+            wsdlExtensionRegistry.registerExtensionAttributeType(PortType.class, Q_CALLBACK_ATTRIBUTE_EXTENSION, AttributeExtensible.QNAME_TYPE);
         } catch (NoSuchMethodError e) {
             // That method does not exist on older WSDL4J levels
         }
@@ -256,7 +258,8 @@ public class WSDLModelResolver implements ModelResolver {
      * @param definitions A list of the WSDL definitions under the same target namespace
      * @return The aggregated WSDL definition
      */
-    private WSDLDefinition aggregate(List<WSDLDefinition> definitions) {
+    @SuppressWarnings("unchecked")
+	private WSDLDefinition aggregate(List<WSDLDefinition> definitions) {
         if (definitions == null || definitions.size() == 0) {
             return null;
         }
@@ -283,6 +286,11 @@ public class WSDLModelResolver implements ModelResolver {
                 facade.addImport(imp);
                 aggregated.getXmlSchemas().addAll(d.getXmlSchemas());
                 aggregated.getImportedDefinitions().add(d);
+                // Deal with extensibility elements in the imported Definitions...
+                List<ExtensibilityElement> extElements = (List<ExtensibilityElement>) d.getDefinition().getExtensibilityElements();
+                for( ExtensibilityElement extElement : extElements ) {
+                	facade.addExtensibilityElement(extElement);
+                } // end for
             }
         }
         aggregated.setDefinition(facade);

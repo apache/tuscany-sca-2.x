@@ -32,9 +32,10 @@ import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
  */
 public class WSDLInterfaceImpl extends InterfaceImpl implements WSDLInterface {
 
-    private QName name;
-    private PortType portType;
-    private WSDLDefinition wsdlDefinition;
+    private QName 			name;
+    private PortType 		portType;
+    private WSDLInterface	callbackInterface = null;    
+    private WSDLDefinition 	wsdlDefinition;
 
     protected WSDLInterfaceImpl() {
         setRemotable(true);
@@ -112,4 +113,12 @@ public class WSDLInterfaceImpl extends InterfaceImpl implements WSDLInterface {
         return true;
     }
 
-}
+	public WSDLInterface getCallbackInterface() {
+		return callbackInterface;
+	}
+
+	public void setCallbackInterface(WSDLInterface theInterface) {
+		callbackInterface = theInterface;	
+	}
+
+} // end class WSDLInterfaceImpl

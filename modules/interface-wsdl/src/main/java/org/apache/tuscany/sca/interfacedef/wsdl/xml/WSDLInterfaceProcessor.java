@@ -32,7 +32,10 @@ import org.apache.tuscany.sca.contribution.processor.ContributionResolveExceptio
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
+import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
@@ -44,19 +47,28 @@ import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
 
 /**
- *
+ * Handles a <interface.wsdl ... /> element in a SCDL file
  * @version $Rev$ $Date$
  */
 public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfaceContract>, WSDLConstants {
 
     private WSDLFactory wsdlFactory;
     private Monitor monitor;
+    private InterfaceContractMapper interfaceContractMapper;
 
-    public WSDLInterfaceProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
+//    public WSDLInterfaceProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
+//        this.wsdlFactory = modelFactories.getFactory(WSDLFactory.class);
+//        this.monitor = monitor;
+//    }
+    
+    public WSDLInterfaceProcessor(ExtensionPointRegistry registry, Monitor monitor) {
+        FactoryExtensionPoint modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
+        this.interfaceContractMapper =
+            registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(InterfaceContractMapper.class);
+        
         this.wsdlFactory = modelFactories.getFactory(WSDLFactory.class);
         this.monitor = monitor;
     }
-    
     /**
      * Report a warning.
      * 
@@ -259,7 +271,7 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
                         			                                                            portType.toString(), e);
                         	error("ContributionResolveException", wsdlFactory, ce);
                             //throw ce;
-                        }                        
+                        } // end try                      
                     }
                     else {
                     	warning("WsdlInterfaceDoesNotMatch", wsdlDefinition, wsdlInterface.getName());
@@ -269,21 +281,99 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
                 	ContributionResolveException ce = new ContributionResolveException("WSDLDefinition unresolved " + 
                 			wsdlInterface.getName() );
                     error("ContributionResolveException", wsdlFactory, ce);
-                }// end if
+                } // end if
             } // end if
         } // end if
         return wsdlInterface;
     }
     
+    public static WSDLInterface resolveWSDLInterface( WSDLInterface wsdlInterface, ModelResolver resolver, 
+    		                                   Monitor monitor, WSDLFactory wsdlFactory) {
+        if (wsdlInterface != null && wsdlInterface.isUnresolved()) {
+
+            // Resolve the WSDL interface
+            wsdlInterface = resolver.resolveModel(WSDLInterface.class, wsdlInterface);
+            if (wsdlInterface.isUnresolved()) {
+
+                // If the WSDL interface has never been resolved yet, do it now
+                // First, resolve the WSDL definition for the given namespace
+                WSDLDefinition wsdlDefinition = wsdlFactory.createWSDLDefinition();
+                wsdlDefinition.setUnresolved(true);
+                wsdlDefinition.setNamespace(wsdlInterface.getName().getNamespaceURI());
+                WSDLDefinition resolved = resolver.resolveModel(WSDLDefinition.class, wsdlDefinition);
+                if (!resolved.isUnresolved()) {
+                    wsdlDefinition.setDefinition(resolved.getDefinition());
+                    wsdlDefinition.setLocation(resolved.getLocation());
+                    wsdlDefinition.setURI(resolved.getURI());
+                    wsdlDefinition.getImportedDefinitions().addAll(resolved.getImportedDefinitions());
+                    wsdlDefinition.getXmlSchemas().addAll(resolved.getXmlSchemas());
+                    wsdlDefinition.setUnresolved(false);
+                    WSDLObject<PortType> portType = wsdlDefinition.getWSDLObject(PortType.class, wsdlInterface.getName());
+                    if (portType != null) {                        
+                        // Introspect the WSDL portType and add the resulting
+                        // WSDLInterface to the resolver
+                        try {
+                            wsdlDefinition.setDefinition(portType.getDefinition());
+                            wsdlInterface = wsdlFactory.createWSDLInterface(portType.getElement(), wsdlDefinition, resolver);
+                            wsdlInterface.setWsdlDefinition(wsdlDefinition);
+                            resolver.addModel(wsdlInterface);
+                        } catch (InvalidInterfaceException e) {
+                        	ContributionResolveException ce = new ContributionResolveException("Invalid interface when resolving " + 
+                        			                                                            portType.toString(), e);
+                        	Monitor.error(monitor, WSDLInterfaceProcessor.class.getName(), 
+                        			"interface-wsdlxml-validation-messages", "ContributionResolveException", 
+                        			wsdlFactory.getClass().getName(), ce.getMessage());
+                            //throw ce;
+                        } // end try                      
+                    }
+                    else {
+                    	Monitor.warning(monitor, WSDLInterfaceProcessor.class.getName(),
+                    			"interface-wsdlxml-validation-messages", "WsdlInterfaceDoesNotMatch", 
+                    			wsdlDefinition.getNamespace(), wsdlInterface.getName().toString() );
+                    } // end if
+                } else {
+                	// If we get here, the WSDLDefinition is unresolved...
+                	ContributionResolveException ce = new ContributionResolveException("WSDLDefinition unresolved " + 
+                			wsdlInterface.getName() );
+                    Monitor.error(monitor, WSDLInterfaceProcessor.class.getName(), 
+                			"interface-wsdlxml-validation-messages", "ContributionResolveException", 
+                			wsdlFactory.getClass().getName(), ce.getMessage());
+                } // end if
+            } // end if
+        } // end if
+        return wsdlInterface;    	
+    } // end method resolveWSDLInterface
+    
+    /**
+     * Resolve a WSDLInterfaceContract
+     */
     public void resolve(WSDLInterfaceContract wsdlInterfaceContract, ModelResolver resolver) throws ContributionResolveException {
         
         // Resolve the interface and callback interface
         WSDLInterface wsdlInterface = resolveWSDLInterface((WSDLInterface)wsdlInterfaceContract.getInterface(), resolver);
         wsdlInterfaceContract.setInterface(wsdlInterface);
         
+        // The forward interface (portType) may have a callback interface declared on it using an sca:callback attribute
+        WSDLInterface intrinsicWSDLCallbackInterface = wsdlInterface.getCallbackInterface();
+        
+        // There may be a callback interface explicitly declared on the <interface.wsdl .../> element
         WSDLInterface wsdlCallbackInterface = resolveWSDLInterface((WSDLInterface)wsdlInterfaceContract.getCallbackInterface(), resolver);
-        wsdlInterfaceContract.setCallbackInterface(wsdlCallbackInterface);
-    }
+        if( intrinsicWSDLCallbackInterface != null ) {
+        	if( wsdlCallbackInterface != null ) {
+        		// If there is both a callback interface declared on the forward interface and also one declared on the
+        		// interface.wsdl element, then the two interfaces must match [ASM80011]
+        		if( !interfaceContractMapper.isEqual(intrinsicWSDLCallbackInterface, wsdlCallbackInterface) ) {
+                    Monitor.error(monitor, WSDLInterfaceProcessor.class.getName(), 
+                			"interface-wsdlxml-validation-messages", "IncompatibleCallbacks", 
+                			intrinsicWSDLCallbackInterface.getName().toString(), 
+                			wsdlCallbackInterface.getName().toString() );
+        		} // end if
+        	} // end if
+        	wsdlInterfaceContract.setCallbackInterface(intrinsicWSDLCallbackInterface);
+        } else {
+        	wsdlInterfaceContract.setCallbackInterface(wsdlCallbackInterface);
+        } // end if
+    } // end method resolve( WSDLInterfaceContract, ModelResolver)
     
     public QName getArtifactType() {
         return WSDLConstants.INTERFACE_WSDL_QNAME;
