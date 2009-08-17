@@ -29,11 +29,14 @@ import javax.xml.namespace.QName;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.ode.bpel.iapi.MessageExchange;
 import org.apache.ode.bpel.iapi.MyRoleMessageExchange;
 import org.apache.ode.bpel.iapi.MessageExchange.Status;
 import org.apache.ode.utils.DOMUtils;
 import org.apache.ode.utils.GUID;
 import org.apache.tuscany.sca.assembly.Base;
+import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.implementation.bpel.ode.EmbeddedODEServer;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -68,18 +71,27 @@ public class BPELInvoker implements Invoker {
     private Part 					bpelOperationInputPart;
     private Part 					bpelOperationOutputPart;
     private RuntimeComponent 		component;
+    // Marks if this service has a callback interface
+    private Boolean					isCallback = false;
+    private EndpointReference 		callbackEPR;
 
-    public BPELInvoker(RuntimeComponent component, RuntimeComponentService service, Operation operation, EmbeddedODEServer odeServer, TransactionManager txMgr) {
+    public BPELInvoker(RuntimeComponent component, RuntimeComponentService service, Operation operation, 
+    		           EmbeddedODEServer odeServer, TransactionManager txMgr) {
         this.service = service;
         this.component = component;
         this.operation = operation;
         this.bpelOperationName = operation.getName();
         this.odeServer = odeServer;
         this.txMgr = txMgr;
+        this.isCallback = serviceHasCallback( service );
 
         initializeInvocation();
-    }
-
+    } // end method BPELInvoker
+    
+    private boolean serviceHasCallback( RuntimeComponentService service ) {
+    	if(service.getInterfaceContract().getCallbackInterface() != null) return true;
+    	return false;
+    } // end method serviceHasCallback
 
     private void initializeInvocation() {
 
@@ -90,10 +102,6 @@ public class BPELInvoker implements Invoker {
             WSDLInterface wsdlInterface = null;
             wsdlInterface = (WSDLInterface) interfaze;
 
-            // The following commented out code is bogus and is replaced by what follows - Mike Edwards
-            // Service serviceDefinition = (Service) wsdlInterface.getWsdlDefinition().getDefinition().getAllServices().values().iterator().next();
-            // bpelServiceName = serviceDefinition.getQName();
-            //
             // Fetch the service name from the service object - including the componentURI guarantees a unique service name
             String componentURI = component.getURI();
             bpelServiceName = new QName( Base.SCA11_TUSCANY_NS, componentURI + service.getName() );
@@ -101,10 +109,14 @@ public class BPELInvoker implements Invoker {
             bpelOperationInputPart = (Part) wsdlInterface.getPortType().getOperation(bpelOperationName,null,null).getInput().getMessage().getParts().values().iterator().next();
             bpelOperationOutputPart = (Part) wsdlInterface.getPortType().getOperation(bpelOperationName,null,null).getOutput().getMessage().getParts().values().iterator().next();
         }
-    }
+    } // end method initializeInvocation
 
     public Message invoke(Message msg) {
         try {
+        	if( isCallback ) {
+        		// Extract the callback endpoint metadata
+        		callbackEPR = msg.getFrom();
+        	} // end if
             Object[] args = msg.getBody();
             Object resp = doTheWork(args);
             msg.setBody(resp);
@@ -125,15 +137,23 @@ public class BPELInvoker implements Invoker {
         Future<?> onhold = null;
 
         //Process the BPEL process invocation
+        Long processID = 0L;
         try {
             txMgr.begin();
             mex = odeServer.getBpelServer().getEngine().createMessageExchange(new GUID().toString(),
                                                                               bpelServiceName,
                                                                               bpelOperationName);
+            //TODO - this will not be true for OneWay operations - need to handle those
             mex.setProperty("isTwoWay", "true");
             onhold = mex.invoke(createInvocationMessage(mex, args));
-
+            
             txMgr.commit();
+            // Deal with callback cases - store the callback metadata by process instance ID
+            if( isCallback ) {
+            	processID = odeServer.getProcessIDFromMex(mex.getMessageExchangeId());
+                // Store the callback metadata for this invocation
+            	odeServer.saveCallbackMetadata( processID, service.getName(), callbackEPR );
+            } // end if
         } catch (Exception e) {
             try {
                 txMgr.rollback();
@@ -141,8 +161,7 @@ public class BPELInvoker implements Invoker {
 
             }
             throw new InvocationTargetException(e, "Error invoking BPEL process : " + e.getMessage());
-        }
-
+        } // end try
 
         // Waiting until the reply is ready in case the engine needs to continue in a different thread
         if (onhold != null) {
@@ -150,8 +169,8 @@ public class BPELInvoker implements Invoker {
                 onhold.get();
             } catch (Exception e) {
                 throw new InvocationTargetException(e,"Error invoking BPEL process : " + e.getMessage());
-            }
-        }
+            } // end try
+        } // end if
 
         //Process the BPEL invocation response
         try {
@@ -193,8 +212,10 @@ public class BPELInvoker implements Invoker {
 
             }
             throw new InvocationTargetException(e, "Error retrieving BPEL process invocation status : " + e.getMessage());
-        }
+        } // end try
 
+        // Cleanup the ODE MessageExchange object
+        //mex.release();
 
         return response;
     }
@@ -218,6 +239,7 @@ public class BPELInvoker implements Invoker {
         Element contentPart = dom.createElement(bpelOperationInputPart.getName());
         Element payload = null;
 
+        // TODO handle WSDL input messages with multiple Parts...
         //TUSCANY-2321 - Properly handling Document or Element types
         if(args[0] instanceof Document) {
             payload = (Element) ((Document) args[0]).getFirstChild();
@@ -258,6 +280,5 @@ public class BPELInvoker implements Invoker {
 
     	// MJE, 12/06/2009 - changed to return the message without the PART wrapper element, since this element is not
     	// transmitted in the SOAP messages on the wire
-    	//return (Element) DOMUtils.findChildByName(response, new QName("",bpelOperationOutputPart.getName()));
-    }
-}
+    } // end method processResponse
+} // end class BPELInvoker

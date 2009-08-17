@@ -109,9 +109,16 @@ public class BPELImplementationProvider implements ImplementationProvider {
     public void start() {
         if(__log.isInfoEnabled()) {
             __log.info("Starting " + component.getName());
-        }
+        } // end if
+        
+    	ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+    	ClassLoader bpelcl = this.getClass().getClassLoader();
 
         try {
+    		// Switch TCCL - under OSGi this causes the TCCL to be set to the Bundle
+    		// classloader - this is then used by 3rd party code from ODE and its dependencies
+    		if( bpelcl != tccl ) Thread.currentThread().setContextClassLoader(bpelcl);
+    		
             if (!odeServer.isInitialized()) {
                 // start ode server
                 odeServer.init();
@@ -142,8 +149,11 @@ public class BPELImplementationProvider implements ImplementationProvider {
             throw new RuntimeException("BPEL Component Type Implementation : Error initializing embedded ODE server " + inite.getMessage(), inite);
         } catch(Exception e) {
             throw new RuntimeException("BPEL Component Type Implementation initialization failure : " + e.getMessage(), e);
-        }
-    }
+    	} finally {
+    		// Restore the TCCL if we changed it
+    		if( bpelcl != tccl ) Thread.currentThread().setContextClassLoader(tccl);
+        } // end try
+    } // end method start()
 
     public void stop() {
         if(__log.isInfoEnabled()) {
