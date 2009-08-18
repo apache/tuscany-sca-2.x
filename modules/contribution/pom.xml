@@ -34,7 +34,13 @@
             <artifactId>tuscany-assembly</artifactId>
             <version>2.0-SNAPSHOT</version>
         </dependency>
-
+        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-assembly-xsd</artifactId>
+            <version>2.0-SNAPSHOT</version>
+        </dependency>
+        
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-extensibility</artifactId>

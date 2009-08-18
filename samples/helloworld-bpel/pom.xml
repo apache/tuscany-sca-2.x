@@ -85,6 +85,21 @@
 					</execution>
 				</executions>
 			</plugin>
+            <plugin>
+                <groupId>org.apache.tuscany.maven.plugins</groupId>
+                <artifactId>maven-osgi-junit-plugin</artifactId>
+                <version>1.0-SNAPSHOT</version>
+                <executions>
+                    <execution>
+                        <id>osgi-test</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration></configuration>
+                    </execution>
+                </executions>
+            </plugin>            
 		</plugins>
     </build>
 
