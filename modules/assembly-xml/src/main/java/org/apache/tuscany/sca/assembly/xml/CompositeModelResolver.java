@@ -41,15 +41,24 @@ public class CompositeModelResolver implements ModelResolver {
 
     private Contribution contribution;
     private Map<QName, Composite> map = new HashMap<QName, Composite>();
+    private Monitor monitor;
 
     public CompositeModelResolver(Contribution contribution, FactoryExtensionPoint modelFactories, Monitor monitor) {
         this.contribution = contribution;
+        this.monitor = monitor;
     }
 
     public void addModel(Object resolved) {
         Composite composite = (Composite)resolved;
-        // FIXME: What if two composites with the same QName are added?
-        map.put(composite.getName(), composite);
+        if (map.containsKey(composite.getName())){
+            Monitor.error(monitor, 
+                          this, 
+                          "assembly-validation-messages", 
+                          "DuplicateCompositeName", 
+                          composite.getName().toString());
+        } else {
+            map.put(composite.getName(), composite);
+        }
     }
 
     public Object removeModel(Object resolved) {
