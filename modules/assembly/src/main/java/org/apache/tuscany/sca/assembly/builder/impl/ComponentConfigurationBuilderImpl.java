@@ -100,51 +100,55 @@ public class ComponentConfigurationBuilderImpl extends BaseBuilderImpl implement
     private void configureComponents(Composite composite, String uri, Definitions definitions, Monitor monitor) {
         String parentURI = uri;		
 
-	        // Process nested composites recursively
-	        for (Component component : composite.getComponents()) {
-	
-	            // Initialize component URI
-	            String componentURI;
-	            if (parentURI == null) {
-	                componentURI = component.getName();
-	            } else {
-	                componentURI = URI.create(parentURI + '/').resolve(component.getName()).toString();
-	            }
-	            component.setURI(componentURI);
-	
-	            Implementation implementation = component.getImplementation();
-	            if (implementation instanceof Composite) {
-	            	try {
-	            		monitor.pushContext("Composite: " + ((Composite)implementation).getURI());
-	
-		                // Process nested composite
-		                configureComponents((Composite)implementation, componentURI, definitions, monitor);
-	            	
-	            	} finally {
-	            		monitor.popContext();
-	            	} // end try
-	            }
-	        } // end for
-	
-	        // Initialize service bindings
-	        List<Service> compositeServices = composite.getServices();
-	        for (Service service : compositeServices) {
-	            // Set default binding names 
-	
-	            // Create default SCA binding
-	            attachSCABinding(service, definitions);
-	        }
-	
-	        // Initialize reference bindings
-	        for (Reference reference : composite.getReferences()) {
-	            // Create default SCA binding
-	            attachSCABinding(reference, definitions);
-	        }
-	
-	        // Initialize all component services and references
-	        Map<String, Component> components = new HashMap<String, Component>();
-	        for (Component component : composite.getComponents()) {
-	
+        // Process nested composites recursively
+        for (Component component : composite.getComponents()) {
+
+            // Initialize component URI
+            String componentURI;
+            if (parentURI == null) {
+                componentURI = component.getName();
+            } else {
+                componentURI = URI.create(parentURI + '/').resolve(component.getName()).toString();
+            }
+            component.setURI(componentURI);
+
+            Implementation implementation = component.getImplementation();
+            if (implementation instanceof Composite) {
+            	try {
+            		monitor.pushContext("Composite: " + ((Composite)implementation).getURI());
+
+	                // Process nested composite
+	                configureComponents((Composite)implementation, componentURI, definitions, monitor);
+            	
+            	} finally {
+            		monitor.popContext();
+            	} // end try
+            }
+        } // end for
+
+        // Initialize service bindings
+        List<Service> compositeServices = composite.getServices();
+        for (Service service : compositeServices) {
+            // Set default binding names 
+
+            // Create default SCA binding
+            attachSCABinding(service, definitions);
+        }
+
+        // Initialize reference bindings
+        for (Reference reference : composite.getReferences()) {
+            // Create default SCA binding
+            attachSCABinding(reference, definitions);
+        }
+
+        // Initialize all component services and references
+        Map<String, Component> components = new HashMap<String, Component>();
+        for (Component component : composite.getComponents()) {
+            
+            
+            monitor.pushContext("Component: " + component.getName());
+            
+            try {
 	            // Index all components and check for duplicates
 	            if (components.containsKey(component.getName())) {
 	                error(monitor, "DuplicateComponentName", component, composite.getName().toString(), component.getName());
@@ -207,8 +211,10 @@ public class ComponentConfigurationBuilderImpl extends BaseBuilderImpl implement
 	                // Create default SCA binding
 	                attachSCABinding(componentReference, definitions);
 	            }
-	        }
-
+            } finally {
+                monitor.popContext();
+            }
+        }
     } // end method 
 
     /**
