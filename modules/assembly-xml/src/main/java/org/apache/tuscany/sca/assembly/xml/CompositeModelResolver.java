@@ -50,14 +50,14 @@ public class CompositeModelResolver implements ModelResolver {
 
     public void addModel(Object resolved) {
         Composite composite = (Composite)resolved;
-        if (map.containsKey(composite.getName())){
-            Monitor.error(monitor, 
-                          this, 
-                          "assembly-validation-messages", 
-                          "DuplicateCompositeName", 
-                          composite.getName().toString());
-        } else {
-            map.put(composite.getName(), composite);
+        Composite old = map.put(composite.getName(), composite);
+        if (old != null) {
+            Monitor.error(monitor,
+                          this,
+                          "assembly-xml-validation-messages",
+                          "DuplicateCompositeName",
+                          composite.getName().toString(),
+                          contribution.getLocation());
         }
     }
 
