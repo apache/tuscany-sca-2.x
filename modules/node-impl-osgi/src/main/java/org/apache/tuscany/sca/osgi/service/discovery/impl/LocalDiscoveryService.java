@@ -27,17 +27,19 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.common.java.io.IOHelper;
+import org.apache.tuscany.sca.common.xml.stax.StAXHelper;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
@@ -48,15 +50,16 @@ import org.apache.tuscany.sca.implementation.osgi.ServiceDescriptions;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.osgi.service.remoteadmin.EndpointDescription;
+import org.apache.tuscany.sca.osgi.service.remoteadmin.RemoteConstants;
 import org.apache.tuscany.sca.osgi.service.remoteadmin.impl.EndpointDescriptionImpl;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
 import org.osgi.framework.BundleListener;
+import org.osgi.framework.Constants;
 
 public class LocalDiscoveryService extends AbstractDiscoveryService implements BundleListener {
-    private XMLInputFactory xmlInputFactory;
-    private XMLOutputFactory xmlOutputFactory;
+    private StAXHelper staxHelper;
     private AssemblyFactory assemblyFactory;
     private StAXArtifactProcessor processor;
 
@@ -71,8 +74,7 @@ public class LocalDiscoveryService extends AbstractDiscoveryService implements B
 
         FactoryExtensionPoint factories = registry.getExtensionPoint(FactoryExtensionPoint.class);
         this.assemblyFactory = factories.getFactory(AssemblyFactory.class);
-        this.xmlInputFactory = factories.getFactory(XMLInputFactory.class);
-        this.xmlOutputFactory = factories.getFactory(XMLOutputFactory.class);
+        this.staxHelper = StAXHelper.getInstance(registry);
         StAXArtifactProcessorExtensionPoint processors =
             registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         UtilityExtensionPoint utilities = this.registry.getExtensionPoint(UtilityExtensionPoint.class);
@@ -81,18 +83,32 @@ public class LocalDiscoveryService extends AbstractDiscoveryService implements B
         if (monitorFactory != null) {
             monitor = monitorFactory.createMonitor();
         }
-        processor = new ExtensibleStAXArtifactProcessor(processors, xmlInputFactory, xmlOutputFactory, monitor);
+        processor =
+            new ExtensibleStAXArtifactProcessor(processors, staxHelper.getInputFactory(),
+                                                staxHelper.getOutputFactory(), monitor);
         processExistingBundles();
     }
 
     public void bundleChanged(BundleEvent event) {
-        switch (event.getType()) {
-            case STARTED:
-                discover(event.getBundle());
-                break;
-            case STOPPING:
-                removeServicesDeclaredInBundle(event.getBundle());
-                break;
+        try {
+            switch (event.getType()) {
+                case STARTED:
+                    discover(event.getBundle());
+                    break;
+                case STOPPING:
+                    removeServicesDeclaredInBundle(event.getBundle());
+                    break;
+            }
+        } catch (Throwable e) {
+            logger.log(Level.SEVERE, e.getMessage(), e);
+            if (e instanceof Error) {
+                throw (Error)e;
+            } else if (e instanceof RuntimeException) {
+                throw (RuntimeException)e;
+            } else {
+                // Should not happen
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -137,8 +153,16 @@ public class LocalDiscoveryService extends AbstractDiscoveryService implements B
     }
 
     private EndpointDescription createEndpointDescription(ServiceDescription sd) {
-        // Endpoint endpoint = assemblyFactory.createEndpoint();
-        EndpointDescription sed = new EndpointDescriptionImpl(sd.getInterfaces(), sd.getProperties());
+        Map<String, Object> props = new HashMap<String, Object>(sd.getProperties());
+        props.put(Constants.OBJECTCLASS, sd.getInterfaces().toArray(new String[sd.getInterfaces().size()]));
+        if (!props.containsKey(RemoteConstants.ENDPOINT_REMOTE_SERVICE_ID)) {
+            props.put(RemoteConstants.ENDPOINT_REMOTE_SERVICE_ID, UUID.randomUUID().toString());
+        }
+        if (!props.containsKey(RemoteConstants.ENDPOINT_URI)) {
+            props.put(RemoteConstants.ENDPOINT_URI, UUID.randomUUID().toString());
+        }
+
+        EndpointDescription sed = new EndpointDescriptionImpl(props);
         return sed;
     }
 
@@ -167,9 +191,9 @@ public class LocalDiscoveryService extends AbstractDiscoveryService implements B
     }
 
     private ServiceDescriptions loadServiceDescriptions(URL url) throws Exception {
-        InputStream is = url.openStream();
+        InputStream is = IOHelper.openStream(url);
         try {
-            XMLStreamReader reader = xmlInputFactory.createXMLStreamReader(is);
+            XMLStreamReader reader = staxHelper.createXMLStreamReader(is);
             reader.nextTag();
             Object model = processor.read(reader);
             if (model instanceof ServiceDescriptions) {

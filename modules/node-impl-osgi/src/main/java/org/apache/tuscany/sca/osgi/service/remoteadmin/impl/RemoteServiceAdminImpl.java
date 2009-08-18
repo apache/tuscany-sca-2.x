@@ -27,8 +27,8 @@ import java.util.Map;
 import org.apache.tuscany.sca.osgi.service.remoteadmin.EndpointDescription;
 import org.apache.tuscany.sca.osgi.service.remoteadmin.ExportRegistration;
 import org.apache.tuscany.sca.osgi.service.remoteadmin.ImportRegistration;
-import org.apache.tuscany.sca.osgi.service.remoteadmin.RemoteServiceAdmin;
 import org.apache.tuscany.sca.osgi.service.remoteadmin.RemoteAdminListener;
+import org.apache.tuscany.sca.osgi.service.remoteadmin.RemoteServiceAdmin;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -105,7 +105,7 @@ public class RemoteServiceAdminImpl implements RemoteServiceAdmin {
      * @see org.apache.tuscany.sca.osgi.service.remoteadmin.RemoteServiceAdmin#exportService(org.osgi.framework.ServiceReference,
      *      java.util.Map)
      */
-    public List<ExportRegistration> exportService(ServiceReference ref, Map<String, Object> properties) {
+    public List<ExportRegistration> exportService(ServiceReference ref, Map properties) {
         List<ExportRegistration> exportRegistrations = exporter.exportService(ref);
         if (exportRegistrations != null) {
             exportedServices.addAll(exportRegistrations);

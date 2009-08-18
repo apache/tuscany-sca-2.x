@@ -31,9 +31,7 @@ import static org.apache.tuscany.sca.osgi.service.remoteadmin.RemoteAdminEvent.I
 import static org.apache.tuscany.sca.osgi.service.remoteadmin.RemoteConstants.SERVICE_EXPORTED_CONFIGS;
 import static org.apache.tuscany.sca.osgi.service.remoteadmin.RemoteConstants.SERVICE_IMPORTED;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -42,18 +40,21 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.tuscany.sca.common.java.collection.CollectionMap;
 import org.apache.tuscany.sca.core.LifeCycleListener;
 import org.apache.tuscany.sca.osgi.service.remoteadmin.EndpointDescription;
 import org.apache.tuscany.sca.osgi.service.remoteadmin.EndpointListener;
 import org.apache.tuscany.sca.osgi.service.remoteadmin.ExportRegistration;
 import org.apache.tuscany.sca.osgi.service.remoteadmin.ImportRegistration;
-import org.apache.tuscany.sca.osgi.service.remoteadmin.RemoteServiceAdmin;
 import org.apache.tuscany.sca.osgi.service.remoteadmin.RemoteAdminEvent;
 import org.apache.tuscany.sca.osgi.service.remoteadmin.RemoteAdminListener;
+import org.apache.tuscany.sca.osgi.service.remoteadmin.RemoteServiceAdmin;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
 import org.osgi.framework.Filter;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
@@ -79,12 +80,12 @@ public class RemoteControllerImpl implements ListenerHook, RemoteAdminListener, 
     private ServiceTracker remotableServices;
 
     // Service listeners keyed by the filter
-    private MappedCollections<String, ListenerInfo> serviceListeners = new MappedCollections<String, ListenerInfo>();
+    private CollectionMap<String, ListenerInfo> serviceListeners = new CollectionMap<String, ListenerInfo>();
 
-    private MappedCollections<ServiceReference, ExportRegistration> exportedServices =
-        new MappedCollections<ServiceReference, ExportRegistration>();
-    private MappedCollections<EndpointDescription, ImportRegistration> importedServices =
-        new MappedCollections<EndpointDescription, ImportRegistration>();
+    private CollectionMap<ServiceReference, ExportRegistration> exportedServices =
+        new CollectionMap<ServiceReference, ExportRegistration>();
+    private CollectionMap<EndpointDescription, ImportRegistration> importedServices =
+        new CollectionMap<EndpointDescription, ImportRegistration>();
 
     private Filter remotableServiceFilter;
 
@@ -186,7 +187,7 @@ public class RemoteControllerImpl implements ListenerHook, RemoteAdminListener, 
                 RemoteServiceAdmin remoteAdmin = (RemoteServiceAdmin)ra;
                 List<ExportRegistration> exportRegistrations = remoteAdmin.exportService(reference);
                 if (exportRegistrations != null && !exportRegistrations.isEmpty()) {
-                    exportedServices.putValue(reference, exportRegistrations);
+                    exportedServices.putValues(reference, exportRegistrations);
                 }
             }
         }
@@ -196,28 +197,40 @@ public class RemoteControllerImpl implements ListenerHook, RemoteAdminListener, 
      * @see org.osgi.framework.hooks.service.ListenerHook#added(java.util.Collection)
      */
     public void added(Collection listeners) {
-        Collection<ListenerInfo> listenerInfos = (Collection<ListenerInfo>)listeners;
-        boolean changed = false;
-        for (ListenerInfo l : listenerInfos) {
-            if (!l.isRemoved() && l.getBundleContext() != context) {
-                String key = l.getFilter();
-                if (key == null) {
-                    // key = "";
-                    // FIXME: It should always match, let's ignore it for now
-                    logger.warning("Service listner without a filter is skipped: " + l);
-                    continue;
+        try {
+            Collection<ListenerInfo> listenerInfos = (Collection<ListenerInfo>)listeners;
+            boolean changed = false;
+            for (ListenerInfo l : listenerInfos) {
+                if (!l.isRemoved() && l.getBundleContext() != context) {
+                    String key = l.getFilter();
+                    if (key == null) {
+                        // key = "";
+                        // FIXME: It should always match, let's ignore it for now
+                        logger.warning("Service listner without a filter is skipped: " + l);
+                        continue;
+                    }
+                    Collection<ListenerInfo> infos = serviceListeners.get(key);
+                    if (infos == null) {
+                        infos = new HashSet<ListenerInfo>();
+                        serviceListeners.put(key, infos);
+                    }
+                    infos.add(l);
+                    changed = true;
                 }
-                Collection<ListenerInfo> infos = serviceListeners.get(key);
-                if (infos == null) {
-                    infos = new HashSet<ListenerInfo>();
-                    serviceListeners.put(key, infos);
-                }
-                infos.add(l);
-                changed = true;
             }
-        }
-        if (changed) {
-            updateEndpointListenerScope();
+            if (changed) {
+                updateEndpointListenerScope();
+            }
+        } catch (Throwable e) {
+            logger.log(Level.SEVERE, e.getMessage(), e);
+            if (e instanceof Error) {
+                throw (Error)e;
+            } else if (e instanceof RuntimeException) {
+                throw (RuntimeException)e;
+            } else {
+                // Should not happen
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -229,7 +242,7 @@ public class RemoteControllerImpl implements ListenerHook, RemoteAdminListener, 
         endpointListener.setProperties(props);
     }
 
-    private MappedCollections<Class<?>, ListenerInfo> findServiceListeners(EndpointDescription endpointDescription,
+    private CollectionMap<Class<?>, ListenerInfo> findServiceListeners(EndpointDescription endpointDescription,
                                                                            String matchedFilter) {
         // First find all the listeners that have the matching filter
         Collection<ListenerInfo> listeners = serviceListeners.get(matchedFilter);
@@ -239,8 +252,8 @@ public class RemoteControllerImpl implements ListenerHook, RemoteAdminListener, 
 
         // Try to partition the listeners by the interface classes 
         List<String> interfaceNames = endpointDescription.getInterfaces();
-        MappedCollections<Class<?>, ListenerInfo> interfaceToListeners =
-            new MappedCollections<Class<?>, ListenerInfo>();
+        CollectionMap<Class<?>, ListenerInfo> interfaceToListeners =
+            new CollectionMap<Class<?>, ListenerInfo>();
         for (String i : interfaceNames) {
             for (ListenerInfo listener : listeners) {
                 try {
@@ -258,21 +271,33 @@ public class RemoteControllerImpl implements ListenerHook, RemoteAdminListener, 
      * @see org.osgi.framework.hooks.service.ListenerHook#removed(java.util.Collection)
      */
     public void removed(Collection listeners) {
-        Collection<ListenerInfo> listenerInfos = (Collection<ListenerInfo>)listeners;
-        boolean changed = false;
-        for (ListenerInfo l : listenerInfos) {
-            if (registration != null && l.getBundleContext() != context) {
-                String key = l.getFilter();
-                if (key == null) {
-                    continue;
-                }
-                if (serviceListeners.removeValue(key, l)) {
-                    changed = true;
+        try {
+            Collection<ListenerInfo> listenerInfos = (Collection<ListenerInfo>)listeners;
+            boolean changed = false;
+            for (ListenerInfo l : listenerInfos) {
+                if (registration != null && l.getBundleContext() != context) {
+                    String key = l.getFilter();
+                    if (key == null) {
+                        continue;
+                    }
+                    if (serviceListeners.removeValue(key, l)) {
+                        changed = true;
+                    }
                 }
             }
-        }
-        if (changed) {
-            updateEndpointListenerScope();
+            if (changed) {
+                updateEndpointListenerScope();
+            }
+        } catch (Throwable e) {
+            logger.log(Level.SEVERE, e.getMessage(), e);
+            if (e instanceof Error) {
+                throw (Error)e;
+            } else if (e instanceof RuntimeException) {
+                throw (RuntimeException)e;
+            } else {
+                // Should not happen
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -316,7 +341,7 @@ public class RemoteControllerImpl implements ListenerHook, RemoteAdminListener, 
             return;
         }
 
-        MappedCollections<Class<?>, ListenerInfo> interfaceToListeners = findServiceListeners(endpoint, matchedFilter);
+        CollectionMap<Class<?>, ListenerInfo> interfaceToListeners = findServiceListeners(endpoint, matchedFilter);
         for (Map.Entry<Class<?>, Collection<ListenerInfo>> e : interfaceToListeners.entrySet()) {
             Class<?> interfaceClass = e.getKey();
             Collection<ListenerInfo> listeners = e.getValue();
@@ -326,8 +351,8 @@ public class RemoteControllerImpl implements ListenerHook, RemoteAdminListener, 
 
             Map<String, Object> props = new HashMap<String, Object>(endpoint.getProperties());
             props.put(Bundle.class.getName(), bundle);
-            EndpointDescription description =
-                new EndpointDescriptionImpl(Collections.singletonList(interfaceClass.getName()), props);
+            props.put(Constants.OBJECTCLASS, new String[] {interfaceClass.getName()});
+            EndpointDescription description = new EndpointDescriptionImpl(props);
 
             if (admins != null) {
                 for (Object ra : admins) {
@@ -367,37 +392,6 @@ public class RemoteControllerImpl implements ListenerHook, RemoteAdminListener, 
         for (Collection<ListenerInfo> infos : serviceListeners.values()) {
         }
         serviceListeners.clear();
-    }
-
-    private static class MappedCollections<K, V> extends HashMap<K, Collection<V>> {
-        private static final long serialVersionUID = -8926174610229029369L;
-
-        public boolean putValue(K key, V value) {
-            Collection<V> collection = get(key);
-            if (collection == null) {
-                collection = new ArrayList<V>();
-                put(key, collection);
-            }
-            return collection.add(value);
-        }
-
-        public boolean putValue(K key, Collection<? extends V> value) {
-            Collection<V> collection = get(key);
-            if (collection == null) {
-                collection = new ArrayList<V>();
-                put(key, collection);
-            }
-            return collection.addAll(value);
-        }
-
-        public boolean removeValue(K key, V value) {
-            Collection<V> collection = get(key);
-            if (collection == null) {
-                return false;
-            }
-            return collection.remove(value);
-        }
-
     }
 
 }

@@ -19,14 +19,10 @@
 
 package org.apache.tuscany.sca.osgi.service.remoteadmin.impl;
 
-import static org.apache.tuscany.sca.osgi.service.remoteadmin.RemoteConstants.SERVICE_EXPORTED_INTERFACES;
-
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -38,37 +34,50 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.osgi.service.remoteadmin.EndpointDescription;
 import org.apache.tuscany.sca.osgi.service.remoteadmin.RemoteConstants;
 import org.apache.tuscany.sca.policy.Intent;
+import org.osgi.framework.Constants;
+import org.osgi.framework.ServiceReference;
 import org.osgi.framework.Version;
 
 /**
  * Implementation of {@link EndpointDescription}
  */
-public class EndpointDescriptionImpl implements EndpointDescription {
+public class EndpointDescriptionImpl extends EndpointDescription {
+    private static final Logger logger = Logger.getLogger(EndpointDescriptionImpl.class.getName());
     private Endpoint endpoint;
 
-    private static final Logger logger = Logger.getLogger(EndpointDescriptionImpl.class.getName());
-
-    private Collection<String> interfaces;
-    private Map<String, Object> properties;
-
-    public EndpointDescriptionImpl(Collection<String> interfaceNames) {
-        this(interfaceNames, Collections.<String, Object> singletonMap(SERVICE_EXPORTED_INTERFACES, interfaceNames));
+    /**
+     * @param properties
+     * @throws IllegalArgumentException
+     */
+    public EndpointDescriptionImpl(Map properties) throws IllegalArgumentException {
+        super(properties);
+        this.endpoint = (Endpoint)getProperties().get(Endpoint.class.getName());
     }
 
-    public EndpointDescriptionImpl(Collection<String> interfaceNames, Map<String, Object> remoteProperties) {
-        this.interfaces = new HashSet<String>(interfaceNames);
-        this.properties =
-            remoteProperties == null ? new HashMap<String, Object>() : new HashMap<String, Object>(remoteProperties);
-        this.properties.put(RemoteConstants.SERVICE_EXPORTED_INTERFACES, interfaceNames);
-        this.endpoint = (Endpoint) properties.get(Endpoint.class.getName());
+    /**
+     * @param ref
+     * @throws IllegalArgumentException
+     */
+    public EndpointDescriptionImpl(ServiceReference ref) throws IllegalArgumentException {
+        super(ref);
+        this.endpoint = (Endpoint)getProperties().get(Endpoint.class.getName());
     }
 
-    public EndpointDescriptionImpl(String interfaceName) {
-        this(Collections.singleton(interfaceName));
+    public EndpointDescriptionImpl(Collection<String> interfaces, String remoteServiceId, String uri) {
+        super(getProperties(interfaces, remoteServiceId, uri));
+        this.endpoint = (Endpoint)getProperties().get(Endpoint.class.getName());
+    }
+
+    private static Map<String, Object> getProperties(Collection<String> interfaces, String remoteServiceId, String uri) {
+        Map<String, Object> props = new HashMap<String, Object>();
+        props.put(Constants.OBJECTCLASS, interfaces.toArray(new String[interfaces.size()]));
+        props.put(RemoteConstants.ENDPOINT_REMOTE_SERVICE_ID, remoteServiceId);
+        props.put(RemoteConstants.ENDPOINT_URI, uri);
+        return props;
     }
 
     public EndpointDescriptionImpl(Endpoint endpoint) {
-        this(getInterfaces(endpoint), getProperties(endpoint));
+        this(getProperties(endpoint));
         this.endpoint = endpoint;
     }
 
@@ -97,31 +106,20 @@ public class EndpointDescriptionImpl implements EndpointDescription {
         return Version.emptyVersion;
     }
 
-    /**
-     * @see org.apache.tuscany.sca.osgi.service.remoteadmin.EndpointDescription#getInterfaces()
-     */
-    public List<String> getInterfaces() {
-        return new ArrayList<String>(interfaces);
-    }
-
     private static List<String> getInterfaces(Endpoint endpoint) {
         Interface intf = endpoint.getInterfaceContract().getInterface();
         JavaInterface javaInterface = (JavaInterface)intf;
         return Collections.singletonList(javaInterface.getName());
     }
 
-    /**
-     * @see org.apache.tuscany.sca.osgi.service.remoteadmin.EndpointDescription#getProperties()
-     */
-    public Map<String, Object> getProperties() {
-        return Collections.unmodifiableMap(properties); // endpoint.getService().getExtensions();
-    }
-
     private static Map<String, Object> getProperties(Endpoint endpoint) {
         Map<String, Object> props = new HashMap<String, Object>();
         props.put(RemoteConstants.ENDPOINT_URI, endpoint.getURI());
+        props.put(RemoteConstants.ENDPOINT_REMOTE_SERVICE_ID, UUID.randomUUID().toString());
         props.put(RemoteConstants.SERVICE_EXPORTED_CONFIGS, new String[] {"sca"});
         props.put(Endpoint.class.getName(), endpoint);
+        List<String> interfaces = getInterfaces(endpoint);
+        props.put(Constants.OBJECTCLASS, interfaces.toArray(new String[interfaces.size()]));
         return props;
     }
 
@@ -135,11 +133,11 @@ public class EndpointDescriptionImpl implements EndpointDescription {
     /**
      * @see org.apache.tuscany.sca.osgi.service.remoteadmin.EndpointDescription#getURI()
      */
-    public URI getURI() {
+    public String getURI() {
         if (endpoint != null) {
-            return URI.create(endpoint.getURI());
+            return endpoint.getURI();
         } else {
-            return URI.create("urn:" + UUID.randomUUID());
+            return super.getURI();
         }
     }
 
