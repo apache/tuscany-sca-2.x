@@ -326,6 +326,7 @@
                 <module>modules</module>
                 <module>samples</module>
                 <module>itest</module>
+                <module>otest/current</module>
                 <!--module>vtest</module-->
                 <!--module>tutorials</module-->
                 <!--module>demos</module-->
