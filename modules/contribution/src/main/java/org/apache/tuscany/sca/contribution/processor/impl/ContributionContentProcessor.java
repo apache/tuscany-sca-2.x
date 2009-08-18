@@ -118,6 +118,7 @@ public class ContributionContentProcessor implements ExtendedURLArtifactProcesso
 
     public Contribution read(URL parentURL, URI contributionURI, URL contributionURL) throws ContributionReadException {
 
+        
         // Create contribution model
         Contribution contribution = contributionFactory.createContribution();
         contribution.setURI(contributionURI.toString());
@@ -125,69 +126,82 @@ public class ContributionContentProcessor implements ExtendedURLArtifactProcesso
         ModelResolver modelResolver = new ExtensibleModelResolver(contribution, modelResolvers, modelFactories, monitor);
         contribution.setModelResolver(modelResolver);
         contribution.setUnresolved(true);
+        
+        monitor.pushContext("Contribution: " + contribution.getURI());
 
-        // Create a contribution scanner
-        ContributionScanner scanner = scanners.getContributionScanner(contributionURL.getProtocol());
-        if (scanner == null) {
-            File file = toFile(contributionURL);
-            if (file != null && file.isDirectory()) {
-                scanner = new DirectoryContributionScanner();
-            } else {
-                scanner = new JarContributionScanner();
-            }
-        }
-
-        // Scan the contribution and list the artifacts contained in it
-        List<Artifact> artifacts = contribution.getArtifacts();
-        boolean contributionMetadata = false;
-        List<String> artifactURIs = scanner.scan(contribution);
-        for (String artifactURI: artifactURIs) {
-            URL artifactURL = scanner.getArtifactURL(contribution, artifactURI);
-
-            // Add the deployed artifact model to the contribution
-            Artifact artifact = this.contributionFactory.createArtifact();
-            artifact.setURI(artifactURI);
-            artifact.setLocation(artifactURL.toString());
-            artifacts.add(artifact);
-            modelResolver.addModel(artifact);
-
-            // Read each artifact
-            Object model = artifactProcessor.read(contributionURL, URI.create(artifactURI), artifactURL);
-            if (model != null) {
-                artifact.setModel(model);
-
-                // Add the loaded model to the model resolver
-                modelResolver.addModel(model);
-
-                // Merge contribution metadata into the contribution model
-                if (model instanceof ContributionMetadata) {
-                    contributionMetadata = true;
-                    ContributionMetadata c = (ContributionMetadata)model;
-                    contribution.getImports().addAll(c.getImports());
-                    contribution.getExports().addAll(c.getExports());
-                    contribution.getDeployables().addAll(c.getDeployables());
-                    contribution.getExtensions().addAll(c.getExtensions());
-                    contribution.getAttributeExtensions().addAll(c.getAttributeExtensions());
+        try {
+            // Create a contribution scanner
+            ContributionScanner scanner = scanners.getContributionScanner(contributionURL.getProtocol());
+            if (scanner == null) {
+                File file = toFile(contributionURL);
+                if (file != null && file.isDirectory()) {
+                    scanner = new DirectoryContributionScanner();
+                } else {
+                    scanner = new JarContributionScanner();
                 }
             }
-        }
-
-        // If no sca-contribution.xml file was provided then just consider
-        // all composites in the contribution as deployables
-        if (!contributionMetadata) {
-            for (Artifact artifact: artifacts) {
-                if (artifact.getModel() instanceof Composite) {
-                    contribution.getDeployables().add((Composite)artifact.getModel());
-                }
+    
+            // Scan the contribution and list the artifacts contained in it
+            List<Artifact> artifacts = contribution.getArtifacts();
+            boolean contributionMetadata = false;
+            List<String> artifactURIs = scanner.scan(contribution);
+            for (String artifactURI: artifactURIs) {
+                URL artifactURL = scanner.getArtifactURL(contribution, artifactURI);
+    
+                // Add the deployed artifact model to the contribution
+                Artifact artifact = this.contributionFactory.createArtifact();
+                artifact.setURI(artifactURI);
+                artifact.setLocation(artifactURL.toString());
+                artifacts.add(artifact);
+                modelResolver.addModel(artifact);
+                
+                monitor.pushContext("Artifact: " + artifactURI);
+    
+                try {
+                    // Read each artifact
+                    Object model = artifactProcessor.read(contributionURL, URI.create(artifactURI), artifactURL);
+                    if (model != null) {
+                        artifact.setModel(model);
+        
+                        // Add the loaded model to the model resolver
+                        modelResolver.addModel(model);
+        
+                        // Merge contribution metadata into the contribution model
+                        if (model instanceof ContributionMetadata) {
+                            contributionMetadata = true;
+                            ContributionMetadata c = (ContributionMetadata)model;
+                            contribution.getImports().addAll(c.getImports());
+                            contribution.getExports().addAll(c.getExports());
+                            contribution.getDeployables().addAll(c.getDeployables());
+                            contribution.getExtensions().addAll(c.getExtensions());
+                            contribution.getAttributeExtensions().addAll(c.getAttributeExtensions());
+                        }
+                    }
+                } finally {
+                    monitor.popContext();
+                }                    
             }
-
-            // Add default contribution import and export
-            DefaultImport defaultImport = contributionFactory.createDefaultImport();
-            defaultImport.setModelResolver(new DefaultModelResolver());
-            contribution.getImports().add(defaultImport);
-            DefaultExport defaultExport = contributionFactory.createDefaultExport();
-            contribution.getExports().add(defaultExport);
+    
+            // If no sca-contribution.xml file was provided then just consider
+            // all composites in the contribution as deployables
+            if (!contributionMetadata) {
+                for (Artifact artifact: artifacts) {
+                    if (artifact.getModel() instanceof Composite) {
+                        contribution.getDeployables().add((Composite)artifact.getModel());
+                    }
+                }
+    
+                // Add default contribution import and export
+                DefaultImport defaultImport = contributionFactory.createDefaultImport();
+                defaultImport.setModelResolver(new DefaultModelResolver());
+                contribution.getImports().add(defaultImport);
+                DefaultExport defaultExport = contributionFactory.createDefaultExport();
+                contribution.getExports().add(defaultExport);
+            }
+        } finally {
+            monitor.popContext();
         }
+        
         return contribution;
     }
 
