@@ -606,9 +606,11 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
                         if (root.getChildNodes().getLength() == 0) {
                             // Add an text as an <value>
                             if (isTextForProperty){
-                                Element valueElement = document.createElementNS(SCA11_NS, VALUE);
-                                root.appendChild(valueElement);
-                                valueElement.setTextContent(text.toString());
+                                if (text.length() > 0) {
+                                    Element valueElement = document.createElementNS(SCA11_NS, VALUE);
+                                    root.appendChild(valueElement);
+                                    valueElement.setTextContent(text.toString());
+                                }
                             }
                         }
                         return document;

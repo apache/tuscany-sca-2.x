@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.sca.assembly.builder.impl;
 
+import static org.apache.tuscany.sca.assembly.Base.SCA11_NS;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -51,10 +53,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
-
-import static org.apache.tuscany.sca.assembly.xsd.Constants.PROPERTY;
-import static org.apache.tuscany.sca.assembly.xsd.Constants.SCA11_NS;
-import static org.apache.tuscany.sca.assembly.xsd.Constants.VALUE;
 
 /**
  * Utility class to deal with processing of component properties that are taking values from the parent 
@@ -92,14 +90,14 @@ abstract class PropertyConfigurationUtil {
             return (Document)result;
         } else {
         	Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
-            Element newProperty = document.createElementNS(SCA11_NS, PROPERTY);
+            Element newProperty = document.createElementNS(SCA11_NS, "property");
             
-            if( VALUE.equals(result.getLocalName()) ) {
+            if( "value".equals(result.getLocalName()) ) {
             	// If the result is a <value/> element, use it directly in the result
             	newProperty.appendChild(document.importNode(result, true));
             } else {
             	// If the result is not a <value/> element, create a <value/> element to contain the result
-            	Element newValue = document.createElementNS(SCA11_NS, VALUE);
+            	Element newValue = document.createElementNS(SCA11_NS, "value");
             	newValue.appendChild(document.importNode(result, true));
             	newProperty.appendChild(newValue);
             } // end if
