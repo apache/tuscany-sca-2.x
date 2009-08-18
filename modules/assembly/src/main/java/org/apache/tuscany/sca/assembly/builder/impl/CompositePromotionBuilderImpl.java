@@ -69,24 +69,31 @@ public class CompositePromotionBuilderImpl extends BaseBuilderImpl implements Co
      * @param problems
      */
     protected void connectCompositeReferencesAndServices(Composite composite, Monitor monitor) {
-        // Wire nested composites recursively
-        for (Component component : composite.getComponents()) {
-            Implementation implementation = component.getImplementation();
-            if (implementation instanceof Composite) {
-                connectCompositeReferencesAndServices((Composite)implementation, monitor);
+        
+        monitor.pushContext("Composite: " + composite.getName().toString());
+        
+        try {
+            // Wire nested composites recursively
+            for (Component component : composite.getComponents()) {
+                Implementation implementation = component.getImplementation();
+                if (implementation instanceof Composite) {
+                    connectCompositeReferencesAndServices((Composite)implementation, monitor);
+                }
             }
-        }
-
-        // Index components, services and references
-        Map<String, Component> components = new HashMap<String, Component>();
-        Map<String, ComponentService> componentServices = new HashMap<String, ComponentService>();
-        Map<String, ComponentReference> componentReferences = new HashMap<String, ComponentReference>();
-        indexComponentsServicesAndReferences(composite, components, componentServices, componentReferences);
-
-        // Connect composite services and references to the component
-        // services and references that they promote
-        connectCompositeServices(composite, components, componentServices, monitor);
-        connectCompositeReferences(composite, components, componentReferences, monitor);
+    
+            // Index components, services and references
+            Map<String, Component> components = new HashMap<String, Component>();
+            Map<String, ComponentService> componentServices = new HashMap<String, ComponentService>();
+            Map<String, ComponentReference> componentReferences = new HashMap<String, ComponentReference>();
+            indexComponentsServicesAndReferences(composite, components, componentServices, componentReferences);
+    
+            // Connect composite services and references to the component
+            // services and references that they promote
+            connectCompositeServices(composite, components, componentServices, monitor);
+            connectCompositeReferences(composite, components, componentReferences, monitor);
+        } finally {
+            monitor.popContext();
+        } // end try
     }
 
     /**
@@ -241,11 +248,12 @@ public class CompositePromotionBuilderImpl extends BaseBuilderImpl implements Co
                             }
                         }
                     } else {
-                        warning(monitor,
-                                "PromotedReferenceNotFound",
-                                composite,
-                                composite.getName().toString(),
-                                componentReferenceName);
+                        Monitor.error(monitor,
+                                      this,
+                                      "assembly-validation-messages",
+                                      "PromotedReferenceNotFound",
+                                      composite.getName().toString(),
+                                      componentReferenceName);
                     }
                 }
             }
