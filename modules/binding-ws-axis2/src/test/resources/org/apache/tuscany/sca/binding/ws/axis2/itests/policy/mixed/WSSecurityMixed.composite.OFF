@@ -21,7 +21,7 @@
 			xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1"
 			xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200903"
 			targetNamespace="http://www.tuscany.apache.org/tests/binding/ws/axis2"
-           name="endpoint3">
+           name="WSSecurityMixed">
            
     <!-- 
     exposing a component with a WS binding using a WSDL port with an explicit URL
