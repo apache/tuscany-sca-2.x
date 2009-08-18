@@ -152,7 +152,7 @@ public class CompositeBuilderImpl implements CompositeBuilder, CompositeBuilderT
                       Monitor monitor) throws CompositeBuilderException {
 
         try {
-    		monitor.pushContext("Composite: " + composite.getURI());   		
+    		monitor.pushContext("Composite: " + composite.getName().toString());   		
     		
             // Collect and fuse includes
             compositeIncludeBuilder.build(composite, definitions, monitor);
