@@ -80,50 +80,62 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
 
     private void processComponentReferences(Composite composite) {
 
-        // index all of the components in the composite
-        Map<String, Component> components = new HashMap<String, Component>();
-        indexComponents(composite, components);
-
-        // index all of the services in the composite
-        Map<String, ComponentService> componentServices = new HashMap<String, ComponentService>();
-        indexServices(composite, componentServices);
-
-        // create endpoint references for each component's references
-        for (Component component : composite.getComponents()) {
-
-            if (useNew) {
-                for (ComponentReference reference : component.getReferences()) {
-                    createReferenceEndpointReferences2(composite, component, reference, components, componentServices);
-                } // end for
-            }
-
-            // recurse for composite implementations
-            Implementation implementation = component.getImplementation();
-            if (implementation instanceof Composite) {
-                processComponentReferences((Composite)implementation);
-            }
-
-            // create endpoint references to represent the component reference
-            for (ComponentReference reference : component.getReferences()) {
-
-                if (!useNew) {
-                    createReferenceEndpointReferences(composite, component, reference, components, componentServices);
-                } // end if
-
-                // fix up links between endpoints and endpoint references that represent callbacks
-                for (ComponentService service : component.getServices()) {
-                    if ((service.getInterfaceContract() != null) && (service.getInterfaceContract()
-                        .getCallbackInterface() != null)) {
-                        if (reference.getName().equals(service.getName())) {
-                            for (Endpoint endpoint : service.getEndpoints()) {
-                                endpoint.getCallbackEndpointReferences().addAll(reference.getEndpointReferences());
-                            }
-                            break;
+        monitor.pushContext("Composite: " + composite.getName().toString());
+        
+        try {
+            // index all of the components in the composite
+            Map<String, Component> components = new HashMap<String, Component>();
+            indexComponents(composite, components);
+    
+            // index all of the services in the composite
+            Map<String, ComponentService> componentServices = new HashMap<String, ComponentService>();
+            indexServices(composite, componentServices);
+    
+            // create endpoint references for each component's references
+            for (Component component : composite.getComponents()) {
+                monitor.pushContext("Component: " + component.getName());
+                
+                try {
+                    if (useNew) {
+                        for (ComponentReference reference : component.getReferences()) {
+                            createReferenceEndpointReferences2(composite, component, reference, components, componentServices);
+                        } // end for
+                    }
+        
+                    // recurse for composite implementations
+                    Implementation implementation = component.getImplementation();
+                    if (implementation instanceof Composite) {
+                        processComponentReferences((Composite)implementation);
+                    }
+        
+                    // create endpoint references to represent the component reference
+                    for (ComponentReference reference : component.getReferences()) {
+        
+                        if (!useNew) {
+                            createReferenceEndpointReferences(composite, component, reference, components, componentServices);
                         } // end if
-                    } // end if
-                } // end for
+        
+                        // fix up links between endpoints and endpoint references that represent callbacks
+                        for (ComponentService service : component.getServices()) {
+                            if ((service.getInterfaceContract() != null) && (service.getInterfaceContract()
+                                .getCallbackInterface() != null)) {
+                                if (reference.getName().equals(service.getName())) {
+                                    for (Endpoint endpoint : service.getEndpoints()) {
+                                        endpoint.getCallbackEndpointReferences().addAll(reference.getEndpointReferences());
+                                    }
+                                    break;
+                                } // end if
+                            } // end if
+                        } // end for
+                    } // end for
+                
+                } finally {
+                    monitor.popContext();
+                }
             } // end for
-        } // end for
+        } finally {
+            monitor.popContext();
+        }
     } // end method processCompoenntReferences
 
     private void createReferenceEndpointReferences(Composite composite,
@@ -131,6 +143,9 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
                                                    ComponentReference reference,
                                                    Map<String, Component> components,
                                                    Map<String, ComponentService> componentServices) {
+        
+        monitor.pushContext("Reference: " + reference.getName());
+        
         // Get reference targets
         List<ComponentService> refTargets = getReferenceTargets(reference);
         if (reference.getAutowire() == Boolean.TRUE && reference.getTargets().isEmpty()) {
@@ -163,7 +178,11 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
 
             if (multiplicity == Multiplicity.ONE_N || multiplicity == Multiplicity.ONE_ONE) {
                 if (reference.getEndpointReferences().size() == 0) {
-                    warning(monitor, "NoComponentReferenceTarget", reference, reference.getName());
+                    Monitor.error(monitor, 
+                                  this, 
+                                  "assembly-validation-messages", 
+                                  "NoComponentReferenceTarget", 
+                                  reference.getName());
                 }
             }
 
@@ -369,6 +388,8 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
                 } // end if
             }
         }
+        
+        monitor.popContext();
         
     } // end method
     
