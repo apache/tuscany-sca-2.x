@@ -544,8 +544,8 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
                 if (componentReference.getInterfaceContract() != null) {
                     if (interfaceContract != null && !componentReference.getInterfaceContract().equals(reference
                         .getInterfaceContract())) {
-                        if (!interfaceContractMapper.isCompatible(componentReference.getInterfaceContract(),
-                                                                  interfaceContract)) {
+                        if (!interfaceContractMapper.isCompatible(interfaceContract,
+                                                                  componentReference.getInterfaceContract())) {
                             error(monitor,
                                   "ReferenceIncompatibleComponentInterface",
                                   component,
