@@ -134,13 +134,19 @@ public class OSGiBundleContributionScanner implements ContributionScanner {
         }
 
         try {
+            // Test if the bundle is an Eclipse project
+            boolean devMode = (bundle.getEntry("/.project") != null);
             // FIXME: The entries can come from fragments. Do we need to have a way to differentiate the entries?
             Enumeration<?> entries = bundle.findEntries("/", "*", true);
             while (entries.hasMoreElements()) {
                 URL entry = (URL)entries.nextElement();
                 String entryName = entry.getPath();
-                if (entryName.contains("/.svn/")) {
+                if (devMode && entryName.contains("/.svn/")
+                    || entryName.startsWith("/.")
+                    || entryName.startsWith("/target/")
+                    || entryName.startsWith("/src/")) {
                     // Ignore .svn files
+                    // Ignore .classpath, .project, src, and target
                     continue;
                 }
                 if (entryName.startsWith("/")) {
