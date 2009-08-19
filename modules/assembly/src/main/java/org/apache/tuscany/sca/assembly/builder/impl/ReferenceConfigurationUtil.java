@@ -66,7 +66,7 @@ abstract class ReferenceConfigurationUtil {
         if (definedMul != overridenMul) {
             switch (definedMul) {
                 case ZERO_N:
-                    return overridenMul == Multiplicity.ZERO_ONE;
+                    return overridenMul == Multiplicity.ZERO_ONE || overridenMul == Multiplicity.ONE_ONE || overridenMul == Multiplicity.ONE_N;
                 case ONE_N:
                     return overridenMul == Multiplicity.ONE_ONE;
                 case ZERO_ONE:
