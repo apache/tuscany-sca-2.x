@@ -69,6 +69,8 @@ abstract class ReferenceConfigurationUtil {
                     return overridenMul == Multiplicity.ZERO_ONE;
                 case ONE_N:
                     return overridenMul == Multiplicity.ONE_ONE;
+                case ZERO_ONE:
+                    return overridenMul == Multiplicity.ONE_ONE;
                 default:
                     return false;
             }
