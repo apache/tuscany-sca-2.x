@@ -79,16 +79,15 @@ abstract class ReferenceConfigurationUtil {
         }
     }
 
-    static boolean validateMultiplicityAndTargets(Multiplicity multiplicity, List<?> targets, List<Binding> bindings) {
+    static boolean validateMultiplicityAndTargets(Multiplicity multiplicity, List<EndpointReference> endpointReferences) {
 
-        // Count targets
-        int count = targets.size();
-
-        //FIXME workaround, this validation is sometimes invoked too early
-        // before we get a chance to init the multiplicity attribute
-        if (multiplicity == null) {
+        // In some tests multiplicity is not set
+        if (multiplicity == null){
             return true;
         }
+        
+        // Count targets
+        int count = endpointReferences.size();
 
         switch (multiplicity) {
             case ZERO_N:
@@ -100,25 +99,11 @@ abstract class ReferenceConfigurationUtil {
                 break;
             case ONE_ONE:
                 if (count != 1) {
-                    if (count == 0) {
-                        for (Binding binding : bindings) {
-                            if (!(binding instanceof OptimizableBinding) || binding.getURI() != null) {
-                                return true;
-                            }
-                        }
-                    }
                     return false;
                 }
                 break;
             case ONE_N:
                 if (count < 1) {
-                    if (count == 0) {
-                        for (Binding binding : bindings) {
-                            if (!(binding instanceof OptimizableBinding) || binding.getURI() != null) {
-                                return true;
-                            }
-                        }
-                    }
                     return false;
                 }
                 break;

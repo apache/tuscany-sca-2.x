@@ -35,6 +35,7 @@ import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Multiplicity;
+import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
@@ -81,7 +82,6 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
     private void processComponentReferences(Composite composite) {
 
         monitor.pushContext("Composite: " + composite.getName().toString());
-        
         try {
             // index all of the components in the composite
             Map<String, Component> components = new HashMap<String, Component>();
@@ -128,14 +128,20 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
                             } // end if
                         } // end for
                     } // end for
+                    
+                    // Validate that references are wired or promoted, according
+                    // to their multiplicity   
+                    validateReferenceMultiplicity(composite, component);
                 
                 } finally {
                     monitor.popContext();
                 }
             } // end for
+        
         } finally {
             monitor.popContext();
         }
+
     } // end method processCompoenntReferences
 
     private void createReferenceEndpointReferences(Composite composite,
@@ -154,6 +160,13 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
             // autowired reference
             Multiplicity multiplicity = reference.getMultiplicity();
             for (Component targetComponent : composite.getComponents()) {
+                
+                // Tuscany specific selection of the first autowire reference
+                // when there are more than one (ASM_60025)
+                if ((multiplicity == Multiplicity.ZERO_ONE || multiplicity == Multiplicity.ONE_ONE) &&
+                    (reference.getEndpointReferences().size() != 0) ) {
+                    break;
+                }
 
                 // Prevent autowire connecting to self
                 if (targetComponent == component)
@@ -392,6 +405,48 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
         monitor.popContext();
         
     } // end method
+    
+    private void validateReferenceMultiplicity(Composite composite, Component component){
+        for (ComponentReference componentReference : component.getReferences()) {
+            if (!ReferenceConfigurationUtil.validateMultiplicityAndTargets(componentReference.getMultiplicity(),
+                                                                           componentReference.getEndpointReferences())) {
+                if (componentReference.getEndpointReferences().isEmpty()) {
+
+                    // No error if the reference is promoted out of the current composite
+                    boolean promoted = false;
+                    for (Reference reference : composite.getReferences()) {
+                        CompositeReference compositeReference = (CompositeReference)reference;
+                        if (compositeReference.getPromotedReferences().contains(componentReference)) {
+                            promoted = true;
+                            break;
+                        }
+                    }
+                    if (!promoted && !componentReference.isForCallback()) {
+                        Monitor.error(monitor,
+                                      this,
+                                      "assembly-validation-messages",
+                                      "ReferenceWithoutTargets",
+                                      composite.getName().toString(),
+                                      componentReference.getName());
+                    }
+                } else {             
+                    // no error if reference is autowire and more targets
+                    // than multiplicity have been found 
+                    if (componentReference.getAutowire() == true){
+                        break;
+                    }
+                    
+                    // TUSCANY-3132  first example of updated error handling                  
+                    Monitor.error(monitor,
+                                  this,
+                                  "assembly-validation-messages",
+                                  "TooManyReferenceTargets", 
+                                  componentReference.getName());                  
+                }
+            }
+        }
+
+    }
     
     /**
      * Create Endpoint References for a component reference inside a given composite

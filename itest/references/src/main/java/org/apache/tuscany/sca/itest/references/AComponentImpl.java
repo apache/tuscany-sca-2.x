@@ -48,7 +48,7 @@ public class AComponentImpl implements AComponent {
 
     private DComponent dReference2;
 
-    @Reference(name = "dReference1")
+    @Reference(name = "dReference1", required = false)
     public void setDReference(DComponent dReference) {
         this.dReference1 = dReference;
     }

@@ -23,7 +23,7 @@
         <implementation.java class="org.apache.tuscany.sca.itest.references.AComponentImpl" />
         <reference name="bReference" target="BComponent" />
         <reference name="cReference" autowire="true" />
-        <reference name="dReference1" />
+        <reference name="dReference1" multiplicity="0..1"/>
         <!-- 
             <reference name="dReference1" target="DComponent" />
         -->
