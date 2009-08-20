@@ -24,7 +24,9 @@ import java.util.Set;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Component;
+import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.definitions.Definitions;
@@ -53,51 +55,64 @@ public class CompositeIncludeBuilderImpl implements CompositeBuilder {
         fuseIncludes(composite, monitor);
     }
 
-    private void warning(Monitor monitor, String message, Object model, String... messageParameters) {
-        if (monitor != null) {
-            Problem problem =
-                monitor.createProblem(this.getClass().getName(),
-                                      "assembly-validation-messages",
-                                      Severity.WARNING,
-                                      model,
-                                      message,
-                                      (Object[])messageParameters);
-            monitor.problem(problem);
-        }
-    }
-
     /**
      * Copy a list of includes into a composite.
      * 
      * @param composite
      */
     private void fuseIncludes(Composite composite, Monitor monitor) {
-
-        Set<Composite> visited = new HashSet<Composite>();
-        visited.add(composite);
-
-        for (Composite included : composite.getIncludes()) {
-            Composite fusedComposite = fuseInclude(included, visited, monitor);
-            if (fusedComposite != null) {
-                composite.getComponents().addAll(fusedComposite.getComponents());
-                composite.getServices().addAll(fusedComposite.getServices());
-                composite.getReferences().addAll(fusedComposite.getReferences());
-                composite.getProperties().addAll(fusedComposite.getProperties());
-                composite.getWires().addAll(fusedComposite.getWires());
-                composite.getPolicySets().addAll(fusedComposite.getPolicySets());
-                composite.getRequiredIntents().addAll(fusedComposite.getRequiredIntents());
+        
+        monitor.pushContext("Composite: " + composite.getName().toString());
+        
+        try {
+            Set<Composite> visited = new HashSet<Composite>();
+            visited.add(composite);
+    
+            for (Composite included : composite.getIncludes()) {
+                Composite fusedComposite = fuseInclude(included, visited, monitor);
+                if (fusedComposite != null) {
+                    composite.getComponents().addAll(fusedComposite.getComponents());
+                    composite.getServices().addAll(fusedComposite.getServices());
+                    composite.getReferences().addAll(fusedComposite.getReferences());
+                    composite.getProperties().addAll(fusedComposite.getProperties());
+                    composite.getWires().addAll(fusedComposite.getWires());
+                    composite.getPolicySets().addAll(fusedComposite.getPolicySets());
+                    composite.getRequiredIntents().addAll(fusedComposite.getRequiredIntents());
+                }
             }
-        }
-
-        // Clear the list of includes as all of the included components 
-        // have now been added into the top level composite
-        composite.getIncludes().clear();
+    
+            // Clear the list of includes as all of the included components 
+            // have now been added into the top level composite
+            composite.getIncludes().clear();
+            
+            // process any composites referenced through implementation.composite 
+            for (Component component : composite.getComponents()) {
+                monitor.pushContext("Component: " + component.getName());
+                
+                try {       
+                    // recurse for composite implementations
+                    Implementation implementation = component.getImplementation();
+                    if (implementation instanceof Composite) {
+                        fuseIncludes((Composite)implementation, monitor);
+                    }
+                } finally {
+                    monitor.popContext();
+                }
+            }             
+        
+        } finally {
+            monitor.popContext();
+        }        
     }
 
     private Composite fuseInclude(Composite include, Set<Composite> visited, Monitor monitor) {
 
         if (visited.contains(include)) {
-            warning(monitor, "CompositeAlreadyIncluded", include, include.getName().toString());
+            Monitor.warning(monitor, 
+                            this, 
+                            "assembly-validation-messages", 
+                            "CompositeAlreadyIncluded", 
+                            include.getName().toString());
             return null;
         }
 
