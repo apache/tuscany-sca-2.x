@@ -29,6 +29,9 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeReference;
 import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
+import org.apache.tuscany.sca.monitor.DefaultMonitorFactory;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -40,10 +43,13 @@ import org.junit.Test;
 public class CompositeBuilderTestCase {
 
     private static AssemblyFactory assemblyFactory;
+    private static Monitor monitor;
 
     @BeforeClass
     public static void setUp() throws Exception {
         assemblyFactory = new DefaultAssemblyFactory();
+        MonitorFactory mf = new DefaultMonitorFactory();
+        monitor = mf.createMonitor();
     }
 
     @Test
@@ -71,7 +77,7 @@ public class CompositeBuilderTestCase {
         c.setName(new QName("http://foo", "C"));
         c.getIncludes().add(c1);
 
-        new CompositeIncludeBuilderImpl(null).build(c, null, null);
+        new CompositeIncludeBuilderImpl(null).build(c, null, monitor);
 
         assertTrue(c.getComponents().get(0).getName().equals("a"));
         assertTrue(c.getComponents().get(1).getName().equals("b"));
@@ -114,7 +120,7 @@ public class CompositeBuilderTestCase {
         z.setImplementation(c1);
         c.getComponents().add(z);
 
-        new CompositeCloneBuilderImpl().build(c, null, null);
+        new CompositeCloneBuilderImpl().build(c, null, monitor);
 
         assertTrue(c.getComponents().get(0).getImplementation() != c1);
         assertTrue(c.getComponents().get(1).getImplementation() != c2);
