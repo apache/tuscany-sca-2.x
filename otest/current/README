@@ -23,7 +23,7 @@ import otest/current/General_Java into eclipse
 
 import which ever other contributions you need into eclipse (depends on which tests you are running)
   
-Stricture of the otests
+Structure of the otests
 ======================
 
 The otest directory, once checked out, contains files from both OASIS and Tuscany svn. As follows
