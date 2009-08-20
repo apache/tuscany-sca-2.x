@@ -68,73 +68,37 @@ public class ComponentReferenceWireBuilderImpl extends BaseBuilderImpl implement
 
         monitor.pushContext(composite.getName().toString());
         
-        // Wire nested composites recursively
-        for (Component component : composite.getComponents()) {
-            Implementation implementation = component.getImplementation();
-            if (implementation instanceof Composite) {
-                wireComponentReferences((Composite)implementation, monitor);
-            }
-        }
-
-        // Index components, services and references
-        Map<String, Component> components = new HashMap<String, Component>();
-        Map<String, ComponentService> componentServices = new HashMap<String, ComponentService>();
-        Map<String, ComponentReference> componentReferences = new HashMap<String, ComponentReference>();
-        indexComponentsServicesAndReferences(composite, components, componentServices, componentReferences);
-
-        // Connect component references as described in wires
-        connectWires(composite, componentServices, componentReferences, monitor);
-
-        // Validate that references are wired or promoted, according
-        // to their multiplicity
-        for (Component component: components.values()){
-            monitor.pushContext(component.getName());
-            for (ComponentReference componentReference : component.getReferences()) {
-                monitor.pushContext(componentReference.getName());
-                if (!ReferenceConfigurationUtil.validateMultiplicityAndTargets(componentReference.getMultiplicity(),
-                                                                               componentReference.getTargets(),
-                                                                               componentReference.getBindings())) {
-                    if (componentReference.getTargets().isEmpty()) {
+        try {
+            // Wire nested composites recursively
+            for (Component component : composite.getComponents()) {
+                Implementation implementation = component.getImplementation();
+                if (implementation instanceof Composite) {
     
-                        // No warning if the reference is promoted out of the current composite
-                        boolean promoted = false;
-                        for (Reference reference : composite.getReferences()) {
-                            CompositeReference compositeReference = (CompositeReference)reference;
-                            if (compositeReference.getPromotedReferences().contains(componentReference)) {
-                                promoted = true;
-                                break;
-                            }
-                        }
-                        if (!promoted && !componentReference.isForCallback()) {
-                            warning(monitor,
-                                    "ReferenceWithoutTargets",
-                                    composite,
-                                    composite.getName().toString(),
-                                    componentReference.getName());
-                        }
-                    } else {
-// ---------------------------                    
-// TUSCANY-3132  first example of updated error handling                  
-                        Monitor.error(monitor,
-                                      this,
-                                      "assembly-validation-messages",
-                                      "TooManyReferenceTargets", 
-                                      componentReference.getName());
-// ---------------------------                    
-                    }
+                        wireComponentReferences((Composite)implementation, monitor);
+                           
                 }
-                monitor.popContext();
             }
-            monitor.popContext();
-        }
-
-        // Finally clear the original reference target lists as we now have
-        // bindings to represent the targets
-        //  for (ComponentReference componentReference : componentReferences.values()) {
-        //      componentReference.getTargets().clear();
-        //  }
+    
+            // Index components, services and references
+            Map<String, Component> components = new HashMap<String, Component>();
+            Map<String, ComponentService> componentServices = new HashMap<String, ComponentService>();
+            Map<String, ComponentReference> componentReferences = new HashMap<String, ComponentReference>();
+            indexComponentsServicesAndReferences(composite, components, componentServices, componentReferences);
+    
+            // Connect component references as described in wires
+            connectWires(composite, componentServices, componentReferences, monitor);
+    
+    
+            // Finally clear the original reference target lists as we now have
+            // bindings to represent the targets
+            //  for (ComponentReference componentReference : componentReferences.values()) {
+            //      componentReference.getTargets().clear();
+            //  }
         
-        monitor.popContext();
+        } finally {
+            monitor.popContext();
+        }         
+
     }
 
     /**

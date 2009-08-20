@@ -138,86 +138,96 @@ public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements C
                                       Definitions definitions,
                                       Map<QName, List<String>> defaultBindings,
                                       Monitor monitor) throws CompositeBuilderException {
-
+        
         String parentComponentURI = uri;
-
-        // Process nested composites recursively
-        for (Component component : composite.getComponents()) {
-
-            // Initialize component URI
-            String componentURI;
-            if (parentComponentURI == null) {
-                componentURI = component.getName();
-            } else {
-                componentURI = URI.create(parentComponentURI + '/').resolve(component.getName()).toString();
+        
+        monitor.pushContext("Composite: " + composite.getName().toString());
+        try {        
+            // Process nested composites recursively
+            for (Component component : composite.getComponents()) {
+    
+                // Initialize component URI
+                String componentURI;
+                if (parentComponentURI == null) {
+                    componentURI = component.getName();
+                } else {
+                    componentURI = URI.create(parentComponentURI + '/').resolve(component.getName()).toString();
+                }
+                component.setURI(componentURI);
+    
+                Implementation implementation = component.getImplementation();
+                if (implementation instanceof Composite) {
+                    // Process nested composite
+                    configureBindingURIs((Composite)implementation, componentURI, definitions, defaultBindings, monitor);  
+                }
             }
-            component.setURI(componentURI);
-
-            Implementation implementation = component.getImplementation();
-            if (implementation instanceof Composite) {
-
-                // Process nested composite
-                configureBindingURIs((Composite)implementation, componentURI, definitions, defaultBindings, monitor);
-            }
-        }
-
-        // Initialize composite service binding URIs
-        List<Service> compositeServices = composite.getServices();
-        for (Service service : compositeServices) {
-            // Set default binding names
-
-            // Create default SCA binding
-            attachSCABinding(service, definitions);
-
-            constructBindingNames(service, monitor);
-            
-            // Initialize binding names and URIs
-            for (Binding binding : service.getBindings()) {
-                constructBindingURI(parentComponentURI, composite, service, binding, defaultBindings, monitor);
-            }
-        }
-
-        // Initialize component service binding URIs
-        for (Component component : composite.getComponents()) {
-
-            // Index properties, services and references
-            Map<String, Service> services = new HashMap<String, Service>();
-            Map<String, Reference> references = new HashMap<String, Reference>();
-            Map<String, Property> properties = new HashMap<String, Property>();
-            indexImplementationPropertiesServicesAndReferences(component, services, references, properties, monitor);
-
-            // Index component services, references and properties
-            // Also check for duplicates
-            Map<String, ComponentService> componentServices = new HashMap<String, ComponentService>();
-            Map<String, ComponentReference> componentReferences = new HashMap<String, ComponentReference>();
-            Map<String, ComponentProperty> componentProperties = new HashMap<String, ComponentProperty>();
-            indexComponentPropertiesServicesAndReferences(component,
-                                                          componentServices,
-                                                          componentReferences,
-                                                          componentProperties,
-                                                          monitor);
-
-            // Reconcile component services/references/properties and
-            // implementation services/references and create component
-            // services/references/properties for the services/references
-            // declared by the implementation
-            reconcileServices(component, services, componentServices, monitor);
-            reconcileReferences(component, references, componentReferences, monitor);
-            reconcileProperties(component, properties, componentProperties, monitor);
-
-            for (ComponentService service : component.getServices()) {
-
+    
+            // Initialize composite service binding URIs
+            List<Service> compositeServices = composite.getServices();
+            for (Service service : compositeServices) {
+                // Set default binding names
+    
                 // Create default SCA binding
                 attachSCABinding(service, definitions);
-
+    
                 constructBindingNames(service, monitor);
                 
                 // Initialize binding names and URIs
                 for (Binding binding : service.getBindings()) {
-                    constructBindingURI(component, service, binding, defaultBindings, monitor);
+                    constructBindingURI(parentComponentURI, composite, service, binding, defaultBindings, monitor);
                 }
             }
-        }
+    
+            // Initialize component service binding URIs
+            for (Component component : composite.getComponents()) {
+                
+                monitor.pushContext("Component: " + component.getName());
+                
+                try {
+                    // Index properties, services and references
+                    Map<String, Service> services = new HashMap<String, Service>();
+                    Map<String, Reference> references = new HashMap<String, Reference>();
+                    Map<String, Property> properties = new HashMap<String, Property>();
+                    indexImplementationPropertiesServicesAndReferences(component, services, references, properties, monitor);
+        
+                    // Index component services, references and properties
+                    // Also check for duplicates
+                    Map<String, ComponentService> componentServices = new HashMap<String, ComponentService>();
+                    Map<String, ComponentReference> componentReferences = new HashMap<String, ComponentReference>();
+                    Map<String, ComponentProperty> componentProperties = new HashMap<String, ComponentProperty>();
+                    indexComponentPropertiesServicesAndReferences(component,
+                                                                  componentServices,
+                                                                  componentReferences,
+                                                                  componentProperties,
+                                                                  monitor);
+        
+                    // Reconcile component services/references/properties and
+                    // implementation services/references and create component
+                    // services/references/properties for the services/references
+                    // declared by the implementation
+                    reconcileServices(component, services, componentServices, monitor);
+                    reconcileReferences(component, references, componentReferences, monitor);
+                    reconcileProperties(component, properties, componentProperties, monitor);
+        
+                    for (ComponentService service : component.getServices()) {
+        
+                        // Create default SCA binding
+                        attachSCABinding(service, definitions);
+        
+                        constructBindingNames(service, monitor);
+                        
+                        // Initialize binding names and URIs
+                        for (Binding binding : service.getBindings()) {
+                            constructBindingURI(component, service, binding, defaultBindings, monitor);
+                        }
+                    }
+                } finally {
+                    monitor.popContext();
+                }
+            }
+        } finally {
+            monitor.popContext();
+        }         
     }
 
     /**

@@ -152,7 +152,6 @@ public class CompositeBuilderImpl implements CompositeBuilder, CompositeBuilderT
                       Monitor monitor) throws CompositeBuilderException {
 
         try {
-    		monitor.pushContext("Composite: " + composite.getName().toString());   		
     		
             // Collect and fuse includes
             compositeIncludeBuilder.build(composite, definitions, monitor);
@@ -223,8 +222,6 @@ public class CompositeBuilderImpl implements CompositeBuilder, CompositeBuilderT
             compositePolicyBuilder.build(composite, definitions, monitor);
         } catch (Exception e) {
             throw new CompositeBuilderException("Exception while building composite " + composite.getName(), e);
-    	} finally {
-    		monitor.popContext();
     	} // end try
 
     } // end method build
