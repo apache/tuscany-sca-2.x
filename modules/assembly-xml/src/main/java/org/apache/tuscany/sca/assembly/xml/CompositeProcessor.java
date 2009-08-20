@@ -66,7 +66,6 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
-import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
@@ -86,6 +85,7 @@ import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.Wire;
+import org.apache.tuscany.sca.common.xml.xpath.XPathHelper;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
@@ -112,6 +112,7 @@ import org.w3c.dom.Document;
  * @version $Rev$ $Date$
  */
 public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArtifactProcessor<Composite> {
+    private XPathHelper xpathHelper;
     private XPathFactory xPathFactory;
     private PolicyFactory intentAttachPointTypeFactory;
     private StAXAttributeProcessor<Object> extensionAttributeProcessor;
@@ -134,6 +135,7 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
     		extensionAttributeProcessor,
     		monitor(extensionPoints));
 
+        this.xpathHelper = XPathHelper.getInstance(extensionPoints);
     	this.extensionAttributeProcessor = extensionAttributeProcessor;
     }
 
@@ -340,21 +342,21 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                                         int index = source.indexOf('/');
                                         if (index == -1) {
                                             // Tolerating $prop
-                                            source = source + "/";
-                                            index = source.length() - 1;
+                                            source = "";
+                                        } else {
+                                            source = source.substring(index + 1);
                                         }
-                                        source = source.substring(index + 1);
                                         if ("".equals(source)) {
                                             source = ".";
                                         }
                                     }
-                                    XPath xpath = xPathFactory.newXPath();
-                                    xpath.setNamespaceContext(reader.getNamespaceContext());
+ 
                                     try {
-                                        componentProperty.setSourceXPathExpression(xpath.compile(source));
+                                        componentProperty.setSourceXPathExpression(xpathHelper.compile(reader
+                                            .getNamespaceContext(), source));
                                     } catch (XPathExpressionException e) {
-                                    	ContributionReadException ce = new ContributionReadException(e);
-                                    	error("ContributionReadException", xpath, ce);
+                                        ContributionReadException ce = new ContributionReadException(e);
+                                        error("ContributionReadException", source, ce);
                                         //throw ce;
                                     }
                                 }

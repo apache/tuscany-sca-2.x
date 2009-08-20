@@ -317,8 +317,9 @@ public class JavaPropertyValueObjectFactory implements PropertyValueFactory {
         List<Node> propValues = new ArrayList<Node>();
         NodeList nodes = rootElement.getChildNodes();
         for (int count = 0; count < nodes.getLength(); ++count) {
-            if (nodes.item(count).getNodeType() == Document.ELEMENT_NODE) {
-                propValues.add(DOMHelper.promote(nodes.item(count)));
+            Node node = nodes.item(count);
+            if (node.getNodeType() == Document.ELEMENT_NODE) {
+                propValues.add(DOMHelper.promote(node));
             }
         }
         return propValues;

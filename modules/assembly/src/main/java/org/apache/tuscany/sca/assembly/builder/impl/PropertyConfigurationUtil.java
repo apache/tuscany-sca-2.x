@@ -62,25 +62,25 @@ import org.xml.sax.InputSource;
  */
 abstract class PropertyConfigurationUtil {
 
-	/**
-	 * Evaluate an XPath expression against a Property value, returning the result as a Property value
-	 * @param node - the document root element of a Property value
-	 * @param expression - the XPath expression
-	 * @param documentBuilderFactory - a DOM document builder factory
-	 * @return - a DOM Document representing the result of the evaluation as a Property value
-	 * @throws XPathExpressionException
-	 * @throws ParserConfigurationException
-	 */
-    private static Document evaluate(Document node, 
-    		                         XPathExpression expression, 
-    		                         DocumentBuilderFactory documentBuilderFactory) throws XPathExpressionException, 
-    	ParserConfigurationException {
+    /**
+     * Evaluate an XPath expression against a Property value, returning the result as a Property value
+     * @param node - the document root element of a Property value
+     * @param expression - the XPath expression
+     * @param documentBuilderFactory - a DOM document builder factory
+     * @return - a DOM Document representing the result of the evaluation as a Property value
+     * @throws XPathExpressionException
+     * @throws ParserConfigurationException
+     */
+    private static Document evaluate(Document node,
+                                     XPathExpression expression,
+                                     DocumentBuilderFactory documentBuilderFactory) throws XPathExpressionException,
+        ParserConfigurationException {
 
-    	// The document element is a <sca:property/> element
+        // The document element is a <sca:property/> element
         Node property = node.getDocumentElement();
         // The first child of the <property/> element is a <value/> element
         Node value = property.getFirstChild();
-        
+
         Node result = (Node)expression.evaluate(value, XPathConstants.NODE);
         if (result == null) {
             return null;
@@ -89,24 +89,23 @@ abstract class PropertyConfigurationUtil {
         if (result instanceof Document) {
             return (Document)result;
         } else {
-        	Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
+            Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
             Element newProperty = document.createElementNS(SCA11_NS, "property");
-            
-            if( "value".equals(result.getLocalName()) ) {
-            	// If the result is a <value/> element, use it directly in the result
-            	newProperty.appendChild(document.importNode(result, true));
+
+            if (result.getNodeType() == Node.ELEMENT_NODE) {
+                // If the result is a <value/> element, use it directly in the result
+                newProperty.appendChild(document.importNode(result, true));
             } else {
-            	// If the result is not a <value/> element, create a <value/> element to contain the result
-            	Element newValue = document.createElementNS(SCA11_NS, "value");
-            	newValue.appendChild(document.importNode(result, true));
-            	newProperty.appendChild(newValue);
+                // If the result is not a <value/> element, create a <value/> element to contain the result
+                Element newValue = document.createElementNS(SCA11_NS, "value");
+                newValue.appendChild(document.importNode(result, true));
+                newProperty.appendChild(newValue);
             } // end if
             document.appendChild(newProperty);
-            
+
             return document;
         }
     } // end method evaluate
-
 
     private static Document loadFromFile(String file, TransformerFactory transformerFactory)
         throws MalformedURLException, IOException, TransformerException, ParserConfigurationException {
