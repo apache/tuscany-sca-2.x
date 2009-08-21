@@ -432,7 +432,7 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
                 } else {             
                     // no error if reference is autowire and more targets
                     // than multiplicity have been found 
-                    if (componentReference.getAutowire() == true){
+                    if (componentReference.getAutowire() == Boolean.TRUE){
                         break;
                     }
                     
