@@ -199,6 +199,8 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
                 }
             }
 
+            setSingleAutoWireTarget(reference);
+
         } else if (!refTargets.isEmpty()) {
             // Check that the component reference does not mix the use of endpoint references
             // specified via the target attribute with the presence of binding elements
@@ -1163,4 +1165,32 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
         return endpoint;
     } // end method createEndpoint
 
+    /**
+     * ASM_5021: where a <reference/> of a <component/> has @autowire=true 
+     * and where the <reference/> has a <binding/> child element which 
+     * declares a single target service,  the reference is wired only to 
+     * the single service identified by the <wire/> element
+     */
+	private void setSingleAutoWireTarget(ComponentReference reference) {
+        if (reference.getEndpointReferences().size() > 1 && reference.getBindings() != null && reference.getBindings().size() == 1) {
+    		String uri = reference.getBindings().get(0).getURI();
+    		if (uri != null) {
+        		if (uri.indexOf('/') > -1) {
+        			// TODO: must be a way to avoid this fiddling
+        			int i = uri.indexOf('/');
+        			String c = uri.substring(0, i);
+        			String s = uri.substring(i+1);
+        			uri = c + "#service(" + s + ")";
+        		}
+    			for (EndpointReference er : reference.getEndpointReferences()) {
+    				if (er.getTargetEndpoint().getURI().equals(uri)) {
+    					reference.getEndpointReferences().clear();
+    					reference.getEndpointReferences().add(er);
+    					return;
+    				}
+    			}
+    		}
+        }
+	}
+    
 } // end class
