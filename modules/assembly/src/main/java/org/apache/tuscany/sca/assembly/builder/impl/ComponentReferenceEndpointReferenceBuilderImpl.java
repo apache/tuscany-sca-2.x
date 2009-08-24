@@ -1183,7 +1183,7 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
         			uri = c + "#service(" + s + ")";
         		}
     			for (EndpointReference er : reference.getEndpointReferences()) {
-    				if (er.getTargetEndpoint().getURI().equals(uri)) {
+    				if (er.getTargetEndpoint() != null && uri.equals(er.getTargetEndpoint().getURI())) {
     					reference.getEndpointReferences().clear();
     					reference.getEndpointReferences().add(er);
     					return;
