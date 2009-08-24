@@ -78,6 +78,14 @@ public interface Component extends Base, Extensible, PolicySubject, Cloneable {
      * @return a list of references used by the component
      */
     List<ComponentReference> getReferences();
+    
+    /**
+     * Return a reference by name
+     * 
+     * @param name the reference name
+     * @return reference the reference
+     */
+    Reference getReference(String name);    
 
     /**
      * Returns a list of services exposed by the component.
@@ -85,6 +93,14 @@ public interface Component extends Base, Extensible, PolicySubject, Cloneable {
      * @return a list of services exposed by the component
      */
     List<ComponentService> getServices();
+    
+    /**
+     * Return a service by name
+     * 
+     * @param name the service name
+     * @return service the service
+     */
+    Service getService(String name);    
 
     /**
      * Returns a list of properties for the component.
@@ -92,6 +108,14 @@ public interface Component extends Base, Extensible, PolicySubject, Cloneable {
      * @return a list of properties
      */
     List<ComponentProperty> getProperties();
+    
+    /**
+     * Return a property by name
+     * 
+     * @param name the property name
+     * @return property the property
+     */
+    Property getProperty(String name);    
 
     /**
      * Returns a constraining type defining the shape of the component.

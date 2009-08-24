@@ -27,6 +27,9 @@ import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.Implementation;
+import org.apache.tuscany.sca.assembly.Property;
+import org.apache.tuscany.sca.assembly.Reference;
+import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.policy.ExtensionType;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySet;
@@ -97,14 +100,53 @@ public class ComponentImpl extends ExtensibleImpl implements Component, Cloneabl
     public List<ComponentProperty> getProperties() {
         return properties;
     }
+    
+    public Property getProperty(String name){
+        Property property = null;
+        
+        for (Property tmp : properties){
+            if (tmp.getName().equals(name)){
+                property = tmp;
+                break;
+            }
+        }
+        
+        return property;
+    }    
 
     public List<ComponentReference> getReferences() {
         return references;
     }
+    
+    public Reference getReference(String name){
+        Reference reference = null;
+        
+        for (Reference tmp : references){
+            if (tmp.getName().equals(name)){
+                reference = tmp;
+                break;
+            }
+        }
+        
+        return reference;
+    }      
 
     public List<ComponentService> getServices() {
         return services;
     }
+    
+    public Service getService(String name){
+        Service service = null;
+        
+        for (Service tmp : services){
+            if (tmp.getName().equals(name)){
+                service = tmp;
+                break;
+            }
+        }
+        
+        return service;
+    }    
 
     public void setConstrainingType(ConstrainingType constrainingType) {
         this.constrainingType = constrainingType;
