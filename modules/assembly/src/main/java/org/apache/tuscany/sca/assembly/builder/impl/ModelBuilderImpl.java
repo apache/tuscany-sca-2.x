@@ -83,8 +83,8 @@ public class ModelBuilderImpl implements CompositeBuilder, CompositeBuilderTmp {
         compositeIncludeBuilder = new CompositeIncludeBuilderImpl(assemblyFactory);
         compositeCloneBuilder = new CompositeCloneBuilderImpl();
         
-        componentTypeBuilder = new ComponentTypeBuilderImpl(monitor);
-        componentBuilder = new ComponentBuilderImpl(monitor);
+        componentTypeBuilder = new ComponentTypeBuilderImpl(registry);
+        componentBuilder = new ComponentBuilderImpl(registry);
         
         componentTypeBuilder.setComponentBuilder(componentBuilder);
         componentBuilder.setComponentTypeBuilder(componentTypeBuilder);
