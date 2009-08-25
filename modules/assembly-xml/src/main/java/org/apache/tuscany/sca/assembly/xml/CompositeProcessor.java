@@ -369,7 +369,7 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                                 readAbstractProperty(componentProperty, reader);
 
                                 // Read the property value
-                                Document value = readPropertyValue(property.getXSDElement(), property.getXSDType(), reader);
+                                Document value = readPropertyValue(property.getXSDElement(), property.getXSDType(), property.isMany(), reader);
                                 property.setValue(value);
 
                                 component.getProperties().add(componentProperty);
@@ -381,7 +381,7 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                                 readAbstractProperty(property, reader);
 
                                 // Read the property value
-                                Document value = readPropertyValue(property.getXSDElement(), property.getXSDType(), reader);
+                                Document value = readPropertyValue(property.getXSDElement(), property.getXSDType(), property.isMany(), reader);
                                 property.setValue(value);
 
                                 composite.getProperties().add(property);

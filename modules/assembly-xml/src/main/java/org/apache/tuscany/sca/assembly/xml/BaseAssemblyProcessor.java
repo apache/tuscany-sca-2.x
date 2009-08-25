@@ -514,7 +514,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
      * @throws ContributionReadException
      * @throws ParserConfigurationException 
      */
-    protected Document readPropertyValue(QName element, QName type, XMLStreamReader reader) throws XMLStreamException,
+    protected Document readPropertyValue(QName element, QName type, boolean isMany, XMLStreamReader reader) throws XMLStreamException,
         ContributionReadException {
         Document document;
         try {
@@ -565,6 +565,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
             valueElement.setTextContent(valueAttr);
         }
 
+        boolean gotOneValue = false;
         boolean isTextForProperty = true;
         StringBuffer text = new StringBuffer();
 
@@ -587,7 +588,12 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
                     }
                     // Read <value>
                     if (VALUE_QNAME.equals(name)) {
+                    	if (gotOneValue && !isMany) {
+                    	    // TODO: TUSCANY-3231 this should be error not warning but that breaks OASIS tests
+                    		warning("ASM50032: multiple value elements for single-valued property", name, name);
+                    	}
                         loadElement(reader, root);
+                        gotOneValue = true;
                     } else {
                         // Global elements
                         loadElement(reader, root);

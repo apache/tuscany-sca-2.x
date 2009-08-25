@@ -127,7 +127,7 @@ public class ConstrainingTypeProcessor extends BaseAssemblyProcessor implements 
                             readAbstractProperty(abstractProperty, reader);
                             
                             // Read the property value
-                            Document value = readPropertyValue(abstractProperty.getXSDElement(), abstractProperty.getXSDType(), reader);
+                            Document value = readPropertyValue(abstractProperty.getXSDElement(), abstractProperty.getXSDType(), abstractProperty.isMany(), reader);
                             abstractProperty.setValue(value);
                             
                             constrainingType.getProperties().add(abstractProperty);
