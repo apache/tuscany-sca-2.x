@@ -159,6 +159,9 @@ public class ComponentReferenceWireBuilderImpl extends BaseBuilderImpl implement
                     .isCompatible(resolvedReference.getInterfaceContract(), resolvedService.getInterfaceContract())) {
 
                     //resolvedReference.getTargets().add(resolvedService);
+                	if (wire.isReplace()) {
+                		resolvedReference.getTargets().clear();
+                	}
                     resolvedReference.getTargets().add(wire.getTarget());
                 } else {
                     warning(monitor, "WireIncompatibleInterface", composite, source.getName(), target.getName());
