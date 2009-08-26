@@ -1,49 +1,17 @@
 Manifest-Version: 1.0
-Export-Package: org.apache.tuscany.sca.node.impl;uses:="org.apache.tus
- cany.sca.runtime,org.apache.tuscany.sca.definitions,org.apache.tuscan
- y.sca.core,javax.xml.namespace,javax.xml.stream,org.apache.tuscany.sc
- a.core.assembly,org.apache.tuscany.sca.contribution.resolver,org.apac
- he.tuscany.sca.workspace,org.apache.tuscany.sca.core.invocation,org.o
- soa.sca,org.apache.tuscany.sca.assembly.builder,org.apache.tuscany.sc
- a.assembly,org.apache.tuscany.sca.node,org.apache.tusc any.sca.contri
- bution,org.apache.tuscany.sca.monitor,org.apache.tuscany.sca.work,org
- .apache.tuscany.sca.contribution.processor";version="2.0.0"
+Export-Package: org.apache.tuscany.sca.node;uses:="org.apache.tuscany.
+ sca.node";version="2.0.0"
 Tool: Bnd-0.0.255
-Bundle-Name: Apache Tuscany SCA Node Implementation
+Bundle-Name: Apache Tuscany SCA Domain Node
 Created-By: 1.6.0_07 (Sun Microsystems Inc.)
 Bundle-Vendor: The Apache Software Foundation
 Bundle-Version: 2.0.0
 Bnd-LastModified: 1225397240796
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
-Bundle-Description: Apache Tuscany SCA Node Implementation
-Import-Package: javax.management,
- javax.xml.namespace,
- javax.xml.stream,
- org.apache.tuscany.sca.assembly;version="2.0.0",
- org.apache.tuscany.sca.assembly.builder;version="2.0.0",
- org.apache.tuscany.sca.assembly.xml;version="2.0.0",
- org.apache.tuscany.sca.contribution;version="2.0.0",
- org.apache.tuscany.sca.contribution.processor;version="2.0.0",
- org.apache.tuscany.sca.contribution.resolver;version="2.0.0",
- org.apache.tuscany.sca.core;version="2.0.0",
- org.apache.tuscany.sca.core.assembly;version="2.0.0",
- org.apache.tuscany.sca.core.invocation;version="2.0.0",
- org.apache.tuscany.sca.definitions;version="2.0.0",
- org.apache.tuscany.sca.definitions.util;version="2.0.0",
- org.apache.tuscany.sca.definitions.xml;version="2.0.0",
- org.apache.tuscany.sca.extensibility;version="2.0.0",
- org.apache.tuscany.sca.monitor;version="2.0.0",
- org.apache.tuscany.sca.node;version="2.0.0",
- org.apache.tuscany.sca.node.configuration;version="2.0.0",
- org.apache.tuscany.sca.node.impl;version="2.0.0",
- org.apache.tuscany.sca.policy;version="2.0.0",
- org.apache.tuscany.sca.provider;version="2.0.0",
- org.apache.tuscany.sca.runtime;version="2.0.0",
- org.apache.tuscany.sca.work;version="2.0.0",
- org.oasisopen.sca;version="2.0.0",
- org.oasisopen.sca.annotation;version="2.0.0";resolution:=optional,
- org.oasisopen.sca.client;version="2.0.0"
-Bundle-SymbolicName: org.apache.tuscany.sca.node.impl
+Bundle-Description: Apache Tuscany SCA Domain Node
+Import-Package: 
+ org.apache.tuscany.sca.node;version="2.0.0"
+Bundle-SymbolicName: org.apache.tuscany.sca.domain.node
 Bundle-DocURL: http://www.apache.org/
 Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6
