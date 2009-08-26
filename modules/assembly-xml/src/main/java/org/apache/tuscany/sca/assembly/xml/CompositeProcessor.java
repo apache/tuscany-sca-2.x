@@ -994,6 +994,8 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
 	                //for this that is resolved, the specified intents and policysets are safe in the
 	                //component and not lost
 	                implementation = resolveImplementation(implementation, resolver);
+	                
+	                validatePropertyTypes(component, implementation);
 	
 	                component.setImplementation(implementation);
 	            }
@@ -1017,6 +1019,24 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
     		// Pop context
     		this.monitor.popContext();
     	} // end try 
+    }
+
+    /**
+     * ASM50036: The property type specified for the property element of a component MUST be
+     * compatible with the type of the property with the same @name declared in the component
+     * type of the implementation used by the component. 
+     */
+    private void validatePropertyTypes(Component component, Implementation implementation) {
+        for (Property cp : component.getProperties()) {
+            Property ip = implementation.getProperty(cp.getName());
+            if (cp != null && ip != null && cp.getXSDType() != null && ip.getXSDType() != null) {
+                if (!cp.getXSDType().equals(ip.getXSDType())) {
+                    // FIXME: how to test for incompatible instead of not equal
+                    // TODO: TUSCANY-3236, should be error not warning
+                    warning("IncompatiblePropertyType", component, component.getName(), cp.getName());
+                }
+            }
+        }
     }
 
     public QName getArtifactType() {
