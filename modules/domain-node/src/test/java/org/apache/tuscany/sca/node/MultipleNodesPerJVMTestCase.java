@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.node;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import itest.nodes.Helloworld;
+import static org.junit.Assert.fail;
 
 import org.junit.After;
 import org.junit.Test;
@@ -70,9 +71,8 @@ public class MultipleNodesPerJVMTestCase{
 
         try {
             assertEquals("Hi Hello Petra", client.sayHello("Petra"));
-            // fail();  //TODO: this should fail but it doesn't so the domain names aren't working properly as it picks up the fooDomain
+            fail();
         } catch (SCARuntimeException e) {
-            e.printStackTrace();
             // FIXME: this gives an SCARuntimeException, would be better to be something like ServiceNotFoundException?
             // expected
         }
