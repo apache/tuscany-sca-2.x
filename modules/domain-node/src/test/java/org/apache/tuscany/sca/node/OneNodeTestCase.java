@@ -48,23 +48,42 @@ public class OneNodeTestCase{
     }
 
     @Test
-    public void testCalculator() throws Exception {
+    public void testService() throws Exception {
         Helloworld service = SCAClient.getService(Helloworld.class, "defaultDomain/HelloworldService");
         assertNotNull(service);
         assertEquals("Hello Petra", service.sayHello("Petra"));
+    }
 
+    @Test
+    public void testClient() throws Exception {
         Helloworld client = SCAClient.getService(Helloworld.class, "defaultDomain/HelloworldClient");
         assertNotNull(client);
         assertEquals("Hi Hello Petra", client.sayHello("Petra"));
-
+    }
+    
+    @Test
+    public void testRemovingServiceContribution() throws Exception {
         domain.removeContribution(serviceContributionUri);
         try {
-            client = SCAClient.getService(Helloworld.class, "defaultDomain/HelloworldService");
+            SCAClient.getService(Helloworld.class, "defaultDomain/HelloworldService");
         // FIXME: should this be NoSuchServiceException or ServiceNotFoundException?
         } catch (NoSuchServiceException e) {
             // expected
         }
-        
+
+        Helloworld client = SCAClient.getService(Helloworld.class, "defaultDomain/HelloworldClient");
+        assertNotNull(client);
+        try {
+            assertEquals("Hi Hello Petra", client.sayHello("Petra"));
+            fail();
+        } catch (Exception e) {
+            // FIXME: this gives an NPE, would be better to be something like ServiceNotFoundException
+            // expected
+        }
+    }
+
+    @Test
+    public void testStoppingDomainNode() throws Exception {
         domain.stop();
         try {
             SCAClient.getService(Helloworld.class, "defaultDomain/HelloworldClient");
@@ -73,7 +92,6 @@ public class OneNodeTestCase{
             // expected
         }
     }
-    
 
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
