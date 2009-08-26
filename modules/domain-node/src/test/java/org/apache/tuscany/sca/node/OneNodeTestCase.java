@@ -28,6 +28,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.oasisopen.sca.NoSuchDomainException;
+import org.oasisopen.sca.NoSuchServiceException;
 import org.oasisopen.sca.client.SCAClient;
 
 /**
@@ -56,9 +57,13 @@ public class OneNodeTestCase{
         assertNotNull(client);
         assertEquals("Hi Hello Petra", client.sayHello("Petra"));
 
-        // FIXME: this should give a service not found as the service contribution has been removed 
-        // domain.removeContribution(serviceContributionUri);
-        // assertEquals("Hi Hello Petra", client.sayHello("Petra"));
+        domain.removeContribution(serviceContributionUri);
+        try {
+            client = SCAClient.getService(Helloworld.class, "defaultDomain/HelloworldService");
+        // FIXME: should this be NoSuchServiceException or ServiceNotFoundException?
+        } catch (NoSuchServiceException e) {
+            // expected
+        }
         
         domain.stop();
         try {
