@@ -21,7 +21,6 @@ package org.apache.tuscany.sca.node;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 import itest.nodes.Helloworld;
 
 import org.junit.After;
