@@ -150,7 +150,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
      * @param model
      * @param messageParameters
      */
-    protected void warning(String message, Object model, String... messageParameters) {
+    protected void warning(String message, Object model, Object... messageParameters) {
         if (monitor != null) {
             Problem problem =
                 monitor.createProblem(this.getClass().getName(),
