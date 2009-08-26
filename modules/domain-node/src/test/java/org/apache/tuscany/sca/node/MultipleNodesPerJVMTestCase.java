@@ -38,7 +38,7 @@ public class MultipleNodesPerJVMTestCase{
     private static DomainNode serviceNode;
     
     @Test
-    public void test1Service() throws Exception {
+    public void testTwoNodesSameDomain() throws Exception {
         serviceNode = new DomainNode("vm://fooDomain", "target/test-classes/itest-nodes-helloworld-service-2.0-SNAPSHOT.jar");
         clientNode = new DomainNode("vm://fooDomain", "target/test-classes/itest-nodes-helloworld-client-2.0-SNAPSHOT.jar");
 
@@ -59,7 +59,7 @@ public class MultipleNodesPerJVMTestCase{
     }
 
     @Test
-    public void test2() throws Exception {
+    public void testTwoNodesDifferentDomains() throws Exception {
         serviceNode = new DomainNode("vm://fooDomain", "target/test-classes/itest-nodes-helloworld-service-2.0-SNAPSHOT.jar");
         Helloworld service = SCAClient.getService(Helloworld.class, "fooDomain/HelloworldService");
         assertNotNull(service);
