@@ -24,8 +24,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 import itest.nodes.Helloworld;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.oasisopen.sca.NoSuchDomainException;
 import org.oasisopen.sca.NoSuchServiceException;
@@ -39,9 +39,8 @@ public class OneNodeTestCase{
     private static DomainNode domain;
     private static String serviceContributionUri;
     
-    @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
-
+    @Before
+    public void setUpBeforeClass() throws Exception {
         domain = new DomainNode();
         serviceContributionUri = domain.addContribution("target/test-classes/itest-nodes-helloworld-service-2.0-SNAPSHOT.jar");
         domain.addContribution("target/test-classes/itest-nodes-helloworld-client-2.0-SNAPSHOT.jar");
@@ -93,8 +92,8 @@ public class OneNodeTestCase{
         }
     }
 
-    @AfterClass
-    public static void tearDownAfterClass() throws Exception {
+    @After
+    public void tearDownAfterClass() throws Exception {
         if (domain != null && domain.isStarted()) {
             domain.stop();
         }
