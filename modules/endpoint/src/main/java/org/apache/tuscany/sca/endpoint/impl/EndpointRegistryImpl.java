@@ -38,8 +38,8 @@ import org.apache.tuscany.sca.runtime.EndpointRegistry;
 public class EndpointRegistryImpl implements EndpointRegistry, LifeCycleListener {
     private final Logger logger = Logger.getLogger(EndpointRegistryImpl.class.getName());
 
-    private static MappedList<EndpointRegistry, Endpoint> endpoints = new MappedList<EndpointRegistry, Endpoint>();
-    private static MappedList<EndpointRegistry, EndpointReference> endpointreferences =
+    private MappedList<EndpointRegistry, Endpoint> endpoints = new MappedList<EndpointRegistry, Endpoint>();
+    private MappedList<EndpointRegistry, EndpointReference> endpointreferences =
         new MappedList<EndpointRegistry, EndpointReference>();
 
     private List<EndpointListener> listeners = new CopyOnWriteArrayList<EndpointListener>();
