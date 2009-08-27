@@ -58,29 +58,33 @@ public class CompositeImpl extends ImplementationImpl implements Composite, Clon
     public Object clone() throws CloneNotSupportedException {
         CompositeImpl clone = (CompositeImpl)super.clone();
 
+        // clone the child components
         clone.components = new ArrayList<Component>();
         for (Component component : getComponents()) {
             Component clonedComponent = (Component)component.clone();
-            for (Service service : clone.getServices()) {
-                CompositeService compositeService = (CompositeService)service;
-                // Force the promoted component/service to be rebuilt against the clone
-                if (compositeService.getPromotedComponent() != null) {
-                    compositeService.getPromotedComponent().setUnresolved(true);
-                }
-                if (compositeService.getPromotedService() != null) {
-                    compositeService.getPromotedService().setUnresolved(true);
-                }
-            }
-            for (Reference reference : clone.getReferences()) {
-                CompositeReference compositeReference = (CompositeReference)reference;
-                for (ComponentReference ref : compositeReference.getPromotedReferences()) {
-                    // Force the promoted reference to be rebuilt against the clone
-                    ref.setUnresolved(true);
-                }
-            }
-
             clone.components.add(clonedComponent);
         }
+        
+        // reset the references and services so the get re-resolved
+        for (Service service : clone.getServices()) {
+            CompositeService compositeService = (CompositeService)service;
+            // Force the promoted component/service to be rebuilt against the clone
+            if (compositeService.getPromotedComponent() != null) {
+                compositeService.getPromotedComponent().setUnresolved(true);
+            }
+            if (compositeService.getPromotedService() != null) {
+                compositeService.getPromotedService().setUnresolved(true);
+            }
+        }
+        for (Reference reference : clone.getReferences()) {
+            CompositeReference compositeReference = (CompositeReference)reference;
+            for (ComponentReference ref : compositeReference.getPromotedReferences()) {
+                // Force the promoted reference to be rebuilt against the clone
+                ref.setUnresolved(true);
+            }
+        }
+        
+        // clone the wires
         clone.wires = new ArrayList<Wire>();
         for (Wire wire : getWires()) {
             clone.wires.add((Wire)wire.clone());
