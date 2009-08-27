@@ -56,10 +56,12 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
+import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.oasisopen.sca.RequestContext;
+import org.oasisopen.sca.SCARuntimeException;
 import org.oasisopen.sca.ServiceReference;
 import org.oasisopen.sca.ServiceRuntimeException;
 
@@ -361,7 +363,11 @@ public class ComponentContextImpl implements ComponentContextExt {
         componentReference.getEndpointReferences().add(endpointReference);
         
         // do binding matching
-        endpointReferenceBuilder.runtimeBuild(endpointReference);
+        Problem problem = endpointReferenceBuilder.runtimeBuild(endpointReference);
+        
+        if (problem != null){
+            throw new SCARuntimeException(problem.toString());
+        }
         
         return componentReference;
     }

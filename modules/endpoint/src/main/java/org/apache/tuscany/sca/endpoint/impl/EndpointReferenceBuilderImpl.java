@@ -38,8 +38,10 @@ import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
+import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySubject;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
@@ -60,6 +62,7 @@ public class EndpointReferenceBuilderImpl implements EndpointReferenceBuilder {
     protected AssemblyFactory assemblyFactory;
     protected InterfaceContractMapper interfaceContractMapper;
     protected EndpointRegistry endpointRegistry;
+    private Monitor monitor;
 
 
     public EndpointReferenceBuilderImpl(ExtensionPointRegistry extensionPoints) {
@@ -70,8 +73,9 @@ public class EndpointReferenceBuilderImpl implements EndpointReferenceBuilder {
 
         UtilityExtensionPoint utils = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
         this.interfaceContractMapper = utils.getUtility(InterfaceContractMapper.class);
-
         this.endpointRegistry = utils.getUtility(EndpointRegistry.class);
+        MonitorFactory monitorFactory = utils.getUtility(MonitorFactory.class);
+        monitor = monitorFactory.createMonitor();
     }
     
     /**
@@ -94,7 +98,9 @@ public class EndpointReferenceBuilderImpl implements EndpointReferenceBuilder {
      * @param endpoint
      * @param monitor
      */
-    public void runtimeBuild(EndpointReference endpointReference) {
+    public Problem runtimeBuild(EndpointReference endpointReference) {
+        
+        Problem problem = null;
 
         if ( endpointReference.getStatus() == EndpointReference.WIRED_TARGET_FOUND_AND_MATCHED ||
              endpointReference.getStatus() == EndpointReference.RESOLVED_BINDING ) {
@@ -103,25 +109,24 @@ public class EndpointReferenceBuilderImpl implements EndpointReferenceBuilder {
             // a remote binding
             
             // still need to check that the callback endpoint is set correctly
-            if ((endpointReference.getCallbackEndpoint() != null) &&
-                (endpointReference.getCallbackEndpoint().isUnresolved() == false)){
-                return;
-            }
-
-            selectCallbackBinding(endpointReference);
-            
+            if (hasCallback(endpointReference) &&
+                endpointReference.getCallbackEndpoint() == null &&
+                endpointReference.getCallbackEndpoint().isUnresolved() == true ){
+                problem = selectCallbackEndpoint(endpointReference,
+                                                 endpointReference.getReference().getCallbackService().getEndpoints());
+            } 
         } else if (endpointReference.getStatus() == EndpointReference.WIRED_TARGET_FOUND_READY_FOR_MATCHING ){
             // The endpoint reference is already resolved to either
             // a service endpoint but no binding was specified in the 
-            // target URL            
-
-            // TODO - EPR - endpoint selection
-            //              just use the first one
-            endpointReference.setTargetEndpoint(endpointReference.getTargetEndpoint().getService().getEndpoints().get(0));
+            // target URL and/or the policies have yet to be matched.         
             
-            selectForwardBinding(endpointReference);
+            problem = selectForwardEndpoint(endpointReference,
+                                            endpointReference.getTargetEndpoint().getService().getEndpoints());
 
-            selectCallbackBinding(endpointReference);
+            if (problem == null && hasCallback(endpointReference)){
+                problem = selectCallbackEndpoint(endpointReference,
+                                                 endpointReference.getReference().getCallbackService().getEndpoints());
+            } 
             
         } else if (endpointReference.getStatus() == EndpointReference.WIRED_TARGET_NOT_FOUND ||
                    endpointReference.getStatus() == EndpointReference.NOT_CONFIGURED){
@@ -131,56 +136,172 @@ public class EndpointReferenceBuilderImpl implements EndpointReferenceBuilder {
             List<Endpoint> endpoints = endpointRegistry.findEndpoint(endpointReference);
 
             if (endpoints.size() == 0) {
-                throw new SCARuntimeException("No endpoints found for EndpointReference " + endpointReference.toString());
+                problem = monitor.createProblem(this.getClass().getName(), 
+                                                "endpoint-validation-messages", 
+                                                Problem.Severity.ERROR, 
+                                                this, 
+                                                "NoEndpointsFound", 
+                                                endpointReference.toString());
             }
-            
-            // TODO - EPR - endpoint selection
-            //              just use the first one
-            endpointReference.setTargetEndpoint(endpoints.get(0));
 
-            selectForwardBinding(endpointReference);
+            problem = selectForwardEndpoint(endpointReference,
+                                            endpoints);
 
-            selectCallbackBinding(endpointReference);
-            
-        } else {
-            // endpointReference.getStatus() == EndpointReference.NOT_CONFIGURED
-            // An error as we shouldn't get here
-            throw new SCARuntimeException("EndpointReference can't be resolved " + endpointReference.toString());
+            if (problem == null && hasCallback(endpointReference)){
+                problem = selectCallbackEndpoint(endpointReference,
+                                                 endpointReference.getReference().getCallbackService().getEndpoints());
+            }             
+        } 
+        
+        if (problem != null){
+            return problem;
         }
 
         if (endpointReference.getStatus() != EndpointReference.WIRED_TARGET_FOUND_AND_MATCHED &&
             endpointReference.getStatus() != EndpointReference.RESOLVED_BINDING){
-            throw new SCARuntimeException("EndpointReference can't be resolved " + endpointReference.toString());
+            problem = monitor.createProblem(this.getClass().getName(), 
+                                            "endpoint-validation-messages", 
+                                            Problem.Severity.ERROR, 
+                                            this, 
+                                            "EndpointReferenceCantBeMatched", 
+                                            endpointReference.toString());
         }
+        
+        return problem;
     }
 
-    private void selectForwardBinding(EndpointReference endpointReference) {
-
-        Endpoint endpoint = endpointReference.getTargetEndpoint();
+    private Problem selectForwardEndpoint(EndpointReference endpointReference, List<Endpoint> endpoints) {    
+             
+        Endpoint matchedEndpoint = null;
         
+        if (endpointReference.getReference().getName().startsWith("$self$.")){
+            // just select the first one and don't do any policy matching
+            matchedEndpoint = endpoints.get(0);
+        } else {
+            // find the first endpoint that matches this endpoint reference
+            for (Endpoint endpoint : endpoints){
+                if (haveMatchingPolicy(endpointReference, endpoint)){
+                    matchedEndpoint = endpoint;
+                }
+            }
+        }
+        
+        if (matchedEndpoint == null){
+            return null;
+        }
+        
+        endpointReference.setTargetEndpoint(matchedEndpoint);
         endpointReference.setBinding(endpointReference.getTargetEndpoint().getBinding());
         endpointReference.setStatus(EndpointReference.WIRED_TARGET_FOUND_AND_MATCHED);
         endpointReference.setUnresolved(false);
         
-        return;
+        return null;
     }
-
-    private void selectCallbackBinding(EndpointReference endpointReference) {
-
-        // if no callback on the interface or we are creating a self reference do nothing
+    
+    private boolean hasCallback(EndpointReference endpointReference){
         if (endpointReference.getReference().getInterfaceContract() == null ||
             endpointReference.getReference().getInterfaceContract().getCallbackInterface() == null ||
             endpointReference.getReference().getName().startsWith("$self$.")){
-                return;
+            return false;
+        } else {
+            return true;
         }
+    }
 
-        Endpoint endpoint = endpointReference.getTargetEndpoint();
+    private Problem selectCallbackEndpoint(EndpointReference endpointReference, List<Endpoint> endpoints) {
 
-        List<Endpoint> callbackEndpoints = endpointReference.getReference().getCallbackService().getEndpoints();
+        Problem problem = null;
         
-        endpointReference.setCallbackEndpoint(callbackEndpoints.get(0));
-        endpointReference.setStatus(EndpointReference.WIRED_TARGET_FOUND_AND_MATCHED);
-        endpointReference.setUnresolved(false);
+        // find the first callback endpoint that matches a callback endpoint reference
+        // at the service
+        Endpoint matchedEndpoint = null;
+        match:
+        for ( EndpointReference callbackEndpointReference : endpointReference.getTargetEndpoint().getCallbackEndpointReferences()){
+            for (Endpoint endpoint : endpoints){
+                if (haveMatchingPolicy(callbackEndpointReference, endpoint)){
+                    matchedEndpoint = endpoint;
+                    break match;
+                }
+            }
+        }
+        
+        if (matchedEndpoint == null){
+            return null;
+        }
+        
+        endpointReference.setCallbackEndpoint(matchedEndpoint);
+        
+        return problem;
+    }
+    
+    private boolean haveMatchingPolicy(EndpointReference endpointReference, Endpoint endpoint){
+        
+        // if no policy sets or intents are present then they match
+        if ((endpointReference.getRequiredIntents().size() == 0) &&
+            (endpoint.getRequiredIntents().size() == 0) &&
+            (endpointReference.getPolicySets().size() == 0) &&
+            (endpoint.getPolicySets().size() == 0)) {
+            return true;
+        }
+        
+        // if there are different numbers of intents 
+        // then they don't match
+        if (endpointReference.getRequiredIntents().size() !=
+            endpoint.getRequiredIntents().size()) {
+            return false;
+        }
+        
+        // if there are different numbers of policy sets 
+        // then they don't match
+        if (endpointReference.getPolicySets().size() !=
+            endpoint.getPolicySets().size()) {
+            return false;
+        }        
+        
+        // check intents for compatibility
+        for(Intent intentEPR : endpointReference.getRequiredIntents()){
+            boolean matched = false;
+            for (Intent intentEP : endpoint.getRequiredIntents()){ 
+                if (intentEPR.getName().equals(intentEP.getName())){
+                    matched = true;
+                    break;
+                }
+            }
+            if (matched == false){
+                return false;
+            }
+        }
+        
+        // check policy sets for compatibility. The list of policy sets
+        // may be a subset of the list of intents as some of the intents 
+        // may be directly provided. We can't just rely on intent compatibility
+        // as different policy sets might have been attached at each end to 
+        // satisfy the listed intents
+        
+        // if all of the policy sets on the endpoint reference match a 
+        // policy set on the endpoint then they match
+        for(PolicySet policySetEPR : endpointReference.getPolicySets()){
+            boolean matched = false;
+            for (PolicySet policySetEP : endpoint.getPolicySets()){ 
+                // find if there is a policy set with the same name
+                if (policySetEPR.getName().equals(policySetEP.getName())){
+                    matched = true;
+                    break;
+                }
+                // find if the policies inside the policy set match the 
+                // policies inside a policy set on the endpoint
+                
+                // TODO - need a policy specific matcher to do this
+                //        so need a new extension point
+                
+            }
+            
+            if (matched == false){
+                return false;
+            }
+        }
+        
+        return true;
     }
 
 }

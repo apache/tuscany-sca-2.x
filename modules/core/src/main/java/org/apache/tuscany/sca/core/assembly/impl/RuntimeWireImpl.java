@@ -52,6 +52,7 @@ import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.invocation.Phase;
+import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.provider.PolicyProvider;
@@ -69,6 +70,7 @@ import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.apache.tuscany.sca.runtime.RuntimeWireProcessor;
 import org.apache.tuscany.sca.runtime.RuntimeWireProcessorExtensionPoint;
 import org.apache.tuscany.sca.work.WorkScheduler;
+import org.oasisopen.sca.SCARuntimeException;
 import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
@@ -329,7 +331,11 @@ public class RuntimeWireImpl implements RuntimeWire {
      * is first used
      */
     private void resolveEndpointReference(){
-        endpointReferenceBuilder.runtimeBuild(endpointReference);
+        Problem problem = endpointReferenceBuilder.runtimeBuild(endpointReference);
+        
+        if (problem != null){
+            throw new SCARuntimeException(problem.toString());
+        }
 
         // set the endpoint based on the resolved endpoint
         endpoint = endpointReference.getTargetEndpoint();

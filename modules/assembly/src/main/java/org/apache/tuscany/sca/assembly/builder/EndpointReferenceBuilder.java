@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.assembly.builder;
 
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.EndpointReference;
+import org.apache.tuscany.sca.monitor.Problem;
 
 /**
  * A builder that handles the configuration of endpoint references
@@ -47,6 +48,6 @@ public interface EndpointReferenceBuilder {
      * @param endpointReference
      * @param monitor
      */
-    void runtimeBuild(EndpointReference endpointReference);
+    Problem runtimeBuild(EndpointReference endpointReference);
 
 }
