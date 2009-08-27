@@ -9,9 +9,11 @@ Bnd-LastModified: 1225397165593
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Default Binding Model
-Import-Package: javax.xml.namespace,
+Import-Package: javax.jms;version="1.1.0",
+ javax.xml.namespace,
  javax.xml.stream;resolution:=optional,
  org.apache.axiom.om,
+ org.apache.commons.fileupload;version="1.2.0",
  org.apache.tuscany.sca.assembly;version="2.0.0",
  org.apache.tuscany.sca.assembly.builder;version="2.0.0",
  org.apache.tuscany.sca.assembly.xml;version="2.0.0";resolution:=optional,
