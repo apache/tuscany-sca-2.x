@@ -520,6 +520,8 @@ public class RuntimeWireImpl implements RuntimeWire {
         //        used at the moment by binding.sca when it resets the
         //        source interface contract for local wires
         this.chains = null;
+        
+        this.endpointReference.setStatus(EndpointReference.NOT_CONFIGURED);
 
         // TODO - cheating here as I fixed the RuntimeComponentService code
         //        to call this when it resets the interface contract
