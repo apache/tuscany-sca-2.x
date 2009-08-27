@@ -35,7 +35,7 @@ import org.junit.Test;
 /**
  * Tests using two nodes and stopping and restarting a service node.
  */
-public class StopStartNodesTestCaseFIXME {
+public class StopStartNodesTestCase {
 
     private static Node serviceNode;
     private static Node clientNode;
