@@ -27,7 +27,7 @@
         <implementation.spring location="META-INF/spring/CalculatorService-context.xml"/>		
         <reference name="addService" target="AddServiceComponent" />
         <reference name="subtractService" target="SubtractServiceComponent" />
-        <reference name="multiplyService" target="MultiplyServiceComponent" />
+        <reference name="multiplyService" target="MultiplyServiceComponent" requires="tuscany:jaasAuthentication"/>
         <reference name="divideService" target="DivideServiceComponent" />
     </component>
 
@@ -51,7 +51,7 @@
         <implementation.spring location="META-INF/spring/CalculatorService-context.xml" requires="tuscany:logging"/>		
         <reference name="addService" target="AddServiceComponent" />
         <reference name="subtractService" target="SubtractServiceComponent" />
-        <reference name="multiplyService" target="MultiplyServiceComponent" />
+        <reference name="multiplyService" target="MultiplyServiceComponent" requires="tuscany:jaasAuthentication"/>
         <reference name="divideService" target="DivideServiceComponent" />
     </component>
 
