@@ -128,20 +128,41 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
         if (wire == null) {
             throw new ServiceRuntimeException("No runtime wire is available");
         }
-        InvocationChain chain = getInvocationChain(method, wire);
         
-        if (chain == null) {
-            throw new IllegalArgumentException("No matching operation is found: " + method);
+        try {
+            InvocationChain chain = getInvocationChain(method, wire);
+            
+            if (chain == null) {
+                throw new IllegalArgumentException("No matching operation is found: " + method);
+            }
+
+            // The EndpointReference is not now resolved until the invocation chain 
+            // is first created so reset the source here 
+            source = wire.getEndpointReference();
+            
+            // send the invocation down the wire
+            Object result = invoke(chain, args, wire, source);
+
+            return result;
+        } catch (TargetResolutionException e) {
+            // the service node has gone so clear and rebuild and try invoke again
+            wire.rebuild();
+            chains.clear();
+            InvocationChain chain = getInvocationChain(method, wire);
+            
+            if (chain == null) {
+                throw new IllegalArgumentException("No matching operation is found: " + method);
+            }
+
+            // The EndpointReference is not now resolved until the invocation chain 
+            // is first created so reset the source here 
+            source = wire.getEndpointReference();
+            
+            // send the invocation down the wire
+            Object result = invoke(chain, args, wire, source);
+
+            return result;
         }
-
-        // The EndpointReference is not now resolved until the invocation chain 
-        // is first created so reset the source here 
-        source = wire.getEndpointReference();
-        
-        // send the invocation down the wire
-        Object result = invoke(chain, args, wire, source);
-
-        return result;
     }
 
     /**
