@@ -41,6 +41,7 @@ import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
+import org.oasisopen.sca.SCARuntimeException;
 import org.oasisopen.sca.ServiceReference;
 import org.oasisopen.sca.ServiceRuntimeException;
 
@@ -148,6 +149,7 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
             // the service node has gone so clear and rebuild and try invoke again
             wire.rebuild();
             chains.clear();
+            try {
             InvocationChain chain = getInvocationChain(method, wire);
             
             if (chain == null) {
@@ -157,11 +159,24 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
             // The EndpointReference is not now resolved until the invocation chain 
             // is first created so reset the source here 
             source = wire.getEndpointReference();
-            
+
             // send the invocation down the wire
             Object result = invoke(chain, args, wire, source);
 
             return result;
+            } catch (SCARuntimeException e1) {
+                // this can be thrown by getInvocationChain if the endpoint isn't available
+                // clean up so a later request can work 
+                wire.rebuild();
+                chains.clear();
+                throw e1;
+            } catch (TargetResolutionException e2) {
+                //this can be thrown by the invoke if the endpoint has disapeared
+                // clean up so a later request can work 
+                wire.rebuild();
+                chains.clear();
+                throw e2;
+            }
         }
     }
 
