@@ -37,8 +37,10 @@ public class StatelessScopeContainer<KEY> extends AbstractScopeContainer<KEY> {
     }
 
     @Override
-    public  InstanceWrapper getWrapper(KEY contextId)
-        throws TargetResolutionException {
+    public  InstanceWrapper getWrapper(KEY contextId) throws TargetResolutionException {
+        if (lifecycleState != RUNNING) {
+            throw new TargetResolutionException("scope container not running, lifecycleState=" + lifecycleState);
+        }
         InstanceWrapper ctx = createInstanceWrapper();
         ctx.start();
         return ctx;
