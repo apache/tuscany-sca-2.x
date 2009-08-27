@@ -948,8 +948,18 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
 	        for (int i = 0, n = composite.getIncludes().size(); i < n; i++) {
 	            Composite include = composite.getIncludes().get(i);
 	            if (include != null) {
-	                include = resolver.resolveModel(Composite.class, include);
-	                composite.getIncludes().set(i, include);
+	            	Composite resolved = resolver.resolveModel(Composite.class, include);
+	            	if (!resolved.isUnresolved()) {	                	
+	                	if ((composite.isLocal() && resolved.isLocal()) || (!composite.isLocal() && !resolved.isLocal())) {
+	                		composite.getIncludes().set(i, resolved);
+	                	} else {
+	                		ContributionResolveException ce = new ContributionResolveException("Error: Composite "+ composite.getName() +" can only include another composite with the identical @local attribute value");
+	                        error("ContributionResolveException", include, ce);
+	                	}
+	                } else {
+	                	ContributionResolveException ce = new ContributionResolveException("Error: Composite "+ include.getName() +" is not a valid composite within the domain");
+                        error("ContributionResolveException", include, ce);
+	                }
 	            }
 	        }
 	
