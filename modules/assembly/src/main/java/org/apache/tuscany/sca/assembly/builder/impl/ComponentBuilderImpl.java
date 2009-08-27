@@ -55,11 +55,11 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.policy.ExtensionType;
+import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySubject;
 
 /**
- * 
  * @version $Rev$ $Date$
  */
 public class ComponentBuilderImpl {
@@ -115,7 +115,7 @@ public class ComponentBuilderImpl {
         
         // properties
         //configureProperties(component);
-        
+               
     }
        
     /**
@@ -162,11 +162,16 @@ public class ComponentBuilderImpl {
                                     componentService);
             
             
-            
-            // need to propagate
-            //   intents
-            //   policy sets
-            // based on OASIS rules
+            // intents - done in CompositePolicyBuilder
+            //           discuss with RF
+            //calculateIntents(componentService,
+            //                 componentTypeService);
+
+            // policy sets - done in CompositePolicyBuilder
+            //               discuss with RF
+            // calculatePolicySets(componentService,
+            //                     componentTypeService);
+
         }
     }
     
@@ -352,7 +357,7 @@ public class ComponentBuilderImpl {
             } // end if
             service.setCallbackReference(callbackReference);            
         }
-    }   
+    }      
     
     /**
      * Create a default SCA binding in the case that no binding

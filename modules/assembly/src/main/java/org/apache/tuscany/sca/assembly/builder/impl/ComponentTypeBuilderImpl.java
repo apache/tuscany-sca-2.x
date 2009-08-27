@@ -112,6 +112,8 @@ public class ComponentTypeBuilderImpl {
                               component.getName());
             } 
             
+            /* process structural hierarchy
+             * replace by structuralParent links and associated processing
             // Push down the autowire flag from the composite to components
             if (component.getAutowire() == null) {
                 component.setAutowire(composite.getAutowire());
@@ -120,6 +122,8 @@ public class ComponentTypeBuilderImpl {
             // what else needs pushing down? 
             //  intents
             //  policySets
+             
+            */
             
             // configure the component from its component type
             componentBuilder.configureComponentFromComponentType(component);
@@ -143,6 +147,9 @@ public class ComponentTypeBuilderImpl {
         
         // properties
         //calculateProperties(composite);
+        
+        // autowire
+        //calculateAutowire(composite);
         
     }
     
@@ -210,7 +217,7 @@ public class ComponentTypeBuilderImpl {
                                    Map<String, Component> components,
                                    Map<String, ComponentService> componentServices){
 
-        // Connect this component types services to the 
+        // Connect this component type's services to the 
         // services from child components which it promotes
         connectPromotedServices(componentType,
                                 components,
@@ -230,8 +237,10 @@ public class ComponentTypeBuilderImpl {
             calculatePromotedBindings(compositeService, promotedComponentService);
             
             // promote intents
+            // calculatePromotedIntents(compositeService, promotedComponentService);
             
             // promote policy sets
+            // calculatePromotedPolicySets(compositeService, promotedComponentService);
         
         }
                
@@ -292,7 +301,7 @@ public class ComponentTypeBuilderImpl {
     }  
     
     /**
-     * OASIS RULE: Interface contract from higher in the hierarchy takes precedence
+     * OASIS RULE: Interface contracts from higher in the implementation hierarchy takes precedence
      * 
      * @param compositeService
      * @param promotedComponentService
@@ -322,7 +331,7 @@ public class ComponentTypeBuilderImpl {
     }
     
     /**
-     * OASIS RULE: Bindings from higher in the hierarchy take precedence
+     * OASIS RULE: Bindings from higher in the implementation hierarchy take precedence
      * 
      * @param compositeService
      * @param promotedComponentService

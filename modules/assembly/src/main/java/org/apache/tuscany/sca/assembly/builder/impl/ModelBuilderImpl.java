@@ -136,22 +136,27 @@ public class ModelBuilderImpl implements CompositeBuilder, CompositeBuilderTmp {
             // Expand nested composites. Clone any composite model that
             // is acting as a component implementation and connects the cloned
             // model to the component implementation in question
-            // TODO - could this be deferred to after the static pass through
-            //        the model is complete
             compositeCloneBuilder.build(composite, definitions, monitor);
             
-            // create the static model by calculating the component type for the
-            // top level implementation (composite). This has the effect of
+            // Process the implementation hierarchy by calculating the component type 
+            // for the top level implementation (composite). This has the effect of
             // recursively calculating component types and configuring the 
             // components that depend on them
             componentTypeBuilder.createComponentType(composite);
+           
 
             // create the runtime model by updating the static model we have just 
             // created. This involves things like creating
             //  component URIs
             //  binding URIs
+            //  callback references
+            //  callback services
             //  Endpoints
             //  Endoint References
+            // runtimeBuilder.build(composite);
+            
+            // Compute the policies across the model hierarchy
+            //compositePolicyBuilder.build(composite, definitions, monitor);
             
             
 
