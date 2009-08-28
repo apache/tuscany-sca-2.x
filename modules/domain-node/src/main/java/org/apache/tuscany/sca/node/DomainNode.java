@@ -23,19 +23,23 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.tuscany.sca.node.Contribution;
-import org.apache.tuscany.sca.node.Node;
-import org.apache.tuscany.sca.node.NodeFactory;
+import org.apache.tuscany.sca.management.ConfigAttributes;
+import org.apache.tuscany.sca.node.impl.NodeFactoryImpl;
 
 public class DomainNode {
 
-    private String domainName;
+    public static final String DOMAIN_NAME_ATTR = "domainName";
+    public static final String DOMAIN_SCHEME_ATTR = "domainScheme";
+    public static final String DEFAULT_DOMAIN_SCHEME = "vm";
+    public static final String DEFAULT_DOMAIN_NAME = "defaultDomain";
+
+    private ConfigAttributes configAttributes = new ConfigAttributesImpl();
     
-    private NodeFactory nodeFactory;
+    private NodeFactoryImpl nodeFactory;
     private Map<String, Node> nodes = new HashMap<String, Node>();
     
     public DomainNode() {
-       this("vm://defaultDomain");   
+       this(DEFAULT_DOMAIN_SCHEME + "://" + DEFAULT_DOMAIN_NAME);   
     }
     
     public DomainNode(String configURI) {
@@ -56,7 +60,9 @@ public class DomainNode {
             throw new IllegalStateException("Already started");
         }
         
-        nodeFactory = NodeFactory.getInstance(domainName);
+        //TODO shouldn't really be working with the impl
+        nodeFactory = (NodeFactoryImpl)NodeFactory.getInstance(configAttributes.getAttributes().get(DOMAIN_NAME_ATTR));
+        nodeFactory.setConfigAttributes(configAttributes);
     }
     
     public boolean isStarted() {
@@ -100,14 +106,34 @@ public class DomainNode {
         node.stop();
     }
 
+    public ConfigAttributes getConfigAttributes() {
+        return configAttributes;
+    }
+    
     public String getDomainName() {
-        return domainName;
+        return configAttributes.getAttributes().get(DOMAIN_NAME_ATTR);
     }
     
     protected void parseConfigURI(String configURI) {
         URI uri = URI.create(configURI);
+        String dn = uri.getHost();
+        if (dn == null || dn.length() < 1) {
+            dn = DEFAULT_DOMAIN_NAME;
+        }
+        configAttributes.getAttributes().put(DOMAIN_NAME_ATTR, dn);  
+        String scheme = uri.getScheme();
+        if (scheme != null && scheme.length() > 0) {
+            configAttributes.getAttributes().put(DOMAIN_SCHEME_ATTR, scheme);  
+        }
 
-        this.domainName = uri.getHost();
+        String query = uri.getQuery();
+        if (query != null && query.length() > 0) {
+            String[] params = query.split("&");
+            for (String param : params){
+                String name = param.split("=")[0];  
+                String value = param.split("=")[1];  
+                configAttributes.getAttributes().put(name, value);  
+            }
+        }
     }
-
 }
