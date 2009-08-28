@@ -90,6 +90,7 @@ import org.apache.tuscany.sca.definitions.util.DefinitionsUtil;
 import org.apache.tuscany.sca.definitions.xml.DefinitionsExtensionPoint;
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
 import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
+import org.apache.tuscany.sca.management.ConfigAttributes;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.monitor.Problem;
@@ -134,6 +135,7 @@ public class NodeFactoryImpl extends NodeFactory {
      * can set this flag.
      */
     protected boolean autoDestroy = true;
+    private ConfigAttributes configAttributes;
 
     @Override
     public Node createNode(NodeConfiguration configuration) {
@@ -390,6 +392,11 @@ public class NodeFactoryImpl extends NodeFactory {
 
         // Create a monitor
         UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
+        
+        if (configAttributes != null) {
+            utilities.addUtility(ConfigAttributes.class, configAttributes);
+        }
+
         MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
         monitor = monitorFactory.createMonitor();
 
@@ -670,5 +677,12 @@ public class NodeFactoryImpl extends NodeFactory {
             }
             return buf.toString();
         }
+    }
+    
+    public ConfigAttributes getConfigAttributes() {
+        return configAttributes;
+    }
+    public void setConfigAttributes(ConfigAttributes configAttributes) {
+        this.configAttributes = configAttributes;
     }
 }
