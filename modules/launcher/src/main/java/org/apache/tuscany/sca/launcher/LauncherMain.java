@@ -37,6 +37,7 @@ import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 import java.util.jar.JarFile;
+import java.util.jar.Manifest;
 
 public class LauncherMain {
     
@@ -166,8 +167,13 @@ public class LauncherMain {
             return false;
         }
         JarFile jar = new JarFile(f);
-        String mfc = jar.getManifest().getMainAttributes().getValue("Main-Class");
-        return mfc != null && mfc.length() > 0;
+        Manifest mf = jar.getManifest();
+        if (mf != null) {
+            String mfc = jar.getManifest().getMainAttributes().getValue("Main-Class");
+            return mfc != null && mfc.length() > 0;
+        } else {
+            return false;
+        }
     }
     /**
      * Gets the jars matching a config classpath property
