@@ -39,4 +39,25 @@ public class ConfigTestCase{
         assertEquals("y", domain.getConfigAttributes().getAttributes().get("p2"));
     }
 
+    @Test
+    public void testConfig1() throws Exception {
+        DomainNode domain = new DomainNode("foo:someDomain:1234?p1=x&p2=y");
+        assertEquals(4,  domain.getConfigAttributes().getAttributes().size());
+        assertEquals("someDomain", domain.getDomainName());
+        assertEquals("foo", domain.getConfigAttributes().getAttributes().get("domainScheme"));
+        assertEquals("someDomain", domain.getConfigAttributes().getAttributes().get("domainName"));
+        assertEquals("x", domain.getConfigAttributes().getAttributes().get("p1"));
+        assertEquals("y", domain.getConfigAttributes().getAttributes().get("p2"));
+    }
+
+    @Test
+    public void testConfig2() throws Exception {
+        DomainNode domain = new DomainNode("foo:/someDomain:1234?p1=x&p2=y");
+        assertEquals(4,  domain.getConfigAttributes().getAttributes().size());
+        assertEquals("someDomain", domain.getDomainName());
+        assertEquals("foo", domain.getConfigAttributes().getAttributes().get("domainScheme"));
+        assertEquals("someDomain", domain.getConfigAttributes().getAttributes().get("domainName"));
+        assertEquals("x", domain.getConfigAttributes().getAttributes().get("p1"));
+        assertEquals("y", domain.getConfigAttributes().getAttributes().get("p2"));
+    }
 }

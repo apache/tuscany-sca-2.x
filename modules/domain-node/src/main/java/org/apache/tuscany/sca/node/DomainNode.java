@@ -115,7 +115,7 @@ public class DomainNode {
     }
     
     protected void parseConfigURI(String configURI) {
-        URI uri = URI.create(configURI);
+        URI uri = URI.create(fixScheme(configURI));
         String dn = uri.getHost();
         if (dn == null || dn.length() < 1) {
             dn = DEFAULT_DOMAIN_NAME;
@@ -135,5 +135,20 @@ public class DomainNode {
                 configAttributes.getAttributes().put(name, value);  
             }
         }
+    }
+    
+    /**
+     * I keep typing the scheme part with just a colon instead of colon slash slash
+     * which URI doesn't parse properly which irritates me so fix it up here
+     */
+    private String fixScheme(String uri) {
+        int i = uri.indexOf(":");
+        if (i > -1 && uri.charAt(i+1) != '/') {
+            uri = uri.replaceFirst(":", ":/");
+        }
+        if (i > -1 && uri.charAt(i+2) != '/') {
+            uri = uri.replaceFirst(":/", "://");
+        }
+        return uri;
     }
 }
