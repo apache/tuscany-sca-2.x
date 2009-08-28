@@ -38,8 +38,10 @@ import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.LifeCycleListener;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.endpoint.tribes.AbstractReplicatedMap.MapEntry;
 import org.apache.tuscany.sca.endpoint.tribes.MapStore.MapListener;
+import org.apache.tuscany.sca.management.ConfigAttributes;
 import org.apache.tuscany.sca.runtime.EndpointListener;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
 
@@ -87,6 +89,17 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry, LifeCycleLi
 
     public ReplicatedEndpointRegistry(ExtensionPointRegistry registry, Map<String, String> attributes) {
         this.registry = registry;
+
+        UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
+        ConfigAttributes domainConfig = utilities.getUtility(ConfigAttributes.class);
+        if (domainConfig != null) {
+            setConfig(domainConfig.getAttributes());
+        } else {
+            setConfig(attributes);
+        }
+    }
+
+    private void setConfig(Map<String, String> attributes) {
         String portStr = attributes.get("port");
         if (portStr != null) {
             port = Integer.parseInt(portStr);
@@ -100,7 +113,6 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry, LifeCycleLi
         if (timeoutStr != null) {
             timeout = Integer.parseInt(timeoutStr);
         }
-        // start();
     }
 
     public ReplicatedEndpointRegistry(String domainURI) {
