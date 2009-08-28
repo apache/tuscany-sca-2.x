@@ -12,7 +12,7 @@ Bundle-Description: Apache Tuscany SCA Default Endpoint Wrapper
 Import-Package: javax.xml.stream;resolution:=optional,
  org.apache.tuscany.sca.endpoint.impl;version="2.0.0",
  org.apache.tuscany.sca.management;version="2.0.0",
- org.apache.tuscany.sca.endpoint.tribes;version="2.0.0",
+ org.apache.tuscany.sca.endpoint.tribes;version="2.0.0"
 Bundle-SymbolicName: org.apache.tuscany.sca.endpoint.wrapper
 Bundle-DocURL: http://www.apache.org/
 Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6
