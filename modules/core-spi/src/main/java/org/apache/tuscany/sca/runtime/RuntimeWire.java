@@ -109,4 +109,6 @@ public interface RuntimeWire extends Cloneable {
      * @throws CloneNotSupportedException
      */
     Object clone() throws CloneNotSupportedException;
+
+    boolean isOutOfDate();
 }

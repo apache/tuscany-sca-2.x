@@ -771,5 +771,9 @@ public class RuntimeWireImpl implements RuntimeWire {
             // No promoted service
             return null;
         }
+    }
+
+    public boolean isOutOfDate() {
+        return endpointReferenceBuilder.isOutOfDate(getEndpointReference());
     }    
 }

@@ -304,4 +304,13 @@ public class EndpointReferenceBuilderImpl implements EndpointReferenceBuilder {
         return true;
     }
 
+    public boolean isOutOfDate(EndpointReference endpointReference) {
+        Endpoint te = endpointReference.getTargetEndpoint();
+        if (!te.isUnresolved() && te.getURI()!= null) {
+            List<Endpoint> endpoints = endpointRegistry.findEndpoint(endpointReference);
+            return ! endpoints.contains(endpointReference.getTargetEndpoint());
+        }
+        return false;
+    }
+
 }

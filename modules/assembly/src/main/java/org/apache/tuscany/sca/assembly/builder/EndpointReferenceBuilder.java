@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.assembly.builder;
 
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.monitor.Problem;
 
@@ -49,5 +50,7 @@ public interface EndpointReferenceBuilder {
      * @param monitor
      */
     Problem runtimeBuild(EndpointReference endpointReference);
+
+    boolean isOutOfDate(EndpointReference endpointReference);
 
 }

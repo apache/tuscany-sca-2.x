@@ -130,54 +130,25 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
             throw new ServiceRuntimeException("No runtime wire is available");
         }
         
-        try {
-            InvocationChain chain = getInvocationChain(method, wire);
-            
-            if (chain == null) {
-                throw new IllegalArgumentException("No matching operation is found: " + method);
-            }
-
-            // The EndpointReference is not now resolved until the invocation chain 
-            // is first created so reset the source here 
-            source = wire.getEndpointReference();
-            
-            // send the invocation down the wire
-            Object result = invoke(chain, args, wire, source);
-
-            return result;
-        } catch (TargetResolutionException e) {
-            // the service node has gone so clear and rebuild and try invoke again
+        if (wire.isOutOfDate()) {
             wire.rebuild();
             chains.clear();
-            try {
-            InvocationChain chain = getInvocationChain(method, wire);
-            
-            if (chain == null) {
-                throw new IllegalArgumentException("No matching operation is found: " + method);
-            }
-
-            // The EndpointReference is not now resolved until the invocation chain 
-            // is first created so reset the source here 
-            source = wire.getEndpointReference();
-
-            // send the invocation down the wire
-            Object result = invoke(chain, args, wire, source);
-
-            return result;
-            } catch (SCARuntimeException e1) {
-                // this can be thrown by getInvocationChain if the endpoint isn't available
-                // clean up so a later request can work 
-                wire.rebuild();
-                chains.clear();
-                throw e1;
-            } catch (TargetResolutionException e2) {
-                //this can be thrown by the invoke if the endpoint has disapeared
-                // clean up so a later request can work 
-                wire.rebuild();
-                chains.clear();
-                throw e2;
-            }
         }
+        
+        InvocationChain chain = getInvocationChain(method, wire);
+        
+        if (chain == null) {
+            throw new IllegalArgumentException("No matching operation is found: " + method);
+        }
+
+        // The EndpointReference is not now resolved until the invocation chain 
+        // is first created so reset the source here 
+        source = wire.getEndpointReference();
+        
+        // send the invocation down the wire
+        Object result = invoke(chain, args, wire, source);
+
+        return result;
     }
 
     /**
