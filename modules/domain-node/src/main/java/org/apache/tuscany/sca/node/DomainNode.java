@@ -72,9 +72,10 @@ public class DomainNode {
             node.stop();
         }
         
-        nodeFactory.destroy();
-        nodeFactory = null;
-        nodes.clear();
+// TODO: stopping the node factory stops _all_ domain nodes not just this instance        
+//        nodeFactory.destroy();
+//        nodeFactory = null;
+//        nodes.clear();
     }
 
     public String addContribution(String location) {
