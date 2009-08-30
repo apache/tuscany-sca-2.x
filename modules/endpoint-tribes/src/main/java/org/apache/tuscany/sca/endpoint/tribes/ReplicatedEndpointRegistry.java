@@ -100,6 +100,10 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry, LifeCycleLi
     }
 
     private void setConfig(Map<String, String> attributes) {
+        if (attributes.containsKey("domainName")) {
+            domainURI = attributes.get("domainName");
+        }
+        
         String portStr = attributes.get("port");
         if (portStr != null) {
             port = Integer.parseInt(portStr);
