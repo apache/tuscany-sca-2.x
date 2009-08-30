@@ -547,7 +547,7 @@ public class NodeFactoryImpl extends NodeFactory {
             for (Composite composite : contribution.getDeployables()) {
                 // Include the node composite in the top-level composite
                 tempComposite.getIncludes().add(composite);
-                logger.log(Level.INFO, "Adding composite: " + composite.getName() + " to domain");
+                logger.log(Level.INFO, "Adding composite: " + composite.getName() + " to domain " + getDomainURI());
             }
         }
 
