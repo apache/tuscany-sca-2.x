@@ -48,6 +48,7 @@
         <reference name="divideService" target="OperationsComponent/DivideService">
         </reference>
          -->
+    </component>         
          
     <component name="OperationsComponent">
         <tuscany:implementation.osgi bundleSymbolicName="calculator.dosgi.operations" bundleVersion="1.0.0" />
@@ -64,7 +65,6 @@
             <tuscany:binding.rmi uri="rmi://localhost:8085/DivideService"/>
         </service>
         
-    </component>         
     </component>
 
 </composite>

@@ -352,7 +352,7 @@ public class RemoteControllerImpl implements ListenerHook, RemoteAdminListener, 
             Map<String, Object> props = new HashMap<String, Object>(endpoint.getProperties());
             props.put(Bundle.class.getName(), bundle);
             props.put(Constants.OBJECTCLASS, new String[] {interfaceClass.getName()});
-            EndpointDescription description = new EndpointDescriptionImpl(props);
+            EndpointDescription description = new EndpointDescription(props);
 
             if (admins != null) {
                 for (Object ra : admins) {

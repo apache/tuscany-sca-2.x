@@ -19,12 +19,13 @@
 
 package org.apache.tuscany.sca.osgi.service.discovery.impl;
 
+import static org.apache.tuscany.sca.osgi.service.remoteadmin.impl.EndpointHelper.createEndpointDescription;
+
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.implementation.osgi.OSGiImplementation;
 import org.apache.tuscany.sca.osgi.service.remoteadmin.EndpointDescription;
-import org.apache.tuscany.sca.osgi.service.remoteadmin.impl.EndpointDescriptionImpl;
 import org.apache.tuscany.sca.runtime.EndpointListener;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
 import org.osgi.framework.BundleContext;
@@ -80,11 +81,6 @@ public class DomainDiscoveryService extends AbstractDiscoveryService implements 
             EndpointDescription description = createEndpointDescription(endpoint);
             endpointChanged(description, ADDED);
         }
-    }
-
-    private EndpointDescription createEndpointDescription(Endpoint endpoint) {
-        EndpointDescription description = new EndpointDescriptionImpl(endpoint);
-        return description;
     }
 
     public void endpointRemoved(Endpoint endpoint) {

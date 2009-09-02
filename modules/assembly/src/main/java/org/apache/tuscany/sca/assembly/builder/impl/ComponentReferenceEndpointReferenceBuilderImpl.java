@@ -423,7 +423,7 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
                             break;
                         }
                     }
-                    if (!promoted && !componentReference.isForCallback()) {
+                    if (!promoted && !componentReference.isForCallback() && !componentReference.isWiredByImpl()) {
                         Monitor.error(monitor,
                                       this,
                                       "assembly-validation-messages",
@@ -475,7 +475,7 @@ public class ComponentReferenceEndpointReferenceBuilderImpl extends BaseBuilderI
             // then this reference is unwired, which is an error - the existing endpoint references
             // will have been attached to a nested reference when a promoting reference has its endpoint
             // references computed
-            if (endpoints.size() == 0 && !reference.isPromoted()) {
+            if (endpoints.size() == 0 && !reference.isPromoted() && !reference.isWiredByImpl()) {
                 warning(monitor, "ReferenceWithoutTargets", reference, composite.getName().toString(), reference
                     .getName());
             } // end if

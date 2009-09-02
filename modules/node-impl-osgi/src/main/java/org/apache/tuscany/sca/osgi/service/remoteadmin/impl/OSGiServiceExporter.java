@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.osgi.service.remoteadmin.impl;
 
+import static org.apache.tuscany.sca.osgi.service.remoteadmin.impl.EndpointHelper.createEndpointDescription;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -93,7 +95,7 @@ public class OSGiServiceExporter implements ServiceTrackerCustomizer, LifeCycleL
                 Component component = contribution.getDeployables().get(0).getComponents().get(0);
                 ComponentService service = component.getServices().get(0);
                 for (Endpoint endpoint : service.getEndpoints()) {
-                    EndpointDescription endpointDescription = new EndpointDescriptionImpl(endpoint);
+                    EndpointDescription endpointDescription = createEndpointDescription(endpoint);
                     ExportRegistration exportRegistration =
                         new ExportRegistrationImpl(node, reference, endpointDescription);
                     exportedServices.add(exportRegistration);

@@ -292,12 +292,9 @@ public class EndpointIntrospector {
     }
 
     public Contribution introspect(Bundle bundle, EndpointDescription endpoint) throws Exception {
-        if (endpoint instanceof EndpointDescriptionImpl) {
-            EndpointDescriptionImpl impl = (EndpointDescriptionImpl)endpoint;
-            Endpoint ep = impl.getEndpoint();
-            if (ep != null) {
-                return introspect(bundle, ep);
-            }
+        Endpoint ep = (Endpoint) endpoint.getProperties().get(Endpoint.class.getName());
+        if (ep != null) {
+            return introspect(bundle, ep);
         }
         Map<String, Object> properties = endpoint.getProperties();
         List<String> remoteInterfaces = endpoint.getInterfaces();

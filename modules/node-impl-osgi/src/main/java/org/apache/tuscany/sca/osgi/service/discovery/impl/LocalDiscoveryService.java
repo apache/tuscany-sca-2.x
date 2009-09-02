@@ -51,7 +51,6 @@ import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.osgi.service.remoteadmin.EndpointDescription;
 import org.apache.tuscany.sca.osgi.service.remoteadmin.RemoteConstants;
-import org.apache.tuscany.sca.osgi.service.remoteadmin.impl.EndpointDescriptionImpl;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
@@ -162,7 +161,7 @@ public class LocalDiscoveryService extends AbstractDiscoveryService implements B
             props.put(RemoteConstants.ENDPOINT_URI, UUID.randomUUID().toString());
         }
 
-        EndpointDescription sed = new EndpointDescriptionImpl(props);
+        EndpointDescription sed = new EndpointDescription(props);
         return sed;
     }
 
