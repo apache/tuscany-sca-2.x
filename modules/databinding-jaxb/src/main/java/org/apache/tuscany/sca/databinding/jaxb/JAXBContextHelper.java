@@ -49,6 +49,8 @@ import org.apache.tuscany.sca.databinding.util.LRUCache;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 
@@ -102,7 +104,10 @@ public final class JAXBContextHelper {
 
     }
     
-    private Class<?>[] getSeeAlso(Class<?> interfaze) {
+    private static Class<?>[] getSeeAlso(Class<?> interfaze) {
+        if (interfaze == null) {
+            return null;
+        }
         XmlSeeAlso seeAlso = interfaze.getAnnotation(XmlSeeAlso.class);
         if (seeAlso == null) {
             return null;
@@ -311,6 +316,23 @@ public final class JAXBContextHelper {
     private static List<DataType> getDataTypes(Operation op, boolean useWrapper) {
         List<DataType> dataTypes = new ArrayList<DataType>();
         getDataTypes(dataTypes, op, useWrapper);
+        // Adding classes referenced by @XmlSeeAlso in the java interface
+        Interface interface1 = op.getInterface();
+        if (interface1 instanceof JavaInterface) {
+            JavaInterface javaInterface = (JavaInterface)interface1;
+            Class<?>[] seeAlso = getSeeAlso(javaInterface.getJavaClass());
+            if (seeAlso != null) {
+                for (Class<?> cls : seeAlso) {
+                    dataTypes.add(new DataTypeImpl<XMLType>(JAXBDataBinding.NAME, cls, XMLType.UNKNOWN));
+                }
+            }
+            seeAlso = getSeeAlso(javaInterface.getCallbackClass());
+            if (seeAlso != null) {
+                for (Class<?> cls : seeAlso) {
+                    dataTypes.add(new DataTypeImpl<XMLType>(JAXBDataBinding.NAME, cls, XMLType.UNKNOWN));
+                }
+            }
+        }
         return dataTypes;
     }
 

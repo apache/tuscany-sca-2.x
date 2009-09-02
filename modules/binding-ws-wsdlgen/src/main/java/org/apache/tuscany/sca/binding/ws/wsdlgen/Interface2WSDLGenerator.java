@@ -43,6 +43,7 @@ import javax.wsdl.Types;
 import javax.wsdl.WSDLException;
 import javax.wsdl.extensions.schema.Schema;
 import javax.wsdl.factory.WSDLFactory;
+import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -55,6 +56,7 @@ import org.apache.tuscany.sca.databinding.jaxb.JAXBDataBinding;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
 import org.apache.tuscany.sca.interfacedef.util.ElementInfo;
@@ -247,7 +249,37 @@ public class Interface2WSDLGenerator {
                 addDataType(dataTypes, dt4, helpers);
             }
         }
+        // Adding classes referenced by @XmlSeeAlso in the java interface
+        if (intf instanceof JavaInterface) {
+            JavaInterface javaInterface = (JavaInterface)intf;
+            Class<?>[] seeAlso = getSeeAlso(javaInterface.getJavaClass());
+            if (seeAlso != null) {
+                for (Class<?> cls : seeAlso) {
+                    DataType dt = new DataTypeImpl<XMLType>(JAXBDataBinding.NAME, cls, XMLType.UNKNOWN);
+                    addDataType(dataTypes, dt, helpers);
+                }
+            }
+            seeAlso = getSeeAlso(javaInterface.getCallbackClass());
+            if (seeAlso != null) {
+                for (Class<?> cls : seeAlso) {
+                    DataType dt = new DataTypeImpl<XMLType>(JAXBDataBinding.NAME, cls, XMLType.UNKNOWN);
+                    addDataType(dataTypes, dt, helpers);
+                }
+            }
+        }
         return dataTypes;
+    }
+    
+    private static Class<?>[] getSeeAlso(Class<?> interfaze) {
+        if (interfaze == null) {
+            return null;
+        }
+        XmlSeeAlso seeAlso = interfaze.getAnnotation(XmlSeeAlso.class);
+        if (seeAlso == null) {
+            return null;
+        } else {
+            return seeAlso.value();
+        }
     }
 
 
