@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.node;
+package org.apache.tuscany.sca.domain.node;
 
 import java.util.HashMap;
 import java.util.Map;

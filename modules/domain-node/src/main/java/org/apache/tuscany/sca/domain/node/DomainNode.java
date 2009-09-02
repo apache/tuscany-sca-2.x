@@ -17,13 +17,16 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.node;
+package org.apache.tuscany.sca.domain.node;
 
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tuscany.sca.management.ConfigAttributes;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.apache.tuscany.sca.node.impl.NodeFactoryImpl;
 
 public class DomainNode {

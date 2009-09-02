@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.tuscany.sca.node;
+package org.apache.tuscany.sca.domain.node;
 
 import java.io.File;
 import java.util.ArrayList;

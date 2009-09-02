@@ -21,5 +21,6 @@ Import-Package: org.apache.catalina.tribes,
  org.apache.juli.logging;resolution:=optional,
  org.apache.tuscany.sca.assembly;version="2.0.0",
  org.apache.tuscany.sca.core;version="2.0.0",
+ org.apache.tuscany.sca.management;version="2.0.0",
  org.apache.tuscany.sca.policy;version="2.0.0",
  org.apache.tuscany.sca.runtime;version="2.0.0"

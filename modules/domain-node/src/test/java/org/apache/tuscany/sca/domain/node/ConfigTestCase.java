@@ -17,10 +17,11 @@
  * under the License.
  */
 
-package org.apache.tuscany.sca.node;
+package org.apache.tuscany.sca.domain.node;
 
 import static org.junit.Assert.assertEquals;
 
+import org.apache.tuscany.sca.domain.node.DomainNode;
 import org.junit.Test;
 
 /**

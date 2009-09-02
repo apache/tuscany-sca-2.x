@@ -17,13 +17,14 @@
  * under the License.
  */
 
-package org.apache.tuscany.sca.node;
+package org.apache.tuscany.sca.domain.node;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 import itest.nodes.Helloworld;
 
+import org.apache.tuscany.sca.domain.node.DomainNode;
 import org.junit.After;
 import org.junit.Test;
 import org.oasisopen.sca.client.SCAClient;
