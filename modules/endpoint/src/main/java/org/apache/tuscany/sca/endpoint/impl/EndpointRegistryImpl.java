@@ -107,7 +107,7 @@ public class EndpointRegistryImpl implements EndpointRegistry, LifeCycleListener
     public List<Endpoint> findEndpoint(EndpointReference endpointReference) {
         List<Endpoint> foundEndpoints = new ArrayList<Endpoint>();
 
-        logger.info("Find endpoint for reference - " + endpointReference.toString());
+        logger.fine("Find endpoint for reference - " + endpointReference.toString());
 
         if (endpointReference.getReference() != null) {
             Endpoint targetEndpoint = endpointReference.getTargetEndpoint();
@@ -140,7 +140,7 @@ public class EndpointRegistryImpl implements EndpointRegistry, LifeCycleListener
 
     public void removeEndpointReference(EndpointReference endpointReference) {
         endpointreferences.removeValue(this, endpointReference);
-        logger.info("Remove endpoint reference - " + endpointReference.toString());
+        logger.fine("Remove endpoint reference - " + endpointReference.toString());
     }
 
     public List<EndpointReference> getEndpointRefereneces() {
