@@ -160,7 +160,7 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry, LifeCycleLi
 
     public void addEndpointReference(EndpointReference endpointReference) {
         endpointreferences.add(endpointReference);
-        logger.info("Add endpoint reference - " + endpointReference);
+        logger.fine("Add endpoint reference - " + endpointReference);
     }
 
     public void addListener(EndpointListener listener) {
@@ -214,14 +214,14 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry, LifeCycleLi
     public List<Endpoint> findEndpoint(EndpointReference endpointReference) {
         List<Endpoint> foundEndpoints = new ArrayList<Endpoint>();
 
-        logger.info("Find endpoint for reference - " + endpointReference);
+        logger.fine("Find endpoint for reference - " + endpointReference);
 
         if (endpointReference.getReference() != null) {
             Endpoint targetEndpoint = endpointReference.getTargetEndpoint();
             for (Object v : map.values()) {
                 Endpoint endpoint = (Endpoint)v;
                 // TODO: implement more complete matching
-                logger.info("Matching against - " + endpoint);
+                logger.fine("Matching against - " + endpoint);
                 if (matches(targetEndpoint.getURI(), endpoint.getURI())) {
                     MapEntry entry = map.getInternal(endpoint.getURI());
                     if (!isLocal(entry)) {
@@ -231,7 +231,7 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry, LifeCycleLi
                     endpoint.setExtensionPointRegistry(registry);
                     // }
                     foundEndpoints.add(endpoint);
-                    logger.info("Found endpoint with matching service  - " + endpoint);
+                    logger.fine("Found endpoint with matching service  - " + endpoint);
                 }
                 // else the service name doesn't match
             }
@@ -270,7 +270,7 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry, LifeCycleLi
 
     public void removeEndpointReference(EndpointReference endpointReference) {
         endpointreferences.remove(endpointReference);
-        logger.info("Remove endpoint reference - " + endpointReference);
+        logger.fine("Remove endpoint reference - " + endpointReference);
     }
 
     public void removeListener(EndpointListener listener) {
