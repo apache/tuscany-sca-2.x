@@ -116,7 +116,7 @@ public class EndpointRegistryImpl implements EndpointRegistry, LifeCycleListener
                     // TODO: implement more complete matching
                     if (matches(targetEndpoint.getURI(), endpoint.getURI())) {
                         foundEndpoints.add(endpoint);
-                        logger.info("Found endpoint with matching service  - " + endpoint);
+                        logger.fine("Found endpoint with matching service  - " + endpoint);
                     }
                     // else the service name doesn't match
                 }
