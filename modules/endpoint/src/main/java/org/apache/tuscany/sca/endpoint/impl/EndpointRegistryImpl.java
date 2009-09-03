@@ -57,7 +57,7 @@ public class EndpointRegistryImpl implements EndpointRegistry, LifeCycleListener
 
     public void addEndpointReference(EndpointReference endpointReference) {
         endpointreferences.putValue(this, endpointReference);
-        logger.info("Add endpoint reference - " + endpointReference.toString());
+        logger.fine("Add endpoint reference - " + endpointReference.toString());
     }
 
     /**
