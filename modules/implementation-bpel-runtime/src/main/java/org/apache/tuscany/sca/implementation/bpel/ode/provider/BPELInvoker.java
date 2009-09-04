@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.implementation.bpel.ode.provider;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import javax.transaction.SystemException;
 import javax.transaction.TransactionManager;
@@ -29,13 +30,11 @@ import javax.xml.namespace.QName;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.ode.bpel.iapi.MessageExchange;
 import org.apache.ode.bpel.iapi.MyRoleMessageExchange;
 import org.apache.ode.bpel.iapi.MessageExchange.Status;
 import org.apache.ode.utils.DOMUtils;
 import org.apache.ode.utils.GUID;
 import org.apache.tuscany.sca.assembly.Base;
-import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.implementation.bpel.ode.EmbeddedODEServer;
 import org.apache.tuscany.sca.interfacedef.Interface;
@@ -59,6 +58,8 @@ import org.w3c.dom.Element;
  * @version $Rev$ $Date$
  */
 public class BPELInvoker implements Invoker {
+	private final static long TIME_OUT = 500L;
+	
     protected final Log __log = LogFactory.getLog(getClass());
 
     private EmbeddedODEServer odeServer;
@@ -166,7 +167,8 @@ public class BPELInvoker implements Invoker {
         // Waiting until the reply is ready in case the engine needs to continue in a different thread
         if (onhold != null) {
             try {
-                onhold.get();
+            	//add timeout to avoid blocking when there is a exception/failure
+            	onhold.get(TIME_OUT, TimeUnit.MILLISECONDS);
             } catch (Exception e) {
                 throw new InvocationTargetException(e,"Error invoking BPEL process : " + e.getMessage());
             } // end try
