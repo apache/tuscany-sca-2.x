@@ -27,8 +27,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -170,6 +170,8 @@ public class SpringXMLComponentTypeLoader {
 
             // System.out.println("Spring TypeLoader - starting to read context file");
             readContextDefinition(resolver, reader, contextPath, beans, services, references, scaproperties);
+            
+            reader.close();
 
         } catch (IOException e) {
             throw new ContributionReadException(e);
