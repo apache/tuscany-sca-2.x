@@ -62,14 +62,27 @@ public class XPathHelper {
     public XPath newXPath() {
         return factory.newXPath();
     }
-
+    
     public XPathExpression compile(NamespaceContext context, String expression) throws XPathExpressionException {
         XPath path = newXPath();
-        path.setNamespaceContext(getNamespaceContext(expression, context));
+        context = getNamespaceContext(expression, context);
+        return compile(path, context, expression);
+    }
+
+    public XPathExpression compile(XPath path, NamespaceContext context, String expression)
+        throws XPathExpressionException {
+        path.setNamespaceContext(context);
         return path.compile(expression);
     }
 
-    private NamespaceContext getNamespaceContext(String expression, NamespaceContext context) {
+    /**
+     * Take a snapshot of the given namespace context based on the prefixes found in the expression.
+     * In StAX, the prefix/namespace mapping in the namespace context can change as the event moves  
+     * @param expression
+     * @param context
+     * @return
+     */
+    public NamespaceContext getNamespaceContext(String expression, NamespaceContext context) {
         NamespaceContextImpl nsContext = new NamespaceContextImpl(null);
 
         for (String prefix : getPrefixes(expression)) {
@@ -81,6 +94,11 @@ public class XPathHelper {
         return nsContext;
     }
 
+    /**
+     * Parse the XPath expression to collect all the prefixes for namespaces
+     * @param expression
+     * @return A collection of prefixes
+     */
     private Collection<String> getPrefixes(String expression) {
         List<String> prefixes = new ArrayList<String>();
         prefixes.add("");
@@ -95,14 +113,12 @@ public class XPathHelper {
                 if (XMLCharHelper.isNCName(prefix.charAt(j))) {
                     continue;
                 }
-                j--;
                 break;
             }
+            // j is before the first char of the prefix
             if (j != (prefix.length() - 1) && XMLCharHelper.isNCNameStart(prefix.charAt(j + 1))) {
                 prefixes.add(prefix.substring(j + 1));
             }
-            break;
-
         }
         return prefixes;
     }
