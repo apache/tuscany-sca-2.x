@@ -1,0 +1,27 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+# 
+#   http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License. 
+
+# Implementation class for the artifact processor extension
+org.apache.tuscany.sca.binding.jms.impl.JMSBindingProcessor;qname=http://www.osoa.org/xmlns/sca/1.0#binding.jms,model=org.apache.tuscany.sca.binding.jms.impl.JMSBinding
+org.apache.tuscany.sca.binding.jms.wireformat.jmsdefault.WireFormatJMSDefaultProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.0#wireFormat.jmsdefault,model=org.apache.tuscany.sca.binding.jms.wireformat.jmsdefault.WireFormatJMSDefault
+org.apache.tuscany.sca.binding.jms.wireformat.jmstextxml.WireFormatJMSTextXMLProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.0#wireFormat.jmsTextXML,model=org.apache.tuscany.sca.binding.jms.wireformat.jmstextxml.WireFormatJMSTextXML
+org.apache.tuscany.sca.binding.jms.wireformat.jmsbytes.WireFormatJMSBytesProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.0#wireFormat.jmsBytes,model=org.apache.tuscany.sca.binding.jms.wireformat.jmsbytes.WireFormatJMSBytes
+org.apache.tuscany.sca.binding.jms.wireformat.jmsbytesxml.WireFormatJMSBytesXMLProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.0#wireFormat.jmsBytesXML,model=org.apache.tuscany.sca.binding.jms.wireformat.jmsbytesxml.WireFormatJMSBytesXML
+org.apache.tuscany.sca.binding.jms.wireformat.jmstext.WireFormatJMSTextProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.0#wireFormat.jmsText,model=org.apache.tuscany.sca.binding.jms.wireformat.jmstext.WireFormatJMSText
+org.apache.tuscany.sca.binding.jms.wireformat.jmsobject.WireFormatJMSObjectProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.0#wireFormat.jmsObject,model=org.apache.tuscany.sca.binding.jms.wireformat.jmsobject.WireFormatJMSObject
+org.apache.tuscany.sca.binding.jms.operationselector.jmsdefault.OperationSelectorJMSDefaultProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.0#operationSelector.jmsdefault,model=org.apache.tuscany.sca.binding.jms.operationselector.jmsdefault.OperationSelectorJMSDefault
+org.apache.tuscany.sca.binding.jms.operationselector.jmsuserprop.OperationSelectorJMSUserPropProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.0#operationSelector.jmsUserProp,model=org.apache.tuscany.sca.binding.jms.operationselector.jmsuserprop.OperationSelectorJMSUserProp
