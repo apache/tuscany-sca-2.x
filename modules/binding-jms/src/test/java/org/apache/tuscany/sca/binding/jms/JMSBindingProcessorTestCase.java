@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.jms.impl;
+package org.apache.tuscany.sca.binding.jms;
 
 import java.io.StringReader;
 import java.util.Iterator;
@@ -32,8 +32,11 @@ import junit.framework.TestCase;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.OperationsConfigurator;
 import org.apache.tuscany.sca.assembly.WireFormat;
-import org.apache.tuscany.sca.binding.jms.wireformat.jmsbytes.WireFormatJMSBytes;
-import org.apache.tuscany.sca.binding.jms.wireformat.jmsobject.WireFormatJMSObject;
+import org.apache.tuscany.sca.binding.jms.BindingProperty;
+import org.apache.tuscany.sca.binding.jms.JMSBinding;
+import org.apache.tuscany.sca.binding.jms.JMSBindingException;
+import org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSBytes;
+import org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSObject;
 import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;

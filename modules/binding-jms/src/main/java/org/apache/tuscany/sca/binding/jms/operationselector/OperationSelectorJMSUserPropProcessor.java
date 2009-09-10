@@ -16,7 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.binding.jms.wireformat.jmstext;
+package org.apache.tuscany.sca.binding.jms.operationselector;
+
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -37,23 +38,30 @@ import org.apache.tuscany.sca.monitor.Monitor;
  *
  * @version $Rev$ $Date$
  */
-public class WireFormatJMSTextProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<WireFormatJMSText> {
+public class OperationSelectorJMSUserPropProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<OperationSelectorJMSUserProp> {
     
     public QName getArtifactType() {
-        return WireFormatJMSText.WIRE_FORMAT_JMS_BYTES_QNAME;
+        return OperationSelectorJMSUserProp.OPERATION_SELECTOR_JMS_USERPROP_QNAME;
     }
     
-    public WireFormatJMSTextProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
+    public OperationSelectorJMSUserPropProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
     }
 
     
-    public WireFormatJMSText read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
-        WireFormatJMSText wireFormat = new WireFormatJMSText();
-         
-        return wireFormat;
+    public OperationSelectorJMSUserProp read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+        OperationSelectorJMSUserProp opSelector = new OperationSelectorJMSUserProp();
+        String propertyName = reader.getAttributeValue(null, OperationSelectorJMSUserProp.OPERATION_SELECTOR_JMS_USERPROP_ATTR);
+        if (propertyName != null && propertyName.length() > 0) {
+            opSelector.setPropertyName(propertyName);
+        } else {
+            throw new ContributionReadException(OperationSelectorJMSUserProp.OPERATION_SELECTOR_JMS_USERPROP_QNAME.toString() + ": " + 
+                    OperationSelectorJMSUserProp.OPERATION_SELECTOR_JMS_USERPROP_ATTR + " is a required attribute.");
+        }
+        
+        return opSelector;
     }
 
-    public void write(WireFormatJMSText wireFormat, XMLStreamWriter writer) 
+    public void write(OperationSelectorJMSUserProp opSelector, XMLStreamWriter writer) 
         throws ContributionWriteException, XMLStreamException {
         String prefix = "tuscany";
         writer.writeStartElement(prefix, 
@@ -61,14 +69,18 @@ public class WireFormatJMSTextProcessor extends BaseStAXArtifactProcessor implem
                                  getArtifactType().getNamespaceURI());
         writer.writeNamespace("tuscany", Constants.SCA11_TUSCANY_NS); 
         
+        if (opSelector.getPropertyName() != null) {
+            writer.writeAttribute(OperationSelectorJMSUserProp.OPERATION_SELECTOR_JMS_USERPROP_ATTR, opSelector.getPropertyName());
+        }
+        
         writer.writeEndElement();
     }
 
-    public Class<WireFormatJMSText> getModelType() {
-        return WireFormatJMSText.class;
+    public Class<OperationSelectorJMSUserProp> getModelType() {
+        return OperationSelectorJMSUserProp.class;
     }
 
-    public void resolve(WireFormatJMSText arg0, ModelResolver arg1) throws ContributionResolveException {
+    public void resolve(OperationSelectorJMSUserProp arg0, ModelResolver arg1) throws ContributionResolveException {
 
     }
     

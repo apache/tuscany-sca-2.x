@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.binding.jms.wireformat.jmsobject;
+package org.apache.tuscany.sca.binding.jms.wireformat;
 
 import javax.xml.namespace.QName;
 
@@ -29,12 +29,8 @@ import org.apache.tuscany.sca.assembly.xml.Constants;
  *
  * @version $Rev$ $Date$
  */
-public class WireFormatJMSObject implements WireFormat {
-    public static final QName WIRE_FORMAT_JMS_BYTES_QNAME = new QName(Constants.SCA11_TUSCANY_NS, "wireFormat.jmsObject");
-    
-    public static final String WIRE_FORMAT_JMS_OBJECT_WRAP_SINGLE_ATTR = "wrapSingle";
-    
-    private boolean wrappedSingleInput = false;
+public class WireFormatJMSBytes implements WireFormat {
+    public static final QName WIRE_FORMAT_JMS_BYTES_QNAME = new QName(Constants.SCA11_TUSCANY_NS, "wireFormat.jmsBytes");
     
     public QName getSchemaName() {
         return WIRE_FORMAT_JMS_BYTES_QNAME;
@@ -45,13 +41,5 @@ public class WireFormatJMSObject implements WireFormat {
     }
 
     public void setUnresolved(boolean unresolved) {
-    }
-
-    public void setWrappedSingleInput(boolean wrappedSingleInput) {
-        this.wrappedSingleInput = wrappedSingleInput;
-    }
-
-    public boolean isWrappedSingleInput() {
-        return wrappedSingleInput;
     }
 }

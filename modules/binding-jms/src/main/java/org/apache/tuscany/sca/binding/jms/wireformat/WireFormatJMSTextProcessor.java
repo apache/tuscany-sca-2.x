@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.binding.jms.wireformat.jmsbytes;
+package org.apache.tuscany.sca.binding.jms.wireformat;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -37,23 +37,23 @@ import org.apache.tuscany.sca.monitor.Monitor;
  *
  * @version $Rev$ $Date$
  */
-public class WireFormatJMSBytesProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<WireFormatJMSBytes> {
+public class WireFormatJMSTextProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<WireFormatJMSText> {
     
     public QName getArtifactType() {
-        return WireFormatJMSBytes.WIRE_FORMAT_JMS_BYTES_QNAME;
+        return WireFormatJMSText.WIRE_FORMAT_JMS_BYTES_QNAME;
     }
     
-    public WireFormatJMSBytesProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
+    public WireFormatJMSTextProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
     }
 
     
-    public WireFormatJMSBytes read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
-        WireFormatJMSBytes wireFormat = new WireFormatJMSBytes();
+    public WireFormatJMSText read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+        WireFormatJMSText wireFormat = new WireFormatJMSText();
          
         return wireFormat;
     }
 
-    public void write(WireFormatJMSBytes wireFormat, XMLStreamWriter writer) 
+    public void write(WireFormatJMSText wireFormat, XMLStreamWriter writer) 
         throws ContributionWriteException, XMLStreamException {
         String prefix = "tuscany";
         writer.writeStartElement(prefix, 
@@ -64,11 +64,11 @@ public class WireFormatJMSBytesProcessor extends BaseStAXArtifactProcessor imple
         writer.writeEndElement();
     }
 
-    public Class<WireFormatJMSBytes> getModelType() {
-        return WireFormatJMSBytes.class;
+    public Class<WireFormatJMSText> getModelType() {
+        return WireFormatJMSText.class;
     }
 
-    public void resolve(WireFormatJMSBytes arg0, ModelResolver arg1) throws ContributionResolveException {
+    public void resolve(WireFormatJMSText arg0, ModelResolver arg1) throws ContributionResolveException {
 
     }
     

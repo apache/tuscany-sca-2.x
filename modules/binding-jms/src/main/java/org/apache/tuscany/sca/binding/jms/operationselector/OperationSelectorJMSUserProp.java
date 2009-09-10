@@ -16,24 +16,28 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.binding.jms.wireformat.jmstext;
+package org.apache.tuscany.sca.binding.jms.operationselector;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.assembly.WireFormat;
+import org.apache.tuscany.sca.assembly.OperationSelector;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 
 /**
- * Implementation for policies that could be injected as parameter
- * into the axis2config.
+ * Model of user property based operation selection
+ * 
+ * <operationSelector.jmsUser propertName="MyHeaderProperty"/>
  *
  * @version $Rev$ $Date$
  */
-public class WireFormatJMSText implements WireFormat {
-    public static final QName WIRE_FORMAT_JMS_BYTES_QNAME = new QName(Constants.SCA11_TUSCANY_NS, "wireFormat.jmsText");
+public class OperationSelectorJMSUserProp implements OperationSelector {
+    public static final QName OPERATION_SELECTOR_JMS_USERPROP_QNAME = new QName(Constants.SCA11_TUSCANY_NS, "operationSelector.jmsUserProp");
+    public static final String OPERATION_SELECTOR_JMS_USERPROP_ATTR  = "propertyName";
+    
+    private String propertyName;
     
     public QName getSchemaName() {
-        return WIRE_FORMAT_JMS_BYTES_QNAME;
+        return OPERATION_SELECTOR_JMS_USERPROP_QNAME;
     }
 
     public boolean isUnresolved() {
@@ -41,5 +45,13 @@ public class WireFormatJMSText implements WireFormat {
     }
 
     public void setUnresolved(boolean unresolved) {
+    }
+
+    public String getPropertyName() {
+        return propertyName;
+    }
+
+    public void setPropertyName(String propertyName) {
+        this.propertyName = propertyName;
     }
 }

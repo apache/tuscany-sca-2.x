@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.binding.jms.wireformat.jmsbytes;
+package org.apache.tuscany.sca.binding.jms.wireformat;
 
 import javax.xml.namespace.QName;
 
@@ -24,16 +24,22 @@ import org.apache.tuscany.sca.assembly.WireFormat;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 
 /**
- * Implementation for policies that could be injected as parameter
- * into the axis2config.
- *
+ * 
  * @version $Rev$ $Date$
  */
-public class WireFormatJMSBytes implements WireFormat {
-    public static final QName WIRE_FORMAT_JMS_BYTES_QNAME = new QName(Constants.SCA11_TUSCANY_NS, "wireFormat.jmsBytes");
+public class WireFormatJMSDefault implements WireFormat {
+    public static final QName WIRE_FORMAT_JMS_DEFAULT_QNAME = new QName(Constants.SCA11_TUSCANY_NS, "wireFormat.jmsdefault");
+    
+    public static final String WIRE_FORMAT_JMS_DEFAULT_FORMAT_ATTR = "sendFormat";
+    
+    public static final String WIRE_FORMAT_JMS_DEFAULT_TEXT_FORMAT_VAL = "text";
+    public static final String WIRE_FORMAT_JMS_DEFAULT_BYTES_FORMAT_VAL = "bytes";
+
+    //default is to use a javax.jms.BytesMessage
+    private boolean useBytesMessage = true;
     
     public QName getSchemaName() {
-        return WIRE_FORMAT_JMS_BYTES_QNAME;
+        return WIRE_FORMAT_JMS_DEFAULT_QNAME;
     }
 
     public boolean isUnresolved() {
@@ -41,5 +47,18 @@ public class WireFormatJMSBytes implements WireFormat {
     }
 
     public void setUnresolved(boolean unresolved) {
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return this.getClass() == obj.getClass();
+    }
+    
+    public void setUseBytesMessage(boolean useBytesMessage) {
+        this.useBytesMessage = useBytesMessage;
+    }
+
+    public boolean isUseBytesMessage() {
+        return useBytesMessage;
     }
 }

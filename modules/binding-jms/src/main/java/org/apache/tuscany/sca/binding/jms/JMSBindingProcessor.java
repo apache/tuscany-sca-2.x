@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.jms.impl;
+package org.apache.tuscany.sca.binding.jms;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
@@ -41,11 +41,11 @@ import org.apache.tuscany.sca.assembly.WireFormat;
 import org.apache.tuscany.sca.assembly.xml.ConfiguredOperationProcessor;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.assembly.xml.PolicySubjectProcessor;
-import org.apache.tuscany.sca.binding.jms.operationselector.jmsdefault.OperationSelectorJMSDefault;
-import org.apache.tuscany.sca.binding.jms.wireformat.jmsdefault.WireFormatJMSDefault;
-import org.apache.tuscany.sca.binding.jms.wireformat.jmsobject.WireFormatJMSObject;
-import org.apache.tuscany.sca.binding.jms.wireformat.jmstext.WireFormatJMSText;
-import org.apache.tuscany.sca.binding.jms.wireformat.jmstextxml.WireFormatJMSTextXML;
+import org.apache.tuscany.sca.binding.jms.operationselector.OperationSelectorJMSDefault;
+import org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSDefault;
+import org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSObject;
+import org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSText;
+import org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSTextXML;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.binding.jms.wireformat.jmsobject;
+package org.apache.tuscany.sca.binding.jms.wireformat;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;

@@ -16,19 +16,24 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.binding.jms.wireformat.jmsbytesxml;
+package org.apache.tuscany.sca.binding.jms.operationselector;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.assembly.WireFormat;
+import org.apache.tuscany.sca.assembly.OperationSelector;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 
-
-public class WireFormatJMSBytesXML implements WireFormat {
-    public static final QName WIRE_FORMAT_JMS_BYTES_QNAME = new QName(Constants.SCA11_TUSCANY_NS, "wireFormat.jmsBytesXML");
+/**
+ * Implementation for policies that could be injected as parameter
+ * into the axis2config.
+ *
+ * @version $Rev$ $Date$
+ */
+public class OperationSelectorJMSDefault implements OperationSelector {
+    public static final QName OPERATION_SELECTOR_JMS_DEFAULT_QNAME = new QName(Constants.SCA11_TUSCANY_NS, "operationSelector.jmsdefault");
     
     public QName getSchemaName() {
-        return WIRE_FORMAT_JMS_BYTES_QNAME;
+        return OPERATION_SELECTOR_JMS_DEFAULT_QNAME;
     }
 
     public boolean isUnresolved() {

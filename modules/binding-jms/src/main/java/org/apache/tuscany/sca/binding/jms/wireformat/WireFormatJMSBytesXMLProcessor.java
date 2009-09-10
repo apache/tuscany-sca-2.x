@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.binding.jms.wireformat.jmstextxml;
+package org.apache.tuscany.sca.binding.jms.wireformat;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -33,27 +33,24 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.monitor.Monitor;
 
-/**
- *
- * @version $Rev$ $Date$
- */
-public class WireFormatJMSTextXMLProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<WireFormatJMSTextXML> {
+
+public class WireFormatJMSBytesXMLProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<WireFormatJMSBytesXML> {
     
     public QName getArtifactType() {
-        return WireFormatJMSTextXML.WIRE_FORMAT_JMS_DEFAULT_QNAME;
+        return WireFormatJMSBytesXML.WIRE_FORMAT_JMS_BYTES_QNAME;
     }
     
-    public WireFormatJMSTextXMLProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
+    public WireFormatJMSBytesXMLProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
     }
 
     
-    public WireFormatJMSTextXML read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
-        WireFormatJMSTextXML wireFormat = new WireFormatJMSTextXML();
+    public WireFormatJMSBytesXML read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+        WireFormatJMSBytesXML wireFormat = new WireFormatJMSBytesXML();
          
         return wireFormat;
     }
 
-    public void write(WireFormatJMSTextXML wireFormat, XMLStreamWriter writer) 
+    public void write(WireFormatJMSBytesXML wireFormat, XMLStreamWriter writer) 
         throws ContributionWriteException, XMLStreamException {
         String prefix = "tuscany";
         writer.writeStartElement(prefix, 
@@ -64,11 +61,11 @@ public class WireFormatJMSTextXMLProcessor extends BaseStAXArtifactProcessor imp
         writer.writeEndElement();
     }
 
-    public Class<WireFormatJMSTextXML> getModelType() {
-        return WireFormatJMSTextXML.class;
+    public Class<WireFormatJMSBytesXML> getModelType() {
+        return WireFormatJMSBytesXML.class;
     }
 
-    public void resolve(WireFormatJMSTextXML arg0, ModelResolver arg1) throws ContributionResolveException {
+    public void resolve(WireFormatJMSBytesXML arg0, ModelResolver arg1) throws ContributionResolveException {
 
     }
     

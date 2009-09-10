@@ -16,33 +16,30 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.binding.jms.wireformat.jmstextxml;
-
-import javax.xml.namespace.QName;
-
-import org.apache.tuscany.sca.assembly.WireFormat;
-import org.apache.tuscany.sca.assembly.xml.Constants;
+package org.apache.tuscany.sca.binding.jms;
 
 /**
+ * Base exception for the JMSBinding.
  *
  * @version $Rev$ $Date$
  */
-public class WireFormatJMSTextXML implements WireFormat {
-    public static final QName WIRE_FORMAT_JMS_DEFAULT_QNAME = new QName(Constants.SCA11_TUSCANY_NS, "wireFormat.jmsTextXML");
-    
-    public QName getSchemaName() {
-        return WIRE_FORMAT_JMS_DEFAULT_QNAME;
+public class JMSBindingException extends RuntimeException {
+    private static final long serialVersionUID = 1L;
+
+    public JMSBindingException() {
+        super();
     }
 
-    public boolean isUnresolved() {
-        return false;
+    public JMSBindingException(String arg0, Throwable arg1) {
+        super(arg0, arg1);
     }
 
-    public void setUnresolved(boolean unresolved) {
+    public JMSBindingException(String arg0) {
+        super(arg0);
     }
-    
-    @Override
-    public boolean equals(Object obj) {
-        return this.getClass() == obj.getClass();
+
+    public JMSBindingException(Throwable arg0) {
+        super(arg0);
     }
+
 }
