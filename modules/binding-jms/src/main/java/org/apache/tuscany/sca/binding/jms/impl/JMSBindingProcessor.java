@@ -34,9 +34,13 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.sca.assembly.ConfiguredOperation;
 import org.apache.tuscany.sca.assembly.OperationSelector;
+import org.apache.tuscany.sca.assembly.OperationsConfigurator;
 import org.apache.tuscany.sca.assembly.WireFormat;
+import org.apache.tuscany.sca.assembly.xml.ConfiguredOperationProcessor;
 import org.apache.tuscany.sca.assembly.xml.Constants;
+import org.apache.tuscany.sca.assembly.xml.PolicySubjectProcessor;
 import org.apache.tuscany.sca.binding.jms.operationselector.jmsdefault.OperationSelectorJMSDefault;
 import org.apache.tuscany.sca.binding.jms.wireformat.jmsdefault.WireFormatJMSDefault;
 import org.apache.tuscany.sca.binding.jms.wireformat.jmsobject.WireFormatJMSObject;
@@ -52,7 +56,6 @@ import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
-import org.apache.tuscany.sca.monitor.impl.ProblemImpl;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 
 /**
@@ -132,7 +135,7 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
 
 public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<JMSBinding> {
     private PolicyFactory policyFactory;
-    private PolicyAttachPointProcessor policyProcessor;
+    private PolicySubjectProcessor policyProcessor;
     private ConfiguredOperationProcessor configuredOperationProcessor;
     protected StAXArtifactProcessor<Object> extensionProcessor;
     private Monitor monitor;
@@ -140,7 +143,8 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
     private FactoryExtensionPoint modelFactories; // DOB
     public JMSBindingProcessor(FactoryExtensionPoint modelFactories, StAXArtifactProcessor<Object> extensionProcessor, Monitor monitor) {
         this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
-        this.policyProcessor = new PolicyAttachPointProcessor(policyFactory);
+        this.policyProcessor = new PolicySubjectProcessor(policyFactory);
+
         this.configuredOperationProcessor = 
             new ConfiguredOperationProcessor(modelFactories, this.monitor);
         this.extensionProcessor = extensionProcessor;
@@ -157,7 +161,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
     */
     private void warning(String message, Object model, Object... messageParameters) {
         if (monitor != null) {
-            Problem problem = new ProblemImpl(this.getClass().getName(), "binding-jms-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
+            Problem problem = monitor.createProblem(this.getClass().getName(), "binding-jms-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
     	    monitor.problem(problem);
         }        
     }
@@ -172,7 +176,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
     */
     private void error(String message, Object model, Object... messageParameters) {
         if (monitor != null) {
-            Problem problem = new ProblemImpl(this.getClass().getName(), "binding-jms-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
+            Problem problem = monitor.createProblem(this.getClass().getName(), "binding-jms-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
      	    monitor.problem(problem);
         }        
     }
@@ -919,7 +923,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
     public void write(JMSBinding jmsBinding, XMLStreamWriter writer) throws ContributionWriteException,
         XMLStreamException {
         // Write a <binding.jms>
-        writeStart(writer, Constants.SCA10_NS, JMSBindingConstants.BINDING_JMS,
+        writeStart(writer, Constants.SCA11_NS, JMSBindingConstants.BINDING_JMS,
                    new XAttr("requestConnection", jmsBinding.getRequestConnectionName()),
                    new XAttr("responseConnection", jmsBinding.getResponseConnectionName()),
                    new XAttr("operationProperties", jmsBinding.getOperationPropertiesName()));
@@ -976,7 +980,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
               responseCFName != null  ||
               responseASName != null ) {
             
-           writer.writeStartElement(Constants.SCA10_NS, "response");
+           writer.writeStartElement(Constants.SCA11_NS, "response");
            writeResponseDestinationProperties( jmsBinding, writer );       
            writeResponseConnectionFactoryProperties( jmsBinding, writer );        
            writeResponseActivationSpecProperties( jmsBinding, writer );
@@ -1020,7 +1024,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
      */
     private void writeHeaders( JMSBinding jmsBinding, XMLStreamWriter writer) throws XMLStreamException {
 
-        writer.writeStartElement(Constants.SCA10_NS, JMSBindingConstants.HEADERS);
+        writer.writeStartElement(Constants.SCA11_NS, JMSBindingConstants.HEADERS);
 
         String jmsType = jmsBinding.getJMSType();
         if (jmsType != null && jmsType.length() > 0) {
@@ -1077,7 +1081,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
             Object key = entry.getKey();
             Object value = entry.getValue();
 
-            writer.writeStartElement(Constants.SCA10_NS, "property" );
+            writer.writeStartElement(Constants.SCA11_NS, "property" );
             writer.writeAttribute("name", key.toString());
 
             if ( value instanceof String) {
@@ -1144,7 +1148,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
         for(Iterator<String> it=operationNames.iterator(); it.hasNext(); ) {
             String opName = it.next();
         
-            writer.writeStartElement(Constants.SCA10_NS, "operationProperties");
+            writer.writeStartElement(Constants.SCA11_NS, "operationProperties");
             writer.writeAttribute("name", opName);
 
             String nativeOperation = jmsBinding.getNativeOperationName(opName);
@@ -1171,7 +1175,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
                     jmsDeliveryMode != null || jmsTimeToLive != null || 
                     jmsPriority != null) {
                     
-                    writer.writeStartElement(Constants.SCA10_NS, JMSBindingConstants.HEADERS);              
+                    writer.writeStartElement(Constants.SCA11_NS, JMSBindingConstants.HEADERS);              
                     
                     if (jmsType != null && jmsType.length() > 0) {
                         writer.writeAttribute("JMSType", jmsType);
@@ -1228,7 +1232,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
             Object key = entry.getKey();
             Object value = entry.getValue();
 
-            writer.writeStartElement(Constants.SCA10_NS, "property" );
+            writer.writeStartElement(Constants.SCA11_NS, "property" );
             if (key != null){
                 writer.writeAttribute("name", key.toString());
             }
@@ -1259,7 +1263,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
     private void writeSubscriptionHeaders( JMSBinding jmsBinding, XMLStreamWriter writer) throws XMLStreamException {
         String jmsSubscriptionHeaders = jmsBinding.getJMSSelector();
         if (jmsSubscriptionHeaders != null && jmsSubscriptionHeaders.length() > 0) {
-            writer.writeStartElement(Constants.SCA10_NS, "SubscriptionHeaders");
+            writer.writeStartElement(Constants.SCA11_NS, "SubscriptionHeaders");
             writer.writeAttribute("JMSSelector", jmsSubscriptionHeaders);
             writer.writeEndElement();
             // Strange bug. Without white space, headers end tag improperly read. 
@@ -1282,7 +1286,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
             return;
         }
 
-        writer.writeStartElement(Constants.SCA10_NS, "destination");
+        writer.writeStartElement(Constants.SCA11_NS, "destination");
 
         if ( destinationName != null && destinationName.length() > 0) {
             writer.writeAttribute("name", destinationName);            
@@ -1321,7 +1325,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
             return;
         }
 
-        writer.writeStartElement(Constants.SCA10_NS, "connectionFactory");
+        writer.writeStartElement(Constants.SCA11_NS, "connectionFactory");
 
         if ( cfName != null && cfName.length() > 0) {
             writer.writeAttribute("name", cfName);            
@@ -1355,7 +1359,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
             return;
         }
 
-        writer.writeStartElement(Constants.SCA10_NS, "activationSpec");
+        writer.writeStartElement(Constants.SCA11_NS, "activationSpec");
 
         if ( asName != null && asName.length() > 0) {
             writer.writeAttribute("name", asName);            
@@ -1390,7 +1394,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
             return;
         }
 
-        writer.writeStartElement(Constants.SCA10_NS, "destination");
+        writer.writeStartElement(Constants.SCA11_NS, "destination");
 
         if ( destinationName != null && destinationName.length() > 0) {
             writer.writeAttribute("name", destinationName);            
@@ -1429,7 +1433,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
             return;
         }
 
-        writer.writeStartElement(Constants.SCA10_NS, "connectionFactory");
+        writer.writeStartElement(Constants.SCA11_NS, "connectionFactory");
 
         if ( cfName != null && cfName.length() > 0) {
             writer.writeAttribute("name", cfName);            
@@ -1462,7 +1466,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
             return;
         }
 
-        writer.writeStartElement(Constants.SCA10_NS, "activationSpec");
+        writer.writeStartElement(Constants.SCA11_NS, "activationSpec");
 
         if ( asName != null && asName.length() > 0) {
             writer.writeAttribute("name", asName);            
@@ -1494,7 +1498,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
             return;
         }
 
-        writer.writeStartElement(Constants.SCA10_NS, "resourceAdapter");
+        writer.writeStartElement(Constants.SCA11_NS, "resourceAdapter");
 
         if ( asName != null && asName.length() > 0) {
             writer.writeAttribute("name", asName);            

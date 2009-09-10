@@ -29,8 +29,11 @@ import java.util.TreeSet;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.BindingRRB;
+import org.apache.tuscany.sca.assembly.ConfiguredOperation;
 import org.apache.tuscany.sca.assembly.OperationSelector;
+import org.apache.tuscany.sca.assembly.OperationsConfigurator;
 import org.apache.tuscany.sca.assembly.WireFormat;
+import org.apache.tuscany.sca.policy.ExtensionType;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySubject;
@@ -41,7 +44,9 @@ import org.apache.tuscany.sca.policy.PolicySubject;
  * @version $Rev$ $Date$
  */
 
-public class JMSBinding implements BindingRRB, PolicySubject, OperationsConfigurator, DefinitionElement {
+//public class JMSBinding implements BindingRRB, PolicySubject, OperationsConfigurator, DefinitionElement {
+public class JMSBinding implements BindingRRB, PolicySubject, OperationsConfigurator {
+    QName TYPE = new QName(SCA11_NS, "binding.jms");
 
     @Override
     public Object clone() throws CloneNotSupportedException {
@@ -60,7 +65,6 @@ public class JMSBinding implements BindingRRB, PolicySubject, OperationsConfigur
     
     // properties required by IntentAttachPoint 
     private List<Intent> requiredIntents = new ArrayList<Intent>();
-    private IntentAttachPointType intentAttachPointType;
 
     // properties required to describe configured operations
     private List<ConfiguredOperation>  configuredOperations = new ArrayList<ConfiguredOperation>();
@@ -145,6 +149,7 @@ public class JMSBinding implements BindingRRB, PolicySubject, OperationsConfigur
     private WireFormat requestWireFormat;
     private WireFormat responseWireFormat;
     private OperationSelector operationSelector;
+    private ExtensionType extensionType;
     
     public JMSBinding() {
         super();
@@ -764,14 +769,10 @@ public class JMSBinding implements BindingRRB, PolicySubject, OperationsConfigur
         return requiredIntents;
     } 
 
-    public IntentAttachPointType getType() {
-        return intentAttachPointType;
+    public QName getType() {
+        return TYPE;
     }
     
-    public void setType(IntentAttachPointType intentAttachPointType) {
-        this.intentAttachPointType = intentAttachPointType;
-    }
-     
     public Map<String, BindingProperty> getDestinationProperties() {
         return destinationProperties;
     }
@@ -963,4 +964,11 @@ public class JMSBinding implements BindingRRB, PolicySubject, OperationsConfigur
         return true;
     }
 
+    public ExtensionType getExtensionType() {
+        return extensionType;
+    }
+
+    public void setExtensionType(ExtensionType intentAttachPointType) {
+        this.extensionType = intentAttachPointType;
+    }
 }

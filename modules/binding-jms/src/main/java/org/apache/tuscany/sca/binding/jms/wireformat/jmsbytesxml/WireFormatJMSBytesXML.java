@@ -20,8 +20,8 @@ package org.apache.tuscany.sca.binding.jms.wireformat.jmsbytesxml;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.assembly.WireFormat;
+import org.apache.tuscany.sca.assembly.xml.Constants;
 
 
 public class WireFormatJMSBytesXML implements WireFormat {

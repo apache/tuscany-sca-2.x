@@ -30,6 +30,7 @@ import javax.xml.stream.XMLStreamReader;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.assembly.OperationsConfigurator;
 import org.apache.tuscany.sca.assembly.WireFormat;
 import org.apache.tuscany.sca.binding.jms.wireformat.jmsbytes.WireFormatJMSBytes;
 import org.apache.tuscany.sca.binding.jms.wireformat.jmsobject.WireFormatJMSObject;
@@ -402,7 +403,7 @@ public class JMSBindingProcessorTestCase extends TestCase {
         inputFactory = XMLInputFactory.newInstance();
         // Create a monitor
         UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
-        MonitorFactory monitorFactory = new DefaultMonitorFactoryImpl();  
+        MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
         if (monitorFactory != null) {
         	monitor = monitorFactory.createMonitor();
         	utilities.addUtility(monitorFactory);

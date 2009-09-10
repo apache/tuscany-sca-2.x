@@ -77,7 +77,7 @@ public class JMSBindingProcessorWriteTestCase extends TestCase {
         outputFactory = XMLOutputFactory.newInstance();
         // Create a monitor
         UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
-        MonitorFactory monitorFactory = new DefaultMonitorFactoryImpl();  
+        MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
         if (monitorFactory != null) {
         	monitor = monitorFactory.createMonitor();
         	utilities.addUtility(monitorFactory);
@@ -92,6 +92,7 @@ public class JMSBindingProcessorWriteTestCase extends TestCase {
      */
     public void testLoadValidComposite() throws Exception {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(JMSBindingProcessorTestCase.COMPOSITE));       
+        Object o = staxProcessor.read(reader);
         Composite composite = (Composite)staxProcessor.read(reader);
         JMSBinding binding = (JMSBinding)composite.getComponents().get(0).getServices().get(0).getBindings().get(0);       
         assertNotNull(binding);
