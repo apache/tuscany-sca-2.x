@@ -32,6 +32,7 @@ import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeReference;
 import org.apache.tuscany.sca.assembly.CompositeService;
+import org.apache.tuscany.sca.assembly.ConfiguredOperation;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
@@ -134,5 +135,9 @@ public abstract class AssemblyFactoryImpl implements AssemblyFactory {
 
     public EndpointReference createEndpointReference() {
         return new EndpointReferenceImpl(registry);
+    }
+
+    public ConfiguredOperation createConfiguredOperation() {
+        return new ConfiguredOperationImpl();
     }
 }

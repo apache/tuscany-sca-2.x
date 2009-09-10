@@ -163,4 +163,11 @@ public interface AssemblyFactory {
      * @return a new endpoint reference
      */
     EndpointReference createEndpointReference();
+
+    /** 
+     * Create a new configured operation.
+     * 
+     * @return a new ConfiguredOperation 
+     */
+    ConfiguredOperation createConfiguredOperation();
 }
