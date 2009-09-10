@@ -51,7 +51,7 @@ public class JMSBindingProcessorTestCase extends TestCase {
     // consider adding a similar test case to JMSBindingProcessorWriteTestCase.
     public static final String COMPOSITE =
         "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 
-        + "<composite xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" targetNamespace=\"http://binding-jms\" name=\"binding-jms\">"
+        + "<composite xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\" targetNamespace=\"http://binding-jms\" name=\"binding-jms\">"
             + " <component name=\"HelloWorldComponent\">"
             + "   <implementation.java class=\"services.HelloWorld\"/>"
             + "      <service name=\"HelloWorldService\">"
@@ -62,7 +62,7 @@ public class JMSBindingProcessorTestCase extends TestCase {
 
     public static final String HEADERS1 =
         "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 
-        + "<composite xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" targetNamespace=\"http://binding-jms\" name=\"binding-jms\">"
+        + "<composite xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\" targetNamespace=\"http://binding-jms\" name=\"binding-jms\">"
             + " <component name=\"HelloWorldComponent\">"
             + "   <implementation.java class=\"services.HelloWorld\"/>"
             + "      <service name=\"HelloWorldService\">"
@@ -76,7 +76,7 @@ public class JMSBindingProcessorTestCase extends TestCase {
     
     public static final String HEADERS_INVALID_PRIORITY =
         "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 
-        + "<composite xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" targetNamespace=\"http://binding-jms\" name=\"binding-jms\">"
+        + "<composite xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\" targetNamespace=\"http://binding-jms\" name=\"binding-jms\">"
             + " <component name=\"HelloWorldComponent\">"
             + "   <implementation.java class=\"services.HelloWorld\"/>"
             + "      <service name=\"HelloWorldService\">"
@@ -90,7 +90,7 @@ public class JMSBindingProcessorTestCase extends TestCase {
 
     public static final String PROPERTIES1 =
         "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 
-        + "<composite xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" targetNamespace=\"http://binding-jms\" name=\"binding-jms\">"
+        + "<composite xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\" targetNamespace=\"http://binding-jms\" name=\"binding-jms\">"
             + " <component name=\"HelloWorldComponent\">"
             + "   <implementation.java class=\"services.HelloWorld\"/>"
             + "      <service name=\"HelloWorldService\">"
@@ -106,7 +106,7 @@ public class JMSBindingProcessorTestCase extends TestCase {
     
     public static final String OP_PROPERTIES1 =
         "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 
-        + "<composite xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" targetNamespace=\"http://binding-jms\" name=\"binding-jms\">"
+        + "<composite xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\" targetNamespace=\"http://binding-jms\" name=\"binding-jms\">"
             + " <component name=\"HelloWorldComponent\">"
             + "   <implementation.java class=\"services.HelloWorld\"/>"
             + "      <service name=\"HelloWorldService\">"
@@ -130,7 +130,7 @@ public class JMSBindingProcessorTestCase extends TestCase {
 
     public static final String OP_NAMES_NO_PROPERTIES1 =
         "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 
-        + "<composite xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" targetNamespace=\"http://binding-jms\" name=\"binding-jms\">"
+        + "<composite xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\" targetNamespace=\"http://binding-jms\" name=\"binding-jms\">"
             + " <component name=\"HelloWorldComponent\">"
             + "   <implementation.java class=\"services.HelloWorld\"/>"
             + "      <service name=\"HelloWorldService\">"
@@ -146,7 +146,7 @@ public class JMSBindingProcessorTestCase extends TestCase {
 
     public static final String SELECTOR =
         "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 
-        + "<composite xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" targetNamespace=\"http://binding-jms\" name=\"binding-jms\">"
+        + "<composite xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\" targetNamespace=\"http://binding-jms\" name=\"binding-jms\">"
             + " <component name=\"HelloWorldComponent\">"
             + "   <implementation.java class=\"services.HelloWorld\"/>"
             + "      <service name=\"HelloWorldService\">"
@@ -159,7 +159,7 @@ public class JMSBindingProcessorTestCase extends TestCase {
 
     public static final String COMPOSITE_INVALID_URI =
         "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 
-        + "<composite xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" targetNamespace=\"http://binding-jms\" name=\"binding-jms\">"
+        + "<composite xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\" targetNamespace=\"http://binding-jms\" name=\"binding-jms\">"
             + " <component name=\"HelloWorldComponent\">"
             + "   <implementation.java class=\"services.HelloWorld\"/>"
             + "      <service name=\"HelloWorldService\">"
@@ -171,7 +171,7 @@ public class JMSBindingProcessorTestCase extends TestCase {
     // Invalid: contains both a response attribute and a response element.
     public static final String COMPOSITE_INVALID_RESPONSE_ATTR_ELEMENT =
         "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 
-        + "<composite xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" targetNamespace=\"http://binding-jms\" name=\"binding-jms\">"
+        + "<composite xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\" targetNamespace=\"http://binding-jms\" name=\"binding-jms\">"
             + " <component name=\"HelloWorldComponent\">"
             + "   <implementation.java class=\"services.HelloWorld\"/>"
             + "      <service name=\"HelloWorldService\">"
@@ -186,7 +186,7 @@ public class JMSBindingProcessorTestCase extends TestCase {
 
     public static final String DEST_PROPS =
         "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 
-        + "<composite xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" targetNamespace=\"http://binding-jms\" name=\"binding-jms\">"
+        + "<composite xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\" targetNamespace=\"http://binding-jms\" name=\"binding-jms\">"
             + " <component name=\"HelloWorldComponent\">"
             + "   <implementation.java class=\"services.HelloWorld\"/>"
             + "      <service name=\"HelloWorldService\">"
@@ -206,7 +206,7 @@ public class JMSBindingProcessorTestCase extends TestCase {
 
     public static final String CF_PROPS =
         "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 
-        + "<composite xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" targetNamespace=\"http://binding-jms\" name=\"binding-jms\">"
+        + "<composite xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\" targetNamespace=\"http://binding-jms\" name=\"binding-jms\">"
             + " <component name=\"HelloWorldComponent\">"
             + "   <implementation.java class=\"services.HelloWorld\"/>"
             + "      <service name=\"HelloWorldService\">"
@@ -226,7 +226,7 @@ public class JMSBindingProcessorTestCase extends TestCase {
 
     public static final String AS_PROPS =
         "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 
-        + "<composite xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" targetNamespace=\"http://binding-jms\" name=\"binding-jms\">"
+        + "<composite xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\" targetNamespace=\"http://binding-jms\" name=\"binding-jms\">"
             + " <component name=\"HelloWorldComponent\">"
             + "   <implementation.java class=\"services.HelloWorld\"/>"
             + "      <service name=\"HelloWorldService\">"
@@ -246,7 +246,7 @@ public class JMSBindingProcessorTestCase extends TestCase {
 
     public static final String RESP_DEST_PROPS =
         "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 
-        + "<composite xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" targetNamespace=\"http://binding-jms\" name=\"binding-jms\">"
+        + "<composite xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\" targetNamespace=\"http://binding-jms\" name=\"binding-jms\">"
             + " <component name=\"HelloWorldComponent\">"
             + "   <implementation.java class=\"services.HelloWorld\"/>"
             + "      <service name=\"HelloWorldService\">"
@@ -268,7 +268,7 @@ public class JMSBindingProcessorTestCase extends TestCase {
 
     public static final String RESP_CF_PROPS =
         "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 
-        + "<composite xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" targetNamespace=\"http://binding-jms\" name=\"binding-jms\">"
+        + "<composite xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\" targetNamespace=\"http://binding-jms\" name=\"binding-jms\">"
             + " <component name=\"HelloWorldComponent\">"
             + "   <implementation.java class=\"services.HelloWorld\"/>"
             + "      <service name=\"HelloWorldService\">"
@@ -290,7 +290,7 @@ public class JMSBindingProcessorTestCase extends TestCase {
 
     public static final String RESP_AS_PROPS =
         "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 
-        + "<composite xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" targetNamespace=\"http://binding-jms\" name=\"binding-jms\">"
+        + "<composite xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\" targetNamespace=\"http://binding-jms\" name=\"binding-jms\">"
             + " <component name=\"HelloWorldComponent\">"
             + "   <implementation.java class=\"services.HelloWorld\"/>"
             + "      <service name=\"HelloWorldService\">"
@@ -312,7 +312,7 @@ public class JMSBindingProcessorTestCase extends TestCase {
 
     public static final String OP_PROPS_PROPS =
         "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 
-        + "<composite xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" targetNamespace=\"http://binding-jms\" name=\"binding-jms\">"
+        + "<composite xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\" targetNamespace=\"http://binding-jms\" name=\"binding-jms\">"
             + " <component name=\"HelloWorldComponent\">"
             + "   <implementation.java class=\"services.HelloWorld\"/>"
             + "      <service name=\"HelloWorldService\">"
@@ -332,7 +332,7 @@ public class JMSBindingProcessorTestCase extends TestCase {
 
     public static final String RES_ADPT_PROPS =
         "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 
-        + "<composite xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" targetNamespace=\"http://binding-jms\" name=\"binding-jms\">"
+        + "<composite xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\" targetNamespace=\"http://binding-jms\" name=\"binding-jms\">"
             + " <component name=\"HelloWorldComponent\">"
             + "   <implementation.java class=\"services.HelloWorld\"/>"
             + "      <service name=\"HelloWorldService\">"
@@ -352,7 +352,7 @@ public class JMSBindingProcessorTestCase extends TestCase {
 
     public static final String CONFIGURED_OPERATIONS =
         "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 
-        + "<composite xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" targetNamespace=\"http://binding-jms\" name=\"binding-jms\">"
+        + "<composite xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\" targetNamespace=\"http://binding-jms\" name=\"binding-jms\">"
             + " <component name=\"HelloWorldComponent\">"
             + "   <implementation.java class=\"services.HelloWorld\"/>"
             + "      <service name=\"HelloWorldService\">"
@@ -367,7 +367,7 @@ public class JMSBindingProcessorTestCase extends TestCase {
     
     public static final String WIRE_FORMAT =
         "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 
-        + "<composite xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" targetNamespace=\"http://binding-jms\" xmlns:tuscany=\"http://tuscany.apache.org/xmlns/sca/1.0\" name=\"binding-jms\">"
+        + "<composite xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\" targetNamespace=\"http://binding-jms\" xmlns:tuscany=\"http://tuscany.apache.org/xmlns/sca/1.0\" name=\"binding-jms\">"
             + " <component name=\"HelloWorldComponent\">"
             + "   <implementation.java class=\"services.HelloWorld\"/>"
             + "      <service name=\"HelloWorldService\">"
@@ -384,7 +384,7 @@ public class JMSBindingProcessorTestCase extends TestCase {
 
     public static final String OP_PROP_NAME =
         "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 
-        + "<composite xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" targetNamespace=\"http://binding-jms\" name=\"binding-jms\">"
+        + "<composite xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\" targetNamespace=\"http://binding-jms\" name=\"binding-jms\">"
             + " <component name=\"HelloWorldComponent\">"
             + "   <implementation.java class=\"services.HelloWorld\"/>"
             + "      <service name=\"HelloWorldService\">"
