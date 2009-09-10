@@ -367,7 +367,7 @@ public class JMSBindingProcessorTestCase extends TestCase {
     
     public static final String WIRE_FORMAT =
         "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 
-        + "<composite xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\" targetNamespace=\"http://binding-jms\" xmlns:tuscany=\"http://tuscany.apache.org/xmlns/sca/1.0\" name=\"binding-jms\">"
+        + "<composite xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\" targetNamespace=\"http://binding-jms\" xmlns:tuscany=\"http://tuscany.apache.org/xmlns/sca/1.1\" name=\"binding-jms\">"
             + " <component name=\"HelloWorldComponent\">"
             + "   <implementation.java class=\"services.HelloWorld\"/>"
             + "      <service name=\"HelloWorldService\">"

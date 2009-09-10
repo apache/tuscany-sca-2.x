@@ -52,7 +52,7 @@ public class JMSBindingProcessorWriteTestCase extends TestCase {
     
     public static final String DEFAULT =
         "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 
-        + "<composite xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" targetNamespace=\"http://binding-jms\" name=\"binding-jms\">"
+        + "<composite xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\" targetNamespace=\"http://binding-jms\" name=\"binding-jms\">"
             + " <component name=\"HelloWorldComponent\">"
             + "      <service name=\"HelloWorldService\">"
             + "          <binding.jms>"
@@ -75,15 +75,8 @@ public class JMSBindingProcessorWriteTestCase extends TestCase {
         DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
         inputFactory = XMLInputFactory.newInstance();
         outputFactory = XMLOutputFactory.newInstance();
-        // Create a monitor
-        UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
-        MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
-        if (monitorFactory != null) {
-        	monitor = monitorFactory.createMonitor();
-        	utilities.addUtility(monitorFactory);
-        }
         StAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(extensionPoints);
-        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null, monitor);
+        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, outputFactory, null);
     }
 
     /**
@@ -92,7 +85,6 @@ public class JMSBindingProcessorWriteTestCase extends TestCase {
      */
     public void testLoadValidComposite() throws Exception {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(JMSBindingProcessorTestCase.COMPOSITE));       
-        Object o = staxProcessor.read(reader);
         Composite composite = (Composite)staxProcessor.read(reader);
         JMSBinding binding = (JMSBinding)composite.getComponents().get(0).getServices().get(0).getBindings().get(0);       
         assertNotNull(binding);
@@ -112,9 +104,7 @@ public class JMSBindingProcessorWriteTestCase extends TestCase {
     }
 
     public void testHeaders1() throws Exception {
-        XMLStreamReader reader =
-            inputFactory.createXMLStreamReader(new StringReader(JMSBindingProcessorTestCase.HEADERS1));
-        Composite composite = (Composite)staxProcessor.read(reader);
+        Composite composite = (Composite)staxProcessor.read(inputFactory.createXMLStreamReader(new StringReader(JMSBindingProcessorTestCase.HEADERS1)));
         JMSBinding binding = (JMSBinding)composite.getComponents().get(0).getServices().get(0).getBindings().get(0);
         assertNotNull(binding);
         
@@ -410,7 +400,7 @@ public class JMSBindingProcessorWriteTestCase extends TestCase {
         System.out.println(bos.toString());
         assertEquals(bos.toString(),
                      "<?xml version=\'1.0\' encoding=\'UTF-8\'?>" +
-                     "<composite targetNamespace=\"http://binding-jms\" name=\"binding-jms\" xmlns=\"http://www.osoa.org/xmlns/sca/1.0\">" +
+                     "<composite xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\" targetNamespace=\"http://binding-jms\" name=\"binding-jms\">" +
                        "<component name=\"HelloWorldComponent\">" + 
                            "<service name=\"HelloWorldService\">" +
                              "<binding.jms><operationProperties name=\"JKL\" /> " +
