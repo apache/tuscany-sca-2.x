@@ -41,6 +41,8 @@ public class MessageImpl implements Message {
     private EndpointReference from;
     private Endpoint to;
 
+    private Object bindingContext;
+
     public MessageImpl() {
         // TODO - EPR - What to do by default?
         //this.from = new EndpointReferenceImpl("/");
@@ -104,4 +106,12 @@ public class MessageImpl implements Message {
         return headers;
     }    
 
+    @SuppressWarnings("unchecked")
+    public <T> T getBindingContext() {
+        return (T)bindingContext;
+    }
+
+    public <T> void setBindingContext(T bindingContext) {
+        this.bindingContext = bindingContext;
+    }
 }

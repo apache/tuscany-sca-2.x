@@ -104,6 +104,11 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
     }
     */
 
+    public Class<?> getBusinessInterface() {
+        return businessInterface;
+    }
+    
+    
     protected Object getCallbackID() {
 //        if (callableReference != null) {
 //            return callableReference.getCallbackID();

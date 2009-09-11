@@ -34,6 +34,7 @@ import org.apache.tuscany.sca.core.assembly.EndpointSerializer;
  */
 public class RuntimeEndpointImpl extends EndpointImpl implements Externalizable {
     private EndpointSerializer serializer;
+    private String bindingURI;
     private String xml;
 
     /**
@@ -77,7 +78,7 @@ public class RuntimeEndpointImpl extends EndpointImpl implements Externalizable 
     }
 
     @Override
-    protected void resolve() {
+    public void resolve() {
         if (component == null && xml != null) {
             try {
                 getSerializer().read(this, xml);

@@ -289,8 +289,8 @@ public class RuntimeWireImpl implements RuntimeWire {
                 if (operation.isNonBlocking()) {
                     addNonBlockingInterceptor(reference, refBinding, chain);
                 }
-                addReferenceBindingInterceptor(reference, refBinding, chain, operation);
                 chains.add(chain);
+                addReferenceBindingInterceptor(reference, refBinding, chain, operation);
             }
 
         } else {
