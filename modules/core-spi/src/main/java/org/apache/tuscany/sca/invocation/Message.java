@@ -113,4 +113,15 @@ public interface Message {
      * @return
      */
     List<Object> getHeaders();
+
+    /**
+     * Returns the binding context in force for this message
+     */
+    <T> T getBindingContext();
+
+    /**
+     * Set the binding context that is in force for this message
+     * @param bindingContext
+     */
+    <T> void setBindingContext(T bindingContext);
 }

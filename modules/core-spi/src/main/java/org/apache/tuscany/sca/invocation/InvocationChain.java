@@ -52,6 +52,13 @@ public interface InvocationChain {
     Operation getSourceOperation();
 
     /**
+     * Updates the source operation for this invocation chain.
+     *
+     * @param operation The new source operation for this invocation chain
+     */
+    void setSourceOperation(Operation operation);
+
+    /**
      * Adds an interceptor to the chain. For reference side, it will be added to
      * Phase.REFERENCE. For service side, it will be added to Phase.SERVICE 
      *
