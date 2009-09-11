@@ -99,9 +99,9 @@ public class JMSBindingReferenceBindingProvider implements ReferenceBindingProvi
     public Invoker createInvoker(Operation operation) {
 
         if (jmsBinding.getDestinationName() == null) {
-            if (!reference.isCallback()) {
+//            if (!reference.isCallback()) { // TODO: 2.x migration, is this check needed?
                 throw new JMSBindingException("No destination specified for reference " + reference.getName());
-            }
+//            }
         }
 
         Invoker invoker = null;

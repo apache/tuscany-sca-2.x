@@ -91,10 +91,10 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProviderR
         // because the activation spec provides the destination.
         if (jmsBinding.getDestinationName() == null &&
             (jmsBinding.getActivationSpecName() == null || jmsBinding.getActivationSpecName().equals(""))) {
-            if (!service.isCallback()) {
+//          if (!service.isCallback()) { // TODO: 2.x migration, is this check needed?
                 // use the SCA service name as the default destination name
                 jmsBinding.setDestinationName(service.getName());
-            }
+//            }
         }
         
         // Get Message factory

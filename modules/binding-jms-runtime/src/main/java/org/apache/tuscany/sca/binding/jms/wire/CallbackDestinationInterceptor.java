@@ -23,14 +23,12 @@ import javax.jms.JMSException;
 import javax.jms.Queue;
 import javax.jms.Topic;
 
-import org.apache.tuscany.sca.assembly.impl.EndpointReferenceImpl;
 import org.apache.tuscany.sca.binding.jms.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.JMSBindingException;
 import org.apache.tuscany.sca.binding.jms.context.JMSBindingContext;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
-import org.apache.tuscany.sca.runtime.ReferenceParameters;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 
@@ -61,7 +59,7 @@ public class CallbackDestinationInterceptor implements Interceptor {
             JMSBindingContext context = msg.getBindingContext();
             javax.jms.Message jmsMsg = context.getJmsMsg();
         
-            ReferenceParameters parameters = msg.getFrom().getReferenceParameters();
+            //ReferenceParameters parameters = msg.getFrom().getReferenceParameters(); TODO: 2.x migration, are these needed?
 
             if (service.getInterfaceContract().getCallbackInterface() != null) {
 
@@ -78,12 +76,12 @@ public class CallbackDestinationInterceptor implements Interceptor {
                 if (callbackdestName != null) {
                     // append "jms:" to make it an absolute uri so the invoker can determine it came in on the request
                     // as otherwise the invoker should use the uri from the service callback binding
-                    parameters.setCallbackReference(new EndpointReferenceImpl("jms:" + callbackdestName));
+//                    parameters.setCallbackReference(new EndpointReferenceImpl("jms:" + callbackdestName));
                 }
 
                 String callbackID = jmsMsg.getStringProperty(JMSBindingConstants.CALLBACK_ID_PROPERTY);
                 if (callbackID != null) {
-                    parameters.setCallbackID(callbackID);
+//                    parameters.setCallbackID(callbackID);
                 }
             }
 

@@ -69,9 +69,9 @@ public class RRBJMSBindingInvoker implements Invoker, DataExchangeSemantics {
             // properties of the inbound service request.  We should not look for or require a
             // statically-configured destination unless a message is received that does not have
             // the necessary properties.  
-            if (!reference.isCallback()) {
+//          if (!reference.isCallback()) { // TODO: 2.x migration, is this check needed?
                 bindingRequestDest = lookupDestination();
-            }
+//            }
             bindingReplyDest = lookupResponseDestination();
         } catch (NamingException e) {
             throw new JMSBindingException(e);
@@ -232,18 +232,18 @@ public class RRBJMSBindingInvoker implements Invoker, DataExchangeSemantics {
     
     protected Destination getRequestDestination(org.apache.tuscany.sca.invocation.Message tuscanyMsg, Session session) throws JMSBindingException, NamingException, JMSException {
         Destination requestDestination;
-        if (reference.isCallback()) {
-            String toURI = tuscanyMsg.getTo().getURI();
-            if (toURI != null && toURI.startsWith("jms:")) {
-                // the msg to uri contains the callback destination name 
-                // this is an jms physical name not a jndi name so need to use session.createQueue
-                requestDestination = session.createQueue(toURI.substring(4));
-            } else {
-                requestDestination = lookupDestination();
-            }
-        } else {
+//      if (!reference.isCallback()) { // TODO: 2.x migration, is this check needed?
+//            String toURI = tuscanyMsg.getTo().getURI();
+//            if (toURI != null && toURI.startsWith("jms:")) {
+//                // the msg to uri contains the callback destination name 
+//                // this is an jms physical name not a jndi name so need to use session.createQueue
+//                requestDestination = session.createQueue(toURI.substring(4));
+//            } else {
+//                requestDestination = lookupDestination();
+//            }
+//        } else {
             requestDestination = bindingRequestDest;
-        }
+//        }
 
         return requestDestination;
     }    
