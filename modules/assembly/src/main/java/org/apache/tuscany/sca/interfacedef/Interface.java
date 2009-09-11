@@ -82,6 +82,22 @@ public interface Interface extends Cloneable, PolicySubject {
     void resetDataBinding(String dataBinding);
 
     /**
+     * Set the interface input types by copying those from the
+     * interface provided
+     * 
+     * @param newInterface
+     */
+    public void resetInterfaceInputTypes(Interface newInterface);
+    
+    /**
+     * Set the interface output types by copying those from the
+     * interface provided
+     * 
+     * @param newInterface
+     */
+    public void resetInterfaceOutputTypes(Interface newInterface);
+
+    /**
      * Returns true if the Interface is dynamic.
      *
      * @return true if the Interface is dynamic.

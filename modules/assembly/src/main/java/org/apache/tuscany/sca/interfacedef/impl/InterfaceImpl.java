@@ -219,6 +219,67 @@ public class InterfaceImpl implements Interface {
         }
     }
 
+    public void resetInterfaceInputTypes(Interface newInterface){
+        for (int i = 0; i < getOperations().size(); i++) {
+            // only remote interfaces only have a data type model defined
+            // and in this case operations cannot be overloaded so match
+            // operations by name
+            Operation oldOperation = getOperations().get(i);
+            Operation newOperation = null;
+
+            for (Operation tmpOperation : newInterface.getOperations()){
+                if (tmpOperation.getName().equals(oldOperation.getName())){
+                    newOperation = tmpOperation;
+                }
+            }
+
+            if (newOperation == null){
+                break;
+            }
+
+            // set input types
+            oldOperation.setInputType(newOperation.getInputType());
+
+            // set wrapper
+            if (newOperation.isWrapperStyle()) {
+                oldOperation.setWrapperStyle(true);
+                oldOperation.setWrapper(newOperation.getWrapper());
+            }
+        }
+    }
+
+    public void resetInterfaceOutputTypes(Interface newInterface){
+        for (int i = 0; i < getOperations().size(); i++) {
+            // only remote interfaces only have a data type model defined
+            // and in this case operations cannot be overloaded so match
+            // operations by name
+            Operation oldOperation = getOperations().get(i);
+            Operation newOperation = null;
+
+            for (Operation tmpOperation : newInterface.getOperations()){
+                if (tmpOperation.getName().equals(oldOperation.getName())){
+                    newOperation = tmpOperation;
+                }
+            }
+
+            if (newOperation == null){
+                break;
+            }
+
+            // set output types
+            oldOperation.setOutputType(newOperation.getOutputType());
+
+            // set fault types
+            oldOperation.setFaultTypes(newOperation.getFaultTypes());
+
+            // set wrapper
+            if (newOperation.isWrapperStyle()) {
+                oldOperation.setWrapperStyle(true);
+                oldOperation.setWrapper(newOperation.getWrapper());
+            }
+        }
+    }
+
     public boolean isDynamic() {
         return false;
     }
