@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,24 +15,34 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.    
--->
-<project>
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.apache.tuscany.sca</groupId>
-        <artifactId>tuscany-modules</artifactId>
-        <version>2.0-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
-    </parent>
-    <artifactId>tuscany-interface</artifactId>
-    <name>Apache Tuscany SCA Interface Model</name>
-    
-    <dependencies>
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-policy</artifactId>
-            <version>2.0-SNAPSHOT</version>
-        </dependency>
-    </dependencies>
+ */
 
-</project>
+package org.apache.tuscany.sca.policy.impl;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.PolicyExpression;
+import org.apache.tuscany.sca.policy.Qualifier;
+
+public class QualifierImpl implements Qualifier {
+    private Intent intent;
+    private List<PolicyExpression> policies = new ArrayList<PolicyExpression>();
+
+    protected QualifierImpl() {
+    }
+
+    public Intent getIntent() {
+        return intent;
+    }
+
+    public List<PolicyExpression> getPolicies() {
+        return policies;
+    }
+
+    public void setIntent(Intent intent) {
+        this.intent = intent;
+    }
+
+}

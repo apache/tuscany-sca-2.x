@@ -54,7 +54,6 @@
         <module>databinding-axiom</module>
         <module>databinding-jaxb</module>
         <module>databinding-jaxb-axiom</module>
-        <module>definitions</module>
         <module>definitions-xml</module>
         <module>domain-node</module>
         <module>endpoint</module>
@@ -74,7 +73,6 @@
         <module>implementation-spring-sca</module>
         <module>implementation-web</module>
         <module>implementation-web-runtime</module>
-        <module>interface</module>
         <module>interface-java</module>
         <module>interface-java-jaxws</module>
         <module>interface-wsdl</module>
@@ -85,7 +83,6 @@
         <module>node-impl</module>
         <module>node-launcher</module>
         <module>node-launcher-equinox</module>
-        <module>policy</module>
         <module>policy-security</module>
         <module>policy-xml</module>
         <module>policy-xml-ws</module>
