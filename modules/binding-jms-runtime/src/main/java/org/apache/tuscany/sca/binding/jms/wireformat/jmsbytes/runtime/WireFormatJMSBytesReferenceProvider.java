@@ -94,4 +94,7 @@ public class WireFormatJMSBytesReferenceProvider implements WireFormatProvider {
         return Phase.REFERENCE_BINDING_WIREFORMAT;
     }
 
+    public InterfaceContract getWireFormatInterfaceContract() {
+        return interfaceContract;
+    }
 }
