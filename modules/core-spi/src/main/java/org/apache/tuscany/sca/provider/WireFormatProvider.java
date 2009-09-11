@@ -27,15 +27,18 @@ import org.apache.tuscany.sca.invocation.Interceptor;
  */
 public interface WireFormatProvider {
     
-    /*
-     * Return the contract that describes the interface that
+    /**
+     * Set up the contract that describes the interface that
      * is providing data to or accepting data from the 
-     * wire format interceptor. The wire formats job
+     * wire format interceptor. The wire format's job
      * is to translate between this interface contract and the
-     * format on the wire
+     * format on the wire. The interface contract may be
+     * configured separately for request and response
+     * wire formats
+     * 
      * @return the wire format interface contract
      */
-    InterfaceContract getWireFormatInterfaceContract();
+    public InterfaceContract configureWireFormatInterfaceContract(InterfaceContract interfaceContract);    
     
     /**
      * Create an interceptor for the wire format
