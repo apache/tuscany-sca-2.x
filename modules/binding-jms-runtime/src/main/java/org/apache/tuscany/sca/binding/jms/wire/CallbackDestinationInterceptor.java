@@ -40,7 +40,7 @@ public class CallbackDestinationInterceptor implements Interceptor {
           
     public CallbackDestinationInterceptor(RuntimeWire runtimeWire) {
         super();
-        this.service = (RuntimeComponentService) runtimeWire.getTarget().getContract();
+        this.service = (RuntimeComponentService) runtimeWire.getEndpoint().getInterfaceContract();
     }
 
     public Invoker getNext() {

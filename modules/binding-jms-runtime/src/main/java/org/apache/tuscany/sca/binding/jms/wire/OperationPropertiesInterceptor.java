@@ -37,7 +37,7 @@ public class OperationPropertiesInterceptor implements Interceptor {
     public OperationPropertiesInterceptor(JMSBinding jmsBinding, RuntimeWire runtimeWire) {
         super();
         this.jmsBinding = jmsBinding;
-        this.service = (RuntimeComponentService) runtimeWire.getTarget().getContract();
+        this.service = (RuntimeComponentService) runtimeWire.getEndpoint().getInterfaceContract();
         this.serviceOperations = service.getInterfaceContract().getInterface().getOperations();
     }
 

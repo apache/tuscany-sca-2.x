@@ -116,11 +116,11 @@ public class WireFormatJMSDefaultServiceProvider implements WireFormatProvider {
                 // TODO - not sure we really support viewing the input/output as separately wrapped 
                 // like the separate code paths imply.  Not sure how many @OneWay tests we have, this might 
                 // not be an issue.  
-                if (matchingWsdlOp.isInputWrapperStyle()) {
+                if (matchingWsdlOp.isWrapperStyle()) {
                     if (op.getInputType().getLogical().size() == 1) {
                         // we only need to know what the wrapper is on the deserialization
                         // might need to change this when the input/output wrapper style is different
-                        ElementInfo ei = op.getInputWrapper().getWrapperElement();
+                        ElementInfo ei = op.getWrapper().getInputWrapperElement();
                         String namespace = ei.getQName().getNamespaceURI();
                         String opName = ei.getQName().getLocalPart();
                         OMNamespace ns = factory.createOMNamespace(namespace, "ns1");
@@ -129,7 +129,7 @@ public class WireFormatJMSDefaultServiceProvider implements WireFormatProvider {
                     }
                 }
 
-                if (matchingWsdlOp.isOutputWrapperStyle()) {
+                if (matchingWsdlOp.isWrapperStyle()) {
                     this.outputWrapperMap.put(name, true);
                 } else {
                     this.outputWrapperMap.put(name, false);
