@@ -22,7 +22,7 @@ package org.apache.tuscany.sca.host.jms.asf;
 import javax.jms.MessageListener;
 import javax.naming.NamingException;
 
-import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
+import org.apache.tuscany.sca.binding.jms.JMSBindingException;
 import org.apache.tuscany.sca.binding.jms.provider.JMSBindingServiceBindingProvider;
 import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory;
 import org.apache.tuscany.sca.host.jms.JMSServiceListener;
@@ -47,7 +47,9 @@ public class JMSServiceListenerFactoryImpl implements JMSServiceListenerFactory 
             MessageListener listener = new ServiceInvoker(jmsSLD.getJmsBinding(), jmsSLD.getService(), jmsSLD.getTargetBinding(), jmsSLD.getMessageFactory(), rf);
             RuntimeComponentService service = jmsSLD.getService();
 
-            return new ASFListener(listener, service.getName(), service.isCallback(), jmsSLD.getJmsBinding(), workScheduler, rf);
+//            return new ASFListener(listener, service.getName(), service.isCallback(), jmsSLD.getJmsBinding(), workScheduler, rf);
+// TODO: 2.x migration, service.isCallback()             
+            return new ASFListener(listener, service.getName(), false, jmsSLD.getJmsBinding(), workScheduler, rf);
 
         } catch (NamingException e) {
             throw new JMSBindingException(e);
