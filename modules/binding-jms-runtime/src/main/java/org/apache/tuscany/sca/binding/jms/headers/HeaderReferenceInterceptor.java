@@ -84,7 +84,7 @@ public class HeaderReferenceInterceptor implements Interceptor {
             
             Operation operation = tuscanyMsg.getOperation();
             String operationName = operation.getName();
-            RuntimeComponentReference reference = (RuntimeComponentReference)runtimeWire.getEndpointReference().getInterfaceContract();
+            RuntimeComponentReference reference = (RuntimeComponentReference)runtimeWire.getEndpointReference().getReference();
             
             // I think the OASIS spec suggests we do not need to do anything with
             // @nativeOperation here on the reference side.

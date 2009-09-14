@@ -46,14 +46,12 @@ public class TransportReferenceInterceptor implements Interceptor {
     private RuntimeWire runtimeWire;
     private JMSResourceFactory jmsResourceFactory;
     private JMSBinding jmsBinding;
-    private RuntimeComponentReference reference;    
 
     public TransportReferenceInterceptor(JMSBinding jmsBinding, JMSResourceFactory jmsResourceFactory, RuntimeWire runtimeWire) {
         super();
         this.jmsBinding = jmsBinding;
         this.runtimeWire = runtimeWire;
         this.jmsResourceFactory = jmsResourceFactory;
-        this.reference = (RuntimeComponentReference)runtimeWire.getEndpointReference().getInterfaceContract();        
     }
     
     public Message invoke(Message msg) {
