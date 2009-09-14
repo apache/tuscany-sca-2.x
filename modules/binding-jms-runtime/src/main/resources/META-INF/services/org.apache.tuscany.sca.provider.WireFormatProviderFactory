@@ -16,9 +16,9 @@
 # under the License. 
 
 # Implementation class for the binding extension
-org.apache.tuscany.sca.binding.jms.wireformat.jmsdefault.runtime.WireFormatJMSDefaultProviderFactory;model=org.apache.tuscany.sca.binding.jms.wireformat.jmsdefault.WireFormatJMSDefault
-org.apache.tuscany.sca.binding.jms.wireformat.jmstextxml.runtime.WireFormatJMSTextXMLProviderFactory;model=org.apache.tuscany.sca.binding.jms.wireformat.jmstextxml.WireFormatJMSTextXML
-org.apache.tuscany.sca.binding.jms.wireformat.jmsbytes.runtime.WireFormatJMSBytesProviderFactory;model=org.apache.tuscany.sca.binding.jms.wireformat.jmsbytes.WireFormatJMSBytes
-org.apache.tuscany.sca.binding.jms.wireformat.jmsbytesxml.runtime.WireFormatJMSBytesXMLProviderFactory;model=org.apache.tuscany.sca.binding.jms.wireformat.jmsbytesxml.WireFormatJMSBytesXML
-org.apache.tuscany.sca.binding.jms.wireformat.jmstext.runtime.WireFormatJMSTextProviderFactory;model=org.apache.tuscany.sca.binding.jms.wireformat.jmstext.WireFormatJMSText
-org.apache.tuscany.sca.binding.jms.wireformat.jmsobject.runtime.WireFormatJMSObjectProviderFactory;model=org.apache.tuscany.sca.binding.jms.wireformat.jmsobject.WireFormatJMSObject
+org.apache.tuscany.sca.binding.jms.wireformat.jmsdefault.runtime.WireFormatJMSDefaultProviderFactory;model=org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSDefault
+org.apache.tuscany.sca.binding.jms.wireformat.jmstextxml.runtime.WireFormatJMSTextXMLProviderFactory;model=org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSTextXML
+org.apache.tuscany.sca.binding.jms.wireformat.jmsbytes.runtime.WireFormatJMSBytesProviderFactory;model=org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSBytes
+org.apache.tuscany.sca.binding.jms.wireformat.jmsbytesxml.runtime.WireFormatJMSBytesXMLProviderFactory;model=org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSBytesXML
+org.apache.tuscany.sca.binding.jms.wireformat.jmstext.runtime.WireFormatJMSTextProviderFactory;model=org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSText
+org.apache.tuscany.sca.binding.jms.wireformat.jmsobject.runtime.WireFormatJMSObjectProviderFactory;model=org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSObject
