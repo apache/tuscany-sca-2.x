@@ -17,15 +17,16 @@
  * specific language governing permissions and limitations
  * under the License.    
  -->
-<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-           xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0" 
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+           targetNamespace="http://itest"
+           xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1" 
            name="ExceptionServiceComposite">
 
     <component name="TextExceptionService">
         <implementation.java class="org.apache.tuscany.sca.binding.jms.ExceptionServiceImpl"/>
         <service name="ExceptionService">
             <binding.jms>
-                 <destination name="TextExceptionService"/>
+                 <destination jndiName="TextExceptionService"/>
             </binding.jms>
         </service> 
     </component>       
@@ -34,7 +35,7 @@
         <implementation.java class="org.apache.tuscany.sca.binding.jms.ExceptionServiceImpl"/>
         <service name="ExceptionService">
             <binding.jms>
-                 <destination name="ObjectExceptionService"/>
+                 <destination jndiName="ObjectExceptionService"/>
                  <tuscany:wireFormat.jmsObject/>
             </binding.jms>
         </service> 

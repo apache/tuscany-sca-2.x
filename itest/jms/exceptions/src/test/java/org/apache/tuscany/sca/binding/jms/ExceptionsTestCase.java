@@ -38,7 +38,8 @@ import javax.jms.TextMessage;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,7 +50,7 @@ import org.xml.sax.SAXException;
  */
 public class ExceptionsTestCase {
 
-    private static SCADomain scaDomain;
+    private Node node;
     private Session session;
     private InitialContext context;
     private Connection connection;
@@ -64,7 +65,7 @@ public class ExceptionsTestCase {
 
     @Before
     public void init() {
-        scaDomain = SCADomain.newInstance("http://localhost", "/", "exceptions/service.composite");
+        node = NodeFactory.newInstance().createNode().start();
     }
 
     @Test
@@ -155,8 +156,8 @@ public class ExceptionsTestCase {
 
     @After
     public void end() throws JMSException {
-        if (scaDomain != null) {
-            scaDomain.close();
+        if (node != null) {
+            node.stop();
         }
         if (connection != null) {
             connection.close();
