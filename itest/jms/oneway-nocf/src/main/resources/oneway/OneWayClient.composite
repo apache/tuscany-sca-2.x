@@ -17,7 +17,8 @@
  * specific language governing permissions and limitations
  * under the License.    
  -->
-<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+           targetNamespace="http://itest"
            name="OneWayClientComposite">
 
     <component name="OneWayClient">
@@ -28,8 +29,8 @@
     <reference name="serviceA" promote="OneWayClient/serviceA">
         <interface.java interface="org.apache.tuscany.sca.binding.jms.OneWayService" />
         <binding.jms>
-            <connectionFactory name="SomeConnectionFactory"/>
-            <destination name="SomeQueue"/>
+            <destination jndiName="SomeQueue"/>
+            <connectionFactory jndiName="SomeConnectionFactory"/>
         </binding.jms>  
     </reference>
 

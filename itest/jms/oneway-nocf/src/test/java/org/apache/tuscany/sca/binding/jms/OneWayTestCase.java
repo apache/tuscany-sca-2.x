@@ -20,7 +20,8 @@ package org.apache.tuscany.sca.binding.jms;
 
 import static org.junit.Assert.assertEquals;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,16 +31,16 @@ import org.junit.Test;
  */
 public class OneWayTestCase {
 
-    private static SCADomain scaDomain;
+    private Node node;
 
     @Before
     public void init() {
-        scaDomain = SCADomain.newInstance("http://localhost", "/", "oneway/OneWayClient.composite", "oneway/OneWayService.composite");
+        node = NodeFactory.newInstance().createNode().start();
     }
 
     @Test
     public void testOneWayInvoked() throws Exception {
-        OneWayService oneWayService = scaDomain.getService(OneWayService.class, "OneWayClient");
+        OneWayService oneWayService = node.getService(OneWayService.class, "OneWayClient");
         oneWayService.sayHello("Petra");
         synchronized (OneWayServiceImpl.mutex) {
             // wait up to 10 seconds but it will likely be a lot less 
@@ -51,8 +52,8 @@ public class OneWayTestCase {
 
     @After
     public void end() {
-        if (scaDomain != null) {
-            scaDomain.close();
+        if (node != null) {
+            node.stop();
         }
     }
 }
