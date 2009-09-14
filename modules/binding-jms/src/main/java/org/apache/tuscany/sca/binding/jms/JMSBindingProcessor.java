@@ -81,7 +81,7 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
  *         <property name="NMTOKEN" type="NMTOKEN">*
  *     </destination>?
  * 
- *     <connectionFactory name="xs:anyURI" create="string"?>
+ *     <connectionFactory jndiName="xs:anyURI" create="string"?>
  *         <property name="NMTOKEN" type="NMTOKEN">*
  *     </connectionFactory>?
  * 
@@ -94,7 +94,7 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
  *             <property name="NMTOKEN" type="NMTOKEN">*
  *         </destination>?
  * 
- *         <connectionFactory name="xs:anyURI" create="string"?>
+ *         <connectionFactory jndiName="xs:anyURI" create="string"?>
  *             <property name="NMTOKEN" type="NMTOKEN">*
  *         </connectionFactory>?
  * 
@@ -433,7 +433,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
     }
 
     private void parseConnectionFactory(XMLStreamReader reader, JMSBinding jmsBinding) throws XMLStreamException {
-        String name = reader.getAttributeValue(null, "name");
+        String name = reader.getAttributeValue(null, "jndiName");
         if (name != null && name.length() > 0) {
             jmsBinding.setConnectionFactoryName(name);
         } else {
@@ -479,7 +479,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
     }
 
     private void parseResponseConnectionFactory(XMLStreamReader reader, JMSBinding jmsBinding) throws XMLStreamException {
-        String name = reader.getAttributeValue(null, "name");
+        String name = reader.getAttributeValue(null, "jndiName");
         if (name != null && name.length() > 0) {
             jmsBinding.setResponseConnectionFactoryName(name);            
         } else {
@@ -1315,7 +1315,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
     
     /**
      * Writes connection factory properties if there are any.
-     *     <connectionFactory name="xs:anyURI" create="string"?>
+     *     <connectionFactory jndiName="xs:anyURI" create="string"?>
      *         <property name="NMTOKEN" type="NMTOKEN">*
      *     </connectionFactory>?
      */
@@ -1328,7 +1328,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
         writer.writeStartElement(Constants.SCA11_NS, "connectionFactory");
 
         if ( cfName != null && cfName.length() > 0) {
-            writer.writeAttribute("name", cfName);            
+            writer.writeAttribute("jndiName", cfName);            
         }
 
         String destinationCreate = jmsBinding.getConnectionFactoryCreate();
@@ -1422,7 +1422,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
     
     /**
      * Writes response connection factory properties if there are any.
-     *     <connectionFactory name="xs:anyURI" create="string"?>
+     *     <connectionFactory jndiName="xs:anyURI" create="string"?>
      *         <property name="NMTOKEN" type="NMTOKEN">*
      *     </connectionFactory>?
      * 
@@ -1436,7 +1436,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
         writer.writeStartElement(Constants.SCA11_NS, "connectionFactory");
 
         if ( cfName != null && cfName.length() > 0) {
-            writer.writeAttribute("name", cfName);            
+            writer.writeAttribute("jndiName", cfName);            
         }
 
         String destinationCreate = jmsBinding.getResponseConnectionFactoryCreate();
