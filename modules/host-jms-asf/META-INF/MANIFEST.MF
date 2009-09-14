@@ -1,0 +1,28 @@
+Manifest-Version: 1.0
+Export-Package: org.apache.tuscany.sca.host.jms.asf;version="2.0.0";uses:="org.apache.tuscany.sca.assembly"
+Tool: Bnd-0.0.255
+Bundle-Name: Apache Tuscany SCA Host JMS ASF 
+Created-By: 1.6.0_07 (Sun Microsystems Inc.)
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 2.0.0
+Bnd-LastModified: 1225397320062
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA Host JMS ASF
+Import-Package: javax.jms,
+ javax.naming,
+ org.apache.tuscany.sca.assembly;version="2.0.0",
+ org.apache.tuscany.sca.assembly.xml;version="2.0.0",
+ org.apache.tuscany.sca.binding.jms;version="2.0.0",
+ org.apache.tuscany.sca.binding.jms.impl;version="2.0.0",
+ org.apache.tuscany.sca.binding.jms.provider;version="2.0.0",
+ org.apache.tuscany.sca.binding.jms.runtime;version="2.0.0",
+ org.apache.tuscany.sca.core;version="2.0.0",
+ org.apache.tuscany.sca.host.jms;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef;version="2.0.0",
+ org.apache.tuscany.sca.invocation;version="2.0.0",
+ org.apache.tuscany.sca.runtime;version="2.0.0",
+ org.apache.tuscany.sca.work;version="2.0.0"
+Bundle-SymbolicName: org.apache.tuscany.sca.host.jms.asf
+Bundle-DocURL: http://www.apache.org/
+Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6
