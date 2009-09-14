@@ -31,6 +31,8 @@ import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.monitor.Monitor;
 
@@ -42,8 +44,9 @@ import org.apache.tuscany.sca.monitor.Monitor;
 public class ComponentReferencePromotionBuilderImpl implements CompositeBuilder {
     private AssemblyFactory assemblyFactory;
 
-    public ComponentReferencePromotionBuilderImpl(AssemblyFactory assemblyFactory) {
-        this.assemblyFactory = assemblyFactory;
+    public ComponentReferencePromotionBuilderImpl(ExtensionPointRegistry registry) {
+        FactoryExtensionPoint factories = registry.getExtensionPoint(FactoryExtensionPoint.class);
+        this.assemblyFactory = factories.getFactory(AssemblyFactory.class);
     }
 
     public void build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {

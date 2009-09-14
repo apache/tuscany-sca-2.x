@@ -38,6 +38,7 @@
     </intent>
 
     <policySet name="TestPolicySetOne" provides="test:TestIntentOne" appliesTo="sca:binding.ws"
+        attachTo = "//sca:component[@name='CalculatorServiceComponent']/sca:reference[@name='addService']"
         xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
         <wsp:PolicyAttachment>
             <!-- policy expression and policy subject for

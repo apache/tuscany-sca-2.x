@@ -24,9 +24,11 @@ import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Implementation;
-import org.apache.tuscany.sca.assembly.builder.BindingBuilderExtension;
+import org.apache.tuscany.sca.assembly.builder.BindingBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
+import org.apache.tuscany.sca.assembly.builder.CompositeBuilderExtensionPoint;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.monitor.Monitor;
 
@@ -38,9 +40,12 @@ import org.apache.tuscany.sca.monitor.Monitor;
  */
 public class ComponentReferenceBindingBuilderImpl implements CompositeBuilder {
 
-    public ComponentReferenceBindingBuilderImpl() {
-    }
+    private CompositeBuilderExtensionPoint builders;
 
+    public ComponentReferenceBindingBuilderImpl(ExtensionPointRegistry registry) {
+        this.builders = registry.getExtensionPoint(CompositeBuilderExtensionPoint.class);
+    }
+    
     public void build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
         buildReferenceBindings(composite, monitor);
     }
@@ -55,11 +60,9 @@ public class ComponentReferenceBindingBuilderImpl implements CompositeBuilder {
         for (Component component : composite.getComponents()) {
             for (ComponentReference componentReference : component.getReferences()) {
                 for (Binding binding : componentReference.getBindings()) {
-                    if (binding instanceof BindingBuilderExtension) {
-                        ((BindingBuilderExtension)binding).getBuilder().build(component,
-                                                                              componentReference,
-                                                                              binding,
-                                                                              monitor);
+                    BindingBuilder builder = builders.getBindingBuilder(binding.getClass());
+                    if (builder != null) {
+                        builder.build(component, componentReference, binding, monitor);
                     }
                 }
             }

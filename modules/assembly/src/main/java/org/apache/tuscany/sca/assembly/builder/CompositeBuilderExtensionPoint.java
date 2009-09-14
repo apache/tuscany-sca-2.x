@@ -19,6 +19,9 @@
 
 package org.apache.tuscany.sca.assembly.builder;
 
+import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.assembly.Implementation;
+
 /**
  * An extension point for Composite builders.
  *
@@ -47,5 +50,17 @@ public interface CompositeBuilderExtensionPoint {
      * @return
      */
     CompositeBuilder getCompositeBuilder(String id);
+    
+    void addBindingBuilder(BindingBuilder<?> bindingBuilder);
+
+    <B extends Binding> BindingBuilder<B> getBindingBuilder(Class<B> bindingType);
+
+    <B extends Binding> void removeBindingBuilder(BindingBuilder<B> builder);
+
+    void addImplementationBuilder(ImplementationBuilder<?> implementationBuilder);
+
+    <I extends Implementation> ImplementationBuilder<I> getImplementationBuilder(Class<I> implementationType);
+
+    <I extends Implementation> void removeImplementationBuilder(ImplementationBuilder<I> builder);
 
 }

@@ -23,20 +23,17 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.TransformerFactory;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
+import org.apache.tuscany.sca.assembly.builder.CompositeBuilderExtensionPoint;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderTmp;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.definitions.Definitions;
-import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
-import org.apache.tuscany.sca.policy.PolicyFactory;
 
 /**
  * A builder that handles the configuration of the components inside a composite
@@ -66,74 +63,41 @@ public class CompositeBuilderImpl implements CompositeBuilder, CompositeBuilderT
     private CompositeBuilder componentReferenceEndpointReferenceBuilder;
     private CompositeBuilder componentServiceEndpointBuilder;
 
-    //private CompositeBuilder endpointReferenceBuilder;
-
-    public CompositeBuilderImpl(FactoryExtensionPoint factories, InterfaceContractMapper mapper) {
-        this(factories.getFactory(AssemblyFactory.class), factories.getFactory(SCABindingFactory.class), factories
-            .getFactory(PolicyFactory.class), factories.getFactory(DocumentBuilderFactory.class), factories
-            .getFactory(TransformerFactory.class), mapper);
-    }
+    private CompositeBuilderExtensionPoint builders;
+    
 
     /**
      * Constructs a new composite builder.
-     * 
-     * @param assemblyFactory
-     * @param scaBindingFactory
-     * @param endpointFactory
-     * @param intentAttachPointTypeFactory
-     * @param interfaceContractMapper
-     * @param policyDefinitions
-     * @param monitor
+     *
+     *  @param registry
      */
-    @Deprecated
-    public CompositeBuilderImpl(AssemblyFactory assemblyFactory,
-                                SCABindingFactory scaBindingFactory,
-                                PolicyFactory intentAttachPointTypeFactory,
-                                InterfaceContractMapper interfaceContractMapper) {
-        this(assemblyFactory, scaBindingFactory, intentAttachPointTypeFactory, null, null, interfaceContractMapper);
-    }
-
-    /**
-     * Constructs a new composite builder.
-     * 
-     * @param assemblyFactory
-     * @param scaBindingFactory
-     * @param endpointFactory
-     * @param intentAttachPointTypeFactory
-     * @param interfaceContractMapper
-     * @param policyDefinitions
-     * @param monitor
-     */
-    public CompositeBuilderImpl(AssemblyFactory assemblyFactory,
-                                SCABindingFactory scaBindingFactory,
-                                PolicyFactory intentAttachPointTypeFactory,
-                                DocumentBuilderFactory documentBuilderFactory,
-                                TransformerFactory transformerFactory,
-                                InterfaceContractMapper interfaceContractMapper) {
-
-        compositeIncludeBuilder = new CompositeIncludeBuilderImpl(assemblyFactory);
-        componentReferenceWireBuilder = new ComponentReferenceWireBuilderImpl(assemblyFactory, interfaceContractMapper);
+    public CompositeBuilderImpl(ExtensionPointRegistry registry) {
+        
+        FactoryExtensionPoint factories = registry.getExtensionPoint(FactoryExtensionPoint.class);
+        this.builders = registry.getExtensionPoint(CompositeBuilderExtensionPoint.class);
+        AssemblyFactory assemblyFactory = factories.getFactory(AssemblyFactory.class);
+ 
+        compositeIncludeBuilder = new CompositeIncludeBuilderImpl();
+        componentReferenceWireBuilder = new ComponentReferenceWireBuilderImpl(registry);
         //componentReferencePromotionWireBuilder = new ComponentReferencePromotionWireBuilderImpl(assemblyFactory, endpointFactory);
-        componentReferencePromotionBuilder = new ComponentReferencePromotionBuilderImpl(assemblyFactory);
+        componentReferencePromotionBuilder = new ComponentReferencePromotionBuilderImpl(registry);
         //compositeReferenceWireBuilder = new CompositeReferenceWireBuilderImpl(assemblyFactory, endpointFactory);
         compositeCloneBuilder = new CompositeCloneBuilderImpl();
         componentConfigurationBuilder =
-            new ComponentConfigurationBuilderImpl(assemblyFactory, scaBindingFactory, documentBuilderFactory,
-                                                  transformerFactory, interfaceContractMapper);
-        compositeServiceConfigurationBuilder = new CompositeServiceConfigurationBuilderImpl(assemblyFactory);
-        compositeReferenceConfigurationBuilder = new CompositeReferenceConfigurationBuilderImpl(assemblyFactory);
+            new ComponentConfigurationBuilderImpl(registry);
+        compositeServiceConfigurationBuilder = new CompositeServiceConfigurationBuilderImpl(registry);
+        compositeReferenceConfigurationBuilder = new CompositeReferenceConfigurationBuilderImpl(registry);
         compositeBindingURIBuilder =
-            new CompositeBindingURIBuilderImpl(assemblyFactory, scaBindingFactory, documentBuilderFactory,
-                                               transformerFactory, interfaceContractMapper);
+            new CompositeBindingURIBuilderImpl(registry);
         //componentServicePromotionBuilder = new ComponentServicePromotionBuilderImpl(assemblyFactory);
         //compositeServicePromotionBuilder = new CompositeServicePromotionBuilderImpl(assemblyFactory);
-        compositePromotionBuilder = new CompositePromotionBuilderImpl(assemblyFactory, interfaceContractMapper);
-        compositePolicyBuilder = new CompositePolicyBuilderImpl(assemblyFactory, interfaceContractMapper);
-        componentServiceBindingBuilder = new ComponentServiceBindingBuilderImpl();
-        componentReferenceBindingBuilder = new ComponentReferenceBindingBuilderImpl();
+        compositePromotionBuilder = new CompositePromotionBuilderImpl(registry);
+        compositePolicyBuilder = new CompositePolicyBuilderImpl(registry);
+        componentServiceBindingBuilder = new ComponentServiceBindingBuilderImpl(registry);
+        componentReferenceBindingBuilder = new ComponentReferenceBindingBuilderImpl(registry);
 
         componentReferenceEndpointReferenceBuilder =
-            new ComponentReferenceEndpointReferenceBuilderImpl(assemblyFactory, interfaceContractMapper);
+            new ComponentReferenceEndpointReferenceBuilderImpl(registry);
         componentServiceEndpointBuilder = new ComponentServiceEndpointBuilderImpl(assemblyFactory);
         //endpointReferenceBuilder = new EndpointReference2BuilderImpl(assemblyFactory, interfaceContractMapper);
     }

@@ -123,7 +123,6 @@ public class WebServiceBindingProcessor implements StAXArtifactProcessor<WebServ
         bindingType.setUnresolved(true);
         ((PolicySubject)wsBinding).setType(bindingType);*/
         wsBinding.setUnresolved(true);
-        wsBinding.setBuilder(new BindingBuilderImpl(extensionPoints));
 
         // Read policies
         policyProcessor.readPolicies(wsBinding, reader);

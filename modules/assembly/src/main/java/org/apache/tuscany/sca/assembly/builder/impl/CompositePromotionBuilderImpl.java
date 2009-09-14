@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
@@ -35,9 +34,9 @@ import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
-import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
@@ -48,9 +47,8 @@ import org.apache.tuscany.sca.monitor.Monitor;
  */
 public class CompositePromotionBuilderImpl extends BaseBuilderImpl implements CompositeBuilder {
 
-    public CompositePromotionBuilderImpl(AssemblyFactory assemblyFactory,
-                                         InterfaceContractMapper interfaceContractMapper) {
-        super(assemblyFactory, null, null, null, interfaceContractMapper);
+    public CompositePromotionBuilderImpl(ExtensionPointRegistry registry) {
+        super(registry);
     }
 
     public String getID() {

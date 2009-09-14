@@ -17,17 +17,25 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.assembly.builder;
+package org.apache.tuscany.sca.implementation.web.impl;
 
 import org.apache.tuscany.sca.assembly.Component;
+import org.apache.tuscany.sca.assembly.builder.ImplementationBuilder;
+import org.apache.tuscany.sca.implementation.web.WebImplementation;
+import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
- * Interface for Component Pre Processors.
- *
- * @version $Rev$ $Date$
+ * 
  */
-public interface ComponentPreProcessor {
+public class WebImplementationBuilder implements ImplementationBuilder<WebImplementation> {
 
-    void preProcess(Component component);
+    public void build(Component component, WebImplementation implmentation, Monitor monitor) {
+        ((WebImplementationImpl)implmentation).build(component);
+
+    }
+
+    public Class<WebImplementation> getModelType() {
+        return WebImplementation.class;
+    }
 
 }

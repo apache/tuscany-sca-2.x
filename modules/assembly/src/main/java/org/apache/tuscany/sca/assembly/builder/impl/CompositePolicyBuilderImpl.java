@@ -22,7 +22,6 @@ package org.apache.tuscany.sca.assembly.builder.impl;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentReference;
@@ -39,7 +38,6 @@ import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.definitions.Definitions;
-import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentMap;
@@ -59,10 +57,6 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
         super(registry);
     }
     
-    public CompositePolicyBuilderImpl(AssemblyFactory assemblyFactory, InterfaceContractMapper interfaceContractMapper) {
-        super(assemblyFactory, null, null, null, interfaceContractMapper);
-    }
-
     public String getID() {
         return "org.apache.tuscany.sca.assembly.builder.CompositePolicyBuilder";
     }

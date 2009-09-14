@@ -77,7 +77,7 @@ public class CompositeBuilderTestCase {
         c.setName(new QName("http://foo", "C"));
         c.getIncludes().add(c1);
 
-        new CompositeIncludeBuilderImpl(null).build(c, null, monitor);
+        new CompositeIncludeBuilderImpl().build(c, null, monitor);
 
         assertTrue(c.getComponents().get(0).getName().equals("a"));
         assertTrue(c.getComponents().get(1).getName().equals("b"));

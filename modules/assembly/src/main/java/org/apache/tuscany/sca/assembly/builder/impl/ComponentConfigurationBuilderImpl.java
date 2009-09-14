@@ -24,10 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.TransformerFactory;
-
-import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentProperty;
 import org.apache.tuscany.sca.assembly.ComponentReference;
@@ -38,14 +34,13 @@ import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
-import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.Service;
-import org.apache.tuscany.sca.assembly.builder.ComponentPreProcessor;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
+import org.apache.tuscany.sca.assembly.builder.ImplementationBuilder;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
-import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
@@ -55,19 +50,8 @@ import org.apache.tuscany.sca.monitor.Monitor;
  */
 public class ComponentConfigurationBuilderImpl extends BaseBuilderImpl implements CompositeBuilder {
 
-    @Deprecated
-    public ComponentConfigurationBuilderImpl(AssemblyFactory assemblyFactory,
-                                             SCABindingFactory scaBindingFactory,
-                                             InterfaceContractMapper interfaceContractMapper) {
-        super(assemblyFactory, scaBindingFactory, null, null, interfaceContractMapper);
-    }
-
-    public ComponentConfigurationBuilderImpl(AssemblyFactory assemblyFactory,
-                                             SCABindingFactory scaBindingFactory,
-                                             DocumentBuilderFactory documentBuilderFactory,
-                                             TransformerFactory transformerFactory,
-                                             InterfaceContractMapper interfaceContractMapper) {
-        super(assemblyFactory, scaBindingFactory, documentBuilderFactory, transformerFactory, interfaceContractMapper);
+    public ComponentConfigurationBuilderImpl(ExtensionPointRegistry registry) {
+        super(registry);
     }
 
     public String getID() {
@@ -158,9 +142,13 @@ public class ComponentConfigurationBuilderImpl extends BaseBuilderImpl implement
     	                component.setAutowire(composite.getAutowire());
     	            }
     	
-    	            if (component.getImplementation() instanceof ComponentPreProcessor) {
-    	                ((ComponentPreProcessor)component.getImplementation()).preProcess(component);
-    	            }
+                    Implementation impl = component.getImplementation();
+                    if (impl != null) {
+                        ImplementationBuilder builder = builders.getImplementationBuilder(impl.getClass());
+                        if (builder != null) {
+                            builder.build(component, impl, monitor);
+                        }
+                    }
     	
     	            // Index implementation properties, services and references
     	            Map<String, Service> services = new HashMap<String, Service>();

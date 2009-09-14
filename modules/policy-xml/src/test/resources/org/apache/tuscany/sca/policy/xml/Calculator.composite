@@ -22,7 +22,7 @@
            xmlns:sample="http://sample"
            name="Calculator">
 
-    <component name="CalculatorServiceComponent" requires="sca:confidentiality">
+    <component name="CalculatorServiceComponent" requires="confidentiality">
 		<implementation.java class="calculator.CalculatorServiceImpl" xmlns:test="http://test" requiers="test:TestIntentOne"/>
         <reference name="addService" target="AddServiceComponent" />
         <reference name="subtractService" target="SubtractServiceComponent" />

@@ -17,27 +17,24 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.assembly.builder;
+package org.apache.tuscany.sca.implementation.spring;
+
+import org.apache.tuscany.sca.assembly.Component;
+import org.apache.tuscany.sca.assembly.builder.ImplementationBuilder;
+import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
- * An extension that can be implemented by bindings to provide a binding builder.
- *
- * @version $Rev$ $Date$
+ * 
  */
-public interface BindingBuilderExtension {
+public class SpringImplementationBuilder implements ImplementationBuilder<SpringImplementation> {
 
-    /**
-     * Returns the binding builder.
-     * 
-     * @return the binding builder
-     */
-    BindingBuilder getBuilder();
+    public void build(Component component, SpringImplementation implmentation, Monitor monitor) {
+        implmentation.build(component);
+    }
 
-    /**
-     * Sets the binding builder.
-     * 
-     * @param builder the binding builder
-     */
-    void setBuilder(BindingBuilder builder);
+    public Class<SpringImplementation> getModelType() {
+        // TODO Auto-generated method stub
+        return SpringImplementation.class;
+    }
 
 }

@@ -33,6 +33,8 @@ import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.monitor.Monitor;
 
@@ -44,8 +46,9 @@ import org.apache.tuscany.sca.monitor.Monitor;
 public class CompositeReferenceConfigurationBuilderImpl implements CompositeBuilder {
     private AssemblyFactory assemblyFactory;
 
-    public CompositeReferenceConfigurationBuilderImpl(AssemblyFactory assemblyFactory) {
-        this.assemblyFactory = assemblyFactory;
+    public CompositeReferenceConfigurationBuilderImpl(ExtensionPointRegistry registry) {
+        FactoryExtensionPoint factories = registry.getExtensionPoint(FactoryExtensionPoint.class);
+        this.assemblyFactory = factories.getFactory(AssemblyFactory.class);
     }
 
     public String getID() {

@@ -26,10 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.xml.namespace.QName;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.TransformerFactory;
 
-import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentProperty;
@@ -40,13 +37,12 @@ import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
-import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderTmp;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.definitions.Definitions;
-import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
@@ -56,19 +52,8 @@ import org.apache.tuscany.sca.monitor.Monitor;
  */
 public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements CompositeBuilder, CompositeBuilderTmp {
 
-    @Deprecated
-    public CompositeBindingURIBuilderImpl(AssemblyFactory assemblyFactory,
-                                          SCABindingFactory scaBindingFactory,
-                                          InterfaceContractMapper interfaceContractMapper) {
-        super(assemblyFactory, scaBindingFactory, null, null, interfaceContractMapper);
-    }
-
-    public CompositeBindingURIBuilderImpl(AssemblyFactory assemblyFactory,
-                                          SCABindingFactory scaBindingFactory,
-                                          DocumentBuilderFactory documentBuilderFactory,
-                                          TransformerFactory transformerFactory,
-                                          InterfaceContractMapper interfaceContractMapper) {
-        super(assemblyFactory, scaBindingFactory, documentBuilderFactory, transformerFactory, interfaceContractMapper);
+    public CompositeBindingURIBuilderImpl(ExtensionPointRegistry registry) {
+        super(registry);
     }
 
     public String getID() {

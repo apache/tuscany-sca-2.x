@@ -17,23 +17,27 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.definitions;
+package org.apache.tuscany.sca.assembly.builder;
 
-import javax.xml.namespace.QName;
+import org.apache.tuscany.sca.assembly.Component;
+import org.apache.tuscany.sca.assembly.Implementation;
+import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
- * Mocked Policy
+ * A builder that handles any build-time configuration needed by implementations.
+ *
+ * @version $Rev$ $Date$
  */
-public class MockPolicy {
-    public QName getName() {
-        return new QName("http://schemas.xmlsoap.org/ws/2004/09/policy", "PolicyAttachment");
-    }
+public interface ImplementationBuilder<I extends Implementation> {
 
-    public boolean isUnresolved() {
-        return false;
-    }
+    /**
+     * Configure a component implementation.
+     * 
+     * @param component The component 
+     * @param contract The implementation
+     */
+    void build(Component component, I implmentation, Monitor monitor);
 
-    public void setUnresolved(boolean unresolved) {
-    }
+    Class<I> getModelType();
 
 }

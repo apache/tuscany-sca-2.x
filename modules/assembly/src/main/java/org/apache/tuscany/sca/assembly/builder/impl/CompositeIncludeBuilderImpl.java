@@ -22,17 +22,15 @@ package org.apache.tuscany.sca.assembly.builder.impl;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Component;
-import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Implementation;
+import org.apache.tuscany.sca.assembly.Reference;
+import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.monitor.Monitor;
-import org.apache.tuscany.sca.monitor.Problem;
-import org.apache.tuscany.sca.monitor.Problem.Severity;
 
 /**
  * Implementation of a CompositeBuilder.
@@ -41,10 +39,7 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
  */
 public class CompositeIncludeBuilderImpl implements CompositeBuilder {
 
-    private AssemblyFactory assemblyFactory;
-
-    public CompositeIncludeBuilderImpl(AssemblyFactory assemblyFactory) {
-        this.assemblyFactory = assemblyFactory;
+    public CompositeIncludeBuilderImpl() {
     }
 
     public String getID() {
@@ -69,6 +64,15 @@ public class CompositeIncludeBuilderImpl implements CompositeBuilder {
             visited.add(composite);
     
             for (Composite included : composite.getIncludes()) {
+                if(included.isLocal() && !composite.isLocal()) {
+                    // ASM60041
+                    Monitor.error(monitor, 
+                                    this, 
+                                    "assembly-validation-messages", 
+                                    "IllegalCompositeIncusion", 
+                                    composite.getName().toString(),
+                                    included.getName().toString());
+                }
                 Composite fusedComposite = fuseInclude(included, visited, monitor);
                 if (fusedComposite != null) {
                     composite.getComponents().addAll(fusedComposite.getComponents());
@@ -76,8 +80,6 @@ public class CompositeIncludeBuilderImpl implements CompositeBuilder {
                     composite.getReferences().addAll(fusedComposite.getReferences());
                     composite.getProperties().addAll(fusedComposite.getProperties());
                     composite.getWires().addAll(fusedComposite.getWires());
-                    composite.getPolicySets().addAll(fusedComposite.getPolicySets());
-                    composite.getRequiredIntents().addAll(fusedComposite.getRequiredIntents());
                 }
             }
     
@@ -108,6 +110,8 @@ public class CompositeIncludeBuilderImpl implements CompositeBuilder {
     private Composite fuseInclude(Composite include, Set<Composite> visited, Monitor monitor) {
 
         if (visited.contains(include)) {
+            // FIXME: [rfeng] Do we need to have a warning? I think it is fine to have Composite A 
+            // include B and C while both B and C include D.
             Monitor.warning(monitor, 
                             this, 
                             "assembly-validation-messages", 
@@ -127,6 +131,17 @@ public class CompositeIncludeBuilderImpl implements CompositeBuilder {
 
         // get the components etc. from any included composites
         for (Composite included : include.getIncludes()) {
+            if(included.isLocal() && !include.isLocal()) {
+                // ASM60041
+                Monitor.error(monitor, 
+                                this, 
+                                "assembly-validation-messages", 
+                                "IllegalCompositeIncusion", 
+                                include.getName().toString(),
+                                included.getName().toString());
+                return null;                    
+            }
+            
             Composite fusedComposite = fuseInclude(included, visited, monitor);
             if (fusedComposite != null) {
                 clone.getComponents().addAll(fusedComposite.getComponents());
@@ -134,8 +149,11 @@ public class CompositeIncludeBuilderImpl implements CompositeBuilder {
                 clone.getReferences().addAll(fusedComposite.getReferences());
                 clone.getProperties().addAll(fusedComposite.getProperties());
                 clone.getWires().addAll(fusedComposite.getWires());
-                clone.getPolicySets().addAll(fusedComposite.getPolicySets());
-                clone.getRequiredIntents().addAll(fusedComposite.getRequiredIntents());
+                // FIXME: What should we do for the extensions
+                /*
+                clone.getExtensions().addAll(fusedComposite.getExtensions());
+                clone.getAttributeExtensions().addAll(fusedComposite.getAttributeExtensions());
+                */
             }
         }
 
@@ -144,10 +162,44 @@ public class CompositeIncludeBuilderImpl implements CompositeBuilder {
         if (include.getAutowire() == Boolean.TRUE) {
             for (Component component : clone.getComponents()) {
                 if (component.getAutowire() == null) {
-                    component.setAutowire(true);
+                    component.setAutowire(Boolean.TRUE);
                 }
             }
         }
+        
+        // Merge the intents and policySets from the included composite into 
+        // component/service/reference elements under the composite
+        for(Component component : clone.getComponents()) {
+            component.getRequiredIntents().addAll(include.getRequiredIntents());
+            component.getPolicySets().addAll(include.getPolicySets());
+        }
+        
+        for(Service service: clone.getServices()) {
+            service.getRequiredIntents().addAll(include.getRequiredIntents());
+            service.getPolicySets().addAll(include.getPolicySets());
+        }
+
+        for(Reference reference: clone.getReferences()) {
+            reference.getRequiredIntents().addAll(include.getRequiredIntents());
+            reference.getPolicySets().addAll(include.getPolicySets());
+        }
+        
+        // process any composites referenced through implementation.composite 
+        for (Component component : clone.getComponents()) {
+
+            // recurse for composite implementations
+            Implementation implementation = component.getImplementation();
+            if (implementation instanceof Composite) {
+                try {
+                    monitor.pushContext("Component: " + component.getName());
+                    fuseIncludes((Composite)implementation, monitor);
+                } finally {
+                    monitor.popContext();
+                }
+            }
+        }
+        
+        clone.getIncludes().clear();
 
         // return the fused composite we have built up so far
         return clone;

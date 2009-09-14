@@ -18,21 +18,14 @@
  */
 package org.apache.tuscany.sca.assembly.builder.impl;
 
-import java.net.URI;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.TransformerFactory;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
-import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeReference;
 import org.apache.tuscany.sca.assembly.CompositeService;
@@ -42,10 +35,8 @@ import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.Service;
-import org.apache.tuscany.sca.assembly.builder.ComponentPreProcessor;
-import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
-import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
-import org.apache.tuscany.sca.assembly.builder.CompositeBuilderTmp;
+import org.apache.tuscany.sca.assembly.builder.CompositeBuilderExtensionPoint;
+import org.apache.tuscany.sca.assembly.builder.ImplementationBuilder;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
@@ -55,8 +46,6 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.policy.ExtensionType;
-import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySubject;
 
 /**
@@ -74,6 +63,7 @@ public class ComponentBuilderImpl {
     private AssemblyFactory assemblyFactory;
     private SCABindingFactory scaBindingFactory;
     private InterfaceContractMapper interfaceContractMapper;
+    private CompositeBuilderExtensionPoint builders;
         
     public ComponentBuilderImpl(ExtensionPointRegistry registry) {
         UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
@@ -85,6 +75,8 @@ public class ComponentBuilderImpl {
         scaBindingFactory = modelFactories.getFactory(SCABindingFactory.class);
         
         interfaceContractMapper = utilities.getUtility(InterfaceContractMapper.class);
+        
+        builders = registry.getExtensionPoint(CompositeBuilderExtensionPoint.class);
     }    
     
     public void setComponentTypeBuilder(ComponentTypeBuilderImpl componentTypeBuilder){
@@ -99,8 +91,12 @@ public class ComponentBuilderImpl {
         
         // do any required pre-processing on the implementation
         // what does this do?
-        if (component.getImplementation() instanceof ComponentPreProcessor) {
-            ((ComponentPreProcessor)component.getImplementation()).preProcess(component);
+        Implementation impl = component.getImplementation();
+        if (impl != null) {
+            ImplementationBuilder builder = builders.getImplementationBuilder(impl.getClass());
+            if (builder != null) {
+                builder.build(component, impl, monitor);
+            }
         }
         
         // create the component type for this component 

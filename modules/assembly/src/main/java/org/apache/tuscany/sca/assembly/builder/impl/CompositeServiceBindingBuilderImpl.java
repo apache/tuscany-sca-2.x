@@ -25,9 +25,11 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Service;
-import org.apache.tuscany.sca.assembly.builder.BindingBuilderExtension;
+import org.apache.tuscany.sca.assembly.builder.BindingBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
+import org.apache.tuscany.sca.assembly.builder.CompositeBuilderExtensionPoint;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.monitor.Monitor;
 
@@ -38,8 +40,10 @@ import org.apache.tuscany.sca.monitor.Monitor;
  * @version $Rev$ $Date$
  */
 public class CompositeServiceBindingBuilderImpl implements CompositeBuilder {
+    private CompositeBuilderExtensionPoint builders;
 
-    public CompositeServiceBindingBuilderImpl() {
+    public CompositeServiceBindingBuilderImpl(ExtensionPointRegistry registry) {
+        this.builders = registry.getExtensionPoint(CompositeBuilderExtensionPoint.class);
     }
 
     public String getID() {
@@ -63,9 +67,10 @@ public class CompositeServiceBindingBuilderImpl implements CompositeBuilder {
         // find all the composite service bindings     
         for (Service service : composite.getServices()) {
             for (Binding binding : service.getBindings()) {
-                if (binding instanceof BindingBuilderExtension) {
+                BindingBuilder builder = builders.getBindingBuilder(binding.getClass());
+                if (builder != null) {
                     Component component = ServiceConfigurationUtil.getPromotedComponent((CompositeService)service);
-                    ((BindingBuilderExtension)binding).getBuilder().build(component, service, binding, monitor);
+                    builder.build(component, service, binding, monitor);
                 }
             }
         }

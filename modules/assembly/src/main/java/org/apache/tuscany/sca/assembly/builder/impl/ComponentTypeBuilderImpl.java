@@ -37,7 +37,7 @@ import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.Service;
-import org.apache.tuscany.sca.assembly.builder.ComponentPreProcessor;
+import org.apache.tuscany.sca.assembly.builder.CompositeBuilderExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
@@ -64,6 +64,7 @@ public class ComponentTypeBuilderImpl {
     private AssemblyFactory assemblyFactory;
     private SCABindingFactory scaBindingFactory;
     private InterfaceContractMapper interfaceContractMapper;
+    private CompositeBuilderExtensionPoint builders;
 
 
     public ComponentTypeBuilderImpl(ExtensionPointRegistry registry) {
@@ -76,6 +77,7 @@ public class ComponentTypeBuilderImpl {
         scaBindingFactory = modelFactories.getFactory(SCABindingFactory.class);       
 
         interfaceContractMapper = utilities.getUtility(InterfaceContractMapper.class);
+        builders = registry.getExtensionPoint(CompositeBuilderExtensionPoint.class);
     }
     
     public void setComponentBuilder(ComponentBuilderImpl componentBuilder){

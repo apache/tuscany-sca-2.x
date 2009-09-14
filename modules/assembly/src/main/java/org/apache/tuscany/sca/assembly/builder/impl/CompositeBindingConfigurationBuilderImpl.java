@@ -21,15 +21,12 @@ package org.apache.tuscany.sca.assembly.builder.impl;
 
 import java.util.List;
 
-import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
-import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.definitions.Definitions;
-import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
@@ -44,15 +41,8 @@ import org.apache.tuscany.sca.monitor.Monitor;
 public class CompositeBindingConfigurationBuilderImpl extends CompositeBindingURIBuilderImpl implements
     CompositeBuilder {
 
-    public CompositeBindingConfigurationBuilderImpl(FactoryExtensionPoint factories, InterfaceContractMapper mapper) {
-        super(factories.getFactory(AssemblyFactory.class), factories.getFactory(SCABindingFactory.class), null, null,
-              mapper);
-    }
-
-    public CompositeBindingConfigurationBuilderImpl(AssemblyFactory assemblyFactory,
-                                                    SCABindingFactory scaBindingFactory,
-                                                    InterfaceContractMapper interfaceContractMapper) {
-        super(assemblyFactory, scaBindingFactory, null, null, interfaceContractMapper);
+    public CompositeBindingConfigurationBuilderImpl(ExtensionPointRegistry registry) {
+        super(registry);
     }
 
     public String getID() {

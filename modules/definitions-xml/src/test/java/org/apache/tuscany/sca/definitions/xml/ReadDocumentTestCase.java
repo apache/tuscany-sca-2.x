@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.definitions;
+package org.apache.tuscany.sca.definitions.xml;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -38,6 +38,7 @@ import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensi
 import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.policy.BindingType;
 import org.apache.tuscany.sca.policy.ImplementationType;
 import org.apache.tuscany.sca.policy.Intent;

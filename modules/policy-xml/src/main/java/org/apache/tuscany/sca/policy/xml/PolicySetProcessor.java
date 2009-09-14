@@ -26,20 +26,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
 
+import org.apache.tuscany.sca.common.xml.xpath.XPathHelper;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
@@ -61,17 +64,22 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
 
     private PolicyFactory policyFactory;
     private StAXArtifactProcessor<Object> extensionProcessor;
-    private XPathFactory xpathFactory = XPathFactory.newInstance();
+    private XPathHelper xpathHelper;
+    // private XPathFactory xpathFactory;
     private Monitor monitor;
 
-    public PolicySetProcessor(FactoryExtensionPoint modelFactories,
+    public PolicySetProcessor(ExtensionPointRegistry registry,
                               StAXArtifactProcessor<Object> extensionProcessor,
                               Monitor monitor) {
+        FactoryExtensionPoint modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
         this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
         this.extensionProcessor = extensionProcessor;
         this.monitor = monitor;
+        this.xpathHelper = XPathHelper.getInstance(registry);
+        // this.xpathFactory = modelFactories.getFactory(XPathFactory.class);
     }
 
+    /*
     public PolicySetProcessor(PolicyFactory policyFactory,
                               StAXArtifactProcessor<Object> extensionProcessor,
                               Monitor monitor) {
@@ -79,6 +87,7 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
         this.extensionProcessor = extensionProcessor;
         this.monitor = monitor;
     }
+    */
 
     /**
      * Report a exception.
@@ -146,16 +155,35 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
 
         policySet.setAppliesTo(appliesTo);
 
-        XPath path = xpathFactory.newXPath();
-        path.setNamespaceContext(reader.getNamespaceContext());
-        try {
-            if (appliesTo != null) {
-                policySet.setAppliesToXPathExpression(path.compile(appliesTo));
+        if (appliesTo != null) {
+            try {
+                XPath path = xpathHelper.newXPath();
+                NamespaceContext context = xpathHelper.getNamespaceContext(appliesTo, reader.getNamespaceContext());
+                // path.setXPathFunctionResolver(new PolicyXPathFunctionResolver(context));
+                XPathExpression expression = xpathHelper.compile(path, context, appliesTo);
+                policySet.setAppliesToXPathExpression(expression);
+            } catch (XPathExpressionException e) {
+                ContributionReadException ce = new ContributionReadException(e);
+                error("ContributionReadException", policySet, ce);
+                //throw ce;
             }
-        } catch (XPathExpressionException e) {
-            ContributionReadException ce = new ContributionReadException(e);
-            error("ContributionReadException", policySet, ce);
-            //throw ce;
+        }
+        
+        String attachTo = reader.getAttributeValue(null, ATTACH_TO);
+        if (attachTo != null) {
+            try {
+                XPath path = xpathHelper.newXPath();
+                NamespaceContext context = xpathHelper.getNamespaceContext(attachTo, reader.getNamespaceContext());
+                path.setXPathFunctionResolver(new PolicyXPathFunctionResolver(context));
+                XPathExpression expression = xpathHelper.compile(path, context, attachTo);
+                policySet.setAttachTo(attachTo);
+                policySet.setAttachToXPathExpression(expression);
+            } catch (XPathExpressionException e) {
+                ContributionReadException ce = new ContributionReadException(e);
+                error("ContributionReadException", policySet, ce);
+                //throw ce;
+            }
+
         }
 
         readProvidedIntents(policySet, reader);

@@ -25,9 +25,10 @@ import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.builder.BindingBuilder;
-import org.apache.tuscany.sca.assembly.builder.BindingBuilderExtension;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
+import org.apache.tuscany.sca.assembly.builder.CompositeBuilderExtensionPoint;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.monitor.Monitor;
 
@@ -38,8 +39,10 @@ import org.apache.tuscany.sca.monitor.Monitor;
  * @version $Rev$ $Date$
  */
 public class ComponentServiceBindingBuilderImpl implements CompositeBuilder {
-
-    public ComponentServiceBindingBuilderImpl() {
+    private CompositeBuilderExtensionPoint builders;
+    
+    public ComponentServiceBindingBuilderImpl(ExtensionPointRegistry registry) {
+        this.builders = registry.getExtensionPoint(CompositeBuilderExtensionPoint.class);
     }
 
     public String getID() {
@@ -64,11 +67,9 @@ public class ComponentServiceBindingBuilderImpl implements CompositeBuilder {
         for (Component component : composite.getComponents()) {
             for (ComponentService componentService : component.getServices()) {
                 for (Binding binding : componentService.getBindings()) {
-                    if (binding instanceof BindingBuilderExtension) {
-                        BindingBuilder builder = ((BindingBuilderExtension)binding).getBuilder();
-                        if (builder != null) {
-                            builder.build(component, componentService, binding, monitor);
-                        }
+                    BindingBuilder builder = builders.getBindingBuilder(binding.getClass());
+                    if (builder != null) {
+                        builder.build(component, componentService, binding, monitor);
                     }
                 }
             }

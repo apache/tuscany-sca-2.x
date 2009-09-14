@@ -27,7 +27,11 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.assembly.Contract;
+import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
@@ -46,6 +50,9 @@ public class DefaultCompositeBuilderExtensionPoint implements CompositeBuilderEx
 
     private ExtensionPointRegistry registry;
     private final Map<String, CompositeBuilder> builders = new HashMap<String, CompositeBuilder>();
+    private final Map<Class<?>, BindingBuilder> bindingBuilders = new HashMap<Class<?>, BindingBuilder>();
+    private final Map<Class<?>, ImplementationBuilder> implementationBuilders =
+        new HashMap<Class<?>, ImplementationBuilder>();
     private boolean loaded;
 
     public DefaultCompositeBuilderExtensionPoint(ExtensionPointRegistry registry) {
@@ -90,19 +97,84 @@ public class DefaultCompositeBuilderExtensionPoint implements CompositeBuilderEx
             Map<String, String> attributes = builderDeclaration.getAttributes();
             String id = attributes.get("id");
 
-            CompositeBuilder builder =
-                new LazyCompositeBuilder(registry, id, builderDeclaration, this, factories, mapper);
+            CompositeBuilder builder = new LazyCompositeBuilder(id, builderDeclaration, this, factories, mapper);
             builders.put(id, builder);
         }
+
+        try {
+            builderDeclarations = serviceDiscovery.getServiceDeclarations(BindingBuilder.class);
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+
+        for (ServiceDeclaration builderDeclaration : builderDeclarations) {
+            BindingBuilder<?> builder = new LazyBindingBuilder(builderDeclaration);
+            bindingBuilders.put(builder.getModelType(), builder);
+        }
+
+        try {
+            builderDeclarations = serviceDiscovery.getServiceDeclarations(ImplementationBuilder.class);
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+
+        for (ServiceDeclaration builderDeclaration : builderDeclarations) {
+            ImplementationBuilder<?> builder = new LazyImplementationBuilder(builderDeclaration);
+            implementationBuilders.put(builder.getModelType(), builder);
+        }
+
+    }
+
+    public void addBindingBuilder(BindingBuilder<?> bindingBuilder) {
+        bindingBuilders.put(bindingBuilder.getModelType(), bindingBuilder);
+    }
+
+    public void addImplementationBuilder(ImplementationBuilder<?> implementationBuilder) {
+        implementationBuilders.put(implementationBuilder.getModelType(), implementationBuilder);
+    }
+
+    public <B extends Binding> BindingBuilder<B> getBindingBuilder(Class<B> bindingType) {
+        if (bindingType.isInterface()) {
+            return (BindingBuilder<B>)bindingBuilders.get(bindingType);
+        }
+        Class<?>[] classes = bindingType.getInterfaces();
+        for (Class<?> i : classes) {
+            BindingBuilder<B> builder = (BindingBuilder<B>)bindingBuilders.get(i);
+            if (builder != null) {
+                return builder;
+            }
+        }
+        return null;
+    }
+
+    public <I extends Implementation> ImplementationBuilder<I> getImplementationBuilder(Class<I> implementationType) {
+        if (implementationType.isInterface()) {
+            return (ImplementationBuilder<I>)implementationBuilders.get(implementationType);
+        }
+        Class<?>[] classes = implementationType.getInterfaces();
+        for (Class<?> i : classes) {
+            ImplementationBuilder<I> builder = (ImplementationBuilder<I>)implementationBuilders.get(i);
+            if (builder != null) {
+                return builder;
+            }
+        }
+        return null;
+    }
+
+    public <B extends Binding> void removeBindingBuilder(BindingBuilder<B> builder) {
+        bindingBuilders.remove(builder.getModelType());
+    }
+
+    public <I extends Implementation> void removeImplementationBuilder(ImplementationBuilder<I> builder) {
+        implementationBuilders.remove(builder.getModelType());
     }
 
     /**
      * A wrapper around a composite builder allowing lazy
      * loading and initialization of implementation providers.
      */
-    private static class LazyCompositeBuilder implements CompositeBuilder, CompositeBuilderTmp {
+    private class LazyCompositeBuilder implements CompositeBuilder, CompositeBuilderTmp {
 
-        private ExtensionPointRegistry registry;
         private FactoryExtensionPoint factories;
         private InterfaceContractMapper mapper;
         private String id;
@@ -110,13 +182,11 @@ public class DefaultCompositeBuilderExtensionPoint implements CompositeBuilderEx
         private CompositeBuilder builder;
         private CompositeBuilderExtensionPoint builders;
 
-        private LazyCompositeBuilder(ExtensionPointRegistry registry,
-                                     String id,
+        private LazyCompositeBuilder(String id,
                                      ServiceDeclaration factoryDeclaration,
                                      CompositeBuilderExtensionPoint builders,
                                      FactoryExtensionPoint factories,
                                      InterfaceContractMapper mapper) {
-            this.registry = registry;
             this.id = id;
             this.builderDeclaration = factoryDeclaration;
             this.builders = builders;
@@ -160,6 +230,108 @@ public class DefaultCompositeBuilderExtensionPoint implements CompositeBuilderEx
                                 builderClass.getConstructor(ExtensionPointRegistry.class);
                             builder = constructor.newInstance(registry);
                         }
+                    }
+                } catch (Exception e) {
+                    throw new IllegalStateException(e);
+                }
+            }
+            return builder;
+        }
+
+    }
+
+    private class LazyBindingBuilder implements BindingBuilder {
+        private ServiceDeclaration sd;
+        private String model;
+        private BindingBuilder<?> builder;
+        private Class<?> modelType;
+
+        /**
+         * @param sd
+         */
+        public LazyBindingBuilder(ServiceDeclaration sd) {
+            super();
+            this.sd = sd;
+            this.model = sd.getAttributes().get("model");
+        }
+
+        public void build(Component component, Contract contract, Binding binding, Monitor monitor) {
+            getBuilder().build(component, contract, binding, monitor);
+        }
+
+        public Class getModelType() {
+            if (modelType == null) {
+                try {
+                    modelType = sd.loadClass(model);
+                } catch (Exception e) {
+                    throw new IllegalStateException(e);
+                }
+            }
+            return modelType;
+        }
+
+        private synchronized BindingBuilder getBuilder() {
+            if (builder == null) {
+                try {
+                    Class<?> builderClass = sd.loadClass();
+                    try {
+                        Constructor<?> constructor = builderClass.getConstructor(ExtensionPointRegistry.class);
+                        builder = (BindingBuilder)constructor.newInstance(registry);
+                    } catch (NoSuchMethodException e) {
+                        Constructor<?> constructor = builderClass.getConstructor();
+                        builder = (BindingBuilder)constructor.newInstance();
+
+                    }
+                } catch (Exception e) {
+                    throw new IllegalStateException(e);
+                }
+            }
+            return builder;
+        }
+
+    }
+
+    private class LazyImplementationBuilder implements ImplementationBuilder {
+        private ServiceDeclaration sd;
+        private String model;
+        private ImplementationBuilder<?> builder;
+        private Class<?> modelType;
+
+        /**
+         * @param sd
+         */
+        public LazyImplementationBuilder(ServiceDeclaration sd) {
+            super();
+            this.sd = sd;
+            this.model = sd.getAttributes().get("model");
+        }
+
+        public void build(Component component, Implementation implementation, Monitor monitor) {
+            getBuilder().build(component, implementation, monitor);
+        }
+
+        public Class getModelType() {
+            if (modelType == null) {
+                try {
+                    modelType = sd.loadClass(model);
+                } catch (Exception e) {
+                    throw new IllegalStateException(e);
+                }
+            }
+            return modelType;
+        }
+
+        private synchronized ImplementationBuilder getBuilder() {
+            if (builder == null) {
+                try {
+                    Class<?> builderClass = sd.loadClass();
+                    try {
+                        Constructor<?> constructor = builderClass.getConstructor(ExtensionPointRegistry.class);
+                        builder = (ImplementationBuilder)constructor.newInstance(registry);
+                    } catch (NoSuchMethodException e) {
+                        Constructor<?> constructor = builderClass.getConstructor();
+                        builder = (ImplementationBuilder)constructor.newInstance();
+
                     }
                 } catch (Exception e) {
                     throw new IllegalStateException(e);

@@ -29,7 +29,6 @@ import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
-import org.apache.tuscany.sca.assembly.builder.ComponentPreProcessor;
 import org.apache.tuscany.sca.assembly.impl.ImplementationImpl;
 import org.apache.tuscany.sca.implementation.web.WebImplementation;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -38,7 +37,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
 /**
  * The model representing an Web implementation in an SCA assembly model.
  */
-class WebImplementationImpl extends ImplementationImpl implements WebImplementation, ComponentPreProcessor {
+class WebImplementationImpl extends ImplementationImpl implements WebImplementation {
     private static final QName TYPE = new QName(SCA11_NS, "implementation.web");
 
     private List<Property> properties = new ArrayList<Property>();
@@ -105,7 +104,7 @@ class WebImplementationImpl extends ImplementationImpl implements WebImplementat
      * Use preProcess to add any references and properties dynamically
      * TODO: also support introspection and handle WEB-INF/web.componentType (spec line 503)
      */
-    public void preProcess(Component component) {
+    public void build(Component component) {
         if (!(component instanceof RuntimeComponent)) {
             return;
         }

@@ -31,7 +31,6 @@ import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
-import org.apache.tuscany.sca.assembly.builder.ComponentPreProcessor;
 import org.apache.tuscany.sca.assembly.impl.ImplementationImpl;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -42,7 +41,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
  *
  * @version $Rev$ $Date$
  */
-public class SpringImplementation extends ImplementationImpl implements Implementation, ComponentPreProcessor, Extensible {
+public class SpringImplementation extends ImplementationImpl implements Implementation, Extensible {
     private final static QName TYPE = new QName(SCA11_NS, "implementation.spring");
     // The location attribute which points to the Spring application-context XML file
     private String location;
@@ -173,7 +172,7 @@ public class SpringImplementation extends ImplementationImpl implements Implemen
     /**
      * Use preProcess to validate and map the references and properties dynamically
      */
-    public void preProcess(Component component) {
+    public void build(Component component) {
         if (!(component instanceof RuntimeComponent))
             return;
 

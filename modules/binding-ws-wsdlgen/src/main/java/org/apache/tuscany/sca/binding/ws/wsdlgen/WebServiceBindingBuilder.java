@@ -17,14 +17,12 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.ws.xml;
+package org.apache.tuscany.sca.binding.ws.wsdlgen;
 
-import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
-import org.apache.tuscany.sca.binding.ws.wsdlgen.BindingWSDLGenerator;
-import org.apache.tuscany.sca.assembly.AbstractContract;
-import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
+import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.assembly.builder.BindingBuilder;
+import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.monitor.Monitor;
 
@@ -33,19 +31,23 @@ import org.apache.tuscany.sca.monitor.Monitor;
  * 
  * @version $Rev$ $Date$
  */
-public class BindingBuilderImpl implements BindingBuilder {
-    
+public class WebServiceBindingBuilder implements BindingBuilder<WebServiceBinding> {
+
     private ExtensionPointRegistry extensionPoints;
-    
-    public BindingBuilderImpl(ExtensionPointRegistry extensionPoints) {
+
+    public WebServiceBindingBuilder(ExtensionPointRegistry extensionPoints) {
         this.extensionPoints = extensionPoints;
     }
-    
+
     /**
      * Create a calculated WSDL document and save it in the Web Service binding. 
      */
-    public void build(Component component, AbstractContract contract, Binding binding, Monitor monitor) {
-        BindingWSDLGenerator.generateWSDL(component, contract, (WebServiceBinding)binding, extensionPoints, monitor);
-    }  
-    
+    public void build(Component component, Contract contract, WebServiceBinding binding, Monitor monitor) {
+        BindingWSDLGenerator.generateWSDL(component, contract, binding, extensionPoints, monitor);
+    }
+
+    public Class<WebServiceBinding> getModelType() {
+        return WebServiceBinding.class;
+    }
+
 }

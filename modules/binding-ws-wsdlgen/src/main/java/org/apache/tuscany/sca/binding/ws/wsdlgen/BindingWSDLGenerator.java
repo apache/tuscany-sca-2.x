@@ -30,7 +30,6 @@ import javax.wsdl.xml.WSDLWriter;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.apache.tuscany.sca.assembly.AbstractContract;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
@@ -154,7 +153,7 @@ public class BindingWSDLGenerator {
      * of these cases.
      */
     public static void generateWSDL(Component component,
-                                    AbstractContract contract,
+                                    Contract contract,
                                     WebServiceBinding wsBinding,
                                     ExtensionPointRegistry extensionPoints,
                                     Monitor monitor) {
@@ -181,7 +180,7 @@ public class BindingWSDLGenerator {
     }        
 
     private static void createWSDLDocument(Component component,
-                                           AbstractContract contract,
+                                           Contract contract,
                                            WebServiceBinding wsBinding,
                                            ExtensionPointRegistry extensionPoints,
                                            Monitor monitor) {

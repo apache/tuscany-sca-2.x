@@ -17,28 +17,23 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.assembly.builder;
+package org.apache.tuscany.sca.definitions.xml;
 
-import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.assembly.Component;
-import org.apache.tuscany.sca.assembly.Contract;
-import org.apache.tuscany.sca.monitor.Monitor;
+import javax.xml.namespace.QName;
 
 /**
- * A builder that handles any build-time configuration needed by bindings.
- *
- * @version $Rev$ $Date$
+ * Mocked Policy
  */
-public interface BindingBuilder<B extends Binding> {
+public class MockPolicy {
+    public QName getName() {
+        return new QName("http://schemas.xmlsoap.org/ws/2004/09/policy", "PolicyAttachment");
+    }
 
-    /**
-     * Configure a binding.
-     * 
-     * @param component The component for the binding's service or reference
-     * @param contract The binding's service or reference
-     */
-    void build(Component component, Contract contract, B binding, Monitor monitor);
+    public boolean isUnresolved() {
+        return false;
+    }
 
-    Class<B> getModelType();
+    public void setUnresolved(boolean unresolved) {
+    }
 
 }

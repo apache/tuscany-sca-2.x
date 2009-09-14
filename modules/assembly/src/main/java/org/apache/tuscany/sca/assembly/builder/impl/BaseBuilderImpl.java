@@ -39,6 +39,7 @@ import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
+import org.apache.tuscany.sca.assembly.builder.CompositeBuilderExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
@@ -67,12 +68,15 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
     protected InterfaceContractMapper interfaceContractMapper;
     protected DocumentBuilderFactory documentBuilderFactory;
     protected TransformerFactory transformerFactory;
+    protected CompositeBuilderExtensionPoint builders;
 
-    protected BaseBuilderImpl(AssemblyFactory assemblyFactory,
+    protected BaseBuilderImpl(CompositeBuilderExtensionPoint builders,
+                              AssemblyFactory assemblyFactory,
                               SCABindingFactory scaBindingFactory,
                               DocumentBuilderFactory documentBuilderFactory,
                               TransformerFactory transformerFactory,
                               InterfaceContractMapper interfaceContractMapper) {
+        this.builders = builders;
         this.assemblyFactory = assemblyFactory;
         this.scaBindingFactory = scaBindingFactory;
         this.documentBuilderFactory = documentBuilderFactory;
@@ -85,6 +89,7 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
      * @param registry
      */
     protected BaseBuilderImpl(ExtensionPointRegistry registry) {
+        this.builders = registry.getExtensionPoint(CompositeBuilderExtensionPoint.class);
         FactoryExtensionPoint factoryExtensionPoint = registry.getExtensionPoint(FactoryExtensionPoint.class);
         this.assemblyFactory = factoryExtensionPoint.getFactory(AssemblyFactory.class);
         this.scaBindingFactory = factoryExtensionPoint.getFactory(SCABindingFactory.class);

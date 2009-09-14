@@ -80,7 +80,7 @@ public class ModelBuilderImpl implements CompositeBuilder, CompositeBuilderTmp {
         MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
         Monitor monitor = monitorFactory.createMonitor();
         
-        compositeIncludeBuilder = new CompositeIncludeBuilderImpl(assemblyFactory);
+        compositeIncludeBuilder = new CompositeIncludeBuilderImpl();
         compositeCloneBuilder = new CompositeCloneBuilderImpl();
         
         componentTypeBuilder = new ComponentTypeBuilderImpl(registry);
