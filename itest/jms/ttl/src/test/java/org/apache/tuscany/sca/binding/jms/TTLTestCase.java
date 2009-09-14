@@ -22,7 +22,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import itest.MockInitialContextFactory;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,16 +32,16 @@ import org.junit.Test;
  */
 public class TTLTestCase {
 
-    private static SCADomain scaDomain;
+    private Node node;
 
     @Before
     public void init() {
-        scaDomain = SCADomain.newInstance("http://localhost", "/", "ttl.composite");
+        node = NodeFactory.newInstance().createNode().start();
     }
 
     @Test
     public void testSayHello() throws Exception {
-        ClientIface client1 = scaDomain.getService(ClientIface.class, "Client1");
+        ClientIface client1 = node.getService(ClientIface.class, "Client1");
 
         client1.sayHello("petra");
 
@@ -56,8 +57,8 @@ public class TTLTestCase {
 
     @After
     public void end() {
-        if (scaDomain != null) {
-            scaDomain.close();
+        if (node != null) {
+            node.stop();
         }
     }
 }

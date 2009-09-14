@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.sca.binding.jms;
 
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * This class implements the OneWay service.

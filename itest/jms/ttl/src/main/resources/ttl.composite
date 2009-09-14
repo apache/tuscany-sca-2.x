@@ -17,18 +17,17 @@
  * specific language governing permissions and limitations
  * under the License.    
  -->
-<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-           targetNamespace="http://jms"
-           xmlns:itest="http://jms"
-           name="DefinitionsTests">
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+           targetNamespace="http://itest"
+           name="TTLTests">
 
     <component name="Client1">
         <implementation.java class="org.apache.tuscany.sca.binding.jms.ClientImpl"/>
         <reference name="serviceA">
            <interface.java interface="org.apache.tuscany.sca.binding.jms.ClientIface" />
            <binding.jms >
-               <destination name="dynamic/MyService"/>
-               <headers JMSTimeToLive="123" />
+               <destination jndiName="dynamic/MyService"/>
+               <headers timeToLive="123" />
            </binding.jms>
         </reference>
     </component>
