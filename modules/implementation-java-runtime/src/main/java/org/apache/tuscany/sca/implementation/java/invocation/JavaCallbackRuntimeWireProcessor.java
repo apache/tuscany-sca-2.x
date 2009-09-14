@@ -68,6 +68,9 @@ public class JavaCallbackRuntimeWireProcessor implements RuntimeWireProcessor {
             return;
         }
         RuntimeComponent component = (RuntimeComponent) wire.getEndpointReference().getComponent();
+        if (component == null) {
+            return;
+        }
         Implementation implementation = component.getImplementation();
         if (!(implementation instanceof JavaImplementation)) {
             return;
