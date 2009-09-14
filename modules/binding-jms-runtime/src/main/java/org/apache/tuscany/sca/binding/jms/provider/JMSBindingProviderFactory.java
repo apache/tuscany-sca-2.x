@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.binding.jms.provider;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.binding.jms.JMSBinding;
+import org.apache.tuscany.sca.binding.jms.host.DefaultJMSHostExtensionPointImpl;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.host.jms.JMSHostExtensionPoint;
 import org.apache.tuscany.sca.host.jms.JMSServiceListenerFactory;
@@ -53,6 +54,10 @@ public class JMSBindingProviderFactory implements BindingProviderFactory<JMSBind
         }
 
         JMSHostExtensionPoint jmsHostExtensionPoint = (JMSHostExtensionPoint)extensionPoints.getExtensionPoint(JMSHostExtensionPoint.class);
+        if (jmsHostExtensionPoint == null) {
+            jmsHostExtensionPoint = new DefaultJMSHostExtensionPointImpl(extensionPoints);
+            extensionPoints.addExtensionPoint(jmsHostExtensionPoint);
+        }
         serviceListenerFactory = jmsHostExtensionPoint.getJMSServiceListenerFactory();
     }
 
