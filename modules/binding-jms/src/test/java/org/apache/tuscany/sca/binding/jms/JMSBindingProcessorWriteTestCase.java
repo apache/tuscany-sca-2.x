@@ -57,7 +57,7 @@ public class JMSBindingProcessorWriteTestCase extends TestCase {
             + " <component name=\"HelloWorldComponent\">"
             + "      <service name=\"HelloWorldService\">"
             + "          <binding.jms>"
-            + "            <destination name=\"AAA\">"
+            + "            <destination jndiName=\"AAA\">"
             + "                <property name=\"AAAProp\" type=\"string\"/>"
             + "            </destination>"
             + "            <connectionFactory name=\"ABC\"/>"
@@ -405,7 +405,7 @@ public class JMSBindingProcessorWriteTestCase extends TestCase {
                        "<component name=\"HelloWorldComponent\">" + 
                            "<service name=\"HelloWorldService\">" +
                              "<binding.jms><operationProperties name=\"JKL\" /> " +
-                               "<destination name=\"AAA\">" +
+                               "<destination jndiName=\"AAA\">" +
                                  "<property name=\"AAAProp\" type=\"string\"></property>" +
                                "</destination> " +
                                "<connectionFactory name=\"ABC\" /> "+

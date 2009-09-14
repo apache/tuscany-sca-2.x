@@ -72,12 +72,12 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
  *     <headers JMSType="string"?
  *              JMSCorrelationID="string"?
  *              JMSDeliveryMode="string"?
- *              JMSTimeToLive="int"?
+ *              timeToLive="int"?
  *              JMSPriority="string"?>
  *         <property name="NMTOKEN" type="NMTOKEN">*
  *     </headers>?
  * 
- *     <destination name="xs:anyURI" type="string"? create="string"?>
+ *     <destination jndiName="xs:anyURI" type="string"? create="string"?>
  *         <property name="NMTOKEN" type="NMTOKEN">*
  *     </destination>?
  * 
@@ -90,7 +90,7 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
  *     </activationSpec>?
  * 
  *     <response>
- *         <destination name="xs:anyURI" type="string"? create="string"?>
+ *         <destination jndiName="xs:anyURI" type="string"? create="string"?>
  *             <property name="NMTOKEN" type="NMTOKEN">*
  *         </destination>?
  * 
@@ -118,7 +118,7 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
  *         <headers JMSType="string"?
  *                  JMSCorrelationID="string"?
  *                  JMSDeliveryMode="string"?
- *                  JMSTimeToLive="int"?
+ *                  timeToLive="int"?
  *                  JMSPriority="string"?>
  *             <property name="NMTOKEN" type="NMTOKEN">*
  *         </headers>?
@@ -407,7 +407,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
     }
 
     private void parseDestination(XMLStreamReader reader, JMSBinding jmsBinding) throws XMLStreamException {
-        String name = reader.getAttributeValue(null, "name");
+        String name = reader.getAttributeValue(null, "jndiName");
         if (name != null && name.length() > 0) {
             jmsBinding.setDestinationName(name);
         }
@@ -453,7 +453,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
     }
 
     private void parseResponseDestination(XMLStreamReader reader, JMSBinding jmsBinding) throws XMLStreamException {
-        String name = reader.getAttributeValue(null, "name");
+        String name = reader.getAttributeValue(null, "jndiName");
         if (name != null && name.length() > 0) {
             jmsBinding.setResponseDestinationName(name);
         }
@@ -552,7 +552,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
      * <headers JMSType=”string”?
      *          JMSCorrelationID=”string”?
      *          JMSDeliveryMode=”PERSISTENT or NON_PERSISTENT”?
-     *          JMSTimeToLive=”long”?      
+     *          timeToLive=”long”?      
      *          JMSPriority=”0 .. 9”?>
      *     <property name=”NMTOKEN” type=”NMTOKEN”?>*    
      * </headers>?
@@ -579,7 +579,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
             }
         }
 
-        String jmsTimeToLive = reader.getAttributeValue(null, "JMSTimeToLive");
+        String jmsTimeToLive = reader.getAttributeValue(null, "timeToLive");
         if (jmsTimeToLive != null && jmsTimeToLive.length() > 0) {
             jmsBinding.setJMSTimeToLive(Long.parseLong(jmsTimeToLive));
         }
@@ -649,7 +649,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
      *   <headers JMSType=”string”?
      *            JMSCorrelationID=”string”?
      *            JMSDeliveryMode=”PERSISTENT or NON_PERSISTENT”?
-     *            JMSTimeToLive=”long”?
+     *            timeToLive=”long”?
      *            JMSPriority=”0 .. 9”?>
      *       <property name=”NMTOKEN” type=”NMTOKEN”?>*
      *   </headers>?
@@ -725,7 +725,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
             }
         }
 
-        String jmsTimeToLive = reader.getAttributeValue(null, "JMSTimeToLive");
+        String jmsTimeToLive = reader.getAttributeValue(null, "timeToLive");
         if (jmsTimeToLive != null && jmsTimeToLive.length() > 0) {
             jmsBinding.setOperationJMSTimeToLive(opName, Long.parseLong(jmsTimeToLive));
         }
@@ -1017,7 +1017,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
      * <headers JMSType=”string”?
      *          JMSCorrelationID=”string”?
      *          JMSDeliveryMode=”PERSISTENT or NON_PERSISTENT”?
-     *          JMSTimeToLive=”long”?      
+     *          timeToLive=”long”?      
      *          JMSPriority=”0 .. 9”?>
      *     <property name=”NMTOKEN” type=”NMTOKEN”?>*    
      * </headers>?
@@ -1046,7 +1046,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
 
         Long jmsTimeToLive = jmsBinding.getJMSTimeToLive();
         if (jmsTimeToLive != null) {
-            writer.writeAttribute("JMSTimeToLive", jmsTimeToLive.toString());
+            writer.writeAttribute("timeToLive", jmsTimeToLive.toString());
         }
 
         Integer jmsPriority = jmsBinding.getJMSPriority();
@@ -1129,7 +1129,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
      *         <headers JMSType="string"?
      *                  JMSCorrelationID="string"?
      *                  JMSDeliveryMode="string"?
-     *                  JMSTimeToLive="int"?
+     *                  timeToLive="int"?
      *                  JMSPriority="string"?>
      *             <property name="NMTOKEN" type="NMTOKEN">*
      *         </headers>?
@@ -1193,7 +1193,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
                     }
     
                     if (jmsTimeToLive != null) {
-                        writer.writeAttribute("JMSTimeToLive", jmsTimeToLive.toString());
+                        writer.writeAttribute("timeToLive", jmsTimeToLive.toString());
                     }
     
                     if (jmsPriority != null) {
@@ -1273,7 +1273,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
     
     /**
      * Writes destination properties if there are any.
-     *     <destination name="xs:anyURI" type="string"? create="string"?>
+     *     <destination jndiName="xs:anyURI" type="string"? create="string"?>
      *         <property name="NMTOKEN" type="NMTOKEN">*
      *     </destination>?
      */
@@ -1289,7 +1289,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
         writer.writeStartElement(Constants.SCA11_NS, "destination");
 
         if ( destinationName != null && destinationName.length() > 0) {
-            writer.writeAttribute("name", destinationName);            
+            writer.writeAttribute("jndiName", destinationName);            
         }
 
         // Type not handled yet
@@ -1381,7 +1381,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
     
     /**
      * Writes response destination properties if there are any.
-     *     <destination name="xs:anyURI" type="string"? create="string"?>
+     *     <destination jndiName="xs:anyURI" type="string"? create="string"?>
      *         <property name="NMTOKEN" type="NMTOKEN">*
      *     </destination>?
      */
@@ -1397,7 +1397,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
         writer.writeStartElement(Constants.SCA11_NS, "destination");
 
         if ( destinationName != null && destinationName.length() > 0) {
-            writer.writeAttribute("name", destinationName);            
+            writer.writeAttribute("jndiName", destinationName);            
         }
 
         // Type not handled yet
