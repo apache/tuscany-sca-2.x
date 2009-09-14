@@ -65,7 +65,7 @@ public class TransportServiceInterceptor implements Interceptor {
         this.jmsResourceFactory = jmsResourceFactory;
         this.requestMessageProcessor = JMSMessageProcessorUtil.getRequestMessageProcessor(jmsBinding);
         this.responseMessageProcessor = JMSMessageProcessorUtil.getResponseMessageProcessor(jmsBinding);
-        this.service = (RuntimeComponentService)runtimeWire.getEndpoint().getInterfaceContract();
+        this.service = (RuntimeComponentService)runtimeWire.getEndpoint().getService();
         this.correlationScheme = jmsBinding.getCorrelationScheme();
     }
     

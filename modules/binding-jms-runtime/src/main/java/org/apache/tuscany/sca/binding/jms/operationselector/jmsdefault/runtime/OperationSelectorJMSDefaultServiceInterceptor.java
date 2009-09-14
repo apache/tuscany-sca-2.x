@@ -74,7 +74,7 @@ public class OperationSelectorJMSDefaultServiceInterceptor implements Intercepto
         this.jmsResourceFactory = jmsResourceFactory;
         this.requestMessageProcessor = JMSMessageProcessorUtil.getRequestMessageProcessor(jmsBinding);
         this.responseMessageProcessor = JMSMessageProcessorUtil.getResponseMessageProcessor(jmsBinding);
-        this.service = (RuntimeComponentService)runtimeWire.getEndpoint().getInterfaceContract();
+        this.service = (RuntimeComponentService)runtimeWire.getEndpoint().getService();
         this.serviceOperations = service.getInterfaceContract().getInterface().getOperations();
     }
     

@@ -53,7 +53,7 @@ public class OperationSelectorJMSUserPropServiceInterceptor implements Intercept
         this.jmsBinding = jmsBinding;
         this.operationSelector = (OperationSelectorJMSUserProp)jmsBinding.getOperationSelector();
         this.runtimeWire = runtimeWire;
-        this.service = (RuntimeComponentService) runtimeWire.getEndpoint().getInterfaceContract();
+        this.service = (RuntimeComponentService) runtimeWire.getEndpoint().getService();
         this.serviceOperations = service.getInterfaceContract().getInterface().getOperations();
     }
 
