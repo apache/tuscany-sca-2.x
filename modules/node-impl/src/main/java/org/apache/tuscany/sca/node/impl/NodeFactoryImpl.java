@@ -54,7 +54,7 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
-import org.apache.tuscany.sca.assembly.builder.CompositeBuilderExtensionPoint;
+import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderTmp;
 import org.apache.tuscany.sca.assembly.builder.EndpointReferenceBuilder;
 import org.apache.tuscany.sca.common.xml.stax.StAXHelper;
@@ -422,7 +422,7 @@ public class NodeFactoryImpl extends NodeFactory {
         modelResolvers = extensionPoints.getExtensionPoint(ModelResolverExtensionPoint.class);
 
         // Get composite builders
-        CompositeBuilderExtensionPoint compositeBuilders = extensionPoints.getExtensionPoint(CompositeBuilderExtensionPoint.class);
+        BuilderExtensionPoint compositeBuilders = extensionPoints.getExtensionPoint(BuilderExtensionPoint.class);
         compositeBuilder = compositeBuilders.getCompositeBuilder("org.apache.tuscany.sca.assembly.builder.CompositeBuilder");
 
         // Get endpoint builder

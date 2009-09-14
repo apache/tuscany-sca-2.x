@@ -34,7 +34,7 @@ import org.apache.tuscany.sca.monitor.Monitor;
  *
  * @version $Rev$ $Date$
  */
-public interface CompositeBuilderTmp {
+public interface DeployedCompositeBuilder {
 
     /**
      * Returns the ID of the builder.

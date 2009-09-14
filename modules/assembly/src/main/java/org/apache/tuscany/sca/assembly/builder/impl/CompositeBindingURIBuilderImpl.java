@@ -40,7 +40,7 @@ import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
-import org.apache.tuscany.sca.assembly.builder.CompositeBuilderTmp;
+import org.apache.tuscany.sca.assembly.builder.DeployedCompositeBuilder;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.monitor.Monitor;
@@ -50,7 +50,7 @@ import org.apache.tuscany.sca.monitor.Monitor;
  *
  * @version $Rev$ $Date$
  */
-public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements CompositeBuilder, CompositeBuilderTmp {
+public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements CompositeBuilder, DeployedCompositeBuilder {
 
     public CompositeBindingURIBuilderImpl(ExtensionPointRegistry registry) {
         super(registry);

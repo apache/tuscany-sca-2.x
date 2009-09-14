@@ -36,7 +36,7 @@ import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
-import org.apache.tuscany.sca.assembly.builder.CompositeBuilderExtensionPoint;
+import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.DefaultURLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
@@ -75,7 +75,7 @@ public class BuildPolicyTestCase {
         SCABindingFactory scaBindingFactory = new TestSCABindingFactoryImpl();
         modelFactories.addFactory(scaBindingFactory);
         compositeBuilder =
-            extensionPoints.getExtensionPoint(CompositeBuilderExtensionPoint.class)
+            extensionPoints.getExtensionPoint(BuilderExtensionPoint.class)
                 .getCompositeBuilder("org.apache.tuscany.sca.assembly.builder.CompositeBuilder");
 
         List<Definitions> policyDefinitions = new ArrayList<Definitions>();

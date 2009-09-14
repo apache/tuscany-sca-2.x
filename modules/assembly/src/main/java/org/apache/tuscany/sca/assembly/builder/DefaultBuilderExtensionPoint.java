@@ -46,7 +46,7 @@ import org.apache.tuscany.sca.monitor.Monitor;
  *
  * @version $Rev$ $Date$
  */
-public class DefaultCompositeBuilderExtensionPoint implements CompositeBuilderExtensionPoint {
+public class DefaultBuilderExtensionPoint implements BuilderExtensionPoint {
 
     private ExtensionPointRegistry registry;
     private final Map<String, CompositeBuilder> builders = new HashMap<String, CompositeBuilder>();
@@ -55,7 +55,7 @@ public class DefaultCompositeBuilderExtensionPoint implements CompositeBuilderEx
         new HashMap<Class<?>, ImplementationBuilder>();
     private boolean loaded;
 
-    public DefaultCompositeBuilderExtensionPoint(ExtensionPointRegistry registry) {
+    public DefaultBuilderExtensionPoint(ExtensionPointRegistry registry) {
         this.registry = registry;
     }
 
@@ -173,18 +173,18 @@ public class DefaultCompositeBuilderExtensionPoint implements CompositeBuilderEx
      * A wrapper around a composite builder allowing lazy
      * loading and initialization of implementation providers.
      */
-    private class LazyCompositeBuilder implements CompositeBuilder, CompositeBuilderTmp {
+    private class LazyCompositeBuilder implements CompositeBuilder, DeployedCompositeBuilder {
 
         private FactoryExtensionPoint factories;
         private InterfaceContractMapper mapper;
         private String id;
         private ServiceDeclaration builderDeclaration;
         private CompositeBuilder builder;
-        private CompositeBuilderExtensionPoint builders;
+        private BuilderExtensionPoint builders;
 
         private LazyCompositeBuilder(String id,
                                      ServiceDeclaration factoryDeclaration,
-                                     CompositeBuilderExtensionPoint builders,
+                                     BuilderExtensionPoint builders,
                                      FactoryExtensionPoint factories,
                                      InterfaceContractMapper mapper) {
             this.id = id;
@@ -207,7 +207,7 @@ public class DefaultCompositeBuilderExtensionPoint implements CompositeBuilderEx
                           Definitions definitions,
                           Map<QName, List<String>> bindingBaseURIs,
                           Monitor monitor) throws CompositeBuilderException {
-            ((CompositeBuilderTmp)getBuilder()).build(composite, definitions, bindingBaseURIs, monitor);
+            ((DeployedCompositeBuilder)getBuilder()).build(composite, definitions, bindingBaseURIs, monitor);
         }
 
         private CompositeBuilder getBuilder() {
@@ -221,7 +221,7 @@ public class DefaultCompositeBuilderExtensionPoint implements CompositeBuilderEx
                     } catch (NoSuchMethodException e) {
                         try {
                             Constructor<CompositeBuilder> constructor =
-                                builderClass.getConstructor(CompositeBuilderExtensionPoint.class,
+                                builderClass.getConstructor(BuilderExtensionPoint.class,
                                                             FactoryExtensionPoint.class,
                                                             InterfaceContractMapper.class);
                             builder = constructor.newInstance(builders, factories, mapper);

@@ -41,7 +41,7 @@ import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.builder.BindingBuilder;
-import org.apache.tuscany.sca.assembly.builder.CompositeBuilderExtensionPoint;
+import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
@@ -99,7 +99,7 @@ public class CallableReferenceImpl<B> implements ServiceReferenceExt<B> {
     private StAXArtifactProcessor<EndpointReference> staxProcessor; 
     private XMLInputFactory xmlInputFactory;
     private XMLOutputFactory xmlOutputFactory;
-    private CompositeBuilderExtensionPoint builders;
+    private BuilderExtensionPoint builders;
 
     /*
      * Public constructor for Externalizable serialization/deserialization
@@ -166,7 +166,7 @@ public class CallableReferenceImpl<B> implements ServiceReferenceExt<B> {
         this.xmlOutputFactory = modelFactories.getFactory(XMLOutputFactory.class);
         this.staxProcessors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         this.staxProcessor = staxProcessors.getProcessor(EndpointReference.class);
-        this.builders = registry.getExtensionPoint(CompositeBuilderExtensionPoint.class);
+        this.builders = registry.getExtensionPoint(BuilderExtensionPoint.class);
     }
 
     public CallableReferenceImpl(Class<B> businessInterface, RuntimeWire wire, ProxyFactory proxyFactory) {

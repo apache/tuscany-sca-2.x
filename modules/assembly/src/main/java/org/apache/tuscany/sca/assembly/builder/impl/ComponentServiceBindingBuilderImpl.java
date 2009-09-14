@@ -27,7 +27,7 @@ import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.builder.BindingBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
-import org.apache.tuscany.sca.assembly.builder.CompositeBuilderExtensionPoint;
+import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.monitor.Monitor;
@@ -39,10 +39,10 @@ import org.apache.tuscany.sca.monitor.Monitor;
  * @version $Rev$ $Date$
  */
 public class ComponentServiceBindingBuilderImpl implements CompositeBuilder {
-    private CompositeBuilderExtensionPoint builders;
+    private BuilderExtensionPoint builders;
     
     public ComponentServiceBindingBuilderImpl(ExtensionPointRegistry registry) {
-        this.builders = registry.getExtensionPoint(CompositeBuilderExtensionPoint.class);
+        this.builders = registry.getExtensionPoint(BuilderExtensionPoint.class);
     }
 
     public String getID() {

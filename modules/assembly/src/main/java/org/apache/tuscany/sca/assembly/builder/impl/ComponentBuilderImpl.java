@@ -35,7 +35,7 @@ import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.Service;
-import org.apache.tuscany.sca.assembly.builder.CompositeBuilderExtensionPoint;
+import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
 import org.apache.tuscany.sca.assembly.builder.ImplementationBuilder;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
@@ -63,7 +63,7 @@ public class ComponentBuilderImpl {
     private AssemblyFactory assemblyFactory;
     private SCABindingFactory scaBindingFactory;
     private InterfaceContractMapper interfaceContractMapper;
-    private CompositeBuilderExtensionPoint builders;
+    private BuilderExtensionPoint builders;
         
     public ComponentBuilderImpl(ExtensionPointRegistry registry) {
         UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
@@ -76,7 +76,7 @@ public class ComponentBuilderImpl {
         
         interfaceContractMapper = utilities.getUtility(InterfaceContractMapper.class);
         
-        builders = registry.getExtensionPoint(CompositeBuilderExtensionPoint.class);
+        builders = registry.getExtensionPoint(BuilderExtensionPoint.class);
     }    
     
     public void setComponentTypeBuilder(ComponentTypeBuilderImpl componentTypeBuilder){

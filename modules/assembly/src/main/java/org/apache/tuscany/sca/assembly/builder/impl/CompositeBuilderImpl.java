@@ -28,8 +28,8 @@ import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
-import org.apache.tuscany.sca.assembly.builder.CompositeBuilderExtensionPoint;
-import org.apache.tuscany.sca.assembly.builder.CompositeBuilderTmp;
+import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
+import org.apache.tuscany.sca.assembly.builder.DeployedCompositeBuilder;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.definitions.Definitions;
@@ -41,7 +41,7 @@ import org.apache.tuscany.sca.monitor.Monitor;
  * 
  * @version $Rev$ $Date$
  */
-public class CompositeBuilderImpl implements CompositeBuilder, CompositeBuilderTmp {
+public class CompositeBuilderImpl implements CompositeBuilder, DeployedCompositeBuilder {
     private static final Logger logger = Logger.getLogger(CompositeBuilderImpl.class.getName());
     private CompositeBuilder compositeIncludeBuilder;
     private CompositeBuilder componentReferenceWireBuilder;
@@ -63,7 +63,7 @@ public class CompositeBuilderImpl implements CompositeBuilder, CompositeBuilderT
     private CompositeBuilder componentReferenceEndpointReferenceBuilder;
     private CompositeBuilder componentServiceEndpointBuilder;
 
-    private CompositeBuilderExtensionPoint builders;
+    private BuilderExtensionPoint builders;
     
 
     /**
@@ -74,7 +74,7 @@ public class CompositeBuilderImpl implements CompositeBuilder, CompositeBuilderT
     public CompositeBuilderImpl(ExtensionPointRegistry registry) {
         
         FactoryExtensionPoint factories = registry.getExtensionPoint(FactoryExtensionPoint.class);
-        this.builders = registry.getExtensionPoint(CompositeBuilderExtensionPoint.class);
+        this.builders = registry.getExtensionPoint(BuilderExtensionPoint.class);
         AssemblyFactory assemblyFactory = factories.getFactory(AssemblyFactory.class);
  
         compositeIncludeBuilder = new CompositeIncludeBuilderImpl();
@@ -139,7 +139,7 @@ public class CompositeBuilderImpl implements CompositeBuilder, CompositeBuilderT
 
             // Configure service binding URIs and names. Creates an SCA defined URI based
             // on the scheme base URI, the component name and the binding name
-            ((CompositeBuilderTmp)compositeBindingURIBuilder).build(composite, definitions, bindingBaseURIs, monitor);
+            ((DeployedCompositeBuilder)compositeBindingURIBuilder).build(composite, definitions, bindingBaseURIs, monitor);
 
             // Create $promoted$ component services on bottom level components
             // to represent promoted services

@@ -27,7 +27,7 @@ import org.apache.tuscany.sca.assembly.Implementation;
  *
  * @version $Rev$ $Date$
  */
-public interface CompositeBuilderExtensionPoint {
+public interface BuilderExtensionPoint {
 
     /**
      * Adds a composite builder.
@@ -51,16 +51,46 @@ public interface CompositeBuilderExtensionPoint {
      */
     CompositeBuilder getCompositeBuilder(String id);
     
+    /**
+     * Add a binding builder
+     * @param bindingBuilder
+     */
     void addBindingBuilder(BindingBuilder<?> bindingBuilder);
 
+    /**
+     * Look up a binding builder by the binding type
+     * @param <B>
+     * @param bindingType
+     * @return
+     */
     <B extends Binding> BindingBuilder<B> getBindingBuilder(Class<B> bindingType);
 
+    /**
+     * Remove a binding builder
+     * @param <B>
+     * @param builder
+     */
     <B extends Binding> void removeBindingBuilder(BindingBuilder<B> builder);
 
+    /**
+     * Add an implementation builder
+     * @param implementationBuilder
+     */
     void addImplementationBuilder(ImplementationBuilder<?> implementationBuilder);
 
+    /**
+     * Look up an implementation builder by implementation type
+     * @param <I>
+     * @param implementationType
+     * @return
+     */
     <I extends Implementation> ImplementationBuilder<I> getImplementationBuilder(Class<I> implementationType);
 
+    /**
+     * Remove an implementation builder
+     * @param <I>
+     * @param builder
+     */
     <I extends Implementation> void removeImplementationBuilder(ImplementationBuilder<I> builder);
 
 }
