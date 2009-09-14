@@ -30,6 +30,7 @@
     <name>Apache Tuscany SCA iTest JMS</name>
     
   <modules>
+    <module>args</module>
     <module>ttl</module>
   </modules>
 
