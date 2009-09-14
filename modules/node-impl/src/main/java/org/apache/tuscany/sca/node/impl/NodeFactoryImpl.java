@@ -53,9 +53,9 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
-import org.apache.tuscany.sca.assembly.builder.CompositeBuilderTmp;
+import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
+import org.apache.tuscany.sca.assembly.builder.DeployedCompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.EndpointReferenceBuilder;
 import org.apache.tuscany.sca.common.xml.stax.StAXHelper;
 import org.apache.tuscany.sca.contribution.Artifact;
@@ -559,7 +559,7 @@ public class NodeFactoryImpl extends NodeFactory {
         }
 
         // build the top level composite
-        ((CompositeBuilderTmp)compositeBuilder).build(tempComposite, systemDefinitions, bindingMap, monitor);
+        ((DeployedCompositeBuilder)compositeBuilder).build(tempComposite, systemDefinitions, bindingMap, monitor);
         analyzeProblems();
 
         endpointReferenceBuilder.buildtimeBuild(tempComposite);
