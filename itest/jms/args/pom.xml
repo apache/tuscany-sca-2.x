@@ -25,6 +25,7 @@
         <version>1.6-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
+
     <artifactId>itest-jms-args</artifactId>
     <name>Apache Tuscany SCA iTest JMS Args</name>
 
@@ -38,35 +39,8 @@
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-implementation-java-runtime</artifactId>
-            <version>2.0-SNAPSHOT</version>
-            <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-jms-runtime</artifactId>
             <version>2.0-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-host-jms-asf</artifactId>
-            <version>2.0-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.5</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-node-impl</artifactId>
-            <version>2.0-SNAPSHOT</version>
-            <scope>test</scope>
         </dependency>
 
         <!--  uses ActiveMQ 5.1 as 4.1 Session.createQueue does not work using
@@ -77,9 +51,20 @@
             <version>5.1.0</version>
         </dependency>
                 
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-implementation-java-runtime</artifactId>
+            <version>2.0-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-node-impl</artifactId>
+            <version>2.0-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
-    <build>
-       <finalName>${artifactId}</finalName>
-    </build>
 </project>
