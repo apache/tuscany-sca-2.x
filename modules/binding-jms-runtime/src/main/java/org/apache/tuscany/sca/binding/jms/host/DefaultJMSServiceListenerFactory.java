@@ -25,9 +25,6 @@ import javax.naming.NamingException;
 import org.apache.tuscany.sca.binding.jms.JMSBindingException;
 import org.apache.tuscany.sca.binding.jms.provider.JMSBindingServiceBindingProvider;
 import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory;
-import org.apache.tuscany.sca.host.jms.JMSServiceListener;
-import org.apache.tuscany.sca.host.jms.JMSServiceListenerDetails;
-import org.apache.tuscany.sca.host.jms.JMSServiceListenerFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.work.WorkScheduler;
 

@@ -21,8 +21,6 @@ package org.apache.tuscany.sca.binding.jms.host;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
-import org.apache.tuscany.sca.host.jms.JMSHostExtensionPoint;
-import org.apache.tuscany.sca.host.jms.JMSServiceListenerFactory;
 import org.apache.tuscany.sca.work.WorkScheduler;
 
 public class DefaultJMSHostExtensionPoint implements JMSHostExtensionPoint {

@@ -36,7 +36,6 @@ import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.JMSBindingException;
 import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory;
-import org.apache.tuscany.sca.host.jms.JMSServiceListener;
 import org.apache.tuscany.sca.work.WorkScheduler;
 
 /**
