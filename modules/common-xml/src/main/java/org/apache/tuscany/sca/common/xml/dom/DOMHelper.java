@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 
+import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -206,6 +207,20 @@ public class DOMHelper {
             parent = parent.getParentNode();
         }
         return doc;
+    }
+    
+    public static String getPrefix(Element element, String namespace) {
+        if (element.isDefaultNamespace(namespace)) {
+            return XMLConstants.DEFAULT_NS_PREFIX;
+        }
+        return element.lookupPrefix(namespace);
+    }
+
+    public static String getNamespaceURI(Element element, String prefix) {
+        if (XMLConstants.DEFAULT_NS_PREFIX.equals(prefix)) {
+            prefix = null;
+        }
+        return element.lookupNamespaceURI(prefix);
     }
 
     public static interface NodeContentHandler extends ContentHandler, LexicalHandler {
