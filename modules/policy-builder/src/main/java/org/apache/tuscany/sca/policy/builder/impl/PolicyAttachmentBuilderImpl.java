@@ -27,7 +27,6 @@ import java.io.StringWriter;
 import java.util.StringTokenizer;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 import javax.xml.xpath.XPathConstants;
@@ -38,11 +37,9 @@ import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.common.xml.dom.DOMHelper;
 import org.apache.tuscany.sca.common.xml.stax.StAXHelper;
-import org.apache.tuscany.sca.common.xml.xpath.XPathHelper;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.policy.PolicySet;
@@ -53,23 +50,20 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * A composite builder that computes policy sets based on attached intents and policy sets.
- * Useful if you want to build the model without making any runtime decisions such as
- * reference/services matching
+ * A builder that attaches policy sets to the domain composite using the xpath defined by
+ * the attachTo attribute. It first creates a DOM model for the composite so that the xpath
+ * expression can be evaluated. For the nodes selected by the xpath, add the policySets attribute
+ * to the subject element. Then reload the patched DOM into a Composite model again.  
  *
  * @version $Rev$ $Date$
  */
 public class PolicyAttachmentBuilderImpl implements CompositeBuilder {
-    private XMLOutputFactory xmlOutputFactory;
     private StAXHelper staxHelper;
     private DOMHelper domHelper;
-    private XPathHelper xpathHelper;
-    private StAXArtifactProcessor processor;
+    private StAXArtifactProcessor<Composite> processor;
 
     public PolicyAttachmentBuilderImpl(ExtensionPointRegistry registry) {
-        xmlOutputFactory = registry.getExtensionPoint(FactoryExtensionPoint.class).getFactory(XMLOutputFactory.class);
         domHelper = DOMHelper.getInstance(registry);
-        xpathHelper = XPathHelper.getInstance(registry);
         staxHelper = StAXHelper.getInstance(registry);
         StAXArtifactProcessorExtensionPoint processors =
             registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
