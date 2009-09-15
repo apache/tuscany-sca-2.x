@@ -34,6 +34,7 @@ import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.core.LifeCycleListener;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
@@ -46,7 +47,7 @@ import org.apache.tuscany.sca.monitor.Monitor;
  *
  * @version $Rev$ $Date$
  */
-public class DefaultBuilderExtensionPoint implements BuilderExtensionPoint {
+public class DefaultBuilderExtensionPoint implements BuilderExtensionPoint, LifeCycleListener {
 
     private ExtensionPointRegistry registry;
     private final Map<String, CompositeBuilder> builders = new HashMap<String, CompositeBuilder>();
@@ -59,6 +60,16 @@ public class DefaultBuilderExtensionPoint implements BuilderExtensionPoint {
         this.registry = registry;
     }
 
+    public void start() {
+    }
+
+    public void stop() {
+        builders.clear();
+        bindingBuilders.clear();
+        implementationBuilders.clear();
+        loaded = false;
+    }
+    
     public void addCompositeBuilder(CompositeBuilder builder) {
         builders.put(builder.getID(), builder);
     }
@@ -122,6 +133,8 @@ public class DefaultBuilderExtensionPoint implements BuilderExtensionPoint {
             ImplementationBuilder<?> builder = new LazyImplementationBuilder(builderDeclaration);
             implementationBuilders.put(builder.getModelType(), builder);
         }
+        
+        loaded = true;
 
     }
 
@@ -134,6 +147,7 @@ public class DefaultBuilderExtensionPoint implements BuilderExtensionPoint {
     }
 
     public <B extends Binding> BindingBuilder<B> getBindingBuilder(Class<B> bindingType) {
+        loadBuilders();
         if (bindingType.isInterface()) {
             return (BindingBuilder<B>)bindingBuilders.get(bindingType);
         }
@@ -148,6 +162,7 @@ public class DefaultBuilderExtensionPoint implements BuilderExtensionPoint {
     }
 
     public <I extends Implementation> ImplementationBuilder<I> getImplementationBuilder(Class<I> implementationType) {
+        loadBuilders();
         if (implementationType.isInterface()) {
             return (ImplementationBuilder<I>)implementationBuilders.get(implementationType);
         }
