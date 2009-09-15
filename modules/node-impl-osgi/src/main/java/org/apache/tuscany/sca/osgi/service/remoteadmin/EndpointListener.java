@@ -1,5 +1,6 @@
 package org.apache.tuscany.sca.osgi.service.remoteadmin;
 
+
 /**
  * A whiteboard service that represents a listener for endpoints.
  * 
@@ -66,44 +67,44 @@ package org.apache.tuscany.sca.osgi.service.remoteadmin;
  * @ThreadSafe
  */
 public interface EndpointListener {
-    /**
-     * Specifies the interest of this listener with filters. This listener is
-     * only interested in Endpoint Descriptions where its properties match the
-     * given filter. The type of this property must be <code>String+</code>.
-     */
-    String ENDPOINT_LISTENER_SCOPE = "endpoint.listener.scope";
+	/**
+	 * Specifies the interest of this listener with filters. This listener is
+	 * only interested in Endpoint Descriptions where its properties match the
+	 * given filter. The type of this property must be <code>String+</code>.
+	 */
+	String ENDPOINT_LISTENER_SCOPE = "endpoint.listener.scope";
 
-    /**
-     * Register an endpoint with this listener.
-     * 
-     * If the endpoint matches one of the filters registered with the
-     * {@link #ENDPOINT_LISTENER_SCOPE} service property then this filter should
-     * be given as the <code>matchedFilter</code> parameter.
-     * 
-     * When this service is first registered or it is modified, it should
-     * receive all known endpoints matching the filter.
-     * 
-     * @param endpoint
-     *            The Endpoint Description to be published
-     * @param matchedFilter
-     *            The filter from the {@link #ENDPOINT_LISTENER_SCOPE} that
-     *            matched the endpoint, must not be <code>null</code>.
-     */
-    void addEndpoint(EndpointDescription endpoint, String matchedFilter);
+	/**
+	 * Register an endpoint with this listener.
+	 * 
+	 * If the endpoint matches one of the filters registered with the
+	 * {@link #ENDPOINT_LISTENER_SCOPE} service property then this filter should
+	 * be given as the <code>matchedFilter</code> parameter.
+	 * 
+	 * When this service is first registered or it is modified, it should
+	 * receive all known endpoints matching the filter.
+	 * 
+	 * @param endpoint
+	 *            The Endpoint Description to be published
+	 * @param matchedFilter
+	 *            The filter from the {@link #ENDPOINT_LISTENER_SCOPE} that
+	 *            matched the endpoint, must not be <code>null</code>.
+	 */
+	void addEndpoint(EndpointDescription endpoint, String matchedFilter);
 
-    /**
-     * Remove the registration of an endpoint.
-     * 
-     * If an endpoint that was registered with the {@link #addEndpoint}
-     * method is no longer available then this method should be called. This
-     * will remove the endpoint from the listener.
-     * 
-     * It is not necessary to remove endpoints when the service is unregistered
-     * or modified in such a way that not all endpoints match the interest
-     * filter anymore.
-     * 
-     * @param endpoint
-     *            The Endpoint Description that is no longer valid.
-     */
-    void removeEndpoint(EndpointDescription endpoint);
+	/**
+	 * Remove the registration of an endpoint.
+	 * 
+	 * If an endpoint that was registered with the {@link #addEndpoint}
+	 * method is no longer available then this method should be called. This
+	 * will remove the endpoint from the listener.
+	 * 
+	 * It is not necessary to remove endpoints when the service is unregistered
+	 * or modified in such a way that not all endpoints match the interest
+	 * filter anymore.
+	 * 
+	 * @param endpoint
+	 *            The Endpoint Description that is no longer valid.
+	 */
+	void removeEndpoint(EndpointDescription endpoint);
 }

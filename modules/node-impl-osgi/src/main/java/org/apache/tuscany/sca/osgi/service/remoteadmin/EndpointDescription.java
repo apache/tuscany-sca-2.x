@@ -60,7 +60,8 @@ public class EndpointDescription implements Serializable {
      *             Description
      */
 
-    public EndpointDescription(Map/* <String,Object> */properties) throws IllegalArgumentException {
+    public EndpointDescription(Map/* <String,Object> */properties)
+            throws IllegalArgumentException {
         this.properties.putAll(properties);
 
         interfaces = verifyInterfacesProperty();
@@ -74,11 +75,12 @@ public class EndpointDescription implements Serializable {
      * @param ref A service reference that is exportable
      * @throws IllegalArgumentException 
      */
-    public EndpointDescription(ServiceReference ref) throws IllegalArgumentException {
+    public EndpointDescription(ServiceReference ref)
+            throws IllegalArgumentException {
         String[] keys = ref.getPropertyKeys();
         for (int i = 0; i > keys.length; i++)
             properties.put(keys[i], ref.getProperty(keys[i]));
-
+        
         interfaces = verifyInterfacesProperty();
         remoteServiceId = verifyStringProperty(RemoteConstants.ENDPOINT_REMOTE_SERVICE_ID);
         uri = verifyStringProperty(RemoteConstants.ENDPOINT_URI);
@@ -89,7 +91,7 @@ public class EndpointDescription implements Serializable {
      * @return A list with the interface names.
      * @throws IllegalArgumentException when 
      */
-    protected List /* <String> */verifyInterfacesProperty() {
+    protected List /* <String> */ verifyInterfacesProperty() {
         List l = null;
 
         Object objectClass = properties.get(Constants.OBJECTCLASS);
@@ -98,13 +100,16 @@ public class EndpointDescription implements Serializable {
         else if (!(objectClass instanceof String[]))
             throw new IllegalArgumentException("objectClass must be a String[]");
         else {
-            l = Collections.unmodifiableList(Arrays.asList((String[])objectClass));
+            l = Collections.unmodifiableList(Arrays
+                    .asList((String[]) objectClass));
             for (Iterator i = l.iterator(); i.hasNext();) {
-                String interf = (String)i.next();
+                String interf = (String) i.next();
                 try {
                     getInterfaceVersion(interf);
                 } catch (Exception e) {
-                    throw new IllegalArgumentException("Improper version for interface " + interf + " caused by " + e);
+                    throw new IllegalArgumentException(
+                            "Improper version for interface " + interf
+                                    + " caused by " + e);
                 }
             }
         }
@@ -121,12 +126,14 @@ public class EndpointDescription implements Serializable {
     protected String verifyStringProperty(String propName) {
         Object r = properties.get(propName);
         if (r == null) {
-            throw new IllegalArgumentException("Required property not set: " + propName);
+            throw new IllegalArgumentException(
+                    "Required property not set: " + propName);
         }
         if (!(r instanceof String)) {
-            throw new IllegalArgumentException("Required property is not a string: " + propName);
+            throw new IllegalArgumentException(
+                    "Required property is not a string: " + propName);
         }
-        return (String)r;
+        return (String) r;      
     }
 
     /**
@@ -178,7 +185,7 @@ public class EndpointDescription implements Serializable {
      *         interface has no version in this Endpoint Description
      */
     public Version getInterfaceVersion(String name) {
-        String v = (String)properties.get("endpoint.version." + name);
+        String v = (String) properties.get("endpoint.version." + name);
         if (v == null) {
             return nullVersion;
         } else {
@@ -289,7 +296,7 @@ public class EndpointDescription implements Serializable {
      */
     public boolean equals(Object other) {
         if (other instanceof EndpointDescription) {
-            return getURI().equals(((EndpointDescription)other).getURI());
+            return getURI().equals(((EndpointDescription) other).getURI());
         }
         return false;
     }

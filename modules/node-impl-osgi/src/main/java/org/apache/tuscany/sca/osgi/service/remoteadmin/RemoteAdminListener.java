@@ -8,8 +8,8 @@ package org.apache.tuscany.sca.osgi.service.remoteadmin;
  */
 
 public interface RemoteAdminListener {
-    /**
-     * @param event
-     */
-    void remoteAdminEvent(RemoteAdminEvent event);
+	/**
+	 * @param event
+	 */
+	void remoteAdminEvent( RemoteAdminEvent event);
 }
