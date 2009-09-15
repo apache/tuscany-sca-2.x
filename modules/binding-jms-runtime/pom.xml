@@ -38,12 +38,6 @@
         
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-host-jms</artifactId>
-            <version>2.0-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-sca-api</artifactId>
             <version>2.0-SNAPSHOT</version>
         </dependency>        
@@ -119,9 +113,5 @@
         </dependency>
         
     </dependencies>
-    
-
-    <build>
-    </build>
 
 </project>
