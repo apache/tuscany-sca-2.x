@@ -17,7 +17,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  -->
-<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
            xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0" 
            name="SimpleServiceComposite">
 
@@ -25,9 +25,9 @@
         <implementation.java class="org.apache.tuscany.sca.binding.jms.HelloWorldServiceImpl"/>
         <service name="HelloWorldService">
             <binding.jms>
-               <destination name="RequestQueue"/>
+               <destination jndiName="RequestQueue"/>
                <response>
-                  <destination name="ResponseQueue"/>
+                  <destination jndiName="ResponseQueue"/>
                </response>
                <tuscany:wireFormat.jmsObject/>
             </binding.jms>  
