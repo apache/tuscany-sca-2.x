@@ -31,6 +31,17 @@
     
   <modules>
     <module>args</module>
+    <module>callbacks</module>
+    <module>definitions</module>
+    <module>exceptions</module>
+    <module>format</module>
+    <module>general</module>
+    <module>noreplyto</module>
+    <module>nulls</module>
+    <module>oneway-nocf</module>
+    <module>responsecf</module>
+    <module>selectors</module>
+    <module>topics</module>
     <module>ttl</module>
   </modules>
 
