@@ -31,11 +31,11 @@ import org.apache.tuscany.sca.host.jms.JMSServiceListenerFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.work.WorkScheduler;
 
-public class JMSServiceListenerFactoryImpl implements JMSServiceListenerFactory {
+public class DefaultJMSServiceListenerFactory implements JMSServiceListenerFactory {
 
     private WorkScheduler workScheduler;
 
-    public JMSServiceListenerFactoryImpl(WorkScheduler workScheduler) {
+    public DefaultJMSServiceListenerFactory(WorkScheduler workScheduler) {
         this.workScheduler = workScheduler;
     }
 
@@ -44,12 +44,12 @@ public class JMSServiceListenerFactoryImpl implements JMSServiceListenerFactory 
 
             JMSResourceFactory rf = ((JMSBindingServiceBindingProvider)jmsSLD).getResourceFactory();
             
-            MessageListener listener = new ServiceInvoker(jmsSLD.getJmsBinding(), jmsSLD.getService(), jmsSLD.getTargetBinding(), jmsSLD.getMessageFactory(), rf);
+            MessageListener listener = new DefaultServiceInvoker(jmsSLD.getJmsBinding(), jmsSLD.getService(), jmsSLD.getTargetBinding(), jmsSLD.getMessageFactory(), rf);
             RuntimeComponentService service = jmsSLD.getService();
 
 //            return new ASFListener(listener, service.getName(), service.isCallback(), jmsSLD.getJmsBinding(), workScheduler, rf);
 // TODO: 2.x migration, service.isCallback()             
-            return new ASFListener(listener, service.getName(), false, jmsSLD.getJmsBinding(), workScheduler, rf);
+            return new DefaultJMSServiceListener(listener, service.getName(), false, jmsSLD.getJmsBinding(), workScheduler, rf);
 
         } catch (NamingException e) {
             throw new JMSBindingException(e);

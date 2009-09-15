@@ -40,9 +40,9 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
  * 
  * @version $Rev: 721811 $ $Date: 2008-11-30 13:46:51 +0000 (Sun, 30 Nov 2008) $
  */
-public class ServiceInvoker implements MessageListener {
+public class DefaultServiceInvoker implements MessageListener {
 
-    private static final Logger logger = Logger.getLogger(ServiceInvoker.class.getName());
+    private static final Logger logger = Logger.getLogger(DefaultServiceInvoker.class.getName());
 
     private JMSBinding jmsBinding;
     private Binding targetBinding;
@@ -50,7 +50,7 @@ public class ServiceInvoker implements MessageListener {
     private RuntimeComponentService service;
     private MessageFactory messageFactory;
 
-    public ServiceInvoker(JMSBinding jmsBinding, RuntimeComponentService service, Binding targetBinding, MessageFactory messageFactory, JMSResourceFactory rf) throws NamingException {
+    public DefaultServiceInvoker(JMSBinding jmsBinding, RuntimeComponentService service, Binding targetBinding, MessageFactory messageFactory, JMSResourceFactory rf) throws NamingException {
         this.jmsBinding = jmsBinding;
         this.jmsResourceFactory = rf;
         this.service = service;

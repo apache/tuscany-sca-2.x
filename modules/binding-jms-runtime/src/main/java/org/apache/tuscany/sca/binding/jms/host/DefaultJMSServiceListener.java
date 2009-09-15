@@ -44,8 +44,8 @@ import org.apache.tuscany.sca.work.WorkScheduler;
  * 
  * @version $Rev: 721811 $ $Date: 2008-11-30 13:46:51 +0000 (Sun, 30 Nov 2008) $
  */
-public class ASFListener implements JMSServiceListener {
-    private static final Logger logger = Logger.getLogger(ASFListener.class.getName());
+public class DefaultJMSServiceListener implements JMSServiceListener {
+    private static final Logger logger = Logger.getLogger(DefaultJMSServiceListener.class.getName());
 
     private MessageListener listener;
     private String serviceName;
@@ -59,7 +59,7 @@ public class ASFListener implements JMSServiceListener {
 
     private Destination destination;
 
-    public ASFListener(MessageListener listener, String serviceName, boolean isCallbackService, JMSBinding jmsBinding, WorkScheduler workScheduler, JMSResourceFactory rf) {
+    public DefaultJMSServiceListener(MessageListener listener, String serviceName, boolean isCallbackService, JMSBinding jmsBinding, WorkScheduler workScheduler, JMSResourceFactory rf) {
         this.listener = listener;
         this.serviceName = serviceName;
         this.isCallbackService = isCallbackService;

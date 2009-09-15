@@ -25,14 +25,14 @@ import org.apache.tuscany.sca.host.jms.JMSHostExtensionPoint;
 import org.apache.tuscany.sca.host.jms.JMSServiceListenerFactory;
 import org.apache.tuscany.sca.work.WorkScheduler;
 
-public class DefaultJMSHostExtensionPointImpl implements JMSHostExtensionPoint {
+public class DefaultJMSHostExtensionPoint implements JMSHostExtensionPoint {
 
     private JMSServiceListenerFactory jmsServiceListenerFactory;
 
-    public DefaultJMSHostExtensionPointImpl(ExtensionPointRegistry extensionPoints) {
+    public DefaultJMSHostExtensionPoint(ExtensionPointRegistry extensionPoints) {
         UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
         WorkScheduler workScheduler = utilities.getUtility(WorkScheduler.class);
-        this.jmsServiceListenerFactory = new JMSServiceListenerFactoryImpl(workScheduler);
+        this.jmsServiceListenerFactory = new DefaultJMSServiceListenerFactory(workScheduler);
     }
 
     public JMSServiceListenerFactory getJMSServiceListenerFactory() {
