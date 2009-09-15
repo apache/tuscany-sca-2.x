@@ -19,18 +19,13 @@
 
 package org.apache.tuscany.sca.policy.builder.impl;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
-import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
@@ -53,8 +48,7 @@ public class PolicyAttachmentTestCase {
     private Monitor monitor;
 
     @Test
-    public void testBuild() throws FactoryConfigurationError, IOException, XMLStreamException,
-        ContributionReadException, CompositeBuilderException {
+    public void testBuild() throws Exception {
         DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
         XMLInputFactory inputFactory = XMLInputFactory.newInstance();
         // Create a monitor
