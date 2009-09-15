@@ -20,7 +20,7 @@ package org.apache.tuscany.sca.binding.jms;
 
 import static org.junit.Assert.assertEquals;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,25 +30,26 @@ import org.junit.Test;
  */
 public class DefaultsTestCase {
 
-    private static SCADomain scaDomain;
+    private Node node;
 
     @Before
     public void init() {
-        scaDomain =
+        node = NodeFactory.newInstance().createNode().start();
+
             SCADomain.newInstance("http://localhost", "/", "defaults/client.composite", "defaults/service.composite");
         // scaDomain = SCADomain.newInstance("http://localhost", "/", "simple/client.composite");
     }
 
     @Test
     public void testHelloWorldCreate() throws Exception {
-        HelloWorldService helloWorldService = scaDomain.getService(HelloWorldService.class, "HelloWorldClient");
+        HelloWorldService helloWorldService = node.getService(HelloWorldService.class, "HelloWorldClient");
         assertEquals("jmsHello Petra", helloWorldService.sayHello("Petra"));
     }
 
     @After
     public void end() {
-        if (scaDomain != null) {
-            scaDomain.close();
+        if (node != null) {
+            node.close();
         }
     }
 }

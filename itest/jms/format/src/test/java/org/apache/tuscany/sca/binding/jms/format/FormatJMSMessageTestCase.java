@@ -21,10 +21,8 @@ package org.apache.tuscany.sca.binding.jms.format;
 import static org.junit.Assert.assertEquals;
 
 import org.apache.tuscany.sca.binding.jms.format.jmsmessage.helloworld.HelloWorldReference;
-import org.apache.tuscany.sca.node.SCAClient;
-import org.apache.tuscany.sca.node.SCAContribution;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,20 +33,16 @@ import org.junit.Test;
  */
 public class FormatJMSMessageTestCase {
 
-    private static SCANode node;
+    private static Node node;
 
     @Before
     public void init() {
-        SCANodeFactory factory = SCANodeFactory.newInstance();
-        node = factory.createSCANode("jmsmessage/helloworld.composite", 
-                                     new SCAContribution("test", "./target/classes"));
-
-        node.start();
+        node = NodeFactory.newInstance().createNode().start();
     }
 
     @Test
     public void testHelloWorldCreate() throws Exception {
-        HelloWorldReference helloWorldService = ((SCAClient)node).getService(HelloWorldReference.class, "HelloWorldReferenceComponent");
+        HelloWorldReference helloWorldService = node.getService(HelloWorldReference.class, "HelloWorldReferenceComponent");
         
         System.out.println(helloWorldService.getGreetings("Fred Bloggs"));
         assertEquals("Hello Fred Bloggs", helloWorldService.getGreetings("Fred Bloggs"));

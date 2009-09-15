@@ -22,7 +22,6 @@ package org.apache.tuscany.sca.binding.jms;
 import javax.jms.Message;
 import javax.jms.Session;
 
-import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.provider.TextMessageProcessor;
 
 public class TestMessageProcessor extends TextMessageProcessor {

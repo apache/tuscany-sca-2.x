@@ -21,7 +21,6 @@ package org.apache.tuscany.sca.binding.jms;
 import static org.junit.Assert.assertEquals;
 
 import org.apache.activemq.broker.BrokerService;
-import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

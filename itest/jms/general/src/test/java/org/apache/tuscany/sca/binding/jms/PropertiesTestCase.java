@@ -23,7 +23,6 @@ import static org.junit.Assert.assertNotNull;
 
 import javax.jms.DeliveryMode;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

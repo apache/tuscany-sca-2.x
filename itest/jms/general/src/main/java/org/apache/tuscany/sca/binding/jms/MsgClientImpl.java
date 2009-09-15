@@ -19,8 +19,8 @@
 
 package org.apache.tuscany.sca.binding.jms;
 
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 
 @Service(MsgClient.class)
 public class MsgClientImpl implements MsgClient {

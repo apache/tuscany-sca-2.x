@@ -22,13 +22,10 @@ import static org.junit.Assert.assertEquals;
 
 import org.apache.tuscany.sca.binding.jms.format.jmstextxmlinjmsobjectout.helloworld.HelloWorldService;
 import org.apache.tuscany.sca.binding.jms.format.jmstextxmlinjmsobjectout.helloworld.Person;
-import org.apache.tuscany.sca.node.SCAClient;
-import org.apache.tuscany.sca.node.SCAContribution;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -37,20 +34,16 @@ import org.junit.Test;
  */
 public class FormatJMSTextXMLInJMSObjectOutTestCase {
 
-    private static SCANode node;
+    private static Node node;
 
     @Before
     public void init() {
-        SCANodeFactory factory = SCANodeFactory.newInstance();
-        node = factory.createSCANode("jmstextxmlinjmsobjectout/helloworld.composite", 
-                                     new SCAContribution("test", "./target/classes"));
-
-        node.start();
+        node = NodeFactory.newInstance().createNode().start();
     }
 
     @Test
     public void testHelloWorldCreate() throws Exception {
-        HelloWorldService helloWorldService = ((SCAClient)node).getService(HelloWorldService.class, "HelloWorldReferenceComponent");
+        HelloWorldService helloWorldService = node.getService(HelloWorldService.class, "HelloWorldReferenceComponent");
         
         assertEquals("Hello Fred Bloggs", helloWorldService.getGreetings("Fred Bloggs"));
         

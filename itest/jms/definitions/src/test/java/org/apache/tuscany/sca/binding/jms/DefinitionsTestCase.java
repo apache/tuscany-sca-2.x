@@ -20,7 +20,8 @@ package org.apache.tuscany.sca.binding.jms;
 
 import static org.junit.Assert.assertEquals;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,16 +30,16 @@ import org.junit.Test;
  */
 public class DefinitionsTestCase {
 
-    private static SCADomain scaDomain;
+    private Node node;
 
     @Before
     public void init() {
-        scaDomain = SCADomain.newInstance("http://localhost", "/", "definitions/definitions.composite");
+        node = NodeFactory.newInstance().createNode().start();
     }
 
     @Test
     public void testSayHello() throws Exception {
-        OneWayService client = scaDomain.getService(OneWayService.class, "OneWayClient");
+        OneWayService client = node.getService(OneWayService.class, "OneWayClient");
 
         client.sayHello("petra");
 
@@ -54,8 +55,8 @@ public class DefinitionsTestCase {
 
     @After
     public void end() {
-        if (scaDomain != null) {
-            scaDomain.close();
+        if (node != null) {
+            node.stop();
         }
     }
 }

@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.sca.binding.jms.format.jmsmessage.helloworld;
 
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 
 public class HelloWorldReferenceImpl implements HelloWorldReference {

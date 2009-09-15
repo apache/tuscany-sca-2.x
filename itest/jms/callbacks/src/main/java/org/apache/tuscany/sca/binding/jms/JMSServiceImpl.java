@@ -18,8 +18,8 @@
  */
 package org.apache.tuscany.sca.binding.jms;
 
-import org.osoa.sca.annotations.Callback;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Callback;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * This class implements MyService and uses a callback.

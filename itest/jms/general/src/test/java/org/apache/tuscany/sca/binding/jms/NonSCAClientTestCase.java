@@ -32,7 +32,6 @@ import javax.naming.NamingException;
 import org.apache.activemq.broker.BrokerService;
 import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory;
 import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactoryImpl;
-import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

@@ -23,10 +23,8 @@ import static org.junit.Assert.assertEquals;
 import org.apache.tuscany.sca.binding.jms.format.jmsdefault.helloworld.HelloWorldReference;
 import org.apache.tuscany.sca.binding.jms.format.jmsdefault.helloworld.HelloWorldServiceImpl;
 import org.apache.tuscany.sca.binding.jms.format.jmsdefault.helloworld.Person;
-import org.apache.tuscany.sca.node.SCAClient;
-import org.apache.tuscany.sca.node.SCAContribution;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -38,20 +36,16 @@ import org.junit.Test;
  */
 public class FormatJMSDefaultTestCase {
 
-    private static SCANode node;
+    private static Node node;
 
     @Before
     public void init() {
-        SCANodeFactory factory = SCANodeFactory.newInstance();
-        node = factory.createSCANode("jmsdefault/helloworld.composite", 
-                                     new SCAContribution("test", "./target/classes"));
-
-        node.start();
+        node = NodeFactory.newInstance().createNode().start();
     }
 
     @Test
     public void testHelloWorldCreate() throws Exception {
-        HelloWorldReference helloWorldService = ((SCAClient)node).getService(HelloWorldReference.class, "HelloWorldReferenceComponent");
+        HelloWorldReference helloWorldService = node.getService(HelloWorldReference.class, "HelloWorldReferenceComponent");
         
         assertEquals("Hello Fred Bloggs Hello Fred Bloggs Hello Fred Bloggs Hello Fred Bloggs foo remote service exception, see nested exception foo remote service exception, see nested exception", helloWorldService.getGreetings("Fred Bloggs"));
         

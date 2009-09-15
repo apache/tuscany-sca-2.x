@@ -20,7 +20,6 @@ package org.apache.tuscany.sca.binding.jms;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.Serializable;
 import java.util.Properties;
 
 import javax.jms.Connection;
@@ -35,7 +34,8 @@ import javax.jms.Session;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,14 +45,14 @@ import org.junit.Test;
  */
 public class NoReplyToTestCase {
 
-    private static SCADomain scaDomain;
+    private Node node;
     private Session session;
     private InitialContext context;
     private Connection connection;
 
     @Before
     public void init() {
-        scaDomain = SCADomain.newInstance("http://localhost", "/", "service.composite");
+        node = NodeFactory.newInstance().createNode().start();
     }
 
     @Test
@@ -90,8 +90,8 @@ public class NoReplyToTestCase {
 
     @After
     public void end() throws JMSException {
-        if (scaDomain != null) {
-            scaDomain.close();
+        if (node != null) {
+            node.stop();
         }
         if (connection != null) {
             connection.close();

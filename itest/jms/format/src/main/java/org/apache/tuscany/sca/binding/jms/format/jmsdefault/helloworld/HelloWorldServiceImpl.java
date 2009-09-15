@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.sca.binding.jms.format.jmsdefault.helloworld;
 
-import org.apache.tuscany.sca.binding.jms.format.jmsdefault.helloworld.CheckedException;
 
 public class HelloWorldServiceImpl implements HelloWorldService {
     

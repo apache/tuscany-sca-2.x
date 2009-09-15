@@ -18,9 +18,9 @@
  */
 package org.apache.tuscany.sca.binding.jms;
 
-import org.osoa.sca.annotations.Callback;
-import org.osoa.sca.annotations.OneWay;
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Callback;
+import org.oasisopen.sca.annotation.OneWay;
+import org.oasisopen.sca.annotation.Remotable;
 
 /**
  * The remote service that will be invoked by the client
