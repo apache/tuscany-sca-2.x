@@ -18,16 +18,17 @@
  * under the License.    
  -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+           targetNamespace="http://itest"
            name="SimpleServiceComposite">
 
     <component name="HelloWorldService">
         <implementation.java class="org.apache.tuscany.sca.binding.jms.HelloWorldServiceImpl"/>
         <service name="HelloWorldService">
             <binding.jms>
-               <destination name="DestQueueA" create="always"> 
+               <destination jndiName="DestQueueA" create="always"> 
                </destination>
                <response>
-                  <destination name="RespQueueA" create="always"/>
+                  <destination jndiName="RespQueueA" create="always"/>
                </response>
             </binding.jms>  
         </service> 

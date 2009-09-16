@@ -18,16 +18,17 @@
  * under the License.    
  -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+           targetNamespace="http://itest"
            name="MPServiceComposite">
 
     <component name="HelloWorldServiceMP">
         <implementation.java class="org.apache.tuscany.sca.binding.jms.HelloWorldServiceImpl"/>
         <service name="HelloWorldService">
             <binding.jms messageProcessor="org.apache.tuscany.sca.binding.jms.TestMessageProcessor">
-               <destination name="DestQueueMP" create="always"> 
+               <destination jndiName="DestQueueMP" create="always"> 
                </destination>
                <response>
-                  <destination name="RespQueueMP" create="always"/>
+                  <destination jndiName="RespQueueMP" create="always"/>
                </response>
             </binding.jms>  
         </service> 

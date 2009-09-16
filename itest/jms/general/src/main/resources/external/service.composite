@@ -18,15 +18,16 @@
  * under the License.    
  -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+           targetNamespace="http://itest"
            name="ExternalServiceComposite">
 
     <component name="HelloWorldService">
         <implementation.java class="org.apache.tuscany.sca.binding.jms.HelloWorldServiceImpl"/>
         <service name="HelloWorldService">
             <binding.jms initialContextFactory="org.apache.activemq.jndi.ActiveMQInitialContextFactory" jndiURL="tcp://localhost:61616">
-               <destination name="DestQueueA" create="always"/>
+               <destination jndiName="DestQueueA" create="always"/>
                <response>
-                  <destination name="RespQueueA" create="always"/>
+                  <destination jndiName="RespQueueA" create="always"/>
                </response>
             </binding.jms>  
         </service> 

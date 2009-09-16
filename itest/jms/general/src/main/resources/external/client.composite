@@ -18,6 +18,7 @@
  * under the License.    
  -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+           targetNamespace="http://itest"
            name="ExternalClientComposite">
 
     <component name="HelloWorldClient">
@@ -28,9 +29,9 @@
     <reference name="serviceA" promote="HelloWorldClient/serviceA">
         <interface.java interface="org.apache.tuscany.sca.binding.jms.HelloWorldService" />
         <binding.jms initialContextFactory="org.apache.activemq.jndi.ActiveMQInitialContextFactory" jndiURL="tcp://localhost:61616">
-            <destination name="DestQueueA"/>
+            <destination jndiName="DestQueueA"/>
             <response>
-               <destination name="RespQueueA"/>
+               <destination jndiName="RespQueueA"/>
             </response>
         </binding.jms>  
     </reference>

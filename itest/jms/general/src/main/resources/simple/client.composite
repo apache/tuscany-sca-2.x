@@ -18,6 +18,7 @@
  * under the License.    
  -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+           targetNamespace="http://itest"
            name="SimpleClientComposite">
 
     <component name="HelloWorldClient">
@@ -28,10 +29,10 @@
     <reference name="serviceA" promote="HelloWorldClient/serviceA">
         <interface.java interface="org.apache.tuscany.sca.binding.jms.HelloWorldService" />
         <binding.jms>
-            <destination name="DestQueueA">
+            <destination jndiName="DestQueueA">
             </destination>
             <response>
-               <destination name="RespQueueA"/>
+               <destination jndiName="RespQueueA"/>
             </response>
         </binding.jms>  
     </reference>

@@ -18,6 +18,7 @@
  * under the License.    
  -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+           targetNamespace="http://itest"
            name="DynamicComposite">
 
     <component name="HelloWorldClient">
@@ -28,7 +29,7 @@
     <reference name="serviceA" promote="HelloWorldClient/serviceA">
         <interface.java interface="org.apache.tuscany.sca.binding.jms.HelloWorldService" />
         <binding.jms>
-            <destination name="DestQueueA"/>
+            <destination jndiName="DestQueueA"/>
             <!-- No response destination defined means a temporary queue will be used -->
         </binding.jms>  
     </reference>
