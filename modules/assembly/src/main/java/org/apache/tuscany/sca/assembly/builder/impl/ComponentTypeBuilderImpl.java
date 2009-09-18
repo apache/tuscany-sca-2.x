@@ -19,6 +19,7 @@
 package org.apache.tuscany.sca.assembly.builder.impl;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -31,9 +32,11 @@ import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.assembly.CompositeReference;
 import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.assembly.Implementation;
+import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.Service;
@@ -52,6 +55,9 @@ import org.apache.tuscany.sca.policy.PolicySubject;
 /**
  * @version $Rev$ $Date$
  */
+
+// TODO - really implementation.composite component type builder
+
 public class ComponentTypeBuilderImpl {
     private static final Logger logger = Logger.getLogger(ComponentTypeBuilderImpl.class.getName());
     
@@ -114,19 +120,12 @@ public class ComponentTypeBuilderImpl {
                               component.getName());
             } 
             
-            /* process structural hierarchy
-             * replace by structuralParent links and associated processing
             // Push down the autowire flag from the composite to components
+            // TODO - Is this the right place to do this structural inheritance 
             if (component.getAutowire() == null) {
                 component.setAutowire(composite.getAutowire());
             }
-            
-            // what else needs pushing down? 
-            //  intents
-            //  policySets
-             
-            */
-            
+
             // configure the component from its component type
             componentBuilder.configureComponentFromComponentType(component);
         }
@@ -145,7 +144,7 @@ public class ComponentTypeBuilderImpl {
         calculateServices(composite, components, componentServices);
         
         // references
-        //calculateReferences(composite);
+        calculateReferences(composite, components, componentReferences);
         
         // properties
         //calculateProperties(composite);
@@ -229,7 +228,6 @@ public class ComponentTypeBuilderImpl {
         // calculate its configuration based on OASIS rules
         for (Service service : componentType.getServices()) {
             CompositeService compositeService = (CompositeService)service;
-            Component promotedComponent = compositeService.getPromotedComponent();
             ComponentService promotedComponentService = compositeService.getPromotedService();
             
             // promote interface contracts
@@ -238,15 +236,55 @@ public class ComponentTypeBuilderImpl {
             // promote bindings
             calculatePromotedBindings(compositeService, promotedComponentService);
             
-            // promote intents
+            // promote intents - done later in CompositePolicyBuilder - discuss with RF
             // calculatePromotedIntents(compositeService, promotedComponentService);
             
-            // promote policy sets
+            // promote policy sets - done later in CompositePolicyBuilder - discuss with RF
             // calculatePromotedPolicySets(compositeService, promotedComponentService);
-        
-        }
-               
+        }        
     }
+    
+    /**
+     * Connect the references in the component type to the component references that
+     * they promote
+     * 
+     * @param componentType
+     * @param component
+     */
+    private void calculateReferences(ComponentType componentType,
+                                     Map<String, Component> components,
+                                     Map<String, ComponentReference> componentReferences){
+
+        // Connect this component type's references to the 
+        // references from child components which it promotes
+        connectPromotedReferences(componentType,
+                                  components,
+                                  componentReferences);
+        
+        // look at each component type reference in turn and 
+        // calculate its configuration based on OASIS rules
+        for (Reference reference : componentType.getReferences()) {
+            CompositeReference compositeReference = (CompositeReference)reference;
+            List<ComponentReference> promotedReferences = compositeReference.getPromotedReferences();
+            
+            for(ComponentReference promotedComponentReference : promotedReferences){
+                
+                // promote interface contracts
+                calculatePromotedInterfaceContract(compositeReference, promotedComponentReference);
+               
+                // promote bindings
+                // Don't need to promote reference bindings as any lower level binding will
+                // already be targeting the correct service without need for promotion
+                //calculatePromotedBindings(compositeReference, promotedComponentReference);
+                
+                // promote intents - done later in CompositePolicyBuilder - discuss with RF
+                // calculatePromotedIntents(compositeService, promotedComponentService);
+                
+                // promote policy sets - done later in CompositePolicyBuilder - discuss with RF
+                // calculatePromotedPolicySets(compositeService, promotedComponentService);
+            }
+        }        
+    }    
     
     /**
      * Connect the services in the component type to the component services that
@@ -300,37 +338,87 @@ public class ComponentTypeBuilderImpl {
                 }                
             }
         }      
-    }  
+    } 
     
     /**
-     * OASIS RULE: Interface contracts from higher in the implementation hierarchy takes precedence
+     * Connect the references in the component type to the component references that
+     * they promote
      * 
-     * @param compositeService
-     * @param promotedComponentService
+     * @param componentType
+     * @param component
      */
-    private void calculatePromotedInterfaceContract(CompositeService compositeService,
-                                                    ComponentService promotedComponentService){
-        // Use the interface contract from the promoted component service if
-        // none is specified on the composite service
-        InterfaceContract compositeServiceInterfaceContract = compositeService.getInterfaceContract();
-        InterfaceContract promotedServiceInterfaceContract = promotedComponentService.getInterfaceContract();
-        if (compositeServiceInterfaceContract == null) {
-            compositeService.setInterfaceContract(promotedServiceInterfaceContract);
-        } else if (promotedServiceInterfaceContract != null) {
-            // Check that the compositeServiceInterfaceContract and promotedServiceInterfaceContract
-            // are compatible
-            boolean isCompatible =
-                interfaceContractMapper.isCompatible(compositeServiceInterfaceContract,
-                                                     promotedServiceInterfaceContract);
-            if (!isCompatible) {
-                Monitor.error(monitor, 
-                              this, 
-                              "assembly-validation-messages", 
-                              "ServiceInterfaceNotSubSet", 
-                              promotedComponentService.getName());
+    private void connectPromotedReferences(ComponentType componentType,
+                                           Map<String, Component> components,
+                                           Map<String, ComponentReference> componentReferences){
+        
+        // Connect composite (component type) references to the component references that they promote
+        for (Reference reference : componentType.getReferences()) {
+            CompositeReference compositeReference = (CompositeReference)reference;
+            List<ComponentReference> promotedReferences = compositeReference.getPromotedReferences();
+            for (int i = 0, n = promotedReferences.size(); i < n; i++) {
+                ComponentReference componentReference = promotedReferences.get(i);
+                if (componentReference.isUnresolved()) {
+                    String componentReferenceName = componentReference.getName();
+                    componentReference = componentReferences.get(componentReferenceName);
+                    if (componentReference != null) {
+                        // Set the promoted component
+                        Component promotedComponent = compositeReference.getPromotedComponents().get(i);
+                        promotedComponent = components.get(promotedComponent.getName());
+                        compositeReference.getPromotedComponents().set(i, promotedComponent);
+
+                        componentReference.setPromoted(true);
+
+                        // Point to the resolved component reference
+                        promotedReferences.set(i, componentReference);                        
+                    } else {
+                        Monitor.error(monitor,
+                                      this,
+                                      "assembly-validation-messages",
+                                      "PromotedReferenceNotFound",
+                                      ((Composite)componentType).getName().toString(),
+                                      componentReferenceName);
+                    }
+                }
             }
-        }         
+        }        
     }
+    
+    /**
+     * OASIS RULE: Interface contract from higher in the implementation hierarchy takes precedence
+     * 
+     * @param topContract the top contract 
+     * @param bottomContract the bottom contract
+     */   
+    private void calculatePromotedInterfaceContract(Contract topContract,
+                                                    Contract bottomContract) {
+        // Use the interface contract from the bottom level contract if
+        // none is specified on the top level contract
+        InterfaceContract topInterfaceContract = topContract.getInterfaceContract();
+        InterfaceContract bottomInterfaceContract = bottomContract.getInterfaceContract();
+        
+        if (topInterfaceContract == null) {
+            topContract.setInterfaceContract(bottomInterfaceContract);
+        } else if (bottomInterfaceContract != null) {
+            // Check that the top and bottom interface contracts are compatible
+            boolean isCompatible = interfaceContractMapper.isCompatible(topInterfaceContract,
+                                                                        bottomInterfaceContract);
+            if (!isCompatible) {
+                if (topContract instanceof Reference) {
+                    Monitor.error(monitor, 
+                                  this,
+                                  "assembly-validation-messages",
+                                  "ReferenceInterfaceNotSubSet",
+                                  topContract.getName());
+                } else {
+                    Monitor.error(monitor, 
+                                  this,
+                                  "assembly-validation-messages",
+                                  "ServiceInterfaceNotSubSet",
+                                  topContract.getName());
+                }
+            }
+        }
+    } 
     
     /**
      * OASIS RULE: Bindings from higher in the implementation hierarchy take precedence

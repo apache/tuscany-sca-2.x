@@ -84,6 +84,7 @@ public class ComponentBuilderImpl {
     }
 
     /**
+     * Configure the component based on its component type using OASIS rules
      * 
      * @param component
      */
@@ -107,7 +108,7 @@ public class ComponentBuilderImpl {
         configureServices(component);
         
         // references
-        //configureReferences(component);
+        configureReferences(component);
         
         // properties
         //configureProperties(component);
@@ -115,6 +116,8 @@ public class ComponentBuilderImpl {
     }
        
     /**
+     * Use the component type builder to build the component type for 
+     * this component. 
      * 
      * @param component
      */
@@ -126,7 +129,9 @@ public class ComponentBuilderImpl {
     }
     
     /**
-     *
+     * Configure this component's services based on the services in its 
+     * component type and the configuration from the composite file
+     * 
      * @param component
      */
     private void configureServices(Component component){
@@ -158,18 +163,64 @@ public class ComponentBuilderImpl {
                                     componentService);
             
             
-            // intents - done in CompositePolicyBuilder
-            //           discuss with RF
+            // intents - done later in CompositePolicyBuilder - discuss with RF
             //calculateIntents(componentService,
             //                 componentTypeService);
 
-            // policy sets - done in CompositePolicyBuilder
-            //               discuss with RF
+            // policy sets - done later in CompositePolicyBuilder - discuss with RF
             // calculatePolicySets(componentService,
             //                     componentTypeService);
 
         }
     }
+    
+    /**
+     * Configure this component's references based on the references in its 
+     * component type and the configuration from the composite file
+     * 
+     * @param component
+     */
+    private void configureReferences(Component component){
+        
+        // If the component type has references that are not described in this
+        // component then create references for this component
+        addReferencesFromComponentType(component);
+        
+        // Connect this component's references to the 
+        // references from its component type
+        connectReferencesToComponentType(component);
+        
+        // look at each component reference in turn and calculate its 
+        // configuration based on OASIS rules
+        for (ComponentReference componentReference : component.getReferences()) {
+            Reference componentTypeReference = componentReference.getReference();
+
+            // interface contracts
+            calculateInterfaceContract(componentReference,
+                                       componentTypeReference);
+            
+            // bindings
+            // We don've to do anything with reference bindings. You've either 
+            // specified one or you haven't
+            //calculateBindings(componentService,
+            //                  componentTypeService);
+            
+            
+            // add callback service model objects
+            //createCallbackService(component,
+            //                     componentReference);
+            
+            
+            // intents - done later in CompositePolicyBuilder - discuss with RF
+            //calculateIntents(componentService,
+            //                 componentTypeService);
+
+            // policy sets - done later in CompositePolicyBuilder - discuss with RF
+            // calculatePolicySets(componentService,
+            //                     componentTypeService);
+
+        }
+    }    
     
     private void addServicesFromComponentType(Component component){
         
@@ -187,6 +238,27 @@ public class ComponentBuilderImpl {
                     String name = service.getName();
                     componentService.setName(name);
                     component.getServices().add(componentService);
+                }
+            }
+        }
+    }  
+    
+    private void addReferencesFromComponentType(Component component){
+        
+        // Create a component reference for each reference
+        if (component.getImplementation() != null) {
+            for (Reference reference : component.getImplementation().getReferences()) {
+                ComponentReference componentReference = 
+                    (ComponentReference)component.getReference(reference.getName());
+                
+                // if the component doesn't have a reference with the same name as the 
+                // component type reference then create one
+                if (componentReference == null) {
+                    componentReference = assemblyFactory.createComponentReference();
+                    componentReference.setForCallback(reference.isForCallback());
+                    componentReference.setName(reference.getName());
+                    componentReference.setReference(reference);
+                    component.getReferences().add(componentReference);
                 }
             }
         }
@@ -214,36 +286,66 @@ public class ComponentBuilderImpl {
             }
         }
     }
-       
-    /**
-     * OASIS RULE: Interface contract from higher in the hierarchy takes precedence
-     * 
-     * @param componentService the top service 
-     * @param componentTypeService the bottom service
-     */
-    private void calculateInterfaceContract(Service componentService,
-                                            Service componentTypeService){
-        // Use the interface contract from the higher level service (1) if
-        // none is specified on the lower level service (2)
-        InterfaceContract componentServiceInterfaceContract = componentService.getInterfaceContract();
-        InterfaceContract componentTypeServiceInterfaceContract = componentTypeService.getInterfaceContract();
+    
+    private void connectReferencesToComponentType(Component component){
         
-        if (componentServiceInterfaceContract == null) {
-            componentService.setInterfaceContract(componentTypeServiceInterfaceContract);
-        } else if (componentTypeServiceInterfaceContract != null) {
-            // Check that the two interface contracts are compatible
-            boolean isCompatible =
-                interfaceContractMapper.isCompatible(componentServiceInterfaceContract,
-                                                     componentTypeServiceInterfaceContract);
-            if (!isCompatible) {
+        // Connect each component reference to the corresponding component type reference
+        for (ComponentReference componentReference : component.getReferences()) {
+            if (componentReference.getReference() != null || componentReference.isForCallback()) {
+                continue;
+            }
+            
+            Reference reference = component.getImplementation().getReference(componentReference.getName());
+
+            if (reference != null) {
+                componentReference.setReference(reference);
+            } else {
                 Monitor.error(monitor, 
                               this, 
                               "assembly-validation-messages", 
-                              "ServiceInterfaceNotSubSet", 
-                              componentService.getName());
+                              "ReferenceNotFoundForComponentReference", 
+                              component.getName(),
+                              componentReference.getName());
             }
-        }         
-    }  
+        }        
+    }    
+       
+    /**
+     * OASIS RULE: Interface contract from higher in the implementation hierarchy takes precedence
+     * 
+     * @param topContract the top contract 
+     * @param bottomContract the bottom contract
+     */   
+    private void calculateInterfaceContract(Contract topContract,
+                                            Contract bottomContract) {
+        // Use the interface contract from the bottom level contract if
+        // none is specified on the top level contract
+        InterfaceContract topInterfaceContract = topContract.getInterfaceContract();
+        InterfaceContract bottomInterfaceContract = bottomContract.getInterfaceContract();
+        
+        if (topInterfaceContract == null) {
+            topContract.setInterfaceContract(bottomInterfaceContract);
+        } else if (bottomInterfaceContract != null) {
+            // Check that the top and bottom interface contracts are compatible
+            boolean isCompatible = interfaceContractMapper.isCompatible(topInterfaceContract,
+                                                                        bottomInterfaceContract);
+            if (!isCompatible) {
+                if (topContract instanceof Reference) {
+                    Monitor.error(monitor, 
+                                  this,
+                                  "assembly-validation-messages",
+                                  "ReferenceInterfaceNotSubSet",
+                                  topContract.getName());
+                } else {
+                    Monitor.error(monitor, 
+                                  this,
+                                  "assembly-validation-messages",
+                                  "ServiceInterfaceNotSubSet",
+                                  topContract.getName());
+                }
+            }
+        }
+    }    
     
     /**
      * OASIS RULE: Bindings from higher in the hierarchy take precedence
@@ -378,4 +480,4 @@ public class ComponentBuilderImpl {
         contract.setOverridingBindings(false);
     }    
 
-} //end class
+}
