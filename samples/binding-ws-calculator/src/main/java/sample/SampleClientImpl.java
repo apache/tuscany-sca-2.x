@@ -19,6 +19,8 @@
 
 package sample;
 
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 
@@ -28,7 +30,8 @@ import org.apache.tuscany.sca.node.NodeFactory;
  */
 public class SampleClientImpl {
     public static void main(String[] args) throws Exception {
-        Node node = NodeFactory.newInstance().createNode();
+        String location = ContributionLocationHelper.getContributionLocation(SampleClient.class);
+        Node node = NodeFactory.newInstance().createNode(new Contribution("c1", location));
         
         node.start();
 
