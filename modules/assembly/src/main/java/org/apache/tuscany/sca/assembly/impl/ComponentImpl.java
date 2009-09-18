@@ -187,5 +187,14 @@ public class ComponentImpl extends ExtensibleImpl implements Component, Cloneabl
     public void setExtensionType(ExtensionType type) {
         this.type = type;
     }
+    
+    public String toString() {
+        StringBuffer buf = new StringBuffer("Component (");
+        buf.append("uri=").append(uri);
+        buf.append(",name=").append(name);
+        buf.append(",implementation=").append(implementation);
+        buf.append(")");
+        return buf.toString();
+    }
 
 }

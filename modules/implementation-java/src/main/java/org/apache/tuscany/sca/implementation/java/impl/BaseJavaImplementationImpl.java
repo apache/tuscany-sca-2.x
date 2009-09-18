@@ -67,7 +67,7 @@ abstract class BaseJavaImplementationImpl extends ImplementationImpl implements 
 
     @Override
     public String toString() {
-        return getName();
+        return getType() + " (class=" + getName() + ")";
     }
 
     @Override

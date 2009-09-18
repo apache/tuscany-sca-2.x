@@ -20,6 +20,7 @@ package org.apache.tuscany.sca.definitions;
 
 import java.util.List;
 
+import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.policy.BindingType;
 import org.apache.tuscany.sca.policy.ImplementationType;
 import org.apache.tuscany.sca.policy.Intent;
@@ -79,5 +80,5 @@ public interface Definitions {
      * 
      * @return a list of domain wide binding definition objects 
      */
-    List<Object> getBindings();
+    List<Binding> getBindings();
 }

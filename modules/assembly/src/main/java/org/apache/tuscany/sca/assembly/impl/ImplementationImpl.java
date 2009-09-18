@@ -50,4 +50,8 @@ public abstract class ImplementationImpl extends ComponentTypeImpl implements Im
     public QName getType() {
         return type;
     }
+    
+    public String toString() {
+        return String.valueOf(getType());
+    }
 }

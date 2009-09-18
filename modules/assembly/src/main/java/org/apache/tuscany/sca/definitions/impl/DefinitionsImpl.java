@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.definitions.impl;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.policy.BindingType;
 import org.apache.tuscany.sca.policy.ImplementationType;
@@ -39,7 +40,7 @@ public class DefinitionsImpl implements Definitions {
     private List<PolicySet> policySets = new CopyOnWriteArrayList<PolicySet>();
     private List<BindingType> bindingTypes = new CopyOnWriteArrayList<BindingType>();
     private List<ImplementationType> implementationTypes = new CopyOnWriteArrayList<ImplementationType>();
-    private List<Object> bindings = new CopyOnWriteArrayList<Object>();
+    private List<Binding> bindings = new CopyOnWriteArrayList<Binding>();
 
    
     public List<BindingType> getBindingTypes() {
@@ -66,7 +67,7 @@ public class DefinitionsImpl implements Definitions {
        this.targetNamespace = ns;
     }
 
-    public List<Object> getBindings() {
+    public List<Binding> getBindings() {
         return bindings;
     }
 }

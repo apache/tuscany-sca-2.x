@@ -86,5 +86,14 @@ public abstract class BindingImpl extends ExtensibleImpl implements Binding {
     public void setURI(String uri) {
         this.uri = uri;
     }
+    
+    public String toString() {
+        StringBuffer buf = new StringBuffer();
+        buf.append(getType()).append(" (");
+        buf.append("uri=").append(getURI());
+        buf.append(",name=").append(getName());
+        buf.append(")");
+        return buf.toString();
+    }
 
 }
