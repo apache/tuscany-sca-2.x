@@ -119,8 +119,10 @@ public class NodeImpl implements Node, Client {
 
             NodeFinder.addNode(IOHelper.createURI(configuration.getDomainURI()), this);
 
-            MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
+            // FIXME: [rfeng] We should turn the management capability into a system utility.
+            // In certain environment such as Google App Engine, the JMX API is not allowed
             try {
+                MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
                 mbean = new NodeManager(this);
                 mBeanServer.registerMBean(mbean, mbean.getName());
                 /*
@@ -130,7 +132,8 @@ public class NodeImpl implements Node, Client {
                 JMXConnectorServer connectorServer = JMXConnectorServerFactory.newJMXConnectorServer(url, null, mBeanServer);
                 connectorServer.start();
                 */
-            } catch (Exception e) {
+            } catch (Throwable e) {
+                // Ignore the error for now
                 mbean = null;
                 logger.log(Level.SEVERE, e.getMessage(), e);
             }
@@ -152,10 +155,10 @@ public class NodeImpl implements Node, Client {
             }
 
             if (mbean != null) {
-                MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
                 try {
+                    MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
                     mBeanServer.unregisterMBean(mbean.getName());
-                } catch (Exception e) {
+                } catch (Throwable e) {
                     logger.log(Level.SEVERE, e.getMessage(), e);
                 } finally {
                     mbean = null;

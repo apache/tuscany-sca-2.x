@@ -34,7 +34,7 @@ public class LRUCache<K, V> extends LinkedHashMap<K, V> {
     protected int maxCacheSize = 4096;
 
     /**
-     * Default constructor for an LRU Cache The default capacity is 10000
+     * Default constructor for an LRU Cache The default capacity is 4096
      */
     public LRUCache() {
         this(0, 4096, 0.75f, true);

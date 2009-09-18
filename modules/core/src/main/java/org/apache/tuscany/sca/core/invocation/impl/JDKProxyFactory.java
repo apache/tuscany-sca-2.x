@@ -18,15 +18,17 @@
  */
 package org.apache.tuscany.sca.core.invocation.impl;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.List;
 
-import org.apache.tuscany.sca.core.context.impl.CallableReferenceImpl;
+import org.apache.tuscany.sca.common.java.collection.LRUCache;
+import org.apache.tuscany.sca.core.LifeCycleListener;
 import org.apache.tuscany.sca.core.context.impl.CallbackServiceReferenceImpl;
 import org.apache.tuscany.sca.core.context.impl.ServiceReferenceImpl;
-import org.apache.tuscany.sca.core.invocation.CachedProxy;
 import org.apache.tuscany.sca.core.invocation.ProxyCreationException;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
@@ -34,12 +36,13 @@ import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.oasisopen.sca.ServiceReference;
 
+
 /**
  * the default implementation of a wire service that uses JDK dynamic proxies
  * 
  * @version $Rev$ $Date$
  */
-public class JDKProxyFactory implements ProxyFactory {
+public class JDKProxyFactory implements ProxyFactory, LifeCycleListener {
     protected InterfaceContractMapper contractMapper;
     private MessageFactory messageFactory;
 
@@ -67,7 +70,7 @@ public class JDKProxyFactory implements ProxyFactory {
                return interfaze.getClassLoader();
             }
         });
-        Object proxy = CachedProxy.newProxyInstance(cl, new Class[] {interfaze}, handler);
+        Object proxy = newProxyInstance(cl, new Class[] {interfaze}, handler);
         ((ServiceReferenceImpl)callableReference).setProxy(proxy);
         return interfaze.cast(proxy);
     }
@@ -82,13 +85,13 @@ public class JDKProxyFactory implements ProxyFactory {
         Class<T> interfaze = callbackReference.getBusinessInterface();
         InvocationHandler handler = new JDKCallbackInvocationHandler(messageFactory, callbackReference);
         ClassLoader cl = interfaze.getClassLoader();
-		Object proxy = CachedProxy.newProxyInstance(cl, new Class[] {interfaze}, handler);
-		callbackReference.setProxy(proxy);
+        Object proxy = newProxyInstance(cl, new Class[] {interfaze}, handler);
+        callbackReference.setProxy(proxy);
         return interfaze.cast(proxy);
     }
 
     public <B, R extends ServiceReference<B>> R cast(B target) throws IllegalArgumentException {
-        InvocationHandler handler = CachedProxy.getInvocationHandler(target);
+        InvocationHandler handler = Proxy.getInvocationHandler(target);
         if (handler instanceof JDKInvocationHandler) {
             return (R)((JDKInvocationHandler)handler).getCallableReference();
         } else {
@@ -100,6 +103,47 @@ public class JDKProxyFactory implements ProxyFactory {
      * @see org.apache.tuscany.sca.core.invocation.ProxyFactory#isProxyClass(java.lang.Class)
      */
     public boolean isProxyClass(Class<?> clazz) {
-        return CachedProxy.isProxyClass(clazz);
+        return Proxy.isProxyClass(clazz);
     }
+    
+    // This is a cache containing the proxy class constructor for each business interface.
+    // This improves performance compared to calling Proxy.newProxyInstance()
+    // every time that a proxy is needed.
+    private final LRUCache<Class<?>, Constructor<?>> cache = new LRUCache<Class<?>, Constructor<?>>(512);
+
+    public Object newProxyInstance(ClassLoader classloader,
+                                          Class<?> interfaces[],
+                                          InvocationHandler invocationhandler) throws IllegalArgumentException {
+        if (interfaces.length > 1) {
+            // We only cache the proxy constructors with one single interface which the case in SCA where
+            // one reference can have one interface
+            return Proxy.newProxyInstance(classloader, interfaces, invocationhandler);
+        }
+        try {
+            if (invocationhandler == null)
+                throw new NullPointerException("InvocationHandler is null");
+            // Lookup cached constructor.  aclass[0] is the reference's business interface.
+            Constructor<?> proxyCTOR;
+            synchronized (cache) {
+                proxyCTOR = cache.get(interfaces[0]);
+            }
+            if (proxyCTOR == null) {
+                Class<?> proxyClass = Proxy.getProxyClass(classloader, interfaces);
+                proxyCTOR = proxyClass.getConstructor(InvocationHandler.class);
+                synchronized (cache) {
+                    cache.put(interfaces[0], proxyCTOR);
+                }
+            }
+            return proxyCTOR.newInstance(invocationhandler);
+        } catch (Throwable e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    public void start() {
+    }
+
+    public void stop() {
+       cache.clear(); 
+    }    
 }

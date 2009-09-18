@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.core.invocation;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.core.LifeCycleListener;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.invocation.impl.JDKProxyFactory;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
@@ -31,7 +32,7 @@ import org.apache.tuscany.sca.invocation.MessageFactory;
  *
  * @version $Rev$ $Date$
  */
-public class DefaultProxyFactoryExtensionPoint implements ProxyFactoryExtensionPoint {
+public class DefaultProxyFactoryExtensionPoint implements ProxyFactoryExtensionPoint, LifeCycleListener {
     private InterfaceContractMapper interfaceContractMapper;
     private MessageFactory messageFactory;
 
@@ -41,10 +42,10 @@ public class DefaultProxyFactoryExtensionPoint implements ProxyFactoryExtensionP
     public DefaultProxyFactoryExtensionPoint(ExtensionPointRegistry extensionPoints) {
         UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
         this.interfaceContractMapper = utilities.getUtility(InterfaceContractMapper.class);
-        
+
         FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         this.messageFactory = modelFactories.getFactory(MessageFactory.class);
-        
+
         interfaceFactory = new JDKProxyFactory(messageFactory, interfaceContractMapper);
     }
 
@@ -69,6 +70,25 @@ public class DefaultProxyFactoryExtensionPoint implements ProxyFactoryExtensionP
 
     public void setInterfaceProxyFactory(ProxyFactory factory) {
         this.interfaceFactory = factory;
+
+    }
+
+    public void start() {
+        if (interfaceFactory instanceof LifeCycleListener) {
+            ((LifeCycleListener)interfaceFactory).start();
+        }
+        if (classFactory instanceof LifeCycleListener) {
+            ((LifeCycleListener)classFactory).start();
+        }
+    }
+
+    public void stop() {
+        if (interfaceFactory instanceof LifeCycleListener) {
+            ((LifeCycleListener)interfaceFactory).stop();
+        }
+        if (classFactory instanceof LifeCycleListener) {
+            ((LifeCycleListener)classFactory).stop();
+        }
 
     }
 
