@@ -271,40 +271,6 @@ public class OverlayEndpointRegistry implements EndpointRegistry, LifeCycleListe
     public void entryUpdated(Object key, Object oldValue, Object newValue) {
       /* TODO*/   
     }
-
-    public static void main(String[] args) throws Exception {
-		DHTConfiguration config = DHTFactory.getDefaultConfiguration();
-		/* the DHT behaviour should be configurable */
-		config.setRoutingStyle("Iterative");
-		config.setRoutingAlgorithm("Pastry");
-		config.setSelfPort(DEFAULT_PORT);
-		try {
-			map = DHTFactory.<Endpoint>getDHT(config);
-		}
-		catch (Exception e) {
-			throw new IllegalStateException(e);
-			}
-		
-		try {
-			map.joinOverlay(address, joinPort);
-		}
-		catch (IOException e) {
-			throw new IllegalStateException(e);
-		}
-		map.put(UUID.randomUUID().toString(), localhost.getHostAddress());
-        for (int i = 0; i < 4; i++) {
-            Thread.sleep(3000);
-            System.out.println(localhost + ": " + map.keySet());
-        }
-        for (Object e : map.entrySetFull()) {
-            Map.Entry en = (Map.Entry)e;
-            AbstractReplicatedMap.MapEntry entry = (AbstractReplicatedMap.MapEntry)en.getValue();
-            System.out.println(entry);
-        }
-        map.breakdown();
-        channel.stop(Channel.DEFAULT);
-    }
-
     private static String getBindAddress() {
         try {
             Enumeration<NetworkInterface> nis = NetworkInterface.getNetworkInterfaces();
