@@ -29,13 +29,13 @@
     <name>Apache Tuscany SCA OverlayWeaver DHT Based EndPoint Registry</name>
 
     <dependencies>
-    <!--    <dependency>
-            <groupId>org.apache.tomcat</groupId>
-            <artifactId>overlay</artifactId>
-            <version>6.0.18</version>
+        <dependency>
+            <groupId>ow</groupId>
+            <artifactId>overlayweaver</artifactId>
+            <version>0.9.5</version>
             <scope>compile</scope>
         </dependency>
-	-->
+
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-core-spi</artifactId>
