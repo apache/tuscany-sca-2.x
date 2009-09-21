@@ -23,4 +23,5 @@ Import-Package: javax.servlet.http,javax.xml.namespace,javax.xml.strea
  ca.monitor;version="2.0"
 Bundle-SymbolicName: org.apache.tuscany.sca.binding.http
 Bundle-DocURL: http://www.apache.org/
+Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6
 
