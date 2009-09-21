@@ -19,16 +19,11 @@
 
 package org.apache.tuscany.sca.binding.http.impl;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.OperationSelector;
 import org.apache.tuscany.sca.assembly.WireFormat;
 import org.apache.tuscany.sca.binding.http.HTTPBinding;
-import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.IntentAttachPointType;
-import org.apache.tuscany.sca.policy.PolicySet;
-import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 
 
 /**
@@ -36,19 +31,17 @@ import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
  * 
  * @version $Rev$ $Date$
  */
-class HTTPBindingImpl implements HTTPBinding, PolicySetAttachPoint {
+class HTTPBindingImpl implements HTTPBinding {
     
     private String name;
     private String uri;
     
     private WireFormat wireFormat;
     private OperationSelector operationSelector;    
-    
-    private List<Intent> requiredIntents = new ArrayList<Intent>();
-    private List<PolicySet> policySets = new ArrayList<PolicySet>();
-    private IntentAttachPointType intentAttachPointType;
-    private List<PolicySet> applicablePolicySets = new ArrayList<PolicySet>();
 
+    public QName getType() {
+		return TYPE;
+	}
 
     public String getName() {
         return name;
@@ -65,9 +58,8 @@ class HTTPBindingImpl implements HTTPBinding, PolicySetAttachPoint {
     public void setURI(String uri) {
         this.uri = uri;
     }
-
     
-    public boolean isUnresolved() {
+	public boolean isUnresolved() {
         return false;
     }
 
@@ -75,7 +67,7 @@ class HTTPBindingImpl implements HTTPBinding, PolicySetAttachPoint {
         // The sample binding is always resolved
     }
     
-// Wireformat and Operation selection
+    // Wireformat and Operation selection
     
     public WireFormat getRequestWireFormat() {
         return wireFormat;
@@ -101,39 +93,8 @@ class HTTPBindingImpl implements HTTPBinding, PolicySetAttachPoint {
         this.operationSelector = operationSelector;
     }    
     
-    //Policy related getters/setters
-    
-    public List<PolicySet> getPolicySets() {
-        return policySets;
-    }
-    
-    public List<Intent> getRequiredIntents() {
-        return requiredIntents;
-    }
-
-    public IntentAttachPointType getType() {
-        return intentAttachPointType;
-    }
-    
-    public void setType(IntentAttachPointType intentAttachPointType) {
-        this.intentAttachPointType = intentAttachPointType;
-    }
-
-    public void setPolicySets(List<PolicySet> policySets) {
-        this.policySets = policySets; 
-    }
-
-    public void setRequiredIntents(List<Intent> intents) {
-        this.requiredIntents = intents;
-    }    
-
-    public List<PolicySet> getApplicablePolicySets() {
-        return applicablePolicySets;
-    }
-    
     @Override
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }     
-
 }

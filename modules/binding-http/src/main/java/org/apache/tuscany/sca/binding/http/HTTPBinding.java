@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.binding.http;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.sca.assembly.BindingRRB;
 
 
@@ -28,4 +30,5 @@ import org.apache.tuscany.sca.assembly.BindingRRB;
  * @version $Rev$ $Date$
 */
 public interface HTTPBinding extends BindingRRB {
+	QName TYPE = new QName(SCA11_TUSCANY_NS, "binding.http");
 }

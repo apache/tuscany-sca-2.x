@@ -29,26 +29,25 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.OperationSelector;
 import org.apache.tuscany.sca.assembly.WireFormat;
-import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
-import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.binding.http.HTTPBinding;
 import org.apache.tuscany.sca.binding.http.HTTPBindingFactory;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
+import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
+import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXAttributeProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
-import org.apache.tuscany.sca.contribution.service.ContributionReadException;
-import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
-import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
+import org.apache.tuscany.sca.monitor.impl.ProblemImpl;
 
 public class HTTPBindingProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<HTTPBinding> {
     private static final String BINDING_HTTP = "binding.http";
-    private static final QName BINDING_HTTP_QNAME = new QName(Constants.SCA10_TUSCANY_NS, BINDING_HTTP);
+    private static final QName BINDING_HTTP_QNAME = HTTPBinding.TYPE;
     
     private static final String NAME = "name";
     private static final String URI = "uri";
@@ -62,7 +61,7 @@ public class HTTPBindingProcessor extends BaseStAXArtifactProcessor implements S
                                 StAXArtifactProcessor extensionProcessor,
                                 StAXAttributeProcessor extensionAttributeProcessor, 
                                 Monitor monitor) {
-        ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         this.httpBindingFactory = modelFactories.getFactory(HTTPBindingFactory.class);
         this.extensionProcessor = (StAXArtifactProcessor<Object>)extensionProcessor;
         this.extensionAttributeProcessor = extensionAttributeProcessor;
@@ -108,7 +107,6 @@ public class HTTPBindingProcessor extends BaseStAXArtifactProcessor implements S
                              }
                          }
                      }
- 
             }
             
             if (event == END_ELEMENT && BINDING_HTTP_QNAME.equals(reader.getName())) {
@@ -148,7 +146,21 @@ public class HTTPBindingProcessor extends BaseStAXArtifactProcessor implements S
         // Should not need to do anything here for now... 
         
     }
-    
+
+    /**
+     * Report a warning.
+     * 
+     * @param problems
+     * @param message
+     * @param model
+     */
+    private void warning(String message, Object model, Object... messageParameters) {
+       if (monitor != null) {
+           Problem problem = monitor.createProblem(this.getClass().getName(), "binding-http-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
+           monitor.problem(problem);
+       }
+    }
+         
     /**
      * Report a error.
      * 
@@ -157,10 +169,10 @@ public class HTTPBindingProcessor extends BaseStAXArtifactProcessor implements S
      * @param model
      */
     private void error(String message, Object model, Object... messageParameters) {
-         if (monitor != null) {
-                Problem problem = new ProblemImpl(this.getClass().getName(), "binding-http-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
-                monitor.problem(problem);
-         }
-    }
+        if (monitor != null) {
+            Problem problem = monitor.createProblem(this.getClass().getName(), "binding-http-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
+            monitor.problem(problem);
+        }        
+    }    
 
 }
