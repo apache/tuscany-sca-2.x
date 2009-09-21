@@ -21,7 +21,7 @@
 	targetNamespace="http://sample/test"
 	xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1"
 	xmlns:sr="http://sample/test"
-	name="test">
+	name="testCache">
 
     <component name="HTTPBindingComponent">
         <implementation.java class="org.apache.tuscany.sca.binding.http.TestBindingCacheImpl"/>
