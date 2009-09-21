@@ -20,25 +20,18 @@
 package org.apache.tuscany.sca.binding.http.provider;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.servlet.Servlet;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
-import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.PolicySet;
-import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
-import org.apache.tuscany.sca.policy.authentication.basic.BasicAuthenticationPolicy;
 
 /**
  * Servlet responsible for dispatching HTTP service requests to the
@@ -47,16 +40,11 @@ import org.apache.tuscany.sca.policy.authentication.basic.BasicAuthenticationPol
  * @version $Rev$ $Date$
  */
 public class HTTPServiceListenerServlet implements Servlet {
-    private static final QName AUTEHTICATION_INTENT = new QName("http://www.osoa.org/xmlns/sca/1.0","authentication");
-    
     transient private Binding binding;
     transient private ServletConfig config;
     transient private MessageFactory messageFactory;
     transient private Invoker serviceInvoker;
     
-    transient private boolean requiresAuthentication = false;
-    transient private BasicAuthenticationPolicy basicAuthenticationPolicy = null;
-
     /**
      * Constructs a new HTTPServiceListenerServlet.
      */
@@ -64,28 +52,6 @@ public class HTTPServiceListenerServlet implements Servlet {
         this.binding = binding;
         this.serviceInvoker = serviceInvoker;
         this.messageFactory = messageFactory;
-        
-        // find out which policies are active
-        if (binding instanceof PolicySetAttachPoint) {
-            List<Intent> intents = ((PolicySetAttachPoint)binding).getRequiredIntents();
-            for(Intent intent : intents) {
-                if(intent.getName().equals(AUTEHTICATION_INTENT)) {
-                    requiresAuthentication = true;
-                }
-            }
-
-
-            List<PolicySet> policySets = ((PolicySetAttachPoint)binding).getApplicablePolicySets();
-            for (PolicySet ps : policySets) {
-                for (Object p : ps.getPolicies()) {
-                    if (BasicAuthenticationPolicy.class.isInstance(p)) {
-                        basicAuthenticationPolicy = (BasicAuthenticationPolicy)p;
-                    } else {
-                        // etc. check for other types of policy being present
-                    }
-                }
-            }
-        }        
     }
 
     public ServletConfig getServletConfig() {
@@ -105,13 +71,6 @@ public class HTTPServiceListenerServlet implements Servlet {
     }
 
     public void service(ServletRequest request, ServletResponse response) throws ServletException, IOException {
-        
-        if(requiresAuthentication) {
-            if(! hasAuthenticationHeader((HttpServletRequest)request, (HttpServletResponse)response)) {
-                ((HttpServletResponse)response).sendError(HttpServletResponse.SC_UNAUTHORIZED);
-            }
-        }
-        
         // Dispatch the service interaction to the service invoker
         Message requestMessage = messageFactory.createMessage();
         requestMessage.setBody(new Object[]{request, response});
@@ -122,15 +81,5 @@ public class HTTPServiceListenerServlet implements Servlet {
             Throwable e = (Throwable)responseMessage.getBody();
             ((HttpServletResponse)response).sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());
         }
-    }
-
-    
-    private boolean hasAuthenticationHeader(HttpServletRequest request, ServletResponse response) {
-        boolean result = false;
-        if(request.getHeader("Authorization") != null) {
-            result = true;
-        }
-        
-        return result;
     }
 }

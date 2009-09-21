@@ -24,25 +24,18 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLDecoder;
 import java.text.ParseException;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.binding.http.HTTPCacheContext;
-import org.apache.tuscany.sca.binding.http.util.HTTPHeadersParser;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
-import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.PolicySet;
-import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
-import org.apache.tuscany.sca.policy.authentication.basic.BasicAuthenticationPolicy;
 
 /**
  * Servlet responsible for dispatching HTTP requests to the
@@ -53,12 +46,7 @@ import org.apache.tuscany.sca.policy.authentication.basic.BasicAuthenticationPol
 public class HTTPBindingListenerServlet extends HttpServlet {
     private static final long serialVersionUID = 2865466417329430610L;
     
-    private static final QName AUTEHTICATION_INTENT = new QName("http://www.osoa.org/xmlns/sca/1.0","authentication");
-    
     transient private Binding binding;
-
-    transient private boolean requiresAuthentication = false;
-    transient private BasicAuthenticationPolicy basicAuthenticationPolicy = null;
 
     private MessageFactory messageFactory;
     private Invoker getInvoker;
@@ -76,42 +64,11 @@ public class HTTPBindingListenerServlet extends HttpServlet {
     public HTTPBindingListenerServlet(Binding binding, MessageFactory messageFactory) {
         this.binding = binding;
         this.messageFactory = messageFactory;
-        
-
-        // find out which policies are active
-        if (binding instanceof PolicySetAttachPoint) {
-            List<Intent> intents = ((PolicySetAttachPoint)binding).getRequiredIntents();
-            for(Intent intent : intents) {
-                if(intent.getName().equals(AUTEHTICATION_INTENT)) {
-                    requiresAuthentication = true;
-                }
-            }
-
-
-            List<PolicySet> policySets = ((PolicySetAttachPoint)binding).getApplicablePolicySets();
-            for (PolicySet ps : policySets) {
-                for (Object p : ps.getPolicies()) {
-                    if (BasicAuthenticationPolicy.class.isInstance(p)) {
-                        basicAuthenticationPolicy = (BasicAuthenticationPolicy)p;
-                    } else {
-                        // etc. check for other types of policy being present
-                    }
-                }
-            }
-        }        
     }
 
     
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-        if(requiresAuthentication) {
-            if(! hasAuthorization(request, response)) {
-                response.setHeader("WWW-Authenticate", "BASIC realm=\"Tuscany\"");
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-            }
-        }
-        
         super.service(request, response);
     }    
     
@@ -129,9 +86,6 @@ public class HTTPBindingListenerServlet extends HttpServlet {
         // Invoke the get operation on the service implementation
         Message requestMessage = messageFactory.createMessage();
 
-        //store http headers to message
-        requestMessage.getHeaders().addAll(HTTPHeadersParser.getHeaders(request));
-        
         String id = path.substring(1);
         
         Message responseMessage = null;
@@ -496,21 +450,4 @@ public class HTTPBindingListenerServlet extends HttpServlet {
     public void setConditionalDeleteInvoker(Invoker conditionalDeleteInvoker) {
         this.conditionalDeleteInvoker = conditionalDeleteInvoker;
     }
-
-    
-    /** 
-     * Utility Methods related to Policy
-     */
-    
-
-    private boolean hasAuthorization(HttpServletRequest request, ServletResponse response) {
-        boolean result = false;
-        if(request.getHeader("Authorization") != null) {
-            result = true;
-        }
-        
-        return result;
-    }
-
-
 }

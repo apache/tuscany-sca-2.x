@@ -19,18 +19,17 @@
 
 package org.apache.tuscany.sca.binding.http.provider;
 
+import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.binding.http.HTTPBinding;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
-import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
 
 /**
@@ -47,16 +46,16 @@ public class HTTPBindingProviderFactory implements BindingProviderFactory<HTTPBi
         this.extensionPoints = extensionPoints;
         ServletHostExtensionPoint servletHosts = extensionPoints.getExtensionPoint(ServletHostExtensionPoint.class);
         this.servletHost = servletHosts.getServletHosts().get(0);
-        ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         messageFactory = modelFactories.getFactory(MessageFactory.class);
     }
 
-    public ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component, RuntimeComponentReference reference, HTTPBinding binding) {
+    public ReferenceBindingProvider createReferenceBindingProvider(EndpointReference endpointReference) {
         return null;
     }
 
-    public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component, RuntimeComponentService service, HTTPBinding binding) {
-        return new HTTPServiceBindingProvider(component, service, binding, extensionPoints, messageFactory, servletHost);
+    public ServiceBindingProvider createServiceBindingProvider(Endpoint endpoint) {
+        return new HTTPServiceBindingProvider(endpoint, extensionPoints, messageFactory, servletHost);
     }
     
     public Class<HTTPBinding> getModelType() {
