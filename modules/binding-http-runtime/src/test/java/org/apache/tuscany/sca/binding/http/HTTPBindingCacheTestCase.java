@@ -27,19 +27,22 @@ import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import junit.framework.TestCase;
+import junit.framework.Assert;
 
 import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  * HTTP binding unit tests.
  * 
  * @version $Rev$ $Date$
  */
-public class HTTPBindingCacheTestCase extends TestCase {
+public class HTTPBindingCacheTestCase {
 	// RFC 822 date time
 	protected static final SimpleDateFormat dateFormat = new SimpleDateFormat(
 			"EEE, dd MMM yyyy HH:mm:ss Z");
@@ -58,8 +61,8 @@ public class HTTPBindingCacheTestCase extends TestCase {
 
 	private static Node node;
 
-	@Override
-	protected void setUp() throws Exception {
+	@BeforeClass
+	public static void setUp() throws Exception {
 		try {
 			String contribution = ContributionLocationHelper.getContributionLocation(HTTPBindingCacheTestCase.class);
 			node = NodeFactory.newInstance().createNode("testCache.composite", new Contribution("test", contribution));
@@ -69,8 +72,8 @@ public class HTTPBindingCacheTestCase extends TestCase {
 		}
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
+	@AfterClass
+	public static void tearDown() throws Exception {
 		node.stop();
 		node.destroy();
 	}
@@ -79,6 +82,7 @@ public class HTTPBindingCacheTestCase extends TestCase {
 	 * Test invoking a POJO get method implementation using the HTTP binding. 
 	 * @throws Exception
 	 */
+	@Test
 	public void testGet() throws Exception {
 		Socket client = new Socket("127.0.0.1", HTTP_PORT);
 		OutputStream os = client.getOutputStream();
@@ -90,13 +94,14 @@ public class HTTPBindingCacheTestCase extends TestCase {
 		os.flush();
 
 		String document = read(client);
-		assertTrue(document.indexOf("<body><p>item=" + index) != -1);
+		Assert.assertTrue(document.indexOf("<body><p>item=" + index) != -1);
 	}
 
 	/**
 	 * Test invoking a conditional method implementation using the HTTP binding. 
 	 * @throws Exception
 	 */
+	@Test
 	public void testConditionalGetIfModifiedNegative() throws Exception {
 		Socket client = new Socket("127.0.0.1", HTTP_PORT);
 		OutputStream os = client.getOutputStream();
@@ -110,7 +115,7 @@ public class HTTPBindingCacheTestCase extends TestCase {
 
 		String document = read(client);
 		// Should return item
-		assertTrue(document.indexOf("<body><p>item=" + index) != -1);
+		Assert.assertTrue(document.indexOf("<body><p>item=" + index) != -1);
 		// Should return code 304 Not Modified.
 		// assertTrue(document.indexOf("HTTP/1.1 304") != -1);
 	}
@@ -119,6 +124,7 @@ public class HTTPBindingCacheTestCase extends TestCase {
 	 * Test invoking a conditional method implementation using the HTTP binding. 
 	 * @throws Exception
 	 */
+	@Test
 	public void testConditionalGetIfModifiedPositive() throws Exception {
 		Socket client = new Socket("127.0.0.1", HTTP_PORT);
 		OutputStream os = client.getOutputStream();
@@ -134,13 +140,14 @@ public class HTTPBindingCacheTestCase extends TestCase {
 		// Should return item
 		// assertTrue(document.indexOf("<body><p>item=" + index) != -1);
 		// Should return code 304 Not Modified.
-		assertTrue(document.indexOf("HTTP/1.1 304") != -1);
+		Assert.assertTrue(document.indexOf("HTTP/1.1 304") != -1);
 	}
 
 	/**
 	 * Test invoking a conditional method implementation using the HTTP binding. 
 	 * @throws Exception
 	 */
+	@Test
 	public void testConditionalGetIfUnmodifiedNegative() throws Exception {
 		Socket client = new Socket("127.0.0.1", HTTP_PORT);
 		OutputStream os = client.getOutputStream();
@@ -154,7 +161,7 @@ public class HTTPBindingCacheTestCase extends TestCase {
 
 		String document = read(client);
 		// Should return item
-		assertTrue(document.indexOf("<body><p>item=" + index) != -1);
+		Assert.assertTrue(document.indexOf("<body><p>item=" + index) != -1);
 		// Should return code 304 Not Modified.
 		// assertTrue(document.indexOf("HTTP/1.1 304") != -1);
 	}
@@ -163,6 +170,7 @@ public class HTTPBindingCacheTestCase extends TestCase {
 	 * Test invoking a conditional method implementation using the HTTP binding. 
 	 * @throws Exception
 	 */
+	@Test
 	public void testConditionalGetIfUnmodifiedPositive() throws Exception {
 		Socket client = new Socket("127.0.0.1", HTTP_PORT);
 		OutputStream os = client.getOutputStream();
@@ -178,13 +186,14 @@ public class HTTPBindingCacheTestCase extends TestCase {
 		// Should return item
 		// assertTrue(document.indexOf("<body><p>item=" + index) != -1);
 		// Should return code 412 PreconditionFailed.
-		assertTrue(document.indexOf("HTTP/1.1 412") != -1);
+		Assert.assertTrue(document.indexOf("HTTP/1.1 412") != -1);
 	}
 
 	/**
 	 * Test invoking a conditional method implementation using the HTTP binding. 
 	 * @throws Exception
 	 */
+	@Test
 	public void testConditionalGetIfMatchNegative() throws Exception {
 		Socket client = new Socket("127.0.0.1", HTTP_PORT);
 		OutputStream os = client.getOutputStream();
@@ -199,13 +208,14 @@ public class HTTPBindingCacheTestCase extends TestCase {
 		// Should return item
 		// assertTrue(document.indexOf("<body><p>item=" + index) != -1);
 		// Should return code 412 precondition failed.
-		assertTrue(document.indexOf("HTTP/1.1 412") != -1);
+		Assert.assertTrue(document.indexOf("HTTP/1.1 412") != -1);
 	}
 
 	/**
 	 * Test invoking a conditional method implementation using the HTTP binding. 
 	 * @throws Exception
 	 */
+	@Test
 	public void testConditionalGetIfMatchPositive() throws Exception {
 		Socket client = new Socket("127.0.0.1", HTTP_PORT);
 		OutputStream os = client.getOutputStream();
@@ -218,7 +228,7 @@ public class HTTPBindingCacheTestCase extends TestCase {
 
 		String document = read(client);
 		// Should return item
-		assertTrue(document.indexOf("<body><p>item=" + index) != -1);
+		Assert.assertTrue(document.indexOf("<body><p>item=" + index) != -1);
 		// Should return code 412 PreconditionFailed.
 		// assertTrue(document.indexOf("HTTP/1.1 412") != -1);
 	}
@@ -227,6 +237,7 @@ public class HTTPBindingCacheTestCase extends TestCase {
 	 * Test invoking a conditional method implementation using the HTTP binding. 
 	 * @throws Exception
 	 */
+	@Test
 	public void testConditionalGetIfNoneMatchNegative() throws Exception {
 		Socket client = new Socket("127.0.0.1", HTTP_PORT);
 		OutputStream os = client.getOutputStream();
@@ -239,7 +250,7 @@ public class HTTPBindingCacheTestCase extends TestCase {
 
 		String document = read(client);
 		// Should return item
-		assertTrue(document.indexOf("<body><p>item=" + index) != -1);
+		Assert.assertTrue(document.indexOf("<body><p>item=" + index) != -1);
 		// Should return code 412 precondition failed.
 		// assertTrue(document.indexOf("HTTP/1.1 412") != -1);
 	}
@@ -248,6 +259,7 @@ public class HTTPBindingCacheTestCase extends TestCase {
 	 * Test invoking a conditional method implementation using the HTTP binding. 
 	 * @throws Exception
 	 */
+	@Test
 	public void testConditionalGetIfNoneMatchPositive() throws Exception {
 		Socket client = new Socket("127.0.0.1", HTTP_PORT);
 		OutputStream os = client.getOutputStream();
@@ -262,13 +274,14 @@ public class HTTPBindingCacheTestCase extends TestCase {
 		// Should return item
 		// assertTrue(document.indexOf("<body><p>item=" + index) != -1);
 		// Should return code 412 PreconditionFailed.
-		assertTrue(document.indexOf("HTTP/1.1 412") != -1);
+		Assert.assertTrue(document.indexOf("HTTP/1.1 412") != -1);
 	}
 
 	/**
 	 * Test invoking a POJO get method implementation using the HTTP binding. 
 	 * @throws Exception
 	 */
+	@Test
 	public void testDelete() throws Exception {
 		Socket client = new Socket("127.0.0.1", HTTP_PORT);
 		OutputStream os = client.getOutputStream();
@@ -280,13 +293,14 @@ public class HTTPBindingCacheTestCase extends TestCase {
 		os.flush();
 
 		String document = read(client);
-		assertTrue(document.indexOf("deleted item=" + index) != -1);
+		Assert.assertTrue(document.indexOf("deleted item=" + index) != -1);
 	}
 
 	/**
 	 * Test invoking a conditional method implementation using the HTTP binding. 
 	 * @throws Exception
 	 */
+	@Test
 	public void testConditionalDeleteIfModifiedNegative() throws Exception {
 		Socket client = new Socket("127.0.0.1", HTTP_PORT);
 		OutputStream os = client.getOutputStream();
@@ -300,7 +314,7 @@ public class HTTPBindingCacheTestCase extends TestCase {
 
 		String document = read(client);
 		// Should return item
-		assertTrue(document.indexOf("deleted item=" + index) != -1);
+		Assert.assertTrue(document.indexOf("deleted item=" + index) != -1);
 		// Should return code 304 Not Modified.
 		// assertTrue(document.indexOf("HTTP/1.1 304") != -1);
 	}
@@ -309,6 +323,7 @@ public class HTTPBindingCacheTestCase extends TestCase {
 	 * Test invoking a conditional method implementation using the HTTP binding. 
 	 * @throws Exception
 	 */
+	@Test
 	public void testConditionalDeleteIfModifiedPositive() throws Exception {
 		Socket client = new Socket("127.0.0.1", HTTP_PORT);
 		OutputStream os = client.getOutputStream();
@@ -324,13 +339,14 @@ public class HTTPBindingCacheTestCase extends TestCase {
 		// Should return item
 		// assertTrue(document.indexOf("deleted item=" + index) != -1);
 		// Should return code 304 Not Modified.
-		assertTrue(document.indexOf("HTTP/1.1 304") != -1);
+		Assert.assertTrue(document.indexOf("HTTP/1.1 304") != -1);
 	}
 
 	/**
 	 * Test invoking a conditional method implementation using the HTTP binding. 
 	 * @throws Exception
 	 */
+	@Test
 	public void testConditionalDeleteIfUnmodifiedNegative() throws Exception {
 		Socket client = new Socket("127.0.0.1", HTTP_PORT);
 		OutputStream os = client.getOutputStream();
@@ -344,7 +360,7 @@ public class HTTPBindingCacheTestCase extends TestCase {
 
 		String document = read(client);
 		// Should return item
-		assertTrue(document.indexOf("deleted item=" + index) != -1);
+		Assert.assertTrue(document.indexOf("deleted item=" + index) != -1);
 		// Should return code 304 Not Modified.
 		// assertTrue(document.indexOf("HTTP/1.1 304") != -1);
 	}
@@ -353,6 +369,7 @@ public class HTTPBindingCacheTestCase extends TestCase {
 	 * Test invoking a conditional method implementation using the HTTP binding. 
 	 * @throws Exception
 	 */
+	@Test
 	public void testConditionalDeleteIfUnmodifiedPositive() throws Exception {
 		Socket client = new Socket("127.0.0.1", HTTP_PORT);
 		OutputStream os = client.getOutputStream();
@@ -368,13 +385,14 @@ public class HTTPBindingCacheTestCase extends TestCase {
 		// Should return item
 		// assertTrue(document.indexOf("deleted item=" + index) != -1);
 		// Should return code 412 PreconditionFailed.
-		assertTrue(document.indexOf("HTTP/1.1 412") != -1);
+		Assert.assertTrue(document.indexOf("HTTP/1.1 412") != -1);
 	}
 
 	/**
 	 * Test invoking a conditional method implementation using the HTTP binding. 
 	 * @throws Exception
 	 */
+	@Test
 	public void testConditionalDeleteIfMatchNegative() throws Exception {
 		Socket client = new Socket("127.0.0.1", HTTP_PORT);
 		OutputStream os = client.getOutputStream();
@@ -389,13 +407,14 @@ public class HTTPBindingCacheTestCase extends TestCase {
 		// Should return item
 		// assertTrue(document.indexOf("deleted item=" + index) != -1);
 		// Should return code 412 precondition failed.
-		assertTrue(document.indexOf("HTTP/1.1 412") != -1);
+		Assert.assertTrue(document.indexOf("HTTP/1.1 412") != -1);
 	}
 
 	/**
 	 * Test invoking a conditional method implementation using the HTTP binding. 
 	 * @throws Exception
 	 */
+	@Test
 	public void testConditionalDeleteIfMatchPositive() throws Exception {
 		Socket client = new Socket("127.0.0.1", HTTP_PORT);
 		OutputStream os = client.getOutputStream();
@@ -408,7 +427,7 @@ public class HTTPBindingCacheTestCase extends TestCase {
 
 		String document = read(client);
 		// Should return item
-		assertTrue(document.indexOf("deleted item=" + index) != -1);
+		Assert.assertTrue(document.indexOf("deleted item=" + index) != -1);
 		// Should return code 412 PreconditionFailed.
 		// assertTrue(document.indexOf("HTTP/1.1 412") != -1);
 	}
@@ -417,6 +436,7 @@ public class HTTPBindingCacheTestCase extends TestCase {
 	 * Test invoking a conditional method implementation using the HTTP binding. 
 	 * @throws Exception
 	 */
+	@Test
 	public void testConditionalDeleteIfNoneMatchNegative() throws Exception {
 		Socket client = new Socket("127.0.0.1", HTTP_PORT);
 		OutputStream os = client.getOutputStream();
@@ -429,7 +449,7 @@ public class HTTPBindingCacheTestCase extends TestCase {
 
 		String document = read(client);
 		// Should return item
-		assertTrue(document.indexOf("deleted item=" + index) != -1);
+		Assert.assertTrue(document.indexOf("deleted item=" + index) != -1);
 		// Should return code 412 precondition failed.
 		// assertTrue(document.indexOf("HTTP/1.1 412") != -1);
 	}
@@ -438,6 +458,7 @@ public class HTTPBindingCacheTestCase extends TestCase {
 	 * Test invoking a conditional method implementation using the HTTP binding. 
 	 * @throws Exception
 	 */
+	@Test
 	public void testConditionalDeleteIfNoneMatchPositive() throws Exception {
 		Socket client = new Socket("127.0.0.1", HTTP_PORT);
 		OutputStream os = client.getOutputStream();
@@ -452,13 +473,14 @@ public class HTTPBindingCacheTestCase extends TestCase {
 		// Should return item
 		// assertTrue(document.indexOf("deleted item=" + index) != -1);
 		// Should return code 412 PreconditionFailed.
-		assertTrue(document.indexOf("HTTP/1.1 412") != -1);
+		Assert.assertTrue(document.indexOf("HTTP/1.1 412") != -1);
 	}
 
 	/**
 	 * Test invoking a POJO get method implementation using the HTTP binding. 
 	 * @throws Exception
 	 */
+	@Test
 	public void testPost() throws Exception {
 		Socket client = new Socket("127.0.0.1", HTTP_PORT);
 		OutputStream os = client.getOutputStream();
@@ -470,13 +492,14 @@ public class HTTPBindingCacheTestCase extends TestCase {
 		os.flush();
 
 		String document = read(client);
-		assertTrue(document.indexOf("HTTP/1.1 200 OK") != -1);
+		Assert.assertTrue(document.indexOf("HTTP/1.1 200 OK") != -1);
 	}
 
 	/**
 	 * Test invoking a conditional method implementation using the HTTP binding. 
 	 * @throws Exception
 	 */
+	@Test
 	public void testConditionalPostIfModifiedNegative() throws Exception {
 		Socket client = new Socket("127.0.0.1", HTTP_PORT);
 		OutputStream os = client.getOutputStream();
@@ -491,7 +514,7 @@ public class HTTPBindingCacheTestCase extends TestCase {
 		String document = read(client);
 		// Should return code 200 OK
 		// assertTrue(document.indexOf("posted item=" + index) != -1);
-		assertTrue(document.indexOf("HTTP/1.1 200 OK") != -1);
+		Assert.assertTrue(document.indexOf("HTTP/1.1 200 OK") != -1);
 		// Should return code 304 Not Modified.
 		// assertTrue(document.indexOf("HTTP/1.1 304") != -1);
 	}
@@ -500,6 +523,7 @@ public class HTTPBindingCacheTestCase extends TestCase {
 	 * Test invoking a conditional method implementation using the HTTP binding. 
 	 * @throws Exception
 	 */
+	@Test
 	public void testConditionalPostIfModifiedPositive() throws Exception {
 		Socket client = new Socket("127.0.0.1", HTTP_PORT);
 		OutputStream os = client.getOutputStream();
@@ -515,13 +539,14 @@ public class HTTPBindingCacheTestCase extends TestCase {
 		// Should return item
 		// assertTrue(document.indexOf("posted item=" + index) != -1);
 		// Should return code 304 Not Modified.
-		assertTrue(document.indexOf("HTTP/1.1 304") != -1);
+		Assert.assertTrue(document.indexOf("HTTP/1.1 304") != -1);
 	}
 
 	/**
 	 * Test invoking a conditional method implementation using the HTTP binding. 
 	 * @throws Exception
 	 */
+	@Test
 	public void testConditionalPostIfUnmodifiedNegative() throws Exception {
 		Socket client = new Socket("127.0.0.1", HTTP_PORT);
 		OutputStream os = client.getOutputStream();
@@ -535,7 +560,7 @@ public class HTTPBindingCacheTestCase extends TestCase {
 
 		String document = read(client);
 		// Should return code 200 OK
-		assertTrue(document.indexOf("HTTP/1.1 200 OK") != -1);
+		Assert.assertTrue(document.indexOf("HTTP/1.1 200 OK") != -1);
 		// Should return code 304 Not Modified.
 		// assertTrue(document.indexOf("HTTP/1.1 304") != -1);
 	}
@@ -544,6 +569,7 @@ public class HTTPBindingCacheTestCase extends TestCase {
 	 * Test invoking a conditional method implementation using the HTTP binding. 
 	 * @throws Exception
 	 */
+	@Test
 	public void testConditionalPostIfUnmodifiedPositive() throws Exception {
 		Socket client = new Socket("127.0.0.1", HTTP_PORT);
 		OutputStream os = client.getOutputStream();
@@ -559,13 +585,14 @@ public class HTTPBindingCacheTestCase extends TestCase {
 		// Should return item
 		// assertTrue(document.indexOf("posted item=" + index) != -1);
 		// Should return code 412 PreconditionFailed.
-		assertTrue(document.indexOf("HTTP/1.1 412") != -1);
+		Assert.assertTrue(document.indexOf("HTTP/1.1 412") != -1);
 	}
 
 	/**
 	 * Test invoking a conditional method implementation using the HTTP binding. 
 	 * @throws Exception
 	 */
+	@Test
 	public void testConditionalPostIfMatchNegative() throws Exception {
 		Socket client = new Socket("127.0.0.1", HTTP_PORT);
 		OutputStream os = client.getOutputStream();
@@ -578,7 +605,7 @@ public class HTTPBindingCacheTestCase extends TestCase {
 
 		String document = read(client);
 		// Should return code 200 OK.
-		assertTrue(document.indexOf("HTTP/1.1 200 OK") != -1);
+		Assert.assertTrue(document.indexOf("HTTP/1.1 200 OK") != -1);
 		// Should return code 412 precondition failed.
 		// assertTrue(document.indexOf("HTTP/1.1 412") != -1);
 	}
@@ -587,6 +614,7 @@ public class HTTPBindingCacheTestCase extends TestCase {
 	 * Test invoking a conditional method implementation using the HTTP binding. 
 	 * @throws Exception
 	 */
+	@Test
 	public void testConditionalPostIfMatchPositive() throws Exception {
 		Socket client = new Socket("127.0.0.1", HTTP_PORT);
 		OutputStream os = client.getOutputStream();
@@ -602,13 +630,14 @@ public class HTTPBindingCacheTestCase extends TestCase {
 		// Should return item
 		// assertTrue(document.indexOf("posted item=" + index) != -1);
 		// Should return code 412 PreconditionFailed.
-		assertTrue(document.indexOf("HTTP/1.1 412") != -1);
+		Assert.assertTrue(document.indexOf("HTTP/1.1 412") != -1);
 	}
 
 	/**
 	 * Test invoking a conditional method implementation using the HTTP binding. 
 	 * @throws Exception
 	 */
+	@Test
 	public void testConditionalPostIfNoneMatchNegative() throws Exception {
 		Socket client = new Socket("127.0.0.1", HTTP_PORT);
 		OutputStream os = client.getOutputStream();
@@ -622,7 +651,7 @@ public class HTTPBindingCacheTestCase extends TestCase {
 
 		String document = read(client);
 		// Should return code 200 OK
-		assertTrue(document.indexOf("HTTP/1.1 200 OK") != -1);
+		Assert.assertTrue(document.indexOf("HTTP/1.1 200 OK") != -1);
 		// Should return code 412 precondition failed.
 		// assertTrue(document.indexOf("HTTP/1.1 412") != -1);
 	}
@@ -631,6 +660,7 @@ public class HTTPBindingCacheTestCase extends TestCase {
 	 * Test invoking a conditional method implementation using the HTTP binding. 
 	 * @throws Exception
 	 */
+	@Test
 	public void testConditionalPostIfNoneMatchPositive() throws Exception {
 		Socket client = new Socket("127.0.0.1", HTTP_PORT);
 		OutputStream os = client.getOutputStream();
@@ -646,13 +676,14 @@ public class HTTPBindingCacheTestCase extends TestCase {
 		// Should return item
 		// assertTrue(document.indexOf("posted item=" + index) != -1);
 		// Should return code 412 PreconditionFailed.
-		assertTrue(document.indexOf("HTTP/1.1 412") != -1);
+		Assert.assertTrue(document.indexOf("HTTP/1.1 412") != -1);
 	}
 
 	/**
 	 * Test invoking a POJO get method implementation using the HTTP binding. 
 	 * @throws Exception
 	 */
+	@Test
 	public void testPut() throws Exception {
 		Socket client = new Socket("127.0.0.1", HTTP_PORT);
 		OutputStream os = client.getOutputStream();
@@ -664,13 +695,14 @@ public class HTTPBindingCacheTestCase extends TestCase {
 		os.flush();
 
 		String document = read(client);
-		assertTrue(document.indexOf("updated item=" + index) != -1);
+		Assert.assertTrue(document.indexOf("updated item=" + index) != -1);
 	}
 
 	/**
 	 * Test invoking a conditional method implementation using the HTTP binding. 
 	 * @throws Exception
 	 */
+	@Test
 	public void testConditionalPutIfModifiedNegative() throws Exception {
 		Socket client = new Socket("127.0.0.1", HTTP_PORT);
 		OutputStream os = client.getOutputStream();
@@ -684,7 +716,7 @@ public class HTTPBindingCacheTestCase extends TestCase {
 
 		String document = read(client);
 		// Should return item
-		assertTrue(document.indexOf("updated item=" + index) != -1);
+		Assert.assertTrue(document.indexOf("updated item=" + index) != -1);
 		// Should return code 304 Not Modified.
 		// assertTrue(document.indexOf("HTTP/1.1 304") != -1);
 	}
@@ -693,6 +725,7 @@ public class HTTPBindingCacheTestCase extends TestCase {
 	 * Test invoking a conditional method implementation using the HTTP binding. 
 	 * @throws Exception
 	 */
+	@Test
 	public void testConditionalPutIfModifiedPositive() throws Exception {
 		Socket client = new Socket("127.0.0.1", HTTP_PORT);
 		OutputStream os = client.getOutputStream();
@@ -708,13 +741,14 @@ public class HTTPBindingCacheTestCase extends TestCase {
 		// Should return item
 		// assertTrue(document.indexOf("updated item=" + index) != -1);
 		// Should return code 304 Not Modified.
-		assertTrue(document.indexOf("HTTP/1.1 304") != -1);
+		Assert.assertTrue(document.indexOf("HTTP/1.1 304") != -1);
 	}
 
 	/**
 	 * Test invoking a conditional method implementation using the HTTP binding. 
 	 * @throws Exception
 	 */
+	@Test
 	public void testConditionalPutIfUnmodifiedNegative() throws Exception {
 		Socket client = new Socket("127.0.0.1", HTTP_PORT);
 		OutputStream os = client.getOutputStream();
@@ -728,7 +762,7 @@ public class HTTPBindingCacheTestCase extends TestCase {
 
 		String document = read(client);
 		// Should return item
-		assertTrue(document.indexOf("updated item=" + index) != -1);
+		Assert.assertTrue(document.indexOf("updated item=" + index) != -1);
 		// Should return code 304 Not Modified.
 		// assertTrue(document.indexOf("HTTP/1.1 304") != -1);
 	}
@@ -737,6 +771,7 @@ public class HTTPBindingCacheTestCase extends TestCase {
 	 * Test invoking a conditional method implementation using the HTTP binding. 
 	 * @throws Exception
 	 */
+	@Test
 	public void testConditionalPutIfUnmodifiedPositive() throws Exception {
 		Socket client = new Socket("127.0.0.1", HTTP_PORT);
 		OutputStream os = client.getOutputStream();
@@ -752,13 +787,14 @@ public class HTTPBindingCacheTestCase extends TestCase {
 		// Should return item
 		// assertTrue(document.indexOf("updated item=" + index) != -1);
 		// Should return code 412 PreconditionFailed.
-		assertTrue(document.indexOf("HTTP/1.1 412") != -1);
+		Assert.assertTrue(document.indexOf("HTTP/1.1 412") != -1);
 	}
 
 	/**
 	 * Test invoking a conditional method implementation using the HTTP binding. 
 	 * @throws Exception
 	 */
+	@Test
 	public void testConditionalPutIfMatchNegative() throws Exception {
 		Socket client = new Socket("127.0.0.1", HTTP_PORT);
 		OutputStream os = client.getOutputStream();
@@ -773,13 +809,14 @@ public class HTTPBindingCacheTestCase extends TestCase {
 		// Should return item
 		// assertTrue(document.indexOf("updated item=" + index) != -1);
 		// Should return code 412 precondition failed.
-		assertTrue(document.indexOf("HTTP/1.1 412") != -1);
+		Assert.assertTrue(document.indexOf("HTTP/1.1 412") != -1);
 	}
 
 	/**
 	 * Test invoking a conditional method implementation using the HTTP binding. 
 	 * @throws Exception
 	 */
+	@Test
 	public void testConditionalPutIfMatchPositive() throws Exception {
 		Socket client = new Socket("127.0.0.1", HTTP_PORT);
 		OutputStream os = client.getOutputStream();
@@ -792,7 +829,7 @@ public class HTTPBindingCacheTestCase extends TestCase {
 
 		String document = read(client);
 		// Should return item
-		assertTrue(document.indexOf("updated item=" + index) != -1);
+		Assert.assertTrue(document.indexOf("updated item=" + index) != -1);
 		// Should return code 412 PreconditionFailed.
 		// assertTrue(document.indexOf("HTTP/1.1 412") != -1);
 	}
@@ -801,6 +838,7 @@ public class HTTPBindingCacheTestCase extends TestCase {
 	 * Test invoking a conditional method implementation using the HTTP binding. 
 	 * @throws Exception
 	 */
+	@Test
 	public void testConditionalPutIfNoneMatchNegative() throws Exception {
 		Socket client = new Socket("127.0.0.1", HTTP_PORT);
 		OutputStream os = client.getOutputStream();
@@ -813,7 +851,7 @@ public class HTTPBindingCacheTestCase extends TestCase {
 
 		String document = read(client);
 		// Should return item
-		assertTrue(document.indexOf("updated item=" + index) != -1);
+		Assert.assertTrue(document.indexOf("updated item=" + index) != -1);
 		// Should return code 412 precondition failed.
 		// assertTrue(document.indexOf("HTTP/1.1 412") != -1);
 	}
@@ -822,6 +860,7 @@ public class HTTPBindingCacheTestCase extends TestCase {
 	 * Test invoking a conditional method implementation using the HTTP binding. 
 	 * @throws Exception
 	 */
+	@Test
 	public void testConditionalPutIfNoneMatchPositive() throws Exception {
 		Socket client = new Socket("127.0.0.1", HTTP_PORT);
 		OutputStream os = client.getOutputStream();
@@ -836,7 +875,7 @@ public class HTTPBindingCacheTestCase extends TestCase {
 		// Should return item
 		// assertTrue(document.indexOf("updated item=" + index) != -1);
 		// Should return code 412 PreconditionFailed.
-		assertTrue(document.indexOf("HTTP/1.1 412") != -1);
+		Assert.assertTrue(document.indexOf("HTTP/1.1 412") != -1);
 	}
 
 	/**
