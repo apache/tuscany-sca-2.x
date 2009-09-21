@@ -362,29 +362,27 @@ abstract class PolicyConfigurationUtil {
 
     static void computeImplementationIntentsAndPolicySets(Implementation implementation, Component parent)
         throws PolicyValidationException, PolicyConfigurationException {
-        if (implementation instanceof PolicySubject) {
-            PolicySubject policiedImplementation = (PolicySubject)implementation;
-            //since for an implementation the component has its policy intents and policysets its possible
-            //that there are some intents there that does not constrain the implementation.. so prune
-            List<Intent> prunedIntents =
-                computeInheritableIntents(policiedImplementation.getExtensionType(), parent.getRequiredIntents());
-            parent.getRequiredIntents().clear();
-            parent.getRequiredIntents().addAll(prunedIntents);
-            normalizeIntents(parent);
+        PolicySubject policiedImplementation = (PolicySubject)implementation;
+        //since for an implementation the component has its policy intents and policysets its possible
+        //that there are some intents there that does not constrain the implementation.. so prune
+        List<Intent> prunedIntents =
+            computeInheritableIntents(policiedImplementation.getExtensionType(), parent.getRequiredIntents());
+        parent.getRequiredIntents().clear();
+        parent.getRequiredIntents().addAll(prunedIntents);
+        normalizeIntents(parent);
 
-            List<PolicySet> prunedPolicySets = computeInheritablePolicySets(parent.getPolicySets());
-            parent.getPolicySets().clear();
-            parent.getPolicySets().addAll(prunedPolicySets);
-            normalizePolicySets(parent);
+        List<PolicySet> prunedPolicySets = computeInheritablePolicySets(parent.getPolicySets());
+        parent.getPolicySets().clear();
+        parent.getPolicySets().addAll(prunedPolicySets);
+        normalizePolicySets(parent);
 
-            PolicyComputationUtils.checkForMutuallyExclusiveIntents(parent.getRequiredIntents(),
-                                                                    parent.getPolicySets(),
-                                                                    policiedImplementation.getExtensionType(),
-                                                                    parent.getName());
+        PolicyComputationUtils.checkForMutuallyExclusiveIntents(parent.getRequiredIntents(),
+                                                                parent.getPolicySets(),
+                                                                policiedImplementation.getExtensionType(),
+                                                                parent.getName());
 
-            determineApplicableImplementationPolicySets(parent);
+        determineApplicableImplementationPolicySets(parent);
 
-        }
     }
 
     private static void determineApplicableImplementationPolicySets(Component component)

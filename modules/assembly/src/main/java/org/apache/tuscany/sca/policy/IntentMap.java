@@ -21,8 +21,6 @@ package org.apache.tuscany.sca.policy;
 
 import java.util.List;
 
-import org.apache.tuscany.sca.policy.Intent;
-
 
 /**
  * Map policies to the qualified intents
