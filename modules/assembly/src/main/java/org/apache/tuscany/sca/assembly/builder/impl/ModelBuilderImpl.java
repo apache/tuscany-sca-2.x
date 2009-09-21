@@ -40,78 +40,34 @@ public class ModelBuilderImpl implements CompositeBuilder, DeployedCompositeBuil
     private static final Logger logger = Logger.getLogger(ModelBuilderImpl.class.getName());
     private CompositeBuilder compositeIncludeBuilder;
     private CompositeBuilder compositeCloneBuilder;
-    private ComponentTypeBuilderImpl componentTypeBuilder;
+    private CompositeComponentTypeBuilderImpl compositeComponentTypeBuilder;
     private ComponentBuilderImpl componentBuilder;
-
-/*    
-    private CompositeBuilder componentConfigurationBuilder;
-    private CompositeBuilder compositePromotionBuilder;
-    private CompositeBuilder componentReferenceWireBuilder;
-    private CompositeBuilder componentReferencePromotionBuilder;
-    private CompositeBuilder compositeServiceConfigurationBuilder;
-    private CompositeBuilder compositeReferenceConfigurationBuilder;
-    private CompositeBuilder compositeBindingURIBuilder;
-    private CompositeBuilder compositePolicyBuilder;
-    private CompositeBuilder componentServiceBindingBuilder;
-    private CompositeBuilder componentReferenceBindingBuilder;
-    private CompositeBuilder componentReferenceEndpointReferenceBuilder;
-    private CompositeBuilder componentServiceEndpointBuilder;
-*/    
-
-
-
+    private BindingURIBuilderImpl bindingURIBuilder;
+    private EndpointBuilderImpl endpointBuilder;
+    private EndpointReferenceBuilderImpl endpointReferenceBuilder;
+    private CompositePolicyBuilderImpl compositePolicyBuilder;
+ 
     /**
      * Constructs a new composite builder.
      * 
-     * @param assemblyFactory
-     * @param scaBindingFactory
-     * @param endpointFactory
-     * @param intentAttachPointTypeFactory
-     * @param interfaceContractMapper
-     * @param policyDefinitions
-     * @param monitor
+     * @param registry the extension point registry
      */
     public ModelBuilderImpl(ExtensionPointRegistry registry) {
-        
-        FactoryExtensionPoint modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
-        AssemblyFactory assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
-        
-        UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
-        MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
-        Monitor monitor = monitorFactory.createMonitor();
         
         compositeIncludeBuilder = new CompositeIncludeBuilderImpl();
         compositeCloneBuilder = new CompositeCloneBuilderImpl();
         
-        componentTypeBuilder = new ComponentTypeBuilderImpl(registry);
+        compositeComponentTypeBuilder = new CompositeComponentTypeBuilderImpl(registry);
         componentBuilder = new ComponentBuilderImpl(registry);
         
-        componentTypeBuilder.setComponentBuilder(componentBuilder);
-        componentBuilder.setComponentTypeBuilder(componentTypeBuilder);
+        compositeComponentTypeBuilder.setComponentBuilder(componentBuilder);
+        componentBuilder.setComponentTypeBuilder(compositeComponentTypeBuilder);
         
-        
-/*        
-        compositePromotionBuilder = new CompositePromotionBuilderImpl(assemblyFactory, interfaceContractMapper);
-        componentConfigurationBuilder =
-            new ComponentConfigurationBuilderImpl(assemblyFactory, scaBindingFactory, documentBuilderFactory,
-                                                  transformerFactory, interfaceContractMapper);  
-        componentReferenceWireBuilder = new ComponentReferenceWireBuilderImpl(assemblyFactory, interfaceContractMapper);
-        componentReferencePromotionBuilder = new ComponentReferencePromotionBuilderImpl(assemblyFactory);
-       
-        compositeServiceConfigurationBuilder = new CompositeServiceConfigurationBuilderImpl(assemblyFactory);
-        compositeReferenceConfigurationBuilder = new CompositeReferenceConfigurationBuilderImpl(assemblyFactory);
-        compositeBindingURIBuilder =
-            new CompositeBindingURIBuilderImpl(assemblyFactory, scaBindingFactory, documentBuilderFactory,
-                                               transformerFactory, interfaceContractMapper);
+        bindingURIBuilder = new BindingURIBuilderImpl(registry);
+        endpointBuilder = new EndpointBuilderImpl(registry);
+        endpointReferenceBuilder = new EndpointReferenceBuilderImpl(registry);
+        compositePolicyBuilder = new CompositePolicyBuilderImpl(registry);
 
-        compositePolicyBuilder = new CompositePolicyBuilderImpl(assemblyFactory, interfaceContractMapper);
-        componentServiceBindingBuilder = new ComponentServiceBindingBuilderImpl();
-        componentReferenceBindingBuilder = new ComponentReferenceBindingBuilderImpl();
-
-        componentReferenceEndpointReferenceBuilder =
-            new ComponentReferenceEndpointReferenceBuilderImpl(assemblyFactory, interfaceContractMapper);
-        componentServiceEndpointBuilder = new ComponentServiceEndpointBuilderImpl(assemblyFactory);
-*/
     }
 
     public String getID() {
@@ -142,83 +98,27 @@ public class ModelBuilderImpl implements CompositeBuilder, DeployedCompositeBuil
             // for the top level implementation (composite). This has the effect of
             // recursively calculating component types and configuring the 
             // components that depend on them
-            componentTypeBuilder.createComponentType(composite);
-           
+            compositeComponentTypeBuilder.createComponentType(composite);
+                       
 
             // create the runtime model by updating the static model we have just 
             // created. This involves things like creating
             //  component URIs
             //  binding URIs
-            //  callback references
-            //  callback services
+            //  callback references - currently done in static pass
+            //  callback services - currently done in static pass
             //  Endpoints
             //  Endoint References
-            // runtimeBuilder.build(composite);
-            
-            // Compute the policies across the model hierarchy
-            //compositePolicyBuilder.build(composite, definitions, monitor);
-            
-            
-
-/*            
-            // Configure all components. Created any derived model elements that
-            // are required. Specifically
-            //  Component name
-            //  autowire flags
-            //  callback references
-            //  callback services
-            //  default bindings
-            componentConfigurationBuilder.build(composite, definitions, monitor);
-            
-            // Connect composite services/references to promoted services/references
-            // so that subsequent processing can navigate down the hierarchy
-            compositePromotionBuilder.build(composite, definitions, monitor);
-
-            // calculate the component type for the composite that was passed in
-            // this involves 
-            
-
-            // Configure composite services by copying bindings up the promotion
-            // hierarchy overwriting automatic bindings with those added manually
-            compositeServiceConfigurationBuilder.build(composite, definitions, monitor);
-
-            // Configure composite references by copying bindings down promotion
-            // hierarchy overwriting automatic bindings with those added manually
-            compositeReferenceConfigurationBuilder.build(composite, definitions, monitor);
-
-            // Configure service binding URIs and names. Creates an SCA defined URI based
-            // on the scheme base URI, the component name and the binding name
-            ((CompositeBuilderTmp)compositeBindingURIBuilder).build(composite, definitions, bindingBaseURIs, monitor);
-
-            // Perform and service binding related build activities. The binding
-            // will provide the builder. 
-            componentServiceBindingBuilder.build(composite, definitions, monitor);
-
-            // create endpoints on component services. 
-            componentServiceEndpointBuilder.build(composite, definitions, monitor);
-
-            // Apply any wires in the composite to create new component reference targets
-            componentReferenceWireBuilder.build(composite, definitions, monitor);
-
-            // create reference endpoint reference models
-            componentReferenceEndpointReferenceBuilder.build(composite, definitions, monitor);
-
-            // Push down configuration from promoted references to the 
-            // references they promote
-            componentReferencePromotionBuilder.build(composite, definitions, monitor);
-
-
-            // Perform and reference binding related build activities. The binding
-            // will provide the builder.
-            componentReferenceBindingBuilder.build(composite, definitions, monitor);
-
-            // Compute the policies across the model hierarchy
+            //  Policies
+            // TODO - called here at the moment but we could have a separate build phase 
+            //        to call these. Also we could re-org the builders themselves
+            bindingURIBuilder.configureBindingURIsAndNames(composite, definitions, monitor);
+            endpointBuilder.build(composite, definitions, monitor);
+            endpointReferenceBuilder.build(composite, definitions, monitor);
             compositePolicyBuilder.build(composite, definitions, monitor);
-*/            
+                     
         } catch (Exception e) {
             throw new CompositeBuilderException("Exception while building model " + composite.getName(), e);
-        } // end try
-
-    } // end method build
-
-} //end class
+        } 
+    }
+} 

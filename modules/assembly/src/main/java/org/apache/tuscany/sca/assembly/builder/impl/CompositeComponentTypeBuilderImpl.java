@@ -28,6 +28,7 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
+import org.apache.tuscany.sca.assembly.ComponentProperty;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.ComponentType;
@@ -36,11 +37,13 @@ import org.apache.tuscany.sca.assembly.CompositeReference;
 import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.assembly.Implementation;
+import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
+import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
@@ -51,15 +54,16 @@ import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.policy.ExtensionType;
 import org.apache.tuscany.sca.policy.PolicySubject;
+import org.w3c.dom.Document;
 
 /**
  * @version $Rev$ $Date$
  */
 
-// TODO - really implementation.composite component type builder
+// TODO - really implementation.composite component type builder - CompositeComponentTypeBuilder?
 
-public class ComponentTypeBuilderImpl {
-    private static final Logger logger = Logger.getLogger(ComponentTypeBuilderImpl.class.getName());
+public class CompositeComponentTypeBuilderImpl {
+    private static final Logger logger = Logger.getLogger(CompositeComponentTypeBuilderImpl.class.getName());
     
     protected static final String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200903";
     protected static final String BINDING_SCA = "binding.sca";
@@ -73,7 +77,7 @@ public class ComponentTypeBuilderImpl {
     private BuilderExtensionPoint builders;
 
 
-    public ComponentTypeBuilderImpl(ExtensionPointRegistry registry) {
+    public CompositeComponentTypeBuilderImpl(ExtensionPointRegistry registry){
         UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
         MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
         monitor = monitorFactory.createMonitor();
@@ -120,14 +124,17 @@ public class ComponentTypeBuilderImpl {
                               component.getName());
             } 
             
+            // do any work we need to do before we configure the component
+            // Anything that needs to be pushed down the promotion
+            // hierarchy must be done before we configure the component
+            
             // Push down the autowire flag from the composite to components
-            // TODO - Is this the right place to do this structural inheritance 
             if (component.getAutowire() == null) {
                 component.setAutowire(composite.getAutowire());
             }
 
             // configure the component from its component type
-            componentBuilder.configureComponentFromComponentType(component);
+            componentBuilder.configureComponentFromComponentType(composite, component);
         }
 
         // create the composite component type based on the promoted artifacts
@@ -147,10 +154,11 @@ public class ComponentTypeBuilderImpl {
         calculateReferences(composite, components, componentReferences);
         
         // properties
-        //calculateProperties(composite);
+        // Properties on the composite component are unaffected by properties 
+        // on child components. Instead child component properties might take their
+        // values from component properties. Hence there is nothing to do here.
+        //calculateProperties(composite, components);
         
-        // autowire
-        //calculateAutowire(composite);
         
     }
     
@@ -163,9 +171,9 @@ public class ComponentTypeBuilderImpl {
      * @param componentReferences
      */
     private void indexComponentsServicesAndReferences(Composite composite,
-                                                        Map<String, Component> components,
-                                                        Map<String, ComponentService> componentServices,
-                                                        Map<String, ComponentReference> componentReferences) {
+                                                      Map<String, Component> components,
+                                                      Map<String, ComponentService> componentServices,
+                                                      Map<String, ComponentReference> componentReferences) {
 
         for (Component component : composite.getComponents()) {
 
@@ -284,7 +292,7 @@ public class ComponentTypeBuilderImpl {
                 // calculatePromotedPolicySets(compositeService, promotedComponentService);
             }
         }        
-    }    
+    }  
     
     /**
      * Connect the services in the component type to the component services that
@@ -384,6 +392,34 @@ public class ComponentTypeBuilderImpl {
     }
     
     /**
+     * Create a default SCA binding in the case that no binding
+     * is specified by the user
+     * 
+     * @param contract
+     * @param definitions
+     */
+    protected void createSCABinding(Contract contract, Definitions definitions) {
+
+        SCABinding scaBinding = scaBindingFactory.createSCABinding();
+
+        if (definitions != null) {
+            for (ExtensionType attachPointType : definitions.getBindingTypes()) {
+                if (attachPointType.getType().equals(BINDING_SCA_QNAME)) {
+                    ((PolicySubject)scaBinding).setExtensionType(attachPointType);
+                }
+            }
+        }
+
+        contract.getBindings().add(scaBinding);
+        contract.setOverridingBindings(false);
+    }    
+    
+    /**
+     * The following methods implement rules that the OASIS specification defined explicitly
+     * to control how configuration from a component type is inherited by a component
+     */    
+    
+    /**
      * OASIS RULE: Interface contract from higher in the implementation hierarchy takes precedence
      * 
      * @param topContract the top contract 
@@ -459,30 +495,7 @@ public class ComponentTypeBuilderImpl {
                 }
             }  
         }        
-    }
-    
-    /**
-     * Create a default SCA binding in the case that no binding
-     * is specified by the user
-     * 
-     * @param contract
-     * @param definitions
-     */
-    protected void createSCABinding(Contract contract, Definitions definitions) {
-
-        SCABinding scaBinding = scaBindingFactory.createSCABinding();
-
-        if (definitions != null) {
-            for (ExtensionType attachPointType : definitions.getBindingTypes()) {
-                if (attachPointType.getType().equals(BINDING_SCA_QNAME)) {
-                    ((PolicySubject)scaBinding).setExtensionType(attachPointType);
-                }
-            }
-        }
-
-        contract.getBindings().add(scaBinding);
-        contract.setOverridingBindings(false);
-    }       
+    }    
     
 
 } //end class
