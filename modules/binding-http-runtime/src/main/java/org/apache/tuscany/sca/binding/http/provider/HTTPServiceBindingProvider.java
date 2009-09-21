@@ -69,10 +69,10 @@ public class HTTPServiceBindingProvider implements ServiceBindingProviderRRB {
                                       ServletHost servletHost) {
     	
     	this.endpoint = endpoint;
-        this.component = component;
-        this.service = service;
+        this.component = (RuntimeComponent)endpoint.getComponent();
+        this.service = (RuntimeComponentService)endpoint.getService();
+        this.binding = (HTTPBinding)endpoint.getBinding();
         
-        this.binding = binding;
         this.extensionPoints = extensionPoints;
         this.messageFactory = messageFactory;
         this.servletHost = servletHost;

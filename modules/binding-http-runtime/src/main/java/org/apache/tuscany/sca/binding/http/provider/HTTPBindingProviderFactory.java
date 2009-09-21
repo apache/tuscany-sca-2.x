@@ -51,6 +51,7 @@ public class HTTPBindingProviderFactory implements BindingProviderFactory<HTTPBi
     }
 
     public ReferenceBindingProvider createReferenceBindingProvider(EndpointReference endpointReference) {
+    	// Binding HTTP is currently NOT supporting References
         return null;
     }
 

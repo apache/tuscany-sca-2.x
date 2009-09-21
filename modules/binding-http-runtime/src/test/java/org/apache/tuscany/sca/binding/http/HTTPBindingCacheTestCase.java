@@ -29,7 +29,10 @@ import java.util.Date;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 
 /**
  * HTTP binding unit tests.
@@ -53,16 +56,23 @@ public class HTTPBindingCacheTestCase extends TestCase {
 
 	private static final int HTTP_PORT = 8085;
 
-	private SCADomain scaDomain;
+	private static Node node;
 
 	@Override
 	protected void setUp() throws Exception {
-		scaDomain = SCADomain.newInstance("testCache.composite");
+		try {
+			String contribution = ContributionLocationHelper.getContributionLocation(HTTPBindingCacheTestCase.class);
+			node = NodeFactory.newInstance().createNode("testCache.composite", new Contribution("test", contribution));
+			node.start();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	protected void tearDown() throws Exception {
-		scaDomain.close();
+		node.stop();
+		node.destroy();
 	}
 
 	/**
