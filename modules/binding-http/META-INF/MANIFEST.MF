@@ -1,0 +1,26 @@
+Manifest-Version: 1.0
+Export-Package: org.apache.tuscany.sca.binding.http;uses:="org.apache.
+ tuscany.sca.assembly,javax.xml.namespace,javax.servlet.http";version=
+ "2.0.0"
+Private-Package: org.apache.tuscany.sca.binding.http.xml;version="2.0.
+ 0",.;version="2.0.0",org.apache.tuscany.sca.binding.http.impl;version
+ ="2.0.0"
+Tool: Bnd-0.0.311
+Bundle-Name: Apache Tuscany SCA HTTP Binding Model
+Created-By: 1.6.0_15 (Apple Inc.)
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 2.0.0
+Bnd-LastModified: 1253494834368
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA HTTP Binding Model
+Import-Package: javax.servlet.http,javax.xml.namespace,javax.xml.strea
+ m;version="1.0",org.apache.tuscany.sca.assembly;version="2.0",org.apa
+ che.tuscany.sca.assembly.xml;version="2.0.0",org.apache.tuscany.sca.b
+ inding.http;version="2.0",org.apache.tuscany.sca.contribution.process
+ or;version="2.0",org.apache.tuscany.sca.contribution.resolver;version
+ ="2.0",org.apache.tuscany.sca.core;version="2.0",org.apache.tuscany.s
+ ca.monitor;version="2.0"
+Bundle-SymbolicName: org.apache.tuscany.sca.binding.http
+Bundle-DocURL: http://www.apache.org/
+
