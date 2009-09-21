@@ -48,14 +48,6 @@ public interface Endpoint extends Base, PolicySubject, Cloneable, Serializable {
     void setURI(String uri);
 
     /**
-     * Supports endpoint cloning
-     *
-     * @return endpoint
-     * @throws CloneNotSupportedException
-     */
-    Object clone() throws CloneNotSupportedException;
-
-    /**
      * Get the component model object
      *
      * @return component
@@ -144,4 +136,11 @@ public interface Endpoint extends Base, PolicySubject, Cloneable, Serializable {
      */
     void setRemote(boolean remote);
 
+    /**
+     * Supports endpoint cloning
+     *
+     * @return endpoint
+     * @throws CloneNotSupportedException
+     */
+    Object clone() throws CloneNotSupportedException;
 }
