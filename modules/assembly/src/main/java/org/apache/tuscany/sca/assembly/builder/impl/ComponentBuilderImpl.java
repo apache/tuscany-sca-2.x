@@ -187,7 +187,13 @@ public class ComponentBuilderImpl {
         // configuration based on OASIS rules
         for (ComponentService componentService : component.getServices()) {
             Service componentTypeService = componentService.getService();
-
+            
+            if (componentTypeService == null){
+                // raise error?
+                // can be null in some of the assembly-xml unit tests
+                continue;
+            }
+            
             // interface contracts
             calculateInterfaceContract(componentService,
                                        componentTypeService);
@@ -233,7 +239,13 @@ public class ComponentBuilderImpl {
         // configuration based on OASIS rules
         for (ComponentReference componentReference : component.getReferences()) {
             Reference componentTypeReference = componentReference.getReference();
-    
+            
+            if (componentTypeReference == null){
+                // raise error?
+                // can be null in some of the assembly-xml unit tests
+                continue;
+            }
+            
             // reference multiplicity
             reconcileReferenceMultiplicity(component,
                                            componentReference,
@@ -385,6 +397,11 @@ public class ComponentBuilderImpl {
                 continue;
             }
             
+            if (component.getImplementation() == null){
+                // is null in some of our basic unit tests
+                continue;
+            }
+            
             Service service = component.getImplementation().getService(componentService.getName());
 
             if (service != null) {
@@ -407,6 +424,11 @@ public class ComponentBuilderImpl {
             if (componentReference.getReference() != null || componentReference.isForCallback()) {
                 continue;
             }
+            
+            if (component.getImplementation() == null){
+                // is null in some of our basic unit tests
+                continue;
+            }            
             
             Reference reference = component.getImplementation().getReference(componentReference.getName());
 
