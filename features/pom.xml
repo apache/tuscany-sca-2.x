@@ -35,13 +35,13 @@
         <module>api</module>
         <module>core</module>
         <module>ejava</module>
-        <module>webservice</module>
-        <module>webapp</module>
         <module>process</module>
+        <module>webservice</module>
+        <module>web20</module>
+        <module>webapp</module>
 <!--
         <module>manager</module>
         <module>repository</module>
-        <module>web20</module>
 -->
     </modules>
 
