@@ -24,6 +24,7 @@ import static javax.xml.XMLConstants.XMLNS_ATTRIBUTE;
 import static javax.xml.XMLConstants.XMLNS_ATTRIBUTE_NS_URI;
 
 import java.io.StringWriter;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import javax.xml.namespace.QName;
@@ -103,14 +104,28 @@ public class PolicyAttachmentBuilderImpl implements CompositeBuilder {
 
         boolean changed = false;
         for (PolicySet ps : definitions.getPolicySets()) {
+            // First calculate the applicable nodes
+            Set<Node> applicableNodes = null;
+            /*
+            XPathExpression appliesTo = ps.getAppliesToXPathExpression();
+            if (appliesTo != null) {
+                applicableNodes = new HashSet<Node>();
+                NodeList nodes = (NodeList)appliesTo.evaluate(document, XPathConstants.NODESET);
+                for (int i = 0; i < nodes.getLength(); i++) {
+                    applicableNodes.add(nodes.item(i));
+                }
+            }
+            */
             XPathExpression exp = ps.getAttachToXPathExpression();
             if (exp != null) {
                 NodeList nodes = (NodeList)exp.evaluate(document, XPathConstants.NODESET);
                 for (int i = 0; i < nodes.getLength(); i++) {
                     Node node = nodes.item(i);
-                    // The node can be a component, service, reference or binding
-                    if (attach(node, ps) && !changed) {
-                        changed = true;
+                    if (applicableNodes == null || applicableNodes.contains(node)) {
+                        // The node can be a component, service, reference or binding
+                        if (attach(node, ps) && !changed) {
+                            changed = true;
+                        }
                     }
                 }
             }
