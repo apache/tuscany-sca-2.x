@@ -33,6 +33,8 @@
         <module>assembly</module>
         <module>assembly-xml</module>
         <module>assembly-xsd</module>
+        <module>binding-http</module>
+        <module>binding-http-runtime</module>
         <module>binding-jsonp</module>
         <module>binding-jsonp-runtime</module>
         <module>binding-rmi</module>
