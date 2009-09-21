@@ -23,7 +23,7 @@
     xmlns:sample="http://sample" 
     xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200903">
 
-    <policySet name="PolicySet1" appliesTo="sca:composite"
+    <policySet name="PolicySet1" appliesTo="sca:implementation.java"
         attachTo = "//composite[@name='Composite1' or @name='Composite2']">
     </policySet>
 
