@@ -34,6 +34,7 @@ import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.common.java.io.IOHelper;
 import org.apache.tuscany.sca.contribution.Contribution;
@@ -304,17 +305,31 @@ public class NodeImpl implements Node, Client {
         StAXArtifactProcessorExtensionPoint xmlProcessors = 
             getExtensionPoints().getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         StAXArtifactProcessor<Composite>  compositeProcessor = 
-            xmlProcessors.getProcessor(Composite.class);        
-        
+            xmlProcessors.getProcessor(Composite.class);   
+     
+        return writeComposite(getDomainComposite(), compositeProcessor);
+    }
+       
+    private String writeComposite(Composite composite, StAXArtifactProcessor<Composite> compositeProcessor){
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
         
         try {
-            compositeProcessor.write(getDomainComposite(), outputFactory.createXMLStreamWriter(bos));
+            compositeProcessor.write(composite, outputFactory.createXMLStreamWriter(bos));
         } catch(Exception ex) {
             return ex.toString();
         }
         
-        return bos.toString();
+        String result = bos.toString();
+        
+        // write out and nested composites
+        for(Component component : composite.getComponents()){
+            if (component.getImplementation() instanceof Composite) {
+                result += "\n<!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->\n" + 
+                          writeComposite((Composite)component.getImplementation(), compositeProcessor);
+            }
+        }
+        
+        return result;
     }
 }
