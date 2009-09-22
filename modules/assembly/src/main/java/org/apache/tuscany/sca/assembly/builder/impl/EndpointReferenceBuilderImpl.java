@@ -36,6 +36,7 @@ import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.SCABinding;
+import org.apache.tuscany.sca.assembly.Wire;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
@@ -82,13 +83,14 @@ public class EndpointReferenceBuilderImpl {
 
         monitor.pushContext("Composite: " + composite.getName().toString());
         try {
-            // index all of the components in the composite
+            // Index components, services and references
             Map<String, Component> components = new HashMap<String, Component>();
-            indexComponents(composite, components);
-            
-            // index all of the services in the composite
             Map<String, ComponentService> componentServices = new HashMap<String, ComponentService>();
-            indexServices(composite, componentServices);
+            Map<String, ComponentReference> componentReferences = new HashMap<String, ComponentReference>();
+            indexComponentsServicesAndReferences(composite, components, componentServices, componentReferences);
+
+            // Connect component references as described in wires
+            connectWires(composite, componentServices, componentReferences, monitor);
     
             // create endpoint references for each component's references
             for (Component component : composite.getComponents()) {
@@ -135,40 +137,146 @@ public class EndpointReferenceBuilderImpl {
 
     } // end method processCompoenntReferences
     
-    private void indexComponents(Composite composite, Map<String, Component> components) {
+    protected void indexComponentsServicesAndReferences(Composite composite,
+            Map<String, Component> components,
+            Map<String, ComponentService> componentServices,
+            Map<String, ComponentReference> componentReferences) {
+
         for (Component component : composite.getComponents()) {
+
             // Index components by name
             components.put(component.getName(), component);
-        }
-    }  
-    
-    protected void indexServices(Composite composite, Map<String, ComponentService> componentServices) {
-
-        for (Component component : composite.getComponents()) {
 
             ComponentService nonCallbackService = null;
-            int nonCallbackServiceCount = 0;
-
+            int nonCallbackServices = 0;
             for (ComponentService componentService : component.getServices()) {
+
                 // Index component services by component name / service name
-                String uri = component.getName() + '/' + componentService.getName();
+                String uri = component.getName() + '/'
+                        + componentService.getName();
                 componentServices.put(uri, componentService);
 
-                // count how many non-callback there are
-                if (!componentService.isForCallback()) {
+                // TODO - EPR - $promoted$ no longer used but it doesn't do any
+                // harm here
+                boolean promotedService = false;
+                if (componentService.getName() != null
+                        && componentService.getName().indexOf("$promoted$") > -1) {
+                    promotedService = true;
+                }
 
-                    if (nonCallbackServiceCount == 0) {
+                // count how many non-callback, non-promoted services there are
+                // if there is only one the component name also acts as the
+                // service name
+                if ((!componentService.isForCallback()) && (!promotedService)) {
+
+                    // Check how many non callback non-promoted services we have
+                    if (nonCallbackServices == 0) {
                         nonCallbackService = componentService;
                     }
-                    nonCallbackServiceCount++;
+                    nonCallbackServices++;
                 }
+
             }
-            if (nonCallbackServiceCount == 1) {
+
+            if (nonCallbackServices == 1) {
                 // If we have a single non callback service, index it by
                 // component name as well
                 componentServices.put(component.getName(), nonCallbackService);
             }
+
+            // Index references by component name / reference name
+            for (ComponentReference componentReference : component
+                    .getReferences()) {
+                String uri = component.getName() + '/'
+                        + componentReference.getName();
+                componentReferences.put(uri, componentReference);
+            }
         }
+    } 
+    
+    /**
+     * Resolve wires and connect the sources to their targets
+     * 
+     * @param composite
+     * @param componentServices
+     * @param componentReferences
+     * @param problems
+     */
+    private void connectWires(Composite composite,
+                              Map<String, ComponentService> componentServices,
+                              Map<String, ComponentReference> componentReferences,
+                              Monitor monitor) {
+
+        // For each wire, resolve the source reference, the target service, and
+        // add it to the list of targets of the reference
+        List<Wire> wires = composite.getWires();
+        for (int i = 0, n = wires.size(); i < n; i++) {
+            Wire wire = wires.get(i);
+
+            ComponentReference resolvedReference;
+            ComponentService resolvedService;
+
+            // Resolve the source reference
+            ComponentReference source = wire.getSource();
+            if (source != null && source.isUnresolved()) {
+                resolvedReference = componentReferences.get(source.getName());
+                if (resolvedReference != null) {
+                    wire.setSource(resolvedReference);
+                } else {
+                    Monitor.warning(monitor, 
+                                    this, 
+                                    "assembly-validation-messages", 
+                                    "WireSourceNotFound", 
+                                    source.getName());                    
+                 }
+            } else {
+                resolvedReference = wire.getSource();
+            }
+
+            // Resolve the target service
+            ComponentService target = wire.getTarget();
+            if (target != null && target.isUnresolved()) {
+                resolvedService = componentServices.get(target.getName());
+                if (resolvedService != null) {
+                    wire.setTarget(target);
+                } else {
+                    Monitor.warning(monitor, 
+                                    this, 
+                                    "assembly-validation-messages", 
+                                    "WireTargetNotFound", 
+                                    target.getName()); 
+                }
+            } else {
+                resolvedService = wire.getTarget();
+            }
+
+            // Add the target service to the list of targets of the
+            // reference
+            if (resolvedReference != null && resolvedService != null) {
+                // Check that the target component service provides
+                // a superset of
+                // the component reference interface
+                if (resolvedReference.getInterfaceContract() == null || interfaceContractMapper
+                    .isCompatible(resolvedReference.getInterfaceContract(), resolvedService.getInterfaceContract())) {
+
+                    //resolvedReference.getTargets().add(resolvedService);
+                    if (wire.isReplace()) {
+                        resolvedReference.getTargets().clear();
+                    }
+                    resolvedReference.getTargets().add(wire.getTarget());
+                } else {
+                    Monitor.warning(monitor, 
+                                    this, 
+                                    "assembly-validation-messages", 
+                                    "WireIncompatibleInterface", 
+                                    source.getName(),
+                                    target.getName()); 
+                }
+            }
+        }
+
+        // Clear the list of wires
+        composite.getWires().clear();
     }    
 
     private void createReferenceEndpointReferences(Composite composite,
