@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.node.impl;
 
+import java.io.ByteArrayOutputStream;
 import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +27,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.management.MBeanServer;
+import javax.xml.stream.XMLOutputFactory;
 
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentService;
@@ -35,6 +37,8 @@ import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.common.java.io.IOHelper;
 import org.apache.tuscany.sca.contribution.Contribution;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.ActivationException;
@@ -293,5 +297,24 @@ public class NodeImpl implements Node, Client {
     
     public Composite getDomainComposite() {
         return compositeActivator.getDomainComposite();
-    }    
+    }   
+    
+    public String dumpDomainComposite() {
+        
+        StAXArtifactProcessorExtensionPoint xmlProcessors = 
+            getExtensionPoints().getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        StAXArtifactProcessor<Composite>  compositeProcessor = 
+            xmlProcessors.getProcessor(Composite.class);        
+        
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
+        
+        try {
+            compositeProcessor.write(getDomainComposite(), outputFactory.createXMLStreamWriter(bos));
+        } catch(Exception ex) {
+            return ex.toString();
+        }
+        
+        return bos.toString();
+    }
 }
