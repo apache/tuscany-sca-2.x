@@ -142,7 +142,9 @@ public class CallbackServiceReferenceImpl<B> extends ServiceReferenceImpl<B> {
         callbackEndpointReference.setReference(ref);
         callbackEndpointReference.setTargetEndpoint(callbackEndpoint);
         callbackEndpointReference.setUnresolved(true);
-       
+               
+        // TODO - should really use incoming callback info but awaiting
+        //        decision from OASIS on what will happen with callbacks
         // The callback endpoint will be resolved with the registry 
         // when the wire chains are created
         ref.getEndpointReferences().add(callbackEndpointReference);

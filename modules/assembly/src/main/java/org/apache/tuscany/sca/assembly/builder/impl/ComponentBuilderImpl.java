@@ -36,6 +36,7 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentProperty;
 import org.apache.tuscany.sca.assembly.ComponentReference;
@@ -44,6 +45,7 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeReference;
 import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.Contract;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.apache.tuscany.sca.assembly.Property;
@@ -766,11 +768,10 @@ public class ComponentBuilderImpl {
                     Implementation implementation = component.getImplementation();
                     if (implementation != null && implementation instanceof Composite) {
                         ((Composite)implementation).getReferences().add(implCompReference);
-                    } // end if
+                    } 
                 } else {
                     implReference = assemblyFactory.createReference();
-                } // end if
-                //
+                } 
     
                 implReference.setName(implService.getName());
                 try {
@@ -785,16 +786,24 @@ public class ComponentBuilderImpl {
             }
             component.getReferences().add(callbackReference);
             
-            // Set the bindings of the callback reference
+            // Set the bindings of the callback reference 
             if (callbackReference.getBindings().isEmpty()) {
-                // If there are specific callback bindings set, use them
-                if (service.getCallback() != null) {
+                // If there are specific callback bindings set in the SCDL service
+                // callback element then use them
+                if (service.getCallback() != null && 
+                    service.getCallback().getBindings().size() > 0 ) {
                     callbackReference.getBindings().addAll(service.getCallback().getBindings());
                 } else {
-                    // otherwise use the bindings on the forward service
-                    callbackReference.getBindings().addAll(service.getBindings());
-                } // end if
-            } // end if
+                    // otherwise create a default binding which 
+                    // will cause the EPR for this reference to be 
+                    // marked as EndpointReference.NOT_CONFIGURED
+                    createSCABinding(callbackReference, null);
+                    
+                    // TODO - should really use the forward binding here but 
+                    //        awaiting OASIS decision on what's going to 
+                    //        happen with callbacks
+                }
+            } 
             service.setCallbackReference(callbackReference); 
         }
     }  
@@ -863,10 +872,30 @@ public class ComponentBuilderImpl {
             }
             component.getServices().add(componentService);
             
-            // set bindings of the callback service                
-            if (reference.getCallback() != null) {
-                if (componentService.getBindings().isEmpty()) {
+            // configure bindings for the callback service
+            if (componentService.getBindings().isEmpty()) {
+                if (reference.getCallback() != null && 
+                    reference.getCallback().getBindings().size() > 0) {
+                    // set bindings of the callback service based on the information provided in 
+                    // SCDL reference callback element
                     componentService.getBindings().addAll(reference.getCallback().getBindings());
+                } else if (reference.getBindings().size() > 0){
+                    // use any bindings explicitly declared on the forward reference
+                    for (Binding binding : reference.getBindings()){
+                        try {
+                            Binding clonedBinding = (Binding)binding.clone();
+                            // binding uri will be calculated during runtime build
+                            clonedBinding.setURI(null);
+                            componentService.getBindings().add(clonedBinding);
+                        } catch (CloneNotSupportedException ex){
+                            
+                        }
+                    }                    
+                } else {
+                    // TODO - should use the binding resolved from the service but
+                    //        waiting for OASIS to decide what to do about callbacks
+                    // create a default binding
+                    createSCABinding(componentService, null);
                 }
             }
             
