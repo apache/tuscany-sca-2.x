@@ -90,7 +90,7 @@ public class ComponentTypeImpl extends ExtensibleImpl implements ComponentType, 
     public Property getProperty(String name){
         Property property = null;
         
-        for (Property tmp : properties){
+        for (Property tmp : getProperties()){
             if (tmp.getName().equals(name)){
                 property = tmp;
                 break;
@@ -107,7 +107,7 @@ public class ComponentTypeImpl extends ExtensibleImpl implements ComponentType, 
     public Reference getReference(String name){
         Reference reference = null;
         
-        for (Reference tmp : references){
+        for (Reference tmp : getReferences()){
             if (tmp.getName().equals(name)){
                 reference = tmp;
                 break;
@@ -124,7 +124,7 @@ public class ComponentTypeImpl extends ExtensibleImpl implements ComponentType, 
     public Service getService(String name){
         Service service = null;
         
-        for (Service tmp : services){
+        for (Service tmp : getServices()){
             if (tmp.getName().equals(name)){
                 service = tmp;
                 break;
