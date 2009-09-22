@@ -53,6 +53,7 @@ import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.policy.PolicySubject;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -120,7 +121,7 @@ public class BuildPolicyTestCase {
     }
 
     @Test
-    // @Ignore("The inheritance will be calculated differently in OASIS SCA")
+    @Ignore("There are so many errors with this composite the builder doesn't have enough to go on")
     public void testPolicyIntentInheritance() throws Exception {
         String namespaceUri = "http://test";
 
