@@ -44,6 +44,7 @@ public class ModelBuilderImpl implements CompositeBuilder, DeployedCompositeBuil
     private ComponentReferenceBindingBuilderImpl componentReferenceBindingBuilder;
     private EndpointBuilderImpl endpointBuilder;
     private EndpointReferenceBuilderImpl endpointReferenceBuilder;
+    private ComponentReferencePromotionBuilderImpl componentReferencePromotionBuilder;
     private CompositePolicyBuilderImpl compositePolicyBuilder;
  
     /**
@@ -67,6 +68,7 @@ public class ModelBuilderImpl implements CompositeBuilder, DeployedCompositeBuil
         componentReferenceBindingBuilder = new ComponentReferenceBindingBuilderImpl(registry);
         endpointBuilder = new EndpointBuilderImpl(registry);
         endpointReferenceBuilder = new EndpointReferenceBuilderImpl(registry);
+        componentReferencePromotionBuilder = new ComponentReferencePromotionBuilderImpl(registry);
         compositePolicyBuilder = new CompositePolicyBuilderImpl(registry);
 
     }
@@ -89,6 +91,8 @@ public class ModelBuilderImpl implements CompositeBuilder, DeployedCompositeBuil
             // out of the included composite into the including composite
             // and discards the included composite
             compositeIncludeBuilder.build(composite, definitions, monitor);
+            
+            // need to apply policy external attachment
             
             // Expand nested composites. Clone any composite model that
             // is acting as a component implementation and connects the cloned
@@ -114,11 +118,12 @@ public class ModelBuilderImpl implements CompositeBuilder, DeployedCompositeBuil
             // TODO - called here at the moment but we could have a separate build phase 
             //        to call these. Also we need to re-org these builders 
             bindingURIBuilder.configureBindingURIsAndNames(composite, definitions, monitor);
-            componentServiceBindingBuilder.build(composite, definitions, monitor);
-            componentReferenceBindingBuilder.build(composite, definitions, monitor);
+            componentServiceBindingBuilder.build(composite, definitions, monitor); // binding specific build
+            componentReferenceBindingBuilder.build(composite, definitions, monitor); // binding specific build
             endpointBuilder.build(composite, definitions, monitor);
             endpointReferenceBuilder.build(composite, definitions, monitor);
-            compositePolicyBuilder.build(composite, definitions, monitor);
+            componentReferencePromotionBuilder.build(composite, definitions, monitor); // move into the static build?
+            compositePolicyBuilder.build(composite, definitions, monitor); // the rest of the policy processing?
                      
         } catch (Exception e) {
             throw new CompositeBuilderException("Exception while building model " + composite.getName(), e);
