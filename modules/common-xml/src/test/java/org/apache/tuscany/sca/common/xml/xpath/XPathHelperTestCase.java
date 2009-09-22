@@ -52,7 +52,7 @@ public class XPathHelperTestCase {
             + "</r:root>";
 
     private static String XPATH =
-        "<policySet attachTo=\"//c:child1[@name='child1']\" xmlns:c=\"http://child1\" xmlns=\"http://p\">" + "<child xmlns:c=\"http://c2\"/></policySet>";
+        "<policySet attachTo=\"//c:child1[@name='child1']/self::node()\" xmlns:c=\"http://child1\" xmlns=\"http://p\">" + "<child xmlns:c=\"http://c2\"/></policySet>";
 
     /**
      * @throws java.lang.Exception

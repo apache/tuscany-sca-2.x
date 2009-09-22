@@ -19,9 +19,10 @@
 
 package org.apache.tuscany.sca.common.xml.xpath;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.HashSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
@@ -62,7 +63,7 @@ public class XPathHelper {
     public XPath newXPath() {
         return factory.newXPath();
     }
-    
+
     public XPathExpression compile(NamespaceContext context, String expression) throws XPathExpressionException {
         XPath path = newXPath();
         context = getNamespaceContext(expression, context);
@@ -100,27 +101,50 @@ public class XPathHelper {
      * @return A collection of prefixes
      */
     private Collection<String> getPrefixes(String expression) {
-        List<String> prefixes = new ArrayList<String>();
-        prefixes.add("");
-        String[] segments = expression.split(":");
-        for (int i = 0; i < segments.length - 1; i++) {
-            String prefix = segments[i];
-            if(prefix.length()<1) {
-                continue;
-            }
-            int j = prefix.length() -1;
-            for (; j >= 0; j--) {
-                if (XMLCharHelper.isNCName(prefix.charAt(j))) {
-                    continue;
-                }
-                break;
-            }
-            // j is before the first char of the prefix
-            if (j != (prefix.length() - 1) && XMLCharHelper.isNCNameStart(prefix.charAt(j + 1))) {
-                prefixes.add(prefix.substring(j + 1));
+        Collection<String> prefixes = new HashSet<String>();
+        Pattern pattern = Pattern.compile("([^:]+):([^:]+)");
+        Matcher matcher = pattern.matcher(expression);
+        while (matcher.find()) {
+            String prefix = extractNCName(matcher.group(1), true);
+            String local = extractNCName(matcher.group(2), false);
+            if (prefix != null && local != null) {
+                prefixes.add(prefix);
             }
         }
         return prefixes;
+    }
+
+    private String extractNCName(String str, boolean reverse) {
+        if (str.length() < 1) {
+            return null;
+        }
+        if (!reverse) {
+            if (!XMLCharHelper.isNCNameStart(str.charAt(0))) {
+                return null;
+            }
+            int i = 0, j = str.length();
+            // Find the last non-NCName char
+            for (; i < j; i++) {
+                if (!XMLCharHelper.isNCName(str.charAt(i))) {
+                    break;
+                }
+            }
+            return str.substring(0, i);
+        } else {
+            int j = str.length() - 1;
+            // Find the first non-NCName char
+            for (; j >= 0; j--) {
+                if (!XMLCharHelper.isNCName(str.charAt(j))) {
+                    break;
+                }
+            }
+            // j is before the first char of the prefix
+            if (j != (str.length() - 1) && XMLCharHelper.isNCNameStart(str.charAt(j + 1))) {
+                return str.substring(j + 1);
+            } else {
+                return null;
+            }
+        }
     }
 
 }

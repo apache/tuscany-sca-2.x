@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
@@ -39,7 +41,7 @@ import org.w3c.dom.NodeList;
  */
 public class PolicyXPathFunction implements XPathFunction {
     private static Logger logger = Logger.getLogger(PolicyXPathFunction.class.getName());
-    
+
     static final QName InterfaceRef = new QName(PolicyConstants.SCA11_NS, "InterfaceRef");
     static final QName OperationRef = new QName(PolicyConstants.SCA11_NS, "OperationRef");
     static final QName MessageRef = new QName(PolicyConstants.SCA11_NS, "MessageRef");
@@ -67,12 +69,12 @@ public class PolicyXPathFunction implements XPathFunction {
         }
         return null;
     }
-    
+
     public Object evaluate(List args) throws XPathFunctionException {
         if (logger.isLoggable(Level.FINE)) {
             logger.fine(functionName + "(" + args + ")");
         }
-        
+
         String arg = (String)args.get(0);
         Node node = getContextNode(args);
         if (InterfaceRef.equals(functionName)) {
@@ -122,6 +124,35 @@ public class PolicyXPathFunction implements XPathFunction {
 
     private Boolean evaluateIntents(String[] intents, Node node) {
         return Boolean.FALSE;
+    }
+
+    private static Pattern FUNCTION;
+    static {
+        String functionPattern = "(URIRef|InterfaceRef|OperationRef|MessageRef|IntentRefs)\\s*\\((.*)\\)";
+        FUNCTION = Pattern.compile(functionPattern);
+    }
+
+    public static String normalize(String attachTo) {
+        Matcher matcher = FUNCTION.matcher(attachTo);
+        boolean result = matcher.find();
+        if (result) {
+            StringBuffer sb = new StringBuffer();
+            do {
+                String function = matcher.group(1);
+                String args = matcher.group(2);
+                String replacement = null;
+                if (args.trim().length() > 0) {
+                    replacement = function + "(" + args + "," + "self::node())";
+                } else {
+                    replacement = function + "(self::node())";
+                }
+                matcher.appendReplacement(sb, replacement);
+                result = matcher.find();
+            } while (result);
+            matcher.appendTail(sb);
+            return sb.toString();
+        }
+        return attachTo;
     }
 
 }
