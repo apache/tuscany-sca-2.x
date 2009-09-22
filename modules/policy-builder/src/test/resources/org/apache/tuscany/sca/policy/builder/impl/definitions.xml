@@ -24,7 +24,7 @@
     xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200903">
 
     <policySet name="PolicySet1" appliesTo="sca:implementation.java"
-        attachTo = "//composite[@name='Composite1' or @name='Composite2']">
+        attachTo = "//composite[@name='']">
     </policySet>
 
     <policySet name="PolicySet2" appliesTo="sca:implementation.java"
@@ -32,7 +32,7 @@
     </policySet>
 
     <policySet name="PolicySet3" appliesTo="sca:binding.ws"
-        attachTo = "//sca:component[URIRef('Component2B/Component4A)]">
+        attachTo = "//sca:component[sca:URIRef('Component2B/Component4A')]">
     </policySet>
 
 </definitions>

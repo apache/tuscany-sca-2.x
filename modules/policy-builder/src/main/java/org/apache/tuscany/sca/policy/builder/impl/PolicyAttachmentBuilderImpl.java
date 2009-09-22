@@ -33,7 +33,9 @@ import javax.xml.stream.XMLStreamWriter;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 
+import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.common.xml.dom.DOMHelper;
@@ -93,6 +95,16 @@ public class PolicyAttachmentBuilderImpl implements CompositeBuilder {
      * @throws Exception
      */
     private Composite applyXPath(Composite composite, Definitions definitions, Monitor monitor) throws Exception {
+        // Recursively apply the xpath against the composites referenced by <implementation.composite>
+        for (Component component : composite.getComponents()) {
+            Implementation impl = component.getImplementation();
+            if (impl instanceof Composite) {
+                Composite patched = applyXPath((Composite)impl, definitions, monitor);
+                if (patched != impl) {
+                    component.setImplementation(patched);
+                }
+            }
+        }
         // First write the composite into a DOM document so that we can apply the xpath
         StringWriter sw = new StringWriter();
         XMLStreamWriter writer = staxHelper.createXMLStreamWriter(sw);

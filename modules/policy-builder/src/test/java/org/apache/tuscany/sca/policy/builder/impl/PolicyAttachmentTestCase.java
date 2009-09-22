@@ -19,22 +19,35 @@
 
 package org.apache.tuscany.sca.policy.builder.impl;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.Base;
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
+import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
+import org.apache.tuscany.sca.assembly.builder.impl.CompositeCloneBuilderImpl;
+import org.apache.tuscany.sca.assembly.builder.impl.CompositeIncludeBuilderImpl;
+import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.monitor.DefaultMonitorFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -44,13 +57,20 @@ import org.junit.Test;
  */
 public class PolicyAttachmentTestCase {
 
-    private StAXArtifactProcessor<Object> staxProcessor;
-    private Monitor monitor;
+    private static StAXArtifactProcessor<Object> staxProcessor;
+    private static Monitor monitor;
 
-    @Test
-    public void testBuild() throws Exception {
-        DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
-        XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+    private static ExtensionPointRegistry extensionPoints;
+    private static XMLInputFactory inputFactory;
+    private static AssemblyFactory assemblyFactory;
+    private static BuilderExtensionPoint builders;
+
+    @BeforeClass
+    public static void init() throws Exception {
+        extensionPoints = new DefaultExtensionPointRegistry();
+        FactoryExtensionPoint factories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
+        assemblyFactory = factories.getFactory(AssemblyFactory.class);
+        inputFactory = factories.getFactory(XMLInputFactory.class);
         // Create a monitor
         UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
         MonitorFactory monitorFactory = new DefaultMonitorFactory();
@@ -63,24 +83,63 @@ public class PolicyAttachmentTestCase {
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null, monitor);
         staxProcessors.addArtifactProcessor(new TestPolicyProcessor());
 
-        URL url = getClass().getResource("test_definitions.xml");
+        builders = extensionPoints.getExtensionPoint(BuilderExtensionPoint.class);
+    }
+
+    @Test
+    public void testBuild() throws Exception {
+        Definitions definitions = load("test_definitions.xml");
+        Composite composite = load("Calculator.composite");
+
+        PolicyAttachmentBuilderImpl builder = new PolicyAttachmentBuilderImpl(extensionPoints);
+        builder.build(composite, definitions, monitor);
+    }
+
+    private <T> T load(String file) throws IOException, XMLStreamException, ContributionReadException {
+        URL url = getClass().getResource(file);
         InputStream urlStream = url.openStream();
         XMLStreamReader reader = inputFactory.createXMLStreamReader(urlStream);
         reader.nextTag();
 
-        Definitions definitions = (Definitions)staxProcessor.read(reader);
+        T model = (T)staxProcessor.read(reader);
         reader.close();
+        return model;
+    }
 
-        url = getClass().getResource("Calculator.composite");
-        urlStream = url.openStream();
-        reader = inputFactory.createXMLStreamReader(urlStream);
-        reader.nextTag();
+    @Test
+    public void testComplexBuild() throws Exception {
+        Definitions definitions = load("definitions.xml");
+        Composite composite1 = load("Composite1.composite");
+        Composite composite2 = load("Composite2.composite");
+        Composite composite3 = load("Composite3.composite");
+        Composite composite4 = load("Composite4.composite");
+        composite1.getIncludes().clear();
+        composite1.getIncludes().add(composite3);
 
-        Composite composite = (Composite)staxProcessor.read(reader);
-        reader.close();
+        composite1.getComponent("Component1B").setImplementation(composite4);
+        composite2.getComponent("Component2B").setImplementation(composite4);
+
+        Composite domainComposite = assemblyFactory.createComposite();
+        domainComposite.setName(new QName(Base.SCA11_NS, ""));
+        domainComposite.getIncludes().add(composite1);
+        domainComposite.getIncludes().add(composite2);
+
+        CompositeBuilder includeBuilder = new CompositeIncludeBuilderImpl();
+        CompositeBuilder cloneBuilder = new CompositeCloneBuilderImpl();
+
+        /*
+        CompositeBuilder includeBuilder =
+            builders.getCompositeBuilder("org.apache.tuscany.sca.assembly.builder.CompositeIncludeBuilder");
+        CompositeBuilder cloneBuilder =
+            builders.getCompositeBuilder("org.apache.tuscany.sca.assembly.builder.CompositeCloneBuilder");
+            */
+
+        includeBuilder.build(domainComposite, definitions, monitor);
+        cloneBuilder.build(domainComposite, definitions, monitor);
 
         PolicyAttachmentBuilderImpl builder = new PolicyAttachmentBuilderImpl(extensionPoints);
-        builder.build(composite, definitions, monitor);
+        builder.build(domainComposite, definitions, monitor);
+
     }
 
 }
