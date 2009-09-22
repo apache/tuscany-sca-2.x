@@ -38,7 +38,10 @@ public class ModelBuilderImpl implements CompositeBuilder, DeployedCompositeBuil
     private CompositeBuilder compositeCloneBuilder;
     private CompositeComponentTypeBuilderImpl compositeComponentTypeBuilder;
     private ComponentBuilderImpl componentBuilder;
+    
     private BindingURIBuilderImpl bindingURIBuilder;
+    private ComponentServiceBindingBuilderImpl componentServiceBindingBuilder;
+    private ComponentReferenceBindingBuilderImpl componentReferenceBindingBuilder;
     private EndpointBuilderImpl endpointBuilder;
     private EndpointReferenceBuilderImpl endpointReferenceBuilder;
     private CompositePolicyBuilderImpl compositePolicyBuilder;
@@ -60,6 +63,8 @@ public class ModelBuilderImpl implements CompositeBuilder, DeployedCompositeBuil
         componentBuilder.setComponentTypeBuilder(compositeComponentTypeBuilder);
         
         bindingURIBuilder = new BindingURIBuilderImpl(registry);
+        componentServiceBindingBuilder = new ComponentServiceBindingBuilderImpl(registry);
+        componentReferenceBindingBuilder = new ComponentReferenceBindingBuilderImpl(registry);
         endpointBuilder = new EndpointBuilderImpl(registry);
         endpointReferenceBuilder = new EndpointReferenceBuilderImpl(registry);
         compositePolicyBuilder = new CompositePolicyBuilderImpl(registry);
@@ -94,21 +99,23 @@ public class ModelBuilderImpl implements CompositeBuilder, DeployedCompositeBuil
             // for the top level implementation (composite). This has the effect of
             // recursively calculating component types and configuring the 
             // components that depend on them
-            compositeComponentTypeBuilder.createComponentType(composite);
-                       
+            compositeComponentTypeBuilder.createComponentType(composite);  
 
             // create the runtime model by updating the static model we have just 
             // created. This involves things like creating
             //  component URIs
             //  binding URIs
+            //  binding specific build processing
             //  callback references - currently done in static pass
             //  callback services - currently done in static pass
             //  Endpoints
             //  Endoint References
             //  Policies
             // TODO - called here at the moment but we could have a separate build phase 
-            //        to call these. Also we could re-org the builders themselves
+            //        to call these. Also we need to re-org these builders 
             bindingURIBuilder.configureBindingURIsAndNames(composite, definitions, monitor);
+            componentServiceBindingBuilder.build(composite, definitions, monitor);
+            componentReferenceBindingBuilder.build(composite, definitions, monitor);
             endpointBuilder.build(composite, definitions, monitor);
             endpointReferenceBuilder.build(composite, definitions, monitor);
             compositePolicyBuilder.build(composite, definitions, monitor);
