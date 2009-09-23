@@ -30,7 +30,7 @@ public class AComponentImpl implements AComponent {
     protected BComponent b;
 
     @Reference
-    protected CComponent cReference;
+    private CComponent cReference;
 
     @Reference(required = false)
     protected DComponent dReference;

@@ -67,7 +67,6 @@ public class ManualWiredReferenceTestCase {
         acomponent.fooD1();
     }
 
-    @Ignore
     @Test
     public void testD2Reference() {
         assertEquals("DComponent", acomponent.fooD2());
