@@ -18,6 +18,9 @@
  */
 package org.apache.tuscany.sca.otest;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -48,7 +51,7 @@ public class TuscanyRuntimeBridge implements RuntimeBridge {
         // read test error mapping
         expectedErrorMessages = new Properties();
         try {
-            InputStream propertiesStream = this.getClass().getResourceAsStream("/oasis-sca-tests-errors.properties");
+            InputStream propertiesStream = this.getClass().getResourceAsStream("/tuscany-oasis-sca-tests-errors.properties");
             expectedErrorMessages.load(propertiesStream);
         } catch (IOException e) {   
             System.out.println("Unable to read oasis-sca-tests-errors.properties file");
@@ -131,34 +134,30 @@ public class TuscanyRuntimeBridge implements RuntimeBridge {
         return ContributionLocationHelper.getContributionLocation(testConfiguration.getTestClass());
     } // end method getContributionLocation
     
-    public boolean checkError(String testName, Throwable ex){       
+    public void checkError(String testName, Throwable ex) throws Throwable {       
         String expectedMessage = expectedErrorMessages.getProperty(testName);
         String receivedMessage = ex.getMessage();
         
         if (expectedMessage == null){
-            System.out.println("Null expected error message for test " + testName);
-            System.out.println("Please add message to oasis-sca-tests-errors.properties");
-            return false;
+            fail("Null expected error message for test " + testName + 
+                 "Please add message to oasis-sca-tests-errors.properties");
         }
         
         if (receivedMessage == null){
-            System.out.println("Null received error message for test " + testName);
-            return false;
+            fail("Null received error message for test " + testName);
         }
         
         int messageStart = receivedMessage.indexOf("] - ");
         
         if (messageStart < 0){
-            System.out.println("Message separator not found for test " + testName);
+            fail("Message separator not found for test " + testName);
         }
         
         receivedMessage = receivedMessage.substring(messageStart + 4);
         
-        if (receivedMessage.startsWith(expectedMessage)){
-            return true;
-        } else {
-            return false;
-        }
+        assertEquals( expectedMessage, receivedMessage );
+        
+        return;
     }
 
 } // end class TuscanyRuntimeBridge
