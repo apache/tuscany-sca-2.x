@@ -15,5 +15,5 @@
 # specific language governing permissions and limitations
 # under the License. 
 
-#org.apache.tuscany.sca.assembly.builder.impl.ModelBuilderImpl;id=org.apache.tuscany.sca.assembly.builder.CompositeBuilder
-org.apache.tuscany.sca.assembly.builder.impl.CompositeBuilderImpl;id=org.apache.tuscany.sca.assembly.builder.CompositeBuilder
+org.apache.tuscany.sca.assembly.builder.impl.ModelBuilderImpl;id=org.apache.tuscany.sca.assembly.builder.CompositeBuilder
+#org.apache.tuscany.sca.assembly.builder.impl.CompositeBuilderImpl;id=org.apache.tuscany.sca.assembly.builder.CompositeBuilder
