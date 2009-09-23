@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.binding.jsonp.runtime;
 
-import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
