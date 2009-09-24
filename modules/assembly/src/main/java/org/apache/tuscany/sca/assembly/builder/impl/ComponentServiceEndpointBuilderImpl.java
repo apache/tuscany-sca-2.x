@@ -66,13 +66,14 @@ public class ComponentServiceEndpointBuilderImpl implements CompositeBuilder {
      * @param definitions
      * @param monitor - a Monitor for logging errors
      */
-    public void build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
+    public Composite build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
 
         // process component services
         if (!useNew) {
             processComponentServices(composite);
         } // end if
         processComponentServices2(composite);
+        return composite;
 
     } // end method build
 

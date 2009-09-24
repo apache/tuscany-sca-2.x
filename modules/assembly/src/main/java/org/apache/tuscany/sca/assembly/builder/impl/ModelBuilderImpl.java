@@ -77,11 +77,11 @@ public class ModelBuilderImpl implements CompositeBuilder, DeployedCompositeBuil
         return "org.apache.tuscany.sca.assembly.builder.CompositeBuilder";
     }
 
-    public void build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
-        build(composite, definitions, null, monitor);
+    public Composite build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
+        return build(composite, definitions, null, monitor);
     }
 
-    public void build(Composite composite,
+    public Composite build(Composite composite,
                       Definitions definitions,
                       Map<QName, List<String>> bindingBaseURIs,
                       Monitor monitor) throws CompositeBuilderException {
@@ -90,14 +90,14 @@ public class ModelBuilderImpl implements CompositeBuilder, DeployedCompositeBuil
             // Collect and fuse includes. Copy all of the components
             // out of the included composite into the including composite
             // and discards the included composite
-            compositeIncludeBuilder.build(composite, definitions, monitor);
+            composite = compositeIncludeBuilder.build(composite, definitions, monitor);
             
             // need to apply policy external attachment
             
             // Expand nested composites. Clone any composite model that
             // is acting as a component implementation and connects the cloned
             // model to the component implementation in question
-            compositeCloneBuilder.build(composite, definitions, monitor);
+            composite = compositeCloneBuilder.build(composite, definitions, monitor);
             
             // Process the implementation hierarchy by calculating the component type 
             // for the top level implementation (composite). This has the effect of
@@ -118,13 +118,13 @@ public class ModelBuilderImpl implements CompositeBuilder, DeployedCompositeBuil
             // TODO - called here at the moment but we could have a separate build phase 
             //        to call these. Also we need to re-org these builders 
             bindingURIBuilder.configureBindingURIsAndNames(composite, definitions, monitor);
-            componentServiceBindingBuilder.build(composite, definitions, monitor); // binding specific build
-            componentReferenceBindingBuilder.build(composite, definitions, monitor); // binding specific build
+            composite = componentServiceBindingBuilder.build(composite, definitions, monitor); // binding specific build
+            composite = componentReferenceBindingBuilder.build(composite, definitions, monitor); // binding specific build
             endpointBuilder.build(composite, definitions, monitor);
             endpointReferenceBuilder.build(composite, definitions, monitor);
-            componentReferencePromotionBuilder.build(composite, definitions, monitor); // move into the static build?
-            compositePolicyBuilder.build(composite, definitions, monitor); // the rest of the policy processing?
-                     
+            composite = componentReferencePromotionBuilder.build(composite, definitions, monitor); // move into the static build?
+            composite = compositePolicyBuilder.build(composite, definitions, monitor); // the rest of the policy processing?
+            return composite;         
         } catch (Exception e) {
             throw new CompositeBuilderException("Exception while building model " + composite.getName(), e);
         } 

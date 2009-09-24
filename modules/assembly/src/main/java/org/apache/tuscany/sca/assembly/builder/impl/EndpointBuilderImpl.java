@@ -50,9 +50,10 @@ public class EndpointBuilderImpl {
      * @param definitions
      * @param monitor - a Monitor for logging errors
      */
-    public void build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
+    public Composite build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
 
         processComponentServices(composite);
+        return composite;
 
     } // end method build
 

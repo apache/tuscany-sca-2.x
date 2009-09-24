@@ -46,8 +46,9 @@ public class CompositeIncludeBuilderImpl implements CompositeBuilder {
         return "org.apache.tuscany.sca.assembly.builder.CompositeIncludeBuilder";
     }
 
-    public void build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
+    public Composite build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
         fuseIncludes(composite, monitor);
+        return composite;
     }
 
     /**

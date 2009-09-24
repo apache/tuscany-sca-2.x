@@ -55,8 +55,9 @@ public class CompositePromotionBuilderImpl extends BaseBuilderImpl implements Co
         return "org.apache.tuscany.sca.assembly.builder.CompositePromotionBuilder";
     }
 
-    public void build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
+    public Composite build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
         connectCompositeReferencesAndServices(composite, monitor);
+        return composite;
     }
 
     /**

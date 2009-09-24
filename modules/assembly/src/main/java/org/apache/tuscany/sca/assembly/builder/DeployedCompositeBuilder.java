@@ -49,9 +49,10 @@ public interface DeployedCompositeBuilder {
      * @param composite
      * @param definitions
      * @param monitor
+     * @return
      * @throws CompositeBuilderException
      */
-    void build(Composite composite, Definitions definitions, Map<QName, List<String>> bindingBaseURIs, Monitor monitor)
+    Composite build(Composite composite, Definitions definitions, Map<QName, List<String>> bindingBaseURIs, Monitor monitor)
         throws CompositeBuilderException;
 
 }

@@ -55,7 +55,7 @@ public class CompositeReferenceConfigurationBuilderImpl implements CompositeBuil
         return "org.apache.tuscany.sca.assembly.builder.CompositeReferenceConfigurationBuilder";
     }
 
-    public void build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
+    public Composite build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
 
         // Process nested composites recursively
         configureNestedCompositeReferences(composite);
@@ -115,6 +115,7 @@ public class CompositeReferenceConfigurationBuilderImpl implements CompositeBuil
                 }
             }
         }
+        return composite;
     }
 
     private void configureNestedCompositeReferences(Composite composite) {

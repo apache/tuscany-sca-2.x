@@ -49,8 +49,9 @@ public class ComponentServiceBindingBuilderImpl implements CompositeBuilder {
         return "org.apache.tuscany.sca.assembly.builder.ComponentServiceBindingBuilder";
     }
 
-    public void build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
+    public Composite build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
         buildServiceBindings(composite, monitor);
+        return composite;
     }
 
     private void buildServiceBindings(Composite composite, Monitor monitor) {

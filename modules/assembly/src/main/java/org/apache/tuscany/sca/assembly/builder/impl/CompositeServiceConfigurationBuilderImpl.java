@@ -53,7 +53,7 @@ public class CompositeServiceConfigurationBuilderImpl implements CompositeBuilde
         return "org.apache.tuscany.sca.assembly.builder.CompositeServiceConfigurationBuilder";
     }
 
-    public void build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
+    public Composite build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
 
         // Process nested composites recursively
         configureNestedCompositeServices(composite);
@@ -98,6 +98,7 @@ public class CompositeServiceConfigurationBuilderImpl implements CompositeBuilde
                 }
             }
         }
+        return composite;
     }
 
     private void configureNestedCompositeServices(Composite composite) {

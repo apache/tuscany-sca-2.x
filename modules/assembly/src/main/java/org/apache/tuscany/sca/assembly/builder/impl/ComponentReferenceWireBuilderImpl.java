@@ -50,8 +50,9 @@ public class ComponentReferenceWireBuilderImpl extends BaseBuilderImpl implement
         return "org.apache.tuscany.sca.assembly.builder.ComponentReferenceWireBuilder";
     }
 
-    public void build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
+    public Composite build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
         wireComponentReferences(composite, monitor);
+        return composite;
     }
 
     /**

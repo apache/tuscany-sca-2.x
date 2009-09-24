@@ -61,8 +61,9 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
         return "org.apache.tuscany.sca.assembly.builder.CompositePolicyBuilder";
     }
 
-    public void build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
+    public Composite build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
         computePolicies(composite, definitions, monitor);
+        return composite;
     }
 
     /**

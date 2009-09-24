@@ -60,16 +60,18 @@ public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements C
         return "org.apache.tuscany.sca.assembly.builder.CompositeBindingURIBuilder";
     }
 
-    public void build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
+    public Composite build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
         configureBindingURIsAndNames(composite, definitions, monitor);
+        return composite;
     }
 
-    public void build(Composite composite,
+    public Composite build(Composite composite,
                       Definitions definitions,
                       Map<QName, List<String>> bindingBaseURIs,
                       Monitor monitor) throws CompositeBuilderException {
         configureBindingURIs(composite, null, definitions, bindingBaseURIs, monitor);
         configureBindingNames(composite, monitor);
+        return composite;
     }
 
     /**

@@ -34,18 +34,21 @@ public interface CompositeBuilder {
     /**
      * Returns the ID of the builder.
      * 
-     * @return
+     * @return An ID that identifies the builder
      */
     String getID();
 
     /**
      * Build a composite.
      * 
-     * @param composite
-     * @param definitions
+     * @param composite The composite
+     * @param definitions SCA definitions
      * @param monitor
+     * @return The composite built from the original one. In most cases, it is the same as the orginal one as
+     * most builders only change the content of the composite. 
+     * 
      * @throws CompositeBuilderException
      */
-    void build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException;
+    Composite build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException;
 
 }

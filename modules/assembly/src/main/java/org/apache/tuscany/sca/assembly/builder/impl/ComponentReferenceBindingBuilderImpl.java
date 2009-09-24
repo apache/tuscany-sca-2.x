@@ -46,8 +46,9 @@ public class ComponentReferenceBindingBuilderImpl implements CompositeBuilder {
         this.builders = registry.getExtensionPoint(BuilderExtensionPoint.class);
     }
     
-    public void build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
+    public Composite build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
         buildReferenceBindings(composite, monitor);
+        return composite;
     }
 
     public String getID() {

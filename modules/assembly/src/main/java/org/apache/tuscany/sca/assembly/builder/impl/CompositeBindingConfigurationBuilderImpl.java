@@ -49,7 +49,7 @@ public class CompositeBindingConfigurationBuilderImpl extends CompositeBindingUR
         return "org.apache.tuscany.sca.assembly.builder.CompositeServiceBindingBuilder";
     }
 
-    public void build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
+    public Composite build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
         List<Binding> defaultBindings = null;
         for (Object x : composite.getExtensions()) {
             if (x instanceof List) {
@@ -58,6 +58,7 @@ public class CompositeBindingConfigurationBuilderImpl extends CompositeBindingUR
         }
         // TODO - EPR - is this ever used?
         //configureBindingURIs(composite, definitions, defaultBindings, monitor);
+        return composite;
     }
 
 }

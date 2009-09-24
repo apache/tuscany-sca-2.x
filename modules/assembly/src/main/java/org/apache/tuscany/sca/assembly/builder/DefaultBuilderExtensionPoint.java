@@ -213,16 +213,16 @@ public class DefaultBuilderExtensionPoint implements BuilderExtensionPoint, Life
             return id;
         }
 
-        public void build(Composite composite, Definitions definitions, Monitor monitor)
+        public Composite build(Composite composite, Definitions definitions, Monitor monitor)
             throws CompositeBuilderException {
-            getBuilder().build(composite, definitions, monitor);
+            return getBuilder().build(composite, definitions, monitor);
         }
 
-        public void build(Composite composite,
+        public Composite build(Composite composite,
                           Definitions definitions,
                           Map<QName, List<String>> bindingBaseURIs,
                           Monitor monitor) throws CompositeBuilderException {
-            ((DeployedCompositeBuilder)getBuilder()).build(composite, definitions, bindingBaseURIs, monitor);
+            return ((DeployedCompositeBuilder)getBuilder()).build(composite, definitions, bindingBaseURIs, monitor);
         }
 
         private CompositeBuilder getBuilder() {

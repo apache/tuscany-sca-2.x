@@ -41,8 +41,9 @@ public class CompositeCloneBuilderImpl implements CompositeBuilder {
     public CompositeCloneBuilderImpl() {
     }
 
-    public void build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
+    public Composite build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
         expandCompositeImplementations(composite);
+        return composite;
     }
 
     public String getID() {

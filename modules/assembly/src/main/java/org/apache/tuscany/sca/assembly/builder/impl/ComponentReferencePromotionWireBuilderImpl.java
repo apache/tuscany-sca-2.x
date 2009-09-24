@@ -46,8 +46,9 @@ public class ComponentReferencePromotionWireBuilderImpl implements CompositeBuil
         this.assemblyFactory = assemblyFactory;
     }
 
-    public void build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
+    public Composite build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
         wireCompositeReferences(composite, monitor);
+        return composite;
     }
 
     public String getID() {

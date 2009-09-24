@@ -49,8 +49,9 @@ public class ComponentReferencePromotionBuilderImpl implements CompositeBuilder 
         this.assemblyFactory = factories.getFactory(AssemblyFactory.class);
     }
 
-    public void build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
+    public Composite build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
         configureNestedCompositeReferences(composite, monitor);
+        return composite;
     }
 
     public String getID() {

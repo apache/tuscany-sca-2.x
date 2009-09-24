@@ -77,10 +77,10 @@ public class PolicyAttachmentBuilderImpl implements CompositeBuilder {
         return "org.apache.tuscany.sca.policy.builder.PolicyAttachmentBuilder";
     }
 
-    public void build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
+    public Composite build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
         try {
             Composite patched = applyXPath(composite, definitions, monitor);
-            System.out.println(patched);
+            return patched;
         } catch (Exception e) {
             throw new CompositeBuilderException(e);
         }

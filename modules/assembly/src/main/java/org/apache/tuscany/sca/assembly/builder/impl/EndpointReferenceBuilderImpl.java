@@ -72,11 +72,12 @@ public class EndpointReferenceBuilderImpl {
      *
      * @param composite
      */
-    public void build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
+    public Composite build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
         this.monitor = monitor;
 
         // process component services
         processComponentReferences(composite);
+        return composite;
     }
 
     private void processComponentReferences(Composite composite) {

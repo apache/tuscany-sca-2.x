@@ -58,8 +58,9 @@ public class ComponentConfigurationBuilderImpl extends BaseBuilderImpl implement
         return "org.apache.tuscany.sca.assembly.builder.ComponentConfigurationBuilder";
     }
 
-    public void build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
+    public Composite build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
         configureComponents(composite, definitions, monitor);
+        return composite;
     }
 
     /**
