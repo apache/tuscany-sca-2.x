@@ -20,7 +20,6 @@
 package org.apache.tuscany.sca.assembly.builder.impl;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Component;
@@ -43,7 +42,19 @@ public class CompositeCloneBuilderImpl implements CompositeBuilder {
 
     public Composite build(Composite composite, Definitions definitions, Monitor monitor)
         throws CompositeBuilderException {
-        expandCompositeImplementations(composite);
+        // Clone the includes 
+        List<Composite> includes = new ArrayList<Composite>();
+        for (Composite included : composite.getIncludes()) {
+            try {
+                includes.add((Composite)included.clone());
+            } catch (CloneNotSupportedException e) {
+                throw new UnsupportedOperationException(e);
+            }
+        }
+        composite.getIncludes().clear();
+        composite.getIncludes().addAll(includes);
+
+        cloneCompositeImplementations(composite);
         return composite;
     }
 
@@ -52,72 +63,24 @@ public class CompositeCloneBuilderImpl implements CompositeBuilder {
     }
 
     /**
-     * Expand composite component implementations.
+     * Clone composite component implementations
      * 
      * @param composite
      * @param problems
      */
-    private void expandCompositeImplementations(Composite composite) {
+    private void cloneCompositeImplementations(Composite composite) {
         for (Component component : composite.getComponents()) {
             Implementation implementation = component.getImplementation();
             if (implementation instanceof Composite) {
 
                 Composite compositeImplementation = (Composite)implementation;
-                Composite clone;
                 try {
-                    clone = (Composite)compositeImplementation.clone();
+                    // Please note the clone method is recursive
+                    Composite clone = (Composite)compositeImplementation.clone();
+                    component.setImplementation(clone);
                 } catch (CloneNotSupportedException e) {
-                    throw new RuntimeException(e);
+                    throw new UnsupportedOperationException(e);
                 }
-                component.setImplementation(clone);
-                expandCompositeImplementations(clone);
-            }
-        }
-    }
-
-    /**
-     * Collect all nested composite implementations in a graph of composites.
-     * 
-     * @param composite
-     * @param nested
-     */
-    private void collectNestedComposites(Composite composite, List<Composite> nested) {
-        for (Component component : composite.getComponents()) {
-            Implementation implementation = component.getImplementation();
-            if (implementation instanceof Composite) {
-                Composite nestedComposite = (Composite)implementation;
-                nested.add(nestedComposite);
-                collectNestedComposites(nestedComposite, nested);
-            }
-        }
-    }
-
-    /**
-     * Fuse nested composites into a top level composite.
-     * 
-     * @param composite
-     */
-    private void fuseCompositeImplementations(Composite composite) {
-
-        // First collect all nested composites
-        List<Composite> nested = new ArrayList<Composite>();
-        collectNestedComposites(composite, nested);
-
-        // Then add all the non-composite components they contain 
-        for (Composite nestedComposite : nested) {
-            for (Component component : nestedComposite.getComponents()) {
-                Implementation implementation = component.getImplementation();
-                if (!(implementation instanceof Composite)) {
-                    composite.getComponents().add(component);
-                }
-            }
-        }
-
-        // Clear the initial list of composite components
-        for (Iterator<Component> i = composite.getComponents().iterator(); i.hasNext();) {
-            Component component = i.next();
-            if (component.getImplementation() instanceof Composite) {
-                i.remove();
             }
         }
     }

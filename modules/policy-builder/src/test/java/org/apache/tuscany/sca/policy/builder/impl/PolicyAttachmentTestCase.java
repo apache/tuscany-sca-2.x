@@ -122,6 +122,7 @@ public class PolicyAttachmentTestCase {
 
         Composite domainComposite = assemblyFactory.createComposite();
         domainComposite.setName(new QName(Base.SCA11_NS, ""));
+        domainComposite.setLocal(false);
         domainComposite.getIncludes().add(composite1);
         domainComposite.getIncludes().add(composite2);
 
@@ -136,12 +137,12 @@ public class PolicyAttachmentTestCase {
             builders.getCompositeBuilder("org.apache.tuscany.sca.assembly.builder.CompositeCloneBuilder");
             */
 
-        includeBuilder.build(domainComposite, definitions, monitor);
-        cloneBuilder.build(domainComposite, definitions, monitor);
-        uriBuilder.build(domainComposite, definitions, monitor);
+        domainComposite = cloneBuilder.build(domainComposite, definitions, monitor);
+        domainComposite = includeBuilder.build(domainComposite, definitions, monitor);
+        domainComposite = uriBuilder.build(domainComposite, definitions, monitor);
 
         PolicyAttachmentBuilderImpl builder = new PolicyAttachmentBuilderImpl(extensionPoints);
-        builder.build(domainComposite, definitions, monitor);
+        domainComposite = builder.build(domainComposite, definitions, monitor);
 
     }
 

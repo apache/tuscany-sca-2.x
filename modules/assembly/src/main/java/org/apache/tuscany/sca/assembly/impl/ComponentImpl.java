@@ -25,6 +25,7 @@ import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentProperty;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
+import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Property;
@@ -74,6 +75,16 @@ public class ComponentImpl extends ExtensibleImpl implements Component, Cloneabl
         for (ComponentService service : getServices()) {
             clone.services.add((ComponentService)service.clone());
         }
+        
+        // Clone the implementation.composite
+        if(implementation instanceof Composite) {
+            clone.implementation = (Composite) ((Composite) implementation).clone();
+        }
+        
+        // Clone the Lists for intents and policySets
+        clone.requiredIntents = new ArrayList<Intent>(getRequiredIntents());
+        clone.policySets = new ArrayList<PolicySet>(getPolicySets());
+        
         return clone;
     }
 

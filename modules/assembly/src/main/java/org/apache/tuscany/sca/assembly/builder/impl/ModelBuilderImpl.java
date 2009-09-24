@@ -88,6 +88,9 @@ public class ModelBuilderImpl implements CompositeBuilder, DeployedCompositeBuil
                            Monitor monitor) throws CompositeBuilderException {
 
         try {
+            // Clone the composites that are included or referenced in implementation.composite
+            composite = compositeCloneBuilder.build(composite, definitions, monitor);
+
             // Collect and fuse includes. Copy all of the components
             // out of the included composite into the including composite
             // and discards the included composite
@@ -95,10 +98,6 @@ public class ModelBuilderImpl implements CompositeBuilder, DeployedCompositeBuil
 
             // need to apply policy external attachment
 
-            // Expand nested composites. Clone any composite model that
-            // is acting as a component implementation and connects the cloned
-            // model to the component implementation in question
-            composite = compositeCloneBuilder.build(composite, definitions, monitor);
 
             // Process the implementation hierarchy by calculating the component type 
             // for the top level implementation (composite). This has the effect of

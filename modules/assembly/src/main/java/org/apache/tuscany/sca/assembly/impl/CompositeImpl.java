@@ -89,6 +89,12 @@ public class CompositeImpl extends ImplementationImpl implements Composite, Clon
         for (Wire wire : getWires()) {
             clone.wires.add((Wire)wire.clone());
         }
+        
+        // Clone the includes 
+        clone.includes = new ArrayList<Composite>(includes);
+        for (Composite included : getIncludes()) {
+            clone.includes.add((Composite)included.clone());
+        }
         return clone;
     }
 

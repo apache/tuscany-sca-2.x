@@ -52,6 +52,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.Base;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
@@ -539,14 +540,14 @@ public class NodeFactoryImpl extends NodeFactory {
 
         // Create a top level composite to host our composite
         // This is temporary to make the activator happy
-        Composite tempComposite = assemblyFactory.createComposite();
-        tempComposite.setName(new QName(SCA11_TUSCANY_NS, "_tempComposite"));
-        tempComposite.setURI(SCA11_TUSCANY_NS);
+        Composite domainComposite = assemblyFactory.createComposite();
+        domainComposite.setName(new QName(Base.SCA11_NS, ""));
+        domainComposite.setURI(Base.SCA11_NS);
 
         for (Contribution contribution : contributions) {
             for (Composite composite : contribution.getDeployables()) {
                 // Include the node composite in the top-level composite
-                tempComposite.getIncludes().add(composite);
+                domainComposite.getIncludes().add(composite);
                 logger.log(Level.INFO, "Adding composite: " + composite.getName() + " to domain " + getDomainURI());
             }
         }
@@ -559,13 +560,13 @@ public class NodeFactoryImpl extends NodeFactory {
         }
 
         // build the top level composite
-        ((DeployedCompositeBuilder)compositeBuilder).build(tempComposite, systemDefinitions, bindingMap, monitor);
+        ((DeployedCompositeBuilder)compositeBuilder).build(domainComposite, systemDefinitions, bindingMap, monitor);
         analyzeProblems();
 
-        endpointReferenceBuilder.buildtimeBuild(tempComposite);
+        endpointReferenceBuilder.buildtimeBuild(domainComposite);
         analyzeProblems();
 
-        return tempComposite;
+        return domainComposite;
     }
 
     private List<Contribution> loadContributions(NodeConfiguration configuration) throws MalformedURLException,

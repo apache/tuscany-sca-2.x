@@ -115,11 +115,11 @@ public class CompositeBuilderImpl implements CompositeBuilder, DeployedComposite
 
         try {
 
+            // Clone nested and included  composites
+            composite = compositeCloneBuilder.build(composite, definitions, monitor);
+
             // Collect and fuse includes
             composite = compositeIncludeBuilder.build(composite, definitions, monitor);
-
-            // Expand nested composites
-            composite = compositeCloneBuilder.build(composite, definitions, monitor);
 
             // Configure all components
             composite = componentConfigurationBuilder.build(composite, definitions, monitor);
