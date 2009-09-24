@@ -41,7 +41,8 @@ public class CompositeCloneBuilderImpl implements CompositeBuilder {
     public CompositeCloneBuilderImpl() {
     }
 
-    public Composite build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
+    public Composite build(Composite composite, Definitions definitions, Monitor monitor)
+        throws CompositeBuilderException {
         expandCompositeImplementations(composite);
         return composite;
     }

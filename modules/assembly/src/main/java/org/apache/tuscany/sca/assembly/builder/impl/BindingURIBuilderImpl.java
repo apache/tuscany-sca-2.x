@@ -49,7 +49,7 @@ import org.apache.tuscany.sca.monitor.MonitorFactory;
  * @version $Rev$ $Date$
  */
 public class BindingURIBuilderImpl {
-    
+
     private Monitor monitor;
 
     public BindingURIBuilderImpl(ExtensionPointRegistry registry) {
@@ -57,7 +57,6 @@ public class BindingURIBuilderImpl {
         MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
         monitor = monitorFactory.createMonitor();
     }
-
 
     /**
      * Called by CompositeBindingURIBuilderImpl
@@ -110,14 +109,14 @@ public class BindingURIBuilderImpl {
                                       Definitions definitions,
                                       Map<QName, List<String>> defaultBindings,
                                       Monitor monitor) throws CompositeBuilderException {
-        
+
         String parentComponentURI = uri;
-        
+
         monitor.pushContext("Composite: " + composite.getName().toString());
-        try {        
+        try {
             // Process nested composites recursively
             for (Component component : composite.getComponents()) {
-    
+
                 // Initialize component URI
                 String componentURI;
                 if (parentComponentURI == null) {
@@ -126,37 +125,37 @@ public class BindingURIBuilderImpl {
                     componentURI = URI.create(parentComponentURI + '/').resolve(component.getName()).toString();
                 }
                 component.setURI(componentURI);
-    
+
                 Implementation implementation = component.getImplementation();
                 if (implementation instanceof Composite) {
                     // Process nested composite
-                    configureBindingURIs((Composite)implementation, componentURI, definitions, defaultBindings, monitor);  
+                    configureBindingURIs((Composite)implementation, componentURI, definitions, defaultBindings, monitor);
                 }
             }
-    
+
             // Initialize composite service binding URIs
             List<Service> compositeServices = composite.getServices();
             for (Service service : compositeServices) {
-    
+
                 constructBindingNames(service, monitor);
-                
+
                 // Initialize binding names and URIs
                 for (Binding binding : service.getBindings()) {
                     constructBindingURI(parentComponentURI, composite, service, binding, defaultBindings, monitor);
                 }
             }
-    
+
             // Initialize component service binding URIs
             for (Component component : composite.getComponents()) {
-                
+
                 monitor.pushContext("Component: " + component.getName());
-                
+
                 try {
-        
+
                     for (ComponentService service : component.getServices()) {
-        
+
                         constructBindingNames(service, monitor);
-                        
+
                         // Initialize binding names and URIs
                         for (Binding binding : service.getBindings()) {
                             constructBindingURI(component, service, binding, defaultBindings, monitor);
@@ -168,7 +167,7 @@ public class BindingURIBuilderImpl {
             }
         } finally {
             monitor.popContext();
-        }         
+        }
     }
 
     /**
@@ -233,24 +232,20 @@ public class BindingURIBuilderImpl {
             Binding existed = bindingMap.put(binding.getName(), binding);
             // Check that multiple bindings do not have the same name
             if (existed != null && existed != binding) {
-                if (contract instanceof Service){
-                    Monitor.error(monitor, 
-                                  this, 
-                                  "assembly-validation-messages", 
-                                  "MultipleBindingsForService", 
-                                  contract.getName(),
-                                  binding.getName());
+                if (contract instanceof Service) {
+                    Monitor.error(monitor, this, "assembly-validation-messages", "MultipleBindingsForService", contract
+                        .getName(), binding.getName());
                 } else {
-                    Monitor.error(monitor, 
-                                  this, 
-                                  "assembly-validation-messages", 
-                                  "MultipleBindingsForReference", 
+                    Monitor.error(monitor,
+                                  this,
+                                  "assembly-validation-messages",
+                                  "MultipleBindingsForReference",
                                   contract.getName(),
                                   binding.getName());
                 }
             }
         }
-        
+
         if (contract.getCallback() != null) {
             bindings = contract.getCallback().getBindings();
             bindingMap.clear();
@@ -263,18 +258,18 @@ public class BindingURIBuilderImpl {
                 Binding existed = bindingMap.put(binding.getName(), binding);
                 // Check that multiple bindings do not have the same name
                 if (existed != null && existed != binding) {
-                    if (contract instanceof Service){
-                        Monitor.error(monitor, 
-                                      this, 
-                                      "assembly-validation-messages", 
-                                      "MultipleBindingsForServiceCallback", 
+                    if (contract instanceof Service) {
+                        Monitor.error(monitor,
+                                      this,
+                                      "assembly-validation-messages",
+                                      "MultipleBindingsForServiceCallback",
                                       contract.getName(),
                                       binding.getName());
                     } else {
-                        Monitor.error(monitor, 
-                                      this, 
-                                      "assembly-validation-messages", 
-                                      "MultipleBindingsForReferenceCallback", 
+                        Monitor.error(monitor,
+                                      this,
+                                      "assembly-validation-messages",
+                                      "MultipleBindingsForReferenceCallback",
                                       contract.getName(),
                                       binding.getName());
                     }
@@ -341,9 +336,9 @@ public class BindingURIBuilderImpl {
                                      Monitor monitor) throws CompositeBuilderException {
 
         try {
-            
+
             boolean includeBindingName = !service.getName().equals(binding.getName());
-            
+
             // calculate the service binding URI
             URI bindingURI;
             if (binding.getURI() != null) {
@@ -402,13 +397,13 @@ public class BindingURIBuilderImpl {
                                                includeBindingName,
                                                bindingName));
         } catch (URISyntaxException ex) {
-            Monitor.error(monitor, 
-                          this, 
-                          "assembly-validation-messages", 
-                          "URLSyntaxException", 
+            Monitor.error(monitor,
+                          this,
+                          "assembly-validation-messages",
+                          "URLSyntaxException",
                           componentURIString,
                           service.getName(),
-                          binding.getName());            
+                          binding.getName());
         }
     }
 

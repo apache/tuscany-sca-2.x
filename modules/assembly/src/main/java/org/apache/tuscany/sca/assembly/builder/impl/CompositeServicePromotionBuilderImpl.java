@@ -46,7 +46,8 @@ public class CompositeServicePromotionBuilderImpl implements CompositeBuilder {
         return "org.apache.tuscany.sca.assembly.builder.CompositeServicePromotionBuilder";
     }
 
-    public Composite build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
+    public Composite build(Composite composite, Definitions definitions, Monitor monitor)
+        throws CompositeBuilderException {
 
         // Process top level composite services
         for (Service service : composite.getServices()) {

@@ -53,7 +53,8 @@ public class CompositeServiceConfigurationBuilderImpl implements CompositeBuilde
         return "org.apache.tuscany.sca.assembly.builder.CompositeServiceConfigurationBuilder";
     }
 
-    public Composite build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
+    public Composite build(Composite composite, Definitions definitions, Monitor monitor)
+        throws CompositeBuilderException {
 
         // Process nested composites recursively
         configureNestedCompositeServices(composite);
@@ -80,8 +81,7 @@ public class CompositeServiceConfigurationBuilderImpl implements CompositeBuilde
                 }
                 if (compositeService.getInterfaceContract() != null && compositeService.getInterfaceContract()
                     .getCallbackInterface() != null) {
-                    if (!isCallbackOverridingBindings(compositeService) 
-                        && isCallbackOverridingBindings(promotedService)) {
+                    if (!isCallbackOverridingBindings(compositeService) && isCallbackOverridingBindings(promotedService)) {
                         if (compositeService.getCallback() != null) {
                             compositeService.getCallback().getBindings().clear();
                         } else {
@@ -138,8 +138,7 @@ public class CompositeServiceConfigurationBuilderImpl implements CompositeBuilde
                             }
                             if (componentService.getInterfaceContract() != null && componentService
                                 .getInterfaceContract().getCallbackInterface() != null) {
-                                if (!isCallbackOverridingBindings(compositeService) 
-                                    && isCallbackOverridingBindings(promotedService)) {
+                                if (!isCallbackOverridingBindings(compositeService) && isCallbackOverridingBindings(promotedService)) {
                                     if (compositeService.getCallback() != null) {
                                         compositeService.getCallback().getBindings().clear();
                                     } else {
@@ -169,7 +168,7 @@ public class CompositeServiceConfigurationBuilderImpl implements CompositeBuilde
             }
         }
     }
-    
+
     private boolean isCallbackOverridingBindings(Contract contract) {
         Callback callback = contract.getCallback();
         return callback != null && !callback.getBindings().isEmpty();

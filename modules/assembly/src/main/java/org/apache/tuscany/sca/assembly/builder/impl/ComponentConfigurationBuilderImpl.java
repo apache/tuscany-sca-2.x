@@ -58,7 +58,8 @@ public class ComponentConfigurationBuilderImpl extends BaseBuilderImpl implement
         return "org.apache.tuscany.sca.assembly.builder.ComponentConfigurationBuilder";
     }
 
-    public Composite build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
+    public Composite build(Composite composite, Definitions definitions, Monitor monitor)
+        throws CompositeBuilderException {
         configureComponents(composite, definitions, monitor);
         return composite;
     }
@@ -83,15 +84,15 @@ public class ComponentConfigurationBuilderImpl extends BaseBuilderImpl implement
      * @param problems
      */
     private void configureComponents(Composite composite, String uri, Definitions definitions, Monitor monitor) {
-        String parentURI = uri;	
-        
+        String parentURI = uri;
+
         monitor.pushContext("Composite: " + composite.getName().toString());
-        
+
         try {
-    
+
             // Process nested composites recursively
             for (Component component : composite.getComponents()) {
-    
+
                 // Initialize component URI
                 String componentURI;
                 if (parentURI == null) {
@@ -100,49 +101,49 @@ public class ComponentConfigurationBuilderImpl extends BaseBuilderImpl implement
                     componentURI = URI.create(parentURI + '/').resolve(component.getName()).toString();
                 }
                 component.setURI(componentURI);
-    
+
                 Implementation implementation = component.getImplementation();
                 if (implementation instanceof Composite) {
-	                // Process nested composite
-	                configureComponents((Composite)implementation, componentURI, definitions, monitor);
+                    // Process nested composite
+                    configureComponents((Composite)implementation, componentURI, definitions, monitor);
                 }
             } // end for
-    
+
             // Initialize service bindings
             List<Service> compositeServices = composite.getServices();
             for (Service service : compositeServices) {
                 // Set default binding names 
-    
+
                 // Create default SCA binding
                 attachSCABinding(service, definitions);
             }
-    
+
             // Initialize reference bindings
             for (Reference reference : composite.getReferences()) {
                 // Create default SCA binding
                 attachSCABinding(reference, definitions);
             }
-    
+
             // Initialize all component services and references
             Map<String, Component> components = new HashMap<String, Component>();
             for (Component component : composite.getComponents()) {
-                
-                
+
                 monitor.pushContext("Component: " + component.getName());
-                
+
                 try {
-    	            // Index all components and check for duplicates
-    	            if (components.containsKey(component.getName())) {
-    	                error(monitor, "DuplicateComponentName", component, composite.getName().toString(), component.getName());
-    	            } else {
-    	                components.put(component.getName(), component);
-    	            }
-    	
-    	            // Propagate the autowire flag from the composite to components
-    	            if (component.getAutowire() == null) {
-    	                component.setAutowire(composite.getAutowire());
-    	            }
-    	
+                    // Index all components and check for duplicates
+                    if (components.containsKey(component.getName())) {
+                        error(monitor, "DuplicateComponentName", component, composite.getName().toString(), component
+                            .getName());
+                    } else {
+                        components.put(component.getName(), component);
+                    }
+
+                    // Propagate the autowire flag from the composite to components
+                    if (component.getAutowire() == null) {
+                        component.setAutowire(composite.getAutowire());
+                    }
+
                     Implementation impl = component.getImplementation();
                     if (impl != null) {
                         ImplementationBuilder builder = builders.getImplementationBuilder(impl.getClass());
@@ -150,58 +151,62 @@ public class ComponentConfigurationBuilderImpl extends BaseBuilderImpl implement
                             builder.build(component, impl, monitor);
                         }
                     }
-    	
-    	            // Index implementation properties, services and references
-    	            Map<String, Service> services = new HashMap<String, Service>();
-    	            Map<String, Reference> references = new HashMap<String, Reference>();
-    	            Map<String, Property> properties = new HashMap<String, Property>();
-    	            indexImplementationPropertiesServicesAndReferences(component, services, references, properties, monitor);
-    	
-    	            // Index component services, references and properties
-    	            // Also check for duplicates
-    	            Map<String, ComponentService> componentServices = new HashMap<String, ComponentService>();
-    	            Map<String, ComponentReference> componentReferences = new HashMap<String, ComponentReference>();
-    	            Map<String, ComponentProperty> componentProperties = new HashMap<String, ComponentProperty>();
-    	            indexComponentPropertiesServicesAndReferences(component,
-    	                                                          componentServices,
-    	                                                          componentReferences,
-    	                                                          componentProperties,
-    	                                                          monitor);
-    	
-    	            // Reconcile component services/references/properties and
-    	            // implementation services/references and create component
-    	            // services/references/properties for the services/references
-    	            // declared by the implementation
-    	            reconcileServices(component, services, componentServices, monitor);
-    	            reconcileReferences(component, references, componentReferences, monitor);
-    	            reconcileProperties(component, properties, componentProperties, monitor);
-    	
-    	            // Configure or create callback services for component's references
-    	            // with callbacks
-    	            configureCallbackServices(component, componentServices);
-    	
-    	            // Configure or create callback references for component's services
-    	            // with callbacks
-    	            configureCallbackReferences(component, componentReferences);
-    	
-    	            // Initialize service bindings
-    	            for (ComponentService componentService : component.getServices()) {
-    	
-    	                // Create default SCA binding
-    	                attachSCABinding(componentService, definitions);
-    	            }
-    	
-    	            // Initialize reference bindings
-    	            for (ComponentReference componentReference : component.getReferences()) {
-    	
-    	                // Create default SCA binding
-    	                attachSCABinding(componentReference, definitions);
-    	            }
+
+                    // Index implementation properties, services and references
+                    Map<String, Service> services = new HashMap<String, Service>();
+                    Map<String, Reference> references = new HashMap<String, Reference>();
+                    Map<String, Property> properties = new HashMap<String, Property>();
+                    indexImplementationPropertiesServicesAndReferences(component,
+                                                                       services,
+                                                                       references,
+                                                                       properties,
+                                                                       monitor);
+
+                    // Index component services, references and properties
+                    // Also check for duplicates
+                    Map<String, ComponentService> componentServices = new HashMap<String, ComponentService>();
+                    Map<String, ComponentReference> componentReferences = new HashMap<String, ComponentReference>();
+                    Map<String, ComponentProperty> componentProperties = new HashMap<String, ComponentProperty>();
+                    indexComponentPropertiesServicesAndReferences(component,
+                                                                  componentServices,
+                                                                  componentReferences,
+                                                                  componentProperties,
+                                                                  monitor);
+
+                    // Reconcile component services/references/properties and
+                    // implementation services/references and create component
+                    // services/references/properties for the services/references
+                    // declared by the implementation
+                    reconcileServices(component, services, componentServices, monitor);
+                    reconcileReferences(component, references, componentReferences, monitor);
+                    reconcileProperties(component, properties, componentProperties, monitor);
+
+                    // Configure or create callback services for component's references
+                    // with callbacks
+                    configureCallbackServices(component, componentServices);
+
+                    // Configure or create callback references for component's services
+                    // with callbacks
+                    configureCallbackReferences(component, componentReferences);
+
+                    // Initialize service bindings
+                    for (ComponentService componentService : component.getServices()) {
+
+                        // Create default SCA binding
+                        attachSCABinding(componentService, definitions);
+                    }
+
+                    // Initialize reference bindings
+                    for (ComponentReference componentReference : component.getReferences()) {
+
+                        // Create default SCA binding
+                        attachSCABinding(componentReference, definitions);
+                    }
                 } finally {
                     monitor.popContext();
                 }
             }
-        
+
         } finally {
             monitor.popContext();
         } // end try        

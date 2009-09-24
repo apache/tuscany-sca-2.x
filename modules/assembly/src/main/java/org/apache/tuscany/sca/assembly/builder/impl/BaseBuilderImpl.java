@@ -83,7 +83,7 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
         this.transformerFactory = transformerFactory;
         this.interfaceContractMapper = interfaceContractMapper;
     }
-    
+
     /**
      * Construct a builder from the extension point registry
      * @param registry
@@ -458,7 +458,7 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
             }
         }
     }
-    
+
     /**
      * Look to see if any value elements have been set into the property
      * A bit involved as the value is stored as a DOM Document
@@ -466,21 +466,21 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
      * @param property the property to be tested
      * @return true is values are present
      */
-    private boolean isPropertyValueSet(Property property){
+    private boolean isPropertyValueSet(Property property) {
         Document value = (Document)property.getValue();
-        
-        if (value == null){
+
+        if (value == null) {
             return false;
         }
-        
-        if (value.getFirstChild() == null){
+
+        if (value.getFirstChild() == null) {
             return false;
         }
-        
-        if (value.getFirstChild().getChildNodes().getLength() == 0){
+
+        if (value.getFirstChild().getChildNodes().getLength() == 0) {
             return false;
         }
-        
+
         return true;
     }
 
@@ -535,10 +535,10 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
                     if (!ReferenceConfigurationUtil.isValidMultiplicityOverride(reference.getMultiplicity(),
                                                                                 componentReference.getMultiplicity())) {
                         error(monitor,
-                                "ReferenceIncompatibleMultiplicity",
-                                component,
-                                component.getName(),
-                                componentReference.getName());
+                              "ReferenceIncompatibleMultiplicity",
+                              component,
+                              component.getName(),
+                              componentReference.getName());
                     }
                 } else {
                     componentReference.setMultiplicity(reference.getMultiplicity());
@@ -549,8 +549,8 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
                 if (componentReference.getInterfaceContract() != null) {
                     if (interfaceContract != null && !componentReference.getInterfaceContract().equals(reference
                         .getInterfaceContract())) {
-                        if (!interfaceContractMapper.isCompatible(interfaceContract,
-                                                                  componentReference.getInterfaceContract())) {
+                        if (!interfaceContractMapper.isCompatible(interfaceContract, componentReference
+                            .getInterfaceContract())) {
                             error(monitor,
                                   "ReferenceIncompatibleComponentInterface",
                                   component,
@@ -682,7 +682,7 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
             return;
         }
         contract.setOverridingBindings(false);
-        
+
         // Only add binding.sca for services
         // FIXME: The latest OASIS spec only adds binding.sca to services
         /*

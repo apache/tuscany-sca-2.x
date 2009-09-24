@@ -64,7 +64,6 @@ public class CompositeBuilderImpl implements CompositeBuilder, DeployedComposite
     private CompositeBuilder componentServiceEndpointBuilder;
 
     private BuilderExtensionPoint builders;
-    
 
     /**
      * Constructs a new composite builder.
@@ -72,23 +71,21 @@ public class CompositeBuilderImpl implements CompositeBuilder, DeployedComposite
      *  @param registry
      */
     public CompositeBuilderImpl(ExtensionPointRegistry registry) {
-        
+
         FactoryExtensionPoint factories = registry.getExtensionPoint(FactoryExtensionPoint.class);
         this.builders = registry.getExtensionPoint(BuilderExtensionPoint.class);
         AssemblyFactory assemblyFactory = factories.getFactory(AssemblyFactory.class);
- 
+
         compositeIncludeBuilder = new CompositeIncludeBuilderImpl();
         componentReferenceWireBuilder = new ComponentReferenceWireBuilderImpl(registry);
         //componentReferencePromotionWireBuilder = new ComponentReferencePromotionWireBuilderImpl(assemblyFactory, endpointFactory);
         componentReferencePromotionBuilder = new ComponentReferencePromotionBuilderImpl(registry);
         //compositeReferenceWireBuilder = new CompositeReferenceWireBuilderImpl(assemblyFactory, endpointFactory);
         compositeCloneBuilder = new CompositeCloneBuilderImpl();
-        componentConfigurationBuilder =
-            new ComponentConfigurationBuilderImpl(registry);
+        componentConfigurationBuilder = new ComponentConfigurationBuilderImpl(registry);
         compositeServiceConfigurationBuilder = new CompositeServiceConfigurationBuilderImpl(registry);
         compositeReferenceConfigurationBuilder = new CompositeReferenceConfigurationBuilderImpl(registry);
-        compositeBindingURIBuilder =
-            new CompositeBindingURIBuilderImpl(registry);
+        compositeBindingURIBuilder = new CompositeBindingURIBuilderImpl(registry);
         //componentServicePromotionBuilder = new ComponentServicePromotionBuilderImpl(assemblyFactory);
         //compositeServicePromotionBuilder = new CompositeServicePromotionBuilderImpl(assemblyFactory);
         compositePromotionBuilder = new CompositePromotionBuilderImpl(registry);
@@ -96,8 +93,7 @@ public class CompositeBuilderImpl implements CompositeBuilder, DeployedComposite
         componentServiceBindingBuilder = new ComponentServiceBindingBuilderImpl(registry);
         componentReferenceBindingBuilder = new ComponentReferenceBindingBuilderImpl(registry);
 
-        componentReferenceEndpointReferenceBuilder =
-            new ComponentReferenceEndpointReferenceBuilderImpl(registry);
+        componentReferenceEndpointReferenceBuilder = new ComponentReferenceEndpointReferenceBuilderImpl(registry);
         componentServiceEndpointBuilder = new ComponentServiceEndpointBuilderImpl(assemblyFactory);
         //endpointReferenceBuilder = new EndpointReference2BuilderImpl(assemblyFactory, interfaceContractMapper);
     }
@@ -106,18 +102,19 @@ public class CompositeBuilderImpl implements CompositeBuilder, DeployedComposite
         return "org.apache.tuscany.sca.assembly.builder.CompositeBuilder";
     }
 
-    public Composite build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
+    public Composite build(Composite composite, Definitions definitions, Monitor monitor)
+        throws CompositeBuilderException {
         build(composite, definitions, null, monitor);
         return composite;
     }
 
     public Composite build(Composite composite,
-                      Definitions definitions,
-                      Map<QName, List<String>> bindingBaseURIs,
-                      Monitor monitor) throws CompositeBuilderException {
+                           Definitions definitions,
+                           Map<QName, List<String>> bindingBaseURIs,
+                           Monitor monitor) throws CompositeBuilderException {
 
         try {
-    		
+
             // Collect and fuse includes
             composite = compositeIncludeBuilder.build(composite, definitions, monitor);
 
@@ -140,7 +137,11 @@ public class CompositeBuilderImpl implements CompositeBuilder, DeployedComposite
 
             // Configure service binding URIs and names. Creates an SCA defined URI based
             // on the scheme base URI, the component name and the binding name
-            composite = ((DeployedCompositeBuilder)compositeBindingURIBuilder).build(composite, definitions, bindingBaseURIs, monitor);
+            composite =
+                ((DeployedCompositeBuilder)compositeBindingURIBuilder).build(composite,
+                                                                             definitions,
+                                                                             bindingBaseURIs,
+                                                                             monitor);
 
             // Create $promoted$ component services on bottom level components
             // to represent promoted services
@@ -185,11 +186,11 @@ public class CompositeBuilderImpl implements CompositeBuilder, DeployedComposite
 
             // Compute the policies across the model hierarchy
             composite = compositePolicyBuilder.build(composite, definitions, monitor);
-            
+
             return composite;
         } catch (Exception e) {
             throw new CompositeBuilderException("Exception while building composite " + composite.getName(), e);
-    	} // end try
+        } // end try
 
     } // end method build
 

@@ -53,7 +53,8 @@ public class CompositeReferenceWireBuilderImpl implements CompositeBuilder {
      * 
      * @param composite
      */
-    public Composite build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
+    public Composite build(Composite composite, Definitions definitions, Monitor monitor)
+        throws CompositeBuilderException {
 
         // Process composite references declared in this composite
         for (Reference reference : composite.getReferences()) {

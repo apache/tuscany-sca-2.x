@@ -66,7 +66,8 @@ public class ComponentServiceEndpointBuilderImpl implements CompositeBuilder {
      * @param definitions
      * @param monitor - a Monitor for logging errors
      */
-    public Composite build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
+    public Composite build(Composite composite, Definitions definitions, Monitor monitor)
+        throws CompositeBuilderException {
 
         // process component services
         if (!useNew) {

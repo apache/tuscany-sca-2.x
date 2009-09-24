@@ -55,7 +55,8 @@ public class CompositePromotionBuilderImpl extends BaseBuilderImpl implements Co
         return "org.apache.tuscany.sca.assembly.builder.CompositePromotionBuilder";
     }
 
-    public Composite build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
+    public Composite build(Composite composite, Definitions definitions, Monitor monitor)
+        throws CompositeBuilderException {
         connectCompositeReferencesAndServices(composite, monitor);
         return composite;
     }
@@ -68,9 +69,9 @@ public class CompositePromotionBuilderImpl extends BaseBuilderImpl implements Co
      * @param problems
      */
     protected void connectCompositeReferencesAndServices(Composite composite, Monitor monitor) {
-        
+
         monitor.pushContext("Composite: " + composite.getName().toString());
-        
+
         try {
             // Wire nested composites recursively
             for (Component component : composite.getComponents()) {
@@ -79,13 +80,13 @@ public class CompositePromotionBuilderImpl extends BaseBuilderImpl implements Co
                     connectCompositeReferencesAndServices((Composite)implementation, monitor);
                 }
             }
-    
+
             // Index components, services and references
             Map<String, Component> components = new HashMap<String, Component>();
             Map<String, ComponentService> componentServices = new HashMap<String, ComponentService>();
             Map<String, ComponentReference> componentReferences = new HashMap<String, ComponentReference>();
             indexComponentsServicesAndReferences(composite, components, componentServices, componentReferences);
-    
+
             // Connect composite services and references to the component
             // services and references that they promote
             connectCompositeServices(composite, components, componentServices, monitor);

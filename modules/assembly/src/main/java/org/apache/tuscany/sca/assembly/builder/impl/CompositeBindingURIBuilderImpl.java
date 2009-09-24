@@ -50,7 +50,8 @@ import org.apache.tuscany.sca.monitor.Monitor;
  *
  * @version $Rev$ $Date$
  */
-public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements CompositeBuilder, DeployedCompositeBuilder {
+public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements CompositeBuilder,
+    DeployedCompositeBuilder {
 
     public CompositeBindingURIBuilderImpl(ExtensionPointRegistry registry) {
         super(registry);
@@ -60,15 +61,16 @@ public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements C
         return "org.apache.tuscany.sca.assembly.builder.CompositeBindingURIBuilder";
     }
 
-    public Composite build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
+    public Composite build(Composite composite, Definitions definitions, Monitor monitor)
+        throws CompositeBuilderException {
         configureBindingURIsAndNames(composite, definitions, monitor);
         return composite;
     }
 
     public Composite build(Composite composite,
-                      Definitions definitions,
-                      Map<QName, List<String>> bindingBaseURIs,
-                      Monitor monitor) throws CompositeBuilderException {
+                           Definitions definitions,
+                           Map<QName, List<String>> bindingBaseURIs,
+                           Monitor monitor) throws CompositeBuilderException {
         configureBindingURIs(composite, null, definitions, bindingBaseURIs, monitor);
         configureBindingNames(composite, monitor);
         return composite;
@@ -125,14 +127,14 @@ public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements C
                                       Definitions definitions,
                                       Map<QName, List<String>> defaultBindings,
                                       Monitor monitor) throws CompositeBuilderException {
-        
+
         String parentComponentURI = uri;
-        
+
         monitor.pushContext("Composite: " + composite.getName().toString());
-        try {        
+        try {
             // Process nested composites recursively
             for (Component component : composite.getComponents()) {
-    
+
                 // Initialize component URI
                 String componentURI;
                 if (parentComponentURI == null) {
@@ -141,42 +143,46 @@ public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements C
                     componentURI = URI.create(parentComponentURI + '/').resolve(component.getName()).toString();
                 }
                 component.setURI(componentURI);
-    
+
                 Implementation implementation = component.getImplementation();
                 if (implementation instanceof Composite) {
                     // Process nested composite
-                    configureBindingURIs((Composite)implementation, componentURI, definitions, defaultBindings, monitor);  
+                    configureBindingURIs((Composite)implementation, componentURI, definitions, defaultBindings, monitor);
                 }
             }
-    
+
             // Initialize composite service binding URIs
             List<Service> compositeServices = composite.getServices();
             for (Service service : compositeServices) {
                 // Set default binding names
-    
+
                 // Create default SCA binding
                 attachSCABinding(service, definitions);
-    
+
                 constructBindingNames(service, monitor);
-                
+
                 // Initialize binding names and URIs
                 for (Binding binding : service.getBindings()) {
                     constructBindingURI(parentComponentURI, composite, service, binding, defaultBindings, monitor);
                 }
             }
-    
+
             // Initialize component service binding URIs
             for (Component component : composite.getComponents()) {
-                
+
                 monitor.pushContext("Component: " + component.getName());
-                
+
                 try {
                     // Index properties, services and references
                     Map<String, Service> services = new HashMap<String, Service>();
                     Map<String, Reference> references = new HashMap<String, Reference>();
                     Map<String, Property> properties = new HashMap<String, Property>();
-                    indexImplementationPropertiesServicesAndReferences(component, services, references, properties, monitor);
-        
+                    indexImplementationPropertiesServicesAndReferences(component,
+                                                                       services,
+                                                                       references,
+                                                                       properties,
+                                                                       monitor);
+
                     // Index component services, references and properties
                     // Also check for duplicates
                     Map<String, ComponentService> componentServices = new HashMap<String, ComponentService>();
@@ -187,7 +193,7 @@ public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements C
                                                                   componentReferences,
                                                                   componentProperties,
                                                                   monitor);
-        
+
                     // Reconcile component services/references/properties and
                     // implementation services/references and create component
                     // services/references/properties for the services/references
@@ -195,14 +201,14 @@ public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements C
                     reconcileServices(component, services, componentServices, monitor);
                     reconcileReferences(component, references, componentReferences, monitor);
                     reconcileProperties(component, properties, componentProperties, monitor);
-        
+
                     for (ComponentService service : component.getServices()) {
-        
+
                         // Create default SCA binding
                         attachSCABinding(service, definitions);
-        
+
                         constructBindingNames(service, monitor);
-                        
+
                         // Initialize binding names and URIs
                         for (Binding binding : service.getBindings()) {
                             constructBindingURI(component, service, binding, defaultBindings, monitor);
@@ -214,7 +220,7 @@ public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements C
             }
         } finally {
             monitor.popContext();
-        }         
+        }
     }
 
     /**
@@ -283,7 +289,7 @@ public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements C
                     : "MultipleBindingsForReference", binding, contract.getName(), binding.getName());
             }
         }
-        
+
         if (contract.getCallback() != null) {
             bindings = contract.getCallback().getBindings();
             bindingMap.clear();
@@ -361,9 +367,9 @@ public class CompositeBindingURIBuilderImpl extends BaseBuilderImpl implements C
                                      Monitor monitor) throws CompositeBuilderException {
 
         try {
-            
+
             boolean includeBindingName = !service.getName().equals(binding.getName());
-            
+
             // calculate the service binding URI
             URI bindingURI;
             if (binding.getURI() != null) {

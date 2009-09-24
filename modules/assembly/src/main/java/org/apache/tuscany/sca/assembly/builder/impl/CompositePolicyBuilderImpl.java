@@ -56,12 +56,13 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
     public CompositePolicyBuilderImpl(ExtensionPointRegistry registry) {
         super(registry);
     }
-    
+
     public String getID() {
         return "org.apache.tuscany.sca.assembly.builder.CompositePolicyBuilder";
     }
 
-    public Composite build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
+    public Composite build(Composite composite, Definitions definitions, Monitor monitor)
+        throws CompositeBuilderException {
         computePolicies(composite, definitions, monitor);
         return composite;
     }
@@ -181,14 +182,14 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
             return name2.equals(name1);
         }
     }
-    
+
     private Intent resolve(Definitions definitions, Intent proxy) {
-        for(Intent i: definitions.getIntents()) {
-            if(i.equals(proxy)) {
+        for (Intent i : definitions.getIntents()) {
+            if (i.equals(proxy)) {
                 return i;
             }
-            for(Intent qi: i.getQualifiedIntents()) {
-                if(qi.equals(proxy)) {
+            for (Intent qi : i.getQualifiedIntents()) {
+                if (qi.equals(proxy)) {
                     return qi;
                 }
             }
@@ -279,7 +280,7 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
                 }
             }
         }
-        
+
         subject.getPolicySets().clear();
         subject.getPolicySets().addAll(policySets);
 

@@ -45,7 +45,6 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeReference;
 import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.Contract;
-import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.apache.tuscany.sca.assembly.Property;
@@ -75,7 +74,7 @@ import org.xml.sax.InputSource;
  */
 public class ComponentBuilderImpl {
     private static final Logger logger = Logger.getLogger(ComponentBuilderImpl.class.getName());
-    
+
     protected static final String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200903";
     protected static final String BINDING_SCA = "binding.sca";
     protected static final QName BINDING_SCA_QNAME = new QName(SCA11_NS, BINDING_SCA);
@@ -89,7 +88,6 @@ public class ComponentBuilderImpl {
     private InterfaceContractMapper interfaceContractMapper;
     private BuilderExtensionPoint builders;
 
-        
     public ComponentBuilderImpl(ExtensionPointRegistry registry) {
         UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
         MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
@@ -100,13 +98,13 @@ public class ComponentBuilderImpl {
         scaBindingFactory = modelFactories.getFactory(SCABindingFactory.class);
         documentBuilderFactory = modelFactories.getFactory(DocumentBuilderFactory.class);
         transformerFactory = modelFactories.getFactory(TransformerFactory.class);
-        
+
         interfaceContractMapper = utilities.getUtility(InterfaceContractMapper.class);
-        
+
         builders = registry.getExtensionPoint(BuilderExtensionPoint.class);
-    }    
-    
-    public void setComponentTypeBuilder(CompositeComponentTypeBuilderImpl componentTypeBuilder){
+    }
+
+    public void setComponentTypeBuilder(CompositeComponentTypeBuilderImpl componentTypeBuilder) {
         this.componentTypeBuilder = componentTypeBuilder;
     }
 
@@ -116,13 +114,12 @@ public class ComponentBuilderImpl {
      * @Param parentComposite the composite that contains the component being configured. Required for property processing
      * @param component the component to be configured
      */
-    public void configureComponentFromComponentType(Composite parentComposite, 
-                                                    Component component){
-        
+    public void configureComponentFromComponentType(Composite parentComposite, Component component) {
+
         // do any work we need to do before we calculate the component type
         // for this component. Anything that needs to be pushed down the promotion
         // hierarchy must be done before we calculate the component type
-        
+
         // first carry out any implementation specific builder processing
         Implementation impl = component.getImplementation();
         if (impl != null) {
@@ -131,79 +128,74 @@ public class ComponentBuilderImpl {
                 builder.build(component, impl, monitor);
             }
         }
-        
+
         // Properties on the composite component type are not affected by the components 
         // that the composite contains. Instead the child components might source  
         // composite level property values. Hence we have to calculate whether the component 
         // type property value should be overridden by this component's property value 
         // before we go ahead and calculate the component type
         configureProperties(parentComposite, component);
-        
+
         // create the component type for this component 
         // taking any nested composites into account
         createComponentType(component);
-               
+
         // configure services based on the calculated component type
         configureServices(component);
-        
+
         // configure services based on the calculated component type
         configureReferences(component);
     }
-       
+
     /**
      * Use the component type builder to build the component type for 
      * this component. 
      * 
      * @param component
      */
-    private void createComponentType(Component component){
+    private void createComponentType(Component component) {
         Implementation implementation = component.getImplementation();
         if (implementation instanceof Composite) {
             componentTypeBuilder.createComponentType((Composite)implementation);
         }
     }
-    
+
     /**
      * Configure this component's services based on the services in its 
      * component type and the configuration from the composite file
      * 
      * @param component
      */
-    private void configureServices(Component component){
-        
+    private void configureServices(Component component) {
+
         // If the component type has services that are not described in this
         // component then create services for this component
         addServicesFromComponentType(component);
-        
+
         // Connect this component's services to the 
         // services from its component type
         connectServicesToComponentType(component);
-        
+
         // look at each component service in turn and calculate its 
         // configuration based on OASIS rules
         for (ComponentService componentService : component.getServices()) {
             Service componentTypeService = componentService.getService();
-            
-            if (componentTypeService == null){
+
+            if (componentTypeService == null) {
                 // raise error?
                 // can be null in some of the assembly-xml unit tests
                 continue;
             }
-            
+
             // interface contracts
-            calculateInterfaceContract(componentService,
-                                       componentTypeService);
-            
+            calculateInterfaceContract(componentService, componentTypeService);
+
             // bindings
-            calculateBindings(componentService,
-                              componentTypeService);
-            
-            
+            calculateBindings(componentService, componentTypeService);
+
             // add callback reference model objects
-            createCallbackReference(component,
-                                    componentService);
-            
-            
+            createCallbackReference(component, componentService);
+
             // intents - done later in CompositePolicyBuilder - discuss with RF
             //calculateIntents(componentService,
             //                 componentTypeService);
@@ -214,55 +206,49 @@ public class ComponentBuilderImpl {
 
         }
     }
-    
+
     /**
      * Configure this component's references based on the references in its 
      * component type and the configuration from the composite file
      * 
      * @param component
      */
-    private void configureReferences(Component component){
-        
+    private void configureReferences(Component component) {
+
         // If the component type has references that are not described in this
         // component then create references for this component
         addReferencesFromComponentType(component);
-        
+
         // Connect this component's references to the 
         // references from its component type
         connectReferencesToComponentType(component);
-        
+
         // look at each component reference in turn and calculate its 
         // configuration based on OASIS rules
         for (ComponentReference componentReference : component.getReferences()) {
             Reference componentTypeReference = componentReference.getReference();
-            
-            if (componentTypeReference == null){
+
+            if (componentTypeReference == null) {
                 // raise error?
                 // can be null in some of the assembly-xml unit tests
                 continue;
             }
-            
+
             // reference multiplicity
-            reconcileReferenceMultiplicity(component,
-                                           componentReference,
-                                           componentTypeReference);
+            reconcileReferenceMultiplicity(component, componentReference, componentTypeReference);
 
             // interface contracts
-            calculateInterfaceContract(componentReference,
-                                       componentTypeReference);
-            
+            calculateInterfaceContract(componentReference, componentTypeReference);
+
             // bindings
             // We don't have to do anything with reference bindings. You've either 
             // specified one or you haven't
             //calculateBindings(componentService,
             //                  componentTypeService);
-            
-            
+
             // add callback service model objects
-            createCallbackService(component,
-                                  componentReference);
-            
-            
+            createCallbackService(component, componentReference);
+
             // intents - done later in CompositePolicyBuilder - discuss with RF
             //calculateIntents(componentService,
             //                 componentTypeService);
@@ -270,7 +256,7 @@ public class ComponentBuilderImpl {
             // policy sets - done later in CompositePolicyBuilder - discuss with RF
             // calculatePolicySets(componentService,
             //                     componentTypeService);
-            
+
             // Propagate autowire setting from the component down the structural 
             // hierarchy
             if (componentReference.getAutowire() == null) {
@@ -283,49 +269,44 @@ public class ComponentBuilderImpl {
             }
 
         }
-    } 
-    
+    }
+
     /**
      * Configure this component's properties based on the properties in its 
      * component type and the configuration from the composite file
      * 
      * @param component
      */
-    private void configureProperties(Composite parentComposite, Component component){
+    private void configureProperties(Composite parentComposite, Component component) {
         // If the component type has properties that are not described in this
         // component then create properties for this component
         addPropertiesFromComponentType(component);
-        
+
         // Connect this component's properties to the 
         // properties from its component type
         connectReferencesToComponentType(component);
-        
+
         // Reconcile component properties and their component type properties
         for (ComponentProperty componentProperty : component.getProperties()) {
-            reconcileComponentPropertyWithComponentType(component,
-                                                        componentProperty);
-            
+            reconcileComponentPropertyWithComponentType(component, componentProperty);
+
             // configure the property value based on the @source attribute
             // At the moment this is done in the parent composite component
             // type calculation a
-            processPropertySourceAttribute(parentComposite, 
-                                           component, 
-                                           componentProperty);
-            
+            processPropertySourceAttribute(parentComposite, component, componentProperty);
+
             // configure the property value based on the @file attribute
-            processPropertyFileAttribute(component, 
-                                         componentProperty);
+            processPropertyFileAttribute(component, componentProperty);
         }
     }
-    
-    private void addServicesFromComponentType(Component component){
-        
+
+    private void addServicesFromComponentType(Component component) {
+
         // Create a component service for each service
         if (component.getImplementation() != null) {
             for (Service service : component.getImplementation().getServices()) {
-                ComponentService componentService = 
-                    (ComponentService)component.getService(service.getName());
-                
+                ComponentService componentService = (ComponentService)component.getService(service.getName());
+
                 // if the component doesn't have a service with the same name as the 
                 // component type service then create one
                 if (componentService == null) {
@@ -337,16 +318,15 @@ public class ComponentBuilderImpl {
                 }
             }
         }
-    }  
-    
-    private void addReferencesFromComponentType(Component component){
-        
+    }
+
+    private void addReferencesFromComponentType(Component component) {
+
         // Create a component reference for each reference
         if (component.getImplementation() != null) {
             for (Reference reference : component.getImplementation().getReferences()) {
-                ComponentReference componentReference = 
-                    (ComponentReference)component.getReference(reference.getName());
-                
+                ComponentReference componentReference = (ComponentReference)component.getReference(reference.getName());
+
                 // if the component doesn't have a reference with the same name as the 
                 // component type reference then create one
                 if (componentReference == null) {
@@ -358,16 +338,15 @@ public class ComponentBuilderImpl {
                 }
             }
         }
-    }   
-    
-    private void addPropertiesFromComponentType(Component component){
-        
+    }
+
+    private void addPropertiesFromComponentType(Component component) {
+
         // Create component property for each property
         if (component.getImplementation() != null) {
             for (Property property : component.getImplementation().getProperties()) {
-                ComponentProperty componentProperty = 
-                    (ComponentProperty)component.getProperty(property.getName());
-                
+                ComponentProperty componentProperty = (ComponentProperty)component.getProperty(property.getName());
+
                 // if the component doesn't have a property with the same name as
                 // the component type property then create one
                 if (componentProperty == null) {
@@ -384,113 +363,111 @@ public class ComponentBuilderImpl {
             }
         }
     }
-    
-    private void connectServicesToComponentType(Component component){
-        
+
+    private void connectServicesToComponentType(Component component) {
+
         // Connect each component service to the corresponding component type service
         for (ComponentService componentService : component.getServices()) {
             if (componentService.getService() != null || componentService.isForCallback()) {
                 continue;
             }
-            
-            if (component.getImplementation() == null){
+
+            if (component.getImplementation() == null) {
                 // is null in some of our basic unit tests
                 continue;
             }
-            
+
             Service service = component.getImplementation().getService(componentService.getName());
 
             if (service != null) {
                 componentService.setService(service);
             } else {
-                Monitor.error(monitor, 
-                              this, 
-                              "assembly-validation-messages", 
-                              "ServiceNotFoundForComponentService", 
+                Monitor.error(monitor,
+                              this,
+                              "assembly-validation-messages",
+                              "ServiceNotFoundForComponentService",
                               component.getName(),
                               componentService.getName());
             }
         }
     }
-    
-    private void connectReferencesToComponentType(Component component){
-        
+
+    private void connectReferencesToComponentType(Component component) {
+
         // Connect each component reference to the corresponding component type reference
         for (ComponentReference componentReference : component.getReferences()) {
             if (componentReference.getReference() != null || componentReference.isForCallback()) {
                 continue;
             }
-            
-            if (component.getImplementation() == null){
+
+            if (component.getImplementation() == null) {
                 // is null in some of our basic unit tests
                 continue;
-            }            
-            
+            }
+
             Reference reference = component.getImplementation().getReference(componentReference.getName());
 
             if (reference != null) {
                 componentReference.setReference(reference);
             } else {
-                Monitor.error(monitor, 
-                              this, 
-                              "assembly-validation-messages", 
-                              "ReferenceNotFoundForComponentReference", 
+                Monitor.error(monitor,
+                              this,
+                              "assembly-validation-messages",
+                              "ReferenceNotFoundForComponentReference",
                               component.getName(),
                               componentReference.getName());
             }
-        }        
-    }  
-    
-    private void connectPropertiesToComponentType(Component component){
+        }
+    }
+
+    private void connectPropertiesToComponentType(Component component) {
         // Connect each component property to the corresponding component type property
         for (ComponentProperty componentProperty : component.getProperties()) {
             Property property = component.getImplementation().getProperty(componentProperty.getName());
             if (property != null) {
                 componentProperty.setProperty(property);
             } else {
-                Monitor.error(monitor, 
-                              this, 
-                              "assembly-validation-messages", 
-                              "PropertyNotFound", 
+                Monitor.error(monitor,
+                              this,
+                              "assembly-validation-messages",
+                              "PropertyNotFound",
                               component.getName(),
                               componentProperty.getName());
             }
         }
     }
-    
+
     private void reconcileReferenceMultiplicity(Component component,
                                                 Reference componentReference,
-                                                Reference componentTypeReference){
+                                                Reference componentTypeReference) {
         if (componentReference.getMultiplicity() != null) {
-            if (!isValidMultiplicityOverride(componentTypeReference.getMultiplicity(),
-                                             componentReference.getMultiplicity())) {
-                Monitor.error(monitor, 
-                        this, 
-                        "assembly-validation-messages", 
-                        "ReferenceIncompatibleMultiplicity", 
-                        component.getName(),
-                        componentReference.getName());
+            if (!isValidMultiplicityOverride(componentTypeReference.getMultiplicity(), componentReference
+                .getMultiplicity())) {
+                Monitor.error(monitor,
+                              this,
+                              "assembly-validation-messages",
+                              "ReferenceIncompatibleMultiplicity",
+                              component.getName(),
+                              componentReference.getName());
             }
         } else {
             componentReference.setMultiplicity(componentTypeReference.getMultiplicity());
         }
     }
-    
-    private void reconcileComponentPropertyWithComponentType(Component component,
-                                                             ComponentProperty componentProperty){
+
+    private void reconcileComponentPropertyWithComponentType(Component component, ComponentProperty componentProperty) {
         Property componentTypeProperty = componentProperty.getProperty();
         if (componentTypeProperty != null) {
 
             // Check that a component property does not override the
             // mustSupply attribute
-            if (!componentTypeProperty.isMustSupply() && 
-                componentProperty.isMustSupply()) {
-                Monitor.error(monitor, 
-                              this, 
-                              "assembly-validation-messages", 
-                              "PropertyMustSupplyIncompatible", 
+            if (!componentTypeProperty.isMustSupply() && componentProperty.isMustSupply()) {
+                Monitor.error(monitor,
+                              this,
+                              "assembly-validation-messages",
+                              "PropertyMustSupplyIncompatible",
                               component.getName(),
-                              componentProperty.getName());                    
+                              componentProperty.getName());
             }
 
             // Default to the mustSupply attribute specified on the property
@@ -508,26 +485,16 @@ public class ComponentBuilderImpl {
             }
 
             // Check that a value is supplied
-            if (!isPropertyValueSet(componentProperty) && 
-                componentTypeProperty.isMustSupply()) {
-                Monitor.error(monitor, 
-                              this, 
-                              "assembly-validation-messages", 
-                              "PropertyMustSupplyNull", 
-                              component.getName(),
-                              componentProperty.getName()); 
+            if (!isPropertyValueSet(componentProperty) && componentTypeProperty.isMustSupply()) {
+                Monitor.error(monitor, this, "assembly-validation-messages", "PropertyMustSupplyNull", component
+                    .getName(), componentProperty.getName());
             }
 
             // Check that a component property does not override the
             // many attribute
-            if (!componentTypeProperty.isMany() && 
-                componentProperty.isMany()) {
-                Monitor.error(monitor, 
-                              this, 
-                              "assembly-validation-messages", 
-                              "PropertyOverrideManyAttribute", 
-                              component.getName(),
-                              componentProperty.getName());                     
+            if (!componentTypeProperty.isMany() && componentProperty.isMany()) {
+                Monitor.error(monitor, this, "assembly-validation-messages", "PropertyOverrideManyAttribute", component
+                    .getName(), componentProperty.getName());
             }
 
             // Default to the many attribute defined on the property
@@ -542,18 +509,13 @@ public class ComponentBuilderImpl {
             }
 
             // Check that a type or element are specified
-            if (componentProperty.getXSDElement() == null && 
-                componentProperty.getXSDType() == null) {
-                Monitor.error(monitor, 
-                              this, 
-                              "assembly-validation-messages", 
-                              "NoTypeForComponentProperty", 
-                              component.getName(),
-                              componentProperty.getName()); 
+            if (componentProperty.getXSDElement() == null && componentProperty.getXSDType() == null) {
+                Monitor.error(monitor, this, "assembly-validation-messages", "NoTypeForComponentProperty", component
+                    .getName(), componentProperty.getName());
             }
         }
     }
-    
+
     /**
      * If the property has a source attribute use this to retrieve the value from a 
      * property in the parent composite
@@ -563,11 +525,11 @@ public class ComponentBuilderImpl {
      * @param component
      * @param componentProperty
      */
-    private void processPropertySourceAttribute(Composite parentComposite, 
+    private void processPropertySourceAttribute(Composite parentComposite,
                                                 Component component,
-                                                ComponentProperty componentProperty){
+                                                ComponentProperty componentProperty) {
         String source = componentProperty.getSource();
-    
+
         if (source != null) {
             // $<name>/...
             int index = source.indexOf('/');
@@ -580,48 +542,49 @@ public class ComponentBuilderImpl {
                 String name = source.substring(1, index);
                 Property compositeProp = parentComposite.getProperty(name);
                 if (compositeProp == null) {
-                    Monitor.error(monitor, 
-                            this, 
-                            "assembly-validation-messages", 
-                            "PropertySourceNotFound", 
-                            source,
-                            componentProperty.getName(),
-                            component.getName());                     
+                    Monitor.error(monitor,
+                                  this,
+                                  "assembly-validation-messages",
+                                  "PropertySourceNotFound",
+                                  source,
+                                  componentProperty.getName(),
+                                  component.getName());
                 }
-    
+
                 Document compositePropDefValues = (Document)compositeProp.getValue();
-    
+
                 try {
                     // FIXME: How to deal with namespaces?
-                    Document node = evaluateXPath(compositePropDefValues, 
-                                                  componentProperty.getSourceXPathExpression(), 
-                                                  documentBuilderFactory);
-        
+                    Document node =
+                        evaluateXPath(compositePropDefValues,
+                                      componentProperty.getSourceXPathExpression(),
+                                      documentBuilderFactory);
+
                     if (node != null) {
                         componentProperty.setValue(node);
                     }
-                } catch (Exception ex){
-                    Monitor.error(monitor, 
-                            this, 
-                            "assembly-validation-messages", 
-                            "PropertySourceXpathInvalid", 
-                            source,
-                            componentProperty.getName(),
-                            component.getName(),
-                            ex.toString());  
+                } catch (Exception ex) {
+                    Monitor.error(monitor,
+                                  this,
+                                  "assembly-validation-messages",
+                                  "PropertySourceXpathInvalid",
+                                  source,
+                                  componentProperty.getName(),
+                                  component.getName(),
+                                  ex.toString());
                 }
             } else {
-                Monitor.error(monitor, 
-                        this, 
-                        "assembly-validation-messages", 
-                        "PropertySourceValueInvalid", 
-                        source,
-                        componentProperty.getName(),
-                        component.getName());                  
+                Monitor.error(monitor,
+                              this,
+                              "assembly-validation-messages",
+                              "PropertySourceValueInvalid",
+                              source,
+                              componentProperty.getName(),
+                              component.getName());
             }
         }
-    }   
-    
+    }
+
     /**
      * If the property has a file attribute use this to retrieve the value from a 
      * local file
@@ -630,11 +593,10 @@ public class ComponentBuilderImpl {
      * @param parentCompoent the composite that contains the component
      * @param component
      */
-    private void processPropertyFileAttribute(Component component,
-                                              ComponentProperty componentProperty){   
+    private void processPropertyFileAttribute(Component component, ComponentProperty componentProperty) {
         String file = componentProperty.getFile();
         if (file != null) {
-            try{
+            try {
                 URI uri = URI.create(file);
                 // URI resolution for relative URIs is done when the composite is resolved.
                 URL url = uri.toURL();
@@ -643,14 +605,14 @@ public class ComponentBuilderImpl {
                 InputStream is = null;
                 try {
                     is = connection.getInputStream();
-        
+
                     Source streamSource = new SAXSource(new InputSource(is));
                     DOMResult result = new DOMResult();
                     javax.xml.transform.Transformer transformer = transformerFactory.newTransformer();
                     transformer.transform(streamSource, result);
-        
+
                     Document document = (Document)result.getNode();
-        
+
                     // TUSCANY-2377, Add a fake value element so it's consistent with
                     // the DOM tree loaded from inside SCDL
                     Element root = document.createElementNS(null, "value");
@@ -662,20 +624,20 @@ public class ComponentBuilderImpl {
                         is.close();
                     }
                 }
-            } catch (Exception ex){
-                Monitor.error(monitor, 
-                        this, 
-                        "assembly-validation-messages", 
-                        "PropertyFileValueInvalid", 
-                        file,
-                        componentProperty.getName(),
-                        component.getName(),
-                        ex.toString()); 
+            } catch (Exception ex) {
+                Monitor.error(monitor,
+                              this,
+                              "assembly-validation-messages",
+                              "PropertyFileValueInvalid",
+                              file,
+                              componentProperty.getName(),
+                              component.getName(),
+                              ex.toString());
             }
         }
-        
+
     }
-    
+
     /**
      * Evaluate an XPath expression against a Property value, returning the result as a Property value
      * @param node - the document root element of a Property value
@@ -687,8 +649,8 @@ public class ComponentBuilderImpl {
      */
     private Document evaluateXPath(Document node,
                                    XPathExpression expression,
-                                   DocumentBuilderFactory documentBuilderFactory) 
-        throws XPathExpressionException, ParserConfigurationException {
+                                   DocumentBuilderFactory documentBuilderFactory) throws XPathExpressionException,
+        ParserConfigurationException {
 
         // The document element is a <sca:property/> element
         Node property = node.getDocumentElement();
@@ -719,8 +681,8 @@ public class ComponentBuilderImpl {
 
             return document;
         }
-    }    
-      
+    }
+
     /**
      * Create a callback reference for a component service
      * 
@@ -728,12 +690,12 @@ public class ComponentBuilderImpl {
      * @param service
      */
     private void createCallbackReference(Component component, ComponentService service) {
-        
+
         // if the service has a callback interface create a reference
         // to represent the callback 
         if (service.getInterfaceContract() != null && // can be null in unit tests
-            service.getInterfaceContract().getCallbackInterface() != null) {
-            
+        service.getInterfaceContract().getCallbackInterface() != null) {
+
             ComponentReference callbackReference = assemblyFactory.createComponentReference();
             callbackReference.setForCallback(true);
             callbackReference.setName(service.getName());
@@ -747,14 +709,15 @@ public class ComponentBuilderImpl {
             }
             Service implService = service.getService();
             if (implService != null) {
-    
+
                 // If the implementation service is a CompositeService, ensure that the Reference that is 
                 // created is a CompositeReference, otherwise create a Reference
                 Reference implReference;
                 if (implService instanceof CompositeService) {
                     CompositeReference implCompReference = assemblyFactory.createCompositeReference();
                     // Set the promoted component from the promoted component of the composite service
-                    implCompReference.getPromotedComponents().add(((CompositeService)implService).getPromotedComponent());
+                    implCompReference.getPromotedComponents().add(((CompositeService)implService)
+                        .getPromotedComponent());
                     // Set the promoted service
                     ComponentReference promotedReference = assemblyFactory.createComponentReference();
                     String promotedRefName =
@@ -768,11 +731,11 @@ public class ComponentBuilderImpl {
                     Implementation implementation = component.getImplementation();
                     if (implementation != null && implementation instanceof Composite) {
                         ((Composite)implementation).getReferences().add(implCompReference);
-                    } 
+                    }
                 } else {
                     implReference = assemblyFactory.createReference();
-                } 
-    
+                }
+
                 implReference.setName(implService.getName());
                 try {
                     InterfaceContract implContract = (InterfaceContract)implService.getInterfaceContract().clone();
@@ -785,38 +748,37 @@ public class ComponentBuilderImpl {
                 callbackReference.setReference(implReference);
             }
             component.getReferences().add(callbackReference);
-            
+
             // Set the bindings of the callback reference 
             if (callbackReference.getBindings().isEmpty()) {
                 // If there are specific callback bindings set in the SCDL service
                 // callback element then use them
-                if (service.getCallback() != null && 
-                    service.getCallback().getBindings().size() > 0 ) {
+                if (service.getCallback() != null && service.getCallback().getBindings().size() > 0) {
                     callbackReference.getBindings().addAll(service.getCallback().getBindings());
                 } else {
                     // otherwise create a default binding which 
                     // will cause the EPR for this reference to be 
                     // marked as EndpointReference.NOT_CONFIGURED
                     createSCABinding(callbackReference, null);
-                    
+
                     // TODO - should really use the forward binding here but 
                     //        awaiting OASIS decision on what's going to 
                     //        happen with callbacks
                 }
-            } 
-            service.setCallbackReference(callbackReference); 
+            }
+            service.setCallbackReference(callbackReference);
         }
-    }  
-    
+    }
+
     /**
      * Create a callback service for a component reference
      * 
      * @param component
      * @param service
      */
-    private void createCallbackService(Component component, ComponentReference reference) {  
+    private void createCallbackService(Component component, ComponentReference reference) {
         if (reference.getInterfaceContract() != null && // can be null in unit tests
-            reference.getInterfaceContract().getCallbackInterface() != null) {
+        reference.getInterfaceContract().getCallbackInterface() != null) {
             ComponentService componentService = assemblyFactory.createComponentService();
             componentService.setForCallback(true);
             componentService.setName(reference.getName());
@@ -839,12 +801,13 @@ public class ComponentBuilderImpl {
                     // one component reference - and there must be a separate composite callback service for each of these component
                     // references
                     // Set the promoted component from the promoted component of the composite reference
-                    implCompService
-                        .setPromotedComponent(((CompositeReference)implReference).getPromotedComponents().get(0));
+                    implCompService.setPromotedComponent(((CompositeReference)implReference).getPromotedComponents()
+                        .get(0));
                     implCompService.setForCallback(true);
                     // Set the promoted service
                     ComponentService promotedService = assemblyFactory.createComponentService();
-                    promotedService.setName(((CompositeReference)implReference).getPromotedReferences().get(0).getName());
+                    promotedService.setName(((CompositeReference)implReference).getPromotedReferences().get(0)
+                        .getName());
                     promotedService.setUnresolved(true);
                     promotedService.setForCallback(true);
                     implCompService.setPromotedService(promotedService);
@@ -871,26 +834,25 @@ public class ComponentBuilderImpl {
                 componentService.setService(implService);
             }
             component.getServices().add(componentService);
-            
+
             // configure bindings for the callback service
             if (componentService.getBindings().isEmpty()) {
-                if (reference.getCallback() != null && 
-                    reference.getCallback().getBindings().size() > 0) {
+                if (reference.getCallback() != null && reference.getCallback().getBindings().size() > 0) {
                     // set bindings of the callback service based on the information provided in 
                     // SCDL reference callback element
                     componentService.getBindings().addAll(reference.getCallback().getBindings());
-                } else if (reference.getBindings().size() > 0){
+                } else if (reference.getBindings().size() > 0) {
                     // use any bindings explicitly declared on the forward reference
-                    for (Binding binding : reference.getBindings()){
+                    for (Binding binding : reference.getBindings()) {
                         try {
                             Binding clonedBinding = (Binding)binding.clone();
                             // binding uri will be calculated during runtime build
                             clonedBinding.setURI(null);
                             componentService.getBindings().add(clonedBinding);
-                        } catch (CloneNotSupportedException ex){
-                            
+                        } catch (CloneNotSupportedException ex) {
+
                         }
-                    }                    
+                    }
                 } else {
                     // TODO - should use the binding resolved from the service but
                     //        waiting for OASIS to decide what to do about callbacks
@@ -898,11 +860,11 @@ public class ComponentBuilderImpl {
                     createSCABinding(componentService, null);
                 }
             }
-            
+
             reference.setCallbackService(componentService);
         }
     }
-    
+
     /**
      * Create a default SCA binding in the case that no binding
      * is specified by the user
@@ -924,8 +886,8 @@ public class ComponentBuilderImpl {
 
         contract.getBindings().add(scaBinding);
         contract.setOverridingBindings(false);
-    }   
-    
+    }
+
     /**
      * Look to see if any value elements have been set into the property
      * A bit involved as the value is stored as a DOM Document
@@ -933,30 +895,30 @@ public class ComponentBuilderImpl {
      * @param property the property to be tested
      * @return true is values are present
      */
-    private boolean isPropertyValueSet(Property property){
+    private boolean isPropertyValueSet(Property property) {
         Document value = (Document)property.getValue();
-        
-        if (value == null){
+
+        if (value == null) {
             return false;
         }
-        
-        if (value.getFirstChild() == null){
+
+        if (value.getFirstChild() == null) {
             return false;
         }
-        
-        if (value.getFirstChild().getChildNodes().getLength() == 0){
+
+        if (value.getFirstChild().getChildNodes().getLength() == 0) {
             return false;
         }
-        
+
         return true;
-    }   
-    
-    private boolean isValidMultiplicityOverride(Multiplicity definedMul, 
-                                                Multiplicity overridenMul) {
+    }
+
+    private boolean isValidMultiplicityOverride(Multiplicity definedMul, Multiplicity overridenMul) {
         if (definedMul != overridenMul) {
             switch (definedMul) {
                 case ZERO_N:
-                    return overridenMul == Multiplicity.ZERO_ONE || overridenMul == Multiplicity.ONE_ONE || overridenMul == Multiplicity.ONE_N;
+                    return overridenMul == Multiplicity.ZERO_ONE || overridenMul == Multiplicity.ONE_ONE
+                        || overridenMul == Multiplicity.ONE_N;
                 case ONE_N:
                     return overridenMul == Multiplicity.ONE_ONE;
                 case ZERO_ONE:
@@ -967,42 +929,40 @@ public class ComponentBuilderImpl {
         } else {
             return true;
         }
-    }    
-    
+    }
+
     /**
      * The following methods implement rules that the OASIS specification defined explicitly
      * to control how configuration from a component type is inherited by a component
      */
-    
+
     /**
      * OASIS RULE: Interface contract from higher in the implementation hierarchy takes precedence
      * 
      * @param topContract the top contract 
      * @param bottomContract the bottom contract
-     */   
-    private void calculateInterfaceContract(Contract topContract,
-                                            Contract bottomContract) {
-        
+     */
+    private void calculateInterfaceContract(Contract topContract, Contract bottomContract) {
+
         // Use the interface contract from the bottom level contract if
         // none is specified on the top level contract
         InterfaceContract topInterfaceContract = topContract.getInterfaceContract();
         InterfaceContract bottomInterfaceContract = bottomContract.getInterfaceContract();
-        
+
         if (topInterfaceContract == null) {
             topContract.setInterfaceContract(bottomInterfaceContract);
         } else if (bottomInterfaceContract != null) {
             // Check that the top and bottom interface contracts are compatible
-            boolean isCompatible = interfaceContractMapper.isCompatible(topInterfaceContract,
-                                                                        bottomInterfaceContract);
+            boolean isCompatible = interfaceContractMapper.isCompatible(topInterfaceContract, bottomInterfaceContract);
             if (!isCompatible) {
                 if (topContract instanceof Reference) {
-                    Monitor.error(monitor, 
+                    Monitor.error(monitor,
                                   this,
                                   "assembly-validation-messages",
                                   "ReferenceInterfaceNotSubSet",
                                   topContract.getName());
                 } else {
-                    Monitor.error(monitor, 
+                    Monitor.error(monitor,
                                   this,
                                   "assembly-validation-messages",
                                   "ServiceInterfaceNotSubSet",
@@ -1010,21 +970,20 @@ public class ComponentBuilderImpl {
                 }
             }
         }
-    }    
-    
+    }
+
     /**
      * OASIS RULE: Bindings from higher in the hierarchy take precedence
      * 
      * @param componentService the top service 
      * @param componentTypeService the bottom service
-     */    
-    private void calculateBindings(Service componentService,
-                                   Service componentTypeService){
+     */
+    private void calculateBindings(Service componentService, Service componentTypeService) {
         // forward bindings
         if (componentService.getBindings().isEmpty()) {
             componentService.getBindings().addAll(componentTypeService.getBindings());
         }
-        
+
         if (componentService.getBindings().isEmpty()) {
             createSCABinding(componentService, null);
         }
@@ -1039,7 +998,7 @@ public class ComponentBuilderImpl {
         } else if (componentService.getCallback().getBindings().isEmpty() && componentTypeService.getCallback() != null) {
             componentService.getCallback().getBindings().addAll(componentTypeService.getCallback().getBindings());
         }
-        
-    }    
+
+    }
 
 }

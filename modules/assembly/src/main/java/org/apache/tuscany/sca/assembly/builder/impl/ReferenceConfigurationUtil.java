@@ -66,7 +66,8 @@ abstract class ReferenceConfigurationUtil {
         if (definedMul != overridenMul) {
             switch (definedMul) {
                 case ZERO_N:
-                    return overridenMul == Multiplicity.ZERO_ONE || overridenMul == Multiplicity.ONE_ONE || overridenMul == Multiplicity.ONE_N;
+                    return overridenMul == Multiplicity.ZERO_ONE || overridenMul == Multiplicity.ONE_ONE
+                        || overridenMul == Multiplicity.ONE_N;
                 case ONE_N:
                     return overridenMul == Multiplicity.ONE_ONE;
                 case ZERO_ONE:
@@ -82,10 +83,10 @@ abstract class ReferenceConfigurationUtil {
     static boolean validateMultiplicityAndTargets(Multiplicity multiplicity, List<EndpointReference> endpointReferences) {
 
         // In some tests multiplicity is not set
-        if (multiplicity == null){
+        if (multiplicity == null) {
             return true;
         }
-        
+
         // Count targets
         int count = endpointReferences.size();
 

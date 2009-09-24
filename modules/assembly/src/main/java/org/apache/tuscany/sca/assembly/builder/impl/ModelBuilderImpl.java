@@ -38,7 +38,7 @@ public class ModelBuilderImpl implements CompositeBuilder, DeployedCompositeBuil
     private CompositeBuilder compositeCloneBuilder;
     private CompositeComponentTypeBuilderImpl compositeComponentTypeBuilder;
     private ComponentBuilderImpl componentBuilder;
-    
+
     private BindingURIBuilderImpl bindingURIBuilder;
     private ComponentServiceBindingBuilderImpl componentServiceBindingBuilder;
     private ComponentReferenceBindingBuilderImpl componentReferenceBindingBuilder;
@@ -46,23 +46,23 @@ public class ModelBuilderImpl implements CompositeBuilder, DeployedCompositeBuil
     private EndpointReferenceBuilderImpl endpointReferenceBuilder;
     private ComponentReferencePromotionBuilderImpl componentReferencePromotionBuilder;
     private CompositePolicyBuilderImpl compositePolicyBuilder;
- 
+
     /**
      * Constructs a new composite builder.
      * 
      * @param registry the extension point registry
      */
     public ModelBuilderImpl(ExtensionPointRegistry registry) {
-        
+
         compositeIncludeBuilder = new CompositeIncludeBuilderImpl();
         compositeCloneBuilder = new CompositeCloneBuilderImpl();
-        
+
         compositeComponentTypeBuilder = new CompositeComponentTypeBuilderImpl(registry);
         componentBuilder = new ComponentBuilderImpl(registry);
-        
+
         compositeComponentTypeBuilder.setComponentBuilder(componentBuilder);
         componentBuilder.setComponentTypeBuilder(compositeComponentTypeBuilder);
-        
+
         bindingURIBuilder = new BindingURIBuilderImpl(registry);
         componentServiceBindingBuilder = new ComponentServiceBindingBuilderImpl(registry);
         componentReferenceBindingBuilder = new ComponentReferenceBindingBuilderImpl(registry);
@@ -77,33 +77,34 @@ public class ModelBuilderImpl implements CompositeBuilder, DeployedCompositeBuil
         return "org.apache.tuscany.sca.assembly.builder.CompositeBuilder";
     }
 
-    public Composite build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
+    public Composite build(Composite composite, Definitions definitions, Monitor monitor)
+        throws CompositeBuilderException {
         return build(composite, definitions, null, monitor);
     }
 
     public Composite build(Composite composite,
-                      Definitions definitions,
-                      Map<QName, List<String>> bindingBaseURIs,
-                      Monitor monitor) throws CompositeBuilderException {
+                           Definitions definitions,
+                           Map<QName, List<String>> bindingBaseURIs,
+                           Monitor monitor) throws CompositeBuilderException {
 
         try {
             // Collect and fuse includes. Copy all of the components
             // out of the included composite into the including composite
             // and discards the included composite
             composite = compositeIncludeBuilder.build(composite, definitions, monitor);
-            
+
             // need to apply policy external attachment
-            
+
             // Expand nested composites. Clone any composite model that
             // is acting as a component implementation and connects the cloned
             // model to the component implementation in question
             composite = compositeCloneBuilder.build(composite, definitions, monitor);
-            
+
             // Process the implementation hierarchy by calculating the component type 
             // for the top level implementation (composite). This has the effect of
             // recursively calculating component types and configuring the 
             // components that depend on them
-            compositeComponentTypeBuilder.createComponentType(composite);  
+            compositeComponentTypeBuilder.createComponentType(composite);
 
             // create the runtime model by updating the static model we have just 
             // created. This involves things like creating
@@ -124,9 +125,9 @@ public class ModelBuilderImpl implements CompositeBuilder, DeployedCompositeBuil
             endpointReferenceBuilder.build(composite, definitions, monitor);
             composite = componentReferencePromotionBuilder.build(composite, definitions, monitor); // move into the static build?
             composite = compositePolicyBuilder.build(composite, definitions, monitor); // the rest of the policy processing?
-            return composite;         
+            return composite;
         } catch (Exception e) {
             throw new CompositeBuilderException("Exception while building model " + composite.getName(), e);
-        } 
+        }
     }
-} 
+}

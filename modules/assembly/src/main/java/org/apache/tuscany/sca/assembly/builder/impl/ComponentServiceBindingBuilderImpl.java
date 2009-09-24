@@ -40,7 +40,7 @@ import org.apache.tuscany.sca.monitor.Monitor;
  */
 public class ComponentServiceBindingBuilderImpl implements CompositeBuilder {
     private BuilderExtensionPoint builders;
-    
+
     public ComponentServiceBindingBuilderImpl(ExtensionPointRegistry registry) {
         this.builders = registry.getExtensionPoint(BuilderExtensionPoint.class);
     }
@@ -49,7 +49,8 @@ public class ComponentServiceBindingBuilderImpl implements CompositeBuilder {
         return "org.apache.tuscany.sca.assembly.builder.ComponentServiceBindingBuilder";
     }
 
-    public Composite build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
+    public Composite build(Composite composite, Definitions definitions, Monitor monitor)
+        throws CompositeBuilderException {
         buildServiceBindings(composite, monitor);
         return composite;
     }

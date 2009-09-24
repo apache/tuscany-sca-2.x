@@ -47,7 +47,8 @@ public class ComponentServicePromotionBuilderImpl implements CompositeBuilder {
         return "org.apache.tuscany.sca.assembly.builder.ComponentServicePromotionBuilder";
     }
 
-    public Composite build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
+    public Composite build(Composite composite, Definitions definitions, Monitor monitor)
+        throws CompositeBuilderException {
 
         // Process nested composites recursively
         configureNestedCompositeServices(composite);

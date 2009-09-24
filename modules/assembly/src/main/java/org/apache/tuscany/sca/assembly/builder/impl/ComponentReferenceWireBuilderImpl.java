@@ -50,7 +50,8 @@ public class ComponentReferenceWireBuilderImpl extends BaseBuilderImpl implement
         return "org.apache.tuscany.sca.assembly.builder.ComponentReferenceWireBuilder";
     }
 
-    public Composite build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
+    public Composite build(Composite composite, Definitions definitions, Monitor monitor)
+        throws CompositeBuilderException {
         wireComponentReferences(composite, monitor);
         return composite;
     }
@@ -64,37 +65,36 @@ public class ComponentReferenceWireBuilderImpl extends BaseBuilderImpl implement
     protected void wireComponentReferences(Composite composite, Monitor monitor) {
 
         monitor.pushContext(composite.getName().toString());
-        
+
         try {
             // Wire nested composites recursively
             for (Component component : composite.getComponents()) {
                 Implementation implementation = component.getImplementation();
                 if (implementation instanceof Composite) {
-    
-                        wireComponentReferences((Composite)implementation, monitor);
-                           
+
+                    wireComponentReferences((Composite)implementation, monitor);
+
                 }
             }
-    
+
             // Index components, services and references
             Map<String, Component> components = new HashMap<String, Component>();
             Map<String, ComponentService> componentServices = new HashMap<String, ComponentService>();
             Map<String, ComponentReference> componentReferences = new HashMap<String, ComponentReference>();
             indexComponentsServicesAndReferences(composite, components, componentServices, componentReferences);
-    
+
             // Connect component references as described in wires
             connectWires(composite, componentServices, componentReferences, monitor);
-    
-    
+
             // Finally clear the original reference target lists as we now have
             // bindings to represent the targets
             //  for (ComponentReference componentReference : componentReferences.values()) {
             //      componentReference.getTargets().clear();
             //  }
-        
+
         } finally {
             monitor.popContext();
-        }         
+        }
 
     }
 
@@ -156,9 +156,9 @@ public class ComponentReferenceWireBuilderImpl extends BaseBuilderImpl implement
                     .isCompatible(resolvedReference.getInterfaceContract(), resolvedService.getInterfaceContract())) {
 
                     //resolvedReference.getTargets().add(resolvedService);
-                	if (wire.isReplace()) {
-                		resolvedReference.getTargets().clear();
-                	}
+                    if (wire.isReplace()) {
+                        resolvedReference.getTargets().clear();
+                    }
                     resolvedReference.getTargets().add(wire.getTarget());
                 } else {
                     warning(monitor, "WireIncompatibleInterface", composite, source.getName(), target.getName());

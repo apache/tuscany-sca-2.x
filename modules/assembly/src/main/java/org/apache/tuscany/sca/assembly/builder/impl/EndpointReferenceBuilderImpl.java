@@ -55,24 +55,23 @@ public class EndpointReferenceBuilderImpl {
     private AssemblyFactory assemblyFactory;
     private InterfaceContractMapper interfaceContractMapper;
 
-
     public EndpointReferenceBuilderImpl(ExtensionPointRegistry registry) {
         UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
         MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
         monitor = monitorFactory.createMonitor();
         interfaceContractMapper = utilities.getUtility(InterfaceContractMapper.class);
-          
+
         FactoryExtensionPoint modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
         assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
     }
-
 
     /**
      * Create endpoint references for all component references.
      *
      * @param composite
      */
-    public Composite build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
+    public Composite build(Composite composite, Definitions definitions, Monitor monitor)
+        throws CompositeBuilderException {
         this.monitor = monitor;
 
         // process component services
@@ -92,56 +91,61 @@ public class EndpointReferenceBuilderImpl {
 
             // Connect component references as described in wires
             connectWires(composite, componentServices, componentReferences, monitor);
-    
+
             // create endpoint references for each component's references
             for (Component component : composite.getComponents()) {
                 monitor.pushContext("Component: " + component.getName());
-                
+
                 try {
-        
+
                     // recurse for composite implementations
                     Implementation implementation = component.getImplementation();
                     if (implementation instanceof Composite) {
                         processComponentReferences((Composite)implementation);
                     }
-        
+
                     // create endpoint references to represent the component reference
                     for (ComponentReference reference : component.getReferences()) {
-                        createReferenceEndpointReferences(composite, component, reference, components, componentServices);
-        
+                        createReferenceEndpointReferences(composite,
+                                                          component,
+                                                          reference,
+                                                          components,
+                                                          componentServices);
+
                         // fix up links between endpoints and endpoint references that represent callbacks
                         for (ComponentService service : component.getServices()) {
                             if ((service.getInterfaceContract() != null) && (service.getInterfaceContract()
                                 .getCallbackInterface() != null)) {
                                 if (reference.getName().equals(service.getName())) {
                                     for (Endpoint endpoint : service.getEndpoints()) {
-                                        endpoint.getCallbackEndpointReferences().addAll(reference.getEndpointReferences());
+                                        endpoint.getCallbackEndpointReferences().addAll(reference
+                                            .getEndpointReferences());
                                     }
                                     break;
                                 } // end if
                             } // end if
                         } // end for
                     } // end for
-                    
+
                     // Validate that references are wired or promoted, according
                     // to their multiplicity   
                     validateReferenceMultiplicity(composite, component);
-                
+
                 } finally {
                     monitor.popContext();
                 }
             } // end for
-        
+
         } finally {
             monitor.popContext();
         }
 
     } // end method processCompoenntReferences
-    
+
     protected void indexComponentsServicesAndReferences(Composite composite,
-            Map<String, Component> components,
-            Map<String, ComponentService> componentServices,
-            Map<String, ComponentReference> componentReferences) {
+                                                        Map<String, Component> components,
+                                                        Map<String, ComponentService> componentServices,
+                                                        Map<String, ComponentReference> componentReferences) {
 
         for (Component component : composite.getComponents()) {
 
@@ -153,15 +157,13 @@ public class EndpointReferenceBuilderImpl {
             for (ComponentService componentService : component.getServices()) {
 
                 // Index component services by component name / service name
-                String uri = component.getName() + '/'
-                        + componentService.getName();
+                String uri = component.getName() + '/' + componentService.getName();
                 componentServices.put(uri, componentService);
 
                 // TODO - EPR - $promoted$ no longer used but it doesn't do any
                 // harm here
                 boolean promotedService = false;
-                if (componentService.getName() != null
-                        && componentService.getName().indexOf("$promoted$") > -1) {
+                if (componentService.getName() != null && componentService.getName().indexOf("$promoted$") > -1) {
                     promotedService = true;
                 }
 
@@ -186,15 +188,13 @@ public class EndpointReferenceBuilderImpl {
             }
 
             // Index references by component name / reference name
-            for (ComponentReference componentReference : component
-                    .getReferences()) {
-                String uri = component.getName() + '/'
-                        + componentReference.getName();
+            for (ComponentReference componentReference : component.getReferences()) {
+                String uri = component.getName() + '/' + componentReference.getName();
                 componentReferences.put(uri, componentReference);
             }
         }
-    } 
-    
+    }
+
     /**
      * Resolve wires and connect the sources to their targets
      * 
@@ -224,12 +224,9 @@ public class EndpointReferenceBuilderImpl {
                 if (resolvedReference != null) {
                     wire.setSource(resolvedReference);
                 } else {
-                    Monitor.warning(monitor, 
-                                    this, 
-                                    "assembly-validation-messages", 
-                                    "WireSourceNotFound", 
-                                    source.getName());                    
-                 }
+                    Monitor.warning(monitor, this, "assembly-validation-messages", "WireSourceNotFound", source
+                        .getName());
+                }
             } else {
                 resolvedReference = wire.getSource();
             }
@@ -241,11 +238,8 @@ public class EndpointReferenceBuilderImpl {
                 if (resolvedService != null) {
                     wire.setTarget(target);
                 } else {
-                    Monitor.warning(monitor, 
-                                    this, 
-                                    "assembly-validation-messages", 
-                                    "WireTargetNotFound", 
-                                    target.getName()); 
+                    Monitor.warning(monitor, this, "assembly-validation-messages", "WireTargetNotFound", target
+                        .getName());
                 }
             } else {
                 resolvedService = wire.getTarget();
@@ -266,28 +260,24 @@ public class EndpointReferenceBuilderImpl {
                     }
                     resolvedReference.getTargets().add(wire.getTarget());
                 } else {
-                    Monitor.warning(monitor, 
-                                    this, 
-                                    "assembly-validation-messages", 
-                                    "WireIncompatibleInterface", 
-                                    source.getName(),
-                                    target.getName()); 
+                    Monitor.warning(monitor, this, "assembly-validation-messages", "WireIncompatibleInterface", source
+                        .getName(), target.getName());
                 }
             }
         }
 
         // Clear the list of wires
         composite.getWires().clear();
-    }    
+    }
 
     private void createReferenceEndpointReferences(Composite composite,
                                                    Component component,
                                                    ComponentReference reference,
                                                    Map<String, Component> components,
                                                    Map<String, ComponentService> componentServices) {
-        
+
         monitor.pushContext("Reference: " + reference.getName());
-        
+
         // Get reference targets
         List<ComponentService> refTargets = getReferenceTargets(reference);
         if (reference.getAutowire() == Boolean.TRUE && reference.getTargets().isEmpty()) {
@@ -296,11 +286,11 @@ public class EndpointReferenceBuilderImpl {
             // autowired reference
             Multiplicity multiplicity = reference.getMultiplicity();
             for (Component targetComponent : composite.getComponents()) {
-                
+
                 // Tuscany specific selection of the first autowire reference
                 // when there are more than one (ASM_60025)
-                if ((multiplicity == Multiplicity.ZERO_ONE || multiplicity == Multiplicity.ONE_ONE) &&
-                    (reference.getEndpointReferences().size() != 0) ) {
+                if ((multiplicity == Multiplicity.ZERO_ONE || multiplicity == Multiplicity.ONE_ONE) && (reference
+                    .getEndpointReferences().size() != 0)) {
                     break;
                 }
 
@@ -327,10 +317,10 @@ public class EndpointReferenceBuilderImpl {
 
             if (multiplicity == Multiplicity.ONE_N || multiplicity == Multiplicity.ONE_ONE) {
                 if (reference.getEndpointReferences().size() == 0) {
-                    Monitor.error(monitor, 
-                                  this, 
-                                  "assembly-validation-messages", 
-                                  "NoComponentReferenceTarget", 
+                    Monitor.error(monitor,
+                                  this,
+                                  "assembly-validation-messages",
+                                  "NoComponentReferenceTarget",
                                   reference.getName());
                 }
             }
@@ -341,10 +331,10 @@ public class EndpointReferenceBuilderImpl {
             // Check that the component reference does not mix the use of endpoint references
             // specified via the target attribute with the presence of binding elements
             if (bindingsIdentifyTargets(reference)) {
-                Monitor.error(monitor, 
-                              this, 
-                              "assembly-validation-messages", 
-                              "ReferenceEndPointMixWithTarget", 
+                Monitor.error(monitor,
+                              this,
+                              "assembly-validation-messages",
+                              "ReferenceEndPointMixWithTarget",
                               composite.getName().toString(),
                               component.getName(),
                               reference.getName());
@@ -356,7 +346,7 @@ public class EndpointReferenceBuilderImpl {
                 String targetName = getComponentServiceName(target.getName());
                 String bindingName = getBindingName(target.getName());
                 ComponentService targetComponentService = componentServices.get(targetName);
- 
+
                 Component targetComponent = getComponentFromTargetName(components, targetName);
 
                 if (targetComponentService != null) {
@@ -364,54 +354,58 @@ public class EndpointReferenceBuilderImpl {
                     if (reference.getInterfaceContract() == null || interfaceContractMapper.isCompatible(reference
                         .getInterfaceContract(), targetComponentService.getInterfaceContract())) {
 
-                        if (bindingName != null){
+                        if (bindingName != null) {
                             // the user has selected a binding as part of the target name
                             Binding targetBinding = null;
-                             
-                            for (Binding tmp : targetComponentService.getBindings()){
-                                if (tmp.getName().equals(bindingName)){
+
+                            for (Binding tmp : targetComponentService.getBindings()) {
+                                if (tmp.getName().equals(bindingName)) {
                                     targetBinding = tmp;
                                     continue;
                                 }
                             }
-                            
-                            if (targetBinding != null){
+
+                            if (targetBinding != null) {
                                 EndpointReference endpointRef = createEndpointRef(component, reference, false);
-                                endpointRef.setTargetEndpoint(createEndpoint(targetComponent, targetComponentService, targetBinding, true));
+                                endpointRef.setTargetEndpoint(createEndpoint(targetComponent,
+                                                                             targetComponentService,
+                                                                             targetBinding,
+                                                                             true));
                                 endpointRef.setStatus(EndpointReference.WIRED_TARGET_NOT_FOUND);
                                 // relying on the registry here to resolve the real endpoint
                                 reference.getEndpointReferences().add(endpointRef);
-                                
+
                             } else {
                                 EndpointReference endpointRef = createEndpointRef(component, reference, true);
                                 endpointRef.setTargetEndpoint(createEndpoint(component, targetName));
                                 endpointRef.setRemote(true);
                                 endpointRef.setStatus(EndpointReference.WIRED_TARGET_NOT_FOUND);
                                 reference.getEndpointReferences().add(endpointRef);
-                                Monitor.warning(monitor, 
-                                                this, 
-                                                "assembly-validation-messages", 
-                                                "ComponentReferenceTargetNotFound", 
+                                Monitor.warning(monitor,
+                                                this,
+                                                "assembly-validation-messages",
+                                                "ComponentReferenceTargetNotFound",
                                                 composite.getName().toString(),
-                                                targetName);                                
+                                                targetName);
                             }
-                            
+
                         } else {
                             // the user hasn't selected a binding as part of the target name
 
                             EndpointReference endpointRef = createEndpointRef(component, reference, false);
-                            endpointRef.setTargetEndpoint(createEndpoint(targetComponent, targetComponentService, true));
+                            endpointRef
+                                .setTargetEndpoint(createEndpoint(targetComponent, targetComponentService, true));
                             endpointRef.setStatus(EndpointReference.WIRED_TARGET_FOUND_READY_FOR_MATCHING);
                             reference.getEndpointReferences().add(endpointRef);
                         }
                     } else {
-                        Monitor.error(monitor, 
-                                     this, 
-                                     "assembly-validation-messages", 
-                                     "ReferenceIncompatibleInterface", 
-                                     composite.getName().toString(),
-                                     component.getName() + "." + reference.getName(),
-                                     targetName);                      
+                        Monitor.error(monitor,
+                                      this,
+                                      "assembly-validation-messages",
+                                      "ReferenceIncompatibleInterface",
+                                      composite.getName().toString(),
+                                      component.getName() + "." + reference.getName(),
+                                      targetName);
                     }
                 } else {
                     // add an unresolved endpoint reference with an unresolved endpoint to go with it
@@ -420,12 +414,12 @@ public class EndpointReferenceBuilderImpl {
                     endpointRef.setRemote(true);
                     endpointRef.setStatus(EndpointReference.WIRED_TARGET_NOT_FOUND);
                     reference.getEndpointReferences().add(endpointRef);
-                    Monitor.warning(monitor, 
-                                    this, 
-                                    "assembly-validation-messages", 
-                                    "ComponentReferenceTargetNotFound", 
+                    Monitor.warning(monitor,
+                                    this,
+                                    "assembly-validation-messages",
+                                    "ComponentReferenceTargetNotFound",
                                     composite.getName().toString(),
-                                    targetName);                     
+                                    targetName);
                 } // end if
             } // end for
         } // end if
@@ -469,7 +463,7 @@ public class EndpointReferenceBuilderImpl {
                 if (uri.startsWith("/")) {
                     uri = uri.substring(1);
                 }
-                
+
                 String targetName = getComponentServiceName(uri);
                 String bindingName = getBindingName(uri);
 
@@ -486,51 +480,56 @@ public class EndpointReferenceBuilderImpl {
                     // a superset of the component reference interface
                     if (reference.getInterfaceContract() == null || interfaceContractMapper.isCompatible(reference
                         .getInterfaceContract(), targetComponentService.getInterfaceContract())) {
-                        if (bindingName != null){
+                        if (bindingName != null) {
                             // the user has selected a binding as part of the target name
                             Binding targetBinding = null;
-                             
-                            for (Binding tmp : targetComponentService.getBindings()){
-                                if (tmp.getName().equals(bindingName)){
+
+                            for (Binding tmp : targetComponentService.getBindings()) {
+                                if (tmp.getName().equals(bindingName)) {
                                     targetBinding = tmp;
                                     continue;
                                 }
                             }
-                            
-                            if (targetBinding != null){
+
+                            if (targetBinding != null) {
                                 EndpointReference endpointRef = createEndpointRef(component, reference, false);
-                                endpointRef.setTargetEndpoint(createEndpoint(targetComponent, targetComponentService, targetBinding, true));
+                                endpointRef.setTargetEndpoint(createEndpoint(targetComponent,
+                                                                             targetComponentService,
+                                                                             targetBinding,
+                                                                             true));
                                 endpointRef.setStatus(EndpointReference.WIRED_TARGET_NOT_FOUND);
                                 // relying on the registry here to resolve the real endpoint
                                 reference.getEndpointReferences().add(endpointRef);
-                                
+
                             } else {
                                 EndpointReference endpointRef = createEndpointRef(component, reference, true);
                                 endpointRef.setTargetEndpoint(createEndpoint(component, targetName));
                                 endpointRef.setRemote(true);
                                 endpointRef.setStatus(EndpointReference.WIRED_TARGET_NOT_FOUND);
                                 reference.getEndpointReferences().add(endpointRef);
-                                Monitor.warning(monitor, 
-                                                this, 
-                                                "assembly-validation-messages", 
-                                                "ComponentReferenceTargetNotFound", 
+                                Monitor.warning(monitor,
+                                                this,
+                                                "assembly-validation-messages",
+                                                "ComponentReferenceTargetNotFound",
                                                 composite.getName().toString(),
-                                                targetName);                                 
+                                                targetName);
                             }
-                            
+
                         } else {
                             // create endpoint reference with dummy endpoint which will be replaced when policies
                             // are matched and bindings are configured later
-                            EndpointReference endpointRef = createEndpointRef(component, reference, binding, null, false);
-                            endpointRef.setTargetEndpoint(createEndpoint(targetComponent, targetComponentService, true));
+                            EndpointReference endpointRef =
+                                createEndpointRef(component, reference, binding, null, false);
+                            endpointRef
+                                .setTargetEndpoint(createEndpoint(targetComponent, targetComponentService, true));
                             endpointRef.setStatus(EndpointReference.WIRED_TARGET_FOUND_READY_FOR_MATCHING);
                             reference.getEndpointReferences().add(endpointRef);
                         }
                     } else {
-                        Monitor.warning(monitor, 
-                                        this, 
-                                        "assembly-validation-messages", 
-                                        "ReferenceIncompatibleInterface", 
+                        Monitor.warning(monitor,
+                                        this,
+                                        "assembly-validation-messages",
+                                        "ReferenceIncompatibleInterface",
                                         composite.getName().toString(),
                                         reference.getName(),
                                         uri);
@@ -549,12 +548,12 @@ public class EndpointReferenceBuilderImpl {
                 } // end if
             }
         }
-        
+
         monitor.popContext();
-        
+
     } // end method
-    
-    private void validateReferenceMultiplicity(Composite composite, Component component){
+
+    private void validateReferenceMultiplicity(Composite composite, Component component) {
         for (ComponentReference componentReference : component.getReferences()) {
             if (!ReferenceConfigurationUtil.validateMultiplicityAndTargets(componentReference.getMultiplicity(),
                                                                            componentReference.getEndpointReferences())) {
@@ -577,24 +576,24 @@ public class EndpointReferenceBuilderImpl {
                                       composite.getName().toString(),
                                       componentReference.getName());
                     }
-                } else {             
+                } else {
                     // no error if reference is autowire and more targets
                     // than multiplicity have been found 
-                    if (componentReference.getAutowire() == Boolean.TRUE){
+                    if (componentReference.getAutowire() == Boolean.TRUE) {
                         break;
                     }
-                                   
+
                     Monitor.error(monitor,
                                   this,
                                   "assembly-validation-messages",
-                                  "TooManyReferenceTargets", 
-                                  componentReference.getName());                  
+                                  "TooManyReferenceTargets",
+                                  componentReference.getName());
                 }
             }
         }
 
     }
-    
+
     /**
      * Evaluates whether the bindings attached to a reference identify one or more target services.
      * @param reference - the reference
@@ -627,7 +626,7 @@ public class EndpointReferenceBuilderImpl {
         } // end if
         return theTargets;
     } // end method getReferenceTargets
-    
+
     /**
      * Target names can take the form 
      *   component/service/binding
@@ -638,14 +637,14 @@ public class EndpointReferenceBuilderImpl {
      */
     private String getComponentServiceName(String targetName) {
         String[] parts = targetName.split("/");
-        
-        if (parts.length > 1){
+
+        if (parts.length > 1) {
             return parts[0] + "/" + parts[1];
         } else {
             return parts[0];
         }
-    } 
-    
+    }
+
     /**
      * Target names can take the form 
      *   component/service/binding
@@ -657,13 +656,13 @@ public class EndpointReferenceBuilderImpl {
      */
     private String getBindingName(String targetName) {
         String[] parts = targetName.split("/");
-        
-        if (parts.length == 3){
+
+        if (parts.length == 3) {
             return parts[2];
         } else {
             return null;
         }
-    } 
+    }
 
     /**
      * Helper method that finds the Component given a target name
@@ -731,7 +730,7 @@ public class EndpointReferenceBuilderImpl {
         endpoint.setUnresolved(unresolved);
         return endpoint;
     } // end method createEndpoint
-    
+
     /**
      * Helper method to create an endpoint
      * @param component
@@ -815,26 +814,27 @@ public class EndpointReferenceBuilderImpl {
      * declares a single target service,  the reference is wired only to 
      * the single service identified by the <wire/> element
      */
-	private void setSingleAutoWireTarget(ComponentReference reference) {
-        if (reference.getEndpointReferences().size() > 1 && reference.getBindings() != null && reference.getBindings().size() == 1) {
-    		String uri = reference.getBindings().get(0).getURI();
-    		if (uri != null) {
-        		if (uri.indexOf('/') > -1) {
-        			// TODO: must be a way to avoid this fiddling
-        			int i = uri.indexOf('/');
-        			String c = uri.substring(0, i);
-        			String s = uri.substring(i+1);
-        			uri = c + "#service(" + s + ")";
-        		}
-    			for (EndpointReference er : reference.getEndpointReferences()) {
-    				if (er.getTargetEndpoint() != null && uri.equals(er.getTargetEndpoint().getURI())) {
-    					reference.getEndpointReferences().clear();
-    					reference.getEndpointReferences().add(er);
-    					return;
-    				}
-    			}
-    		}
+    private void setSingleAutoWireTarget(ComponentReference reference) {
+        if (reference.getEndpointReferences().size() > 1 && reference.getBindings() != null
+            && reference.getBindings().size() == 1) {
+            String uri = reference.getBindings().get(0).getURI();
+            if (uri != null) {
+                if (uri.indexOf('/') > -1) {
+                    // TODO: must be a way to avoid this fiddling
+                    int i = uri.indexOf('/');
+                    String c = uri.substring(0, i);
+                    String s = uri.substring(i + 1);
+                    uri = c + "#service(" + s + ")";
+                }
+                for (EndpointReference er : reference.getEndpointReferences()) {
+                    if (er.getTargetEndpoint() != null && uri.equals(er.getTargetEndpoint().getURI())) {
+                        reference.getEndpointReferences().clear();
+                        reference.getEndpointReferences().add(er);
+                        return;
+                    }
+                }
+            }
         }
-	}
-    
+    }
+
 } // end class
