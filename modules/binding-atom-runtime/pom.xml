@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+-->
+<project>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apache.tuscany.sca</groupId>
+        <artifactId>tuscany-modules</artifactId>
+        <version>1.6-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>tuscany-binding-atom-abdera</artifactId>
+    <name>Apache Tuscany SCA Abdera Atom Feed Binding Extension</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-binding-atom</artifactId>
+            <version>1.6-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-assembly</artifactId>
+            <version>1.6-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-interface-java</artifactId>
+            <version>1.6-SNAPSHOT</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-interface-wsdl</artifactId>
+            <version>1.6-SNAPSHOT</version>
+        </dependency>        
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-data-api</artifactId>
+            <version>1.6-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-core-spi</artifactId>
+            <version>1.6-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-databinding</artifactId>
+            <version>1.6-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-host-http</artifactId>
+            <version>1.6-SNAPSHOT</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-binding-http</artifactId>
+            <version>1.6-SNAPSHOT</version>
+        </dependency>
+        
+        <dependency>
+           <groupId>commons-httpclient</groupId>
+           <artifactId>commons-httpclient</artifactId>
+           <version>3.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.abdera</groupId>
+            <artifactId>abdera-core</artifactId>
+            <version>0.4.0-incubating</version> 
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.geronimo.specs</groupId>
+                    <artifactId>geronimo-activation_1.0.2_spec</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>    
+        
+        <dependency>
+           <groupId>org.apache.abdera</groupId>
+            <artifactId>abdera-parser</artifactId>
+            <version>0.4.0-incubating</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>stax</groupId>
+                    <artifactId>stax-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>xom</groupId>
+                    <artifactId>xom</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.ws.commons.axiom</groupId>
+                    <artifactId>axiom-impl</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>           
+
+        <dependency>
+           <groupId>org.apache.ws.commons.axiom</groupId>
+           <artifactId>axiom-impl</artifactId>
+           <version>1.2.7</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.abdera</groupId>
+            <artifactId>abdera-client</artifactId>
+            <version>0.4.0-incubating</version> 
+        </dependency>            
+                
+        <dependency>
+            <groupId>org.apache.abdera</groupId>
+            <artifactId>abdera-extensions-main</artifactId>
+            <version>0.4.0-incubating</version> 
+        </dependency>            
+                
+        <dependency>
+            <groupId>org.apache.abdera</groupId>
+            <artifactId>abdera-extensions-json</artifactId>
+            <version>0.4.0-incubating</version> 
+        </dependency>            
+                
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.4</version> 
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-host-jetty</artifactId>
+            <version>1.6-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-implementation-java-runtime</artifactId>
+            <version>1.6-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-host-embedded</artifactId>
+            <version>1.6-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.5</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+           <groupId>commons-codec</groupId>
+           <artifactId>commons-codec</artifactId>
+           <version>1.3</version>
+           <exclusions>
+               <exclusion>
+                   <groupId>commons-codec</groupId>
+                   <artifactId>commons-codec</artifactId>
+               </exclusion>
+           </exclusions>
+        </dependency>
+
+        <dependency>
+           <groupId>commons-logging</groupId>
+           <artifactId>commons-logging</artifactId>
+           <version>1.1.1</version>
+           <exclusions>
+               <exclusion>
+                   <groupId>javax.servlet</groupId>
+                   <artifactId>servlet-api</artifactId>
+               </exclusion>
+               <exclusion>
+                   <groupId>avalon-framework</groupId>
+                   <artifactId>avalon-framework</artifactId>
+               </exclusion>
+           </exclusions>
+        </dependency>          
+                
+    </dependencies>
+
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+
+                <configuration>
+                    <instructions>
+                        <Bundle-Version>${tuscany.version}</Bundle-Version>
+                        <Bundle-SymbolicName>org.apache.tuscany.sca.binding.atom.abdera</Bundle-SymbolicName>
+                        <Bundle-Description>${pom.name}</Bundle-Description>
+                        <Export-Package>org.apache.tuscany.sca.binding.atom*</Export-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
