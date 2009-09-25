@@ -43,32 +43,31 @@ public class ScopeTestCase {
     
     private Node node;
 
-    /**
-     * Test scope containers.
-     * 
-     * The request scope container isn't hooked up for some reason so the code below
-     * that tests request scope is commented out.
-     * Code could be added to test session scope once it is supported in a standalone environment.
-     * 
-     * @throws InterruptedException Test failed
-     */
+    @Before
+    public void setUp() throws Exception {
+        String location = ContributionLocationHelper.getContributionLocation("scopes.composite");
+        node = NodeFactory.newInstance().createNode("scopes.composite", new Contribution("c1", location));
+        node.start();
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        node.stop();
+    }
+
     @Test
     public void testScopes() throws InterruptedException {
 
         Thread[] moduleScopeThreadTable = new Thread[NUM_THREADS];
-        Thread[] requestScopeThreadTable = new Thread[NUM_THREADS];
 
         for (int i = 0; i < NUM_THREADS; i++) {
             moduleScopeThreadTable[i] = new ModuleScopeTestThread();
-            requestScopeThreadTable[i] = new RequestScopeTestThread();
         }
         for (int j = 0; j < NUM_THREADS; j++) {
             moduleScopeThreadTable[j].start();
-            requestScopeThreadTable[j].start();
         }
         for (int k = 0; k < NUM_THREADS; k++) {
             moduleScopeThreadTable[k].join();
-            requestScopeThreadTable[k].join();
         }
     }
 
@@ -85,29 +84,6 @@ public class ScopeTestCase {
         }
     }
 
-    private class RequestScopeTestThread extends Thread {
 
-        public void run() {
-            StateVerifier requestScopeService = node.getService(StateVerifier.class, "RequestScopeComponent");
-            for (int i = 1; i <= ITERATIONS; i++) {
-                requestScopeService.setState(i);
-                if (!requestScopeService.checkState(i)) {
-                    fail("The request scope service lost its state on iteration " + i);
-                }
-            }
-        }
-    }
-
-    @Before
-    public void setUp() throws Exception {
-        String location = ContributionLocationHelper.getContributionLocation("scopes.composite");
-        node = NodeFactory.newInstance().createNode("scopes.composite", new Contribution("c1", location));
-        node.start();
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        node.stop();
-    }
 
 }

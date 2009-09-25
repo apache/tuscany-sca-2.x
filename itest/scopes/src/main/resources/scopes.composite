@@ -22,11 +22,6 @@
            name="Scopes">
 
     <!-- Components used to test scopes. -->
-
- 	<component name="RequestScopeComponent">
-		<implementation.java class="org.apache.tuscany.sca.itest.scopes.RequestScopeStateVerifierImpl"/>
-    </component>
-
  	<component name="ModuleScopeComponent">
 		<implementation.java class="org.apache.tuscany.sca.itest.scopes.CompositeScopeStateVerifierImpl"/>
     </component>
