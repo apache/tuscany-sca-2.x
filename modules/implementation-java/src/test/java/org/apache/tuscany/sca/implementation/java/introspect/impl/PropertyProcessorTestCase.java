@@ -46,6 +46,13 @@ public class PropertyProcessorTestCase {
     JavaImplementation type;
     PropertyProcessor processor;
 
+    @Before
+    public void setUp() throws Exception {
+        JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory();
+        type = javaImplementationFactory.createJavaImplementation();
+        processor = new PropertyProcessor(new DefaultAssemblyFactory());
+    }
+
     @Test
     public void testMethodAnnotation() throws Exception {
         processor.visitMethod(Foo.class.getMethod("setFoo", String.class), type);
@@ -116,102 +123,6 @@ public class PropertyProcessorTestCase {
         } catch (IllegalPropertyException e) {
             // expected
         }
-    }
-
-    @Before
-    public void setUp() throws Exception {
-        JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory();
-        type = javaImplementationFactory.createJavaImplementation();
-        processor = new PropertyProcessor(new DefaultAssemblyFactory());
-    }
-
-    private class Foo {
-
-        @Property
-        protected String baz;
-        @Property(required = true)
-        protected String bazRequired;
-        @Property(name = "theBaz")
-        protected String bazField;
-
-        @Property
-        public void setFoo(String string) {
-        }
-
-        @Property(required = true)
-        public void setFooRequired(String string) {
-        }
-
-        @Property(name = "bar")
-        public void setBarMethod(String string) {
-        }
-
-    }
-
-    private class Bar {
-
-        @Property
-        protected String dup;
-
-        @Property(name = "dup")
-        protected String baz;
-
-        @Property
-        public void setDupMethod(String s) {
-        }
-
-        @Property(name = "dupMethod")
-        public void setDupSomeMethod(String s) {
-        }
-
-        @Property
-        public void badMethod() {
-        }
-
-    }
-
-    private class Multiple {
-        @Property
-        protected List<String> refs1;
-
-        @Property
-        protected String[] refs2;
-
-        @Property
-        public void setRefs3(String[] refs) {
-        }
-
-        @Property
-        public void setRefs4(Collection<String> refs) {
-        }
-
-    }
-    
-    private static class BadMethodProps {
-
-        @org.oasisopen.sca.annotation.Constructor()
-        public BadMethodProps(@Property(name = "myProp", required = true)String prop) {
-
-        }
-        
-        /** Java can't tell that the @reference argument is disallowed by SCA, but the run time must reject it*/
-        public void BadMethod(@Property(name = "badMethodArgProp")String methArg) 
-        {}
-
- 
-    }
-    
-    private static class BadStaticProps {
-    	
-    	@Property(name="badstaticfield")static int stint;
-    	
-    	@Property(name="badstaticfield")static void setStint(int theStint) {
-    		stint = theStint;
-    	}
-    }
-
-    private Class<?> getBaseType(JavaElementImpl element) {
-        return JavaIntrospectionHelper.getBaseType(element.getType(), element.getGenericType());
     }
 
     @Test
@@ -299,4 +210,96 @@ public class PropertyProcessorTestCase {
 
     }
 
+    /**
+     * Private classes utilized in the tests
+     */
+    
+    private class Foo {
+
+        @Property
+        protected String baz;
+        
+        @Property(required = true)
+        protected String bazRequired;
+        
+        @Property(name = "theBaz")
+        protected String bazField;
+
+        @Property
+        public void setFoo(String string) {
+        }
+
+        @Property(required = true)
+        public void setFooRequired(String string) {
+        }
+
+        @Property(name = "bar")
+        public void setBarMethod(String string) {
+        }
+
+    }
+
+    private class Bar {
+
+        @Property
+        protected String dup;
+
+        @Property(name = "dup")
+        protected String baz;
+
+        @Property
+        public void setDupMethod(String s) {
+        }
+
+        @Property(name = "dupMethod")
+        public void setDupSomeMethod(String s) {
+        }
+
+        @Property
+        public void badMethod() {
+        }
+    }
+
+    private class Multiple {
+        @Property
+        protected List<String> refs1;
+
+        @Property
+        protected String[] refs2;
+
+        @Property
+        public void setRefs3(String[] refs) {
+        }
+
+        @Property
+        public void setRefs4(Collection<String> refs) {
+        }
+    }
+    
+    private static class BadMethodProps {
+
+        @org.oasisopen.sca.annotation.Constructor()
+        public BadMethodProps(@Property(name = "myProp", required = true)String prop) {
+
+        }
+        
+        /** Java can't tell that the @reference argument is disallowed by SCA, but the run time must reject it*/
+        public void BadMethod(@Property(name = "badMethodArgProp")String methArg) {
+        
+        }
+    }
+    
+    private static class BadStaticProps {
+    	
+    	@Property(name="badstaticfield")static int stint;
+    	
+    	@Property(name="badstaticfield")static void setStint(int theStint) {
+    		stint = theStint;
+    	}
+    }
+
+    private Class<?> getBaseType(JavaElementImpl element) {
+        return JavaIntrospectionHelper.getBaseType(element.getType(), element.getGenericType());
+    }
+   
 }

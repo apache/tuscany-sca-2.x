@@ -48,6 +48,13 @@ public class ReferenceProcessorTestCase {
     private JavaImplementation type;
     private ReferenceProcessor processor;
 
+    @Before
+    public void setUp() throws Exception {
+        JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory();
+        type = javaImplementationFactory.createJavaImplementation();
+        processor = new ReferenceProcessor(new DefaultAssemblyFactory(), new DefaultJavaInterfaceFactory());
+    }
+
     @Test
     public void testMethodAnnotation() throws Exception {
         processor.visitMethod(ReferenceProcessorTestCase.Foo.class.getMethod("setFoo", Ref.class), type);
@@ -142,101 +149,6 @@ public class ReferenceProcessorTestCase {
 		}
     }
 
-    @Before
-    public void setUp() throws Exception {
-        JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory();
-        type = javaImplementationFactory.createJavaImplementation();
-        processor = new ReferenceProcessor(new DefaultAssemblyFactory(), new DefaultJavaInterfaceFactory());
-    }
-
-    private interface Ref {
-    }
-
-    private class Foo {
-
-        @Reference
-        protected Ref baz;
-        @Reference(required = true)
-        protected Ref bazRequired;
-        @Reference(name = "theBaz")
-        protected Ref bazField;
-
-        @Reference
-        public void setFoo(Ref ref) {
-        }
-
-        @Reference(required = true)
-        public void setFooRequired(Ref ref) {
-        }
-
-        @Reference(name = "bar")
-        public void setBarMethod(Ref ref) {
-        }
-
-    }
-
-    private class Bar {
-
-        @Reference
-        protected Ref dup;
-
-        @Reference(name = "dup")
-        protected Ref baz;
-
-        @Reference
-        public void setDupMethod(Ref s) {
-        }
-
-        @Reference(name = "dupMethod")
-        public void setDupSomeMethod(Ref s) {
-        }
-
-        @Reference
-        public void badMethod() {
-        }
-
-    }
-
-    private class Multiple {
-        @Reference(required = true)
-        protected List<Ref> refs1;
-
-        @Reference(required = false)
-        protected Ref[] refs2;
-
-        @Reference(required = true)
-        public void setRefs3(Ref[] refs) {
-        }
-
-        @Reference(required = false)
-        public void setRefs4(Collection<Ref> refs) {
-        }
-
-    }
-    
-    private static class BadStaticRefs {
-    	
-    	@Reference(name="badstaticfield")static int stint;
-    	
-    	@Reference(name="badstaticfield")static void setStint(int theStint) {
-    		stint = theStint;
-    	}
-    }
-    
-    
-    private static class BadMethAnn {
-
-        @org.oasisopen.sca.annotation.Constructor()
-        public BadMethAnn(@Property(name = "myProp", required = true)String prop) {
-
-        }
-        
-        /** Java can't tell that the @reference argument is disallowed by SCA, but the run time must reject it*/
-        public void BadMethod(@Reference(name = "badMethodArgRef")String methArg) 
-        {}
-
-    }
-
     @Test
     public void testMultiplicity1ToN() throws Exception {
         processor.visitField(Multiple.class.getDeclaredField("refs1"), type);
@@ -308,4 +220,93 @@ public class ReferenceProcessorTestCase {
 
     }
 
+    /**
+     * Private classes utilized in the tests
+     */
+
+    private interface Ref {
+    }
+
+    private class Foo {
+        @Reference
+        protected Ref baz;
+        
+        @Reference(required = true)
+        protected Ref bazRequired;
+        
+        @Reference(name = "theBaz")
+        protected Ref bazField;
+
+        @Reference
+        public void setFoo(Ref ref) {
+        }
+
+        @Reference(required = true)
+        public void setFooRequired(Ref ref) {
+        }
+
+        @Reference(name = "bar")
+        public void setBarMethod(Ref ref) {
+        }
+    }
+
+    private class Bar {
+        @Reference
+        protected Ref dup;
+
+        @Reference(name = "dup")
+        protected Ref baz;
+
+        @Reference
+        public void setDupMethod(Ref s) {
+        }
+
+        @Reference(name = "dupMethod")
+        public void setDupSomeMethod(Ref s) {
+        }
+
+        @Reference
+        public void badMethod() {
+        }
+
+    }
+
+    private class Multiple {
+        @Reference(required = true)
+        protected List<Ref> refs1;
+
+        @Reference(required = false)
+        protected Ref[] refs2;
+
+        @Reference(required = true)
+        public void setRefs3(Ref[] refs) {
+        }
+
+        @Reference(required = false)
+        public void setRefs4(Collection<Ref> refs) {
+        }
+    }
+    
+    private static class BadStaticRefs {
+    	
+    	@Reference(name="badstaticfield")static int stint;
+    	
+    	@Reference(name="badstaticfield")static void setStint(int theStint) {
+    		stint = theStint;
+    	}
+    }
+    
+    
+    private static class BadMethAnn {
+
+        @org.oasisopen.sca.annotation.Constructor()
+        public BadMethAnn(@Property(name = "myProp", required = true)String prop) {
+
+        }
+        
+        /** Java can't tell that the @reference argument is disallowed by SCA, but the run time must reject it*/
+        public void BadMethod(@Reference(name = "badMethodArgRef")String methArg) {
+        
+        }
+    }
 }
