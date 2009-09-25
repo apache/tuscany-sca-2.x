@@ -168,7 +168,7 @@ public class PropertyProcessorTestCase {
     		fail("Processor should not accept a static field with Property annotation");
     	}
     	catch (IllegalPropertyException e) {
-			// System.out.println("Caught expected exception");
+			// expected
 		}
     	catch (Exception e) {
 			fail("Wrong exception detected");
@@ -182,7 +182,7 @@ public class PropertyProcessorTestCase {
     		fail("Processor should not accept a static method with Property annotation");
     	}
     	catch (IllegalPropertyException e) {
-			// System.out.println("Caught expected exception");
+			// expected
 		}
     	catch (Exception e) {
 			fail("Wrong exception detected");
@@ -200,8 +200,7 @@ public class PropertyProcessorTestCase {
         	
             fail("Method with @Property annotated args should be rejected");
         } catch (IllegalPropertyException e) {
-//        	e.printStackTrace();
-//        	System.out.println("Exception successfully received");
+        	// expected
         }
         catch (Exception e) {
 			fail("Wrong exception received");

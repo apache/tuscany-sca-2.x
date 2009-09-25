@@ -140,8 +140,7 @@ public class ReferenceProcessorTestCase {
         	
             fail("reference annotation on ordinary method arg should be rejected");
         } catch (IllegalReferenceException e) {
-//        	e.printStackTrace();
-//        	System.out.println("Exception successfully received");
+        	// expected
         }
     	catch (Exception e) {
 			fail("Wrong exception detected");
@@ -156,7 +155,6 @@ public class ReferenceProcessorTestCase {
         assertNotNull(ref);
         assertSame(Ref.class, ((JavaInterface)ref.getInterfaceContract().getInterface()).getJavaClass());
         assertEquals(Multiplicity.ONE_N, ref.getMultiplicity());
-        // assertEquals(Multiplicity.ONE_ONE, ref.getMultiplicity());
     }
 
     @Test
@@ -166,7 +164,6 @@ public class ReferenceProcessorTestCase {
         assertNotNull(ref);
         assertSame(Ref.class, ((JavaInterface)ref.getInterfaceContract().getInterface()).getJavaClass());
         assertEquals(Multiplicity.ZERO_N, ref.getMultiplicity());
-        // assertFalse(ref.isMustSupply());
     }
 
     @Test
@@ -176,7 +173,6 @@ public class ReferenceProcessorTestCase {
         assertNotNull(ref);
         assertSame(Ref.class, ((JavaInterface)ref.getInterfaceContract().getInterface()).getJavaClass());
         assertEquals(Multiplicity.ONE_N, ref.getMultiplicity());
-        // assertEquals(Multiplicity.ONE_ONE, ref.getMultiplicity());
     }
 
     @Test
@@ -186,7 +182,6 @@ public class ReferenceProcessorTestCase {
         assertNotNull(ref);
         assertSame(Ref.class, ((JavaInterface)ref.getInterfaceContract().getInterface()).getJavaClass());
         assertEquals(Multiplicity.ZERO_N, ref.getMultiplicity());
-        // assertFalse(ref.isMustSupply());
     }
     
     @Test
@@ -196,7 +191,7 @@ public class ReferenceProcessorTestCase {
     		fail("Processor should not accept a static field with Property annotation");
     	}
     	catch (IllegalReferenceException e) {
-			// System.out.println("Caught expected exception");
+			// expected
 		}
     	catch (Exception e) {
 			fail("Wrong exception detected");
@@ -211,7 +206,7 @@ public class ReferenceProcessorTestCase {
     		fail("Processor should not accept a static method with Property annotation");
     	}
     	catch (IllegalPropertyException e) {
-			// System.out.println("Caught expected exception");
+			// expected
 		}
     	catch (Exception e) {
 			fail("Wrong exception detected");
