@@ -87,15 +87,17 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
      * Check if two policy subjects requires multually exclusive intents
      * @param subject1
      * @param subject2
+     * @param monitor 
      * @return
      */
-    private boolean isMutualExclusive(PolicySubject subject1, PolicySubject subject2) {
+    private boolean checkMutualExclusion(PolicySubject subject1, PolicySubject subject2, Monitor monitor) {
         if (subject1 == subject2 || subject1 == null || subject2 == null) {
             return false;
         }
         for (Intent i1 : subject1.getRequiredIntents()) {
             for (Intent i2 : subject1.getRequiredIntents()) {
                 if (i1.getExcludedIntents().contains(i2) || i2.getExcludedIntents().contains(i1)) {
+                    error(monitor, "MutuallyExclusiveIntents", new Object[] {subject1, subject2}, i1, i2);
                     return true;
                 }
             }
@@ -206,7 +208,7 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
                 if (resolved != null) {
                     intents.add(resolved);
                 } else {
-                    warning(monitor, "intent-not-found", subject, i.getName().toString());
+                    warning(monitor, "IntentNotFound", subject, i);
                     // Intent cannot be resolved
                 }
             }
@@ -297,16 +299,17 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
         }
 
         for (Component component : composite.getComponents()) {
-            isMutualExclusive(component, component.getImplementation());
+            checkMutualExclusion(component, component.getImplementation(), monitor);
 
             for (ComponentService componentService : component.getServices()) {
-                isMutualExclusive(componentService, componentService.getService());
+                checkMutualExclusion(componentService, componentService.getService(), monitor);
 
                 if (componentService.getInterfaceContract() != null && componentService.getService() != null) {
-                    isMutualExclusive(componentService.getInterfaceContract().getInterface(), componentService
-                        .getService().getInterfaceContract().getInterface());
-                    isMutualExclusive(componentService.getInterfaceContract().getCallbackInterface(), componentService
-                        .getService().getInterfaceContract().getCallbackInterface());
+                    checkMutualExclusion(componentService.getInterfaceContract().getInterface(), componentService
+                        .getService().getInterfaceContract().getInterface(), monitor);
+                    checkMutualExclusion(componentService.getInterfaceContract().getCallbackInterface(),
+                                         componentService.getService().getInterfaceContract().getCallbackInterface(),
+                                         monitor);
                 }
 
                 for (Endpoint ep : componentService.getEndpoints()) {
@@ -324,7 +327,7 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
                     if (componentService.getService() != null) {
                         for (Binding binding : componentService.getService().getBindings()) {
                             if (isEqual(ep.getBinding().getName(), binding.getName()) && (binding instanceof PolicySubject)) {
-                                isMutualExclusive((PolicySubject)ep.getBinding(), (PolicySubject)binding);
+                                checkMutualExclusion((PolicySubject)ep.getBinding(), (PolicySubject)binding, monitor);
                                 // Inherit from componentType.service.binding
                                 inherit(ep, binding);
                                 break;
@@ -345,13 +348,15 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
             }
 
             for (ComponentReference componentReference : component.getReferences()) {
-                isMutualExclusive(componentReference, componentReference.getReference());
+                checkMutualExclusion(componentReference, componentReference.getReference(), monitor);
 
                 if (componentReference.getInterfaceContract() != null && componentReference.getReference() != null) {
-                    isMutualExclusive(componentReference.getInterfaceContract().getInterface(), componentReference
-                        .getReference().getInterfaceContract().getInterface());
-                    isMutualExclusive(componentReference.getInterfaceContract().getCallbackInterface(),
-                                      componentReference.getReference().getInterfaceContract().getCallbackInterface());
+                    checkMutualExclusion(componentReference.getInterfaceContract().getInterface(), componentReference
+                        .getReference().getInterfaceContract().getInterface(), monitor);
+                    checkMutualExclusion(componentReference.getInterfaceContract().getCallbackInterface(),
+                                         componentReference.getReference().getInterfaceContract()
+                                             .getCallbackInterface(),
+                                         monitor);
                 }
 
                 for (EndpointReference epr : componentReference.getEndpointReferences()) {
@@ -371,7 +376,7 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
                         for (Binding binding : componentReference.getReference().getBindings()) {
                             if (epr.getBinding() != null && isEqual(epr.getBinding().getName(), binding.getName())
                                 && (binding instanceof PolicySubject)) {
-                                isMutualExclusive((PolicySubject)epr.getBinding(), (PolicySubject)binding);
+                                checkMutualExclusion((PolicySubject)epr.getBinding(), (PolicySubject)binding, monitor);
                                 // Inherit from componentType.reference.binding
                                 inherit(epr, binding);
                                 break;

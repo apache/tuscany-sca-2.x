@@ -77,9 +77,7 @@
                 <module>services</module>
                 <module>service-reference</module>
                 <module>wires</module>
-<!-- TUSCANY-3242
                 <module>policies</module>
--->
            </modules>
         </profile>
         
