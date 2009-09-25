@@ -27,8 +27,6 @@ public @interface Scope {
      * The name of the scope. Values currently defined by the specification are:
      * <ul>
      * <li>STATELESS (default)</li>
-     * <li>REQUEST</li>
-     * <li>CONVERSATION</li>
      * <li>COMPOSITE</li>
      * </ul>
      *
