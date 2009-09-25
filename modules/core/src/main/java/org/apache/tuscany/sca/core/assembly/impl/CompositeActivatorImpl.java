@@ -37,24 +37,18 @@ import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.context.ComponentContextFactory;
+import org.apache.tuscany.sca.context.CompositeContext;
 import org.apache.tuscany.sca.context.ContextFactoryExtensionPoint;
-import org.apache.tuscany.sca.context.PropertyValueFactory;
-import org.apache.tuscany.sca.context.RequestContextFactory;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
-import org.apache.tuscany.sca.core.assembly.ActivationException;
-import org.apache.tuscany.sca.core.assembly.CompositeActivator;
-import org.apache.tuscany.sca.core.context.CompositeContext;
 import org.apache.tuscany.sca.core.context.impl.CompositeContextImpl;
 import org.apache.tuscany.sca.core.invocation.ExtensibleWireProcessor;
-import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.scope.ScopeContainer;
 import org.apache.tuscany.sca.core.scope.ScopeRegistry;
 import org.apache.tuscany.sca.core.scope.ScopedRuntimeComponent;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
-import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
@@ -64,6 +58,8 @@ import org.apache.tuscany.sca.provider.PolicyProviderFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
+import org.apache.tuscany.sca.runtime.ActivationException;
+import org.apache.tuscany.sca.runtime.CompositeActivator;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentContext;
@@ -90,10 +86,6 @@ public class CompositeActivatorImpl implements CompositeActivator {
     private final ProviderFactoryExtensionPoint providerFactories;
 
     private final ComponentContextFactory componentContextFactory;
-    private final RequestContextFactory requestContextFactory;
-    private final ProxyFactory proxyFactory;
-    private final JavaInterfaceFactory javaInterfaceFactory;
-    private final PropertyValueFactory propertyValueFactory;
     private final EndpointRegistry endpointRegistry;
 
     private final CompositeContext compositeContext;
@@ -102,23 +94,19 @@ public class CompositeActivatorImpl implements CompositeActivator {
 
     public CompositeActivatorImpl(ExtensionPointRegistry extensionPoints) {
         this.extensionPoints = extensionPoints;
-        this.compositeContext = new CompositeContextImpl(extensionPoints);
+        UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
+        this.endpointRegistry = utilities.getUtility(EndpointRegistry.class);
+        this.compositeContext = new CompositeContextImpl(extensionPoints, endpointRegistry);
         FactoryExtensionPoint factories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         this.assemblyFactory = factories.getFactory(AssemblyFactory.class);
         this.messageFactory = factories.getFactory(MessageFactory.class);
-        UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
         this.interfaceContractMapper = utilities.getUtility(InterfaceContractMapper.class);
         this.scopeRegistry = utilities.getUtility(ScopeRegistry.class);
         this.workScheduler = utilities.getUtility(WorkScheduler.class);
         this.wireProcessor = new ExtensibleWireProcessor(extensionPoints.getExtensionPoint(RuntimeWireProcessorExtensionPoint.class));
         this.providerFactories = extensionPoints.getExtensionPoint(ProviderFactoryExtensionPoint.class);
-        this.javaInterfaceFactory = compositeContext.getJavaInterfaceFactory();
-        this.propertyValueFactory = factories.getFactory(PropertyValueFactory.class);
         ContextFactoryExtensionPoint contextFactories = extensionPoints.getExtensionPoint(ContextFactoryExtensionPoint.class);
         this.componentContextFactory = contextFactories.getFactory(ComponentContextFactory.class);
-        this.requestContextFactory = contextFactories.getFactory(RequestContextFactory.class);
-        proxyFactory = compositeContext.getProxyFactory();
-        this.endpointRegistry = utilities.getUtility(EndpointRegistry.class);
     }
 
     //=========================================================================

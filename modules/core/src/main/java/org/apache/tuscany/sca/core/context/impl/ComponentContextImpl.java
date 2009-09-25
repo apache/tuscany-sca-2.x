@@ -37,15 +37,13 @@ import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.builder.EndpointReferenceBuilder;
+import org.apache.tuscany.sca.context.CompositeContext;
 import org.apache.tuscany.sca.context.ContextFactoryExtensionPoint;
 import org.apache.tuscany.sca.context.PropertyValueFactory;
 import org.apache.tuscany.sca.context.RequestContextFactory;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
-import org.apache.tuscany.sca.core.assembly.CompositeActivator;
-import org.apache.tuscany.sca.core.context.ComponentContextExt;
-import org.apache.tuscany.sca.core.context.CompositeContext;
 import org.apache.tuscany.sca.core.invocation.ExtensibleProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactoryExtensionPoint;
@@ -57,7 +55,9 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.monitor.Problem;
+import org.apache.tuscany.sca.runtime.CompositeActivator;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
+import org.apache.tuscany.sca.runtime.RuntimeComponentContext;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.oasisopen.sca.RequestContext;
@@ -70,7 +70,7 @@ import org.oasisopen.sca.ServiceRuntimeException;
  *
  * @version $Rev$ $Date$
  */
-public class ComponentContextImpl implements ComponentContextExt {
+public class ComponentContextImpl implements RuntimeComponentContext {
     private final RuntimeComponent component;
 
     private final CompositeActivator compositeActivator;
@@ -87,8 +87,11 @@ public class ComponentContextImpl implements ComponentContextExt {
         FactoryExtensionPoint factories = registry.getExtensionPoint(FactoryExtensionPoint.class);
         this.assemblyFactory = factories.getFactory(AssemblyFactory.class);
         this.javaInterfaceFactory = factories.getFactory(JavaInterfaceFactory.class);
+        
+        // FIXME: We need to have node-specific compositeActivator
         UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
         this.compositeActivator = utilities.getUtility(CompositeActivator.class);
+        
         this.requestContextFactory =
             registry.getExtensionPoint(ContextFactoryExtensionPoint.class).getFactory(RequestContextFactory.class);
         this.proxyFactory = new ExtensibleProxyFactory(registry.getExtensionPoint(ProxyFactoryExtensionPoint.class));

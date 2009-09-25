@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.core.invocation;
 import java.lang.reflect.InvocationTargetException;
 
 import org.apache.tuscany.sca.assembly.EndpointReference;
+import org.apache.tuscany.sca.context.ThreadMessageContext;
 import org.apache.tuscany.sca.core.factory.InstanceWrapper;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.InvocationChain;

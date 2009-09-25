@@ -107,7 +107,7 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
      * @param message
      * @param model
      */
-    protected void warning(Monitor monitor, String message, Object model, String... messageParameters) {
+    protected void warning(Monitor monitor, String message, Object model, Object... messageParameters) {
         if (monitor != null) {
             Problem problem =
                 monitor.createProblem(this.getClass().getName(),
@@ -115,7 +115,7 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
                                       Severity.WARNING,
                                       model,
                                       message,
-                                      (Object[])messageParameters);
+                                      messageParameters);
             monitor.problem(problem);
         }
     }
@@ -128,7 +128,7 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
      * @param message
      * @param model
      */
-    protected void error(Monitor monitor, String message, Object model, String... messageParameters) {
+    protected void error(Monitor monitor, String message, Object model, Object... messageParameters) {
         if (monitor != null) {
             Problem problem =
                 monitor.createProblem(this.getClass().getName(),
@@ -136,7 +136,7 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
                                       Severity.ERROR,
                                       model,
                                       message,
-                                      (Object[])messageParameters);
+                                      messageParameters);
             monitor.problem(problem);
         }
     }

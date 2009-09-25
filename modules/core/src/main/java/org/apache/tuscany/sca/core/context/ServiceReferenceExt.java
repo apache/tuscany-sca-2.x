@@ -20,14 +20,10 @@
 package org.apache.tuscany.sca.core.context;
 
 import java.io.Externalizable;
-import java.io.IOException;
 
-import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.assembly.EndpointReference;
-import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
-import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.oasisopen.sca.ServiceReference;
 

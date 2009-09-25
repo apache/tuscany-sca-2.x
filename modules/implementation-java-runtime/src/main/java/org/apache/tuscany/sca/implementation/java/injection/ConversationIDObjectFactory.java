@@ -18,8 +18,8 @@
  */
 package org.apache.tuscany.sca.implementation.java.injection;
 
+import org.apache.tuscany.sca.context.ThreadMessageContext;
 import org.apache.tuscany.sca.core.factory.ObjectFactory;
-import org.apache.tuscany.sca.core.invocation.ThreadMessageContext;
 
 /**
  * Object Factory that is used to retrieve the ConversationID from the

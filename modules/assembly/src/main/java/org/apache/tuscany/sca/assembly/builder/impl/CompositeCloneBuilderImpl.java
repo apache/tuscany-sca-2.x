@@ -42,7 +42,22 @@ public class CompositeCloneBuilderImpl implements CompositeBuilder {
 
     public Composite build(Composite composite, Definitions definitions, Monitor monitor)
         throws CompositeBuilderException {
-        // Clone the includes 
+
+        if (Composite.DOMAIN_COMPOSITE.equals(composite.getName())) {
+            // Try to avoid clone for top-level composites that are added to the domain composite
+            for (Composite included : composite.getIncludes()) {
+                cloneIncludes(included);
+            }
+        } else {
+            // Clone the includes 
+            cloneIncludes(composite);
+        }
+
+        cloneCompositeImplementations(composite);
+        return composite;
+    }
+
+    private void cloneIncludes(Composite composite) {
         List<Composite> includes = new ArrayList<Composite>();
         for (Composite included : composite.getIncludes()) {
             try {
@@ -53,9 +68,6 @@ public class CompositeCloneBuilderImpl implements CompositeBuilder {
         }
         composite.getIncludes().clear();
         composite.getIncludes().addAll(includes);
-
-        cloneCompositeImplementations(composite);
-        return composite;
     }
 
     public String getID() {

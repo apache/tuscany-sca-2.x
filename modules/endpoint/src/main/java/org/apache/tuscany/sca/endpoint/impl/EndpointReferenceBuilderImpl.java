@@ -33,8 +33,6 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.monitor.Problem;
-import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
 
 /**
@@ -223,9 +221,15 @@ public class EndpointReferenceBuilderImpl implements EndpointReferenceBuilder {
         
         return problem;
     }
-    
+
+    // FIXME: [rfeng] This implementation is wrong. It is the responsibility of the policy language
+    // to compare the reference and service side setting to determine if they are compatible. Some of
+    // policies apply to the reference side only, some of the policies apply to the service side only, 
+    // while others apply to both sides. Even for those policies that apply to both side, they can be 
+    // independent or related. 
     private boolean haveMatchingPolicy(EndpointReference endpointReference, Endpoint endpoint){
         
+        /*
         // if no policy sets or intents are present then they match
         if ((endpointReference.getRequiredIntents().size() == 0) &&
             (endpoint.getRequiredIntents().size() == 0) &&
@@ -290,6 +294,7 @@ public class EndpointReferenceBuilderImpl implements EndpointReferenceBuilder {
                 return false;
             }
         }
+        */
         
         return true;
     }

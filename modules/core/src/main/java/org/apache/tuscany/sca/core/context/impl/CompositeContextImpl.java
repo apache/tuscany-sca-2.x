@@ -44,23 +44,23 @@ import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.context.CompositeContext;
+import org.apache.tuscany.sca.context.ThreadMessageContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.core.UtilityExtensionPoint;
-import org.apache.tuscany.sca.core.assembly.CompositeActivator;
-import org.apache.tuscany.sca.core.context.CompositeContext;
 import org.apache.tuscany.sca.core.invocation.ExtensibleProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactoryExtensionPoint;
-import org.apache.tuscany.sca.core.invocation.ThreadMessageContext;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.invocation.Message;
+import org.apache.tuscany.sca.runtime.CompositeActivator;
+import org.apache.tuscany.sca.runtime.EndpointRegistry;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
@@ -71,25 +71,27 @@ import org.oasisopen.sca.ServiceRuntimeException;
  */
 public class CompositeContextImpl extends CompositeContext {
     private final ExtensionPointRegistry extensionPointRegistry;
-    private final UtilityExtensionPoint utilityExtensionPoint;
+    private final EndpointRegistry endpointRegistry;
     private final AssemblyFactory assemblyFactory;
     private final JavaInterfaceFactory javaInterfaceFactory;
     private final StAXArtifactProcessorExtensionPoint staxProcessors;
     private final XMLInputFactory xmlInputFactory;
     private final XMLOutputFactory xmlOutputFactory;
-    private final ProxyFactory proxyFactory;
 
-    public CompositeContextImpl(ExtensionPointRegistry registry) {
+    public CompositeContextImpl(ExtensionPointRegistry registry, EndpointRegistry endpointRegistry) {
         this.extensionPointRegistry = registry;
-        this.utilityExtensionPoint = extensionPointRegistry.getExtensionPoint(UtilityExtensionPoint.class);
+        this.endpointRegistry = endpointRegistry;
         FactoryExtensionPoint factories = registry.getExtensionPoint(FactoryExtensionPoint.class);
         this.xmlInputFactory = factories.getFactory(XMLInputFactory.class);
         this.xmlOutputFactory = factories.getFactory(XMLOutputFactory.class);
         this.assemblyFactory = factories.getFactory(AssemblyFactory.class);
         this.javaInterfaceFactory = factories.getFactory(JavaInterfaceFactory.class);
         this.staxProcessors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+    }
+
+    private ProxyFactory getProxyFactory() {
         ProxyFactoryExtensionPoint proxyFactories = extensionPointRegistry.getExtensionPoint(ProxyFactoryExtensionPoint.class);
-        this.proxyFactory = new ExtensibleProxyFactory(proxyFactories);
+        return new ExtensibleProxyFactory(proxyFactories);
     }
     
     /**
@@ -331,20 +333,8 @@ public class CompositeContextImpl extends CompositeContext {
         return extensionPointRegistry;
     }
 
-    /**
-     * Get the java interface factory
-     * @return
-     */
-    public JavaInterfaceFactory getJavaInterfaceFactory() {
-        return javaInterfaceFactory;
-    }
-
-    /**
-     * Get the proxy factory
-     * @return
-     */
-    public ProxyFactory getProxyFactory() {
-        return proxyFactory;
+    public EndpointRegistry getEndpointRegistry() {
+        return endpointRegistry;
     }
 
 }

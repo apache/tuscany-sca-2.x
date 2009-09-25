@@ -30,6 +30,10 @@ import org.apache.tuscany.sca.policy.PolicySubject;
  * @version $Rev$ $Date$
  */
 public interface Composite extends Implementation, Extensible, Cloneable, PolicySubject {
+    /**
+     * Special name for the domain composite
+     */
+    QName DOMAIN_COMPOSITE = new QName(SCA11_NS, "");
     QName TYPE = new QName(SCA11_NS, "implementation.composite");
 
     /**

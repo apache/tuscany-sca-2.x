@@ -42,22 +42,24 @@ import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.builder.BindingBuilder;
 import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
+import org.apache.tuscany.sca.context.CompositeContext;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.core.assembly.CompositeActivator;
 import org.apache.tuscany.sca.core.assembly.RuntimeAssemblyFactory;
 import org.apache.tuscany.sca.core.assembly.impl.ReferenceParametersImpl;
-import org.apache.tuscany.sca.core.context.ComponentContextExt;
-import org.apache.tuscany.sca.core.context.CompositeContext;
 import org.apache.tuscany.sca.core.context.ServiceReferenceExt;
 import org.apache.tuscany.sca.core.factory.ObjectCreationException;
+import org.apache.tuscany.sca.core.invocation.ExtensibleProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
+import org.apache.tuscany.sca.core.invocation.ProxyFactoryExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
+import org.apache.tuscany.sca.runtime.CompositeActivator;
 import org.apache.tuscany.sca.runtime.ReferenceParameters;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
@@ -200,7 +202,7 @@ public class CallableReferenceImpl<B> implements ServiceReferenceExt<B> {
             this.component = (RuntimeComponent)wire.getEndpointReference().getComponent();
             this.reference = (RuntimeComponentReference)wire.getEndpointReference().getReference();
             this.endpointReference = wire.getEndpointReference();
-            this.compositeActivator = ((ComponentContextExt)component.getComponentContext()).getCompositeActivator();
+            this.compositeActivator = component.getComponentContext().getCompositeActivator();
             initCallbackID();
         }
     }
@@ -415,9 +417,11 @@ public class CallableReferenceImpl<B> implements ServiceReferenceExt<B> {
                             return Thread.currentThread().getContextClassLoader();
                         }
                     });
+                    
                     javaInterface.setJavaClass(classLoader.loadClass(javaInterface.getName()));
-                    compositeActivator.getCompositeContext().getJavaInterfaceFactory()
-                        .createJavaInterface(javaInterface, javaInterface.getJavaClass());
+                    JavaInterfaceFactory javaInterfaceFactory = getJavaInterfaceFactory(compositeActivator);
+                    
+                    javaInterfaceFactory.createJavaInterface(javaInterface, javaInterface.getJavaClass());
                     //FIXME: If the interface needs XSDs to be loaded (e.g., for static SDO),
                     // this needs to be done here.  We usually search for XSDs in the current
                     // contribution at resolve time.  Is it possible to locate the current
@@ -434,13 +438,26 @@ public class CallableReferenceImpl<B> implements ServiceReferenceExt<B> {
                 }
             }
 
-            this.proxyFactory = compositeActivator.getCompositeContext().getProxyFactory();       
+            this.proxyFactory = getProxyFactory(this.compositeActivator);       
         } else if (compositeActivator == null) {
             this.compositeActivator = CompositeContext.getCurrentCompositeActivator();
             if (this.compositeActivator != null) {
-                this.proxyFactory = this.compositeActivator.getCompositeContext().getProxyFactory();
+                this.proxyFactory = getProxyFactory(this.compositeActivator);
             }
         }       
+    }
+
+    private JavaInterfaceFactory getJavaInterfaceFactory(CompositeActivator activator) {
+        ExtensionPointRegistry extensionPointRegistry = activator.getCompositeContext().getExtensionPointRegistry();
+        FactoryExtensionPoint factories = extensionPointRegistry.getExtensionPoint(FactoryExtensionPoint.class);
+        JavaInterfaceFactory javaInterfaceFactory = factories.getFactory(JavaInterfaceFactory.class);
+        return javaInterfaceFactory;
+    }
+    
+    private ProxyFactory getProxyFactory(CompositeActivator activator) {
+        ExtensionPointRegistry extensionPointRegistry = activator.getCompositeContext().getExtensionPointRegistry();
+        ProxyFactoryExtensionPoint proxyFactories = extensionPointRegistry.getExtensionPoint(ProxyFactoryExtensionPoint.class);
+        return new ExtensibleProxyFactory(proxyFactories);
     }
     
     // ==================================================================================

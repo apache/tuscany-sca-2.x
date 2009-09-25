@@ -16,9 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.core.invocation;
+package org.apache.tuscany.sca.context;
 
-import org.apache.tuscany.sca.core.invocation.impl.MessageImpl;
 import org.apache.tuscany.sca.invocation.Message;
 
 /**
@@ -28,34 +27,11 @@ import org.apache.tuscany.sca.invocation.Message;
  */
 public final class ThreadMessageContext {
 
-    private static final ThreadLocal<Message> CONTEXT = new ThreadLocal<Message>() {
-        @Override
-        protected synchronized Message initialValue() {
-            //Message msg =  new MessageImpl();
-            // TODO - EPR - What to set as default?
-            //msg.setFrom(new EndpointReferenceImpl("/"));
-            return null;//msg;
-        }
-    };
+    private static final ThreadLocal<Message> CONTEXT = new ThreadLocal<Message>();
 
     private ThreadMessageContext() {
     }
 
-    /**
-     * Set the WorkContext for the current thread.
-     * The current work context is returned and must be restored after the invocation is complete.
-     * Typical usage would be:
-     * <pre>
-     *   WorkContext old = PojoWorkContextTunnel.setThreadWorkContext(newContext);
-     *   try {
-     *      ... invoke user code ...
-     *   } finally {
-     *     PojoWorkContextTunnel.setThreadWorkContext(old);
-     *   }
-     * </pre>
-     * @param context
-     * @return the current work context for the thread; this must be restored after the invocation is made
-     */
     public static Message setMessageContext(Message context) {
         Message old = CONTEXT.get();
         CONTEXT.set(context);
@@ -70,12 +46,12 @@ public final class ThreadMessageContext {
     public static Message getMessageContext() {
         return CONTEXT.get();
     }
-    
+
     /**
      * Removes and state from the current thread to ensure that
      * any associated classloaders can be GCd
      */
     public static void removeMessageContext() {
         CONTEXT.remove();
-    }    
+    }
 }

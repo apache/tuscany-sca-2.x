@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.core.context;
+package org.apache.tuscany.sca.context;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -32,13 +32,12 @@ import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.core.assembly.CompositeActivator;
-import org.apache.tuscany.sca.core.invocation.ProxyFactory;
-import org.apache.tuscany.sca.core.invocation.ThreadMessageContext;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
-import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.invocation.Message;
+import org.apache.tuscany.sca.runtime.CompositeActivator;
+import org.apache.tuscany.sca.runtime.EndpointRegistry;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
+import org.apache.tuscany.sca.runtime.RuntimeComponentContext;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.oasisopen.sca.ServiceRuntimeException;
@@ -161,7 +160,7 @@ public abstract class CompositeContext {
     public static CompositeActivator getCurrentCompositeActivator() {
         RuntimeComponent component = getCurrentComponent();
         if (component != null) {
-            ComponentContextExt context = (ComponentContextExt)component.getComponentContext();
+            RuntimeComponentContext context = component.getComponentContext();
             return context.getCompositeActivator();
         }
         return null;
@@ -208,15 +207,9 @@ public abstract class CompositeContext {
     public abstract ExtensionPointRegistry getExtensionPointRegistry();
 
     /**
-     * Get the java interface factory
+     * Get the EndpointRegistry
      * @return
      */
-    public abstract JavaInterfaceFactory getJavaInterfaceFactory();
-
-    /**
-     * Get the proxy factory
-     * @return
-     */
-    public abstract ProxyFactory getProxyFactory();
+    public abstract EndpointRegistry getEndpointRegistry();
 
 }

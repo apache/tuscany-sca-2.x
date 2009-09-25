@@ -17,14 +17,11 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.core.assembly;
+package org.apache.tuscany.sca.runtime;
 
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.core.context.CompositeContext;
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
-import org.apache.tuscany.sca.runtime.RuntimeComponentService;
+import org.apache.tuscany.sca.context.CompositeContext;
 
 /**
  * Start/stop a composite

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.tuscany.sca.core.assembly;
+package org.apache.tuscany.sca.runtime;
 
 import java.io.IOException;
 

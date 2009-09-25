@@ -34,7 +34,7 @@ import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.core.assembly.EndpointSerializer;
+import org.apache.tuscany.sca.runtime.EndpointSerializer;
 
 public class EndpointSerializerImpl implements EndpointSerializer {
     private XMLInputFactory inputFactory;

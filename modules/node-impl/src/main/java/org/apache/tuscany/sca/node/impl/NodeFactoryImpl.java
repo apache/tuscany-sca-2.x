@@ -541,7 +541,7 @@ public class NodeFactoryImpl extends NodeFactory {
         // Create a top level composite to host our composite
         // This is temporary to make the activator happy
         Composite domainComposite = assemblyFactory.createComposite();
-        domainComposite.setName(new QName(Base.SCA11_NS, ""));
+        domainComposite.setName(Composite.DOMAIN_COMPOSITE);
         domainComposite.setURI(Base.SCA11_NS);
 
         for (Contribution contribution : contributions) {

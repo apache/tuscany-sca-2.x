@@ -25,6 +25,7 @@ import java.io.Writer;
 
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.EndpointReference;
+import org.apache.tuscany.sca.context.CompositeContext;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.oasisopen.sca.ComponentContext;
 import org.oasisopen.sca.ServiceReference;
@@ -102,4 +103,6 @@ public interface RuntimeComponentContext extends ComponentContext {
     <B> ServiceReference<B> createSelfReference(Class<B> businessInterface, ComponentService service);
     
     ExtensionPointRegistry getExtensionPointRegistry();
+    CompositeActivator getCompositeActivator();
+    CompositeContext getCompositeContext();
 }

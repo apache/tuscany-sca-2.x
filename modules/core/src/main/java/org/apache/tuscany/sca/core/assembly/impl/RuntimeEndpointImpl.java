@@ -27,7 +27,7 @@ import java.io.ObjectOutput;
 import org.apache.tuscany.sca.assembly.impl.EndpointImpl;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
-import org.apache.tuscany.sca.core.assembly.EndpointSerializer;
+import org.apache.tuscany.sca.runtime.EndpointSerializer;
 
 /**
  * Runtime model for Endpoint that supports java serialization
