@@ -56,6 +56,8 @@ public class ScopeRegistryImpl implements ScopeRegistry {
             Scope scope = provider.getScope();
             if (scope == null) {
                 scope = Scope.STATELESS;
+            } else if (scope.equals(Scope.INVALID)) {
+            	return null;
             }
             ScopeContainerFactory factory = scopeCache.get(scope);
             ScopeContainer container = factory.createScopeContainer(component);

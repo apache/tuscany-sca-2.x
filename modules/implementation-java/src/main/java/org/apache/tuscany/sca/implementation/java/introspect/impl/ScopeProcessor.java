@@ -44,19 +44,20 @@ public class ScopeProcessor extends BaseJavaClassVisitor {
             type.setJavaScope(JavaScopeImpl.STATELESS);
             return;
         }
+        
         String name = annotation.value();
         JavaScopeImpl scope;
         if ("COMPOSITE".equals(name)) {
             scope = JavaScopeImpl.COMPOSITE;
-        } else if ("SESSION".equals(name)) {
-            scope = JavaScopeImpl.SESSION;
-        } else if ("CONVERSATION".equals(name)) {
-            scope = JavaScopeImpl.CONVERSATION;
-        } else if ("REQUEST".equals(name)) {
-            scope = JavaScopeImpl.REQUEST;
+        } else if ("STATELESS".equals(name)) {
+            scope = JavaScopeImpl.STATELESS;
         } else {
-            scope = new JavaScopeImpl(name);
+            scope = JavaScopeImpl.INVALID;
         }
         type.setJavaScope(scope);
+        
+        if (type.getJavaScope().equals(JavaScopeImpl.INVALID)) {
+        	throw new IntrospectionException("Invalid scope :" + name + " for " + type.getName());
+        }
     }
 }

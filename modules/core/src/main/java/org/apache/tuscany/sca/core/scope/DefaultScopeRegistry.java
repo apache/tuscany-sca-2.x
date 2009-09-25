@@ -20,7 +20,6 @@
 package org.apache.tuscany.sca.core.scope;
 
 import org.apache.tuscany.sca.core.scope.impl.CompositeScopeContainerFactory;
-import org.apache.tuscany.sca.core.scope.impl.RequestScopeContainerFactory;
 import org.apache.tuscany.sca.core.scope.impl.ScopeRegistryImpl;
 import org.apache.tuscany.sca.core.scope.impl.StatelessScopeContainerFactory;
 
@@ -33,9 +32,7 @@ public class DefaultScopeRegistry extends ScopeRegistryImpl implements ScopeRegi
 
     public DefaultScopeRegistry() {
         ScopeContainerFactory[] factories =
-            new ScopeContainerFactory[] {new CompositeScopeContainerFactory(), new StatelessScopeContainerFactory(),
-                                         new RequestScopeContainerFactory(),
-            };
+            new ScopeContainerFactory[] {new CompositeScopeContainerFactory(), new StatelessScopeContainerFactory()};
         for (ScopeContainerFactory f : factories) {
             register(f);
         }

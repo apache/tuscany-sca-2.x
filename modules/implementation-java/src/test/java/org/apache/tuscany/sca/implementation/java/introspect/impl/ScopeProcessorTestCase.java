@@ -50,7 +50,7 @@ public class ScopeProcessorTestCase {
         ScopeProcessor processor = new ScopeProcessor(new DefaultAssemblyFactory());
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         processor.visitClass(Session.class, type);
-        assertEquals(JavaScopeImpl.SESSION, type.getJavaScope());
+        assertEquals(JavaScopeImpl.INVALID, type.getJavaScope());
     }
 
     @Test
@@ -58,7 +58,7 @@ public class ScopeProcessorTestCase {
         ScopeProcessor processor = new ScopeProcessor(new DefaultAssemblyFactory());
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         processor.visitClass(Conversation.class, type);
-        assertEquals(JavaScopeImpl.CONVERSATION, type.getJavaScope());
+        assertEquals(JavaScopeImpl.INVALID, type.getJavaScope());
     }
 
     @Test
@@ -66,7 +66,7 @@ public class ScopeProcessorTestCase {
         ScopeProcessor processor = new ScopeProcessor(new DefaultAssemblyFactory());
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         processor.visitClass(Request.class, type);
-        assertEquals(JavaScopeImpl.REQUEST, type.getJavaScope());
+        assertEquals(JavaScopeImpl.INVALID, type.getJavaScope());
     }
 
     @Test

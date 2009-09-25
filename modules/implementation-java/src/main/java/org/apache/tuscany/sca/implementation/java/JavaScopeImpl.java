@@ -25,12 +25,8 @@ package org.apache.tuscany.sca.implementation.java;
  */
 public class JavaScopeImpl {
     public static final JavaScopeImpl STATELESS = new JavaScopeImpl("STATELESS");
-    public static final JavaScopeImpl REQUEST = new JavaScopeImpl("REQUEST");
-    public static final JavaScopeImpl SESSION = new JavaScopeImpl("SESSION");
-    public static final JavaScopeImpl CONVERSATION = new JavaScopeImpl("CONVERSATION");
     public static final JavaScopeImpl COMPOSITE = new JavaScopeImpl("COMPOSITE");
-    public static final JavaScopeImpl SYSTEM = new JavaScopeImpl("SYSTEM");
-    public static final JavaScopeImpl UNDEFINED = new JavaScopeImpl("UNDEFINED");
+    public static final JavaScopeImpl INVALID = new JavaScopeImpl("INVALID");
 
     private String scope;
 

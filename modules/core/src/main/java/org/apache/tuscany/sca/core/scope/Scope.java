@@ -25,12 +25,8 @@ package org.apache.tuscany.sca.core.scope;
  */
 public class Scope {
     public static final Scope STATELESS = new Scope("STATELESS");
-    public static final Scope REQUEST = new Scope("REQUEST");
-    public static final Scope SESSION = new Scope("SESSION");
-    public static final Scope CONVERSATION = new Scope("CONVERSATION");
     public static final Scope COMPOSITE = new Scope("COMPOSITE");
-    public static final Scope SYSTEM = new Scope("SYSTEM");
-    public static final Scope UNDEFINED = new Scope("UNDEFINED");
+    public static final Scope INVALID = new Scope("INVALID");
 
     private String scope;
 
