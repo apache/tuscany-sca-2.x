@@ -67,7 +67,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Callback;
@@ -113,11 +112,9 @@ import org.w3c.dom.Document;
  */
 public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArtifactProcessor<Composite> {
     private XPathHelper xpathHelper;
-    private XPathFactory xPathFactory;
     private PolicyFactory intentAttachPointTypeFactory;
     private StAXAttributeProcessor<Object> extensionAttributeProcessor;
     private ContributionFactory contributionFactory;
-
 
     /**
      * Construct a new composite processor
@@ -126,17 +123,14 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
      * @param extensionProcessor
      */
     public CompositeProcessor(ExtensionPointRegistry extensionPoints,
-			StAXArtifactProcessor extensionProcessor,
-			StAXAttributeProcessor extensionAttributeProcessor,
-			Monitor monitor) {
+                              StAXArtifactProcessor extensionProcessor,
+                              StAXAttributeProcessor extensionAttributeProcessor,
+                              Monitor monitor) {
 
-    	this(modelFactories(extensionPoints),
-    		extensionProcessor,
-    		extensionAttributeProcessor,
-    		monitor(extensionPoints));
+        this(modelFactories(extensionPoints), extensionProcessor, extensionAttributeProcessor, monitor(extensionPoints));
 
         this.xpathHelper = XPathHelper.getInstance(extensionPoints);
-    	this.extensionAttributeProcessor = extensionAttributeProcessor;
+        this.extensionAttributeProcessor = extensionAttributeProcessor;
     }
 
     /**
@@ -147,13 +141,12 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
      * @param monitor
      */
     private CompositeProcessor(FactoryExtensionPoint modelFactories,
-             StAXArtifactProcessor extensionProcessor,
-             StAXAttributeProcessor extensionAttributeProcessor,
-             Monitor monitor) {
+                               StAXArtifactProcessor extensionProcessor,
+                               StAXAttributeProcessor extensionAttributeProcessor,
+                               Monitor monitor) {
 
-    	super(modelFactories, extensionProcessor, monitor);
+        super(modelFactories, extensionProcessor, monitor);
         this.intentAttachPointTypeFactory = modelFactories.getFactory(PolicyFactory.class);
-        this.xPathFactory = modelFactories.getFactory(XPathFactory.class);
         this.contributionFactory = modelFactories.getFactory(ContributionFactory.class);
         this.extensionAttributeProcessor = extensionAttributeProcessor;
 
@@ -190,12 +183,12 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
 
                             composite.setName(new QName(getString(reader, TARGET_NAMESPACE), getString(reader, NAME)));
 
-                            if(!isSet(reader, TARGET_NAMESPACE)){
+                            if (!isSet(reader, TARGET_NAMESPACE)) {
                                 // spec says that a composite must have a namespace
                                 warning("NoCompositeNamespace", composite, composite.getName().toString());
                             }
 
-                            if(isSet(reader, AUTOWIRE)) {
+                            if (isSet(reader, AUTOWIRE)) {
                                 composite.setAutowire(getBoolean(reader, AUTOWIRE));
                             }
 
@@ -224,7 +217,8 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                                 componentService.setName(getString(reader, NAME));
 
                                 //handle extension attributes
-                                this.readExtendedAttributes(reader, name, componentService, extensionAttributeProcessor);
+                                this
+                                    .readExtendedAttributes(reader, name, componentService, extensionAttributeProcessor);
 
                                 component.getServices().add(componentService);
                                 policyProcessor.readPolicies(contract, reader);
@@ -260,7 +254,8 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                                 }
 
                                 //handle extension attributes
-                                this.readExtendedAttributes(reader, name, compositeService, extensionAttributeProcessor);
+                                this
+                                    .readExtendedAttributes(reader, name, compositeService, extensionAttributeProcessor);
 
                                 composite.getServices().add(compositeService);
                                 policyProcessor.readPolicies(contract, reader);
@@ -285,7 +280,10 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                                 componentReference.setWiredByImpl(getBoolean(reader, WIRED_BY_IMPL));
 
                                 //handle extension attributes
-                                this.readExtendedAttributes(reader, name, componentReference, extensionAttributeProcessor);
+                                this.readExtendedAttributes(reader,
+                                                            name,
+                                                            componentReference,
+                                                            extensionAttributeProcessor);
 
                                 component.getReferences().add(componentReference);
                                 policyProcessor.readPolicies(contract, reader);
@@ -319,7 +317,10 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                                 compositeReference.setWiredByImpl(getBoolean(reader, WIRED_BY_IMPL));
 
                                 //handle extension attributes
-                                this.readExtendedAttributes(reader, name, compositeReference, extensionAttributeProcessor);
+                                this.readExtendedAttributes(reader,
+                                                            name,
+                                                            compositeReference,
+                                                            extensionAttributeProcessor);
 
                                 composite.getReferences().add(compositeReference);
                                 policyProcessor.readPolicies(contract, reader);
@@ -332,7 +333,7 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                                 componentProperty = assemblyFactory.createComponentProperty();
                                 property = componentProperty;
                                 String source = getString(reader, SOURCE);
-                                if(source!=null) {
+                                if (source != null) {
                                     source = source.trim();
                                 }
                                 componentProperty.setSource(source);
@@ -350,7 +351,7 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                                             source = ".";
                                         }
                                     }
- 
+
                                     try {
                                         componentProperty.setSourceXPathExpression(xpathHelper.compile(reader
                                             .getNamespaceContext(), source));
@@ -363,13 +364,18 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                                 componentProperty.setFile(getString(reader, FILE));
 
                                 //handle extension attributes
-                                this.readExtendedAttributes(reader, name, componentProperty, extensionAttributeProcessor);
+                                this.readExtendedAttributes(reader,
+                                                            name,
+                                                            componentProperty,
+                                                            extensionAttributeProcessor);
 
                                 policyProcessor.readPolicies(property, reader);
                                 readAbstractProperty(componentProperty, reader);
 
                                 // Read the property value
-                                Document value = readPropertyValue(property.getXSDElement(), property.getXSDType(), property.isMany(), reader);
+                                Document value =
+                                    readPropertyValue(property.getXSDElement(), property.getXSDType(), property
+                                        .isMany(), reader);
                                 property.setValue(value);
 
                                 component.getProperties().add(componentProperty);
@@ -381,7 +387,9 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                                 readAbstractProperty(property, reader);
 
                                 // Read the property value
-                                Document value = readPropertyValue(property.getXSDElement(), property.getXSDType(), property.isMany(), reader);
+                                Document value =
+                                    readPropertyValue(property.getXSDElement(), property.getXSDType(), property
+                                        .isMany(), reader);
                                 property.setValue(value);
 
                                 composite.getProperties().add(property);
@@ -407,7 +415,7 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                             }
 
                             //handle extension attributes
-                           this.readExtendedAttributes(reader, name, component, extensionAttributeProcessor);
+                            this.readExtendedAttributes(reader, name, component, extensionAttributeProcessor);
 
                             component.setConstrainingType(readConstrainingType(reader));
                             composite.getComponents().add(component);
@@ -475,14 +483,14 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                                         contract.setInterfaceContract((InterfaceContract)extension);
                                     } else {
                                         if (name.getNamespaceURI().equals(SCA11_NS)) {
-                                        	error("UnexpectedInterfaceElement", extension);
+                                            error("UnexpectedInterfaceElement", extension);
                                             //throw new ContributionReadException("Unexpected <interface> element found. It should appear inside a <service> or <reference> element");
                                         } else {
                                             composite.getExtensions().add(extension);
                                         }
                                     }
                                 } else if (extension instanceof Binding) {
-                                    if ( extension instanceof PolicySubject ) {
+                                    if (extension instanceof PolicySubject) {
                                         ExtensionType bindingType = intentAttachPointTypeFactory.createBindingType();
                                         bindingType.setType(name);
                                         bindingType.setUnresolved(true);
@@ -497,7 +505,7 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                                             contract.getBindings().add((Binding)extension);
                                         } else {
                                             if (name.getNamespaceURI().equals(SCA11_NS)) {
-                                            	error("UnexpectedBindingElement", extension);
+                                                error("UnexpectedBindingElement", extension);
                                                 //throw new ContributionReadException("Unexpected <binding> element found. It should appear inside a <service> or <reference> element");
                                             } else {
                                                 composite.getExtensions().add(extension);
@@ -506,8 +514,9 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                                     }
 
                                 } else if (extension instanceof Implementation) {
-                                    if ( extension instanceof PolicySubject ) {
-                                        ExtensionType implType = intentAttachPointTypeFactory.createImplementationType();
+                                    if (extension instanceof PolicySubject) {
+                                        ExtensionType implType =
+                                            intentAttachPointTypeFactory.createImplementationType();
                                         implType.setType(name);
                                         implType.setUnresolved(true);
                                         ((PolicySubject)extension).setExtensionType(implType);
@@ -517,7 +526,7 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                                         component.setImplementation((Implementation)extension);
                                     } else {
                                         if (name.getNamespaceURI().equals(SCA11_NS)) {
-                                        	error("UnexpectedImplementationElement", extension);
+                                            error("UnexpectedImplementationElement", extension);
                                             //throw new ContributionReadException("Unexpected <implementation> element found. It should appear inside a <component> element");
                                         } else {
                                             composite.getExtensions().add(extension);
@@ -578,8 +587,7 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                     reader.next();
                 }
             }
-        }
-        catch (XMLStreamException e) {
+        } catch (XMLStreamException e) {
             ContributionReadException ex = new ContributionReadException(e);
             error("XMLStreamException", reader, ex);
         }
@@ -587,7 +595,8 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
         return composite;
     }
 
-    public void write(Composite composite, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
+    public void write(Composite composite, XMLStreamWriter writer) throws ContributionWriteException,
+        XMLStreamException {
 
         // Write <composite> element
         writeStartDocument(writer,
@@ -604,11 +613,8 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
 
         // Write <include> elements
         for (Composite include : composite.getIncludes()) {
-            String uri = include.isUnresolved()? include.getURI() : null;
-            writeStart(writer,
-                       INCLUDE,
-                       new XAttr(NAME, include.getName()),
-                       new XAttr(URI, uri));
+            String uri = include.isUnresolved() ? include.getURI() : null;
+            writeStart(writer, INCLUDE, new XAttr(NAME, include.getName()), new XAttr(URI, uri));
 
             //write extended attributes
             this.writeExtendedAttributes(writer, include, extensionAttributeProcessor);
@@ -631,12 +637,14 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
             } else {
                 promote = null;
             }
-            writeStart(writer, SERVICE, new XAttr(NAME, service.getName()), new XAttr(PROMOTE, promote),
+            writeStart(writer,
+                       SERVICE,
+                       new XAttr(NAME, service.getName()),
+                       new XAttr(PROMOTE, promote),
                        policyProcessor.writePolicies(service));
 
             //write extended attributes
             this.writeExtendedAttributes(writer, service, extensionAttributeProcessor);
-
 
             // Write service interface
             extensionProcessor.write(service.getInterfaceContract(), writer);
@@ -649,8 +657,7 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
             // Write <callback> element
             if (service.getCallback() != null) {
                 Callback callback = service.getCallback();
-                writeStart(writer, CALLBACK,
-                           policyProcessor.writePolicies(callback));
+                writeStart(writer, CALLBACK, policyProcessor.writePolicies(callback));
 
                 //write extended attributes
                 this.writeExtendedAttributes(writer, callback, extensionAttributeProcessor);
@@ -678,7 +685,9 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
 
         // Write <component> elements
         for (Component component : composite.getComponents()) {
-            writeStart(writer, COMPONENT, new XAttr(NAME, component.getName()),
+            writeStart(writer,
+                       COMPONENT,
+                       new XAttr(NAME, component.getName()),
                        new XAttr(URI, component.getURI()),
                        new XAttr(AUTOWIRE, component.getAutowire()),
                        policyProcessor.writePolicies(component));
@@ -705,8 +714,7 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
 
             // Write <service> elements
             for (ComponentService service : component.getServices()) {
-                writeStart(writer, SERVICE, new XAttr(NAME, service.getName()),
-                           policyProcessor.writePolicies(service));
+                writeStart(writer, SERVICE, new XAttr(NAME, service.getName()), policyProcessor.writePolicies(service));
 
                 //write extended attributes
                 this.writeExtendedAttributes(writer, service, extensionAttributeProcessor);
@@ -835,12 +843,14 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
 
             // Write list of promoted references
             List<String> promote = new ArrayList<String>();
-            for (ComponentReference promoted: compositeReference.getPromotedReferences()) {
+            for (ComponentReference promoted : compositeReference.getPromotedReferences()) {
                 promote.add(promoted.getName());
             }
 
             // Write <reference> element
-            writeStart(writer, REFERENCE, new XAttr(NAME, reference.getName()),
+            writeStart(writer,
+                       REFERENCE,
+                       new XAttr(NAME, reference.getName()),
                        new XAttr(PROMOTE, promote),
                        writeMultiplicity(reference),
                        policyProcessor.writePolicies(reference));
@@ -926,7 +936,7 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
         }
 
         for (Object extension : composite.getExtensions()) {
-        		extensionProcessor.write(extension, writer);
+            extensionProcessor.write(extension, writer);
         }
 
         writeEndDocument(writer);
@@ -934,101 +944,105 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
 
     public void resolve(Composite composite, ModelResolver resolver) throws ContributionResolveException {
 
-    	try {
-    		this.monitor.pushContext("Composite: " + composite.getName());
-	    	
-	        // Resolve constraining type
-	        ConstrainingType constrainingType = composite.getConstrainingType();
-	        if (constrainingType != null) {
-	            constrainingType = resolver.resolveModel(ConstrainingType.class, constrainingType);
-	            composite.setConstrainingType(constrainingType);
-	        }
-	
-	        // Resolve includes in the composite
-	        for (int i = 0, n = composite.getIncludes().size(); i < n; i++) {
-	            Composite include = composite.getIncludes().get(i);
-	            if (include != null) {
-	            	Composite resolved = resolver.resolveModel(Composite.class, include);
-	            	if (!resolved.isUnresolved()) {	                	
-	                	if ((composite.isLocal() && resolved.isLocal()) || (!composite.isLocal() && !resolved.isLocal())) {
-	                		composite.getIncludes().set(i, resolved);
-	                	} else {
-	                		ContributionResolveException ce = new ContributionResolveException("Error: Composite "+ composite.getName() +" can only include another composite with the identical @local attribute value");
-	                        error("ContributionResolveException", include, ce);
-	                	}
-	                } else {
-	                	ContributionResolveException ce = new ContributionResolveException("Error: Composite "+ include.getName() +" is not a valid composite within the domain");
+        try {
+            this.monitor.pushContext("Composite: " + composite.getName());
+
+            // Resolve constraining type
+            ConstrainingType constrainingType = composite.getConstrainingType();
+            if (constrainingType != null) {
+                constrainingType = resolver.resolveModel(ConstrainingType.class, constrainingType);
+                composite.setConstrainingType(constrainingType);
+            }
+
+            // Resolve includes in the composite
+            for (int i = 0, n = composite.getIncludes().size(); i < n; i++) {
+                Composite include = composite.getIncludes().get(i);
+                if (include != null) {
+                    Composite resolved = resolver.resolveModel(Composite.class, include);
+                    if (!resolved.isUnresolved()) {
+                        if ((composite.isLocal() && resolved.isLocal()) || (!composite.isLocal() && !resolved.isLocal())) {
+                            composite.getIncludes().set(i, resolved);
+                        } else {
+                            ContributionResolveException ce =
+                                new ContributionResolveException("Error: Composite " + composite.getName()
+                                    + " can only include another composite with the identical @local attribute value");
+                            error("ContributionResolveException", include, ce);
+                        }
+                    } else {
+                        ContributionResolveException ce =
+                            new ContributionResolveException("Error: Composite " + include.getName()
+                                + " is not a valid composite within the domain");
                         error("ContributionResolveException", include, ce);
-	                }
-	            }
-	        }
-	
-	        // Resolve extensions
-	        for (Object extension : composite.getExtensions()) {
-	            if (extension != null) {
-	                extensionProcessor.resolve(extension, resolver);
-	            }
-	        }
-	
-	        //Resolve composite services and references
-	        resolveContracts(composite, composite.getServices(), resolver);
-	        resolveContracts(composite, composite.getReferences(), resolver);
-	
-	        // Resolve component implementations, services and references
-	        for (Component component : composite.getComponents()) {
-	            constrainingType = component.getConstrainingType();
-	            if (constrainingType != null) {
-	                constrainingType = resolver.resolveModel(ConstrainingType.class, constrainingType);
-	                component.setConstrainingType(constrainingType);
-	            }
-	
-	            //resolve component services and references
-	            resolveContracts(component, component.getServices(), resolver);
-	            resolveContracts(component, component.getReferences(), resolver);
-	
-	            for (ComponentProperty componentProperty : component.getProperties()) {
-	                if (componentProperty.getFile() != null) {
-	                    Artifact artifact = contributionFactory.createArtifact();
-	                    artifact.setURI(componentProperty.getFile());
-	                    artifact = resolver.resolveModel(Artifact.class, artifact);
-	                    if (artifact.getLocation() != null) {
-	                        componentProperty.setFile(artifact.getLocation());
-	                    }
-	                }
-	            }
-	
-	            //resolve component implementation
-	            Implementation implementation = component.getImplementation();
-	            if (implementation != null) {
-	                //now resolve the implementation so that even if there is a shared instance
-	                //for this that is resolved, the specified intents and policysets are safe in the
-	                //component and not lost
-	                implementation = resolveImplementation(implementation, resolver);
-	                
-	                validatePropertyTypes(component, implementation);
-	
-	                component.setImplementation(implementation);
-	            }
-	
-	            //add model resolver to component
-	            if (component instanceof ResolverExtension) {
-	                ((ResolverExtension)component).setModelResolver(resolver);
-	            }
-	        }
-	
-	        // Add model resolver to promoted components
-	        for (Service service : composite.getServices()) {
-	            CompositeService compositeService = (CompositeService)service;
-	            Component promotedComponent = compositeService.getPromotedComponent();
-	            if (promotedComponent instanceof ResolverExtension) {
-	                ((ResolverExtension)promotedComponent).setModelResolver(resolver);
-	            }
-	        } // end for
-        
-    	} finally {
-    		// Pop context
-    		this.monitor.popContext();
-    	} // end try 
+                    }
+                }
+            }
+
+            // Resolve extensions
+            for (Object extension : composite.getExtensions()) {
+                if (extension != null) {
+                    extensionProcessor.resolve(extension, resolver);
+                }
+            }
+
+            //Resolve composite services and references
+            resolveContracts(composite, composite.getServices(), resolver);
+            resolveContracts(composite, composite.getReferences(), resolver);
+
+            // Resolve component implementations, services and references
+            for (Component component : composite.getComponents()) {
+                constrainingType = component.getConstrainingType();
+                if (constrainingType != null) {
+                    constrainingType = resolver.resolveModel(ConstrainingType.class, constrainingType);
+                    component.setConstrainingType(constrainingType);
+                }
+
+                //resolve component services and references
+                resolveContracts(component, component.getServices(), resolver);
+                resolveContracts(component, component.getReferences(), resolver);
+
+                for (ComponentProperty componentProperty : component.getProperties()) {
+                    if (componentProperty.getFile() != null) {
+                        Artifact artifact = contributionFactory.createArtifact();
+                        artifact.setURI(componentProperty.getFile());
+                        artifact = resolver.resolveModel(Artifact.class, artifact);
+                        if (artifact.getLocation() != null) {
+                            componentProperty.setFile(artifact.getLocation());
+                        }
+                    }
+                }
+
+                //resolve component implementation
+                Implementation implementation = component.getImplementation();
+                if (implementation != null) {
+                    //now resolve the implementation so that even if there is a shared instance
+                    //for this that is resolved, the specified intents and policysets are safe in the
+                    //component and not lost
+                    implementation = resolveImplementation(implementation, resolver);
+
+                    validatePropertyTypes(component, implementation);
+
+                    component.setImplementation(implementation);
+                }
+
+                //add model resolver to component
+                if (component instanceof ResolverExtension) {
+                    ((ResolverExtension)component).setModelResolver(resolver);
+                }
+            }
+
+            // Add model resolver to promoted components
+            for (Service service : composite.getServices()) {
+                CompositeService compositeService = (CompositeService)service;
+                Component promotedComponent = compositeService.getPromotedComponent();
+                if (promotedComponent instanceof ResolverExtension) {
+                    ((ResolverExtension)promotedComponent).setModelResolver(resolver);
+                }
+            } // end for
+
+        } finally {
+            // Pop context
+            this.monitor.popContext();
+        } // end try 
     }
 
     /**
