@@ -106,11 +106,11 @@ import org.apache.tuscany.sca.work.WorkScheduler;
 import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
- *
+ * This class provides a node factory that can create multiple nodes that share the same 
+ * extension point registry
  */
 public class NodeFactoryImpl extends NodeFactory {
     protected static final Logger logger = Logger.getLogger(NodeImpl.class.getName());
-    private static final String SCA11_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.1";
 
     protected boolean inited;
     protected Map<Object, Node> nodes = new ConcurrentHashMap<Object, Node>();
