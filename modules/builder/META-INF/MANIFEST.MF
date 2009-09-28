@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bundle-Name: Apache Tuscany SCA Policy Attachment Builder
+Bundle-Name: Apache Tuscany SCA Model Builders
 Created-By: 1.6.0_07 (Sun Microsystems Inc.)
 Bundle-Vendor: The Apache Software Foundation
 Bundle-Version: 2.0.0
@@ -11,7 +11,6 @@ Import-Package: javax.xml.namespace,
  javax.xml.xpath,
  org.apache.tuscany.sca.assembly;version="2.0.0",
  org.apache.tuscany.sca.assembly.builder;version="2.0.0",
- org.apache.tuscany.sca.assembly.builder.impl;version="2.0.0";resolution:=optional,
  org.apache.tuscany.sca.common.xml.dom;version="2.0.0",
  org.apache.tuscany.sca.common.xml.stax;version="2.0.0",
  org.apache.tuscany.sca.common.xml.xpath;version="2.0.0",
@@ -19,9 +18,10 @@ Import-Package: javax.xml.namespace,
  org.apache.tuscany.sca.contribution.resolver;version="2.0.0";resolution:=optional,
  org.apache.tuscany.sca.core;version="2.0.0",
  org.apache.tuscany.sca.definitions;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef;version="2.0.0",
  org.apache.tuscany.sca.monitor;version="2.0.0",
  org.apache.tuscany.sca.policy;version="2.0.0",
  org.w3c.dom
-Bundle-SymbolicName: org.apache.tuscany.sca.policy.builder
+Bundle-SymbolicName: org.apache.tuscany.sca.builder
 Bundle-DocURL: http://www.apache.org/
 Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6

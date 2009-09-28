@@ -25,8 +25,8 @@
         <version>2.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>tuscany-policy-builder</artifactId>
-    <name>Apache Tuscany SCA Policy Attachment Builder</name>
+    <artifactId>tuscany-builder</artifactId>
+    <name>Apache Tuscany SCA Model Builders</name>
 
     <dependencies>
       

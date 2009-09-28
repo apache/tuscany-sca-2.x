@@ -33,9 +33,9 @@ import org.apache.tuscany.sca.assembly.Base;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
-import org.apache.tuscany.sca.assembly.builder.impl.CompositeBindingURIBuilderImpl;
-import org.apache.tuscany.sca.assembly.builder.impl.CompositeCloneBuilderImpl;
-import org.apache.tuscany.sca.assembly.builder.impl.CompositeIncludeBuilderImpl;
+import org.apache.tuscany.sca.builder.impl.CompositeCloneBuilderImpl;
+import org.apache.tuscany.sca.builder.impl.CompositeIncludeBuilderImpl;
+import org.apache.tuscany.sca.builder.impl.StructuralURIBuilderImpl;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
@@ -128,7 +128,7 @@ public class PolicyAttachmentTestCase {
 
         CompositeBuilder includeBuilder = new CompositeIncludeBuilderImpl();
         CompositeBuilder cloneBuilder = new CompositeCloneBuilderImpl();
-        CompositeBuilder uriBuilder = new CompositeBindingURIBuilderImpl(extensionPoints);
+        CompositeBuilder uriBuilder = new StructuralURIBuilderImpl(extensionPoints);
 
         /*
         CompositeBuilder includeBuilder =

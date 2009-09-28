@@ -14,4 +14,4 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License. 
-org.apache.tuscany.sca.policy.builder.impl.PolicyAttachmentBuilderImpl;id=org.apache.tuscany.sca.policy.builder.PolicyAttachmentBuilder
+org.apache.tuscany.sca.builder.impl.ModelBuilderImpl;id=org.apache.tuscany.sca.assembly.builder.CompositeBuilder
