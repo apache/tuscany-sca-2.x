@@ -22,18 +22,19 @@ package org.apache.tuscany.sca.assembly.xml;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 
 import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
-import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
-import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
+import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
@@ -43,12 +44,7 @@ import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.definitions.Definitions;
-import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
-import org.apache.tuscany.sca.monitor.DefaultMonitorFactory;
-import org.apache.tuscany.sca.monitor.Monitor;
-import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -63,8 +59,6 @@ public class WireTestCase {
     private static StAXArtifactProcessor<Object> staxProcessor;
     private static ModelResolver resolver; 
     private static URLArtifactProcessor<Definitions> policyDefinitionsProcessor;
-    private static CompositeBuilder compositeBuilder;
-    private static Monitor monitor;
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -73,17 +67,10 @@ public class WireTestCase {
         StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null, null);
         resolver = new DefaultModelResolver();
-        
-        MonitorFactory monitorFactory = new DefaultMonitorFactory();
-        monitor = monitorFactory.createMonitor();
-        
+
         FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         SCABindingFactory scaBindingFactory = new TestSCABindingFactoryImpl();
         modelFactories.addFactory(scaBindingFactory);
-        compositeBuilder = extensionPoints.getExtensionPoint(BuilderExtensionPoint.class).getCompositeBuilder("org.apache.tuscany.sca.assembly.builder.CompositeBuilder");
-
-        UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
-        InterfaceContractMapper mapper = utilities.getUtility(InterfaceContractMapper.class);
 
         URLArtifactProcessorExtensionPoint documentProcessors = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
         policyDefinitionsProcessor = documentProcessors.getProcessor(Definitions.class);
@@ -112,7 +99,6 @@ public class WireTestCase {
         policyDefinitionsProcessor.resolve(scaDefns, resolver);
         
         staxProcessor.resolve(composite, resolver);
-        compositeBuilder.build(composite, null, monitor);
         
         assertEquals(composite.getConstrainingType(), constrainingType);
         assertEquals(composite.getComponents().get(0).getConstrainingType(), constrainingType);
@@ -120,17 +106,11 @@ public class WireTestCase {
 
     @Test
     public void testResolveComposite() throws Exception {
-        InputStream is = getClass().getResourceAsStream("Calculator.composite");
-        XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-        Composite nestedComposite = (Composite)staxProcessor.read(reader);
-        is.close();
+        Composite nestedComposite = readComposite("Calculator.composite");
         assertNotNull(nestedComposite);
         resolver.addModel(nestedComposite);
 
-        is = getClass().getResourceAsStream("TestAllCalculator.composite");
-        reader = inputFactory.createXMLStreamReader(is);
-        Composite composite = (Composite)staxProcessor.read(reader);
-        is.close();
+        Composite composite = readComposite("TestAllCalculator.composite");
         
         URL url = getClass().getResource("test_definitions.xml");
         URI uri = URI.create("test_definitions.xml");
@@ -140,9 +120,16 @@ public class WireTestCase {
         policyDefinitionsProcessor.resolve(scaDefns, resolver);
         
         staxProcessor.resolve(composite, resolver);
-        compositeBuilder.build(composite, null, monitor);
         
         assertEquals(composite.getComponents().get(2).getImplementation(), nestedComposite);
+    }
+
+    private Composite readComposite(String resource) throws XMLStreamException, ContributionReadException, IOException {
+        InputStream is = getClass().getResourceAsStream(resource);
+        XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
+        Composite composite = (Composite)staxProcessor.read(reader);
+        is.close();
+        return composite;
     }
 
 }

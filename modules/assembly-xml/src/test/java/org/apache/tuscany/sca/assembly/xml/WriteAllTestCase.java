@@ -36,8 +36,6 @@ import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
-import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
-import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
@@ -46,12 +44,7 @@ import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.definitions.Definitions;
-import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
-import org.apache.tuscany.sca.monitor.DefaultMonitorFactory;
-import org.apache.tuscany.sca.monitor.Monitor;
-import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -65,9 +58,7 @@ public class WriteAllTestCase {
     private static XMLOutputFactory outputFactory;
     private static ExtensibleStAXArtifactProcessor staxProcessor;
     private static ModelResolver resolver; 
-    private static CompositeBuilder compositeBuilder;
     private static URLArtifactProcessor<Definitions> policyDefinitionsProcessor;
-    private static Monitor monitor;
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -81,14 +72,7 @@ public class WriteAllTestCase {
         FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         SCABindingFactory scaBindingFactory = new TestSCABindingFactoryImpl();
         modelFactories.addFactory(scaBindingFactory);
-        compositeBuilder = extensionPoints.getExtensionPoint(BuilderExtensionPoint.class).getCompositeBuilder("org.apache.tuscany.sca.assembly.builder.CompositeBuilder");
 
-        UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
-        InterfaceContractMapper mapper = utilities.getUtility(InterfaceContractMapper.class);
-        
-        MonitorFactory monitorFactory = new DefaultMonitorFactory();
-        monitor = monitorFactory.createMonitor();
-        
         URLArtifactProcessorExtensionPoint documentProcessors = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
         policyDefinitionsProcessor = documentProcessors.getProcessor(Definitions.class);
     }
@@ -123,7 +107,7 @@ public class WriteAllTestCase {
         policyDefinitionsProcessor.resolve(scaDefns, resolver);
         
         staxProcessor.resolve(composite, resolver);
-        compositeBuilder.build(composite, null, monitor);
+        // compositeBuilder.build(composite, null, monitor);
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         staxProcessor.write(composite, bos);
     }

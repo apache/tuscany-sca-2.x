@@ -29,8 +29,9 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://docs.oasis-open.org/ns/opencsa/sca/200903 http://docs.oasis-open.org/ns/opencsa/sca/200903 ">
 	
+    <!-- 
   <include name="tns:CompleteDivide"/>
-  
+   -->
   <service name="DivideService" policySets="" promote="CalculatorDivideComponent/DivideService" requires="">
     <interface.java interface="calculator.DivideService" callbackInterface="calculator.DivideCallback"/>
     <operation name="divide" policySets="" requires=""/>

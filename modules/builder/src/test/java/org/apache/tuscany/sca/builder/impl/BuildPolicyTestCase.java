@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.tuscany.sca.assembly.xml;
+package org.apache.tuscany.sca.builder.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -31,12 +31,10 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
-import org.apache.tuscany.sca.assembly.SCABindingFactory;
-import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
+import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.contribution.processor.DefaultURLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
@@ -48,7 +46,6 @@ import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.definitions.Definitions;
-import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.policy.PolicySubject;
@@ -73,8 +70,7 @@ public class BuildPolicyTestCase {
     public static void setUp() throws Exception {
         DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
         FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
-        SCABindingFactory scaBindingFactory = new TestSCABindingFactoryImpl();
-        modelFactories.addFactory(scaBindingFactory);
+
         compositeBuilder =
             extensionPoints.getExtensionPoint(BuilderExtensionPoint.class)
                 .getCompositeBuilder("org.apache.tuscany.sca.assembly.builder.CompositeBuilder");
@@ -86,8 +82,6 @@ public class BuildPolicyTestCase {
         MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
         monitor = monitorFactory.createMonitor();
 
-        InterfaceContractMapper mapper = utilities.getUtility(InterfaceContractMapper.class);
-
         URLArtifactProcessorExtensionPoint documentProcessors =
             new DefaultURLArtifactProcessorExtensionPoint(extensionPoints);
         documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors, null);
@@ -97,19 +91,13 @@ public class BuildPolicyTestCase {
             extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         staxProcessors.addArtifactProcessor(new TestPolicyProcessor());
 
-        URL url = BuildPolicyTestCase.class.getResource("CalculatorComponent.constrainingType");
-        URI uri = URI.create("CalculatorComponent.constrainingType");
-        ConstrainingType constrainingType = (ConstrainingType)documentProcessor.read(null, uri, url);
-        assertNotNull(constrainingType);
-        resolver.addModel(constrainingType);
-
-        url = BuildPolicyTestCase.class.getResource("TestAllPolicyCalculator.composite");
-        uri = URI.create("TestAllCalculator.composite");
+        URL url = BuildPolicyTestCase.class.getResource("Calculator.composite");
+        URI uri = URI.create("TestAllCalculator.composite");
         composite = (Composite)documentProcessor.read(null, uri, url);
         assertNotNull(composite);
 
-        url = BuildPolicyTestCase.class.getResource("another_test_definitions.xml");
-        uri = URI.create("another_test_definitions.xml");
+        url = BuildPolicyTestCase.class.getResource("test_definitions.xml");
+        uri = URI.create("test_definitions.xml");
         Definitions definitions = (Definitions)policyDefinitionsProcessor.read(null, uri, url);
         assertNotNull(definitions);
         policyDefinitions.add(definitions);

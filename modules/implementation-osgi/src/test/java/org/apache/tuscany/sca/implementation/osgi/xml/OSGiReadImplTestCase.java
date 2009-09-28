@@ -34,7 +34,6 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
@@ -57,7 +56,6 @@ public class OSGiReadImplTestCase {
     private static XMLInputFactory inputFactory;
     private static XMLOutputFactory outputFactory;
     private static StAXArtifactProcessor<Object> staxProcessor;
-    private static CompositeBuilder compositeBuilder;
 
     @BeforeClass
     public static void setUp() throws Exception {

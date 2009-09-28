@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.assembly.builder.impl;
+package org.apache.tuscany.sca.builder.impl;
 
 import static org.junit.Assert.assertTrue;
 
