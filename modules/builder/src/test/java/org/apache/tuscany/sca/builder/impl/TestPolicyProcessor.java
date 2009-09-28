@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.policy.builder.impl;
+package org.apache.tuscany.sca.builder.impl;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;

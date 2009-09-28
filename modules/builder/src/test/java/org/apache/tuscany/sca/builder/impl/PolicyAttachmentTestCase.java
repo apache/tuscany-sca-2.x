@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.policy.builder.impl;
+package org.apache.tuscany.sca.builder.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,6 +35,7 @@ import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.builder.impl.CompositeCloneBuilderImpl;
 import org.apache.tuscany.sca.builder.impl.CompositeIncludeBuilderImpl;
+import org.apache.tuscany.sca.builder.impl.PolicyAttachmentBuilderImpl;
 import org.apache.tuscany.sca.builder.impl.StructuralURIBuilderImpl;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;

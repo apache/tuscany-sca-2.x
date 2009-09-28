@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.policy.builder.impl;
+package org.apache.tuscany.sca.builder.impl;
 
 import javax.xml.namespace.QName;
 

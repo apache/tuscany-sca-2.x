@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.tuscany.sca.policy.builder.impl;
+package org.apache.tuscany.sca.builder.impl;
 
 import static javax.xml.XMLConstants.DEFAULT_NS_PREFIX;
 import static javax.xml.XMLConstants.XMLNS_ATTRIBUTE;
