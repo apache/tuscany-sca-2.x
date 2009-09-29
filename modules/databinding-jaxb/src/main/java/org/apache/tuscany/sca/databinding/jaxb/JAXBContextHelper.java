@@ -284,7 +284,7 @@ public final class JAXBContextHelper {
             }
         } else if (type instanceof GenericArrayType) {
             GenericArrayType gType = (GenericArrayType)type;
-            findClasses(gType, classSet, visited);
+            findClasses(gType.getGenericComponentType(), classSet, visited);
         } else if (type instanceof WildcardType) {
             WildcardType wType = (WildcardType)type;
             for (Type t : wType.getLowerBounds()) {
