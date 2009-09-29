@@ -19,7 +19,10 @@
 
 package org.apache.tuscany.sca.endpoint.wrapper;
 
+import java.lang.reflect.Constructor;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.assembly.Endpoint;
@@ -27,8 +30,8 @@ import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.LifeCycleListener;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
-import org.apache.tuscany.sca.endpoint.impl.EndpointRegistryImpl;
-import org.apache.tuscany.sca.endpoint.tribes.ReplicatedEndpointRegistry;
+import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
+import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 import org.apache.tuscany.sca.management.ConfigAttributes;
 import org.apache.tuscany.sca.runtime.EndpointListener;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
@@ -38,7 +41,7 @@ import org.apache.tuscany.sca.runtime.EndpointRegistry;
  */
 public class EndpointRegistryWrapper implements EndpointRegistry, LifeCycleListener {
     private final Logger logger = Logger.getLogger(EndpointRegistryWrapper.class.getName());
-    
+
     private ExtensionPointRegistry extensionPoints;
     private EndpointRegistry delegateEndpointRegistry;
 
@@ -49,12 +52,34 @@ public class EndpointRegistryWrapper implements EndpointRegistry, LifeCycleListe
     public void start() {
         UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
         ConfigAttributes domainConfig = utilities.getUtility(ConfigAttributes.class);
-        if (domainConfig != null && "tribes".equals(domainConfig.getAttributes().get("domainScheme"))) {
-            logger.info("Using Tribes based EndpointRegistry");
-            delegateEndpointRegistry = new ReplicatedEndpointRegistry(extensionPoints, null);
-        } else {
-            logger.info("Using in-VM EndpointRegistry");
-            delegateEndpointRegistry = new EndpointRegistryImpl(extensionPoints);
+        String scheme = null;
+        if (domainConfig != null) {
+            scheme = domainConfig.getAttributes().get("domainScheme");
+        }
+        if (scheme == null) {
+            scheme = "vm";
+        }
+        try {
+            Collection<ServiceDeclaration> sds =
+                ServiceDiscovery.getInstance().getServiceDeclarations(EndpointRegistry.class);
+            for (ServiceDeclaration sd : sds) {
+                if (scheme.equals(sd.getAttributes().get("scheme"))) {
+                    logger.info("EndpointRegistry found: " + sd.getClassName());
+                    Class<?> implClass = sd.loadClass();
+                    Constructor<?> constructor = null;
+                    try {
+                        constructor = implClass.getConstructor(ExtensionPointRegistry.class);
+                        delegateEndpointRegistry = (EndpointRegistry)constructor.newInstance(extensionPoints);
+                    } catch (NoSuchMethodException e) {
+                        constructor = implClass.getConstructor(ExtensionPointRegistry.class, Map.class);
+                        delegateEndpointRegistry =
+                            (EndpointRegistry)constructor.newInstance(extensionPoints, sd.getAttributes());
+                    }
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
         }
         if (delegateEndpointRegistry instanceof LifeCycleListener) {
             ((LifeCycleListener)delegateEndpointRegistry).start();

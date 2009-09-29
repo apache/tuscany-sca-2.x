@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.tuscany.sca.endpoint.impl;
+package org.apache.tuscany.sca.core.assembly.impl;
 
 import java.util.List;
 

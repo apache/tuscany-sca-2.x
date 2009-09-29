@@ -10,10 +10,8 @@ Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Default Endpoint Wrapper
 Import-Package: org.apache.tuscany.sca.assembly;version="2.0.0";resolution:=optional,
- org.apache.tuscany.sca.assembly.builder;version="2.0.0";resolution:=optional,
  org.apache.tuscany.sca.core;version="2.0.0";resolution:=optional,
- org.apache.tuscany.sca.endpoint.impl;version="2.0.0",
- org.apache.tuscany.sca.endpoint.tribes;version="2.0.0",
+ org.apache.tuscany.sca.extensibility;version="2.0.0",
  org.apache.tuscany.sca.management;version="2.0.0",
  org.apache.tuscany.sca.runtime;version="2.0.0"
 Bundle-SymbolicName: org.apache.tuscany.sca.endpoint.wrapper

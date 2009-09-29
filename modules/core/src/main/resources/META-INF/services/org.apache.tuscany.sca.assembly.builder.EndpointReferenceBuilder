@@ -15,4 +15,4 @@
 # specific language governing permissions and limitations
 # under the License. 
 
-org.apache.tuscany.sca.endpoint.impl.EndpointReferenceBuilderImpl
+org.apache.tuscany.sca.core.assembly.impl.EndpointReferenceBuilderImpl

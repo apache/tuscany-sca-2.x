@@ -59,7 +59,6 @@
         <module>databinding-jaxb-axiom</module>
         <module>definitions-xml</module>
         <module>domain-node</module>
-        <module>endpoint</module>
         <module>endpoint-tribes</module>
         <module>endpoint-wrapper</module>
         <module>extensibility</module>

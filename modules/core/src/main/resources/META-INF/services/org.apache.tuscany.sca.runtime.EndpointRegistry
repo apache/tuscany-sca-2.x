@@ -15,4 +15,4 @@
 # specific language governing permissions and limitations
 # under the License.
 
-org.apache.tuscany.sca.endpoint.impl.EndpointRegistryImpl;ranking=100
+org.apache.tuscany.sca.core.assembly.impl.EndpointRegistryImpl;ranking=100,scheme=vm
