@@ -479,7 +479,7 @@ public abstract class BaseStAXArtifactProcessor {
                 }
                 str = String.valueOf(value);
             }
-            if (str.length() == 0) {
+            if (str.length() == 0 && (value instanceof Collection)) {
                 return;
             }
 

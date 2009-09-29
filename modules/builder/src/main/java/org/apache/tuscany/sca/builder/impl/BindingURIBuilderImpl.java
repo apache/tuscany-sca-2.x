@@ -21,7 +21,6 @@ package org.apache.tuscany.sca.builder.impl;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,33 +28,25 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
-import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.assembly.Implementation;
-import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
+import org.apache.tuscany.sca.assembly.builder.DeployedCompositeBuilder;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.monitor.Monitor;
-import org.apache.tuscany.sca.monitor.MonitorFactory;
 
 /**
  * Configuration of binding URIs.
  *
  * @version $Rev$ $Date$
  */
-public class BindingURIBuilderImpl {
-
-    private Monitor monitor;
+public class BindingURIBuilderImpl implements CompositeBuilder, DeployedCompositeBuilder {
 
     public BindingURIBuilderImpl(ExtensionPointRegistry registry) {
-        UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
-        MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
-        monitor = monitorFactory.createMonitor();
     }
 
     /**
@@ -63,10 +54,10 @@ public class BindingURIBuilderImpl {
      *
      * @param composite the composite to be configured
      */
-    protected void configureBindingURIsAndNames(Composite composite, Definitions definitions, Monitor monitor)
+    public Composite build(Composite composite, Definitions definitions, Monitor monitor)
         throws CompositeBuilderException {
         configureBindingURIs(composite, null, definitions, null, monitor);
-        configureBindingNames(composite, monitor);
+        return composite;
     }
 
     /**
@@ -77,11 +68,12 @@ public class BindingURIBuilderImpl {
      * @param composite the composite to be configured
      * @param defaultBindings list of default binding configurations
      */
-    protected void configureBindingURIs(Composite composite,
-                                        Definitions definitions,
-                                        Map<QName, List<String>> defaultBindings,
-                                        Monitor monitor) throws CompositeBuilderException {
+    public Composite build(Composite composite,
+                           Definitions definitions,
+                           Map<QName, List<String>> defaultBindings,
+                           Monitor monitor) throws CompositeBuilderException {
         configureBindingURIs(composite, null, definitions, defaultBindings, monitor);
+        return composite;
     }
 
     /**
@@ -137,8 +129,6 @@ public class BindingURIBuilderImpl {
             List<Service> compositeServices = composite.getServices();
             for (Service service : compositeServices) {
 
-                constructBindingNames(service, monitor);
-
                 // Initialize binding names and URIs
                 for (Binding binding : service.getBindings()) {
                     constructBindingURI(parentComponentURI, composite, service, binding, defaultBindings, monitor);
@@ -154,8 +144,6 @@ public class BindingURIBuilderImpl {
 
                     for (ComponentService service : component.getServices()) {
 
-                        constructBindingNames(service, monitor);
-
                         // Initialize binding names and URIs
                         for (Binding binding : service.getBindings()) {
                             constructBindingURI(component, service, binding, defaultBindings, monitor);
@@ -167,114 +155,6 @@ public class BindingURIBuilderImpl {
             }
         } finally {
             monitor.popContext();
-        }
-    }
-
-    /**
-     * Add default names for callback bindings and reference bindings.  Needs to be
-     * separate from configureBindingURIs() because configureBindingURIs() is called
-     * by NodeConfigurationServiceImpl as well as by CompositeBuilderImpl.
-     */
-    private void configureBindingNames(Composite composite, Monitor monitor) {
-
-        // Process nested composites recursively
-        for (Component component : composite.getComponents()) {
-
-            Implementation implementation = component.getImplementation();
-            if (implementation instanceof Composite) {
-
-                // Process nested composite
-                configureBindingNames((Composite)implementation, monitor);
-            }
-        }
-
-        // Initialize composite service callback binding names
-        for (Service service : composite.getServices()) {
-            constructBindingNames(service, monitor);
-        }
-
-        // Initialize composite reference binding names
-        for (Reference reference : composite.getReferences()) {
-            constructBindingNames(reference, monitor);
-        }
-
-        // Initialize component service and reference binding names
-        for (Component component : composite.getComponents()) {
-
-            // Initialize component service callback binding names
-            for (ComponentService service : component.getServices()) {
-                constructBindingNames(service, monitor);
-            }
-
-            // Initialize component reference binding names
-            for (ComponentReference reference : component.getReferences()) {
-                // Initialize binding names
-                constructBindingNames(reference, monitor);
-            }
-        }
-    }
-
-    /**
-     * If a binding name is not provided by the user, construct it based on the service
-     * or reference name
-     *
-     * @param contract the service or reference
-     */
-    private void constructBindingNames(Contract contract, Monitor monitor) {
-        List<Binding> bindings = contract.getBindings();
-        Map<String, Binding> bindingMap = new HashMap<String, Binding>();
-        for (Binding binding : bindings) {
-            // set the default binding name if one is required
-            // if there is no name on the binding then set it to the service or reference name
-            if (binding.getName() == null) {
-                binding.setName(contract.getName());
-            }
-            Binding existed = bindingMap.put(binding.getName(), binding);
-            // Check that multiple bindings do not have the same name
-            if (existed != null && existed != binding) {
-                if (contract instanceof Service) {
-                    Monitor.error(monitor, this, "assembly-validation-messages", "MultipleBindingsForService", contract
-                        .getName(), binding.getName());
-                } else {
-                    Monitor.error(monitor,
-                                  this,
-                                  "assembly-validation-messages",
-                                  "MultipleBindingsForReference",
-                                  contract.getName(),
-                                  binding.getName());
-                }
-            }
-        }
-
-        if (contract.getCallback() != null) {
-            bindings = contract.getCallback().getBindings();
-            bindingMap.clear();
-            for (Binding binding : bindings) {
-                // set the default binding name if one is required
-                // if there is no name on the binding then set it to the service or reference name
-                if (binding.getName() == null) {
-                    binding.setName(contract.getName());
-                }
-                Binding existed = bindingMap.put(binding.getName(), binding);
-                // Check that multiple bindings do not have the same name
-                if (existed != null && existed != binding) {
-                    if (contract instanceof Service) {
-                        Monitor.error(monitor,
-                                      this,
-                                      "assembly-validation-messages",
-                                      "MultipleBindingsForServiceCallback",
-                                      contract.getName(),
-                                      binding.getName());
-                    } else {
-                        Monitor.error(monitor,
-                                      this,
-                                      "assembly-validation-messages",
-                                      "MultipleBindingsForReferenceCallback",
-                                      contract.getName(),
-                                      binding.getName());
-                    }
-                }
-            }
         }
     }
 
@@ -504,6 +384,10 @@ public class BindingURIBuilderImpl {
             str = str.substring(1);
         }
         return URI.create(baseURI.toString() + str).normalize();
+    }
+
+    public String getID() {
+        return "org.apache.tuscany.sca.assembly.builder.BindingURIBuilder";
     }
 
 }

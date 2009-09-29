@@ -386,6 +386,7 @@ public class CompositeComponentTypeBuilderImpl {
     protected void createSCABinding(Contract contract, Definitions definitions) {
 
         SCABinding scaBinding = scaBindingFactory.createSCABinding();
+        scaBinding.setName(contract.getName());
 
         if (definitions != null) {
             for (ExtensionType attachPointType : definitions.getBindingTypes()) {

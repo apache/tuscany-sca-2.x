@@ -25,20 +25,11 @@ import javax.xml.namespace.QName;
 import junit.framework.Assert;
 
 import org.apache.tuscany.sca.assembly.Component;
-import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.assembly.Endpoint;
-import org.apache.tuscany.sca.assembly.EndpointReference;
-import org.apache.tuscany.sca.assembly.Implementation;
-import org.apache.tuscany.sca.assembly.Reference;
-import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
-import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
-import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -191,7 +182,7 @@ public class BuilderTestCase {
         "  Endpoint:  URI = ComponentB/ComponentD#service-binding(Service3/Service3) org.apache.tuscany.sca.assembly.impl.SCABindingImpl\n" +
         "  Endpoint:  URI = ComponentB/ComponentD#service-binding(Service3a/Service3a) org.apache.tuscany.sca.assembly.impl.SCABindingImpl\n" +
         "Endpoint:  URI = ComponentB#service-binding(Service2/Service2) org.apache.tuscany.sca.binding.ws.impl.WebServiceBindingImpl\n" +
-        "Endpoint:  URI = ComponentB#service-binding(Service2a/Service2a) org.apache.tuscany.sca.assembly.impl.SCABindingImpl\n";
+        "Endpoint:  URI = ComponentB#service-binding(Service2a/Service3a) org.apache.tuscany.sca.assembly.impl.SCABindingImpl\n";
 
         Assert.assertEquals(expectedStructure, structure);
         

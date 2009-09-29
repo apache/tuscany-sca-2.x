@@ -23,34 +23,43 @@ import static javax.xml.XMLConstants.DEFAULT_NS_PREFIX;
 import static javax.xml.XMLConstants.XMLNS_ATTRIBUTE;
 import static javax.xml.XMLConstants.XMLNS_ATTRIBUTE_NS_URI;
 
+import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Set;
 import java.util.StringTokenizer;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 
+import org.apache.tuscany.sca.assembly.Base;
+import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
+import org.apache.tuscany.sca.assembly.ComponentReference;
+import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.common.xml.dom.DOMHelper;
 import org.apache.tuscany.sca.common.xml.stax.StAXHelper;
+import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.policy.PolicySubject;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 /**
  * A builder that attaches policy sets to the domain composite using the xpath defined by
@@ -77,7 +86,8 @@ public class PolicyAttachmentBuilderImpl implements CompositeBuilder {
         return "org.apache.tuscany.sca.policy.builder.PolicyAttachmentBuilder";
     }
 
-    public Composite build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException {
+    public Composite build(Composite composite, Definitions definitions, Monitor monitor)
+        throws CompositeBuilderException {
         try {
             Composite patched = applyXPath(composite, definitions, monitor);
             return patched;
@@ -95,6 +105,9 @@ public class PolicyAttachmentBuilderImpl implements CompositeBuilder {
      * @throws Exception
      */
     private Composite applyXPath(Composite composite, Definitions definitions, Monitor monitor) throws Exception {
+        if (definitions == null || definitions.getPolicySets().isEmpty()) {
+            return composite;
+        }
         // Recursively apply the xpath against the composites referenced by <implementation.composite>
         for (Component component : composite.getComponents()) {
             Implementation impl = component.getImplementation();
@@ -105,16 +118,8 @@ public class PolicyAttachmentBuilderImpl implements CompositeBuilder {
                 }
             }
         }
-        // First write the composite into a DOM document so that we can apply the xpath
-        StringWriter sw = new StringWriter();
-        XMLStreamWriter writer = staxHelper.createXMLStreamWriter(sw);
-        // Write the composite into a DOM document
-        processor.write(composite, writer);
-        writer.close();
+        Document document = saveAsDOM(composite);
 
-        Document document = domHelper.load(sw.toString());
-
-        boolean changed = false;
         for (PolicySet ps : definitions.getPolicySets()) {
             // First calculate the applicable nodes
             Set<Node> applicableNodes = null;
@@ -135,22 +140,156 @@ public class PolicyAttachmentBuilderImpl implements CompositeBuilder {
                     Node node = nodes.item(i);
                     if (applicableNodes == null || applicableNodes.contains(node)) {
                         // The node can be a component, service, reference or binding
-                        if (attach(node, ps) && !changed) {
-                            changed = true;
+                        String index = getStructuralURI(node);
+                        PolicySubject subject = lookup(composite, index);
+                        if (subject != null) {
+                            subject.getPolicySets().add(ps);
                         }
                     }
                 }
             }
         }
 
-        if (changed) {
-            XMLStreamReader reader = staxHelper.createXMLStreamReader(document);
-            reader.nextTag();
-            Composite patchedComposite = (Composite)processor.read(reader);
-            return patchedComposite;
-        } else {
-            return composite;
+        return composite;
+    }
+
+    private Document saveAsDOM(Composite composite) throws XMLStreamException, ContributionWriteException, IOException,
+        SAXException {
+        // First write the composite into a DOM document so that we can apply the xpath
+        StringWriter sw = new StringWriter();
+        XMLStreamWriter writer = staxHelper.createXMLStreamWriter(sw);
+        // Write the composite into a DOM document
+        processor.write(composite, writer);
+        writer.close();
+
+        Document document = domHelper.load(sw.toString());
+        return document;
+    }
+
+    private static final QName COMPONENT = new QName(Base.SCA11_NS, "component");
+    private static final QName SERVICE = new QName(Base.SCA11_NS, "service");
+    private static final QName REFERENCE = new QName(Base.SCA11_NS, "reference");
+
+    private static String getStructuralURI(Node node) {
+        if (node != null) {
+            QName name = new QName(node.getNamespaceURI(), node.getLocalName());
+            if (COMPONENT.equals(name)) {
+                Element element = (Element)node;
+                return element.getAttributeNS(null, "uri");
+            } else if (SERVICE.equals(name)) {
+                Element component = (Element)node.getParentNode();
+                String uri = component.getAttributeNS(null, "uri");
+                String service = ((Element)node).getAttributeNS(null, "name");
+                return uri + "#service(" + service + ")";
+            } else if (REFERENCE.equals(name)) {
+                Element component = (Element)node.getParentNode();
+                String uri = component.getAttributeNS(null, "uri");
+                String reference = ((Element)node).getAttributeNS(null, "name");
+                return uri + "#reference(" + reference + ")";
+            } else {
+                String localName = node.getLocalName();
+                if (localName.startsWith("binding.")) {
+                    String bindingName = ((Element)node).getAttributeNS(null, "name");
+                    Element contract = (Element)node.getParentNode();
+                    String contractName = contract.getAttributeNS(null, "name");
+                    Element component = (Element)node.getParentNode().getParentNode();
+                    String uri = component.getAttributeNS(null, "uri");
+                    return uri + "#" + contract.getLocalName() + "(" + contractName + "/" + bindingName + ")";
+                } else if (localName.startsWith("implementation.")) {
+                    Element component = (Element)node.getParentNode();
+                    String uri = component.getAttributeNS(null, "uri");
+                    return uri + "#implementation()";
+                }
+            }
         }
+        return null;
+    }
+
+    private Binding getBinding(Contract contract, String name) {
+        for (Binding binding : contract.getBindings()) {
+            if (name.equals(binding.getName())) {
+                return binding;
+            }
+        }
+        return null;
+    }
+
+    private PolicySubject lookup(Composite composite, String structuralURI) {
+        if (structuralURI == null) {
+            return null;
+        }
+        int index = structuralURI.indexOf('#');
+        String componentURI = structuralURI;
+        String service = null;
+        String reference = null;
+        String binding = null;
+        boolean impl = false;
+
+        if (index != -1) {
+            componentURI = structuralURI.substring(0, index);
+            String fragment = structuralURI.substring(index + 1);
+            int begin = fragment.indexOf('(');
+            int end = fragment.indexOf(')');
+            if (begin != -1 && end != -1) {
+                String path = fragment.substring(begin + 1, end).trim();
+                String prefix = fragment.substring(0, begin).trim();
+                if (prefix.equals("implementation")) {
+                    impl = true;
+                } else {
+                    int pos = path.indexOf('/');
+                    if (pos != -1) {
+                        binding = path.substring(pos + 1);
+                        path = path.substring(0, index);
+                        if ("service-binding".equals(prefix)) {
+                            service = path;
+                        } else if ("reference-binding".equals(prefix)) {
+                            reference = path;
+                        }
+                    }
+                    if ("service".equals(prefix)) {
+                        service = path;
+                    } else if ("reference".equals(prefix)) {
+                        reference = path;
+                    }
+                }
+            }
+        }
+        for (Component component : composite.getComponents()) {
+            if (component.getURI().equals(componentURI)) {
+                if (service != null) {
+                    ComponentService componentService = component.getService(service);
+                    if (binding != null) {
+                        Binding b = getBinding(componentService, binding);
+                        if (b instanceof PolicySubject) {
+                            return (PolicySubject)b;
+                        }
+                    } else {
+                        return componentService;
+                    }
+                } else if (reference != null) {
+                    ComponentReference componentReference = component.getReference(reference);
+                    if (binding != null) {
+                        Binding b = getBinding(componentReference, binding);
+                        if (b instanceof PolicySubject) {
+                            return (PolicySubject)b;
+                        }
+                    } else {
+                        return componentReference;
+                    }
+                } else if (impl) {
+                    return component.getImplementation();
+                }
+                return component;
+            } else if (structuralURI.startsWith(component.getURI() + "/")) {
+                Implementation implementation = component.getImplementation();
+                if (implementation instanceof Composite) {
+                    return lookup((Composite)implementation, structuralURI);
+                } else {
+                    return null;
+                }
+            }
+        }
+        return null;
     }
 
     /**

@@ -691,6 +691,7 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
         }
         */
         SCABinding scaBinding = scaBindingFactory.createSCABinding();
+        scaBinding.setName(contract.getName());
 
         if (definitions != null) {
             for (ExtensionType attachPointType : definitions.getBindingTypes()) {

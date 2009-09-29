@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.common.xml.stax.impl;
 import static javax.xml.XMLConstants.DEFAULT_NS_PREFIX;
 import static javax.xml.XMLConstants.NULL_NS_URI;
 
+import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
@@ -120,10 +121,10 @@ public class XMLStreamSerializer implements XMLStreamConstants {
     }
 
     public String writeAttribute(XMLStreamWriter writer,
-                                String prefix,
-                                String localName,
-                                String namespaceURI,
-                                String value) throws XMLStreamException {
+                                 String prefix,
+                                 String localName,
+                                 String namespaceURI,
+                                 String value) throws XMLStreamException {
         String writerPrefix;
         /*
          * Due to parser implementations returning null as the namespace URI (for the empty namespace) we need to
@@ -231,17 +232,17 @@ public class XMLStreamSerializer implements XMLStreamConstants {
     public void writeStartElement(XMLStreamWriter writer, QName name) throws XMLStreamException {
         writeStartElement(writer, name.getPrefix(), name.getLocalPart(), name.getNamespaceURI());
     }
-    
+
     public void writeStartElement(XMLStreamWriter writer, String prefix, String localName, String namespaceURI)
         throws XMLStreamException {
-        
+
         if (namespaceURI == null) {
             namespaceURI = NULL_NS_URI;
         }
         if (prefix == null) {
             prefix = DEFAULT_NS_PREFIX;
         }
-        
+
         if (isRepairingNamespaces) {
             writer.writeStartElement(prefix, localName, namespaceURI);
             return;
@@ -297,6 +298,12 @@ public class XMLStreamSerializer implements XMLStreamConstants {
         if (prefix1 == null) {
             if (prefix == null) {
                 prefix = DEFAULT_NS_PREFIX;
+            }
+            if (DEFAULT_NS_PREFIX.equals(prefix) && !XMLConstants.NULL_NS_URI.equals(uri)) {
+                String ns = writer.getNamespaceContext().getNamespaceURI(prefix);
+                if (ns != null) {
+                    prefix = generateUniquePrefix(writer.getNamespaceContext());
+                }
             }
             writer.writeNamespace(prefix, uri);
             return prefix;

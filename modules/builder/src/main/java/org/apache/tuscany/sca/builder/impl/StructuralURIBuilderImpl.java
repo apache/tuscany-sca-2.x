@@ -54,160 +54,6 @@ public class StructuralURIBuilderImpl implements CompositeBuilder, DeployedCompo
     }
 
     /**
-     * Called by CompositeBindingURIBuilderImpl
-     *
-     * @param composite the composite to be configured
-     */
-    protected void configureBindingURIsAndNames(Composite composite, Definitions definitions, Monitor monitor)
-        throws CompositeBuilderException {
-        configureBindingURIs(composite, null, definitions, null, monitor);
-        configureBindingNames(composite, monitor);
-    }
-
-    /**
-     * Fully resolve the binding URIs based on available information. This includes information
-     * from the ".composite" files, from resources associated with the binding, e.g. WSDL files,
-     * from any associated policies and from the default information for each binding type.
-     *
-     * @param composite the composite to be configured
-     * @param bindingBaseURIs list of default binding configurations
-     */
-    private void configureBindingURIs(Composite composite,
-                                      Definitions definitions,
-                                      Map<QName, List<String>> bindingBaseURIs,
-                                      Monitor monitor) throws CompositeBuilderException {
-        configureBindingURIs(composite, null, definitions, bindingBaseURIs, monitor);
-    }
-
-    /**
-     * Fully resolve the binding URIs based on available information. This includes information
-     * from the ".composite" files, from resources associated with the binding, e.g. WSDL files,
-     * from any associated policies and from the default information for each binding type.
-     *
-     * NOTE: This method repeats some of the processing performed by the configureComponents()
-     *       method above.  The duplication is needed because NodeConfigurationServiceImpl
-     *       calls this method without previously calling configureComponents().  In the
-     *       normal builder sequence used by CompositeBuilderImpl, both of these methods
-     *       are called.
-     *
-     * TODO: Share the URL calculation algorithm with the configureComponents() method above
-     *       although keeping the configureComponents() methods signature as is because when
-     *       a composite is actually build in a node the node default information is currently
-     *       available
-     *
-     * @param composite the composite to be configured
-     * @param uri the path to the composite provided through any nested composite component implementations
-     * @param defaultBindings list of default binding configurations
-     */
-    private void configureBindingURIs(Composite composite,
-                                      String parentComponentURI,
-                                      Definitions definitions,
-                                      Map<QName, List<String>> defaultBindings,
-                                      Monitor monitor) throws CompositeBuilderException {
-
-        monitor.pushContext("Composite: " + composite.getName().toString());
-        try {
-            // Process nested composites recursively
-            for (Component component : composite.getComponents()) {
-
-                // Initialize component URI
-                String componentURI;
-                if (parentComponentURI == null) {
-                    componentURI = component.getName();
-                } else {
-                    componentURI = parentComponentURI + '/' + component.getName();
-                }
-                component.setURI(componentURI);
-
-                Implementation implementation = component.getImplementation();
-                if (implementation instanceof Composite) {
-                    // Process nested composite
-                    configureBindingURIs((Composite)implementation, componentURI, definitions, defaultBindings, monitor);
-                }
-            }
-
-            // Initialize composite service binding URIs
-            List<Service> compositeServices = composite.getServices();
-            for (Service service : compositeServices) {
-
-                constructBindingNames(service, monitor);
-
-                // Initialize binding names and URIs
-                for (Binding binding : service.getBindings()) {
-                    constructBindingURI(parentComponentURI, composite, service, binding, defaultBindings, monitor);
-                }
-            }
-
-            // Initialize component service binding URIs
-            for (Component component : composite.getComponents()) {
-
-                monitor.pushContext("Component: " + component.getName());
-
-                try {
-
-                    for (ComponentService service : component.getServices()) {
-
-                        constructBindingNames(service, monitor);
-
-                        // Initialize binding names and URIs
-                        for (Binding binding : service.getBindings()) {
-                            constructBindingURI(component.getURI(), service, binding, defaultBindings, monitor);
-                        }
-                    }
-                } finally {
-                    monitor.popContext();
-                }
-            }
-        } finally {
-            monitor.popContext();
-        }
-    }
-
-    /**
-     * Add default names for callback bindings and reference bindings.  Needs to be
-     * separate from configureBindingURIs() because configureBindingURIs() is called
-     * by NodeConfigurationServiceImpl as well as by CompositeBuilderImpl.
-     */
-    private void configureBindingNames(Composite composite, Monitor monitor) {
-
-        // Process nested composites recursively
-        for (Component component : composite.getComponents()) {
-
-            Implementation implementation = component.getImplementation();
-            if (implementation instanceof Composite) {
-
-                // Process nested composite
-                configureBindingNames((Composite)implementation, monitor);
-            }
-        }
-
-        // Initialize composite service callback binding names
-        for (Service service : composite.getServices()) {
-            constructBindingNames(service, monitor);
-        }
-
-        // Initialize composite reference binding names
-        for (Reference reference : composite.getReferences()) {
-            constructBindingNames(reference, monitor);
-        }
-
-        // Initialize component service and reference binding names
-        for (Component component : composite.getComponents()) {
-
-            // Initialize component service callback binding names
-            for (ComponentService service : component.getServices()) {
-                constructBindingNames(service, monitor);
-            }
-
-            // Initialize component reference binding names
-            for (ComponentReference reference : component.getReferences()) {
-                // Initialize binding names
-                constructBindingNames(reference, monitor);
-            }
-        }
-    }
-
-    /**
      * If a binding name is not provided by the user, construct it based on the service
      * or reference name
      *
@@ -269,29 +115,6 @@ public class StructuralURIBuilderImpl implements CompositeBuilder, DeployedCompo
                 }
             }
         }
-    }
-
-    /**
-     * URI construction for composite bindings based on Assembly Specification section 1.7.2, This method
-     * assumes that the component URI part of the binding URI is formed from the part to the
-     * composite in question and just calls the generic constructBindingURI method with this
-     * information
-     *
-     * @param parentComponentURI
-     * @param composite
-     * @param service
-     * @param binding
-     * @param defaultBindings
-     */
-    private void constructBindingURI(String parentComponentURI,
-                                     Composite composite,
-                                     Service service,
-                                     Binding binding,
-                                     Map<QName, List<String>> defaultBindings,
-                                     Monitor monitor) throws CompositeBuilderException {
-        // This is a composite service so there is no component to provide a component URI
-        // The path to this composite (through nested composites) is used.
-        constructBindingURI(parentComponentURI, service, binding, defaultBindings, monitor);
     }
 
     /**
@@ -494,7 +317,7 @@ public class StructuralURIBuilderImpl implements CompositeBuilder, DeployedCompo
                            Definitions definitions,
                            Map<QName, List<String>> bindingBaseURIs,
                            Monitor monitor) throws CompositeBuilderException {
-        configureBindingURIs(composite, definitions, bindingBaseURIs, monitor);
+        configureStructuralURIs(composite, null, definitions, bindingBaseURIs, monitor);
         return composite;
     }
 
@@ -531,10 +354,12 @@ public class StructuralURIBuilderImpl implements CompositeBuilder, DeployedCompo
                     for (ComponentService service : component.getServices()) {
                         constructBindingNames(service, monitor);
 
+                        /*
                         // Initialize binding names and URIs
                         for (Binding binding : service.getBindings()) {
                             constructBindingURI(componentURI, service, binding, defaultBindings, monitor);
                         }
+                        */
                     }
                     for (ComponentReference service : component.getReferences()) {
                         constructBindingNames(service, monitor);

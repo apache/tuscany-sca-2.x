@@ -33,10 +33,6 @@ import org.apache.tuscany.sca.assembly.Base;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
-import org.apache.tuscany.sca.builder.impl.CompositeCloneBuilderImpl;
-import org.apache.tuscany.sca.builder.impl.CompositeIncludeBuilderImpl;
-import org.apache.tuscany.sca.builder.impl.PolicyAttachmentBuilderImpl;
-import org.apache.tuscany.sca.builder.impl.StructuralURIBuilderImpl;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
@@ -92,7 +88,10 @@ public class PolicyAttachmentTestCase {
     public void testBuild() throws Exception {
         Definitions definitions = load("test_definitions.xml");
         Composite composite = load("Calculator.composite");
+        
+        CompositeBuilder uriBuilder = new StructuralURIBuilderImpl(extensionPoints);
 
+        composite = uriBuilder.build(composite, definitions, monitor);
         PolicyAttachmentBuilderImpl builder = new PolicyAttachmentBuilderImpl(extensionPoints);
         builder.build(composite, definitions, monitor);
     }
@@ -130,13 +129,6 @@ public class PolicyAttachmentTestCase {
         CompositeBuilder includeBuilder = new CompositeIncludeBuilderImpl();
         CompositeBuilder cloneBuilder = new CompositeCloneBuilderImpl();
         CompositeBuilder uriBuilder = new StructuralURIBuilderImpl(extensionPoints);
-
-        /*
-        CompositeBuilder includeBuilder =
-            builders.getCompositeBuilder("org.apache.tuscany.sca.assembly.builder.CompositeIncludeBuilder");
-        CompositeBuilder cloneBuilder =
-            builders.getCompositeBuilder("org.apache.tuscany.sca.assembly.builder.CompositeCloneBuilder");
-            */
 
         domainComposite = cloneBuilder.build(domainComposite, definitions, monitor);
         domainComposite = includeBuilder.build(domainComposite, definitions, monitor);

@@ -28,9 +28,6 @@ import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.Implementation;
-import org.apache.tuscany.sca.assembly.Property;
-import org.apache.tuscany.sca.assembly.Reference;
-import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.policy.ExtensionType;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySet;
@@ -112,52 +109,40 @@ public class ComponentImpl extends ExtensibleImpl implements Component, Cloneabl
         return properties;
     }
     
-    public Property getProperty(String name){
-        Property property = null;
-        
-        for (Property tmp : getProperties()){
-            if (tmp.getName().equals(name)){
-                property = tmp;
-                break;
+    public ComponentProperty getProperty(String name) {
+        for (ComponentProperty property : getProperties()) {
+            if (property.getName().equals(name)) {
+                return property;
             }
         }
-        
-        return property;
-    }    
+        return null;
+    }
 
     public List<ComponentReference> getReferences() {
         return references;
     }
     
-    public Reference getReference(String name){
-        Reference reference = null;
-        
-        for (Reference tmp : getReferences()){
-            if (tmp.getName().equals(name)){
-                reference = tmp;
-                break;
+    public ComponentReference getReference(String name){
+        for (ComponentReference ref : getReferences()){
+            if (ref.getName().equals(name)){
+                return ref;
             }
         }
-        
-        return reference;
+        return null;
     }      
 
     public List<ComponentService> getServices() {
         return services;
     }
     
-    public Service getService(String name){
-        Service service = null;
-        
-        for (Service tmp : getServices()){
-            if (tmp.getName().equals(name)){
-                service = tmp;
-                break;
+    public ComponentService getService(String name) {
+        for (ComponentService service : getServices()) {
+            if (service.getName().equals(name)) {
+                return service;
             }
         }
-        
-        return service;
-    }    
+        return null;
+    }
 
     public void setConstrainingType(ConstrainingType constrainingType) {
         this.constrainingType = constrainingType;

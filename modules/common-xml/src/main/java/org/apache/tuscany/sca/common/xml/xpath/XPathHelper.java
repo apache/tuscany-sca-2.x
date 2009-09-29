@@ -102,6 +102,7 @@ public class XPathHelper {
      */
     private Collection<String> getPrefixes(String expression) {
         Collection<String> prefixes = new HashSet<String>();
+        prefixes.add(XMLConstants.DEFAULT_NS_PREFIX);
         Pattern pattern = Pattern.compile("([^:]+):([^:]+)");
         Matcher matcher = pattern.matcher(expression);
         while (matcher.find()) {

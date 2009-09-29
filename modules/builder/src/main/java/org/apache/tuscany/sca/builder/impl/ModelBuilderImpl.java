@@ -37,12 +37,15 @@ public class ModelBuilderImpl implements CompositeBuilder, DeployedCompositeBuil
     private CompositeComponentTypeBuilderImpl compositeComponentTypeBuilder;
     private ComponentBuilderImpl componentBuilder;
 
+    private CompositeBuilder structuralURIBuilder;
     private BindingURIBuilderImpl bindingURIBuilder;
     private ComponentServiceBindingBuilderImpl componentServiceBindingBuilder;
     private ComponentReferenceBindingBuilderImpl componentReferenceBindingBuilder;
     private EndpointBuilderImpl endpointBuilder;
     private EndpointReferenceBuilderImpl endpointReferenceBuilder;
     private ComponentReferencePromotionBuilderImpl componentReferencePromotionBuilder;
+    
+    private CompositeBuilder policyAttachmentBuilder;
     private CompositePolicyBuilderImpl compositePolicyBuilder;
 
     /**
@@ -61,14 +64,16 @@ public class ModelBuilderImpl implements CompositeBuilder, DeployedCompositeBuil
         compositeComponentTypeBuilder.setComponentBuilder(componentBuilder);
         componentBuilder.setComponentTypeBuilder(compositeComponentTypeBuilder);
 
+        structuralURIBuilder = new StructuralURIBuilderImpl(registry);
         bindingURIBuilder = new BindingURIBuilderImpl(registry);
         componentServiceBindingBuilder = new ComponentServiceBindingBuilderImpl(registry);
         componentReferenceBindingBuilder = new ComponentReferenceBindingBuilderImpl(registry);
         endpointBuilder = new EndpointBuilderImpl(registry);
         endpointReferenceBuilder = new EndpointReferenceBuilderImpl(registry);
         componentReferencePromotionBuilder = new ComponentReferencePromotionBuilderImpl(registry);
-        compositePolicyBuilder = new CompositePolicyBuilderImpl(registry);
 
+        policyAttachmentBuilder = new PolicyAttachmentBuilderImpl(registry);
+        compositePolicyBuilder = new CompositePolicyBuilderImpl(registry);
     }
 
     public String getID() {
@@ -94,8 +99,11 @@ public class ModelBuilderImpl implements CompositeBuilder, DeployedCompositeBuil
             // and discards the included composite
             composite = compositeIncludeBuilder.build(composite, definitions, monitor);
 
+            // Set up the structural URIs for components (services/references/bindings?)
+            composite = structuralURIBuilder.build(composite, definitions, monitor);
+            
             // need to apply policy external attachment
-
+            composite = policyAttachmentBuilder.build(composite, definitions, monitor);
 
             // Process the implementation hierarchy by calculating the component type 
             // for the top level implementation (composite). This has the effect of
@@ -115,7 +123,7 @@ public class ModelBuilderImpl implements CompositeBuilder, DeployedCompositeBuil
             //  Policies
             // TODO - called here at the moment but we could have a separate build phase 
             //        to call these. Also we need to re-org these builders 
-            bindingURIBuilder.configureBindingURIsAndNames(composite, definitions, monitor);
+            composite = bindingURIBuilder.build(composite, definitions, monitor);
             composite = componentServiceBindingBuilder.build(composite, definitions, monitor); // binding specific build
             composite = componentReferenceBindingBuilder.build(composite, definitions, monitor); // binding specific build
             endpointBuilder.build(composite, definitions, monitor);
