@@ -46,30 +46,6 @@ public class ScopeProcessorTestCase {
     }
 
     @Test
-    public void testSessionScope() throws IntrospectionException {
-        ScopeProcessor processor = new ScopeProcessor(new DefaultAssemblyFactory());
-        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
-        processor.visitClass(Session.class, type);
-        assertEquals(JavaScopeImpl.INVALID, type.getJavaScope());
-    }
-
-    @Test
-    public void testConversationalScope() throws IntrospectionException {
-        ScopeProcessor processor = new ScopeProcessor(new DefaultAssemblyFactory());
-        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
-        processor.visitClass(Conversation.class, type);
-        assertEquals(JavaScopeImpl.INVALID, type.getJavaScope());
-    }
-
-    @Test
-    public void testRequestScope() throws IntrospectionException {
-        ScopeProcessor processor = new ScopeProcessor(new DefaultAssemblyFactory());
-        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
-        processor.visitClass(Request.class, type);
-        assertEquals(JavaScopeImpl.INVALID, type.getJavaScope());
-    }
-
-    @Test
     public void testStatelessScope() throws IntrospectionException {
         ScopeProcessor processor = new ScopeProcessor(new DefaultAssemblyFactory());
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
@@ -92,18 +68,6 @@ public class ScopeProcessorTestCase {
 
     @org.oasisopen.sca.annotation.Scope("COMPOSITE")
     private class Composite {
-    }
-
-    @org.oasisopen.sca.annotation.Scope("SESSION")
-    private class Session {
-    }
-
-    @org.oasisopen.sca.annotation.Scope("CONVERSATION")
-    private class Conversation {
-    }
-
-    @org.oasisopen.sca.annotation.Scope("REQUEST")
-    private class Request {
     }
 
     @org.oasisopen.sca.annotation.Scope("STATELESS")
