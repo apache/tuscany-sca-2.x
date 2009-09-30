@@ -30,24 +30,23 @@ import java.util.List;
 public class SpringPropertyElement {
 
     private String name;
-    private String ref;
+    private List<String> refs = new ArrayList<String>();
     private List<String> values = new ArrayList<String>();
 
-    public SpringPropertyElement(String name, String ref) {
+    public SpringPropertyElement(String name) {
         this.name = name;
-        this.ref = ref;
     }
 
     public String getName() {
         return name;
     }
 
-    public String getRef() {
-        return ref;
+    public List<String> getRefs() {
+        return this.refs;
     }
     
-    public void setRef(String ref) {
-        this.ref = ref;
+    public void addRef(String ref) {
+        this.refs.add(ref);
     }
     
     public List<String> getValues() {
@@ -57,5 +56,5 @@ public class SpringPropertyElement {
     public void addValue(String value) {
         this.values.add(value);
     }
-
+    
 } // end class SpringPropertyElement

@@ -195,7 +195,7 @@ public class SpringImplementationProcessor implements StAXArtifactProcessor<Spri
 
         /* Load the Spring component type by reading the Spring application context */
         SpringXMLComponentTypeLoader springLoader =
-            new SpringXMLComponentTypeLoader(factories, assemblyFactory, javaFactory, policyFactory);
+            new SpringXMLComponentTypeLoader(factories, assemblyFactory, javaFactory, policyFactory, monitor);
         try {
             // Load the Spring Implementation information from its application context file...
             springLoader.load(springImplementation, resolver);

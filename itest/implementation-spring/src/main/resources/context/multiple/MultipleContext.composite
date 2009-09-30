@@ -21,15 +21,10 @@
 	xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200903"
 	targetNamespace="http://stockquote"
 	xmlns:hw="http://stockquote"
-      name="MultipleContext">
-    
-    <service name="StockQuoteService" promote="StockQuoteServiceComponent">
-        <interface.java interface="bigbank.stockquote.StockQuoteService"/>
-        <binding.ws uri="http://localhost:8081/services/StockQuoteWebService"/>
-    </service>
+    name="MultipleContext">
 
     <component name="StockQuoteServiceComponent">
-        <implementation.spring location="META-INF/spring/beanRefContext.xml"/>
+        <implementation.spring location="springapp"/>
     </component>
 
 </composite>

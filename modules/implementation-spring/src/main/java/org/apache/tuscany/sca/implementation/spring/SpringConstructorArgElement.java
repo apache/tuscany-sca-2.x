@@ -29,14 +29,13 @@ import java.util.List;
  */
 public class SpringConstructorArgElement {
     
-    private String ref;
-    private String type;
+	private String type;
     private int autoIndex = -1;
     private int index = -1;
+    private List<String> refs = new ArrayList<String>();
     private List<String> values = new ArrayList<String>();
 
-    public SpringConstructorArgElement(String ref, String type) {
-        this.ref = ref;
+    public SpringConstructorArgElement(String type) {
         this.type = type;
     }
     
@@ -44,12 +43,12 @@ public class SpringConstructorArgElement {
         return this.type;
     }
     
-    public String getRef() {
-        return this.ref;
+    public List<String> getRefs() {
+        return this.refs;
     }
     
-    public void setRef(String ref) {
-        this.ref = ref;
+    public void addRef(String ref) {
+        this.refs.add(ref);
     }
     
     public int getIndex() {

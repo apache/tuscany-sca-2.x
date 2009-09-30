@@ -30,10 +30,11 @@ public class SpringSCAServiceElement {
     private String name;
     private String type;
     private String target;
+    private String requiredIntents;
+    private String policySets;
 
-    public SpringSCAServiceElement(String name, String type, String target) {
+    public SpringSCAServiceElement(String name, String target) {
         this.name = name;
-        this.type = type;
         this.target = target;
     }
     
@@ -59,6 +60,22 @@ public class SpringSCAServiceElement {
 
     public String getTarget() {
         return target;
+    }
+    
+    public void setRequiredIntents(String requiredIntents) {    	
+    	this.requiredIntents = requiredIntents;
+    }
+    
+    public String getRequiredIntents() {   	
+    	return requiredIntents;
+    }
+    
+    public void setPolicySets(String policySets) {    	
+    	this.policySets = policySets;
+    }
+    
+    public String getPolicySets() {   	
+    	return policySets;
     }
 
 } // end class SpringSCAServiceElement

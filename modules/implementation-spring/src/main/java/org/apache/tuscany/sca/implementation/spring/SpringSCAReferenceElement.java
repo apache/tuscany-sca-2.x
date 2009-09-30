@@ -29,6 +29,9 @@ public class SpringSCAReferenceElement {
 
     private String name;
     private String type;
+    private String defaultBean;
+    private String requiredIntents;
+    private String policySets;
 
     public SpringSCAReferenceElement(String name, String type) {
         this.name = name;
@@ -49,6 +52,30 @@ public class SpringSCAReferenceElement {
 
     public String getType() {
         return type;
+    }
+    
+    public void setDefaultBean(String defaultBean) {
+        this.defaultBean = defaultBean;
+    }
+
+    public String getDefaultBean() {
+        return defaultBean;
+    }
+    
+    public void setRequiredIntents(String requiredIntents) {    	
+    	this.requiredIntents = requiredIntents;
+    }
+    
+    public String getRequiredIntents() {   	
+    	return requiredIntents;
+    }
+    
+    public void setPolicySets(String policySets) {    	
+    	this.policySets = policySets;
+    }
+    
+    public String getPolicySets() {   	
+    	return policySets;
     }
 
 } // end class SpringSCAReferenceElement

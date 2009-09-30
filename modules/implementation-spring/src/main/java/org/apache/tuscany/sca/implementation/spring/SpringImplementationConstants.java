@@ -30,14 +30,14 @@ public interface SpringImplementationConstants {
     String SPRING_NS = "http://www.springframework.org/schema/beans";
     
     String PROPERTY = "property";
-    QName SCAPROPERTY_ELEMENT = new QName(SCA_NS, PROPERTY);
+    QName SCA_PROPERTY_ELEMENT = new QName(SCA_NS, PROPERTY);
     QName PROPERTY_ELEMENT = new QName(SPRING_NS, PROPERTY);
     
-    String SERVICE = "service";
-    QName SERVICE_ELEMENT = new QName(SCA_NS, SERVICE);
+    String SCASERVICE = "service";
+    QName SCA_SERVICE_ELEMENT = new QName(SCA_NS, SCASERVICE);
     
-    String REFERENCE = "reference";
-    QName REFERENCE_ELEMENT = new QName(SCA_NS, REFERENCE);
+    String SCAREFERENCE = "reference";
+    QName SCA_REFERENCE_ELEMENT = new QName(SCA_NS, SCAREFERENCE);
     
     String BEANS = "beans";
     QName BEANS_ELEMENT = new QName(SPRING_NS, BEANS);
@@ -54,11 +54,20 @@ public interface SpringImplementationConstants {
     String LIST = "list";
     QName LIST_ELEMENT = new QName(SPRING_NS, LIST); 
     
+    String SET = "set";
+    QName SET_ELEMENT = new QName(SPRING_NS, SET);
+    
+    String MAP = "map";
+    QName MAP_ELEMENT = new QName(SPRING_NS, MAP);
+    
     String VALUE = "value";
     QName VALUE_ELEMENT = new QName(SPRING_NS, VALUE);
     
     String REF = "ref";
     QName REF_ELEMENT = new QName(SPRING_NS, REF);
+    
+    String ENTRY = "entry";
+    QName ENTRY_ELEMENT = new QName(SPRING_NS, ENTRY);
 
     String APPLICATION_CONTEXT = "application-context.xml";
 }

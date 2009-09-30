@@ -20,7 +20,6 @@
 package org.apache.tuscany.sca.implementation.spring.runtime.context;
 
 import java.net.URL;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.tuscany.sca.implementation.spring.processor.ComponentNameAnnotationProcessor;
@@ -31,16 +30,11 @@ import org.apache.tuscany.sca.implementation.spring.processor.PropertyAnnotation
 import org.apache.tuscany.sca.implementation.spring.processor.PropertyValueStub;
 import org.apache.tuscany.sca.implementation.spring.processor.ReferenceAnnotationProcessor;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-import org.springframework.beans.factory.config.ConstructorArgumentValues;
-import org.springframework.beans.factory.config.TypedStringValue;
-import org.springframework.beans.factory.support.ManagedList;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
+import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.support.AbstractApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.context.support.FileSystemXmlApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.io.UrlResource;
 
@@ -55,7 +49,7 @@ public class SpringContextTie {
     private AbstractApplicationContext springContext;
     private SpringImplementationStub implementation;
     
-    public SpringContextTie(SpringImplementationStub implementation, URL resource) {
+    public SpringContextTie(SpringImplementationStub implementation, List<URL> resource) {
         this.implementation = implementation;
         SCAParentApplicationContext scaParentContext = new SCAParentApplicationContext(implementation);
         springContext = createApplicationContext(scaParentContext, resource);  
@@ -77,56 +71,30 @@ public class SpringContextTie {
     /**
      * Include BeanPostProcessor to deal with SCA Annotations in Spring Bean
      */
-    private AbstractApplicationContext createApplicationContext(SCAParentApplicationContext scaParentContext, URL resource) {
+    private AbstractApplicationContext createApplicationContext(SCAParentApplicationContext scaParentContext, List<URL> resources) {
 
-        XmlBeanFactory beanFactory = new XmlBeanFactory(new UrlResource(resource));
+    	XmlBeanFactory beanFactory = null;
+    	AbstractApplicationContext appContext = null;
+    	
+    	if (resources.size() > 1) {
+    		GenericApplicationContext appCtx = 
+    			new SCAGenericApplicationContext(scaParentContext, implementation.getClassLoader());
+    		XmlBeanDefinitionReader xmlReader = new XmlBeanDefinitionReader(appCtx);
+    		for (URL resource : resources) {
+    			xmlReader.loadBeanDefinitions(new UrlResource(resource));
+    		}
+    		xmlReader.setBeanClassLoader(implementation.getClassLoader());    		
+           	includeAnnotationProcessors(appCtx.getBeanFactory());
+    		return appCtx;    		
+    	} 
+        
+    	// use the generic application context as default
+    	beanFactory = new XmlBeanFactory(new UrlResource(resources.get(0)));
         beanFactory.setBeanClassLoader(implementation.getClassLoader());
-        AbstractApplicationContext appContext = null;
-        
-        for (String bean : beanFactory.getBeanDefinitionNames()) {
-	        String beanClassName = (beanFactory.getType(bean)).getName();
-	        if (beanClassName.indexOf(".ClassPathXmlApplicationContext") != -1 || 
-	                        beanClassName.indexOf(".FileSystemXmlApplicationContext") != -1) 
-	        {
-                BeanDefinition beanDef = beanFactory.getBeanDefinition(bean);                           
-                String[] configLocations = null;
-                List<ConstructorArgumentValues.ValueHolder> conArgs = 
-                        beanDef.getConstructorArgumentValues().getGenericArgumentValues();
-                for (ConstructorArgumentValues.ValueHolder conArg : conArgs) {
-                    if (conArg.getValue() instanceof TypedStringValue) {
-                        TypedStringValue value = (TypedStringValue) conArg.getValue();
-                        if (value.getValue().indexOf(".xml") != -1)
-                        	configLocations = new String[]{value.getValue()};
-                    }
-                    if (conArg.getValue() instanceof ManagedList) {
-                        Iterator itml = ((ManagedList)conArg.getValue()).iterator();
-                        StringBuffer values = new StringBuffer();
-                        while (itml.hasNext()) {
-                            TypedStringValue next = (TypedStringValue)itml.next();
-                            if (next.getValue().indexOf(".xml") != -1) {
-                            	values.append(implementation.getClassLoader().getResource(next.getValue()).toString());
-                                values.append("~");
-                            }
-                        }
-                        configLocations = (values.toString()).split("~");                                    
-                    }
-                }
-                
-                if (beanClassName.indexOf(".ClassPathXmlApplicationContext") != -1) {                                                                   
-                    appContext = new ClassPathXmlApplicationContext(configLocations, true, scaParentContext);                    
-                    includeAnnotationProcessors(appContext.getBeanFactory());
-                    return appContext;
-                } else {
-                    appContext = new FileSystemXmlApplicationContext(configLocations, true, scaParentContext);
-                    includeAnnotationProcessors(appContext.getBeanFactory());
-                    return appContext;
-                }
-	        }               
-        }
-        
-        // use the generic application context as default 
         includeAnnotationProcessors(beanFactory);
-        appContext = new GenericApplicationContext(beanFactory, scaParentContext);
+        appContext = new SCAGenericApplicationContext(beanFactory, 
+                                                      scaParentContext,
+                                                      implementation.getClassLoader());
         return appContext;
     }
 

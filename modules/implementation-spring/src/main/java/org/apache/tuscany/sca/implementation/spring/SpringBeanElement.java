@@ -31,11 +31,13 @@ import java.util.List;
 public class SpringBeanElement {
 
     private String id;
-    private String className;
+    private String className = null;
     private boolean innerBean = false;
     private boolean abstractBean = false;
-    private boolean refParentBean = false;
-    private boolean reffactoryBean = false;
+    private boolean parentAttribute = false;
+    private boolean factoryBeanAttribute = false;
+    private boolean factoryMethodAttribute = false;
+    
     private List<SpringPropertyElement> properties = new ArrayList<SpringPropertyElement>();
     private List<SpringConstructorArgElement> constructorargs = new ArrayList<SpringConstructorArgElement>();
 
@@ -50,6 +52,10 @@ public class SpringBeanElement {
 
     public String getId() {
         return id;
+    }
+    
+    public void setId(String id) {
+        this.id = id;
     }
 
     public List<SpringPropertyElement> getProperties() {
@@ -82,6 +88,30 @@ public class SpringBeanElement {
     
     public void setAbstractBean(boolean abstractBean) {
         this.abstractBean = abstractBean;
+    }
+    
+    public boolean hasParentAttribute() {
+        return parentAttribute;
+    }
+    
+    public void setParentAttribute(boolean parentAttribute) {
+        this.parentAttribute = parentAttribute;
+    }
+    
+    public boolean hasFactoryBeanAttribute() {
+        return factoryBeanAttribute;
+    }
+    
+    public void setFactoryBeanAttribute(boolean factoryBeanAttribute) {
+        this.factoryBeanAttribute = factoryBeanAttribute;
+    }
+    
+    public boolean hasFactoryMethodAttribute() {
+        return factoryMethodAttribute;
+    }
+    
+    public void setFactoryMethodAttribute(boolean factoryMethodAttribute) {
+        this.factoryMethodAttribute = factoryMethodAttribute;
     }
 
 } // end class SpringBeanElement
