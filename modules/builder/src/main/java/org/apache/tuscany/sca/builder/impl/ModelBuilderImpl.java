@@ -109,7 +109,7 @@ public class ModelBuilderImpl implements CompositeBuilder, DeployedCompositeBuil
             // for the top level implementation (composite). This has the effect of
             // recursively calculating component types and configuring the 
             // components that depend on them
-            compositeComponentTypeBuilder.createComponentType(composite);
+            compositeComponentTypeBuilder.createComponentType(null, composite);
 
             // create the runtime model by updating the static model we have just 
             // created. This involves things like creating

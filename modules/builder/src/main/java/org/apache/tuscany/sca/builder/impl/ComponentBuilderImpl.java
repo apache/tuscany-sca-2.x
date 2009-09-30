@@ -111,7 +111,7 @@ public class ComponentBuilderImpl {
      * @Param parentComposite the composite that contains the component being configured. Required for property processing
      * @param component the component to be configured
      */
-    public void configureComponentFromComponentType(Composite parentComposite, Component component) {
+    public void configureComponentFromComponentType(Component outerComponent, Composite parentComposite, Component component) {
 
         // do any work we need to do before we calculate the component type
         // for this component. Anything that needs to be pushed down the promotion
@@ -131,7 +131,7 @@ public class ComponentBuilderImpl {
         // composite level property values. Hence we have to calculate whether the component 
         // type property value should be overridden by this component's property value 
         // before we go ahead and calculate the component type
-        configureProperties(parentComposite, component);
+        configureProperties(outerComponent, parentComposite, component);
 
         // create the component type for this component 
         // taking any nested composites into account
@@ -153,7 +153,7 @@ public class ComponentBuilderImpl {
     private void createComponentType(Component component) {
         Implementation implementation = component.getImplementation();
         if (implementation instanceof Composite) {
-            componentTypeBuilder.createComponentType((Composite)implementation);
+            componentTypeBuilder.createComponentType(component, (Composite)implementation);
         }
     }
 
@@ -274,7 +274,7 @@ public class ComponentBuilderImpl {
      * 
      * @param component
      */
-    private void configureProperties(Composite parentComposite, Component component) {
+    private void configureProperties(Component outerComponent, Composite parentComposite, Component component) {
         // If the component type has properties that are not described in this
         // component then create properties for this component
         addPropertiesFromComponentType(component);
@@ -290,7 +290,7 @@ public class ComponentBuilderImpl {
             // configure the property value based on the @source attribute
             // At the moment this is done in the parent composite component
             // type calculation a
-            processPropertySourceAttribute(parentComposite, component, componentProperty);
+            processPropertySourceAttribute(outerComponent, parentComposite, component, componentProperty);
 
             // configure the property value based on the @file attribute
             processPropertyFileAttribute(component, componentProperty);
@@ -522,7 +522,8 @@ public class ComponentBuilderImpl {
      * @param component
      * @param componentProperty
      */
-    private void processPropertySourceAttribute(Composite parentComposite,
+    private void processPropertySourceAttribute(Component outerComponent,
+                                                Composite parentComposite,
                                                 Component component,
                                                 ComponentProperty componentProperty) {
         String source = componentProperty.getSource();
@@ -537,8 +538,13 @@ public class ComponentBuilderImpl {
             }
             if (source.charAt(0) == '$') {
                 String name = source.substring(1, index);
-                Property compositeProp = parentComposite.getProperty(name);
-                if (compositeProp == null) {
+                Property sourceProp = null;
+                if (outerComponent != null) {
+                    sourceProp = outerComponent.getProperty(name);
+                } else {
+                    sourceProp = parentComposite.getProperty(name);
+                }
+                if (sourceProp == null) {
                     Monitor.error(monitor,
                                   this,
                                   "assembly-validation-messages",
@@ -548,12 +554,12 @@ public class ComponentBuilderImpl {
                                   component.getName());
                 }
 
-                Document compositePropDefValues = (Document)compositeProp.getValue();
+                Document sourcePropValue = (Document)sourceProp.getValue();
 
                 try {
                     // FIXME: How to deal with namespaces?
                     Document node =
-                        evaluateXPath(compositePropDefValues,
+                        evaluateXPath(sourcePropValue,
                                       componentProperty.getSourceXPathExpression(),
                                       documentBuilderFactory);
 
@@ -568,7 +574,7 @@ public class ComponentBuilderImpl {
                                   source,
                                   componentProperty.getName(),
                                   component.getName(),
-                                  ex.toString());
+                                  ex);
                 }
             } else {
                 Monitor.error(monitor,

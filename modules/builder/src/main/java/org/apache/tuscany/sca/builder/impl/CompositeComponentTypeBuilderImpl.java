@@ -35,7 +35,6 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeReference;
 import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.Contract;
-import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
@@ -95,15 +94,7 @@ public class CompositeComponentTypeBuilderImpl {
      * @param implementation
      * @return component type
      */
-    public void createComponentType(Implementation implementation) {
-        if (!(implementation instanceof Composite)) {
-            // component type will have been calculated at resolve time
-            return;
-        }
-
-        // create the composite component type as this was not
-        // calculated at resolve time
-        Composite composite = (Composite)implementation;
+    public void createComponentType(Component outerComponent, Composite composite) {
 
         // first make sure that each child component has been properly configured based
         // on its own component type
@@ -125,7 +116,7 @@ public class CompositeComponentTypeBuilderImpl {
             }
 
             // configure the component from its component type
-            componentBuilder.configureComponentFromComponentType(composite, component);
+            componentBuilder.configureComponentFromComponentType(outerComponent, composite, component);
         }
 
         // create the composite component type based on the promoted artifacts
