@@ -83,11 +83,11 @@ public class WSDLServiceGenerator {
      * @param problem
      */
     private static void logWarning(Problem problem) {
-        Logger problemLogger = Logger.getLogger(problem.getSourceClassName(), problem.getBundleName());
+        Logger problemLogger = Logger.getLogger(problem.getSourceClassName(), problem.getResourceBundleName());
         if (problemLogger != null){
             problemLogger.logp(Level.WARNING, problem.getSourceClassName(), null, problem.getMessageId(), problem.getMessageParams());
         } else {
-            logger.severe("Can't get logger " + problem.getSourceClassName()+ " with bundle " + problem.getBundleName());
+            logger.severe("Can't get logger " + problem.getSourceClassName()+ " with bundle " + problem.getResourceBundleName());
         }
     }
 

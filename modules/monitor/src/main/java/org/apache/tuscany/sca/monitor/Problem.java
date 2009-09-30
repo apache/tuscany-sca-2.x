@@ -32,7 +32,7 @@ public interface Problem {
 
     String getSourceClassName();
 
-    String getBundleName();
+    String getResourceBundleName();
 
     Severity getSeverity();
     
@@ -42,7 +42,7 @@ public interface Problem {
 
     String getMessageId();
 
-    Exception getCause();
+    Throwable getCause();
 
     Object[] getMessageParams();
 }

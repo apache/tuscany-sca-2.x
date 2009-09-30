@@ -24,13 +24,10 @@ import static org.apache.tuscany.sca.common.java.io.IOHelper.createURI;
 import static org.apache.tuscany.sca.common.java.io.IOHelper.openStream;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.security.AccessController;
@@ -279,7 +276,7 @@ public class NodeFactoryImpl extends NodeFactory {
      *
      * @throws Exception
      */
-    private void analyzeProblems() throws Exception {
+    private void analyzeProblems() throws Throwable {
         for (Problem problem : monitor.getProblems()) {
             if ((problem.getSeverity() == Severity.ERROR)) {
                 if (problem.getCause() != null) {
@@ -478,7 +475,7 @@ public class NodeFactoryImpl extends NodeFactory {
     }
 
     protected Composite configureNode(NodeConfiguration configuration, List<Contribution> contributions)
-        throws Exception {
+        throws Throwable {
         if (contributions == null) {
             // Load contributions
             contributions = loadContributions(configuration);
@@ -569,8 +566,7 @@ public class NodeFactoryImpl extends NodeFactory {
         return domainComposite;
     }
 
-    private List<Contribution> loadContributions(NodeConfiguration configuration) throws MalformedURLException,
-        ContributionReadException, XMLStreamException, IOException, UnsupportedEncodingException, Exception {
+    private List<Contribution> loadContributions(NodeConfiguration configuration) throws Throwable {
         List<Contribution> contributions = new ArrayList<Contribution>();
 
         // Load the specified contributions

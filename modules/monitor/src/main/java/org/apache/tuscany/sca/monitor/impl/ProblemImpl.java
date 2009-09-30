@@ -41,7 +41,7 @@ public class ProblemImpl implements Problem {
     private Object problemObject;
     private String messageId;
     private Object[] messageParams;
-    private Exception cause;
+    private Throwable cause;
 
     /**
      * Construct a new problem
@@ -87,7 +87,7 @@ public class ProblemImpl implements Problem {
                        String context,
                        Object problemObject,
                        String messageId,
-                       Exception cause) {
+                       Throwable cause) {
         this.sourceClassName = sourceClassName;
         this.bundleName = bundleName;
         this.severity = severity;
@@ -101,7 +101,7 @@ public class ProblemImpl implements Problem {
         return sourceClassName;
     }
 
-    public String getBundleName() {
+    public String getResourceBundleName() {
         return bundleName;
     }
 
@@ -125,7 +125,7 @@ public class ProblemImpl implements Problem {
         return messageParams;
     }
 
-    public Exception getCause() {
+    public Throwable getCause() {
         return cause;
     }
 

@@ -48,12 +48,12 @@ public class MonitorImpl extends Monitor {
 
     public void problem(Problem problem) {
 
-        Logger problemLogger = Logger.getLogger(problem.getSourceClassName(), problem.getBundleName());
+        Logger problemLogger = Logger.getLogger(problem.getSourceClassName(), problem.getResourceBundleName());
 
         if (problemLogger == null) {
             logger.severe("Can't get logger " + problem.getSourceClassName()
                 + " with bundle "
-                + problem.getBundleName());
+                + problem.getResourceBundleName());
         }
 
         if (problem.getSeverity() == Severity.INFO) {
@@ -68,7 +68,7 @@ public class MonitorImpl extends Monitor {
             if (problem.getCause() != null) {
                 problemCache.add(problem);
                 problemLogger.logp(Level.SEVERE, problem.getSourceClassName(), problem.getContext(), problem.getMessageId(), problem
-                    .getCause().toString());
+                    .getCause());
 
             } else {
                 problemCache.add(problem);
@@ -94,7 +94,7 @@ public class MonitorImpl extends Monitor {
                                  Severity severity,
                                  Object problemObject,
                                  String messageId,
-                                 Exception cause) {
+                                 Throwable cause) {
         return new ProblemImpl(sourceClassName, bundleName, severity, contextStack.toString(), problemObject, messageId, cause);
     }
 

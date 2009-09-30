@@ -66,7 +66,7 @@ public abstract class Monitor {
                                           Severity severity,
                                           Object problemObject,
                                           String messageId,
-                                          Exception cause);
+                                          Throwable cause);
 
     /**
      * Create a new problem.
@@ -134,7 +134,7 @@ public abstract class Monitor {
                                 Object reportingObject,
                                 String messageBundle,
                                 String messageId, 
-                                String... messageParameters){
+                                Object... messageParameters){
         if (monitor != null) {
             Problem problem =
                 monitor.createProblem(reportingObject.getClass().getName(),
@@ -142,7 +142,7 @@ public abstract class Monitor {
                                       Severity.WARNING,
                                       null,
                                       messageId,
-                                      (Object[])messageParameters);
+                                      messageParameters);
             monitor.problem(problem);
         } else {
             System.out.println("Attempt to report warning with id " + 
@@ -167,7 +167,7 @@ public abstract class Monitor {
                               Object reportingObject,
                               String messageBundle,
                               String messageId, 
-                              String... messageParameters){
+                              Object... messageParameters){
         if (monitor != null) {
             Problem problem =
                 monitor.createProblem(reportingObject.getClass().getName(),
@@ -175,7 +175,7 @@ public abstract class Monitor {
                                       Severity.ERROR,
                                       null,
                                       messageId,
-                                      (Object[])messageParameters);
+                                      messageParameters);
             monitor.problem(problem);
         } else {
             System.out.println("Attempt to report error with id " + 
@@ -200,7 +200,7 @@ public abstract class Monitor {
                               Object reportingObject,
                               String messageBundle,
                               String messageId, 
-                              Exception cause){
+                              Throwable cause){
         if (monitor != null) {
             Problem problem =
                 monitor.createProblem(reportingObject.getClass().getName(),
