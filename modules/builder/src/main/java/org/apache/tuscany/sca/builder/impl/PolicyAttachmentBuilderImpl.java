@@ -118,7 +118,7 @@ public class PolicyAttachmentBuilderImpl implements CompositeBuilder {
                 }
             }
         }
-        Document document = saveAsDOM(composite);
+        Document document = null;
 
         for (PolicySet ps : definitions.getPolicySets()) {
             // First calculate the applicable nodes
@@ -135,6 +135,9 @@ public class PolicyAttachmentBuilderImpl implements CompositeBuilder {
             */
             XPathExpression exp = ps.getAttachToXPathExpression();
             if (exp != null) {
+                if (document == null) {
+                    document = saveAsDOM(composite);
+                }
                 NodeList nodes = (NodeList)exp.evaluate(document, XPathConstants.NODESET);
                 for (int i = 0; i < nodes.getLength(); i++) {
                     Node node = nodes.item(i);
