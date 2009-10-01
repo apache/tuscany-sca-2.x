@@ -18,16 +18,13 @@
  */
 package sample;
 
-import org.oasisopen.sca.annotation.Service;
-
 /**
  * This class implements the HelloWorld service.
  */
-@Service(HelloWorldService.class)
 public class HelloWorldServiceImpl implements HelloWorldService {
 
     public String sayHello(String name) {
-        System.out.println("HelloWorldServiceImpl .sayHello " + name);        
+        System.out.println("HelloWorldServiceImpl.sayHello " + name);        
         return "Hello " + name;
     }
 

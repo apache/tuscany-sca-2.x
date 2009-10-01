@@ -18,6 +18,11 @@
  * under the License.    
 -->
 
+<!--
+This file configures the ActiveMQ JMS resources and is only required when
+using Apache ActiveMQ as the JMS broker in Apache Tomcat.
+-->
+
 <Context>
 
    <Resource name="ConnectionFactory" auth="Container" type="org.apache.activemq.ActiveMQConnectionFactory" description="JMS Connection Factory"

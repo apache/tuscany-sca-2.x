@@ -31,7 +31,7 @@ public class HelloWorldClient implements HelloWorldService {
     }
 
     public void setHelloWorldRef(HelloWorldService helloWorldRef) {
-        System.out.println("HelloWorldClient .setHelloWorldService " + helloWorldRef);        
+        System.out.println("HelloWorldClient.setHelloWorldService " + helloWorldRef);        
         this.helloWorldRef = helloWorldRef;
     }
 }
