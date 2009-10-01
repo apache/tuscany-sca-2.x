@@ -1,0 +1,36 @@
+Manifest-Version: 1.0
+Export-Package: org.apache.tuscany.sca.databinding.json.axiom;uses:="o
+ rg.apache.tuscany.sca.databinding,org.oasisopen.sca.annotation,org.ap
+ ache.tuscany.sca.interfacedef.util,org.apache.tuscany.sca.databinding
+ .impl,org.codehaus.jettison.json,org.apache.tuscany.sca.databinding.j
+ son,org.apache.tuscany.sca.interfacedef,javax.xml.namespace,org.apach
+ e.axiom.om,org.codehaus.jettison.badgerfish,javax.xml.stream,org.code
+ haus.jettison.mapped";version="",org.apache.tuscany.sca.databinding.j
+ son;uses:="org.apache.tuscany.sca.databinding,com.metaparadigm.jsonrp
+ c,org.apache.tuscany.sca.interfacedef,org.apache.tuscany.sca.databind
+ ing.impl,org.codehaus.jettison.badgerfish,javax.xml.stream,org.codeha
+ us.jettison.json,org.apache.tuscany.sca.interfacedef.util,org.json,ja
+ vax.xml.namespace,org.apache.tuscany.sca.common.xml.stax.impl";versio
+ n=""
+Tool: Bnd-0.0.357
+Bundle-Name: Apache Tuscany SCA Data Binding for JSON
+Created-By: 1.6.0_15 (Apple Inc.)
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 2.0.0
+Bnd-LastModified: 1254338075268
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA Data Binding for JSON
+Import-Package: com.metaparadigm.jsonrpc,javax.xml.namespace,javax.xml
+ .stream;version="1.0",org.apache.axiom.om,org.apache.tuscany.sca.comm
+ on.xml.stax.impl,org.apache.tuscany.sca.databinding;version="2.0.0",org
+ .apache.tuscany.sca.databinding.impl;version="2.0.0",org.apache.tuscany
+ .sca.databinding.json;version="2.0.0",org.apache.tuscany.sca
+ .databinding.json.axiom;version="2.0.0",org.apache.tuscany.s
+ ca.interfacedef;version="2.0.0",org.apache.tuscany.sca.interfacedef.uti
+ l;version="2.0.0",org.codehaus.jettison.badgerfish,org.codehaus.jettiso
+ n.json,org.codehaus.jettison.mapped,org.json,org.oasisopen.sca.annota
+ tion;version="2.0.0"
+Bundle-SymbolicName: org.apache.tuscany.sca.databinding.json
+Bundle-DocURL: http://www.apache.org/
+
