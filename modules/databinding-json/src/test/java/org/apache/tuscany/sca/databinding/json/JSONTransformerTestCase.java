@@ -29,10 +29,11 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
 
 import org.apache.axiom.om.OMElement;
-import org.apache.tuscany.sca.common.xml.stax.impl.XMLStreamSerializer;
+import org.apache.tuscany.sca.common.xml.stax.StAXHelper;
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.impl.TransformationContextImpl;
 import org.apache.tuscany.sca.databinding.json.axiom.JSON2OMElement;
@@ -40,8 +41,9 @@ import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.json.JSONObject;
+import org.junit.Test;
 
-public class JSONTransformerTestCase extends TestCase {
+public class JSONTransformerTestCase  {
     private static final String IPO_XML = "<?xml version=\"1.0\"?>" + "<ipo:purchaseOrder"
                                           + "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
                                           + "  xmlns:ipo=\"http://www.example.com/IPO\""
@@ -73,9 +75,12 @@ public class JSONTransformerTestCase extends TestCase {
 
     private static final String JSON_STR = "{\"xsl:root\":{\"@xmlns\":{\"xsl\":\"http://foo.com\"},\"data\":{\"$\":\"my json string\"}}}";
 
+    @Test
     public void testXML2JSON() throws Exception {
+    	ExtensionPointRegistry extensionPointRegistry = new DefaultExtensionPointRegistry();
+    	
         XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(new StringReader(IPO_XML));
-        XMLStreamReader2JSON t1 = new XMLStreamReader2JSON();
+        XMLStreamReader2JSON t1 = new XMLStreamReader2JSON(extensionPointRegistry);
         JSONObject json = (JSONObject) t1.transform(reader, null);
         Assert.assertNotNull(json);
 
@@ -89,20 +94,23 @@ public class JSONTransformerTestCase extends TestCase {
          streamWriter.flush();
          System.out.println(sw.toString());
          */
-
     }
 
+    @Test
     public void testJSON2XML() throws Exception {
+    	ExtensionPointRegistry extensionPointRegistry = new DefaultExtensionPointRegistry();
+    	StAXHelper helper = StAXHelper.getInstance(extensionPointRegistry);
+    	
         JSON2XMLStreamReader t2 = new JSON2XMLStreamReader();
         XMLStreamReader reader2 = t2.transform(new JSONObject(JSON_STR), null);
         StringWriter sw = new StringWriter();
         XMLStreamWriter streamWriter = XMLOutputFactory.newInstance().createXMLStreamWriter(sw);
-        new XMLStreamSerializer().serialize(reader2, streamWriter);
-        streamWriter.flush();
+        helper.save(reader2, streamWriter);
         Assert.assertTrue(sw.toString()
             .contains("<xsl:root xmlns:xsl=\"http://foo.com\"><data>my json string</data></xsl:root>"));
     }
 
+    @Test
     public void testJSON2OMElement() throws Exception {
         JSON2OMElement t1 = new JSON2OMElement();
         TransformationContext context = new TransformationContextImpl();
@@ -114,15 +122,16 @@ public class JSONTransformerTestCase extends TestCase {
         // System.out.println(writer.toString());
     }
 
+    @Test
     public void testString2JSON() throws Exception {
         String json = "{\"name\":\"John\",\"age\":25}";
         String2JSON t1 = new String2JSON();
         JSONObject jsonObject = (JSONObject) t1.transform(json, null);
-        assertEquals(jsonObject.getString("name"), "John");
-        assertEquals(jsonObject.getInt("age"), 25);
+        Assert.assertEquals(jsonObject.getString("name"), "John");
+        Assert.assertEquals(jsonObject.getInt("age"), 25);
         JSON2String t2 = new JSON2String();
         String str = t2.transform(jsonObject, null);
-        assertTrue(str.contains("\"name\":\"John\""));
-        assertTrue(str.contains("\"age\":25"));
+        Assert.assertTrue(str.contains("\"name\":\"John\""));
+        Assert.assertTrue(str.contains("\"age\":25"));
     }
 }

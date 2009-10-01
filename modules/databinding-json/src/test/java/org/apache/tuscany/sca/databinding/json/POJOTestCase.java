@@ -20,13 +20,14 @@ package org.apache.tuscany.sca.databinding.json;
 
 import java.lang.reflect.Array;
 
-import junit.framework.TestCase;
+import junit.framework.Assert;
 
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.impl.TransformationContextImpl;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
+import org.junit.Test;
 
-public class POJOTestCase extends TestCase {
+public class POJOTestCase  {
     public void testPOJO() throws Exception {
         MyBean bean = new MyBean();
         bean.setName("Test");
@@ -55,33 +56,37 @@ public class POJOTestCase extends TestCase {
 
         if (newBean != null && newBean.getClass().isArray()) {
             int len = Array.getLength(newBean);
-            assertEquals(Array.getLength(bean), len);
+            Assert.assertEquals(Array.getLength(bean), len);
             for (int i = 0; i < len; i++) {
-                assertEquals(Array.get(bean, i), Array.get(newBean, i));
+            	Assert.assertEquals(Array.get(bean, i), Array.get(newBean, i));
             }
             return;
         }
-        assertEquals(bean, newBean);
+        Assert.assertEquals(bean, newBean);
     }
 
+    @Test
     public void testString() throws Exception {
         roundTrip("ABC");
     }
 
+    @Test
     public void testNull() throws Exception {
         roundTrip(null);
     }
 
+    @Test
     public void testArray() throws Exception {
         roundTrip(new String[] {"123", "ABC"});
     }
 
+    @Test
     public void testByteArray() throws Exception {
         roundTrip("ABC".getBytes());
     }
 
+    @Test
     public void testPrimitive() throws Exception {
         roundTrip(123);
     }
-
 }
