@@ -10,11 +10,6 @@ Export-Package: org.apache.tuscany.sca.assembly;version="2.0.0";
    org.apache.tuscany.sca.definitions,
    org.apache.tuscany.sca.core,
    org.apache.tuscany.sca.monitor",
- org.apache.tuscany.sca.assembly.builder.impl;version="2.0.0";
-  uses:="org.apache.tuscany.sca.assembly,
-   org.apache.tuscany.sca.definitions,
-   org.apache.tuscany.sca.core,
-   org.apache.tuscany.sca.monitor",
  org.apache.tuscany.sca.assembly.impl;version="2.0.0";
   uses:="javax.xml.xpath,
    org.apache.tuscany.sca.assembly,
