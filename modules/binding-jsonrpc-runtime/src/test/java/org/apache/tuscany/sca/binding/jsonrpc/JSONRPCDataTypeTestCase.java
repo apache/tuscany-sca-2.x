@@ -22,11 +22,13 @@ import java.io.ByteArrayInputStream;
 
 import junit.framework.Assert;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.json.JSONObject;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.meterware.httpunit.PostMethodWebRequest;
@@ -41,16 +43,24 @@ public class JSONRPCDataTypeTestCase {
 
 	private static final String SERVICE_PATH = "/EchoService";
 	private static final String SERVICE_URL = "http://localhost:8085/SCADomain" + SERVICE_PATH;
-	private SCADomain domain;
+	
+	private static Node node;
 
-	@Before
-	public void setUp() throws Exception {
-		domain = SCADomain.newInstance("JSONRPCBinding.composite");
+	@BeforeClass
+	public static void setUp() throws Exception {
+		try {
+    		String contribution = ContributionLocationHelper.getContributionLocation(JSONRPCDataTypeTestCase.class);
+    		node = NodeFactory.newInstance().createNode("JSONRPCBinding.composite", new Contribution("test", contribution));
+    		node.start();
+    	} catch (Exception e) {
+    		e.printStackTrace();
+    	}
 	}
 
-	@After
-	public void tearDown() throws Exception {
-		domain.close();
+	@AfterClass
+	public static void tearDown() throws Exception {
+		node.stop();
+    	node.destroy();
 	}
 
 	@Test
