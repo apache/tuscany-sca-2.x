@@ -281,7 +281,7 @@ public class ComponentBuilderImpl {
 
         // Connect this component's properties to the 
         // properties from its component type
-        connectReferencesToComponentType(component);
+        connectPropertiesToComponentType(component);
 
         // Reconcile component properties and their component type properties
         for (ComponentProperty componentProperty : component.getProperties()) {
