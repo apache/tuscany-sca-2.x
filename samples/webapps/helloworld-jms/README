@@ -10,7 +10,8 @@ first.
 As this sample provides a web app there is a manual step where the WAR file
 that contains the sample is copied to your web app container. If you just want 
 to give this sample a go deploy the WAR file (target/helloworld-jms.war )
-to you web application server. 
+to you web application server. Alternatevly, the sample pom.xml is configured
+with the Jetty plugin so you can run the it with Jetty by simply doing "mvn jetty:run".
 
 Once the web app is deployed use your browser to visit the following URL;
 
