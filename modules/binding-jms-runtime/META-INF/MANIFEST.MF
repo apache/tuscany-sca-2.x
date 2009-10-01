@@ -11,8 +11,18 @@ Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA JMS Binding Runtime
 Import-Package: org.apache.tuscany.sca.assembly;version="2.0.0",
  org.apache.tuscany.sca.assembly.xml;version="2.0.0",
+ org.apache.tuscany.sca.core;version="2.0.0",
+ org.apache.tuscany.sca.invocation;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef.impl;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef.util;version="2.0.0",
+ org.apache.tuscany.sca.provider;version="2.0.0",
+ org.oasisopen.sca.annotation;version="2.0.0",
+ org.apache.tuscany.sca.runtime;version="2.0.0",
  org.apache.tuscany.sca.binding.jms;version="2.0.0",
- org.apache.tuscany.sca.binding.jms.runtime;version="2.0.0"
+ org.apache.tuscany.sca.binding.jms.wireformat;version="2.0.0",
+ org.apache.tuscany.sca.binding.jms.runtime;version="2.0.0",
+ org.apache.tuscany.sca.binding.ws;version="2.0.0"
 Bundle-SymbolicName: org.apache.tuscany.sca.binding.jms.runtime
 Bundle-DocURL: http://www.apache.org/
 Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6
