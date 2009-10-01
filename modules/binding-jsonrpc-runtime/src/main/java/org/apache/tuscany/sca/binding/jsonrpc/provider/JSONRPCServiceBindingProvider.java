@@ -25,9 +25,13 @@ import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.binding.jsonrpc.JSONRPCBinding;
+import org.apache.tuscany.sca.databinding.javabeans.SimpleJavaDataBinding;
+import org.apache.tuscany.sca.databinding.json.JSONDataBinding;
 import org.apache.tuscany.sca.host.http.ServletHost;
+import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
@@ -75,8 +79,7 @@ public class JSONRPCServiceBindingProvider implements ServiceBindingProvider {
             this.serviceContract = service.getInterfaceContract();
         }
         
-        // FIXME Bringup JSON Databing
-        // setDataBinding(serviceContract.getInterface());
+        setDataBinding(serviceContract.getInterface());
     }
 
     public InterfaceContract getBindingInterfaceContract() {
@@ -89,8 +92,7 @@ public class JSONRPCServiceBindingProvider implements ServiceBindingProvider {
     
     public void start() {
         // Set default databinding to json
-    	// FIXME : port json databinding support
-        // serviceContract.getInterface().resetDataBinding(JSONDataBinding.NAME);
+        serviceContract.getInterface().resetDataBinding(JSONDataBinding.NAME);
 
         // Determine the service business interface
         Class<?> serviceInterface = getTargetJavaClass(serviceContract.getInterface());
@@ -163,8 +165,6 @@ public class JSONRPCServiceBindingProvider implements ServiceBindingProvider {
         return ((JavaInterface)targetInterface).getJavaClass();
     }
     
-    // FIXME Bringup JSON Databinding support
-    /*
     private void setDataBinding(Interface interfaze) {
         List<Operation> operations = interfaze.getOperations();
         for (Operation operation : operations) {
@@ -186,5 +186,4 @@ public class JSONRPCServiceBindingProvider implements ServiceBindingProvider {
             }
         }
     }
-    */
 }
