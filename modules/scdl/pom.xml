@@ -55,13 +55,11 @@
             <version>2.0-SNAPSHOT</version>
         </dependency>
 
-<!-- TODO: leave out WS binding for now as it drags in entire runtime 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-binding-ws-xml</artifactId>
+            <artifactId>tuscany-binding-ws</artifactId>
             <version>2.0-SNAPSHOT</version>
         </dependency>
--->
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
