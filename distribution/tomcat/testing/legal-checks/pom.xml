@@ -29,12 +29,6 @@
     <name>Apache Tuscany SCA WAR Distribution Legal Checks</name>
 
     <dependencies>
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>itest-bin-distro-unzip</artifactId>
-            <type>pom</type>
-            <version>2.0-SNAPSHOT</version>
-        </dependency>        
     </dependencies>
     
     <build>
