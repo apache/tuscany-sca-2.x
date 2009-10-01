@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import org.apache.tuscany.sca.databinding.PullTransformer;
+import org.apache.tuscany.sca.databinding.SimpleTypeMapper;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
 import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
@@ -39,6 +40,8 @@ import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
 
 public class JavaBean2JSONObject extends BaseTransformer<Object, Object> implements PullTransformer<Object, Object> {
+	private static final SimpleTypeMapper SIMPLE_TYPE_MAPPER = new SimpleTypeMapperImpl();
+	
     private static final Comparator<PropertyDescriptor> COMPARATOR = new Comparator<PropertyDescriptor>() {
         public int compare(PropertyDescriptor o1, PropertyDescriptor o2) {
             return o1.getName().compareTo(o2.getName());
@@ -52,7 +55,7 @@ public class JavaBean2JSONObject extends BaseTransformer<Object, Object> impleme
         if (o == null) {
             return null;
         }
-        TypeInfo info = SimpleTypeMapperImpl.getXMLType(o.getClass());
+        TypeInfo info = SIMPLE_TYPE_MAPPER.getXMLType(o.getClass());
         if (info != null) {
             return MAPPER.toXMLLiteral(info.getQName(), o, null);
         } else {
@@ -61,7 +64,7 @@ public class JavaBean2JSONObject extends BaseTransformer<Object, Object> impleme
     }
 
     private static boolean isSimpleType(Class<?> javaType) {
-        return SimpleTypeMapperImpl.getXMLType(javaType) != null;
+        return SIMPLE_TYPE_MAPPER.getXMLType(javaType) != null;
     }
 
     public JavaBean2JSONObject() {

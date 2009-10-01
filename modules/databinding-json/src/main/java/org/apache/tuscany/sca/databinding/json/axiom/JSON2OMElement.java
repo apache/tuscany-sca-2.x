@@ -34,7 +34,7 @@ import org.apache.tuscany.sca.databinding.json.JSONHelper;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.codehaus.jettison.json.JSONObject;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  * @version $Rev$ $Date$
