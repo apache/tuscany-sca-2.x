@@ -8,7 +8,8 @@ Bnd-LastModified: 1253941843749
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA JSON-RPC Binding Runtime
-Import-Package: javax.servlet,
+Import-Package: com.metaparadigm.jsonrpc;version="1.0.0",
+ javax.servlet,
  javax.servlet.http,
  javax.xml.namespace,
  javax.xml.stream;version="1.0",
@@ -27,6 +28,7 @@ Import-Package: javax.servlet,
  org.apache.tuscany.sca.monitor;version="2.0",
  org.apache.tuscany.sca.provider,
  org.apache.tuscany.sca.runtime,
+ org.json;version="1.0.0",
  org.oasisopen.sca;version="2.0.0",
  org.oasisopen.sca.annotation
 Bundle-SymbolicName: org.apache.tuscany.sca.binding.jsonrpc.runtime
