@@ -19,12 +19,7 @@
 
 package org.apache.tuscany.sca.binding.jsonrpc.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.IntentAttachPointType;
-import org.apache.tuscany.sca.policy.PolicySet;
+import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.binding.jsonrpc.JSONRPCBinding;
 
@@ -37,12 +32,10 @@ public class JSONRPCBindingImpl implements JSONRPCBinding {
     private String name;
     private String uri;
 
-
-    private List<Intent> requiredIntents = new ArrayList<Intent>();
-    private List<PolicySet> policySets = new ArrayList<PolicySet>();
-    private IntentAttachPointType intentAttachPointType;
-    private List<PolicySet> applicablePolicySets = new ArrayList<PolicySet>();
-
+    public QName getType() {
+		return TYPE;
+	}
+    
     public String getName() {
         return name;
     }
@@ -66,36 +59,6 @@ public class JSONRPCBindingImpl implements JSONRPCBinding {
 
     public void setUnresolved(boolean unresolved) {
         // The binding is always resolved
-    }
-
-    //Policy related getters/setters
-
-    public List<PolicySet> getPolicySets() {
-        return policySets;
-    }
-
-    public List<Intent> getRequiredIntents() {
-        return requiredIntents;
-    }
-
-    public IntentAttachPointType getType() {
-        return intentAttachPointType;
-    }
-
-    public void setType(IntentAttachPointType intentAttachPointType) {
-        this.intentAttachPointType = intentAttachPointType;
-    }
-
-    public void setPolicySets(List<PolicySet> policySets) {
-        this.policySets = policySets;
-    }
-
-    public void setRequiredIntents(List<Intent> intents) {
-        this.requiredIntents = intents;
-    }
-
-    public List<PolicySet> getApplicablePolicySets() {
-        return applicablePolicySets;
     }
 
     @Override

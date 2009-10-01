@@ -19,14 +19,15 @@
 
 package org.apache.tuscany.sca.binding.jsonrpc;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 
 /**
  * A model for the JSONRPC binding.
  * 
  * @version $Rev$ $Date$
  */
-public interface JSONRPCBinding extends Binding, PolicySetAttachPoint {
-
+public interface JSONRPCBinding extends Binding {
+	QName TYPE = new QName(SCA11_TUSCANY_NS, "binding.jsonrpc");
 }
