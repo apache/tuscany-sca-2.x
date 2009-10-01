@@ -20,13 +20,23 @@ Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA WS Binding Model
 Import-Package: javax.wsdl,
  javax.xml.namespace,
+ javax.xml.parsers,
+ javax.xml.stream,
+ javax.xml.transform,
+ javax.xml.transform.dom,
  org.apache.tuscany.sca.assembly;version="2.0.0",
  org.apache.tuscany.sca.assembly.builder;version="2.0.0",
+ org.apache.tuscany.sca.assembly.xml;version="2.0.0",
  org.apache.tuscany.sca.binding.ws;version="2.0.0",
  org.apache.tuscany.sca.binding.ws.addressing;version="2.0.0",
+ org.apache.tuscany.sca.contribution.processor;version="2.0.0",
+ org.apache.tuscany.sca.contribution.resolver;version="2.0.0",
+ org.apache.tuscany.sca.core;version="2.0.0";resolution:=optional,
  org.apache.tuscany.sca.interfacedef;version="2.0.0",
  org.apache.tuscany.sca.interfacedef.wsdl;version="2.0.0",
+ org.apache.tuscany.sca.monitor;version="2.0.0",
  org.apache.tuscany.sca.policy;version="2.0.0",
+ org.apache.tuscany.sca.xsd;version="2.0.0",
  org.w3c.dom
 Bundle-SymbolicName: org.apache.tuscany.sca.binding.ws
 Bundle-DocURL: http://www.apache.org/
