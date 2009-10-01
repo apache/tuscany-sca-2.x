@@ -74,6 +74,7 @@
                 <module>references</module>
                 <module>scaclient-api</module>
                 <module>scopes</module>
+                <module>scdl</module>
                 <module>services</module>
                 <module>service-reference</module>
                 <module>wires</module>
