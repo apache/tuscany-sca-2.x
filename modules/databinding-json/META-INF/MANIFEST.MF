@@ -1,17 +1,6 @@
 Manifest-Version: 1.0
-Export-Package: org.apache.tuscany.sca.databinding.json.axiom;uses:="o
- rg.apache.tuscany.sca.databinding,org.oasisopen.sca.annotation,org.ap
- ache.tuscany.sca.interfacedef.util,org.apache.tuscany.sca.databinding
- .impl,org.codehaus.jettison.json,org.apache.tuscany.sca.databinding.j
- son,org.apache.tuscany.sca.interfacedef,javax.xml.namespace,org.apach
- e.axiom.om,org.codehaus.jettison.badgerfish,javax.xml.stream,org.code
- haus.jettison.mapped";version="",org.apache.tuscany.sca.databinding.j
- son;uses:="org.apache.tuscany.sca.databinding,com.metaparadigm.jsonrp
- c,org.apache.tuscany.sca.interfacedef,org.apache.tuscany.sca.databind
- ing.impl,org.codehaus.jettison.badgerfish,javax.xml.stream,org.codeha
- us.jettison.json,org.apache.tuscany.sca.interfacedef.util,org.json,ja
- vax.xml.namespace,org.apache.tuscany.sca.common.xml.stax.impl";versio
- n=""
+Export-Package: org.apache.tuscany.sca.databinding.json,
+ org.apache.tuscany.sca.databinding.json.axiom
 Tool: Bnd-0.0.357
 Bundle-Name: Apache Tuscany SCA Data Binding for JSON
 Created-By: 1.6.0_15 (Apple Inc.)
