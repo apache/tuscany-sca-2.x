@@ -27,7 +27,7 @@
     <bean id="beanRefFactory" class="org.springframework.context.support.ClassPathXmlApplicationContext">
 	   <constructor-arg>
 		  <list>
-			 <value>context/multiple/META-INF/spring/SpringHelloWorld-context.xml</value>
+			 <value>context/multiple/springapp/META-INF/spring/SpringHelloWorld-context.xml</value>
 		  </list>
 	   </constructor-arg>
     </bean>
