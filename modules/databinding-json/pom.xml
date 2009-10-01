@@ -102,6 +102,7 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.5</version>
+            <scope>test</scope>
         </dependency>
         
         <dependency>
@@ -118,6 +119,7 @@
                    <artifactId>servlet-api</artifactId>
                </exclusion>
            </exclusions>
+           <scope>test</scope>
         </dependency>          
     </dependencies>
 </project>
