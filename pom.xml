@@ -523,7 +523,7 @@
             <modules>
                 <module>modules/binding-jms</module>
                 <module>modules/binding-jms-runtime</module>
-                <!-- module>samples/webapps/helloworld-jms</module -->
+                <module>samples/webapps/helloworld-jms</module>
                 <module>itest/jms</module>
             </modules>
         </profile>
