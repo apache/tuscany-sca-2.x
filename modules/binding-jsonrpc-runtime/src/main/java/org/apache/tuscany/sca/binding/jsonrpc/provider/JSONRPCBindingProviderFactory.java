@@ -19,18 +19,18 @@
 
 package org.apache.tuscany.sca.binding.jsonrpc.provider;
 
+import javax.xml.soap.MessageFactory;
+
+import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.binding.jsonrpc.JSONRPCBinding;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
-import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
-import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
 /**
  * JSON-RPC Provider Factory
@@ -46,21 +46,17 @@ public class JSONRPCBindingProviderFactory implements BindingProviderFactory<JSO
         ServletHostExtensionPoint servletHosts = extensionPoints.getExtensionPoint(ServletHostExtensionPoint.class);
         this.servletHost = servletHosts.getServletHosts().get(0);
         
-        ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         messageFactory = modelFactories.getFactory(MessageFactory.class);
     }
     
-    public ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component,
-                                                                   RuntimeComponentReference reference,
-                                                                   JSONRPCBinding binding) {
+    public ReferenceBindingProvider createReferenceBindingProvider(EndpointReference endpointReference) {
         
-        return new JSONRPCReferenceBindingProvider(component, reference, binding);
+        return new JSONRPCReferenceBindingProvider(endpointReference);
     }
 
-    public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component,
-                                                               RuntimeComponentService service,
-                                                               JSONRPCBinding binding) {
-        return new JSONRPCServiceBindingProvider(component, service, binding, messageFactory, servletHost);
+    public ServiceBindingProvider createServiceBindingProvider(Endpoint endpoint) {
+        return new JSONRPCServiceBindingProvider(endpoint, messageFactory, servletHost);
     }
 
     public Class<JSONRPCBinding> getModelType() {

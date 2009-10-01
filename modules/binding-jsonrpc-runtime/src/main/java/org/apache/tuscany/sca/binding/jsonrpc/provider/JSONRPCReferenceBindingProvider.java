@@ -19,12 +19,12 @@
 
 package org.apache.tuscany.sca.binding.jsonrpc.provider;
 
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.binding.jsonrpc.JSONRPCBinding;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 
 /**
@@ -34,15 +34,15 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
  */
 public class JSONRPCReferenceBindingProvider implements ReferenceBindingProvider {
 
+	private EndpointReference endpointReference;
     private RuntimeComponentReference reference;
     private JSONRPCBinding binding;
     
-    public JSONRPCReferenceBindingProvider(RuntimeComponent component,
-                                           RuntimeComponentReference reference,
-                                           JSONRPCBinding binding) {
-           this.reference = reference;
-           this.binding = binding;
+    public JSONRPCReferenceBindingProvider(EndpointReference endpointReference) {
         
+    	this.endpointReference = endpointReference;
+    	this.reference = (RuntimeComponentReference) endpointReference.getReference();
+        this.binding = (JSONRPCBinding) endpointReference.getBinding();
     }
 
     public InterfaceContract getBindingInterfaceContract() {
@@ -54,13 +54,11 @@ public class JSONRPCReferenceBindingProvider implements ReferenceBindingProvider
     }
 
     public void start() {
-        // TODO Auto-generated method stub
-
+        // TODO Provide support for JSONRPC References
     }
 
     public void stop() {
-        // TODO Auto-generated method stub
-
+        // TODO Provide support for JSONRPC References
     }
 
     public boolean supportsOneWayInvocation() {

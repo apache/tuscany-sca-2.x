@@ -23,19 +23,17 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.binding.jsonrpc.JSONRPCBinding;
-import org.apache.tuscany.sca.databinding.javabeans.SimpleJavaDataBinding;
-import org.apache.tuscany.sca.databinding.json.JSONDataBinding;
 import org.apache.tuscany.sca.host.http.ServletHost;
-import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
-import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
+
 
 /**
  * Implementation of the JSONRPC Binding Provider for Services
@@ -51,6 +49,7 @@ public class JSONRPCServiceBindingProvider implements ServiceBindingProvider {
     
     private MessageFactory messageFactory;
     
+    private Endpoint endpoint;
     private RuntimeComponent component;
     private RuntimeComponentService service;
     private InterfaceContract serviceContract;
@@ -59,14 +58,13 @@ public class JSONRPCServiceBindingProvider implements ServiceBindingProvider {
     private List<String> servletMappings = new ArrayList<String>();
     private String domainScriptMapping;
 
-    public JSONRPCServiceBindingProvider(RuntimeComponent component,
-                                         RuntimeComponentService service,
-                                         JSONRPCBinding binding,
+    public JSONRPCServiceBindingProvider(Endpoint endpoint,
                                          MessageFactory messageFactory,
                                          ServletHost servletHost) {
-        this.component = component;
-        this.service = service;
-        this.binding = binding;
+        this.endpoint = endpoint;
+        this.component = (RuntimeComponent)endpoint.getComponent();
+        this.service = (RuntimeComponentService)endpoint.getService();
+        this.binding = (JSONRPCBinding) endpoint.getBinding();
         this.messageFactory = messageFactory;
         this.servletHost = servletHost;
         
@@ -77,7 +75,8 @@ public class JSONRPCServiceBindingProvider implements ServiceBindingProvider {
             this.serviceContract = service.getInterfaceContract();
         }
         
-        setDataBinding(serviceContract.getInterface());
+        // FIXME Bringup JSON Databing
+        // setDataBinding(serviceContract.getInterface());
     }
 
     public InterfaceContract getBindingInterfaceContract() {
@@ -90,7 +89,8 @@ public class JSONRPCServiceBindingProvider implements ServiceBindingProvider {
     
     public void start() {
         // Set default databinding to json
-        serviceContract.getInterface().resetDataBinding(JSONDataBinding.NAME);
+    	// FIXME : port json databinding support
+        // serviceContract.getInterface().resetDataBinding(JSONDataBinding.NAME);
 
         // Determine the service business interface
         Class<?> serviceInterface = getTargetJavaClass(serviceContract.getInterface());
@@ -163,6 +163,8 @@ public class JSONRPCServiceBindingProvider implements ServiceBindingProvider {
         return ((JavaInterface)targetInterface).getJavaClass();
     }
     
+    // FIXME Bringup JSON Databinding support
+    /*
     private void setDataBinding(Interface interfaze) {
         List<Operation> operations = interfaze.getOperations();
         for (Operation operation : operations) {
@@ -184,6 +186,5 @@ public class JSONRPCServiceBindingProvider implements ServiceBindingProvider {
             }
         }
     }
-
-
+    */
 }
