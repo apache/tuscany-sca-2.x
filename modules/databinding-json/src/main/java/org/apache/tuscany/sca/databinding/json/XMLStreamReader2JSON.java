@@ -24,7 +24,8 @@ import java.io.StringWriter;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.tuscany.sca.common.xml.stax.impl.XMLStreamSerializer;
+import org.apache.tuscany.sca.common.xml.stax.StAXHelper;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
@@ -36,7 +37,13 @@ import org.codehaus.jettison.badgerfish.BadgerFishXMLStreamWriter;
  */
 public class XMLStreamReader2JSON extends BaseTransformer<XMLStreamReader, Object> implements
     PullTransformer<XMLStreamReader, Object> {
-    
+	
+	private StAXHelper staxHelper;
+	 
+	public XMLStreamReader2JSON(ExtensionPointRegistry registry) {
+		staxHelper = StAXHelper.getInstance(registry);
+    }
+	
     @Override
     protected Class<XMLStreamReader> getSourceType() {
         return XMLStreamReader.class;
@@ -51,8 +58,7 @@ public class XMLStreamReader2JSON extends BaseTransformer<XMLStreamReader, Objec
         try {
             StringWriter writer = new StringWriter();
             XMLStreamWriter jsonWriter = new BadgerFishXMLStreamWriter(writer);
-            XMLStreamSerializer serializer = new XMLStreamSerializer();
-            serializer.serialize(source, jsonWriter);
+            staxHelper.save(source, jsonWriter);
             source.close();
             Class type = null;
             if (context != null && context.getTargetDataType() != null) {
