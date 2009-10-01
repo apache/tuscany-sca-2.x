@@ -56,4 +56,12 @@ public class DeploymentCompositeImpl implements DeploymentComposite {
         return this;
     }
 
+	@Override
+	public String toString() {
+		return "DeploymentCompositeImpl [contributionURI=" + contributionURI 
+		        + ", location=" + location + "]";
+	}
+    
+    
+
 }
