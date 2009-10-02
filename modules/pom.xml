@@ -58,7 +58,6 @@
         <module>databinding-axiom</module>
         <module>databinding-jaxb</module>
         <module>databinding-jaxb-axiom</module>
-        <module>definitions-xml</module>
         <module>domain-node</module>
         <module>endpoint-tribes</module>
         <module>endpoint-wrapper</module>
@@ -87,7 +86,6 @@
         <module>node-launcher</module>
         <module>node-launcher-equinox</module>
         <module>policy-security</module>
-        <module>policy-xml</module>
         <module>policy-xml-ws</module>
         <module>policy-logging</module>
         <module>sca-api</module>

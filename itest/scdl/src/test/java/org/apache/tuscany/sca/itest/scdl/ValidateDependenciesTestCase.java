@@ -44,14 +44,12 @@ import org.junit.Test;
  * tuscany-common-java-2.0-SNAPSHOT.jar
  * tuscany-common-xml-2.0-SNAPSHOT.jar
  * tuscany-contribution-2.0-SNAPSHOT.jar
- * tuscany-definitions-xml-2.0-SNAPSHOT.jar
  * tuscany-extensibility-2.0-SNAPSHOT.jar
  * tuscany-implementation-bpel-2.0-SNAPSHOT.jar
  * tuscany-implementation-java-2.0-SNAPSHOT.jar
  * tuscany-interface-java-2.0-SNAPSHOT.jar
  * tuscany-interface-wsdl-2.0-SNAPSHOT.jar
  * tuscany-monitor-2.0-SNAPSHOT.jar
- * tuscany-policy-xml-2.0-SNAPSHOT.jar
  * tuscany-sca-api-2.0-SNAPSHOT.jar
  * tuscany-scdl-2.0-SNAPSHOT.jar
  * tuscany-xsd-2.0-SNAPSHOT.jar
@@ -70,6 +68,6 @@ public class ValidateDependenciesTestCase {
         Assert.assertTrue(dependenciesDir.exists());
         
         File[] dependencyFiles = dependenciesDir.listFiles();
-        Assert.assertEquals(27, dependencyFiles.length);
+        Assert.assertEquals(25, dependencyFiles.length);
     }
 }

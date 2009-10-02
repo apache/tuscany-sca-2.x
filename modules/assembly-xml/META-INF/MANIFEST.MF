@@ -8,7 +8,9 @@ Export-Package: org.apache.tuscany.sca.assembly.xml;uses:="org.apache.
  tion,org.apache.tuscany.sca.monitor,org.w3c.dom,org.apache.tuscany.sc
  a.interfacedef,org.apache.tuscany.sca.contribution.namespace,javax.xm
  l.xpath,javax.xml.transform,org.apache.tuscany.sca.contribution.proce
- ssor,org.apache.tuscany.sca.interfacedef.impl";version="2.0.0"
+ ssor,org.apache.tuscany.sca.interfacedef.impl";version="2.0.0",org.ap
+ ache.tuscany.sca.definitions.xml;version="2.0.0";org.apache.tuscany.s
+ ca.policy.xml;version="2.0.0"
 Tool: Bnd-0.0.255
 Bundle-Name: Apache Tuscany SCA XML Assembly Model
 Created-By: 1.6.0_07 (Sun Microsystems Inc.)
@@ -37,10 +39,14 @@ Import-Package: javax.xml.namespace,
  org.apache.tuscany.sca.contribution.resolver;version="2.0.0",
  org.apache.tuscany.sca.core;version="2.0.0",
  org.apache.tuscany.sca.definitions;version="2.0.0",
+ org.apache.tuscany.sca.definitions.util;version="2.0.0",
+ org.apache.tuscany.sca.definitions.xml;version="2.0.0",
+ org.apache.tuscany.sca.extensibility;version="2.0.0",
  org.apache.tuscany.sca.interfacedef;version="2.0.0",
  org.apache.tuscany.sca.interfacedef.impl;version="2.0.0",
  org.apache.tuscany.sca.monitor;version="2.0.0",
  org.apache.tuscany.sca.policy;version="2.0.0",
+ org.apache.tuscany.sca.policy.impl;version="2.0.0",
  org.apache.tuscany.sca.policy.util;version="2.0.0",
  org.w3c.dom,
  org.xml.sax;resolution:=optional

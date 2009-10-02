@@ -519,6 +519,51 @@
         </profile>
 
         <profile>
+            <id>base</id>
+            <modules>
+                <module>modules/assembly</module>
+                <module>modules/assembly-xml</module>
+                <module>modules/assembly-xsd</module>
+                <module>modules/binding-sca-runtime</module>
+                <module>modules/binding-ws</module>
+                <module>modules/binding-ws-axis2-policy</module>
+                <module>modules/binding-ws-wsdlgen</module>
+                <module>modules/builder</module>
+                <module>modules/common-java</module>
+                <module>modules/common-xml</module>
+                <module>modules/contribution</module>
+                <module>modules/core</module>
+                <module>modules/core-databinding</module>
+                <module>modules/core-spi</module>
+                <module>modules/databinding</module>
+                <module>modules/databinding-axiom</module>
+                <module>modules/databinding-jaxb</module>
+                <module>modules/definitions-xml</module>
+                <module>modules/domain-node</module>
+                <module>modules/endpoint-tribes</module>
+                <module>modules/endpoint-wrapper</module>
+                <module>modules/extensibility</module>
+                <module>modules/host-http</module>
+                <module>modules/host-webapp</module>
+                <module>modules/implementation-java</module>
+                <module>modules/implementation-java-runtime</module>
+                <module>modules/implementation-web</module>
+                <module>modules/implementation-web-runtime</module>
+                <module>modules/interface-java</module>
+                <module>modules/interface-java-jaxws</module>
+                <module>modules/interface-wsdl</module>
+                <module>modules/monitor</module>
+                <module>modules/interface-wsdl</module>
+                <module>modules/node-api</module>
+                <module>modules/node-impl</module>
+                <module>modules/policy-xml</module>
+                <module>modules/policy-security</module>
+                <module>modules/sca-api</module>
+                <module>modules/sca-client-impl</module>
+                <module>modules/xsd</module>
+            </modules>
+        </profile>
+        <profile>
             <id>jms</id>
             <modules>
                 <module>modules/binding-jms</module>
