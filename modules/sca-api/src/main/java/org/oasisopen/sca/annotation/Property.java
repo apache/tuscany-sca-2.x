@@ -1,9 +1,6 @@
 /*
- * (c) Copyright BEA Systems, Inc., Cape Clear Software, International Business Machines Corp, Interface21, IONA Technologies,
- * Oracle, Primeton Technologies, Progress Software, Red Hat, Rogue Wave Software, SAP AG., Siemens AG., Software AG., Sybase
- * Inc., TIBCO Software Inc., 2005, 2007. All rights reserved.
- * 
- * see http://www.osoa.org/display/Main/Service+Component+Architecture+Specifications
+ * Copyright(C) OASIS(R) 2005,2009. All Rights Reserved.
+ * OASIS trademark, IPR and other policies apply.    
  */
 package org.oasisopen.sca.annotation;
 
@@ -37,5 +34,5 @@ public @interface Property {
      *
      * @return true if a value must be provided
      */
-    boolean required() default false;
+    boolean required() default true;
 }
