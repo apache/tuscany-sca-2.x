@@ -258,8 +258,10 @@ The following components come under Apache Software License 2.0
  httpcore-nio-4.0.1.jar
  jackson-core-asl-1.0.1.jar
  jackson-mapper-asl-1.0.1.jar
+ jettison-1.0.1.jar
  jetty-6.1.19.jar
  jetty-util-6.1.19.jar
+ json-rpc-1.0.jar
  juli-6.0.18.jar
  log4j-1.2.15.jar
  mex-1.41-impl.jar
