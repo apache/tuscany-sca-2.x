@@ -78,7 +78,7 @@ public class EchoClientImpl implements Echo {
         throw new UnsupportedOperationException("UNsupported !");
     }
 
-    public void getΩλπ() {
+    public void get\u03a9\u03bb\u03c0() {
         throw new UnsupportedOperationException("UNsupported !");
     }
 
