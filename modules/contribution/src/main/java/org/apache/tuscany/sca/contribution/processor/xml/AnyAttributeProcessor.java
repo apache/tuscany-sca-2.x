@@ -25,11 +25,11 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Extension;
-import org.apache.tuscany.sca.contribution.Constants;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXAttributeProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXAttributeProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
@@ -41,7 +41,6 @@ import org.apache.tuscany.sca.monitor.Monitor;
  * @version $Rev$ $Date$
  */
 public class AnyAttributeProcessor extends BaseStAXArtifactProcessor implements StAXAttributeProcessor<Extension> {
-    private static final QName ANY_ATTRIBUTE = new QName(Constants.XMLSCHEMA_NS, "anyAttribute");
     
     private AssemblyFactory assemblyFactory;
 
@@ -50,7 +49,7 @@ public class AnyAttributeProcessor extends BaseStAXArtifactProcessor implements 
     }
 	
     public QName getArtifactType() {
-        return ANY_ATTRIBUTE;
+        return ExtensibleStAXAttributeProcessor.ANY_ATTRIBUTE;
     }
 
     public Class<Extension> getModelType() {

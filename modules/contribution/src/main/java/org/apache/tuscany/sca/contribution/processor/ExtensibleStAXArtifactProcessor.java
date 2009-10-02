@@ -33,7 +33,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.tuscany.sca.contribution.Constants;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
@@ -49,8 +48,8 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
  */
 public class ExtensibleStAXArtifactProcessor implements StAXArtifactProcessor<Object> {
     private static final Logger logger = Logger.getLogger(ExtensibleStAXArtifactProcessor.class.getName());
-
-    private static final QName ANY_ELEMENT = new QName(Constants.XMLSCHEMA_NS, "any");
+    private static final String XMLSCHEMA_NS = "http://www.w3.org/2001/XMLSchema";
+    public static final QName ANY_ELEMENT = new QName(XMLSCHEMA_NS, "any");
 
     private XMLInputFactory inputFactory;
     private XMLOutputFactory outputFactory;

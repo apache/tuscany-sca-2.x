@@ -35,7 +35,6 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.Extension;
-import org.apache.tuscany.sca.contribution.Constants;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
@@ -52,8 +51,8 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
 public class ExtensibleStAXAttributeProcessor implements StAXAttributeProcessor<Object> {
 
     private static final Logger logger = Logger.getLogger(ExtensibleStAXAttributeProcessor.class.getName());
-
-    private static final QName ANY_ATTRIBUTE = new QName(Constants.XMLSCHEMA_NS, "anyAttribute");
+    private static final String XMLSCHEMA_NS = "http://www.w3.org/2001/XMLSchema";
+    public static final QName ANY_ATTRIBUTE = new QName(XMLSCHEMA_NS, "anyAttribute");
 
     private XMLInputFactory inputFactory;
     private XMLOutputFactory outputFactory;
