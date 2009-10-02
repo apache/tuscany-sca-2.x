@@ -60,6 +60,7 @@
         <module>databinding-axiom</module>
         <module>databinding-jaxb</module>
         <module>databinding-jaxb-axiom</module>
+        <module>databinding-json</module>
         <module>domain-node</module>
         <module>endpoint-tribes</module>
         <module>endpoint-wrapper</module>
