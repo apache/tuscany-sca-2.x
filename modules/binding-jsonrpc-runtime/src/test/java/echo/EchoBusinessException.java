@@ -22,8 +22,8 @@ public class EchoBusinessException extends Exception {
     private static final long serialVersionUID = 7234119326657905710L;
 
     public EchoBusinessException(String message)
-	{
-		super(message);
-	}
+    {
+        super(message);
+    }
 
 }

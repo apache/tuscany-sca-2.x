@@ -40,64 +40,64 @@ public class EchoComponentImpl implements Echo {
         return "echo: " + msg;
     }
 
-	public void echoBusinessException() throws EchoBusinessException {
-		throw new EchoBusinessException("Business Exception");
-		
-	}
+    public void echoBusinessException() throws EchoBusinessException {
+        throw new EchoBusinessException("Business Exception");
 
-	public void echoRuntimeException() throws RuntimeException {
-		throw new RuntimeException("Runtime Exception");
-	}
-	
-	public int echoInt(int param) {
-		int value = param;
-		return value;
-	}
-	
-	public boolean echoBoolean(boolean param) {
-		boolean value = param;
-		return value;
-	}
-	
-	public Map echoMap(HashMap param) {
-		Map map = new HashMap();
-		map = param;
-		return map;
-	}
-	
-	public TestBean echoBean(TestBean testBean1) {
-		TestBean testBean = new TestBean();
-		testBean.setTestString(testBean1.getTestString());
-		testBean.setTestInt(testBean1.getTestInt());
-		return testBean;
-	}
-	
-	public List echoList(ArrayList param){
-		List list = new ArrayList();
-		for(Iterator itr = param.iterator();itr.hasNext();)
-		{
-			list.add(itr.next());
-		}
-		return list;
-	}
-	
-	public String[] echoArrayString(String[] stringArray) {
-		return stringArray;
-	}
-	
-	public int[] echoArrayInt(int[] intArray) {
-		return intArray;
-	}
-	
-	public Set echoSet(HashSet param){
-		Set set = new HashSet();
-		set  = param;
-		return set;
-		
-	}
-	
+    }
 
-        public void get\u03a9\u03bb\u03c0() {
+    public void echoRuntimeException() throws RuntimeException {
+        throw new RuntimeException("Runtime Exception");
+    }
 
+    public int echoInt(int param) {
+        int value = param;
+        return value;
+    }
+
+    public boolean echoBoolean(boolean param) {
+        boolean value = param;
+        return value;
+    }
+
+    public Map echoMap(HashMap param) {
+        Map map = new HashMap();
+        map = param;
+        return map;
+    }
+
+    public TestBean echoBean(TestBean testBean1) {
+        TestBean testBean = new TestBean();
+        testBean.setTestString(testBean1.getTestString());
+        testBean.setTestInt(testBean1.getTestInt());
+        return testBean;
+    }
+
+    public List echoList(ArrayList param){
+        List list = new ArrayList();
+        for(Iterator itr = param.iterator();itr.hasNext();)
+        {
+            list.add(itr.next());
         }
+        return list;
+    }
+
+    public String[] echoArrayString(String[] stringArray) {
+        return stringArray;
+    }
+
+    public int[] echoArrayInt(int[] intArray) {
+        return intArray;
+    }
+
+    public Set echoSet(HashSet param){
+        Set set = new HashSet();
+        set  = param;
+        return set;
+
+    }
+
+
+    public void get\u03a9\u03bb\u03c0() {
+
+    }
 }

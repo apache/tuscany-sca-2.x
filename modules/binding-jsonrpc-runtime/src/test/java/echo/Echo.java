@@ -36,29 +36,29 @@ import bean.TestBean;
  */
 @Remotable
 public interface Echo {
-    
+
     String echo(String msg);
-    
+
     void echoRuntimeException() throws RuntimeException;
-    
+
     void echoBusinessException() throws EchoBusinessException;
-    
+
     int echoInt(int param);
-    
+
     boolean echoBoolean(boolean param);
-    
+
     Map echoMap(HashMap map);
-    
+
     TestBean echoBean(TestBean testBean);
-    
+
     List echoList(ArrayList list);
-    
+
     String [] echoArrayString(String[] stringArray);
-    
+
     int [] echoArrayInt(int[] intArray);
-    
+
     Set echoSet(HashSet set);
-    
+
     void get\u03a9\u03bb\u03c0();
-    
+
 }
