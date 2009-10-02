@@ -19,9 +19,17 @@
 
 package org.apache.tuscany.sca.binding.jsonrpc.provider;
 
+import java.io.ByteArrayInputStream;
+
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.tuscany.sca.assembly.EndpointReference;
+import org.apache.tuscany.sca.binding.jsonrpc.JSONRPCBinding;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  * Invoker for the JSONRPC Binding
@@ -29,17 +37,107 @@ import org.apache.tuscany.sca.invocation.Message;
  * @version $Rev$ $Date$
  */
 public class JSONRPCBindingInvoker implements Invoker {
-    Operation operation;
-    String uri;
+    private EndpointReference endpointReference;
+    private Operation operation;
+    private String uri;
+    
+    private HttpClient httpClient;
 
-    public JSONRPCBindingInvoker(Operation operation, String uri) {
+    public JSONRPCBindingInvoker(EndpointReference endpointReference, Operation operation, HttpClient httpClient) {
+        this.endpointReference = endpointReference;
         this.operation = operation;
-        this.uri = uri;        
+        this.uri = ((JSONRPCBinding) endpointReference.getBinding()).getURI();
+        
+        this.httpClient = httpClient;
+    }
+
+    public Message invoke(Message msg) {
+        Object[] jsonArgs = (Object[])msg.getBody();
+
+        PostMethod post = null;
+        try {
+
+            JSONObject jsonRequest = null;;
+            String requestId = "1";
+            Object[] args = null;
+            try {
+                // Extract the method
+                jsonRequest = new JSONObject();
+                jsonRequest.putOpt("method", "Service" + "." + msg.getOperation().getName());
+
+                // Extract the arguments
+                args = msg.getBody();
+                JSONArray array = new JSONArray();
+                for (int i = 0; i < args.length; i++) {
+                    array.put(args[i]);
+                }
+                jsonRequest.putOpt("params", array);
+                jsonRequest.put("id", requestId);
+
+            } catch (Exception e) {
+                throw new RuntimeException("Unable to parse JSON parameter", e);
+            }
+
+            post = new PostMethod(uri);
+            post.setRequestBody(new ByteArrayInputStream(jsonRequest.toString().getBytes("UTF-8")));
+
+            httpClient.executeMethod(post);
+            int status = post.getStatusCode();
+
+            if (status == 200) {
+                //success 
+                JSONObject jsonResponse = null;
+                try {
+                    jsonResponse = new JSONObject(post.getResponseBodyAsString());
+
+                    //check requestId
+                    if (! jsonResponse.getString("id").equalsIgnoreCase(requestId)) {
+                        throw new RuntimeException("Invalid response id:" + requestId );
+                    }
+
+                    msg.setBody(jsonResponse.get("result"));
+                } catch (Exception e) {
+                    //FIXME Exceptions are not handled correctly here
+                    // They should be reported to the client JavaScript as proper
+                    // JavaScript exceptions.
+                    throw new RuntimeException("Unable to parse response", e);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            msg.setFaultBody(e);
+        } finally {
+            if (post != null) {
+                post.releaseConnection();
+            }
+        }
+
+        return msg;
     }
     
-    public Message invoke(Message msg) {
-        // TODO Auto-generated method stub
-        return null;
-    }
+    private static JSONObject getJSONRequest(Message msg) {
+        
+        JSONObject jsonRequest = null;;
+        Object[] args = null;
+        Object id = null;
+        try {
+            // Extract the method
+            jsonRequest = new JSONObject();
+            jsonRequest.putOpt("method", "Service" + "." + msg.getOperation().getName());
+            
+            // Extract the arguments
+            args = msg.getBody();
+            JSONArray array = new JSONArray();
+            for (int i = 0; i < args.length; i++) {
+                array.put(args[i]);
+            }
+            jsonRequest.putOpt("params", array);
+            id = jsonRequest.put("id", "1");
 
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to parse JSON parameter", e);
+        }
+
+        return jsonRequest;
+    }
 }

@@ -19,8 +19,10 @@
 
 package org.apache.tuscany.sca.binding.jsonrpc.provider;
 
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpConnectionManager;
+import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.tuscany.sca.assembly.EndpointReference;
-import org.apache.tuscany.sca.binding.jsonrpc.JSONRPCBinding;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
@@ -34,23 +36,28 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
  */
 public class JSONRPCReferenceBindingProvider implements ReferenceBindingProvider {
 
-	private EndpointReference endpointReference;
+    private EndpointReference endpointReference;
     private RuntimeComponentReference reference;
-    private JSONRPCBinding binding;
-    
+    private HttpClient httpClient;
+
     public JSONRPCReferenceBindingProvider(EndpointReference endpointReference) {
+
+        this.endpointReference = endpointReference;
+        this.reference = (RuntimeComponentReference) endpointReference.getReference();
         
-    	this.endpointReference = endpointReference;
-    	this.reference = (RuntimeComponentReference) endpointReference.getReference();
-        this.binding = (JSONRPCBinding) endpointReference.getBinding();
+        // Create an HTTP client
+        HttpConnectionManager connectionManager = new MultiThreadedHttpConnectionManager();
+        connectionManager.getParams().setDefaultMaxConnectionsPerHost(10);
+        connectionManager.getParams().setConnectionTimeout(60000);
+        httpClient = new HttpClient(connectionManager);
     }
 
     public InterfaceContract getBindingInterfaceContract() {
         return reference.getInterfaceContract();
     }
-    
+
     public Invoker createInvoker(Operation operation) {
-        return new JSONRPCBindingInvoker(operation, binding.getURI());
+        return new JSONRPCBindingInvoker(endpointReference, operation, httpClient);
     }
 
     public void start() {
