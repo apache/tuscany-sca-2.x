@@ -28,7 +28,6 @@ import net.sf.cglib.proxy.Factory;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 
-import org.apache.tuscany.sca.core.context.impl.CallableReferenceImpl;
 import org.apache.tuscany.sca.core.context.impl.ServiceReferenceImpl;
 import org.apache.tuscany.sca.core.invocation.impl.JDKCallbackInvocationHandler;
 import org.apache.tuscany.sca.core.invocation.impl.JDKInvocationHandler;

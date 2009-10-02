@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.core.context;
 
 import org.apache.tuscany.sca.context.ComponentContextFactory;
+import org.apache.tuscany.sca.context.CompositeContext;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.context.impl.ComponentContextImpl;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -35,8 +36,8 @@ public class DefaultComponentContextFactory implements ComponentContextFactory {
         this.registry = registry;
     }
 
-    public ComponentContext createComponentContext(RuntimeComponent component) {
-        return new ComponentContextImpl(registry, component);
+    public ComponentContext createComponentContext(CompositeContext compositeContext, RuntimeComponent component) {
+        return new ComponentContextImpl(registry, compositeContext, component);
     }
 
 }

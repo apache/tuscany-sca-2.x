@@ -36,13 +36,10 @@ import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
-import org.apache.tuscany.sca.context.ComponentContextFactory;
 import org.apache.tuscany.sca.context.CompositeContext;
-import org.apache.tuscany.sca.context.ContextFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
-import org.apache.tuscany.sca.core.context.impl.CompositeContextImpl;
 import org.apache.tuscany.sca.core.invocation.ExtensibleWireProcessor;
 import org.apache.tuscany.sca.core.scope.ScopeContainer;
 import org.apache.tuscany.sca.core.scope.ScopeRegistry;
@@ -62,7 +59,6 @@ import org.apache.tuscany.sca.runtime.ActivationException;
 import org.apache.tuscany.sca.runtime.CompositeActivator;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.runtime.RuntimeComponentContext;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
@@ -85,18 +81,9 @@ public class CompositeActivatorImpl implements CompositeActivator {
     private final RuntimeWireProcessor wireProcessor;
     private final ProviderFactoryExtensionPoint providerFactories;
 
-    private final ComponentContextFactory componentContextFactory;
-    private final EndpointRegistry endpointRegistry;
-
-    private final CompositeContext compositeContext;
-
-    private Composite domainComposite;
-
     public CompositeActivatorImpl(ExtensionPointRegistry extensionPoints) {
         this.extensionPoints = extensionPoints;
         UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
-        this.endpointRegistry = utilities.getUtility(EndpointRegistry.class);
-        this.compositeContext = new CompositeContextImpl(extensionPoints, endpointRegistry);
         FactoryExtensionPoint factories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         this.assemblyFactory = factories.getFactory(AssemblyFactory.class);
         this.messageFactory = factories.getFactory(MessageFactory.class);
@@ -105,8 +92,6 @@ public class CompositeActivatorImpl implements CompositeActivator {
         this.workScheduler = utilities.getUtility(WorkScheduler.class);
         this.wireProcessor = new ExtensibleWireProcessor(extensionPoints.getExtensionPoint(RuntimeWireProcessorExtensionPoint.class));
         this.providerFactories = extensionPoints.getExtensionPoint(ProviderFactoryExtensionPoint.class);
-        ContextFactoryExtensionPoint contextFactories = extensionPoints.getExtensionPoint(ContextFactoryExtensionPoint.class);
-        this.componentContextFactory = contextFactories.getFactory(ComponentContextFactory.class);
     }
 
     //=========================================================================
@@ -482,27 +467,27 @@ public class CompositeActivatorImpl implements CompositeActivator {
 
     // Composite start/stop
 
-    public void start(Composite composite) {
+    public void start(CompositeContext compositeContext, Composite composite) {
         if (logger.isLoggable(Level.FINE)) {
             logger.fine("Starting composite: " + composite.getName());
         }
         for (Component component : composite.getComponents()) {
-            start(component);
+            start(compositeContext, component);
         }
     }
 
-    public void stop(Composite composite) {
+    public void stop(CompositeContext compositeContext, Composite composite) {
         if (logger.isLoggable(Level.FINE)) {
             logger.fine("Stopping composite: " + composite.getName());
         }
         for (final Component component : composite.getComponents()) {
-            stop(component);
+            stop(compositeContext, component);
         }
     }
 
     // Component start/stop
 
-    public void start(Component component) {
+    public void start(CompositeContext compositeContext, Component component) {
         if (logger.isLoggable(Level.FINE)) {
             logger.fine("Starting component: " + component.getURI());
         }
@@ -511,7 +496,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
             return;
         }
 
-        configureComponentContext(runtimeComponent);
+        compositeContext.configureComponentContext(runtimeComponent);
 
         // Reference bindings aren't started until the wire is first used
 
@@ -536,14 +521,14 @@ public class CompositeActivatorImpl implements CompositeActivator {
                             return null;
                           }
                     });
-                    endpointRegistry.addEndpoint(endpoint);
+                    compositeContext.getEndpointRegistry().addEndpoint(endpoint);
                 }
             }
         }
 
         Implementation implementation = component.getImplementation();
         if (implementation instanceof Composite) {
-            start((Composite)implementation);
+            start(compositeContext, (Composite)implementation);
         } else {
             for (PolicyProvider policyProvider : runtimeComponent.getPolicyProviders()) {
                 policyProvider.start();
@@ -564,7 +549,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
         runtimeComponent.setStarted(true);
     }
 
-    public void stop(Component component) {
+    public void stop(CompositeContext compositeContext, Component component) {
         if (!((RuntimeComponent)component).isStarted()) {
             return;
         }
@@ -576,7 +561,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
                 logger.fine("Stopping component service: " + component.getURI() + "#" + service.getName());
             }
             for (Endpoint endpoint : service.getEndpoints()) {
-                endpointRegistry.removeEndpoint(endpoint);
+                compositeContext.getEndpointRegistry().removeEndpoint(endpoint);
                 final ServiceBindingProvider bindingProvider = ((RuntimeComponentService)service).getBindingProvider(endpoint.getBinding());
                 if (bindingProvider != null) {
                     // Allow bindings to read properties. Requires PropertyPermission read in security policy.
@@ -600,7 +585,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
             RuntimeComponentReference runtimeRef = ((RuntimeComponentReference)reference);
 
             for (EndpointReference endpointReference : reference.getEndpointReferences()) {
-                endpointRegistry.removeEndpointReference(endpointReference);
+                compositeContext.getEndpointRegistry().removeEndpointReference(endpointReference);
                 final ReferenceBindingProvider bindingProvider = runtimeRef.getBindingProvider(endpointReference.getBinding());
                 if (bindingProvider != null) {
                     // Allow bindings to read properties. Requires PropertyPermission read in security policy.
@@ -620,7 +605,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
         }
         Implementation implementation = component.getImplementation();
         if (implementation instanceof Composite) {
-            stop((Composite)implementation);
+            stop(compositeContext, (Composite)implementation);
         } else {
             final ImplementationProvider implementationProvider = ((RuntimeComponent)component).getImplementationProvider();
             if (implementationProvider != null) {
@@ -646,11 +631,6 @@ public class CompositeActivatorImpl implements CompositeActivator {
         }
 
         ((RuntimeComponent)component).setStarted(false);
-    }
-
-    public void configureComponentContext(RuntimeComponent runtimeComponent) {
-        RuntimeComponentContext componentContext = (RuntimeComponentContext) componentContextFactory.createComponentContext(runtimeComponent);
-        runtimeComponent.setComponentContext(componentContext);
     }
 
     // Service start/stop
@@ -717,7 +697,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
             // is first used (when the chains are created)
             for (EndpointReference endpointReference : componentReference.getEndpointReferences()){
                 addReferenceWire(component, componentReference, endpointReference);
-                endpointRegistry.addEndpointReference(endpointReference);
+                component.getComponentContext().getCompositeContext().getEndpointRegistry().addEndpointReference(endpointReference);
             }
 
         }
@@ -728,6 +708,8 @@ public class CompositeActivatorImpl implements CompositeActivator {
             logger.fine("Stopping component reference: " + component.getURI() + "#" + reference.getName());
         }
         RuntimeComponentReference runtimeRef = ((RuntimeComponentReference)reference);
+        RuntimeComponent runtimeComponent = (RuntimeComponent) component;
+        EndpointRegistry endpointRegistry = runtimeComponent.getComponentContext().getCompositeContext().getEndpointRegistry();
         for ( EndpointReference endpointReference : runtimeRef.getEndpointReferences()){
             endpointRegistry.removeEndpointReference(endpointReference);
             ReferenceBindingProvider bindingProvider = runtimeRef.getBindingProvider(endpointReference.getBinding());
@@ -831,22 +813,6 @@ public class CompositeActivatorImpl implements CompositeActivator {
         return interfaceContract.makeUnidirectional(false);
     }
 
-
-
-   // Utility functions
-   // TODO - EPR - can we get rid of these?
-
-    public CompositeContext getCompositeContext() {
-        return compositeContext;
-    }
-
-    public Composite getDomainComposite() {
-        return domainComposite;
-    }
-
-    public void setDomainComposite(Composite domainComposite) {
-        this.domainComposite = domainComposite;
-    }
 
     /* TODO - EPR - Resolved via registry now
     public Component resolve(String componentURI) {

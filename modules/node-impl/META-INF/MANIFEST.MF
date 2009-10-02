@@ -17,7 +17,7 @@ Bnd-LastModified: 1225397240796
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Node Implementation
-Import-Package: javax.management,
+Import-Package: javax.management;resolution:=optional,
  javax.xml.namespace,
  javax.xml.stream,
  org.apache.tuscany.sca.assembly;version="2.0.0",
@@ -36,6 +36,8 @@ Import-Package: javax.management,
  org.apache.tuscany.sca.definitions.util;version="2.0.0",
  org.apache.tuscany.sca.definitions.xml;version="2.0.0",
  org.apache.tuscany.sca.extensibility;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef.java;version="2.0.0",
  org.apache.tuscany.sca.management;version="2.0.0",
  org.apache.tuscany.sca.monitor;version="2.0.0",
  org.apache.tuscany.sca.node;version="2.0.0",

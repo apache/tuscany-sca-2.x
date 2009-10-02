@@ -33,5 +33,5 @@ public interface ComponentContextFactory {
      * @param component The runtime component
      * @return An instance of ComponentContext for the component
      */
-    ComponentContext createComponentContext(RuntimeComponent component);
+    ComponentContext createComponentContext(CompositeContext compositeContext, RuntimeComponent component);
 }

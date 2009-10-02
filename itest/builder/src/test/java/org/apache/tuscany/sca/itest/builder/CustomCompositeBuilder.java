@@ -28,7 +28,6 @@ import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.node.Contribution;
-import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 import org.apache.tuscany.sca.node.impl.NodeImpl;
@@ -42,7 +41,6 @@ public class CustomCompositeBuilder {
     private ExtensionPointRegistry extensionPoints;
     private Monitor monitor;
     private StAXArtifactProcessor<Composite> compositeProcessor;
-    private Composite domainComposite;
 
     public CustomCompositeBuilder(boolean nonWiring) {
         this.nonWiring = nonWiring;
@@ -64,7 +62,6 @@ public class CustomCompositeBuilder {
         compositeProcessor = xmlProcessors.getProcessor(Composite.class);
         
         CompositeActivator compositeActivator = utilities.getUtility(CompositeActivator.class);
-        domainComposite = compositeActivator.getDomainComposite();
     }
     
     /**

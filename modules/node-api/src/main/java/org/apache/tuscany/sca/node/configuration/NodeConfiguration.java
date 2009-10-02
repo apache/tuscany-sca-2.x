@@ -33,6 +33,8 @@ import javax.xml.namespace.QName;
 public interface NodeConfiguration {
     String DEFAULT_DOMAIN_URI = "http://tuscany.apache.org/sca/1.1/domains/default";
     String DEFAULT_NODE_URI = "http://tuscany.apache.org/sca/1.1/nodes/default";
+    String DEFAULT_DOMAIN_REGISTRY_URI = "vm://localhost";
+    
     /**
      * Get the URI of the SCA domain that manages the composite application
      * @return The URI of the SCA domain
@@ -50,6 +52,24 @@ public interface NodeConfiguration {
      * @param domainURI The URI of the SCA domain
      */
     NodeConfiguration setDomainURI(String domainURI);
+    
+    /**
+     * Return the URI of the domain registry
+     * @return
+     */
+    String getDomainRegistryURI();
+    
+    /**
+     * Set the URI of the domain registry
+     * @param domainRegistryURI The URI of the domain registry. The scheme will be used
+     * by Tusany to choose the implementation of DomainRegistry interface. Examples are:
+     * <ul>
+     * <li>vm://localhost (a JVM local registry)
+     * <li>multicast://228.0.0.100:50000?timeout=50 (Tomcat Tribes multicast based registry)
+     * </ul>
+     * @return The NodeConfiguration
+     */
+    NodeConfiguration setDomainRegistryURI(String domainRegistryURI);
 
     /**
      * Get the URI of the node. It uniquely identifies a node within the SCA domain

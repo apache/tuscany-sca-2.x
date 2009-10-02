@@ -18,9 +18,6 @@
  */
 package org.apache.tuscany.sca.core.context.impl;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -73,6 +70,7 @@ import org.oasisopen.sca.ServiceRuntimeException;
 public class ComponentContextImpl implements RuntimeComponentContext {
     private final RuntimeComponent component;
 
+    private final CompositeContext compositeContext;
     private final CompositeActivator compositeActivator;
     private final RequestContextFactory requestContextFactory;
     private final ProxyFactory proxyFactory;
@@ -82,14 +80,15 @@ public class ComponentContextImpl implements RuntimeComponentContext {
     private final EndpointReferenceBuilder endpointReferenceBuilder;
     private final Monitor monitor;
     
-    public ComponentContextImpl(ExtensionPointRegistry registry, RuntimeComponent component) {
+    public ComponentContextImpl(ExtensionPointRegistry registry, CompositeContext compositeContext, RuntimeComponent component) {
         this.component = component;
         FactoryExtensionPoint factories = registry.getExtensionPoint(FactoryExtensionPoint.class);
         this.assemblyFactory = factories.getFactory(AssemblyFactory.class);
         this.javaInterfaceFactory = factories.getFactory(JavaInterfaceFactory.class);
         
-        // FIXME: We need to have node-specific compositeActivator
         UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
+        this.compositeContext = compositeContext;
+        
         this.compositeActivator = utilities.getUtility(CompositeActivator.class);
         
         this.requestContextFactory =
@@ -238,7 +237,7 @@ public class ComponentContextImpl implements RuntimeComponentContext {
             }
             ref.setComponent(component);
             return new ServiceReferenceImpl<B>(businessInterface, component, ref, endpointReference, proxyFactory,
-                                               compositeActivator);
+                                               component.getComponentContext().getCompositeContext());
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);
         }
@@ -283,7 +282,7 @@ public class ComponentContextImpl implements RuntimeComponentContext {
                     ref.getBindings().add(binding);
                 }
             }
-            return new ServiceReferenceImpl<B>(businessInterface, component, ref, proxyFactory, compositeActivator);
+            return new ServiceReferenceImpl<B>(businessInterface, component, ref, null, proxyFactory, compositeContext);
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);
         }
@@ -301,7 +300,7 @@ public class ComponentContextImpl implements RuntimeComponentContext {
                 (RuntimeComponentReference)createSelfReference(component, service, businessInterface);
             ref.setComponent(component);
             return new ServiceReferenceImpl<B>(businessInterface, component, ref, null, proxyFactory,
-                                                compositeActivator);
+                                                compositeContext);
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);
         }
@@ -410,34 +409,12 @@ public class ComponentContextImpl implements RuntimeComponentContext {
     }
 
     /**
-     * @return the compositeActivator
-     */
-    public CompositeActivator getCompositeActivator() {
-        return compositeActivator;
-    }
-
-    /**
      * @see org.apache.tuscany.sca.runtime.RuntimeComponentContext#start(org.apache.tuscany.sca.runtime.RuntimeComponentReference)
      */
     public void start(RuntimeComponentReference reference) {
         compositeActivator.start(component, reference);
     }
 
-    /**
-     * @see org.apache.tuscany.sca.runtime.RuntimeComponentContext#read(java.io.Reader)
-     */
-    public RuntimeComponent read(Reader reader) throws IOException {
-        RuntimeComponent component = compositeActivator.getCompositeContext().read(reader);
-        compositeActivator.configureComponentContext(component);
-        return component;
-    }
-
-    /**
-     * @see org.apache.tuscany.sca.runtime.RuntimeComponentContext#write(org.apache.tuscany.sca.runtime.RuntimeComponentReference, java.io.Writer)
-     */
-    public void write(RuntimeComponentReference reference, Writer writer) throws IOException {
-        compositeActivator.getCompositeContext().write(component, reference, writer);
-    }
 
     /* ******************** Contribution for issue TUSCANY-2281 ******************** */
 
@@ -478,7 +455,7 @@ public class ComponentContextImpl implements RuntimeComponentContext {
     /* ******************** Contribution for issue TUSCANY-2281 ******************** */
 
     public CompositeContext getCompositeContext() {
-        return compositeActivator.getCompositeContext();
+        return compositeContext;
     }
 
     public ExtensionPointRegistry getExtensionPointRegistry() {

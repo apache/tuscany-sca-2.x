@@ -38,6 +38,7 @@ import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
 public class NodeConfigurationImpl implements NodeConfiguration {
     private String uri = DEFAULT_NODE_URI;
     private String domainURI = DEFAULT_DOMAIN_URI;
+    private String domainRegistryURI = DEFAULT_DOMAIN_REGISTRY_URI;
     private List<ContributionConfiguration> contributions = new ArrayList<ContributionConfiguration>();
     private List<BindingConfiguration> bindings = new ArrayList<BindingConfiguration>();
     private List<Object> extensions = new ArrayList<Object>();
@@ -171,6 +172,15 @@ public class NodeConfigurationImpl implements NodeConfiguration {
 
     public List<Object> getExtensions() {
         return extensions;
+    }
+
+    public String getDomainRegistryURI() {
+        return domainRegistryURI;
+    }
+
+    public NodeConfiguration setDomainRegistryURI(String domainRegistryURI) {
+        this.domainRegistryURI = domainRegistryURI;
+        return this;
     }
 
 }

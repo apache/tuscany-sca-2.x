@@ -36,6 +36,7 @@ import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.common.java.io.IOHelper;
+import org.apache.tuscany.sca.context.CompositeContext;
 import org.apache.tuscany.sca.context.ThreadMessageContext;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
@@ -50,6 +51,7 @@ import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
 import org.apache.tuscany.sca.node.management.NodeManager;
 import org.apache.tuscany.sca.runtime.ActivationException;
 import org.apache.tuscany.sca.runtime.CompositeActivator;
+import org.apache.tuscany.sca.runtime.EndpointRegistry;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentContext;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
@@ -64,6 +66,8 @@ public class NodeImpl implements Node, Client {
     private static final Logger logger = Logger.getLogger(NodeImpl.class.getName());
     private ProxyFactory proxyFactory;
     private CompositeActivator compositeActivator;
+    private CompositeContext compositeContext;
+    private Composite domainComposite;
     private NodeConfiguration configuration;
     private NodeFactoryImpl manager;
     private List<Contribution> contributions;
@@ -106,20 +110,20 @@ public class NodeImpl implements Node, Client {
         manager.init();
         manager.addNode(configuration, this);
         this.proxyFactory = manager.proxyFactory;
-        this.compositeActivator =
-            manager.extensionPoints.getExtensionPoint(UtilityExtensionPoint.class).getUtility(CompositeActivator.class,
-                                                                                              manager.getNodeKey(configuration));
+        UtilityExtensionPoint utilities = manager.extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
+        
+        // FIXME: Get the endpoint registry by the Node configuration
+        EndpointRegistry endpointRegistry = utilities.getUtility(EndpointRegistry.class);
+        this.compositeContext = new CompositeContextImpl(manager.extensionPoints, endpointRegistry);
+        this.compositeActivator = utilities.getUtility(CompositeActivator.class);
         try {
-            Composite composite = manager.configureNode(configuration, contributions);
+            domainComposite = manager.configureNode(configuration, contributions);
             
-            // get the top level composite for this node
-            compositeActivator.setDomainComposite(composite);
-
             // Activate the composite
-            compositeActivator.activate(compositeActivator.getDomainComposite());
+            compositeActivator.activate(domainComposite);
 
             // Start the composite
-            compositeActivator.start(compositeActivator.getDomainComposite());
+            compositeActivator.start(compositeContext, domainComposite);
 
             NodeFinder.addNode(IOHelper.createURI(configuration.getDomainURI()), this);
 
@@ -170,13 +174,13 @@ public class NodeImpl implements Node, Client {
             }
 
             NodeFinder.removeNode(this);
-            if( compositeActivator.getDomainComposite() != null ) {
+            if( domainComposite != null ) {
 
                 // Stop the composite
-                compositeActivator.stop(compositeActivator.getDomainComposite());
+                compositeActivator.stop(compositeContext, domainComposite);
 
                 // Deactivate the composite
-                compositeActivator.deactivate(compositeActivator.getDomainComposite());
+                compositeActivator.deactivate(domainComposite);
 
             } // end if
 
@@ -225,7 +229,7 @@ public class NodeImpl implements Node, Client {
         // Lookup the component
         Component component = null;
 
-        for (Component compositeComponent : compositeActivator.getDomainComposite().getComponents()) {
+        for (Component compositeComponent : domainComposite.getComponents()) {
             if (compositeComponent.getName().equals(componentName)) {
                 component = compositeComponent;
             }
@@ -279,7 +283,6 @@ public class NodeImpl implements Node, Client {
     public List<Endpoint> getServiceEndpoints() {
         List<Endpoint> endpoints = new ArrayList<Endpoint>();
         if (compositeActivator != null) {
-            Composite domainComposite = compositeActivator.getDomainComposite();
             if (domainComposite != null) {
                 for (Component component : domainComposite.getComponents()) {
                     for (Service service : component.getServices()) {
@@ -296,7 +299,7 @@ public class NodeImpl implements Node, Client {
     }
     
     public Composite getDomainComposite() {
-        return compositeActivator.getDomainComposite();
+        return domainComposite;
     }   
     
     public String dumpDomainComposite() {
@@ -322,10 +325,12 @@ public class NodeImpl implements Node, Client {
         String result = bos.toString();
         
         // write out and nested composites
-        for(Component component : composite.getComponents()){
+        for (Component component : composite.getComponents()) {
             if (component.getImplementation() instanceof Composite) {
-                result += "\n<!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->\n" + 
-                          writeComposite((Composite)component.getImplementation(), compositeProcessor);
+                result +=
+                    "\n<!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->\n" + writeComposite((Composite)component
+                                                                                                          .getImplementation(),
+                                                                                                      compositeProcessor);
             }
         }
         

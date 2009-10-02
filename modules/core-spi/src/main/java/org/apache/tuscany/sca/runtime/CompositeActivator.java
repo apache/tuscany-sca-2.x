@@ -80,48 +80,24 @@ public interface CompositeActivator {
      * Start a component
      * @param component
      */
-    void start(Component component) throws ActivationException;
+    void start(CompositeContext compositeContext, Component component) throws ActivationException;
 
     /**
      * Stop a component
      * @param component
      */
-    void stop(Component component) throws ActivationException;
+    void stop(CompositeContext compositeContext, Component component) throws ActivationException;
 
     /**
      * Start components in a composite
      * @param composite
      */
-    void start(Composite composite) throws ActivationException;
+    void start(CompositeContext compositeContext, Composite composite) throws ActivationException;
 
     /**
      * Stop components in a composite
      * @param composite
      */
-    void stop(Composite composite) throws ActivationException;
-
-    /**
-     * Get the component context helper
-     * @return
-     */
-    CompositeContext getCompositeContext();
-
-    /**
-     * Configure the runtime component with component context
-     * @param component
-     */
-    void configureComponentContext(RuntimeComponent component);
-
-    /**
-     * Set the domain composite
-     * @param domainComposite
-     */
-    void setDomainComposite(Composite domainComposite);
-
-    /**
-     * Get the domain composite
-     * @return
-     */
-    Composite getDomainComposite();
+    void stop(CompositeContext compositeContext, Composite composite) throws ActivationException;
 
 }

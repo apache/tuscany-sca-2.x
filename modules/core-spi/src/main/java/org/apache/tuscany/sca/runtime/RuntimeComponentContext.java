@@ -19,10 +19,6 @@
 
 package org.apache.tuscany.sca.runtime;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.io.Writer;
-
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.context.CompositeContext;
@@ -39,22 +35,6 @@ public interface RuntimeComponentContext extends ComponentContext {
      * @param reference
      */
     void start(RuntimeComponentReference reference);
-
-    /**
-     * Deserialize the component reference
-     * @param reader
-     * @return A component that contains the reference
-     * @throws IOException
-     */
-    RuntimeComponent read(Reader reader) throws IOException;
-
-    /**
-     * Serialize the component reference
-     * @param reference
-     * @param writer
-     * @throws IOException
-     */
-    void write(RuntimeComponentReference reference, Writer writer) throws IOException;
 
     /**
      * Get the CallableReference for a given component reference
@@ -103,6 +83,5 @@ public interface RuntimeComponentContext extends ComponentContext {
     <B> ServiceReference<B> createSelfReference(Class<B> businessInterface, ComponentService service);
     
     ExtensionPointRegistry getExtensionPointRegistry();
-    CompositeActivator getCompositeActivator();
     CompositeContext getCompositeContext();
 }

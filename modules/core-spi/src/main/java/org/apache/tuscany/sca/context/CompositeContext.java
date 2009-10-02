@@ -19,125 +19,23 @@
 
 package org.apache.tuscany.sca.context;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.stream.XMLStreamReader;
-
 import org.apache.tuscany.sca.assembly.Component;
-import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.invocation.Message;
-import org.apache.tuscany.sca.runtime.CompositeActivator;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentContext;
-import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
-import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
  * @version $Rev$ $Date$
  */
 public abstract class CompositeContext {
-    /**
-     * Create a self-reference for a component service
-     * @param component
-     * @param service
-     * @throws CloneNotSupportedException 
-     * @throws InvalidInterfaceException 
-     */
-    public abstract ComponentReference createSelfReference(Component component,
-                                                           ComponentService service,
-                                                           Class<?> businessInterface)
-        throws CloneNotSupportedException, InvalidInterfaceException;
-
-    /**
-     * Bind a component reference to a component service
-     * @param <B>
-     * @param businessInterface
-     * @param reference
-     * @param service
-     * @return
-     * @throws CloneNotSupportedException
-     * @throws InvalidInterfaceException
-     */
-    public abstract RuntimeComponentReference bindComponentReference(Class<?> businessInterface,
-                                                                     RuntimeComponentReference reference,
-                                                                     RuntimeComponent component,
-                                                                     RuntimeComponentService service)
-        throws CloneNotSupportedException, InvalidInterfaceException;
-
-    /**
-     * @param component
-     * @param reference
-     * @param writer
-     * @throws IOException
-     */
-    public abstract void write(Component component, ComponentReference reference, Writer writer) throws IOException;
-
-    /**
-     * @param component
-     * @param reference
-     * @param service
-     * @param writer
-     * @throws IOException
-     */
-    public abstract void write(Component component,
-                               ComponentReference reference,
-                               ComponentService service,
-                               Writer writer) throws IOException;
-
-    /**
-     * @param component
-     * @param reference
-     * @return
-     * @throws IOException
-     */
-    public abstract String toXML(Component component, ComponentReference reference) throws IOException;
-
-    /**
-     * @param component
-     * @param service
-     * @return
-     * @throws IOException
-     */
-    public abstract String toXML(Component component, ComponentService service) throws IOException;
-
-    /**
-     * @param reader
-     * @return
-     * @throws IOException
-     */
-    public abstract RuntimeComponent read(Reader reader) throws IOException;
-
-    /**
-     * @param streamReader
-     * @return
-     * @throws IOException
-     */
-    public abstract RuntimeComponent read(XMLStreamReader streamReader) throws IOException;
-
-    /**
-     * @param xml
-     * @return
-     * @throws IOException
-     */
-    public abstract Component fromXML(String xml) throws IOException;
-
-    /**
-     * @param streamReader
-     * @return
-     * @throws IOException
-     */
-    public abstract Component fromXML(XMLStreamReader streamReader) throws IOException;
-
     /**
      * @return
      */
@@ -157,22 +55,11 @@ public abstract class CompositeContext {
     /**
      * @return
      */
-    public static CompositeActivator getCurrentCompositeActivator() {
+    public static CompositeContext getCurrentCompositeContext() {
         RuntimeComponent component = getCurrentComponent();
         if (component != null) {
             RuntimeComponentContext context = component.getComponentContext();
-            return context.getCompositeActivator();
-        }
-        return null;
-    }
-
-    /**
-     * @return
-     */
-    public static CompositeContext getCurrentCompositeContext() {
-        CompositeActivator activator = getCurrentCompositeActivator();
-        if (activator != null) {
-            return activator.getCompositeContext();
+            return context.getCompositeContext();
         }
         return null;
     }
@@ -204,6 +91,8 @@ public abstract class CompositeContext {
         return targetService;
     }
 
+    public abstract void configureComponentContext(RuntimeComponent runtimeComponent);
+    
     public abstract ExtensionPointRegistry getExtensionPointRegistry();
 
     /**
