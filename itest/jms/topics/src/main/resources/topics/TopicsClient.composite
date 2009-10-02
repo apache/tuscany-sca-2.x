@@ -18,18 +18,16 @@
  * under the License.    
  -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+           targetNamespace="http://itest"
            name="TopicsClientComposite">
 
     <component name="OneWayClient">
         <implementation.java class="org.apache.tuscany.sca.binding.jms.OneWayClientImpl"/>
-        <reference name="serviceA" />
+        <reference name="serviceA">
+            <binding.jms>
+                <destination jndiName="MyTopic" type="topic" create="never"/>
+            </binding.jms>  
+        </reference>
     </component>
-
-    <reference name="serviceA" promote="OneWayClient/serviceA">
-        <interface.java interface="org.apache.tuscany.sca.binding.jms.OneWayService" />
-        <binding.jms>
-            <destination name="MyTopic" type="topic" create="never"/>
-        </binding.jms>  
-    </reference>
 
 </composite>
