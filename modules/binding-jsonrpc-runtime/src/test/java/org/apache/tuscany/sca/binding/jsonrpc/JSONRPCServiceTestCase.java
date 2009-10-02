@@ -45,24 +45,24 @@ public class JSONRPCServiceTestCase{
 
     private static final String SERVICE_URL = "http://localhost:8085/SCADomain" + SERVICE_PATH;
 
-	private static Node node;
+    private static Node node;
 
-	@BeforeClass
-	public static void setUp() throws Exception {
-		try {
-    		String contribution = ContributionLocationHelper.getContributionLocation(JSONRPCServiceTestCase.class);
-    		node = NodeFactory.newInstance().createNode("JSONRPCBinding.composite", new Contribution("test", contribution));
-    		node.start();
-    	} catch (Exception e) {
-    		e.printStackTrace();
-    	}
-	}
+    @BeforeClass
+    public static void setUp() throws Exception {
+        try {
+            String contribution = ContributionLocationHelper.getContributionLocation(JSONRPCServiceTestCase.class);
+            node = NodeFactory.newInstance().createNode("JSONRPCBinding.composite", new Contribution("test", contribution));
+            node.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-	@AfterClass
-	public static void tearDown() throws Exception {
-		node.stop();
-    	node.destroy();
-	}
+    @AfterClass
+    public static void tearDown() throws Exception {
+        node.stop();
+        node.destroy();
+    }
 
     @Test
     public void testJSONRPCBinding() throws Exception {
@@ -73,7 +73,7 @@ public class JSONRPCServiceTestCase{
         WebResponse response = wc.getResource(request);
 
         Assert.assertEquals(200, response.getResponseCode());
-        
+
         JSONObject jsonResp = new JSONObject(response.getText());
         Assert.assertEquals("echo: Hello JSON-RPC", jsonResp.getString("result"));
     }   

@@ -42,27 +42,27 @@ public class JSONRPCSmdTestCase {
     private static final String SERVICE_PATH = "/EchoService";
 
     private static final String SERVICE_URL = "http://localhost:8085/SCADomain" + SERVICE_PATH;
-    
+
     private static final String SMD_URL = SERVICE_URL + "?smd";
 
-	private static Node node;
+    private static Node node;
 
-	@BeforeClass
-	public static void setUp() throws Exception {
-		try {
-    		String contribution = ContributionLocationHelper.getContributionLocation(JSONRPCSmdTestCase.class);
-    		node = NodeFactory.newInstance().createNode("JSONRPCBinding.composite", new Contribution("test", contribution));
-    		node.start();
-    	} catch (Exception e) {
-    		e.printStackTrace();
-    	}
-	}
+    @BeforeClass
+    public static void setUp() throws Exception {
+        try {
+            String contribution = ContributionLocationHelper.getContributionLocation(JSONRPCSmdTestCase.class);
+            node = NodeFactory.newInstance().createNode("JSONRPCBinding.composite", new Contribution("test", contribution));
+            node.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-	@AfterClass
-	public static void tearDown() throws Exception {
-		node.stop();
-    	node.destroy();
-	}
+    @AfterClass
+    public static void tearDown() throws Exception {
+        node.stop();
+        node.destroy();
+    }
 
     @Test
     /**
@@ -75,7 +75,7 @@ public class JSONRPCSmdTestCase {
 
         Assert.assertEquals(200, response.getResponseCode());
         Assert.assertNotNull(response.getText());
-        
+
         //System.out.println(">>>SMD:" + response.getText());
     }
 }

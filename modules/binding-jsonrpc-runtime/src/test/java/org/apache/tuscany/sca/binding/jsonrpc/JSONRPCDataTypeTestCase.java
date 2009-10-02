@@ -41,163 +41,163 @@ import com.meterware.httpunit.WebResponse;
  */
 public class JSONRPCDataTypeTestCase {
 
-	private static final String SERVICE_PATH = "/EchoService";
-	private static final String SERVICE_URL = "http://localhost:8085/SCADomain" + SERVICE_PATH;
-	
-	private static Node node;
+    private static final String SERVICE_PATH = "/EchoService";
+    private static final String SERVICE_URL = "http://localhost:8085/SCADomain" + SERVICE_PATH;
 
-	@BeforeClass
-	public static void setUp() throws Exception {
-		try {
-    		String contribution = ContributionLocationHelper.getContributionLocation(JSONRPCDataTypeTestCase.class);
-    		node = NodeFactory.newInstance().createNode("JSONRPCBinding.composite", new Contribution("test", contribution));
-    		node.start();
-    	} catch (Exception e) {
-    		e.printStackTrace();
-    	}
-	}
+    private static Node node;
 
-	@AfterClass
-	public static void tearDown() throws Exception {
-		node.stop();
-    	node.destroy();
-	}
+    @BeforeClass
+    public static void setUp() throws Exception {
+        try {
+            String contribution = ContributionLocationHelper.getContributionLocation(JSONRPCDataTypeTestCase.class);
+            node = NodeFactory.newInstance().createNode("JSONRPCBinding.composite", new Contribution("test", contribution));
+            node.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-	@Test
-	public void testInt() throws Exception {
-		JSONObject jsonRequest = new JSONObject(
-				"{ \"method\": \"echoInt\", \"params\": [12345], \"id\": 4}");
+    @AfterClass
+    public static void tearDown() throws Exception {
+        node.stop();
+        node.destroy();
+    }
 
-		WebConversation wc = new WebConversation();
-		WebRequest request = new PostMethodWebRequest(SERVICE_URL,
-				new ByteArrayInputStream(jsonRequest.toString().getBytes("UTF-8")), "application/json");
-		WebResponse response = wc.getResource(request);
+    @Test
+    public void testInt() throws Exception {
+        JSONObject jsonRequest = new JSONObject(
+        "{ \"method\": \"echoInt\", \"params\": [12345], \"id\": 4}");
 
-		Assert.assertEquals(200, response.getResponseCode());
+        WebConversation wc = new WebConversation();
+        WebRequest request = new PostMethodWebRequest(SERVICE_URL,
+                                                      new ByteArrayInputStream(jsonRequest.toString().getBytes("UTF-8")), "application/json");
+        WebResponse response = wc.getResource(request);
 
-		JSONObject jsonResp = new JSONObject(response.getText());
+        Assert.assertEquals(200, response.getResponseCode());
 
-		Assert.assertEquals(12345, jsonResp.getInt("result"));
-	}
+        JSONObject jsonResp = new JSONObject(response.getText());
 
-	@Test
-	public void testBoolean() throws Exception {
-		JSONObject jsonRequest = new JSONObject(
-				"{ \"method\": \"echoBoolean\", \"params\": [true], \"id\": 5}");
-		
-		WebConversation wc = new WebConversation();
-		WebRequest request = new PostMethodWebRequest(SERVICE_URL,
-				new ByteArrayInputStream(jsonRequest.toString().getBytes("UTF-8")), "application/json");
-		WebResponse response = wc.getResource(request);
+        Assert.assertEquals(12345, jsonResp.getInt("result"));
+    }
 
-		Assert.assertEquals(200, response.getResponseCode());
+    @Test
+    public void testBoolean() throws Exception {
+        JSONObject jsonRequest = new JSONObject(
+        "{ \"method\": \"echoBoolean\", \"params\": [true], \"id\": 5}");
 
-		JSONObject jsonResp = new JSONObject(response.getText());
+        WebConversation wc = new WebConversation();
+        WebRequest request = new PostMethodWebRequest(SERVICE_URL,
+                                                      new ByteArrayInputStream(jsonRequest.toString().getBytes("UTF-8")), "application/json");
+        WebResponse response = wc.getResource(request);
 
-		Assert.assertEquals(true, jsonResp.getBoolean("result"));
-	}
+        Assert.assertEquals(200, response.getResponseCode());
 
-	@Test
-	public void testMap() throws Exception {
-		JSONObject jsonRequest = new JSONObject(
-				"{ \"method\": \"echoMap\", \"params\": [ {\"javaClass\": \"java.util.HashMap\", \"map\": { \"Binding\": \"JSON-RPC\"}}], \"id\": 6}");
+        JSONObject jsonResp = new JSONObject(response.getText());
 
-		WebConversation wc = new WebConversation();
-		WebRequest request = new PostMethodWebRequest(SERVICE_URL,
-				new ByteArrayInputStream(jsonRequest.toString().getBytes("UTF-8")), "application/json");
-		WebResponse response = wc.getResource(request);
+        Assert.assertEquals(true, jsonResp.getBoolean("result"));
+    }
 
-		Assert.assertEquals(200, response.getResponseCode());
+    @Test
+    public void testMap() throws Exception {
+        JSONObject jsonRequest = new JSONObject(
+        "{ \"method\": \"echoMap\", \"params\": [ {\"javaClass\": \"java.util.HashMap\", \"map\": { \"Binding\": \"JSON-RPC\"}}], \"id\": 6}");
 
-		JSONObject jsonResp = new JSONObject(response.getText());
+        WebConversation wc = new WebConversation();
+        WebRequest request = new PostMethodWebRequest(SERVICE_URL,
+                                                      new ByteArrayInputStream(jsonRequest.toString().getBytes("UTF-8")), "application/json");
+        WebResponse response = wc.getResource(request);
 
-		Assert.assertEquals("JSON-RPC", jsonResp.getJSONObject("result").getJSONObject("map").getString("Binding"));
-	}
-	
-	@Test
-	public void testBean() throws Exception {
-		JSONObject jsonRequest = new JSONObject(
-				"{ \"method\": \"echoBean\", \"params\": [ {\"javaClass\": \"bean.TestBean\", \"testString\": \"JSON-RPC\", \"testInt\":1234}], \"id\": 7}");
+        Assert.assertEquals(200, response.getResponseCode());
 
-		WebConversation wc = new WebConversation();
-		WebRequest request = new PostMethodWebRequest(SERVICE_URL,
-				new ByteArrayInputStream(jsonRequest.toString().getBytes("UTF-8")), "application/json");
-		WebResponse response = wc.getResource(request);
+        JSONObject jsonResp = new JSONObject(response.getText());
 
-		Assert.assertEquals(200, response.getResponseCode());
+        Assert.assertEquals("JSON-RPC", jsonResp.getJSONObject("result").getJSONObject("map").getString("Binding"));
+    }
 
-		JSONObject jsonResp = new JSONObject(response.getText());
+    @Test
+    public void testBean() throws Exception {
+        JSONObject jsonRequest = new JSONObject(
+        "{ \"method\": \"echoBean\", \"params\": [ {\"javaClass\": \"bean.TestBean\", \"testString\": \"JSON-RPC\", \"testInt\":1234}], \"id\": 7}");
 
-		Assert.assertEquals("JSON-RPC", jsonResp.getJSONObject("result").getString("testString"));
-	}	
+        WebConversation wc = new WebConversation();
+        WebRequest request = new PostMethodWebRequest(SERVICE_URL,
+                                                      new ByteArrayInputStream(jsonRequest.toString().getBytes("UTF-8")), "application/json");
+        WebResponse response = wc.getResource(request);
 
-	@Test
-	public void testList() throws Exception {
-		JSONObject jsonRequest = new JSONObject(
-				"{ \"method\": \"echoList\", \"params\": [ {\"javaClass\": \"java.util.ArrayList\", \"list\": [0,1,2,3,4]}], \"id\": 8}");
+        Assert.assertEquals(200, response.getResponseCode());
 
-		WebConversation wc = new WebConversation();
-		WebRequest request = new PostMethodWebRequest(SERVICE_URL,
-				new ByteArrayInputStream(jsonRequest.toString().getBytes("UTF-8")), "application/json");
-		WebResponse response = wc.getResource(request);
+        JSONObject jsonResp = new JSONObject(response.getText());
 
-		Assert.assertEquals(200, response.getResponseCode());
+        Assert.assertEquals("JSON-RPC", jsonResp.getJSONObject("result").getString("testString"));
+    }	
 
-		JSONObject jsonResp = new JSONObject(response.getText());
+    @Test
+    public void testList() throws Exception {
+        JSONObject jsonRequest = new JSONObject(
+        "{ \"method\": \"echoList\", \"params\": [ {\"javaClass\": \"java.util.ArrayList\", \"list\": [0,1,2,3,4]}], \"id\": 8}");
 
-		Assert.assertEquals(0, jsonResp.getJSONObject("result").getJSONArray("list").get(0));
-	}
-	
-	@Test
-	public void testArrayString() throws Exception {
-		JSONObject jsonRequest = new JSONObject(
-				"{\"params\":[[\"1\",\"2\"]],\"method\":\"echoArrayString\",\"id\":9}");
+        WebConversation wc = new WebConversation();
+        WebRequest request = new PostMethodWebRequest(SERVICE_URL,
+                                                      new ByteArrayInputStream(jsonRequest.toString().getBytes("UTF-8")), "application/json");
+        WebResponse response = wc.getResource(request);
 
-		WebConversation wc = new WebConversation();
-		WebRequest request = new PostMethodWebRequest(SERVICE_URL,
-				new ByteArrayInputStream(jsonRequest.toString().getBytes("UTF-8")), "application/json");
-		WebResponse response = wc.getResource(request);
+        Assert.assertEquals(200, response.getResponseCode());
 
-		Assert.assertEquals(200, response.getResponseCode());
+        JSONObject jsonResp = new JSONObject(response.getText());
 
-		JSONObject jsonResp = new JSONObject(response.getText());
+        Assert.assertEquals(0, jsonResp.getJSONObject("result").getJSONArray("list").get(0));
+    }
 
-		Assert.assertEquals(1, jsonResp.getJSONArray("result").getInt(0));
-	}	
+    @Test
+    public void testArrayString() throws Exception {
+        JSONObject jsonRequest = new JSONObject(
+        "{\"params\":[[\"1\",\"2\"]],\"method\":\"echoArrayString\",\"id\":9}");
 
-	
-	@Test
-	public void testArrayInt() throws Exception {
-		JSONObject jsonRequest = new JSONObject(
-				"{\"params\":[[1,2]],\"method\":\"echoArrayInt\",\"id\":10}");
+        WebConversation wc = new WebConversation();
+        WebRequest request = new PostMethodWebRequest(SERVICE_URL,
+                                                      new ByteArrayInputStream(jsonRequest.toString().getBytes("UTF-8")), "application/json");
+        WebResponse response = wc.getResource(request);
 
-		WebConversation wc = new WebConversation();
-		WebRequest request = new PostMethodWebRequest(SERVICE_URL,
-				new ByteArrayInputStream(jsonRequest.toString().getBytes("UTF-8")), "application/json");
-		WebResponse response = wc.getResource(request);
+        Assert.assertEquals(200, response.getResponseCode());
 
-		Assert.assertEquals(200, response.getResponseCode());
+        JSONObject jsonResp = new JSONObject(response.getText());
 
-		JSONObject jsonResp = new JSONObject(response.getText());
+        Assert.assertEquals(1, jsonResp.getJSONArray("result").getInt(0));
+    }	
 
-		Assert.assertEquals(1, jsonResp.getJSONArray("result").getInt(0));
-	}	
 
-	
-	@Test
-	public void testSet() throws Exception {
-		JSONObject jsonRequest = new JSONObject(
-				"{ \"method\": \"echoSet\", \"params\": [ {\"javaClass\": \"java.util.HashSet\", \"set\": {\"1\": \"red\", \"2\": \"blue\"}}],\"id\": 11}");
+    @Test
+    public void testArrayInt() throws Exception {
+        JSONObject jsonRequest = new JSONObject(
+        "{\"params\":[[1,2]],\"method\":\"echoArrayInt\",\"id\":10}");
 
-		WebConversation wc = new WebConversation();
-		WebRequest request = new PostMethodWebRequest(SERVICE_URL,
-				new ByteArrayInputStream(jsonRequest.toString().getBytes("UTF-8")), "application/json");
-		WebResponse response = wc.getResource(request);
+        WebConversation wc = new WebConversation();
+        WebRequest request = new PostMethodWebRequest(SERVICE_URL,
+                                                      new ByteArrayInputStream(jsonRequest.toString().getBytes("UTF-8")), "application/json");
+        WebResponse response = wc.getResource(request);
 
-		Assert.assertEquals(200, response.getResponseCode());
+        Assert.assertEquals(200, response.getResponseCode());
 
-		JSONObject jsonResp = new JSONObject(response.getText());
+        JSONObject jsonResp = new JSONObject(response.getText());
 
-		Assert.assertEquals("red", jsonResp.getJSONObject("result").getJSONObject("set").getString("red"));
-	}
+        Assert.assertEquals(1, jsonResp.getJSONArray("result").getInt(0));
+    }	
+
+
+    @Test
+    public void testSet() throws Exception {
+        JSONObject jsonRequest = new JSONObject(
+        "{ \"method\": \"echoSet\", \"params\": [ {\"javaClass\": \"java.util.HashSet\", \"set\": {\"1\": \"red\", \"2\": \"blue\"}}],\"id\": 11}");
+
+        WebConversation wc = new WebConversation();
+        WebRequest request = new PostMethodWebRequest(SERVICE_URL,
+                                                      new ByteArrayInputStream(jsonRequest.toString().getBytes("UTF-8")), "application/json");
+        WebResponse response = wc.getResource(request);
+
+        Assert.assertEquals(200, response.getResponseCode());
+
+        JSONObject jsonResp = new JSONObject(response.getText());
+
+        Assert.assertEquals("red", jsonResp.getJSONObject("result").getJSONObject("set").getString("red"));
+    }
 }

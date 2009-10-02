@@ -45,52 +45,52 @@ public class JSONRPCExceptionTestCase{
 
     private static final String SERVICE_URL = "http://localhost:8085/SCADomain" + SERVICE_PATH;
 
-	private static Node node;
+    private static Node node;
 
-	@BeforeClass
-	public static void setUp() throws Exception {
-		try {
-    		String contribution = ContributionLocationHelper.getContributionLocation(JSONRPCExceptionTestCase.class);
-    		node = NodeFactory.newInstance().createNode("JSONRPCBinding.composite", new Contribution("test", contribution));
-    		node.start();
-    	} catch (Exception e) {
-    		e.printStackTrace();
-    	}
-	}
+    @BeforeClass
+    public static void setUp() throws Exception {
+        try {
+            String contribution = ContributionLocationHelper.getContributionLocation(JSONRPCExceptionTestCase.class);
+            node = NodeFactory.newInstance().createNode("JSONRPCBinding.composite", new Contribution("test", contribution));
+            node.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-	@AfterClass
-	public static void tearDown() throws Exception {
-		node.stop();
-    	node.destroy();
-	}
-    
+    @AfterClass
+    public static void tearDown() throws Exception {
+        node.stop();
+        node.destroy();
+    }
+
     @Test
     public void testRuntimeException() throws Exception{
-    	JSONObject jsonRequest = new JSONObject("{ \"method\": \"echoRuntimeException\", \"params\": [], \"id\": 2}");
-    	
-    	WebConversation wc = new WebConversation();
+        JSONObject jsonRequest = new JSONObject("{ \"method\": \"echoRuntimeException\", \"params\": [], \"id\": 2}");
+
+        WebConversation wc = new WebConversation();
         WebRequest request   = new PostMethodWebRequest( SERVICE_URL, new ByteArrayInputStream(jsonRequest.toString().getBytes("UTF-8")),"application/json");
         WebResponse response = wc.getResource(request);
 
         Assert.assertEquals(200, response.getResponseCode());
-        
+
         JSONObject jsonErr = new JSONObject(response.getText()).getJSONObject("error");
-        
+
         Assert.assertEquals("Runtime Exception", jsonErr.getString("msg"));
     }
-    
+
     @Test
     public void testBusinessException() throws Exception{
-    	JSONObject jsonRequest = new JSONObject("{ \"method\": \"echoBusinessException\", \"params\": [], \"id\": 3}");
-    	
-    	WebConversation wc = new WebConversation();
+        JSONObject jsonRequest = new JSONObject("{ \"method\": \"echoBusinessException\", \"params\": [], \"id\": 3}");
+
+        WebConversation wc = new WebConversation();
         WebRequest request   = new PostMethodWebRequest( SERVICE_URL, new ByteArrayInputStream(jsonRequest.toString().getBytes("UTF-8")),"application/json");
         WebResponse response = wc.getResource(request);
 
         Assert.assertEquals(200, response.getResponseCode());
-        
+
         JSONObject jsonErr = new JSONObject(response.getText()).getJSONObject("error");
-        
+
         Assert.assertEquals("Business Exception", jsonErr.getString("msg"));
     }   
 }
