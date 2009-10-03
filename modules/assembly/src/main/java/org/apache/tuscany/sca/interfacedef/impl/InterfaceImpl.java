@@ -39,7 +39,7 @@ import org.apache.tuscany.sca.policy.PolicySet;
  */
 public class InterfaceImpl implements Interface {
 
-    private boolean remotable;
+    private Boolean remotable;
     private boolean conversational;
     private OperationList operations = new OperationList();
     private boolean unresolved;
@@ -50,11 +50,19 @@ public class InterfaceImpl implements Interface {
     private Map<Object, Object> attributes = new ConcurrentHashMap<Object, Object>();
 
     public boolean isRemotable() {
-        return remotable;
+        boolean value = false;
+        if (remotable != null && remotable.booleanValue()) {
+            value = true;
+        }
+        return value;
     }
 
-    public void setRemotable(boolean local) {
-        this.remotable = local;
+    public void setRemotable(boolean remotable) {
+        this.remotable = Boolean.valueOf(remotable);
+    }
+    
+    public boolean isRemotableSet() {
+        return remotable == null ? false : true;
     }
 
     public List<Operation> getOperations() {

@@ -45,7 +45,17 @@ public interface Interface extends Cloneable, PolicySubject {
      * @param remotable indicates whether the interface is remotable or local
      */
     void setRemotable(boolean remotable);
-
+    
+    /**
+     * Returns true if the interface remotable property is set..
+     * 
+     * This is used to verify if a @remotable attribute is used in the 
+     * <interface.java> SCDL element. If true, use isRemotable to verify the
+     * current value
+     * 
+     * @return
+     */
+    boolean isRemotableSet();
 
     // FIXME: [rfeng] We need to re-consider the conversational as an intent
     /**

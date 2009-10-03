@@ -63,11 +63,11 @@ public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfa
      * @param model
      */
     private void error(String message, Object model, Exception ex) {
-    	 if (monitor != null) {
-    		 Problem problem = monitor.createProblem(this.getClass().getName(), "interface-javaxml-validation-messages", Severity.ERROR, model, message, ex);
-    	     monitor.problem(problem);
-    	 }        
-     }
+        if (monitor != null) {
+            Problem problem = monitor.createProblem(this.getClass().getName(), "interface-javaxml-validation-messages", Severity.ERROR, model, message, ex);
+            monitor.problem(problem);
+        }        
+    }
      
      /**
       * Report a error.
@@ -106,6 +106,12 @@ public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfa
             javaInterfaceContract.setCallbackInterface(javaCallbackInterface);
         }
 
+        String remotable = reader.getAttributeValue(null, REMOTABLE);
+        if (remotable != null) {
+            javaInterfaceContract.getInterface().setRemotable(Boolean.parseBoolean(remotable));
+        }
+
+        
         // Skip to end element
         while (reader.hasNext()) {
             if (reader.next() == END_ELEMENT && INTERFACE_JAVA_QNAME.equals(reader.getName())) {

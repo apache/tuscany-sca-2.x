@@ -35,6 +35,7 @@ import java.util.Set;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.InvalidAnnotationException;
 import org.apache.tuscany.sca.interfacedef.InvalidCallbackException;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.InvalidOperationException;
@@ -71,6 +72,12 @@ public class JavaInterfaceIntrospectorImpl {
         javaInterface.setJavaClass(clazz);
 
         boolean remotable = clazz.isAnnotationPresent(Remotable.class);
+        
+        if (remotable) {
+            if (javaInterface.isRemotableSet() && javaInterface.isRemotable() == false) {
+                throw new InvalidAnnotationException("@Remotable annotation present in a interface marked as not remotable in the SCDL", Remotable.class);
+            }
+        }
 
         // Consider @javax.ejb.Remote, java.rmi.Remote and javax.ejb.EJBObject
         // equivalent to @Remotable

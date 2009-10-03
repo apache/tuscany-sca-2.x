@@ -16,21 +16,21 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.interfacedef.java.xml;
 
-import javax.xml.namespace.QName;
+package org.apache.tuscany.sca.interfacedef;
 
-/**
- * Interface Java XML Constants.
- *
- * @version $Rev$ $Date$
- */
-public interface JavaConstants {
-    String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200903";
-    String INTERFACE_JAVA = "interface.java";
-    QName INTERFACE_JAVA_QNAME = new QName(SCA11_NS, "interface.java");
-    String INTERFACE = "interface";
-    String CALLBACK_INTERFACE = "callbackInterface";
-    String REMOTABLE = "remotable";
-    
+
+public class InvalidAnnotationException extends InvalidInterfaceException {
+
+    private static final long serialVersionUID = 4923028138353415223L;
+    private final Class<?> clazz;
+
+    public InvalidAnnotationException(String message, Class<?> clazz) {
+        super(message);
+        this.clazz = clazz;
+    }
+
+    public Class<?> getAnnotation() {
+        return clazz;
+    }
 }
