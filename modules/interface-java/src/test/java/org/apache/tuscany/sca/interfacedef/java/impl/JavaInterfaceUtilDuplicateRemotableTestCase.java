@@ -97,7 +97,7 @@ public class JavaInterfaceUtilDuplicateRemotableTestCase {
         assertEquals("getTime", method.getName());
         assertEquals(1, method.getParameterTypes().length);
         assertEquals(String.class, method.getParameterTypes()[0]);
-        }
+    }
 
     /**
      * Test to get the getTime(int) method from the GMTTimeService
@@ -125,7 +125,6 @@ public class JavaInterfaceUtilDuplicateRemotableTestCase {
         assertEquals(1, method.getParameterTypes().length);
         assertEquals(Integer.TYPE, method.getParameterTypes()[0]);
     }
-
 
     /**
      * Test to get the getTime() method from the LocalTimeService on the
@@ -160,6 +159,35 @@ public class JavaInterfaceUtilDuplicateRemotableTestCase {
     }
 
     /**
+     * Test case that validates that a @Remotable interface with Overloaded operations
+     * is detected.
+     * 
+     * This test case is for TUSCANY-2194
+     */
+    @Test
+    public void testDuplicateOpeartionOnRemotableInterface()
+    {
+        JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory();
+        JavaInterfaceIntrospectorImpl introspector = new JavaInterfaceIntrospectorImpl(javaFactory);
+        JavaInterfaceImpl javaInterface = new JavaInterfaceImpl();
+
+        try {
+            introspector.introspectInterface(javaInterface, DuplicateMethodOnRemotableInterface.class);
+            Assert.fail("Should have thrown an exception as @Remotable interface has overloaded methods");
+        } catch (OverloadedOperationException ex) {
+            // As expected
+            // Make sure that the class and method names are in the exception
+            String exMsg = ex.toString();
+            Assert.assertTrue("Method name missing from exception", exMsg.indexOf("aDuplicateMethod") != -1);
+            Assert.assertTrue("Class name missing from exception", 
+                exMsg.indexOf(DuplicateMethodOnRemotableInterface.class.getName()) != -1);
+        } catch (InvalidInterfaceException ex) {
+            // Should have thrown OverloadedOperationException
+            Assert.fail("Should have thrown an OverloadedOperationException but threw " + ex);
+        }
+    }
+
+    /**
      * Creates a new operation with the specified name and parameter types
      *
      * @param name The name of the operation
@@ -189,37 +217,7 @@ public class JavaInterfaceUtilDuplicateRemotableTestCase {
         // Return the created operation
         return operation;
     }
-
-    /**
-     * Test case that validates that a @Remotable interface with Overloaded operations
-     * is detected.
-     * 
-     * This test case is for TUSCANY-2194
-     */
-    @Test
-    public void testDuplicateOpeartionOnRemotableInterface()
-    {
-        JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory();
-        JavaInterfaceIntrospectorImpl introspector = new JavaInterfaceIntrospectorImpl(javaFactory);
-        JavaInterfaceImpl javaInterface = new JavaInterfaceImpl();
-
-        try {
-            introspector.introspectInterface(javaInterface, DuplicateMethodOnRemotableInterface.class);
-            Assert.fail("Should have thrown an exception as @Remotable interface has overloaded methods");
-        } catch (OverloadedOperationException ex) {
-            // As expected
-            // Make sure that the class and method names are in the exception
-            String exMsg = ex.toString();
-            Assert.assertTrue("Method name missing from exception", exMsg.indexOf("aDuplicateMethod") != -1);
-            Assert.assertTrue("Class name missing from exception", 
-                exMsg.indexOf(DuplicateMethodOnRemotableInterface.class.getName()) != -1);
-        } catch (InvalidInterfaceException ex) {
-            // Should have thrown OverloadedOperationException
-            Assert.fail("Should have thrown an OverloadedOperationException but threw " + ex);
-        }
-    }
-
-
+    
     /**
      * Sample @Remotable interface that has an overloaded operation which is not 
      * allowed according to the SCA Assembly Specification.
