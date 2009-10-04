@@ -34,6 +34,7 @@ import org.junit.Test;
  * Tests to make sure that autowiring and recusive composite work together
  *
  */
+@Ignore("TUSCANY-3296")
 public class MultiLevelTestCase {
     private static Node node1;
     private static Node node2;
