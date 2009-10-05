@@ -115,10 +115,10 @@ public class NodeImpl implements Node, Client {
         
         // FIXME: Get the endpoint registry by the Node configuration
         EndpointRegistry endpointRegistry = utilities.getUtility(EndpointRegistry.class);
-        this.compositeContext = new CompositeContextImpl(manager.extensionPoints, endpointRegistry);
         this.compositeActivator = utilities.getUtility(CompositeActivator.class);
         try {
             domainComposite = manager.configureNode(configuration, contributions);
+            this.compositeContext = new CompositeContextImpl(manager.extensionPoints, endpointRegistry, domainComposite);
             
             // Activate the composite
             compositeActivator.activate(domainComposite);
@@ -189,6 +189,8 @@ public class NodeImpl implements Node, Client {
             manager.extensionPoints.getExtensionPoint(UtilityExtensionPoint.class).removeUtility(compositeActivator);
             this.compositeActivator = null;
             this.proxyFactory = null;
+            this.domainComposite = null;
+            this.compositeContext = null;
             
             ThreadMessageContext.removeMessageContext();
 

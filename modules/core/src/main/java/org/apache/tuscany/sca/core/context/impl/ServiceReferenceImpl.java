@@ -380,7 +380,7 @@ public class ServiceReferenceImpl<B> implements ServiceReferenceExt<B> {
             fromXMLString();
             
             this.component = (RuntimeComponent)endpointReference.getComponent();
-            compositeContext.configureComponentContext(this.component);
+            compositeContext.bindComponent(this.component);
             
             this.reference = (RuntimeComponentReference)endpointReference.getReference();
             this.reference.setComponent(this.component);

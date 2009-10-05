@@ -20,6 +20,7 @@ package org.apache.tuscany.sca.core.context.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
@@ -160,8 +161,36 @@ public class ComponentContextImpl implements RuntimeComponentContext {
         throw new ServiceRuntimeException("Property not found: " + propertyName);
     }
 
+    /**
+     * @param component
+     */
+    public static ComponentService getSingleService(Component component) {
+        ComponentService targetService;
+        List<ComponentService> services = component.getServices();
+        List<ComponentService> regularServices = new ArrayList<ComponentService>();
+        for (ComponentService service : services) {
+            if (service.isForCallback()) {
+                continue;
+            }
+            String name = service.getName();
+            if (!name.startsWith("$") || name.startsWith("$dynamic$")) {
+                regularServices.add(service);
+            }
+        }
+        if (regularServices.size() == 0) {
+            throw new ServiceRuntimeException("No service is declared on component " + component.getURI());
+        }
+        if (regularServices.size() != 1) {
+            throw new ServiceRuntimeException("More than one service is declared on component " + component.getURI()
+                + ". Service name is required to get the service.");
+        }
+        targetService = regularServices.get(0);
+        return targetService;
+    }
+
+
     public <B> ServiceReference<B> createSelfReference(Class<B> businessInterface) {
-        ComponentService service = CompositeContext.getSingleService(component);
+        ComponentService service = getSingleService(component);
         try {
             return createSelfReference(businessInterface, service);
         } catch (Exception e) {

@@ -496,7 +496,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
             return;
         }
 
-        compositeContext.configureComponentContext(runtimeComponent);
+        compositeContext.bindComponent(runtimeComponent);
 
         // Reference bindings aren't started until the wire is first used
 

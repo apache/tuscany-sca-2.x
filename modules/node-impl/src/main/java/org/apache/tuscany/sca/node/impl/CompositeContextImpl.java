@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.node.impl;
 
+import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.context.ComponentContextFactory;
 import org.apache.tuscany.sca.context.CompositeContext;
 import org.apache.tuscany.sca.context.ContextFactoryExtensionPoint;
@@ -34,12 +35,14 @@ public class CompositeContextImpl extends CompositeContext {
     private final ExtensionPointRegistry extensionPointRegistry;
     private final EndpointRegistry endpointRegistry;
     private final ComponentContextFactory componentContextFactory;
+    private final Composite domainComposite;
 
-    public CompositeContextImpl(ExtensionPointRegistry registry, EndpointRegistry endpointRegistry) {
+    public CompositeContextImpl(ExtensionPointRegistry registry, EndpointRegistry endpointRegistry, Composite domainComposite) {
         this.extensionPointRegistry = registry;
         this.endpointRegistry = endpointRegistry;
         ContextFactoryExtensionPoint contextFactories = registry.getExtensionPoint(ContextFactoryExtensionPoint.class);
         this.componentContextFactory = contextFactories.getFactory(ComponentContextFactory.class);
+        this.domainComposite = domainComposite;
     }
 
     public ExtensionPointRegistry getExtensionPointRegistry() {
@@ -50,10 +53,14 @@ public class CompositeContextImpl extends CompositeContext {
         return endpointRegistry;
     }
 
-    public void configureComponentContext(RuntimeComponent runtimeComponent) {
+    public void bindComponent(RuntimeComponent runtimeComponent) {
         RuntimeComponentContext componentContext =
             (RuntimeComponentContext)componentContextFactory.createComponentContext(this, runtimeComponent);
         runtimeComponent.setComponentContext(componentContext);
+    }
+
+    public Composite getDomainComposite() {
+        return domainComposite;
     }
 
 }

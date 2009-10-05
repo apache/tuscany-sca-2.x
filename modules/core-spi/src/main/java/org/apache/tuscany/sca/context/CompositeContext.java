@@ -19,20 +19,17 @@
 
 package org.apache.tuscany.sca.context;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.tuscany.sca.assembly.Component;
-import org.apache.tuscany.sca.assembly.ComponentService;
+import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentContext;
-import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
+ * The context associated with the Node that provides access to ExtensionPointRegistry and EndpointRegistry
+ * 
  * @version $Rev$ $Date$
  */
 public abstract class CompositeContext {
@@ -46,7 +43,7 @@ public abstract class CompositeContext {
             if (to == null) {
                 return null;
             }
-            RuntimeComponent component = (RuntimeComponent) message.getTo().getComponent();
+            RuntimeComponent component = (RuntimeComponent)message.getTo().getComponent();
             return component;
         }
         return null;
@@ -65,40 +62,23 @@ public abstract class CompositeContext {
     }
 
     /**
-     * @param component
+     * Attach a component context to the component
+     * @param runtimeComponent
      */
-    public static ComponentService getSingleService(Component component) {
-        ComponentService targetService;
-        List<ComponentService> services = component.getServices();
-        List<ComponentService> regularServices = new ArrayList<ComponentService>();
-        for (ComponentService service : services) {
-            if (service.isForCallback()) {
-                continue;
-            }
-            String name = service.getName();
-            if (!name.startsWith("$") || name.startsWith("$dynamic$")) {
-                regularServices.add(service);
-            }
-        }
-        if (regularServices.size() == 0) {
-            throw new ServiceRuntimeException("No service is declared on component " + component.getURI());
-        }
-        if (regularServices.size() != 1) {
-            throw new ServiceRuntimeException("More than one service is declared on component " + component.getURI()
-                + ". Service name is required to get the service.");
-        }
-        targetService = regularServices.get(0);
-        return targetService;
-    }
+    public abstract void bindComponent(RuntimeComponent runtimeComponent);
 
-    public abstract void configureComponentContext(RuntimeComponent runtimeComponent);
-    
+    /**
+     * Get the ExtensionPointRegistry for this node
+     * @return The ExtensionPointRegistry
+     */
     public abstract ExtensionPointRegistry getExtensionPointRegistry();
 
     /**
      * Get the EndpointRegistry
-     * @return
+     * @return The EndpointRegistry for this node
      */
     public abstract EndpointRegistry getEndpointRegistry();
+    
+    public abstract Composite getDomainComposite();
 
 }
