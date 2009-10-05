@@ -96,51 +96,61 @@ public class CompositeComponentTypeBuilderImpl {
      */
     public void createComponentType(Component outerComponent, Composite composite) {
 
-        // first make sure that each child component has been properly configured based
-        // on its own component type
-        for (Component component : composite.getComponents()) {
-
-            // Check for duplicate component names
-            if (composite.getComponent(component.getName()) == null) {
-                Monitor.error(monitor, this, "assembly-validation-messages", "DuplicateComponentName", composite
-                    .getName().toString(), component.getName());
+        monitor.pushContext("Composite: " + composite.getName().toString());
+        
+        try {
+            // first make sure that each child component has been properly configured based
+            // on its own component type
+            for (Component component : composite.getComponents()) {
+    
+                // Check for duplicate component names
+                if (composite.getComponent(component.getName()) == null) {
+                    Monitor.error(monitor, 
+                                  this, 
+                                  "assembly-validation-messages", 
+                                  "DuplicateComponentName", 
+                                  composite.getName().toString(), 
+                                  component.getName());
+                }
+    
+                // do any work we need to do before we configure the component
+                // Anything that needs to be pushed down the promotion
+                // hierarchy must be done before we configure the component
+    
+                // Push down the autowire flag from the composite to components
+                if (component.getAutowire() == null) {
+                    component.setAutowire(composite.getAutowire());
+                }
+    
+                // configure the component from its component type
+                componentBuilder.configureComponentFromComponentType(outerComponent, composite, component);
             }
-
-            // do any work we need to do before we configure the component
-            // Anything that needs to be pushed down the promotion
-            // hierarchy must be done before we configure the component
-
-            // Push down the autowire flag from the composite to components
-            if (component.getAutowire() == null) {
-                component.setAutowire(composite.getAutowire());
-            }
-
-            // configure the component from its component type
-            componentBuilder.configureComponentFromComponentType(outerComponent, composite, component);
-        }
-
-        // create the composite component type based on the promoted artifacts
-        // from the components that it contains
-
-        // index all the components, services and references in the
-        // component type so that they are easy to find
-        Map<String, Component> components = new HashMap<String, Component>();
-        Map<String, ComponentService> componentServices = new HashMap<String, ComponentService>();
-        Map<String, ComponentReference> componentReferences = new HashMap<String, ComponentReference>();
-        indexComponentsServicesAndReferences(composite, components, componentServices, componentReferences);
-
-        // services
-        calculateServices(composite, components, componentServices);
-
-        // references
-        calculateReferences(composite, components, componentReferences);
-
-        // properties
-        // Properties on the composite component are unaffected by properties 
-        // on child components. Instead child component properties might take their
-        // values from composite properties. Hence there is nothing to do here.
-        //calculateProperties(composite, components);
-
+    
+            // create the composite component type based on the promoted artifacts
+            // from the components that it contains
+    
+            // index all the components, services and references in the
+            // component type so that they are easy to find
+            Map<String, Component> components = new HashMap<String, Component>();
+            Map<String, ComponentService> componentServices = new HashMap<String, ComponentService>();
+            Map<String, ComponentReference> componentReferences = new HashMap<String, ComponentReference>();
+            indexComponentsServicesAndReferences(composite, components, componentServices, componentReferences);
+    
+            // services
+            calculateServices(composite, components, componentServices);
+    
+            // references
+            calculateReferences(composite, components, componentReferences);
+    
+            // properties
+            // Properties on the composite component are unaffected by properties 
+            // on child components. Instead child component properties might take their
+            // values from composite properties. Hence there is nothing to do here.
+            //calculateProperties(composite, components);
+        
+        } finally {
+            monitor.popContext();
+        } 
     }
 
     /**

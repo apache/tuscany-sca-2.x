@@ -113,35 +113,41 @@ public class ComponentBuilderImpl {
      */
     public void configureComponentFromComponentType(Component outerComponent, Composite parentComposite, Component component) {
 
-        // do any work we need to do before we calculate the component type
-        // for this component. Anything that needs to be pushed down the promotion
-        // hierarchy must be done before we calculate the component type
-
-        // first carry out any implementation specific builder processing
-        Implementation impl = component.getImplementation();
-        if (impl != null) {
-            ImplementationBuilder builder = builders.getImplementationBuilder(impl.getClass());
-            if (builder != null) {
-                builder.build(component, impl, monitor);
+        monitor.pushContext("Component: " + component.getName().toString());
+        
+        try {
+            // do any work we need to do before we calculate the component type
+            // for this component. Anything that needs to be pushed down the promotion
+            // hierarchy must be done before we calculate the component type
+    
+            // first carry out any implementation specific builder processing
+            Implementation impl = component.getImplementation();
+            if (impl != null) {
+                ImplementationBuilder builder = builders.getImplementationBuilder(impl.getClass());
+                if (builder != null) {
+                    builder.build(component, impl, monitor);
+                }
             }
-        }
-
-        // Properties on the composite component type are not affected by the components 
-        // that the composite contains. Instead the child components might source  
-        // composite level property values. Hence we have to calculate whether the component 
-        // type property value should be overridden by this component's property value 
-        // before we go ahead and calculate the component type
-        configureProperties(outerComponent, parentComposite, component);
-
-        // create the component type for this component 
-        // taking any nested composites into account
-        createComponentType(component);
-
-        // configure services based on the calculated component type
-        configureServices(component);
-
-        // configure services based on the calculated component type
-        configureReferences(component);
+    
+            // Properties on the composite component type are not affected by the components 
+            // that the composite contains. Instead the child components might source  
+            // composite level property values. Hence we have to calculate whether the component 
+            // type property value should be overridden by this component's property value 
+            // before we go ahead and calculate the component type
+            configureProperties(outerComponent, parentComposite, component);
+    
+            // create the component type for this component 
+            // taking any nested composites into account
+            createComponentType(component);
+    
+            // configure services based on the calculated component type
+            configureServices(component);
+    
+            // configure services based on the calculated component type
+            configureReferences(component);
+        } finally {
+            monitor.popContext();
+        }         
     }
 
     /**
@@ -290,7 +296,7 @@ public class ComponentBuilderImpl {
 
             // configure the property value based on the @source attribute
             // At the moment this is done in the parent composite component
-            // type calculation a
+            // type calculation 
             processPropertySourceAttribute(outerComponent, parentComposite, component, componentProperty);
 
             // configure the property value based on the @file attribute
@@ -298,8 +304,12 @@ public class ComponentBuilderImpl {
             
             // Check that a value is supplied
             if (componentProperty.isMustSupply() && !isPropertyValueSet(componentProperty)) {
-                Monitor.error(monitor, this, "assembly-validation-messages", "PropertyMustSupplyNull", component
-                    .getName(), componentProperty.getName());
+                Monitor.error(monitor, 
+                              this, 
+                              "assembly-validation-messages", 
+                              "PropertyMustSupplyNull", 
+                              component.getName(), 
+                              componentProperty.getName());
             }
         }
     }
@@ -553,8 +563,12 @@ public class ComponentBuilderImpl {
             // Check that a component property does not override the
             // many attribute
             if (!componentTypeProperty.isMany() && componentProperty.isMany()) {
-                Monitor.error(monitor, this, "assembly-validation-messages", "PropertyOverrideManyAttribute", component
-                    .getName(), componentProperty.getName());
+                Monitor.error(monitor, 
+                              this, 
+                              "assembly-validation-messages", 
+                              "PropertyOverrideManyAttribute", 
+                              component.getName(), 
+                              componentProperty.getName());
             }
 
             // Default to the many attribute defined on the property
@@ -570,8 +584,12 @@ public class ComponentBuilderImpl {
 
             // Check that a type or element are specified
             if (componentProperty.getXSDElement() == null && componentProperty.getXSDType() == null) {
-                Monitor.error(monitor, this, "assembly-validation-messages", "NoTypeForComponentProperty", component
-                    .getName(), componentProperty.getName());
+                Monitor.error(monitor, 
+                              this, 
+                              "assembly-validation-messages", 
+                              "NoTypeForComponentProperty", 
+                              component.getName(), 
+                              componentProperty.getName());
             }
         }
     }
