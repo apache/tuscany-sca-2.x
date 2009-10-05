@@ -31,6 +31,7 @@ import org.junit.Test;
  */
 public class MonitorTestCase {
 
+    private static final String MESSAGES = "org.apache.tuscany.sca.monitor.tuscany-monitor-test-messages";
     private static MonitorFactory monitorFactory;
 
     @BeforeClass
@@ -53,7 +54,7 @@ public class MonitorTestCase {
 
         problem =
             monitor.createProblem(this.getClass().getName(),
-                                  "tuscany-monitor-test-messages",
+                                  MESSAGES,
                                   Severity.WARNING,
                                   dummyModelObject,
                                   "MESSAGE1");
@@ -63,7 +64,7 @@ public class MonitorTestCase {
 
         problem =
             monitor.createProblem(this.getClass().getName(),
-                                  "tuscany-monitor-test-messages",
+                                  MESSAGES,
                                   Severity.WARNING,
                                   dummyModelObject,
                                   "MESSAGE2",
@@ -72,7 +73,7 @@ public class MonitorTestCase {
 
         problem =
             monitor.createProblem(this.getClass().getName(),
-                                  "tuscany-monitor-test-messages",
+                                  MESSAGES,
                                   Severity.WARNING,
                                   dummyModelObject,
                                   "MESSAGE3",
@@ -85,7 +86,7 @@ public class MonitorTestCase {
 
         problem =
             monitor.createProblem(this.getClass().getName(),
-                                  "tuscany-monitor-test-messages",
+                                  MESSAGES,
                                   Severity.ERROR,
                                   dummyModelObject,
                                   "MESSAGE4",

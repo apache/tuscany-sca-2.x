@@ -9,6 +9,7 @@ Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Monitor
 Import-Package: org.apache.tuscany.sca.monitor;version="2.0.0"
+DynamicImport-Package: *
 Bundle-SymbolicName: org.apache.tuscany.sca.monitor
 Bundle-DocURL: http://www.apache.org/
 Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6
