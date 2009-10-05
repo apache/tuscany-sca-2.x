@@ -2,6 +2,7 @@ Manifest-Version: 1.0
 Export-Package: org.apache.tuscany.sca.assembly;version="2.0.0";
   uses:="javax.xml.xpath,
    org.apache.tuscany.sca.assembly.impl,
+   org.apache.tuscany.sca.core,
    org.apache.tuscany.sca.policy,
    org.apache.tuscany.sca.interfacedef,
    javax.xml.namespace",
@@ -13,43 +14,18 @@ Export-Package: org.apache.tuscany.sca.assembly;version="2.0.0";
  org.apache.tuscany.sca.assembly.impl;version="2.0.0";
   uses:="javax.xml.xpath,
    org.apache.tuscany.sca.assembly,
+   org.apache.tuscany.sca.core,
    org.apache.tuscany.sca.policy,
    org.apache.tuscany.sca.interfacedef,
    javax.xml.namespace",
- org.apache.tuscany.sca.policy.util;version="2.0.0";
-  uses:="javax.xml.parsers,
-   javax.xml.transform.dom,
-   org.apache.tuscany.sca.policy,
-   org.apache.tuscany.sca.extensibility,
-   org.w3c.dom,javax.xml.namespace,
-   javax.xml.xpath,javax.xml.transform,
-   javax.xml.transform.stream",
- org.apache.tuscany.sca.policy.impl;version="2.0.0";
-  uses:="javax.xml.xpath,
-   org.apache.tuscany.sca.policy,
-   javax.xml.namespace",
- org.apache.tuscany.sca.policy;version="2.0.0";
-  uses:="javax.xml.xpath,
-   org.apache.tuscany.sca.policy.impl,
-   javax.xml.namespace",
- org.apache.tuscany.sca.interfacedef.util;version="2.0.0";
-  uses:="javax.xml.transform,
-  org.apache.tuscany.sca.interfacedef.impl,
-  org.apache.tuscany.sca.interfacedef,
-  javax.xml.datatype,
-  javax.xml.namespace",
- org.apache.tuscany.sca.interfacedef.impl;version="2.0.0";
-  uses:="org.apache.tuscany.sca.interfacedef.util,
-  org.apache.tuscany.sca.policy,
-  org.apache.tuscany.sca.interfacedef",
- org.apache.tuscany.sca.interfacedef;version="2.0.0";
- uses:="org.apache.tuscany.sca.interfacedef.util,
-  org.apache.tuscany.sca.policy",
- org.apache.tuscany.sca.definitions;version="2.0.0";
-  uses:="org.apache.tuscany.sca.policy,
-   javax.xml.namespace",     
- org.apache.tuscany.sca.definitions.util;version="2.0.0";
-  uses:="org.apache.tuscany.sca.definitions"
+ org.apache.tuscany.sca.definitions;version="2.0.0",
+ org.apache.tuscany.sca.definitions.util;version="2.0.0";uses:="org.apache.tuscany.sca.definitions,org.apache.tuscany.sca.monitor",
+ org.apache.tuscany.sca.interfacedef;version="2.0.0";uses:="org.apache.tuscany.sca.interfacedef.util,org.apache.tuscany.sca.policy",
+ org.apache.tuscany.sca.interfacedef.impl;version="2.0.0";uses:="org.apache.tuscany.sca.interfacedef.util,org.apache.tuscany.sca.policy,org.apache.tuscany.sca.interfacedef",
+ org.apache.tuscany.sca.interfacedef.util;version="2.0.0";uses:="org.apache.tuscany.sca.interfacedef,javax.xml.namespace",
+ org.apache.tuscany.sca.policy;version="2.0.0";uses:="javax.xml.xpath,org.apache.tuscany.sca.policy.impl,javax.xml.namespace",
+ org.apache.tuscany.sca.policy.impl;version="2.0.0";uses:="javax.xml.xpath,org.apache.tuscany.sca.policy,javax.xml.namespace",
+ org.apache.tuscany.sca.policy.util;version="2.0.0";uses:="javax.xml.parsers,org.apache.tuscany.sca.policy"
 Private-Package: org.apache.tuscany.sca.assembly.builder.impl;version=
  "2.0.0"
 Tool: Bnd-0.0.255
@@ -66,7 +42,6 @@ Import-Package: javax.xml.datatype,
  javax.xml.parsers,
  javax.xml.transform,
  javax.xml.transform.dom,
- javax.xml.transform.sax,
  javax.xml.transform.stream,
  javax.xml.xpath,
  org.apache.tuscany.sca.assembly;version="2.0.0",
@@ -81,8 +56,7 @@ Import-Package: javax.xml.datatype,
  org.apache.tuscany.sca.policy;version="2.0.0",
  org.apache.tuscany.sca.policy.impl;version="2.0.0",
  org.apache.tuscany.sca.policy.util;version="2.0.0",
- org.w3c.dom,
- org.xml.sax
+ org.w3c.dom
 Bundle-SymbolicName: org.apache.tuscany.sca.assembly
 Bundle-DocURL: http://www.apache.org/
 Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6

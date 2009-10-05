@@ -17,11 +17,12 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.jms.policy.authentication.token;
+package org.apache.tuscany.sca.binding.jms.policy.authentication.token.provider;
 
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.Implementation;
+import org.apache.tuscany.sca.binding.jms.policy.authentication.token.JMSTokenAuthenticationPolicy;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.provider.PolicyProvider;
 import org.apache.tuscany.sca.provider.PolicyProviderFactory;

@@ -16,15 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.binding.jms.policy.authentication.token;
-
+package org.apache.tuscany.sca.binding.jms.policy.authentication.token.provider;
 
 
 import javax.jms.JMSException;
 import javax.security.auth.Subject;
 
 import org.apache.tuscany.sca.binding.jms.JMSBindingException;
-import org.apache.tuscany.sca.binding.jms.context.JMSBindingContext;
+import org.apache.tuscany.sca.binding.jms.policy.authentication.token.JMSTokenAuthenticationPolicy;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.PhasedInterceptor;
@@ -33,19 +32,20 @@ import org.apache.tuscany.sca.policy.authentication.token.TokenPrincipal;
 import org.apache.tuscany.sca.policy.security.SecurityUtil;
 
 /**
- * Policy handler to handle token based authentication
+ * Policy handler to handle PolicySet related to Logging with the QName
  * {http://tuscany.apache.org/xmlns/sca/1.0/impl/java}LoggingPolicy
  *
  * @version $Rev$ $Date$
  */
-public class JMSTokenAuthenticationServicePolicyInterceptor implements PhasedInterceptor {
+public class JMSTokenAuthenticationReferencePolicyInterceptor implements PhasedInterceptor {
+
     private Invoker next;
     private PolicySet policySet = null;
     private String context;
     private JMSTokenAuthenticationPolicy policy;
     private String phase;
 
-    public JMSTokenAuthenticationServicePolicyInterceptor(String context, PolicySet policySet, String phase) {
+    public JMSTokenAuthenticationReferencePolicyInterceptor(String context, PolicySet policySet, String phase) {
         super();
         this.policySet = policySet;
         this.context = context;
@@ -65,27 +65,26 @@ public class JMSTokenAuthenticationServicePolicyInterceptor implements PhasedInt
     }
 
     public Message invoke(Message msg) {
-    	try{
-            // get the jms context
-            JMSBindingContext context = msg.getBindingContext();
-	        javax.jms.Message jmsMsg = context.getJmsMsg();
+    	try {	
+	        javax.jms.Message jmsMsg = msg.getBody();
 	        
-	        String token = jmsMsg.getStringProperty(policy.getTokenName().toString());
-	        
-	        Subject subject = SecurityUtil.getSubject(msg);
-	        TokenPrincipal principal = SecurityUtil.getPrincipal(subject, TokenPrincipal.class);
-	        
-	        if (principal == null){
-	            principal = new TokenPrincipal(token);
-	            subject.getPrincipals().add(principal);
+	        if ( policy.getTokenName() != null){
+	    
+	            Subject subject = SecurityUtil.getSubject(msg);
+	            TokenPrincipal principal = SecurityUtil.getPrincipal(subject, TokenPrincipal.class);
+	            
+	            if (principal == null){
+	            	// should call out here to some 3rd party system to get credentials
+	            	// and correct token. Here we are just putting in the token name
+	                principal = new TokenPrincipal("DummyTokenID");
+	                subject.getPrincipals().add(principal); 
+	            }
+	            
+	            jmsMsg.setStringProperty(policy.getTokenName().toString(), principal.getName());
 	        }
 	        
-	        System.out.println("JMS service received token: " + principal.getName());
-	        
-	        // call out here to some 3rd party system to do whatever you 
-	        // need to authenticate the principal
-	    
 	        return getNext().invoke(msg);
+	        
 	    } catch (JMSException e) {
 	        throw new JMSBindingException(e);
 	    }

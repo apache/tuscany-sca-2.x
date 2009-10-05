@@ -1,11 +1,6 @@
 Manifest-Version: 1.0
-Export-Package: org.apache.tuscany.sca.binding.http;uses:="org.apache.
- tuscany.sca.assembly,javax.xml.namespace,javax.servlet.http";version=
- "2.0.0"
-Private-Package: org.apache.tuscany.sca.binding.http.xml;version="2.0.
- 0",.;version="2.0.0",org.apache.tuscany.sca.binding.http.impl;version
- ="2.0.0"
-Tool: Bnd-0.0.311
+Export-Package: org.apache.tuscany.sca.binding.http;version="2.0.0";
+ uses:="org.apache.tuscany.sca.assembly,javax.xml.namespace,javax.servlet.http"
 Bundle-Name: Apache Tuscany SCA HTTP Binding Model
 Created-By: 1.6.0_15 (Apple Inc.)
 Bundle-Vendor: The Apache Software Foundation
@@ -18,7 +13,6 @@ Import-Package: javax.servlet.http,
  javax.xml.namespace,
  javax.xml.stream,
  org.apache.tuscany.sca.assembly;version="2.0.0",
- org.apache.tuscany.sca.assembly.xml;version="2.0.0",
  org.apache.tuscany.sca.binding.http;version="2.0.0",
  org.apache.tuscany.sca.contribution.processor;version="2.0.0",
  org.apache.tuscany.sca.contribution.resolver;version="2.0.0",

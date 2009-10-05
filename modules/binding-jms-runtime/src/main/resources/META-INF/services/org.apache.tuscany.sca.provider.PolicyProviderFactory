@@ -16,4 +16,4 @@
 # under the License. 
 
 # Implementation class for the policy extension
-org.apache.tuscany.sca.binding.jms.policy.authentication.token.JMSTokenAuthenticationPolicyProviderFactory;model=org.apache.tuscany.sca.binding.jms.policy.authentication.token.JMSTokenAuthenticationPolicy
+org.apache.tuscany.sca.binding.jms.policy.authentication.token.provider.JMSTokenAuthenticationPolicyProviderFactory;model=org.apache.tuscany.sca.binding.jms.policy.authentication.token.JMSTokenAuthenticationPolicy

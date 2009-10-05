@@ -25,17 +25,34 @@ Import-Package: javax.xml.datatype,
  org.apache.tuscany.sca.common.xml.stax.reader;version="2.0.0",
  org.apache.tuscany.sca.common.xml.xpath;version="2.0.0",
  org.apache.tuscany.sca.core;version="2.0.0",
- org.apache.tuscany.sca.extensibility;version="2.0.0",
  org.w3c.dom,
  org.xml.sax,
  org.xml.sax.ext,
  org.xml.sax.helpers
 Bundle-SymbolicName: org.apache.tuscany.sca.common.xml
 Bundle-DocURL: http://www.apache.org/
-Export-Package: org.apache.tuscany.sca.common.xml;version="2.0.0",
- org.apache.tuscany.sca.common.xml.dom;version="2.0.0",
- org.apache.tuscany.sca.common.xml.sax;version="2.0.0",
- org.apache.tuscany.sca.common.xml.xpath;version="2.0.0",
- org.apache.tuscany.sca.common.xml.stax;version="2.0.0",
- org.apache.tuscany.sca.common.xml.stax.reader;version="2.0.0"
+Export-Package: org.apache.tuscany.sca.common.xml;version="2.0.0";uses:="org.xml.sax",
+ org.apache.tuscany.sca.common.xml.dom;version="2.0.0";
+  uses:="org.xml.sax.ext,
+   javax.xml.transform,
+   javax.xml.parsers,
+   org.apache.tuscany.sca.core,
+   org.w3c.dom,
+   javax.xml.namespace,
+   org.xml.sax",
+ org.apache.tuscany.sca.common.xml.sax;version="2.0.0";uses:="javax.xml.parsers,org.apache.tuscany.sca.core,org.xml.sax",
+ org.apache.tuscany.sca.common.xml.stax;version="2.0.0";
+  uses:="org.apache.tuscany.sca.common.xml.dom,
+   javax.xml.stream,
+   javax.xml.transform,
+   org.apache.tuscany.sca.core,
+   org.w3c.dom,
+   javax.xml.namespace,
+   org.xml.sax",
+ org.apache.tuscany.sca.common.xml.stax.reader;version="2.0.0";
+  uses:="javax.xml.stream,
+   javax.xml.stream.util,
+   org.w3c.dom,
+   javax.xml.namespace",
+ org.apache.tuscany.sca.common.xml.xpath;version="2.0.0";uses:="javax.xml.xpath,org.apache.tuscany.sca.core,javax.xml.namespace"
 

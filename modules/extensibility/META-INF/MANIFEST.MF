@@ -2,9 +2,9 @@ Manifest-Version: 1.0
 Tuscany-Comment1: Export the META-INF.services under an "internal" attribute 
  so that it can be seen only by the bundle itself without following the 
  DynamicImport-Package * 
-Export-Package: org.apache.tuscany.sca.core;uses:="org.apache.tuscany.
- sca.extensibility";version="2.0.0",org.apache.tuscany.sca.extensibility
- ;version="2.0.0"
+Export-Package: org.apache.tuscany.sca.core;version="2.0.0";
+ uses:="org.apache.tuscany.sca.extensibility",
+ org.apache.tuscany.sca.extensibility;version="2.0.0"
 Tool: Bnd-0.0.255
 Bundle-Name: Apache Tuscany SCA Extensibility
 Created-By: 1.6.0_07 (Sun Microsystems Inc.)

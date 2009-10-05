@@ -12,13 +12,15 @@ Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Data Binding for JSON
 Import-Package: com.metaparadigm.jsonrpc,
  javax.xml.namespace,
- javax.xml.stream;version="1.0",
+ javax.xml.stream,
  org.apache.axiom.om,
  org.apache.tuscany.sca.common.xml.stax;version="2.0.0",
  org.apache.tuscany.sca.core;version="2.0.0",
  org.apache.tuscany.sca.databinding;version="2.0.0",
  org.apache.tuscany.sca.databinding.impl;version="2.0.0",
+ org.apache.tuscany.sca.databinding.javabeans;version="2.0.0",
  org.apache.tuscany.sca.interfacedef;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef.impl;version="2.0.0";resolution:=optional,
  org.apache.tuscany.sca.interfacedef.util;version="2.0.0",
  org.codehaus.jettison.badgerfish,
  org.codehaus.jettison.json,
@@ -27,6 +29,4 @@ Import-Package: com.metaparadigm.jsonrpc,
  org.oasisopen.sca.annotation;version="2.0.0"
 Bundle-SymbolicName: org.apache.tuscany.sca.databinding.json
 Bundle-DocURL: http://www.apache.org/
-Require-Bundle: org.apache.tuscany.sca.databinding,
- org.apache.tuscany.sca.assembly
 
