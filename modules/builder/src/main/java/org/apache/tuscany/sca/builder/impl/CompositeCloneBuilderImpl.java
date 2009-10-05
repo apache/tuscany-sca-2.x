@@ -47,13 +47,14 @@ public class CompositeCloneBuilderImpl implements CompositeBuilder {
             // Try to avoid clone for top-level composites that are added to the domain composite
             for (Composite included : composite.getIncludes()) {
                 cloneIncludes(included);
+                cloneCompositeImplementations(included);
             }
         } else {
             // Clone the includes 
             cloneIncludes(composite);
+            cloneCompositeImplementations(composite);
         }
 
-        cloneCompositeImplementations(composite);
         return composite;
     }
 
