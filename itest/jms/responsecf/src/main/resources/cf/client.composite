@@ -23,17 +23,14 @@
 
     <component name="HelloWorldClient">
         <implementation.java class="org.apache.tuscany.sca.binding.jms.HelloWorldClientImpl"/>
-        <reference name="serviceA" />
+        <reference name="serviceA">
+            <binding.jms>
+                <destination jndiName="DestQueueA"/>
+                <response>
+                   <destination jndiName="RespQueueA"/>
+                </response>
+            </binding.jms>  
+        </reference>
     </component>
-
-    <reference name="serviceA" promote="HelloWorldClient/serviceA">
-        <interface.java interface="org.apache.tuscany.sca.binding.jms.HelloWorldService" />
-        <binding.jms>
-            <destination jndiName="DestQueueA"/>
-            <response>
-               <destination jndiName="RespQueueA"/>
-            </response>
-        </binding.jms>  
-    </reference>
 
 </composite>
