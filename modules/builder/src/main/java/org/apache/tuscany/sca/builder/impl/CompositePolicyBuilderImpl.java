@@ -260,6 +260,7 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
                     policySets.add(definitions.getPolicySets().get(index));
                 } else {
                     // PolicySet cannot be resolved
+                    warning(monitor, "PolicySetNotFound", subject, policySet);
                 }
             }
         }

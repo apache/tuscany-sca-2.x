@@ -40,6 +40,7 @@ import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
+import org.apache.tuscany.sca.assembly.builder.Messages;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
@@ -111,7 +112,7 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
         if (monitor != null) {
             Problem problem =
                 monitor.createProblem(this.getClass().getName(),
-                                      "assembly-validation-messages",
+                                      Messages.ASSEMBLY_VALIDATION,
                                       Severity.WARNING,
                                       model,
                                       message,
@@ -132,7 +133,7 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
         if (monitor != null) {
             Problem problem =
                 monitor.createProblem(this.getClass().getName(),
-                                      "assembly-validation-messages",
+                                      Messages.ASSEMBLY_VALIDATION,
                                       Severity.ERROR,
                                       model,
                                       message,
@@ -153,7 +154,7 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
             Problem problem = null;
             problem =
                 monitor.createProblem(this.getClass().getName(),
-                                      "assembly-validation-messages",
+                                      Messages.ASSEMBLY_VALIDATION,
                                       Severity.ERROR,
                                       model,
                                       message,

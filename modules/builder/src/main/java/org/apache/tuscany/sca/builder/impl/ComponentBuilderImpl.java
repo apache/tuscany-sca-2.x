@@ -53,6 +53,7 @@ import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
 import org.apache.tuscany.sca.assembly.builder.ImplementationBuilder;
+import org.apache.tuscany.sca.assembly.builder.Messages;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
@@ -306,7 +307,7 @@ public class ComponentBuilderImpl {
             if (componentProperty.isMustSupply() && !isPropertyValueSet(componentProperty)) {
                 Monitor.error(monitor, 
                               this, 
-                              "assembly-validation-messages", 
+                              Messages.ASSEMBLY_VALIDATION, 
                               "PropertyMustSupplyNull", 
                               component.getName(), 
                               componentProperty.getName());
@@ -323,7 +324,7 @@ public class ComponentBuilderImpl {
                 if (service != component.getImplementation().getService(service.getName())){
                     Monitor.error(monitor, 
                                   this,
-                                  "assembly-validation-messages",
+                                  Messages.ASSEMBLY_VALIDATION,
                                   "DuplicateImplementationServiceName", 
                                   component.getName(), 
                                   service.getName());
@@ -353,7 +354,7 @@ public class ComponentBuilderImpl {
                 if (reference != component.getImplementation().getReference(reference.getName())){
                     Monitor.error(monitor, 
                                   this,
-                                  "assembly-validation-messages",
+                                  Messages.ASSEMBLY_VALIDATION,
                                   "DuplicateImplementationReferenceName", 
                                   component.getName(), 
                                   reference.getName());
@@ -383,7 +384,7 @@ public class ComponentBuilderImpl {
                 if (property != component.getImplementation().getProperty(property.getName())){
                     Monitor.error(monitor, 
                                   this,
-                                  "assembly-validation-messages",
+                                  Messages.ASSEMBLY_VALIDATION,
                                   "DuplicateImplementationPropertyName", 
                                   component.getName(), 
                                   property.getName());
@@ -415,7 +416,7 @@ public class ComponentBuilderImpl {
             if (componentService != component.getService(componentService.getName())){
                 Monitor.error(monitor, 
                               this,
-                              "assembly-validation-messages",
+                              Messages.ASSEMBLY_VALIDATION,
                               "DuplicateComponentServiceName", 
                               component.getName(), 
                               componentService.getName());
@@ -437,7 +438,7 @@ public class ComponentBuilderImpl {
             } else {
                 Monitor.error(monitor,
                               this,
-                              "assembly-validation-messages",
+                              Messages.ASSEMBLY_VALIDATION,
                               "ServiceNotFoundForComponentService",
                               component.getName(),
                               componentService.getName());
@@ -453,7 +454,7 @@ public class ComponentBuilderImpl {
             if (componentReference != component.getReference(componentReference.getName())){
                 Monitor.error(monitor, 
                               this,
-                              "assembly-validation-messages",
+                              Messages.ASSEMBLY_VALIDATION,
                               "DuplicateComponentReferenceName", 
                               component.getName(), 
                               componentReference.getName());
@@ -475,7 +476,7 @@ public class ComponentBuilderImpl {
             } else {
                 Monitor.error(monitor,
                               this,
-                              "assembly-validation-messages",
+                              Messages.ASSEMBLY_VALIDATION,
                               "ReferenceNotFoundForComponentReference",
                               component.getName(),
                               componentReference.getName());
@@ -490,7 +491,7 @@ public class ComponentBuilderImpl {
             if (componentProperty != component.getProperty(componentProperty.getName())){
                 Monitor.error(monitor, 
                               this,
-                              "assembly-validation-messages",
+                              Messages.ASSEMBLY_VALIDATION,
                               "DuplicateComponentPropertyName", 
                               component.getName(), 
                               componentProperty.getName());
@@ -503,7 +504,7 @@ public class ComponentBuilderImpl {
             } else {
                 Monitor.error(monitor,
                               this,
-                              "assembly-validation-messages",
+                              Messages.ASSEMBLY_VALIDATION,
                               "PropertyNotFound",
                               component.getName(),
                               componentProperty.getName());
@@ -519,7 +520,7 @@ public class ComponentBuilderImpl {
                 .getMultiplicity())) {
                 Monitor.error(monitor,
                               this,
-                              "assembly-validation-messages",
+                              Messages.ASSEMBLY_VALIDATION,
                               "ReferenceIncompatibleMultiplicity",
                               component.getName(),
                               componentReference.getName());
@@ -538,7 +539,7 @@ public class ComponentBuilderImpl {
             if (!componentTypeProperty.isMustSupply() && componentProperty.isMustSupply()) {
                 Monitor.error(monitor,
                               this,
-                              "assembly-validation-messages",
+                              Messages.ASSEMBLY_VALIDATION,
                               "PropertyMustSupplyIncompatible",
                               component.getName(),
                               componentProperty.getName());
@@ -565,7 +566,7 @@ public class ComponentBuilderImpl {
             if (!componentTypeProperty.isMany() && componentProperty.isMany()) {
                 Monitor.error(monitor, 
                               this, 
-                              "assembly-validation-messages", 
+                              Messages.ASSEMBLY_VALIDATION, 
                               "PropertyOverrideManyAttribute", 
                               component.getName(), 
                               componentProperty.getName());
@@ -586,7 +587,7 @@ public class ComponentBuilderImpl {
             if (componentProperty.getXSDElement() == null && componentProperty.getXSDType() == null) {
                 Monitor.error(monitor, 
                               this, 
-                              "assembly-validation-messages", 
+                              Messages.ASSEMBLY_VALIDATION, 
                               "NoTypeForComponentProperty", 
                               component.getName(), 
                               componentProperty.getName());
@@ -628,7 +629,7 @@ public class ComponentBuilderImpl {
                 if (sourceProp == null) {
                     Monitor.error(monitor,
                                   this,
-                                  "assembly-validation-messages",
+                                  Messages.ASSEMBLY_VALIDATION,
                                   "PropertySourceNotFound",
                                   source,
                                   componentProperty.getName(),
@@ -650,7 +651,7 @@ public class ComponentBuilderImpl {
                 } catch (Exception ex) {
                     Monitor.error(monitor,
                                   this,
-                                  "assembly-validation-messages",
+                                  Messages.ASSEMBLY_VALIDATION,
                                   "PropertySourceXpathInvalid",
                                   source,
                                   componentProperty.getName(),
@@ -660,7 +661,7 @@ public class ComponentBuilderImpl {
             } else {
                 Monitor.error(monitor,
                               this,
-                              "assembly-validation-messages",
+                              Messages.ASSEMBLY_VALIDATION,
                               "PropertySourceValueInvalid",
                               source,
                               componentProperty.getName(),
@@ -711,7 +712,7 @@ public class ComponentBuilderImpl {
             } catch (Exception ex) {
                 Monitor.error(monitor,
                               this,
-                              "assembly-validation-messages",
+                              Messages.ASSEMBLY_VALIDATION,
                               "PropertyFileValueInvalid",
                               file,
                               componentProperty.getName(),
@@ -1043,13 +1044,13 @@ public class ComponentBuilderImpl {
                 if (topContract instanceof Reference) {
                     Monitor.error(monitor,
                                   this,
-                                  "assembly-validation-messages",
+                                  Messages.ASSEMBLY_VALIDATION,
                                   "ReferenceInterfaceNotSubSet",
                                   topContract.getName());
                 } else {
                     Monitor.error(monitor,
                                   this,
-                                  "assembly-validation-messages",
+                                  Messages.ASSEMBLY_VALIDATION,
                                   "ServiceInterfaceNotSubSet",
                                   topContract.getName());
                 }

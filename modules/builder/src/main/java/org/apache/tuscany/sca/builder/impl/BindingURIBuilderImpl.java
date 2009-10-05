@@ -35,6 +35,7 @@ import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.assembly.builder.DeployedCompositeBuilder;
+import org.apache.tuscany.sca.assembly.builder.Messages;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.monitor.Monitor;
@@ -279,7 +280,7 @@ public class BindingURIBuilderImpl implements CompositeBuilder, DeployedComposit
         } catch (URISyntaxException ex) {
             Monitor.error(monitor,
                           this,
-                          "assembly-validation-messages",
+                          Messages.ASSEMBLY_VALIDATION,
                           "URLSyntaxException",
                           componentURIString,
                           service.getName(),

@@ -39,6 +39,7 @@ import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.assembly.builder.DeployedCompositeBuilder;
+import org.apache.tuscany.sca.assembly.builder.Messages;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.monitor.Monitor;
@@ -72,12 +73,12 @@ public class StructuralURIBuilderImpl implements CompositeBuilder, DeployedCompo
             // Check that multiple bindings do not have the same name
             if (existed != null && existed != binding) {
                 if (contract instanceof Service) {
-                    Monitor.error(monitor, this, "assembly-validation-messages", "MultipleBindingsForService", contract
+                    Monitor.error(monitor, this, Messages.ASSEMBLY_VALIDATION, "MultipleBindingsForService", contract
                         .getName(), binding.getName());
                 } else {
                     Monitor.error(monitor,
                                   this,
-                                  "assembly-validation-messages",
+                                  Messages.ASSEMBLY_VALIDATION,
                                   "MultipleBindingsForReference",
                                   contract.getName(),
                                   binding.getName());
@@ -100,14 +101,14 @@ public class StructuralURIBuilderImpl implements CompositeBuilder, DeployedCompo
                     if (contract instanceof Service) {
                         Monitor.error(monitor,
                                       this,
-                                      "assembly-validation-messages",
+                                      Messages.ASSEMBLY_VALIDATION,
                                       "MultipleBindingsForServiceCallback",
                                       contract.getName(),
                                       binding.getName());
                     } else {
                         Monitor.error(monitor,
                                       this,
-                                      "assembly-validation-messages",
+                                      Messages.ASSEMBLY_VALIDATION,
                                       "MultipleBindingsForReferenceCallback",
                                       contract.getName(),
                                       binding.getName());
@@ -196,7 +197,7 @@ public class StructuralURIBuilderImpl implements CompositeBuilder, DeployedCompo
         } catch (URISyntaxException ex) {
             Monitor.error(monitor,
                           this,
-                          "assembly-validation-messages",
+                          Messages.ASSEMBLY_VALIDATION,
                           "URLSyntaxException",
                           componentURIString,
                           service.getName(),

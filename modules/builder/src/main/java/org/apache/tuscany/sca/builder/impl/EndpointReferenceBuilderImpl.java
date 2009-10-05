@@ -38,6 +38,7 @@ import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.Wire;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
+import org.apache.tuscany.sca.assembly.builder.Messages;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
@@ -224,7 +225,7 @@ public class EndpointReferenceBuilderImpl {
                 if (resolvedReference != null) {
                     wire.setSource(resolvedReference);
                 } else {
-                    Monitor.warning(monitor, this, "assembly-validation-messages", "WireSourceNotFound", source
+                    Monitor.warning(monitor, this, Messages.ASSEMBLY_VALIDATION, "WireSourceNotFound", source
                         .getName());
                 }
             } else {
@@ -238,7 +239,7 @@ public class EndpointReferenceBuilderImpl {
                 if (resolvedService != null) {
                     wire.setTarget(target);
                 } else {
-                    Monitor.warning(monitor, this, "assembly-validation-messages", "WireTargetNotFound", target
+                    Monitor.warning(monitor, this, Messages.ASSEMBLY_VALIDATION, "WireTargetNotFound", target
                         .getName());
                 }
             } else {
@@ -260,7 +261,7 @@ public class EndpointReferenceBuilderImpl {
                     }
                     resolvedReference.getTargets().add(wire.getTarget());
                 } else {
-                    Monitor.warning(monitor, this, "assembly-validation-messages", "WireIncompatibleInterface", source
+                    Monitor.warning(monitor, this, Messages.ASSEMBLY_VALIDATION, "WireIncompatibleInterface", source
                         .getName(), target.getName());
                 }
             }
@@ -319,7 +320,7 @@ public class EndpointReferenceBuilderImpl {
                 if (reference.getEndpointReferences().size() == 0) {
                     Monitor.error(monitor,
                                   this,
-                                  "assembly-validation-messages",
+                                  Messages.ASSEMBLY_VALIDATION,
                                   "NoComponentReferenceTarget",
                                   reference.getName());
                 }
@@ -333,7 +334,7 @@ public class EndpointReferenceBuilderImpl {
             if (bindingsIdentifyTargets(reference)) {
                 Monitor.error(monitor,
                               this,
-                              "assembly-validation-messages",
+                              Messages.ASSEMBLY_VALIDATION,
                               "ReferenceEndPointMixWithTarget",
                               composite.getName().toString(),
                               component.getName(),
@@ -383,7 +384,7 @@ public class EndpointReferenceBuilderImpl {
                                 reference.getEndpointReferences().add(endpointRef);
                                 Monitor.warning(monitor,
                                                 this,
-                                                "assembly-validation-messages",
+                                                Messages.ASSEMBLY_VALIDATION,
                                                 "ComponentReferenceTargetNotFound",
                                                 composite.getName().toString(),
                                                 targetName);
@@ -401,7 +402,7 @@ public class EndpointReferenceBuilderImpl {
                     } else {
                         Monitor.error(monitor,
                                       this,
-                                      "assembly-validation-messages",
+                                      Messages.ASSEMBLY_VALIDATION,
                                       "ReferenceIncompatibleInterface",
                                       composite.getName().toString(),
                                       component.getName() + "." + reference.getName(),
@@ -416,7 +417,7 @@ public class EndpointReferenceBuilderImpl {
                     reference.getEndpointReferences().add(endpointRef);
                     Monitor.warning(monitor,
                                     this,
-                                    "assembly-validation-messages",
+                                    Messages.ASSEMBLY_VALIDATION,
                                     "ComponentReferenceTargetNotFound",
                                     composite.getName().toString(),
                                     targetName);
@@ -509,7 +510,7 @@ public class EndpointReferenceBuilderImpl {
                                 reference.getEndpointReferences().add(endpointRef);
                                 Monitor.warning(monitor,
                                                 this,
-                                                "assembly-validation-messages",
+                                                Messages.ASSEMBLY_VALIDATION,
                                                 "ComponentReferenceTargetNotFound",
                                                 composite.getName().toString(),
                                                 targetName);
@@ -528,7 +529,7 @@ public class EndpointReferenceBuilderImpl {
                     } else {
                         Monitor.warning(monitor,
                                         this,
-                                        "assembly-validation-messages",
+                                        Messages.ASSEMBLY_VALIDATION,
                                         "ReferenceIncompatibleInterface",
                                         composite.getName().toString(),
                                         reference.getName(),
@@ -571,7 +572,7 @@ public class EndpointReferenceBuilderImpl {
                     if (!promoted && !componentReference.isForCallback() && !componentReference.isWiredByImpl()) {
                         Monitor.error(monitor,
                                       this,
-                                      "assembly-validation-messages",
+                                      Messages.ASSEMBLY_VALIDATION,
                                       "ReferenceWithoutTargets",
                                       composite.getName().toString(),
                                       componentReference.getName());
@@ -585,7 +586,7 @@ public class EndpointReferenceBuilderImpl {
 
                     Monitor.error(monitor,
                                   this,
-                                  "assembly-validation-messages",
+                                  Messages.ASSEMBLY_VALIDATION,
                                   "TooManyReferenceTargets",
                                   componentReference.getName());
                 }

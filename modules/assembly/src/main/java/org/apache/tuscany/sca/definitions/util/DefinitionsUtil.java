@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.definitions.util;
 
+import static org.apache.tuscany.sca.assembly.builder.Messages.DEFINITIONS_VALIDATION;
+
 import java.util.HashSet;
 
 import org.apache.tuscany.sca.definitions.Definitions;
@@ -49,7 +51,7 @@ public class DefinitionsUtil {
             if (intents.contains(intent)){
                 Monitor.error(monitor, 
                               target, 
-                              "definitions-validation-messages", 
+                              DEFINITIONS_VALIDATION, 
                               "DuplicateIntent", 
                               intent.getName().toString());
             } else {          
@@ -62,7 +64,7 @@ public class DefinitionsUtil {
             if (policySets.contains(policySet)){
                 Monitor.error(monitor, 
                               target, 
-                              "definitions-validation-messages", 
+                              DEFINITIONS_VALIDATION, 
                               "DuplicatePolicySet", 
                               policySet.getName().toString());
             } else {          
@@ -75,7 +77,7 @@ public class DefinitionsUtil {
             if (bindingTypes.contains(bindingType)){
                 Monitor.error(monitor, 
                               target, 
-                              "definitions-validation-messages", 
+                              DEFINITIONS_VALIDATION, 
                               "DuplicateBindingType", 
                               bindingType.getType().toString());
             } else {          
@@ -88,7 +90,7 @@ public class DefinitionsUtil {
             if (implementationTypes.contains(implementationType)){
                 Monitor.error(monitor, 
                               target, 
-                              "definitions-validation-messages", 
+                              DEFINITIONS_VALIDATION, 
                               "DuplicateImplementationType", 
                               implementationType.getType().toString());
             } else {          

@@ -31,6 +31,7 @@ import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.assembly.Reference;
+import org.apache.tuscany.sca.assembly.builder.Messages;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
@@ -53,7 +54,7 @@ abstract class ReferenceConfigurationUtil {
         if (monitor != null) {
             Problem problem =
                 monitor.createProblem(ReferenceConfigurationUtil.class.getName(),
-                                      "assembly-validation-messages",
+                                      Messages.ASSEMBLY_VALIDATION,
                                       Severity.WARNING,
                                       model,
                                       message,

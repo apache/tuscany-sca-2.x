@@ -40,6 +40,7 @@ import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
+import org.apache.tuscany.sca.assembly.builder.Messages;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
@@ -107,7 +108,7 @@ public class CompositeComponentTypeBuilderImpl {
                 if (composite.getComponent(component.getName()) == null) {
                     Monitor.error(monitor, 
                                   this, 
-                                  "assembly-validation-messages", 
+                                  Messages.ASSEMBLY_VALIDATION, 
                                   "DuplicateComponentName", 
                                   composite.getName().toString(), 
                                   component.getName());
@@ -325,7 +326,7 @@ public class CompositeComponentTypeBuilderImpl {
                 } else {
                     Monitor.error(monitor,
                                   this,
-                                  "assembly-validation-messages",
+                                  Messages.ASSEMBLY_VALIDATION,
                                   "PromotedServiceNotFound",
                                   ((Composite)componentType).getName().toString(),
                                   promotedServiceName);
@@ -367,7 +368,7 @@ public class CompositeComponentTypeBuilderImpl {
                     } else {
                         Monitor.error(monitor,
                                       this,
-                                      "assembly-validation-messages",
+                                      Messages.ASSEMBLY_VALIDATION,
                                       "PromotedReferenceNotFound",
                                       ((Composite)componentType).getName().toString(),
                                       componentReferenceName);
@@ -427,13 +428,13 @@ public class CompositeComponentTypeBuilderImpl {
                 if (topContract instanceof Reference) {
                     Monitor.error(monitor,
                                   this,
-                                  "assembly-validation-messages",
+                                  Messages.ASSEMBLY_VALIDATION,
                                   "ReferenceInterfaceNotSubSet",
                                   topContract.getName());
                 } else {
                     Monitor.error(monitor,
                                   this,
-                                  "assembly-validation-messages",
+                                  Messages.ASSEMBLY_VALIDATION,
                                   "ServiceInterfaceNotSubSet",
                                   topContract.getName());
                 }

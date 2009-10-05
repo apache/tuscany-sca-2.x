@@ -26,6 +26,7 @@ import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
+import org.apache.tuscany.sca.assembly.builder.Messages;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.monitor.Monitor;
 
@@ -72,7 +73,7 @@ public class CompositeIncludeBuilderImpl implements CompositeBuilder {
             for (Composite included : composite.getIncludes()) {
                 if (included.isLocal() && !composite.isLocal()) {
                     // ASM60041
-                    Monitor.error(monitor, this, "assembly-validation-messages", "IllegalCompositeIncusion", composite
+                    Monitor.error(monitor, this, Messages.ASSEMBLY_VALIDATION, "IllegalCompositeIncusion", composite
                         .getName().toString(), included.getName().toString());
                     return null;
                 }
