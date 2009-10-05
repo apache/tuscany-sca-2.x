@@ -23,15 +23,13 @@
 
     <component name="OneWayClient">
         <implementation.java class="org.apache.tuscany.sca.binding.jms.OneWayClientImpl"/>
-        <reference name="serviceA" />
+        <reference name="serviceA">
+            <interface.java interface="org.apache.tuscany.sca.binding.jms.OneWayService" />
+            <binding.jms>
+                <destination jndiName="SomeQueue"/>
+                <connectionFactory jndiName="SomeConnectionFactory"/>
+            </binding.jms>  
+        </reference>
     </component>
-
-    <reference name="serviceA" promote="OneWayClient/serviceA">
-        <interface.java interface="org.apache.tuscany.sca.binding.jms.OneWayService" />
-        <binding.jms>
-            <destination jndiName="SomeQueue"/>
-            <connectionFactory jndiName="SomeConnectionFactory"/>
-        </binding.jms>  
-    </reference>
 
 </composite>
