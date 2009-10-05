@@ -27,7 +27,7 @@
             <binding.jms>
                <destination jndiName="DestQueueA"/>
                <response>
-                  <connectionFactory name="ResponseCF"/>
+                  <connectionFactory jndiName="ResponseCF"/>
                </response>
             </binding.jms>  
         </service> 
