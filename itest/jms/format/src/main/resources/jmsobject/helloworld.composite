@@ -27,13 +27,13 @@
         <implementation.java class="org.apache.tuscany.sca.binding.jms.format.jmsobject.helloworld.HelloWorldReferenceImpl" />
         <reference name="helloWorldServiceWrapSingle" >
             <binding.jms>
-                <destination name="HelloWorldService1"/>
+                <destination jndiName="HelloWorldService1"/>
                  <tuscany:wireFormat.jmsObject wrapSingle="true"/>
             </binding.jms>
         </reference> 
         <reference name="helloWorldServiceDontWrapSingle" >
             <binding.jms>
-                <destination name="HelloWorldService2"/>
+                <destination jndiName="HelloWorldService2"/>
                  <tuscany:wireFormat.jmsObject wrapSingle="false" />
             </binding.jms>
         </reference>          
@@ -44,7 +44,7 @@
         <service name="HelloWorldService">
             <interface.wsdl interface="http://helloworld.jmsobject.format.jms.binding.sca.tuscany.apache.org/#wsdl.interface(HelloWorldService)"/>
             <binding.jms>
-                <destination name="HelloWorldService1"/>
+                <destination jndiName="HelloWorldService1"/>
                  <tuscany:wireFormat.jmsObject wrapSingle="true"/>
             </binding.jms>
         </service>
@@ -54,7 +54,7 @@
         <implementation.java class="org.apache.tuscany.sca.binding.jms.format.jmsobject.helloworld.HelloWorldServiceImpl" />
         <service name="HelloWorldService">
             <binding.jms>
-                <destination name="HelloWorldService2"/>
+                <destination jndiName="HelloWorldService2"/>
                 <tuscany:wireFormat.jmsObject /> <!-- test that wrapSingle default works -->
             </binding.jms>
         </service>

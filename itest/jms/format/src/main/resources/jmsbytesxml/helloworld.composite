@@ -27,7 +27,7 @@
         <implementation.java class="org.apache.tuscany.sca.binding.jms.format.jmsbytesxml.helloworld.HelloWorldReferenceImpl" />
         <reference name="helloWorldService1" >
            <binding.jms>
-                <destination name="HelloWorldService1"/>
+                <destination jndiName="HelloWorldService1"/>
                 <tuscany:wireFormat.jmsBytesXML/>
             </binding.jms>
         </reference>  
@@ -37,7 +37,7 @@
         <implementation.java class="org.apache.tuscany.sca.binding.jms.format.jmsbytesxml.helloworld.HelloWorldServiceImpl" />
         <service name="HelloWorldService">
             <binding.jms>
-                <destination name="HelloWorldService1"/>
+                <destination jndiName="HelloWorldService1"/>
                 <tuscany:wireFormat.jmsBytesXML/>
             </binding.jms>
         </service>

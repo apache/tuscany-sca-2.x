@@ -28,9 +28,9 @@
     <reference name="serviceA" promote="HelloWorldClient/serviceA">
         <interface.java interface="org.apache.tuscany.sca.binding.jms.HelloWorldService" />
         <binding.jms>
-            <destination name="DestQueueA"/>
+            <destination jndiName="DestQueueA"/>
             <response>
-               <destination name="RespQueueA"/>
+               <destination jndiName="RespQueueA"/>
             </response>
         </binding.jms>  
     </reference>

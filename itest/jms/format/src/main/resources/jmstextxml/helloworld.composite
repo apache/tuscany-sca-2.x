@@ -27,19 +27,19 @@
         <implementation.java class="org.apache.tuscany.sca.binding.jms.format.jmstextxml.helloworld.HelloWorldReferenceImpl" />
         <reference name="helloWorldService1" >
             <binding.jms>
-                <destination name="HelloWorldService1"/>
+                <destination jndiName="HelloWorldService1"/>
                 <tuscany:wireFormat.jmsTextXML/>
             </binding.jms>
         </reference>  
         <reference name="helloWorldService2" >
             <binding.jms>
-                <destination name="HelloWorldService2"/>
+                <destination jndiName="HelloWorldService2"/>
                 <tuscany:wireFormat.jmsTextXML/>
             </binding.jms>
         </reference>
         <reference name="helloWorldService3" >
             <binding.jms>
-                <destination name="HelloWorldService3"/>
+                <destination jndiName="HelloWorldService3"/>
                 <tuscany:wireFormat.jmsTextXML/>
             </binding.jms>
         </reference>      
@@ -49,7 +49,7 @@
         <implementation.java class="org.apache.tuscany.sca.binding.jms.format.jmstextxml.helloworld.HelloWorldServiceImpl" />
         <service name="HelloWorldService">
             <binding.jms>
-                <destination name="HelloWorldService1"/>
+                <destination jndiName="HelloWorldService1"/>
                 <tuscany:wireFormat.jmsTextXML/>
             </binding.jms>
         </service>
@@ -60,7 +60,7 @@
         <service name="HelloWorldService">
             <interface.java interface="org.apache.tuscany.sca.binding.jms.format.jmstextxml.helloworld.HelloWorldService" />
             <binding.jms>
-                <destination name="HelloWorldService2"/>
+                <destination jndiName="HelloWorldService2"/>
                 <tuscany:wireFormat.jmsTextXML/>
             </binding.jms>
         </service>
@@ -71,7 +71,7 @@
 	    <service name="HelloWorldService">
 	        <interface.wsdl interface="http://helloworld/textxml#wsdl.interface(HelloWorld)" />
             <binding.jms>
-                <destination name="HelloWorldService3"/>
+                <destination jndiName="HelloWorldService3"/>
                 <tuscany:wireFormat.jmsTextXML/>
             </binding.jms>
 	    </service>

@@ -29,7 +29,7 @@
             <!--interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)"/-->
             <interface.java interface="org.apache.tuscany.sca.binding.jms.format.jmsmessage.helloworld.HelloWorldServiceReferenceSide"/>
             <binding.jms>
-                <destination name="HelloWorldService1"/>
+                <destination jndiName="HelloWorldService1"/>
                 <tuscany:wireFormat.jmsText/>
             </binding.jms>
         </reference>  
@@ -39,7 +39,7 @@
         <implementation.java class="org.apache.tuscany.sca.binding.jms.format.jmsmessage.helloworld.HelloWorldServiceImpl" />
         <service name="HelloWorldService">
             <binding.jms>
-                <destination name="HelloWorldService1"/>
+                <destination jndiName="HelloWorldService1"/>
             </binding.jms>
         </service>
     </component> 

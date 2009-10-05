@@ -27,7 +27,7 @@
         <implementation.java class="org.apache.tuscany.sca.binding.jms.operationselector.jmsuserprop.HelloWorldReferenceImpl" />
         <reference name="helloWorldService1" >
             <binding.jms>
-                <destination name="HelloWorldService2"/>
+                <destination jndiName="HelloWorldService2"/>
                 <operationProperties name="getGreetingsOne" >
                   <headers>
                      <property name="myProperty">getGreetingsOne</property>
@@ -51,7 +51,7 @@
         <implementation.java class="org.apache.tuscany.sca.binding.jms.operationselector.jmsuserprop.HelloWorldServiceImpl" />
         <service name="HelloWorldService">
             <binding.jms>
-                <destination name="HelloWorldService2"/>
+                <destination jndiName="HelloWorldService2"/>
                 <operationProperties name="getGreetingsThree" nativeOperation="getGreetingsFour">
                 </operationProperties>
                 <tuscany:operationSelector.jmsUserProp propertyName="myProperty"/>
