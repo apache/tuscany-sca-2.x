@@ -18,9 +18,9 @@
  * under the License.    
  -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
-           targetNamespace="http://jms"
+           targetNamespace="http://itest"
            xmlns:itest="http://jms"
-           name="DefinitionsTests">
+           name="Selectors">
 
     <component name="Client1">
         <implementation.java class="org.apache.tuscany.sca.binding.jms.ClientImpl"/>

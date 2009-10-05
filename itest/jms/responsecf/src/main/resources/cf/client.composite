@@ -18,6 +18,7 @@
  * under the License.    
  -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+           targetNamespace="http://itest"
            name="SimpleClientComposite">
 
     <component name="HelloWorldClient">

@@ -19,8 +19,7 @@
  -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
            xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0" 
-           targetNamespace="http://jms"
-           xmlns:itest="http://jms"
+           targetNamespace="http://itest"
            name="Nulls">
 
     <component name="Client1">

@@ -18,8 +18,8 @@
  * under the License.    
  -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
-           targetNamespace="http://jms"
-           name="CallbackClientComposite">
+           targetNamespace="http://itest"
+           name="CallbackTempQComposite">
 
 <!-- 
 

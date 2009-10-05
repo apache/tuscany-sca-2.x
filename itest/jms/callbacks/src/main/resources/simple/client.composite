@@ -18,7 +18,7 @@
  * under the License.    
  -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
-           targetNamespace="http://jms"
+           targetNamespace="http://itest"
            name="CallbackClientComposite">
 
     <component name="ClientComponent">
