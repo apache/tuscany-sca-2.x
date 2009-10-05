@@ -19,7 +19,6 @@
  -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
            targetNamespace="http://jms"
-           xmlns:itest="http://jms"
            name="DefinitionsTests">
 
     <component name="OneWayClient">
