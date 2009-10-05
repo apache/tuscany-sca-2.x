@@ -294,6 +294,12 @@ public class ComponentBuilderImpl {
 
             // configure the property value based on the @file attribute
             processPropertyFileAttribute(component, componentProperty);
+            
+            // Check that a value is supplied
+            if (componentProperty.isMustSupply() && !isPropertyValueSet(componentProperty)) {
+                Monitor.error(monitor, this, "assembly-validation-messages", "PropertyMustSupplyNull", component
+                    .getName(), componentProperty.getName());
+            }
         }
     }
 
@@ -481,11 +487,7 @@ public class ComponentBuilderImpl {
                 componentTypeProperty.setValue(componentProperty.getValue());
             }
 
-            // Check that a value is supplied
-            if (!isPropertyValueSet(componentProperty) && componentTypeProperty.isMustSupply()) {
-                Monitor.error(monitor, this, "assembly-validation-messages", "PropertyMustSupplyNull", component
-                    .getName(), componentProperty.getName());
-            }
+
 
             // Check that a component property does not override the
             // many attribute
@@ -635,7 +637,7 @@ public class ComponentBuilderImpl {
                               file,
                               componentProperty.getName(),
                               component.getName(),
-                              ex.toString());
+                              ex);
             }
         }
 
