@@ -42,6 +42,7 @@ import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.node.Client;
@@ -314,7 +315,9 @@ public class NodeImpl implements Node, Client {
        
     private String writeComposite(Composite composite, StAXArtifactProcessor<Composite> compositeProcessor){
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
+        XMLOutputFactory outputFactory =
+            manager.getExtensionPoints().getExtensionPoint(FactoryExtensionPoint.class)
+                .getFactory(XMLOutputFactory.class);
         
         try {
             compositeProcessor.write(composite, outputFactory.createXMLStreamWriter(bos));
