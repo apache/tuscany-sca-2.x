@@ -138,7 +138,7 @@ public class CompositeComponentTypeBuilderImpl {
         // properties
         // Properties on the composite component are unaffected by properties 
         // on child components. Instead child component properties might take their
-        // values from component properties. Hence there is nothing to do here.
+        // values from composite properties. Hence there is nothing to do here.
         //calculateProperties(composite, components);
 
     }
