@@ -176,6 +176,7 @@ public class ComponentBuilderImpl {
         // look at each component service in turn and calculate its 
         // configuration based on OASIS rules
         for (ComponentService componentService : component.getServices()) {
+                      
             Service componentTypeService = componentService.getService();
 
             if (componentTypeService == null) {
@@ -308,6 +309,16 @@ public class ComponentBuilderImpl {
         // Create a component service for each service
         if (component.getImplementation() != null) {
             for (Service service : component.getImplementation().getServices()) {
+                // check for duplicate service names in implementation
+                if (service != component.getImplementation().getService(service.getName())){
+                    Monitor.error(monitor, 
+                                  this,
+                                  "assembly-validation-messages",
+                                  "DuplicateImplementationServiceName", 
+                                  component.getName(), 
+                                  service.getName());
+                }
+                
                 ComponentService componentService = (ComponentService)component.getService(service.getName());
 
                 // if the component doesn't have a service with the same name as the 
@@ -328,6 +339,16 @@ public class ComponentBuilderImpl {
         // Create a component reference for each reference
         if (component.getImplementation() != null) {
             for (Reference reference : component.getImplementation().getReferences()) {
+                // check for duplicate reference names in implementation
+                if (reference != component.getImplementation().getReference(reference.getName())){
+                    Monitor.error(monitor, 
+                                  this,
+                                  "assembly-validation-messages",
+                                  "DuplicateImplementationReferenceName", 
+                                  component.getName(), 
+                                  reference.getName());
+                } 
+                
                 ComponentReference componentReference = (ComponentReference)component.getReference(reference.getName());
 
                 // if the component doesn't have a reference with the same name as the 
@@ -348,6 +369,15 @@ public class ComponentBuilderImpl {
         // Create component property for each property
         if (component.getImplementation() != null) {
             for (Property property : component.getImplementation().getProperties()) {
+                // check for duplicate property names in implementation
+                if (property != component.getImplementation().getProperty(property.getName())){
+                    Monitor.error(monitor, 
+                                  this,
+                                  "assembly-validation-messages",
+                                  "DuplicateImplementationPropertyName", 
+                                  component.getName(), 
+                                  property.getName());
+                }                
                 ComponentProperty componentProperty = (ComponentProperty)component.getProperty(property.getName());
 
                 // if the component doesn't have a property with the same name as
@@ -371,6 +401,16 @@ public class ComponentBuilderImpl {
 
         // Connect each component service to the corresponding component type service
         for (ComponentService componentService : component.getServices()) {
+            // check for duplicate service names in component
+            if (componentService != component.getService(componentService.getName())){
+                Monitor.error(monitor, 
+                              this,
+                              "assembly-validation-messages",
+                              "DuplicateComponentServiceName", 
+                              component.getName(), 
+                              componentService.getName());
+            }
+            
             if (componentService.getService() != null || componentService.isForCallback()) {
                 continue;
             }
@@ -399,6 +439,16 @@ public class ComponentBuilderImpl {
 
         // Connect each component reference to the corresponding component type reference
         for (ComponentReference componentReference : component.getReferences()) {
+            // check for duplicate reference names in component
+            if (componentReference != component.getReference(componentReference.getName())){
+                Monitor.error(monitor, 
+                              this,
+                              "assembly-validation-messages",
+                              "DuplicateComponentReferenceName", 
+                              component.getName(), 
+                              componentReference.getName());
+            }
+            
             if (componentReference.getReference() != null || componentReference.isForCallback()) {
                 continue;
             }
@@ -426,7 +476,18 @@ public class ComponentBuilderImpl {
     private void connectPropertiesToComponentType(Component component) {
         // Connect each component property to the corresponding component type property
         for (ComponentProperty componentProperty : component.getProperties()) {
+            // check for duplicate property names in component
+            if (componentProperty != component.getProperty(componentProperty.getName())){
+                Monitor.error(monitor, 
+                              this,
+                              "assembly-validation-messages",
+                              "DuplicateComponentPropertyName", 
+                              component.getName(), 
+                              componentProperty.getName());
+            }
+            
             Property property = component.getImplementation().getProperty(componentProperty.getName());
+            
             if (property != null) {
                 componentProperty.setProperty(property);
             } else {
