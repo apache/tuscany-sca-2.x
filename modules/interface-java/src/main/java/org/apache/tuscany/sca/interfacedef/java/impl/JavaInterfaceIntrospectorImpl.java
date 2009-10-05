@@ -72,12 +72,6 @@ public class JavaInterfaceIntrospectorImpl {
         javaInterface.setJavaClass(clazz);
 
         boolean remotable = clazz.isAnnotationPresent(Remotable.class);
-        
-        if (remotable) {
-            if (javaInterface.isRemotableSet() && javaInterface.isRemotable() == false) {
-                throw new InvalidAnnotationException("@Remotable annotation present in a interface marked as not remotable in the SCDL", Remotable.class);
-            }
-        }
 
         // Consider @javax.ejb.Remote, java.rmi.Remote and javax.ejb.EJBObject
         // equivalent to @Remotable
@@ -95,6 +89,16 @@ public class JavaInterfaceIntrospectorImpl {
                     remotable = true;
                     break;
                 }
+            }
+        }
+        
+        if (remotable) {
+            if (javaInterface.isRemotableSet() && javaInterface.isRemotable() == false) {
+                throw new InvalidAnnotationException("@Remotable annotation present in a interface marked as not remotable in the SCDL", Remotable.class);
+            }
+        } else {
+            if (javaInterface.isRemotableSet()) {
+                remotable = javaInterface.isRemotable();
             }
         }
 
