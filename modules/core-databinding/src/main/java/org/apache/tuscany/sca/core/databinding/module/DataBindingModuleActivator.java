@@ -34,7 +34,6 @@ import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.Mediator;
 import org.apache.tuscany.sca.databinding.TransformerExtensionPoint;
 import org.apache.tuscany.sca.databinding.impl.Group2GroupTransformer;
-import org.apache.tuscany.sca.databinding.jaxb.XMLAdapterExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.FaultExceptionMapper;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.jaxws.JAXWSJavaInterfaceProcessor;
@@ -50,8 +49,6 @@ public class DataBindingModuleActivator implements ModuleActivator {
         DataBindingExtensionPoint dataBindings = registry.getExtensionPoint(DataBindingExtensionPoint.class);
         TransformerExtensionPoint transformers = registry.getExtensionPoint(TransformerExtensionPoint.class);
 
-        XMLAdapterExtensionPoint xmlAdapterExtensionPoint = registry.getExtensionPoint(XMLAdapterExtensionPoint.class);
-        
         FaultExceptionMapper faultExceptionMapper = registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(FaultExceptionMapper.class);
         
         Mediator mediator = registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(Mediator.class);
@@ -85,12 +82,12 @@ public class DataBindingModuleActivator implements ModuleActivator {
         javaFactory.addInterfaceVisitor(new WebServiceInterfaceProcessor());
         // Introspect the data types
         javaFactory.addInterfaceVisitor(new DataBindingJavaInterfaceProcessor(dataBindings));
-        javaFactory.addInterfaceVisitor(new JAXWSJavaInterfaceProcessor(dataBindings, faultExceptionMapper, xmlAdapterExtensionPoint));
+        javaFactory.addInterfaceVisitor(new JAXWSJavaInterfaceProcessor(registry));
         javaFactory.addInterfaceVisitor(new WrapperJavaInterfaceProcessor(dataBindings));
 
         RuntimeWireProcessorExtensionPoint wireProcessorExtensionPoint = registry.getExtensionPoint(RuntimeWireProcessorExtensionPoint.class);
         if (wireProcessorExtensionPoint != null) {
-            wireProcessorExtensionPoint.addWireProcessor(new DataBindingRuntimeWireProcessor(mediator, dataBindings, faultExceptionMapper));
+            wireProcessorExtensionPoint.addWireProcessor(new DataBindingRuntimeWireProcessor(mediator));
         }
 
     }

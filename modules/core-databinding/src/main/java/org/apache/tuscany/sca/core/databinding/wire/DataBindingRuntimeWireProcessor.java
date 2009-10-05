@@ -22,10 +22,10 @@ package org.apache.tuscany.sca.core.databinding.wire;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.ComponentReference;
-import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.databinding.Mediator;
 import org.apache.tuscany.sca.interfacedef.DataType;
-import org.apache.tuscany.sca.interfacedef.FaultExceptionMapper;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
@@ -42,16 +42,15 @@ import org.apache.tuscany.sca.runtime.RuntimeWireProcessor;
  */
 public class DataBindingRuntimeWireProcessor implements RuntimeWireProcessor {
     private Mediator mediator;
-    private DataBindingExtensionPoint dataBindings;
-    private FaultExceptionMapper faultExceptionMapper;
 
-    public DataBindingRuntimeWireProcessor(Mediator mediator,
-                                           DataBindingExtensionPoint dataBindings,
-                                           FaultExceptionMapper faultExceptionMapper) {
+    public DataBindingRuntimeWireProcessor(Mediator mediator) {
         super();
         this.mediator = mediator;
-        this.dataBindings = dataBindings;
-        this.faultExceptionMapper = faultExceptionMapper;
+    }
+    
+    public DataBindingRuntimeWireProcessor(ExtensionPointRegistry registry) {
+        super();
+        this.mediator = registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(Mediator.class);
     }
 
     public boolean isTransformationRequired(DataType source, DataType target) {

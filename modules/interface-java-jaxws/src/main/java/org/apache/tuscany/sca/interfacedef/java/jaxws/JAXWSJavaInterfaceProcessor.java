@@ -39,6 +39,8 @@ import javax.xml.namespace.QName;
 import javax.xml.ws.RequestWrapper;
 import javax.xml.ws.ResponseWrapper;
 
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.javabeans.JavaExceptionDataBinding;
 import org.apache.tuscany.sca.databinding.jaxb.JAXBDataBinding;
@@ -70,6 +72,12 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
     private XMLAdapterExtensionPoint xmlAdapterExtensionPoint;
 
 
+    public JAXWSJavaInterfaceProcessor(ExtensionPointRegistry registry) {
+        dataBindingExtensionPoint = registry.getExtensionPoint(DataBindingExtensionPoint.class);
+        faultExceptionMapper = registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(FaultExceptionMapper.class);
+        xmlAdapterExtensionPoint = registry.getExtensionPoint(XMLAdapterExtensionPoint.class);
+    }
+    
     public JAXWSJavaInterfaceProcessor(DataBindingExtensionPoint dataBindingExtensionPoint,
                                        FaultExceptionMapper faultExceptionMapper,
                                        XMLAdapterExtensionPoint xmlAdapters) {
