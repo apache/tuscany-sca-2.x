@@ -134,30 +134,33 @@ public class TuscanyRuntimeBridge implements RuntimeBridge {
         return ContributionLocationHelper.getContributionLocation(testConfiguration.getTestClass());
     } // end method getContributionLocation
     
-    public void checkError(String testName, Throwable ex) throws Throwable {       
+    public void checkError(String testName, Throwable ex) throws Throwable { 
+              
         String expectedMessage = expectedErrorMessages.getProperty(testName);
         String receivedMessage = ex.getMessage();
         
         if (expectedMessage == null){
             fail("Null expected error message for test " + testName + 
                  "Please add message to oasis-sca-tests-errors.properties");
-        }
+        } // end if
         
         if (receivedMessage == null){
+            ex.printStackTrace();
             fail("Null received error message for test " + testName);
-        }
+        } // end if
         
-        int messageStart = receivedMessage.indexOf("] - ");
-        
-        if (messageStart < 0){
-            fail("Message separator not found for test " + testName);
-        }
-        
-        receivedMessage = receivedMessage.substring(messageStart + 4);
+        // Deal with the case where the end of the message is variable (eg contains absolute filenames) 
+        // and where the only relevant part is the start of the message - in this case the expected
+        // message only contains the stem section which is unchanging...
+        if( receivedMessage.length() > expectedMessage.length() ) {
+            // Truncate the received message to the length of the expected message
+            receivedMessage = receivedMessage.substring(0, expectedMessage.length() );
+        } // end if
         
         assertEquals( expectedMessage, receivedMessage );
         
         return;
+       
     }
 
 } // end class TuscanyRuntimeBridge
