@@ -26,7 +26,7 @@
         <implementation.java class="org.apache.tuscany.sca.binding.jms.ClientImpl"/>
         <reference name="serviceA">
            <binding.jms uri="jms:ServiceTopic" >
-              <headers JMSType="type1" />
+              <headers type="type1" />
            </binding.jms>
         </reference>
     </component>
@@ -35,7 +35,7 @@
         <implementation.java class="org.apache.tuscany.sca.binding.jms.ClientImpl"/>
         <reference name="serviceA">
            <binding.jms uri="jms:ServiceTopic" >
-              <headers JMSType="type2" />
+              <headers type="type2" />
            </binding.jms>
         </reference>
     </component>
@@ -51,7 +51,7 @@
         <implementation.java class="org.apache.tuscany.sca.binding.jms.SelectorServiceImpl2"/>
         <service name="SelectorService">
             <binding.jms uri="jms:ServiceTopic" >
-               <SubscriptionHeaders JMSSelector="JMSType = 'type1'"/>
+               <messageSelection selector="JMSType = 'type1'"/>
             </binding.jms>
         </service> 
     </component>       
@@ -60,7 +60,7 @@
         <implementation.java class="org.apache.tuscany.sca.binding.jms.SelectorServiceImpl3"/>
         <service name="SelectorService">
             <binding.jms uri="jms:ServiceTopic" >
-               <SubscriptionHeaders JMSSelector="JMSType = 'type2'"/>
+               <messageSelection selector="JMSType = 'type2'"/>
             </binding.jms>
         </service> 
     </component>       
