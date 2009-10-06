@@ -34,7 +34,6 @@ public class DefaultRMIHostExtensionPoint implements RMIHostExtensionPoint, Life
     private List<RMIHost> rmiHosts = new ArrayList<RMIHost>();
 
     public DefaultRMIHostExtensionPoint() {
-        addRMIHost(new DefaultRMIHost());
     }
 
     public void addRMIHost(RMIHost rmiHost) {
@@ -48,7 +47,10 @@ public class DefaultRMIHostExtensionPoint implements RMIHostExtensionPoint, Life
         rmiHosts.remove(rmiHost);
     }
 
-    public List<RMIHost> getRMIHosts() {
+    public synchronized List<RMIHost> getRMIHosts() {
+        if(rmiHosts.isEmpty()) {
+            addRMIHost(new DefaultRMIHost());
+        }
         return rmiHosts;
     }
 

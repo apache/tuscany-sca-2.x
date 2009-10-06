@@ -61,14 +61,10 @@ public class DefaultRMIHost implements RMIHost {
             registry = rmiRegistries.get(Integer.toString(rmiURI.port));
             if (registry == null) {
                 try {
-                    registry = LocateRegistry.getRegistry(null, rmiURI.port, socketFactory);
-                    // FIXME: It takes about 15 seconds to time out
-                    registry.lookup(rmiURI.serviceName);
-                } catch (RemoteException e) {
                     registry = LocateRegistry.createRegistry(rmiURI.port, socketFactory, socketFactory);
-                } catch (NotBoundException e) {
-                    // Ignore
-                }
+                } catch (RemoteException e) {
+                    registry = LocateRegistry.getRegistry(null, rmiURI.port, socketFactory);
+                } 
                 rmiRegistries.put(Integer.toString(rmiURI.port), registry);
             }
             registry.bind(rmiURI.serviceName, serviceObject);
