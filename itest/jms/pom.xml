@@ -31,18 +31,31 @@
     
   <modules>
     <module>args</module>
+    <module>defaults</module>
+    <module>DynamicReplyQ</module>
+    <module>externalBroker</module>
+    <module>non-sca-client</module>
+    <module>noreplyto</module>
+    <module>nulls</module>
+    <module>oneway</module>
+    <module>oneway-nocf</module>
+    <module>policy-headers</module>
+    <module>properties</module>
+    <module>responsecf</module>
+    <module>rpc</module>
+    <module>topics</module>
+    <module>ttl</module>
+    <module>uri-rpc</module>
+
+<!-- still to bring up in 2.x
     <module>callbacks</module>
     <module>definitions</module>
     <module>exceptions</module>
+    <module>exceptions1</module>
     <module>format</module>
-    <module>general</module>
-    <module>noreplyto</module>
-    <module>nulls</module>
-    <module>oneway-nocf</module>
-    <module>responsecf</module>
     <module>selectors</module>
-    <module>topics</module>
-    <module>ttl</module>
+-->
+
   </modules>
 
 </project>
