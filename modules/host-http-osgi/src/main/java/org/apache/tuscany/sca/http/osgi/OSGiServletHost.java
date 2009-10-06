@@ -268,4 +268,8 @@ public class OSGiServletHost implements ServletHost, BundleActivator {
         }
     }
 
+    public String getName() {
+        return "osgi";
+    }
+
 }

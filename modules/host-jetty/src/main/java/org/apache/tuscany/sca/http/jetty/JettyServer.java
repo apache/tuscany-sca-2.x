@@ -127,6 +127,10 @@ public class JettyServer implements ServletHost, LifeCycleListener {
             }
         });
     }
+    
+    public String getName() {
+        return "jetty";
+    }
 
     public void setDefaultPort(int port) {
         defaultPort = port;

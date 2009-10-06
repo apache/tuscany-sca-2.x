@@ -67,6 +67,10 @@ public class WebAppServletHost implements ServletHost {
     public int getDefaultPort() {
         return defaultPortNumber;
     }
+    
+    public String getName() {
+        return "webapp";
+    }
 
     public void addServletMapping(String suri, Servlet servlet) throws ServletMappingException {
         URI pathURI = URI.create(suri);

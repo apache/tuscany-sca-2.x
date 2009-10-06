@@ -32,6 +32,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.host.http.DefaultServletHostExtensionPoint;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
 import org.apache.tuscany.sca.node.Node;
@@ -163,8 +164,12 @@ public class ServletHostHelper {
             throw new IllegalStateException("No ServletHost found");
         }
         for (ServletHost servletHost : hosts) {
-            if ((servletHost instanceof WebAppServletHost)) {
-                return (WebAppServletHost)servletHost;
+            if ("webapp".equals(servletHost.getName())) {
+                if(servletHost instanceof DefaultServletHostExtensionPoint.LazyServletHost) {
+                    return (WebAppServletHost) ((DefaultServletHostExtensionPoint.LazyServletHost) servletHost).getServletHost();
+                } else if(servletHost instanceof WebAppServletHost) {
+                    return (WebAppServletHost) servletHost;
+                }
             }
         }
         throw new IllegalStateException("No WebApp Servlet host is configured");

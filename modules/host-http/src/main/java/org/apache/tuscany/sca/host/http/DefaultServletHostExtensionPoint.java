@@ -95,7 +95,7 @@ public class DefaultServletHostExtensionPoint implements ServletHostExtensionPoi
      * A data binding facade allowing data bindings to be lazily loaded and
      * initialized.
      */
-    private class LazyServletHost implements ServletHost, LifeCycleListener {
+    public class LazyServletHost implements ServletHost, LifeCycleListener {
         private ServiceDeclaration sd;
         private ServletHost host;
 
@@ -107,7 +107,7 @@ public class DefaultServletHostExtensionPoint implements ServletHostExtensionPoi
             this.sd = sd;
         }
 
-        private synchronized ServletHost getServletHost() {
+        public synchronized ServletHost getServletHost() {
             if (host == null) {
                 try {
                     Class<?> cls = sd.loadClass();
@@ -167,6 +167,10 @@ public class DefaultServletHostExtensionPoint implements ServletHostExtensionPoi
 
         public void setDefaultPort(int port) {
             getServletHost().setDefaultPort(port);
+        }
+        
+        public String getName() {
+            return sd.getAttributes().get("name");
         }
 
         public void start() {

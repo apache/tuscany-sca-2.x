@@ -124,4 +124,8 @@ public class ExtensibleServletHost implements ServletHost {
     public void setAttribute(String name, Object value) {
         getDefaultServletHost().setAttribute(name, value);
     }
+    
+    public String getName() {
+        return getDefaultServletHost().getName();
+    }
 }

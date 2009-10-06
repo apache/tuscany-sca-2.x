@@ -15,4 +15,4 @@
 # specific language governing permissions and limitations
 # under the License.
 # Implementation class for the ServletHost
-org.apache.tuscany.sca.http.jetty.JettyServer;name=jetty,ranking=100
+org.apache.tuscany.sca.host.webapp.WebAppServletHost;name=webapp,ranking=0

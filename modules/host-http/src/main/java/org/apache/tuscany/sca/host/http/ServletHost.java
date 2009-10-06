@@ -115,4 +115,6 @@ public interface ServletHost {
      * @param value the attribute value
      */
     void setAttribute(String name, Object value);
+    
+    String getName();
 }
