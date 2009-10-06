@@ -48,6 +48,9 @@
             <binding.jms>
                 <destination jndiName="HelloWorldService1"/>
                 <operationProperties name="getGreetingsThree" nativeOperation="getGreetingsFour">
+                  <headers>
+                     <property name="blaNotUsed">getGreetingsThree</property>
+                  </headers>
                 </operationProperties>
             </binding.jms>
         </service>

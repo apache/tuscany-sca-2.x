@@ -42,7 +42,7 @@ public class OperationselectorJMSUserPropTestCase {
 
     @Test
     public void testHelloWorldCreate() throws Exception {
-        HelloWorldReference helloWorldReference = node.getService(HelloWorldReference.class, "HelloWorldReferenceComponent");
+        HelloWorldReference helloWorldReference = node.getService(HelloWorldReference.class, "HelloWorldReferenceComponent1");
         
         assertEquals("Hello One Fred Bloggs Hello Four Fred Bloggs Hello Two Fred Bloggs", helloWorldReference.getGreetings("Fred Bloggs"));
         

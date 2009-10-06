@@ -23,11 +23,11 @@
     xmlns:hw="http://helloworld"
     name="helloworldUP">
 
-    <component name="HelloWorldReferenceComponent">
+    <component name="HelloWorldReferenceComponent1">
         <implementation.java class="org.apache.tuscany.sca.binding.jms.operationselector.jmsuserprop.HelloWorldReferenceImpl" />
         <reference name="helloWorldService1" >
             <binding.jms>
-                <destination jndiName="HelloWorldService2"/>
+                <destination jndiName="HelloWorldService4"/>
                 <operationProperties name="getGreetingsOne" >
                   <headers>
                      <property name="myProperty">getGreetingsOne</property>
@@ -47,12 +47,15 @@
         </reference> 
     </component>
     
-    <component name="HelloWorldServiceComponent1">
+    <component name="HelloWorldServiceComponent3">
         <implementation.java class="org.apache.tuscany.sca.binding.jms.operationselector.jmsuserprop.HelloWorldServiceImpl" />
         <service name="HelloWorldService">
             <binding.jms>
-                <destination jndiName="HelloWorldService2"/>
+                <destination jndiName="HelloWorldService4"/>
                 <operationProperties name="getGreetingsThree" nativeOperation="getGreetingsFour">
+                  <headers>
+                     <property name="blaNotUsed2">getGreetingsThree</property>
+                  </headers>
                 </operationProperties>
                 <tuscany:operationSelector.jmsUserProp propertyName="myProperty"/>
             </binding.jms>
