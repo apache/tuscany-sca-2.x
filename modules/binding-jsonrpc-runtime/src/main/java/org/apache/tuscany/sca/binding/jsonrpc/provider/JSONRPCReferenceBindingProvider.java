@@ -19,10 +19,16 @@
 
 package org.apache.tuscany.sca.binding.jsonrpc.provider;
 
+import java.util.List;
+
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpConnectionManager;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.tuscany.sca.assembly.EndpointReference;
+import org.apache.tuscany.sca.databinding.javabeans.SimpleJavaDataBinding;
+import org.apache.tuscany.sca.databinding.json.JSONDataBinding;
+import org.apache.tuscany.sca.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
@@ -38,12 +44,23 @@ public class JSONRPCReferenceBindingProvider implements ReferenceBindingProvider
 
     private EndpointReference endpointReference;
     private RuntimeComponentReference reference;
+    private InterfaceContract referenceContract;
+
     private HttpClient httpClient;
 
     public JSONRPCReferenceBindingProvider(EndpointReference endpointReference) {
 
         this.endpointReference = endpointReference;
         this.reference = (RuntimeComponentReference) endpointReference.getReference();
+        
+        //clone the service contract to avoid databinding issues
+        try {
+            this.referenceContract = (InterfaceContract)reference.getInterfaceContract().clone();
+        } catch(CloneNotSupportedException e) {
+            this.referenceContract = reference.getInterfaceContract();
+        }
+        
+        setDataBinding(referenceContract.getInterface());
         
         // Create an HTTP client
         HttpConnectionManager connectionManager = new MultiThreadedHttpConnectionManager();
@@ -53,7 +70,7 @@ public class JSONRPCReferenceBindingProvider implements ReferenceBindingProvider
     }
 
     public InterfaceContract getBindingInterfaceContract() {
-        return reference.getInterfaceContract();
+        return referenceContract;
     }
 
     public Invoker createInvoker(Operation operation) {
@@ -70,6 +87,28 @@ public class JSONRPCReferenceBindingProvider implements ReferenceBindingProvider
 
     public boolean supportsOneWayInvocation() {
         return false;
+    }
+    
+    private void setDataBinding(Interface interfaze) {
+        List<Operation> operations = interfaze.getOperations();
+        for (Operation operation : operations) {
+            operation.setDataBinding(JSONDataBinding.NAME);
+            DataType<List<DataType>> inputType = operation.getInputType();
+            if (inputType != null) {
+                List<DataType> logical = inputType.getLogical();
+                for (DataType inArg : logical) {
+                    if (!SimpleJavaDataBinding.NAME.equals(inArg.getDataBinding())) {
+                        inArg.setDataBinding(JSONDataBinding.NAME);
+                    } 
+                }
+            }
+            DataType outputType = operation.getOutputType();
+            if (outputType != null) {
+                if (!SimpleJavaDataBinding.NAME.equals(outputType.getDataBinding())) {
+                    outputType.setDataBinding(JSONDataBinding.NAME);
+                }
+            }
+        }
     }
 
 }
