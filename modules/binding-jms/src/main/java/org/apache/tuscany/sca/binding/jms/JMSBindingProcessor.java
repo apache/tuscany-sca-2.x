@@ -69,11 +69,10 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
  *              operationProperties="QName"?
  *              ...>
  * 
- *     <headers JMSType="string"?
- *              JMSCorrelationID="string"?
- *              JMSDeliveryMode="string"?
+ *     <headers type="string"?
+ *              deliveryMode="string"?
  *              timeToLive="int"?
- *              JMSPriority="string"?>
+ *              priority="string"?>
  *         <property name="NMTOKEN" type="NMTOKEN">*
  *     </headers>?
  * 
@@ -115,11 +114,10 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
  * 
  *     <operationProperties name="string" nativeOperation="string"?>
  *         <property name="NMTOKEN" type="NMTOKEN">*
- *         <headers JMSType="string"?
- *                  JMSCorrelationID="string"?
- *                  JMSDeliveryMode="string"?
+ *         <headers type="string"?
+ *                  deliveryMode="string"?
  *                  timeToLive="int"?
- *                  JMSPriority="string"?>
+ *                  priority="string"?>
  *             <property name="NMTOKEN" type="NMTOKEN">*
  *         </headers>?
  *     </operationProperties>*
@@ -558,21 +556,16 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
      * </headers>?
      */
     private void parseHeaders(XMLStreamReader reader, JMSBinding jmsBinding) throws XMLStreamException {
-        String jmsType = reader.getAttributeValue(null, "JMSType");
+        String jmsType = reader.getAttributeValue(null, "type");
         if (jmsType != null && jmsType.length() > 0) {
             jmsBinding.setJMSType(jmsType);
         }
 
-        String jmsCorrelationId = reader.getAttributeValue(null, "JMSCorrelationID");
-        if (jmsCorrelationId != null && jmsCorrelationId.length() > 0) {
-            jmsBinding.setJMSCorrelationId(jmsCorrelationId);
-        }
-
-        String jmsDeliveryMode = reader.getAttributeValue(null, "JMSDeliveryMode");
+        String jmsDeliveryMode = reader.getAttributeValue(null, "deliveryMode");
         if (jmsDeliveryMode != null && jmsDeliveryMode.length() > 0) {
-            if ("PERSISTENT".equalsIgnoreCase(jmsDeliveryMode)) {
+            if ("persistent".equalsIgnoreCase(jmsDeliveryMode)) {
                 jmsBinding.setJMSDeliveryMode(true);
-            } else if ("NON_PERSISTENT".equalsIgnoreCase(jmsDeliveryMode)) {
+            } else if ("nonpersistent".equalsIgnoreCase(jmsDeliveryMode)) {
                 jmsBinding.setJMSDeliveryMode(false);
             } else {
                 error("InvalidJMSDeliveryMode", jmsBinding, jmsDeliveryMode);
@@ -584,7 +577,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
             jmsBinding.setJMSTimeToLive(Long.parseLong(jmsTimeToLive));
         }
 
-        String jmsPriority = reader.getAttributeValue(null, "JMSPriority");
+        String jmsPriority = reader.getAttributeValue(null, "priority");
         if (jmsPriority != null && jmsPriority.length() > 0) {
             try {
                 int p = Integer.parseInt(jmsPriority);
@@ -704,21 +697,16 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
     }
 
     private void parseOperationHeaders(XMLStreamReader reader, JMSBinding jmsBinding, String opName) throws XMLStreamException {
-        String jmsType = reader.getAttributeValue(null, "JMSType");
+        String jmsType = reader.getAttributeValue(null, "type");
         if (jmsType != null && jmsType.length() > 0) {
             jmsBinding.setOperationJMSType(opName, jmsType);
         }
 
-        String jmsCorrelationId = reader.getAttributeValue(null, "JMSCorrelationID");
-        if (jmsCorrelationId != null && jmsCorrelationId.length() > 0) {
-            jmsBinding.setOperationJMSCorrelationId(opName, jmsCorrelationId);
-        }
-
-        String jmsDeliveryMode = reader.getAttributeValue(null, "JMSDeliveryMode");
+        String jmsDeliveryMode = reader.getAttributeValue(null, "deliveryMode");
         if (jmsDeliveryMode != null && jmsDeliveryMode.length() > 0) {
-            if ("PERSISTENT".equalsIgnoreCase(jmsDeliveryMode)) {
+            if ("persistent".equalsIgnoreCase(jmsDeliveryMode)) {
                 jmsBinding.setOperationJMSDeliveryMode(opName, true);
-            } else if ("NON_PERSISTENT".equalsIgnoreCase(jmsDeliveryMode)) {
+            } else if ("nonpersistent".equalsIgnoreCase(jmsDeliveryMode)) {
                 jmsBinding.setOperationJMSDeliveryMode(opName, false);
             } else {
                 error("InvalidOPJMSDeliveryMode", jmsBinding, jmsDeliveryMode);
@@ -730,7 +718,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
             jmsBinding.setOperationJMSTimeToLive(opName, Long.parseLong(jmsTimeToLive));
         }
 
-        String jmsPriority = reader.getAttributeValue(null, "JMSPriority");
+        String jmsPriority = reader.getAttributeValue(null, "priority");
         if (jmsPriority != null && jmsPriority.length() > 0) {
             try {
                 int p = Integer.parseInt(jmsPriority);
@@ -1028,20 +1016,15 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
 
         String jmsType = jmsBinding.getJMSType();
         if (jmsType != null && jmsType.length() > 0) {
-            writer.writeAttribute("JMSType", jmsType);
-        }
-
-        String jmsCorrelationId = jmsBinding.getJMSCorrelationId();
-        if (jmsCorrelationId != null && jmsCorrelationId.length() > 0) {
-            writer.writeAttribute("JMSCorrelationID", jmsCorrelationId);
+            writer.writeAttribute("type", jmsType);
         }
 
         Boolean jmsDeliveryMode = jmsBinding.isdeliveryModePersistent();
         if (jmsDeliveryMode != null) {
             if ( jmsDeliveryMode.booleanValue() )
-               writer.writeAttribute("JMSDeliveryMode", "PERSISTENT");
+               writer.writeAttribute("deliveryMode", "persistent");
             else
-               writer.writeAttribute("JMSDeliveryMode", "NON_PERSISTENT");
+               writer.writeAttribute("deliveryMode", "nonpersistent");
         }
 
         Long jmsTimeToLive = jmsBinding.getJMSTimeToLive();
@@ -1051,7 +1034,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
 
         Integer jmsPriority = jmsBinding.getJMSPriority();
         if (jmsPriority != null) {
-            writer.writeAttribute("JMSPriority", jmsPriority.toString());
+            writer.writeAttribute("priority", jmsPriority.toString());
         }
 
         Map<String, Object> properties = jmsBinding.getProperties();
@@ -1178,18 +1161,14 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
                     writer.writeStartElement(Constants.SCA11_NS, JMSBindingConstants.HEADERS);              
                     
                     if (jmsType != null && jmsType.length() > 0) {
-                        writer.writeAttribute("JMSType", jmsType);
-                    }
-    
-                    if (jmsCorrelationId != null && jmsCorrelationId.length() > 0) {
-                        writer.writeAttribute("JMSCorrelationID", jmsCorrelationId);
+                        writer.writeAttribute("type", jmsType);
                     }
     
                     if (jmsDeliveryMode != null) {
                         if (jmsDeliveryMode.booleanValue())
-                            writer.writeAttribute("JMSDeliveryMode", "PERSISTENT");
+                            writer.writeAttribute("deliveryMode", "persistent");
                         else
-                            writer.writeAttribute("JMSDeliveryMode", "NON_PERSISTENT");
+                            writer.writeAttribute("deliveryMode", "nonpersistent");
                     }
     
                     if (jmsTimeToLive != null) {
@@ -1197,7 +1176,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
                     }
     
                     if (jmsPriority != null) {
-                        writer.writeAttribute("JMSPriority", jmsPriority.toString());
+                        writer.writeAttribute("priority", jmsPriority.toString());
                     }
                     
                     writeProperties( operationProperties, writer );

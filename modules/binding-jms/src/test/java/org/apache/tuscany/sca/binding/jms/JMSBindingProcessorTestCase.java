@@ -70,7 +70,7 @@ public class JMSBindingProcessorTestCase extends TestCase {
             + "   <implementation.java class=\"services.HelloWorld\"/>"
             + "      <service name=\"HelloWorldService\">"
             + "          <binding.jms uri=\"jms:testQueue\" >"
-            + "             <headers JMSType=\"myType\" JMSCorrelationID=\"myCorrelId\" JMSDeliveryMode=\"PERSISTENT\" timeToLive=\"54321\" JMSPriority=\"5\">"
+            + "             <headers type=\"myType\" deliveryMode=\"persistent\" timeToLive=\"54321\" priority=\"5\">"
             + "             </headers>" 
             + "          </binding.jms>"
             + "      </service>"
@@ -84,7 +84,7 @@ public class JMSBindingProcessorTestCase extends TestCase {
             + "   <implementation.java class=\"services.HelloWorld\"/>"
             + "      <service name=\"HelloWorldService\">"
             + "          <binding.jms uri=\"jms:testQueue\" >"
-            + "             <headers JMSType=\"myType\" JMSCorrelationID=\"myCorrelId\" JMSDeliveryMode=\"PERSISTENT\" timeToLive=\"54321\" JMSPriority=\"medium\">"
+            + "             <headers type=\"myType\" deliveryMode=\"persistent\" timeToLive=\"54321\" priority=\"medium\">"
             + "             </headers>" 
             + "          </binding.jms>"
             + "      </service>"
@@ -115,13 +115,13 @@ public class JMSBindingProcessorTestCase extends TestCase {
             + "      <service name=\"HelloWorldService\">"
             + "          <binding.jms uri=\"jms:testQueue\" >"
             + "             <operationProperties name=\"op1\">"
-            + "                <headers JMSType=\"op1Type\" >"
+            + "                <headers type=\"op1Type\" >"
             + "                   <property name=\"p1\">bla</property>"
             + "                   <property name=\"intProp\" type=\"int\">42</property>"
             + "                </headers>" 
             + "             </operationProperties >" 
             + "             <operationProperties name=\"op2\" nativeOperation=\"nativeOp2\" >"
-            + "                <headers JMSType=\"op2Type\">"
+            + "                <headers type=\"op2Type\">"
             + "                   <property name=\"p2\">op2bla</property>"
             + "                   <property name=\"intProp\" type=\"int\">77</property>"
             + "                </headers>" 
@@ -438,7 +438,6 @@ public class JMSBindingProcessorTestCase extends TestCase {
         
         assertNotNull(binding);
         assertEquals("myType", binding.getJMSType());
-        assertEquals("myCorrelId", binding.getJMSCorrelationId());
         assertTrue(binding.isdeliveryModePersistent());
         assertEquals(54321, binding.getJMSTimeToLive().longValue());
         assertEquals(5, binding.getJMSPriority().intValue());
