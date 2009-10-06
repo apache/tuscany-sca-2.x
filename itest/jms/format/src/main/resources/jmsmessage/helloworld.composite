@@ -20,7 +20,7 @@
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
 	targetNamespace="http://helloworld"
 	xmlns:hw="http://helloworld"
-	xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
+	xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1"
     name="helloworld">
 
     <component name="HelloWorldReferenceComponent">
