@@ -290,7 +290,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
                         parseHeaders(reader, jmsBinding);
                     } else if ("operationProperties".equals(elementName)) {
                         parseOperationProperties(reader, jmsBinding);
-                    } else if ("SubscriptionHeaders".equals(elementName)) {
+                    } else if ("messageSelection".equals(elementName)) {
                         parseSubscriptionHeaders(reader, jmsBinding);
                     } else if (Constants.OPERATION_QNAME.equals(reader.getName())) {
                         ConfiguredOperation confOp = configuredOperationProcessor.read(reader);
@@ -777,14 +777,14 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
     }
 
     private void parseSubscriptionHeaders(XMLStreamReader reader, JMSBinding jmsBinding) throws XMLStreamException {
-        String jmsSelector = reader.getAttributeValue(null, "JMSSelector");
+        String jmsSelector = reader.getAttributeValue(null, "selector");
         if (jmsSelector != null && jmsSelector.length() > 0) {
             jmsBinding.setJMSSelector(jmsSelector);
         }
         
         // Skip to end element
         while (reader.hasNext()) {
-            if (reader.next() == END_ELEMENT && "SubscriptionHeaders".equals(reader.getName().getLocalPart())) {
+            if (reader.next() == END_ELEMENT && "messageSelection".equals(reader.getName().getLocalPart())) {
                 break;
             }
         } // end while
@@ -1234,16 +1234,16 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
 
     /**
      * Writes subscription headers if there are any.
-     *     <complexType name="SubscriptionHeaders"> 
-     *         <attribute name="JMSSelector" type="string"/> 
+     *     <complexType name="messageSelection"> 
+     *         <attribute name="selector" type="string"/> 
      *     </complexType>
      *
      */
     private void writeSubscriptionHeaders( JMSBinding jmsBinding, XMLStreamWriter writer) throws XMLStreamException {
         String jmsSubscriptionHeaders = jmsBinding.getJMSSelector();
         if (jmsSubscriptionHeaders != null && jmsSubscriptionHeaders.length() > 0) {
-            writer.writeStartElement(Constants.SCA11_NS, "SubscriptionHeaders");
-            writer.writeAttribute("JMSSelector", jmsSubscriptionHeaders);
+            writer.writeStartElement(Constants.SCA11_NS, "messageSelection");
+            writer.writeAttribute("selector", jmsSubscriptionHeaders);
             writer.writeEndElement();
             // Strange bug. Without white space, headers end tag improperly read. 
             // writer.writeCharacters( " " ); 
