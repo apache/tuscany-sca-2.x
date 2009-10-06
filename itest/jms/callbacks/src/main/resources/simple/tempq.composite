@@ -27,20 +27,20 @@ The client component does not define the callback destination so a temporary que
 
 -->
 
-    <component name="ClientComponent">
+    <component name="TQClientComponent">
         <implementation.java class="org.apache.tuscany.sca.binding.jms.JMSClientImpl" />
         <reference name="myService">
-            <binding.jms uri="jms:ServiceQueue"/>
+            <binding.jms uri="jms:TQServiceQueue"/>
             <callback>
                 <binding.jms />
             </callback>
         </reference>
     </component>
 
-    <component name="ServiceComponent">
+    <component name="TQServiceComponent">
         <implementation.java class="org.apache.tuscany.sca.binding.jms.JMSServiceImpl" />
         <service name="JMSService">
-            <binding.jms uri="jms:ServiceQueue"/>
+            <binding.jms uri="jms:TQServiceQueue"/>
             <callback>
                 <binding.jms />
             </callback>
