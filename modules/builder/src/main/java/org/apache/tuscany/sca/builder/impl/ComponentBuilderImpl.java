@@ -1036,7 +1036,7 @@ public class ComponentBuilderImpl {
             topContract.setInterfaceContract(bottomInterfaceContract);
         } else if (bottomInterfaceContract != null) {
             // Check that the top and bottom interface contracts are compatible
-            boolean isCompatible = interfaceContractMapper.isCompatible(topInterfaceContract, bottomInterfaceContract);
+            boolean isCompatible = interfaceContractMapper.isCompatible(bottomInterfaceContract, topInterfaceContract);
             if (!isCompatible) {
                 if (topContract instanceof Reference) {
                     Monitor.error(monitor,
