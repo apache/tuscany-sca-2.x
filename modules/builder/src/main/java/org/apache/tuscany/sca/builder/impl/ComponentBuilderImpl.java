@@ -193,7 +193,7 @@ public class ComponentBuilderImpl {
             }
 
             // interface contracts
-            calculateInterfaceContract(componentService, componentTypeService);
+            calculateInterfaceContract(component, componentService, componentTypeService);
 
             // bindings
             calculateBindings(componentService, componentTypeService);
@@ -243,13 +243,10 @@ public class ComponentBuilderImpl {
             reconcileReferenceMultiplicity(component, componentReference, componentTypeReference);
 
             // interface contracts
-            calculateInterfaceContract(componentReference, componentTypeReference);
+            calculateInterfaceContract(component, componentReference, componentTypeReference);
 
             // bindings
-            // We don't have to do anything with reference bindings. You've either 
-            // specified one or you haven't
-            //calculateBindings(componentService,
-            //                  componentTypeService);
+            calculateBindings(componentReference, componentTypeReference);
 
             // add callback service model objects
             createCallbackService(component, componentReference);
@@ -1028,7 +1025,7 @@ public class ComponentBuilderImpl {
      * @param topContract the top contract 
      * @param bottomContract the bottom contract
      */
-    private void calculateInterfaceContract(Contract topContract, Contract bottomContract) {
+    private void calculateInterfaceContract(Component component, Contract topContract, Contract bottomContract) {
 
         // Use the interface contract from the bottom level contract if
         // none is specified on the top level contract
@@ -1045,13 +1042,15 @@ public class ComponentBuilderImpl {
                     Monitor.error(monitor,
                                   this,
                                   Messages.ASSEMBLY_VALIDATION,
-                                  "ReferenceInterfaceNotSubSet",
+                                  "ReferenceIncompatibleComponentInterface",
+                                  component.getName(),
                                   topContract.getName());
                 } else {
                     Monitor.error(monitor,
                                   this,
                                   Messages.ASSEMBLY_VALIDATION,
-                                  "ServiceInterfaceNotSubSet",
+                                  "ServiceIncompatibleComponentInterface",
+                                  component.getName(),
                                   topContract.getName());
                 }
             }
@@ -1086,5 +1085,26 @@ public class ComponentBuilderImpl {
         }
 
     }
+    
+    /**
+     * OASIS RULE: Bindings from higher in the hierarchy take precedence
+     * 
+     * @param componentReference the top service 
+     * @param componentTypeReference the bottom service
+     */
+    private void calculateBindings(Reference componentReference, Reference componentTypeReference) {
+        // forward bindings
+        if (componentReference.getBindings().isEmpty()) {
+            componentReference.getBindings().addAll(componentTypeReference.getBindings());
+        }
+
+        // callback bindings
+        if (componentReference.getCallback() == null) {
+            componentReference.setCallback(componentTypeReference.getCallback());
+        } else if (componentReference.getCallback().getBindings().isEmpty() && componentTypeReference.getCallback() != null) {
+            componentReference.getCallback().getBindings().addAll(componentTypeReference.getCallback().getBindings());
+        }
+
+    }    
 
 }
