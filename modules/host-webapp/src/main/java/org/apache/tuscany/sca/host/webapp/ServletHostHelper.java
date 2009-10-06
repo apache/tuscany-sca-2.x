@@ -162,11 +162,12 @@ public class ServletHostHelper {
         if (hosts == null || hosts.size() < 1) {
             throw new IllegalStateException("No ServletHost found");
         }
-        ServletHost servletHost = hosts.get(0);
-        if (!(servletHost instanceof WebAppServletHost)) {
-            throw new IllegalStateException("unexpected ServletHost type: " + servletHost);
+        for (ServletHost servletHost : hosts) {
+            if ((servletHost instanceof WebAppServletHost)) {
+                return (WebAppServletHost)servletHost;
+            }
         }
-        return (WebAppServletHost)servletHost;
+        throw new IllegalStateException("No WebApp Servlet host is configured");
     }
 
     private static Node createNode(final ServletContext servletContext) throws ServletException {

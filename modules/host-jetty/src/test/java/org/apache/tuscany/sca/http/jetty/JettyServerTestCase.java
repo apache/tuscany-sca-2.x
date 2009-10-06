@@ -87,6 +87,7 @@ public class JettyServerTestCase extends TestCase {
      */
     public void testRegisterServletMapping() throws Exception {
         JettyServer service = new JettyServer(workScheduler);
+        service.start();
         TestServlet servlet = new TestServlet();
         service.addServletMapping("http://127.0.0.1:" + HTTP_PORT + "/", servlet);
         Socket client = new Socket("127.0.0.1", HTTP_PORT);
@@ -103,6 +104,7 @@ public class JettyServerTestCase extends TestCase {
         System.setProperty("javax.net.ssl.keyStorePassword", "apache");
         System.setProperty("jetty.ssl.password", "apache");
         JettyServer service = new JettyServer(workScheduler);
+        service.start();
         TestServlet servlet = new TestServlet();
         try {
             service.addServletMapping("https://127.0.0.1:" + HTTP_PORT + "/foo", servlet);
@@ -134,6 +136,7 @@ public class JettyServerTestCase extends TestCase {
      */
     public void testRegisterMultiplePorts() throws Exception {
         JettyServer service = new JettyServer(workScheduler);
+        service.start();
         TestServlet servlet = new TestServlet();
         service.addServletMapping("http://127.0.0.1:" + HTTP_PORT + "/", servlet);
         TestServlet servlet2 = new TestServlet();
@@ -160,6 +163,7 @@ public class JettyServerTestCase extends TestCase {
 
     public void testUnregisterMapping() throws Exception {
         JettyServer service = new JettyServer(workScheduler);
+        service.start();
         TestServlet servlet = new TestServlet();
         String uri = "http://127.0.0.1:" + HTTP_PORT + "/foo";
         service.addServletMapping(uri, servlet);
@@ -179,6 +183,7 @@ public class JettyServerTestCase extends TestCase {
 
     public void testRequestSession() throws Exception {
         JettyServer service = new JettyServer(workScheduler);
+        service.start();
         TestServlet servlet = new TestServlet();
         service.addServletMapping("http://127.0.0.1:" + HTTP_PORT + "/", servlet);
         Socket client = new Socket("127.0.0.1", HTTP_PORT);
@@ -193,12 +198,14 @@ public class JettyServerTestCase extends TestCase {
 
     public void testRestart() throws Exception {
         JettyServer service = new JettyServer(workScheduler);
+        service.start();
         service.stop();
         service.stop();
     }
 
     public void testNoMappings() throws Exception {
         JettyServer service = new JettyServer(workScheduler);
+        service.start();
         Exception ex = null;
         try {
             new Socket("127.0.0.1", HTTP_PORT);
@@ -211,6 +218,7 @@ public class JettyServerTestCase extends TestCase {
 
     public void testResourceServlet() throws Exception {
         JettyServer service = new JettyServer(workScheduler);
+        service.start();
 
         String documentRoot = getClass().getClassLoader().getResource("content/test.html").toString();
         documentRoot = documentRoot.substring(0, documentRoot.lastIndexOf('/'));
@@ -231,6 +239,7 @@ public class JettyServerTestCase extends TestCase {
 
     public void testDefaultServlet() throws Exception {
         JettyServer service = new JettyServer(workScheduler);
+        service.start();
 
         String documentRoot = getClass().getClassLoader().getResource("content/test.html").toString();
         documentRoot = documentRoot.substring(0, documentRoot.lastIndexOf('/'));

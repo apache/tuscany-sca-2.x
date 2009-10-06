@@ -40,6 +40,9 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.LifeCycleListener;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.host.http.DefaultResourceServlet;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.host.http.ServletMappingException;
@@ -62,7 +65,7 @@ import org.mortbay.thread.ThreadPool;
  *
  * @version $Rev$ $Date$
  */
-public class JettyServer implements ServletHost {
+public class JettyServer implements ServletHost, LifeCycleListener {
     private static final Logger logger = Logger.getLogger(JettyServer.class.getName());
 
     private final Object joinLock = new Object();
@@ -74,7 +77,6 @@ public class JettyServer implements ServletHost {
     private String keyStoreType;
     private String trustStoreType;
 
-    
     private boolean sendServerVersion;
     private WorkScheduler workScheduler;
     private int defaultPort = portDefault;
@@ -86,7 +88,7 @@ public class JettyServer implements ServletHost {
     private class Port {
         private Server server;
         private ServletHandler servletHandler;
-        
+
         private Port(Server server, ServletHandler servletHandler) {
             this.server = server;
             this.servletHandler = servletHandler;
@@ -95,26 +97,23 @@ public class JettyServer implements ServletHost {
         public Server getServer() {
             return server;
         }
-        
+
         public ServletHandler getServletHandler() {
             return servletHandler;
         }
     }
-    
+
     private Map<Integer, Port> ports = new HashMap<Integer, Port>();
 
     private String contextPath = "/";
     private org.mortbay.log.Logger jettyLogger;
 
-    public JettyServer(WorkScheduler workScheduler) {
+    public JettyServer(ExtensionPointRegistry registry) {
+        this(registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(WorkScheduler.class));
+    }
+
+    protected JettyServer(WorkScheduler workScheduler) {
         this.workScheduler = workScheduler;
-        try {
-            jettyLogger = Log.getLog();
-        } catch (Throwable e) {
-            // Ignore
-        } finally {
-            Log.setLog(new JettyLogger());
-        }
         AccessController.doPrivileged(new PrivilegedAction<Object>() {
             public Object run() {
                 trustStore = System.getProperty("javax.net.ssl.trustStore");
@@ -128,11 +127,11 @@ public class JettyServer implements ServletHost {
             }
         });
     }
-    
+
     public void setDefaultPort(int port) {
         defaultPort = port;
     }
-    
+
     public int getDefaultPort() {
         return defaultPort;
     }
@@ -150,7 +149,7 @@ public class JettyServer implements ServletHost {
         }
         try {
             Set<Entry<Integer, Port>> entries = new HashSet<Entry<Integer, Port>>(ports.entrySet());
-            for (Entry<Integer, Port> entry: entries) {
+            for (Entry<Integer, Port> entry : entries) {
                 Port port = entry.getValue();
                 Server server = port.getServer();
                 server.stop();
@@ -166,7 +165,7 @@ public class JettyServer implements ServletHost {
             }
         }
     }
-    
+
     private void configureSSL(SslSocketConnector connector) {
         connector.setProtocol("TLS");
         connector.setKeystore(keyStore);
@@ -186,7 +185,7 @@ public class JettyServer implements ServletHost {
 
     public void addServletMapping(String suri, Servlet servlet) throws ServletMappingException {
         URI uri = URI.create(suri);
-        
+
         // Get the URI scheme and port
         String scheme = uri.getScheme();
         if (scheme == null) {
@@ -206,8 +205,8 @@ public class JettyServer implements ServletHost {
                 Server server = new Server();
                 server.setThreadPool(new WorkSchedulerThreadPool());
                 if ("https".equals(scheme)) {
-//                    Connector httpConnector = new SelectChannelConnector();
-//                    httpConnector.setPort(portNumber);
+                    //                    Connector httpConnector = new SelectChannelConnector();
+                    //                    httpConnector.setPort(portNumber);
                     SslSocketConnector sslConnector = new SslSocketConnector();
                     sslConnector.setPort(portNumber);
                     configureSSL(sslConnector);
@@ -217,26 +216,26 @@ public class JettyServer implements ServletHost {
                     selectConnector.setPort(portNumber);
                     server.setConnectors(new Connector[] {selectConnector});
                 }
-    
+
                 ContextHandler contextHandler = new ContextHandler();
                 //contextHandler.setContextPath(contextPath);
                 contextHandler.setContextPath("/");
                 server.setHandler(contextHandler);
-    
+
                 SessionHandler sessionHandler = new SessionHandler();
                 ServletHandler servletHandler = new ServletHandler();
                 sessionHandler.addHandler(servletHandler);
-    
+
                 contextHandler.setHandler(sessionHandler);
-    
+
                 server.setStopAtShutdown(true);
                 server.setSendServerVersion(sendServerVersion);
                 server.start();
-                
+
                 // Keep track of the new server and Servlet handler 
                 port = new Port(server, servletHandler);
                 ports.put(portNumber, port);
-                
+
             } catch (Exception e) {
                 throw new ServletMappingException(e);
             }
@@ -246,44 +245,44 @@ public class JettyServer implements ServletHost {
         ServletHandler servletHandler = port.getServletHandler();
         ServletHolder holder;
         if (servlet instanceof DefaultResourceServlet) {
-            
+
             // Optimize the handling of resource requests, use the Jetty default Servlet
             // instead of our default resource Servlet
             String servletPath = uri.getPath();
             if (servletPath.endsWith("*")) {
-                servletPath = servletPath.substring(0, servletPath.length()-1);
+                servletPath = servletPath.substring(0, servletPath.length() - 1);
             }
             if (servletPath.endsWith("/")) {
-                servletPath = servletPath.substring(0, servletPath.length()-1);
-            }          
+                servletPath = servletPath.substring(0, servletPath.length() - 1);
+            }
             if (!servletPath.startsWith("/")) {
                 servletPath = '/' + servletPath;
-            }     
-       
+            }
+
             DefaultResourceServlet resourceServlet = (DefaultResourceServlet)servlet;
             DefaultServlet defaultServlet = new JettyDefaultServlet(servletPath, resourceServlet.getDocumentRoot());
             holder = new ServletHolder(defaultServlet);
-            
+
         } else {
             holder = new ServletHolder(servlet);
         }
         servletHandler.addServlet(holder);
-        
+
         ServletMapping mapping = new ServletMapping();
         mapping.setServletName(holder.getName());
         String path = uri.getPath();
-        
+
         if (!path.startsWith("/")) {
             path = '/' + path;
         }
-        
+
         if (!path.startsWith(contextPath)) {
             path = contextPath + path;
-        }  
-                
+        }
+
         mapping.setPathSpec(path);
         servletHandler.addServletMapping(mapping);
-        
+
         // Compute the complete URL
         String host;
         try {
@@ -299,7 +298,7 @@ public class JettyServer implements ServletHost {
         }
         logger.info("Added Servlet mapping: " + addedURL);
     }
-    
+
     public URL getURLMapping(String suri) throws ServletMappingException {
         URI uri = URI.create(suri);
 
@@ -312,7 +311,7 @@ public class JettyServer implements ServletHost {
         if (portNumber == -1) {
             portNumber = defaultPort;
         }
-        
+
         // Get the host
         String host;
         try {
@@ -320,11 +319,10 @@ public class JettyServer implements ServletHost {
         } catch (UnknownHostException e) {
             host = "localhost";
         }
-        
+
         // Construct the URL
         String path = uri.getPath();
 
-       
         if (!path.startsWith("/")) {
             path = '/' + path;
         }
@@ -332,7 +330,6 @@ public class JettyServer implements ServletHost {
         if (!path.startsWith(contextPath)) {
             path = contextPath + path;
         }
-        
 
         URL url;
         try {
@@ -342,15 +339,15 @@ public class JettyServer implements ServletHost {
         }
         return url;
     }
-        
+
     public Servlet getServletMapping(String suri) throws ServletMappingException {
-        
-        if (suri == null){
+
+        if (suri == null) {
             return null;
         }
-        
+
         URI uri = URI.create(suri);
-        
+
         // Get the URI port
         int portNumber = uri.getPort();
         if (portNumber == -1) {
@@ -362,22 +359,22 @@ public class JettyServer implements ServletHost {
         if (port == null) {
             return null;
         }
-        
+
         // Remove the Servlet mapping for the given Servlet 
         ServletHandler servletHandler = port.getServletHandler();
         Servlet servlet = null;
         List<ServletMapping> mappings =
             new ArrayList<ServletMapping>(Arrays.asList(servletHandler.getServletMappings()));
         String path = uri.getPath();
-        
+
         if (!path.startsWith("/")) {
             path = '/' + path;
         }
-        
+
         if (!path.startsWith(contextPath)) {
             path = contextPath + path;
         }
-        
+
         for (ServletMapping mapping : mappings) {
             if (Arrays.asList(mapping.getPathSpecs()).contains(path)) {
                 try {
@@ -393,7 +390,7 @@ public class JettyServer implements ServletHost {
 
     public Servlet removeServletMapping(String suri) {
         URI uri = URI.create(suri);
-        
+
         // Get the URI port
         int portNumber = uri.getPort();
         if (portNumber == -1) {
@@ -410,22 +407,22 @@ public class JettyServer implements ServletHost {
             logger.warning("No servlet registered at this URI: " + suri);
             return null;
         }
-        
+
         // Remove the Servlet mapping for the given Servlet 
         ServletHandler servletHandler = port.getServletHandler();
         Servlet removedServlet = null;
         List<ServletMapping> mappings =
             new ArrayList<ServletMapping>(Arrays.asList(servletHandler.getServletMappings()));
         String path = uri.getPath();
-        
+
         if (!path.startsWith("/")) {
             path = '/' + path;
         }
-        
+
         if (!path.startsWith(contextPath)) {
             path = contextPath + path;
         }
-        
+
         for (ServletMapping mapping : mappings) {
             if (Arrays.asList(mapping.getPathSpecs()).contains(path)) {
                 try {
@@ -440,7 +437,7 @@ public class JettyServer implements ServletHost {
         }
         if (removedServlet != null) {
             servletHandler.setServletMappings(mappings.toArray(new ServletMapping[mappings.size()]));
-            
+
             // Stop the port if there are no servlet mappings on it anymore
             if (mappings.size() == 0) {
                 try {
@@ -452,11 +449,11 @@ public class JettyServer implements ServletHost {
                 }
                 ports.remove(portNumber);
             }
-            
+
         } else {
             logger.warning("Trying to Remove servlet mapping: " + path + " where mapping is not registered");
         }
-        
+
         return removedServlet;
     }
 
@@ -464,11 +461,11 @@ public class JettyServer implements ServletHost {
         //FIXME implement this later
         return null;
     }
-    
+
     public String getContextPath() {
         return contextPath;
     }
-    
+
     public void setContextPath(String path) {
         this.contextPath = path;
     }
@@ -504,6 +501,16 @@ public class JettyServer implements ServletHost {
 
     public void setAttribute(String name, Object value) {
         throw new UnsupportedOperationException();
+    }
+
+    public void start() {
+        try {
+            jettyLogger = Log.getLog();
+        } catch (Throwable e) {
+            // Ignore
+        } finally {
+            Log.setLog(new JettyLogger());
+        }
     }
 
 }
