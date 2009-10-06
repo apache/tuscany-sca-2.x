@@ -29,6 +29,7 @@ import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
+import org.apache.tuscany.sca.node.impl.NodeImpl;
 
 import client.RuntimeBridge;
 import client.TestConfiguration;
@@ -80,9 +81,13 @@ public class TuscanyRuntimeBridge implements RuntimeBridge {
             node = launcher.createNode(testConfiguration.getComposite(), contributions);
             // Start the node
             node.start();
+            
+            // For debugging 
+            // print out the composites that have been read in success cases
+            // System.out.println(((NodeImpl)node).dumpDomainComposite());
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            e.printStackTrace();
+            e.printStackTrace();      
             throw e;
         } // end try
 
