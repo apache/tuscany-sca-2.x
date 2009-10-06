@@ -18,20 +18,28 @@
  */
 package org.apache.tuscany.sca.builder.impl;
 
+import java.io.ByteArrayOutputStream;
 import java.util.List;
 import java.util.Map;
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLOutputFactory;
 
+import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.assembly.builder.DeployedCompositeBuilder;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.monitor.Monitor;
 
 public class ModelBuilderImpl implements CompositeBuilder, DeployedCompositeBuilder {
+    private ExtensionPointRegistry registry;
+    
     private CompositeBuilder compositeIncludeBuilder;
     private CompositeBuilder compositeCloneBuilder;
     private CompositeComponentTypeBuilderImpl compositeComponentTypeBuilder;
@@ -54,6 +62,7 @@ public class ModelBuilderImpl implements CompositeBuilder, DeployedCompositeBuil
      * @param registry the extension point registry
      */
     public ModelBuilderImpl(ExtensionPointRegistry registry) {
+        this.registry = registry;
 
         compositeIncludeBuilder = new CompositeIncludeBuilderImpl();
         compositeCloneBuilder = new CompositeCloneBuilderImpl();
@@ -130,9 +139,56 @@ public class ModelBuilderImpl implements CompositeBuilder, DeployedCompositeBuil
             endpointReferenceBuilder.build(composite, definitions, monitor);
             composite = componentReferencePromotionBuilder.build(composite, definitions, monitor); // move into the static build?
             composite = compositePolicyBuilder.build(composite, definitions, monitor); // the rest of the policy processing?
+            
+            // For debugging - in success cases
+            //System.out.println(dumpBuiltComposite(composite));
+            
             return composite;
         } catch (Exception e) {
+            // For debugging - in failure cases
+            //System.out.println(dumpBuiltComposite(composite));
             throw new CompositeBuilderException("Exception while building model " + composite.getName(), e);
         }
     }
+    
+    /**
+     * For debugging the build process
+     * 
+     * @return a tring version of the built model 
+     */
+    public String dumpBuiltComposite(Composite composite) {
+        
+        StAXArtifactProcessorExtensionPoint xmlProcessors = 
+            registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        StAXArtifactProcessor<Composite>  compositeProcessor = 
+            xmlProcessors.getProcessor(Composite.class);   
+     
+        return writeComposite(composite, compositeProcessor);
+    }
+       
+    private String writeComposite(Composite composite, StAXArtifactProcessor<Composite> compositeProcessor){
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        XMLOutputFactory outputFactory =
+            registry.getExtensionPoint(FactoryExtensionPoint.class)
+                .getFactory(XMLOutputFactory.class);
+        
+        try {
+            compositeProcessor.write(composite, outputFactory.createXMLStreamWriter(bos));
+        } catch(Exception ex) {
+            return ex.toString();
+        }
+        
+        String result = bos.toString();
+        
+        // write out and nested composites
+        for (Component component : composite.getComponents()) {
+            if (component.getImplementation() instanceof Composite) {
+                result += "\n<!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->\n" + 
+                          writeComposite((Composite)component.getImplementation(),
+                                          compositeProcessor);
+            }
+        }
+        
+        return result;
+    }    
 }
