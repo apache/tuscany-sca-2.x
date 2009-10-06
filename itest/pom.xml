@@ -63,6 +63,7 @@
                 <module>exceptions</module>
                 <module>implementation-spring</module>
                 <module>interfaces</module>
+                <module>jms</module>
                 <module>nodes</module>
 <!-- why commented out?
                 <module>operation-overloading</module>
