@@ -43,6 +43,7 @@
     <module>properties</module>
     <module>responsecf</module>
     <module>rpc</module>
+    <module>selectors</module>
     <module>topics</module>
     <module>ttl</module>
     <module>uri-rpc</module>
@@ -53,7 +54,6 @@
     <module>exceptions</module>
     <module>exceptions1</module>
     <module>format</module>
-    <module>selectors</module>
 -->
 
   </modules>
