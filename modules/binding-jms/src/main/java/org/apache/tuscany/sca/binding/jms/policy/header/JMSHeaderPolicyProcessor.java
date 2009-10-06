@@ -27,6 +27,7 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.xml.Constants;
+import org.apache.tuscany.sca.assembly.xml.Messages;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
@@ -63,7 +64,7 @@ public class JMSHeaderPolicyProcessor extends BaseStAXArtifactProcessor implemen
      */
     protected void warning(String message, Object model, String... messageParameters) {
         if (monitor != null){
-            Problem problem = monitor.createProblem(this.getClass().getName(), "assembly-xml-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
+            Problem problem = monitor.createProblem(this.getClass().getName(), Messages.RESOURCE_BUNDLE, Severity.WARNING, model, message, (Object[])messageParameters);
             monitor.problem(problem);
         }
     }
@@ -77,7 +78,7 @@ public class JMSHeaderPolicyProcessor extends BaseStAXArtifactProcessor implemen
      */
     protected void error(String message, Object model, Object... messageParameters) {
         if (monitor != null) {
-            Problem problem = monitor.createProblem(this.getClass().getName(), "assembly-xml-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
+            Problem problem = monitor.createProblem(this.getClass().getName(), Messages.RESOURCE_BUNDLE, Severity.ERROR, model, message, (Object[])messageParameters);
             monitor.problem(problem);
         }
     }    

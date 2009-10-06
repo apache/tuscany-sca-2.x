@@ -75,7 +75,7 @@ abstract class ExtensionTypeProcessor extends BaseStAXArtifactProcessor implemen
         if (monitor != null) {
             Problem problem =
                 monitor.createProblem(this.getClass().getName(),
-                                      "policy-xml-validation-messages",
+                                      Messages.RESOURCE_BUNDLE,
                                       Severity.ERROR,
                                       model,
                                       message,

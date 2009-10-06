@@ -80,7 +80,7 @@ public class IntentProcessor extends BaseStAXArtifactProcessor implements StAXAr
         if (monitor != null) {
             Problem problem =
                 monitor.createProblem(this.getClass().getName(),
-                                      "policy-xml-validation-messages",
+                                      Messages.RESOURCE_BUNDLE,
                                       Severity.ERROR,
                                       model,
                                       message,
@@ -93,7 +93,7 @@ public class IntentProcessor extends BaseStAXArtifactProcessor implements StAXAr
         if (monitor != null) {
             Problem problem =
                 monitor.createProblem(this.getClass().getName(),
-                                      "policy-xml-validation-messages",
+                                      Messages.RESOURCE_BUNDLE,
                                       Severity.WARNING,
                                       model,
                                       message,

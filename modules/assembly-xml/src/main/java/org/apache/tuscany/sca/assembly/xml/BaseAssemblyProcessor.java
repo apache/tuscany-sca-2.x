@@ -154,7 +154,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
         if (monitor != null) {
             Problem problem =
                 monitor.createProblem(this.getClass().getName(),
-                                      "assembly-xml-validation-messages",
+                                      Messages.RESOURCE_BUNDLE,
                                       Severity.WARNING,
                                       model,
                                       message,
@@ -174,7 +174,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
         if (monitor != null) {
             Problem problem =
                 monitor.createProblem(this.getClass().getName(),
-                                      "assembly-xml-validation-messages",
+                                      Messages.RESOURCE_BUNDLE,
                                       Severity.ERROR,
                                       model,
                                       message,
@@ -194,7 +194,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
         if (monitor != null) {
             Problem problem =
                 monitor.createProblem(this.getClass().getName(),
-                                      "assembly-xml-validation-messages",
+                                      Messages.RESOURCE_BUNDLE,
                                       Severity.ERROR,
                                       model,
                                       message,

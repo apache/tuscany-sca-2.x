@@ -54,7 +54,7 @@ public class CompositeModelResolver implements ModelResolver {
         if (old != null) {
             Monitor.error(monitor,
                           this,
-                          "assembly-xml-validation-messages",
+                          Messages.RESOURCE_BUNDLE,
                           "DuplicateCompositeName",
                           composite.getName().toString(),
                           contribution.getLocation());

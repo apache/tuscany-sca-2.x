@@ -85,7 +85,7 @@ public class DefinitionsDocumentProcessor implements URLArtifactProcessor<Defini
         if (monitor != null) {
             Problem problem =
                 monitor.createProblem(this.getClass().getName(),
-                                      "definitions-xml-validation-messages",
+                                      Messages.RESOURCE_BUNDLE,
                                       Severity.ERROR,
                                       model,
                                       message,

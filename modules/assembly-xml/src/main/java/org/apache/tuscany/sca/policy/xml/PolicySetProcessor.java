@@ -100,7 +100,7 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
         if (monitor != null) {
             Problem problem =
                 monitor.createProblem(this.getClass().getName(),
-                                      "policy-xml-validation-messages",
+                                      Messages.RESOURCE_BUNDLE,
                                       Severity.ERROR,
                                       model,
                                       message,
@@ -120,7 +120,7 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
         if (monitor != null) {
             Problem problem =
                 monitor.createProblem(this.getClass().getName(),
-                                      "policy-xml-validation-messages",
+                                      Messages.RESOURCE_BUNDLE,
                                       Severity.ERROR,
                                       model,
                                       message,
