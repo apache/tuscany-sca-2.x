@@ -105,7 +105,7 @@ public class CompositeComponentTypeBuilderImpl {
             for (Component component : composite.getComponents()) {
     
                 // Check for duplicate component names
-                if (composite.getComponent(component.getName()) == null) {
+                if (component != composite.getComponent(component.getName())) {
                     Monitor.error(monitor, 
                                   this, 
                                   Messages.ASSEMBLY_VALIDATION, 
