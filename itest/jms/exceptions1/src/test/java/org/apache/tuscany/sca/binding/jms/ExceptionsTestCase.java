@@ -47,6 +47,8 @@ public class ExceptionsTestCase {
             fail();
         } catch (CheckedExcpetion e) {
             assertEquals("foo", e.getMessage());
+        } catch (Throwable e) {
+            fail();
         }
     }
 
