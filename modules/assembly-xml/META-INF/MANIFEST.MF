@@ -41,6 +41,7 @@ Bundle-Description: Apache Tuscany SCA XML Assembly Model
 Import-Package: javax.xml.namespace,
  javax.xml.parsers,
  javax.xml.stream,
+ javax.xml.transform,
  javax.xml.transform.dom,
  javax.xml.validation;resolution:=optional,
  javax.xml.xpath,
