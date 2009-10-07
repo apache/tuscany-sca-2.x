@@ -9,7 +9,8 @@ Bnd-LastModified: 1225397321468
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA RMI Host Extension Point
-Import-Package: org.apache.tuscany.sca.core;version="2.0.0",
+Import-Package: javax.net,
+ org.apache.tuscany.sca.core;version="2.0.0",
  org.apache.tuscany.sca.host.rmi;version="2.0.0"
 Bundle-SymbolicName: org.apache.tuscany.sca.host.rmi
 Bundle-DocURL: http://www.apache.org/
