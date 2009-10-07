@@ -21,7 +21,7 @@
 	targetNamespace="http://itest"
 	xmlns:hw="http://helloworld"
 	xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1" 
-    name="jmsobject">
+    name="helloworld">
 
     <component name="HelloWorldReferenceComponent">
         <implementation.java class="org.apache.tuscany.sca.binding.jms.format.jmsobject.helloworld.HelloWorldReferenceImpl" />

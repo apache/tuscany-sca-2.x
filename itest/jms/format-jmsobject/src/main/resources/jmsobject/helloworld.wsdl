@@ -175,6 +175,9 @@
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
+
+            <xs:element name="CheckedException" type="xs:string" />
+
         </xs:schema>
     </wsdl:types>
     <wsdl:message name="getObjectGreetingResponse">
@@ -236,6 +239,9 @@
         <wsdl:part name="getArrayGreetingResponse" element="tns:getArrayGreetingResponse">
         </wsdl:part>
     </wsdl:message>
+    <wsdl:message name="CheckedException">
+        <wsdl:part element="tns:CheckedException" name="fault" />
+    </wsdl:message>
     <wsdl:portType name="HelloWorldService">
         <wsdl:operation name="getPersonGreetings">
             <wsdl:input message="tns:getPersonGreetings">
@@ -279,6 +285,13 @@
             <wsdl:output message="tns:getObjectArrayGreetingResponse">
             </wsdl:output>
         </wsdl:operation>
+        <wsdl:operation name="throwChecked">
+            <wsdl:input message="tns:getPersonGreetingsRequest" name="getPersonGreetingsRequest"/>
+            <wsdl:fault message="tns:CheckedException" name="CheckedException"/>
+        </wsdl:operation>        
+        <wsdl:operation name="throwUnChecked">
+            <wsdl:input message="tns:getPersonGreetingsRequest" name="getPersonGreetingsRequest"/>
+        </wsdl:operation>        
     </wsdl:portType>
     <wsdl:binding name="HelloWorldServiceBinding" type="tns:HelloWorldService">
         <SOAP:binding style="document"

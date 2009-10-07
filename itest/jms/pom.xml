@@ -40,6 +40,7 @@
     <module>format-jmsbytesxml</module>
     <module>format-jmsdefault</module>
     <module>format-jmsmessage</module>
+    <module>format-jmsobject</module>
     <module>format-jmstext</module>
     <module>format-jmstextxml</module>
     <module>format-jmstextxmlinjmsobjectout</module>
@@ -60,8 +61,6 @@
 <!-- still to bring up in 2.x
     <module>callbacks</module>
     <module>definitions</module>
-
-    <module>format-jmsobject</module>
 -->
 
   </modules>
