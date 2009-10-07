@@ -20,13 +20,14 @@ package org.apache.tuscany.sca.core.databinding.transformers;
 
 import java.lang.reflect.Array;
 
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.databinding.Mediator;
 import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
 import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
 import org.apache.tuscany.sca.interfacedef.DataType;
-import org.oasisopen.sca.annotation.Reference;
 
 /**
  * This is a special transformer to transform the output from one IDL to the
@@ -38,16 +39,9 @@ public class Array2ArrayTransformer extends BaseTransformer<Object, Object> impl
 
     protected Mediator mediator;
 
-    public Array2ArrayTransformer() {
+    public Array2ArrayTransformer(ExtensionPointRegistry registry) {
         super();
-    }
-
-    /**
-     * @param mediator the mediator to set
-     */
-    @Reference
-    public void setMediator(Mediator mediator) {
-        this.mediator = mediator;
+        this.mediator = registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(Mediator.class);
     }
 
     @Override

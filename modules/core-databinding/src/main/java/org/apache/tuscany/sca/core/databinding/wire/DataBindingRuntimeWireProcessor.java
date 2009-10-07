@@ -42,11 +42,6 @@ import org.apache.tuscany.sca.runtime.RuntimeWireProcessor;
  */
 public class DataBindingRuntimeWireProcessor implements RuntimeWireProcessor {
     private Mediator mediator;
-
-    public DataBindingRuntimeWireProcessor(Mediator mediator) {
-        super();
-        this.mediator = mediator;
-    }
     
     public DataBindingRuntimeWireProcessor(ExtensionPointRegistry registry) {
         super();

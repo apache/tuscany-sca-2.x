@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.databinding.impl;
 
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.databinding.Mediator;
 import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
@@ -38,15 +40,9 @@ public class Group2GroupTransformer extends BaseTransformer<Object, Object> impl
     /**
      * @param wrapperHandler
      */
-    public Group2GroupTransformer() {
+    public Group2GroupTransformer(ExtensionPointRegistry registry) {
         super();
-    }
-
-    /**
-     * @param mediator the mediator to set
-     */
-    public void setMediator(Mediator mediator) {
-        this.mediator = mediator;
+        this.mediator = registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(Mediator.class);
     }
 
     @Override

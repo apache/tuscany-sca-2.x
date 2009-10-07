@@ -20,8 +20,9 @@
 package org.apache.tuscany.sca.core.databinding.transformers;
 
 import java.util.List;
-import java.util.logging.Logger;
 
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.databinding.DataBinding;
 import org.apache.tuscany.sca.databinding.Mediator;
 import org.apache.tuscany.sca.databinding.PullTransformer;
@@ -34,7 +35,6 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.util.ElementInfo;
 import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
-import org.oasisopen.sca.annotation.Reference;
 
 /**
  * This is a special transformer to transform the input from one IDL to the
@@ -44,12 +44,11 @@ import org.oasisopen.sca.annotation.Reference;
  */
 public class Input2InputTransformer extends BaseTransformer<Object[], Object[]> implements
     PullTransformer<Object[], Object[]> {
-    private static final Logger logger = Logger.getLogger(Input2InputTransformer.class.getName());
-
     protected Mediator mediator;
 
-    public Input2InputTransformer() {
+    public Input2InputTransformer(ExtensionPointRegistry registry) {
         super();
+        this.mediator = registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(Mediator.class);
     }
 
     @Override
@@ -60,14 +59,6 @@ public class Input2InputTransformer extends BaseTransformer<Object[], Object[]> 
     @Override
     public String getTargetDataBinding() {
         return DataBinding.IDL_INPUT;
-    }
-
-    /**
-     * @param mediator the mediator to set
-     */
-    @Reference
-    public void setMediator(Mediator mediator) {
-        this.mediator = mediator;
     }
 
     /**

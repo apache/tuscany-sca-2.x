@@ -20,6 +20,8 @@ package org.apache.tuscany.sca.core.databinding.transformers;
 
 import java.util.List;
 
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.databinding.DataBinding;
 import org.apache.tuscany.sca.databinding.Mediator;
 import org.apache.tuscany.sca.databinding.PullTransformer;
@@ -32,7 +34,6 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.util.ElementInfo;
 import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
-import org.oasisopen.sca.annotation.Reference;
 
 /**
  * This is a special transformer to transform the output from one IDL to the
@@ -48,16 +49,9 @@ public class Output2OutputTransformer extends BaseTransformer<Object, Object> im
     /**
      * @param wrapperHandler
      */
-    public Output2OutputTransformer() {
+    public Output2OutputTransformer(ExtensionPointRegistry registry) {
         super();
-    }
-
-    /**
-     * @param mediator the mediator to set
-     */
-    @Reference
-    public void setMediator(Mediator mediator) {
-        this.mediator = mediator;
+        this.mediator = registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(Mediator.class);
     }
 
     @Override

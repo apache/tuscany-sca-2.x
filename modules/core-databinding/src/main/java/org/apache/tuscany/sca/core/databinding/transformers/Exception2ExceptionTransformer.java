@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.core.databinding.transformers;
 
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.databinding.DataBinding;
 import org.apache.tuscany.sca.databinding.Mediator;
 import org.apache.tuscany.sca.databinding.PullTransformer;
@@ -39,7 +41,14 @@ public class Exception2ExceptionTransformer extends BaseTransformer<Throwable, T
     protected Mediator mediator;
     protected FaultExceptionMapper faultExceptionMapper;
 
-    public Exception2ExceptionTransformer(Mediator mediator, FaultExceptionMapper faultExceptionMapper) {
+    public Exception2ExceptionTransformer(ExtensionPointRegistry registry) {
+        super();
+        UtilityExtensionPoint utilityExtensionPoint = registry.getExtensionPoint(UtilityExtensionPoint.class);
+        this.mediator = utilityExtensionPoint.getUtility(Mediator.class);
+        this.faultExceptionMapper = utilityExtensionPoint.getUtility(FaultExceptionMapper.class);
+    }
+    
+    protected Exception2ExceptionTransformer(Mediator mediator, FaultExceptionMapper faultExceptionMapper) {
         super();
         this.mediator = mediator;
         this.faultExceptionMapper = faultExceptionMapper;
@@ -57,13 +66,6 @@ public class Exception2ExceptionTransformer extends BaseTransformer<Throwable, T
     @Override
     public String getTargetDataBinding() {
         return DataBinding.IDL_FAULT;
-    }
-
-    /**
-     * @param mediator the mediator to set
-     */
-    public void setMediator(Mediator mediator) {
-        this.mediator = mediator;
     }
 
     /**

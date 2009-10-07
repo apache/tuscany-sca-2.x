@@ -22,19 +22,11 @@ package org.apache.tuscany.sca.core.databinding.module;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ModuleActivator;
-import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.databinding.processor.DataBindingJavaInterfaceProcessor;
 import org.apache.tuscany.sca.core.databinding.processor.WrapperJavaInterfaceProcessor;
-import org.apache.tuscany.sca.core.databinding.transformers.Array2ArrayTransformer;
-import org.apache.tuscany.sca.core.databinding.transformers.Exception2ExceptionTransformer;
-import org.apache.tuscany.sca.core.databinding.transformers.Input2InputTransformer;
-import org.apache.tuscany.sca.core.databinding.transformers.Output2OutputTransformer;
 import org.apache.tuscany.sca.core.databinding.wire.DataBindingRuntimeWireProcessor;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
-import org.apache.tuscany.sca.databinding.Mediator;
 import org.apache.tuscany.sca.databinding.TransformerExtensionPoint;
-import org.apache.tuscany.sca.databinding.impl.Group2GroupTransformer;
-import org.apache.tuscany.sca.interfacedef.FaultExceptionMapper;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.jaxws.JAXWSJavaInterfaceProcessor;
 import org.apache.tuscany.sca.interfacedef.java.jaxws.WebServiceInterfaceProcessor;
@@ -49,28 +41,22 @@ public class DataBindingModuleActivator implements ModuleActivator {
         DataBindingExtensionPoint dataBindings = registry.getExtensionPoint(DataBindingExtensionPoint.class);
         TransformerExtensionPoint transformers = registry.getExtensionPoint(TransformerExtensionPoint.class);
 
-        FaultExceptionMapper faultExceptionMapper = registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(FaultExceptionMapper.class);
-        
-        Mediator mediator = registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(Mediator.class);
+        /*
+        Input2InputTransformer input2InputTransformer = new Input2InputTransformer(registry);
+        transformers.addTransformer(input2InputTransformer, false);
 
-        Input2InputTransformer input2InputTransformer = new Input2InputTransformer();
-        input2InputTransformer.setMediator(mediator);
-        transformers.addTransformer(input2InputTransformer, true);
+        Output2OutputTransformer output2OutputTransformer = new Output2OutputTransformer(registry);
+        transformers.addTransformer(output2OutputTransformer, false);
 
-        Output2OutputTransformer output2OutputTransformer = new Output2OutputTransformer();
-        output2OutputTransformer.setMediator(mediator);
-        transformers.addTransformer(output2OutputTransformer, true);
-
-        Exception2ExceptionTransformer exception2ExceptionTransformer = new Exception2ExceptionTransformer(mediator, faultExceptionMapper);
+        Exception2ExceptionTransformer exception2ExceptionTransformer = new Exception2ExceptionTransformer(registry);
         transformers.addTransformer(exception2ExceptionTransformer, false);
 
-        Array2ArrayTransformer array2ArrayTransformer = new Array2ArrayTransformer();
-        array2ArrayTransformer.setMediator(mediator);
-        transformers.addTransformer(array2ArrayTransformer, true);
+        Array2ArrayTransformer array2ArrayTransformer = new Array2ArrayTransformer(registry);
+        transformers.addTransformer(array2ArrayTransformer, false);
 
-        Group2GroupTransformer group2GroupTransformer = new Group2GroupTransformer();
-        group2GroupTransformer.setMediator(mediator);
-        transformers.addTransformer(group2GroupTransformer, true);
+        Group2GroupTransformer group2GroupTransformer = new Group2GroupTransformer(registry);
+        transformers.addTransformer(group2GroupTransformer, false);
+        */
 
 //        dataBindings.addDataBinding(new CallableReferenceDataBinding());
 //        transformers.addTransformer(new CallableReference2XMLStreamReader(), true);
@@ -87,7 +73,7 @@ public class DataBindingModuleActivator implements ModuleActivator {
 
         RuntimeWireProcessorExtensionPoint wireProcessorExtensionPoint = registry.getExtensionPoint(RuntimeWireProcessorExtensionPoint.class);
         if (wireProcessorExtensionPoint != null) {
-            wireProcessorExtensionPoint.addWireProcessor(new DataBindingRuntimeWireProcessor(mediator));
+            wireProcessorExtensionPoint.addWireProcessor(new DataBindingRuntimeWireProcessor(registry));
         }
 
     }
