@@ -41,6 +41,7 @@
     <module>format-jmsdefault</module>
     <module>format-jmsmessage</module>
     <module>format-jmstext</module>
+    <module>format-jmstextxmlinjmsobjectout</module>
     <module>non-sca-client</module>
     <module>noreplyto</module>
     <module>nulls</module>
@@ -61,7 +62,6 @@
 
     <module>format-jmsobject</module>
     <module>format-jmstextxml</module>
-    <module>format-jmstextxmlinjmsobjectout</module>
 -->
 
   </modules>
