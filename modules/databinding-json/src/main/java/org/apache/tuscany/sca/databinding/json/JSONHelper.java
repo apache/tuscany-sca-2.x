@@ -19,8 +19,6 @@
 
 package org.apache.tuscany.sca.databinding.json;
 
-import java.text.ParseException;
-
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -61,7 +59,7 @@ public class JSONHelper {
         if (source instanceof JSONObject) {
             try {
                 json = new org.json.JSONObject(((JSONObject)source).toString());
-            } catch (ParseException e) {
+            } catch (org.json.JSONException e) {
                 throw new IllegalArgumentException(e);
             }
         } else if (source instanceof org.json.JSONObject) {
@@ -83,7 +81,7 @@ public class JSONHelper {
             }
             try {
                 return type.cast(new org.json.JSONObject(json));
-            } catch (ParseException e) {
+            } catch (org.json.JSONException e) {
                 throw new IllegalArgumentException(e);
             }
         }

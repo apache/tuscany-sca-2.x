@@ -24,9 +24,8 @@ import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
 import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
 import org.apache.tuscany.sca.databinding.javabeans.JavaBeansDataBinding;
-
-import com.metaparadigm.jsonrpc.JSONSerializer;
-import com.metaparadigm.jsonrpc.SerializerState;
+import org.jabsorb.JSONSerializer;
+import org.jabsorb.serializer.SerializerState;
 
 public class JavaBean2JSON extends BaseTransformer<Object, Object> implements PullTransformer<Object, Object> {
     private JSONSerializer serializer;
@@ -68,7 +67,7 @@ public class JavaBean2JSON extends BaseTransformer<Object, Object> implements Pu
         }
 
         SerializerState state = new SerializerState();
-        return serializer.marshall(state, source);
+        return serializer.marshall(state, null, source, new Integer(0));
     }
 
     public Object transform(Object source, TransformationContext context) {

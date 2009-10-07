@@ -38,13 +38,13 @@ import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
+import org.jabsorb.JSONRPCBridge;
+import org.jabsorb.JSONRPCResult;
+import org.jabsorb.JSONRPCServlet;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.oasisopen.sca.ServiceRuntimeException;
-
-import com.metaparadigm.jsonrpc.JSONRPCBridge;
-import com.metaparadigm.jsonrpc.JSONRPCResult;
-import com.metaparadigm.jsonrpc.JSONRPCServlet;
 
 /**
  * Servlet that handles JSON-RPC requests invoking SCA services.
@@ -154,10 +154,14 @@ public class JSONRPCServiceServlet extends JSONRPCServlet {
         // check if it's a system request 
         // or a method invocation
         byte[] bout;
-        if (method.startsWith("system.")) {
-            bout = handleJSONRPCSystemInvocation(request, response, data.toString());
-        } else {
-            bout = handleJSONRPCMethodInvocation(request, response, jsonReq);
+        try {
+            if (method.startsWith("system.")) {
+                bout = handleJSONRPCSystemInvocation(request, response, data.toString());
+            } else {
+                bout = handleJSONRPCMethodInvocation(request, response, jsonReq);
+            }
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
         }
 
         // Send response to client
@@ -182,7 +186,7 @@ public class JSONRPCServiceServlet extends JSONRPCServlet {
     }
     
     protected byte[] handleJSONRPCSystemInvocation(HttpServletRequest request, HttpServletResponse response, String requestData) throws IOException,
-    UnsupportedEncodingException {
+    UnsupportedEncodingException, JSONException {
         /*
          * Create a new bridge for every request to avoid all the problems with 
          * JSON-RPC-Java storing the bridge in the session
@@ -194,12 +198,8 @@ public class JSONRPCServiceServlet extends JSONRPCServlet {
         session.setAttribute("JSONRPCBridge", jsonrpcBridge);
         
         org.json.JSONObject jsonReq = null;
-        com.metaparadigm.jsonrpc.JSONRPCResult jsonResp = null;
-        try {
-            jsonReq = new org.json.JSONObject(requestData);
-        } catch (java.text.ParseException e) {
-            throw new RuntimeException("Unable to parse request", e);
-        }
+        JSONRPCResult jsonResp = null;
+        jsonReq = new org.json.JSONObject(requestData);
 
         String method = jsonReq.getString("method");
         if ((method != null) && (method.indexOf('.') < 0)) {

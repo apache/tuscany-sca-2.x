@@ -19,10 +19,9 @@
 
 package org.apache.tuscany.sca.binding.jsonrpc.provider;
 
-import java.io.ByteArrayInputStream;
-
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.binding.jsonrpc.JSONRPCBinding;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -52,8 +51,6 @@ public class JSONRPCBindingInvoker implements Invoker {
     }
 
     public Message invoke(Message msg) {
-        Object[] jsonArgs = (Object[])msg.getBody();
-
         PostMethod post = null;
         try {
 
@@ -79,7 +76,9 @@ public class JSONRPCBindingInvoker implements Invoker {
             }
 
             post = new PostMethod(uri);
-            post.setRequestBody(new ByteArrayInputStream(jsonRequest.toString().getBytes("UTF-8")));
+            String req = jsonRequest.toString();
+            StringRequestEntity entity = new StringRequestEntity(req, "application/json", "UTF-8");
+            post.setRequestEntity(entity);
 
             httpClient.executeMethod(post);
             int status = post.getStatusCode();

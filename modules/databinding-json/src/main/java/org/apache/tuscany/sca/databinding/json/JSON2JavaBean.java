@@ -23,9 +23,8 @@ import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
 import org.apache.tuscany.sca.databinding.javabeans.JavaBeansDataBinding;
-
-import com.metaparadigm.jsonrpc.JSONSerializer;
-import com.metaparadigm.jsonrpc.SerializerState;
+import org.jabsorb.JSONSerializer;
+import org.jabsorb.serializer.SerializerState;
 
 /**
  * @version $Rev$ $Date$

@@ -8,28 +8,29 @@ Bnd-LastModified: 1253941843749
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA JSON-RPC Binding Runtime
-Import-Package: com.metaparadigm.jsonrpc;version="1.0.0",
- javax.security.auth.login,
+Import-Package: javax.security.auth.login,
  javax.servlet,
  javax.servlet.http,
- org.apache.commons.httpclient;version="3.1.0",
+ org.apache.commons.httpclient,
  org.apache.commons.httpclient.methods,
- org.apache.commons.httpclient.params;version="3.1.0",
- org.apache.tuscany.sca.assembly;version="2.0",
+ org.apache.commons.httpclient.params,
+ org.apache.tuscany.sca.assembly;version="2.0.0",
  org.apache.tuscany.sca.binding.jsonrpc;version="2.0.0",
- org.apache.tuscany.sca.core;version="2.0",
+ org.apache.tuscany.sca.core;version="2.0.0",
  org.apache.tuscany.sca.databinding.javabeans;version="2.0.0",
- org.apache.tuscany.sca.databinding.json,
- org.apache.tuscany.sca.host.http,
- org.apache.tuscany.sca.interfacedef,
+ org.apache.tuscany.sca.databinding.json;version="2.0.0",
+ org.apache.tuscany.sca.host.http;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef;version="2.0.0",
  org.apache.tuscany.sca.interfacedef.java;version="2.0.0",
- org.apache.tuscany.sca.invocation,
+ org.apache.tuscany.sca.invocation;version="2.0.0",
  org.apache.tuscany.sca.node;version="2.0.0",
- org.apache.tuscany.sca.provider,
- org.apache.tuscany.sca.runtime,
- org.json;version="1.0.0",
+ org.apache.tuscany.sca.provider;version="2.0.0",
+ org.apache.tuscany.sca.runtime;version="2.0.0",
+ org.json,
+ org.jabsorb,
+ org.jabsorb.client,
  org.oasisopen.sca;version="2.0.0",
- org.oasisopen.sca.annotation
+ org.oasisopen.sca.annotation;version="2.0.0"
 Bundle-SymbolicName: org.apache.tuscany.sca.binding.jsonrpc.runtime
 Bundle-DocURL: http://www.apache.org/
 

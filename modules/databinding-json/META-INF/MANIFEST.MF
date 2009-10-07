@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
-Export-Package: org.apache.tuscany.sca.databinding.json,
- org.apache.tuscany.sca.databinding.json.axiom
+Export-Package: org.apache.tuscany.sca.databinding.json;version="2.0.0",
+ org.apache.tuscany.sca.databinding.json.axiom;version="2.0.0"
 Tool: Bnd-0.0.357
 Bundle-Name: Apache Tuscany SCA Data Binding for JSON
 Created-By: 1.6.0_15 (Apple Inc.)
@@ -10,8 +10,7 @@ Bnd-LastModified: 1254338075268
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Data Binding for JSON
-Import-Package: com.metaparadigm.jsonrpc,
- javax.xml.namespace,
+Import-Package: javax.xml.namespace,
  javax.xml.stream,
  org.apache.axiom.om,
  org.apache.tuscany.sca.common.xml.stax;version="2.0.0",
@@ -25,6 +24,8 @@ Import-Package: com.metaparadigm.jsonrpc,
  org.codehaus.jettison.badgerfish,
  org.codehaus.jettison.json,
  org.codehaus.jettison.mapped,
+ org.jabsorb,
+ org.jabsorb.serializer,
  org.json,
  org.oasisopen.sca.annotation;version="2.0.0"
 Bundle-SymbolicName: org.apache.tuscany.sca.databinding.json

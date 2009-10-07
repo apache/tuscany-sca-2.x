@@ -74,7 +74,7 @@ public class JSONRPCReferenceBindingProvider implements ReferenceBindingProvider
     }
 
     public Invoker createInvoker(Operation operation) {
-        return new JSONRPCBindingInvoker(endpointReference, operation, httpClient);
+        return new JSONRPCClientInvoker(endpointReference, operation, httpClient);
     }
 
     public void start() {
