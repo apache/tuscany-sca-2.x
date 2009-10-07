@@ -19,11 +19,12 @@
 
 package org.apache.tuscany.sca.interfacedef.java.jaxws;
 
-import java.security.SecureClassLoader;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.HashMap;
 import java.util.Map;
 
-public class GeneratedClassLoader extends SecureClassLoader {
+public class GeneratedClassLoader extends URLClassLoader {
     private class GeneratedClass {
         private String className;
         private byte[] byteCode;
@@ -46,7 +47,7 @@ public class GeneratedClassLoader extends SecureClassLoader {
     private Map<String, GeneratedClass> generatedClasses = new HashMap<String, GeneratedClass>();
 
     public GeneratedClassLoader(ClassLoader parentLoader) {
-        super(parentLoader);
+        super(new URL[0], parentLoader);
     }
 
     @Override
