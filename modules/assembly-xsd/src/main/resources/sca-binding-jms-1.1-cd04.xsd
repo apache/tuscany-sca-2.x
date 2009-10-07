@@ -95,6 +95,11 @@
             <element name="connectionFactory" type="sca:JMSConnectionFactory"/> 
             <element name="activationSpec" type="sca:JMSActivationSpec"/> 
          </choice> 
+
+         <!-- TUSCANY-3297 -->
+         <any namespace="##other" processContents="lax" 
+              minOccurs="0" maxOccurs="unbounded"/>
+
       </sequence>
    </complexType>
 
