@@ -33,6 +33,7 @@
     <module>args</module>
     <module>defaults</module>
     <module>DynamicReplyQ</module>
+    <module>exceptions</module>
     <module>externalBroker</module>
     <module>non-sca-client</module>
     <module>noreplyto</module>
@@ -51,7 +52,6 @@
 <!-- still to bring up in 2.x
     <module>callbacks</module>
     <module>definitions</module>
-    <module>exceptions</module>
     <module>exceptions1</module>
     <module>format</module>
 -->
