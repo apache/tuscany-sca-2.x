@@ -98,7 +98,7 @@ public class EndpointReferenceBuilderImpl implements EndpointReferenceBuilder {
             
             // still need to check that the callback endpoint is set correctly
             if (hasCallback(endpointReference) &&
-                endpointReference.getCallbackEndpoint() == null &&
+                endpointReference.getCallbackEndpoint() != null &&
                 endpointReference.getCallbackEndpoint().isUnresolved() == true ){
                 problem = selectCallbackEndpoint(endpointReference,
                                                  endpointReference.getReference().getCallbackService().getEndpoints());
