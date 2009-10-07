@@ -75,7 +75,7 @@ public class RuntimeWireInvoker implements Invoker{
             // shouldn't take it out of the response message in the first place
             msg.setBody(response);
         } catch (InvocationTargetException e) {
-            throw new ServiceRuntimeException(e);
+//            throw new ServiceRuntimeException(e);
         }
         
         return msg;
