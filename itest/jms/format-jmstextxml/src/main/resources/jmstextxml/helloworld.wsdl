@@ -64,6 +64,9 @@
                     </sequence>
                 </complexType>
             </element>
+
+            <element name="CheckedException" type="xsd:string" />
+
         </schema>
         
     </wsdl:types>
@@ -84,6 +87,10 @@
         <wsdl:part element="tns:getPersonGreetingsResponse" name="parameters"/>
     </wsdl:message>    
 
+    <wsdl:message name="CheckedException">
+        <wsdl:part element="tns:CheckedException" name="fault" />
+    </wsdl:message>
+
     <wsdl:portType name="HelloWorld">
         <wsdl:operation name="getGreetings">
             <wsdl:input message="tns:getGreetingsRequest" name="getGreetingsRequest"/>
@@ -92,6 +99,13 @@
         <wsdl:operation name="getPersonGreetings">
             <wsdl:input message="tns:getPersonGreetingsRequest" name="getPersonGreetingsRequest"/>
             <wsdl:output message="tns:getPersonGreetingsResponse" name="getPersonGreetingsResponse"/>
+        </wsdl:operation>        
+        <wsdl:operation name="throwChecked">
+            <wsdl:input message="tns:getPersonGreetingsRequest" name="getPersonGreetingsRequest"/>
+            <wsdl:fault message="tns:CheckedException" name="CheckedException"/>
+        </wsdl:operation>        
+        <wsdl:operation name="throwUnChecked">
+            <wsdl:input message="tns:getPersonGreetingsRequest" name="getPersonGreetingsRequest"/>
         </wsdl:operation>        
     </wsdl:portType>
 
