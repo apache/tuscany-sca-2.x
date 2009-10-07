@@ -1,0 +1,3 @@
+This test uses an SCA composite to fake a scenario where the reference is an SCA reference but the 
+service is a non-SCA JMS endpoint. This gives us the opportunity to play about with the interface
+configuration at the reference to see how the contents of the JMS message can be controlled. 

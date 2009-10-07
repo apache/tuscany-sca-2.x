@@ -36,6 +36,11 @@
     <module>exceptions</module>
     <module>exceptions1</module>
     <module>externalBroker</module>
+    <module>format-jmsbytes</module>
+    <module>format-jmsbytesxml</module>
+    <module>format-jmsdefault</module>
+    <module>format-jmsmessage</module>
+    <module>format-jmstext</module>
     <module>non-sca-client</module>
     <module>noreplyto</module>
     <module>nulls</module>
@@ -53,7 +58,10 @@
 <!-- still to bring up in 2.x
     <module>callbacks</module>
     <module>definitions</module>
-    <module>format</module>
+
+    <module>format-jmsobject</module>
+    <module>format-jmstextxml</module>
+    <module>format-jmstextxmlinjmsobjectout</module>
 -->
 
   </modules>

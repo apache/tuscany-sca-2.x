@@ -17,7 +17,7 @@
     * specific language governing permissions and limitations
     * under the License.    
 -->
-<contribution xmlns="http://www.osoa.org/xmlns/sca/1.0"
-              xmlns:hw="http://helloworld">
-    <deployable composite="hw:jmsobject" />
+<contribution xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+              xmlns:itest="http://itest">
+    <deployable composite="itest:helloworld" />
 </contribution>
