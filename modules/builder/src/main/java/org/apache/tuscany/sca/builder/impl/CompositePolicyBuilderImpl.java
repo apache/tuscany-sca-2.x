@@ -77,6 +77,7 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
         for (Object model : models) {
             if (model instanceof PolicySubject) {
                 PolicySubject subject = (PolicySubject)model;
+                // FIXME: We should ignore the mutually exclusive intents from different levels
                 policySubject.getRequiredIntents().addAll(subject.getRequiredIntents());
                 policySubject.getPolicySets().addAll(subject.getPolicySets());
             }
@@ -300,9 +301,11 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
         }
 
         for (Component component : composite.getComponents()) {
+            // Check component against implementation
             checkMutualExclusion(component, component.getImplementation(), monitor);
 
             for (ComponentService componentService : component.getServices()) {
+                // Check component/service against componentType/service 
                 checkMutualExclusion(componentService, componentService.getService(), monitor);
 
                 if (componentService.getInterfaceContract() != null && componentService.getService() != null) {
@@ -349,6 +352,7 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
             }
 
             for (ComponentReference componentReference : component.getReferences()) {
+                // Check component/reference against componentType/reference
                 checkMutualExclusion(componentReference, componentReference.getReference(), monitor);
 
                 if (componentReference.getInterfaceContract() != null && componentReference.getReference() != null) {
@@ -397,6 +401,9 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
             }
 
             Implementation implementation = component.getImplementation();
+            if (implementation != null) {
+                inherit(implementation, component, composite);
+            }
             // How to deal with implementation level policySets/intents
         }
     }
