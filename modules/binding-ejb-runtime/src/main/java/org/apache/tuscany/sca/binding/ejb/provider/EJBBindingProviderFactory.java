@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.sca.binding.ejb.provider;
 
+import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.binding.ejb.EJBBinding;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
@@ -25,7 +27,6 @@ import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
-import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
 /**
  * A factory from creating the EJB binding provider.
@@ -35,19 +36,18 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 public class EJBBindingProviderFactory implements BindingProviderFactory<EJBBinding> {
 
     public EJBBindingProviderFactory(ExtensionPointRegistry extensionPoints) {
+    	// empty constructor
+    }
+    
+    public ReferenceBindingProvider createReferenceBindingProvider(EndpointReference endpointReference) {
+    	return new EJBBindingReferenceBindingProvider((RuntimeComponent)endpointReference.getComponent(), 
+    												  (RuntimeComponentReference)endpointReference.getReference(), 
+    												  (EJBBinding)endpointReference.getBinding());
     }
 
-    public ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component,
-                                                                   RuntimeComponentReference reference,
-                                                                   EJBBinding binding) {
-        return new EJBBindingReferenceBindingProvider(component, reference, binding);
-    }
-
-    public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component,
-                                                               RuntimeComponentService service,
-                                                               EJBBinding binding) {
-        return null;
-        //throw new EJBBindingException("Service Binding not supported for EJB Binding");
+    public ServiceBindingProvider createServiceBindingProvider(Endpoint endpoint) {
+    	// Service Binding not supported for EJB Binding
+    	return null;
     }
 
     public Class<EJBBinding> getModelType() {

@@ -24,6 +24,7 @@
    <include schemaLocation="sca-binding-jms-1.1-cd04.xsd"/>
    <include schemaLocation="sca-binding-jca-1.1-cd04.xsd"/>   
    <include schemaLocation="sca-binding-sca-1.1-cd04.xsd"/>
+   <include schemaLocation="sca-binding-ejb-1.1-cd01.xsd"/>
 
    <include schemaLocation="sca-definitions-1.1-cd04.xsd"/>
    <include schemaLocation="sca-policy-1.1-cd04.xsd"/>

@@ -38,5 +38,4 @@ Import-Package: javax.ejb,
  org.oasisopen.sca.annotation;version="2.0.0";resolution:=optional
 Bundle-SymbolicName: org.apache.tuscany.sca.binding.ejb.runtime
 Bundle-DocURL: http://www.apache.org/
-
 Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6

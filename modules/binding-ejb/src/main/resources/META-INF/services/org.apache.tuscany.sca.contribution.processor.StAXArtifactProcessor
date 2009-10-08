@@ -16,4 +16,4 @@
 # under the License. 
 
 # Implementation class for the artifact processor extension
-org.apache.tuscany.sca.binding.ejb.impl.EJBBindingProcessor;qname=http://www.osoa.org/xmlns/sca/1.0#binding.ejb,model=org.apache.tuscany.sca.binding.ejb.EJBBinding
+org.apache.tuscany.sca.binding.ejb.impl.EJBBindingProcessor;qname=http://docs.oasis-open.org/ns/opencsa/sca/200903#binding.ejb,model=org.apache.tuscany.sca.binding.ejb.EJBBinding

@@ -22,7 +22,6 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.Base;
 import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.assembly.xml.Constants;
 
 /**
  * An implementation of EJBBinding.
@@ -33,8 +32,9 @@ public interface EJBBinding extends Binding, Base {
     // Constants used when describing the EJB binding
     // model and for setting up defaults
     String BINDING_EJB = "binding.ejb";
-    QName BINDING_EJB_QNAME = new QName(Constants.SCA11_NS, BINDING_EJB);
-
+    QName BINDING_EJB_QNAME = new QName(SCA11_NS, BINDING_EJB);
+    QName TYPE = new QName(SCA11_NS, BINDING_EJB);
+    
     // Constants for the XML describing the EJB Binding
     String HOME_INTERFACE = "homeInterface";
     String EJB_LINK_NAME = "ejb-link-name";

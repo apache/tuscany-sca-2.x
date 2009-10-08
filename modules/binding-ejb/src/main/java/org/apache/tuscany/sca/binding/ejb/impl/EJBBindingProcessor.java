@@ -131,7 +131,6 @@ public class EJBBindingProcessor implements StAXArtifactProcessor<EJBBinding> {
                 ejbBinding.setSessionType(EJBBinding.SessionType.STATEFUL);
             } else {
             	error("UnknownEJBSessionType", reader, sessionType, name);            	
-                //throw new ContributionReadException("Unknown EJB Session Type of " + sessionType + " for " + name);
             }
         }
 
@@ -143,7 +142,6 @@ public class EJBBindingProcessor implements StAXArtifactProcessor<EJBBinding> {
                 ejbBinding.setEjbVersion(EJBBinding.EJBVersion.EJB3);
             } else {
             	error("UnknownEJBVersion", reader, ejbVersion, name);
-                //throw new ContributionReadException("Unknown EJB Version of " + ejbVersion + " for " + name);
             }
         }
 
@@ -167,11 +165,9 @@ public class EJBBindingProcessor implements StAXArtifactProcessor<EJBBinding> {
         
         if (ejbBinding.getURI() != null){
             writer.writeAttribute(EJBBinding.URI, ejbBinding.getURI());
-        }        
-        
+        }
         
         // FIXME Implement the rest
-
         writer.writeEndElement();
     }
 

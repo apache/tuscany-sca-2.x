@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.sca.binding.ejb.impl;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.sca.binding.ejb.EJBBinding;
 
 /**
@@ -146,6 +148,10 @@ public class EJBBindingImpl implements EJBBinding {
      */
     public void setURI(String uri) {
         this.uri = uri;
+    }
+    
+    public QName getType() {
+        return TYPE;
     }
 
     public boolean isUnresolved() {
