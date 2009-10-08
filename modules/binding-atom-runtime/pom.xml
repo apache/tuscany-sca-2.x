@@ -101,6 +101,7 @@
            <groupId>org.apache.ws.commons.axiom</groupId>
            <artifactId>axiom-impl</artifactId>
            <version>1.2.7</version>
+           <scope>runtime</scope>
         </dependency>
 
         <dependency>
@@ -168,6 +169,7 @@
         <dependency>
            <groupId>commons-logging</groupId>
            <artifactId>commons-logging</artifactId>
+           <scope>runtime</scope>
            <version>1.1.1</version>
            <exclusions>
                <exclusion>
