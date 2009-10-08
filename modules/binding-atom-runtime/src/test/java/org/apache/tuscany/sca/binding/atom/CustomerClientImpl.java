@@ -26,10 +26,14 @@ import org.apache.abdera.model.Feed;
 import org.apache.tuscany.sca.binding.atom.collection.Collection;
 import org.oasisopen.sca.annotation.Reference;
 
+/**
+ * 
+ * @version $Rev$ $Date$
+ */
 public class CustomerClientImpl implements CustomerClient {
 
     protected final Abdera abdera = new Abdera();
-    
+
     @Reference
     public Collection customerCollection;
 
@@ -67,9 +71,9 @@ public class CustomerClientImpl implements CustomerClient {
     }
 
     public Collection getCustomerCollection() {
-    	return customerCollection;
+        return customerCollection;
     }
-    
+
     private Entry newEntry(String value) {
 
         Entry entry = this.abdera.newEntry();
@@ -78,7 +82,7 @@ public class CustomerClientImpl implements CustomerClient {
         Content content = this.abdera.getFactory().newContent();
         content.setContentType(Content.Type.TEXT);
         content.setValue(value);
-        
+
         entry.setContentElement(content);
 
         return entry;

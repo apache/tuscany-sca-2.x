@@ -28,6 +28,10 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+/**
+ * 
+ * @version $Rev$ $Date$
+ */
 public class AtomPostTestCase extends AbstractProviderConsumerTestCase {
     protected static CustomerClient testService;
     protected static Abdera abdera;
@@ -49,7 +53,7 @@ public class AtomPostTestCase extends AbstractProviderConsumerTestCase {
     @AfterClass
     public static void destroy() throws Exception {
         //System.out.println(">>>AtomPostTestCase.destroy entry");
-        
+
         destroyTestEnvironment();
     }
 

@@ -26,6 +26,8 @@ import org.oasisopen.sca.annotation.Scope;
  * Implementation of an Atom feed that does not implement the Collections
  * interface but does have a getAll() method that will be used by the Atom
  * binding to get the feed entries.
+ * 
+ * @version $Rev$ $Date$
  */
 @Scope("COMPOSITE")
 public class CustomerNonCollectionImpl {

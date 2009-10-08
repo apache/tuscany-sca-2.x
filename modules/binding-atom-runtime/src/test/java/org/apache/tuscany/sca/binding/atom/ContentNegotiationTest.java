@@ -49,209 +49,211 @@ import org.junit.Test;
  * Tests use of content negotiation for Atom binding in Tuscany.
  * Uses the SCA provided Provider composite to act as a server.
  * Uses the Abdera provided Client to act as a client.
+ * 
+ * @version $Rev$ $Date$
  */
 public class ContentNegotiationTest {
     public final static String providerURI = "http://localhost:8084/customer";
-    
+
     protected static Node scaProviderNode;
-    
+
     protected static CustomerClient testService;
     protected static Abdera abdera;
     protected static AbderaClient client;
     protected static Parser abderaParser;    
     protected static String lastId;
 
-	@BeforeClass
-	public static void init() throws Exception {
-	    try {
-		//System.out.println(">>>ContentNegotiationTest.init");
-	        String contribution = ContributionLocationHelper.getContributionLocation(ContentNegotiationTest.class);
-	        
-	        scaProviderNode = NodeFactory.newInstance().createNode("org/apache/tuscany/sca/binding/atom/Provider.composite", new Contribution("provider", contribution));
-	        scaProviderNode.start();
-	        
-	        abdera = new Abdera();
-		client = new AbderaClient(abdera);
-		abderaParser = Abdera.getNewParser();
-	    } catch(Exception e) {
-	        e.printStackTrace();
-	    }
-	}
+    @BeforeClass
+    public static void init() throws Exception {
+        try {
+            //System.out.println(">>>ContentNegotiationTest.init");
+            String contribution = ContributionLocationHelper.getContributionLocation(ContentNegotiationTest.class);
 
-	@AfterClass
-	public static void destroy() throws Exception {
-		//System.out.println(">>>ContentNegotiationTest.destroy");
-	        if (scaProviderNode != null) {
-	            scaProviderNode.stop();
-	            scaProviderNode.destroy();
-	        }
-	}
+            scaProviderNode = NodeFactory.newInstance().createNode("org/apache/tuscany/sca/binding/atom/Provider.composite", new Contribution("provider", contribution));
+            scaProviderNode.start();
 
-	@Test
-	public void testPrelim() throws Exception {
-		Assert.assertNotNull(scaProviderNode);
-		Assert.assertNotNull( client );
-	}
-	
+            abdera = new Abdera();
+            client = new AbderaClient(abdera);
+            abderaParser = Abdera.getNewParser();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @AfterClass
+    public static void destroy() throws Exception {
+        //System.out.println(">>>ContentNegotiationTest.destroy");
+        if (scaProviderNode != null) {
+            scaProviderNode.stop();
+            scaProviderNode.destroy();
+        }
+    }
+
     @Test
-	public void testPost() throws Exception {
-		//System.out.println(">>>ContentNegotiationTest.testPost");
-		// Testing of entry creation
-		Factory factory = abdera.getFactory();
-		String customerName = "Fred Farkle";
-		Entry entry = factory.newEntry();
-		entry.setTitle("customer " + customerName);
-		entry.setUpdated(new Date());
-		entry.addAuthor("Apache Tuscany");
-		// ID created by collection.
-		Content content = abdera.getFactory().newContent();
-		content.setContentType(Content.Type.TEXT);
-		content.setValue(customerName);
-		entry.setContentElement(content);
+    public void testPrelim() throws Exception {
+        Assert.assertNotNull(scaProviderNode);
+        Assert.assertNotNull( client );
+    }
 
-		RequestOptions opts = new RequestOptions();
-		final String contentType = "application/atom+xml; type=entry"; 
-		opts.setContentType(contentType);
-		// AtomTestCaseUtils.printRequestHeaders( "Post request headers", "   ", opts );
-		IRI colUri = new IRI(providerURI).resolve("customer");
-		// res = client.post(colUri.toString() + "?test=foo", entry, opts);
-		ClientResponse res = client.post(colUri.toString(), entry, opts);
-		
-	    // Assert response status code is 201-OK.
-		// Assert response header Content-Type: application/atom+xml; charset=UTF-8
-    	Assert.assertEquals(201, res.getStatus());
-    	String returnedContentType = res.getContentType().toString().trim();
-    	Assert.assertEquals(contentType, returnedContentType );
+    @Test
+    public void testPost() throws Exception {
+        //System.out.println(">>>ContentNegotiationTest.testPost");
+        // Testing of entry creation
+        Factory factory = abdera.getFactory();
+        String customerName = "Fred Farkle";
+        Entry entry = factory.newEntry();
+        entry.setTitle("customer " + customerName);
+        entry.setUpdated(new Date());
+        entry.addAuthor("Apache Tuscany");
+        // ID created by collection.
+        Content content = abdera.getFactory().newContent();
+        content.setContentType(Content.Type.TEXT);
+        content.setValue(customerName);
+        entry.setContentElement(content);
 
-    	String eTag = res.getHeader( "ETag" );
-    	if ( eTag != null)
-    		lastId = eTag.substring( 1, eTag.length()-1);
-    	
-    	// AtomTestCaseUtils.printResponseHeaders( "Entry post response headers:", "   ", res );
-    	// System.out.println("Entry post response content:");
-    	// AtomTestCaseUtils.prettyPrint(abdera, res.getDocument());
-	}
+        RequestOptions opts = new RequestOptions();
+        final String contentType = "application/atom+xml; type=entry"; 
+        opts.setContentType(contentType);
+        // AtomTestCaseUtils.printRequestHeaders( "Post request headers", "   ", opts );
+        IRI colUri = new IRI(providerURI).resolve("customer");
+        // res = client.post(colUri.toString() + "?test=foo", entry, opts);
+        ClientResponse res = client.post(colUri.toString(), entry, opts);
 
-	@Test
-	public void testXMLEntryGet() throws Exception {
-		//System.out.println(">>>ContentNegotiationTest.testXMLEntryGet");
-		RequestOptions opts = new RequestOptions();
-		opts.setHeader( "Accept", "application/atom+xml" );
-		
-		IRI colUri = new IRI(providerURI).resolve("customer");
-		ClientResponse res = client.get(colUri.toString() + "/" + lastId, opts);
-    	Assert.assertEquals(200, res.getStatus());
-    	String returnedContentType = res.getContentType().toString().trim();
-    	// Assert.assertEquals(contentType, returnedContentType );
-		res.release();	    
-	}
+        // Assert response status code is 201-OK.
+        // Assert response header Content-Type: application/atom+xml; charset=UTF-8
+        Assert.assertEquals(201, res.getStatus());
+        String returnedContentType = res.getContentType().toString().trim();
+        Assert.assertEquals(contentType, returnedContentType );
 
-	@Test
-	public void testJSONEntryGet() throws Exception {
-		//System.out.println(">>>ContentNegotiationTest.testJSONEntryGet");
-		RequestOptions opts = new RequestOptions();
-		opts.setHeader( "Accept", "application/json" );
-		
-		IRI colUri = new IRI(providerURI).resolve("customer");
-		ClientResponse res = client.get(colUri.toString() + "/" + lastId, opts);
-		try {
-			Assert.assertEquals(200, res.getStatus());
-			// Abdera 0.4 throws exception on getContentType with application/json.    	
-			// System.out.println( "ContentNegotiationTest.testJSONEntryGet contentType=" + res.getContentType());
-			String contentType = res.getHeader( "Content-Type");
-			Assert.assertTrue( -1 < contentType.indexOf( "application/json" ));
-			// Following is a poor man's JSONObject test to avoid dependency on JSON libs.
-			// JSONObject jsonResp = new JSONObject(res.);
-			// Assert.assertEquals(12345, jsonResp.getInt("result"));
-			String responseBody = readResponse( res.getReader() );
-			Assert.assertTrue( responseBody.startsWith( "{") );
-			Assert.assertTrue( responseBody.endsWith( "}") );
-			Assert.assertTrue( -1 < responseBody.indexOf( "\"id\"" ));
-			Assert.assertTrue( -1 < responseBody.indexOf( "\"title\"" ));
-			Assert.assertTrue( -1 < responseBody.indexOf( "\"updated\"" ));
-			// AtomTestCaseUtils.printResponseHeaders( "JSON Entry response headers:", "   ", res );
-			// System.out.println( "ContentNegotiationTest.testJSONEntryGet JSON entry body=" + responseBody );
-		} finally {
-			res.release();	    			
-		}
-	}
+        String eTag = res.getHeader( "ETag" );
+        if ( eTag != null)
+            lastId = eTag.substring( 1, eTag.length()-1);
 
-	@Test
+        // AtomTestCaseUtils.printResponseHeaders( "Entry post response headers:", "   ", res );
+        // System.out.println("Entry post response content:");
+        // AtomTestCaseUtils.prettyPrint(abdera, res.getDocument());
+    }
+
+    @Test
+    public void testXMLEntryGet() throws Exception {
+        //System.out.println(">>>ContentNegotiationTest.testXMLEntryGet");
+        RequestOptions opts = new RequestOptions();
+        opts.setHeader( "Accept", "application/atom+xml" );
+
+        IRI colUri = new IRI(providerURI).resolve("customer");
+        ClientResponse res = client.get(colUri.toString() + "/" + lastId, opts);
+        Assert.assertEquals(200, res.getStatus());
+        String returnedContentType = res.getContentType().toString().trim();
+        // Assert.assertEquals(contentType, returnedContentType );
+        res.release();	    
+    }
+
+    @Test
+    public void testJSONEntryGet() throws Exception {
+        //System.out.println(">>>ContentNegotiationTest.testJSONEntryGet");
+        RequestOptions opts = new RequestOptions();
+        opts.setHeader( "Accept", "application/json" );
+
+        IRI colUri = new IRI(providerURI).resolve("customer");
+        ClientResponse res = client.get(colUri.toString() + "/" + lastId, opts);
+        try {
+            Assert.assertEquals(200, res.getStatus());
+            // Abdera 0.4 throws exception on getContentType with application/json.    	
+            // System.out.println( "ContentNegotiationTest.testJSONEntryGet contentType=" + res.getContentType());
+            String contentType = res.getHeader( "Content-Type");
+            Assert.assertTrue( -1 < contentType.indexOf( "application/json" ));
+            // Following is a poor man's JSONObject test to avoid dependency on JSON libs.
+            // JSONObject jsonResp = new JSONObject(res.);
+            // Assert.assertEquals(12345, jsonResp.getInt("result"));
+            String responseBody = readResponse( res.getReader() );
+            Assert.assertTrue( responseBody.startsWith( "{") );
+            Assert.assertTrue( responseBody.endsWith( "}") );
+            Assert.assertTrue( -1 < responseBody.indexOf( "\"id\"" ));
+            Assert.assertTrue( -1 < responseBody.indexOf( "\"title\"" ));
+            Assert.assertTrue( -1 < responseBody.indexOf( "\"updated\"" ));
+            // AtomTestCaseUtils.printResponseHeaders( "JSON Entry response headers:", "   ", res );
+            // System.out.println( "ContentNegotiationTest.testJSONEntryGet JSON entry body=" + responseBody );
+        } finally {
+            res.release();	    			
+        }
+    }
+
+    @Test
     public void testXMLFeedGet() throws Exception {		
-		//System.out.println(">>>ContentNegotiationTest.testXMLFeedGet");
-		RequestOptions opts = new RequestOptions();
-		opts.setHeader( "Accept", "application/atom+xml" );
-		
-		// Atom feed request
-		ClientResponse res = client.get(providerURI, opts);
-		Assert.assertNotNull(res);
-		try {
-			// Asser feed provided since no predicates
-			Assert.assertEquals(200, res.getStatus());
-			Assert.assertEquals(ResponseType.SUCCESS, res.getType());
-	    	// AtomTestCaseUtils.printResponseHeaders( "Feed response headers:", "   ", res );
-	    	// System.out.println("Feed response content:");
-	    	// AtomTestCaseUtils.prettyPrint(abdera, res.getDocument());
+        //System.out.println(">>>ContentNegotiationTest.testXMLFeedGet");
+        RequestOptions opts = new RequestOptions();
+        opts.setHeader( "Accept", "application/atom+xml" );
 
-	    	// Perform other tests on feed.
-			Document<Feed> doc = res.getDocument();
-			Assert.assertNotNull( doc );
-			Feed feed = doc.getRoot();
-			Assert.assertNotNull( feed );
-			// RFC 4287 requires non-null id, title, updated elements
-			Assert.assertNotNull( feed.getId() );
-			Assert.assertNotNull( feed.getTitle() );
-			Assert.assertNotNull( feed.getUpdated() );
-			// AtomTestCaseUtils.printFeed( "Feed values", "   ", feed );
-		} finally {
-			res.release();
-		}
-	}		
+        // Atom feed request
+        ClientResponse res = client.get(providerURI, opts);
+        Assert.assertNotNull(res);
+        try {
+            // Asser feed provided since no predicates
+            Assert.assertEquals(200, res.getStatus());
+            Assert.assertEquals(ResponseType.SUCCESS, res.getType());
+            // AtomTestCaseUtils.printResponseHeaders( "Feed response headers:", "   ", res );
+            // System.out.println("Feed response content:");
+            // AtomTestCaseUtils.prettyPrint(abdera, res.getDocument());
 
-	@Test
+            // Perform other tests on feed.
+            Document<Feed> doc = res.getDocument();
+            Assert.assertNotNull( doc );
+            Feed feed = doc.getRoot();
+            Assert.assertNotNull( feed );
+            // RFC 4287 requires non-null id, title, updated elements
+            Assert.assertNotNull( feed.getId() );
+            Assert.assertNotNull( feed.getTitle() );
+            Assert.assertNotNull( feed.getUpdated() );
+            // AtomTestCaseUtils.printFeed( "Feed values", "   ", feed );
+        } finally {
+            res.release();
+        }
+    }		
+
+    @Test
     public void testJSONFeedGet() throws Exception {		
-		//System.out.println(">>>ContentNegotiationTest.testJSONFeedGet");
-		RequestOptions opts = new RequestOptions();
-		opts.setHeader( "Accept", "application/json" );
-		
-		// JSON feed request
-		ClientResponse res = client.get(providerURI, opts);
-		Assert.assertNotNull(res);
-		try {
-			// Assert feed provided since no predicates
-			Assert.assertEquals(200, res.getStatus());
-			// Abdera 0.4 throws exception on getContentType with application/json.    	
-			// System.out.println( "ContentNegotiationTest.testJSONEntryGet contentType=" + res.getContentType());
-			String contentType = res.getHeader( "Content-Type");
-			Assert.assertTrue( -1 < contentType.indexOf( "application/json" ));
-			// Following is a poor man's JSONObject test to avoid dependency on JSON libs.
-			// JSONObject jsonResp = new JSONObject(res.);
-			// Assert.assertEquals(12345, jsonResp.getInt("result"));
-			String responseBody = readResponse( res.getReader() );
-			Assert.assertTrue( responseBody.startsWith( "{") );
-			Assert.assertTrue( responseBody.endsWith( "}") );
-			Assert.assertTrue( -1 < responseBody.indexOf( "\"id\"" ));
-			Assert.assertTrue( -1 < responseBody.indexOf( "\"title\"" ));
-			Assert.assertTrue( -1 < responseBody.indexOf( "\"updated\"" ));
-			Assert.assertTrue( -1 < responseBody.indexOf( "\"entries\"" ));
-			// AtomTestCaseUtils.printResponseHeaders( "JSON Entry response headers:", "   ", res );
-			// System.out.println( "ContentNegotiationTest.testJSONEntryGet JSON entry body=" + responseBody );
-		} finally {
-			res.release();
-		}
-	}
-	
-	protected String readResponse( Reader responseReader ) {
-		if ( responseReader == null ) return ""; 
-		StringBuffer sb = new StringBuffer(1024);
-		try {
-			int charValue = 0;
-			while ((charValue = responseReader.read()) != -1) {
-				//result = result + (char) charValue;
-				sb.append((char)charValue);
-			}
-		} catch ( IOException e ) {
-		}
-		return sb.toString();
-	}
+        //System.out.println(">>>ContentNegotiationTest.testJSONFeedGet");
+        RequestOptions opts = new RequestOptions();
+        opts.setHeader( "Accept", "application/json" );
+
+        // JSON feed request
+        ClientResponse res = client.get(providerURI, opts);
+        Assert.assertNotNull(res);
+        try {
+            // Assert feed provided since no predicates
+            Assert.assertEquals(200, res.getStatus());
+            // Abdera 0.4 throws exception on getContentType with application/json.    	
+            // System.out.println( "ContentNegotiationTest.testJSONEntryGet contentType=" + res.getContentType());
+            String contentType = res.getHeader( "Content-Type");
+            Assert.assertTrue( -1 < contentType.indexOf( "application/json" ));
+            // Following is a poor man's JSONObject test to avoid dependency on JSON libs.
+            // JSONObject jsonResp = new JSONObject(res.);
+            // Assert.assertEquals(12345, jsonResp.getInt("result"));
+            String responseBody = readResponse( res.getReader() );
+            Assert.assertTrue( responseBody.startsWith( "{") );
+            Assert.assertTrue( responseBody.endsWith( "}") );
+            Assert.assertTrue( -1 < responseBody.indexOf( "\"id\"" ));
+            Assert.assertTrue( -1 < responseBody.indexOf( "\"title\"" ));
+            Assert.assertTrue( -1 < responseBody.indexOf( "\"updated\"" ));
+            Assert.assertTrue( -1 < responseBody.indexOf( "\"entries\"" ));
+            // AtomTestCaseUtils.printResponseHeaders( "JSON Entry response headers:", "   ", res );
+            // System.out.println( "ContentNegotiationTest.testJSONEntryGet JSON entry body=" + responseBody );
+        } finally {
+            res.release();
+        }
+    }
+
+    protected String readResponse( Reader responseReader ) {
+        if ( responseReader == null ) return ""; 
+        StringBuffer sb = new StringBuffer(1024);
+        try {
+            int charValue = 0;
+            while ((charValue = responseReader.read()) != -1) {
+                //result = result + (char) charValue;
+                sb.append((char)charValue);
+            }
+        } catch ( IOException e ) {
+        }
+        return sb.toString();
+    }
 }

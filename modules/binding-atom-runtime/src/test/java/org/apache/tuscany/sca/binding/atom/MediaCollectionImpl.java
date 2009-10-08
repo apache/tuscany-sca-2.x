@@ -36,27 +36,31 @@ import org.apache.tuscany.sca.binding.atom.collection.MediaCollection;
 import org.apache.tuscany.sca.binding.atom.collection.NotFoundException;
 import org.oasisopen.sca.annotation.Scope;
 
+/**
+ * 
+ * @version $Rev$ $Date$
+ */
 @Scope("COMPOSITE")
 public class MediaCollectionImpl implements MediaCollection {
     private final Abdera abdera = new Abdera();
     private Map<String, Entry> entries = new HashMap<String, Entry>();
     private Map<String, String> mediaFiles = new HashMap<String, String>();
     public Date lastModified = new Date();
-    
+
     public Entry post(Entry entry) {
         //System.out.println(">>> MediaCollectionImpl.post entry=" + entry.getTitle());
 
         if(!("Exception_Test".equalsIgnoreCase(entry.getTitle())))
         {
-           String id = "urn:uuid:customer-" + UUID.randomUUID().toString();
-           entry.setId(id);
+            String id = "urn:uuid:customer-" + UUID.randomUUID().toString();
+            entry.setId(id);
 
-           entry.addLink("" + id, "edit");
-           entry.addLink("" + id, "alternate");
-           Date now = new Date();
-           entry.setUpdated(now);
-           lastModified = now;
-           entries.put(id, entry);
+            entry.addLink("" + id, "edit");
+            entry.addLink("" + id, "alternate");
+            Date now = new Date();
+            entry.setUpdated(now);
+            lastModified = now;
+            entries.put(id, entry);
 
             //System.out.println(">>> MediaCollectionImpl.post return id=" + id);
 
@@ -65,7 +69,7 @@ public class MediaCollectionImpl implements MediaCollection {
         }
         else
         {
-        	throw new IllegalArgumentException("Exception in Post method");
+            throw new IllegalArgumentException("Exception in Post method");
         }
     }
 
@@ -77,26 +81,26 @@ public class MediaCollectionImpl implements MediaCollection {
     public void put(String id, Entry entry) throws NotFoundException {
         //System.out.println(">>> MediaCollectionImpl.put id=" + id + " entry=" + entry.getTitle());
         if(entries.containsKey(id)){
-        	Date now = new Date();
-        	entry.setUpdated(now);
-        	lastModified = now;
+            Date now = new Date();
+            entry.setUpdated(now);
+            lastModified = now;
             entries.put(id, entry);
         }
         else {
-        	throw new NotFoundException();
+            throw new NotFoundException();
         }
-     }
+    }
 
     public void delete(String id) throws NotFoundException {
         //System.out.println(">>> MediaCollectionImpl.delete id=" + id);
         if(entries.containsKey(id)){
-        	entries.remove(id);
-        	lastModified = new Date();
+            entries.remove(id);
+            lastModified = new Date();
         }
         else {
-        	throw new NotFoundException();
-		}
-     }
+            throw new NotFoundException();
+        }
+    }
 
     public Feed getFeed() {
         //System.out.println(">>> MediaCollectionImpl.getFeed");
@@ -163,21 +167,21 @@ public class MediaCollectionImpl implements MediaCollection {
         // </entry>  		
 
         // Normalize title
-		entry.setTitle( title );
+        entry.setTitle( title );
         String normalTitle = title.replace( " ", "_" );
         String hostURL = "http://media.example.org/";
         int lastDelimiterPos = contentType != null ? contentType.lastIndexOf( "/" ) : -1;
         String extension = "";
         if ( lastDelimiterPos != -1 ) {
-        	extension = contentType.substring( lastDelimiterPos + 1 );
+            extension = contentType.substring( lastDelimiterPos + 1 );
         } else {
-        	extension = contentType;
+            extension = contentType;
         }
         long mediaLength = -1;
         try {
-        	mediaLength = media.skip( Long.MAX_VALUE );
+            mediaLength = media.skip( Long.MAX_VALUE );
         } catch ( IOException e ){}
-        
+
         // A true implementation would store the media to a repository, e.g. file system.
         // This implementation record's the id and the location.
         String id = "urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a-" + mediaFiles.size();
@@ -185,14 +189,14 @@ public class MediaCollectionImpl implements MediaCollection {
         mediaFiles.put( id, reposLocation );
 
         // Build entry for media link.
-		entry.setUpdated( new Date() );
-		entry.setId( id );
-		// Convention. Return header properties as key values.
-		entry.setSummary( "Content-Type=" + contentType + ",Content-Length=" + mediaLength  );
-		entry.setContent( new IRI( hostURL + normalTitle + "." + extension ), contentType );
-		entry.addLink( reposLocation + ".atom", "edit" );
-		entry.addLink( reposLocation + "." + extension, "edit-media" );
-		return entry;  	
+        entry.setUpdated( new Date() );
+        entry.setId( id );
+        // Convention. Return header properties as key values.
+        entry.setSummary( "Content-Type=" + contentType + ",Content-Length=" + mediaLength  );
+        entry.setContent( new IRI( hostURL + normalTitle + "." + extension ), contentType );
+        entry.addLink( reposLocation + ".atom", "edit" );
+        entry.addLink( reposLocation + "." + extension, "edit-media" );
+        return entry;  	
     }
 
     public void putMedia(String id, String contentType, InputStream media) throws NotFoundException {
@@ -201,8 +205,8 @@ public class MediaCollectionImpl implements MediaCollection {
         // Must responsd with success or not found as per Atom Pub spec (http://tools.ietf.org/html/rfc5023#section-9.6)
         // Body is null.
         if ( !id.endsWith( "0" ) )
-        	throw new NotFoundException( "Media at id=" + id + " not found." );
-        
+            throw new NotFoundException( "Media at id=" + id + " not found." );
+
         // A true implementation would update the media in the media repository.
     }
 

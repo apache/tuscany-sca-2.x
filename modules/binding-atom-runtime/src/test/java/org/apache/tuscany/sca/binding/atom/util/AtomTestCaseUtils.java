@@ -31,6 +31,8 @@ import org.apache.abdera.writer.WriterFactory;
 
 /**
  * Utilities to help print and test various aspects of entity tag support.
+ * 
+ * @version $Rev$ $Date$
  */
 public class AtomTestCaseUtils {
 
@@ -39,58 +41,58 @@ public class AtomTestCaseUtils {
         Writer writer = factory.getWriter("prettyxml");
         writer.writeTo(doc, System.out);
         System.out.println();
- 	}
+    }
 
     public static void printRequestHeaders( String title, String indent, RequestOptions request ) {
-     	System.out.println( title );
-     	if ( request == null ) {
-     		System.out.println( indent + " request is null");
-     		return;
-     	}
-     	String [] headerNames = request.getHeaderNames();
-     	for ( String headerName: headerNames) {
-     		String header = request.getHeader(headerName);
-    	       System.out.println( indent + " header name,value=" + headerName + "," + header );	
-     	}    	               	           
-     }
-    
-     public static void printResponseHeaders( String title, String indent, ClientResponse response ) {
-      	System.out.println( title );
-     	if ( response == null ) {
-     		System.out.println( indent + " response is null");
-     		return;
-     	}
-     	String [] headerNames = response.getHeaderNames();
-     	for ( String headerName: headerNames) {
-     	    String header = response.getHeader(headerName);
-     	    System.out.println( indent + " header name,value=" + headerName + "," + header );
-     	}
-     	               	           
-     }
+        System.out.println( title );
+        if ( request == null ) {
+            System.out.println( indent + " request is null");
+            return;
+        }
+        String [] headerNames = request.getHeaderNames();
+        for ( String headerName: headerNames) {
+            String header = request.getHeader(headerName);
+            System.out.println( indent + " header name,value=" + headerName + "," + header );	
+        }    	               	           
+    }
 
-	public static Entry newEntry(String value) {
-		Abdera abdera = new Abdera();
-		Entry entry = abdera.newEntry();
-		entry.setTitle("customer " + value);
+    public static void printResponseHeaders( String title, String indent, ClientResponse response ) {
+        System.out.println( title );
+        if ( response == null ) {
+            System.out.println( indent + " response is null");
+            return;
+        }
+        String [] headerNames = response.getHeaderNames();
+        for ( String headerName: headerNames) {
+            String header = response.getHeader(headerName);
+            System.out.println( indent + " header name,value=" + headerName + "," + header );
+        }
 
-		Content content = abdera.getFactory().newContent();
-		content.setContentType(Content.Type.TEXT);
-		content.setValue(value);
-		entry.setContentElement(content);
+    }
 
-		return entry;
-	}
+    public static Entry newEntry(String value) {
+        Abdera abdera = new Abdera();
+        Entry entry = abdera.newEntry();
+        entry.setTitle("customer " + value);
 
-	public static Entry updateEntry(Entry entry, String value) {
-		Abdera abdera = new Abdera();
-		entry.setTitle("customer " + value);
+        Content content = abdera.getFactory().newContent();
+        content.setContentType(Content.Type.TEXT);
+        content.setValue(value);
+        entry.setContentElement(content);
 
-		Content content = abdera.getFactory().newContent();
-		content.setContentType(Content.Type.TEXT);
-		content.setValue(value);
-		entry.setContentElement(content);
+        return entry;
+    }
 
-		return entry;
-	}		
-	
+    public static Entry updateEntry(Entry entry, String value) {
+        Abdera abdera = new Abdera();
+        entry.setTitle("customer " + value);
+
+        Content content = abdera.getFactory().newContent();
+        content.setContentType(Content.Type.TEXT);
+        content.setValue(value);
+        entry.setContentElement(content);
+
+        return entry;
+    }		
+
 }

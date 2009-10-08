@@ -42,6 +42,8 @@ import org.junit.Test;
 /**
  * Test cases for using an Atom feed that does not implement
  * the Collections interface but does have a getAll() method.
+ * 
+ * @version $Rev$ $Date$
  */
 public class AtomFeedNonCollectionTest {
     /**
@@ -68,7 +70,7 @@ public class AtomFeedNonCollectionTest {
      * The number of test feed entries.
      */
     private static final int FEED_ENTRY_COUNT = FEED_ENTRY_TITLES.length;
-    
+
     protected static Node scaProviderNode;
     protected static Node scaConsumerNode;
 
@@ -78,12 +80,12 @@ public class AtomFeedNonCollectionTest {
     public static void init() throws Exception {
         try {
             //System.out.println(">>>AtomFeedNonCollectionTest.init entry");
-            
+
             String contribution = ContributionLocationHelper.getContributionLocation(AtomFeedNonCollectionTest.class);
-            
+
             scaProviderNode = NodeFactory.newInstance().createNode("org/apache/tuscany/sca/binding/atom/ProviderNonCollection.composite", new Contribution("provider", contribution));
             scaProviderNode.start();
-            
+
             scaConsumerNode = NodeFactory.newInstance().createNode("org/apache/tuscany/sca/binding/atom/Consumer.composite", new Contribution("consumer", contribution));
             scaConsumerNode.start();
 

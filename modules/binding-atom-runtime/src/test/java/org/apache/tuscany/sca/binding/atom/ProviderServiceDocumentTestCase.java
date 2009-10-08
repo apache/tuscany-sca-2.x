@@ -44,6 +44,8 @@ import org.junit.Test;
  * Tests use of service documents provided by atom binding based collections.
  * Uses the SCA provided Provider composite to act as a server.
  * Uses the Abdera provided Client to act as a client.
+ * 
+ * @version $Rev$ $Date$
  */
 public class ProviderServiceDocumentTestCase extends AbstractProviderConsumerTestCase {
     public final static String providerURI = "http://localhost:8084/customer";
@@ -53,54 +55,54 @@ public class ProviderServiceDocumentTestCase extends AbstractProviderConsumerTes
     protected static AbderaClient client;
     protected static Parser abderaParser;    
 
-	@BeforeClass
-	public static void init() throws Exception {
-	    initTestEnvironment(AtomPostTestCase.class);
+    @BeforeClass
+    public static void init() throws Exception {
+        initTestEnvironment(AtomPostTestCase.class);
 
-	    testService = scaConsumerNode.getService(CustomerClient.class, "CustomerClient");
+        testService = scaConsumerNode.getService(CustomerClient.class, "CustomerClient");
 
-	    abdera = new Abdera();
-	    client = new AbderaClient(abdera);
-	    abderaParser = Abdera.getNewParser();
-	}
+        abdera = new Abdera();
+        client = new AbderaClient(abdera);
+        abderaParser = Abdera.getNewParser();
+    }
 
     @AfterClass
     public static void destroy() throws Exception {
         destroyTestEnvironment();
     }
 
-	@Test
-	public void testPrelim() throws Exception {
-	    Assert.assertNotNull(scaProviderNode);
-	        Assert.assertNotNull(scaConsumerNode);
-		Assert.assertNotNull( client );
-	}
-			
-	@Test
-    public void testFeedBasics() throws Exception {		
-		// Normal feed request
-		ClientResponse res = client.get(providerURI);
-		Assert.assertNotNull(res);
-		try {
-			// Assert feed provided since no predicates
-			Assert.assertEquals(200, res.getStatus());
-			Assert.assertEquals(ResponseType.SUCCESS, res.getType());
-	    	// AtomTestCaseUtils.printResponseHeaders( "Feed response headers:", "   ", res );
-	    	// System.out.println("Feed response content:");
-	    	// AtomTestCaseUtils.prettyPrint(abdera, res.getDocument());
+    @Test
+    public void testPrelim() throws Exception {
+        Assert.assertNotNull(scaProviderNode);
+        Assert.assertNotNull(scaConsumerNode);
+        Assert.assertNotNull( client );
+    }
 
-	    	// Perform other tests on feed.
-	    	// Warning. AbderaClient.getEntityTag is very particular on tag pattern.
-			// Document<Feed> doc = res.getDocument();
-	    	String body = read( res.getInputStream() );
-			// RFC 4287 requires non-null id, title, updated elements
-			Assert.assertTrue( -1 != body.indexOf( "</id>" ));
-			Assert.assertTrue( -1 != body.indexOf( "</title>" ));
-			Assert.assertTrue( -1 != body.indexOf( "</updated>" ));
-		} finally {
-			res.release();
-		}
-	}		
+    @Test
+    public void testFeedBasics() throws Exception {		
+        // Normal feed request
+        ClientResponse res = client.get(providerURI);
+        Assert.assertNotNull(res);
+        try {
+            // Assert feed provided since no predicates
+            Assert.assertEquals(200, res.getStatus());
+            Assert.assertEquals(ResponseType.SUCCESS, res.getType());
+            // AtomTestCaseUtils.printResponseHeaders( "Feed response headers:", "   ", res );
+            // System.out.println("Feed response content:");
+            // AtomTestCaseUtils.prettyPrint(abdera, res.getDocument());
+
+            // Perform other tests on feed.
+            // Warning. AbderaClient.getEntityTag is very particular on tag pattern.
+            // Document<Feed> doc = res.getDocument();
+            String body = read( res.getInputStream() );
+            // RFC 4287 requires non-null id, title, updated elements
+            Assert.assertTrue( -1 != body.indexOf( "</id>" ));
+            Assert.assertTrue( -1 != body.indexOf( "</title>" ));
+            Assert.assertTrue( -1 != body.indexOf( "</updated>" ));
+        } finally {
+            res.release();
+        }
+    }		
 
     @Test
     public void testServiceDocumentGet() throws Exception {
@@ -114,56 +116,56 @@ public class ProviderServiceDocumentTestCase extends AbstractProviderConsumerTes
         postEntry = postEntry("Count Dracula");
         newEntry = resourceCollection.post(postEntry);
 
-		// Service document
-		ClientResponse res = client.get(providerURI + "/atomsvc");
-		Assert.assertNotNull(res);
-		try {
-			// Asser feed provided since no predicates
-			Assert.assertEquals(200, res.getStatus());
-			Assert.assertEquals(ResponseType.SUCCESS, res.getType());
+        // Service document
+        ClientResponse res = client.get(providerURI + "/atomsvc");
+        Assert.assertNotNull(res);
+        try {
+            // Asser feed provided since no predicates
+            Assert.assertEquals(200, res.getStatus());
+            Assert.assertEquals(ResponseType.SUCCESS, res.getType());
 
-	    	// Perform other tests on feed.
-	    	// AtomTestCaseUtils.prettyPrint(abdera, res.getDocument());	    	
-			Document<Service> serviceDoc = res.getDocument();
-			Service service = serviceDoc.getRoot();
-			Assert.assertNotNull( service );
-			org.apache.abdera.model.Collection collection =  service.getCollection( "workspace", "customers" );
-			String title = collection.getTitle();
-			Assert.assertEquals("customers", title);
-			String href = collection.getHref().toString();
-			Assert.assertTrue( href.contains( "customer") );
-		} finally {
-			res.release();
-		}
+            // Perform other tests on feed.
+            // AtomTestCaseUtils.prettyPrint(abdera, res.getDocument());	    	
+            Document<Service> serviceDoc = res.getDocument();
+            Service service = serviceDoc.getRoot();
+            Assert.assertNotNull( service );
+            org.apache.abdera.model.Collection collection =  service.getCollection( "workspace", "customers" );
+            String title = collection.getTitle();
+            Assert.assertEquals("customers", title);
+            String href = collection.getHref().toString();
+            Assert.assertTrue( href.contains( "customer") );
+        } finally {
+            res.release();
+        }
     }
 
-	public static void printFeed( String title, String indent, Feed feed ) {
-		if ( feed == null ) {
-			System.out.println( title + " feed is null");
-			return;
-		}
-			
-		System.out.println( title );
-		System.out.println( indent + "id=" + feed.getId() );
-		System.out.println( indent + "title=" + feed.getTitle() );
-		System.out.println( indent + "updated=" + feed.getUpdated() );
-		System.out.println( indent + "author=" + feed.getAuthor() );
-		// Collection collection = feed.getCollection();
-		// if ( collection == null ) {
-		// 	System.out.println( indent + "collection=null" );
-		// } else {
-		// 	System.out.println( indent + "collection=" + collection );
-		// }
-		// System.out.println( indent + "collection size=" + feed.getCollection() );
-		// for (Collection collection : workspace.getCollections()) {
-		//    if (collection.getTitle().equals("customers")) {
-		//       String expected = uri + "customers";
-		//       String actual = collection.getResolvedHref().toString();
-		//       assertEquals(expected, actual);
-		//    }
-		// }
+    public static void printFeed( String title, String indent, Feed feed ) {
+        if ( feed == null ) {
+            System.out.println( title + " feed is null");
+            return;
+        }
 
-	}
+        System.out.println( title );
+        System.out.println( indent + "id=" + feed.getId() );
+        System.out.println( indent + "title=" + feed.getTitle() );
+        System.out.println( indent + "updated=" + feed.getUpdated() );
+        System.out.println( indent + "author=" + feed.getAuthor() );
+        // Collection collection = feed.getCollection();
+        // if ( collection == null ) {
+        // 	System.out.println( indent + "collection=null" );
+        // } else {
+        // 	System.out.println( indent + "collection=" + collection );
+        // }
+        // System.out.println( indent + "collection size=" + feed.getCollection() );
+        // for (Collection collection : workspace.getCollections()) {
+        //    if (collection.getTitle().equals("customers")) {
+        //       String expected = uri + "customers";
+        //       String actual = collection.getResolvedHref().toString();
+        //       assertEquals(expected, actual);
+        //    }
+        // }
+
+    }
 
     private Entry postEntry(String value) {
         Entry entry = abdera.newEntry();
@@ -178,25 +180,25 @@ public class ProviderServiceDocumentTestCase extends AbstractProviderConsumerTes
     }
 
     /**
-	 * Read response ream from the given socket.
-	 * @param socket
-	 * @return
-	 * @throws IOException
-	 */
-	private static String read(InputStream inputStream) throws IOException {
-		BufferedReader reader = null;
-		try {
-			reader = new BufferedReader(new InputStreamReader( inputStream ));
-			StringBuffer sb = new StringBuffer();
-			String str;
-			while ((str = reader.readLine()) != null) {
-				sb.append(str);
-			}
-			return sb.toString();
-		} finally {
-			if (reader != null) {
-				reader.close();
-			}
-		}
-	}
+     * Read response ream from the given socket.
+     * @param socket
+     * @return
+     * @throws IOException
+     */
+    private static String read(InputStream inputStream) throws IOException {
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new InputStreamReader( inputStream ));
+            StringBuffer sb = new StringBuffer();
+            String str;
+            while ((str = reader.readLine()) != null) {
+                sb.append(str);
+            }
+            return sb.toString();
+        } finally {
+            if (reader != null) {
+                reader.close();
+            }
+        }
+    }
 }

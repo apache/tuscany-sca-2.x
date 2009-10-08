@@ -30,6 +30,10 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+/**
+ * 
+ * @version $Rev$ $Date$
+ */
 public class AtomPutTestCase extends AbstractProviderConsumerTestCase {
 
     protected static CustomerClient testService;
@@ -41,7 +45,7 @@ public class AtomPutTestCase extends AbstractProviderConsumerTestCase {
             //System.out.println(">>>AtomPutTestCase.init entry");
 
             initTestEnvironment(AtomPutTestCase.class);
-            
+
             testService = scaConsumerNode.getService(CustomerClient.class, "CustomerClient");
             abdera = new Abdera();
         } catch(Exception e) {
@@ -52,7 +56,7 @@ public class AtomPutTestCase extends AbstractProviderConsumerTestCase {
     @AfterClass
     public static void destroy() throws Exception {
         // System.out.println(">>>AtomPutTestCase.destroy entry");
-        
+
         destroyTestEnvironment();
     }
 

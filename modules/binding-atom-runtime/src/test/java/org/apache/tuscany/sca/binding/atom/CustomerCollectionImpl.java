@@ -32,12 +32,16 @@ import org.apache.tuscany.sca.binding.atom.collection.Collection;
 import org.apache.tuscany.sca.binding.atom.collection.NotFoundException;
 import org.oasisopen.sca.annotation.Scope;
 
+/**
+ * 
+ * @version $Rev$ $Date$
+ */
 @Scope("COMPOSITE")
 public class CustomerCollectionImpl implements Collection {
     private final Abdera abdera = new Abdera();
     private Map<String, Entry> entries = new HashMap<String, Entry>();
     public Date lastModified = new Date();
-    
+
     /**
      * Default constructor 
      */
@@ -50,15 +54,15 @@ public class CustomerCollectionImpl implements Collection {
 
         if(!("Exception_Test".equalsIgnoreCase(entry.getTitle())))
         {
-           String id = "urn:uuid:customer-" + UUID.randomUUID().toString();
-           entry.setId(id);
+            String id = "urn:uuid:customer-" + UUID.randomUUID().toString();
+            entry.setId(id);
 
-           entry.addLink("" + id, "edit");
-           entry.addLink("" + id, "alternate");
-           Date now = new Date();
-           entry.setUpdated(now);
-           lastModified = now;
-           entries.put(id, entry);
+            entry.addLink("" + id, "edit");
+            entry.addLink("" + id, "alternate");
+            Date now = new Date();
+            entry.setUpdated(now);
+            lastModified = now;
+            entries.put(id, entry);
 
             //System.out.println(">>> CustomerCollectionImpl.post return id=" + id);
 
@@ -67,7 +71,7 @@ public class CustomerCollectionImpl implements Collection {
         }
         else
         {
-        	throw new IllegalArgumentException("Exception in Post method");
+            throw new IllegalArgumentException("Exception in Post method");
         }
     }
 
@@ -79,26 +83,26 @@ public class CustomerCollectionImpl implements Collection {
     public void put(String id, Entry entry) throws NotFoundException {
         //System.out.println(">>> CustomerCollectionImpl.put id=" + id + " entry=" + entry.getTitle());
         if(entries.containsKey(id)){
-        	Date now = new Date();
-        	entry.setUpdated(now);
-        	lastModified = now;
+            Date now = new Date();
+            entry.setUpdated(now);
+            lastModified = now;
             entries.put(id, entry);
         }
         else {
-        	throw new NotFoundException();
+            throw new NotFoundException();
         }
-     }
+    }
 
     public void delete(String id) throws NotFoundException {
         //System.out.println(">>> CustomerCollectionImpl.delete id=" + id);
         if(entries.containsKey(id)){
-        	entries.remove(id);
-        	lastModified = new Date();
+            entries.remove(id);
+            lastModified = new Date();
         }
         else {
-        	throw new NotFoundException();
-		}
-     }
+            throw new NotFoundException();
+        }
+    }
 
     public Feed getFeed() {
         //System.out.println(">>> CustomerCollectionImpl.getFeed");

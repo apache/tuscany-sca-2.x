@@ -30,15 +30,19 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+/**
+ * 
+ * @version $Rev$ $Date$
+ */
 public class AtomDeleteTestCase extends AbstractProviderConsumerTestCase {
-    
+
     protected static CustomerClient testService;
     protected static Abdera abdera;
 
     @BeforeClass
     public static void init() throws Exception {
         try {
-            //System.out.println(">>>AtomDeleteTestCase.init entry");
+            // System.out.println(">>>AtomDeleteTestCase.init entry");
 
             initTestEnvironment(AtomDeleteTestCase.class);
 
@@ -53,7 +57,7 @@ public class AtomDeleteTestCase extends AbstractProviderConsumerTestCase {
     @AfterClass
     public static void destroy() throws Exception {
         // System.out.println(">>>AtomDeleteTestCase.destroy entry");
-        
+
         destroyTestEnvironment();
     }
 
@@ -71,12 +75,12 @@ public class AtomDeleteTestCase extends AbstractProviderConsumerTestCase {
         Assert.assertNotNull(resourceCollection);
 
         Entry postEntry = postEntry("Sponge Bob");
-        //System.out.println(">>> post entry= " + postEntry.getTitle());
+        // System.out.println(">>> post entry= " + postEntry.getTitle());
 
         Entry newEntry = resourceCollection.post(postEntry);
-        //System.out.println("<<< Entry posted for " + newEntry.getTitle());
+        // System.out.println("<<< Entry posted for " + newEntry.getTitle());
 
-        //System.out.println(">>> get id=" + newEntry.getId());
+        // System.out.println(">>> get id=" + newEntry.getId());
 
         resourceCollection.delete(newEntry.getId().toString());
 

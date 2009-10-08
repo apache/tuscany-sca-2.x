@@ -39,7 +39,7 @@ public class AggregatorImpl implements Aggregator {
 
     @Reference(required = false)
     public Collection<String, Item> atomFeed1;
-    
+
     @Reference(required = false)
     public Collection<String, Item> atomFeed2;
 

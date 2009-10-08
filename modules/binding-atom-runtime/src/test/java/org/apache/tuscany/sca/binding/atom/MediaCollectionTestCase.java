@@ -51,6 +51,8 @@ import org.junit.Test;
  * using entity tags or last modified header entries. 
  * Uses the SCA provided Provider composite to act as a server.
  * Uses the Abdera provided Client to act as a client.
+ * 
+ * @version $Rev$ $Date$
  */
 public class MediaCollectionTestCase {
     public final static String providerURI = "http://localhost:8084/receipt";
@@ -66,22 +68,22 @@ public class MediaCollectionTestCase {
     protected static String mediaId;
     protected static final SimpleDateFormat dateFormat = new SimpleDateFormat( "EEE, dd MMM yyyy HH:mm:ss Z" ); // RFC 822 date time
 
-	@BeforeClass
-	public static void init() throws Exception {
-	    try {
-		//System.out.println(">>>MediaCollectionTestCase.init");
-		String contribution = ContributionLocationHelper.getContributionLocation(MediaCollectionTestCase.class);
-                
-                scaProviderNode = NodeFactory.newInstance().createNode("org/apache/tuscany/sca/binding/atom/ReceiptProvider.composite", new Contribution("provider", contribution));
-                scaProviderNode.start();
-                
-		abdera = new Abdera();
-		client = new AbderaClient(abdera);
-		abderaParser = Abdera.getNewParser();
-	    } catch(Exception e) {
-                e.printStackTrace();
-            }
-	}
+    @BeforeClass
+    public static void init() throws Exception {
+        try {
+            //System.out.println(">>>MediaCollectionTestCase.init");
+            String contribution = ContributionLocationHelper.getContributionLocation(MediaCollectionTestCase.class);
+
+            scaProviderNode = NodeFactory.newInstance().createNode("org/apache/tuscany/sca/binding/atom/ReceiptProvider.composite", new Contribution("provider", contribution));
+            scaProviderNode.start();
+
+            abdera = new Abdera();
+            client = new AbderaClient(abdera);
+            abderaParser = Abdera.getNewParser();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @AfterClass
     public static void destroy() throws Exception {
@@ -92,30 +94,30 @@ public class MediaCollectionTestCase {
         }
     }
 
-	@Test
-	public void testPrelim() throws Exception {
-		Assert.assertNotNull(scaProviderNode);
-		Assert.assertNotNull( client );
-	}
-	
     @Test
-	public void testMediaEntryPost() throws Exception {
-    	// Pseudo Code (see APP (http://tools.ietf.org/html/rfc5023#section-9.6)
-    	// Post request 
-    	// POST /edit/ HTTP/1.1
+    public void testPrelim() throws Exception {
+        Assert.assertNotNull(scaProviderNode);
+        Assert.assertNotNull( client );
+    }
+
+    @Test
+    public void testMediaEntryPost() throws Exception {
+        // Pseudo Code (see APP (http://tools.ietf.org/html/rfc5023#section-9.6)
+        // Post request 
+        // POST /edit/ HTTP/1.1
         // Host: media.example.org
         // Content-Type: image/png
         // Slug: The Beach
         // Content-Length: nnn
         // ...binary data...
-		
-		// Testing of entry creation
-		String receiptName = "Auto Repair Bill";
-		String fileName = "target/test-classes/ReceiptToms.gif";
-		File input = new File( fileName );
-		boolean exists = input.exists();
-		Assert.assertTrue( exists );		
-		
+
+        // Testing of entry creation
+        String receiptName = "Auto Repair Bill";
+        String fileName = "target/test-classes/ReceiptToms.gif";
+        File input = new File( fileName );
+        boolean exists = input.exists();
+        Assert.assertTrue( exists );		
+
         // Prepare HTTP post
         // PostMethod post = new PostMethod( colUri.toString() );
         PostMethod post = new PostMethod( providerURI );
@@ -123,45 +125,45 @@ public class MediaCollectionTestCase {
         post.addRequestHeader( "Title", "Title " + receiptName + "" );
         post.addRequestHeader( "Slug", "Slug " + receiptName + "" );
         post.setRequestEntity( new InputStreamRequestEntity( new FileInputStream( input ), "image/gif" ) );
-		
+
         // Get HTTP client
         HttpClient httpclient = new HttpClient();
         try {
             // Execute request
             int result = httpclient.executeMethod(post);
             // Pseudo Code (see APP (http://tools.ietf.org/html/rfc5023#section-9.6)
-        	// Post response
+            // Post response
             // Tuscany responds with proper media links. Note that the media is 
-        	// stored in a different location than the media information which is
-        	// stored in the Atom feed.
+            // stored in a different location than the media information which is
+            // stored in the Atom feed.
             // HTTP/1.1 201 Created
             // Display status code
             // System.out.println("Response status code: " + result + ", status text=" + post.getStatusText() );
-        	Assert.assertEquals(201, result );
+            Assert.assertEquals(201, result );
             // Display response
             // System.out.println("Response body: ");
             // System.out.println(post.getResponseBodyAsString()); // Warning: BodyAsString recommends BodyAsStream
 
             // Location: http://example.org/media/edit/the_beach.atom (REQUIRED)
             // System.out.println( "Response Location=" + post.getResponseHeader( "Location" ).getValue() + "." );
-        	Header header = post.getResponseHeader( "Location" );
-        	Assert.assertNotNull( header );
-        	Assert.assertNotNull( header.getValue() );
+            Header header = post.getResponseHeader( "Location" );
+            Assert.assertNotNull( header );
+            Assert.assertNotNull( header.getValue() );
             // ContentLocation: http://example.org/media/edit/the_beach.jpg (REQUIRED)
             // System.out.println( "Response Content-Location=" + post.getResponseHeader( "Content-Location" ).getValue() );
-        	header = post.getResponseHeader( "Content-Location" );
-        	Assert.assertNotNull( header );
-        	Assert.assertNotNull( header.getValue() );      	
+            header = post.getResponseHeader( "Content-Location" );
+            Assert.assertNotNull( header );
+            Assert.assertNotNull( header.getValue() );      	
             // Content-Type: application/atom+xml;type=entry;charset="utf-8"
             // System.out.println( "Response Content-Type=" + post.getResponseHeader( "Content-Type" ).getValue());
-        	header = post.getResponseHeader( "Content-Type" );
-        	Assert.assertNotNull( header );
-        	Assert.assertNotNull( header.getValue() );      	
+            header = post.getResponseHeader( "Content-Type" );
+            Assert.assertNotNull( header );
+            Assert.assertNotNull( header.getValue() );      	
             // Content-Length: nnn (OPTIONAL)
             // System.out.println( "Response Content-Length=" + post.getResponseHeader( "Content-Length" ).getValue() );
-        	header = post.getResponseHeader( "Content-Length" );
-        	Assert.assertNotNull( header );
-        	Assert.assertNotNull( header.getValue() );      	
+            header = post.getResponseHeader( "Content-Length" );
+            Assert.assertNotNull( header );
+            Assert.assertNotNull( header.getValue() );      	
             // <?xml version="1.0"?>
             // <entry xmlns="http://www.w3.org/2005/Atom">
             //   <title>The Beach</title> (REQUIRED) 
@@ -193,15 +195,15 @@ public class MediaCollectionTestCase {
             // System.out.println( "mediaPost entry.content.src=" + contentSrc + ", type=" + entry.getContentType());
             Assert.assertNotNull( contentSrc );
             Link editLink = entry.getEditLink();
-    		// System.out.println( "mediaPost entry.editLink" + " rel=" + editLink.getRel() + ", href=" +  editLink.getHref() );
-    		Assert.assertNotNull( editLink );
-    		Assert.assertNotNull( editLink.getRel() );
-    		Assert.assertNotNull( editLink.getHref() );
+            // System.out.println( "mediaPost entry.editLink" + " rel=" + editLink.getRel() + ", href=" +  editLink.getHref() );
+            Assert.assertNotNull( editLink );
+            Assert.assertNotNull( editLink.getRel() );
+            Assert.assertNotNull( editLink.getHref() );
             Link editMediaLink = entry.getEditMediaLink();
-    		// System.out.println( "mediaPost entry.editMediaLink" + " rel=" + editMediaLink.getRel() + ", href=" +  editMediaLink.getHref() );
-    		Assert.assertNotNull( editMediaLink );
-    		Assert.assertNotNull( editMediaLink.getRel() );
-    		Assert.assertNotNull( editMediaLink.getHref() );
+            // System.out.println( "mediaPost entry.editMediaLink" + " rel=" + editMediaLink.getRel() + ", href=" +  editMediaLink.getHref() );
+            Assert.assertNotNull( editMediaLink );
+            Assert.assertNotNull( editMediaLink.getRel() );
+            Assert.assertNotNull( editMediaLink.getHref() );
 
         } finally {
             // Release current connection to the connection pool once you are done
@@ -209,29 +211,29 @@ public class MediaCollectionTestCase {
         }
     }
 
-	@Test
-	public void testMediaEntryPutFound() throws Exception {
-    	// Pseudo Code (see APP (http://tools.ietf.org/html/rfc5023#section-9.6)
-		// Testing of entry update
-		String receiptName = "Value Autoglass Bill";
-		String fileName = "target/test-classes/ReceiptValue.jpg";
-		File input = new File( fileName );
-		boolean exists = input.exists();
-		Assert.assertTrue( exists );		
-		
+    @Test
+    public void testMediaEntryPutFound() throws Exception {
+        // Pseudo Code (see APP (http://tools.ietf.org/html/rfc5023#section-9.6)
+        // Testing of entry update
+        String receiptName = "Value Autoglass Bill";
+        String fileName = "target/test-classes/ReceiptValue.jpg";
+        File input = new File( fileName );
+        boolean exists = input.exists();
+        Assert.assertTrue( exists );		
+
         // Prepare HTTP put request
-	    // PUT /edit/the_beach.png HTTP/1.1
-	    // Host: media.example.org
-	    // Content-Type: image/png
-	    // Content-Length: nnn
-	    // ...binary data...
+        // PUT /edit/the_beach.png HTTP/1.1
+        // Host: media.example.org
+        // Content-Type: image/png
+        // Content-Length: nnn
+        // ...binary data...
         PutMethod put = new PutMethod( providerURI + "/" + mediaId );
         put.addRequestHeader( "Content-Type", "image/jpg" );
         put.addRequestHeader( "Title", "Title " + receiptName + "" );
         put.addRequestHeader( "Slug", "Slug " + receiptName + "" );
         put.setRequestEntity( 
-        	new InputStreamRequestEntity( new FileInputStream( input ), "image/jpg" ) );
-		
+                             new InputStreamRequestEntity( new FileInputStream( input ), "image/jpg" ) );
+
         // Get HTTP client
         HttpClient httpclient = new HttpClient();
         try {
@@ -240,7 +242,7 @@ public class MediaCollectionTestCase {
             // Pseudo Code (see APP (http://tools.ietf.org/html/rfc5023#section-9.6)
             // Display status code
             // System.out.println("Response status code: " + result + ", status text=" + put.getStatusText() );
-        	Assert.assertEquals(200, result );
+            Assert.assertEquals(200, result );
             // Display response. Should be empty for put.
             // System.out.println("Response body: ");
             // System.out.println(put.getResponseBodyAsString()); // Warning: BodyAsString recommends BodyAsStream
@@ -248,31 +250,31 @@ public class MediaCollectionTestCase {
             // Release current connection to the connection pool once you are done
             put.releaseConnection();
         }
-	}
-	
-	@Test
-	public void testMediaEntryPutNotFound() throws Exception {
-    	// Pseudo Code (see APP (http://tools.ietf.org/html/rfc5023#section-9.6)
-		// Testing of entry update
-		String receiptName = "Value Autoglass Bill";
-		String fileName = "target/test-classes/ReceiptValue.jpg";
-		File input = new File( fileName );
-		boolean exists = input.exists();
-		Assert.assertTrue( exists );		
-		
+    }
+
+    @Test
+    public void testMediaEntryPutNotFound() throws Exception {
+        // Pseudo Code (see APP (http://tools.ietf.org/html/rfc5023#section-9.6)
+        // Testing of entry update
+        String receiptName = "Value Autoglass Bill";
+        String fileName = "target/test-classes/ReceiptValue.jpg";
+        File input = new File( fileName );
+        boolean exists = input.exists();
+        Assert.assertTrue( exists );		
+
         // Prepare HTTP put request
-	    // PUT /edit/the_beach.png HTTP/1.1
-	    // Host: media.example.org
-	    // Content-Type: image/png
-	    // Content-Length: nnn
-	    // ...binary data...
+        // PUT /edit/the_beach.png HTTP/1.1
+        // Host: media.example.org
+        // Content-Type: image/png
+        // Content-Length: nnn
+        // ...binary data...
         PutMethod put = new PutMethod( providerURI + "/" + mediaId + "-bogus" ); // Does not exist.
         put.addRequestHeader( "Content-Type", "image/jpg" );
         put.addRequestHeader( "Title", "Title " + receiptName + "" );
         put.addRequestHeader( "Slug", "Slug " + receiptName + "" );
         put.setRequestEntity( 
-        	new InputStreamRequestEntity( new FileInputStream( input ), "image/jpg" ) );
-		
+                             new InputStreamRequestEntity( new FileInputStream( input ), "image/jpg" ) );
+
         // Get HTTP client
         HttpClient httpclient = new HttpClient();
         try {
@@ -281,7 +283,7 @@ public class MediaCollectionTestCase {
             // Pseudo Code (see APP (http://tools.ietf.org/html/rfc5023#section-9.6)
             // Display status code
             // System.out.println("Response status code: " + result + ", status text=" + put.getStatusText() );
-        	Assert.assertEquals(404, result );
+            Assert.assertEquals(404, result );
             // Display response. Should be empty for put.
             // System.out.println("Response body: ");
             // System.out.println(put.getResponseBodyAsString()); // Warning: BodyAsString recommends BodyAsStream
@@ -289,5 +291,5 @@ public class MediaCollectionTestCase {
             // Release current connection to the connection pool once you are done
             put.releaseConnection();
         }
-	}
+    }
 }

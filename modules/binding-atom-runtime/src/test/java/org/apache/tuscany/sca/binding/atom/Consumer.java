@@ -24,6 +24,10 @@ import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 
+/**
+ * 
+ * @version $Rev$ $Date$
+ */
 public class Consumer {
 
     public static void main(String[] args) throws Exception {

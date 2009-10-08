@@ -63,19 +63,19 @@ public class AggregatorTestCase {
             node.destroy();
         }
     }
-    
+
     @Test
     public void testPing() throws Exception {
         new Socket("127.0.0.1", 8085);
     }
-    
+
     @Test
     public void testAggregator() throws Exception {
         Entry<String, Item>[] entries = aggregatorService.getAll();
-        
+
         Assert.assertNotNull(entries);
         Assert.assertTrue(entries.length > 0);
-        
+
         for(int pos = 0; pos < entries.length; pos++) {
             System.out.println(">>> Entry[" + pos + "] - " + entries[pos].getData().getTitle());
         }

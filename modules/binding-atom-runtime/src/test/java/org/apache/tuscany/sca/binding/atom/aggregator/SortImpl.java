@@ -43,10 +43,10 @@ public class SortImpl implements Sort {
         entriesArray = (Entry<String,Item>[])entries.toArray(entriesArray);
         Arrays.sort(entriesArray, new Comparator() {
             public int compare(final Object xObj, final Object yObj) {
-            	Entry x = (Entry) xObj;
-            	Entry y = (Entry) yObj;
-            	Item xItem = (Item) x.getData();
-            	Item yItem = (Item) y.getData();
+                Entry x = (Entry) xObj;
+                Entry y = (Entry) yObj;
+                Item xItem = (Item) x.getData();
+                Item yItem = (Item) y.getData();
                 Date xDate = xItem.getDate();
                 Date yDate = yItem.getDate();
                 if (xDate == null)

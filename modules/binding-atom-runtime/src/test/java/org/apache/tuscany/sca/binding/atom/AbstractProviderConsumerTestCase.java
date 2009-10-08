@@ -24,16 +24,20 @@ import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 
+/**
+ * 
+ * @version $Rev$ $Date$
+ */
 public abstract class AbstractProviderConsumerTestCase {
     protected static Node scaProviderNode;
     protected static Node scaConsumerNode;
- 
+
     protected static void initTestEnvironment(Class<?> testClazz) throws Exception {
         String contribution = ContributionLocationHelper.getContributionLocation(testClazz);
-        
+
         scaProviderNode = NodeFactory.newInstance().createNode("org/apache/tuscany/sca/binding/atom/Provider.composite", new Contribution("provider", contribution));
         scaProviderNode.start();
-        
+
         scaConsumerNode = NodeFactory.newInstance().createNode("org/apache/tuscany/sca/binding/atom/Consumer.composite", new Contribution("consumer", contribution));
         scaConsumerNode.start();
     }

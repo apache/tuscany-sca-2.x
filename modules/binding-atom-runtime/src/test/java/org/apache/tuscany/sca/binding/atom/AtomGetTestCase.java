@@ -28,8 +28,12 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+/**
+ * 
+ * @version $Rev$ $Date$
+ */
 public class AtomGetTestCase extends AbstractProviderConsumerTestCase {
-    
+
     protected static CustomerClient testService;
     protected static Abdera abdera;
 
@@ -37,7 +41,7 @@ public class AtomGetTestCase extends AbstractProviderConsumerTestCase {
     public static void init() throws Exception {
         try {
             //System.out.println(">>>AtomGetTestCase.init entry");
-            
+
             initTestEnvironment(AtomFeedNonCollectionTest.class);
 
             testService = scaConsumerNode.getService(CustomerClient.class, "CustomerClient");
