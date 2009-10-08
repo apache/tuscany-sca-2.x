@@ -45,9 +45,6 @@ import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
 
 public class HTTPBindingProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<HTTPBinding> {
-    private static final String BINDING_HTTP = "binding.http";
-    private static final QName BINDING_HTTP_QNAME = HTTPBinding.TYPE;
-
     private static final String NAME = "name";
     private static final String URI = "uri";
 
@@ -68,7 +65,7 @@ public class HTTPBindingProcessor extends BaseStAXArtifactProcessor implements S
     }
 
     public QName getArtifactType() {
-        return BINDING_HTTP_QNAME;
+        return HTTPBinding.TYPE;
     }
 
     public Class<HTTPBinding> getModelType() {
@@ -85,7 +82,7 @@ public class HTTPBindingProcessor extends BaseStAXArtifactProcessor implements S
                 case START_ELEMENT:
                     elementName = reader.getName();
 
-                    if (BINDING_HTTP_QNAME.equals(elementName)) {
+                    if (HTTPBinding.TYPE.equals(elementName)) {
                         String name = getString(reader, NAME);
                         if(name != null) {
                             httpBinding.setName(name);
@@ -108,7 +105,7 @@ public class HTTPBindingProcessor extends BaseStAXArtifactProcessor implements S
                     }
             }
 
-            if (event == END_ELEMENT && BINDING_HTTP_QNAME.equals(reader.getName())) {
+            if (event == END_ELEMENT && HTTPBinding.TYPE.equals(reader.getName())) {
                 break;
             }
 
@@ -124,7 +121,7 @@ public class HTTPBindingProcessor extends BaseStAXArtifactProcessor implements S
     public void write(HTTPBinding httpBinding, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
         //writer.writeStartElement(Constants.SCA10_NS, BINDING_HTTP);
 
-        writeStart(writer, BINDING_HTTP_QNAME.getNamespaceURI(), BINDING_HTTP_QNAME.getLocalPart());
+        writeStart(writer, HTTPBinding.TYPE.getNamespaceURI(), HTTPBinding.TYPE.getLocalPart());
 
         // Write binding name
         if (httpBinding.getName() != null) {
