@@ -33,6 +33,8 @@
         <module>assembly</module>
         <module>assembly-xml</module>
         <module>assembly-xsd</module>
+        <module>binding-atom</module>
+        <module>binding-atom-runtime</module>
         <module>binding-http</module>
         <module>binding-http-runtime</module>
         <module>binding-jms</module>
@@ -56,6 +58,7 @@
         <module>core</module>
         <module>core-databinding</module>
         <module>core-spi</module>
+        <module>data-api</module>
         <module>databinding</module>
         <module>databinding-axiom</module>
         <module>databinding-jaxb</module>
