@@ -32,16 +32,16 @@ import org.apache.tuscany.sca.binding.http.HTTPBinding;
  * @version $Rev$ $Date$
  */
 class HTTPBindingImpl implements HTTPBinding {
-    
+
     private String name;
     private String uri;
-    
+
     private WireFormat wireFormat;
     private OperationSelector operationSelector;    
 
     public QName getType() {
-		return TYPE;
-	}
+        return TYPE;
+    }
 
     public String getName() {
         return name;
@@ -58,41 +58,41 @@ class HTTPBindingImpl implements HTTPBinding {
     public void setURI(String uri) {
         this.uri = uri;
     }
-    
-	public boolean isUnresolved() {
+
+    public boolean isUnresolved() {
         return false;
     }
 
     public void setUnresolved(boolean unresolved) {
         // The sample binding is always resolved
     }
-    
+
     // Wireformat and Operation selection
-    
+
     public WireFormat getRequestWireFormat() {
         return wireFormat;
     }
-    
+
     public void setRequestWireFormat(WireFormat wireFormat) {
         this.wireFormat = wireFormat;
     }
-    
+
     public WireFormat getResponseWireFormat() {
         return wireFormat;
     }
-    
+
     public void setResponseWireFormat(WireFormat wireFormat) {
         this.wireFormat = wireFormat;
     }    
-    
+
     public OperationSelector getOperationSelector() {
         return operationSelector;
     }
-    
+
     public void setOperationSelector(OperationSelector operationSelector) {
         this.operationSelector = operationSelector;
     }    
-    
+
     @Override
     public Object clone() throws CloneNotSupportedException {
         return super.clone();

@@ -25,7 +25,7 @@ package org.apache.tuscany.sca.binding.http;
  * @version $Rev$ $Date$
  */
 public interface HTTPBindingFactory {
-    
+
     /**
      * Creates a new HTTP binding.
      * @return a new HTTP binding

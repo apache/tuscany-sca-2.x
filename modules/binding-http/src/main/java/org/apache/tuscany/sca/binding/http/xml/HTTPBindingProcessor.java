@@ -47,10 +47,10 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
 public class HTTPBindingProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<HTTPBinding> {
     private static final String BINDING_HTTP = "binding.http";
     private static final QName BINDING_HTTP_QNAME = HTTPBinding.TYPE;
-    
+
     private static final String NAME = "name";
     private static final String URI = "uri";
-    
+
     private HTTPBindingFactory httpBindingFactory;
     private StAXArtifactProcessor<Object> extensionProcessor;
     private StAXAttributeProcessor<Object> extensionAttributeProcessor;
@@ -66,52 +66,52 @@ public class HTTPBindingProcessor extends BaseStAXArtifactProcessor implements S
         this.extensionAttributeProcessor = extensionAttributeProcessor;
         this.monitor = monitor;
     }
-    
+
     public QName getArtifactType() {
         return BINDING_HTTP_QNAME;
     }
-    
+
     public Class<HTTPBinding> getModelType() {
         return HTTPBinding.class;
     }
 
     public HTTPBinding read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
         HTTPBinding httpBinding = httpBindingFactory.createHTTPBinding();
-        
+
         while(reader.hasNext()) {
             QName elementName = null;
             int event = reader.getEventType();
             switch (event) {
                 case START_ELEMENT:
                     elementName = reader.getName();
-                     
-                     if (BINDING_HTTP_QNAME.equals(elementName)) {
-                         String name = getString(reader, NAME);
-                         if(name != null) {
-                             httpBinding.setName(name);
-                         }
-                         
-                         String uri = getString(reader, URI);
-                         if (uri != null) {
-                             httpBinding.setURI(uri);
-                         }
-                     } else {
-                         // Read an extension element
-                         Object extension = extensionProcessor.read(reader);
-                         if (extension != null) {
-                             if (extension instanceof WireFormat) {
-                                 httpBinding.setRequestWireFormat((WireFormat)extension);
-                             } else if(extension instanceof OperationSelector) {
-                                 httpBinding.setOperationSelector((OperationSelector)extension);
-                             }
-                         }
-                     }
+
+                    if (BINDING_HTTP_QNAME.equals(elementName)) {
+                        String name = getString(reader, NAME);
+                        if(name != null) {
+                            httpBinding.setName(name);
+                        }
+
+                        String uri = getString(reader, URI);
+                        if (uri != null) {
+                            httpBinding.setURI(uri);
+                        }
+                    } else {
+                        // Read an extension element
+                        Object extension = extensionProcessor.read(reader);
+                        if (extension != null) {
+                            if (extension instanceof WireFormat) {
+                                httpBinding.setRequestWireFormat((WireFormat)extension);
+                            } else if(extension instanceof OperationSelector) {
+                                httpBinding.setOperationSelector((OperationSelector)extension);
+                            }
+                        }
+                    }
             }
-            
+
             if (event == END_ELEMENT && BINDING_HTTP_QNAME.equals(reader.getName())) {
                 break;
             }
-            
+
             // Read the next element
             if (reader.hasNext()) {
                 reader.next();
@@ -123,9 +123,9 @@ public class HTTPBindingProcessor extends BaseStAXArtifactProcessor implements S
 
     public void write(HTTPBinding httpBinding, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
         //writer.writeStartElement(Constants.SCA10_NS, BINDING_HTTP);
-        
+
         writeStart(writer, BINDING_HTTP_QNAME.getNamespaceURI(), BINDING_HTTP_QNAME.getLocalPart());
-        
+
         // Write binding name
         if (httpBinding.getName() != null) {
             writer.writeAttribute(NAME, httpBinding.getName());
@@ -135,7 +135,7 @@ public class HTTPBindingProcessor extends BaseStAXArtifactProcessor implements S
         if (httpBinding.getURI() != null) {
             writer.writeAttribute(URI, httpBinding.getURI());
         }
-        
+
         writeEnd(writer);
         //writer.writeEndElement();
     }
@@ -143,7 +143,7 @@ public class HTTPBindingProcessor extends BaseStAXArtifactProcessor implements S
 
     public void resolve(HTTPBinding model, ModelResolver resolver) throws ContributionResolveException {
         // Should not need to do anything here for now... 
-        
+
     }
 
     /**
@@ -154,12 +154,12 @@ public class HTTPBindingProcessor extends BaseStAXArtifactProcessor implements S
      * @param model
      */
     private void warning(String message, Object model, Object... messageParameters) {
-       if (monitor != null) {
-           Problem problem = monitor.createProblem(this.getClass().getName(), "binding-http-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
-           monitor.problem(problem);
-       }
+        if (monitor != null) {
+            Problem problem = monitor.createProblem(this.getClass().getName(), "binding-http-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
+            monitor.problem(problem);
+        }
     }
-         
+
     /**
      * Report a error.
      * 
