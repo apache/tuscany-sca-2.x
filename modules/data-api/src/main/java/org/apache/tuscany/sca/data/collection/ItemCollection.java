@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.sca.data.collection;
 
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 
 /**
  * Provides access to a collection of data items.
