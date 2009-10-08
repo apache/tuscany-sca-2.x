@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.binding.atom.provider;
 
+import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.binding.atom.AtomBinding;
 import org.apache.tuscany.sca.databinding.Mediator;
@@ -37,38 +38,42 @@ import org.apache.tuscany.sca.runtime.RuntimeWire;
  * @version $Rev$ $Date$
  */
 class AtomServiceBindingProvider implements ServiceBindingProvider {
+    private MessageFactory messageFactory;
 
+    private Endpoint endpoint;
+
+    private RuntimeComponent component;
     private RuntimeComponentService service;
     private InterfaceContract serviceContract;
     private AtomBinding binding;
     private ServletHost servletHost;
-    private MessageFactory messageFactory;
     private Mediator mediator;
     
     private String servletMapping;
     private String bindingURI;
 
-    AtomServiceBindingProvider(RuntimeComponent component,
-                                      RuntimeComponentService service,
-                                      AtomBinding binding,
-                                      ServletHost servletHost,
-                                      MessageFactory messageFactory,
-                                      Mediator mediator) {
-        this.service = service;
-        this.binding = binding;
+    AtomServiceBindingProvider(Endpoint endpoint,
+                               MessageFactory messageFactory,
+                               Mediator mediator,
+                               ServletHost servletHost) {
+        this.endpoint = endpoint;
+        this.component = (RuntimeComponent)endpoint.getComponent();
+        this.service = (RuntimeComponentService)endpoint.getService();
+        this.binding = (AtomBinding) endpoint.getBinding();
+
         this.servletHost = servletHost;
         this.messageFactory = messageFactory;
         this.mediator = mediator;
-        
+
         // TUSCANY-3166
         this.serviceContract = service.getInterfaceContract();
         if (this.serviceContract instanceof WSDLInterfaceContract) {
-        	for (Service componentService : component.getImplementation().getServices()) {
-        		if (componentService.getName().equals(service.getName())) {
-        			this.serviceContract = (InterfaceContract) componentService.getInterfaceContract();
-        			break;
-        		}
-        	}
+            for (Service componentService : component.getImplementation().getServices()) {
+                if (componentService.getName().equals(service.getName())) {
+                    this.serviceContract = (InterfaceContract) componentService.getInterfaceContract();
+                    break;
+                }
+            }
 
         }      
     }

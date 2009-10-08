@@ -19,9 +19,11 @@
 
 package org.apache.tuscany.sca.binding.atom.provider;
 
+import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.binding.atom.AtomBinding;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.databinding.Mediator;
 import org.apache.tuscany.sca.host.http.ServletHost;
@@ -30,9 +32,6 @@ import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
-import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
 /**
  * Implementation of a Binding provider factory for the Atom binding.
@@ -48,21 +47,17 @@ public class AtomBindingProviderFactory implements BindingProviderFactory<AtomBi
     public AtomBindingProviderFactory(ExtensionPointRegistry extensionPoints) {
         ServletHostExtensionPoint servletHosts = extensionPoints.getExtensionPoint(ServletHostExtensionPoint.class);
         this.servletHost = servletHosts.getServletHosts().get(0);
-        ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         this.messageFactory = modelFactories.getFactory(MessageFactory.class);
         this.mediator = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class).getUtility(Mediator.class);
     }
 
-    public ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component,
-                                                                   RuntimeComponentReference reference,
-                                                                   AtomBinding binding) {
-        return new AtomReferenceBindingProvider(component, reference, binding, mediator);
+    ReferenceBindingProvider createReferenceBindingProvider(EndpointReference endpointReference) {
+        return new AtomReferenceBindingProvider(endpointReference, mediator);
     }
 
-    public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component,
-                                                               RuntimeComponentService service,
-                                                               AtomBinding binding) {
-        return new AtomServiceBindingProvider(component, service, binding, servletHost, messageFactory, mediator);
+    ServiceBindingProvider createServiceBindingProvider(Endpoint endpoint) {
+        return new AtomServiceBindingProvider(endpoint, messageFactory, mediator, servletHost);
     }
 
     public Class<AtomBinding> getModelType() {
