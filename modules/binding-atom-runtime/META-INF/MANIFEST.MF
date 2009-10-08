@@ -1,0 +1,43 @@
+Manifest-Version: 1.0
+Export-Package: 
+ org.apache.tuscany.sca.binding.atom.collection
+Tool: Bnd-0.0.357
+Bundle-Name: Apache Tuscany SCA Abdera Atom Feed Binding Extension
+Created-By: 1.6.0_15 (Apple Inc.)
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 2.0.0
+Bnd-LastModified: 1254972865968
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA Abdera Atom Feed Binding Extens
+ ion
+Import-Package: javax.servlet,
+ javax.servlet.http,
+ org.apache.abdera,
+ org.apache.abdera.factory,
+ org.apache.abdera.i18n.iri,
+ org.apache.abdera.model,
+ org.apache.abdera.parser,
+ org.apache.abdera.writer,
+ org.apache.commons.codec.binary,
+ org.apache.commons.httpclient,
+ org.apache.commons.httpclient.auth,
+ org.apache.commons.httpclient.methods,
+ org.apache.commons.httpclient.params,
+ org.apache.tuscany.sca.assembly;version="2.0.0",
+ org.apache.tuscany.sca.binding.atom;version="2.0.0",
+ org.apache.tuscany.sca.binding.http;version="2.0.0",
+ org.apache.tuscany.sca.core;version="2.0.0",
+ org.apache.tuscany.sca.data.collection;version="2.0.0",
+ org.apache.tuscany.sca.databinding;version="2.0.0",
+ org.apache.tuscany.sca.host.http;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef.wsdl;version="2.0.0",
+ org.apache.tuscany.sca.invocation;version="2.0.0",
+ org.apache.tuscany.sca.provider;version="2.0.0",
+ org.apache.tuscany.sca.runtime;version="2.0.0",
+ org.oasisopen.sca;version="2.0.0",
+ org.oasisopen.sca.annotation;version="2.0.0"
+Bundle-SymbolicName: org.apache.tuscany.sca.binding.atom.abdera
+Bundle-DocURL: http://www.apache.org/
+

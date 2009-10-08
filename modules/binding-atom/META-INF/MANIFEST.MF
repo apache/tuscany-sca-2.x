@@ -1,0 +1,21 @@
+Manifest-Version: 1.0
+Export-Package: org.apache.tuscany.sca.binding.atom;
+ uses:="org.apache.tuscany.sca.assembly";version="2.0.0"
+Tool: Bnd-0.0.357
+Bundle-Name: Apache Tuscany SCA Atom Feed Binding Extension
+Created-By: 1.6.0_15 (Apple Inc.)
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 2.0.0
+Bnd-LastModified: 1254972834027
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA Atom Feed Binding Extension
+Import-Package: javax.xml.namespace,
+ org.apache.tuscany.sca.assembly;version="2.0.0",
+ org.apache.tuscany.sca.assembly.xml;version="2.0.0",
+ org.apache.tuscany.sca.binding.atom;version="2.0.0",
+ org.apache.tuscany.sca.core,
+ org.apache.tuscany.sca.monitor
+Bundle-SymbolicName: org.apache.tuscany.sca.binding.atom
+Bundle-DocURL: http://www.apache.org/
+
