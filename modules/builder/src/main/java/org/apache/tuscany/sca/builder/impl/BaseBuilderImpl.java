@@ -428,16 +428,13 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
 
                 // Check that a value is supplied
                 if (!isPropertyValueSet(componentProperty) && property.isMustSupply()) {
-                    error(monitor, "PropertyMustSupplyNull", component, component.getName(), componentProperty
-                        .getName());
+                    error(monitor, "PropertyMustSupplyNull", component, component.getName(), componentProperty.getName());
                 }
 
                 // Check that a component property does not override the
                 // many attribute
                 if (!property.isMany() && componentProperty.isMany()) {
-
-                    warning(monitor, "PropertyOverrideManyAttribute", component, component.getName(), componentProperty
-                        .getName());
+                    warning(monitor, "PropertyOverrideManyAttribute", component, component.getName(), componentProperty.getName());
                 }
 
                 // Default to the many attribute defined on the property
@@ -453,8 +450,7 @@ public abstract class BaseBuilderImpl implements CompositeBuilder {
 
                 // Check that a type or element are specified
                 if (componentProperty.getXSDElement() == null && componentProperty.getXSDType() == null) {
-                    warning(monitor, "NoTypeForComponentProperty", component, component.getName(), componentProperty
-                        .getName());
+                    warning(monitor, "NoTypeForComponentProperty", component, component.getName(), componentProperty.getName());
                 }
             }
         }
