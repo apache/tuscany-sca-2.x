@@ -33,7 +33,10 @@ import org.apache.abdera.protocol.client.AbderaClient;
 import org.apache.abdera.protocol.client.ClientResponse;
 import org.apache.abdera.protocol.client.RequestOptions;
 import org.apache.abdera.protocol.client.util.BaseRequestEntity;
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -46,9 +49,11 @@ import org.junit.Test;
  * Uses the Abdera provided Client to act as a client.
  */
 public class ProviderEntryEntityTagsTestCase {
-	public final static String providerURI = "http://localhost:8084/customer";
-	protected static SCADomain scaProviderDomain;
-	protected static CustomerClient testService;
+    public final static String providerURI = "http://localhost:8084/customer";
+
+    protected static Node scaProviderNode;
+
+    protected static CustomerClient testService;
     protected static Abdera abdera;
     protected static AbderaClient client;
     protected static Parser abderaParser;    
@@ -58,24 +63,29 @@ public class ProviderEntryEntityTagsTestCase {
 
 	@BeforeClass
 	public static void init() throws Exception {
-		System.out.println(">>>ProviderEntryEntityTagsTestCase.init");
-		scaProviderDomain = SCADomain.newInstance("org/apache/tuscany/sca/binding/atom/Provider.composite");
-		abdera = new Abdera();
-		client = new AbderaClient(abdera);
-		abderaParser = Abdera.getNewParser();
+	    //System.out.println(">>>ProviderEntryEntityTagsTestCase.init");
+	    String contribution = ContributionLocationHelper.getContributionLocation(ProviderEntryEntityTagsTestCase.class);
+
+	    scaProviderNode = NodeFactory.newInstance().createNode("org/apache/tuscany/sca/binding/atom/Provider.composite", new Contribution("provider", contribution));
+	    scaProviderNode.start();
+	    
+	    abdera = new Abdera();
+	    client = new AbderaClient(abdera);
+	    abderaParser = Abdera.getNewParser();
 	}
 
     @AfterClass
     public static void destroy() throws Exception {
-        System.out.println(">>>ProviderEntryEntityTagsTestCase.destroy");
-        if (scaProviderDomain != null) {
-            scaProviderDomain.close();
+        //System.out.println(">>>ProviderEntryEntityTagsTestCase.destroy");
+        if (scaProviderNode != null) {
+            scaProviderNode.stop();
+            scaProviderNode.destroy();
         }
     }
 
 	@Test
 	public void testPrelim() throws Exception {
-		Assert.assertNotNull(scaProviderDomain);
+		Assert.assertNotNull(scaProviderNode);
 		Assert.assertNotNull( client );
 	}
 	

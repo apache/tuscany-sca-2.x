@@ -27,7 +27,6 @@ import org.apache.abdera.model.Content;
 import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.Feed;
 import org.apache.tuscany.sca.binding.atom.collection.Collection;
-import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -35,33 +34,36 @@ import org.junit.Test;
 /**
  * Test case for the given package.
  */
-public class ConsumerProviderAtomTestCase {
+public class ConsumerProviderAtomTestCase extends AbstractProviderConsumerTestCase {
 
-	protected static SCADomain scaConsumerDomain;
-	protected static SCADomain scaProviderDomain;
 	protected static CustomerClient testService;
 	protected static Abdera abdera;
 
 	@BeforeClass
 	public static void init() throws Exception {
-		System.out.println(">>>AtomBindingIntegratedTestCase.init entry");
-		scaProviderDomain = SCADomain.newInstance("org/apache/tuscany/sca/binding/atom/Provider.composite");
-		scaConsumerDomain = SCADomain.newInstance("org/apache/tuscany/sca/binding/atom/Consumer.composite");
-		testService = scaConsumerDomain.getService(CustomerClient.class,"CustomerClient");
-		abdera = new Abdera();
+	    try {
+	        //System.out.println(">>>AtomBindingIntegratedTestCase.init entry");
+
+	        initTestEnvironment(ConsumerProviderAtomTestCase.class);
+	        
+	        testService = scaConsumerNode.getService(CustomerClient.class,"CustomerClient");
+	        abdera = new Abdera();
+	    } catch(Exception e) {
+	        e.printStackTrace();
+	    }
 	}
 
 	@AfterClass
 	public static void destroy() throws Exception {
-		System.out.println(">>>AtomBindingIntegratedTestCase.destroy entry");
-		scaConsumerDomain.close();
-		scaProviderDomain.close();
+		//System.out.println(">>>AtomBindingIntegratedTestCase.destroy entry");
+		
+		destroyTestEnvironment();
 	}
 
 	@Test
 	public void testPrelim() throws Exception {
-		Assert.assertNotNull(scaProviderDomain);
-		Assert.assertNotNull(scaConsumerDomain);
+		Assert.assertNotNull(scaProviderNode);
+		Assert.assertNotNull(scaConsumerNode);
 		Assert.assertNotNull(testService);
 		Assert.assertNotNull(abdera);
 	}

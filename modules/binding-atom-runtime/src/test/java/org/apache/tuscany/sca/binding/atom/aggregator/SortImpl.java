@@ -25,12 +25,12 @@ import java.util.List;
 
 import org.apache.tuscany.sca.data.collection.Entry;
 import org.apache.tuscany.sca.data.collection.Item;
-import org.osoa.sca.annotations.Property;
+import org.oasisopen.sca.annotation.Property;
 
 /**
  * Implementation of a Feed Sort service component.
  * 
- * @version $Rev: 685663 $ $Date: 2008-08-13 13:11:20 -0700 (Wed, 13 Aug 2008) $
+ * @version $Rev$ $Date$
  */
 public class SortImpl implements Sort {
 

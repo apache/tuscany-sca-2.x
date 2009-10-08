@@ -26,9 +26,15 @@ import org.apache.tuscany.sca.data.collection.Collection;
 import org.apache.tuscany.sca.data.collection.Entry;
 import org.apache.tuscany.sca.data.collection.Item;
 import org.apache.tuscany.sca.data.collection.NotFoundException;
-import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
 
+
+/**
+ * Aggregator impl
+ * 
+ * @version $Rev$ $Date$
+ */
 public class AggregatorImpl implements Aggregator {
 
     @Reference(required = false)
@@ -67,6 +73,7 @@ public class AggregatorImpl implements Aggregator {
 
     }
 
+    @SuppressWarnings("unchecked")
     public Entry<String, Item>[] getAll() {
 
         // Aggregate entries from atomFeed1, atomFeed2, rssFeed1 and rssFeed2
@@ -105,6 +112,7 @@ public class AggregatorImpl implements Aggregator {
     public void put(String id, Item entry) {
     }
 
+    @SuppressWarnings("unchecked")
     public Entry<String, Item>[] query(String queryString) {
         ArrayList<Entry> entries = new ArrayList<Entry>();
 

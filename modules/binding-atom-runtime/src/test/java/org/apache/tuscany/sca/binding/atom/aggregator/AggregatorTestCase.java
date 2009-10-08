@@ -23,29 +23,44 @@ import java.net.Socket;
 
 import org.apache.tuscany.sca.data.collection.Entry;
 import org.apache.tuscany.sca.data.collection.Item;
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-
+/**
+ * Agregattor test case
+ * 
+ * @version $Rev$ $Date$
+ */
 public class AggregatorTestCase {
-    private static SCADomain domain;
+    private static Node node;
+
     private static Aggregator aggregatorService;
 
     @BeforeClass
     public static void init() throws Exception {
-        domain = SCADomain.newInstance("org/apache/tuscany/sca/binding/atom/aggregator/FeedAggregator.composite");
-        Assert.assertNotNull(domain);
-        aggregatorService = domain.getService(Aggregator.class, "AtomAggregator");
-        Assert.assertNotNull(aggregatorService);
+        try {
+            String contribution = ContributionLocationHelper.getContributionLocation(AggregatorTestCase.class);
+            node = NodeFactory.newInstance().createNode("org/apache/tuscany/sca/binding/atom/aggregator/FeedAggregator.composite", new Contribution("test", contribution));
+            node.start();
+
+            aggregatorService = node.getService(Aggregator.class, "AtomAggregator");
+            Assert.assertNotNull(aggregatorService);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @AfterClass
     public static void destroy() throws Exception {
-        if(domain != null) {
-            domain.close();
+        if(node != null) {
+            node.stop();
+            node.destroy();
         }
     }
     

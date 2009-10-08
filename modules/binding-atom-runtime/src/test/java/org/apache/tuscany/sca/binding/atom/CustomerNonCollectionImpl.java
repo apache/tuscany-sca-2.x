@@ -20,7 +20,7 @@
 package org.apache.tuscany.sca.binding.atom;
 
 import org.apache.tuscany.sca.data.collection.Entry;
-import org.osoa.sca.annotations.Scope;
+import org.oasisopen.sca.annotation.Scope;
 
 /**
  * Implementation of an Atom feed that does not implement the Collections

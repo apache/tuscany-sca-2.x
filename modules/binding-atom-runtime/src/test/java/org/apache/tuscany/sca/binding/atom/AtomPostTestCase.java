@@ -24,41 +24,39 @@ import org.apache.abdera.Abdera;
 import org.apache.abdera.model.Content;
 import org.apache.abdera.model.Entry;
 import org.apache.tuscany.sca.binding.atom.collection.Collection;
-import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class AtomPostTestCase {
-    protected static SCADomain scaConsumerDomain;
-    protected static SCADomain scaProviderDomain;
+public class AtomPostTestCase extends AbstractProviderConsumerTestCase {
     protected static CustomerClient testService;
     protected static Abdera abdera;
 
     @BeforeClass
     public static void init() throws Exception {
-        System.out.println(">>>AtomPostTestCase.init entry");
-        scaProviderDomain = SCADomain.newInstance("org/apache/tuscany/sca/binding/atom/Provider.composite");
-        scaConsumerDomain = SCADomain.newInstance("org/apache/tuscany/sca/binding/atom/Consumer.composite");
-        testService = scaConsumerDomain.getService(CustomerClient.class, "CustomerClient");
-        abdera = new Abdera();
+        try {
+            //System.out.println(">>>AtomPostTestCase.init entry");
+
+            initTestEnvironment(AtomPostTestCase.class);
+
+            testService = scaConsumerNode.getService(CustomerClient.class, "CustomerClient");
+            abdera = new Abdera();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @AfterClass
     public static void destroy() throws Exception {
-        System.out.println(">>>AtomPostTestCase.destroy entry");
-        if (scaConsumerDomain != null) {
-            scaConsumerDomain.close();
-        }
-        if (scaProviderDomain != null) {
-            scaProviderDomain.close();
-        }
+        //System.out.println(">>>AtomPostTestCase.destroy entry");
+        
+        destroyTestEnvironment();
     }
 
     @Test
     public void testPrelim() throws Exception {
-        Assert.assertNotNull(scaProviderDomain);
-        Assert.assertNotNull(scaConsumerDomain);
+        Assert.assertNotNull(scaProviderNode);
+        Assert.assertNotNull(scaConsumerNode);
         Assert.assertNotNull(testService);
         Assert.assertNotNull(abdera);
     }

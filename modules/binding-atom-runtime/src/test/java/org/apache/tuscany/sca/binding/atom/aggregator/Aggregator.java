@@ -21,8 +21,14 @@ package org.apache.tuscany.sca.binding.atom.aggregator;
 
 import org.apache.tuscany.sca.data.collection.Collection;
 import org.apache.tuscany.sca.data.collection.Item;
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 
+
+/**
+ * Aggreator interface
+ * 
+ * @version $Rev$ $Date$
+ */
 @Remotable
 public interface Aggregator extends Collection<String, Item>{
 

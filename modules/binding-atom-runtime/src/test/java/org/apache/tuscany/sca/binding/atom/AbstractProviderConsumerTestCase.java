@@ -19,28 +19,33 @@
 
 package org.apache.tuscany.sca.binding.atom;
 
-import java.io.IOException;
-
 import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 
-public class Provider {
+public abstract class AbstractProviderConsumerTestCase {
+    protected static Node scaProviderNode;
+    protected static Node scaConsumerNode;
+ 
+    protected static void initTestEnvironment(Class<?> testClazz) throws Exception {
+        String contribution = ContributionLocationHelper.getContributionLocation(testClazz);
+        
+        scaProviderNode = NodeFactory.newInstance().createNode("org/apache/tuscany/sca/binding/atom/Provider.composite", new Contribution("provider", contribution));
+        scaProviderNode.start();
+        
+        scaConsumerNode = NodeFactory.newInstance().createNode("org/apache/tuscany/sca/binding/atom/Consumer.composite", new Contribution("consumer", contribution));
+        scaConsumerNode.start();
+    }
 
-    public static void main(String[] args) {
-
-        String contribution = ContributionLocationHelper.getContributionLocation(Provider.class);
-        Node node = NodeFactory.newInstance().createNode("org/apache/tuscany/sca/binding/atom/Provider.composite", new Contribution("c1", contribution));
-        System.out.println("Provider.composite ready...");
-
-        try {
-            System.in.read();
-        } catch (IOException e) {
-            e.printStackTrace();
+    protected static void destroyTestEnvironment() throws Exception {
+        if (scaConsumerNode != null) {
+            scaConsumerNode.stop();
+            scaConsumerNode.destroy();
         }
-
-        node.stop();
-        node.destroy();
+        if (scaProviderNode != null) {
+            scaProviderNode.stop();
+            scaProviderNode.destroy();
+        }
     }
 }

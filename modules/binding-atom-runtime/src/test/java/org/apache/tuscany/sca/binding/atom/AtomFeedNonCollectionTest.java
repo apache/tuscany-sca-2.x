@@ -29,7 +29,6 @@ import org.apache.abdera.model.Link;
 import org.apache.tuscany.sca.binding.atom.collection.Collection;
 import org.apache.tuscany.sca.data.collection.Entry;
 import org.apache.tuscany.sca.data.collection.Item;
-import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -40,7 +39,7 @@ import org.junit.Test;
  * Test cases for using an Atom feed that does not implement
  * the Collections interface but does have a getAll() method.
  */
-public class AtomFeedNonCollectionTest {
+public class AtomFeedNonCollectionTest extends AbstractProviderConsumerTestCase {
     /**
      * Used to generate unique IDs for the feed entries.
      */
@@ -66,36 +65,34 @@ public class AtomFeedNonCollectionTest {
      */
     private static final int FEED_ENTRY_COUNT = FEED_ENTRY_TITLES.length;
 
-    private static SCADomain scaConsumerDomain;
-    private static SCADomain scaProviderDomain;
     private static CustomerClient testService;
 
     @BeforeClass
     public static void init() throws Exception {
-        System.out.println(">>>AtomFeedNonCollectionTest.init entry");
-        scaProviderDomain = SCADomain.newInstance("org/apache/tuscany/sca/binding/atom/ProviderNonCollection.composite");
-        scaConsumerDomain = SCADomain.newInstance("org/apache/tuscany/sca/binding/atom/Consumer.composite");
-        testService = scaConsumerDomain.getService(CustomerClient.class, "CustomerClient");
+        try {
+            //System.out.println(">>>AtomFeedNonCollectionTest.init entry");
+            
+            initTestEnvironment(AtomFeedNonCollectionTest.class);
+
+            testService = scaConsumerNode.getService(CustomerClient.class, "CustomerClient");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @AfterClass
     public static void destroy() throws Exception {
-        System.out.println(">>>AtomFeedNonCollectionTest.destroy entry");
-        if (scaConsumerDomain != null) {
-            scaConsumerDomain.close();
-        }
-        if (scaProviderDomain != null) {
-            scaProviderDomain.close();
-        }
+        destroyTestEnvironment();
     }
 
     /**
      * Make sure everything has been initialised correctly.
      */
+    @SuppressWarnings("unchecked")
     @Before
     public void testPrelim() {
-        Assert.assertNotNull(scaProviderDomain);
-        Assert.assertNotNull(scaConsumerDomain);
+        Assert.assertNotNull(scaConsumerNode);
+        Assert.assertNotNull(scaProviderNode);
         Assert.assertNotNull(testService);
 
         // Add some entries to the Atom feed

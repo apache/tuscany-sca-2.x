@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.binding.atom;
+package org.apache.tuscany.sca.binding.atom.util;
 
 import java.io.IOException;
 

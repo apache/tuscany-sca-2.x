@@ -36,7 +36,6 @@ import org.apache.abdera.protocol.Response.ResponseType;
 import org.apache.abdera.protocol.client.AbderaClient;
 import org.apache.abdera.protocol.client.ClientResponse;
 import org.apache.tuscany.sca.binding.atom.collection.Collection;
-import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -46,10 +45,9 @@ import org.junit.Test;
  * Uses the SCA provided Provider composite to act as a server.
  * Uses the Abdera provided Client to act as a client.
  */
-public class ProviderServiceDocumentTestCase {
-	public final static String providerURI = "http://localhost:8084/customer";
-	protected static SCADomain scaProviderDomain;
-    protected static SCADomain scaConsumerDomain;
+public class ProviderServiceDocumentTestCase extends AbstractProviderConsumerTestCase {
+    public final static String providerURI = "http://localhost:8084/customer";
+
     protected static CustomerClient testService;
     protected static Abdera abdera;
     protected static AbderaClient client;
@@ -57,24 +55,24 @@ public class ProviderServiceDocumentTestCase {
 
 	@BeforeClass
 	public static void init() throws Exception {
-		scaProviderDomain = SCADomain.newInstance("org/apache/tuscany/sca/binding/atom/Provider.composite");
-        scaConsumerDomain = SCADomain.newInstance("org/apache/tuscany/sca/binding/atom/Consumer.composite");
-        testService = scaConsumerDomain.getService(CustomerClient.class, "CustomerClient");
-		abdera = new Abdera();
-		client = new AbderaClient(abdera);
-		abderaParser = Abdera.getNewParser();
+	    initTestEnvironment(AtomPostTestCase.class);
+
+	    testService = scaConsumerNode.getService(CustomerClient.class, "CustomerClient");
+
+	    abdera = new Abdera();
+	    client = new AbderaClient(abdera);
+	    abderaParser = Abdera.getNewParser();
 	}
 
     @AfterClass
     public static void destroy() throws Exception {
-        if (scaProviderDomain != null) {
-            scaProviderDomain.close();
-        }
+        destroyTestEnvironment();
     }
 
 	@Test
 	public void testPrelim() throws Exception {
-		Assert.assertNotNull(scaProviderDomain);
+	    Assert.assertNotNull(scaProviderNode);
+	        Assert.assertNotNull(scaConsumerNode);
 		Assert.assertNotNull( client );
 	}
 			

@@ -34,7 +34,7 @@ import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.Feed;
 import org.apache.tuscany.sca.binding.atom.collection.MediaCollection;
 import org.apache.tuscany.sca.binding.atom.collection.NotFoundException;
-import org.osoa.sca.annotations.Scope;
+import org.oasisopen.sca.annotation.Scope;
 
 @Scope("COMPOSITE")
 public class MediaCollectionImpl implements MediaCollection {

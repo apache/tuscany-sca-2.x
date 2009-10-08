@@ -25,7 +25,7 @@ import org.apache.tuscany.sca.data.collection.Entry;
 /**
  * The Sort service business interface.
  * 
- * @version $Rev: 639931 $ $Date: 2008-03-21 18:13:05 -0700 (Fri, 21 Mar 2008) $
+ * @version $Rev$ $Date$
  */
 public interface Sort {
 
@@ -34,5 +34,6 @@ public interface Sort {
      * @param entries
      * @return
      */
+    @SuppressWarnings("unchecked")
     List<Entry> sort(List<Entry> entries);
 }
