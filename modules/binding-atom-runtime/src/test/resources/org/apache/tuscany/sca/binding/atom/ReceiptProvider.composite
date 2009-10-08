@@ -22,12 +22,15 @@
 	   targetNamespace = "http://receipt"
 	   name="ReceiptProvider">
 
-	<service name="receipt" promote="MediaCollection">
+	<!-- service name="receipt" promote="MediaCollection">
 		<tuscany:binding.atom uri = "http://localhost:8084/receipt"/>
-	</service>
+	</service-->
 	
     <component name="MediaCollection">
         <implementation.java class="org.apache.tuscany.sca.binding.atom.MediaCollectionImpl"/>
+        <service name="MediaCollection">
+            <tuscany:binding.atom uri = "http://localhost:8084/receipt"/>
+        </service>
     </component>
 
 </composite>

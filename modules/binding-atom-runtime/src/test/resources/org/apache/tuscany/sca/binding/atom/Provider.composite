@@ -22,12 +22,15 @@
 	   targetNamespace = "http://customer"
 	   name="Provider">
 
-	<service name="customer" promote="CustomerCollection">
+	<!-- service name="customer" promote="CustomerCollection">
 		<tuscany:binding.atom uri = "http://localhost:8084/customer"/>
-	</service>
+	</service-->
 	
     <component name="CustomerCollection">
         <implementation.java class="org.apache.tuscany.sca.binding.atom.CustomerCollectionImpl"/>
+        <service name="Collection">
+            <tuscany:binding.atom uri = "http://localhost:8084/customer"/>
+        </service>
     </component>
 
 </composite>

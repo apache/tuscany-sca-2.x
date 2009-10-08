@@ -22,12 +22,15 @@
 	targetNamespace="http://aggregator"
     name="FeedAggregator">
 
-	<service name="atomSample" promote="AtomAggregator">
+	<!-- service name="atomSample" promote="AtomAggregator">
 		<tuscany:binding.atom  uri="http://localhost:8085/atomAggregator"/>
-	</service>	
+	</service-->	
     
     <component name="AtomAggregator">
-        <implementation.java class="org.apache.tuscany.sca.binding.atom.aggregator.AggregatorImpl"/>        
+        <implementation.java class="org.apache.tuscany.sca.binding.atom.aggregator.AggregatorImpl"/>
+        <service name="Aggregator">
+            <tuscany:binding.atom  uri="http://localhost:8085/atomAggregator"/>
+        </service>      
         <reference name="sort" target="Sort"/>          
 		<reference name="atomFeed1">
    	 		<tuscany:binding.atom uri="http://www.ibm.com/developerworks/blogs/rss/lresende?flavor=atomdw"/>
