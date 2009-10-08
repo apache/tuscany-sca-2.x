@@ -52,11 +52,11 @@ public class AtomBindingProviderFactory implements BindingProviderFactory<AtomBi
         this.mediator = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class).getUtility(Mediator.class);
     }
 
-    ReferenceBindingProvider createReferenceBindingProvider(EndpointReference endpointReference) {
+    public ReferenceBindingProvider createReferenceBindingProvider(EndpointReference endpointReference) {
         return new AtomReferenceBindingProvider(endpointReference, mediator);
     }
 
-    ServiceBindingProvider createServiceBindingProvider(Endpoint endpoint) {
+    public ServiceBindingProvider createServiceBindingProvider(Endpoint endpoint) {
         return new AtomServiceBindingProvider(endpoint, messageFactory, mediator, servletHost);
     }
 
