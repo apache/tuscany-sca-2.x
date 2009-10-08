@@ -21,10 +21,6 @@
             <attribute name="interface" type="NCName" use="required"/>
             <attribute name="callbackInterface" type="NCName" 
                        use="optional"/>
-            <!-- @remotable is defined in Interface -->           
-            <!-- 
-            <attribute name="remotable" type="boolean" use="optional"/>
-             -->
             <anyAttribute namespace="##other" processContents="lax"/>
          </extension>
       </complexContent>
