@@ -18,6 +18,8 @@ Import-Package: javax.servlet,
  org.apache.abdera.i18n.iri,
  org.apache.abdera.model,
  org.apache.abdera.parser,
+ org.apache.abdera.protocol.client,
+ org.apache.abdera.protocol.client.util,
  org.apache.abdera.writer,
  org.apache.commons.codec.binary,
  org.apache.commons.httpclient,
@@ -40,4 +42,5 @@ Import-Package: javax.servlet,
  org.oasisopen.sca.annotation;version="2.0.0"
 Bundle-SymbolicName: org.apache.tuscany.sca.binding.atom.abdera
 Bundle-DocURL: http://www.apache.org/
+Require-Bundle: org.apache.abdera.abdera-core
 
