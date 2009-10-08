@@ -54,10 +54,6 @@ public class Exception2ExceptionTransformer extends BaseTransformer<Throwable, T
         this.faultExceptionMapper = faultExceptionMapper;
     }
 
-    public Exception2ExceptionTransformer() {
-        super();
-    }
-
     @Override
     public String getSourceDataBinding() {
         return DataBinding.IDL_FAULT;
