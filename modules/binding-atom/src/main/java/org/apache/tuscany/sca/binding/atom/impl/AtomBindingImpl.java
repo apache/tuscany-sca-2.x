@@ -19,34 +19,21 @@
 
 package org.apache.tuscany.sca.binding.atom.impl;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.assembly.Component;
-import org.apache.tuscany.sca.assembly.ComponentService;
-import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.binding.atom.AtomBinding;
-import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.IntentAttachPointType;
-import org.apache.tuscany.sca.policy.PolicySet;
-import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 
 /**
  * Implementation of the Atom Feed binding model.
  *
  * @version $Rev$ $Date$
  */
-class AtomBindingImpl implements AtomBinding, PolicySetAttachPoint {
+class AtomBindingImpl implements AtomBinding {
 
     private String name;
     private String uri;
     private String title;
     private String description;
-    private List<Intent> requiredIntents = new ArrayList<Intent>();
-    private List<PolicySet> policySets = new ArrayList<PolicySet>();
-    private IntentAttachPointType intentAttachPointType;
-    private List<PolicySet> applicablePolicySets = new ArrayList<PolicySet>();
 
     public String getName() {
         return name;
@@ -95,34 +82,8 @@ class AtomBindingImpl implements AtomBinding, PolicySetAttachPoint {
         // The binding is always resolved
     }
 
-    //Policy related getters/setters
-    
-    public List<PolicySet> getPolicySets() {
-        return policySets;
-    }
-    
-    public List<Intent> getRequiredIntents() {
-        return requiredIntents;
-    }
-
-    public IntentAttachPointType getType() {
-        return intentAttachPointType;
-    }
-    
-    public void setType(IntentAttachPointType intentAttachPointType) {
-        this.intentAttachPointType = intentAttachPointType;
-    }
-
-    public void setPolicySets(List<PolicySet> policySets) {
-        this.policySets = policySets; 
-    }
-
-    public void setRequiredIntents(List<Intent> intents) {
-        this.requiredIntents = intents;
-    }
-    
-    public List<PolicySet> getApplicablePolicySets() {
-        return applicablePolicySets;
+    public QName getType() {
+        return AtomBinding.TYPE;
     }
 
     @Override

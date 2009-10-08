@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.binding.atom;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.sca.assembly.Binding;
 
 /**
@@ -27,6 +29,7 @@ import org.apache.tuscany.sca.assembly.Binding;
  * @version $Rev$ $Date$
  */
 public interface AtomBinding extends Binding {
+    QName TYPE = new QName(SCA11_TUSCANY_NS, "binding.atom");
     
     /**
      * Returns the title of the Atom collection.
