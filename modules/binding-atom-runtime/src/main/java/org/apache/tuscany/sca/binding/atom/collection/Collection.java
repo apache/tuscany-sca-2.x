@@ -20,7 +20,7 @@ package org.apache.tuscany.sca.binding.atom.collection;
 
 import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.Feed;
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 
 /**
  * Provides access to a collection of resources using Atom.
