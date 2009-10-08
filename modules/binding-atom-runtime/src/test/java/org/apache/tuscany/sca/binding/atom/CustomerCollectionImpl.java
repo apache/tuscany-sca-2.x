@@ -46,7 +46,7 @@ public class CustomerCollectionImpl implements Collection {
     }
 
     public Entry post(Entry entry) {
-        System.out.println(">>> CustomerCollectionImpl.post entry=" + entry.getTitle());
+        //System.out.println(">>> CustomerCollectionImpl.post entry=" + entry.getTitle());
 
         if(!("Exception_Test".equalsIgnoreCase(entry.getTitle())))
         {
@@ -60,7 +60,7 @@ public class CustomerCollectionImpl implements Collection {
            lastModified = now;
            entries.put(id, entry);
 
-            System.out.println(">>> CustomerCollectionImpl.post return id=" + id);
+            //System.out.println(">>> CustomerCollectionImpl.post return id=" + id);
 
             return entry;
 
@@ -72,12 +72,12 @@ public class CustomerCollectionImpl implements Collection {
     }
 
     public Entry get(String id) {
-        System.out.println(">>> CustomerCollectionImpl.get id=" + id);
+        //System.out.println(">>> CustomerCollectionImpl.get id=" + id);
         return entries.get(id);
     }
 
     public void put(String id, Entry entry) throws NotFoundException {
-        System.out.println(">>> CustomerCollectionImpl.put id=" + id + " entry=" + entry.getTitle());
+        //System.out.println(">>> CustomerCollectionImpl.put id=" + id + " entry=" + entry.getTitle());
         if(entries.containsKey(id)){
         	Date now = new Date();
         	entry.setUpdated(now);
@@ -90,7 +90,7 @@ public class CustomerCollectionImpl implements Collection {
      }
 
     public void delete(String id) throws NotFoundException {
-        System.out.println(">>> CustomerCollectionImpl.delete id=" + id);
+        //System.out.println(">>> CustomerCollectionImpl.delete id=" + id);
         if(entries.containsKey(id)){
         	entries.remove(id);
         	lastModified = new Date();
@@ -101,7 +101,7 @@ public class CustomerCollectionImpl implements Collection {
      }
 
     public Feed getFeed() {
-        System.out.println(">>> CustomerCollectionImpl.getFeed");
+        //System.out.println(">>> CustomerCollectionImpl.getFeed");
 
         Feed feed = this.abdera.getFactory().newFeed();
         feed.setId("customers" + this.hashCode() ); // provide unique id for feed instance.
@@ -119,7 +119,7 @@ public class CustomerCollectionImpl implements Collection {
     }
 
     public Feed query(String queryString) {
-        System.out.println(">>> CustomerCollectionImpl.query collection " + queryString);
+        //System.out.println(">>> CustomerCollectionImpl.query collection " + queryString);
         return getFeed();
     }
 

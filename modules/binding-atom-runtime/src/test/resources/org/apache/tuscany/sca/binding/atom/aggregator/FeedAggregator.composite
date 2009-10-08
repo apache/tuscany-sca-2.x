@@ -38,7 +38,9 @@
    		<reference name="atomFeed2"> 	
    	 		<tuscany:binding.atom uri="https://blogs.apache.org/foundation/feed/entries/atom"/>
    		</reference>
-        <property name="feedTitle">Atom Aggregator Sample</property>    		           
+        <property name="feedTitle">Atom Aggregator Sample</property>
+        <property name="feedDescription">Anonymous Aggregated Feed</property>
+        <property name="feedAuthor">anonymous</property>
     </component>    
     
     <component name="Sort">

@@ -82,7 +82,7 @@ public class ProviderFeedEntityTagsTestCase {
 
     @AfterClass
     public static void destroy() throws Exception {
-        System.out.println(">>>ProviderFeedEntityTagsTestCase.destroy");
+        //System.out.println(">>>ProviderFeedEntityTagsTestCase.destroy");
         if (scaProviderNode != null) {
             scaProviderNode.stop();
             scaProviderNode.destroy();
@@ -97,7 +97,7 @@ public class ProviderFeedEntityTagsTestCase {
 			
 	@Test
     public void testFeedBasics() throws Exception {		
-		System.out.println(">>>ProviderFeedEntityTagsTestCase.testFeedBasics");
+		// System.out.println(">>>ProviderFeedEntityTagsTestCase.testFeedBasics");
 		// Normal feed request
 		ClientResponse res = client.get(providerURI);
 		Assert.assertNotNull(res);
@@ -129,7 +129,7 @@ public class ProviderFeedEntityTagsTestCase {
 
 	@Test
     public void testUnmodifiedGetIfMatch() throws Exception {		
-		System.out.println(">>>ProviderFeedEntityTagsTestCase.testFeedUnmodifiedGetIfMatch");
+		//System.out.println(">>>ProviderFeedEntityTagsTestCase.testFeedUnmodifiedGetIfMatch");
 		// Feed request with predicates
 		RequestOptions opts = new RequestOptions();
 		final String contentType = "application/atom+xml"; 
@@ -157,7 +157,7 @@ public class ProviderFeedEntityTagsTestCase {
 
 	@Test
     public void testUnmodifiedGetIfNoneMatch() throws Exception {		
-		System.out.println(">>>ProviderFeedEntityTagsTestCase.testFeedUnmodifiedGetIfNoneMatch");
+		//System.out.println(">>>ProviderFeedEntityTagsTestCase.testFeedUnmodifiedGetIfNoneMatch");
 		// Feed request with predicates
 		RequestOptions opts = new RequestOptions();
 		final String contentType = "application/atom+xml"; 
@@ -176,7 +176,7 @@ public class ProviderFeedEntityTagsTestCase {
 
 	@Test
     public void testUnmodifiedGetIfUnModified() throws Exception {		
-		System.out.println(">>>ProviderFeedEntityTagsTestCase.testFeedUnmodifiedGetIfUnModified");
+		//System.out.println(">>>ProviderFeedEntityTagsTestCase.testFeedUnmodifiedGetIfUnModified");
 		// Feed request with predicates
 		RequestOptions opts = new RequestOptions();
 		final String contentType = "application/atom+xml"; 
@@ -195,7 +195,7 @@ public class ProviderFeedEntityTagsTestCase {
 
 	@Test
     public void testUnmodifiedGetIfModified() throws Exception {		
-		System.out.println(">>>ProviderFeedEntityTagsTestCase.testFeedUnmodifiedGetIfModified");
+		//System.out.println(">>>ProviderFeedEntityTagsTestCase.testFeedUnmodifiedGetIfModified");
 		// Feed request with predicates
 		RequestOptions opts = new RequestOptions();
 		final String contentType = "application/atom+xml"; 
@@ -220,7 +220,7 @@ public class ProviderFeedEntityTagsTestCase {
 
 	@Test
     public void testModifiedGetIfNoneMatch() throws Exception {		
-		System.out.println(">>>ProviderFeedEntityTagsTestCase.testFeedModifiedGetIfNoneMatch");
+		//System.out.println(">>>ProviderFeedEntityTagsTestCase.testFeedModifiedGetIfNoneMatch");
 		// Post some new content to the feed.
 		Factory factory = abdera.getFactory();
 		String customerName = "Fred Farkle";
@@ -260,7 +260,7 @@ public class ProviderFeedEntityTagsTestCase {
 
 	@Test
     public void testModifiedGetIfMatch() throws Exception {		
-		System.out.println(">>>ProviderFeedEntityTagsTestCase.testFeedModifiedGetIfMatch");
+		//System.out.println(">>>ProviderFeedEntityTagsTestCase.testFeedModifiedGetIfMatch");
 		// Feed request with predicates
 		RequestOptions opts = new RequestOptions();
 		final String contentType = "application/atom+xml"; 
@@ -289,7 +289,7 @@ public class ProviderFeedEntityTagsTestCase {
 
 	@Test
     public void testModifiedGetIfUnModified() throws Exception {		
-		System.out.println(">>>ProviderFeedEntityTagsTestCase.testFeedUnmodifiedGetIfUnModified");
+		//System.out.println(">>>ProviderFeedEntityTagsTestCase.testFeedUnmodifiedGetIfUnModified");
 		// Feed request with predicates
 		RequestOptions opts = new RequestOptions();
 		final String contentType = "application/atom+xml"; 
@@ -308,7 +308,7 @@ public class ProviderFeedEntityTagsTestCase {
 
 	@Test
     public void testModifiedGetIfModified() throws Exception {		
-		System.out.println(">>>ProviderFeedEntityTagsTestCase.testFeedUnmodifiedGetIfModified");
+		//System.out.println(">>>ProviderFeedEntityTagsTestCase.testFeedUnmodifiedGetIfModified");
 		// Feed request with predicates
 		RequestOptions opts = new RequestOptions();
 		final String contentType = "application/atom+xml"; 

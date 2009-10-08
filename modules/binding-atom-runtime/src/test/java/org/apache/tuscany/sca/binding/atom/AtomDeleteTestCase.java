@@ -71,12 +71,12 @@ public class AtomDeleteTestCase extends AbstractProviderConsumerTestCase {
         Assert.assertNotNull(resourceCollection);
 
         Entry postEntry = postEntry("Sponge Bob");
-        System.out.println(">>> post entry= " + postEntry.getTitle());
+        //System.out.println(">>> post entry= " + postEntry.getTitle());
 
         Entry newEntry = resourceCollection.post(postEntry);
-        System.out.println("<<< Entry posted for " + newEntry.getTitle());
+        //System.out.println("<<< Entry posted for " + newEntry.getTitle());
 
-        System.out.println(">>> get id=" + newEntry.getId());
+        //System.out.println(">>> get id=" + newEntry.getId());
 
         resourceCollection.delete(newEntry.getId().toString());
 

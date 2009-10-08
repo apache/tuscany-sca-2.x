@@ -70,15 +70,15 @@ public class AtomPutTestCase extends AbstractProviderConsumerTestCase {
         Assert.assertNotNull(resourceCollection);
 
         Entry postEntry = postEntry("Sponge Bob");
-        System.out.println(">>> post entry= " + postEntry.getTitle());
+        //System.out.println(">>> post entry= " + postEntry.getTitle());
 
         Entry newEntry = resourceCollection.post(postEntry);
-        System.out.println("<<< Entry posted for " + newEntry.getTitle());
-        System.out.println(newEntry.getId());
+        //System.out.println("<<< Entry posted for " + newEntry.getTitle());
+        //System.out.println(newEntry.getId());
 
-        System.out.println(">>> put id=" + newEntry.getId() + " entry=" + newEntry.getTitle());
+        //System.out.println(">>> put id=" + newEntry.getId() + " entry=" + newEntry.getTitle());
         resourceCollection.put(newEntry.getId().toString(), updateEntry(newEntry, "James Bond"));
-        System.out.println("<<< put id=" + newEntry.getId() + " entry=" + newEntry.getTitle());
+        //System.out.println("<<< put id=" + newEntry.getId() + " entry=" + newEntry.getTitle());
     }
 
     @Test
@@ -87,7 +87,7 @@ public class AtomPutTestCase extends AbstractProviderConsumerTestCase {
         Assert.assertNotNull(resourceCollection);
 
         Entry postEntry = postEntry("Sponge Bob");
-        System.out.println(">>> post entry= " + postEntry.getTitle());
+        //System.out.println(">>> post entry= " + postEntry.getTitle());
 
         // Generate random ID to pass as parameter in PUT() --
         String id = "urn:uuid:customer-" + UUID.randomUUID().toString();

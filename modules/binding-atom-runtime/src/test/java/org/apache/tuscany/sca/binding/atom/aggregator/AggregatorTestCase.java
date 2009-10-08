@@ -49,7 +49,7 @@ public class AggregatorTestCase {
             node = NodeFactory.newInstance().createNode("org/apache/tuscany/sca/binding/atom/aggregator/FeedAggregator.composite", new Contribution("test", contribution));
             node.start();
 
-            aggregatorService = node.getService(Aggregator.class, "AtomAggregator");
+            aggregatorService = node.getService(Aggregator.class, "AtomAggregator/Aggregator");
             Assert.assertNotNull(aggregatorService);
         } catch (Exception e) {
             e.printStackTrace();

@@ -67,13 +67,13 @@ public class AtomPostTestCase extends AbstractProviderConsumerTestCase {
         Assert.assertNotNull(resourceCollection);
 
         Entry postEntry = postEntry("Sponge Bob");
-        System.out.println(">>> post entry= " + postEntry.getTitle());
+        //System.out.println(">>> post entry= " + postEntry.getTitle());
 
         Entry newEntry = resourceCollection.post(postEntry);
 
         Assert.assertEquals(postEntry.getTitle(), newEntry.getTitle());
 
-        System.out.println("<<< new entry= " + newEntry.getTitle());
+        //System.out.println("<<< new entry= " + newEntry.getTitle());
 
     }
 

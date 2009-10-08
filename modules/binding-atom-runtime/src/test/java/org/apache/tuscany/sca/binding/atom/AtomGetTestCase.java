@@ -67,17 +67,17 @@ public class AtomGetTestCase extends AbstractProviderConsumerTestCase {
         Assert.assertNotNull(resourceCollection);
 
         Entry postEntry = postEntry("Sponge Bob");
-        System.out.println(">>> post entry= " + postEntry.getTitle());
+        //System.out.println(">>> post entry= " + postEntry.getTitle());
 
         Entry newEntry = resourceCollection.post(postEntry);
-        System.out.println("<<< Entry posted for " + newEntry.getTitle());
+        //System.out.println("<<< Entry posted for " + newEntry.getTitle());
 
-        System.out.println(">>> get id=" + newEntry.getId());
+        //System.out.println(">>> get id=" + newEntry.getId());
 
         Entry getEntry = resourceCollection.get(newEntry.getId().toString());
 
         Assert.assertEquals(newEntry.getTitle(), getEntry.getTitle());
-        System.out.println("<<< get id=" + getEntry.getId() + " entry=" + getEntry.getTitle());
+        //System.out.println("<<< get id=" + getEntry.getId() + " entry=" + getEntry.getTitle());
     }
 
     @Test
@@ -86,11 +86,11 @@ public class AtomGetTestCase extends AbstractProviderConsumerTestCase {
         Assert.assertNotNull(resourceCollection);
 
         Entry postEntry = postEntry("Sponge Bob");
-        System.out.println(">>> post entry= " + postEntry.getTitle());
+        //System.out.println(">>> post entry= " + postEntry.getTitle());
 
         Entry newEntry = resourceCollection.post(postEntry);
-        System.out.println("<<< Entry posted for " + newEntry.getTitle());
-        System.out.println(newEntry.getId());
+        //System.out.println("<<< Entry posted for " + newEntry.getTitle());
+        //System.out.println(newEntry.getId());
 
         // Delete the entry to force the Collection to throw NotFoundException
         resourceCollection.delete(newEntry.getId().toString());

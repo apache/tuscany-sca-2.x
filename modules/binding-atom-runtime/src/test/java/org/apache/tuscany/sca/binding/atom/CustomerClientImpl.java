@@ -36,33 +36,33 @@ public class CustomerClientImpl implements CustomerClient {
     public void testCustomerCollection() throws Exception {
 
         Entry newEntry = newEntry("Sponge Bob");
-        System.out.println(">>> post entry=" + newEntry.getTitle());
+        //System.out.println(">>> post entry=" + newEntry.getTitle());
         newEntry = customerCollection.post(newEntry);
-        System.out.println("<<< post id=" + newEntry.getId() + " entry=" + newEntry.getTitle());
+        //System.out.println("<<< post id=" + newEntry.getId() + " entry=" + newEntry.getTitle());
 
         newEntry = newEntry("Jane Bond");
-        System.out.println(">>> post entry=" + newEntry.getTitle());
+        //System.out.println(">>> post entry=" + newEntry.getTitle());
         newEntry = customerCollection.post(newEntry);
-        System.out.println("<<< post id=" + newEntry.getId() + " entry=" + newEntry.getTitle());
+        //System.out.println("<<< post id=" + newEntry.getId() + " entry=" + newEntry.getTitle());
 
-        System.out.println(">>> get id=" + newEntry.getId());
+        //System.out.println(">>> get id=" + newEntry.getId());
         Entry entry = customerCollection.get(newEntry.getId().toString());
-        System.out.println("<<< get id=" + entry.getId() + " entry=" + entry.getTitle());
+        //System.out.println("<<< get id=" + entry.getId() + " entry=" + entry.getTitle());
 
-        System.out.println(">>> put id=" + newEntry.getId() + " entry=" + entry.getTitle());
+        //System.out.println(">>> put id=" + newEntry.getId() + " entry=" + entry.getTitle());
         customerCollection.put(entry.getId().toString(), updateEntry(entry, "James Bond"));
-        System.out.println("<<< put id=" + entry.getId() + " entry=" + entry.getTitle());
+        //System.out.println("<<< put id=" + entry.getId() + " entry=" + entry.getTitle());
 
-        System.out.println(">>> delete id=" + entry.getId());
+        //System.out.println(">>> delete id=" + entry.getId());
         customerCollection.delete(entry.getId().toString());
-        System.out.println("<<< delete id=" + entry.getId());
+        //System.out.println("<<< delete id=" + entry.getId());
 
-        System.out.println(">>> get collection");
+        //System.out.println(">>> get collection");
         Feed feed = customerCollection.getFeed();
-        System.out.println("<<< get collection");
+        //System.out.println("<<< get collection");
         for (Object o : feed.getEntries()) {
             Entry e = (Entry)o;
-            System.out.println("id = " + e.getId() + " entry = " + e.getTitle());
+            //System.out.println("id = " + e.getId() + " entry = " + e.getTitle());
         }
     }
 

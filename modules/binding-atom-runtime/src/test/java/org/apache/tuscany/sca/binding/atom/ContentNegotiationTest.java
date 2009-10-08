@@ -95,7 +95,7 @@ public class ContentNegotiationTest {
 	
     @Test
 	public void testPost() throws Exception {
-		System.out.println(">>>ContentNegotiationTest.testPost");
+		//System.out.println(">>>ContentNegotiationTest.testPost");
 		// Testing of entry creation
 		Factory factory = abdera.getFactory();
 		String customerName = "Fred Farkle";
@@ -134,7 +134,7 @@ public class ContentNegotiationTest {
 
 	@Test
 	public void testXMLEntryGet() throws Exception {
-		System.out.println(">>>ContentNegotiationTest.testXMLEntryGet");
+		//System.out.println(">>>ContentNegotiationTest.testXMLEntryGet");
 		RequestOptions opts = new RequestOptions();
 		opts.setHeader( "Accept", "application/atom+xml" );
 		
@@ -148,7 +148,7 @@ public class ContentNegotiationTest {
 
 	@Test
 	public void testJSONEntryGet() throws Exception {
-		System.out.println(">>>ContentNegotiationTest.testJSONEntryGet");
+		//System.out.println(">>>ContentNegotiationTest.testJSONEntryGet");
 		RequestOptions opts = new RequestOptions();
 		opts.setHeader( "Accept", "application/json" );
 		
@@ -178,7 +178,7 @@ public class ContentNegotiationTest {
 
 	@Test
     public void testXMLFeedGet() throws Exception {		
-		System.out.println(">>>ContentNegotiationTest.testXMLFeedGet");
+		//System.out.println(">>>ContentNegotiationTest.testXMLFeedGet");
 		RequestOptions opts = new RequestOptions();
 		opts.setHeader( "Accept", "application/atom+xml" );
 		
@@ -210,7 +210,7 @@ public class ContentNegotiationTest {
 
 	@Test
     public void testJSONFeedGet() throws Exception {		
-		System.out.println(">>>ContentNegotiationTest.testJSONFeedGet");
+		//System.out.println(">>>ContentNegotiationTest.testJSONFeedGet");
 		RequestOptions opts = new RequestOptions();
 		opts.setHeader( "Accept", "application/json" );
 		

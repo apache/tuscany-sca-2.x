@@ -33,7 +33,6 @@
             <tuscany:binding.atom uri = "http://localhost:8084/customer" 
                 title="Atom binding Non Collection" description="Feed used for unit testing"/>
         </service>
-        
     </component>
-
+    
 </composite>

@@ -29,6 +29,10 @@ import org.apache.abdera.model.Link;
 import org.apache.tuscany.sca.binding.atom.collection.Collection;
 import org.apache.tuscany.sca.data.collection.Entry;
 import org.apache.tuscany.sca.data.collection.Item;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -39,7 +43,7 @@ import org.junit.Test;
  * Test cases for using an Atom feed that does not implement
  * the Collections interface but does have a getAll() method.
  */
-public class AtomFeedNonCollectionTest extends AbstractProviderConsumerTestCase {
+public class AtomFeedNonCollectionTest {
     /**
      * Used to generate unique IDs for the feed entries.
      */
@@ -64,6 +68,9 @@ public class AtomFeedNonCollectionTest extends AbstractProviderConsumerTestCase 
      * The number of test feed entries.
      */
     private static final int FEED_ENTRY_COUNT = FEED_ENTRY_TITLES.length;
+    
+    protected static Node scaProviderNode;
+    protected static Node scaConsumerNode;
 
     private static CustomerClient testService;
 
@@ -72,7 +79,13 @@ public class AtomFeedNonCollectionTest extends AbstractProviderConsumerTestCase 
         try {
             //System.out.println(">>>AtomFeedNonCollectionTest.init entry");
             
-            initTestEnvironment(AtomFeedNonCollectionTest.class);
+            String contribution = ContributionLocationHelper.getContributionLocation(AtomFeedNonCollectionTest.class);
+            
+            scaProviderNode = NodeFactory.newInstance().createNode("org/apache/tuscany/sca/binding/atom/ProviderNonCollection.composite", new Contribution("provider", contribution));
+            scaProviderNode.start();
+            
+            scaConsumerNode = NodeFactory.newInstance().createNode("org/apache/tuscany/sca/binding/atom/Consumer.composite", new Contribution("consumer", contribution));
+            scaConsumerNode.start();
 
             testService = scaConsumerNode.getService(CustomerClient.class, "CustomerClient");
         } catch (Exception e) {
@@ -82,11 +95,18 @@ public class AtomFeedNonCollectionTest extends AbstractProviderConsumerTestCase 
 
     @AfterClass
     public static void destroy() throws Exception {
-        destroyTestEnvironment();
+        if (scaConsumerNode != null) {
+            scaConsumerNode.stop();
+            scaConsumerNode.destroy();
+        }
+        if (scaProviderNode != null) {
+            scaProviderNode.stop();
+            scaProviderNode.destroy();
+        }
     }
 
     /**
-     * Make sure everything has been initialised correctly.
+     * Make sure everything has been initialized correctly.
      */
     @SuppressWarnings("unchecked")
     @Before
@@ -141,29 +161,6 @@ public class AtomFeedNonCollectionTest extends AbstractProviderConsumerTestCase 
     }
 
     /**
-     * Creates a feed entry.
-     * 
-     * @param title Title for the feed entry
-     * @param content Contents of the feed entry
-     * @param link Link for the feed entry
-     * @return A new feed entry.
-     */
-    private Entry<Object, Object> createFeedEntry(String title, String content, String link) {
-        final Item item = new Item(title, content, link, null, new Date());
-        final Entry<Object, Object> entry = new Entry<Object, Object>(nextFeedID(), item);
-        return entry;
-    }
-
-    /**
-     * Generates the feed entry ID.
-     * 
-     * @return Next feed entry ID
-     */
-    private String nextFeedID() {
-        return Integer.toString(ID_GEN.incrementAndGet());
-    }
-
-    /**
      * Tests that the title of the feed can be set by the title
      * attribute on the binding.atom
      */
@@ -195,5 +192,28 @@ public class AtomFeedNonCollectionTest extends AbstractProviderConsumerTestCase 
 
         // Validate the description
         Assert.assertEquals(expectedFeedDescription, feedDescription);
+    }
+
+    /**
+     * Creates a feed entry.
+     * 
+     * @param title Title for the feed entry
+     * @param content Contents of the feed entry
+     * @param link Link for the feed entry
+     * @return A new feed entry.
+     */
+    private Entry<Object, Object> createFeedEntry(String title, String content, String link) {
+        final Item item = new Item(title, content, link, null, new Date());
+        final Entry<Object, Object> entry = new Entry<Object, Object>(nextFeedID(), item);
+        return entry;
+    }
+
+    /**
+     * Generates the feed entry ID.
+     * 
+     * @return Next feed entry ID
+     */
+    private String nextFeedID() {
+        return Integer.toString(ID_GEN.incrementAndGet());
     }
 }

@@ -44,7 +44,7 @@ public class MediaCollectionImpl implements MediaCollection {
     public Date lastModified = new Date();
     
     public Entry post(Entry entry) {
-        System.out.println(">>> MediaCollectionImpl.post entry=" + entry.getTitle());
+        //System.out.println(">>> MediaCollectionImpl.post entry=" + entry.getTitle());
 
         if(!("Exception_Test".equalsIgnoreCase(entry.getTitle())))
         {
@@ -58,7 +58,7 @@ public class MediaCollectionImpl implements MediaCollection {
            lastModified = now;
            entries.put(id, entry);
 
-            System.out.println(">>> MediaCollectionImpl.post return id=" + id);
+            //System.out.println(">>> MediaCollectionImpl.post return id=" + id);
 
             return entry;
 
@@ -70,12 +70,12 @@ public class MediaCollectionImpl implements MediaCollection {
     }
 
     public Entry get(String id) {
-        System.out.println(">>> MediaCollectionImpl.get id=" + id);
+        //System.out.println(">>> MediaCollectionImpl.get id=" + id);
         return entries.get(id);
     }
 
     public void put(String id, Entry entry) throws NotFoundException {
-        System.out.println(">>> MediaCollectionImpl.put id=" + id + " entry=" + entry.getTitle());
+        //System.out.println(">>> MediaCollectionImpl.put id=" + id + " entry=" + entry.getTitle());
         if(entries.containsKey(id)){
         	Date now = new Date();
         	entry.setUpdated(now);
@@ -88,7 +88,7 @@ public class MediaCollectionImpl implements MediaCollection {
      }
 
     public void delete(String id) throws NotFoundException {
-        System.out.println(">>> MediaCollectionImpl.delete id=" + id);
+        //System.out.println(">>> MediaCollectionImpl.delete id=" + id);
         if(entries.containsKey(id)){
         	entries.remove(id);
         	lastModified = new Date();
@@ -99,7 +99,7 @@ public class MediaCollectionImpl implements MediaCollection {
      }
 
     public Feed getFeed() {
-        System.out.println(">>> MediaCollectionImpl.getFeed");
+        //System.out.println(">>> MediaCollectionImpl.getFeed");
 
         Feed feed = this.abdera.getFactory().newFeed();
         feed.setId("customers" + this.hashCode() ); // provide unique id for feed instance.
@@ -117,7 +117,7 @@ public class MediaCollectionImpl implements MediaCollection {
     }
 
     public Feed query(String queryString) {
-        System.out.println(">>> MediaCollectionImpl.query collection " + queryString);
+        //System.out.println(">>> MediaCollectionImpl.query collection " + queryString);
         return getFeed();
     }
 
@@ -146,7 +146,7 @@ public class MediaCollectionImpl implements MediaCollection {
 
     // MediaCollection role
     public Entry postMedia(String title, String slug, String contentType, InputStream media) {
-        System.out.println(">>> MediaCollectionImpl.postMedia title=" + title + ", slug=" + slug + ", contentType=" + contentType );
+        //System.out.println(">>> MediaCollectionImpl.postMedia title=" + title + ", slug=" + slug + ", contentType=" + contentType );
 
         Factory factory = abdera.getFactory();
         Entry entry = factory.newEntry();
@@ -196,7 +196,7 @@ public class MediaCollectionImpl implements MediaCollection {
     }
 
     public void putMedia(String id, String contentType, InputStream media) throws NotFoundException {
-        System.out.println(">>> MediaCollectionImpl.putMedia id=" + id + ", contentType=" + contentType );
+        //System.out.println(">>> MediaCollectionImpl.putMedia id=" + id + ", contentType=" + contentType );
 
         // Must responsd with success or not found as per Atom Pub spec (http://tools.ietf.org/html/rfc5023#section-9.6)
         // Body is null.

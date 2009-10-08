@@ -102,33 +102,33 @@ public class ConsumerProviderAtomTestCase extends AbstractProviderConsumerTestCa
 		Assert.assertNotNull(resourceCollection);
 		
 		Entry newEntry = newEntry("Sponge Bob");
-	        System.out.println(">>> post entry=" + newEntry.getTitle());
+	        //System.out.println(">>> post entry=" + newEntry.getTitle());
 	        newEntry = resourceCollection.post(newEntry);
-	        System.out.println("<<< post id=" + newEntry.getId() + " entry=" + newEntry.getTitle());
+	        //System.out.println("<<< post id=" + newEntry.getId() + " entry=" + newEntry.getTitle());
 
 	        newEntry = newEntry("Jane Bond");
-	        System.out.println(">>> post entry=" + newEntry.getTitle());
+	        //System.out.println(">>> post entry=" + newEntry.getTitle());
 	        newEntry = resourceCollection.post(newEntry);
-	        System.out.println("<<< post id=" + newEntry.getId() + " entry=" + newEntry.getTitle());
+	        //System.out.println("<<< post id=" + newEntry.getId() + " entry=" + newEntry.getTitle());
 
-	        System.out.println(">>> get id=" + newEntry.getId());
+	        //System.out.println(">>> get id=" + newEntry.getId());
 	        Entry entry = resourceCollection.get(newEntry.getId().toString());
-	        System.out.println("<<< get id=" + entry.getId() + " entry=" + entry.getTitle());
+	        //System.out.println("<<< get id=" + entry.getId() + " entry=" + entry.getTitle());
 
-	        System.out.println(">>> put id=" + newEntry.getId() + " entry=" + entry.getTitle());
+	        //System.out.println(">>> put id=" + newEntry.getId() + " entry=" + entry.getTitle());
 	        resourceCollection.put(entry.getId().toString(), updateEntry(entry, "James Bond"));
-	        System.out.println("<<< put id=" + entry.getId() + " entry=" + entry.getTitle());
+	        //System.out.println("<<< put id=" + entry.getId() + " entry=" + entry.getTitle());
 
-	        System.out.println(">>> delete id=" + entry.getId());
+	        //System.out.println(">>> delete id=" + entry.getId());
 	        resourceCollection.delete(entry.getId().toString());
-	        System.out.println("<<< delete id=" + entry.getId());
+	        //System.out.println("<<< delete id=" + entry.getId());
 	        
-	        System.out.println(">>> get collection");
+	        //System.out.println(">>> get collection");
 	        Feed feed = resourceCollection.getFeed();
-	        System.out.println("<<< get collection");
+	        //System.out.println("<<< get collection");
 	        for (Object o : feed.getEntries()) {
 	            Entry e = (Entry)o;
-	            System.out.println("id = " + e.getId() + " entry = " + e.getTitle());
+	            //System.out.println("id = " + e.getId() + " entry = " + e.getTitle());
 	        }
 	}
 
