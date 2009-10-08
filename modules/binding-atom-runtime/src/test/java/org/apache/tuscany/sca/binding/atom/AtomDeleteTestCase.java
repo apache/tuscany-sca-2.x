@@ -26,15 +26,12 @@ import org.apache.abdera.Abdera;
 import org.apache.abdera.model.Content;
 import org.apache.abdera.model.Entry;
 import org.apache.tuscany.sca.binding.atom.collection.Collection;
-import org.apache.tuscany.sca.node.Node;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class AtomDeleteTestCase extends AbstractProviderConsumerTestCase {
-    private static Node scaProviderNode;
-    private static Node scaConsumerNode;
-
+    
     protected static CustomerClient testService;
     protected static Abdera abdera;
 
