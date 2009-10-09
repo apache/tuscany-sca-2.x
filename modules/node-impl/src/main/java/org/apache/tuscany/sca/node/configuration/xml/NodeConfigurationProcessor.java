@@ -103,6 +103,7 @@ public class NodeConfigurationProcessor extends BaseStAXArtifactProcessor implem
                         node = nodeConfigurationFactory.createNodeConfiguration();
                         node.setURI(reader.getAttributeValue(null, "uri"));
                         node.setDomainURI(reader.getAttributeValue(null, "domain"));
+                        node.setDomainRegistryURI(reader.getAttributeValue(null, "domainRegistry"));
                     } else if (CONTRIBUTION.equals(name)) {
                         contribution = nodeConfigurationFactory.createContributionConfiguration();
                         contribution.setURI(reader.getAttributeValue(null, "uri"));
@@ -146,6 +147,8 @@ public class NodeConfigurationProcessor extends BaseStAXArtifactProcessor implem
                         XMLStreamWriter writer = helper.createXMLStreamWriter(sw);
                         helper.save(reader, writer);
                         composite.setContent(sw.toString());
+                    } else {
+                        node.getExtensions().add(processor.read(reader));
                     }
                     break;
 
@@ -181,6 +184,7 @@ public class NodeConfigurationProcessor extends BaseStAXArtifactProcessor implem
                    NODE.getNamespaceURI(),
                    NODE.getLocalPart(),
                    new XAttr("uri", node.getURI()),
+                   new XAttr("domainRegistry", node.getDomainRegistryURI()),
                    new XAttr("domain", node.getDomainURI()));
 
         for (ContributionConfiguration c : node.getContributions()) {
@@ -222,6 +226,10 @@ public class NodeConfigurationProcessor extends BaseStAXArtifactProcessor implem
                        new XAttr("name", b.getBindingType()),
                        new XAttr("baseURIs", uris.toString()));
             writeEnd(writer);
+        }
+        
+        for(Object o: node.getExtensions()) {
+            processor.write(o, writer);
         }
 
         writeEnd(writer);

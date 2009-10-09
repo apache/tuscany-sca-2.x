@@ -492,6 +492,7 @@ public class NodeFactoryImpl extends NodeFactory {
             // aggregate definitions
             for (Artifact artifact : contribution.getArtifacts()) {
                 Object model = artifact.getModel();
+                // FIXME: Should we check the artifact URI is META-INF/definitions.xml?
                 if (model instanceof Definitions) {
                     monitor.pushContext("Definitions: " + artifact.getLocation());
                     DefinitionsUtil.aggregate((Definitions)model, systemDefinitions, monitor);
@@ -562,7 +563,7 @@ public class NodeFactoryImpl extends NodeFactory {
         return domainComposite;
     }
 
-    private List<Contribution> loadContributions(NodeConfiguration configuration, Monitor monitor) throws Throwable {
+    protected List<Contribution> loadContributions(NodeConfiguration configuration, Monitor monitor) throws Throwable {
         List<Contribution> contributions = new ArrayList<Contribution>();
 
         // Load the specified contributions

@@ -124,7 +124,12 @@ public class NodeImpl implements Node, Client {
         try {
             Monitor monitor = manager.monitorFactory.createMonitor();
             monitor.reset();
+            
+            if (contributions == null) {
+                contributions = manager.loadContributions(configuration, monitor);
+            }
             domainComposite = manager.configureNode(configuration, contributions, monitor);
+            
             this.compositeContext = new CompositeContextImpl(manager.extensionPoints, endpointRegistry, domainComposite);
             
             // Activate the composite

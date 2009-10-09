@@ -21,6 +21,7 @@
     xmlns="http://tuscany.apache.org/xmlns/sca/1.1"
     xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1"
     uri="http://sample/nodes/TestNode1"
+    domainRegistry = "vm://localhost"
     domain="http://domain1">
 
     <!-- Configure the base URIs for a given binding -->
@@ -52,4 +53,6 @@
         <deploymentComposite location="test/Test.composite">
         </deploymentComposite>
     </contribution>
+    <option name="debug" value="true"/>
+    <option name="validation">true</option>
 </node>
