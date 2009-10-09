@@ -19,13 +19,14 @@
 
 package org.apache.tuscany.sca.definitions.xml;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -46,7 +47,7 @@ public class DefaultDefinitionsExtensionPoint implements DefinitionsExtensionPoi
     private static final Logger logger = Logger.getLogger(DefaultDefinitionsExtensionPoint.class.getName());
     private static final URI DEFINITIONS_URI = URI.create("META-INF/definitions.xml");
     private ExtensionPointRegistry registry;
-    private List<URL> documents = new ArrayList<URL>();
+    private Set<URL> documents = new HashSet<URL>();
     private List<Definitions> definitions = new ArrayList<Definitions>();
     private boolean documentsLoaded;
     private boolean loaded;
@@ -83,7 +84,7 @@ public class DefaultDefinitionsExtensionPoint implements DefinitionsExtensionPoi
         for (ServiceDeclaration definitionsDeclaration : definitionsDeclarations) {
             URL url = definitionsDeclaration.getResource(definitionsDeclaration.getClassName());
             if (url == null) {
-                throw new IllegalArgumentException(new FileNotFoundException(definitionsDeclaration.getClassName()));
+                throw new IllegalArgumentException(definitionsDeclaration.getClassName() + " cannot be found");
             }
             documents.add(url);
         }
