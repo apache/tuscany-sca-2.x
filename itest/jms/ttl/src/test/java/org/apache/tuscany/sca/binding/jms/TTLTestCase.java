@@ -47,7 +47,7 @@ public class TTLTestCase {
 
         synchronized(MockInitialContextFactory.lock) {
             if (MockInitialContextFactory.timeToLive == null) {
-                MockInitialContextFactory.lock.wait(1000);
+                MockInitialContextFactory.lock.wait(10000);
             }
         }
 
