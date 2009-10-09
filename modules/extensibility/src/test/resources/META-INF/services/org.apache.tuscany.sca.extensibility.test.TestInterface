@@ -14,6 +14,6 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License. 
-org.apache.tuscany.sca.extensibility.test.TestImpl;ranking=10
-org.apache.tuscany.sca.extensibility.test.Test2Impl;ranking=20
+org.apache.tuscany.sca.extensibility.test.TestImpl;ranking=10;attr=123
+org.apache.tuscany.sca.extensibility.test.Test2Impl;ranking=20;attr=abc
 org.apache.tuscany.sca.extensibility.test.DummyImpl

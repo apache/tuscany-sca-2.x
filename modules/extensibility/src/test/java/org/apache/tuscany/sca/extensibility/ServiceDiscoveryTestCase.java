@@ -65,4 +65,23 @@ public class ServiceDiscoveryTestCase {
         Assert.assertEquals("org.apache.tuscany.sca.extensibility.test.Test2Impl", sd1.getClassName());
         Assert.assertEquals("org.apache.tuscany.sca.extensibility.test.TestImpl", sd2.getClassName());
     }
+
+    @Test
+    public void testFilter() throws Exception {
+        Collection<ServiceDeclaration> sds =
+            ServiceDiscovery.getInstance().getServiceDeclarations(TestInterface.class, "(attr=abc)");
+
+        Assert.assertEquals(1, sds.size());
+
+        Iterator<ServiceDeclaration> it = sds.iterator();
+        ServiceDeclaration sd1 = it.next();
+        Assert.assertEquals("org.apache.tuscany.sca.extensibility.test.Test2Impl", sd1.getClassName());
+
+        sds = ServiceDiscovery.getInstance().getServiceDeclarations(TestInterface.class, "(attr=1*)");
+        Assert.assertEquals(1, sds.size());
+        it = sds.iterator();
+        sd1 = it.next();
+        Assert.assertEquals("org.apache.tuscany.sca.extensibility.test.TestImpl", sd1.getClassName());
+    }
+
 }
