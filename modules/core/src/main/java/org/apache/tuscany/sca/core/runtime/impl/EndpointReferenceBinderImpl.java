@@ -17,15 +17,13 @@
  * under the License.
  */
 
-package org.apache.tuscany.sca.core.assembly.impl;
+package org.apache.tuscany.sca.core.runtime.impl;
 
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
-import org.apache.tuscany.sca.assembly.builder.EndpointReferenceBuilder;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
@@ -33,6 +31,7 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.monitor.Problem;
+import org.apache.tuscany.sca.runtime.EndpointReferenceBinder;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
 
 /**
@@ -44,16 +43,15 @@ import org.apache.tuscany.sca.runtime.EndpointRegistry;
  *
  * @version $Rev$ $Date$
  */
-public class EndpointReferenceBuilderImpl implements EndpointReferenceBuilder {
+public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
 
     protected ExtensionPointRegistry extensionPoints;
     protected AssemblyFactory assemblyFactory;
     protected InterfaceContractMapper interfaceContractMapper;
-    protected EndpointRegistry endpointRegistry;
     private Monitor monitor;
 
 
-    public EndpointReferenceBuilderImpl(ExtensionPointRegistry extensionPoints) {
+    public EndpointReferenceBinderImpl(ExtensionPointRegistry extensionPoints) {
         this.extensionPoints = extensionPoints;
 
         FactoryExtensionPoint factories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
@@ -61,24 +59,11 @@ public class EndpointReferenceBuilderImpl implements EndpointReferenceBuilder {
 
         UtilityExtensionPoint utils = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
         this.interfaceContractMapper = utils.getUtility(InterfaceContractMapper.class);
-        this.endpointRegistry = utils.getUtility(EndpointRegistry.class);
         MonitorFactory monitorFactory = utils.getUtility(MonitorFactory.class);
         monitor = monitorFactory.createMonitor();
     }
     
-    /**
-     * Build a composite
-     *
-     * @param endpoint
-     * @param monitor
-     */
-    public void buildtimeBuild(Composite composite) { 
-        // TODO - ready for reorganization of the builders
-        //        build all the endpoint references in a composite
-        //        that it is possible to build in order to get any
-        //        errors out as early as possible. Any that can't
-        //        be built now must wait until runtime
-    }
+
 
     /**
      * Build a single endpoint reference
@@ -86,10 +71,8 @@ public class EndpointReferenceBuilderImpl implements EndpointReferenceBuilder {
      * @param endpoint
      * @param monitor
      */
-    public Problem runtimeBuild(EndpointReference endpointReference) {
-        
+    public boolean bind(EndpointRegistry endpointRegistry, EndpointReference endpointReference) {
         Problem problem = null;
-
         if ( endpointReference.getStatus() == EndpointReference.WIRED_TARGET_FOUND_AND_MATCHED ||
              endpointReference.getStatus() == EndpointReference.RESOLVED_BINDING ) {
             // The endpoint reference is already resolved to either
@@ -142,7 +125,8 @@ public class EndpointReferenceBuilderImpl implements EndpointReferenceBuilder {
         } 
         
         if (problem != null){
-            return problem;
+            monitor.problem(problem);
+            return false;
         }
 
         if (endpointReference.getStatus() != EndpointReference.WIRED_TARGET_FOUND_AND_MATCHED &&
@@ -153,9 +137,12 @@ public class EndpointReferenceBuilderImpl implements EndpointReferenceBuilder {
                                             this, 
                                             "EndpointReferenceCantBeMatched", 
                                             endpointReference.toString());
+            monitor.problem(problem);
+            return false;
         }
         
-        return problem;
+        return true;
+        
     }
 
     private Problem selectForwardEndpoint(EndpointReference endpointReference, List<Endpoint> endpoints) {    
@@ -170,6 +157,7 @@ public class EndpointReferenceBuilderImpl implements EndpointReferenceBuilder {
             for (Endpoint endpoint : endpoints){
                 if (haveMatchingPolicy(endpointReference, endpoint)){
                     matchedEndpoint = endpoint;
+                    break;
                 }
             }
         }
@@ -299,7 +287,7 @@ public class EndpointReferenceBuilderImpl implements EndpointReferenceBuilder {
         return true;
     }
 
-    public boolean isOutOfDate(EndpointReference endpointReference) {
+    public boolean isOutOfDate(EndpointRegistry endpointRegistry, EndpointReference endpointReference) {
         Endpoint te = endpointReference.getTargetEndpoint();
         if (!te.isUnresolved() && te.getURI()!= null) {
             List<Endpoint> endpoints = endpointRegistry.findEndpoint(endpointReference);

@@ -45,6 +45,7 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
+import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.node.Client;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFinder;
@@ -52,6 +53,7 @@ import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
 import org.apache.tuscany.sca.node.management.NodeManager;
 import org.apache.tuscany.sca.runtime.ActivationException;
 import org.apache.tuscany.sca.runtime.CompositeActivator;
+import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentContext;
@@ -113,15 +115,20 @@ public class NodeImpl implements Node, Client {
         this.proxyFactory = manager.proxyFactory;
         UtilityExtensionPoint utilities = manager.extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
         
-        // FIXME: Get the endpoint registry by the Node configuration
-        EndpointRegistry endpointRegistry = utilities.getUtility(EndpointRegistry.class);
+        DomainRegistryFactory domainRegistryFactory = utilities.getUtility(DomainRegistryFactory.class);
+        EndpointRegistry endpointRegistry =
+            domainRegistryFactory.getEndpointRegistry(configuration.getDomainRegistryURI(), configuration
+                .getDomainURI());
+
         this.compositeActivator = utilities.getUtility(CompositeActivator.class);
         try {
-            domainComposite = manager.configureNode(configuration, contributions);
+            Monitor monitor = manager.monitorFactory.createMonitor();
+            monitor.reset();
+            domainComposite = manager.configureNode(configuration, contributions, monitor);
             this.compositeContext = new CompositeContextImpl(manager.extensionPoints, endpointRegistry, domainComposite);
             
             // Activate the composite
-            compositeActivator.activate(domainComposite);
+            compositeActivator.activate(compositeContext, domainComposite);
 
             // Start the composite
             compositeActivator.start(compositeContext, domainComposite);

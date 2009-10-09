@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.monitor;
 
+
 /**
  * A factory for validation monitors
  * 
@@ -32,4 +33,27 @@ public interface MonitorFactory {
      */
     Monitor createMonitor();
 
+    /**
+     * Get the monitor instance on the thread
+     * @return the monitor instance on the thread
+     */
+    Monitor getContextMonitor();
+
+    /**
+     * Get the monitor instance on the thread
+     * @param create if it true, then create a new instance if no monitor is on the thread 
+     * @return the monitor instance on the thread
+     */
+    Monitor getContextMonitor(boolean create);
+
+    /**
+     * Remove the monitor on the thread
+     */
+    void removeContextMonitor();
+
+    /**
+     * Set the monitor onto the thread
+     * @param value
+     */
+    void setContextMonitor(Monitor monitor);
 }

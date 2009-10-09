@@ -33,6 +33,8 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.tuscany.sca.extensibility.impl.LDAPFilter;
+
 /**
  * Service discovery for Tuscany based on J2SE Jar service provider spec.
  * Services are described using configuration files in META-INF/services.
@@ -152,8 +154,51 @@ public final class ServiceDiscovery implements ServiceDiscoverer {
         return sds;
     }
 
+    /**
+     * Discover all service providers that are compatible with the service type
+     * @param serviceType
+     * @return
+     * @throws IOException
+     */
     public Collection<ServiceDeclaration> getServiceDeclarations(Class<?> serviceType) throws IOException {
         return getServiceDeclarations(serviceType, false);
+    }
+    
+    /**
+     * Discover all service providers that are compatible with the service type and match the filter
+     * @param serviceType
+     * @param filter
+     * @return
+     * @throws IOException
+     */
+    public Collection<ServiceDeclaration> getServiceDeclarations(Class<?> serviceType, String filter) throws IOException {
+        Collection<ServiceDeclaration> sds = getServiceDeclarations(serviceType, false);
+        Collection<ServiceDeclaration> filtered = new ArrayList<ServiceDeclaration>();
+        LDAPFilter filterImpl = LDAPFilter.newInstance(filter);
+        for(ServiceDeclaration sd: sds) {
+            if(filterImpl.match(sd.getAttributes())) {
+                filtered.add(sd);
+            }
+        }
+        return filtered;
+    }
+    
+    /**
+     * @param serviceName
+     * @param filter
+     * @return
+     * @throws IOException
+     */
+    public Collection<ServiceDeclaration> getServiceDeclarations(String serviceName, String filter) throws IOException {
+        Collection<ServiceDeclaration> sds = getServiceDeclarations(serviceName, false);
+        Collection<ServiceDeclaration> filtered = new ArrayList<ServiceDeclaration>();
+        LDAPFilter filterImpl = LDAPFilter.newInstance(filter);
+        for(ServiceDeclaration sd: sds) {
+            if(filterImpl.match(sd.getAttributes())) {
+                filtered.add(sd);
+            }
+        }
+        return filtered;
     }
 
     public ServiceDeclaration getServiceDeclaration(Class<?> serviceType) throws IOException {

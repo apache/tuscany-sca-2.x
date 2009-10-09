@@ -129,4 +129,11 @@ public class MonitorImpl extends Monitor {
     public void clearContext() {
         contextStack.clear();  
     }
+    
+    @Override
+    public void reset() {
+        clearContext();
+        problemCache.clear();
+        artifactName = null;
+    }
 }

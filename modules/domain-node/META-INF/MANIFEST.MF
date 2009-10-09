@@ -11,6 +11,7 @@ Bundle-Description: Apache Tuscany SCA Domain Node
 Import-Package: 
  org.apache.tuscany.sca.management;version="2.0.0",
  org.apache.tuscany.sca.node;version="2.0.0",
+ org.apache.tuscany.sca.node.configuration;version="2.0.0",
  org.apache.tuscany.sca.node.impl;version="2.0.0"
 Bundle-SymbolicName: org.apache.tuscany.sca.domain.node
 Bundle-DocURL: http://www.apache.org/

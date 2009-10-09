@@ -121,6 +121,11 @@ public abstract class Monitor {
     public abstract void clearContext();
     
     /**
+     * Clear context and problems
+     */
+    public abstract void reset();
+    
+    /**
      * A utility function for raising a warning. It creates the problem and 
      * adds it to the monitor
      * 

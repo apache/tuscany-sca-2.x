@@ -68,7 +68,6 @@
         <module>databinding-json</module>
         <module>domain-node</module>
         <module>endpoint-tribes</module>
-        <module>endpoint-wrapper</module>
         <module>extensibility</module>
         <module>extensibility-equinox</module>
         <module>host-http</module>

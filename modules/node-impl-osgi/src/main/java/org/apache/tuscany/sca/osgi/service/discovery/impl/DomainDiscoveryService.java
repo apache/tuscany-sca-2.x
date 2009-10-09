@@ -26,15 +26,15 @@ import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.implementation.osgi.OSGiImplementation;
 import org.apache.tuscany.sca.osgi.service.remoteadmin.EndpointDescription;
+import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.EndpointListener;
-import org.apache.tuscany.sca.runtime.EndpointRegistry;
 import org.osgi.framework.BundleContext;
 
 /**
  * Discovery service based on the distributed SCA domain
  */
 public class DomainDiscoveryService extends AbstractDiscoveryService implements EndpointListener {
-    private EndpointRegistry endpointRegistry;
+    private DomainRegistryFactory domainRegistryFactory;
 
     public DomainDiscoveryService(BundleContext context) {
         super(context);
@@ -43,9 +43,9 @@ public class DomainDiscoveryService extends AbstractDiscoveryService implements 
     public void start() {
         super.start();
         getExtensionPointRegistry();
-        this.endpointRegistry =
-            registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(EndpointRegistry.class);
-        this.endpointRegistry.addListener(this);
+        this.domainRegistryFactory =
+            registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(DomainRegistryFactory.class);
+        domainRegistryFactory.addListener(this);
     }
 
     public void endpointAdded(Endpoint endpoint) {
@@ -102,7 +102,7 @@ public class DomainDiscoveryService extends AbstractDiscoveryService implements 
     }
 
     public void stop() {
-        endpointRegistry.removeListener(this);
+        domainRegistryFactory.removeListener(this);
         super.stop();
     }
 

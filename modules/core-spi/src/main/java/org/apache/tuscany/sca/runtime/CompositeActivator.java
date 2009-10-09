@@ -31,30 +31,34 @@ import org.apache.tuscany.sca.context.CompositeContext;
 public interface CompositeActivator {
     /**
      * Activate a composite
+     * @param compositeContext The context of the Node
      * @param composite
      */
-    void activate(Composite composite) throws ActivationException;
+    void activate(CompositeContext compositeContext, Composite composite) throws ActivationException;
 
     /**
      * Activate a component reference
+     * @param compositeContext The context of the Node
      * @param component
      * @param ref
      */
-    void start(RuntimeComponent component, RuntimeComponentReference ref);
+    void start(CompositeContext compositeContext, RuntimeComponent component, RuntimeComponentReference ref);
     
     /**
      * Activate a component reference
+     * @param compositeContext The context of the Node
      * @param component
      * @param ref
      */
-    void activate(RuntimeComponent component, RuntimeComponentReference ref);
+    void activate(CompositeContext compositeContext, RuntimeComponent component, RuntimeComponentReference ref);
 
     /**
      * Activate a component reference
+     * @param compositeContext The context of the Node
      * @param component
      * @param ref
      */
-    void activate(RuntimeComponent component, RuntimeComponentService service);
+    void activate(CompositeContext compositeContext, RuntimeComponent component, RuntimeComponentService service);
 
     /**
      * De-activate a component reference

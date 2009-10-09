@@ -35,7 +35,7 @@ import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.Service;
-import org.apache.tuscany.sca.assembly.builder.EndpointReferenceBuilder;
+import org.apache.tuscany.sca.context.CompositeContext;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
@@ -52,7 +52,6 @@ import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.invocation.Phase;
-import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.provider.PolicyProvider;
@@ -63,6 +62,7 @@ import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.provider.ReferenceBindingProviderRRB;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.provider.ServiceBindingProviderRRB;
+import org.apache.tuscany.sca.runtime.EndpointReferenceBinder;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
@@ -78,7 +78,8 @@ import org.oasisopen.sca.ServiceRuntimeException;
  */
 public class RuntimeWireImpl implements RuntimeWire {
 
-    ExtensionPointRegistry extensionPoints;
+    private CompositeContext compositeContext;
+    private ExtensionPointRegistry extensionPoints;
 
     private Boolean isReferenceWire = false;
     private EndpointReference endpointReference;
@@ -100,7 +101,7 @@ public class RuntimeWireImpl implements RuntimeWire {
     private List<InvocationChain> chains;
     private InvocationChain bindingInvocationChain;
 
-    private EndpointReferenceBuilder endpointReferenceBuilder;
+    private EndpointReferenceBinder eprBinder;
     private final ProviderFactoryExtensionPoint providerFactories;
 
     /**
@@ -112,7 +113,7 @@ public class RuntimeWireImpl implements RuntimeWire {
      * @param messageFactory
      * @param conversationManager
      */
-    public RuntimeWireImpl(ExtensionPointRegistry extensionPoints,
+    public RuntimeWireImpl(CompositeContext compositeContext,
                             boolean isReferenceWire,
                             EndpointReference endpointReference,
                             Endpoint endpoint,
@@ -121,7 +122,8 @@ public class RuntimeWireImpl implements RuntimeWire {
                             RuntimeWireProcessor wireProcessor,
                             MessageFactory messageFactory) {
         super();
-        this.extensionPoints = extensionPoints;
+        this.compositeContext = compositeContext;
+        this.extensionPoints = compositeContext.getExtensionPointRegistry();
         this.isReferenceWire = isReferenceWire;
         this.endpointReference = endpointReference;
         this.endpoint = endpoint;
@@ -132,16 +134,17 @@ public class RuntimeWireImpl implements RuntimeWire {
         this.invoker = new RuntimeWireInvoker(this.messageFactory, this);
 
         UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
-        this.endpointReferenceBuilder = utilities.getUtility(EndpointReferenceBuilder.class);
+        this.eprBinder = utilities.getUtility(EndpointReferenceBinder.class);
         this.providerFactories = extensionPoints.getExtensionPoint(ProviderFactoryExtensionPoint.class);
     }
 
-    public RuntimeWireImpl(ExtensionPointRegistry extensionPoints,
+    public RuntimeWireImpl(CompositeContext compositeContext,
                            boolean isReferenceWire,
                            EndpointReference endpointReference,
                            Endpoint endpoint) {
        super();
-       this.extensionPoints = extensionPoints;
+       this.compositeContext = compositeContext;
+       this.extensionPoints = compositeContext.getExtensionPointRegistry();
        this.isReferenceWire = isReferenceWire;
        this.endpointReference = endpointReference;
        this.endpoint = endpoint;
@@ -154,9 +157,10 @@ public class RuntimeWireImpl implements RuntimeWire {
        this.messageFactory = factories.getFactory(MessageFactory.class);
        this.invoker = new RuntimeWireInvoker(this.messageFactory, this);
 
-       this.endpointReferenceBuilder = utilities.getUtility(EndpointReferenceBuilder.class);
+       this.eprBinder = utilities.getUtility(EndpointReferenceBinder.class);
        this.providerFactories = extensionPoints.getExtensionPoint(ProviderFactoryExtensionPoint.class);
    }
+    
     public synchronized List<InvocationChain> getInvocationChains() {
         if (chains == null) {
             initInvocationChains();
@@ -331,10 +335,10 @@ public class RuntimeWireImpl implements RuntimeWire {
      * is first used
      */
     private void resolveEndpointReference(){
-        Problem problem = endpointReferenceBuilder.runtimeBuild(endpointReference);
+        boolean ok = eprBinder.bind(compositeContext.getEndpointRegistry(), endpointReference);
         
-        if (problem != null){
-            throw new SCARuntimeException(problem.toString());
+        if (!ok) {
+            throw new SCARuntimeException("Unable to bind " + endpointReference);
         }
 
         // set the endpoint based on the resolved endpoint
@@ -774,6 +778,6 @@ public class RuntimeWireImpl implements RuntimeWire {
     }
 
     public boolean isOutOfDate() {
-        return endpointReferenceBuilder.isOutOfDate(getEndpointReference());
+        return eprBinder.isOutOfDate(compositeContext.getEndpointRegistry(), getEndpointReference());
     }    
 }

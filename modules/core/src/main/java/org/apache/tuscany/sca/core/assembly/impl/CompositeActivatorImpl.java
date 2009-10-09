@@ -100,13 +100,13 @@ public class CompositeActivatorImpl implements CompositeActivator {
 
     // Composite activation/deactivation
 
-    public void activate(Composite composite) throws ActivationException {
+    public void activate(CompositeContext compositeContext, Composite composite) throws ActivationException {
         try {
             if (logger.isLoggable(Level.FINE)) {
                 logger.fine("Activating composite: " + composite.getName());
             }
             for (Component component : composite.getComponents()) {
-                activateComponent(component);
+                activateComponent(compositeContext, component);
             }
         } catch (Exception e) {
             throw new ActivationException(e);
@@ -128,7 +128,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
 
     // Component activation/deactivation
 
-    public void activateComponent(Component component)
+    public void activateComponent(CompositeContext compositeContext, Component component)
             throws ActivationException {
         try {
             if (logger.isLoggable(Level.FINE)) {
@@ -137,7 +137,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
 
             Implementation implementation = component.getImplementation();
             if (implementation instanceof Composite) {
-                activate((Composite) implementation);
+                activate(compositeContext, (Composite) implementation);
             } else if (implementation != null) {
                 addImplementationProvider((RuntimeComponent) component,
                         implementation);
@@ -145,13 +145,13 @@ public class CompositeActivatorImpl implements CompositeActivator {
             }
 
             for (ComponentService service : component.getServices()) {
-                activate((RuntimeComponent) component,
-                        (RuntimeComponentService) service);
+                activate(compositeContext,
+                        (RuntimeComponent) component, (RuntimeComponentService) service);
             }
 
             for (ComponentReference reference : component.getReferences()) {
-                activate((RuntimeComponent) component,
-                        (RuntimeComponentReference) reference);
+                activate(compositeContext,
+                        (RuntimeComponent) component, (RuntimeComponentReference) reference);
             }
         } catch (Exception e) {
             throw new ActivationException(e);
@@ -237,7 +237,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
 
     // Service activation/deactivation
 
-    public void activate(RuntimeComponent component, RuntimeComponentService service) {
+    public void activate(CompositeContext compositeContext, RuntimeComponent component, RuntimeComponentService service) {
         if (service.getService() == null) {
             if (logger.isLoggable(Level.WARNING)) {
                 logger.warning("Skipping component service not defined in the component type: " + component.getURI()
@@ -261,7 +261,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
         for (Endpoint endpoint : service.getEndpoints()) {
             addServiceBindingProvider(endpoint, component, service, endpoint.getBinding());
         }
-        addServiceWires(component, service);
+        addServiceWires(compositeContext, component, service);
     }
 
     public void deactivate(RuntimeComponent component, RuntimeComponentService service) {
@@ -313,7 +313,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
         }
     }
 
-    private void addServiceWires(Component serviceComponent, ComponentService service) {
+    private void addServiceWires(CompositeContext compositeContext, Component serviceComponent, ComponentService service) {
         if (!(service instanceof RuntimeComponentService)) {
             return;
         }
@@ -341,7 +341,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
             endpointReference.setInterfaceContract(getServiceBindingInterfaceContract(service, endpoint.getBinding()));
 
             // create the wire
-            RuntimeWire wire = new RuntimeWireImpl(extensionPoints,
+            RuntimeWire wire = new RuntimeWireImpl(compositeContext,
                                                     false,
                                                     endpointReference,
                                                     endpoint,
@@ -381,7 +381,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
 
     // Reference activation/deactivation
 
-    public void activate(RuntimeComponent component, RuntimeComponentReference reference) {
+    public void activate(CompositeContext compositeContext, RuntimeComponent component, RuntimeComponentReference reference) {
         if (logger.isLoggable(Level.FINE)) {
             logger.fine("Activating component reference: " + component.getURI() + "#" + reference.getName());
         }
@@ -641,7 +641,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
     // Used by component context start
     // TODO - EPR I don't know why reference wires don't get added until component start
 
-    public void start(RuntimeComponent component, RuntimeComponentReference componentReference) {
+    public void start(CompositeContext compositeContext, RuntimeComponent component, RuntimeComponentReference componentReference) {
         synchronized (componentReference) {
 
             if (!(componentReference instanceof RuntimeComponentReference)) {
@@ -696,7 +696,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
             // current composite). Endpoint reference resolution takes place when the wire
             // is first used (when the chains are created)
             for (EndpointReference endpointReference : componentReference.getEndpointReferences()){
-                addReferenceWire(component, componentReference, endpointReference);
+                addReferenceWire(compositeContext, component, componentReference, endpointReference);
                 component.getComponentContext().getCompositeContext().getEndpointRegistry().addEndpointReference(endpointReference);
             }
 
@@ -723,7 +723,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
         }
     }
 
-    private void addReferenceWire(Component component, ComponentReference reference, EndpointReference endpointReference) {
+    private void addReferenceWire(CompositeContext compositeContext, Component component, ComponentReference reference, EndpointReference endpointReference) {
         RuntimeComponentReference runtimeRef = (RuntimeComponentReference)reference;
 
         // Use the interface contract of the reference on the component type and if there
@@ -789,7 +789,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
         // create the wire
         // null endpoint passed in here as the endpoint reference may
         // not be resolved yet
-        RuntimeWire wire = new RuntimeWireImpl(extensionPoints,
+        RuntimeWire wire = new RuntimeWireImpl(compositeContext,
                                                 true,
                                                 endpointReference,
                                                 null,

@@ -17,39 +17,26 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.assembly.builder;
+package org.apache.tuscany.sca.runtime;
 
-import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.EndpointReference;
-import org.apache.tuscany.sca.monitor.Problem;
 
 /**
- * A builder that handles the configuration of endpoint references
- * It collects together the logic so that it can be used at build time
- * or later on during late binding scenarios
- *
- * @version $Rev$ $Date$
+ * A utility responsible for resolving the endpoint reference against a matching endpoint published
+ * to the EndpointRegistry
  */
-public interface EndpointReferenceBuilder {
-    
+public interface EndpointReferenceBinder {
     /**
-     * Build an endpoint reference matching reference bindings 
-     * with service bindings.
-     * 
+     * @param endpointRegistry
      * @param endpointReference
-     * @param monitor
+     * @return
      */
-    void buildtimeBuild(Composite composite);
-
+    boolean bind(EndpointRegistry endpointRegistry, EndpointReference endpointReference);
     /**
-     * Build an endpoint reference matching reference bindings 
-     * with service bindings.
      * 
+     * @param endpointRegistry
      * @param endpointReference
-     * @param monitor
+     * @return
      */
-    Problem runtimeBuild(EndpointReference endpointReference);
-
-    boolean isOutOfDate(EndpointReference endpointReference);
-
+    boolean isOutOfDate(EndpointRegistry endpointRegistry, EndpointReference endpointReference);
 }

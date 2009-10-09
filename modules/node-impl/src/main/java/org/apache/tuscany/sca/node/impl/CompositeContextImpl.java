@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.node.impl;
 
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.context.ComponentContextFactory;
 import org.apache.tuscany.sca.context.CompositeContext;
 import org.apache.tuscany.sca.context.ContextFactoryExtensionPoint;
@@ -57,6 +58,10 @@ public class CompositeContextImpl extends CompositeContext {
         RuntimeComponentContext componentContext =
             (RuntimeComponentContext)componentContextFactory.createComponentContext(this, runtimeComponent);
         runtimeComponent.setComponentContext(componentContext);
+    }
+    
+    public void bindEndpointReference(EndpointReference endpointReference) {
+        
     }
 
     public Composite getDomainComposite() {

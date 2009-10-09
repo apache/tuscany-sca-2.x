@@ -24,10 +24,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tuscany.sca.management.ConfigAttributes;
-import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
-import org.apache.tuscany.sca.node.impl.NodeFactoryImpl;
+import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
 
 public class DomainNode {
 
@@ -37,8 +36,9 @@ public class DomainNode {
     public static final String DEFAULT_DOMAIN_NAME = "defaultDomain";
 
     private ConfigAttributes configAttributes = new ConfigAttributesImpl();
+    private String domainRegistryURI;
     
-    private NodeFactoryImpl nodeFactory;
+    private NodeFactory nodeFactory;
     private Map<String, Node> nodes = new HashMap<String, Node>();
     
     public DomainNode() {
@@ -46,11 +46,13 @@ public class DomainNode {
     }
     
     public DomainNode(String configURI) {
+        this.domainRegistryURI = configURI;
         parseConfigURI(configURI);
         start();
     }
     
     public DomainNode(String configURI, String... contributionLocations) {
+        this.domainRegistryURI = configURI;
         parseConfigURI(configURI);
         start();
         for (String loc : contributionLocations) {
@@ -60,12 +62,10 @@ public class DomainNode {
     
     public void start() {
         if (nodeFactory != null) {
-            throw new IllegalStateException("Already started");
+            throw new IllegalStateException("The node is already started");
         }
         
-        //TODO shouldn't really be working with the impl
-        nodeFactory = (NodeFactoryImpl)NodeFactory.getInstance(configAttributes.getAttributes().get(DOMAIN_NAME_ATTR));
-        nodeFactory.setConfigAttributes(configAttributes);
+        nodeFactory = NodeFactory.getInstance(configAttributes.getAttributes().get(DOMAIN_NAME_ATTR));
     }
     
     public boolean isStarted() {
@@ -74,17 +74,13 @@ public class DomainNode {
 
     public void stop() {
         if (nodeFactory == null) {
-            throw new IllegalStateException("not started");
+            throw new IllegalStateException("The node is not started");
         }
         
         for (Node node : nodes.values()) {
             node.stop();
         }
-        
-// TODO: stopping the node factory stops _all_ domain nodes not just this instance        
-//        nodeFactory.destroy();
-//        nodeFactory = null;
-//        nodes.clear();
+
     }
 
     public String addContribution(String location) {
@@ -97,7 +93,11 @@ public class DomainNode {
         if (nodes.containsKey(uri)) {
             throw new IllegalArgumentException("contribution already added: " + uri);
         }
-        Node node = nodeFactory.createNode(new Contribution(uri, location)).start();
+        NodeConfiguration configuration =
+            nodeFactory.createNodeConfiguration().addContribution(uri, location)
+                .setDomainRegistryURI(domainRegistryURI).setDomainURI(configAttributes.getAttributes()
+                    .get(DOMAIN_NAME_ATTR)).setURI(uri);
+        Node node = nodeFactory.createNode(configuration).start();
         nodes.put(uri, node);
     }
 

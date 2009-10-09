@@ -54,7 +54,6 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.DeployedCompositeBuilder;
-import org.apache.tuscany.sca.assembly.builder.EndpointReferenceBuilder;
 import org.apache.tuscany.sca.common.xml.stax.StAXHelper;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
@@ -88,7 +87,6 @@ import org.apache.tuscany.sca.definitions.util.DefinitionsUtil;
 import org.apache.tuscany.sca.definitions.xml.DefinitionsExtensionPoint;
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
 import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
-import org.apache.tuscany.sca.management.ConfigAttributes;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.monitor.Problem;
@@ -117,23 +115,23 @@ public class NodeFactoryImpl extends NodeFactory {
     private StAXArtifactProcessor<Composite> compositeProcessor;
     private ContributionFactory contributionFactory;
     private ExtendedURLArtifactProcessor<Contribution> contributionProcessor;
-    private EndpointReferenceBuilder endpointReferenceBuilder;
     protected ExtensionPointRegistry extensionPoints;
     private XMLInputFactory inputFactory;
     protected FactoryExtensionPoint modelFactories;
     private ModelResolverExtensionPoint modelResolvers;
-    private Monitor monitor;
     protected ProxyFactory proxyFactory;
     private Contribution systemContribution;
     private Definitions systemDefinitions;
     private StAXArtifactProcessorExtensionPoint xmlProcessors;
+    
+    protected MonitorFactory monitorFactory;
+
 
     /**
      * Automatically destroy the factory when last node is stopped. Subclasses
      * can set this flag.
      */
     protected boolean autoDestroy = true;
-    private ConfigAttributes configAttributes;
 
     @Override
     public Node createNode(NodeConfiguration configuration) {
@@ -276,15 +274,20 @@ public class NodeFactoryImpl extends NodeFactory {
      *
      * @throws Exception
      */
-    private void analyzeProblems() throws Throwable {
-        for (Problem problem : monitor.getProblems()) {
-            if ((problem.getSeverity() == Severity.ERROR)) {
-                if (problem.getCause() != null) {
-                    throw problem.getCause();
-                } else {
-                    throw new ServiceRuntimeException(problem.toString());
+    private void analyzeProblems(Monitor monitor) throws Throwable {
+        try {
+            for (Problem problem : monitor.getProblems()) {
+                if ((problem.getSeverity() == Severity.ERROR)) {
+                    if (problem.getCause() != null) {
+                        throw problem.getCause();
+                    } else {
+                        throw new ServiceRuntimeException(problem.toString());
+                    }
                 }
             }
+        } finally {
+            // FIXME: Clear problems so that the monitor is clean again
+            monitor.reset();
         }
     }
 
@@ -390,13 +393,8 @@ public class NodeFactoryImpl extends NodeFactory {
 
         // Create a monitor
         UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
-        
-        if (configAttributes != null) {
-            utilities.addUtility(ConfigAttributes.class, configAttributes);
-        }
 
-        MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
-        monitor = monitorFactory.createMonitor();
+        monitorFactory = utilities.getUtility(MonitorFactory.class);
 
         // Initialize the Tuscany module activators
         // The module activators will be started
@@ -423,9 +421,6 @@ public class NodeFactoryImpl extends NodeFactory {
         BuilderExtensionPoint compositeBuilders = extensionPoints.getExtensionPoint(BuilderExtensionPoint.class);
         compositeBuilder = compositeBuilders.getCompositeBuilder("org.apache.tuscany.sca.assembly.builder.CompositeBuilder");
 
-        // Get endpoint builder
-        endpointReferenceBuilder = utilities.getUtility(EndpointReferenceBuilder.class);
-
         // Initialize runtime
 
         // Get proxy factory
@@ -438,11 +433,15 @@ public class NodeFactoryImpl extends NodeFactory {
         systemDefinitions = definitionsFactory.createDefinitions();
 
         DefinitionsExtensionPoint definitionsExtensionPoint = extensionPoints.getExtensionPoint(DefinitionsExtensionPoint.class);
+        Monitor monitor = monitorFactory.createMonitor();
         monitor.pushContext("Extension points definitions");
-        for(Definitions defs: definitionsExtensionPoint.getDefinitions()) {
-            DefinitionsUtil.aggregate(defs, systemDefinitions, monitor);
+        try {
+            for (Definitions defs : definitionsExtensionPoint.getDefinitions()) {
+                DefinitionsUtil.aggregate(defs, systemDefinitions, monitor);
+            }
+        } finally {
+            monitor.popContext();
         }
-        monitor.popContext();
 
         // create a system contribution to hold the definitions. The contribution
         // will be extended later with definitions from application contributions
@@ -474,11 +473,11 @@ public class NodeFactoryImpl extends NodeFactory {
         return new DefaultExtensionPointRegistry();
     }
 
-    protected Composite configureNode(NodeConfiguration configuration, List<Contribution> contributions)
+    protected Composite configureNode(NodeConfiguration configuration, List<Contribution> contributions, Monitor monitor)
         throws Throwable {
         if (contributions == null) {
             // Load contributions
-            contributions = loadContributions(configuration);
+            contributions = loadContributions(configuration, monitor);
         }
         // Build an aggregated SCA definitions model. Must be done before we try and
         // resolve any contributions or composites as they may depend on the full
@@ -558,15 +557,12 @@ public class NodeFactoryImpl extends NodeFactory {
 
         // build the top level composite
         ((DeployedCompositeBuilder)compositeBuilder).build(domainComposite, systemDefinitions, bindingMap, monitor);
-        analyzeProblems();
-
-        endpointReferenceBuilder.buildtimeBuild(domainComposite);
-        analyzeProblems();
+        analyzeProblems(monitor);
 
         return domainComposite;
     }
 
-    private List<Contribution> loadContributions(NodeConfiguration configuration) throws Throwable {
+    private List<Contribution> loadContributions(NodeConfiguration configuration, Monitor monitor) throws Throwable {
         List<Contribution> contributions = new ArrayList<Contribution>();
 
         // Load the specified contributions
@@ -619,7 +615,7 @@ public class NodeFactoryImpl extends NodeFactory {
                     }
                 }
             }
-            analyzeProblems();
+            analyzeProblems(monitor);
         }
         return contributions;
     }
@@ -676,10 +672,4 @@ public class NodeFactoryImpl extends NodeFactory {
         }
     }
     
-    public ConfigAttributes getConfigAttributes() {
-        return configAttributes;
-    }
-    public void setConfigAttributes(ConfigAttributes configAttributes) {
-        this.configAttributes = configAttributes;
-    }
 }

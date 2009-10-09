@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.context;
 
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
@@ -66,6 +67,12 @@ public abstract class CompositeContext {
      * @param runtimeComponent
      */
     public abstract void bindComponent(RuntimeComponent runtimeComponent);
+    
+    /**
+     * 
+     * @param endpointReference
+     */
+    public abstract void bindEndpointReference(EndpointReference endpointReference);
 
     /**
      * Get the ExtensionPointRegistry for this node

@@ -34,7 +34,6 @@ import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
-import org.apache.tuscany.sca.assembly.builder.EndpointReferenceBuilder;
 import org.apache.tuscany.sca.context.CompositeContext;
 import org.apache.tuscany.sca.context.ContextFactoryExtensionPoint;
 import org.apache.tuscany.sca.context.PropertyValueFactory;
@@ -52,8 +51,8 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
-import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.runtime.CompositeActivator;
+import org.apache.tuscany.sca.runtime.EndpointReferenceBinder;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentContext;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
@@ -78,7 +77,7 @@ public class ComponentContextImpl implements RuntimeComponentContext {
     private final AssemblyFactory assemblyFactory;
     private final JavaInterfaceFactory javaInterfaceFactory;
     private final PropertyValueFactory propertyFactory;
-    private final EndpointReferenceBuilder endpointReferenceBuilder;
+    private final EndpointReferenceBinder eprBinder;
     private final Monitor monitor;
     
     public ComponentContextImpl(ExtensionPointRegistry registry, CompositeContext compositeContext, RuntimeComponent component) {
@@ -97,7 +96,7 @@ public class ComponentContextImpl implements RuntimeComponentContext {
         this.proxyFactory = new ExtensibleProxyFactory(registry.getExtensionPoint(ProxyFactoryExtensionPoint.class));
         this.propertyFactory = factories.getFactory(PropertyValueFactory.class);
         
-        this.endpointReferenceBuilder = utilities.getUtility(EndpointReferenceBuilder.class);
+        this.eprBinder = utilities.getUtility(EndpointReferenceBinder.class);
 
         MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
         this.monitor = monitorFactory.createMonitor();
@@ -394,10 +393,10 @@ public class ComponentContextImpl implements RuntimeComponentContext {
         componentReference.getEndpointReferences().add(endpointReference);
         
         // do binding matching
-        Problem problem = endpointReferenceBuilder.runtimeBuild(endpointReference);
+        boolean ok = eprBinder.bind(compositeContext.getEndpointRegistry(), endpointReference);
         
-        if (problem != null){
-            throw new SCARuntimeException(problem.toString());
+        if (!ok) {
+            throw new SCARuntimeException("Unable to bind " + endpointReference);
         }
         
         return componentReference;
@@ -441,7 +440,7 @@ public class ComponentContextImpl implements RuntimeComponentContext {
      * @see org.apache.tuscany.sca.runtime.RuntimeComponentContext#start(org.apache.tuscany.sca.runtime.RuntimeComponentReference)
      */
     public void start(RuntimeComponentReference reference) {
-        compositeActivator.start(component, reference);
+        compositeActivator.start(compositeContext, component, reference);
     }
 
 

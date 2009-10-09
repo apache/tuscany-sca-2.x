@@ -20,12 +20,16 @@
 package org.apache.tuscany.sca.endpoint.tribes;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.NetworkInterface;
+import java.net.URI;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -36,11 +40,8 @@ import java.util.logging.Logger;
 
 import org.apache.catalina.tribes.Channel;
 import org.apache.catalina.tribes.ChannelException;
-import org.apache.catalina.tribes.ChannelInterceptor;
 import org.apache.catalina.tribes.Member;
-import org.apache.catalina.tribes.group.ChannelCoordinator;
 import org.apache.catalina.tribes.group.GroupChannel;
-import org.apache.catalina.tribes.group.interceptors.MessageDispatchInterceptor;
 import org.apache.catalina.tribes.group.interceptors.StaticMembershipInterceptor;
 import org.apache.catalina.tribes.membership.McastService;
 import org.apache.catalina.tribes.membership.StaticMember;
@@ -48,10 +49,8 @@ import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.LifeCycleListener;
-import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.endpoint.tribes.AbstractReplicatedMap.MapEntry;
 import org.apache.tuscany.sca.endpoint.tribes.MapStore.MapListener;
-import org.apache.tuscany.sca.management.ConfigAttributes;
 import org.apache.tuscany.sca.runtime.EndpointListener;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
 
@@ -98,26 +97,50 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry, LifeCycleLi
         return channel;
     }
 
-    public ReplicatedEndpointRegistry(ExtensionPointRegistry registry, Map<String, String> attributes) {
+    public ReplicatedEndpointRegistry(ExtensionPointRegistry registry,
+                                      Map<String, String> attributes,
+                                      String domainRegistryURI,
+                                      String domainURI) {
         this.registry = registry;
+        this.domainURI = domainURI;
 
-        UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
-        ConfigAttributes domainConfig = utilities.getUtility(ConfigAttributes.class);
-        if (domainConfig != null) {
-            setConfig(domainConfig.getAttributes());
-        } else {
-            setConfig(attributes);
+        getParameters(domainRegistryURI);
+    }
+    
+    private Map<String, String> getParameters(String domainRegistryURI) {
+        Map<String, String> map = new HashMap<String, String>();
+        URI uri = URI.create(domainRegistryURI);
+        map.put("address", uri.getHost());
+        map.put("port", String.valueOf(uri.getPort()));
+        int index = domainRegistryURI.indexOf('?');
+        if (index == -1) {
+            setConfig(map);
+            return map;
         }
+        String query = domainRegistryURI.substring(index + 1);
+        try {
+            query = URLDecoder.decode(query, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalArgumentException(e);
+        }
+        String[] params = query.split("&");
+        for (String param : params) {
+            index = param.indexOf('=');
+            if (index != -1) {
+                map.put(param.substring(0, index), param.substring(index + 1));
+            }
+        }
+        setConfig(map);
+        return map;
     }
 
     private void setConfig(Map<String, String> attributes) {
-        if (attributes.containsKey("domainName")) {
-            domainURI = attributes.get("domainName");
-        }
-        
         String portStr = attributes.get("port");
         if (portStr != null) {
             port = Integer.parseInt(portStr);
+            if (port == -1) {
+                port = MULTICAST_PORT;
+            }
         }
         String address = attributes.get("address");
         if (address == null) {
@@ -141,11 +164,6 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry, LifeCycleLi
                 }
             }
         }
-    }
-
-    public ReplicatedEndpointRegistry(String domainURI) {
-        this.domainURI = domainURI;
-        // start();
     }
 
     public void start() {

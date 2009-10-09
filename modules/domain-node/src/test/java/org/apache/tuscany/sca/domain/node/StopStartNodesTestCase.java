@@ -24,7 +24,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 import itest.nodes.Helloworld;
 
-import org.apache.tuscany.sca.domain.node.DomainNode;
 import org.junit.After;
 import org.junit.Test;
 import org.oasisopen.sca.client.SCAClient;
@@ -58,7 +57,6 @@ public class StopStartNodesTestCase{
             assertEquals("Hi Hello Petra", client.sayHello("Petra"));
             fail();
         } catch (Exception e) {
-            e.printStackTrace();
             // expected
         }
 

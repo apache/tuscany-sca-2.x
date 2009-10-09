@@ -14,6 +14,7 @@ Bundle-DocURL: http://www.apache.org/
 Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6
 Import-Package: org.apache.catalina.tribes,
  org.apache.catalina.tribes.group,
+ org.apache.catalina.tribes.group.interceptors,
  org.apache.catalina.tribes.io,
  org.apache.catalina.tribes.membership,
  org.apache.catalina.tribes.tipis,
