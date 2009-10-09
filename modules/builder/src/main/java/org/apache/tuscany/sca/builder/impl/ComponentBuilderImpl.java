@@ -310,6 +310,17 @@ public class ComponentBuilderImpl {
                               component.getName(), 
                               componentProperty.getName());
             }
+            
+            // check that not too many values are supplied
+            if (!componentProperty.isMany() && isPropertyManyValued(componentProperty)){
+                Monitor.error(monitor, 
+                              this, 
+                              Messages.ASSEMBLY_VALIDATION, 
+                              "PropertyHasManyValues", 
+                              component.getName(), 
+                              componentProperty.getName());                
+            }
+            
         }
     }
 
@@ -1002,6 +1013,23 @@ public class ComponentBuilderImpl {
         }
 
         return true;
+    }
+    
+    /**
+     * Look to see is a property has more than one value
+     * 
+     * @param property
+     * @return true is the property has more than one value
+     */
+    private boolean isPropertyManyValued(Property property) {
+        
+        if (isPropertyValueSet(property)){
+            Document value = (Document)property.getValue();
+            if (value.getFirstChild().getChildNodes().getLength() > 1){
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean isValidMultiplicityOverride(Multiplicity definedMul, Multiplicity overridenMul) {
