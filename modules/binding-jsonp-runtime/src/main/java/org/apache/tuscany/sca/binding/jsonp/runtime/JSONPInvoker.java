@@ -34,6 +34,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.invocation.DataExchangeSemantics;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.codehaus.jackson.JsonGenerationException;
@@ -41,7 +42,7 @@ import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
-public class JSONPInvoker implements Invoker {
+public class JSONPInvoker implements Invoker, DataExchangeSemantics {
     
     protected Operation operation;
     protected EndpointReference endpoint;
@@ -157,5 +158,8 @@ public class JSONPInvoker implements Invoker {
         Object[] args = (Object[])mapper.readValue("[" + jsonRequest +"]", c);
         return args;
     }
-
+    
+    public boolean allowsPassByReference() {
+        return true;
+    }
 }

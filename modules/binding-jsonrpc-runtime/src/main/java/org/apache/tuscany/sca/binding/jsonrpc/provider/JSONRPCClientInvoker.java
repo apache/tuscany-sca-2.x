@@ -26,6 +26,7 @@ import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.binding.jsonrpc.JSONRPCBinding;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
+import org.apache.tuscany.sca.invocation.DataExchangeSemantics;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.jabsorb.client.Client;
@@ -37,7 +38,7 @@ import org.jabsorb.client.TransportRegistry;
  * 
  * @version $Rev$ $Date$
  */
-public class JSONRPCClientInvoker implements Invoker {
+public class JSONRPCClientInvoker implements Invoker, DataExchangeSemantics {
     private EndpointReference endpointReference;
     private Operation operation;
     private Method method;
@@ -69,5 +70,8 @@ public class JSONRPCClientInvoker implements Invoker {
         }
         return msg;
     }
-
+    
+    public boolean allowsPassByReference() {
+        return true;
+    }
 }

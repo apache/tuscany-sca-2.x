@@ -476,12 +476,14 @@ public class MediatorImpl implements Mediator {
         // If no databinding was specified, introspect the given arg to
         // determine its databinding
         if (dataBinding == null) {
-            dataType = dataBindings.introspectType(data, operation);
-            if (dataType != null) {
-                String db = dataType.getDataBinding();
-                dataBinding = dataBindings.getDataBinding(db);
-                if (dataBinding == null && db != null) {
-                    return data;
+            if (!"java:array".equals(dataType.getDataBinding())) {
+                dataType = dataBindings.introspectType(data, operation);
+                if (dataType != null) {
+                    String db = dataType.getDataBinding();
+                    dataBinding = dataBindings.getDataBinding(db);
+                    if (dataBinding == null && db != null) {
+                        return data;
+                    }
                 }
             }
             if (dataBinding == null) {
