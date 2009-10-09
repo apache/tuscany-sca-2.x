@@ -568,8 +568,6 @@ public class ComponentBuilderImpl {
                 componentTypeProperty.setValue(componentProperty.getValue());
             }
 
-
-
             // Check that a component property does not override the
             // many attribute
             if (!componentTypeProperty.isMany() && componentProperty.isMany()) {
@@ -601,6 +599,31 @@ public class ComponentBuilderImpl {
                               component.getName(), 
                               componentProperty.getName());
             }
+            
+            // check that the types specified in the component type and component property match
+            if ( componentProperty.getXSDElement() != null &&
+                 !componentProperty.getXSDElement().equals(componentTypeProperty.getXSDElement())){
+                Monitor.error(monitor, 
+                              this, 
+                              Messages.ASSEMBLY_VALIDATION, 
+                              "PropertXSDElementsDontMatch", 
+                              component.getName(), 
+                              componentProperty.getName(),
+                              componentProperty.getXSDElement().toString(),
+                              componentTypeProperty.getXSDElement().toString());                
+            }
+            
+            if ( componentProperty.getXSDType() != null &&
+                    !componentProperty.getXSDType().equals(componentTypeProperty.getXSDType())){
+                Monitor.error(monitor, 
+                              this, 
+                              Messages.ASSEMBLY_VALIDATION, 
+                              "PropertXSDTypesDontMatch", 
+                              component.getName(), 
+                              componentProperty.getName(),
+                              componentProperty.getXSDType().toString(),
+                              componentTypeProperty.getXSDType().toString());                
+            }            
         }
     }
 
