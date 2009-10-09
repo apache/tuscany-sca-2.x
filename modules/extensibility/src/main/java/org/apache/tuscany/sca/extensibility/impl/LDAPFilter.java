@@ -18,6 +18,8 @@ import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
 
 
 /**
+ * This code is derived from <a href="http://svn.apache.org/repos/asf/felix/releases/org.osgi.core-1.4.0/src/main/java/org/osgi/framework/FrameworkUtil.java">FrameworkUtil</a>
+ * <p>
  * RFC 1960-based Filter. Filter objects can be created by calling the
  * constructor with the desired filter string. A Filter object can be called
  * numerous times to determine if the match argument matches the filter
