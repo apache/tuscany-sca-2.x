@@ -17,7 +17,9 @@ REM # KIND, either express or implied.  See the License for the
 REM # specific language governing permissions and limitations
 REM # under the License. 
 
-if "%1"=="/?" goto help
+REM TODO: can't get these to work yet when using the tribes domaim URI in quotes
+REM if "%1".=="/?". goto help
+REM if "%1".=="-help". goto help
 
 if not "%TUSCANY_HOME%"=="" goto gotHome
 SET TUSCANY_HOME=%~dp0\..
@@ -58,9 +60,14 @@ goto end
 :help
 
 echo Apache Tuscany SCA runtime launcher
-echo TUSCANY [debug] [fork] contributions
+echo TUSCANY [debug] [fork] [domainURI] contributions
 echo     debug          enable Java remote debugging
 echo     fork           start a new command prompt window to run the contributions
+echo     domainURI      config URI for the domain, the format is:
+echo                        vm:domainName
+echo                    or
+echo                        "tribes:domainName?routes=ip1,ip2,..."
+echo                    NOTE that the tribes URI needs to be in quotes
 echo     contributions  list of SCA contribution file names seperated by spaces. All
 echo                    deployable composites found in the contributions will be run.
 
