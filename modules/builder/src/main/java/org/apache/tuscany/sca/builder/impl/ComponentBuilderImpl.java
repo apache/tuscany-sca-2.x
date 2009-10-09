@@ -65,6 +65,7 @@ import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.policy.ExtensionType;
 import org.apache.tuscany.sca.policy.PolicySubject;
 import org.w3c.dom.Document;
+import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
@@ -644,6 +645,13 @@ public class ComponentBuilderImpl {
 
                     if (node != null) {
                         componentProperty.setValue(node);
+                    } else {
+                        Monitor.warning(monitor,
+                                        this,
+                                        Messages.ASSEMBLY_VALIDATION,
+                                        "PropertyXpathExpressionReturnedNull",
+                                        component.getName(),
+                                        componentProperty.getName());
                     }
                 } catch (Exception ex) {
                     Monitor.error(monitor,
