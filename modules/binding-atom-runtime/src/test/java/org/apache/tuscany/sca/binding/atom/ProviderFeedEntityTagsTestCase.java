@@ -176,7 +176,7 @@ public class ProviderFeedEntityTagsTestCase {
         }
     }		
 
-    @Test
+    // @Test @Ignore Intermitently fails, see TUSCANY-3299
     public void testUnmodifiedGetIfUnModified() throws Exception {		
         //System.out.println(">>>ProviderFeedEntityTagsTestCase.testFeedUnmodifiedGetIfUnModified");
         // Feed request with predicates
@@ -289,7 +289,7 @@ public class ProviderFeedEntityTagsTestCase {
         }
     }		
 
-    // @Test @Ignore Intermitently fails, see TUSCANY-3299
+    @Test
     public void testModifiedGetIfUnModified() throws Exception {		
         //System.out.println(">>>ProviderFeedEntityTagsTestCase.testFeedUnmodifiedGetIfUnModified");
         // Feed request with predicates
