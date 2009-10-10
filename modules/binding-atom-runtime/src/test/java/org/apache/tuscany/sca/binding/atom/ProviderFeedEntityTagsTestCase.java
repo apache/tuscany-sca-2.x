@@ -289,7 +289,7 @@ public class ProviderFeedEntityTagsTestCase {
         }
     }		
 
-    @Test
+    // @Test @Ignore Intermitently fails, see TUSCANY-3299
     public void testModifiedGetIfUnModified() throws Exception {		
         //System.out.println(">>>ProviderFeedEntityTagsTestCase.testFeedUnmodifiedGetIfUnModified");
         // Feed request with predicates
