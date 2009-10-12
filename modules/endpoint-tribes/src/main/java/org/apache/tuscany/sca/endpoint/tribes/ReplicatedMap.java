@@ -97,7 +97,7 @@ public class ReplicatedMap extends AbstractReplicatedMap implements RpcCallback,
      * @return Member - the backup node
      * @throws ChannelException
      */
-    protected Member[] publishEntryInfo(Object key, Object value) throws ChannelException {
+    protected Member[] publishEntryInfo(Object key, Object value, Member[] backupNodes) throws ChannelException {
         if (!(key instanceof Serializable && value instanceof Serializable))
             return new Member[0];
         //select a backup node
@@ -106,12 +106,18 @@ public class ReplicatedMap extends AbstractReplicatedMap implements RpcCallback,
         if (backup == null || backup.length == 0)
             return null;
 
+        // Set the receivers to these members that are not in the backup nodes yet 
+        Member[] members = backup;
+        if (backupNodes != null) {
+            members = getMapMembersExcl(backupNodes);
+        }
+
         //publish the data out to all nodes
         MapMessage msg =
             new MapMessage(getMapContextName(), MapMessage.MSG_COPY, false, (Serializable)key, (Serializable)value,
                            null, channel.getLocalMember(false), backup);
 
-        getChannel().send(getMapMembers(), msg, getChannelSendOptions());
+        getChannel().send(members, msg, getChannelSendOptions());
 
         return backup;
     }

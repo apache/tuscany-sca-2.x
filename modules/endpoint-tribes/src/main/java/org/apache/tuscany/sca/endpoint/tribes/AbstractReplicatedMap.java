@@ -685,7 +685,8 @@ public abstract class AbstractReplicatedMap extends MapStore implements RpcCallb
     }
 
     public void mapMemberAdded(Member member) {
-        if (member.equals(getChannel().getLocalMember(false)))
+        Member self = getChannel().getLocalMember(false);
+        if (member.equals(self))
             return;
         boolean memberAdded = false;
         //select a backup node if we don't have one
@@ -703,11 +704,13 @@ public abstract class AbstractReplicatedMap extends MapStore implements RpcCallb
                     MapEntry entry = (MapEntry)super.get(e.getKey());
                     if (entry == null)
                         continue;
-                    if (entry.isPrimary() && (entry.getBackupNodes() == null || entry.getBackupNodes().length == 0)) {
+                    // if (entry.isPrimary() && (entry.getBackupNodes() == null || entry.getBackupNodes().length == 0)) {
+                    // [rfeng] Change the behavior to replicate to all nodes
+                    if (entry.isPrimary() && self.equals(entry.getPrimary())) {
                         try {
-                            Member[] backup = publishEntryInfo(entry.getKey(), entry.getValue());
+                            Member[] backup = publishEntryInfo(entry.getKey(), entry.getValue(), entry.getBackupNodes());
                             entry.setBackupNodes(backup);
-                            entry.setPrimary(channel.getLocalMember(false));
+                            entry.setPrimary(self);
                         } catch (ChannelException x) {
                             log.error("Unable to select backup node.", x);
                         } //catch
@@ -765,7 +768,7 @@ public abstract class AbstractReplicatedMap extends MapStore implements RpcCallb
                 if (log.isDebugEnabled())
                     log.debug("[1] Primary choosing a new backup");
                 try {
-                    Member[] backup = publishEntryInfo(entry.getKey(), entry.getValue());
+                    Member[] backup = publishEntryInfo(entry.getKey(), entry.getValue(), entry.getBackupNodes());
                     entry.setBackupNodes(backup);
                     entry.setPrimary(channel.getLocalMember(false));
                 } catch (ChannelException x) {
@@ -795,7 +798,7 @@ public abstract class AbstractReplicatedMap extends MapStore implements RpcCallb
                     entry.setPrimary(channel.getLocalMember(false));
                     entry.setBackup(false);
                     entry.setProxy(false);
-                    Member[] backup = publishEntryInfo(entry.getKey(), entry.getValue());
+                    Member[] backup = publishEntryInfo(entry.getKey(), entry.getValue(), entry.getBackupNodes());
                     entry.setBackupNodes(backup);
                     if (mapOwner != null)
                         mapOwner.objectMadePrimay(entry.getKey(), entry.getValue());
@@ -830,7 +833,7 @@ public abstract class AbstractReplicatedMap extends MapStore implements RpcCallb
         return members[node];
     }
 
-    protected abstract Member[] publishEntryInfo(Object key, Object value) throws ChannelException;
+    protected abstract Member[] publishEntryInfo(Object key, Object value, Member[] backupNodes) throws ChannelException;
 
     public void heartbeat() {
         try {
@@ -913,7 +916,7 @@ public abstract class AbstractReplicatedMap extends MapStore implements RpcCallb
                 }
                 if (entry.isBackup()) {
                     //select a new backup node
-                    backup = publishEntryInfo(key, entry.getValue());
+                    backup = publishEntryInfo(key, entry.getValue(), entry.getBackupNodes());
                 } else if (entry.isProxy()) {
                     //invalidate the previous primary
                     msg =
@@ -994,7 +997,7 @@ public abstract class AbstractReplicatedMap extends MapStore implements RpcCallb
             old = remove(key);
         try {
             if (notify) {
-                Member[] backup = publishEntryInfo(key, value);
+                Member[] backup = publishEntryInfo(key, value, entry.getBackupNodes());
                 entry.setBackupNodes(backup);
             }
         } catch (ChannelException x) {

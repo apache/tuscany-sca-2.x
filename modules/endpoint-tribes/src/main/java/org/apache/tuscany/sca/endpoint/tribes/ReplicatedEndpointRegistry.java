@@ -75,6 +75,8 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry, LifeCycleLi
     private ExtensionPointRegistry registry;
     private ReplicatedMap map;
     private static List<URL> staticRoutes;
+    
+    private String id;
 
     private static final Channel createChannel(String address, int port, String bindAddress) {
 
@@ -103,7 +105,7 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry, LifeCycleLi
                                       String domainURI) {
         this.registry = registry;
         this.domainURI = domainURI;
-
+        this.id = "[" + System.identityHashCode(this) + "]";
         getParameters(domainRegistryURI);
     }
     
@@ -207,7 +209,7 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry, LifeCycleLi
             try {
                 channel.stop(Channel.DEFAULT);
             } catch (ChannelException e) {
-                throw new IllegalStateException(e);
+                logger.log(Level.WARNING, e.getMessage(), e);
             }
             map = null;
         }
@@ -336,6 +338,10 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry, LifeCycleLi
     public void removeListener(EndpointListener listener) {
         listeners.remove(listener);
     }
+    
+    public void replicate(boolean complete) {
+        map.replicate(complete);
+    }
 
     public void updateEndpoint(String uri, Endpoint endpoint) {
         Endpoint oldEndpoint = getEndpoint(uri);
@@ -348,7 +354,7 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry, LifeCycleLi
     public void entryAdded(Object key, Object value) {
         MapEntry entry = (MapEntry)value;
         if (!isLocal(entry)) {
-            logger.info("Remote endpoint added: " + entry.getValue());
+            logger.info(id + " Remote endpoint added: " + entry.getValue());
         }
         Endpoint newEp = (Endpoint)entry.getValue();
         for (EndpointListener listener : listeners) {
@@ -359,7 +365,7 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry, LifeCycleLi
     public void entryRemoved(Object key, Object value) {
         MapEntry entry = (MapEntry)value;
         if (!isLocal(entry)) {
-            logger.info("Remote endpoint removed: " + entry.getValue());
+            logger.info(id + " Remote endpoint removed: " + entry.getValue());
         }
         Endpoint oldEp = (Endpoint)entry.getValue();
         for (EndpointListener listener : listeners) {
@@ -371,7 +377,7 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry, LifeCycleLi
         MapEntry oldEntry = (MapEntry)oldValue;
         MapEntry newEntry = (MapEntry)newValue;
         if (!isLocal(newEntry)) {
-            logger.info("Remote endpoint updated: " + newEntry.getValue());
+            logger.info(id + " Remote endpoint updated: " + newEntry.getValue());
         }
         Endpoint oldEp = (Endpoint)oldEntry.getValue();
         Endpoint newEp = (Endpoint)newEntry.getValue();
