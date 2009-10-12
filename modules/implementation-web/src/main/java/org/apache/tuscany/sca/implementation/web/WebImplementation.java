@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.sca.implementation.web;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.sca.assembly.Implementation;
 
 
@@ -26,7 +28,8 @@ import org.apache.tuscany.sca.assembly.Implementation;
  * The model representing an Web implementation in an SCA assembly model.
  */
 public interface WebImplementation extends Implementation {
-    
+    QName TYPE = new QName(SCA11_NS, "implementation.web");
+
     /**
      * Returns the webapp URI.
      * @return the webapp URI

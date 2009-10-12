@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.implementation.web.impl;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.builder.ImplementationBuilder;
 import org.apache.tuscany.sca.implementation.web.WebImplementation;
@@ -34,8 +36,8 @@ public class WebImplementationBuilder implements ImplementationBuilder<WebImplem
 
     }
 
-    public Class<WebImplementation> getModelType() {
-        return WebImplementation.class;
+    public QName getImplementationType() {
+        return WebImplementation.TYPE;
     }
 
 }

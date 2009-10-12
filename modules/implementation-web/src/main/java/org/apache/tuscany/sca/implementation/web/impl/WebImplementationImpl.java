@@ -22,8 +22,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.xml.namespace.QName;
-
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.Property;
@@ -38,7 +36,6 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
  * The model representing an Web implementation in an SCA assembly model.
  */
 class WebImplementationImpl extends ImplementationImpl implements WebImplementation {
-    private static final QName TYPE = new QName(SCA11_NS, "implementation.web");
 
     private List<Property> properties = new ArrayList<Property>();
     private List<Reference> references = new ArrayList<Reference>();

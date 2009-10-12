@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.binding.ws.wsdlgen;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.assembly.builder.BindingBuilder;
@@ -46,8 +48,8 @@ public class WebServiceBindingBuilder implements BindingBuilder<WebServiceBindin
         BindingWSDLGenerator.generateWSDL(component, contract, binding, extensionPoints, monitor);
     }
 
-    public Class<WebServiceBinding> getModelType() {
-        return WebServiceBinding.class;
+    public QName getBindingType() {
+        return WebServiceBinding.TYPE;
     }
 
 }

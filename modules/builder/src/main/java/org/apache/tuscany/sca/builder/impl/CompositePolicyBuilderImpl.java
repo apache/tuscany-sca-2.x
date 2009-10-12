@@ -19,8 +19,11 @@
 
 package org.apache.tuscany.sca.builder.impl;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+
+import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
@@ -36,11 +39,13 @@ import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
+import org.apache.tuscany.sca.assembly.builder.PolicyBuilder;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentMap;
+import org.apache.tuscany.sca.policy.PolicyExpression;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySubject;
 import org.apache.tuscany.sca.policy.Qualifier;
@@ -64,6 +69,7 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
     public Composite build(Composite composite, Definitions definitions, Monitor monitor)
         throws CompositeBuilderException {
         computePolicies(composite, definitions, monitor);
+        buildPolicies(composite, definitions, monitor);
         return composite;
     }
 
@@ -405,6 +411,65 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
                 inherit(implementation, component, composite);
             }
             // How to deal with implementation level policySets/intents
+        }
+    }
+    
+    private Set<QName> getPolicyNames(PolicySubject subject) {
+        if (subject == null) {
+            return Collections.emptySet();
+        }
+        Set<QName> names = new HashSet<QName>();
+        for (PolicySet ps : subject.getPolicySets()) {
+            for (PolicyExpression exp : ps.getPolicies()) {
+                names.add(exp.getName());
+            }
+        }
+        return names;
+    }
+    
+    protected void buildPolicies(Composite composite, Definitions definitions, Monitor monitor) {
+
+        // compute policies recursively
+        for (Component component : composite.getComponents()) {
+            Implementation implementation = component.getImplementation();
+            if (implementation instanceof Composite) {
+                buildPolicies((Composite)implementation, definitions, monitor);
+            }
+        }
+
+        for (Component component : composite.getComponents()) {
+
+            for (ComponentService componentService : component.getServices()) {
+                for (Endpoint ep : componentService.getEndpoints()) {
+                    for (QName policyType : getPolicyNames(ep)) {
+                        PolicyBuilder builder = builders.getPolicyBuilder(policyType);
+                        if (builder != null) {
+                            builder.build(ep, definitions, monitor);
+                        }
+                    }
+                }
+            }
+
+            for (ComponentReference componentReference : component.getReferences()) {
+                for (EndpointReference epr : componentReference.getEndpointReferences()) {
+                    for (QName policyType : getPolicyNames(epr)) {
+                        PolicyBuilder builder = builders.getPolicyBuilder(policyType);
+                        if (builder != null) {
+                            builder.build(epr, definitions, monitor);
+                        }
+                    }
+                }
+            }
+
+            Implementation implementation = component.getImplementation();
+            if (implementation != null) {
+                for (QName policyType : getPolicyNames(implementation)) {
+                    PolicyBuilder builder = builders.getPolicyBuilder(policyType);
+                    if (builder != null) {
+                        builder.build(component, implementation, definitions, monitor);
+                    }
+                }
+            }
         }
     }
 }

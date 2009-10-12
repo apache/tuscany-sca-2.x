@@ -62,7 +62,7 @@ public class ComponentReferenceBindingBuilderImpl implements CompositeBuilder {
         for (Component component : composite.getComponents()) {
             for (ComponentReference componentReference : component.getReferences()) {
                 for (Binding binding : componentReference.getBindings()) {
-                    BindingBuilder builder = builders.getBindingBuilder(binding.getClass());
+                    BindingBuilder builder = builders.getBindingBuilder(binding.getType());
                     if (builder != null) {
                         builder.build(component, componentReference, binding, monitor);
                     }

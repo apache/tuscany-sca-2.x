@@ -24,6 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.namespace.QName;
+
 /**
  * Parser for the service descriptors. The syntax of the service declaration is similar with the OSGi
  * headers with the following exceptions:
@@ -259,6 +261,32 @@ public class ServiceDeclarationParser {
             return text;
         }
 
+    }
+    
+    /**
+     * Returns a QName object from a QName expressed as {ns}name
+     * or ns#name.
+     *
+     * @param qname
+     * @return
+     */
+    public static QName getQName(String qname) {
+        if (qname == null) {
+            return null;
+        }
+        qname = qname.trim();
+        if (qname.startsWith("{")) {
+            int h = qname.indexOf('}');
+            if (h != -1) {
+                return new QName(qname.substring(1, h), qname.substring(h + 1));
+            }
+        } else {
+            int h = qname.indexOf('#');
+            if (h != -1) {
+                return new QName(qname.substring(0, h), qname.substring(h + 1));
+            }
+        }
+        return new QName(qname);
     }
 
 }

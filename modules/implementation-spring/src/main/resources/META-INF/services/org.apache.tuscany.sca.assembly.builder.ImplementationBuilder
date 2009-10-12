@@ -14,4 +14,4 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License. 
-org.apache.tuscany.sca.implementation.spring.SpringImplementationBuilder;model=org.apache.tuscany.sca.implementation.spring.SpringImplementation
+org.apache.tuscany.sca.implementation.spring.SpringImplementationBuilder;qname=http://docs.oasis-open.org/ns/opencsa/sca/200903#implementation.spring

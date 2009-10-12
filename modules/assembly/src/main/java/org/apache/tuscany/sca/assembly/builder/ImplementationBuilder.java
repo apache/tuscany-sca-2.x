@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.assembly.builder;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.monitor.Monitor;
@@ -38,6 +40,10 @@ public interface ImplementationBuilder<I extends Implementation> {
      */
     void build(Component component, I implmentation, Monitor monitor);
 
-    Class<I> getModelType();
+    /**
+     * Get the QName of the implementation type
+     * @return
+     */
+    QName getImplementationType();
 
 }

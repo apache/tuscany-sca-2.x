@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.implementation.spring;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.builder.ImplementationBuilder;
 import org.apache.tuscany.sca.monitor.Monitor;
@@ -32,9 +34,8 @@ public class SpringImplementationBuilder implements ImplementationBuilder<Spring
         implmentation.build(component);
     }
 
-    public Class<SpringImplementation> getModelType() {
-        // TODO Auto-generated method stub
-        return SpringImplementation.class;
+    public QName getImplementationType() {
+        return SpringImplementation.TYPE;
     }
 
 }

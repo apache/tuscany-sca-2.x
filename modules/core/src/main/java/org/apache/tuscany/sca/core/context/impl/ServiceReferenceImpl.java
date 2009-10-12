@@ -423,7 +423,7 @@ public class ServiceReferenceImpl<B> implements ServiceReferenceExt<B> {
             
             Binding binding = endpointReference.getBinding();
             if (binding != null) {
-                BindingBuilder bindingBuilder = builders.getBindingBuilder(binding.getClass());
+                BindingBuilder bindingBuilder = builders.getBindingBuilder(binding.getType());
                 if (bindingBuilder != null) {
                     bindingBuilder.build(component, reference, endpointReference.getBinding(), null);
                 }

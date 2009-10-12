@@ -65,7 +65,6 @@ import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.policy.ExtensionType;
 import org.apache.tuscany.sca.policy.PolicySubject;
 import org.w3c.dom.Document;
-import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
@@ -125,7 +124,7 @@ public class ComponentBuilderImpl {
             // first carry out any implementation specific builder processing
             Implementation impl = component.getImplementation();
             if (impl != null) {
-                ImplementationBuilder builder = builders.getImplementationBuilder(impl.getClass());
+                ImplementationBuilder builder = builders.getImplementationBuilder(impl.getType());
                 if (builder != null) {
                     builder.build(component, impl, monitor);
                 }

@@ -42,7 +42,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
  * @version $Rev$ $Date$
  */
 public class SpringImplementation extends ImplementationImpl implements Implementation, Extensible {
-    private final static QName TYPE = new QName(SCA11_NS, "implementation.spring");
+    public final static QName TYPE = new QName(SCA11_NS, "implementation.spring");
     // The location attribute which points to the Spring application-context XML file
     private String location;
     // The application-context file as a Spring Resource

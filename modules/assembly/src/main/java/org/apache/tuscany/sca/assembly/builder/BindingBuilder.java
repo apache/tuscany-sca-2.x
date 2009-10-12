@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.assembly.builder;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Contract;
@@ -39,6 +41,10 @@ public interface BindingBuilder<B extends Binding> {
      */
     void build(Component component, Contract contract, B binding, Monitor monitor);
 
-    Class<B> getModelType();
+    /**
+     * Get QName of the binding type
+     * @return
+     */
+    QName getBindingType();
 
 }

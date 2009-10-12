@@ -69,7 +69,7 @@ public class ComponentServiceBindingBuilderImpl implements CompositeBuilder {
         for (Component component : composite.getComponents()) {
             for (ComponentService componentService : component.getServices()) {
                 for (Binding binding : componentService.getBindings()) {
-                    BindingBuilder builder = builders.getBindingBuilder(binding.getClass());
+                    BindingBuilder builder = builders.getBindingBuilder(binding.getType());
                     if (builder != null) {
                         builder.build(component, componentService, binding, monitor);
                     }

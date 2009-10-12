@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.assembly.builder;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Implementation;
 
@@ -63,7 +65,7 @@ public interface BuilderExtensionPoint {
      * @param bindingType
      * @return
      */
-    <B extends Binding> BindingBuilder<B> getBindingBuilder(Class<B> bindingType);
+    <B extends Binding> BindingBuilder<B> getBindingBuilder(QName bindingType);
 
     /**
      * Remove a binding builder
@@ -84,7 +86,7 @@ public interface BuilderExtensionPoint {
      * @param implementationType
      * @return
      */
-    <I extends Implementation> ImplementationBuilder<I> getImplementationBuilder(Class<I> implementationType);
+    <I extends Implementation> ImplementationBuilder<I> getImplementationBuilder(QName implementationType);
 
     /**
      * Remove an implementation builder
@@ -92,5 +94,25 @@ public interface BuilderExtensionPoint {
      * @param builder
      */
     <I extends Implementation> void removeImplementationBuilder(ImplementationBuilder<I> builder);
+    
+    /**
+     * Add a policy builder
+     * @param policyBuilder
+     */
+    void addPolicyBuilder(PolicyBuilder<?> policyBuilder);
 
+    /**
+     * Look up a Policy builder by the Policy type
+     * @param <P>
+     * @param policyType
+     * @return
+     */
+    <P> PolicyBuilder<P> getPolicyBuilder(QName policyType);
+
+    /**
+     * Remove a Policy builder
+     * @param <P>
+     * @param builder
+     */
+    <P> void removePolicyBuilder(PolicyBuilder<P> builder);
 }

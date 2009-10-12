@@ -26,11 +26,13 @@ import java.util.List;
 import java.util.Map;
 
 import javax.xml.namespace.QName;
+import javax.xml.ws.EndpointReference;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Contract;
+import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
@@ -38,6 +40,7 @@ import org.apache.tuscany.sca.core.LifeCycleListener;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
+import org.apache.tuscany.sca.extensibility.ServiceDeclarationParser;
 import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
@@ -51,9 +54,11 @@ public class DefaultBuilderExtensionPoint implements BuilderExtensionPoint, Life
 
     private ExtensionPointRegistry registry;
     private final Map<String, CompositeBuilder> builders = new HashMap<String, CompositeBuilder>();
-    private final Map<Class<?>, BindingBuilder> bindingBuilders = new HashMap<Class<?>, BindingBuilder>();
-    private final Map<Class<?>, ImplementationBuilder> implementationBuilders =
-        new HashMap<Class<?>, ImplementationBuilder>();
+    private final Map<QName, BindingBuilder> bindingBuilders = new HashMap<QName, BindingBuilder>();
+    private final Map<QName, ImplementationBuilder> implementationBuilders =
+        new HashMap<QName, ImplementationBuilder>();
+    private final Map<QName, PolicyBuilder> policyBuilders = new HashMap<QName, PolicyBuilder>();
+
     private boolean loaded;
 
     public DefaultBuilderExtensionPoint(ExtensionPointRegistry registry) {
@@ -69,7 +74,7 @@ public class DefaultBuilderExtensionPoint implements BuilderExtensionPoint, Life
         implementationBuilders.clear();
         loaded = false;
     }
-    
+
     public void addCompositeBuilder(CompositeBuilder builder) {
         builders.put(builder.getID(), builder);
     }
@@ -120,7 +125,7 @@ public class DefaultBuilderExtensionPoint implements BuilderExtensionPoint, Life
 
         for (ServiceDeclaration builderDeclaration : builderDeclarations) {
             BindingBuilder<?> builder = new LazyBindingBuilder(builderDeclaration);
-            bindingBuilders.put(builder.getModelType(), builder);
+            bindingBuilders.put(builder.getBindingType(), builder);
         }
 
         try {
@@ -131,59 +136,64 @@ public class DefaultBuilderExtensionPoint implements BuilderExtensionPoint, Life
 
         for (ServiceDeclaration builderDeclaration : builderDeclarations) {
             ImplementationBuilder<?> builder = new LazyImplementationBuilder(builderDeclaration);
-            implementationBuilders.put(builder.getModelType(), builder);
+            implementationBuilders.put(builder.getImplementationType(), builder);
         }
         
+        try {
+            builderDeclarations = serviceDiscovery.getServiceDeclarations(PolicyBuilder.class);
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+
+        for (ServiceDeclaration builderDeclaration : builderDeclarations) {
+            PolicyBuilder<?> builder = new LazyPolicyBuilder(builderDeclaration);
+            policyBuilders.put(builder.getPolicyType(), builder);
+        }
+
+
         loaded = true;
 
     }
 
     public void addBindingBuilder(BindingBuilder<?> bindingBuilder) {
-        bindingBuilders.put(bindingBuilder.getModelType(), bindingBuilder);
+        bindingBuilders.put(bindingBuilder.getBindingType(), bindingBuilder);
     }
-
-    public void addImplementationBuilder(ImplementationBuilder<?> implementationBuilder) {
-        implementationBuilders.put(implementationBuilder.getModelType(), implementationBuilder);
-    }
-
-    public <B extends Binding> BindingBuilder<B> getBindingBuilder(Class<B> bindingType) {
+    
+    public <B extends Binding> BindingBuilder<B> getBindingBuilder(QName bindingType) {
         loadBuilders();
-        if (bindingType.isInterface()) {
-            return (BindingBuilder<B>)bindingBuilders.get(bindingType);
-        }
-        Class<?>[] classes = bindingType.getInterfaces();
-        for (Class<?> i : classes) {
-            BindingBuilder<B> builder = (BindingBuilder<B>)bindingBuilders.get(i);
-            if (builder != null) {
-                return builder;
-            }
-        }
-        return null;
-    }
-
-    public <I extends Implementation> ImplementationBuilder<I> getImplementationBuilder(Class<I> implementationType) {
-        loadBuilders();
-        if (implementationType.isInterface()) {
-            return (ImplementationBuilder<I>)implementationBuilders.get(implementationType);
-        }
-        Class<?>[] classes = implementationType.getInterfaces();
-        for (Class<?> i : classes) {
-            ImplementationBuilder<I> builder = (ImplementationBuilder<I>)implementationBuilders.get(i);
-            if (builder != null) {
-                return builder;
-            }
-        }
-        return null;
+        return (BindingBuilder<B>)bindingBuilders.get(bindingType);
     }
 
     public <B extends Binding> void removeBindingBuilder(BindingBuilder<B> builder) {
-        bindingBuilders.remove(builder.getModelType());
+        bindingBuilders.remove(builder.getBindingType());
+    }
+
+    public void addImplementationBuilder(ImplementationBuilder<?> implementationBuilder) {
+        implementationBuilders.put(implementationBuilder.getImplementationType(), implementationBuilder);
+    }
+
+    public <I extends Implementation> ImplementationBuilder<I> getImplementationBuilder(QName implementationType) {
+        loadBuilders();
+        return (ImplementationBuilder<I>)implementationBuilders.get(implementationType);
     }
 
     public <I extends Implementation> void removeImplementationBuilder(ImplementationBuilder<I> builder) {
-        implementationBuilders.remove(builder.getModelType());
+        implementationBuilders.remove(builder.getImplementationType());
     }
 
+    public void addPolicyBuilder(PolicyBuilder<?> policyBuilder) {
+        policyBuilders.put(policyBuilder.getPolicyType(), policyBuilder);
+    }
+
+    public <B> PolicyBuilder<B> getPolicyBuilder(QName policyType) {
+        loadBuilders();
+        return (PolicyBuilder<B>)policyBuilders.get(policyType);
+    }
+
+    public <B> void removePolicyBuilder(PolicyBuilder<B> builder) {
+        policyBuilders.remove(builder.getPolicyType());
+    }
+    
     /**
      * A wrapper around a composite builder allowing lazy
      * loading and initialization of implementation providers.
@@ -219,9 +229,9 @@ public class DefaultBuilderExtensionPoint implements BuilderExtensionPoint, Life
         }
 
         public Composite build(Composite composite,
-                          Definitions definitions,
-                          Map<QName, List<String>> bindingBaseURIs,
-                          Monitor monitor) throws CompositeBuilderException {
+                               Definitions definitions,
+                               Map<QName, List<String>> bindingBaseURIs,
+                               Monitor monitor) throws CompositeBuilderException {
             return ((DeployedCompositeBuilder)getBuilder()).build(composite, definitions, bindingBaseURIs, monitor);
         }
 
@@ -257,9 +267,8 @@ public class DefaultBuilderExtensionPoint implements BuilderExtensionPoint, Life
 
     private class LazyBindingBuilder implements BindingBuilder {
         private ServiceDeclaration sd;
-        private String model;
         private BindingBuilder<?> builder;
-        private Class<?> modelType;
+        private QName qname;;
 
         /**
          * @param sd
@@ -267,23 +276,17 @@ public class DefaultBuilderExtensionPoint implements BuilderExtensionPoint, Life
         public LazyBindingBuilder(ServiceDeclaration sd) {
             super();
             this.sd = sd;
-            this.model = sd.getAttributes().get("model");
+            this.qname = ServiceDeclarationParser.getQName(sd.getAttributes().get("qname"));
         }
 
         public void build(Component component, Contract contract, Binding binding, Monitor monitor) {
             getBuilder().build(component, contract, binding, monitor);
         }
 
-        public Class getModelType() {
-            if (modelType == null) {
-                try {
-                    modelType = sd.loadClass(model);
-                } catch (Exception e) {
-                    throw new IllegalStateException(e);
-                }
-            }
-            return modelType;
+        public QName getBindingType() {
+            return qname;
         }
+
 
         private synchronized BindingBuilder getBuilder() {
             if (builder == null) {
@@ -308,9 +311,8 @@ public class DefaultBuilderExtensionPoint implements BuilderExtensionPoint, Life
 
     private class LazyImplementationBuilder implements ImplementationBuilder {
         private ServiceDeclaration sd;
-        private String model;
         private ImplementationBuilder<?> builder;
-        private Class<?> modelType;
+        private QName qname;;
 
         /**
          * @param sd
@@ -318,22 +320,15 @@ public class DefaultBuilderExtensionPoint implements BuilderExtensionPoint, Life
         public LazyImplementationBuilder(ServiceDeclaration sd) {
             super();
             this.sd = sd;
-            this.model = sd.getAttributes().get("model");
+            this.qname = ServiceDeclarationParser.getQName(sd.getAttributes().get("qname"));
         }
 
         public void build(Component component, Implementation implementation, Monitor monitor) {
             getBuilder().build(component, implementation, monitor);
         }
 
-        public Class getModelType() {
-            if (modelType == null) {
-                try {
-                    modelType = sd.loadClass(model);
-                } catch (Exception e) {
-                    throw new IllegalStateException(e);
-                }
-            }
-            return modelType;
+        public QName getImplementationType() {
+            return qname;
         }
 
         private synchronized ImplementationBuilder getBuilder() {
@@ -353,6 +348,57 @@ public class DefaultBuilderExtensionPoint implements BuilderExtensionPoint, Life
                 }
             }
             return builder;
+        }
+
+    }
+
+    private class LazyPolicyBuilder implements PolicyBuilder {
+        private ServiceDeclaration sd;
+        private PolicyBuilder<?> builder;
+        private QName qname;;
+
+        /**
+         * @param sd
+         */
+        public LazyPolicyBuilder(ServiceDeclaration sd) {
+            super();
+            this.sd = sd;
+            this.qname = ServiceDeclarationParser.getQName(sd.getAttributes().get("qname"));
+        }
+
+        public void build(Component component, Implementation implementation, Definitions definitions, Monitor monitor) {
+            getBuilder().build(component, implementation, definitions, monitor);
+        }
+
+        public QName getPolicyType() {
+            return qname;
+        }
+        
+        private synchronized PolicyBuilder getBuilder() {
+            if (builder == null) {
+                try {
+                    Class<?> builderClass = sd.loadClass();
+                    try {
+                        Constructor<?> constructor = builderClass.getConstructor(ExtensionPointRegistry.class);
+                        builder = (PolicyBuilder)constructor.newInstance(registry);
+                    } catch (NoSuchMethodException e) {
+                        Constructor<?> constructor = builderClass.getConstructor();
+                        builder = (PolicyBuilder)constructor.newInstance();
+
+                    }
+                } catch (Exception e) {
+                    throw new IllegalStateException(e);
+                }
+            }
+            return builder;
+        }
+
+        public void build(Endpoint endpoint, Definitions definitions, Monitor monitor) {
+            getBuilder().build(endpoint, definitions, monitor);
+        }
+
+        public void build(org.apache.tuscany.sca.assembly.EndpointReference endpointReference, Definitions definitions, Monitor monitor) {
+            getBuilder().build(endpointReference, definitions, monitor);
         }
 
     }
