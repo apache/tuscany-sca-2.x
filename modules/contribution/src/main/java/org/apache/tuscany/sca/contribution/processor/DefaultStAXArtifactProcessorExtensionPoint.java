@@ -35,6 +35,7 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
+import org.apache.tuscany.sca.extensibility.ServiceDeclarationParser;
 import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
@@ -129,32 +130,6 @@ public class DefaultStAXArtifactProcessorExtensionPoint extends
     }
 
     /**
-     * Returns a QName object from a QName expressed as {ns}name
-     * or ns#name.
-     *
-     * @param qname
-     * @return
-     */
-    private static QName getQName(String qname) {
-        if (qname == null) {
-            return null;
-        }
-        qname = qname.trim();
-        if (qname.startsWith("{")) {
-            int h = qname.indexOf('}');
-            if (h != -1) {
-                return new QName(qname.substring(1, h), qname.substring(h + 1));
-            }
-        } else {
-            int h = qname.indexOf('#');
-            if (h != -1) {
-                return new QName(qname.substring(0, h), qname.substring(h + 1));
-            }
-        }
-        throw new IllegalArgumentException("Invalid qname: " + qname);
-    }
-
-    /**
      * Lazily load artifact processors registered in the extension point.
      */
     private synchronized void loadArtifactProcessors() {
@@ -178,7 +153,7 @@ public class DefaultStAXArtifactProcessorExtensionPoint extends
             // Load a StAX artifact processor
 
             // Get the model QName
-            QName artifactType = getQName(attributes.get("qname"));
+            QName artifactType = ServiceDeclarationParser.getQName(attributes.get("qname"));
 
             // Get the model class name
             String modelTypeName = attributes.get("model");
