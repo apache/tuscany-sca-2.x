@@ -41,7 +41,7 @@ import org.apache.tuscany.sca.policy.PolicySubject;
 public class EndpointImpl implements Endpoint {
     private static final long serialVersionUID = 7344399683703812593L;
 
-    protected ExtensionPointRegistry registry;
+    protected transient ExtensionPointRegistry registry;
     protected boolean unresolved;
     protected String uri;
     protected Component component;
