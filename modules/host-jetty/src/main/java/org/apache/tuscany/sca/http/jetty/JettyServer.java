@@ -509,12 +509,11 @@ public class JettyServer implements ServletHost, LifeCycleListener {
 
     public void start() {
         try {
-            jettyLogger = Log.getLog();
+            jettyLogger = new JettyLogger(logger);
+            Log.setLog(jettyLogger);
         } catch (Throwable e) {
             // Ignore
-        } finally {
-            Log.setLog(new JettyLogger());
-        }
+        } 
     }
 
 }
