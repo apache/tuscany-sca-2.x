@@ -69,7 +69,7 @@ public class EJBBindingImpl implements EJBBinding {
     /**
      * The type of session for this EJB Binding 
      */
-    private SessionType sessionType;
+    //private SessionType sessionType;
 
     /**
      * The EJB version for this EJB Binding 
@@ -151,7 +151,7 @@ public class EJBBindingImpl implements EJBBinding {
     }
     
     public QName getType() {
-        return TYPE;
+        return BINDING_EJB_QNAME;
     }
 
     public boolean isUnresolved() {
@@ -162,21 +162,12 @@ public class EJBBindingImpl implements EJBBinding {
         this.unresolved = unresolved;
     }
 
-    public void setSessionType(SessionType ejb_version_enum) {
-        this.sessionType = ejb_version_enum;
-    }
-
     public void setEjbVersion(EJBVersion ejb_version_enum) {
         this.ejbVersion = ejb_version_enum;
     }
 
     public void setRequires(String requires) {
         this.requires = requires;
-
-    }
-
-    public SessionType getSessionType() {
-        return sessionType;
     }
 
     public EJBVersion getEjbVersion() {

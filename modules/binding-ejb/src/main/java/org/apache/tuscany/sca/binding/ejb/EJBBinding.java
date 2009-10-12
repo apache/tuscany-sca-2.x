@@ -33,12 +33,10 @@ public interface EJBBinding extends Binding, Base {
     // model and for setting up defaults
     String BINDING_EJB = "binding.ejb";
     QName BINDING_EJB_QNAME = new QName(SCA11_NS, BINDING_EJB);
-    QName TYPE = new QName(SCA11_NS, BINDING_EJB);
     
     // Constants for the XML describing the EJB Binding
     String HOME_INTERFACE = "homeInterface";
     String EJB_LINK_NAME = "ejb-link-name";
-    String SESSION_TYPE = "session-type";
     String EJB_VERSION = "ejb-version";
     String NAME = "name";
     String POLICY_SETS = "policySets";
@@ -48,10 +46,6 @@ public interface EJBBinding extends Binding, Base {
     // Enums for the EJB Binding
     enum EJBVersion {
         EJB2, EJB3
-    };
-
-    enum SessionType {
-        STATEFUL, STATELESS
     };
 
     /**
@@ -81,9 +75,6 @@ public interface EJBBinding extends Binding, Base {
      * @param ejb-link-name
      */
     void setEjbLinkName(String ejbLinkName);
-
-    SessionType getSessionType();
-    void setSessionType(SessionType sessionType);
 
     EJBVersion getEjbVersion();
     void setEjbVersion(EJBVersion ejbVersion);

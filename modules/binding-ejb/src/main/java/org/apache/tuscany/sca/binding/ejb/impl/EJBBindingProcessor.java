@@ -41,19 +41,17 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
 /**
  * A processor to read the XML that describes the EJB binding...
  * 
- * <binding.ejb
- *  homeInterface="NCName"?
- *  ejb-link-name="NCName"?
- *  session-type="stateful or stateless"?
- *  ejb-version="EJB2 or EJB3"?
- *  name="NCName"?
- *  policySets=" sca:listOfQNames"?
- *  requires="sca:listOfQNames"?
- *  uri="anyURI"?
- * >
+ * <binding.ejb homeInterface="NCName"?
+ * 				ejb-link-name="string"?
+ *				ejb-version="EJB2 or EJB3"?
+ *				name="NCName"?
+ *				policySets="sca:listOfQNames"?
+ *				requires="sca:listOfQNames"?
+ *				uri="anyURI"?>
+ * 		<wireFormat ... />?
+ * 		<operationSelector ... />?
  *
- *  <!-- additional elements here -->
- *  
+ *  	<!-- additional elements here --> *  
  * </binding.ejb>
  *
  * @version $Rev$ $Date$
@@ -121,17 +119,6 @@ public class EJBBindingProcessor implements StAXArtifactProcessor<EJBBinding> {
         String ejbLinkName = reader.getAttributeValue(null, EJBBinding.EJB_LINK_NAME);
         if (ejbLinkName != null) {
             ejbBinding.setEjbLinkName(ejbLinkName);
-        }
-
-        String sessionType = reader.getAttributeValue(null, EJBBinding.SESSION_TYPE);
-        if (sessionType != null) {
-            if (sessionType.equals("stateless")) {
-                ejbBinding.setSessionType(EJBBinding.SessionType.STATELESS);
-            } else if (sessionType.equals("stateful")) {
-                ejbBinding.setSessionType(EJBBinding.SessionType.STATEFUL);
-            } else {
-            	error("UnknownEJBSessionType", reader, sessionType, name);            	
-            }
         }
 
         String ejbVersion = reader.getAttributeValue(null, EJBBinding.EJB_VERSION);
