@@ -19,9 +19,12 @@
 
 package org.apache.tuscany.sca.binding.jsonrpc.provider;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.methods.StringRequestEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.util.EntityUtils;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.binding.jsonrpc.JSONRPCBinding;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -52,7 +55,8 @@ public class JSONRPCBindingInvoker implements Invoker, DataExchangeSemantics {
     }
 
     public Message invoke(Message msg) {
-        PostMethod post = null;
+        HttpPost post = null;
+        HttpResponse response = null;
         try {
 
             JSONObject jsonRequest = null;;
@@ -76,19 +80,19 @@ public class JSONRPCBindingInvoker implements Invoker, DataExchangeSemantics {
                 throw new RuntimeException("Unable to parse JSON parameter", e);
             }
 
-            post = new PostMethod(uri);
+            post = new HttpPost(uri);
             String req = jsonRequest.toString();
-            StringRequestEntity entity = new StringRequestEntity(req, "application/json", "UTF-8");
-            post.setRequestEntity(entity);
+            StringEntity entity = new StringEntity(req, "application/json; charset\"UTF-8\"");
+            post.setEntity(entity);
 
-            httpClient.executeMethod(post);
-            int status = post.getStatusCode();
+            response = httpClient.execute(post);
 
-            if (status == 200) {
+            if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
                 //success 
                 JSONObject jsonResponse = null;
                 try {
-                    jsonResponse = new JSONObject(post.getResponseBodyAsString());
+
+                    jsonResponse = new JSONObject(EntityUtils.toString(response.getEntity()));
 
                     //check requestId
                     if (! jsonResponse.getString("id").equalsIgnoreCase(requestId)) {
@@ -106,10 +110,6 @@ public class JSONRPCBindingInvoker implements Invoker, DataExchangeSemantics {
         } catch (Exception e) {
             e.printStackTrace();
             msg.setFaultBody(e);
-        } finally {
-            if (post != null) {
-                post.releaseConnection();
-            }
         }
 
         return msg;

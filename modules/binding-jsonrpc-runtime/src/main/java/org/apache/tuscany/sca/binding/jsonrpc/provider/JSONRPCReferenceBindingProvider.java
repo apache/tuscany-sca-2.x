@@ -19,9 +19,20 @@
 
 package org.apache.tuscany.sca.binding.jsonrpc.provider;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpConnectionManager;
-import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
+import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
+import org.apache.http.HttpHost;
+import org.apache.http.client.HttpClient;
+import org.apache.http.conn.ClientConnectionManager;
+import org.apache.http.conn.scheme.PlainSocketFactory;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
+import org.apache.http.params.HttpProtocolParams;
+import org.apache.http.protocol.HTTP;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -57,10 +68,18 @@ public class JSONRPCReferenceBindingProvider implements ReferenceBindingProvider
         JSONRPCDatabindingHelper.setDataBinding(referenceContract.getInterface());
         
         // Create an HTTP client
-        HttpConnectionManager connectionManager = new MultiThreadedHttpConnectionManager();
-        connectionManager.getParams().setDefaultMaxConnectionsPerHost(10);
-        connectionManager.getParams().setConnectionTimeout(60000);
-        httpClient = new HttpClient(connectionManager);
+        HttpParams defaultParameters = new BasicHttpParams();
+        defaultParameters.setIntParameter(HttpConnectionManagerParams.MAX_TOTAL_CONNECTIONS, 10);
+        HttpProtocolParams.setContentCharset(defaultParameters, HTTP.UTF_8);
+        HttpConnectionParams.setConnectionTimeout(defaultParameters, 60000);
+        HttpConnectionParams.setSoTimeout(defaultParameters, 60000);
+        
+        SchemeRegistry supportedSchemes = new SchemeRegistry();
+        supportedSchemes.register(new Scheme(HttpHost.DEFAULT_SCHEME_NAME, PlainSocketFactory.getSocketFactory(), 80));
+        
+        ClientConnectionManager connectionManager = new ThreadSafeClientConnManager(defaultParameters, supportedSchemes);
+
+        httpClient = new DefaultHttpClient(connectionManager, defaultParameters);
     }
 
     public InterfaceContract getBindingInterfaceContract() {
