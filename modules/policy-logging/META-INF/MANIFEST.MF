@@ -13,6 +13,7 @@ Bundle-Description: Apache Tuscany Logging Policy Model
 Import-Package: javax.xml.namespace,
  javax.xml.stream,
  org.apache.tuscany.sca.assembly;version="2.0.0",
+ org.apache.tuscany.sca.assembly.builder;version="2.0.0", 
  org.apache.tuscany.sca.contribution.processor;version="2.0.0",
  org.apache.tuscany.sca.contribution.resolver;version="2.0.0",
  org.apache.tuscany.sca.core;version="2.0.0",

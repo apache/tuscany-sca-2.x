@@ -33,7 +33,7 @@ import org.apache.tuscany.sca.assembly.Base;
 public class JDKLoggingPolicy {
     static final String SCA11_NS = Base.SCA11_NS;
     static final String SCA11_TUSCANY_NS = Base.SCA11_TUSCANY_NS;
-    private static final QName JDK_LOGGING_POLICY_QNAME = new QName(SCA11_TUSCANY_NS, "jdkLogger");
+    static final QName JDK_LOGGING_POLICY_QNAME = new QName(SCA11_TUSCANY_NS, "jdkLogger");
 
     private String loggerName;
     private String resourceBundleName;
@@ -81,5 +81,17 @@ public class JDKLoggingPolicy {
     }
 
     public void setUnresolved(boolean unresolved) {
+    }
+
+    @Override
+    public String toString() {
+        return "JDKLoggingPolicy [logLevel=" + logLevel
+            + ", loggerName="
+            + loggerName
+            + ", resourceBundleName="
+            + resourceBundleName
+            + ", useParentHandlers="
+            + useParentHandlers
+            + "]";
     }
 }
