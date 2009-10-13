@@ -86,9 +86,10 @@ public class Axis2SCAServiceBindingProvider implements ServiceBindingProvider {
             int port = 8085;
             String host;
             try {
-                host = InetAddress.getLocalHost().getHostName();
+                host = InetAddress.getLocalHost().getHostAddress();
             } catch (UnknownHostException e) {
                 host = "localhost";
+                logger.warning("unable to determine host address, using localhost");
             }
             ServerSocket socket;
             try {
