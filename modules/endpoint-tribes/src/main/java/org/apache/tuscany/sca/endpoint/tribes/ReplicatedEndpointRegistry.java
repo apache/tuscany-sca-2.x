@@ -176,12 +176,7 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry, LifeCycleLi
             new ReplicatedMap(null, createChannel(address, port, bind), timeout, this.domainURI,
                               new ClassLoader[] {ReplicatedEndpointRegistry.class.getClassLoader()});
         map.addListener(this);
-        try {
-            map.getChannel().start(Channel.DEFAULT);
-        } catch (ChannelException e) {
-            throw new IllegalStateException(e);
-        }
-        
+
         if (staticRoutes != null) {
             StaticMembershipInterceptor smi = new StaticMembershipInterceptor();
             for (URL staticRoute : staticRoutes) {
@@ -198,6 +193,11 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry, LifeCycleLi
             map.getChannel().addInterceptor(smi);
         }
         
+        try {
+            map.getChannel().start(Channel.DEFAULT);
+        } catch (ChannelException e) {
+            throw new IllegalStateException(e);
+        }
         
     }
 
