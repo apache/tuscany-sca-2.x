@@ -24,13 +24,10 @@ import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.binding.jsonrpc.JSONRPCBinding;
-import org.apache.tuscany.sca.databinding.javabeans.SimpleJavaDataBinding;
 import org.apache.tuscany.sca.databinding.json.JSONDataBinding;
 import org.apache.tuscany.sca.host.http.ServletHost;
-import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
-import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
@@ -53,7 +50,6 @@ public class JSONRPCServiceBindingProvider implements ServiceBindingProvider {
     private JSONRPCBinding binding;
     private ServletHost servletHost;
     private List<String> servletMappings = new ArrayList<String>();
-    private String domainScriptMapping;
 
     public JSONRPCServiceBindingProvider(Endpoint endpoint,
                                          MessageFactory messageFactory,
@@ -72,7 +68,7 @@ public class JSONRPCServiceBindingProvider implements ServiceBindingProvider {
             this.serviceContract = service.getInterfaceContract();
         }
         
-        setDataBinding(serviceContract.getInterface());
+        JSONRPCDatabindingHelper.setDataBinding(serviceContract.getInterface());
     }
 
     public InterfaceContract getBindingInterfaceContract() {
@@ -124,27 +120,5 @@ public class JSONRPCServiceBindingProvider implements ServiceBindingProvider {
         // Implementation. Need to figure out how to generate Java
         // Interface in cases where the target is not a Java Implementation
         return ((JavaInterface)targetInterface).getJavaClass();
-    }
-    
-    private void setDataBinding(Interface interfaze) {
-        List<Operation> operations = interfaze.getOperations();
-        for (Operation operation : operations) {
-            operation.setDataBinding(JSONDataBinding.NAME);
-            DataType<List<DataType>> inputType = operation.getInputType();
-            if (inputType != null) {
-                List<DataType> logical = inputType.getLogical();
-                for (DataType inArg : logical) {
-                    if (!SimpleJavaDataBinding.NAME.equals(inArg.getDataBinding())) {
-                        inArg.setDataBinding(JSONDataBinding.NAME);
-                    } 
-                }
-            }
-            DataType outputType = operation.getOutputType();
-            if (outputType != null) {
-                if (!SimpleJavaDataBinding.NAME.equals(outputType.getDataBinding())) {
-                    outputType.setDataBinding(JSONDataBinding.NAME);
-                }
-            }
-        }
     }
 }
