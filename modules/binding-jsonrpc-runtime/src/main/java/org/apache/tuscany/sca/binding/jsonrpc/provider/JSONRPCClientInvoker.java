@@ -21,7 +21,7 @@ package org.apache.tuscany.sca.binding.jsonrpc.provider;
 
 import java.lang.reflect.Method;
 
-import org.apache.commons.httpclient.HttpClient;
+import org.apache.http.client.HttpClient;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.binding.jsonrpc.JSONRPCBinding;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -44,15 +44,11 @@ public class JSONRPCClientInvoker implements Invoker, DataExchangeSemantics {
     private Method method;
     private String uri;
 
-    private HttpClient httpClient;
-
     public JSONRPCClientInvoker(EndpointReference endpointReference, Operation operation, HttpClient httpClient) {
         this.endpointReference = endpointReference;
         this.operation = operation;
         this.method = ((JavaOperation)operation).getJavaMethod();
         this.uri = ((JSONRPCBinding)endpointReference.getBinding()).getURI();
-
-        this.httpClient = httpClient;
     }
 
     public Message invoke(Message msg) {
@@ -67,6 +63,7 @@ public class JSONRPCClientInvoker implements Invoker, DataExchangeSemantics {
             msg.setFaultBody(e);
         } finally {
             client.closeProxy(proxy);
+            session.close();
         }
         return msg;
     }
