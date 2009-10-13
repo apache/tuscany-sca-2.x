@@ -18,6 +18,11 @@
  */
 package org.apache.tuscany.sca.implementation.spring;
 
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.PolicySet;
+
 /**
  * Represents a <sca:reference> element in a Spring application-context
  * - this has id and className attributes
@@ -30,8 +35,8 @@ public class SpringSCAReferenceElement {
     private String name;
     private String type;
     private String defaultBean;
-    private String requiredIntents;
-    private String policySets;
+    private List<Intent> intents = new ArrayList<Intent>();
+    private List<PolicySet> policySets = new ArrayList<PolicySet>();
 
     public SpringSCAReferenceElement(String name, String type) {
         this.name = name;
@@ -62,19 +67,11 @@ public class SpringSCAReferenceElement {
         return defaultBean;
     }
     
-    public void setRequiredIntents(String requiredIntents) {    	
-    	this.requiredIntents = requiredIntents;
+    public List<Intent> getRequiredIntents() {
+        return intents;
     }
     
-    public String getRequiredIntents() {   	
-    	return requiredIntents;
-    }
-    
-    public void setPolicySets(String policySets) {    	
-    	this.policySets = policySets;
-    }
-    
-    public String getPolicySets() {   	
+    public List<PolicySet> getPolicySets() {   	
     	return policySets;
     }
 

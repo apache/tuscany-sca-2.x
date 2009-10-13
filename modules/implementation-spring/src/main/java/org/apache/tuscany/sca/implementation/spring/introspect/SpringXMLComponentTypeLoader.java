@@ -51,6 +51,7 @@ import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.assembly.xml.PolicySubjectProcessor;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
@@ -93,6 +94,7 @@ public class SpringXMLComponentTypeLoader {
     private AssemblyFactory assemblyFactory;
     private JavaInterfaceFactory javaFactory;
     private PolicyFactory policyFactory;
+    private PolicySubjectProcessor policyProcessor;
     private Monitor monitor;
     private SpringBeanIntrospector beanIntrospector;
 
@@ -105,6 +107,7 @@ public class SpringXMLComponentTypeLoader {
         this.assemblyFactory = assemblyFactory;
         this.javaFactory = javaFactory;
         this.policyFactory = policyFactory;
+        this.policyProcessor = new PolicySubjectProcessor(policyFactory);
         this.contributionFactory = factories.getFactory(ContributionFactory.class);
         this.xmlInputFactory = factories.getFactory(XMLInputFactory.class);
         this.monitor = monitor;
@@ -311,10 +314,7 @@ public class SpringXMLComponentTypeLoader {
                                 							reader.getAttributeValue(null, "target"));
                             if (reader.getAttributeValue(null, "type") != null)
                             	service.setType(reader.getAttributeValue(null, "type"));
-                            if (reader.getAttributeValue(null, "requires") != null)
-                            	service.setRequiredIntents(reader.getAttributeValue(null, "requires"));
-                            if (reader.getAttributeValue(null, "policySets") != null)
-                            	service.setPolicySets(reader.getAttributeValue(null, "policySets"));
+                            policyProcessor.readPolicies(service, reader);
                             services.add(service);
                         } else if (SpringImplementationConstants.SCA_REFERENCE_ELEMENT.equals(qname)) {
                         	// The value of the @name attribute of an <sca:reference/> subelement of a <beans/> 
@@ -328,10 +328,7 @@ public class SpringXMLComponentTypeLoader {
                                 							  reader.getAttributeValue(null, "type"));
                             if (reader.getAttributeValue(null, "default") != null)
                             	reference.setDefaultBean(reader.getAttributeValue(null, "default"));
-                            if (reader.getAttributeValue(null, "requires") != null)
-                            	reference.setRequiredIntents(reader.getAttributeValue(null, "requires"));
-                            if (reader.getAttributeValue(null, "policySets") != null)
-                            	reference.setPolicySets(reader.getAttributeValue(null, "policySets"));
+                            policyProcessor.readPolicies(reference, reader);
                             references.add(reference);                            
                         } else if (SpringImplementationConstants.SCA_PROPERTY_ELEMENT.equals(qname)) {
                         	// The value of the @name attribute of an <sca:property/> subelement of a <beans/> 
@@ -560,7 +557,7 @@ public class SpringXMLComponentTypeLoader {
             // Deal with the services first....
             Iterator<SpringSCAServiceElement> its = services.iterator();
             while (its.hasNext()) {
-                SpringSCAServiceElement serviceElement = its.next();
+                SpringSCAServiceElement serviceElement = its.next();                
                 Class<?> interfaze = resolveClass(resolver, serviceElement.getType());
                 Service theService = createService(interfaze, serviceElement.getName());
                 // Spring allows duplication of bean definitions in multiple context scenario,
@@ -581,11 +578,9 @@ public class SpringXMLComponentTypeLoader {
                     if (beanName.equals(beanElement.getId())) {
                     	if (isvalidBeanForService(beanElement)) {
                     		// add the required intents and policySets for the service
-                            //theService.getRequiredIntents().addAll(collection);
-                            //theService.getPolicySets().addAll(collection);
+                            theService.getRequiredIntents().addAll(serviceElement.getRequiredIntents());
+                            theService.getPolicySets().addAll(serviceElement.getPolicySets());
                             implementation.setBeanForService(theService, beanElement);
-                    	} else {
-                    		// Do we need a warning message here.
                     	}
                     }
                 } // end for
@@ -608,8 +603,8 @@ public class SpringXMLComponentTypeLoader {
                 	componentType.getReferences().remove(duplicate);
                 
                 // add the required intents and policySets for this reference
-                //theReference.getRequiredIntents().addAll(collection);
-                //theReference.getPolicySets().addAll(collection);
+                theReference.getRequiredIntents().addAll(referenceElement.getRequiredIntents());
+                theReference.getPolicySets().addAll(referenceElement.getPolicySets());
                 componentType.getReferences().add(theReference);
             } // end while
 
@@ -1006,7 +1001,7 @@ public class SpringXMLComponentTypeLoader {
                         }
                     }
                     // No MANIFEST.MF file OR no manifest-specified Spring context , then read all the 
-                    // xml files available in the META-INF/spring folder.
+                    // .xml files available in the META-INF/spring folder.
                     Enumeration<JarEntry> entries = jf.entries();
                     while (entries.hasMoreElements()) {
                     	je = entries.nextElement();
@@ -1030,7 +1025,7 @@ public class SpringXMLComponentTypeLoader {
         			// Deal with the directory inside a jar file, in case the contribution itself is a JAR file.
         			try {
 	        			if (locationFile.getPath().indexOf(".jar") > 0) {
-	        				String jarPath = url.getPath().substring(6, url.getPath().indexOf("!"));
+	        				String jarPath = url.getPath().substring(5, url.getPath().indexOf("!"));
 	        				JarFile jf = new JarFile(jarPath);
 	        				JarEntry je = jf.getJarEntry(url.getPath().substring(url.getPath().indexOf("!/")+2)
 	        												+ "/" + "META-INF" + "/" + "MANIFEST.MF");
@@ -1050,7 +1045,7 @@ public class SpringXMLComponentTypeLoader {
 	                            }
 	        				}	        			    
 	        			    // No MANIFEST.MF file OR no manifest-specified Spring context , then read all the 
-	                        // xml files available in the META-INF/spring folder.
+	                        // .xml files available in the META-INF/spring folder.
 	        			    Enumeration<JarEntry> entries = jf.entries();
 	                        while (entries.hasMoreElements()) {
 	                        	je = entries.nextElement();
