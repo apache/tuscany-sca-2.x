@@ -340,7 +340,7 @@
                    <plugin> 
                        <groupId>org.apache.tuscany.maven.plugins</groupId> 
                        <artifactId>maven-bundle-plugin</artifactId> 
-                       <version>1.0.4-SNAPSHOT</version> 
+                       <version>1.0.4</version> 
                        <extensions>true</extensions> 
                     </plugin>
                     <plugin>
