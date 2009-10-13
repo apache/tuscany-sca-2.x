@@ -20,8 +20,10 @@
 package org.apache.tuscany.sca.binding.sca.axis2.impl;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.URI;
+import java.net.UnknownHostException;
 import java.util.logging.Logger;
 
 import org.apache.axiom.om.OMElement;
@@ -82,7 +84,12 @@ public class Axis2SCAServiceBindingProvider implements ServiceBindingProvider {
         URI uri = URI.create(binding.getURI());
         if (!uri.isAbsolute()) {
             int port = 8085;
-            String host = "localhost";
+            String host;
+            try {
+                host = InetAddress.getLocalHost().getHostName();
+            } catch (UnknownHostException e) {
+                host = "localhost";
+            }
             ServerSocket socket;
             try {
                 socket = new ServerSocket(0);
