@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.binding.jsonrpc.provider;
 
-import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
 import org.apache.http.HttpHost;
 import org.apache.http.client.HttpClient;
 import org.apache.http.conn.ClientConnectionManager;
@@ -69,7 +68,7 @@ public class JSONRPCReferenceBindingProvider implements ReferenceBindingProvider
         
         // Create an HTTP client
         HttpParams defaultParameters = new BasicHttpParams();
-        defaultParameters.setIntParameter(HttpConnectionManagerParams.MAX_TOTAL_CONNECTIONS, 10);
+        //defaultParameters.setIntParameter(HttpConnectionManagerParams.MAX_TOTAL_CONNECTIONS, 10);
         HttpProtocolParams.setContentCharset(defaultParameters, HTTP.UTF_8);
         HttpConnectionParams.setConnectionTimeout(defaultParameters, 60000);
         HttpConnectionParams.setSoTimeout(defaultParameters, 60000);
