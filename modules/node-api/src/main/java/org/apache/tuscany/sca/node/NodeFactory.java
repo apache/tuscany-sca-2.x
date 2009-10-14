@@ -245,7 +245,8 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
     public Node createNode(URL configurationURL) {
         try {
             InputStream is = openStream(configurationURL);
-            return createNode(is);
+            NodeConfiguration configuration = loadConfiguration(is, configurationURL);
+            return createNode(configuration);
         } catch (IOException e) {
             throw new ServiceRuntimeException(e);
         }
@@ -258,13 +259,8 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
      * @return a new SCA node
      */
     public Node createNode(InputStream is) {
-        try {
-            NodeConfiguration configuration = loadConfiguration(is);
-            is.close();
-            return createNode(configuration);
-        } catch (IOException e) {
-            throw new ServiceRuntimeException(e);
-        }
+        NodeConfiguration configuration = loadConfiguration(is, null);
+        return createNode(configuration);
     }
 
     /**
@@ -442,7 +438,7 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
      * @param configuration The input stream of the XML document
      * @return The node configuration
      */
-    public abstract NodeConfiguration loadConfiguration(InputStream xml);
+    public abstract NodeConfiguration loadConfiguration(InputStream xml, URL base);
 
 
 }

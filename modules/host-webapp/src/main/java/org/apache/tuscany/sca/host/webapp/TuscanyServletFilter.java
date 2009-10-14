@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.host.webapp;
 
 import java.io.IOException;
+import java.util.Enumeration;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterConfig;
@@ -47,6 +48,11 @@ public class TuscanyServletFilter implements Filter {
 
     public void init(final FilterConfig config) throws ServletException {
         context = config.getServletContext();
+        for (Enumeration<String> e = config.getInitParameterNames(); e.hasMoreElements();) {
+            String name = e.nextElement();
+            String value = config.getInitParameter(name);
+            context.setAttribute(name, value);
+        }
         servletHost = ServletHostHelper.init(context);
     }
 

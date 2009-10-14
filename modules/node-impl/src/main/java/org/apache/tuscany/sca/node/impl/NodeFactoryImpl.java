@@ -29,6 +29,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -54,6 +55,7 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.DeployedCompositeBuilder;
+import org.apache.tuscany.sca.common.java.io.IOHelper;
 import org.apache.tuscany.sca.common.xml.stax.StAXHelper;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
@@ -166,7 +168,7 @@ public class NodeFactoryImpl extends NodeFactory {
     }
 
     @Override
-    public NodeConfiguration loadConfiguration(InputStream xml) {
+    public NodeConfiguration loadConfiguration(InputStream xml, URL base) {
         try {
             init();
             StAXHelper helper = StAXHelper.getInstance(extensionPoints);
@@ -177,10 +179,35 @@ public class NodeFactoryImpl extends NodeFactory {
             reader.nextTag();
             NodeConfiguration config = (NodeConfiguration)processor.read(reader);
             xml.close();
+            if (base != null && config != null) {
+                // Resolve the contribution location against the node.xml
+                for (ContributionConfiguration c : config.getContributions()) {
+                    String location = c.getLocation();
+                    if (location != null) {
+                        URL url = new URL(base, location);
+                        url = IOHelper.normalize(url);
+                        c.setLocation(url.toString());
+                    }
+                }
+            }
             return config;
         } catch (Throwable e) {
             throw new ServiceRuntimeException(e);
         }
+    }
+    
+    private File toFile(URL url) {
+        if("file".equalsIgnoreCase(url.getProtocol())) {
+            try {
+                return new File(url.toURI());
+            } catch(URISyntaxException e) {
+                return new File(url.getPath());
+            } catch(IllegalArgumentException e) {
+                // Hack for file:./a.txt or file:../a/c.wsdl
+                return new File(url.getPath());
+            }
+        }
+        return null;
     }
 
     public Map<Object, Node> getNodes() {

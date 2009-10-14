@@ -21,7 +21,6 @@ package org.apache.tuscany.sca.host.webapp;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 import java.util.Enumeration;
@@ -44,19 +43,6 @@ public class ServletHostHelper {
     public static final String DOMAIN_NAME_ATTR = "org.apache.tuscany.sca.domain.name";
     public static final String SCA_NODE_ATTRIBUTE = Node.class.getName();
     private static NodeFactory factory;
-
-    private static InputStream openStream(ServletContext servletContext, String location) throws IOException {
-        URI uri = URI.create(location);
-        if (uri.isAbsolute()) {
-            return uri.toURL().openStream();
-        } else {
-            String path = location;
-            if (!path.startsWith("/")) {
-                path = "/" + path;
-            }
-            return servletContext.getResourceAsStream(path);
-        }
-    }
 
     private static URL getResource(ServletContext servletContext, String location) throws IOException {
         URI uri = URI.create(location);
@@ -82,17 +68,18 @@ public class ServletHostHelper {
     @SuppressWarnings("unchecked")
     private static NodeConfiguration getNodeConfiguration(ServletContext servletContext) throws IOException {
         NodeConfiguration configuration = null;
-        String nodeConfigURI = servletContext.getInitParameter("node.configuration");
+        String nodeConfigURI = (String) servletContext.getAttribute("node.configuration");
         if (nodeConfigURI != null) {
-            configuration = factory.loadConfiguration(openStream(servletContext, nodeConfigURI));
+            URL url = getResource(servletContext, nodeConfigURI);
+            configuration = factory.loadConfiguration(url.openStream(), url);
         } else {
             configuration = factory.createNodeConfiguration();
             configuration.setDomainURI(factory.getDomainURI());
-            Enumeration<String> names = servletContext.getInitParameterNames();
+            Enumeration<String> names = servletContext.getAttributeNames();
             while (names.hasMoreElements()) {
                 String name = names.nextElement();
                 if (name.startsWith("contribution.")) {
-                    String contrib = servletContext.getInitParameter(name);
+                    String contrib = (String) servletContext.getAttribute(name);
                     if (contrib != null) {
                         configuration.addContribution(getResource(servletContext, contrib));
                     }
@@ -106,12 +93,12 @@ public class ServletHostHelper {
             if (composite != null) {
                 configuration.getContributions().get(0).addDeploymentComposite(composite);
             }
-            String nodeURI = servletContext.getInitParameter("node.uri");
+            String nodeURI = (String) servletContext.getAttribute("node.uri");
             if (nodeURI == null) {
                 nodeURI = new File(servletContext.getRealPath("/")).getName();
             }
             configuration.setURI(nodeURI);
-            String domainURI = servletContext.getInitParameter("domain.uri");
+            String domainURI = (String) servletContext.getAttribute("domain.uri");
             if (domainURI != null) {
                 configuration.setDomainURI(domainURI);
             }
@@ -128,6 +115,11 @@ public class ServletHostHelper {
                     factory = NodeFactory.getInstance(domainName);
                 } else {
                     factory = NodeFactory.newInstance();
+                }
+                for (Enumeration<String> e = servletContext.getInitParameterNames(); e.hasMoreElements();) {
+                    String name = e.nextElement();
+                    String value = servletContext.getInitParameter(name);
+                    servletContext.setAttribute(name, value);
                 }
                 node = createNode(servletContext);
                 servletContext.setAttribute(SCA_NODE_ATTRIBUTE, node);

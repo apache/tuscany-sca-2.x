@@ -24,6 +24,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.JarURLConnection;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -91,6 +92,21 @@ public class IOHelper {
             return null;
         }
         return createURI(url.toString());
+    }
+    
+    public static URL normalize(URL url) {
+        // Make sure the trailing / is added to the file directory URL so that
+        // URLClassLoader can load classes from that
+        try {
+            File file = toFile(url);
+            if (file != null) {
+                return file.getAbsoluteFile().toURI().toURL();
+            } else {
+                return toURI(url).toURL();
+            }
+        } catch (MalformedURLException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
     
     /**
