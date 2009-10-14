@@ -67,9 +67,26 @@
 
 	</dependencies>
 	
-    <modules>
-        <module>sca-assembly</module>
-        <module>tuscany-test-runner</module>
-    </modules>
+    <profiles>
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+               <module>sca-assembly</module>
+               <module>tuscany-test-runner</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>scajcaa</id>
+            <modules>
+                <module>sca-java-caa</module>
+                <module>tuscany-java-caa-test-runner</module>
+            </modules>
+        </profile>
+
+    </profiles>
 
 </project>
