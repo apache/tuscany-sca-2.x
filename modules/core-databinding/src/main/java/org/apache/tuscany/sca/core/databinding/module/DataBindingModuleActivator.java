@@ -26,7 +26,6 @@ import org.apache.tuscany.sca.core.databinding.processor.DataBindingJavaInterfac
 import org.apache.tuscany.sca.core.databinding.processor.WrapperJavaInterfaceProcessor;
 import org.apache.tuscany.sca.core.databinding.wire.DataBindingRuntimeWireProcessor;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
-import org.apache.tuscany.sca.databinding.TransformerExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.jaxws.JAXWSJavaInterfaceProcessor;
 import org.apache.tuscany.sca.interfacedef.java.jaxws.WebServiceInterfaceProcessor;
@@ -39,25 +38,6 @@ public class DataBindingModuleActivator implements ModuleActivator {
 
     public void start(ExtensionPointRegistry registry) {
         DataBindingExtensionPoint dataBindings = registry.getExtensionPoint(DataBindingExtensionPoint.class);
-        TransformerExtensionPoint transformers = registry.getExtensionPoint(TransformerExtensionPoint.class);
-
-        /*
-        Input2InputTransformer input2InputTransformer = new Input2InputTransformer(registry);
-        transformers.addTransformer(input2InputTransformer, false);
-
-        Output2OutputTransformer output2OutputTransformer = new Output2OutputTransformer(registry);
-        transformers.addTransformer(output2OutputTransformer, false);
-
-        Exception2ExceptionTransformer exception2ExceptionTransformer = new Exception2ExceptionTransformer(registry);
-        transformers.addTransformer(exception2ExceptionTransformer, false);
-
-        Array2ArrayTransformer array2ArrayTransformer = new Array2ArrayTransformer(registry);
-        transformers.addTransformer(array2ArrayTransformer, false);
-
-        Group2GroupTransformer group2GroupTransformer = new Group2GroupTransformer(registry);
-        transformers.addTransformer(group2GroupTransformer, false);
-        */
-
 //        dataBindings.addDataBinding(new CallableReferenceDataBinding());
 //        transformers.addTransformer(new CallableReference2XMLStreamReader(), true);
 //        transformers.addTransformer(new XMLStreamReader2CallableReference(), false);
