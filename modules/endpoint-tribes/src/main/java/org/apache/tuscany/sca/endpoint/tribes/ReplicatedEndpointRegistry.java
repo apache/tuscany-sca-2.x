@@ -22,10 +22,8 @@ package org.apache.tuscany.sca.endpoint.tribes;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
-import java.net.MalformedURLException;
 import java.net.NetworkInterface;
 import java.net.URI;
-import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -74,8 +72,8 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry, LifeCycleLi
 
     private ExtensionPointRegistry registry;
     private ReplicatedMap map;
-    private static List<URL> staticRoutes;
-    
+    private static List<URI> staticRoutes;
+
     private String id;
 
     private static final Channel createChannel(String address, int port, String bindAddress) {
@@ -106,14 +104,21 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry, LifeCycleLi
         this.registry = registry;
         this.domainURI = domainURI;
         this.id = "[" + System.identityHashCode(this) + "]";
-        getParameters(domainRegistryURI);
+        getParameters(attributes, domainRegistryURI);
     }
-    
-    private Map<String, String> getParameters(String domainRegistryURI) {
+
+    private Map<String, String> getParameters(Map<String, String> attributes, String domainRegistryURI) {
         Map<String, String> map = new HashMap<String, String>();
+        if (attributes != null) {
+            map.putAll(attributes);
+        }
         URI uri = URI.create(domainRegistryURI);
-        map.put("address", uri.getHost());
-        map.put("port", String.valueOf(uri.getPort()));
+        if (uri.getHost() != null) {
+            map.put("address", uri.getHost());
+        }
+        if (uri.getPort() != -1) {
+            map.put("port", String.valueOf(uri.getPort()));
+        }
         int index = domainRegistryURI.indexOf('?');
         if (index == -1) {
             setConfig(map);
@@ -157,13 +162,9 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry, LifeCycleLi
         String routesStr = attributes.get("routes");
         if (routesStr != null) {
             StringTokenizer st = new StringTokenizer(routesStr);
-            staticRoutes = new ArrayList<URL>();
+            staticRoutes = new ArrayList<URI>();
             while (st.hasMoreElements()) {
-                try {
-                    staticRoutes.add(new URL("http://" + st.nextToken()));
-                } catch (MalformedURLException e) {
-                    throw new RuntimeException(e);
-                }
+                staticRoutes.add(URI.create("tcp://" + st.nextToken()));
             }
         }
     }
@@ -179,7 +180,7 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry, LifeCycleLi
 
         if (staticRoutes != null) {
             StaticMembershipInterceptor smi = new StaticMembershipInterceptor();
-            for (URL staticRoute : staticRoutes) {
+            for (URI staticRoute : staticRoutes) {
                 Member member;
                 try {
                     member = new StaticMember(staticRoute.getHost(), staticRoute.getPort(), 5000);
@@ -192,13 +193,13 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry, LifeCycleLi
             smi.setLocalMember(map.getChannel().getLocalMember(false));
             map.getChannel().addInterceptor(smi);
         }
-        
+
         try {
             map.getChannel().start(Channel.DEFAULT);
         } catch (ChannelException e) {
             throw new IllegalStateException(e);
         }
-        
+
     }
 
     public void stop() {
@@ -338,7 +339,7 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry, LifeCycleLi
     public void removeListener(EndpointListener listener) {
         listeners.remove(listener);
     }
-    
+
     public void replicate(boolean complete) {
         map.replicate(complete);
     }
