@@ -19,14 +19,11 @@
 
 package org.apache.tuscany.sca.assembly.xml;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
-import java.util.Collection;
 
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -41,8 +38,6 @@ import org.apache.tuscany.sca.contribution.processor.ValidatingXMLInputFactory;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.monitor.Monitor;
-import org.apache.tuscany.sca.policy.PolicySet;
-import org.apache.tuscany.sca.policy.util.PolicyComputationUtils;
 
 /**
  * A composite processor.
@@ -51,8 +46,6 @@ import org.apache.tuscany.sca.policy.util.PolicyComputationUtils;
  */
 public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements URLArtifactProcessor<Composite> {
     private XMLInputFactory inputFactory;
-    private DocumentBuilderFactory documentBuilderFactory;
-    private Collection<PolicySet> domainPolicySets = null;
     private Monitor monitor;
 
     /**
@@ -66,7 +59,6 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
                                       Monitor monitor) {
         super(modelFactories, staxProcessor, monitor);
         this.inputFactory = modelFactories.getFactory(ValidatingXMLInputFactory.class);
-        this.documentBuilderFactory = modelFactories.getFactory(DocumentBuilderFactory.class);
         this.monitor = monitor;
     }
     
@@ -102,23 +94,6 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
             if( monitor != null ) {
             	monitor.setArtifactName(uri.toString());
             } //end if
-            
-            byte[] transformedArtifactContent;
-            try {
-                if ( domainPolicySets != null ) {
-                    transformedArtifactContent =
-                        PolicyComputationUtils.addApplicablePolicySets(scdlStream, domainPolicySets, documentBuilderFactory);
-                    scdlStream = new ByteArrayInputStream(transformedArtifactContent);
-                } 
-            } catch ( IOException e ) {
-            	ContributionReadException ce = new ContributionReadException("Exception reading " + uri, e);
-            	error("ContributionReadException", scdlStream, ce);
-            	throw ce;
-            } catch ( Exception e ) {
-            	ContributionReadException ce = new ContributionReadException("Exception reading " + uri, e);
-            	error("ContributionReadException", scdlStream, ce);
-                //throw ce;
-            }
             
             XMLStreamReader reader = inputFactory.createXMLStreamReader(scdlStream);
             

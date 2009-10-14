@@ -54,7 +54,6 @@ import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentMap;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.Qualifier;
-import org.apache.tuscany.sca.policy.impl.ImplementationTypeImpl;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -142,7 +141,7 @@ public class ReadDocumentTestCase {
                     } else if (artifact instanceof BindingType) {
                         BindingType bindingType = (BindingType)artifact;
                         bindingTypesTable.put(bindingType.getType(), bindingType);
-                    } else if (artifact instanceof ImplementationTypeImpl) {
+                    } else if (artifact instanceof ImplementationType) {
                         ImplementationType implType = (ImplementationType)artifact;
                         implTypesTable.put(implType.getType(), implType);
                     }
