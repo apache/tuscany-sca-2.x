@@ -130,6 +130,10 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Ba
         	throw new IllegalPropertyException("Static field " + field.getName() +" in class " + field.getDeclaringClass().getName() + " can not be annotated as a Property");
         }
 
+        if(Modifier.isFinal(field.getModifiers())) {
+            throw new IllegalPropertyException("Final field " + field.getName() +" in class " + field.getDeclaringClass().getName() + " can not be annotated as a Property");
+        }
+
         String name = getName(annotation);
         if (name == null) {
             name = "";
