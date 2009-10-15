@@ -25,6 +25,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -83,20 +85,28 @@ public class ServiceProcessor extends BaseJavaClassVisitor {
             }
             return;
         }
-        Class<?>[] interfaces = annotation.interfaces();
-        if (interfaces.length == 0) {
-            Class<?> interfaze = annotation.value();
-            if (Void.class.equals(interfaze)) {
-                //throw new IllegalServiceDefinitionException("No interfaces specified");
-                logger.warning("Ignoring @Service annotation.  No interfaces specified. class = "+clazz.getName());
-            } else {
-                interfaces = new Class<?>[1];
-                interfaces[0] = interfaze;
+        
+        if (annotation.value().length == 0) {
+            throw new IntrospectionException("JCA90059 The array of interfaces or classes specified by the value attribute of the @Service annotation MUST contain at least one element");
+        }
+        Class<?>[] interfaces = annotation.value();
+        if (annotation.names().length > 0) {
+            if (annotation.names().length != interfaces.length) {
+                throw new IntrospectionException("JCA90050 The number of Strings in the names attribute array of the @Service annotation MUST match the number of elements in the value attribute array");
+            }
+            Set<String> names = new HashSet<String>();
+            names.addAll(Arrays.asList(annotation.names()));
+            if (names.size() != annotation.names().length) {
+                throw new IntrospectionException("JCA90060 The value of each element in the @Service names array MUST be unique amongst all the other element values in the array");
             }
         }
-        for (Class<?> interfaze : interfaces) {
+        
+        for (int i=0; i < interfaces.length; i++) {
             try {
-                Service service = createService(interfaze);
+                Service service = createService(interfaces[i]);
+                if (annotation.names().length > 0) {
+                    service.setName(annotation.names()[i]);
+                }
                 type.getServices().add(service);
             } catch (InvalidInterfaceException e) {
                 throw new IntrospectionException(e);

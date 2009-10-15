@@ -304,7 +304,6 @@ public class HeuristicPojoProcessorTestCase extends AbstractProcessorTest {
         void operation1(String param1);
     }
 
-    @Service
     private interface PropertyNonRemotableInterface {
         void operation1(String param1);
     }
@@ -568,7 +567,7 @@ public class HeuristicPojoProcessorTestCase extends AbstractProcessorTest {
         void serviceOperation1();
     }
     
-    @Service
+    @Service(SomeWebService.class)
     private static class SomeWebServiceImpl implements SomeWebService {
         public SomeWebServiceImpl() {
             

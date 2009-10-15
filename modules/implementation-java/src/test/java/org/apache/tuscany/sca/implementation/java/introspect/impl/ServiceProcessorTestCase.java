@@ -20,12 +20,14 @@ package org.apache.tuscany.sca.implementation.java.introspect.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import javax.jws.WebService;
 
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
+import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
@@ -96,12 +98,44 @@ public class ServiceProcessorTestCase {
     }
 
     @Test
-    public void testNoInterfaces() throws Exception {
+    public void testMultiplenamedInterfaces() throws Exception {
+        processor.visitClass(FooMultipleNamed.class, type);
+        assertEquals(2, type.getServices().size());
+        org.apache.tuscany.sca.assembly.Service sbaz = type.getService("BazName");
+        assertNotNull(sbaz);
+        assertEquals(Baz.class, ((JavaInterface)sbaz.getInterfaceContract().getInterface()).getJavaClass());
+        org.apache.tuscany.sca.assembly.Service sbar = type.getService("BarName");
+        assertNotNull(sbar);
+        assertEquals(Bar.class, ((JavaInterface)sbar.getInterfaceContract().getInterface()).getJavaClass());
+    }
+
+    @Test
+    public void testBadService() throws Exception {
         try {
-            processor.visitClass(BadDefinition.class, type);
-        } catch (IllegalServiceDefinitionException e) {
-            //not expected
+            processor.visitClass(BadService.class, type);
             fail();
+        } catch (IntrospectionException e) {
+            assertTrue(e.getMessage().startsWith("JCA90059"));
+        }
+    }
+
+    @Test
+    public void testBadServiceNames() throws Exception {
+        try {
+            processor.visitClass(BadServiceNames.class, type);
+            fail();
+        } catch (IntrospectionException e) {
+            assertTrue(e.getMessage().startsWith("JCA90050"));
+        }
+    }
+
+    @Test
+    public void testBadServiceDuplicateNames() throws Exception {
+        try {
+            processor.visitClass(BadServiceDuplicateNames.class, type);
+            fail();
+        } catch (IntrospectionException e) {
+            assertTrue(e.getMessage().startsWith("JCA90060"));
         }
     }
 
@@ -130,7 +164,7 @@ public class ServiceProcessorTestCase {
     private interface BazRemotable {
     }
 
-    @Service(interfaces = {Baz.class, Bar.class})
+    @Service({Baz.class, Bar.class})
     private class FooMultiple implements Baz, Bar {
 
     }
@@ -160,10 +194,23 @@ public class ServiceProcessorTestCase {
 
     }
 
-
-    @Service()
-    private class BadDefinition extends FooSingle {
+    @Service(value={Baz.class, Bar.class}, names={"BazName", "BarName"})
+    private class FooMultipleNamed implements Baz, Bar {
 
     }
 
+    @Service(value={})
+    private class BadService implements Baz {
+
+    }
+
+    @Service(value={Baz.class, Bar.class}, names={"BazName"})
+    private class BadServiceNames implements Baz, Bar {
+
+    }
+
+    @Service(value={Baz.class, Bar.class}, names={"BazName", "BazName"})
+    private class BadServiceDuplicateNames implements Baz, Bar {
+
+    }
 }

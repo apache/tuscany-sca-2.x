@@ -288,7 +288,7 @@ public class PolicyProcessorTestCase {
         int method6();
     }
 
-    @Service(interfaces = {Interface1.class, Interface2.class})
+    @Service({Interface1.class, Interface2.class})
     private class Service2 implements Interface1, Interface2 {
         public int method1() {
             return 0;
@@ -353,7 +353,7 @@ public class PolicyProcessorTestCase {
         int method6();
     }
 
-    @Service(interfaces = {Interface3.class, Interface4.class})
+    @Service({Interface3.class, Interface4.class})
     @Requires( {"transaction.local"})
     private class Service4 implements Interface3, Interface4 {
         public int method1() {

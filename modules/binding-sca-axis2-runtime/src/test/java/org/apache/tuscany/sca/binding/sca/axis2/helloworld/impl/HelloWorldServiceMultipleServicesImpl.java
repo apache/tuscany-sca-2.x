@@ -24,7 +24,7 @@ import org.apache.tuscany.sca.binding.sca.axis2.helloworld.HelloWorldServiceRemo
 import org.apache.tuscany.sca.binding.sca.axis2.helloworld.HelloWorldServiceRemote2;
 import org.oasisopen.sca.annotation.Service;
 
-@Service(interfaces={HelloWorldServiceRemote.class, HelloWorldServiceRemote2.class, HelloWorldServiceLocal.class} )
+@Service({HelloWorldServiceRemote.class, HelloWorldServiceRemote2.class, HelloWorldServiceLocal.class} )
 public class HelloWorldServiceMultipleServicesImpl implements HelloWorldServiceLocal, HelloWorldServiceRemote, HelloWorldServiceRemote2  {
 
     public String getGreetingsLocal(String s) {

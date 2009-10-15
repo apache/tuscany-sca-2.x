@@ -1,37 +1,45 @@
 /*
- * (c) Copyright BEA Systems, Inc., Cape Clear Software, International Business Machines Corp, Interface21, IONA Technologies,
- * Oracle, Primeton Technologies, Progress Software, Red Hat, Rogue Wave Software, SAP AG., Siemens AG., Software AG., Sybase
- * Inc., TIBCO Software Inc., 2005, 2007. All rights reserved.
- * 
- * see http://www.osoa.org/display/Main/Service+Component+Architecture+Specifications
+ * Copyright(C) OASIS(R) 2005,2009. All Rights Reserved.
+ * OASIS trademark, IPR and other policies apply.
  */
 package org.oasisopen.sca.annotation;
 
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * Annotation used to indicate the service interfaces exposed by a Java class.
+ * The @Service annotation is used on a component implementation
+ * class to specify the SCA services offered by the implementation.
  *
- * @version $Rev$ $Date$
+ * The class need not be declared as implementing all of the
+ * interfaces implied by the services, but all methods of the service
+ * interfaces must be present.
+ *
+ * A class used as the implementation of a service is not required
+ * to have a @Service annotation.  If a class has no @Service annotation,
+ * then the rules determining which services are offered and what
+ * interfaces those services have are determined by the specific
+ * implementation type.
  */
-@Target({TYPE})
+@Target(TYPE)
 @Retention(RUNTIME)
 public @interface Service {
-    /**
-     * Array of interfaces that should be exposed as services.
-     *
-     * @return a list of interfaces that should be exposed as services
-     */
-    Class<?>[] interfaces() default {};
 
     /**
-     * Shortcut allowing a single interface to be exposed.
+     * The value is an array of interface or class objects that should be
+     * exposed as services by this component.
      *
-     * @return a single service interfaces to be exposed
+     * @return the services of this component
      */
-    Class<?> value() default Void.class;
+    Class<?>[] value();
+
+    /**
+     * The value is an array of strings which are used as the service names
+     * for each of the interfaces declared in the value array.
+     *
+     * @return the service names
+     */
+    String[] names() default {};
 }
