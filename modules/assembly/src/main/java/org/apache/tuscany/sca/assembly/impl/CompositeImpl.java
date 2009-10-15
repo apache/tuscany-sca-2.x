@@ -91,7 +91,7 @@ public class CompositeImpl extends ImplementationImpl implements Composite, Clon
         }
         
         // Clone the includes 
-        clone.includes = new ArrayList<Composite>(includes);
+        clone.includes = new ArrayList<Composite>();
         for (Composite included : getIncludes()) {
             clone.includes.add((Composite)included.clone());
         }
