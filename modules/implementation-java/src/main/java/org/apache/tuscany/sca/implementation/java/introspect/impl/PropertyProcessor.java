@@ -43,4 +43,8 @@ public class PropertyProcessor extends AbstractPropertyProcessor<Property> {
         property.setMustSupply(annotation.required());
     }
 
+    @Override
+    protected boolean getRequired(Property annotation) {
+        return annotation.required();
+    }
 }

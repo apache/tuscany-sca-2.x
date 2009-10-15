@@ -174,6 +174,10 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Ba
             if ("".equals(name)) {
                 name = parameter.getName();
             }
+            
+            if (!getRequired(annotation)) {
+                throw new InvalidPropertyException("JCA_90014 Constructor property must not have required=false: " + type.getName());
+            }
 
             JavaElementImpl prop = properties.get(name);
             // Setter override field
@@ -192,6 +196,7 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Ba
     }
 
     protected abstract String getName(A annotation);
+    protected abstract boolean getRequired(A annotation);
 
     protected abstract void initProperty(Property property, A annotation) throws IntrospectionException;
 

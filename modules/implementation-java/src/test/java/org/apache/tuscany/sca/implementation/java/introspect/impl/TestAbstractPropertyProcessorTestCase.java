@@ -142,6 +142,11 @@ public class TestAbstractPropertyProcessorTestCase {
         protected String getName(Bar annotation) {
             return "test";
         }
+
+        @Override
+        protected boolean getRequired(Bar annotation) {
+            return true;
+        }
     }
 
     private static class Foo {
