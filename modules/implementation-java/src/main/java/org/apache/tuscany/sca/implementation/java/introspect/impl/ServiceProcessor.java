@@ -102,6 +102,15 @@ public class ServiceProcessor extends BaseJavaClassVisitor {
             }
         }
 
+        //validate no scope on servce interface
+        for (Class<?> iface : interfaces) {
+            for (Annotation aaa : iface.getAnnotations()) {
+                if (iface.getAnnotation(org.oasisopen.sca.annotation.Scope.class) != null) {
+                    throw new IntrospectionException("JCA90041 @Scope annotation not allowed on service interface " + iface.getName());
+                }
+            }
+        }
+        
         //validate service methods implemented
         Method[] ms = clazz.getMethods();
         for (Class<?> iface : interfaces) {
