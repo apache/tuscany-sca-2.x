@@ -21,6 +21,8 @@ package org.apache.tuscany.sca.otest;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -29,7 +31,6 @@ import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
-import org.apache.tuscany.sca.node.impl.NodeImpl;
 
 import client.RuntimeBridge;
 import client.TestConfiguration;
@@ -145,6 +146,7 @@ public class TuscanyRuntimeBridge implements RuntimeBridge {
         String receivedMessage = ex.getMessage();
         
         if (expectedMessage == null){
+            writeMissingMessage(testName, ex);
             fail("Null expected error message for test " + testName + 
                  "Please add message to oasis-sca-tests-errors.properties");
         } // end if
@@ -154,6 +156,11 @@ public class TuscanyRuntimeBridge implements RuntimeBridge {
             fail("Null received error message for test " + testName);
         } // end if
         
+        if (expectedMessage.startsWith("*")) {
+            // allow using * to ignore a message comparison
+            return;
+        }
+
         // Deal with the case where the end of the message is variable (eg contains absolute filenames) 
         // and where the only relevant part is the start of the message - in this case the expected
         // message only contains the stem section which is unchanging...
@@ -162,10 +169,35 @@ public class TuscanyRuntimeBridge implements RuntimeBridge {
             receivedMessage = receivedMessage.substring(0, expectedMessage.length() );
         } // end if
         
+        if (!expectedMessage.equals(receivedMessage)) {
+            writeIncorrectMessage(testName, expectedMessage, receivedMessage);
+        }
+
         assertEquals( expectedMessage, receivedMessage );
         
         return;
        
+    }
+
+    protected void writeMissingMessage(String testName, Throwable ex) {
+        try {
+            BufferedWriter out = new BufferedWriter(new FileWriter("target/OTestMissingMsgs.txt", true));
+            out.write(testName + "=*");
+            out.newLine();
+            out.close();
+        } catch (IOException e) {
+        } 
+    }
+
+    protected void writeIncorrectMessage(String testName, String expected, String received) {
+        try {
+            BufferedWriter out = new BufferedWriter(new FileWriter("target/OTestIncorrectMsgs.txt", true));
+            out.write(testName); out.newLine();
+            out.write("    " + expected); out.newLine();
+            out.write("    " + received); out.newLine();
+            out.close();
+        } catch (IOException e) {
+        } 
     }
 
 } // end class TuscanyRuntimeBridge
