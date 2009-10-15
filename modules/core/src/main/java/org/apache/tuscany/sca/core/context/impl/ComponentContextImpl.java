@@ -135,6 +135,9 @@ public class ComponentContextImpl implements RuntimeComponentContext {
         } catch (ServiceRuntimeException e) {
             throw e;
         } catch (Exception e) {
+            if (e instanceof RuntimeException) {
+                throw (RuntimeException)e;
+            }
             throw new ServiceRuntimeException(e.getMessage(), e);
         }
     }
