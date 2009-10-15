@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.annotation.DataBinding;
 import org.apache.tuscany.sca.interfacedef.DataType;
@@ -42,9 +43,9 @@ import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceVisitor;
 public class DataBindingJavaInterfaceProcessor implements JavaInterfaceVisitor {
     private DataBindingExtensionPoint dataBindingRegistry;
 
-    public DataBindingJavaInterfaceProcessor(DataBindingExtensionPoint dataBindingRegistry) {
+    public DataBindingJavaInterfaceProcessor(ExtensionPointRegistry registry) {
         super();
-        this.dataBindingRegistry = dataBindingRegistry;
+        this.dataBindingRegistry = registry.getExtensionPoint(DataBindingExtensionPoint.class);
     }
 
     public void visitInterface(JavaInterface javaInterface) throws InvalidInterfaceException {

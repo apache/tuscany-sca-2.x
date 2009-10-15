@@ -61,14 +61,20 @@ public class JavaInterfaceIntrospectorImpl {
 
     private static final String UNKNOWN_DATABINDING = null;
 
+    private JavaInterfaceFactory javaFactory = null;
     private List<JavaInterfaceVisitor> visitors = new ArrayList<JavaInterfaceVisitor>();
+    private boolean loadedVisitors;
 
     public JavaInterfaceIntrospectorImpl(JavaInterfaceFactory javaFactory) {
-        this.visitors = javaFactory.getInterfaceVisitors();
+        this.javaFactory = javaFactory;
     }
 
-    public void introspectInterface(JavaInterface javaInterface, Class<?> clazz)
-        throws InvalidInterfaceException {
+    public void introspectInterface(JavaInterface javaInterface, Class<?> clazz) throws InvalidInterfaceException {
+        
+        if(!loadedVisitors) {
+            this.visitors = javaFactory.getInterfaceVisitors();
+        }
+        
         javaInterface.setJavaClass(clazz);
 
         boolean remotable = clazz.isAnnotationPresent(Remotable.class);

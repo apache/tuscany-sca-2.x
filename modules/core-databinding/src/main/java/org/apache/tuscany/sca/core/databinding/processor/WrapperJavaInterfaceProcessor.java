@@ -24,6 +24,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.WrapperHandler;
 import org.apache.tuscany.sca.databinding.javabeans.JavaBeansDataBinding;
@@ -44,9 +45,9 @@ public class WrapperJavaInterfaceProcessor implements JavaInterfaceVisitor {
     private static final String JAXB_DATABINDING = "javax.xml.bind.JAXBElement";
     private DataBindingExtensionPoint dataBindingRegistry;
 
-    public WrapperJavaInterfaceProcessor(DataBindingExtensionPoint dataBindingRegistry) {
+    public WrapperJavaInterfaceProcessor(ExtensionPointRegistry registry) {
         super();
-        this.dataBindingRegistry = dataBindingRegistry;
+        this.dataBindingRegistry = registry.getExtensionPoint(DataBindingExtensionPoint.class);
     }
 
     public void visitInterface(JavaInterface javaInterface) throws InvalidInterfaceException {

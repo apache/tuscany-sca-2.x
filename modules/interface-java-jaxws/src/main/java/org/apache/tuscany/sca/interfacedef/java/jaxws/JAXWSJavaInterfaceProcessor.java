@@ -78,6 +78,7 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
         xmlAdapterExtensionPoint = registry.getExtensionPoint(XMLAdapterExtensionPoint.class);
     }
     
+    
     public JAXWSJavaInterfaceProcessor(DataBindingExtensionPoint dataBindingExtensionPoint,
                                        FaultExceptionMapper faultExceptionMapper,
                                        XMLAdapterExtensionPoint xmlAdapters) {

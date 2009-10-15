@@ -52,11 +52,11 @@ public class Interface2WSDLGeneratorTestCase {
     public void testGenerate() throws Exception {
         JavaInterfaceFactory iFactory = new DefaultJavaInterfaceFactory();
         JavaInterface iface = iFactory.createJavaInterface(TestJavaInterface.class);
+        ExtensionPointRegistry registry = new DefaultExtensionPointRegistry();
         DefaultDataBindingExtensionPoint dataBindings = new DefaultDataBindingExtensionPoint(new DefaultExtensionPointRegistry());
         JAXWSFaultExceptionMapper faultExceptionMapper = new JAXWSFaultExceptionMapper(dataBindings, null);
         new JAXWSJavaInterfaceProcessor(dataBindings, faultExceptionMapper, null).visitInterface(iface);
-        new DataBindingJavaInterfaceProcessor(dataBindings).visitInterface(iface);
-        ExtensionPointRegistry registry = new DefaultExtensionPointRegistry();
+        new DataBindingJavaInterfaceProcessor(registry).visitInterface(iface);
         DefaultFactoryExtensionPoint modelFactories = new DefaultFactoryExtensionPoint(registry);
         WSDLFactory wFactory = new DefaultWSDLFactory(registry);
         DocumentBuilderFactory documentBuilderFactory = modelFactories.getFactory(DocumentBuilderFactory.class);
