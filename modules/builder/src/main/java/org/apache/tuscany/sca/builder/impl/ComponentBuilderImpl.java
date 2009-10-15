@@ -58,6 +58,7 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.definitions.Definitions;
+import org.apache.tuscany.sca.interfacedef.IncompatibleInterfaceContractException;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
@@ -193,7 +194,7 @@ public class ComponentBuilderImpl {
             }
 
             // interface contracts
-            calculateInterfaceContract(component, componentService, componentTypeService);
+            calculateServiceInterfaceContract(component, componentService, componentTypeService);
 
             // bindings
             calculateBindings(componentService, componentTypeService);
@@ -243,7 +244,7 @@ public class ComponentBuilderImpl {
             reconcileReferenceMultiplicity(component, componentReference, componentTypeReference);
 
             // interface contracts
-            calculateInterfaceContract(component, componentReference, componentTypeReference);
+            calculateReferenceInterfaceContract(component, componentReference, componentTypeReference);
 
             // bindings
             calculateBindings(componentReference, componentTypeReference);
@@ -1072,18 +1073,17 @@ public class ComponentBuilderImpl {
         }
     }
 
-    /**
-     * The following methods implement rules that the OASIS specification defined explicitly
-     * to control how configuration from a component type is inherited by a component
-     */
 
     /**
-     * OASIS RULE: Interface contract from higher in the implementation hierarchy takes precedence
+     * Interface contract from higher in the implementation hierarchy takes precedence
+     * When it comes to checking compatibility the top level service interface is a 
+     * subset of the promoted service interface so treat the top level interface as
+     * the source
      * 
      * @param topContract the top contract 
      * @param bottomContract the bottom contract
      */
-    private void calculateInterfaceContract(Component component, Contract topContract, Contract bottomContract) {
+    private void calculateServiceInterfaceContract(Component component, Service topContract, Service bottomContract) {
 
         // Use the interface contract from the bottom level contract if
         // none is specified on the top level contract
@@ -1094,29 +1094,68 @@ public class ComponentBuilderImpl {
             topContract.setInterfaceContract(bottomInterfaceContract);
         } else if (bottomInterfaceContract != null) {
             // Check that the top and bottom interface contracts are compatible
-            boolean isCompatible = interfaceContractMapper.isCompatible(bottomInterfaceContract, topInterfaceContract);
+            boolean isCompatible = true;
+            String incompatibilityReason = "";
+            try{
+                isCompatible = interfaceContractMapper.checkCompatibility(topInterfaceContract, bottomInterfaceContract, false, false);
+            } catch (IncompatibleInterfaceContractException ex){
+                isCompatible = false;
+                incompatibilityReason = ex.getMessage();
+            }            
             if (!isCompatible) {
-                if (topContract instanceof Reference) {
-                    Monitor.error(monitor,
-                                  this,
-                                  Messages.ASSEMBLY_VALIDATION,
-                                  "ReferenceIncompatibleComponentInterface",
-                                  component.getName(),
-                                  topContract.getName());
-                } else {
-                    Monitor.error(monitor,
-                                  this,
-                                  Messages.ASSEMBLY_VALIDATION,
-                                  "ServiceIncompatibleComponentInterface",
-                                  component.getName(),
-                                  topContract.getName());
-                }
+                Monitor.error(monitor,
+                              this,
+                              Messages.ASSEMBLY_VALIDATION,
+                              "ServiceIncompatibleComponentInterface",
+                              component.getName(),
+                              topContract.getName(),
+                              incompatibilityReason);
             }
         }
     }
+    
+    /**
+     * Interface contract from higher in the implementation hierarchy takes precedence
+     * When it comes to checking compatibility the top level reference interface is a 
+     * superset of the promoted reference interface so treat the treat the promoted
+     * (bottom) interface as the source    
+     * 
+     * @param topContract the top contract 
+     * @param bottomContract the bottom contract
+     */
+    private void calculateReferenceInterfaceContract(Component component, Reference topContract, Reference bottomContract) {
+
+        // Use the interface contract from the bottom level contract if
+        // none is specified on the top level contract
+        InterfaceContract topInterfaceContract = topContract.getInterfaceContract();
+        InterfaceContract bottomInterfaceContract = bottomContract.getInterfaceContract();
+
+        if (topInterfaceContract == null) {
+            topContract.setInterfaceContract(bottomInterfaceContract);
+        } else if (bottomInterfaceContract != null) {
+            // Check that the top and bottom interface contracts are compatible
+            boolean isCompatible = true;
+            String incompatibilityReason = "";
+            try{
+                isCompatible = interfaceContractMapper.checkCompatibility(bottomInterfaceContract, topInterfaceContract, false, false);
+            } catch (IncompatibleInterfaceContractException ex){
+                isCompatible = false;
+                incompatibilityReason = ex.getMessage();
+            }            
+            if (!isCompatible) {
+                Monitor.error(monitor,
+                              this,
+                              Messages.ASSEMBLY_VALIDATION,
+                              "ReferenceIncompatibleComponentInterface",
+                              component.getName(),
+                              topContract.getName(),
+                              incompatibilityReason);
+            }
+        }
+    }    
 
     /**
-     * OASIS RULE: Bindings from higher in the hierarchy take precedence
+     * Bindings from higher in the hierarchy take precedence
      * 
      * @param componentService the top service 
      * @param componentTypeService the bottom service
@@ -1145,7 +1184,7 @@ public class ComponentBuilderImpl {
     }
     
     /**
-     * OASIS RULE: Bindings from higher in the hierarchy take precedence
+     * Bindings from higher in the hierarchy take precedence
      * 
      * @param componentReference the top service 
      * @param componentTypeReference the bottom service

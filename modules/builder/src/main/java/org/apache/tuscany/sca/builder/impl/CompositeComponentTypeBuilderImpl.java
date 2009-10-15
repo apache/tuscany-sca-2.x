@@ -45,6 +45,7 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.definitions.Definitions;
+import org.apache.tuscany.sca.interfacedef.IncompatibleInterfaceContractException;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
@@ -228,7 +229,7 @@ public class CompositeComponentTypeBuilderImpl {
             ComponentService promotedComponentService = compositeService.getPromotedService();
 
             // promote interface contracts
-            calculatePromotedInterfaceContract(compositeService, promotedComponentService);
+            calculatePromotedServiceInterfaceContract(compositeService, promotedComponentService);
 
             // promote bindings
             calculatePromotedBindings(compositeService, promotedComponentService);
@@ -265,7 +266,7 @@ public class CompositeComponentTypeBuilderImpl {
             for (ComponentReference promotedComponentReference : promotedReferences) {
 
                 // promote interface contracts
-                calculatePromotedInterfaceContract(compositeReference, promotedComponentReference);
+                calculatePromotedReferenceInterfaceContract(compositeReference, promotedComponentReference);
 
                 // promote bindings
                 // Don't need to promote reference bindings as any lower level binding will
@@ -408,12 +409,15 @@ public class CompositeComponentTypeBuilderImpl {
      */
 
     /**
-     * OASIS RULE: Interface contract from higher in the implementation hierarchy takes precedence
+     * Interface contract from higher in the implementation hierarchy takes precedence. 
+     * When it comes to checking compatibility the top level service interface is a 
+     * subset of the promoted service interface so treat the top level interface as
+     * the source
      * 
      * @param topContract the top contract 
      * @param bottomContract the bottom contract
      */
-    private void calculatePromotedInterfaceContract(Contract topContract, Contract bottomContract) {
+    private void calculatePromotedServiceInterfaceContract(Service topContract, Service bottomContract) {
         // Use the interface contract from the bottom level contract if
         // none is specified on the top level contract
         InterfaceContract topInterfaceContract = topContract.getInterfaceContract();
@@ -423,27 +427,65 @@ public class CompositeComponentTypeBuilderImpl {
             topContract.setInterfaceContract(bottomInterfaceContract);
         } else if (bottomInterfaceContract != null) {
             // Check that the top and bottom interface contracts are compatible
-            boolean isCompatible = interfaceContractMapper.isCompatible(topInterfaceContract, bottomInterfaceContract);
+            boolean isCompatible = true;
+            String incompatibilityReason = "";
+            try{
+                isCompatible = interfaceContractMapper.checkCompatibility(topInterfaceContract, bottomInterfaceContract, false, false);
+            } catch (IncompatibleInterfaceContractException ex){
+                isCompatible = false;
+                incompatibilityReason = ex.getMessage();
+            }
             if (!isCompatible) {
-                if (topContract instanceof Reference) {
-                    Monitor.error(monitor,
-                                  this,
-                                  Messages.ASSEMBLY_VALIDATION,
-                                  "ReferenceInterfaceNotSubSet",
-                                  topContract.getName());
-                } else {
-                    Monitor.error(monitor,
-                                  this,
-                                  Messages.ASSEMBLY_VALIDATION,
-                                  "ServiceInterfaceNotSubSet",
-                                  topContract.getName());
-                }
+                Monitor.error(monitor,
+                              this,
+                              Messages.ASSEMBLY_VALIDATION,
+                              "ServiceInterfaceNotSubSet",
+                              topContract.getName(),
+                              incompatibilityReason);
             }
         }
     }
+    
+    /**
+     * Interface contract from higher in the implementation hierarchy takes precedence. 
+     * When it comes to checking compatibility the top level reference interface is a 
+     * superset of the promoted reference interface so treat the treat the promoted
+     * (bottom) interface as the source
+     * 
+     * @param topContract the top contract 
+     * @param bottomContract the bottom contract
+     */    
+    private void calculatePromotedReferenceInterfaceContract(Reference topContract, Reference bottomContract) {
+        // Use the interface contract from the bottom level contract if
+        // none is specified on the top level contract
+        InterfaceContract topInterfaceContract = topContract.getInterfaceContract();
+        InterfaceContract bottomInterfaceContract = bottomContract.getInterfaceContract();
+
+        if (topInterfaceContract == null) {
+            topContract.setInterfaceContract(bottomInterfaceContract);
+        } else if (bottomInterfaceContract != null) {
+            // Check that the top and bottom interface contracts are compatible
+            boolean isCompatible = true;
+            String incompatibilityReason = "";
+            try{
+                isCompatible = interfaceContractMapper.checkCompatibility(bottomInterfaceContract, topInterfaceContract, false, false);
+            } catch (IncompatibleInterfaceContractException ex){
+                isCompatible = false;
+                incompatibilityReason = ex.getMessage();
+            }
+            if (!isCompatible) {
+                Monitor.error(monitor,
+                              this,
+                              Messages.ASSEMBLY_VALIDATION,
+                              "ReferenceInterfaceNotSubSet",
+                              topContract.getName(),
+                              incompatibilityReason);
+            }
+        }
+    }    
 
     /**
-     * OASIS RULE: Bindings from higher in the implementation hierarchy take precedence
+     * Bindings from higher in the implementation hierarchy take precedence
      * 
      * @param compositeService
      * @param promotedComponentService
