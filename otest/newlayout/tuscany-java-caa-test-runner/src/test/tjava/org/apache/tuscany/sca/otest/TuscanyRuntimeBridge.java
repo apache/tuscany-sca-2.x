@@ -182,7 +182,7 @@ public class TuscanyRuntimeBridge implements RuntimeBridge {
     protected void writeMissingMessage(String testName, Throwable ex) {
         try {
             BufferedWriter out = new BufferedWriter(new FileWriter("target/OTestMissingMsgs.txt", true));
-            out.write(testName + "=*");
+            out.write(testName + "=* " + ex.getMessage());
             out.newLine();
             out.close();
         } catch (IOException e) {
