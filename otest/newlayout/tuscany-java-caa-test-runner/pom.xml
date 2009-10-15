@@ -160,6 +160,11 @@
                                     <property name="to.file" value="src/test/java/client/TuscanyRuntimeBridge.java"/>
                                     <target name="copyFile"/>
                                 </ant>
+                                <ant antfile="../build.xml">
+                                    <property name="from.file" value="../sca-assembly/Test_Client/src/main/resources/TestClient.wsdl"/>
+                                    <property name="to.file" value="src/main/resources/TestClient.wsdl"/>
+                                    <target name="copyFile"/>
+                                </ant>
                             </tasks>
                         </configuration>
                     </execution>
