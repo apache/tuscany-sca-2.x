@@ -28,18 +28,18 @@
     <wsdl:types>
         <schema elementFormDefault="qualified" targetNamespace="http://greetings" xmlns="http://www.w3.org/2001/XMLSchema">
 
-            <element name="getGreetings">
+            <element name="greetings">
                 <complexType>
                     <sequence>
-                        <element name="name" type="xsd:string"/>
+                        <element name="greetings" type="xsd:string"/>
                     </sequence>
                 </complexType>
             </element>
 
-            <element name="getGreetingsResponse">
+            <element name="greetingsResponse">
                 <complexType>
                     <sequence>
-                        <element name="getGreetingsReturn" type="xsd:string"/>
+                        <element name="greetingsResponse" type="xsd:string"/>
                     </sequence>
                 </complexType>
             </element>
@@ -47,18 +47,18 @@
         </schema>
     </wsdl:types>
 
-    <wsdl:message name="getGreetingsRequest">
-        <wsdl:part element="tns:getGreetings" name="parameters"/>
+    <wsdl:message name="GreetingsRequest">
+        <wsdl:part element="tns:greetings" name="request"/>
     </wsdl:message>
 
-    <wsdl:message name="getGreetingsResponse">
-        <wsdl:part element="tns:getGreetingsResponse" name="parameters"/>
+    <wsdl:message name="GreetingsResponse">
+        <wsdl:part element="tns:greetingsResponse" name="response"/>
     </wsdl:message>
 
     <wsdl:portType name="Greetings">
         <wsdl:operation name="getGreetings">
-            <wsdl:input message="tns:getGreetingsRequest" name="getGreetingsRequest"/>
-            <wsdl:output message="tns:getGreetingsResponse" name="getGreetingsResponse"/>
+            <wsdl:input message="tns:GreetingsRequest" name="GreetingsRequest"/>
+            <wsdl:output message="tns:GreetingsResponse" name="GreetingsResponse"/>
         </wsdl:operation>
     </wsdl:portType>
 
@@ -66,10 +66,10 @@
         <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
         <wsdl:operation name="getGreetings">
             <wsdlsoap:operation soapAction=""/>
-            <wsdl:input name="getGreetingsRequest">
+            <wsdl:input name="GreetingsRequest">
                 <wsdlsoap:body use="literal"/>
             </wsdl:input>
-            <wsdl:output name="getGreetingsResponse">
+            <wsdl:output name="GreetingsResponse">
                 <wsdlsoap:body use="literal"/>
             </wsdl:output>
         </wsdl:operation>
@@ -77,7 +77,7 @@
 
     <wsdl:service name="GreetingsService">
         <wsdl:port name="GreetingsSoapPort" binding="tns:GreetingsSoapBinding">
-            <wsdlsoap:address location="http://localhost:8085/GreetingsServiceComponent"/>
+            <wsdlsoap:address location="http://localhost:8085/ode/processes/greetings"/>
         </wsdl:port>
     </wsdl:service>
 

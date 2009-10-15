@@ -48,7 +48,8 @@
                         <element name="messageResponse" type="xsd:string"/>
                     </sequence>
                 </complexType>
-            </element>                          </schema>
+            </element>                          
+        </schema>
     </wsdl:types>
     
     <wsdl:message name="HelloMessage">

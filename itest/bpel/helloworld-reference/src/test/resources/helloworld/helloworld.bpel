@@ -41,8 +41,8 @@
    <variables>
      <variable name="helloMessage" messageType="helloworld:HelloMessage"/>
      <variable name="helloMessageResponse" messageType="helloworld:HelloMessageResponse"/>
-     <variable name="greetingsRequest" messageType="greetings:getGreetingsRequest"/>
-     <variable name="greetingsResponse" messageType="greetings:getGreetingsResponse"/>
+     <variable name="greetingsRequest" messageType="greetings:GreetingsRequest"/>
+     <variable name="greetingsResponse" messageType="greetings:GreetingsResponse"/>
    </variables>
 
    <sequence>
@@ -57,7 +57,7 @@
        <assign name="assignToGreetingsRequest">
           <copy>
               <from>$helloMessage.TestPart</from>
-              <to>$greetingsRequest.parameters</to>
+              <to>$greetingsRequest.request</to>
           </copy>
        </assign>
 
@@ -70,7 +70,7 @@
 
        <assign name="assignToHelloResponse">
           <copy>
-              <from>$greetingsResponse.parameters/greetings:getGreetingsReturn</from>
+              <from>$greetingsResponse.parameters/greetings:GreetingsResponse</from>
               <to>$helloMessageResponse.TestPart</to>
           </copy>
        </assign>
