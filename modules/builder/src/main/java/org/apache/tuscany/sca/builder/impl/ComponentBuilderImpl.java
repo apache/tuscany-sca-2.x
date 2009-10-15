@@ -121,8 +121,13 @@ public class ComponentBuilderImpl {
             // do any work we need to do before we calculate the component type
             // for this component. Anything that needs to be pushed down the promotion
             // hierarchy must be done before we calculate the component type
+            
+            // check that the implementation is present
+            if (!isComponentImplementationPresent(component)){
+                return;
+            }
     
-            // first carry out any implementation specific builder processing
+            // carry out any implementation specific builder processing
             Implementation impl = component.getImplementation();
             if (impl != null) {
                 ImplementationBuilder builder = builders.getImplementationBuilder(impl.getType());
@@ -150,6 +155,38 @@ public class ComponentBuilderImpl {
         } finally {
             monitor.popContext();
         }         
+    }
+    
+    /**
+     * Checks that a component implementation is present and resolved 
+     * before doing anything else
+     * 
+     * @param component
+     * @return true if the implementation is present and resolved
+     */
+    private boolean isComponentImplementationPresent(Component component){
+        Implementation implementation = component.getImplementation();
+        if (implementation == null) {
+            // A component must have an implementation
+            Monitor.error(monitor, 
+                          this, 
+                          Messages.ASSEMBLY_VALIDATION, 
+                          "NoComponentImplementation", 
+                          component.getName());
+            return false;
+        } else if (implementation.isUnresolved()) {
+            // The implementation must be fully resolved
+            Monitor.error(monitor, 
+                          this, 
+                          Messages.ASSEMBLY_VALIDATION,
+                          "UnresolvedComponentImplementation", 
+                          component, 
+                          component.getName(), 
+                          implementation.getURI());
+            return false;
+        }        
+        
+        return true;
     }
 
     /**
