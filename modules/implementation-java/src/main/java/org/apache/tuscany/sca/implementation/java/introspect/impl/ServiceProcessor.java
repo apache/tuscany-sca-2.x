@@ -20,6 +20,7 @@ package org.apache.tuscany.sca.implementation.java.introspect.impl;
 
 import static org.apache.tuscany.sca.implementation.java.introspect.JavaIntrospectionHelper.getAllInterfaces;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -100,6 +101,16 @@ public class ServiceProcessor extends BaseJavaClassVisitor {
                 throw new IntrospectionException("JCA90060 The value of each element in the @Service names array MUST be unique amongst all the other element values in the array");
             }
         }
+
+        //validate service methods implemented
+        Method[] ms = clazz.getMethods();
+        for (Class<?> iface : interfaces) {
+            for (Method m : iface.getMethods()) {
+                if (!hasMethod(m, ms)) {
+                    throw new IntrospectionException("JCA???? Implementation missing service method " + m.getName() + " service interface " + iface.getName());
+                }
+            }
+        }
         
         for (int i=0; i < interfaces.length; i++) {
             try {
@@ -112,6 +123,15 @@ public class ServiceProcessor extends BaseJavaClassVisitor {
                 throw new IntrospectionException(e);
             }
         }
+    }
+
+    protected boolean hasMethod(Method m1, Method[] ms) {
+        for (Method m2 : ms) {
+            if (JavaIntrospectionHelper.exactMethodMatch(m1, m2)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
