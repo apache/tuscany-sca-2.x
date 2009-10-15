@@ -28,7 +28,7 @@ import org.oasisopen.sca.annotation.Service;
  * 
  * @version $Rev$ $Date$
  */
-@Service(interfaces={Service3.class, Service3a.class})
+@Service({Service3.class, Service3a.class})
 public class ComponentDReferenceMultiplicityImpl implements Service3, Service3a {
 
     @Reference

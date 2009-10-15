@@ -26,7 +26,7 @@ import org.oasisopen.sca.annotation.Service;
  * 
  * @version $Rev$ $Date$
  */
-@Service(interfaces={Service3.class})
+@Service({Service3.class})
 public class ComponentEImpl implements Service3 {
 
 

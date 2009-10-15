@@ -21,7 +21,7 @@ package org.apache.tuscany.sca.itest.services;
 
 import org.oasisopen.sca.annotation.Service;
 
-@Service(interfaces = {DComponent.class, D1Component.class})
+@Service({DComponent.class, D1Component.class})
 public class DComponentImpl implements DComponent, D1Component {
 
     public String foo() {
