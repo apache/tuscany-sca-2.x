@@ -21,6 +21,12 @@ package org.apache.tuscany.sca.interfacedef.java.xml;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.List;
+
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -40,6 +46,20 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
+import org.oasisopen.sca.annotation.AllowsPassByReference;
+import org.oasisopen.sca.annotation.Callback;
+import org.oasisopen.sca.annotation.ComponentName;
+import org.oasisopen.sca.annotation.Constructor;
+import org.oasisopen.sca.annotation.Context;
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Intent;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Qualifier;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Scope;
+import org.oasisopen.sca.annotation.Service;
 
 /**
  *
@@ -179,7 +199,7 @@ public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfa
         }
         return javaInterface;
     }
-    
+
     public void resolve(JavaInterfaceContract javaInterfaceContract, ModelResolver resolver) throws ContributionResolveException {
         try {
 	        // Resolve the interface and callback interface
@@ -188,11 +208,112 @@ public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfa
 	        
 	        JavaInterface javaCallbackInterface = resolveJavaInterface((JavaInterface)javaInterfaceContract.getCallbackInterface(), resolver);
 	        javaInterfaceContract.setCallbackInterface(javaCallbackInterface);
+	        
+	        checkForbiddenAnnotations(javaInterfaceContract);
+	        
         } catch (Exception e) {
         	throw new ContributionResolveException( "Resolving Java Interface " + javaInterfaceContract.getInterface().toString(), e );
         } // end try
     }
     
+    private static List<Class<?>> JCA30006_ANNOTATIONS =
+        Arrays.asList(new Class<?>[] {AllowsPassByReference.class, ComponentName.class, Constructor.class, Context.class,
+                                   Destroy.class, EagerInit.class, Init.class, Intent.class, Property.class, Qualifier.class,
+                                   Reference.class, Scope.class, Service.class});
+    private static List<Class<?>> JCA30007_ANNOTATIONS =
+        Arrays.asList(new Class<?>[] {AllowsPassByReference.class, Callback.class, ComponentName.class, Constructor.class,
+                                   Context.class, Destroy.class, EagerInit.class, Init.class, Intent.class,
+                                   Property.class, Qualifier.class, Reference.class, Scope.class, Service.class}); 
+    private static List<Class<?>> JCA30008_ANNOTATIONS = Arrays.asList(new Class<?>[] {Intent.class, Qualifier.class}); 
+    
+    private void checkForbiddenAnnotations(JavaInterfaceContract javaInterfaceContract) {
+        if (javaInterfaceContract.getInterface() != null) {
+            Class<?> ifc = ((JavaInterface) javaInterfaceContract.getInterface()).getJavaClass();
+            if (ifc != null) {
+                for (Annotation a : ifc.getAnnotations()) {
+                    if (ifc.isInterface()) {
+                        if (JCA30006_ANNOTATIONS.contains(a.annotationType())) {
+                            error("ForbiddenAnnotationJCA30006", javaInterfaceContract, a.annotationType(), ifc.getName());
+                        }
+                    } else {
+                        if (JCA30008_ANNOTATIONS.contains(a.annotationType())) {
+                            error("ForbiddenAnnotationJCA30008", javaInterfaceContract, a.annotationType(), ifc.getName());
+                        }
+                    }
+                }
+            }
+            for (Method m : ifc.getMethods()) {
+                for (Annotation a : m.getAnnotations()) {
+                    if (ifc.isInterface()) {
+                        if (JCA30006_ANNOTATIONS.contains(a.annotationType())) {
+                            error("ForbiddenAnnotationJCA30006", javaInterfaceContract, a.annotationType(), ifc.getName());
+                        }
+                    } else {
+                        if (JCA30008_ANNOTATIONS.contains(a.annotationType())) {
+                            error("ForbiddenAnnotationJCA30008", javaInterfaceContract, a.annotationType(), ifc.getName());
+                        }
+                    }
+                }
+            }
+            for (Field f : ifc.getFields()) {
+                for (Annotation a : f.getAnnotations()) {
+                    if (ifc.isInterface()) {
+                        if (JCA30006_ANNOTATIONS.contains(a.annotationType())) {
+                            error("ForbiddenAnnotationJCA30006", javaInterfaceContract, a.annotationType(), ifc.getName());
+                        }
+                    } else {
+                        if (JCA30008_ANNOTATIONS.contains(a.annotationType())) {
+                            error("ForbiddenAnnotationJCA30008", javaInterfaceContract, a.annotationType(), ifc.getName());
+                        }
+                    }
+                }
+            }
+        }
+        
+        if (javaInterfaceContract.getCallbackInterface() != null) {
+            Class<?> ifc = ((JavaInterface) javaInterfaceContract.getCallbackInterface()).getJavaClass();
+            if (ifc != null) {
+                for (Annotation a : ifc.getAnnotations()) {
+                    if (ifc.isInterface()) {
+                        if (JCA30007_ANNOTATIONS.contains(a.annotationType())) {
+                            error("ForbiddenAnnotationJCA30007", javaInterfaceContract, a.annotationType(), ifc.getName());
+                        }
+                    } else {
+                        if (JCA30008_ANNOTATIONS.contains(a.annotationType())) {
+                            error("ForbiddenAnnotationJCA30008", javaInterfaceContract, a.annotationType(), ifc.getName());
+                        }
+                    }
+                }
+            }
+            for (Method m : ifc.getMethods()) {
+                for (Annotation a : m.getAnnotations()) {
+                    if (ifc.isInterface()) {
+                        if (JCA30007_ANNOTATIONS.contains(a.annotationType())) {
+                            error("ForbiddenAnnotationJCA30007", javaInterfaceContract, a.annotationType(), ifc.getName());
+                        }
+                    } else {
+                        if (JCA30008_ANNOTATIONS.contains(a.annotationType())) {
+                            error("ForbiddenAnnotationJCA30008", javaInterfaceContract, a.annotationType(), ifc.getName());
+                        }
+                    }
+                }
+            }
+            for (Field f : ifc.getFields()) {
+                for (Annotation a : f.getAnnotations()) {
+                    if (ifc.isInterface()) {
+                        if (JCA30007_ANNOTATIONS.contains(a.annotationType())) {
+                            error("ForbiddenAnnotationJCA30007", javaInterfaceContract, a.annotationType(), ifc.getName());
+                        }
+                    } else {
+                        if (JCA30008_ANNOTATIONS.contains(a.annotationType())) {
+                            error("ForbiddenAnnotationJCA30008", javaInterfaceContract, a.annotationType(), ifc.getName());
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     public QName getArtifactType() {
         return INTERFACE_JAVA_QNAME;
     }
