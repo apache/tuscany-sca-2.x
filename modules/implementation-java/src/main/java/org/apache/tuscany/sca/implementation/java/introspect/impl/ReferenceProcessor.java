@@ -137,6 +137,11 @@ public class ReferenceProcessor extends BaseJavaClassVisitor {
         if (refAnnotation == null) {
             return;
         }
+        
+        if (!refAnnotation.required()) {
+            throw new InvalidReferenceException("JCA90016 Constructor has @Reference with required=false: " + type.getName());
+        }
+        
         String paramName = parameter.getName();
         String name = getReferenceName(paramName, parameter.getIndex(), refAnnotation.name());
         JavaElementImpl ref = type.getReferenceMembers().get(name);
