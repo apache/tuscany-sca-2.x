@@ -127,7 +127,7 @@ public class ConstructorProcessorTestCase {
 
     private static class Foo {
         @org.oasisopen.sca.annotation.Constructor("foo")
-        public Foo(String foo) {
+        public Foo(@Property String foo) {
 
         }
     }

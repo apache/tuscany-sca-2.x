@@ -26,6 +26,8 @@ import org.apache.tuscany.sca.implementation.java.JavaConstructorImpl;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaParameterImpl;
 import org.apache.tuscany.sca.implementation.java.introspect.BaseJavaClassVisitor;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Handles processing of a constructor decorated with
@@ -76,9 +78,30 @@ public class ConstructorProcessor extends BaseJavaClassVisitor {
         if (!isDefault && value.length != parameters.length) {
             throw new InvalidConstructorException("Invalid Number of names in @Constructor");
         }
+        
+        for (JavaParameterImpl p : parameters) {
+            if (!hasAnnotation(p)) {
+                throw new InvalidConstructorException("JCA90003 constructor parameters must have @Property or @Reference annotation");
+            }
+        }
+
         for (int i = 0; i < parameters.length; i++) {
             parameters[i].setName(i < value.length ? value[i] : "");
         }
         type.setConstructor(definition);
+    }
+
+    private boolean hasAnnotation(JavaParameterImpl p) {
+        if (p.getAnnotations() != null && p.getAnnotations().length > 0) {
+            return true;
+        }
+// TODO: need to verify JCA90003 as it seems like any annotation should be ok not just SCA ref or prop        
+//        if (p.getAnnotation(Reference.class) != null) {
+//            return true;
+//        }
+//        if (p.getAnnotation(Property.class) != null) {
+//            return true;
+//        }
+        return false;
     }
 }
