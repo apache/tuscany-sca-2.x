@@ -82,8 +82,12 @@ public class ConstructorReferenceTestCase extends AbstractProcessorTest {
     public void testNoName() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<NoNameFoo> ctor = NoNameFoo.class.getConstructor(String.class);
-        visitConstructor(ctor, type);
-        assertNotNull(getReference(type, "_ref0"));
+        try {
+            visitConstructor(ctor, type);
+            fail();
+        } catch (InvalidReferenceException e) {
+           //expected   
+        }
     }
 
     @Test
@@ -91,7 +95,7 @@ public class ConstructorReferenceTestCase extends AbstractProcessorTest {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         Constructor<Foo> ctor = Foo.class.getConstructor(Integer.class);
         visitConstructor(ctor, type);
-        assertNotNull(getReference(type, "myRef"));
+        assertNotNull(getReference(type, "myRef2"));
     }
 
     @Test
@@ -113,7 +117,7 @@ public class ConstructorReferenceTestCase extends AbstractProcessorTest {
         try {
             visitConstructor(ctor, type);
             fail();
-        } catch (InvalidConstructorException e) {
+        } catch (InvalidReferenceException e) {
             // expected
         }
     }
@@ -135,13 +139,13 @@ public class ConstructorReferenceTestCase extends AbstractProcessorTest {
 
         }
 
-        @org.oasisopen.sca.annotation.Constructor("myRef")
-        public Foo(@Reference Integer prop) {
+        @org.oasisopen.sca.annotation.Constructor("myRef2")
+        public Foo(@Reference(name = "myRef2") Integer prop) {
 
         }
 
         @org.oasisopen.sca.annotation.Constructor()
-        public Foo(@Reference List prop) {
+        public Foo(@Reference(name = "myRef3") List prop) {
 
         }
     }

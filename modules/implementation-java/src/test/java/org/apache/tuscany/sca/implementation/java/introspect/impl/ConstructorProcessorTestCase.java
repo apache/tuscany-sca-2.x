@@ -145,7 +145,7 @@ public class ConstructorProcessorTestCase {
 
     public static final class Mixed {
         @org.oasisopen.sca.annotation.Constructor
-        public Mixed(@Reference
+        public Mixed(@Reference(name="_ref0")
         String param1, @Property(name = "foo")
         String param2, @Reference(name = "bar")
         String param3) {
@@ -154,7 +154,7 @@ public class ConstructorProcessorTestCase {
 
     public static final class Multiple {
         @org.oasisopen.sca.annotation.Constructor
-        public Multiple(@Reference
+        public Multiple(@Reference(name="_ref0")
         Collection<String> param1, @Property(name = "foo")
         String[] param2, @Reference(name = "bar", required = true)
         List<String> param3, @Property(name = "abc")
