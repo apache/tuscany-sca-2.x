@@ -244,87 +244,92 @@ public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfa
     private static List<Class<?>> JCA30008_ANNOTATIONS = Arrays.asList(new Class<?>[] {Intent.class, Qualifier.class}); 
     
     private void checkForbiddenAnnotations(JavaInterfaceContract javaInterfaceContract) {
-        if (javaInterfaceContract.getInterface() != null) {
-            Class<?> ifc = ((JavaInterface) javaInterfaceContract.getInterface()).getJavaClass();
-            if (ifc != null) {
-                for (Annotation a : ifc.getAnnotations()) {
-                    if (ifc.isInterface()) {
-                        if (JCA30006_ANNOTATIONS.contains(a.annotationType())) {
-                            error("ForbiddenAnnotationJCA30006", javaInterfaceContract, a.annotationType(), ifc.getName());
-                        }
-                    } else {
-                        if (JCA30008_ANNOTATIONS.contains(a.annotationType())) {
-                            error("ForbiddenAnnotationJCA30008", javaInterfaceContract, a.annotationType(), ifc.getName());
-                        }
+        if (javaInterfaceContract.getInterface() == null) {
+            return;
+        }
+        Class<?> ifc = ((JavaInterface) javaInterfaceContract.getInterface()).getJavaClass();
+        if (ifc == null) {
+            return;
+        }
+        for (Annotation a : ifc.getAnnotations()) {
+            if (ifc.isInterface()) {
+                if (JCA30006_ANNOTATIONS.contains(a.annotationType())) {
+                    error("ForbiddenAnnotationJCA30006", javaInterfaceContract, a.annotationType(), ifc.getName());
+                }
+            } else {
+                if (JCA30008_ANNOTATIONS.contains(a.annotationType())) {
+                    error("ForbiddenAnnotationJCA30008", javaInterfaceContract, a.annotationType(), ifc.getName());
+                }
+            }
+        }
+        for (Method m : ifc.getMethods()) {
+            for (Annotation a : m.getAnnotations()) {
+                if (ifc.isInterface()) {
+                    if (JCA30006_ANNOTATIONS.contains(a.annotationType())) {
+                        error("ForbiddenAnnotationJCA30006", javaInterfaceContract, a.annotationType(), ifc.getName());
+                    }
+                } else {
+                    if (JCA30008_ANNOTATIONS.contains(a.annotationType())) {
+                        error("ForbiddenAnnotationJCA30008", javaInterfaceContract, a.annotationType(), ifc.getName());
                     }
                 }
             }
-            for (Method m : ifc.getMethods()) {
-                for (Annotation a : m.getAnnotations()) {
-                    if (ifc.isInterface()) {
-                        if (JCA30006_ANNOTATIONS.contains(a.annotationType())) {
-                            error("ForbiddenAnnotationJCA30006", javaInterfaceContract, a.annotationType(), ifc.getName());
-                        }
-                    } else {
-                        if (JCA30008_ANNOTATIONS.contains(a.annotationType())) {
-                            error("ForbiddenAnnotationJCA30008", javaInterfaceContract, a.annotationType(), ifc.getName());
-                        }
+        }
+        for (Field f : ifc.getFields()) {
+            for (Annotation a : f.getAnnotations()) {
+                if (ifc.isInterface()) {
+                    if (JCA30006_ANNOTATIONS.contains(a.annotationType())) {
+                        error("ForbiddenAnnotationJCA30006", javaInterfaceContract, a.annotationType(), ifc.getName());
                     }
-                }
-            }
-            for (Field f : ifc.getFields()) {
-                for (Annotation a : f.getAnnotations()) {
-                    if (ifc.isInterface()) {
-                        if (JCA30006_ANNOTATIONS.contains(a.annotationType())) {
-                            error("ForbiddenAnnotationJCA30006", javaInterfaceContract, a.annotationType(), ifc.getName());
-                        }
-                    } else {
-                        if (JCA30008_ANNOTATIONS.contains(a.annotationType())) {
-                            error("ForbiddenAnnotationJCA30008", javaInterfaceContract, a.annotationType(), ifc.getName());
-                        }
+                } else {
+                    if (JCA30008_ANNOTATIONS.contains(a.annotationType())) {
+                        error("ForbiddenAnnotationJCA30008", javaInterfaceContract, a.annotationType(), ifc.getName());
                     }
                 }
             }
         }
         
-        if (javaInterfaceContract.getCallbackInterface() != null) {
-            Class<?> ifc = ((JavaInterface) javaInterfaceContract.getCallbackInterface()).getJavaClass();
-            if (ifc != null) {
-                for (Annotation a : ifc.getAnnotations()) {
-                    if (ifc.isInterface()) {
-                        if (JCA30007_ANNOTATIONS.contains(a.annotationType())) {
-                            error("ForbiddenAnnotationJCA30007", javaInterfaceContract, a.annotationType(), ifc.getName());
-                        }
-                    } else {
-                        if (JCA30008_ANNOTATIONS.contains(a.annotationType())) {
-                            error("ForbiddenAnnotationJCA30008", javaInterfaceContract, a.annotationType(), ifc.getName());
-                        }
+        if (javaInterfaceContract.getCallbackInterface() == null) {
+            return;
+        }
+        ifc = ((JavaInterface) javaInterfaceContract.getCallbackInterface()).getJavaClass();
+        if (ifc == null) {
+            return;
+        }
+
+        for (Annotation a : ifc.getAnnotations()) {
+            if (ifc.isInterface()) {
+                if (JCA30007_ANNOTATIONS.contains(a.annotationType())) {
+                    error("ForbiddenAnnotationJCA30007", javaInterfaceContract, a.annotationType(), ifc.getName());
+                }
+            } else {
+                if (JCA30008_ANNOTATIONS.contains(a.annotationType())) {
+                    error("ForbiddenAnnotationJCA30008", javaInterfaceContract, a.annotationType(), ifc.getName());
+                }
+            }
+        }
+        for (Method m : ifc.getMethods()) {
+            for (Annotation a : m.getAnnotations()) {
+                if (ifc.isInterface()) {
+                    if (JCA30007_ANNOTATIONS.contains(a.annotationType())) {
+                        error("ForbiddenAnnotationJCA30007", javaInterfaceContract, a.annotationType(), ifc.getName());
+                    }
+                } else {
+                    if (JCA30008_ANNOTATIONS.contains(a.annotationType())) {
+                        error("ForbiddenAnnotationJCA30008", javaInterfaceContract, a.annotationType(), ifc.getName());
                     }
                 }
             }
-            for (Method m : ifc.getMethods()) {
-                for (Annotation a : m.getAnnotations()) {
-                    if (ifc.isInterface()) {
-                        if (JCA30007_ANNOTATIONS.contains(a.annotationType())) {
-                            error("ForbiddenAnnotationJCA30007", javaInterfaceContract, a.annotationType(), ifc.getName());
-                        }
-                    } else {
-                        if (JCA30008_ANNOTATIONS.contains(a.annotationType())) {
-                            error("ForbiddenAnnotationJCA30008", javaInterfaceContract, a.annotationType(), ifc.getName());
-                        }
+        }
+        for (Field f : ifc.getFields()) {
+            for (Annotation a : f.getAnnotations()) {
+                if (ifc.isInterface()) {
+                    if (JCA30007_ANNOTATIONS.contains(a.annotationType())) {
+                        error("ForbiddenAnnotationJCA30007", javaInterfaceContract, a.annotationType(), ifc.getName());
                     }
-                }
-            }
-            for (Field f : ifc.getFields()) {
-                for (Annotation a : f.getAnnotations()) {
-                    if (ifc.isInterface()) {
-                        if (JCA30007_ANNOTATIONS.contains(a.annotationType())) {
-                            error("ForbiddenAnnotationJCA30007", javaInterfaceContract, a.annotationType(), ifc.getName());
-                        }
-                    } else {
-                        if (JCA30008_ANNOTATIONS.contains(a.annotationType())) {
-                            error("ForbiddenAnnotationJCA30008", javaInterfaceContract, a.annotationType(), ifc.getName());
-                        }
+                } else {
+                    if (JCA30008_ANNOTATIONS.contains(a.annotationType())) {
+                        error("ForbiddenAnnotationJCA30008", javaInterfaceContract, a.annotationType(), ifc.getName());
                     }
                 }
             }
