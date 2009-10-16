@@ -121,7 +121,7 @@ public class ComponentBuilderImpl {
             // hierarchy must be done before we calculate the component type
             
             // check that the implementation is present
-            if (!isComponentImplementationPresent(component)){
+            if (!isComponentImplementationPresent(component, monitor)){
                 return;
             }
     
@@ -162,7 +162,7 @@ public class ComponentBuilderImpl {
      * @param component
      * @return true if the implementation is present and resolved
      */
-    private boolean isComponentImplementationPresent(Component component){
+    private boolean isComponentImplementationPresent(Component component, Monitor monitor){
         Implementation implementation = component.getImplementation();
         if (implementation == null) {
             // A component must have an implementation
