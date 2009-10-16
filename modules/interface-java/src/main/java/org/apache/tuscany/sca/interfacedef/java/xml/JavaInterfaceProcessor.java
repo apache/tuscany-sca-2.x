@@ -225,7 +225,7 @@ public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfa
                 resolveJavaInterface((JavaInterface)javaInterfaceContract.getCallbackInterface(), resolver, context);
             javaInterfaceContract.setCallbackInterface(javaCallbackInterface);
 	        
-	        checkForbiddenAnnotations(javaInterfaceContract);
+	        checkForbiddenAnnotations(monitor, javaInterfaceContract);
 	        
         } catch (Exception e) {
             throw new ContributionResolveException("Resolving Java Interface " + javaInterfaceContract.getInterface()
@@ -243,7 +243,7 @@ public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfa
                                    Property.class, Qualifier.class, Reference.class, Scope.class, Service.class}); 
     private static List<Class<?>> JCA30008_ANNOTATIONS = Arrays.asList(new Class<?>[] {Intent.class, Qualifier.class}); 
     
-    private void checkForbiddenAnnotations(JavaInterfaceContract javaInterfaceContract) {
+    private void checkForbiddenAnnotations(Monitor monitor, JavaInterfaceContract javaInterfaceContract) {
         if (javaInterfaceContract.getInterface() == null) {
             return;
         }
@@ -254,11 +254,11 @@ public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfa
         for (Annotation a : ifc.getAnnotations()) {
             if (ifc.isInterface()) {
                 if (JCA30006_ANNOTATIONS.contains(a.annotationType())) {
-                    error("ForbiddenAnnotationJCA30006", javaInterfaceContract, a.annotationType(), ifc.getName());
+                    error(monitor, "ForbiddenAnnotationJCA30006", javaInterfaceContract, a.annotationType(), ifc.getName());
                 }
             } else {
                 if (JCA30008_ANNOTATIONS.contains(a.annotationType())) {
-                    error("ForbiddenAnnotationJCA30008", javaInterfaceContract, a.annotationType(), ifc.getName());
+                    error(monitor, "ForbiddenAnnotationJCA30008", javaInterfaceContract, a.annotationType(), ifc.getName());
                 }
             }
         }
@@ -266,11 +266,11 @@ public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfa
             for (Annotation a : m.getAnnotations()) {
                 if (ifc.isInterface()) {
                     if (JCA30006_ANNOTATIONS.contains(a.annotationType())) {
-                        error("ForbiddenAnnotationJCA30006", javaInterfaceContract, a.annotationType(), ifc.getName());
+                        error(monitor, "ForbiddenAnnotationJCA30006", javaInterfaceContract, a.annotationType(), ifc.getName());
                     }
                 } else {
                     if (JCA30008_ANNOTATIONS.contains(a.annotationType())) {
-                        error("ForbiddenAnnotationJCA30008", javaInterfaceContract, a.annotationType(), ifc.getName());
+                        error(monitor, "ForbiddenAnnotationJCA30008", javaInterfaceContract, a.annotationType(), ifc.getName());
                     }
                 }
             }
@@ -279,11 +279,11 @@ public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfa
             for (Annotation a : f.getAnnotations()) {
                 if (ifc.isInterface()) {
                     if (JCA30006_ANNOTATIONS.contains(a.annotationType())) {
-                        error("ForbiddenAnnotationJCA30006", javaInterfaceContract, a.annotationType(), ifc.getName());
+                        error(monitor, "ForbiddenAnnotationJCA30006", javaInterfaceContract, a.annotationType(), ifc.getName());
                     }
                 } else {
                     if (JCA30008_ANNOTATIONS.contains(a.annotationType())) {
-                        error("ForbiddenAnnotationJCA30008", javaInterfaceContract, a.annotationType(), ifc.getName());
+                        error(monitor, "ForbiddenAnnotationJCA30008", javaInterfaceContract, a.annotationType(), ifc.getName());
                     }
                 }
             }
@@ -300,11 +300,11 @@ public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfa
         for (Annotation a : ifc.getAnnotations()) {
             if (ifc.isInterface()) {
                 if (JCA30007_ANNOTATIONS.contains(a.annotationType())) {
-                    error("ForbiddenAnnotationJCA30007", javaInterfaceContract, a.annotationType(), ifc.getName());
+                    error(monitor, "ForbiddenAnnotationJCA30007", javaInterfaceContract, a.annotationType(), ifc.getName());
                 }
             } else {
                 if (JCA30008_ANNOTATIONS.contains(a.annotationType())) {
-                    error("ForbiddenAnnotationJCA30008", javaInterfaceContract, a.annotationType(), ifc.getName());
+                    error(monitor, "ForbiddenAnnotationJCA30008", javaInterfaceContract, a.annotationType(), ifc.getName());
                 }
             }
         }
@@ -312,11 +312,11 @@ public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfa
             for (Annotation a : m.getAnnotations()) {
                 if (ifc.isInterface()) {
                     if (JCA30007_ANNOTATIONS.contains(a.annotationType())) {
-                        error("ForbiddenAnnotationJCA30007", javaInterfaceContract, a.annotationType(), ifc.getName());
+                        error(monitor, "ForbiddenAnnotationJCA30007", javaInterfaceContract, a.annotationType(), ifc.getName());
                     }
                 } else {
                     if (JCA30008_ANNOTATIONS.contains(a.annotationType())) {
-                        error("ForbiddenAnnotationJCA30008", javaInterfaceContract, a.annotationType(), ifc.getName());
+                        error(monitor, "ForbiddenAnnotationJCA30008", javaInterfaceContract, a.annotationType(), ifc.getName());
                     }
                 }
             }
@@ -325,11 +325,11 @@ public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfa
             for (Annotation a : f.getAnnotations()) {
                 if (ifc.isInterface()) {
                     if (JCA30007_ANNOTATIONS.contains(a.annotationType())) {
-                        error("ForbiddenAnnotationJCA30007", javaInterfaceContract, a.annotationType(), ifc.getName());
+                        error(monitor, "ForbiddenAnnotationJCA30007", javaInterfaceContract, a.annotationType(), ifc.getName());
                     }
                 } else {
                     if (JCA30008_ANNOTATIONS.contains(a.annotationType())) {
-                        error("ForbiddenAnnotationJCA30008", javaInterfaceContract, a.annotationType(), ifc.getName());
+                        error(monitor, "ForbiddenAnnotationJCA30008", javaInterfaceContract, a.annotationType(), ifc.getName());
                     }
                 }
             }
