@@ -50,6 +50,7 @@ import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
@@ -136,17 +137,16 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
     private PolicySubjectProcessor policyProcessor;
     private ConfiguredOperationProcessor configuredOperationProcessor;
     protected StAXArtifactProcessor<Object> extensionProcessor;
-    private Monitor monitor;
+    
 
     private FactoryExtensionPoint modelFactories; // DOB
-    public JMSBindingProcessor(FactoryExtensionPoint modelFactories, StAXArtifactProcessor<Object> extensionProcessor, Monitor monitor) {
+    public JMSBindingProcessor(FactoryExtensionPoint modelFactories, StAXArtifactProcessor<Object> extensionProcessor) {
         this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
         this.policyProcessor = new PolicySubjectProcessor(policyFactory);
 
         this.configuredOperationProcessor = 
-            new ConfiguredOperationProcessor(modelFactories, this.monitor);
+            new ConfiguredOperationProcessor(modelFactories);
         this.extensionProcessor = extensionProcessor;
-        this.monitor = monitor;
         this.modelFactories = modelFactories;
     }
     
@@ -157,7 +157,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
      * @param message
      * @param model
     */
-    private void warning(String message, Object model, Object... messageParameters) {
+    private void warning(Monitor monitor, String message, Object model, Object... messageParameters) {
         if (monitor != null) {
             Problem problem = monitor.createProblem(this.getClass().getName(), "binding-jms-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
     	    monitor.problem(problem);
@@ -172,7 +172,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
       * @param message
       * @param model
     */
-    private void error(String message, Object model, Object... messageParameters) {
+    private void error(Monitor monitor, String message, Object model, Object... messageParameters) {
         if (monitor != null) {
             Problem problem = monitor.createProblem(this.getClass().getName(), "binding-jms-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
      	    monitor.problem(problem);
@@ -187,7 +187,8 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
         return JMSBinding.class;
     }
 
-    public JMSBinding read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+    public JMSBinding read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException, XMLStreamException {
+        Monitor monitor = context.getMonitor();
         JMSBinding jmsBinding = new JMSBinding();
         // Reset validation message to keep track of validation issues.
 
@@ -203,7 +204,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
         // Read binding URI
         String uri = reader.getAttributeValue(null, "uri");
         if (uri != null && uri.length() > 0) {
-            parseURI(uri, jmsBinding);
+            parseURI(uri, jmsBinding, monitor);
         }
 
         // Read correlation scheme
@@ -212,7 +213,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
             if (JMSBindingConstants.VALID_CORRELATION_SCHEMES.contains(correlationScheme.toLowerCase())) {
                 jmsBinding.setCorrelationScheme(correlationScheme);
             } else {
-            	error("InvalidCorrelationScheme", reader, correlationScheme);
+            	error(monitor, "InvalidCorrelationScheme", reader, correlationScheme);
             }
         }
 
@@ -277,28 +278,28 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
                 case START_ELEMENT:
                     String elementName = reader.getName().getLocalPart();
                     if ("destination".equals(elementName)) {
-                        parseDestination(reader, jmsBinding);
+                        parseDestination(reader, jmsBinding, monitor);
                     } else if ("connectionFactory".equals(elementName)) {
-                        parseConnectionFactory(reader, jmsBinding);
+                        parseConnectionFactory(reader, jmsBinding, monitor);
                     } else if ("activationSpec".equals(elementName)) {
-                        parseActivationSpec(reader, jmsBinding);
+                        parseActivationSpec(reader, jmsBinding, monitor);
                     } else if ("response".equals(elementName)) {
-                        parseResponse(reader, jmsBinding);
+                        parseResponse(reader, jmsBinding, context);
                     } else if ("resourceAdapter".equals(elementName)) {
-                        parseResourceAdapter(reader, jmsBinding);
+                        parseResourceAdapter(reader, jmsBinding, monitor);
                     } else if ("headers".equals(elementName)) {
-                        parseHeaders(reader, jmsBinding);
+                        parseHeaders(reader, jmsBinding, monitor);
                     } else if ("operationProperties".equals(elementName)) {
-                        parseOperationProperties(reader, jmsBinding);
+                        parseOperationProperties(reader, jmsBinding, monitor);
                     } else if ("messageSelection".equals(elementName)) {
                         parseSubscriptionHeaders(reader, jmsBinding);
                     } else if (Constants.OPERATION_QNAME.equals(reader.getName())) {
-                        ConfiguredOperation confOp = configuredOperationProcessor.read(reader);
+                        ConfiguredOperation confOp = configuredOperationProcessor.read(reader, context);
                         if (confOp != null) {
                             ((OperationsConfigurator)jmsBinding).getConfiguredOperations().add(confOp);
                         }
                     } else {
-                        Object extension = extensionProcessor.read(reader);
+                        Object extension = extensionProcessor.read(reader, context);
                         if (extension != null) {
                             if (extension instanceof WireFormat) {
                                 if (jmsBinding.getRequestWireFormat() == null) {
@@ -314,7 +315,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
                                 }
 
                             } else {
-                                error("UnexpectedElement", reader, extension.toString());
+                                error(monitor, "UnexpectedElement", reader, extension.toString());
                             }
                         }
                     }
@@ -331,7 +332,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
                     if (x.equals(JMSBindingConstants.BINDING_JMS_QNAME)) {
                         endFound = true;
                     } else {
-                    	error("UnexpectedElement: expected " + JMSBindingConstants.BINDING_JMS_QNAME + ", found " + x.toString(), 
+                    	error(monitor, "UnexpectedElement: expected " + JMSBindingConstants.BINDING_JMS_QNAME + ", found " + x.toString(), 
                     	      reader, x.toString());
                     }
             }
@@ -352,14 +353,14 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
             jmsBinding.setResponseWireFormat(jmsBinding.getRequestWireFormat());
          }
 
-        validate( jmsBinding );
+        validate( jmsBinding, monitor );
 
         return jmsBinding;
     }
 
-    protected void parseURI(String uri, JMSBinding jmsBinding) {
+    protected void parseURI(String uri, JMSBinding jmsBinding, Monitor monitor) {
         if (!uri.startsWith("jms:")) {
-        	error("MustStartWithSchema", jmsBinding, uri);
+        	error(monitor, "MustStartWithSchema", jmsBinding, uri);
         	return;
         }
         int i = uri.indexOf('?');            
@@ -370,7 +371,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
         	    if (s.startsWith("connectionFactoryName=")) {
         	        jmsBinding.setConnectionFactoryName(s.substring(22));
         	    } else {
-        	        error("UnknownTokenInURI", jmsBinding, s, uri);
+        	        error(monitor, "UnknownTokenInURI", jmsBinding, s, uri);
                  	return;
         	     }
         	}
@@ -380,31 +381,32 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
         }
     }
 
-    public void resolve(JMSBinding model, ModelResolver resolver) throws ContributionResolveException {
+    public void resolve(JMSBinding model, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
+        Monitor monitor = context.getMonitor();
         if (model.getRequestConnectionName() != null) {
-            model.setRequestConnectionBinding(getConnectionBinding(model, "requestConnection", model.getRequestConnectionName(), resolver));
+            model.setRequestConnectionBinding(getConnectionBinding(model, "requestConnection", model.getRequestConnectionName(), resolver, context));
         }
         if (model.getResponseConnectionName() != null) {
-            model.setResponseConnectionBinding(getConnectionBinding(model, "responseConnection", model.getResponseConnectionName(), resolver));
+            model.setResponseConnectionBinding(getConnectionBinding(model, "responseConnection", model.getResponseConnectionName(), resolver, context));
         }
         if (model.getOperationPropertiesName() != null) {
-            model.setOperationPropertiesBinding(getConnectionBinding(model, "operationProperties", model.getOperationPropertiesName(), resolver));
+            model.setOperationPropertiesBinding(getConnectionBinding(model, "operationProperties", model.getOperationPropertiesName(), resolver, context));
         }
     }
 
     @SuppressWarnings("unchecked")
-    private JMSBinding getConnectionBinding(JMSBinding model, String attrName, QName bindingName, ModelResolver resolver) {
+    private JMSBinding getConnectionBinding(JMSBinding model, String attrName, QName bindingName, ModelResolver resolver, ProcessorContext context) {
         JMSBinding binding = new JMSBinding();
         binding.setTargetNamespace(bindingName.getNamespaceURI());
         binding.setName(bindingName.getLocalPart());
         binding.setUnresolved(true);
-        binding = resolver.resolveModel(JMSBinding.class, binding);
+        binding = resolver.resolveModel(JMSBinding.class, binding, context);
         if (binding.isUnresolved())
-            error("BindingNotFound", model, attrName, bindingName);
+            error(context.getMonitor(), "BindingNotFound", model, attrName, bindingName);
         return binding;
     }
 
-    private void parseDestination(XMLStreamReader reader, JMSBinding jmsBinding) throws XMLStreamException {
+    private void parseDestination(XMLStreamReader reader, JMSBinding jmsBinding, Monitor monitor) throws XMLStreamException {
         String name = reader.getAttributeValue(null, "jndiName");
         if (name != null && name.length() > 0) {
             jmsBinding.setDestinationName(name);
@@ -412,13 +414,13 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
 
         String type = reader.getAttributeValue(null, "type");                
         if (type != null && type.length() > 0) {
-            warning("DoesntProcessDestinationType", jmsBinding);
+            warning(monitor, "DoesntProcessDestinationType", jmsBinding);
             if (JMSBindingConstants.DESTINATION_TYPE_QUEUE.equalsIgnoreCase(type)) {
                 jmsBinding.setDestinationType(JMSBindingConstants.DESTINATION_TYPE_QUEUE);
             } else if (JMSBindingConstants.DESTINATION_TYPE_TOPIC.equalsIgnoreCase(type)) {
                 jmsBinding.setDestinationType(JMSBindingConstants.DESTINATION_TYPE_TOPIC);
             } else {
-            	error("InvalidDestinationType", reader, type);
+            	error(monitor, "InvalidDestinationType", reader, type);
             }            
         }
 
@@ -427,30 +429,30 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
             jmsBinding.setDestinationCreate(create);
         }
 
-        jmsBinding.getDestinationProperties().putAll(parseBindingProperties(reader));
+        jmsBinding.getDestinationProperties().putAll(parseBindingProperties(reader, monitor));
     }
 
-    private void parseConnectionFactory(XMLStreamReader reader, JMSBinding jmsBinding) throws XMLStreamException {
+    private void parseConnectionFactory(XMLStreamReader reader, JMSBinding jmsBinding, Monitor monitor) throws XMLStreamException {
         String name = reader.getAttributeValue(null, "jndiName");
         if (name != null && name.length() > 0) {
             jmsBinding.setConnectionFactoryName(name);
         } else {
-            error("MissingConnectionFactoryName", reader);
+            error(monitor, "MissingConnectionFactoryName", reader);
         }
-        jmsBinding.getConnectionFactoryProperties().putAll(parseBindingProperties(reader));
+        jmsBinding.getConnectionFactoryProperties().putAll(parseBindingProperties(reader, monitor));
     }
 
-    private void parseActivationSpec(XMLStreamReader reader, JMSBinding jmsBinding) throws XMLStreamException {
+    private void parseActivationSpec(XMLStreamReader reader, JMSBinding jmsBinding, Monitor monitor) throws XMLStreamException {
         String name = reader.getAttributeValue(null, "name");        
         if (name != null && name.length() > 0) {
             jmsBinding.setActivationSpecName(name);            
         } else {
-            warning("MissingActivationSpecName", reader);
+            warning(monitor, "MissingActivationSpecName", reader);
         }
-        jmsBinding.getActivationSpecProperties().putAll(parseBindingProperties(reader));
+        jmsBinding.getActivationSpecProperties().putAll(parseBindingProperties(reader, monitor));
     }
 
-    private void parseResponseDestination(XMLStreamReader reader, JMSBinding jmsBinding) throws XMLStreamException {
+    private void parseResponseDestination(XMLStreamReader reader, JMSBinding jmsBinding, Monitor monitor) throws XMLStreamException {
         String name = reader.getAttributeValue(null, "jndiName");
         if (name != null && name.length() > 0) {
             jmsBinding.setResponseDestinationName(name);
@@ -458,13 +460,13 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
 
         String type = reader.getAttributeValue(null, "type");        
         if (type != null && type.length() > 0) {
-            warning("DoesntProcessResponseDestinationType", jmsBinding);
+            warning(monitor, "DoesntProcessResponseDestinationType", jmsBinding);
             if (JMSBindingConstants.DESTINATION_TYPE_QUEUE.equalsIgnoreCase(type)) {
                 jmsBinding.setResponseDestinationType(JMSBindingConstants.DESTINATION_TYPE_QUEUE);
             } else if (JMSBindingConstants.DESTINATION_TYPE_TOPIC.equalsIgnoreCase(type)) {
                 jmsBinding.setResponseDestinationType(JMSBindingConstants.DESTINATION_TYPE_TOPIC);
             } else {
-                error("InvalidResponseDestinationType", reader, type);
+                error(monitor, "InvalidResponseDestinationType", reader, type);
             }
         }
 
@@ -473,43 +475,44 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
             jmsBinding.setResponseDestinationCreate(create);
         }
 
-        jmsBinding.getResponseDestinationProperties().putAll(parseBindingProperties(reader));
+        jmsBinding.getResponseDestinationProperties().putAll(parseBindingProperties(reader, monitor));
     }
 
-    private void parseResponseConnectionFactory(XMLStreamReader reader, JMSBinding jmsBinding) throws XMLStreamException {
+    private void parseResponseConnectionFactory(XMLStreamReader reader, JMSBinding jmsBinding, Monitor monitor) throws XMLStreamException {
         String name = reader.getAttributeValue(null, "jndiName");
         if (name != null && name.length() > 0) {
             jmsBinding.setResponseConnectionFactoryName(name);            
         } else {
-            warning("MissingResponseConnectionFactory", reader);
+            warning(monitor, "MissingResponseConnectionFactory", reader);
         }
-        jmsBinding.getResponseConnectionFactoryProperties().putAll(parseBindingProperties(reader));
+        jmsBinding.getResponseConnectionFactoryProperties().putAll(parseBindingProperties(reader, monitor));
     }
 
-    private void parseResponseActivationSpec(XMLStreamReader reader, JMSBinding jmsBinding) throws XMLStreamException {
+    private void parseResponseActivationSpec(XMLStreamReader reader, JMSBinding jmsBinding, Monitor monitor) throws XMLStreamException {
         String name = reader.getAttributeValue(null, "name");
         if (name != null && name.length() > 0) {
             jmsBinding.setResponseActivationSpecName(name);            
         } else {
-            warning("MissingResponseActivationSpec", reader);
+            warning(monitor, "MissingResponseActivationSpec", reader);
         }
-        jmsBinding.getResponseActivationSpecProperties().putAll(parseBindingProperties(reader));
+        jmsBinding.getResponseActivationSpecProperties().putAll(parseBindingProperties(reader, monitor));
     }
 
-    private void parseResponse(XMLStreamReader reader, JMSBinding jmsBinding) throws ContributionReadException, XMLStreamException {
+    private void parseResponse(XMLStreamReader reader, JMSBinding jmsBinding, ProcessorContext context) throws ContributionReadException, XMLStreamException {
         // Read sub-elements of response
+        Monitor monitor = context.getMonitor();
         while (true) {
             switch (reader.next()) {
                 case START_ELEMENT:
                     String elementName = reader.getName().getLocalPart();
                     if ("destination".equals(elementName)) {
-                        parseResponseDestination(reader, jmsBinding);
+                        parseResponseDestination(reader, jmsBinding, context.getMonitor());
                     } else if ("connectionFactory".equals(elementName)) {
-                        parseResponseConnectionFactory(reader, jmsBinding);
+                        parseResponseConnectionFactory(reader, jmsBinding, monitor);
                     } else if ("activationSpec".equals(elementName)) {
-                        parseResponseActivationSpec(reader, jmsBinding);
+                        parseResponseActivationSpec(reader, jmsBinding, monitor);
                     } else {
-                        Object extension = extensionProcessor.read(reader);
+                        Object extension = extensionProcessor.read(reader, context);
                         if (extension != null) {
                             if (extension instanceof WireFormat) {
                                 if (jmsBinding.getResponseWireFormat() == null) {
@@ -518,7 +521,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
                                     throw new ContributionReadException("The response wireformat has already been defined. " + "Only one response wire format can be specified.");
                                 }
                             } else {
-                                error("UnexpectedElement", reader, extension.toString());
+                                error(context.getMonitor(), "UnexpectedElement", reader, extension.toString());
                             }
                         }
                         reader.next();
@@ -530,20 +533,20 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
                     if (x.getLocalPart().equals("response")) {
                         return;
                     } else {
-                    	error("UnexpectedResponseElement", reader, x.toString());
+                    	error(context.getMonitor(), "UnexpectedResponseElement", reader, x.toString());
                     }
             }
         }
     }
 
-    private void parseResourceAdapter(XMLStreamReader reader, JMSBinding jmsBinding) throws XMLStreamException {
+    private void parseResourceAdapter(XMLStreamReader reader, JMSBinding jmsBinding, Monitor monitor) throws XMLStreamException {
         String name = reader.getAttributeValue(null, "name");        
         if (name != null && name.length() > 0) {
             jmsBinding.setResourceAdapterName(name);            
         } else {
-            error("MissingResourceAdapterName", reader);
+            error(monitor, "MissingResourceAdapterName", reader);
         }
-        jmsBinding.getResourceAdapterProperties().putAll(parseBindingProperties(reader));
+        jmsBinding.getResourceAdapterProperties().putAll(parseBindingProperties(reader, monitor));
     }
 
     /**
@@ -555,7 +558,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
      *     <property name=”NMTOKEN” type=”NMTOKEN”?>*    
      * </headers>?
      */
-    private void parseHeaders(XMLStreamReader reader, JMSBinding jmsBinding) throws XMLStreamException {
+    private void parseHeaders(XMLStreamReader reader, JMSBinding jmsBinding, Monitor monitor) throws XMLStreamException {
         String jmsType = reader.getAttributeValue(null, "type");
         if (jmsType != null && jmsType.length() > 0) {
             jmsBinding.setJMSType(jmsType);
@@ -568,7 +571,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
             } else if ("nonpersistent".equalsIgnoreCase(jmsDeliveryMode)) {
                 jmsBinding.setJMSDeliveryMode(false);
             } else {
-                error("InvalidJMSDeliveryMode", jmsBinding, jmsDeliveryMode);
+                error(monitor, "InvalidJMSDeliveryMode", jmsBinding, jmsDeliveryMode);
             }
         }
 
@@ -584,10 +587,10 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
                 if (p >= 0 && p <= 9) {
                     jmsBinding.setJMSPriority(p);
                 } else {
-                    warning("InvalidJMSPriority", jmsBinding, jmsPriority);
+                    warning(monitor, "InvalidJMSPriority", jmsBinding, jmsPriority);
                 }
             } catch (NumberFormatException ex) {
-                error("InvalidJMSPriority", jmsBinding, jmsPriority);
+                error(monitor, "InvalidJMSPriority", jmsBinding, jmsPriority);
             }
         }
 
@@ -603,7 +606,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
                     if (x.getLocalPart().equals("headers")) {
                         return;
                     } else {
-                        error("UnexpectedResponseElement", reader, x.toString());
+                        error(monitor, "UnexpectedResponseElement", reader, x.toString());
                     }
             }
         }
@@ -648,15 +651,15 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
      *   </headers>?
      * </operationProperties>*
      */
-    private void parseOperationProperties(XMLStreamReader reader, JMSBinding jmsBinding) throws XMLStreamException {
+    private void parseOperationProperties(XMLStreamReader reader, JMSBinding jmsBinding, Monitor monitor) throws XMLStreamException {
         
         if (jmsBinding.getOperationPropertiesName() != null) {
-            error("DuplicateOperationProperties", jmsBinding);
+            error(monitor, "DuplicateOperationProperties", jmsBinding);
         }
         
         String opName = reader.getAttributeValue(null, "name");
         if (opName == null || opName.length() < 1) {
-            warning("MissingJMSOperationPropertyName", jmsBinding);
+            warning(monitor, "MissingJMSOperationPropertyName", jmsBinding);
             return;
         }
         // Since nativeOpName, headers, and property elements are optional, must add opName.
@@ -671,9 +674,9 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
             switch (reader.next()) {
                 case START_ELEMENT:
                     if (reader.getName().getLocalPart().equals("headers")) { // optional
-                        parseOperationHeaders(reader, jmsBinding, opName);
+                        parseOperationHeaders(reader, jmsBinding, opName, monitor);
                     } else if (reader.getName().getLocalPart().equals("property")) { // optional
-                    	processProperty(reader, props);
+                    	processProperty(reader, props, monitor);
                     }
                 break;
                 case END_ELEMENT:
@@ -689,14 +692,14 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
                         	jmsBinding.getOperationPropertiesProperties(opName).putAll(props);
                             return;
                         } else {
-                            error("UnexpectedResponseElement", reader, x.toString());
+                            error(monitor, "UnexpectedResponseElement", reader, x.toString());
                         }
                     }
             }
         }
     }
 
-    private void parseOperationHeaders(XMLStreamReader reader, JMSBinding jmsBinding, String opName) throws XMLStreamException {
+    private void parseOperationHeaders(XMLStreamReader reader, JMSBinding jmsBinding, String opName, Monitor monitor) throws XMLStreamException {
         String jmsType = reader.getAttributeValue(null, "type");
         if (jmsType != null && jmsType.length() > 0) {
             jmsBinding.setOperationJMSType(opName, jmsType);
@@ -709,7 +712,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
             } else if ("nonpersistent".equalsIgnoreCase(jmsDeliveryMode)) {
                 jmsBinding.setOperationJMSDeliveryMode(opName, false);
             } else {
-                error("InvalidOPJMSDeliveryMode", jmsBinding, jmsDeliveryMode);
+                error(monitor, "InvalidOPJMSDeliveryMode", jmsBinding, jmsDeliveryMode);
             }
         }
 
@@ -725,10 +728,10 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
                 if (p >= 0 && p <= 9) {
                     jmsBinding.setOperationJMSPriority(opName, p);
                 } else {
-                    warning("InvalidOPJMSPriority", jmsBinding, jmsPriority);
+                    warning(monitor, "InvalidOPJMSPriority", jmsBinding, jmsPriority);
                 }
             } catch (NumberFormatException ex) {
-                error("InvalidOPJMSPriority", jmsBinding, jmsPriority);
+                error(monitor, "InvalidOPJMSPriority", jmsBinding, jmsPriority);
             }
         }
 
@@ -744,7 +747,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
                     if (x.getLocalPart().equals("headers")) {
                         return;
                     } else {
-                        error("UnexpectedResponseElement", reader, x.toString());
+                        error(monitor, "UnexpectedResponseElement", reader, x.toString());
                     }
             }
         }
@@ -790,7 +793,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
         } // end while
     }
 
-    private Map<String, BindingProperty> parseBindingProperties(XMLStreamReader reader) throws XMLStreamException {
+    private Map<String, BindingProperty> parseBindingProperties(XMLStreamReader reader, Monitor monitor) throws XMLStreamException {
     	Map<String, BindingProperty> props = new HashMap<String, BindingProperty>();
     	String parentName = reader.getName().getLocalPart();        
         // Parse for all the properties within this element, until the end of
@@ -801,7 +804,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
                 case START_ELEMENT:
                     String elementName = reader.getName().getLocalPart();
                     if ("property".equals(elementName)) {
-                    	processProperty(reader, props);
+                    	processProperty(reader, props, monitor);
                     }
                     break;
                 case END_ELEMENT:
@@ -815,10 +818,10 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
         return props;
     }
 
-    private void processProperty(XMLStreamReader reader, Map<String, BindingProperty> props) throws XMLStreamException {
+    private void processProperty(XMLStreamReader reader, Map<String, BindingProperty> props, Monitor monitor) throws XMLStreamException {
         String name = reader.getAttributeValue(null, "name");
         if (name == null || name.length() < 1) {
-            error("InvalidPropertyElement", reader);
+            error(monitor, "InvalidPropertyElement", reader);
         }
         String type = reader.getAttributeValue(null, "type");
         String value = reader.getElementText();
@@ -833,7 +836,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
      * The older validate() now calls validate(JMSBinding jmsBinding) with a null model. 
      */
     public void validate() {
-        validate( null );
+        validate( null, null );
     }
     
     /**
@@ -846,7 +849,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
      * @param jmsBinding an optional JMS binding model to check for validity.  
      * @since 1.4
      */
-    protected void validate( JMSBinding jmsBinding ) {        
+    protected void validate( JMSBinding jmsBinding, Monitor monitor ) {        
         // If no JMSBinding model is provided, that is all the validation we can do.
         if ( jmsBinding == null ) {
             return;
@@ -857,12 +860,12 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
         if (( connectionFactoryName != null ) && ( connectionFactoryName.length() > 0 )) {
             if (JMSBindingConstants.DESTINATION_TYPE_QUEUE == jmsBinding.getDestinationType()) {
                 if ( connectionFactoryName.contains( "topic" )) {
-                    error("DestinationQueueContradiction", jmsBinding, connectionFactoryName );
+                    error(monitor, "DestinationQueueContradiction", jmsBinding, connectionFactoryName );
                 }
             }
             if (JMSBindingConstants.DESTINATION_TYPE_TOPIC == jmsBinding.getDestinationType()) {
                 if ( connectionFactoryName.contains( "queue" )) {
-                    error("DestinationTopicContradiction", jmsBinding, connectionFactoryName );
+                    error(monitor, "DestinationTopicContradiction", jmsBinding, connectionFactoryName );
                 }
             }
         }
@@ -871,7 +874,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
         if (( connectionFactoryName != null ) && ( connectionFactoryName.length() > 0 )) {
             String activationSpecName = jmsBinding.getActivationSpecName();
             if ((activationSpecName != null) && (activationSpecName.length() > 0 )) {
-                error("ConnectionFactoryActivationSpecContradiction", jmsBinding, connectionFactoryName, activationSpecName );                
+                error(monitor, "ConnectionFactoryActivationSpecContradiction", jmsBinding, connectionFactoryName, activationSpecName );                
             }
         }
 
@@ -883,7 +886,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
         if (( responseConnectionName != null ) && ( responseConnectionName.getLocalPart().length() > 0 )) {
             String responseDestinationName = jmsBinding.getResponseDestinationName();
             if (( responseDestinationName != null ) && (responseDestinationName.length() > 0)) {
-                error("ResponseAttrElement", jmsBinding, responseConnectionName, responseDestinationName );                               
+                error(monitor, "ResponseAttrElement", jmsBinding, responseConnectionName, responseDestinationName );                               
             }
         }
 
@@ -904,11 +907,10 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
      *    responseConnection="QName"?
      *    operationProperties="QName"? 
      *    ...>
-     *
-     * @param jmsBinding JMSBinding model
      * @param writer an XMLStreamWriter that writes XML attributes and elements
+     * @param jmsBinding JMSBinding model
      */
-    public void write(JMSBinding jmsBinding, XMLStreamWriter writer) throws ContributionWriteException,
+    public void write(JMSBinding jmsBinding, XMLStreamWriter writer, ProcessorContext context) throws ContributionWriteException,
         XMLStreamException {
         // Write a <binding.jms>
         writeStart(writer, Constants.SCA11_NS, JMSBindingConstants.BINDING_JMS,
@@ -975,7 +977,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
            
            if ((jmsBinding.getResponseWireFormat() != null) &&
                !(jmsBinding.getResponseWireFormat() instanceof WireFormatJMSDefault)){
-               writeWireFormat(jmsBinding.getResponseWireFormat(), writer);
+               writeWireFormat(jmsBinding.getResponseWireFormat(), writer, context);
            }
            
            writer.writeEndElement();
@@ -985,16 +987,16 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
         
         writeResourceAdapterProperties( jmsBinding, writer );
         
-        writeConfiguredOperations( jmsBinding, writer );
+        writeConfiguredOperations( jmsBinding, writer, context );
         
         if ((jmsBinding.getRequestWireFormat() != null) &&
             !(jmsBinding.getRequestWireFormat() instanceof WireFormatJMSDefault)){
-            writeWireFormat(jmsBinding.getRequestWireFormat(), writer);
+            writeWireFormat(jmsBinding.getRequestWireFormat(), writer, context);
         }
         
         if ((jmsBinding.getOperationSelector() != null) &&
             !(jmsBinding.getOperationSelector() instanceof OperationSelectorJMSDefault)){
-            writeOperationSelector(jmsBinding.getOperationSelector(), writer);
+            writeOperationSelector(jmsBinding.getOperationSelector(), writer, context);
         }
         
         writeEnd(writer);
@@ -1500,14 +1502,14 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
      *       <operation name=\"op1\" requires=\"IntentOne IntentTwo\"/>"
      *   </binding.jms>"
      */
-    private void writeConfiguredOperations( JMSBinding jmsBinding, XMLStreamWriter writer) throws XMLStreamException, ContributionWriteException {       
+    private void writeConfiguredOperations( JMSBinding jmsBinding, XMLStreamWriter writer, ProcessorContext context) throws XMLStreamException, ContributionWriteException {       
         List<ConfiguredOperation> configOps = jmsBinding.getConfiguredOperations();
         if (configOps == null || (configOps.size() < 1)) {
             return;
         }
 
         for( Iterator<ConfiguredOperation> it = configOps.iterator(); it.hasNext();) {
-           configuredOperationProcessor.write(it.next(), writer);
+           configuredOperationProcessor.write(it.next(), writer, context);
         }
 
         // Strange bug. Without white space, headers end tag improperly read.
@@ -1521,8 +1523,8 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
      * @param wireFormat
      * @param writer
      */
-    private void writeWireFormat(WireFormat wireFormat, XMLStreamWriter writer ) throws XMLStreamException, ContributionWriteException {
-        extensionProcessor.write(wireFormat, writer);
+    private void writeWireFormat(WireFormat wireFormat, XMLStreamWriter writer, ProcessorContext context ) throws XMLStreamException, ContributionWriteException {
+        extensionProcessor.write(wireFormat, writer, context);
     }
     
     /**
@@ -1532,8 +1534,8 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
      * @param operationSeletor
      * @param writer
      */
-    private void writeOperationSelector(OperationSelector operationSeletor, XMLStreamWriter writer ) throws XMLStreamException, ContributionWriteException{
-        extensionProcessor.write(operationSeletor, writer);        
+    private void writeOperationSelector(OperationSelector operationSeletor, XMLStreamWriter writer, ProcessorContext context ) throws XMLStreamException, ContributionWriteException{
+        extensionProcessor.write(operationSeletor, writer, context);        
     }
     
 }

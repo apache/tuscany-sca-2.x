@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.contribution.resolver;
 
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
+
 /**
  * A model resolver, responsible for resolving models in the scope of an
  * SCA contribution. 
@@ -47,23 +49,26 @@ public interface ModelResolver {
      * 
      * @param modelClass the type of artifact
      * @param unresolved the unresolved model
+     * @param context The context
      * @return the resolved model
      */
-    <T> T resolveModel(Class<T> modelClass, T unresolved);
+    <T> T resolveModel(Class<T> modelClass, T unresolved, ProcessorContext context);
     
     /**
      * Add a resolved model.
      * 
      * @param resolved The model
+     * @param context 
      */
-    void addModel(Object resolved);
+    void addModel(Object resolved, ProcessorContext context);
     
     /**
      * Remove a resolved model.
      * 
      * @param resolved
+     * @param context 
      * @return The removed model, or null if the model was not removed
      */
-    Object removeModel(Object resolved);
+    Object removeModel(Object resolved, ProcessorContext context);
     
 }

@@ -35,6 +35,7 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.tuscany.sca.common.java.io.IOHelper;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ValidatingXMLInputFactory;
@@ -56,7 +57,7 @@ public class DefinitionsDocumentProcessor implements URLArtifactProcessor<Defini
     private StAXArtifactProcessor<Object> extensionProcessor;
     private XMLInputFactory inputFactory;
     private DefinitionsFactory definitionsFactory;
-    private Monitor monitor;
+    
 
 
     /**
@@ -66,12 +67,10 @@ public class DefinitionsDocumentProcessor implements URLArtifactProcessor<Defini
      * @param staxProcessor
      */
     public DefinitionsDocumentProcessor(FactoryExtensionPoint modelFactories,
-                                        StAXArtifactProcessor<Object> staxProcessor,
-                                        Monitor monitor) {
+                                        StAXArtifactProcessor<Object> staxProcessor) {
         this.extensionProcessor = (StAXArtifactProcessor<Object>)staxProcessor;
         this.inputFactory = modelFactories.getFactory(ValidatingXMLInputFactory.class);
         this.definitionsFactory = modelFactories.getFactory(DefinitionsFactory.class);
-        this.monitor = monitor;
     }
 
     /**
@@ -81,7 +80,7 @@ public class DefinitionsDocumentProcessor implements URLArtifactProcessor<Defini
      * @param message
      * @param model
      */
-    private void error(String message, Object model, Exception ex) {
+    private void error(Monitor monitor, String message, Object model, Exception ex) {
         if (monitor != null) {
             Problem problem =
                 monitor.createProblem(this.getClass().getName(),
@@ -94,8 +93,9 @@ public class DefinitionsDocumentProcessor implements URLArtifactProcessor<Defini
         }
     }
 
-    public Definitions read(URL contributionURL, final URI uri, final URL url) throws ContributionReadException {
+    public Definitions read(URL contributionURL, final URI uri, final URL url, ProcessorContext context) throws ContributionReadException {
         InputStream urlStream = null;
+        Monitor monitor = context.getMonitor();
         monitor.pushContext("Definitions: " + url);
         try {
             // Allow privileged access to open URL stream. Add FilePermission to added to security
@@ -107,7 +107,7 @@ public class DefinitionsDocumentProcessor implements URLArtifactProcessor<Defini
                     }
                 });
             } catch (PrivilegedActionException e) {
-                error("PrivilegedActionException", url, (IOException)e.getException());
+                error(monitor, "PrivilegedActionException", url, (IOException)e.getException());
                 throw (IOException)e.getException();
             }
 
@@ -122,12 +122,12 @@ public class DefinitionsDocumentProcessor implements URLArtifactProcessor<Defini
                 // We only deal with the root element
                 if (event == XMLStreamConstants.START_ELEMENT) {
                     // QName name = reader.getName();
-                    Object model = extensionProcessor.read(reader);
+                    Object model = extensionProcessor.read(reader, context);
                     if (model instanceof Definitions) {
                         DefinitionsUtil.aggregate((Definitions)model, definitions, monitor);
                         return definitions;
                     } else {
-                        error("ContributionReadException", model, null);
+                        error(monitor, "ContributionReadException", model, null);
                     }
                 }
             }
@@ -135,11 +135,11 @@ public class DefinitionsDocumentProcessor implements URLArtifactProcessor<Defini
             return definitions;
         } catch (XMLStreamException e) {
             ContributionReadException ce = new ContributionReadException(e);
-            error("ContributionReadException", inputFactory, ce);
+            error(monitor, "ContributionReadException", inputFactory, ce);
             throw ce;
         } catch (IOException e) {
             ContributionReadException ce = new ContributionReadException(e);
-            error("ContributionReadException", inputFactory, ce);
+            error(monitor, "ContributionReadException", inputFactory, ce);
             throw ce;
         } finally {
 
@@ -156,8 +156,8 @@ public class DefinitionsDocumentProcessor implements URLArtifactProcessor<Defini
         }
     }
 
-    public void resolve(Definitions scaDefinitions, ModelResolver resolver) throws ContributionResolveException {
-        extensionProcessor.resolve(scaDefinitions, resolver);
+    public void resolve(Definitions scaDefinitions, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
+        extensionProcessor.resolve(scaDefinitions, resolver, context);
     }
 
     public String getArtifactType() {

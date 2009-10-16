@@ -260,25 +260,26 @@ public abstract class BaseStAXArtifactProcessor {
     /**
      *
      * @param reader
-     * @param elementName
      * @param extensible
      * @param extensionAttributeProcessor
      * @param extensionAttributeProcessor
      * @param extensionFactory
+     * @param context TODO
+     * @param elementName
      * @throws ContributionReadException
      * @throws XMLStreamException
      */
     protected void readExtendedAttributes(XMLStreamReader reader,
                                           Extensible extensible,
                                           StAXAttributeProcessor extensionAttributeProcessor,
-                                          AssemblyFactory extensionFactory) throws ContributionReadException,
+                                          AssemblyFactory extensionFactory, ProcessorContext context) throws ContributionReadException,
         XMLStreamException {
         QName elementName = reader.getName();
         for (int a = 0; a < reader.getAttributeCount(); a++) {
             QName attributeName = reader.getAttributeName(a);
             if (attributeName.getNamespaceURI() != null && attributeName.getNamespaceURI().length() > 0) {
                 if (!elementName.getNamespaceURI().equals(attributeName.getNamespaceURI())) {
-                    Object attributeValue = extensionAttributeProcessor.read(attributeName, reader);
+                    Object attributeValue = extensionAttributeProcessor.read(attributeName, reader, context);
                     Extension attributeExtension;
                     if (attributeValue instanceof Extension) {
                         attributeExtension = (Extension)attributeValue;
@@ -296,29 +297,30 @@ public abstract class BaseStAXArtifactProcessor {
 
     /**
      *
-     * @param attributeModel
      * @param writer
      * @param extensibleElement
      * @param extensionAttributeProcessor
+     * @param context TODO
+     * @param attributeModel
      * @throws ContributionWriteException
      * @throws XMLStreamException
      */
     protected void writeExtendedAttributes(XMLStreamWriter writer,
                                            Extensible extensibleElement,
-                                           StAXAttributeProcessor extensionAttributeProcessor)
+                                           StAXAttributeProcessor extensionAttributeProcessor, ProcessorContext context)
         throws ContributionWriteException, XMLStreamException {
         for (Extension extension : extensibleElement.getAttributeExtensions()) {
             if (extension.isAttribute()) {
-                extensionAttributeProcessor.write(extension, writer);
+                extensionAttributeProcessor.write(extension, writer, context);
             }
         }
     }
 
     protected void readExtendedElement(XMLStreamReader reader,
                                        Extensible extensible,
-                                       StAXArtifactProcessor extensionProcessor) throws ContributionReadException,
+                                       StAXArtifactProcessor extensionProcessor, ProcessorContext context) throws ContributionReadException,
         XMLStreamException {
-        Object ext = extensionProcessor.read(reader);
+        Object ext = extensionProcessor.read(reader, context);
         if (extensible != null) {
             extensible.getExtensions().add(ext);
         }
@@ -326,10 +328,10 @@ public abstract class BaseStAXArtifactProcessor {
 
     protected void writeExtendedElements(XMLStreamWriter writer,
                                          Extensible extensible,
-                                         StAXArtifactProcessor extensionProcessor) throws ContributionWriteException,
+                                         StAXArtifactProcessor extensionProcessor, ProcessorContext context) throws ContributionWriteException,
         XMLStreamException {
         for (Object ext : extensible.getExtensions()) {
-            extensionProcessor.write(ext, writer);
+            extensionProcessor.write(ext, writer, context);
         }
     }
 

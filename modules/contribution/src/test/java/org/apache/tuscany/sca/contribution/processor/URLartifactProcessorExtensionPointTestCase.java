@@ -77,11 +77,11 @@ public class URLartifactProcessorExtensionPointTestCase {
         public FileTypeArtifactProcessor() {
         }
 
-        public M1 read(URL contributionURL, URI uri, URL url) throws ContributionReadException {
+        public M1 read(URL contributionURL, URI uri, URL url, ProcessorContext context) throws ContributionReadException {
             return null;
         }
 
-        public void resolve(M1 m1, ModelResolver resolver) throws ContributionResolveException {
+        public void resolve(M1 m1, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
         }
 
         public String getArtifactType() {
@@ -97,11 +97,11 @@ public class URLartifactProcessorExtensionPointTestCase {
         public FileNameArtifactProcessor() {
         }
 
-        public M2 read(URL contributionURL, URI uri, URL url) throws ContributionReadException {
+        public M2 read(URL contributionURL, URI uri, URL url, ProcessorContext context) throws ContributionReadException {
             return null;
         }
 
-        public void resolve(M2 m2, ModelResolver resolver) throws ContributionResolveException {
+        public void resolve(M2 m2, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
         }
 
         public String getArtifactType() {

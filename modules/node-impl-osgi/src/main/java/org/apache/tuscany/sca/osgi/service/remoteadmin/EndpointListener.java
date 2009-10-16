@@ -1,20 +1,19 @@
 package org.apache.tuscany.sca.osgi.service.remoteadmin;
 
-
 /**
- * A whiteboard service that represents a listener for endpoints.
+ * A white board service that represents a listener for endpoints.
  * 
  * An Endpoint Listener represents a participant in the distributed model that
  * is interested in Endpoint Descriptions.
  * 
- * This whiteboard service can be used in many different scenarios. However, the
- * primary use case is to allow a remote controller to be informed of End Point
+ * This white board service can be used in many different scenarios. However, the
+ * primary use case is to allow a remote manager to be informed of End Point
  * Descriptions available in the network and inform the network about available
  * End Point Descriptions.
  * 
- * Both the network bundle and the controller bundle register a Endpoint
- * Listener service. The controller informs the network bundle about End Points
- * that it creates. The network bundles then uses a protocol like for example
+ * Both the network bundle and the manager bundle register an Endpoint
+ * Listener service. The manager informs the network bundle about End Points
+ * that it creates. The network bundles then uses a protocol like
  * SLP to announce these local end-points to the network.
  * 
  * If the network bundle discovers a new Endpoint through its discovery
@@ -36,7 +35,7 @@ package org.apache.tuscany.sca.osgi.service.remoteadmin;
  *   (org.osgi.framework.uuid=72dc5fd9-5f8f-4f8f-9821-9ebb433a5b72)
  * </pre>
  * 
- * In the same vein, a controller that is only interested in remote Endpoint
+ * In the same vein, a manager that is only interested in remote Endpoint
  * Descriptions can use a filter like:
  * 
  * <pre>
@@ -47,7 +46,7 @@ package org.apache.tuscany.sca.osgi.service.remoteadmin;
  * can be found in the Framework properties.
  * 
  * The Endpoint Listener's scope maps very well to the service hooks. A
- * controller can just register all filters found from the Listener Hook as its
+ * manager can just register all filters found from the Listener Hook as its
  * scope. This will automatically provide it with all known endpoints that match
  * the given scope, without having to inspect the filter string.
  * 
@@ -67,44 +66,47 @@ package org.apache.tuscany.sca.osgi.service.remoteadmin;
  * @ThreadSafe
  */
 public interface EndpointListener {
-	/**
-	 * Specifies the interest of this listener with filters. This listener is
-	 * only interested in Endpoint Descriptions where its properties match the
-	 * given filter. The type of this property must be <code>String+</code>.
-	 */
-	String ENDPOINT_LISTENER_SCOPE = "endpoint.listener.scope";
+    /**
+     * Specifies the interest of this listener with filters. This listener is
+     * only interested in Endpoint Descriptions where its properties match the
+     * given filter. The type of this property must be <code>String+</code>.
+     */
+    String ENDPOINT_LISTENER_SCOPE = "endpoint.listener.scope";
 
-	/**
-	 * Register an endpoint with this listener.
-	 * 
-	 * If the endpoint matches one of the filters registered with the
-	 * {@link #ENDPOINT_LISTENER_SCOPE} service property then this filter should
-	 * be given as the <code>matchedFilter</code> parameter.
-	 * 
-	 * When this service is first registered or it is modified, it should
-	 * receive all known endpoints matching the filter.
-	 * 
-	 * @param endpoint
-	 *            The Endpoint Description to be published
-	 * @param matchedFilter
-	 *            The filter from the {@link #ENDPOINT_LISTENER_SCOPE} that
-	 *            matched the endpoint, must not be <code>null</code>.
-	 */
-	void addEndpoint(EndpointDescription endpoint, String matchedFilter);
+    /**
+     * Register an endpoint with this listener.
+     * 
+     * If the endpoint matches one of the filters registered with the
+     * {@link #ENDPOINT_LISTENER_SCOPE} service property then this filter should
+     * be given as the <code>matchedFilter</code> parameter.
+     * 
+     * When this service is first registered or it is modified, it should
+     * receive all known endpoints matching the filter.
+     * 
+     * @param endpoint
+     *            The Endpoint Description to be published
+     * @param matchedFilter
+     *            The filter from the {@link #ENDPOINT_LISTENER_SCOPE} that
+     *            matched the endpoint, must not be <code>null</code>.
+     */
+    void endpointAdded(EndpointDescription endpoint, String matchedFilter);
 
-	/**
-	 * Remove the registration of an endpoint.
-	 * 
-	 * If an endpoint that was registered with the {@link #addEndpoint}
-	 * method is no longer available then this method should be called. This
-	 * will remove the endpoint from the listener.
-	 * 
-	 * It is not necessary to remove endpoints when the service is unregistered
-	 * or modified in such a way that not all endpoints match the interest
-	 * filter anymore.
-	 * 
-	 * @param endpoint
-	 *            The Endpoint Description that is no longer valid.
-	 */
-	void removeEndpoint(EndpointDescription endpoint);
+    /**
+     * Remove the registration of an endpoint.
+     * 
+     * If an endpoint that was registered with the {@link #endpointAdded(EndpointDescription, String)}
+     * method is no longer available then this method should be called. This
+     * will remove the endpoint from the listener.
+     * 
+     * It is not necessary to remove endpoints when the service is unregistered
+     * or modified in such a way that not all endpoints match the interest
+     * filter anymore.
+     * 
+     * @param endpoint
+     *            The Endpoint Description that is no longer valid.
+     * @param matchedFilter
+     *            The filter from the {@link #ENDPOINT_LISTENER_SCOPE} that
+     *            matched the endpoint, must not be <code>null</code>.
+     */
+    void endpointRemoved(EndpointDescription endpoint, String matchedFilter);
 }

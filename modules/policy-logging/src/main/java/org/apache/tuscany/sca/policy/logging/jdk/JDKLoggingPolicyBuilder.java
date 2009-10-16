@@ -28,9 +28,8 @@ import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.Implementation;
+import org.apache.tuscany.sca.assembly.builder.BuilderContext;
 import org.apache.tuscany.sca.assembly.builder.PolicyBuilder;
-import org.apache.tuscany.sca.definitions.Definitions;
-import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.policy.PolicyExpression;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySubject;
@@ -40,17 +39,17 @@ import org.apache.tuscany.sca.policy.PolicySubject;
  */
 public class JDKLoggingPolicyBuilder implements PolicyBuilder<JDKLoggingPolicy> {
 
-    public void build(Endpoint endpoint, Definitions definitions, Monitor monitor) {
+    public void build(Endpoint endpoint, BuilderContext context) {
         List<JDKLoggingPolicy> polices = getPolicies(endpoint);
         System.out.println(endpoint + ": " + polices);
     }
 
-    public void build(EndpointReference endpointReference, Definitions definitions, Monitor monitor) {
+    public void build(EndpointReference endpointReference, BuilderContext context) {
         List<JDKLoggingPolicy> polices = getPolicies(endpointReference);
         System.out.println(endpointReference + ": " + polices);
     }
 
-    public void build(Component component, Implementation implementation, Definitions definitions, Monitor monitor) {
+    public void build(Component component, Implementation implementation, BuilderContext context) {
         List<JDKLoggingPolicy> polices = getPolicies(implementation);
         System.out.println(implementation + ": " + polices);
     }

@@ -32,19 +32,14 @@ import junit.framework.TestCase;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.OperationsConfigurator;
 import org.apache.tuscany.sca.assembly.WireFormat;
-import org.apache.tuscany.sca.binding.jms.BindingProperty;
-import org.apache.tuscany.sca.binding.jms.JMSBinding;
-import org.apache.tuscany.sca.binding.jms.JMSBindingException;
 import org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSBytes;
 import org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSObject;
 import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
-import org.apache.tuscany.sca.core.UtilityExtensionPoint;
-import org.apache.tuscany.sca.monitor.Monitor;
-import org.apache.tuscany.sca.monitor.MonitorFactory;
 
 /**
  * Tests for JMS binding xml
@@ -398,21 +393,15 @@ public class JMSBindingProcessorTestCase extends TestCase {
 
     private XMLInputFactory inputFactory;
     private StAXArtifactProcessor<Object> staxProcessor;
-    private Monitor monitor;
+    private ProcessorContext context;
 
     @Override
     protected void setUp() throws Exception {
         DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
+        context = new ProcessorContext(extensionPoints);
         inputFactory = XMLInputFactory.newInstance();
-        // Create a monitor
-        UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
-        MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
-        if (monitorFactory != null) {
-        	monitor = monitorFactory.createMonitor();
-        	utilities.addUtility(monitorFactory);
-        }
         StAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(extensionPoints);
-        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null, monitor);
+        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null);
 
     }
 
@@ -423,7 +412,7 @@ public class JMSBindingProcessorTestCase extends TestCase {
     public void testLoadValidComposite() throws Exception {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(COMPOSITE));
         
-        Composite composite = (Composite)staxProcessor.read(reader);
+        Composite composite = (Composite)staxProcessor.read(reader, context);
         JMSBinding binding = (JMSBinding)   composite.getComponents().get(0).getServices().get(0).getBindings().get(0);
         
         assertNotNull(binding);
@@ -433,7 +422,7 @@ public class JMSBindingProcessorTestCase extends TestCase {
     public void testHeaders1() throws Exception {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(HEADERS1));
         
-        Composite composite = (Composite)staxProcessor.read(reader);
+        Composite composite = (Composite)staxProcessor.read(reader, context);
         JMSBinding binding = (JMSBinding)   composite.getComponents().get(0).getServices().get(0).getBindings().get(0);
         
         assertNotNull(binding);
@@ -446,7 +435,7 @@ public class JMSBindingProcessorTestCase extends TestCase {
     public void testProperties1() throws Exception {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(PROPERTIES1));
         
-        Composite composite = (Composite)staxProcessor.read(reader);
+        Composite composite = (Composite)staxProcessor.read(reader, context);
         JMSBinding binding = (JMSBinding)   composite.getComponents().get(0).getServices().get(0).getBindings().get(0);
         
         assertNotNull(binding);
@@ -457,7 +446,7 @@ public class JMSBindingProcessorTestCase extends TestCase {
     public void testOpProperties1() throws Exception {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(OP_PROPERTIES1));
         
-        Composite composite = (Composite)staxProcessor.read(reader);
+        Composite composite = (Composite)staxProcessor.read(reader, context);
         JMSBinding binding = (JMSBinding)   composite.getComponents().get(0).getServices().get(0).getBindings().get(0);
         
         assertNotNull(binding);
@@ -476,7 +465,7 @@ public class JMSBindingProcessorTestCase extends TestCase {
     public void testSubscriptionHeaders () throws Exception {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(SELECTOR));
         
-        Composite composite = (Composite)staxProcessor.read(reader);
+        Composite composite = (Composite)staxProcessor.read(reader, context);
         JMSBinding binding = (JMSBinding)   composite.getComponents().get(0).getServices().get(0).getBindings().get(0);
         
         assertNotNull(binding);
@@ -490,7 +479,7 @@ public class JMSBindingProcessorTestCase extends TestCase {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(COMPOSITE_INVALID_URI));
 
         try {
-            Composite composite = (Composite)staxProcessor.read(reader);       
+            Composite composite = (Composite)staxProcessor.read(reader, context);       
         } catch(Exception e) {
             // JMSBindingExceptions are expected with invalid composite.
             if ( !e.getClass().isAssignableFrom( JMSBindingException.class ) )
@@ -505,7 +494,7 @@ public class JMSBindingProcessorTestCase extends TestCase {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(HEADERS_INVALID_PRIORITY));
 
         try {
-            Composite composite = (Composite)staxProcessor.read(reader);       
+            Composite composite = (Composite)staxProcessor.read(reader, context);       
         } catch(Exception e) {
             // JMSBindingExceptions are expected with invalid composite.
             if ( !e.getClass().isAssignableFrom( JMSBindingException.class ) )
@@ -522,7 +511,7 @@ public class JMSBindingProcessorTestCase extends TestCase {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(COMPOSITE_INVALID_RESPONSE_ATTR_ELEMENT));
         
         try {
-            Composite composite = (Composite)staxProcessor.read(reader);
+            Composite composite = (Composite)staxProcessor.read(reader, context);
         } catch(Exception e) {
             // JMSBindingExceptions are expected with invalid composite.
             if ( !e.getClass().isAssignableFrom( JMSBindingException.class ) )
@@ -535,7 +524,7 @@ public class JMSBindingProcessorTestCase extends TestCase {
     public void testDestinationProperties() throws Exception {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(DEST_PROPS));
         
-        Composite composite = (Composite)staxProcessor.read(reader);
+        Composite composite = (Composite)staxProcessor.read(reader, context);
         JMSBinding binding = (JMSBinding)   composite.getComponents().get(0).getServices().get(0).getBindings().get(0);
         
         assertNotNull(binding);
@@ -553,7 +542,7 @@ public class JMSBindingProcessorTestCase extends TestCase {
     public void testConnectionFactoryProperties() throws Exception {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(CF_PROPS));
         
-        Composite composite = (Composite)staxProcessor.read(reader);
+        Composite composite = (Composite)staxProcessor.read(reader, context);
         JMSBinding binding = (JMSBinding)   composite.getComponents().get(0).getServices().get(0).getBindings().get(0);
         
         assertNotNull(binding);
@@ -571,7 +560,7 @@ public class JMSBindingProcessorTestCase extends TestCase {
     public void testActivationSpecProperties() throws Exception {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(AS_PROPS));
         
-        Composite composite = (Composite)staxProcessor.read(reader);
+        Composite composite = (Composite)staxProcessor.read(reader, context);
         JMSBinding binding = (JMSBinding)   composite.getComponents().get(0).getServices().get(0).getBindings().get(0);
         
         assertNotNull(binding);
@@ -589,7 +578,7 @@ public class JMSBindingProcessorTestCase extends TestCase {
     public void testResponseDestinationProperties() throws Exception {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(RESP_DEST_PROPS));
         
-        Composite composite = (Composite)staxProcessor.read(reader);
+        Composite composite = (Composite)staxProcessor.read(reader, context);
         JMSBinding binding = (JMSBinding)   composite.getComponents().get(0).getServices().get(0).getBindings().get(0);
         
         assertNotNull(binding);
@@ -607,7 +596,7 @@ public class JMSBindingProcessorTestCase extends TestCase {
     public void testResponseConnectionFactoryProperties() throws Exception {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(RESP_CF_PROPS));
         
-        Composite composite = (Composite)staxProcessor.read(reader);
+        Composite composite = (Composite)staxProcessor.read(reader, context);
         JMSBinding binding = (JMSBinding)   composite.getComponents().get(0).getServices().get(0).getBindings().get(0);
         
         assertNotNull(binding);
@@ -625,7 +614,7 @@ public class JMSBindingProcessorTestCase extends TestCase {
     public void testResponseActivationSpecProperties() throws Exception {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(RESP_AS_PROPS));
         
-        Composite composite = (Composite)staxProcessor.read(reader);
+        Composite composite = (Composite)staxProcessor.read(reader, context);
         JMSBinding binding = (JMSBinding)   composite.getComponents().get(0).getServices().get(0).getBindings().get(0);
         
         assertNotNull(binding);
@@ -643,7 +632,7 @@ public class JMSBindingProcessorTestCase extends TestCase {
     public void testOperationPropertiesProperties() throws Exception {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(OP_PROPS_PROPS));
         
-        Composite composite = (Composite)staxProcessor.read(reader);
+        Composite composite = (Composite)staxProcessor.read(reader, context);
         JMSBinding binding = (JMSBinding)   composite.getComponents().get(0).getServices().get(0).getBindings().get(0);
         
         assertNotNull(binding);
@@ -661,7 +650,7 @@ public class JMSBindingProcessorTestCase extends TestCase {
     public void testResouceAdapterProperties() throws Exception {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(RES_ADPT_PROPS));
         
-        Composite composite = (Composite)staxProcessor.read(reader);
+        Composite composite = (Composite)staxProcessor.read(reader, context);
         JMSBinding binding = (JMSBinding)   composite.getComponents().get(0).getServices().get(0).getBindings().get(0);
         
         assertNotNull(binding);
@@ -687,7 +676,7 @@ public class JMSBindingProcessorTestCase extends TestCase {
     public void testOpProperties2() throws Exception {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(OP_PROPERTIES1));
         
-        Composite composite = (Composite)staxProcessor.read(reader);
+        Composite composite = (Composite)staxProcessor.read(reader, context);
         JMSBinding binding = (JMSBinding)   composite.getComponents().get(0).getServices().get(0).getBindings().get(0);
         
         assertNotNull(binding);
@@ -720,7 +709,7 @@ public class JMSBindingProcessorTestCase extends TestCase {
     public void testOpProperties3() throws Exception {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(OP_NAMES_NO_PROPERTIES1));
         
-        Composite composite = (Composite)staxProcessor.read(reader);
+        Composite composite = (Composite)staxProcessor.read(reader, context);
         JMSBinding binding = (JMSBinding)   composite.getComponents().get(0).getServices().get(0).getBindings().get(0);
         
         assertNotNull(binding);
@@ -743,7 +732,7 @@ public class JMSBindingProcessorTestCase extends TestCase {
     public void testConfiguredOperations1() throws Exception {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(CONFIGURED_OPERATIONS));
         
-        Composite composite = (Composite)staxProcessor.read(reader);
+        Composite composite = (Composite)staxProcessor.read(reader, context);
         JMSBinding binding = (JMSBinding)   composite.getComponents().get(0).getServices().get(0).getBindings().get(0);        
         assertNotNull(binding);
         
@@ -761,7 +750,7 @@ public class JMSBindingProcessorTestCase extends TestCase {
     public void testWireFormat() throws Exception {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(WIRE_FORMAT));
         
-        Composite composite = (Composite)staxProcessor.read(reader);
+        Composite composite = (Composite)staxProcessor.read(reader, context);
         JMSBinding binding = (JMSBinding)   composite.getComponents().get(0).getServices().get(0).getBindings().get(0);        
         assertNotNull(binding);
         
@@ -775,7 +764,7 @@ public class JMSBindingProcessorTestCase extends TestCase {
     public void testOpPropertiesName() throws Exception {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(OP_PROP_NAME));
         
-        Composite composite = (Composite)staxProcessor.read(reader);
+        Composite composite = (Composite)staxProcessor.read(reader, context);
         JMSBinding binding = (JMSBinding)   composite.getComponents().get(0).getServices().get(0).getBindings().get(0);
         
         assertNotNull(binding);

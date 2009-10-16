@@ -30,10 +30,10 @@ import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXAttributeProcessor;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXAttributeProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  * A Policy Processor used for testing.
@@ -44,7 +44,7 @@ public class AnyAttributeProcessor extends BaseStAXArtifactProcessor implements 
     
     private AssemblyFactory assemblyFactory;
 
-    public AnyAttributeProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
+    public AnyAttributeProcessor(FactoryExtensionPoint modelFactories) {
         this.assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
     }
 	
@@ -56,7 +56,7 @@ public class AnyAttributeProcessor extends BaseStAXArtifactProcessor implements 
         return Extension.class;
     }
 
-    public Extension read(QName attributeName, XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+    public Extension read(QName attributeName, XMLStreamReader reader, ProcessorContext context) throws ContributionReadException, XMLStreamException {
         String attributeValue = reader.getAttributeValue(attributeName.getNamespaceURI(), attributeName.getLocalPart());
         Extension ext = assemblyFactory.createExtension();
         ext.setQName(attributeName);
@@ -65,7 +65,7 @@ public class AnyAttributeProcessor extends BaseStAXArtifactProcessor implements 
         return ext;
     }
 
-    public void write(Extension attributeExtension, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
+    public void write(Extension attributeExtension, XMLStreamWriter writer, ProcessorContext context) throws ContributionWriteException, XMLStreamException {
     	writer.writeAttribute(attributeExtension.getQName().getPrefix(), 
     	                      attributeExtension.getQName().getNamespaceURI(), 
     	                      attributeExtension.getQName().getLocalPart(), 
@@ -73,7 +73,7 @@ public class AnyAttributeProcessor extends BaseStAXArtifactProcessor implements 
     	                                                                  // are just the string representation fo the attribute
     } 
 
-    public void resolve(Extension model, ModelResolver modelResolver) throws ContributionResolveException {
+    public void resolve(Extension model, ModelResolver modelResolver, ProcessorContext context) throws ContributionResolveException {
     	
     }
 }

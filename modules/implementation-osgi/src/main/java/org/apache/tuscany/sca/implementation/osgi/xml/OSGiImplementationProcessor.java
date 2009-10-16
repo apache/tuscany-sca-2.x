@@ -41,6 +41,7 @@ import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
@@ -83,20 +84,19 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
     private ServiceDescriptionsFactory serviceDescriptionsFactory;
     private OSGiImplementationFactory osgiImplementationFactory;
     private JavaInterfaceFactory javaInterfaceFactory;
-    private Monitor monitor;
+    
     private ExtensionPointRegistry registry;
     private StAXArtifactProcessor artifactProcessor;
 
-    protected OSGiImplementationProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
-        this.monitor = monitor;
+    protected OSGiImplementationProcessor(FactoryExtensionPoint modelFactories) {
         this.serviceDescriptionsFactory = modelFactories.getFactory(ServiceDescriptionsFactory.class);
         this.assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         this.osgiImplementationFactory = modelFactories.getFactory(OSGiImplementationFactory.class);
         this.javaInterfaceFactory = modelFactories.getFactory(JavaInterfaceFactory.class);
     }
 
-    public OSGiImplementationProcessor(ExtensionPointRegistry registry, StAXArtifactProcessor processor, Monitor monitor) {
-        this(registry.getExtensionPoint(FactoryExtensionPoint.class), monitor);
+    public OSGiImplementationProcessor(ExtensionPointRegistry registry, StAXArtifactProcessor processor) {
+        this(registry.getExtensionPoint(FactoryExtensionPoint.class));
         this.artifactProcessor = processor;
         this.registry = registry;
     }
@@ -108,7 +108,7 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
      * @param message
      * @param model
      */
-    private void error(String message, Object model, Object... messageParameters) {
+    private void error(Monitor monitor, String message, Object model, Object... messageParameters) {
         if (monitor != null) {
             Problem problem =
                 monitor.createProblem(this.getClass().getName(),
@@ -129,7 +129,7 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
         return OSGiImplementation.class;
     }
 
-    public OSGiImplementation read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+    public OSGiImplementation read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException, XMLStreamException {
         assert IMPLEMENTATION_OSGI.equals(reader.getName());
 
         String bundleSymbolicName = reader.getAttributeValue(null, BUNDLE_SYMBOLICNAME);
@@ -157,11 +157,11 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
         return implementation;
     }
 
-    public void resolve(OSGiImplementation impl, ModelResolver resolver) throws ContributionResolveException {
+    public void resolve(OSGiImplementation impl, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
 
         if (impl == null || !impl.isUnresolved())
             return;
-
+        Monitor monitor = context.getMonitor();
         impl.setUnresolved(false);
 
         BundleContext bundleContext = OSGiImplementationActivator.getBundleContext();
@@ -186,14 +186,14 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
         if (bundle != null) {
             impl.setBundle(bundle);
         } else {
-            error("CouldNotLocateOSGiBundle", impl, impl.getBundleSymbolicName());
+            error(monitor, "CouldNotLocateOSGiBundle", impl, impl.getBundleSymbolicName());
             //throw new ContributionResolveException("Could not locate OSGi bundle " +
             //impl.getBundleSymbolicName());
             return;
         }
 
         try {
-            if (introspect(impl, resolver, bundle)) {
+            if (introspect(impl, resolver, context, bundle)) {
                 return;
             }
         } catch (ContributionReadException e) {
@@ -205,39 +205,39 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
         // Try to find a bundle.componentType for the target bundle
         componentType.setURI("OSGI-INF/sca/" + bundle.getSymbolicName() + "/bundle.componentType");
         componentType.setUnresolved(true);
-        componentType = resolver.resolveModel(ComponentType.class, componentType);
+        componentType = resolver.resolveModel(ComponentType.class, componentType, context);
         if (componentType.isUnresolved()) {
             // Create a new instance to prevent it being treated as reentry
             // See org.apache.tuscany.sca.contribution.resolver.ExtensibleModelResolver.resolveModel(Class<T>, T)
             componentType = assemblyFactory.createComponentType();
             // Try a generic one
             componentType.setURI(BUNDLE_COMPONENT_TYPE);
-            componentType = resolver.resolveModel(ComponentType.class, componentType);
+            componentType = resolver.resolveModel(ComponentType.class, componentType, context);
         }
         if (componentType.isUnresolved()) {
             // Try to derive it from the service descriptions
-            if (!deriveFromServiceDescriptions(impl, resolver)) {
-                error("MissingComponentTypeFile", impl, componentType.getURI());
+            if (!deriveFromServiceDescriptions(impl, resolver, context)) {
+                error(monitor, "MissingComponentTypeFile", impl, componentType.getURI());
             }
             //throw new ContributionResolveException("missing .componentType side file " + ctURI);
             return;
         } else {
-            mergeFromComponentType(impl, componentType, resolver);
+            mergeFromComponentType(impl, componentType, resolver, context);
         }
     }
 
-    private boolean deriveFromServiceDescriptions(OSGiImplementation impl, ModelResolver resolver)
+    private boolean deriveFromServiceDescriptions(OSGiImplementation impl, ModelResolver resolver, ProcessorContext context)
         throws ContributionResolveException {
         // FIXME: How to find the RFC 119 service descriptions in the contribution and
         // derive the SCA component type from them?
         ServiceDescriptions descriptions = serviceDescriptionsFactory.createServiceDescriptions();
-        descriptions = resolver.resolveModel(ServiceDescriptions.class, descriptions);
+        descriptions = resolver.resolveModel(ServiceDescriptions.class, descriptions, context);
         if (descriptions != null && !descriptions.isEmpty()) {
             ComponentType ct = assemblyFactory.createComponentType();
             int index = 0;
             for (ServiceDescription ds : descriptions) {
                 for (String i : ds.getInterfaces()) {
-                    Class<?> cls = getJavaClass(resolver, i);
+                    Class<?> cls = getJavaClass(resolver, i, context);
                     JavaInterface javaInterface;
                     try {
                         javaInterface = javaInterfaceFactory.createJavaInterface(cls);
@@ -257,26 +257,26 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
                     ct.getReferences().add(reference);
                 }
             }
-            mergeFromComponentType(impl, ct, resolver);
+            mergeFromComponentType(impl, ct, resolver, context);
             return true;
         }
         return false;
     }
 
-    private void mergeFromComponentType(OSGiImplementation impl, ComponentType componentType, ModelResolver resolver) {
+    private void mergeFromComponentType(OSGiImplementation impl, ComponentType componentType, ModelResolver resolver, ProcessorContext context) {
         List<Service> services = componentType.getServices();
         for (Service service : services) {
             Interface interfaze = service.getInterfaceContract().getInterface();
             if (interfaze instanceof JavaInterface) {
                 JavaInterface javaInterface = (JavaInterface)interfaze;
                 if (javaInterface.getJavaClass() == null) {
-                    javaInterface.setJavaClass(getJavaClass(resolver, javaInterface.getName()));
+                    javaInterface.setJavaClass(getJavaClass(resolver, javaInterface.getName(), context));
                 }
                 if (service.getInterfaceContract().getCallbackInterface() instanceof JavaInterface) {
                     JavaInterface callbackInterface =
                         (JavaInterface)service.getInterfaceContract().getCallbackInterface();
                     if (callbackInterface.getJavaClass() == null) {
-                        callbackInterface.setJavaClass(getJavaClass(resolver, callbackInterface.getName()));
+                        callbackInterface.setJavaClass(getJavaClass(resolver, callbackInterface.getName(), context));
                     }
                 }
 
@@ -290,7 +290,7 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
             if (interfaze instanceof JavaInterface) {
                 JavaInterface javaInterface = (JavaInterface)interfaze;
                 if (javaInterface.getJavaClass() == null) {
-                    javaInterface.setJavaClass(getJavaClass(resolver, javaInterface.getName()));
+                    javaInterface.setJavaClass(getJavaClass(resolver, javaInterface.getName(), context));
                 }
                 impl.getReferences().add(reference);
             } else
@@ -304,13 +304,13 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
         impl.setConstrainingType(componentType.getConstrainingType());
     }
 
-    private Class<?> getJavaClass(ModelResolver resolver, String className) {
+    private Class<?> getJavaClass(ModelResolver resolver, String className, ProcessorContext context) {
         ClassReference ref = new ClassReference(className);
-        ref = resolver.resolveModel(ClassReference.class, ref);
+        ref = resolver.resolveModel(ClassReference.class, ref, context);
         return ref.getJavaClass();
     }
 
-    public void write(OSGiImplementation model, XMLStreamWriter writer) throws ContributionWriteException,
+    public void write(OSGiImplementation model, XMLStreamWriter writer, ProcessorContext context) throws ContributionWriteException,
         XMLStreamException {
         String ns = IMPLEMENTATION_OSGI.getNamespaceURI();
         writer.writeStartElement(ns, IMPLEMENTATION_OSGI.getLocalPart());
@@ -321,7 +321,7 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
         writer.writeEndElement();
     }
 
-    private boolean introspect(OSGiImplementation implementation, ModelResolver resolver, Bundle bundle)
+    private boolean introspect(OSGiImplementation implementation, ModelResolver resolver, ProcessorContext context, Bundle bundle)
         throws ContributionReadException, ContributionResolveException {
         String componentTypeFile = (String)bundle.getHeaders().get(COMPONENT_TYPE_HEADER);
         if (componentTypeFile == null) {
@@ -332,9 +332,9 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
             URLArtifactProcessorExtensionPoint processors =
                 registry.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
             URLArtifactProcessor<ComponentType> processor = processors.getProcessor(ComponentType.class);
-            ComponentType componentType = processor.read(null, URI.create(BUNDLE_COMPONENT_TYPE), url);
-            artifactProcessor.resolve(componentType, resolver);
-            mergeFromComponentType(implementation, componentType, resolver);
+            ComponentType componentType = processor.read(null, URI.create(BUNDLE_COMPONENT_TYPE), url, context);
+            artifactProcessor.resolve(componentType, resolver, context);
+            mergeFromComponentType(implementation, componentType, resolver, context);
             return true;
         }
         return false;

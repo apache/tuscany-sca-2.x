@@ -31,6 +31,7 @@ import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
@@ -38,7 +39,6 @@ import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.implementation.osgi.ServiceDescription;
 import org.apache.tuscany.sca.implementation.osgi.ServiceDescriptions;
 import org.apache.tuscany.sca.implementation.osgi.ServiceDescriptionsFactory;
-import org.apache.tuscany.sca.monitor.Monitor;
 
 /*
 <?xml version="1.0" encoding="UTF-8"?>
@@ -65,18 +65,16 @@ public class ServiceDescriptionsProcessor extends BaseStAXArtifactProcessor impl
     StAXArtifactProcessor<ServiceDescriptions> {
     private ServiceDescriptionsFactory factory;
     private StAXArtifactProcessor processor;
-    private Monitor monitor;
+    
 
     public ServiceDescriptionsProcessor(ExtensionPointRegistry registry,
-                                        StAXArtifactProcessor processor,
-                                        Monitor monitor) {
-        this.monitor = monitor;
+                                        StAXArtifactProcessor processor) {
         this.processor = processor;
         FactoryExtensionPoint modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
         this.factory = modelFactories.getFactory(ServiceDescriptionsFactory.class);
     }
 
-    public ServiceDescriptions read(XMLStreamReader reader) throws XMLStreamException, ContributionReadException {
+    public ServiceDescriptions read(XMLStreamReader reader, ProcessorContext context) throws XMLStreamException, ContributionReadException {
         int event = reader.getEventType();
         ServiceDescriptions sds = factory.createServiceDescriptions();
         ServiceDescription sd = null;
@@ -130,7 +128,7 @@ public class ServiceDescriptionsProcessor extends BaseStAXArtifactProcessor impl
                     } else {
                         name = reader.getName();
                         if (!ServiceDescriptions.SERVICE_DESCRIPTIONS_QNAME.equals(name)) {
-                            Object ext = processor.read(reader);
+                            Object ext = processor.read(reader, context);
                             if (sd != null) {
                                 sd.getProperties().put(name.toString(), ext);
                             }
@@ -178,7 +176,7 @@ public class ServiceDescriptionsProcessor extends BaseStAXArtifactProcessor impl
         return ServiceDescriptions.SERVICE_DESCRIPTIONS_QNAME;
     }
 
-    public void write(ServiceDescriptions model, XMLStreamWriter writer) throws ContributionWriteException,
+    public void write(ServiceDescriptions model, XMLStreamWriter writer, ProcessorContext context) throws ContributionWriteException,
         XMLStreamException {
         // TODO: To be implemented
     }
@@ -187,7 +185,7 @@ public class ServiceDescriptionsProcessor extends BaseStAXArtifactProcessor impl
         return ServiceDescriptions.class;
     }
 
-    public void resolve(ServiceDescriptions model, ModelResolver resolver) throws ContributionResolveException {
+    public void resolve(ServiceDescriptions model, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
         // TODO: To be implemented
     }
 }

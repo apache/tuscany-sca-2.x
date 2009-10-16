@@ -30,6 +30,7 @@ import org.apache.tuscany.sca.binding.ejb.EJBBindingFactory;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
@@ -59,14 +60,13 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
 public class EJBBindingProcessor implements StAXArtifactProcessor<EJBBinding> {
     private PolicyFactory policyFactory;
     private PolicySubjectProcessor policyProcessor;
-    private Monitor monitor;
+    
     private EJBBindingFactory ejbBindingFactory;
 
-    public EJBBindingProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
+    public EJBBindingProcessor(FactoryExtensionPoint modelFactories) {
         this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
         this.ejbBindingFactory = modelFactories.getFactory(EJBBindingFactory.class);
         this.policyProcessor = new PolicySubjectProcessor(policyFactory);
-        this.monitor = monitor;
     }
     
     /**
@@ -76,7 +76,7 @@ public class EJBBindingProcessor implements StAXArtifactProcessor<EJBBinding> {
      * @param message
      * @param model
      */
-     private void error(String message, Object model, Object... messageParameters) {
+     private void error(Monitor monitor, String message, Object model, Object... messageParameters) {
     	 if (monitor != null) {
     		 Problem problem = monitor.createProblem(this.getClass().getName(), "binding-ejb-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
     	     monitor.problem(problem);
@@ -93,7 +93,7 @@ public class EJBBindingProcessor implements StAXArtifactProcessor<EJBBinding> {
     /**
      * {@inheritDoc}
      */
-    public EJBBinding read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+    public EJBBinding read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException, XMLStreamException {
         EJBBinding ejbBinding = ejbBindingFactory.createEJBBinding();
 
         // Read the policies 
@@ -128,7 +128,7 @@ public class EJBBindingProcessor implements StAXArtifactProcessor<EJBBinding> {
             } else if (ejbVersion.equals("EJB3")) {
                 ejbBinding.setEjbVersion(EJBBinding.EJBVersion.EJB3);
             } else {
-            	error("UnknownEJBVersion", reader, ejbVersion, name);
+            	error(context.getMonitor(), "UnknownEJBVersion", reader, ejbVersion, name);
             }
         }
 
@@ -141,7 +141,7 @@ public class EJBBindingProcessor implements StAXArtifactProcessor<EJBBinding> {
         return ejbBinding;
     }
 
-    public void write(EJBBinding ejbBinding, XMLStreamWriter writer) throws ContributionWriteException,
+    public void write(EJBBinding ejbBinding, XMLStreamWriter writer, ProcessorContext context) throws ContributionWriteException,
         XMLStreamException {
         // Write a <binding.ejb>
         writer.writeStartElement(Constants.SCA11_NS, EJBBinding.BINDING_EJB);
@@ -162,6 +162,6 @@ public class EJBBindingProcessor implements StAXArtifactProcessor<EJBBinding> {
         return EJBBinding.class;
     }
 
-    public void resolve(EJBBinding ejbBinding, ModelResolver modelResolver) throws ContributionResolveException {
+    public void resolve(EJBBinding ejbBinding, ModelResolver modelResolver, ProcessorContext context) throws ContributionResolveException {
     }
 }

@@ -20,9 +20,9 @@
 package org.apache.tuscany.sca.contribution.java.impl;
 
 import org.apache.tuscany.sca.contribution.java.JavaExport;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.resolver.ClassReference;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
-import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  * A model resolver for Java exports.
@@ -34,20 +34,20 @@ public class JavaExportModelResolver implements ModelResolver {
     private JavaExport export;
     private ModelResolver resolver;
     
-    public JavaExportModelResolver(JavaExport export, ModelResolver resolver, Monitor monitor) {
+    public JavaExportModelResolver(JavaExport export, ModelResolver resolver) {
         this.export = export;
         this.resolver = resolver;
     }
     
-    public void addModel(Object resolved) {
+    public void addModel(Object resolved, ProcessorContext context) {
         throw new IllegalStateException();
     }
 
-    public Object removeModel(Object resolved) {
+    public Object removeModel(Object resolved, ProcessorContext context) {
         throw new IllegalStateException();
     }
 
-    public <T> T resolveModel(Class<T> modelClass, T unresolved) {
+    public <T> T resolveModel(Class<T> modelClass, T unresolved, ProcessorContext context) {
         if (!(unresolved instanceof ClassReference)) {
             return unresolved;
         }
@@ -66,7 +66,7 @@ public class JavaExportModelResolver implements ModelResolver {
             
             // Package matches the exported package, delegate to the
             // contribution's resolver
-            return resolver.resolveModel(modelClass, unresolved);
+            return resolver.resolveModel(modelClass, unresolved, context);
         } else {
             
             // Package is not exported, return the unresolved object 

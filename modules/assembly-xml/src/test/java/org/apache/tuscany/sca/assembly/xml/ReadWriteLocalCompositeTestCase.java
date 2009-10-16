@@ -32,6 +32,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXAttributeProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
@@ -50,7 +51,8 @@ public class ReadWriteLocalCompositeTestCase {
 
     private XMLInputFactory inputFactory;
     private ExtensibleStAXArtifactProcessor staxProcessor;
-
+    private ProcessorContext context;
+    
     private static final String LOCAL_COMPOSITE_XML = "<?xml version='1.0' encoding='UTF-8'?>"+
     "<composite xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\" targetNamespace=\"http://localcalc\" name=\"LocalCalculator\" local=\"true\">"+
     "</composite>";
@@ -58,13 +60,14 @@ public class ReadWriteLocalCompositeTestCase {
     @Before
     public void setUp() throws Exception {
         ExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
+        context = new ProcessorContext(extensionPoints);
         inputFactory = XMLInputFactory.newInstance();
         StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
 
         StAXAttributeProcessorExtensionPoint staxAttributeProcessors = extensionPoints.getExtensionPoint(StAXAttributeProcessorExtensionPoint.class);
         staxAttributeProcessors.addArtifactProcessor(new TestAttributeProcessor());
         
-        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance(), null);
+        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
     }
 
     @After
@@ -76,7 +79,7 @@ public class ReadWriteLocalCompositeTestCase {
     public void testReadComposite() throws Exception {
         InputStream is = getClass().getResourceAsStream("local.composite");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-        Composite composite = (Composite) staxProcessor.read(reader);
+        Composite composite = (Composite) staxProcessor.read(reader, context);
         assertNotNull(composite);
         assertTrue(composite.isLocal());
         is.close();
@@ -86,13 +89,13 @@ public class ReadWriteLocalCompositeTestCase {
     public void testWriteComposite() throws Exception {
         InputStream is = getClass().getResourceAsStream("local.composite");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-        Composite composite = (Composite) staxProcessor.read(reader);
+        Composite composite = (Composite) staxProcessor.read(reader, context);
         assertNotNull(composite);
         assertTrue(composite.isLocal());
         is.close();
         
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        staxProcessor.write(composite, bos);
+        staxProcessor.write(composite, bos, context);
         System.out.println(bos.toString());
         
         assertEquals(LOCAL_COMPOSITE_XML, bos.toString());

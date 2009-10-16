@@ -32,6 +32,7 @@ import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
@@ -45,14 +46,13 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
  */
 public class JMSHeaderPolicyProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<JMSHeaderPolicy> {
     
-    private Monitor monitor;
+    
     
     public QName getArtifactType() {
         return JMSHeaderPolicy.JMS_HEADER_POLICY_QNAME;
     }
     
-    public JMSHeaderPolicyProcessor(ExtensionPointRegistry modelFactories, Monitor monitor) {
-        this.monitor = monitor;
+    public JMSHeaderPolicyProcessor(ExtensionPointRegistry modelFactories) {
     }
     
     /**
@@ -62,7 +62,7 @@ public class JMSHeaderPolicyProcessor extends BaseStAXArtifactProcessor implemen
      * @param model
      * @param messageParameters
      */
-    protected void warning(String message, Object model, String... messageParameters) {
+    protected void warning(Monitor monitor, String message, Object model, String... messageParameters) {
         if (monitor != null){
             Problem problem = monitor.createProblem(this.getClass().getName(), Messages.RESOURCE_BUNDLE, Severity.WARNING, model, message, (Object[])messageParameters);
             monitor.problem(problem);
@@ -76,7 +76,7 @@ public class JMSHeaderPolicyProcessor extends BaseStAXArtifactProcessor implemen
      * @param message
      * @param model
      */
-    protected void error(String message, Object model, Object... messageParameters) {
+    protected void error(Monitor monitor, String message, Object model, Object... messageParameters) {
         if (monitor != null) {
             Problem problem = monitor.createProblem(this.getClass().getName(), Messages.RESOURCE_BUNDLE, Severity.ERROR, model, message, (Object[])messageParameters);
             monitor.problem(problem);
@@ -84,11 +84,11 @@ public class JMSHeaderPolicyProcessor extends BaseStAXArtifactProcessor implemen
     }    
 
     
-    public JMSHeaderPolicy read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+    public JMSHeaderPolicy read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException, XMLStreamException {
         JMSHeaderPolicy policy = new JMSHeaderPolicy();
         int event = reader.getEventType();
         QName name = null;
-        
+        Monitor monitor = context.getMonitor();
         while (reader.hasNext()) {
             event = reader.getEventType();
             switch (event) {
@@ -106,7 +106,7 @@ public class JMSHeaderPolicyProcessor extends BaseStAXArtifactProcessor implemen
                             } else if (deliveryMode.equals("NON_PERSISTENT")){
                                 policy.setDeliveryModePersistent(false);
                             } else {
-                                error("InvalidDeliveryMode", policy, deliveryMode);
+                                error(monitor, "InvalidDeliveryMode", policy, deliveryMode);
                             }  
                         }
                         
@@ -116,7 +116,7 @@ public class JMSHeaderPolicyProcessor extends BaseStAXArtifactProcessor implemen
                             try {
                                 policy.setTimeToLive(Long.valueOf(timeToLive));
                             } catch (NumberFormatException ex){
-                                error("InvalidTimeToLive", policy, timeToLive);
+                                error(monitor, "InvalidTimeToLive", policy, timeToLive);
                             }
                         }
                         
@@ -126,7 +126,7 @@ public class JMSHeaderPolicyProcessor extends BaseStAXArtifactProcessor implemen
                             try {
                                 policy.setJmsPriority(Integer.valueOf(priority));
                             } catch (NumberFormatException ex){
-                                error("InvalidPriority", policy, priority);
+                                error(monitor, "InvalidPriority", policy, priority);
                             }                                
                         }
                     } else if (name.getLocalPart().equals(JMSHeaderPolicy.JMS_HEADER_JMS_PROPERTY)) {
@@ -153,7 +153,7 @@ public class JMSHeaderPolicyProcessor extends BaseStAXArtifactProcessor implemen
         return policy;
     }
 
-    public void write(JMSHeaderPolicy policy, XMLStreamWriter writer) 
+    public void write(JMSHeaderPolicy policy, XMLStreamWriter writer, ProcessorContext context) 
         throws ContributionWriteException, XMLStreamException {
         String prefix = "tuscany";
         writer.writeStartElement(prefix, 
@@ -199,7 +199,7 @@ public class JMSHeaderPolicyProcessor extends BaseStAXArtifactProcessor implemen
         return JMSHeaderPolicy.class;
     }
 
-    public void resolve(JMSHeaderPolicy arg0, ModelResolver arg1) throws ContributionResolveException {
+    public void resolve(JMSHeaderPolicy arg0, ModelResolver arg1, ProcessorContext context) throws ContributionResolveException {
 
     }
     

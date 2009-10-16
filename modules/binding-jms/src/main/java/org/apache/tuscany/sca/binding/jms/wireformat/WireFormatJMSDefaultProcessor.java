@@ -28,10 +28,10 @@ import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  * 
@@ -43,10 +43,10 @@ public class WireFormatJMSDefaultProcessor extends BaseStAXArtifactProcessor imp
         return WireFormatJMSDefault.WIRE_FORMAT_JMS_DEFAULT_QNAME;
     }
 
-    public WireFormatJMSDefaultProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
+    public WireFormatJMSDefaultProcessor(FactoryExtensionPoint modelFactories) {
     }
 
-    public WireFormatJMSDefault read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+    public WireFormatJMSDefault read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException, XMLStreamException {
         WireFormatJMSDefault wireFormat = new WireFormatJMSDefault();
 
         String sendFormat = reader.getAttributeValue(null, WireFormatJMSDefault.WIRE_FORMAT_JMS_DEFAULT_FORMAT_ATTR);
@@ -64,7 +64,7 @@ public class WireFormatJMSDefaultProcessor extends BaseStAXArtifactProcessor imp
         return wireFormat;
     }
 
-    public void write(WireFormatJMSDefault wireFormat, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
+    public void write(WireFormatJMSDefault wireFormat, XMLStreamWriter writer, ProcessorContext context) throws ContributionWriteException, XMLStreamException {
         String prefix = "tuscany";
         writer.writeStartElement(prefix, getArtifactType().getLocalPart(), getArtifactType().getNamespaceURI());
         writer.writeNamespace("tuscany", Constants.SCA11_TUSCANY_NS);
@@ -82,7 +82,7 @@ public class WireFormatJMSDefaultProcessor extends BaseStAXArtifactProcessor imp
         return WireFormatJMSDefault.class;
     }
 
-    public void resolve(WireFormatJMSDefault arg0, ModelResolver arg1) throws ContributionResolveException {
+    public void resolve(WireFormatJMSDefault arg0, ModelResolver arg1, ProcessorContext context) throws ContributionResolveException {
 
     }
 

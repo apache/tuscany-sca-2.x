@@ -31,6 +31,7 @@ import javax.xml.stream.XMLOutputFactory;
 import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
@@ -48,24 +49,26 @@ public class WriteTestCase {
     private static StAXArtifactProcessor<Object> staxProcessor;
     private static XMLInputFactory inputFactory;
     private static XMLOutputFactory outputFactory;
-
+    private static ProcessorContext context;
+    
     @BeforeClass
     public static void setUp() throws Exception {
         DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
+        context = new ProcessorContext(extensionPoints);
         StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         inputFactory = XMLInputFactory.newInstance();
         outputFactory = XMLOutputFactory.newInstance();
-        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, outputFactory, null);
+        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, outputFactory);
     }
 
     @Test
     @Ignore // broken in 2.0 bring up
     public void testReadWriteComponentType() throws Exception {
         InputStream is = getClass().getResourceAsStream("/CalculatorServiceImpl.componentType");
-        ComponentType componentType = (ComponentType)staxProcessor.read(inputFactory.createXMLStreamReader(is));
+        ComponentType componentType = (ComponentType)staxProcessor.read(inputFactory.createXMLStreamReader(is), context);
         assertNotNull(componentType);
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        staxProcessor.write(componentType, outputFactory.createXMLStreamWriter(bos));
+        staxProcessor.write(componentType, outputFactory.createXMLStreamWriter(bos), context);
         assertEquals("<?xml version='1.0' encoding='UTF-8'?><componentType xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\" ><service name=\"CalculatorService\"><binding.sca /><interface.java interface=\"calculator.CalculatorService\" /></service><reference name=\"addService\"><binding.sca /><interface.java interface=\"calculator.AddService\" /></reference></componentType>",
         		     bos.toString());
         }
@@ -74,10 +77,10 @@ public class WriteTestCase {
     @Ignore // broken in 2.0 bring up
     public void testReadWriteComposite() throws Exception {
         InputStream is = getClass().getResourceAsStream("/Calculator.composite");
-        Composite composite = (Composite)staxProcessor.read(inputFactory.createXMLStreamReader(is));
+        Composite composite = (Composite)staxProcessor.read(inputFactory.createXMLStreamReader(is), context);
         assertNotNull(composite);
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        staxProcessor.write(composite, outputFactory.createXMLStreamWriter(bos));
+        staxProcessor.write(composite, outputFactory.createXMLStreamWriter(bos), context);
         assertEquals("<?xml version='1.0' encoding='UTF-8'?><composite xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\" targetNamespace=\"http://calc\" name=\"Calculator\"><service name=\"CalculatorService\" promote=\"CalculatorServiceComponent\"><binding.sca /><interface.java interface=\"calculator.CalculatorService\" /></service><component name=\"CalculatorServiceComponent\"><implementation.java class=\"calculator.CalculatorServiceImpl\" /><reference name=\"addService\" target=\"AddServiceComponent\"><binding.sca /></reference><reference name=\"subtractService\" target=\"SubtractServiceComponent\" /><reference name=\"multiplyService\" target=\"MultiplyServiceComponent\" /><reference name=\"divideService\" target=\"DivideServiceComponent\" /></component><component name=\"AddServiceComponent\"><implementation.java class=\"calculator.AddServiceImpl\" /><service name=\"AddService\"><binding.sca /><interface.java interface=\"calculator.AddService\" /></service></component><component name=\"SubtractServiceComponent\"><implementation.java class=\"calculator.SubtractServiceImpl\" /></component><component name=\"MultiplyServiceComponent\"><implementation.java class=\"calculator.MultiplyServiceImpl\" /></component><component name=\"DivideServiceComponent\"><implementation.java class=\"calculator.DivideServiceImpl\" /></component></composite>",
                      bos.toString());
     }

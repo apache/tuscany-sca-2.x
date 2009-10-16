@@ -22,11 +22,9 @@ package org.apache.tuscany.sca.assembly.builder;
 import java.lang.reflect.Constructor;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.xml.namespace.QName;
-import javax.xml.ws.EndpointReference;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
@@ -38,12 +36,10 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.LifeCycleListener;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
-import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
 import org.apache.tuscany.sca.extensibility.ServiceDeclarationParser;
 import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
-import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  * Default implementation of a provider factory extension point.
@@ -198,7 +194,7 @@ public class DefaultBuilderExtensionPoint implements BuilderExtensionPoint, Life
      * A wrapper around a composite builder allowing lazy
      * loading and initialization of implementation providers.
      */
-    private class LazyCompositeBuilder implements CompositeBuilder, DeployedCompositeBuilder {
+    private class LazyCompositeBuilder implements CompositeBuilder {
 
         private FactoryExtensionPoint factories;
         private InterfaceContractMapper mapper;
@@ -223,16 +219,9 @@ public class DefaultBuilderExtensionPoint implements BuilderExtensionPoint, Life
             return id;
         }
 
-        public Composite build(Composite composite, Definitions definitions, Monitor monitor)
+        public Composite build(Composite composite, BuilderContext context)
             throws CompositeBuilderException {
-            return getBuilder().build(composite, definitions, monitor);
-        }
-
-        public Composite build(Composite composite,
-                               Definitions definitions,
-                               Map<QName, List<String>> bindingBaseURIs,
-                               Monitor monitor) throws CompositeBuilderException {
-            return ((DeployedCompositeBuilder)getBuilder()).build(composite, definitions, bindingBaseURIs, monitor);
+            return getBuilder().build(composite, context);
         }
 
         private CompositeBuilder getBuilder() {
@@ -279,8 +268,8 @@ public class DefaultBuilderExtensionPoint implements BuilderExtensionPoint, Life
             this.qname = ServiceDeclarationParser.getQName(sd.getAttributes().get("qname"));
         }
 
-        public void build(Component component, Contract contract, Binding binding, Monitor monitor) {
-            getBuilder().build(component, contract, binding, monitor);
+        public void build(Component component, Contract contract, Binding binding, BuilderContext context) {
+            getBuilder().build(component, contract, binding, context);
         }
 
         public QName getBindingType() {
@@ -323,8 +312,8 @@ public class DefaultBuilderExtensionPoint implements BuilderExtensionPoint, Life
             this.qname = ServiceDeclarationParser.getQName(sd.getAttributes().get("qname"));
         }
 
-        public void build(Component component, Implementation implementation, Monitor monitor) {
-            getBuilder().build(component, implementation, monitor);
+        public void build(Component component, Implementation implementation, BuilderContext context) {
+            getBuilder().build(component, implementation, context);
         }
 
         public QName getImplementationType() {
@@ -366,8 +355,8 @@ public class DefaultBuilderExtensionPoint implements BuilderExtensionPoint, Life
             this.qname = ServiceDeclarationParser.getQName(sd.getAttributes().get("qname"));
         }
 
-        public void build(Component component, Implementation implementation, Definitions definitions, Monitor monitor) {
-            getBuilder().build(component, implementation, definitions, monitor);
+        public void build(Component component, Implementation implementation, BuilderContext context) {
+            getBuilder().build(component, implementation, context);
         }
 
         public QName getPolicyType() {
@@ -393,12 +382,12 @@ public class DefaultBuilderExtensionPoint implements BuilderExtensionPoint, Life
             return builder;
         }
 
-        public void build(Endpoint endpoint, Definitions definitions, Monitor monitor) {
-            getBuilder().build(endpoint, definitions, monitor);
+        public void build(Endpoint endpoint, BuilderContext context) {
+            getBuilder().build(endpoint, context);
         }
 
-        public void build(org.apache.tuscany.sca.assembly.EndpointReference endpointReference, Definitions definitions, Monitor monitor) {
-            getBuilder().build(endpointReference, definitions, monitor);
+        public void build(org.apache.tuscany.sca.assembly.EndpointReference endpointReference, BuilderContext context) {
+            getBuilder().build(endpointReference, context);
         }
 
     }

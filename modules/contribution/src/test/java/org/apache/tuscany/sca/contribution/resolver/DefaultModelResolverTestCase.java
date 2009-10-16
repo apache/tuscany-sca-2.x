@@ -24,6 +24,7 @@ import static org.junit.Assert.assertTrue;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.DefaultContributionFactory;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -45,28 +46,30 @@ public class DefaultModelResolverTestCase {
 
     @Test
     public void testResolved() {
+        ProcessorContext context = new ProcessorContext();
         Model a = new Model("a");
-        resolver.addModel(a);
+        resolver.addModel(a, context);
         Model x = new Model("a");
-        x = resolver.resolveModel(Model.class, x);
+        x = resolver.resolveModel(Model.class, x, context);
         assertTrue(x == a);
     }
 
     @Test
     public void testUnresolved() {
         Model x = new Model("a");
-        Model y = resolver.resolveModel(Model.class, x);
+        Model y = resolver.resolveModel(Model.class, x, new ProcessorContext());
         assertTrue(x == y);
     }
 
     @Test
     public void testResolvedArtifact() {
+        ProcessorContext context = new ProcessorContext();
         Artifact artifact = factory.createArtifact();
         artifact.setURI("foo/bar");
-        resolver.addModel(artifact);
+        resolver.addModel(artifact, context);
         Artifact x = factory.createArtifact();
         x.setURI("foo/bar");
-        x = resolver.resolveModel(Artifact.class, x);
+        x = resolver.resolveModel(Artifact.class, x, context);
         assertTrue(x == artifact);
     }
 

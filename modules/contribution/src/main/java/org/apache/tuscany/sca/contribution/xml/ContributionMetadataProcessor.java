@@ -38,6 +38,7 @@ import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXAttributeProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
@@ -62,17 +63,15 @@ public class ContributionMetadataProcessor extends BaseStAXArtifactProcessor imp
     private final ContributionFactory contributionFactory;
     private final StAXArtifactProcessor<Object> extensionProcessor;
     private final StAXAttributeProcessor<Object> attributeProcessor;
-    private Monitor monitor;
+    
 
     public ContributionMetadataProcessor(FactoryExtensionPoint modelFactories,
                                          StAXArtifactProcessor<Object> extensionProcessor,
-                                         StAXAttributeProcessor<Object> attributeProcessor,
-                                         Monitor monitor) {
+                                         StAXAttributeProcessor<Object> attributeProcessor) {
         this.assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         this.contributionFactory = modelFactories.getFactory(ContributionFactory.class);
         this.extensionProcessor = extensionProcessor;
         this.attributeProcessor = attributeProcessor;
-        this.monitor = monitor;
     }
 
     /**
@@ -82,7 +81,7 @@ public class ContributionMetadataProcessor extends BaseStAXArtifactProcessor imp
      * @param message
      * @param model
      */
-    private void error(String message, Object model, Object... messageParameters) {
+    private void error(Monitor monitor, String message, Object model, Object... messageParameters) {
         if (monitor != null) {
             Problem problem =
                 monitor.createProblem(this.getClass().getName(),
@@ -102,7 +101,7 @@ public class ContributionMetadataProcessor extends BaseStAXArtifactProcessor imp
      * @param message
      * @param model
      */
-    private void error(String message, Object model, Exception ex) {
+    private void error(Monitor monitor, String message, Object model, Exception ex) {
         if (monitor != null) {
             Problem problem =
                 monitor.createProblem(this.getClass().getName(), "contribution-xml-validation-messages", Severity.ERROR,
@@ -119,7 +118,7 @@ public class ContributionMetadataProcessor extends BaseStAXArtifactProcessor imp
         return ContributionMetadata.class;
     }
 
-    public ContributionMetadata read(XMLStreamReader reader) throws ContributionReadException {
+    public ContributionMetadata read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException {
         ContributionMetadata contribution = null;
         QName name = null;
 
@@ -135,14 +134,14 @@ public class ContributionMetadataProcessor extends BaseStAXArtifactProcessor imp
                             // Read <contribution>
                             contribution = this.contributionFactory.createContributionMetadata();
                             contribution.setUnresolved(true);
-                            readExtendedAttributes(reader, contribution, attributeProcessor, assemblyFactory);
+                            readExtendedAttributes(reader, contribution, attributeProcessor, assemblyFactory, context);
 
                         } else if (DEPLOYABLE_QNAME.equals(name)) {
 
                             // Read <deployable>
                             QName compositeName = getQName(reader, "composite");
                             if (compositeName == null) {
-                                error("AttributeCompositeMissing", reader);
+                                error(context.getMonitor(), "AttributeCompositeMissing", reader);
                                 //throw new ContributionReadException("Attribute 'composite' is missing");
                             } else {
                                 if (contribution != null) {
@@ -155,7 +154,7 @@ public class ContributionMetadataProcessor extends BaseStAXArtifactProcessor imp
                         } else {
 
                             // Read an extension element
-                            Object extension = extensionProcessor.read(reader);
+                            Object extension = extensionProcessor.read(reader, context);
                             if (extension != null && contribution != null) {
                                 if (extension instanceof Import) {
                                     contribution.getImports().add((Import)extension);
@@ -182,27 +181,27 @@ public class ContributionMetadataProcessor extends BaseStAXArtifactProcessor imp
             }
         } catch (XMLStreamException e) {
             ContributionReadException ex = new ContributionReadException(e);
-            error("XMLStreamException", reader, ex);
+            error(context.getMonitor(), "XMLStreamException", reader, ex);
         }
 
         return contribution;
     }
 
-    public void write(ContributionMetadata contribution, XMLStreamWriter writer) throws ContributionWriteException,
+    public void write(ContributionMetadata contribution, XMLStreamWriter writer, ProcessorContext context) throws ContributionWriteException,
         XMLStreamException {
 
         // Write <contribution>
         writeStartDocument(writer, CONTRIBUTION_QNAME.getNamespaceURI(), CONTRIBUTION_QNAME.getLocalPart());
-        writeExtendedAttributes(writer, contribution, attributeProcessor);
+        writeExtendedAttributes(writer, contribution, attributeProcessor, context);
 
         // Write <import>
         for (Import imp : contribution.getImports()) {
-            extensionProcessor.write(imp, writer);
+            extensionProcessor.write(imp, writer, context);
         }
 
         // Write <export>
         for (Export export : contribution.getExports()) {
-            extensionProcessor.write(export, writer);
+            extensionProcessor.write(export, writer, context);
         }
 
         // Write <deployable>
@@ -217,28 +216,28 @@ public class ContributionMetadataProcessor extends BaseStAXArtifactProcessor imp
         writeEndDocument(writer);
     }
 
-    public void resolve(ContributionMetadata contribution, ModelResolver resolver) throws ContributionResolveException {
+    public void resolve(ContributionMetadata contribution, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
 
         // Resolve imports and exports
         for (Export export : contribution.getExports()) {
-            extensionProcessor.resolve(export, resolver);
+            extensionProcessor.resolve(export, resolver, context);
         }
         for (Import import_ : contribution.getImports()) {
-            extensionProcessor.resolve(import_, resolver);
+            extensionProcessor.resolve(import_, resolver, context);
         }
 
         // Resolve deployable composites
         List<Composite> deployables = contribution.getDeployables();
         for (int i = 0, n = deployables.size(); i < n; i++) {
             Composite deployable = deployables.get(i);
-            Composite resolved = (Composite)resolver.resolveModel(Composite.class, deployable);
+            Composite resolved = (Composite)resolver.resolveModel(Composite.class, deployable, context);
             if (resolved != deployable) {
                 deployables.set(i, resolved);
             }
         }
 
         for (Object ext : contribution.getExtensions()) {
-            extensionProcessor.resolve(ext, resolver);
+            extensionProcessor.resolve(ext, resolver, context);
         }
 
         contribution.setUnresolved(false);

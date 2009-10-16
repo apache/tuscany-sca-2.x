@@ -31,12 +31,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
 import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
+import org.apache.tuscany.sca.monitor.MonitorFactory;
 
 /**
  * Default implementation of an extension point for XML definitionss.
@@ -47,6 +50,7 @@ public class DefaultDefinitionsExtensionPoint implements DefinitionsExtensionPoi
     private static final Logger logger = Logger.getLogger(DefaultDefinitionsExtensionPoint.class.getName());
     private static final URI DEFINITIONS_URI = URI.create("META-INF/definitions.xml");
     private ExtensionPointRegistry registry;
+    private MonitorFactory monitorFactory;
     private Set<URL> documents = new HashSet<URL>();
     private List<Definitions> definitions = new ArrayList<Definitions>();
     private boolean documentsLoaded;
@@ -54,6 +58,7 @@ public class DefaultDefinitionsExtensionPoint implements DefinitionsExtensionPoi
 
     public DefaultDefinitionsExtensionPoint(ExtensionPointRegistry registry) {
         this.registry = registry;
+        this.monitorFactory = registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(MonitorFactory.class);
     }
 
     public void addDefinitionsDocument(URL url) {
@@ -98,10 +103,11 @@ public class DefaultDefinitionsExtensionPoint implements DefinitionsExtensionPoi
             URLArtifactProcessorExtensionPoint processors =
                 registry.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
             URLArtifactProcessor<Definitions> processor = processors.getProcessor(Definitions.class);
+            ProcessorContext context = new ProcessorContext(monitorFactory.createMonitor());
             for (URL url : documents) {
                 Definitions def;
                 try {
-                    def = processor.read(null, DEFINITIONS_URI, url);
+                    def = processor.read(null, DEFINITIONS_URI, url, context);
                     definitions.add(def);
                 } catch (ContributionReadException e) {
                     logger.log(Level.SEVERE, e.getMessage(), e);

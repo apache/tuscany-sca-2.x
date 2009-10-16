@@ -33,14 +33,12 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.contribution.ContributionMetadata;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.core.UtilityExtensionPoint;
-import org.apache.tuscany.sca.monitor.DefaultMonitorFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
-import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -71,31 +69,25 @@ public class ContributionMetadataProcessorTestCase {
     private static XMLOutputFactory outputFactory;
     private static StAXArtifactProcessor<Object> staxProcessor;
     private static Monitor monitor;
-
+    private static ProcessorContext context;
+    
     @BeforeClass
     public static void setUp() throws Exception {
         ExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
-
+        context = new ProcessorContext(extensionPoints);
+        monitor = context.getMonitor();        
         inputFactory = XMLInputFactory.newInstance();
         outputFactory = XMLOutputFactory.newInstance();
         outputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.TRUE);
-
-        // Create a monitor
-        UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
-        MonitorFactory monitorFactory = new DefaultMonitorFactory();
-        if (monitorFactory != null) {
-            monitor = monitorFactory.createMonitor();
-            utilities.addUtility(monitorFactory);
-        }
         StAXArtifactProcessorExtensionPoint staxProcessors =
             extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, outputFactory, null);
+        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, outputFactory);
     }
 
     @Test
     public void testRead() throws Exception {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(VALID_XML));
-        ContributionMetadata contribution = (ContributionMetadata)staxProcessor.read(reader);
+        ContributionMetadata contribution = (ContributionMetadata)staxProcessor.read(reader, context);
         assertNotNull(contribution);
         assertEquals(2, contribution.getDeployables().size());
         assertEquals(1, contribution.getAttributeExtensions().size());
@@ -111,7 +103,7 @@ public class ContributionMetadataProcessorTestCase {
         } catch (ContributionReadException e) {
             assertTrue(true);
         }*/
-        staxProcessor.read(reader);
+        staxProcessor.read(reader, context);
         Problem problem = monitor.getLastProblem();
         assertNotNull(problem);
         assertEquals("AttributeCompositeMissing", problem.getMessageId());
@@ -120,18 +112,18 @@ public class ContributionMetadataProcessorTestCase {
     @Test
     public void testWrite() throws Exception {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(VALID_XML));
-        ContributionMetadata contribution = (ContributionMetadata)staxProcessor.read(reader);
+        ContributionMetadata contribution = (ContributionMetadata)staxProcessor.read(reader, context);
 
         validateContribution(contribution);
 
         //write the contribution metadata contents
         StringWriter stringWriter = new StringWriter();
         XMLStreamWriter writer = outputFactory.createXMLStreamWriter(stringWriter);
-        staxProcessor.write(contribution, writer);
+        staxProcessor.write(contribution, writer, context);
         stringWriter.close();
 
         reader = inputFactory.createXMLStreamReader(new StringReader(stringWriter.toString()));
-        contribution = (ContributionMetadata)staxProcessor.read(reader);
+        contribution = (ContributionMetadata)staxProcessor.read(reader, context);
 
         validateContribution(contribution);
     }

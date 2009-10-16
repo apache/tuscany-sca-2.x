@@ -22,10 +22,10 @@ package org.apache.tuscany.sca.policy.xml;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.policy.ExtensionType;
 import org.apache.tuscany.sca.policy.ImplementationType;
 import org.apache.tuscany.sca.policy.PolicyFactory;
@@ -38,15 +38,13 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
 public class ImplementationTypeProcessor extends ExtensionTypeProcessor {
 
     public ImplementationTypeProcessor(PolicyFactory policyFactory,
-                                       StAXArtifactProcessor<Object> extensionProcessor,
-                                       Monitor monitor) {
-        super(policyFactory, extensionProcessor, monitor);
+                                       StAXArtifactProcessor<Object> extensionProcessor) {
+        super(policyFactory, extensionProcessor);
     }
 
     public ImplementationTypeProcessor(FactoryExtensionPoint modelFactories,
-                                       StAXArtifactProcessor<Object> extensionProcessor,
-                                       Monitor monitor) {
-        super(modelFactories.getFactory(PolicyFactory.class), extensionProcessor, monitor);
+                                       StAXArtifactProcessor<Object> extensionProcessor) {
+        super(modelFactories.getFactory(PolicyFactory.class), extensionProcessor);
     }
 
     public QName getArtifactType() {
@@ -54,11 +52,11 @@ public class ImplementationTypeProcessor extends ExtensionTypeProcessor {
     }
 
     @Override
-    protected ExtensionType resolveExtensionType(ExtensionType extnType, ModelResolver resolver)
+    protected ExtensionType resolveExtensionType(ExtensionType extnType, ModelResolver resolver, ProcessorContext context)
         throws ContributionResolveException {
         if (extnType instanceof ImplementationType) {
             ImplementationType implType = (ImplementationType)extnType;
-            return resolver.resolveModel(ImplementationType.class, implType);
+            return resolver.resolveModel(ImplementationType.class, implType, context);
         } else {
             return extnType;
         }

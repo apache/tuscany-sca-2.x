@@ -32,9 +32,9 @@ import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.assembly.builder.BuilderContext;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
-import org.apache.tuscany.sca.assembly.builder.DeployedCompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.Messages;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.definitions.Definitions;
@@ -45,7 +45,7 @@ import org.apache.tuscany.sca.monitor.Monitor;
  *
  * @version $Rev$ $Date$
  */
-public class BindingURIBuilderImpl implements CompositeBuilder, DeployedCompositeBuilder {
+public class BindingURIBuilderImpl implements CompositeBuilder {
 
     public BindingURIBuilderImpl(ExtensionPointRegistry registry) {
     }
@@ -55,27 +55,12 @@ public class BindingURIBuilderImpl implements CompositeBuilder, DeployedComposit
      *
      * @param composite the composite to be configured
      */
-    public Composite build(Composite composite, Definitions definitions, Monitor monitor)
+    public Composite build(Composite composite, BuilderContext context)
         throws CompositeBuilderException {
-        configureBindingURIs(composite, null, definitions, null, monitor);
+        configureBindingURIs(composite, null, context.getDefinitions(), context.getBindingBaseURIs(), context.getMonitor());
         return composite;
     }
 
-    /**
-     * Fully resolve the binding URIs based on available information. This includes information
-     * from the ".composite" files, from resources associated with the binding, e.g. WSDL files,
-     * from any associated policies and from the default information for each binding type.
-     *
-     * @param composite the composite to be configured
-     * @param defaultBindings list of default binding configurations
-     */
-    public Composite build(Composite composite,
-                           Definitions definitions,
-                           Map<QName, List<String>> defaultBindings,
-                           Monitor monitor) throws CompositeBuilderException {
-        configureBindingURIs(composite, null, definitions, defaultBindings, monitor);
-        return composite;
-    }
 
     /**
      * Fully resolve the binding URIs based on available information. This includes information

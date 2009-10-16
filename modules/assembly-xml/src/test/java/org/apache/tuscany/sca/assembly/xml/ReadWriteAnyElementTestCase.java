@@ -30,6 +30,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ValidatingXMLInputFactory;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
@@ -75,15 +76,18 @@ public class ReadWriteAnyElementTestCase {
     
     private XMLInputFactory inputFactory;
     private ExtensibleStAXArtifactProcessor staxProcessor;
+    private ProcessorContext context;
 
     @Before
     public void setUp() throws Exception {
         ExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
+        context = new ProcessorContext(extensionPoints);
+        
         FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         inputFactory = modelFactories.getFactory(ValidatingXMLInputFactory.class);
 
         StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, XMLOutputFactory.newInstance(), null);
+        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, XMLOutputFactory.newInstance());
     }
 
     @After
@@ -93,12 +97,12 @@ public class ReadWriteAnyElementTestCase {
     @Test
     public void testReadWriteExtendedRecursiveElement() throws Exception {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(XML_RECURSIVE_EXTENDED_ELEMENT));
-        Composite composite = (Composite)staxProcessor.read(reader);
+        Composite composite = (Composite)staxProcessor.read(reader, context);
         assertNotNull(composite);
         reader.close();
 
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        staxProcessor.write(composite, bos);
+        staxProcessor.write(composite, bos, context);
 
         // used for debug comparison
         // System.out.println(XML_RECURSIVE_EXTENDED_ELEMENT);
@@ -111,12 +115,12 @@ public class ReadWriteAnyElementTestCase {
     @Test
     public void testReadWriteUnknwonImpl() throws Exception {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(XML_UNKNOWN_IMPL));
-        Composite composite = (Composite)staxProcessor.read(reader);
+        Composite composite = (Composite)staxProcessor.read(reader, context);
         assertNotNull(composite);
         reader.close();
 
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        staxProcessor.write(composite, bos);
+        staxProcessor.write(composite, bos, context);
 
         // used for debug comparison
         // System.out.println(XML_UNKNOWN_IMPL);
@@ -130,12 +134,12 @@ public class ReadWriteAnyElementTestCase {
     @Ignore()
     public void testReadWriteInvalidAttribute() throws Exception {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(XML_UNKNOWN_IMPL_WITH_INVALID_ATTRIBUTE));
-        Composite composite = (Composite)staxProcessor.read(reader);
+        Composite composite = (Composite)staxProcessor.read(reader, context);
         assertNotNull(composite);
         reader.close();
 
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        staxProcessor.write(composite, bos);
+        staxProcessor.write(composite, bos, context);
 
         // used for debug comparison
         // System.out.println(XML_UNKNOWN_IMPL);

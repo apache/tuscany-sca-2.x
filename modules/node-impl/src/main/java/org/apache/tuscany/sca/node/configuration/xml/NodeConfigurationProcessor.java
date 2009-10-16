@@ -35,11 +35,11 @@ import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.node.configuration.BindingConfiguration;
 import org.apache.tuscany.sca.node.configuration.ContributionConfiguration;
 import org.apache.tuscany.sca.node.configuration.DeploymentComposite;
@@ -68,8 +68,7 @@ public class NodeConfigurationProcessor extends BaseStAXArtifactProcessor implem
     private StAXHelper helper;
 
     public NodeConfigurationProcessor(ExtensionPointRegistry registry,
-                                      StAXArtifactProcessor processor,
-                                      Monitor monitor) {
+                                      StAXArtifactProcessor processor) {
         FactoryExtensionPoint modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
         this.nodeConfigurationFactory = modelFactories.getFactory(NodeConfigurationFactory.class);
         this.processor = processor;
@@ -86,7 +85,7 @@ public class NodeConfigurationProcessor extends BaseStAXArtifactProcessor implem
         return NodeConfiguration.class;
     }
 
-    public NodeConfiguration read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+    public NodeConfiguration read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException, XMLStreamException {
 
         NodeConfiguration node = null;
         ContributionConfiguration contribution = null;
@@ -148,7 +147,7 @@ public class NodeConfigurationProcessor extends BaseStAXArtifactProcessor implem
                         helper.save(reader, writer);
                         composite.setContent(sw.toString());
                     } else {
-                        node.getExtensions().add(processor.read(reader));
+                        node.getExtensions().add(processor.read(reader, context));
                     }
                     break;
 
@@ -174,10 +173,10 @@ public class NodeConfigurationProcessor extends BaseStAXArtifactProcessor implem
         return node;
     }
 
-    public void resolve(NodeConfiguration node, ModelResolver resolver) throws ContributionResolveException {
+    public void resolve(NodeConfiguration node, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
     }
 
-    public void write(NodeConfiguration node, XMLStreamWriter writer) throws ContributionWriteException,
+    public void write(NodeConfiguration node, XMLStreamWriter writer, ProcessorContext context) throws ContributionWriteException,
         XMLStreamException {
 
         writeStart(writer,
@@ -229,7 +228,7 @@ public class NodeConfigurationProcessor extends BaseStAXArtifactProcessor implem
         }
         
         for(Object o: node.getExtensions()) {
-            processor.write(o, writer);
+            processor.write(o, writer, context);
         }
 
         writeEnd(writer);

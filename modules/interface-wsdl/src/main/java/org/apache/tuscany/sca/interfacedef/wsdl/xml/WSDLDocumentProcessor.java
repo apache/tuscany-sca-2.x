@@ -34,6 +34,7 @@ import org.apache.tuscany.sca.common.xml.stax.StAXHelper;
 import org.apache.tuscany.sca.common.xml.stax.StAXHelper.Attribute;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
@@ -62,14 +63,13 @@ public class WSDLDocumentProcessor implements URLArtifactProcessor<WSDLDefinitio
     private StAXHelper helper;
     private WSDLFactory factory;
     private XSDFactory xsdFactory;
-    private Monitor monitor;
+    
 
-    public WSDLDocumentProcessor(ExtensionPointRegistry registry, StAXArtifactProcessor processor, Monitor monitor) {
+    public WSDLDocumentProcessor(ExtensionPointRegistry registry, StAXArtifactProcessor processor) {
         FactoryExtensionPoint modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
         this.factory = modelFactories.getFactory(WSDLFactory.class);
         this.xsdFactory = modelFactories.getFactory(XSDFactory.class);
         this.inputFactory = modelFactories.getFactory(XMLInputFactory.class);
-        this.monitor = monitor;
         this.helper = StAXHelper.getInstance(registry);
     }
 
@@ -80,29 +80,29 @@ public class WSDLDocumentProcessor implements URLArtifactProcessor<WSDLDefinitio
      * @param message
      * @param model
      */
-     private void error(String message, Object model, Exception ex) {
+     private void error(Monitor monitor, String message, Object model, Exception ex) {
     	 if (monitor != null) {
     		 Problem problem = monitor.createProblem(this.getClass().getName(), "interface-wsdlxml-validation-messages", Severity.ERROR, model, message, ex);
     	     monitor.problem(problem);
     	 }
      }
 
-    public WSDLDefinition read(URL contributionURL, URI artifactURI, URL artifactURL) throws ContributionReadException {
+    public WSDLDefinition read(URL contributionURL, URI artifactURI, URL artifactURL, ProcessorContext context) throws ContributionReadException {
         try {
             WSDLDefinition definition = indexRead(artifactURL);
             definition.setURI(artifactURI);
             return definition;
         } catch (Exception e) {
         	ContributionReadException ce = new ContributionReadException(e);
-        	error("ContributionReadException", artifactURL, ce);
+        	error(context.getMonitor(), "ContributionReadException", artifactURL, ce);
             //throw ce;
         	return null;
         }
     }
 
-    public void resolve(WSDLDefinition model, ModelResolver resolver) throws ContributionResolveException {
+    public void resolve(WSDLDefinition model, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
         if (model == null) return;
-
+        Monitor monitor = context.getMonitor();
         Definition definition = model.getDefinition();
         if (definition != null) {
             for (Object imports : definition.getImports().values()) {
@@ -118,7 +118,7 @@ public class WSDLDocumentProcessor implements URLArtifactProcessor<WSDLDefinitio
                         WSDLDefinition proxy = factory.createWSDLDefinition();
                         proxy.setUnresolved(true);
                         proxy.setNamespace(imp.getNamespaceURI());
-                        WSDLDefinition resolved = resolver.resolveModel(WSDLDefinition.class, proxy);
+                        WSDLDefinition resolved = resolver.resolveModel(WSDLDefinition.class, proxy, context);
                         if (resolved != null && !resolved.isUnresolved()) {
                             imp.setDefinition(resolved.getDefinition());
                             if (!model.getImportedDefinitions().contains(resolved)) {
@@ -134,14 +134,14 @@ public class WSDLDocumentProcessor implements URLArtifactProcessor<WSDLDefinitio
                         if (uri.isAbsolute()) {
                             WSDLDefinition resolved;
                             try {
-                                resolved = read(null, uri, uri.toURL());
+                                resolved = read(null, uri, uri.toURL(), context);
                                 imp.setDefinition(resolved.getDefinition());
                                 if (!model.getImportedDefinitions().contains(resolved)) {
                                     model.getImportedDefinitions().add(resolved);
                                 }
                             } catch (Exception e) {
                             	ContributionResolveException ce = new ContributionResolveException(e);
-                            	error("ContributionResolveException", resolver, ce);
+                            	error(monitor, "ContributionResolveException", resolver, ce);
                                 //throw ce;
                             }
                         } else {
@@ -155,14 +155,14 @@ public class WSDLDocumentProcessor implements URLArtifactProcessor<WSDLDefinitio
                                 URI locationURI = baseURI.resolve(location);
                                 WSDLDefinition resolved;
                                 try {
-                                    resolved = read(null, locationURI, locationURI.toURL());
+                                    resolved = read(null, locationURI, locationURI.toURL(), context);
                                     imp.setDefinition(resolved.getDefinition());
                                     if (!model.getImportedDefinitions().contains(resolved)) {
                                         model.getImportedDefinitions().add(resolved);
                                     }
                                 } catch (Exception e) {
                                 	ContributionResolveException ce = new ContributionResolveException(e);
-                                	error("ContributionResolveException", resolver, ce);
+                                	error(monitor, "ContributionResolveException", resolver, ce);
                                     //throw ce;
                                 }
                             }

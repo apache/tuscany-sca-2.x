@@ -30,6 +30,7 @@ import junit.framework.TestCase;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
@@ -42,22 +43,24 @@ public class WriteTestCase extends TestCase {
     private XMLInputFactory inputFactory;
     private XMLOutputFactory outputFactory;
     private StAXArtifactProcessor<Object> staxProcessor;
+    private ProcessorContext context;
 
     @Override
     public void setUp() throws Exception {
         DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
+        context = new ProcessorContext(extensionPoints);
         inputFactory = XMLInputFactory.newInstance();
         outputFactory = XMLOutputFactory.newInstance();
         StAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(extensionPoints);
-        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, outputFactory, null);
+        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, outputFactory);
     }
 
     public void testReadWriteComposite() throws Exception {
         InputStream is = getClass().getResourceAsStream("TestWeb.composite");
-        Composite composite = (Composite) staxProcessor.read(inputFactory.createXMLStreamReader(is));
+        Composite composite = (Composite) staxProcessor.read(inputFactory.createXMLStreamReader(is), context);
         assertNotNull(composite);
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        staxProcessor.write(composite, outputFactory.createXMLStreamWriter(bos));
+        staxProcessor.write(composite, outputFactory.createXMLStreamWriter(bos), context);
         
         assertTrue(bos.toString().contains("web-uri=\"MyWebapp\""));
 

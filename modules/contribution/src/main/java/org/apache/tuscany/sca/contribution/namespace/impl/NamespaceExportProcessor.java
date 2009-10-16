@@ -34,6 +34,7 @@ import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXAttributeProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
@@ -57,17 +58,14 @@ public class NamespaceExportProcessor extends BaseStAXArtifactProcessor implemen
     private final AssemblyFactory extensionFactory;
     private final StAXArtifactProcessor<Object> extensionProcessor;
     private final StAXAttributeProcessor<Object> attributeProcessor;
-    private final Monitor monitor;
     
     public NamespaceExportProcessor(FactoryExtensionPoint modelFactories,
                                     StAXArtifactProcessor<Object> extensionProcessor,
-                                    StAXAttributeProcessor<Object> attributeProcessor,
-                                    Monitor monitor) {
+                                    StAXAttributeProcessor<Object> attributeProcessor) {
         this.factory = modelFactories.getFactory(NamespaceImportExportFactory.class);
         this.extensionFactory = modelFactories.getFactory(AssemblyFactory.class);
         this.extensionProcessor = extensionProcessor;
         this.attributeProcessor = attributeProcessor;
-        this.monitor = monitor;
     }
 
     /**
@@ -77,7 +75,7 @@ public class NamespaceExportProcessor extends BaseStAXArtifactProcessor implemen
      * @param message
      * @param model
      */
-     private void error(String message, Object model, Object... messageParameters) {
+     private void error(Monitor monitor, String message, Object model, Object... messageParameters) {
     	 if (monitor != null) {
 	        Problem problem = monitor.createProblem(this.getClass().getName(), "contribution-namespace-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
 	        monitor.problem(problem);
@@ -95,7 +93,7 @@ public class NamespaceExportProcessor extends BaseStAXArtifactProcessor implemen
     /**
      * Process <export namespace=""/>
      */
-    public NamespaceExport read(XMLStreamReader reader) throws ContributionReadException {
+    public NamespaceExport read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException {
         NamespaceExport namespaceExport = this.factory.createNamespaceExport();
         QName element = null;
 
@@ -110,14 +108,14 @@ public class NamespaceExportProcessor extends BaseStAXArtifactProcessor implemen
                         if (EXPORT.equals(element)) {
                             String ns = reader.getAttributeValue(null, NAMESPACE);
                             if (ns == null) {
-                            	error("AttributeNameSpaceMissing", reader);
+                            	error(context.getMonitor(), "AttributeNameSpaceMissing", reader);
                                 //throw new ContributionReadException("Attribute 'namespace' is missing");
                             } else {
                                 namespaceExport.setNamespace(ns);
                             }
-                            readExtendedAttributes(reader, namespaceExport, attributeProcessor, extensionFactory);
+                            readExtendedAttributes(reader, namespaceExport, attributeProcessor, extensionFactory, context);
                         } else {
-                            readExtendedElement(reader, namespaceExport, extensionProcessor);
+                            readExtendedElement(reader, namespaceExport, extensionProcessor, context);
                         }
 
                         break;
@@ -136,13 +134,13 @@ public class NamespaceExportProcessor extends BaseStAXArtifactProcessor implemen
         }
         catch (XMLStreamException e) {
             ContributionReadException ex = new ContributionReadException(e);
-            error("XMLStreamException", reader, ex);
+            error(context.getMonitor(), "XMLStreamException", reader, ex);
         }
 
         return namespaceExport;
     }
 
-    public void write(NamespaceExport namespaceExport, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
+    public void write(NamespaceExport namespaceExport, XMLStreamWriter writer, ProcessorContext context) throws ContributionWriteException, XMLStreamException {
 
         // Write <export>
         writer.writeStartElement(EXPORT.getNamespaceURI(), EXPORT.getLocalPart());
@@ -151,14 +149,14 @@ public class NamespaceExportProcessor extends BaseStAXArtifactProcessor implemen
             writer.writeAttribute(NAMESPACE, namespaceExport.getNamespace());
         }
 
-        writeExtendedAttributes(writer, namespaceExport, attributeProcessor);
+        writeExtendedAttributes(writer, namespaceExport, attributeProcessor, context);
 
-        writeExtendedElements(writer, namespaceExport, extensionProcessor);
+        writeExtendedElements(writer, namespaceExport, extensionProcessor, context);
 
         writer.writeEndElement();
     }
 
-    public void resolve(NamespaceExport namespaceExport, ModelResolver resolver) throws ContributionResolveException {
+    public void resolve(NamespaceExport namespaceExport, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
 
         if (namespaceExport.getNamespace() != null)
             // Initialize the export's resolver

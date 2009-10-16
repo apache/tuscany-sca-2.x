@@ -25,8 +25,6 @@ import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.Implementation;
-import org.apache.tuscany.sca.definitions.Definitions;
-import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  * A builder that is contributed by a specific policy languange to validate the configurations
@@ -38,25 +36,22 @@ public interface PolicyBuilder<T> {
     /**
      * Build (and validate) the policy settings on the endpoint
      * @param endpoint
-     * @param definitions 
      * @param monitor
      */
-    void build(Endpoint endpoint, Definitions definitions, Monitor monitor);
+    void build(Endpoint endpoint, BuilderContext context);
 
     /**
      * Build (and validate) the policy settings on the endpoint reference
      * @param endpointReference
-     * @param definitions 
      * @param monitor
      */
-    void build(EndpointReference endpointReference, Definitions definitions, Monitor monitor);
+    void build(EndpointReference endpointReference, BuilderContext context);
 
     /**
      * Build (and validate) the policy settings on the component implementation
      * @param component
      * @param implementation
-     * @param definitions 
      * @param monitor
      */
-    void build(Component component, Implementation implementation, Definitions definitions, Monitor monitor);
+    void build(Component component, Implementation implementation, BuilderContext context);
 }

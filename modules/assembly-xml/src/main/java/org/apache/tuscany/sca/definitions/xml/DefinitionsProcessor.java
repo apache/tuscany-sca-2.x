@@ -36,12 +36,12 @@ import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.definitions.DefinitionsFactory;
-import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.policy.BindingType;
 import org.apache.tuscany.sca.policy.ImplementationType;
 import org.apache.tuscany.sca.policy.Intent;
@@ -56,7 +56,7 @@ public class DefinitionsProcessor extends BaseStAXArtifactProcessor implements S
 
     private StAXArtifactProcessor<Object> extensionProcessor;
     private DefinitionsFactory definitionsFactory;
-    private Monitor monitor;
+    
 
     public static final String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200903";
     public static final String BINDING = "binding";
@@ -67,14 +67,12 @@ public class DefinitionsProcessor extends BaseStAXArtifactProcessor implements S
     public static final String NAME = "name";
 
     public DefinitionsProcessor(FactoryExtensionPoint factoryExtensionPoint,
-                                StAXArtifactProcessor<Object> extensionProcessor,
-                                Monitor monitor) {
+                                StAXArtifactProcessor<Object> extensionProcessor) {
         this.extensionProcessor = extensionProcessor;
-        this.monitor = monitor;
         this.definitionsFactory = factoryExtensionPoint.getFactory(DefinitionsFactory.class);
     }
 
-    public Definitions read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+    public Definitions read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException, XMLStreamException {
         QName name = null;
         Definitions definitions = null;
         String targetNamespace = null;
@@ -89,7 +87,7 @@ public class DefinitionsProcessor extends BaseStAXArtifactProcessor implements S
                         targetNamespace = reader.getAttributeValue(null, TARGET_NAMESPACE);
                         definitions.setTargetNamespace(targetNamespace);
                     } else {
-                        Object extension = extensionProcessor.read(reader);
+                        Object extension = extensionProcessor.read(reader, context);
                         if (extension != null) {
                             if (extension instanceof Intent) {
                                 Intent intent = (Intent)extension;
@@ -134,31 +132,31 @@ public class DefinitionsProcessor extends BaseStAXArtifactProcessor implements S
         return definitions;
     }
 
-    public void write(Definitions definitions, XMLStreamWriter writer) throws ContributionWriteException,
+    public void write(Definitions definitions, XMLStreamWriter writer, ProcessorContext context) throws ContributionWriteException,
         XMLStreamException {
 
         writeStartDocument(writer, SCA11_NS, DEFINITIONS, new XAttr(TARGET_NAMESPACE, definitions.getTargetNamespace()));
 
         for (Intent policyIntent : definitions.getIntents()) {
-            extensionProcessor.write(policyIntent, writer);
+            extensionProcessor.write(policyIntent, writer, context);
         }
 
         for (PolicySet policySet : definitions.getPolicySets()) {
-            extensionProcessor.write(policySet, writer);
+            extensionProcessor.write(policySet, writer, context);
         }
 
         for (BindingType bindingType : definitions.getBindingTypes()) {
-            extensionProcessor.write(bindingType, writer);
+            extensionProcessor.write(bindingType, writer, context);
         }
 
         for (ImplementationType implType : definitions.getImplementationTypes()) {
-            extensionProcessor.write(implType, writer);
+            extensionProcessor.write(implType, writer, context);
         }
 
         writeEndDocument(writer);
     }
 
-    public void resolve(Definitions scaDefns, ModelResolver resolver) throws ContributionResolveException {
+    public void resolve(Definitions scaDefns, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
         // start by adding all of the top level artifacts into the resolver as there
         // are many cross artifact references in a definitions file and we don't want
         // to be dependent on the order things appear
@@ -169,10 +167,10 @@ public class DefinitionsProcessor extends BaseStAXArtifactProcessor implements S
 
         for (Intent intent : scaDefns.getIntents()) {
             intents.add(intent);
-            resolver.addModel(intent);
+            resolver.addModel(intent, context);
             for (Intent i : intent.getQualifiedIntents()) {
                 intents.add(i);
-                resolver.addModel(i);
+                resolver.addModel(i, context);
             }
         }
 
@@ -183,35 +181,35 @@ public class DefinitionsProcessor extends BaseStAXArtifactProcessor implements S
                 referredPolicySets.add(policySet);
             }
 
-            resolver.addModel(policySet);
+            resolver.addModel(policySet, context);
         }
 
         for (BindingType bindingType : scaDefns.getBindingTypes()) {
-            resolver.addModel(bindingType);
+            resolver.addModel(bindingType, context);
         }
 
         for (ImplementationType implType : scaDefns.getImplementationTypes()) {
-            resolver.addModel(implType);
+            resolver.addModel(implType, context);
         }
 
         // now resolve everything to ensure that any references between
         // artifacts are satisfied
 
         for (Intent policyIntent : intents)
-            extensionProcessor.resolve(policyIntent, resolver);
+            extensionProcessor.resolve(policyIntent, resolver, context);
 
         for (PolicySet policySet : policySets)
-            extensionProcessor.resolve(policySet, resolver);
+            extensionProcessor.resolve(policySet, resolver, context);
 
         for (PolicySet policySet : referredPolicySets)
-            extensionProcessor.resolve(policySet, resolver);
+            extensionProcessor.resolve(policySet, resolver, context);
 
         for (BindingType bindingType : scaDefns.getBindingTypes()) {
-            extensionProcessor.resolve(bindingType, resolver);
+            extensionProcessor.resolve(bindingType, resolver, context);
         }
 
         for (ImplementationType implementationType : scaDefns.getImplementationTypes()) {
-            extensionProcessor.resolve(implementationType, resolver);
+            extensionProcessor.resolve(implementationType, resolver, context);
         }
     }
 

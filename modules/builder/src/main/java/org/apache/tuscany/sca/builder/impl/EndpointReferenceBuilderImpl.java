@@ -37,29 +37,25 @@ import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.Wire;
+import org.apache.tuscany.sca.assembly.builder.BuilderContext;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.assembly.builder.Messages;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
-import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
-import org.apache.tuscany.sca.monitor.MonitorFactory;
 
 /**
  * Creates endpoint reference models.
  */
 public class EndpointReferenceBuilderImpl {
 
-    private Monitor monitor;
     private AssemblyFactory assemblyFactory;
     private InterfaceContractMapper interfaceContractMapper;
 
     public EndpointReferenceBuilderImpl(ExtensionPointRegistry registry) {
         UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
-        MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
-        monitor = monitorFactory.createMonitor();
         interfaceContractMapper = utilities.getUtility(InterfaceContractMapper.class);
 
         FactoryExtensionPoint modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
@@ -71,16 +67,16 @@ public class EndpointReferenceBuilderImpl {
      *
      * @param composite
      */
-    public Composite build(Composite composite, Definitions definitions, Monitor monitor)
+    public Composite build(Composite composite, BuilderContext context)
         throws CompositeBuilderException {
-        this.monitor = monitor;
+        Monitor monitor = context.getMonitor();
 
         // process component services
-        processComponentReferences(composite);
+        processComponentReferences(composite, monitor);
         return composite;
     }
 
-    private void processComponentReferences(Composite composite) {
+    private void processComponentReferences(Composite composite, Monitor monitor) {
 
         monitor.pushContext("Composite: " + composite.getName().toString());
         try {
@@ -102,7 +98,7 @@ public class EndpointReferenceBuilderImpl {
                     // recurse for composite implementations
                     Implementation implementation = component.getImplementation();
                     if (implementation instanceof Composite) {
-                        processComponentReferences((Composite)implementation);
+                        processComponentReferences((Composite)implementation, monitor);
                     }
 
                     // create endpoint references to represent the component reference
@@ -111,7 +107,8 @@ public class EndpointReferenceBuilderImpl {
                                                           component,
                                                           reference,
                                                           components,
-                                                          componentServices);
+                                                          componentServices,
+                                                          monitor);
 
                         // fix up links between endpoints and endpoint references that represent callbacks
                         for (ComponentService service : component.getServices()) {
@@ -130,7 +127,7 @@ public class EndpointReferenceBuilderImpl {
 
                     // Validate that references are wired or promoted, according
                     // to their multiplicity   
-                    validateReferenceMultiplicity(composite, component);
+                    validateReferenceMultiplicity(composite, component, monitor);
 
                 } finally {
                     monitor.popContext();
@@ -275,7 +272,8 @@ public class EndpointReferenceBuilderImpl {
                                                    Component component,
                                                    ComponentReference reference,
                                                    Map<String, Component> components,
-                                                   Map<String, ComponentService> componentServices) {
+                                                   Map<String, ComponentService> componentServices,
+                                                   Monitor monitor) {
 
         monitor.pushContext("Reference: " + reference.getName());
 
@@ -554,7 +552,7 @@ public class EndpointReferenceBuilderImpl {
 
     } // end method
 
-    private void validateReferenceMultiplicity(Composite composite, Component component) {
+    private void validateReferenceMultiplicity(Composite composite, Component component, Monitor monitor) {
         for (ComponentReference componentReference : component.getReferences()) {
             if (!ReferenceConfigurationUtil.validateMultiplicityAndTargets(componentReference.getMultiplicity(),
                                                                            componentReference.getEndpointReferences())) {

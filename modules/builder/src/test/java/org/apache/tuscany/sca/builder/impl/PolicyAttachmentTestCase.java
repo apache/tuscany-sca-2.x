@@ -31,10 +31,12 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Base;
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.assembly.builder.BuilderContext;
 import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
@@ -62,10 +64,13 @@ public class PolicyAttachmentTestCase {
     private static XMLInputFactory inputFactory;
     private static AssemblyFactory assemblyFactory;
     private static BuilderExtensionPoint builders;
+    private static ProcessorContext context;
 
     @BeforeClass
     public static void init() throws Exception {
         extensionPoints = new DefaultExtensionPointRegistry();
+        context = new ProcessorContext(extensionPoints);
+
         FactoryExtensionPoint factories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         assemblyFactory = factories.getFactory(AssemblyFactory.class);
         inputFactory = factories.getFactory(XMLInputFactory.class);
@@ -78,7 +83,7 @@ public class PolicyAttachmentTestCase {
         }
         StAXArtifactProcessorExtensionPoint staxProcessors =
             extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null, monitor);
+        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null);
         staxProcessors.addArtifactProcessor(new TestPolicyProcessor());
 
         builders = extensionPoints.getExtensionPoint(BuilderExtensionPoint.class);
@@ -91,9 +96,11 @@ public class PolicyAttachmentTestCase {
         
         CompositeBuilder uriBuilder = new StructuralURIBuilderImpl(extensionPoints);
 
-        composite = uriBuilder.build(composite, definitions, monitor);
+        BuilderContext builderContext = new BuilderContext(extensionPoints);
+        builderContext.setDefinitions(definitions);
+        composite = uriBuilder.build(composite, builderContext);
         PolicyAttachmentBuilderImpl builder = new PolicyAttachmentBuilderImpl(extensionPoints);
-        builder.build(composite, definitions, monitor);
+        builder.build(composite, builderContext);
     }
 
     private <T> T load(String file) throws IOException, XMLStreamException, ContributionReadException {
@@ -102,7 +109,7 @@ public class PolicyAttachmentTestCase {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(urlStream);
         reader.nextTag();
 
-        T model = (T)staxProcessor.read(reader);
+        T model = (T)staxProcessor.read(reader, context);
         reader.close();
         return model;
     }
@@ -130,12 +137,14 @@ public class PolicyAttachmentTestCase {
         CompositeBuilder cloneBuilder = new CompositeCloneBuilderImpl();
         CompositeBuilder uriBuilder = new StructuralURIBuilderImpl(extensionPoints);
 
-        domainComposite = cloneBuilder.build(domainComposite, definitions, monitor);
-        domainComposite = includeBuilder.build(domainComposite, definitions, monitor);
-        domainComposite = uriBuilder.build(domainComposite, definitions, monitor);
+        BuilderContext context = new BuilderContext(extensionPoints);
+        context.setDefinitions(definitions);
+        domainComposite = cloneBuilder.build(domainComposite, context);
+        domainComposite = includeBuilder.build(domainComposite, context);
+        domainComposite = uriBuilder.build(domainComposite, context);
 
         PolicyAttachmentBuilderImpl builder = new PolicyAttachmentBuilderImpl(extensionPoints);
-        domainComposite = builder.build(domainComposite, definitions, monitor);
+        domainComposite = builder.build(domainComposite, context);
 
     }
 

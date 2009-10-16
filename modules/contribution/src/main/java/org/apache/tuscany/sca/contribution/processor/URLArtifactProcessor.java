@@ -36,9 +36,10 @@ public interface URLArtifactProcessor<M> extends ArtifactProcessor<M> {
      * @param contributionURL Contribution location URL
      * @param artifactURI Artifact URI
      * @param artifactURL Artifact location URL 
+     * @param context The context
      * @return A model representation of the input.
      */
-    M read(URL contributionURL, URI artifactURI, URL artifactURL) throws ContributionReadException;
+    M read(URL contributionURL, URI artifactURI, URL artifactURL, ProcessorContext context) throws ContributionReadException;
     
     /**
      * Returns the type of artifact handled by this artifact processor.

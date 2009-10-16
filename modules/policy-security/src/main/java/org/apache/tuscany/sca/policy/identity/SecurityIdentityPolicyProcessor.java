@@ -29,6 +29,7 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
@@ -42,14 +43,12 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
  */
 public class SecurityIdentityPolicyProcessor implements StAXArtifactProcessor<SecurityIdentityPolicy> {
     private static final String ROLE = "role";
-    private Monitor monitor;
 
     public QName getArtifactType() {
         return SecurityIdentityPolicy.NAME;
     }
 
-    public SecurityIdentityPolicyProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
-        this.monitor = monitor;
+    public SecurityIdentityPolicyProcessor(FactoryExtensionPoint modelFactories) {
     }
 
     /**
@@ -59,14 +58,14 @@ public class SecurityIdentityPolicyProcessor implements StAXArtifactProcessor<Se
      * @param message
      * @param model
      */
-    private void error(String message, Object model, Object... messageParameters) {
+    private void error(Monitor monitor, String message, Object model, Object... messageParameters) {
         if (monitor != null) {
             Problem problem = monitor.createProblem(this.getClass().getName(), "policy-security-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
             monitor.problem(problem);
         }        
     }    
 
-    public SecurityIdentityPolicy read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+    public SecurityIdentityPolicy read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException, XMLStreamException {
         SecurityIdentityPolicy policy = new SecurityIdentityPolicy();
         int event = reader.getEventType();
         QName start = reader.getName();
@@ -77,7 +76,7 @@ public class SecurityIdentityPolicyProcessor implements StAXArtifactProcessor<Se
                     if ("runAs".equals(ac)) {
                         String roleName = reader.getAttributeValue(null, ROLE);
                         if (roleName == null) {
-                            error("RequiredAttributeRolesMissing", reader);
+                            error(context.getMonitor(), "RequiredAttributeRolesMissing", reader);
                             //throw new IllegalArgumentException("Required attribute 'roles' is missing.");
                         } else {
                             policy.setRunAsRole(roleName);
@@ -103,7 +102,7 @@ public class SecurityIdentityPolicyProcessor implements StAXArtifactProcessor<Se
         }
     }
 
-    public void write(SecurityIdentityPolicy policy, XMLStreamWriter writer) throws ContributionWriteException,
+    public void write(SecurityIdentityPolicy policy, XMLStreamWriter writer, ProcessorContext context) throws ContributionWriteException,
     XMLStreamException {
         writer.writeStartElement(SecurityIdentityPolicy.NAME.getLocalPart());
 
@@ -122,7 +121,7 @@ public class SecurityIdentityPolicyProcessor implements StAXArtifactProcessor<Se
         return SecurityIdentityPolicy.class;
     }
 
-    public void resolve(SecurityIdentityPolicy policy, ModelResolver resolver) throws ContributionResolveException {
+    public void resolve(SecurityIdentityPolicy policy, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
         
     	if (policy.getRunAsRole() != null)
     	    //right now nothing to resolve

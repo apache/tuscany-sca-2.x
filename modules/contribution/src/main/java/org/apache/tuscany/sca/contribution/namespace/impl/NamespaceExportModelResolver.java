@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.contribution.namespace.impl;
 
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 
 /**
@@ -34,21 +35,21 @@ public class NamespaceExportModelResolver implements ModelResolver {
         this.resolver = resolver;
     }
     
-    public void addModel(Object resolved) {
+    public void addModel(Object resolved, ProcessorContext context) {
         throw new IllegalStateException();
     }
 
-    public Object removeModel(Object resolved) {
+    public Object removeModel(Object resolved, ProcessorContext context) {
         throw new IllegalStateException();
     }
 
-    public <T> T resolveModel(Class<T> modelClass, T unresolved) {
+    public <T> T resolveModel(Class<T> modelClass, T unresolved, ProcessorContext context) {
         
         // Just delegate to the contribution's model resolver, namespace
         // based filtering is implemented in the model specific model
         // resolver, which know how to get the namespace of the particular
         // type of model that they handle 
-        return resolver.resolveModel(modelClass, unresolved);
+        return resolver.resolveModel(modelClass, unresolved, context);
     }
 
 }

@@ -31,26 +31,25 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.implementation.osgi.OSGiImplementationFactory;
 import org.apache.tuscany.sca.implementation.osgi.OSGiProperty;
-import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  * A processor for <tuscany:osgi.property>
  */
 public class OSGiPropertyProcessor implements StAXArtifactProcessor<OSGiProperty> {
     private OSGiImplementationFactory factory;
-    private Monitor monitor;
+    
 
-    public OSGiPropertyProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
-        this.monitor = monitor;
+    public OSGiPropertyProcessor(FactoryExtensionPoint modelFactories) {
         this.factory = modelFactories.getFactory(OSGiImplementationFactory.class);
     }
 
-    public OSGiProperty read(XMLStreamReader reader) throws XMLStreamException {
+    public OSGiProperty read(XMLStreamReader reader, ProcessorContext context) throws XMLStreamException {
         int event = reader.getEventType();
         OSGiProperty prop = null;
         while (true) {
@@ -88,7 +87,7 @@ public class OSGiPropertyProcessor implements StAXArtifactProcessor<OSGiProperty
         return PROPERTY_QNAME;
     }
 
-    public void write(OSGiProperty model, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
+    public void write(OSGiProperty model, XMLStreamWriter writer, ProcessorContext context) throws ContributionWriteException, XMLStreamException {
         writer.writeStartElement(PROPERTY_QNAME.getNamespaceURI(), PROPERTY_QNAME.getLocalPart());
         writer.writeAttribute(NAME, model.getName());
         writer.writeCharacters(model.getValue());
@@ -99,7 +98,7 @@ public class OSGiPropertyProcessor implements StAXArtifactProcessor<OSGiProperty
         return OSGiProperty.class;
     }
 
-    public void resolve(OSGiProperty model, ModelResolver resolver) throws ContributionResolveException {
+    public void resolve(OSGiProperty model, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
         // TODO: To be implemented
     }
 }

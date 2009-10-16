@@ -100,7 +100,7 @@ public class IOHelper {
         try {
             File file = toFile(url);
             if (file != null) {
-                return file.getAbsoluteFile().toURI().toURL();
+                return file.toURI().toURL();
             } else {
                 return toURI(url).toURL();
             }

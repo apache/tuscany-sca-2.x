@@ -23,14 +23,12 @@ import javax.wsdl.PortType;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
 import org.apache.tuscany.sca.monitor.Monitor;
-import org.apache.tuscany.sca.monitor.MonitorFactory;
 
 /**
  * A factory for the WSDL model.
@@ -43,12 +41,7 @@ public abstract class WSDLFactoryImpl implements WSDLFactory {
     
     public WSDLFactoryImpl(ExtensionPointRegistry registry) {
         FactoryExtensionPoint modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
-        UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
-        MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
-
-        Monitor monitor = monitorFactory.createMonitor();
-
-        introspector = new WSDLInterfaceIntrospectorImpl(modelFactories, this, monitor);
+        introspector = new WSDLInterfaceIntrospectorImpl(modelFactories, this);
     } // end constructor WSDLFactoryImpl(ExtensionPointRegistry registry)
 
     public WSDLInterface createWSDLInterface() {
@@ -57,17 +50,19 @@ public abstract class WSDLFactoryImpl implements WSDLFactory {
     
     public WSDLInterface createWSDLInterface(PortType portType,
                                              WSDLDefinition wsdlDefinition,
-                                             ModelResolver resolver) throws InvalidInterfaceException {
+                                             ModelResolver resolver, 
+                                             Monitor monitor) throws InvalidInterfaceException {
         WSDLInterface wsdlInterface = createWSDLInterface();
-        introspector.introspectPortType(wsdlInterface, portType, wsdlDefinition, resolver);
+        introspector.introspectPortType(wsdlInterface, portType, wsdlDefinition, resolver, monitor);
         return wsdlInterface;
     }
     
     public void createWSDLInterface(WSDLInterface wsdlInterface,
                                     PortType portType,
                                     WSDLDefinition wsdlDefinition,
-                                    ModelResolver resolver) throws InvalidInterfaceException {
-        introspector.introspectPortType(wsdlInterface, portType, wsdlDefinition, resolver);
+                                    ModelResolver resolver,
+                                    Monitor monitor) throws InvalidInterfaceException {
+        introspector.introspectPortType(wsdlInterface, portType, wsdlDefinition, resolver, monitor);
     }
     
     public WSDLDefinition createWSDLDefinition() {

@@ -24,10 +24,10 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.assembly.builder.BuilderContext;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.assembly.builder.Messages;
-import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
@@ -44,9 +44,9 @@ public class CompositeIncludeBuilderImpl implements CompositeBuilder {
         return "org.apache.tuscany.sca.assembly.builder.CompositeIncludeBuilder";
     }
 
-    public Composite build(Composite composite, Definitions definitions, Monitor monitor)
+    public Composite build(Composite composite, BuilderContext context)
         throws CompositeBuilderException {
-        return processIncludes(composite, monitor);
+        return processIncludes(composite, context.getMonitor());
     }
 
     /**

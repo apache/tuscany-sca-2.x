@@ -39,6 +39,7 @@ import org.apache.tuscany.sca.common.java.io.IOHelper;
 import org.apache.tuscany.sca.context.CompositeContext;
 import org.apache.tuscany.sca.context.ThreadMessageContext;
 import org.apache.tuscany.sca.contribution.Contribution;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
@@ -125,10 +126,12 @@ public class NodeImpl implements Node, Client {
             Monitor monitor = manager.monitorFactory.createMonitor();
             monitor.reset();
             
+            ProcessorContext context = new ProcessorContext(monitor);
+            
             if (contributions == null) {
-                contributions = manager.loadContributions(configuration, monitor);
+                contributions = manager.loadContributions(configuration, context);
             }
-            domainComposite = manager.configureNode(configuration, contributions, monitor);
+            domainComposite = manager.configureNode(configuration, contributions, context);
             
             this.compositeContext = new CompositeContextImpl(manager.extensionPoints, endpointRegistry, domainComposite);
             
@@ -334,7 +337,7 @@ public class NodeImpl implements Node, Client {
                 .getFactory(XMLOutputFactory.class);
         
         try {
-            compositeProcessor.write(composite, outputFactory.createXMLStreamWriter(bos));
+            compositeProcessor.write(composite, outputFactory.createXMLStreamWriter(bos), new ProcessorContext(manager.extensionPoints));
         } catch(Exception ex) {
             return ex.toString();
         }

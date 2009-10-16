@@ -28,10 +28,10 @@ import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  *
@@ -43,17 +43,17 @@ public class WireFormatJMSTextProcessor extends BaseStAXArtifactProcessor implem
         return WireFormatJMSText.WIRE_FORMAT_JMS_BYTES_QNAME;
     }
     
-    public WireFormatJMSTextProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
+    public WireFormatJMSTextProcessor(FactoryExtensionPoint modelFactories) {
     }
 
     
-    public WireFormatJMSText read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+    public WireFormatJMSText read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException, XMLStreamException {
         WireFormatJMSText wireFormat = new WireFormatJMSText();
          
         return wireFormat;
     }
 
-    public void write(WireFormatJMSText wireFormat, XMLStreamWriter writer) 
+    public void write(WireFormatJMSText wireFormat, XMLStreamWriter writer, ProcessorContext context) 
         throws ContributionWriteException, XMLStreamException {
         String prefix = "tuscany";
         writer.writeStartElement(prefix, 
@@ -68,7 +68,7 @@ public class WireFormatJMSTextProcessor extends BaseStAXArtifactProcessor implem
         return WireFormatJMSText.class;
     }
 
-    public void resolve(WireFormatJMSText arg0, ModelResolver arg1) throws ContributionResolveException {
+    public void resolve(WireFormatJMSText arg0, ModelResolver arg1, ProcessorContext context) throws ContributionResolveException {
 
     }
     

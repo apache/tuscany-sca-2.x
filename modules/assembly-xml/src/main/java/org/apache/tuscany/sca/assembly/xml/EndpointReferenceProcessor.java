@@ -31,16 +31,15 @@ import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
-import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXAttributeProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  *
@@ -53,10 +52,9 @@ public class EndpointReferenceProcessor extends BaseAssemblyProcessor implements
 
     public EndpointReferenceProcessor(ExtensionPointRegistry registry,
                                       StAXArtifactProcessor extensionProcessor,
-                                      StAXAttributeProcessor extensionAttributeProcessor,
-                                      Monitor monitor) {
+                                      StAXAttributeProcessor extensionAttributeProcessor) {
 
-        super(modelFactories(registry), extensionProcessor, monitor);
+        super(modelFactories(registry), extensionProcessor);
         this.registry = registry;
     }
 
@@ -74,10 +72,10 @@ public class EndpointReferenceProcessor extends BaseAssemblyProcessor implements
         return ENDPOINT_QNAME;
     }
 
-    public EndpointReference read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+    public EndpointReference read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException, XMLStreamException {
         EndpointReference endpointReference = assemblyFactory.createEndpointReference();
         reader.nextTag();
-        Object model = extensionProcessor.read(reader);
+        Object model = extensionProcessor.read(reader, context);
         if (model instanceof Composite) {
             Composite composite = (Composite)model;
             Component component = composite.getComponents().get(0);
@@ -110,8 +108,8 @@ public class EndpointReferenceProcessor extends BaseAssemblyProcessor implements
         return endpointReference;
     }
 
-    public void write(EndpointReference model, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
-        extensionProcessor.write(wrap(model), writer);
+    public void write(EndpointReference model, XMLStreamWriter writer, ProcessorContext context) throws ContributionWriteException, XMLStreamException {
+        extensionProcessor.write(wrap(model), writer, context);
     }
 
     private Composite wrap(EndpointReference endpointReference) {
@@ -145,6 +143,6 @@ public class EndpointReferenceProcessor extends BaseAssemblyProcessor implements
         return EndpointReference.class;
     }
 
-    public void resolve(EndpointReference model, ModelResolver resolver) throws ContributionResolveException {
+    public void resolve(EndpointReference model, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
     }
 }

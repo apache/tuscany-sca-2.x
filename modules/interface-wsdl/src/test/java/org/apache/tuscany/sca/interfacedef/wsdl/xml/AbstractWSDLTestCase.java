@@ -31,7 +31,6 @@ import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
-import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.xsd.XSDFactory;
 import org.junit.Before;
 
@@ -56,11 +55,11 @@ public abstract class AbstractWSDLTestCase {
         ContributionFactory contributionFactory = modelFactories.getFactory(ContributionFactory.class);
         Contribution contribution = contributionFactory.createContribution();
         ModelResolverExtensionPoint modelResolvers = extensionPoints.getExtensionPoint(ModelResolverExtensionPoint.class);
-        resolver = new ExtensibleModelResolver(contribution, modelResolvers, modelFactories, (Monitor)null);
+        resolver = new ExtensibleModelResolver(contribution, modelResolvers, modelFactories);
         contribution.setModelResolver(resolver);
         
         URLArtifactProcessorExtensionPoint documentProcessors = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
-        documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors, null);
+        documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors);
     }
 
 }

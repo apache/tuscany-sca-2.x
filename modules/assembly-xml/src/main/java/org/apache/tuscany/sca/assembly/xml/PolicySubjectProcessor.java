@@ -32,6 +32,7 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.policy.Intent;
@@ -202,7 +203,7 @@ public class PolicySubjectProcessor extends BaseStAXArtifactProcessor {
         return new XAttr(Constants.POLICY_SETS, qnames);
     }
     
-    public void resolvePolicies(Object attachPoint, ModelResolver resolver) {
+    public void resolvePolicies(Object attachPoint, ModelResolver resolver, ProcessorContext context) {
         if ( attachPoint instanceof PolicySubject ) {
             PolicySubject policySetAttachPoint = (PolicySubject)attachPoint;
             
@@ -211,7 +212,7 @@ public class PolicySubjectProcessor extends BaseStAXArtifactProcessor {
             
             if ( policySetAttachPoint.getRequiredIntents() != null && policySetAttachPoint.getRequiredIntents().size() > 0 ) {
                 for ( Intent intent : policySetAttachPoint.getRequiredIntents() ) {
-                    resolvedIntent = resolver.resolveModel(Intent.class, intent);
+                    resolvedIntent = resolver.resolveModel(Intent.class, intent, context);
                     requiredIntents.add(resolvedIntent);
                 }
                 policySetAttachPoint.getRequiredIntents().clear();
@@ -222,7 +223,7 @@ public class PolicySubjectProcessor extends BaseStAXArtifactProcessor {
                 List<PolicySet> resolvedPolicySets = new ArrayList<PolicySet>();
                 PolicySet resolvedPolicySet = null;
                 for ( PolicySet policySet : policySetAttachPoint.getPolicySets() ) {
-                    resolvedPolicySet = resolver.resolveModel(PolicySet.class, policySet);
+                    resolvedPolicySet = resolver.resolveModel(PolicySet.class, policySet, context);
                     resolvedPolicySets.add(resolvedPolicySet);
                 }
                 policySetAttachPoint.getPolicySets().clear();

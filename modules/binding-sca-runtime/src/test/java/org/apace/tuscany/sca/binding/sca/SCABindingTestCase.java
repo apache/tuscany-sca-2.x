@@ -28,6 +28,7 @@ import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.xml.CompositeModelResolver;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
@@ -55,10 +56,11 @@ public class SCABindingTestCase {
         extensionPoints = new DefaultExtensionPointRegistry();
         inputFactory = XMLInputFactory.newInstance();
 
-        StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null, null);
+        StAXArtifactProcessorExtensionPoint staxProcessors =
+            extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null);
 
-        resolver = new CompositeModelResolver(null, null, null);
+        resolver = new CompositeModelResolver(null, null);
     }
 
     @Test
@@ -73,26 +75,29 @@ public class SCABindingTestCase {
     @Test
     @Ignore
     public void testBuildModel() {
-    	try{
-	        InputStream is = getClass().getResourceAsStream("/Calculator.composite");
-	        XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-	        Composite composite = (Composite)staxProcessor.read(reader);
+        try {
+            InputStream is = getClass().getResourceAsStream("/Calculator.composite");
+            XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
+            ProcessorContext context = new ProcessorContext(extensionPoints);
+            Composite composite = (Composite)staxProcessor.read(reader, context);
 
-	        is.close();
-	        Assert.assertNotNull(composite);
+            is.close();
+            Assert.assertNotNull(composite);
 
-	        resolver.addModel(composite);
+            resolver.addModel(composite, context);
 
-	        staxProcessor.resolve(composite, resolver);
+            staxProcessor.resolve(composite, resolver, new ProcessorContext());
 
-	        SCABinding referenceSCABinding = (SCABinding) composite.getComponents().get(0).getReferences().get(0).getBindings().get(0);
-	        SCABinding serviceSCABinding   = (SCABinding) composite.getComponents().get(1).getServices().get(0).getBindings().get(0);
+            SCABinding referenceSCABinding =
+                (SCABinding)composite.getComponents().get(0).getReferences().get(0).getBindings().get(0);
+            SCABinding serviceSCABinding =
+                (SCABinding)composite.getComponents().get(1).getServices().get(0).getBindings().get(0);
 
-	        Assert.assertNotNull(referenceSCABinding);
-	        Assert.assertNotNull(serviceSCABinding);
-    	} catch (Exception ex) {
-    		Assert.fail(ex.getMessage());
-    	}
+            Assert.assertNotNull(referenceSCABinding);
+            Assert.assertNotNull(serviceSCABinding);
+        } catch (Exception ex) {
+            Assert.fail(ex.getMessage());
+        }
 
     }
 }

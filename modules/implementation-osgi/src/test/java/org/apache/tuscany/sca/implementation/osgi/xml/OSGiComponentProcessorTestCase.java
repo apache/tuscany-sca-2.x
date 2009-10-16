@@ -25,8 +25,10 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.assembly.ComponentType;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.DefaultFactoryExtensionPoint;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -66,9 +68,10 @@ public class OSGiComponentProcessorTestCase {
 
     @Test
     public void testLoad() throws Exception {
+        ExtensionPointRegistry registry = new DefaultExtensionPointRegistry();
         OSGiComponentProcessor processor =
-            new OSGiComponentProcessor(new DefaultFactoryExtensionPoint(new DefaultExtensionPointRegistry()), null);
-        ComponentType ct = processor.read(reader);
+            new OSGiComponentProcessor(new DefaultFactoryExtensionPoint(registry));
+        ComponentType ct = processor.read(reader, new ProcessorContext(registry));
         Assert.assertEquals(1, ct.getServices().size());
         Assert.assertEquals(4, ct.getReferences().size());
     }

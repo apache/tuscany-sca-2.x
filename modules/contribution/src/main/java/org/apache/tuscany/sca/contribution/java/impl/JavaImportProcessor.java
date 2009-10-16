@@ -32,6 +32,7 @@ import org.apache.tuscany.sca.contribution.java.JavaImportExportFactory;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
@@ -53,12 +54,10 @@ public class JavaImportProcessor  implements StAXArtifactProcessor<JavaImport> {
     private static final String LOCATION = "location";
     
     private final JavaImportExportFactory factory;
-    private final Monitor monitor;
     
-    public JavaImportProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
+    public JavaImportProcessor(FactoryExtensionPoint modelFactories) {
         super();
         this.factory = modelFactories.getFactory(JavaImportExportFactory.class);
-        this.monitor = monitor;
     }
     
     /**
@@ -68,7 +67,7 @@ public class JavaImportProcessor  implements StAXArtifactProcessor<JavaImport> {
      * @param message
      * @param model
      */
-     private void error(String message, Object model, Object... messageParameters) {
+     private void error(Monitor monitor, String message, Object model, Object... messageParameters) {
     	 if (monitor != null) {
 	        Problem problem = monitor.createProblem(this.getClass().getName(), "contribution-java-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
 	        monitor.problem(problem);
@@ -86,7 +85,7 @@ public class JavaImportProcessor  implements StAXArtifactProcessor<JavaImport> {
     /**
      * Process <import.java package="" location=""/>
      */
-    public JavaImport read(XMLStreamReader reader) throws ContributionReadException {
+    public JavaImport read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException {
         JavaImport javaImport = this.factory.createJavaImport();
         QName element = null;
         
@@ -101,7 +100,7 @@ public class JavaImportProcessor  implements StAXArtifactProcessor<JavaImport> {
                         if (IMPORT_JAVA.equals(element)) {
                             String packageName = reader.getAttributeValue(null, PACKAGE);
                             if (packageName == null) {
-                            	error("AttributePackageMissing", reader);
+                            	error(context.getMonitor(), "AttributePackageMissing", reader);
                                 //throw new ContributionReadException("Attribute 'package' is missing");
                             } else
                             	javaImport.setPackage(packageName);
@@ -125,13 +124,13 @@ public class JavaImportProcessor  implements StAXArtifactProcessor<JavaImport> {
         }
         catch (XMLStreamException e) {
             ContributionReadException ex = new ContributionReadException(e);
-            error("XMLStreamException", reader, ex);
+            error(context.getMonitor(), "XMLStreamException", reader, ex);
         }
         
         return javaImport;
     }
 
-    public void write(JavaImport javaImport, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
+    public void write(JavaImport javaImport, XMLStreamWriter writer, ProcessorContext context) throws ContributionWriteException, XMLStreamException {
         
         // Write <import.java>
         writer.writeStartElement(IMPORT_JAVA.getNamespaceURI(), IMPORT_JAVA.getLocalPart());
@@ -147,7 +146,7 @@ public class JavaImportProcessor  implements StAXArtifactProcessor<JavaImport> {
     }
 
 
-    public void resolve(JavaImport model, ModelResolver resolver) throws ContributionResolveException {
+    public void resolve(JavaImport model, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
         
     }
 }

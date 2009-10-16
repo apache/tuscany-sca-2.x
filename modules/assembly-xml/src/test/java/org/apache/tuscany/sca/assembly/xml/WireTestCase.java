@@ -36,6 +36,7 @@ import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
@@ -59,13 +60,15 @@ public class WireTestCase {
     private static StAXArtifactProcessor<Object> staxProcessor;
     private static ModelResolver resolver; 
     private static URLArtifactProcessor<Definitions> policyDefinitionsProcessor;
-
+    private static ProcessorContext context;
+    
     @BeforeClass
     public static void setUp() throws Exception {
         DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
+        context = new ProcessorContext(extensionPoints);
         inputFactory = XMLInputFactory.newInstance();
         StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null, null);
+        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null);
         resolver = new DefaultModelResolver();
 
         FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
@@ -80,25 +83,25 @@ public class WireTestCase {
     public void testResolveConstrainingType() throws Exception {
         InputStream is = getClass().getResourceAsStream("CalculatorComponent.constrainingType");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-        ConstrainingType constrainingType = (ConstrainingType)staxProcessor.read(reader);
+        ConstrainingType constrainingType = (ConstrainingType)staxProcessor.read(reader, context);
         is.close();
         assertNotNull(constrainingType);
-        resolver.addModel(constrainingType);
+        resolver.addModel(constrainingType, context);
 
         is = getClass().getResourceAsStream("TestAllCalculator.composite");
         reader = inputFactory.createXMLStreamReader(is);
-        Composite composite = (Composite)staxProcessor.read(reader);
+        Composite composite = (Composite)staxProcessor.read(reader, context);
         is.close();
         assertNotNull(composite);
         
         URL url = getClass().getResource("test_definitions.xml");
         URI uri = URI.create("test_definitions.xml");
-        Definitions scaDefns = (Definitions)policyDefinitionsProcessor.read(null, uri, url);
+        Definitions scaDefns = (Definitions)policyDefinitionsProcessor.read(null, uri, url, context);
         assertNotNull(scaDefns);
         
-        policyDefinitionsProcessor.resolve(scaDefns, resolver);
+        policyDefinitionsProcessor.resolve(scaDefns, resolver, context);
         
-        staxProcessor.resolve(composite, resolver);
+        staxProcessor.resolve(composite, resolver, context);
         
         assertEquals(composite.getConstrainingType(), constrainingType);
         assertEquals(composite.getComponents().get(0).getConstrainingType(), constrainingType);
@@ -108,18 +111,18 @@ public class WireTestCase {
     public void testResolveComposite() throws Exception {
         Composite nestedComposite = readComposite("Calculator.composite");
         assertNotNull(nestedComposite);
-        resolver.addModel(nestedComposite);
+        resolver.addModel(nestedComposite, context);
 
         Composite composite = readComposite("TestAllCalculator.composite");
         
         URL url = getClass().getResource("test_definitions.xml");
         URI uri = URI.create("test_definitions.xml");
-        Definitions scaDefns = (Definitions)policyDefinitionsProcessor.read(null, uri, url);
+        Definitions scaDefns = (Definitions)policyDefinitionsProcessor.read(null, uri, url, context);
         assertNotNull(scaDefns);
         
-        policyDefinitionsProcessor.resolve(scaDefns, resolver);
+        policyDefinitionsProcessor.resolve(scaDefns, resolver, context);
         
-        staxProcessor.resolve(composite, resolver);
+        staxProcessor.resolve(composite, resolver, context);
         
         assertEquals(composite.getComponents().get(2).getImplementation(), nestedComposite);
     }
@@ -127,7 +130,7 @@ public class WireTestCase {
     private Composite readComposite(String resource) throws XMLStreamException, ContributionReadException, IOException {
         InputStream is = getClass().getResourceAsStream(resource);
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-        Composite composite = (Composite)staxProcessor.read(reader);
+        Composite composite = (Composite)staxProcessor.read(reader, context);
         is.close();
         return composite;
     }

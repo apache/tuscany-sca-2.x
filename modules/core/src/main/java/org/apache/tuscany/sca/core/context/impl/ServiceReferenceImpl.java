@@ -41,10 +41,12 @@ import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.builder.BindingBuilder;
+import org.apache.tuscany.sca.assembly.builder.BuilderContext;
 import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
 import org.apache.tuscany.sca.context.CompositeContext;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
@@ -326,7 +328,7 @@ public class ServiceReferenceImpl<B> implements ServiceReferenceExt<B> {
     public String toXMLString() throws IOException, XMLStreamException, ContributionWriteException{
         StringWriter writer = new StringWriter();
         XMLStreamWriter streamWriter = xmlOutputFactory.createXMLStreamWriter(writer);
-        staxProcessor.write(endpointReference, streamWriter);
+        staxProcessor.write(endpointReference, streamWriter, new ProcessorContext(registry));
         return writer.toString();
     }   
     
@@ -365,7 +367,7 @@ public class ServiceReferenceImpl<B> implements ServiceReferenceExt<B> {
             streamReader = xmlInputFactory.createXMLStreamReader(reader);
         }
         
-        endpointReference = staxProcessor.read(streamReader);
+        endpointReference = staxProcessor.read(streamReader, new ProcessorContext(registry));
         
         // ok to GC
         xmlReader = null;
@@ -425,7 +427,8 @@ public class ServiceReferenceImpl<B> implements ServiceReferenceExt<B> {
             if (binding != null) {
                 BindingBuilder bindingBuilder = builders.getBindingBuilder(binding.getType());
                 if (bindingBuilder != null) {
-                    bindingBuilder.build(component, reference, endpointReference.getBinding(), null);
+                    BuilderContext context = new BuilderContext(registry);
+                    bindingBuilder.build(component, reference, endpointReference.getBinding(), context);
                 }
             }
 

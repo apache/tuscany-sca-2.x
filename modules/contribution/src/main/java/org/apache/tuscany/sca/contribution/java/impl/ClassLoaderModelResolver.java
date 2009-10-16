@@ -32,12 +32,12 @@ import java.util.Map;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.Import;
 import org.apache.tuscany.sca.contribution.java.JavaImport;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.resolver.ClassReference;
 import org.apache.tuscany.sca.contribution.resolver.DefaultDelegatingModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
-import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  * A Model Resolver for ClassReferences.
@@ -46,6 +46,7 @@ import org.apache.tuscany.sca.monitor.Monitor;
  */
 public class ClassLoaderModelResolver extends URLClassLoader implements ModelResolver {
     private Contribution contribution;
+    private ProcessorContext context;
     private Map<String, ModelResolver> importResolvers = new HashMap<String, ModelResolver>();
 
     private static ClassLoader parentClassLoader(Contribution contribution) {
@@ -67,10 +68,9 @@ public class ClassLoaderModelResolver extends URLClassLoader implements ModelRes
         return urls.toArray(new URL[urls.size()]);
     }
 
-    public ClassLoaderModelResolver(final Contribution contribution, FactoryExtensionPoint modelFactories, Monitor monitor) throws IOException {
+    public ClassLoaderModelResolver(final Contribution contribution, FactoryExtensionPoint modelFactories) throws IOException {
         super(getContributionURLs(contribution), parentClassLoader(contribution));
         this.contribution = contribution;
-
         // Index Java import resolvers by package name
         Map<String, List<ModelResolver>> resolverMap = new HashMap<String, List<ModelResolver>>();
         for (Import import_: this.contribution.getImports()) {
@@ -91,21 +91,21 @@ public class ClassLoaderModelResolver extends URLClassLoader implements ModelRes
         }
     }
 
-    public void addModel(Object resolved) {
+    public void addModel(Object resolved, ProcessorContext context) {
         throw new IllegalStateException();
     }
 
-    public Object removeModel(Object resolved) {
+    public Object removeModel(Object resolved, ProcessorContext context) {
         throw new IllegalStateException();
     }
 
-    public <T> T resolveModel(Class<T> modelClass, T unresolved) {
+    public <T> T resolveModel(Class<T> modelClass, T unresolved, ProcessorContext context) {
         if (!(unresolved instanceof ClassReference)) {
             return unresolved;
         }
 
         try {
-
+            this.context = context;
             // Load the class and return a class reference for it
             String className = ((ClassReference)unresolved).getClassName();
             Class<?> clazz = Class.forName(className, true, this);
@@ -159,7 +159,7 @@ public class ClassLoaderModelResolver extends URLClassLoader implements ModelRes
         // First try to load the class using the Java import resolvers
         ModelResolver importResolver = importResolvers.get(packageName);
         if (importResolver != null) {
-            ClassReference classReference = importResolver.resolveModel(ClassReference.class, new ClassReference(name));
+            ClassReference classReference = importResolver.resolveModel(ClassReference.class, new ClassReference(name), context);
             if (!classReference.isUnresolved()) {
                 return classReference.getJavaClass();
             }

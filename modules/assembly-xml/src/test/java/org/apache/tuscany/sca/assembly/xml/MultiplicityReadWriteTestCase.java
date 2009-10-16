@@ -31,6 +31,7 @@ import javax.xml.stream.XMLOutputFactory;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.junit.Before;
@@ -47,31 +48,32 @@ public class MultiplicityReadWriteTestCase {
     private XMLInputFactory inputFactory;
     private XMLOutputFactory outputFactory;
     private ExtensibleStAXArtifactProcessor staxProcessor;
-
+    private ProcessorContext context;
 
     @Before
     public void setUp() throws Exception {
         DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
+        context = new ProcessorContext(extensionPoints);
         inputFactory = XMLInputFactory.newInstance();
         outputFactory = XMLOutputFactory.newInstance();
         StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, outputFactory, null);
+        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, outputFactory);
     }
 
 
     @Test
     public void testReadWriteComposite() throws Exception {
         InputStream is = getClass().getResourceAsStream("Multiplicity.composite");
-        Composite composite = staxProcessor.read(is, Composite.class);
+        Composite composite = staxProcessor.read(is, Composite.class, context);
         
         verifyComposite(composite);
         
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        staxProcessor.write(composite, bos);
+        staxProcessor.write(composite, bos, context);
         bos.close();
         
         ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
-        composite = staxProcessor.read(bis, Composite.class);
+        composite = staxProcessor.read(bis, Composite.class, context);
         
         verifyComposite(composite);
         

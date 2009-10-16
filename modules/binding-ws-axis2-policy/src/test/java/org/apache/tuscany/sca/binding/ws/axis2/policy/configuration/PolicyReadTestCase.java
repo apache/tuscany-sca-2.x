@@ -28,6 +28,7 @@ import javax.xml.stream.XMLStreamReader;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
@@ -45,14 +46,14 @@ public class PolicyReadTestCase extends TestCase {
         ExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
         StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         XMLInputFactory inputFactory = XMLInputFactory.newInstance();
-        StAXArtifactProcessor<Object> staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null, null);
+        StAXArtifactProcessor<Object> staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null);
         
         URL url = getClass().getResource("mock_policies.xml");
         
         InputStream urlStream = url.openStream();
         XMLStreamReader reader = inputFactory.createXMLStreamReader(urlStream);
         
-        Axis2ConfigParamPolicy policy = (Axis2ConfigParamPolicy)staxProcessor.read(reader);
+        Axis2ConfigParamPolicy policy = (Axis2ConfigParamPolicy)staxProcessor.read(reader, new ProcessorContext(extensionPoints));
         assertEquals(policy.getParamElements().size(), 2);
     }
 

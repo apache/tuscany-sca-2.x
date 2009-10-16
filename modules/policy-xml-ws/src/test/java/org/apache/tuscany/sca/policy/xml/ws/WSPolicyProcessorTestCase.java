@@ -27,9 +27,9 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.sca.policy.xml.ws.WSPolicyProcessor;
-
 import junit.framework.TestCase;
+
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 
 /**
  * Test reading SCA XML assembly documents.
@@ -93,7 +93,7 @@ public class WSPolicyProcessorTestCase extends TestCase {
                 	name = reader.getName();
                 	
                 	if(WSPolicyProcessor.WS_POLICY_QNAME.equals(name)) {
-                		 artifact = processor.read(reader);
+                		 artifact = processor.read(reader, new ProcessorContext());
                 	}
                 	
                     break;

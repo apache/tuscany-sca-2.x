@@ -78,7 +78,7 @@ public class DomainDiscoveryService extends AbstractDiscoveryService implements 
         */ 
         {
             // Notify the endpoint listeners
-            EndpointDescription description = createEndpointDescription(endpoint);
+            EndpointDescription description = createEndpointDescription(bundleContext, endpoint);
             endpointChanged(description, ADDED);
         }
     }
@@ -90,7 +90,7 @@ public class DomainDiscoveryService extends AbstractDiscoveryService implements 
         } else
         */ 
         {
-            EndpointDescription description = createEndpointDescription(endpoint);
+            EndpointDescription description = createEndpointDescription(context, endpoint);
             endpointChanged(description, REMOVED);
         }
     }

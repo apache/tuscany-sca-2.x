@@ -50,13 +50,13 @@ import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.OperationImpl;
-import org.apache.tuscany.sca.monitor.Monitor;
 import org.w3c.dom.Document;
 
 /**
@@ -73,12 +73,11 @@ public class ConstrainingTypeProcessor extends BaseAssemblyProcessor implements 
      * @param extensionProcessor
      */
     public ConstrainingTypeProcessor(FactoryExtensionPoint modelFactories,
-                                     StAXArtifactProcessor extensionProcessor,
-                                     Monitor monitor) {
-        super(modelFactories, extensionProcessor, monitor);
+                                     StAXArtifactProcessor extensionProcessor) {
+        super(modelFactories, extensionProcessor);
     }
     
-    public ConstrainingType read(XMLStreamReader reader) throws ContributionReadException {
+    public ConstrainingType read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException {
         ConstrainingType constrainingType = null;
         AbstractService abstractService = null;
         AbstractReference abstractReference = null;
@@ -124,10 +123,10 @@ public class ConstrainingTypeProcessor extends BaseAssemblyProcessor implements 
                             
                             // Read a <property>
                             abstractProperty = assemblyFactory.createAbstractProperty();
-                            readAbstractProperty(abstractProperty, reader);
+                            readAbstractProperty(abstractProperty, reader, context);
                             
                             // Read the property value
-                            Document value = readPropertyValue(abstractProperty.getXSDElement(), abstractProperty.getXSDType(), abstractProperty.isMany(), reader);
+                            Document value = readPropertyValue(abstractProperty.getXSDElement(), abstractProperty.getXSDType(), abstractProperty.isMany(), reader, context);
                             abstractProperty.setValue(value);
                             
                             constrainingType.getProperties().add(abstractProperty);
@@ -144,7 +143,7 @@ public class ConstrainingTypeProcessor extends BaseAssemblyProcessor implements 
                         } else {
     
                             // Read an extension element
-                            Object extension = extensionProcessor.read(reader);
+                            Object extension = extensionProcessor.read(reader, context);
                             if (extension instanceof InterfaceContract) {
                                 
                                 // <service><interface> and <reference><interface>
@@ -184,13 +183,13 @@ public class ConstrainingTypeProcessor extends BaseAssemblyProcessor implements 
         }
         catch (XMLStreamException e) {
             ContributionReadException ex = new ContributionReadException(e);
-            error("XMLStreamException", reader, ex);
+            error(context.getMonitor(), "XMLStreamException", reader, ex);
         }
         
         return constrainingType;
     }
     
-    public void write(ConstrainingType constrainingType, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
+    public void write(ConstrainingType constrainingType, XMLStreamWriter writer, ProcessorContext context) throws ContributionWriteException, XMLStreamException {
 
         // Write <constrainingType> element
         writeStartDocument(writer, CONSTRAINING_TYPE,
@@ -203,10 +202,10 @@ public class ConstrainingTypeProcessor extends BaseAssemblyProcessor implements 
             writeStart(writer, SERVICE, new XAttr(NAME, service.getName()),
                        policyProcessor.writePolicies(service));
             
-            extensionProcessor.write(service.getInterfaceContract(), writer);
+            extensionProcessor.write(service.getInterfaceContract(), writer, context);
 
             for (Object extension: service.getExtensions()) {
-                extensionProcessor.write(extension, writer);
+                extensionProcessor.write(extension, writer, context);
             }
             
             writeEnd(writer);
@@ -218,10 +217,10 @@ public class ConstrainingTypeProcessor extends BaseAssemblyProcessor implements 
                        writeMultiplicity(reference),
                        policyProcessor.writePolicies(reference));
             
-            extensionProcessor.write(reference.getInterfaceContract(), writer);
+            extensionProcessor.write(reference.getInterfaceContract(), writer, context);
 
             for (Object extension: reference.getExtensions()) {
-                extensionProcessor.write(extension, writer);
+                extensionProcessor.write(extension, writer, context);
             }
             
             writeEnd(writer);
@@ -243,7 +242,7 @@ public class ConstrainingTypeProcessor extends BaseAssemblyProcessor implements 
 
             // Write extensions
             for (Object extension : abstractProperty.getExtensions()) {
-                extensionProcessor.write(extension, writer);
+                extensionProcessor.write(extension, writer, context);
             }
 
             writeEnd(writer);
@@ -251,16 +250,16 @@ public class ConstrainingTypeProcessor extends BaseAssemblyProcessor implements 
 
         // Write extension elements
         for (Object extension: constrainingType.getExtensions()) {
-            extensionProcessor.write(extension, writer);
+            extensionProcessor.write(extension, writer, context);
         }
         
         writeEndDocument(writer);
     }
     
-    public void resolve(ConstrainingType constrainingType, ModelResolver resolver) throws ContributionResolveException {
+    public void resolve(ConstrainingType constrainingType, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
         // Resolve component type services and references
-        resolveAbstractContracts(constrainingType.getServices(), resolver);
-        resolveAbstractContracts(constrainingType.getReferences(), resolver);
+        resolveAbstractContracts(constrainingType.getServices(), resolver, context);
+        resolveAbstractContracts(constrainingType.getReferences(), resolver, context);
     }
     
     public QName getArtifactType() {

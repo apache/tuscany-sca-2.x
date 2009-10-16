@@ -28,10 +28,10 @@ import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  *
@@ -43,17 +43,17 @@ public class WireFormatJMSTextXMLProcessor extends BaseStAXArtifactProcessor imp
         return WireFormatJMSTextXML.WIRE_FORMAT_JMS_DEFAULT_QNAME;
     }
     
-    public WireFormatJMSTextXMLProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
+    public WireFormatJMSTextXMLProcessor(FactoryExtensionPoint modelFactories) {
     }
 
     
-    public WireFormatJMSTextXML read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+    public WireFormatJMSTextXML read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException, XMLStreamException {
         WireFormatJMSTextXML wireFormat = new WireFormatJMSTextXML();
          
         return wireFormat;
     }
 
-    public void write(WireFormatJMSTextXML wireFormat, XMLStreamWriter writer) 
+    public void write(WireFormatJMSTextXML wireFormat, XMLStreamWriter writer, ProcessorContext context) 
         throws ContributionWriteException, XMLStreamException {
         String prefix = "tuscany";
         writer.writeStartElement(prefix, 
@@ -68,7 +68,7 @@ public class WireFormatJMSTextXMLProcessor extends BaseStAXArtifactProcessor imp
         return WireFormatJMSTextXML.class;
     }
 
-    public void resolve(WireFormatJMSTextXML arg0, ModelResolver arg1) throws ContributionResolveException {
+    public void resolve(WireFormatJMSTextXML arg0, ModelResolver arg1, ProcessorContext context) throws ContributionResolveException {
 
     }
     

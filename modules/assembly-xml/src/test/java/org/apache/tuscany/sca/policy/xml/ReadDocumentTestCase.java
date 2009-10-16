@@ -38,15 +38,12 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
-import org.apache.tuscany.sca.core.UtilityExtensionPoint;
-import org.apache.tuscany.sca.monitor.DefaultMonitorFactory;
-import org.apache.tuscany.sca.monitor.Monitor;
-import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.policy.BindingType;
 import org.apache.tuscany.sca.policy.ExtensionType;
 import org.apache.tuscany.sca.policy.ImplementationType;
@@ -66,8 +63,8 @@ public class ReadDocumentTestCase {
 
     private ModelResolver resolver;
     private StAXArtifactProcessor<Object> staxProcessor;
-    private Monitor monitor;
-
+    private ProcessorContext context;
+    
     private static final QName elementToProcess =
         new QName("http://docs.oasis-open.org/ns/opencsa/sca/200903", "implementationType");
 
@@ -94,17 +91,12 @@ public class ReadDocumentTestCase {
     public void setUp() throws Exception {
         DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
         resolver = new DefaultModelResolver();
+        context = new ProcessorContext(extensionPoints);
         XMLInputFactory inputFactory = XMLInputFactory.newInstance();
-        // Create a monitor
-        UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
-        MonitorFactory monitorFactory = new DefaultMonitorFactory();
-        if (monitorFactory != null) {
-            monitor = monitorFactory.createMonitor();
-            utilities.addUtility(monitorFactory);
-        }
+
         StAXArtifactProcessorExtensionPoint staxProcessors =
             extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null, monitor);
+        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null);
         staxProcessors.addArtifactProcessor(new TestPolicyProcessor());
 
         URL url = getClass().getResource("test_definitions.xml");
@@ -124,7 +116,7 @@ public class ReadDocumentTestCase {
             int event = reader.getEventType();
             switch (event) {
                 case START_ELEMENT: {
-                    Object artifact = staxProcessor.read(reader);
+                    Object artifact = staxProcessor.read(reader, context);
                     if (artifact instanceof PolicySet) {
                         PolicySet policySet = (PolicySet)artifact;
                         policySet.setName(new QName(namespace, policySet.getName().getLocalPart()));
@@ -136,7 +128,7 @@ public class ReadDocumentTestCase {
                         for (Intent i : intent.getQualifiedIntents()) {
                             i.setName(new QName(namespace, i.getName().getLocalPart()));
                             intentTable.put(i.getName(), i);
-                            resolver.addModel(i);
+                            resolver.addModel(i, context);
                         }
                     } else if (artifact instanceof BindingType) {
                         BindingType bindingType = (BindingType)artifact;
@@ -147,7 +139,7 @@ public class ReadDocumentTestCase {
                     }
 
                     if (artifact != null) {
-                        resolver.addModel(artifact);
+                        resolver.addModel(artifact, context);
                     }
 
                     break;
@@ -229,25 +221,25 @@ public class ReadDocumentTestCase {
         List<Intent> intents = new ArrayList<Intent>(intentTable.values());
 
         for (Intent intent : intents) {
-            staxProcessor.resolve(intent, resolver);
+            staxProcessor.resolve(intent, resolver, context);
         }
 
         for (PolicySet policySet : policySetTable.values()) {
             if (policySet.getReferencedPolicySets().isEmpty())
-                staxProcessor.resolve(policySet, resolver);
+                staxProcessor.resolve(policySet, resolver, context);
         }
 
         for (PolicySet policySet : policySetTable.values()) {
             if (!policySet.getReferencedPolicySets().isEmpty())
-                staxProcessor.resolve(policySet, resolver);
+                staxProcessor.resolve(policySet, resolver, context);
         }
 
         for (ExtensionType bindingType : bindingTypesTable.values()) {
-            staxProcessor.resolve(bindingType, resolver);
+            staxProcessor.resolve(bindingType, resolver, context);
         }
 
         for (ExtensionType implType : implTypesTable.values()) {
-            staxProcessor.resolve(implType, resolver);
+            staxProcessor.resolve(implType, resolver, context);
         }
 
         //testing if policy intents have been linked have property been linked up 

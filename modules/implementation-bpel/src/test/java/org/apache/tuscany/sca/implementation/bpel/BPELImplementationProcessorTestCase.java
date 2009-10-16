@@ -30,13 +30,11 @@ import junit.framework.TestCase;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
-import org.apache.tuscany.sca.monitor.DefaultMonitorFactory;
-import org.apache.tuscany.sca.monitor.Monitor;
-import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.monitor.Problem;
 
 /**
@@ -62,21 +60,18 @@ public class BPELImplementationProcessorTestCase extends TestCase {
 
     private XMLInputFactory inputFactory;
     private StAXArtifactProcessor<Object> staxProcessor;
-    private Monitor monitor;
+    private ProcessorContext context;
 
     @Override
     protected void setUp() throws Exception {
         DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
+        context = new ProcessorContext(extensionPoints);
         inputFactory = XMLInputFactory.newInstance();
         // Create a monitor
         UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
-        MonitorFactory monitorFactory = new DefaultMonitorFactory();  
-        if (monitorFactory != null) {
-        	monitor = monitorFactory.createMonitor();
-        	utilities.addUtility(monitorFactory);
-        }
+
         StAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(extensionPoints);
-        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null, null);
+        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null);
     }
 
     /**
@@ -86,7 +81,7 @@ public class BPELImplementationProcessorTestCase extends TestCase {
     public void testLoadValidComposite() throws Exception {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(COMPOSITE));
         
-        Composite composite = (Composite)staxProcessor.read(reader);
+        Composite composite = (Composite)staxProcessor.read(reader, context);
         BPELImplementation implementation = (BPELImplementation)composite.getComponents().get(0).getImplementation();
         
         assertNotNull(implementation);
@@ -99,8 +94,8 @@ public class BPELImplementationProcessorTestCase extends TestCase {
      */
     public void testLoadInvalidComposite() throws Exception {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(COMPOSITE_INVALID));
-        staxProcessor.read(reader);
-        Problem problem = monitor.getLastProblem();           
+        staxProcessor.read(reader, context);
+        Problem problem = context.getMonitor().getLastProblem();           
         assertNotNull(problem);
         assertEquals("AttributeProcessMissing", problem.getMessageId());
     }    

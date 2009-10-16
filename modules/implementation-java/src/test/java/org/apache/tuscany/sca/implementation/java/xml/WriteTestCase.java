@@ -27,6 +27,7 @@ import javax.xml.stream.XMLOutputFactory;
 
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
@@ -44,24 +45,26 @@ public class WriteTestCase {
     private static StAXArtifactProcessor<Object> staxProcessor;
     private static XMLInputFactory inputFactory;
     private static XMLOutputFactory outputFactory;
+    private static ProcessorContext context;
     
     @BeforeClass
     public static void setUp() throws Exception {
         DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
+        context = new ProcessorContext(extensionPoints);
         inputFactory = XMLInputFactory.newInstance();
         outputFactory = XMLOutputFactory.newInstance();
         outputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.TRUE);
         StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, outputFactory, null);
+        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, outputFactory);
     }
 
     @Test
     public void testReadWriteComposite() throws Exception {
         InputStream is = getClass().getResourceAsStream("Calculator.composite");
-        Composite composite = (Composite)staxProcessor.read(inputFactory.createXMLStreamReader(is));
+        Composite composite = (Composite)staxProcessor.read(inputFactory.createXMLStreamReader(is), context);
         Assert.assertNotNull(composite);
         StringWriter sw = new StringWriter();
-        staxProcessor.write(composite, outputFactory.createXMLStreamWriter(sw));
+        staxProcessor.write(composite, outputFactory.createXMLStreamWriter(sw), context);
         System.out.println(sw.toString());
     }
 

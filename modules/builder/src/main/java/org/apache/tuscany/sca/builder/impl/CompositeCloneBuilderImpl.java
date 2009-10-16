@@ -25,10 +25,9 @@ import java.util.List;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Implementation;
+import org.apache.tuscany.sca.assembly.builder.BuilderContext;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
-import org.apache.tuscany.sca.definitions.Definitions;
-import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  * A composite builder that clones nested composites.
@@ -40,7 +39,7 @@ public class CompositeCloneBuilderImpl implements CompositeBuilder {
     public CompositeCloneBuilderImpl() {
     }
 
-    public Composite build(Composite composite, Definitions definitions, Monitor monitor)
+    public Composite build(Composite composite, BuilderContext context)
         throws CompositeBuilderException {
 
         if (Composite.DOMAIN_COMPOSITE.equals(composite.getName())) {

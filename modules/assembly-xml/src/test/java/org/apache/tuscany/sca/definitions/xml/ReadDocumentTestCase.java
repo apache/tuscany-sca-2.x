@@ -32,6 +32,7 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
@@ -76,11 +77,13 @@ public class ReadDocumentTestCase {
     private static final QName basicAuthMsgProtSecurity = new QName(namespace, "BasicAuthMsgProtSecurity");
     private static final QName wsBinding = new QName(scaNamespace, "binding.ws");
     private static final QName javaImpl = new QName(scaNamespace, "implementation.java");
+    private static ProcessorContext context;
 
     @BeforeClass
     public static void setUp() throws Exception {
         DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
-
+        context = new ProcessorContext(extensionPoints);
+        
         // Create StAX processors
         StAXArtifactProcessorExtensionPoint staxProcessors =
             extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
@@ -92,7 +95,7 @@ public class ReadDocumentTestCase {
 
         URL url = ReadDocumentTestCase.class.getResource("test_definitions.xml");
         URI uri = URI.create("test_definitions.xml");
-        definitions = policyDefinitionsProcessor.read(null, uri, url);
+        definitions = policyDefinitionsProcessor.read(null, uri, url, context);
 
         for (Intent intent : definitions.getIntents()) {
             intentTable.put(intent.getName(), intent);
@@ -194,7 +197,7 @@ public class ReadDocumentTestCase {
         assertNull(javaImplType.getMayProvidedIntents().get(0).getDescription());
 
         ModelResolver resolver = new DefaultModelResolver();
-        policyDefinitionsProcessor.resolve(definitions, resolver);
+        policyDefinitionsProcessor.resolve(definitions, resolver, context);
         //builder.build(scaDefinitions);
 
         //testing if policy intents have been linked have property been linked up 

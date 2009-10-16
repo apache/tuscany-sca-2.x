@@ -31,13 +31,13 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ValidatingXMLInputFactory;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.implementation.osgi.ServiceDescriptions;
-import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  * The service descriptions document processor
@@ -47,8 +47,7 @@ public class ServiceDescriptionsDocumentProcessor implements URLArtifactProcesso
     private StAXArtifactProcessor extensionProcessor;
 
     public ServiceDescriptionsDocumentProcessor(FactoryExtensionPoint modelFactories,
-                                                StAXArtifactProcessor staxProcessor,
-                                                Monitor monitor) {
+                                                StAXArtifactProcessor staxProcessor) {
         super();
         this.extensionProcessor = staxProcessor;
         this.inputFactory = modelFactories.getFactory(ValidatingXMLInputFactory.class);
@@ -58,7 +57,7 @@ public class ServiceDescriptionsDocumentProcessor implements URLArtifactProcesso
         return "/OSGI-INF/remote-service/*.xml";
     }
 
-    public ServiceDescriptions read(URL contributionURL, URI artifactURI, URL artifactURL)
+    public ServiceDescriptions read(URL contributionURL, URI artifactURI, URL artifactURL, ProcessorContext context)
         throws ContributionReadException {
         InputStream is = null;
         try {
@@ -71,7 +70,7 @@ public class ServiceDescriptionsDocumentProcessor implements URLArtifactProcesso
         }
         try {
             XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-            Object result = extensionProcessor.read(reader);
+            Object result = extensionProcessor.read(reader, context);
             return (ServiceDescriptions)result;
         } catch (XMLStreamException e) {
             ContributionReadException ce = new ContributionReadException(e);
@@ -93,7 +92,7 @@ public class ServiceDescriptionsDocumentProcessor implements URLArtifactProcesso
         return ServiceDescriptions.class;
     }
 
-    public void resolve(ServiceDescriptions model, ModelResolver resolver) throws ContributionResolveException {
+    public void resolve(ServiceDescriptions model, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
     }
 
 }

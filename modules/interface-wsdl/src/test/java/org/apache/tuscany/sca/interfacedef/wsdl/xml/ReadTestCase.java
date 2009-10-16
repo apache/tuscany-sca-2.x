@@ -31,10 +31,11 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -44,22 +45,25 @@ import org.junit.Test;
  */
 public class ReadTestCase {
 
-    private XMLInputFactory inputFactory;
-    private StAXArtifactProcessor<Object> staxProcessor;
+    private static XMLInputFactory inputFactory;
+    private static StAXArtifactProcessor<Object> staxProcessor;
 
-    @Before
-    public void setUp() throws Exception {
+    private static ProcessorContext context;
+
+    @BeforeClass
+    public static void setUp() throws Exception {
         DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
+        context = new ProcessorContext(extensionPoints);
         inputFactory = XMLInputFactory.newInstance();
         StAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(extensionPoints);
-        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null, null);
+        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null);
     }
 
     @Test
     public void testReadComponentType() throws Exception {
         InputStream is = getClass().getResourceAsStream("CalculatorImpl.componentType");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-        ComponentType componentType = (ComponentType)staxProcessor.read(reader);
+        ComponentType componentType = (ComponentType)staxProcessor.read(reader, context);
         assertNotNull(componentType);
     }
 
@@ -67,7 +71,7 @@ public class ReadTestCase {
     public void testReadConstrainingType() throws Exception {
         InputStream is = getClass().getResourceAsStream("CalculatorComponent.constrainingType");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-        ConstrainingType constrainingType = (ConstrainingType)staxProcessor.read(reader);
+        ConstrainingType constrainingType = (ConstrainingType)staxProcessor.read(reader, context);
         assertNotNull(constrainingType);
     }
 
@@ -75,7 +79,7 @@ public class ReadTestCase {
     public void testReadComposite() throws Exception {
         InputStream is = getClass().getResourceAsStream("Calculator.composite");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-        Composite composite = (Composite)staxProcessor.read(reader);
+        Composite composite = (Composite)staxProcessor.read(reader, context);
         assertNotNull(composite);
     }
 

@@ -26,16 +26,16 @@ import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.Implementation;
+import org.apache.tuscany.sca.assembly.builder.BuilderContext;
+import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.definitions.Definitions;
-import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  * creates endpoint models for component services.
  */
-public class EndpointBuilderImpl {
+public class EndpointBuilderImpl implements CompositeBuilder {
     private AssemblyFactory assemblyFactory;
 
     public EndpointBuilderImpl(ExtensionPointRegistry registry) {
@@ -50,7 +50,7 @@ public class EndpointBuilderImpl {
      * @param definitions
      * @param monitor - a Monitor for logging errors
      */
-    public Composite build(Composite composite, Definitions definitions, Monitor monitor)
+    public Composite build(Composite composite, BuilderContext context)
         throws CompositeBuilderException {
 
         processComponentServices(composite);
@@ -97,5 +97,9 @@ public class EndpointBuilderImpl {
                 } // end for
             }
         }
+    }
+
+    public String getID() {
+        return "org.apache.tuscany.sca.assembly.builder.EndpointBuilder";
     }
 }

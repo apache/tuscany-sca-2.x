@@ -38,6 +38,7 @@ import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.Import;
 import org.apache.tuscany.sca.contribution.namespace.NamespaceImport;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.implementation.bpel.BPELProcessDefinition;
@@ -58,27 +59,25 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
  */
 public class BPELDocumentModelResolver implements ModelResolver {
 	
-	private WSDLFactory wsdlFactory;
+    private WSDLFactory wsdlFactory;
     private Contribution contribution;
     private Map<QName, BPELProcessDefinition> map = new HashMap<QName, BPELProcessDefinition>();
     
-    private Monitor monitor;
-    
-    public BPELDocumentModelResolver(Contribution contribution, FactoryExtensionPoint modelFactories, Monitor monitor) {
+    public BPELDocumentModelResolver(Contribution contribution, FactoryExtensionPoint modelFactories) {
     	this.wsdlFactory = modelFactories.getFactory(WSDLFactory.class);
         this.contribution = contribution;
     }
 
-    public void addModel(Object resolved) {
+    public void addModel(Object resolved, ProcessorContext context) {
         BPELProcessDefinition process = (BPELProcessDefinition)resolved;
         map.put(process.getName(), process);
     }
     
-    public Object removeModel(Object resolved) {
+    public Object removeModel(Object resolved, ProcessorContext context) {
         return map.remove(((BPELProcessDefinition)resolved).getName());
     }
     
-    public <T> T resolveModel(Class<T> modelClass, T unresolved) {    	
+    public <T> T resolveModel(Class<T> modelClass, T unresolved, ProcessorContext context) {    	
     	BPELProcessDefinition resolved = null;
     	QName qname = ((BPELProcessDefinition)unresolved).getName();
     	
@@ -92,7 +91,7 @@ public class BPELDocumentModelResolver implements ModelResolver {
                 if (namespaceImport.getNamespace().equals(qname.getNamespaceURI())) {
                     if (namespaceImport.getLocation() == null) {
 	                    // Delegate the resolution to the import resolver
-	                    resolved = namespaceImport.getModelResolver().resolveModel(BPELProcessDefinition.class, (BPELProcessDefinition)unresolved);
+	                    resolved = namespaceImport.getModelResolver().resolveModel(BPELProcessDefinition.class, (BPELProcessDefinition)unresolved, context);
 	                    if (!resolved.isUnresolved()) {
 	                        return modelClass.cast(resolved);
 	                    }
@@ -109,7 +108,7 @@ public class BPELDocumentModelResolver implements ModelResolver {
         for (String location : locations) {
         	NamespaceImport namespaceImport = (NamespaceImport)locationMap.get(location);
         	// Delegate the resolution to the namespace import resolver
-            resolved = namespaceImport.getModelResolver().resolveModel(BPELProcessDefinition.class, (BPELProcessDefinition)unresolved);
+            resolved = namespaceImport.getModelResolver().resolveModel(BPELProcessDefinition.class, (BPELProcessDefinition)unresolved, context);
             if (!resolved.isUnresolved()) {
                 return modelClass.cast(resolved);
             }
@@ -121,7 +120,7 @@ public class BPELDocumentModelResolver implements ModelResolver {
         
         if(resolved.isUnresolved()) {
         	try {
-        		resolve(resolved);
+        		resolve(resolved, context);
         	} catch(Exception e) {
         		//FIXME
         	}
@@ -134,7 +133,7 @@ public class BPELDocumentModelResolver implements ModelResolver {
         return (T)unresolved;
     }
     
-    public void resolve(BPELProcessDefinition unresolved) throws ContributionResolveException {
+    public void resolve(BPELProcessDefinition unresolved, ProcessorContext context) throws ContributionResolveException {
         // FIXME - serious resolving needs to happen here
     	
     	// Step 1 is to resolve the WSDL files referenced from this BPEL process
@@ -150,12 +149,12 @@ public class BPELDocumentModelResolver implements ModelResolver {
     	// callback interface.
 
     	List<BPELImportElement> theImports = unresolved.getImports();
-    	Set<Definition> wsdlDefinitions = getImportedWSDLDefinitions( theImports, contribution.getModelResolver() );
+    	Set<Definition> wsdlDefinitions = getImportedWSDLDefinitions( theImports, contribution.getModelResolver(), context );
     	
     	// Fetch the sets of partner links, port types and interfaces
-    	List<BPELPartnerLinkTypeElement> thePLinkTypes = getPartnerLinkTypes( wsdlDefinitions );
+    	List<BPELPartnerLinkTypeElement> thePLinkTypes = getPartnerLinkTypes( wsdlDefinitions, context.getMonitor() );
     	Collection<WSDLInterface> theInterfaces = (Collection<WSDLInterface>)new ArrayList<WSDLInterface>();
-    	Collection<PortType> thePortTypes = getAllPortTypes( theImports, theInterfaces, contribution.getModelResolver() );
+    	Collection<PortType> thePortTypes = getAllPortTypes( theImports, theInterfaces, contribution.getModelResolver(), context );
     	
     	// Store the Port Types and the Interfaces for later calculation of the component type...
     	unresolved.getPortTypes().addAll(thePortTypes);
@@ -167,7 +166,7 @@ public class BPELDocumentModelResolver implements ModelResolver {
             QName partnerLinkType = thePartnerLink.getPartnerLinkType();
             BPELPartnerLinkTypeElement pLinkType = findPartnerLinkType(partnerLinkType, thePLinkTypes);
             if (pLinkType == null) {
-                error("PartnerLinkNoMatchingType", thePartnerLink, thePartnerLink.getName());
+                error(context.getMonitor(), "PartnerLinkNoMatchingType", thePartnerLink, thePartnerLink.getName());
             } else {
                 thePartnerLink.setPartnerLinkType(pLinkType);
             }
@@ -182,13 +181,13 @@ public class BPELDocumentModelResolver implements ModelResolver {
      * @param theImports - a list of the import statements
      * @return - a Set containing all the referenced WSDL definitions
      */
-    private Set<Definition> getImportedWSDLDefinitions( List<BPELImportElement> theImports, ModelResolver resolver ) {
+    private Set<Definition> getImportedWSDLDefinitions( List<BPELImportElement> theImports, ModelResolver resolver, ProcessorContext context ) {
     	Set<Definition> wsdlDefinitions = null;
     	for (BPELImportElement theImport : theImports) {
             if (theImport.getImportType().equals(BPELProcessorConstants.WSDL_NS)) {
             	// If the Import is a WSDL import, resolve the WSDL
             	WSDLDefinition theWSDL = resolveWSDLDefinition( theImport.getLocation(), 
-            			                                        theImport.getNamespace(), resolver );
+            			                                        theImport.getNamespace(), resolver, context );
                 if( theWSDL != null ) {
 	            	theImport.setWSDLDefinition( theWSDL );
 	            	
@@ -210,9 +209,10 @@ public class BPELDocumentModelResolver implements ModelResolver {
      * @param wsdlLocation - a string containing the WSDL location
      * @param wsdlNamespace - a string containing the WSDL namespace
      * @param resolver - a model resolver
+     * @param context 
      * @return - a WSDLDefinition object for the referenced WSDL, or null if the WSDL cannot be resolved
      */
-    private WSDLDefinition resolveWSDLDefinition( String wsdlLocation, String wsdlNamespace, ModelResolver resolver ) {
+    private WSDLDefinition resolveWSDLDefinition( String wsdlLocation, String wsdlNamespace, ModelResolver resolver, ProcessorContext context ) {
         
         // Resolve the WSDL definition
         WSDLDefinition proxy = wsdlFactory.createWSDLDefinition();
@@ -221,11 +221,11 @@ public class BPELDocumentModelResolver implements ModelResolver {
         if (wsdlLocation != null) {
             proxy.setLocation(URI.create(wsdlLocation));
         }
-        WSDLDefinition resolved = resolver.resolveModel(WSDLDefinition.class, proxy);
+        WSDLDefinition resolved = resolver.resolveModel(WSDLDefinition.class, proxy, context);
         if (resolved != null && !resolved.isUnresolved()) {
         	return resolved;
         } else {
-            error("CannotResolveWSDLReference", resolver, wsdlLocation, wsdlNamespace);
+            error(context.getMonitor(), "CannotResolveWSDLReference", resolver, wsdlLocation, wsdlNamespace);
             return null;
         } // end if
     } // end resolveWSDLDefinition
@@ -238,7 +238,7 @@ public class BPELDocumentModelResolver implements ModelResolver {
      * @return - a List of PartnerLinkType elements
      */
     @SuppressWarnings("unchecked")
-    private List<BPELPartnerLinkTypeElement> getPartnerLinkTypes( Set<Definition> wsdlDefinitions ) throws ContributionResolveException {
+    private List<BPELPartnerLinkTypeElement> getPartnerLinkTypes( Set<Definition> wsdlDefinitions, Monitor monitor ) throws ContributionResolveException {
     	
     	List<BPELPartnerLinkTypeElement> thePLinks = new ArrayList<BPELPartnerLinkTypeElement>();
 
@@ -268,7 +268,7 @@ public class BPELDocumentModelResolver implements ModelResolver {
                     } // end for
 
                     if (count == 0) {
-                        error("PartnerLinkTypeNoRoles", theElement, pLinkElement.getName());
+                        error(monitor, "PartnerLinkTypeNoRoles", theElement, pLinkElement.getName());
                         throw new ContributionResolveException("partnerLinkType " + pLinkElement.getName() + " has no Roles defined");
                     } else
                         thePLinks.add(pLinkElement);
@@ -308,7 +308,9 @@ public class BPELDocumentModelResolver implements ModelResolver {
      */
     @SuppressWarnings("unchecked")
     private Collection<PortType> getAllPortTypes(List<BPELImportElement> theImports,
-                                                 Collection<WSDLInterface> theInterfaces, ModelResolver resolver) throws ContributionResolveException {
+                                                 Collection<WSDLInterface> theInterfaces, 
+                                                 ModelResolver resolver,
+                                                 ProcessorContext context) throws ContributionResolveException {
 
         Set<PortType> thePortTypes = new HashSet<PortType>();
         for (BPELImportElement theImport : theImports) {
@@ -335,15 +337,15 @@ public class BPELDocumentModelResolver implements ModelResolver {
                         if (wsdlPortType != null) {
                             // Introspect the WSDL portType and add the resulting WSDLInterface to the resolver
                             try {
-                                wsdlInterface = wsdlFactory.createWSDLInterface(wsdlPortType.getElement(), theWSDL, resolver);
+                                wsdlInterface = wsdlFactory.createWSDLInterface(wsdlPortType.getElement(), theWSDL, resolver, context.getMonitor());
                                 wsdlInterface.setWsdlDefinition(theWSDL);
                             } catch (InvalidInterfaceException e) {
                                 ContributionResolveException ce = 
                                 	new ContributionResolveException("Unable to create WSDLInterface for portType " + portType.getQName(),e);
-                                error("ContributionResolveException", resolver, ce);
+                                error(context.getMonitor(), "ContributionResolveException", resolver, ce);
                                 throw ce;
                             } // end try
-                            resolver.addModel(wsdlInterface);
+                            resolver.addModel(wsdlInterface, context);
                             theInterfaces.add(wsdlInterface);
                         } // end if
                     } // end for
@@ -361,7 +363,7 @@ public class BPELDocumentModelResolver implements ModelResolver {
      * @param message
      * @param model
      */
-    private void warning(String message, Object model, Object... messageParameters) {
+    private void warning(Monitor monitor, String message, Object model, Object... messageParameters) {
         if (monitor != null) {
             Problem problem = monitor.createProblem(this.getClass().getName(), "impl-bpel-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
             monitor.problem(problem);
@@ -375,7 +377,7 @@ public class BPELDocumentModelResolver implements ModelResolver {
      * @param message
      * @param model
      */
-    private void error(String message, Object model, Object... messageParameters) {
+    private void error(Monitor monitor, String message, Object model, Object... messageParameters) {
         if (monitor != null) {
             Problem problem = monitor.createProblem(this.getClass().getName(), "impl-bpel-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
             monitor.problem(problem);
@@ -389,7 +391,7 @@ public class BPELDocumentModelResolver implements ModelResolver {
      * @param message
      * @param model
      */
-    private void error(String message, Object model, Exception ex) {
+    private void error(Monitor monitor, String message, Object model, Exception ex) {
         if (monitor != null) {
             Problem problem = monitor.createProblem(this.getClass().getName(), "impl-bpel-validation-messages", Severity.ERROR, model, message, ex);
             monitor.problem(problem);

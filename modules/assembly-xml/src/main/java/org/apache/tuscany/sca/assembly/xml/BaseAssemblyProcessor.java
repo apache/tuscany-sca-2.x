@@ -77,6 +77,7 @@ import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXAttributeProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
@@ -106,7 +107,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
     protected StAXArtifactProcessor<Object> extensionProcessor;
     protected PolicySubjectProcessor policyProcessor;
     private DocumentBuilderFactory documentBuilderFactory;
-    protected Monitor monitor;
+
 
     /**
      * Constructs a new BaseArtifactProcessor.
@@ -117,14 +118,12 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
     protected BaseAssemblyProcessor(AssemblyFactory assemblyFactory,
                                     PolicyFactory policyFactory,
                                     DocumentBuilderFactory documentBuilderFactory,
-                                    StAXArtifactProcessor extensionProcessor,
-                                    Monitor monitor) {
+                                    StAXArtifactProcessor extensionProcessor) {
         this.assemblyFactory = assemblyFactory;
         this.policyFactory = policyFactory;
         this.documentBuilderFactory = documentBuilderFactory;
         this.extensionProcessor = (StAXArtifactProcessor<Object>)extensionProcessor;
         this.policyProcessor = new PolicySubjectProcessor(policyFactory);
-        this.monitor = monitor;
     }
 
     /**
@@ -133,14 +132,12 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
      * @param monitor
      */
     protected BaseAssemblyProcessor(FactoryExtensionPoint modelFactories,
-                                    StAXArtifactProcessor staxProcessor,
-                                    Monitor monitor) {
+                                    StAXArtifactProcessor staxProcessor) {
         this.assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
         this.documentBuilderFactory = modelFactories.getFactory(DocumentBuilderFactory.class);
         this.extensionProcessor = (StAXArtifactProcessor<Object>)staxProcessor;
         this.policyProcessor = new PolicySubjectProcessor(policyFactory);
-        this.monitor = monitor;
     }
 
     /**
@@ -150,7 +147,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
      * @param model
      * @param messageParameters
      */
-    protected void warning(String message, Object model, Object... messageParameters) {
+    protected void warning(Monitor monitor, String message, Object model, Object... messageParameters) {
         if (monitor != null) {
             Problem problem =
                 monitor.createProblem(this.getClass().getName(),
@@ -170,7 +167,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
      * @param message
      * @param model
      */
-    protected void error(String message, Object model, Object... messageParameters) {
+    protected void error(Monitor monitor, String message, Object model, Object... messageParameters) {
         if (monitor != null) {
             Problem problem =
                 monitor.createProblem(this.getClass().getName(),
@@ -190,7 +187,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
      * @param message
      * @param model
      */
-    protected void error(String message, Object model, Exception ex) {
+    protected void error(Monitor monitor, String message, Object model, Exception ex) {
         if (monitor != null) {
             Problem problem =
                 monitor.createProblem(this.getClass().getName(),
@@ -312,10 +309,11 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
      * Reads an abstract property element.
      * @param property
      * @param reader
+     * @param context TODO
      * @throws XMLStreamException
      * @throws ContributionReadException
      */
-    protected void readAbstractProperty(AbstractProperty property, XMLStreamReader reader) throws XMLStreamException,
+    protected void readAbstractProperty(AbstractProperty property, XMLStreamReader reader, ProcessorContext context) throws XMLStreamException,
         ContributionReadException {
 
         property.setName(getString(reader, NAME));
@@ -327,7 +325,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
         if( property.getXSDElement() != null && property.getXSDType() != null ) {
         	ContributionReadException ce = new ContributionReadException("Error: property has both @type and @element attribute values - " + 
         			                                                     property.getName());
-        	error("ContributionReadException", property, ce);
+        	error(context.getMonitor(), "ContributionReadException", property, ce);
         } // end if
 
     }
@@ -336,20 +334,21 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
      * Resolve an implementation.
      * @param implementation
      * @param resolver
+     * @param context 
      * @return
      * @throws ContributionResolveException
      */
-    protected Implementation resolveImplementation(Implementation implementation, ModelResolver resolver)
+    protected Implementation resolveImplementation(Implementation implementation, ModelResolver resolver, ProcessorContext context)
         throws ContributionResolveException {
         if (implementation != null) {
             if (implementation.isUnresolved()) {
-                implementation = resolver.resolveModel(Implementation.class, implementation);
+                implementation = resolver.resolveModel(Implementation.class, implementation, context);
 
                 // Lazily resolve implementations
                 if (implementation.isUnresolved()) {
-                    extensionProcessor.resolve(implementation, resolver);
+                    extensionProcessor.resolve(implementation, resolver, context);
                     if (!implementation.isUnresolved()) {
-                        resolver.addModel(implementation);
+                        resolver.addModel(implementation, context);
                     }
                 }
             }
@@ -361,10 +360,11 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
      * Resolve interface, callback interface and bindings on a list of contracts.
      * @param contracts the list of contracts
      * @param resolver the resolver to use to resolve models
+     * @param context TODO
      */
-    protected <C extends Contract> void resolveContracts(List<C> contracts, ModelResolver resolver)
+    protected <C extends Contract> void resolveContracts(List<C> contracts, ModelResolver resolver, ProcessorContext context)
         throws ContributionResolveException {
-        resolveContracts(null, contracts, resolver);
+        resolveContracts(null, contracts, resolver, context);
     }
 
     /**
@@ -372,8 +372,9 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
      * @param parent element for the contracts
      * @param contracts the list of contracts
      * @param resolver the resolver to use to resolve models
+     * @param context TODO
      */
-    protected <C extends Contract> void resolveContracts(Base parent, List<C> contracts, ModelResolver resolver)
+    protected <C extends Contract> void resolveContracts(Base parent, List<C> contracts, ModelResolver resolver, ProcessorContext context)
         throws ContributionResolveException {
 
         String parentName =
@@ -384,13 +385,13 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
             // Resolve the interface contract
             InterfaceContract interfaceContract = contract.getInterfaceContract();
             if (interfaceContract != null) {
-                extensionProcessor.resolve(interfaceContract, resolver);
+                extensionProcessor.resolve(interfaceContract, resolver, context);
             }
 
             // Resolve bindings
             for (int i = 0, n = contract.getBindings().size(); i < n; i++) {
                 Binding binding = contract.getBindings().get(i);
-                extensionProcessor.resolve(binding, resolver);
+                extensionProcessor.resolve(binding, resolver, context);
 
             }
 
@@ -399,7 +400,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
 
                 for (int i = 0, n = contract.getCallback().getBindings().size(); i < n; i++) {
                     Binding binding = contract.getCallback().getBindings().get(i);
-                    extensionProcessor.resolve(binding, resolver);
+                    extensionProcessor.resolve(binding, resolver, context);
                 }
             }
         }
@@ -409,15 +410,16 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
      * Resolve interface and callback interface on a list of abstract contracts.
      * @param contracts the list of contracts
      * @param resolver the resolver to use to resolve models
+     * @param context TODO
      */
-    protected <C extends AbstractContract> void resolveAbstractContracts(List<C> contracts, ModelResolver resolver)
+    protected <C extends AbstractContract> void resolveAbstractContracts(List<C> contracts, ModelResolver resolver, ProcessorContext context)
         throws ContributionResolveException {
         for (AbstractContract contract : contracts) {
 
             // Resolve the interface contract
             InterfaceContract interfaceContract = contract.getInterfaceContract();
             if (interfaceContract != null) {
-                extensionProcessor.resolve(interfaceContract, resolver);
+                extensionProcessor.resolve(interfaceContract, resolver, context);
             }
         }
     }
@@ -509,12 +511,13 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
      * @param element
      * @param type
      * @param reader
+     * @param context TODO
      * @return
      * @throws XMLStreamException
      * @throws ContributionReadException
      * @throws ParserConfigurationException 
      */
-    protected Document readPropertyValue(QName element, QName type, boolean isMany, XMLStreamReader reader) throws XMLStreamException,
+    protected Document readPropertyValue(QName element, QName type, boolean isMany, XMLStreamReader reader, ProcessorContext context) throws XMLStreamException,
         ContributionReadException {
         Document document;
         try {
@@ -525,7 +528,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
             document = documentBuilderFactory.newDocumentBuilder().newDocument();
         } catch (ParserConfigurationException e) {
             ContributionReadException ce = new ContributionReadException(e);
-            error("ContributionReadException", documentBuilderFactory, ce);
+            error(context.getMonitor(), "ContributionReadException", documentBuilderFactory, ce);
             throw ce;
         }
 
@@ -584,13 +587,13 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
                     // A property <value/> subelement MUST NOT be used when the @value attribute is used 
                     // to specify the value for that property.
                     if (valueAttr != null) {
-                        error("ASM50033: value attribute exists for the property element", name, name);
+                        error(context.getMonitor(), "ASM50033: value attribute exists for the property element", name, name);
                     }
                     // Read <value>
                     if (VALUE_QNAME.equals(name)) {
                     	if (gotOneValue && !isMany) {
                     	    // TODO: TUSCANY-3231 this should be error not warning but that breaks OASIS tests
-                    		warning("ASM50032: multiple value elements for single-valued property", name, name);
+                    		warning(context.getMonitor(), "ASM50032: multiple value elements for single-valued property", name, name);
                     	}
                         loadElement(reader, root);
                         gotOneValue = true;
@@ -845,17 +848,19 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
      * 
      * @param reader
      * @param elementName
-     * @param estensibleElement
      * @param extensionAttributeProcessor
+     * @param context TODO
+     * @param estensibleElement
      * @throws ContributionReadException
      * @throws XMLStreamException
      */
     protected void readExtendedAttributes(XMLStreamReader reader,
                                           QName elementName,
                                           Extensible extensible,
-                                          StAXAttributeProcessor extensionAttributeProcessor)
-        throws ContributionReadException, XMLStreamException {
-        super.readExtendedAttributes(reader, extensible, extensionAttributeProcessor, assemblyFactory);
+                                          StAXAttributeProcessor extensionAttributeProcessor,
+                                          ProcessorContext context) throws ContributionReadException,
+        XMLStreamException {
+        super.readExtendedAttributes(reader, extensible, extensionAttributeProcessor, assemblyFactory, context);
     }
 
 

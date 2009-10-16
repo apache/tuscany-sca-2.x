@@ -20,11 +20,11 @@
 package org.apache.tuscany.sca.implementation.osgi.xml;
 
 import org.apache.tuscany.sca.contribution.Contribution;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.implementation.osgi.ServiceDescriptions;
 import org.apache.tuscany.sca.implementation.osgi.ServiceDescriptionsFactory;
-import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  * 
@@ -32,19 +32,19 @@ import org.apache.tuscany.sca.monitor.Monitor;
 public class ServiceDescriptionsModelResolver implements ModelResolver {
     private ServiceDescriptions serviceDescriptions;
 
-    public ServiceDescriptionsModelResolver(Contribution contribution, FactoryExtensionPoint modelFactories, Monitor monitor) {
+    public ServiceDescriptionsModelResolver(Contribution contribution, FactoryExtensionPoint modelFactories) {
         ServiceDescriptionsFactory factory = modelFactories.getFactory(ServiceDescriptionsFactory.class);
         this.serviceDescriptions = factory.createServiceDescriptions();
     }
 
-    public void addModel(Object resolved) {
+    public void addModel(Object resolved, ProcessorContext context) {
         // Merge the service descriptions
         if (resolved instanceof ServiceDescriptions) {
             serviceDescriptions.addAll((ServiceDescriptions)resolved);
         }
     }
 
-    public Object removeModel(Object resolved) {
+    public Object removeModel(Object resolved, ProcessorContext context) {
         // Remove the service descriptions
         if (resolved instanceof ServiceDescriptions) {
             serviceDescriptions.removeAll((ServiceDescriptions)resolved);
@@ -52,7 +52,7 @@ public class ServiceDescriptionsModelResolver implements ModelResolver {
         return resolved;
     }
 
-    public <T> T resolveModel(Class<T> modelClass, T unresolved) {
+    public <T> T resolveModel(Class<T> modelClass, T unresolved, ProcessorContext context) {
         // Always return the aggregated service descriptions
         return modelClass.cast(serviceDescriptions);
     }

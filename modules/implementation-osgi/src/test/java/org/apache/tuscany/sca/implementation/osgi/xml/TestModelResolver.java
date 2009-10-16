@@ -26,6 +26,7 @@ import java.util.Map;
 
 import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.Property;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.resolver.ClassReference;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.implementation.osgi.impl.OSGiImplementationImpl;
@@ -46,7 +47,7 @@ public class TestModelResolver implements ModelResolver {
         this.classLoader = new WeakReference<ClassLoader>(classLoader);
     }
 
-    public <T> T resolveModel(Class<T> modelClass, T unresolved) {
+    public <T> T resolveModel(Class<T> modelClass, T unresolved, ProcessorContext context) {
         Object resolved = map.get(unresolved);
         if (resolved != null) {
 
@@ -93,11 +94,11 @@ public class TestModelResolver implements ModelResolver {
         }
     }
 
-    public void addModel(Object resolved) {
+    public void addModel(Object resolved, ProcessorContext context) {
         map.put(resolved, resolved);
     }
 
-    public Object removeModel(Object resolved) {
+    public Object removeModel(Object resolved, ProcessorContext context) {
         return map.remove(resolved);
     }
 

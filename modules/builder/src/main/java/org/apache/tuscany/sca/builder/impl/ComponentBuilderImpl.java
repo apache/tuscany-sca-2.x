@@ -51,6 +51,7 @@ import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.assembly.builder.BuilderContext;
 import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
 import org.apache.tuscany.sca.assembly.builder.ImplementationBuilder;
 import org.apache.tuscany.sca.assembly.builder.Messages;
@@ -62,7 +63,6 @@ import org.apache.tuscany.sca.interfacedef.IncompatibleInterfaceContractExceptio
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
-import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.policy.ExtensionType;
 import org.apache.tuscany.sca.policy.PolicySubject;
 import org.w3c.dom.Document;
@@ -79,7 +79,6 @@ public class ComponentBuilderImpl {
     protected static final QName BINDING_SCA_QNAME = new QName(SCA11_NS, BINDING_SCA);
 
     private CompositeComponentTypeBuilderImpl componentTypeBuilder;
-    private Monitor monitor;
     private AssemblyFactory assemblyFactory;
     private SCABindingFactory scaBindingFactory;
     private DocumentBuilderFactory documentBuilderFactory;
@@ -89,8 +88,6 @@ public class ComponentBuilderImpl {
 
     public ComponentBuilderImpl(ExtensionPointRegistry registry) {
         UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
-        MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
-        monitor = monitorFactory.createMonitor();
 
         FactoryExtensionPoint modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
         assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
@@ -113,8 +110,9 @@ public class ComponentBuilderImpl {
      * @Param parentComposite the composite that contains the component being configured. Required for property processing
      * @param component the component to be configured
      */
-    public void configureComponentFromComponentType(Component outerComponent, Composite parentComposite, Component component) {
+    public void configureComponentFromComponentType(Component outerComponent, Composite parentComposite, Component component, BuilderContext context) {
 
+        Monitor monitor = context.getMonitor();
         monitor.pushContext("Component: " + component.getName().toString());
         
         try {
@@ -132,7 +130,7 @@ public class ComponentBuilderImpl {
             if (impl != null) {
                 ImplementationBuilder builder = builders.getImplementationBuilder(impl.getType());
                 if (builder != null) {
-                    builder.build(component, impl, monitor);
+                    builder.build(component, impl, context);
                 }
             }
     
@@ -141,17 +139,17 @@ public class ComponentBuilderImpl {
             // composite level property values. Hence we have to calculate whether the component 
             // type property value should be overridden by this component's property value 
             // before we go ahead and calculate the component type
-            configureProperties(outerComponent, parentComposite, component);
+            configureProperties(outerComponent, parentComposite, component, monitor);
     
             // create the component type for this component 
             // taking any nested composites into account
-            createComponentType(component);
+            createComponentType(component, context);
     
             // configure services based on the calculated component type
-            configureServices(component);
+            configureServices(component, monitor);
     
             // configure services based on the calculated component type
-            configureReferences(component);
+            configureReferences(component, monitor);
         } finally {
             monitor.popContext();
         }         
@@ -195,10 +193,10 @@ public class ComponentBuilderImpl {
      * 
      * @param component
      */
-    private void createComponentType(Component component) {
+    private void createComponentType(Component component, BuilderContext context) {
         Implementation implementation = component.getImplementation();
         if (implementation instanceof Composite) {
-            componentTypeBuilder.createComponentType(component, (Composite)implementation);
+            componentTypeBuilder.createComponentType(component, (Composite)implementation, context);
         }
     }
 
@@ -208,15 +206,15 @@ public class ComponentBuilderImpl {
      * 
      * @param component
      */
-    private void configureServices(Component component) {
+    private void configureServices(Component component, Monitor monitor) {
 
         // If the component type has services that are not described in this
         // component then create services for this component
-        addServicesFromComponentType(component);
+        addServicesFromComponentType(component, monitor);
 
         // Connect this component's services to the 
         // services from its component type
-        connectServicesToComponentType(component);
+        connectServicesToComponentType(component, monitor);
 
         // look at each component service in turn and calculate its 
         // configuration based on OASIS rules
@@ -231,7 +229,7 @@ public class ComponentBuilderImpl {
             }
 
             // interface contracts
-            calculateServiceInterfaceContract(component, componentService, componentTypeService);
+            calculateServiceInterfaceContract(component, componentService, componentTypeService, monitor);
 
             // bindings
             calculateBindings(componentService, componentTypeService);
@@ -256,15 +254,15 @@ public class ComponentBuilderImpl {
      * 
      * @param component
      */
-    private void configureReferences(Component component) {
+    private void configureReferences(Component component, Monitor monitor) {
 
         // If the component type has references that are not described in this
         // component then create references for this component
-        addReferencesFromComponentType(component);
+        addReferencesFromComponentType(component, monitor);
 
         // Connect this component's references to the 
         // references from its component type
-        connectReferencesToComponentType(component);
+        connectReferencesToComponentType(component, monitor);
 
         // look at each component reference in turn and calculate its 
         // configuration based on OASIS rules
@@ -278,10 +276,10 @@ public class ComponentBuilderImpl {
             }
 
             // reference multiplicity
-            reconcileReferenceMultiplicity(component, componentReference, componentTypeReference);
+            reconcileReferenceMultiplicity(component, componentReference, componentTypeReference, monitor);
 
             // interface contracts
-            calculateReferenceInterfaceContract(component, componentReference, componentTypeReference);
+            calculateReferenceInterfaceContract(component, componentReference, componentTypeReference, monitor);
 
             // bindings
             calculateBindings(componentReference, componentTypeReference);
@@ -317,26 +315,26 @@ public class ComponentBuilderImpl {
      * 
      * @param component
      */
-    private void configureProperties(Component outerComponent, Composite parentComposite, Component component) {
+    private void configureProperties(Component outerComponent, Composite parentComposite, Component component, Monitor monitor) {
         // If the component type has properties that are not described in this
         // component then create properties for this component
-        addPropertiesFromComponentType(component);
+        addPropertiesFromComponentType(component, monitor);
 
         // Connect this component's properties to the 
         // properties from its component type
-        connectPropertiesToComponentType(component);
+        connectPropertiesToComponentType(component, monitor);
 
         // Reconcile component properties and their component type properties
         for (ComponentProperty componentProperty : component.getProperties()) {
-            reconcileComponentPropertyWithComponentType(component, componentProperty);
+            reconcileComponentPropertyWithComponentType(component, componentProperty, monitor);
 
             // configure the property value based on the @source attribute
             // At the moment this is done in the parent composite component
             // type calculation 
-            processPropertySourceAttribute(outerComponent, parentComposite, component, componentProperty);
+            processPropertySourceAttribute(outerComponent, parentComposite, component, componentProperty, monitor);
 
             // configure the property value based on the @file attribute
-            processPropertyFileAttribute(component, componentProperty);
+            processPropertyFileAttribute(component, componentProperty, monitor);
             
             // Check that a value is supplied
             if (componentProperty.isMustSupply() && !isPropertyValueSet(componentProperty)) {
@@ -361,7 +359,7 @@ public class ComponentBuilderImpl {
         }
     }
 
-    private void addServicesFromComponentType(Component component) {
+    private void addServicesFromComponentType(Component component, Monitor monitor) {
 
         // Create a component service for each service
         if (component.getImplementation() != null) {
@@ -391,7 +389,7 @@ public class ComponentBuilderImpl {
         }
     }
 
-    private void addReferencesFromComponentType(Component component) {
+    private void addReferencesFromComponentType(Component component, Monitor monitor) {
 
         // Create a component reference for each reference
         if (component.getImplementation() != null) {
@@ -421,7 +419,7 @@ public class ComponentBuilderImpl {
         }
     }
 
-    private void addPropertiesFromComponentType(Component component) {
+    private void addPropertiesFromComponentType(Component component, Monitor monitor) {
 
         // Create component property for each property
         if (component.getImplementation() != null) {
@@ -454,7 +452,7 @@ public class ComponentBuilderImpl {
         }
     }
 
-    private void connectServicesToComponentType(Component component) {
+    private void connectServicesToComponentType(Component component, Monitor monitor) {
 
         // Connect each component service to the corresponding component type service
         for (ComponentService componentService : component.getServices()) {
@@ -492,7 +490,7 @@ public class ComponentBuilderImpl {
         }
     }
 
-    private void connectReferencesToComponentType(Component component) {
+    private void connectReferencesToComponentType(Component component, Monitor monitor) {
 
         // Connect each component reference to the corresponding component type reference
         for (ComponentReference componentReference : component.getReferences()) {
@@ -530,7 +528,7 @@ public class ComponentBuilderImpl {
         }
     }
 
-    private void connectPropertiesToComponentType(Component component) {
+    private void connectPropertiesToComponentType(Component component, Monitor monitor) {
         // Connect each component property to the corresponding component type property
         for (ComponentProperty componentProperty : component.getProperties()) {
             // check for duplicate property names in component
@@ -560,7 +558,8 @@ public class ComponentBuilderImpl {
 
     private void reconcileReferenceMultiplicity(Component component,
                                                 Reference componentReference,
-                                                Reference componentTypeReference) {
+                                                Reference componentTypeReference,
+                                                Monitor monitor) {
         if (componentReference.getMultiplicity() != null) {
             if (!isValidMultiplicityOverride(componentTypeReference.getMultiplicity(), componentReference
                 .getMultiplicity())) {
@@ -576,7 +575,7 @@ public class ComponentBuilderImpl {
         }
     }
 
-    private void reconcileComponentPropertyWithComponentType(Component component, ComponentProperty componentProperty) {
+    private void reconcileComponentPropertyWithComponentType(Component component, ComponentProperty componentProperty, Monitor monitor) {
         Property componentTypeProperty = componentProperty.getProperty();
         if (componentTypeProperty != null) {
 
@@ -676,7 +675,8 @@ public class ComponentBuilderImpl {
     private void processPropertySourceAttribute(Component outerComponent,
                                                 Composite parentComposite,
                                                 Component component,
-                                                ComponentProperty componentProperty) {
+                                                ComponentProperty componentProperty,
+                                                Monitor monitor) {
         String source = componentProperty.getSource();
 
         if (source != null) {
@@ -754,7 +754,7 @@ public class ComponentBuilderImpl {
      * @param parentCompoent the composite that contains the component
      * @param component
      */
-    private void processPropertyFileAttribute(Component component, ComponentProperty componentProperty) {
+    private void processPropertyFileAttribute(Component component, ComponentProperty componentProperty, Monitor monitor) {
         String file = componentProperty.getFile();
         if (file != null) {
             try {
@@ -1120,7 +1120,7 @@ public class ComponentBuilderImpl {
      * @param topContract the top contract 
      * @param bottomContract the bottom contract
      */
-    private void calculateServiceInterfaceContract(Component component, Service topContract, Service bottomContract) {
+    private void calculateServiceInterfaceContract(Component component, Service topContract, Service bottomContract, Monitor monitor) {
 
         // Use the interface contract from the bottom level contract if
         // none is specified on the top level contract
@@ -1160,7 +1160,7 @@ public class ComponentBuilderImpl {
      * @param topContract the top contract 
      * @param bottomContract the bottom contract
      */
-    private void calculateReferenceInterfaceContract(Component component, Reference topContract, Reference bottomContract) {
+    private void calculateReferenceInterfaceContract(Component component, Reference topContract, Reference bottomContract, Monitor monitor) {
 
         // Use the interface contract from the bottom level contract if
         // none is specified on the top level contract

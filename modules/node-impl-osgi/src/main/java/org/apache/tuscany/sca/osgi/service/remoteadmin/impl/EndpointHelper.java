@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.osgi.service.remoteadmin.impl;
 
+import java.net.URL;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -30,17 +31,20 @@ import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.osgi.service.remoteadmin.EndpointDescription;
 import org.apache.tuscany.sca.osgi.service.remoteadmin.RemoteConstants;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 
 /**
  * Implementation of {@link EndpointDescription}
  */
 public class EndpointHelper {
+    private static final String FRAMEWORK_UUID = UUID.randomUUID().toString();
+    
     private EndpointHelper() {
     }
 
-    public static EndpointDescription createEndpointDescription(Endpoint endpoint) {
-        return new EndpointDescription(getProperties(endpoint));
+    public static EndpointDescription createEndpointDescription(BundleContext bundleContext, Endpoint endpoint) {
+        return new EndpointDescription(getProperties(bundleContext, endpoint));
     }
 
     private static List<String> getInterfaces(Endpoint endpoint) {
@@ -49,15 +53,30 @@ public class EndpointHelper {
         return Collections.singletonList(javaInterface.getName());
     }
 
-    private static Map<String, Object> getProperties(Endpoint endpoint) {
+    private static Map<String, Object> getProperties(BundleContext bundleContext, Endpoint endpoint) {
         Map<String, Object> props = new HashMap<String, Object>();
-        props.put(RemoteConstants.ENDPOINT_URI, endpoint.getURI());
-        props.put(RemoteConstants.ENDPOINT_REMOTE_SERVICE_ID, UUID.randomUUID().toString());
-        props.put(RemoteConstants.SERVICE_EXPORTED_CONFIGS, new String[] {"sca"});
+        
+        String uuid = getFrameworkUUID(bundleContext);
+        
+        props.put(RemoteConstants.SERVICE_REMOTE_FRAMEWORK_UUID, uuid);
+        props.put(RemoteConstants.SERVICE_REMOTE_URI, endpoint.getURI());
+        props.put(RemoteConstants.SERVICE_REMOTE_ID, String.valueOf(System.currentTimeMillis()));
+        props.put(RemoteConstants.SERVICE_EXPORTED_CONFIGS, new String[] {"org.osgi.sca"});
         props.put(Endpoint.class.getName(), endpoint);
         List<String> interfaces = getInterfaces(endpoint);
         props.put(Constants.OBJECTCLASS, interfaces.toArray(new String[interfaces.size()]));
         return props;
+    }
+
+    public static String getFrameworkUUID(BundleContext bundleContext) {
+        String uuid = null;
+        if (bundleContext != null) {
+            URL url = bundleContext.getBundle(0).getEntry("/"); // bundleentry://0.fwk24942249/
+            uuid = url.getHost();
+        } else {
+            uuid = FRAMEWORK_UUID;
+        }
+        return uuid;
     }
 
     public static Endpoint getEndpoint(EndpointDescription endpointDescription) {

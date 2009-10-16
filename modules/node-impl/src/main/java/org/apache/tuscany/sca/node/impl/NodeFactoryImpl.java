@@ -52,9 +52,9 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Base;
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.assembly.builder.BuilderContext;
 import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
-import org.apache.tuscany.sca.assembly.builder.DeployedCompositeBuilder;
 import org.apache.tuscany.sca.common.java.io.IOHelper;
 import org.apache.tuscany.sca.common.xml.stax.StAXHelper;
 import org.apache.tuscany.sca.contribution.Artifact;
@@ -66,6 +66,7 @@ import org.apache.tuscany.sca.contribution.Import;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ExtendedURLArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
@@ -177,7 +178,7 @@ public class NodeFactoryImpl extends NodeFactory {
                 extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
             StAXArtifactProcessor processor = processors.getProcessor(NodeConfiguration.class);
             reader.nextTag();
-            NodeConfiguration config = (NodeConfiguration)processor.read(reader);
+            NodeConfiguration config = (NodeConfiguration)processor.read(reader, new ProcessorContext(extensionPoints));
             xml.close();
             if (base != null && config != null) {
                 // Resolve the contribution location against the node.xml
@@ -318,13 +319,13 @@ public class NodeFactoryImpl extends NodeFactory {
         }
     }
 
-    private boolean attachDeploymentComposite(Contribution contribution, Reader xml, String location, boolean attached)
+    private boolean attachDeploymentComposite(Contribution contribution, Reader xml, String location, boolean attached, ProcessorContext context)
         throws XMLStreamException, ContributionReadException {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(xml);
         reader.nextTag();
 
         // Read the composite model
-        Composite composite = (Composite)compositeProcessor.read(reader);
+        Composite composite = (Composite)compositeProcessor.read(reader, context);
         reader.close();
 
         // Create an artifact for the deployment composite
@@ -373,11 +374,11 @@ public class NodeFactoryImpl extends NodeFactory {
      * @param resolver - the ModelResolver to use
      * @throws ContributionResolveException
      */
-    private void contributionsPreresolve( List<Contribution> contributions, ModelResolver resolver )
+    private void contributionsPreresolve( List<Contribution> contributions, ModelResolver resolver, ProcessorContext context)
         throws ContributionResolveException {
 
         for( Contribution contribution : contributions ) {
-                contributionProcessor.preResolve(contribution, resolver);
+                contributionProcessor.preResolve(contribution, resolver, context);
         } // end for
     } // end method contributionsPreresolve
 
@@ -475,7 +476,7 @@ public class NodeFactoryImpl extends NodeFactory {
         systemContribution = contributionFactory.createContribution();
         systemContribution.setURI("http://tuscany.apache.org/SystemContribution");
         systemContribution.setLocation("http://tuscany.apache.org/SystemContribution");
-        ModelResolver modelResolver = new ExtensibleModelResolver(systemContribution, modelResolvers, modelFactories, monitor);
+        ModelResolver modelResolver = new ExtensibleModelResolver(systemContribution, modelResolvers, modelFactories);
         systemContribution.setModelResolver(modelResolver);
         systemContribution.setUnresolved(true);
 
@@ -500,11 +501,11 @@ public class NodeFactoryImpl extends NodeFactory {
         return new DefaultExtensionPointRegistry();
     }
 
-    protected Composite configureNode(NodeConfiguration configuration, List<Contribution> contributions, Monitor monitor)
+    protected Composite configureNode(NodeConfiguration configuration, List<Contribution> contributions, ProcessorContext context)
         throws Throwable {
         if (contributions == null) {
             // Load contributions
-            contributions = loadContributions(configuration, monitor);
+            contributions = loadContributions(configuration, context);
         }
         // Build an aggregated SCA definitions model. Must be done before we try and
         // resolve any contributions or composites as they may depend on the full
@@ -514,6 +515,7 @@ public class NodeFactoryImpl extends NodeFactory {
         // into the system contribution. In turn add a default import into
         // each contribution so that for unresolved items the resolution
         // processing will look in the system contribution
+        Monitor monitor = context.getMonitor();
         for (Contribution contribution: contributions) {
             monitor.pushContext("Contribution: " + contribution.getURI());
             // aggregate definitions
@@ -537,16 +539,16 @@ public class NodeFactoryImpl extends NodeFactory {
             monitor.popContext();
         }
 
-        ExtensibleModelResolver modelResolver = new ExtensibleModelResolver(new Contributions(contributions), modelResolvers, modelFactories, monitor);
+        ExtensibleModelResolver modelResolver = new ExtensibleModelResolver(new Contributions(contributions), modelResolvers, modelFactories);
 
         // now resolve and add the system contribution
-        contributionProcessor.resolve(systemContribution, modelResolver);
+        contributionProcessor.resolve(systemContribution, modelResolver, context);
         contributions.add(systemContribution);
 
         // TODO - Now we can calculate applicable policy sets for each composite
 
         // pre-resolve the contributions
-        contributionsPreresolve(contributions, modelResolver);
+        contributionsPreresolve(contributions, modelResolver, context);
 
         // Build the contribution dependencies
         Set<Contribution> resolved = new HashSet<Contribution>();
@@ -557,7 +559,7 @@ public class NodeFactoryImpl extends NodeFactory {
             for (Contribution dependency: contribution.getDependencies()) {
                 if (!resolved.contains(dependency)) {
                     resolved.add(dependency);
-                    contributionProcessor.resolve(dependency, modelResolver);
+                    contributionProcessor.resolve(dependency, modelResolver, context);
                 }
             }
         }
@@ -584,13 +586,14 @@ public class NodeFactoryImpl extends NodeFactory {
         }
 
         // build the top level composite
-        ((DeployedCompositeBuilder)compositeBuilder).build(domainComposite, systemDefinitions, bindingMap, monitor);
+        BuilderContext builderContext = new BuilderContext(systemDefinitions, bindingMap, monitor);
+        compositeBuilder.build(domainComposite, builderContext);
         analyzeProblems(monitor);
 
         return domainComposite;
     }
 
-    protected List<Contribution> loadContributions(NodeConfiguration configuration, Monitor monitor) throws Throwable {
+    protected List<Contribution> loadContributions(NodeConfiguration configuration, ProcessorContext context) throws Throwable {
         List<Contribution> contributions = new ArrayList<Contribution>();
 
         // Load the specified contributions
@@ -605,14 +608,14 @@ public class NodeFactoryImpl extends NodeFactory {
 
             // Load the contribution
             logger.log(Level.INFO, "Loading contribution: " + contributionURL);
-            Contribution contribution = contributionProcessor.read(null, contributionURI, contributionURL);
+            Contribution contribution = contributionProcessor.read(null, contributionURI, contributionURL, context);
             contributions.add(contribution);
 
             boolean attached = false;
             for (DeploymentComposite dc : contrib.getDeploymentComposites()) {
                 if (dc.getContent() != null) {
                     Reader xml = new StringReader(dc.getContent());
-                    attached = attachDeploymentComposite(contribution, xml, null, attached);
+                    attached = attachDeploymentComposite(contribution, xml, null, attached, context);
                 } else if (dc.getLocation() != null) {
                     URI dcURI = createURI(dc.getLocation());
                     if (!dcURI.isAbsolute()) {
@@ -639,11 +642,11 @@ public class NodeFactoryImpl extends NodeFactory {
                         URL url = dcURI.toURL();
                         InputStream is = openStream(url);
                         Reader xml = new InputStreamReader(is, "UTF-8");
-                        attached = attachDeploymentComposite(contribution, xml, url.toString(), attached);
+                        attached = attachDeploymentComposite(contribution, xml, url.toString(), attached, context);
                     }
                 }
             }
-            analyzeProblems(monitor);
+            analyzeProblems(context.getMonitor());
         }
         return contributions;
     }

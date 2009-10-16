@@ -31,6 +31,7 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ExtensibleModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
@@ -39,7 +40,6 @@ import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
-import org.apache.tuscany.sca.monitor.Monitor;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -59,21 +59,21 @@ public class WSDLTestCase {
     public void setUp() throws Exception {
         ExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
         URLArtifactProcessorExtensionPoint documentProcessors = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
-        documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors, null);
+        documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors);
         
         FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         contributionFactory = modelFactories.getFactory(ContributionFactory.class);
         Contribution contribution = contributionFactory.createContribution();
         ModelResolverExtensionPoint modelResolvers = extensionPoints.getExtensionPoint(ModelResolverExtensionPoint.class);
-        resolver = new ExtensibleModelResolver(contribution, modelResolvers, modelFactories, (Monitor)null);
+        resolver = new ExtensibleModelResolver(contribution, modelResolvers, modelFactories);
         contribution.setModelResolver(resolver);
-        wsdlResolver = new WSDLModelResolver(contribution, modelFactories, null);
+        wsdlResolver = new WSDLModelResolver(contribution, modelFactories);
     }
 
     @Test
     public void testReadWSDLDocument() throws Exception {
         URL url = getClass().getResource("example.wsdl");
-        WSDLDefinition definition = documentProcessor.read(null, new URI("example.wsdl"), url, WSDLDefinition.class);
+        WSDLDefinition definition = documentProcessor.read(null, new URI("example.wsdl"), url, null, WSDLDefinition.class);
         assertNotNull(definition);
         assertNull(definition.getDefinition());
         assertEquals(definition.getNamespace(), "http://www.example.org");
@@ -85,10 +85,11 @@ public class WSDLTestCase {
         QName aPortType = new QName("http://helloworld", "HelloWorld");
 
         URL url = getClass().getResource("test1.wsdl");
-        WSDLDefinition test1Defn = documentProcessor.read(null, new URI("test1.wsdl"), url, WSDLDefinition.class);
+        WSDLDefinition test1Defn = documentProcessor.read(null, new URI("test1.wsdl"), url, null, WSDLDefinition.class);
         assertNotNull(test1Defn);
-        wsdlResolver.addModel(test1Defn);
-        test1Defn = wsdlResolver.resolveModel(WSDLDefinition.class, test1Defn);
+        ProcessorContext context = new ProcessorContext();
+        wsdlResolver.addModel(test1Defn, context);
+        test1Defn = wsdlResolver.resolveModel(WSDLDefinition.class, test1Defn, context);
         //binding is a part of test1.wsdl
         assertNotNull(test1Defn.getDefinition().getBinding(aBinding));
         //porttype is part of test2.wsdl
@@ -100,22 +101,23 @@ public class WSDLTestCase {
         QName aBinding = new QName("http://helloworld", "HelloWorldSoapBinding");
         QName aPortType = new QName("http://helloworld", "HelloWorld");
 
+        ProcessorContext context = new ProcessorContext();
         URL url = getClass().getResource("test2.wsdl");
-        WSDLDefinition test2Defn = documentProcessor.read(null, new URI("test2.wsdl"), url, WSDLDefinition.class);
+        WSDLDefinition test2Defn = documentProcessor.read(null, new URI("test2.wsdl"), url, null, WSDLDefinition.class);
         assertNotNull(test2Defn);
-        wsdlResolver.addModel(test2Defn);
-        test2Defn = wsdlResolver.resolveModel(WSDLDefinition.class, test2Defn);
+        wsdlResolver.addModel(test2Defn, context);
+        test2Defn = wsdlResolver.resolveModel(WSDLDefinition.class, test2Defn, context);
 
         //bindings are a part of test1.wsdl so should not be found
         assertNull(test2Defn.getDefinition().getBinding(aBinding));
         assertNotNull(test2Defn.getDefinition().getPortType(aPortType));
 
         url = getClass().getResource("test1.wsdl");
-        WSDLDefinition test1Defn = documentProcessor.read(null, new URI("test1.wsdl"), url, WSDLDefinition.class);
+        WSDLDefinition test1Defn = documentProcessor.read(null, new URI("test1.wsdl"), url, null, WSDLDefinition.class);
         assertNotNull(test1Defn);
-        wsdlResolver.addModel(test1Defn);
+        wsdlResolver.addModel(test1Defn, context);
 
-        test1Defn = wsdlResolver.resolveModel(WSDLDefinition.class, test1Defn);
+        test1Defn = wsdlResolver.resolveModel(WSDLDefinition.class, test1Defn, context);
 
         assertNotNull(test1Defn.getDefinition().getPortType(aPortType));
         assertNotNull(test1Defn.getDefinition().getBinding(aBinding));

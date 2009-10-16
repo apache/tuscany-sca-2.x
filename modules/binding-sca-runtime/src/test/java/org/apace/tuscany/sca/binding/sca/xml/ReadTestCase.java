@@ -30,6 +30,7 @@ import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
@@ -47,21 +48,23 @@ public class ReadTestCase {
 
     private static XMLInputFactory inputFactory;
     private static StAXArtifactProcessor<Object> staxProcessor;
-
+    private static ProcessorContext context;
+    
     @BeforeClass
     public static void setUp() throws Exception {
         ExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
-
+        context = new ProcessorContext(extensionPoints);
+        
         inputFactory = XMLInputFactory.newInstance();
         StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null, null);
+        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null);
     }
 
     @Test
     public void testReadComponentType() throws Exception {
         InputStream is = getClass().getResourceAsStream("/CalculatorServiceImpl.componentType");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-        ComponentType componentType = (ComponentType)staxProcessor.read(reader);
+        ComponentType componentType = (ComponentType)staxProcessor.read(reader, context);
         assertNotNull(componentType);
         
         SCABinding referenceSCABinding = (SCABinding) componentType.getReferences().get(0).getBindings().get(0);
@@ -77,7 +80,7 @@ public class ReadTestCase {
     public void testReadComposite() throws Exception {
         InputStream is = getClass().getResourceAsStream("/Calculator.composite");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-        Composite composite = (Composite)staxProcessor.read(reader);
+        Composite composite = (Composite)staxProcessor.read(reader, context);
         assertNotNull(composite);
 
         SCABinding referenceSCABinding = (SCABinding) composite.getComponents().get(0).getReferences().get(0).getBindings().get(0);

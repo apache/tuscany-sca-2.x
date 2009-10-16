@@ -25,6 +25,7 @@ import java.net.URL;
 import javax.wsdl.PortType;
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLOperation;
@@ -42,12 +43,13 @@ public class WrapperStyleOperationTestCase extends AbstractWSDLTestCase {
 
     @Test
     public final void testWrappedOperation() throws Exception {
+        ProcessorContext context = new ProcessorContext();
         URL url = getClass().getResource("../xml/stockquote.wsdl");
-        WSDLDefinition definition = (WSDLDefinition)documentProcessor.read(null, new URI("stockquote.wsdl"), url);
-        resolver.addModel(definition);
-        definition = resolver.resolveModel(WSDLDefinition.class, definition);
+        WSDLDefinition definition = (WSDLDefinition)documentProcessor.read(null, new URI("stockquote.wsdl"), url, context);
+        resolver.addModel(definition, context);
+        definition = resolver.resolveModel(WSDLDefinition.class, definition, context);
         PortType portType = definition.getDefinition().getPortType(PORTTYPE_NAME);
-        WSDLInterface wi = wsdlFactory.createWSDLInterface(portType, definition, resolver);
+        WSDLInterface wi = wsdlFactory.createWSDLInterface(portType, definition, resolver, context.getMonitor());
         WSDLOperation op = (WSDLOperation) wi.getOperations().get(0);
         Assert.assertTrue(op.isWrapperStyle());
         Assert.assertEquals(1, op.getWrapper().getInputChildElements().size());
@@ -56,12 +58,13 @@ public class WrapperStyleOperationTestCase extends AbstractWSDLTestCase {
 
     @Test
     public final void testUnwrappedOperation() throws Exception {
+        ProcessorContext context = new ProcessorContext();
         URL url = getClass().getResource("../xml/unwrapped-stockquote.wsdl");
-        WSDLDefinition definition = (WSDLDefinition)documentProcessor.read(null, new URI("unwrapped-stockquote.wsdl"), url);
-        resolver.addModel(definition);
-        definition = resolver.resolveModel(WSDLDefinition.class, definition);
+        WSDLDefinition definition = (WSDLDefinition)documentProcessor.read(null, new URI("unwrapped-stockquote.wsdl"), url, context);
+        resolver.addModel(definition, context);
+        definition = resolver.resolveModel(WSDLDefinition.class, definition, context);
         PortType portType = definition.getDefinition().getPortType(PORTTYPE_NAME);
-        WSDLInterface wi = wsdlFactory.createWSDLInterface(portType, definition, resolver);
+        WSDLInterface wi = wsdlFactory.createWSDLInterface(portType, definition, resolver, context.getMonitor());
         WSDLOperation op = (WSDLOperation) wi.getOperations().get(1);
         Assert.assertFalse(op.isWrapperStyle());
         op = (WSDLOperation) wi.getOperations().get(2);

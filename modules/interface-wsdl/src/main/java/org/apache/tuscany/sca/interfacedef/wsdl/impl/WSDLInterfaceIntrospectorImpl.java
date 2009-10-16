@@ -55,21 +55,19 @@ public class WSDLInterfaceIntrospectorImpl {
     private WSDLFactory wsdlFactory;
     private XSDFactory xsdFactory;
     private PolicyFactory policyFactory;
-    private Monitor monitor;
     
-    public WSDLInterfaceIntrospectorImpl(FactoryExtensionPoint modelFactories, WSDLFactory wsdlFactory, Monitor monitor) {
+    public WSDLInterfaceIntrospectorImpl(FactoryExtensionPoint modelFactories, WSDLFactory wsdlFactory) {
         this.xsdFactory = modelFactories.getFactory(XSDFactory.class);
         this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
         this.wsdlFactory = wsdlFactory;
-        this.monitor = monitor;
     }
 
     // FIXME: Do we want to deal with document-literal wrapped style based on the JAX-WS Specification?
-    private List<Operation> introspectOperations(PortType portType, WSDLDefinition wsdlDefinition, ModelResolver resolver) throws InvalidWSDLException {
+    private List<Operation> introspectOperations(PortType portType, WSDLDefinition wsdlDefinition, ModelResolver resolver, Monitor monitor) throws InvalidWSDLException {
         List<Operation> operations = new ArrayList<Operation>();
         for (Object o : portType.getOperations()) {
             javax.wsdl.Operation wsdlOp = (javax.wsdl.Operation)o;
-            Operation operation = getOperation(wsdlOp, wsdlDefinition, resolver, xsdFactory);
+            Operation operation = getOperation(wsdlOp, wsdlDefinition, resolver, xsdFactory, monitor);
             if(isEndConversation(wsdlOp)) {
                 operation.setConversationSequence(ConversationSequence.CONVERSATION_END);
             }
@@ -78,20 +76,21 @@ public class WSDLInterfaceIntrospectorImpl {
         return operations;
     }
 
-    public void introspectPortType(WSDLInterface wsdlInterface, PortType portType, WSDLDefinition wsdlDefinition, ModelResolver resolver) throws InvalidWSDLException {
+    public void introspectPortType(WSDLInterface wsdlInterface, PortType portType, WSDLDefinition wsdlDefinition, ModelResolver resolver, Monitor monitor) throws InvalidWSDLException {
         processIntents(wsdlInterface, portType);
-        WSDLInterface callback = processCallbackAttribute( portType, resolver );
+        WSDLInterface callback = processCallbackAttribute( portType, resolver, monitor );
         wsdlInterface.setPortType(portType);
         wsdlInterface.setCallbackInterface(callback);
-        wsdlInterface.getOperations().addAll(introspectOperations(portType, wsdlDefinition, resolver));
+        wsdlInterface.getOperations().addAll(introspectOperations(portType, wsdlDefinition, resolver, monitor));
         wsdlInterface.setConversational(isConversational(portType));
     }
 
     public static Operation getOperation(javax.wsdl.Operation wsdlOp,
                                          WSDLDefinition wsdlDefinition,
                                          ModelResolver resolver,
-                                         XSDFactory xsdFactory) throws InvalidWSDLException {
-        WSDLOperationIntrospectorImpl op = new WSDLOperationIntrospectorImpl(xsdFactory, wsdlOp, wsdlDefinition, null, resolver);
+                                         XSDFactory xsdFactory,
+                                         Monitor monitor) throws InvalidWSDLException {
+        WSDLOperationIntrospectorImpl op = new WSDLOperationIntrospectorImpl(xsdFactory, wsdlOp, wsdlDefinition, null, resolver, monitor);
         return op.getOperation();
     }
     
@@ -101,7 +100,7 @@ public class WSDLInterfaceIntrospectorImpl {
      * @param portType the portType
      * @return
      */
-    private WSDLInterface processCallbackAttribute( PortType portType, ModelResolver resolver ) {
+    private WSDLInterface processCallbackAttribute( PortType portType, ModelResolver resolver, Monitor monitor ) {
         Object o =  portType.getExtensionAttribute(CALLBACK_ATTRIBUTE);
         if(o != null && o instanceof QName) { 
         	WSDLInterface wsdlInterface = wsdlFactory.createWSDLInterface();

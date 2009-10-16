@@ -37,6 +37,7 @@ import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
@@ -57,16 +58,14 @@ public class IntentProcessor extends BaseStAXArtifactProcessor implements StAXAr
     PolicyConstants {
 
     private PolicyFactory policyFactory;
-    private Monitor monitor;
+    
 
-    public IntentProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
+    public IntentProcessor(FactoryExtensionPoint modelFactories) {
         this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
-        this.monitor = monitor;
     }
 
-    public IntentProcessor(PolicyFactory policyFactory, Monitor monitor) {
+    public IntentProcessor(PolicyFactory policyFactory) {
         this.policyFactory = policyFactory;
-        this.monitor = monitor;
     }
 
     /**
@@ -76,7 +75,7 @@ public class IntentProcessor extends BaseStAXArtifactProcessor implements StAXAr
      * @param message
      * @param model
      */
-    private void error(String message, Object model, Object... messageParameters) {
+    private void error(Monitor monitor, String message, Object model, Object... messageParameters) {
         if (monitor != null) {
             Problem problem =
                 monitor.createProblem(this.getClass().getName(),
@@ -89,7 +88,7 @@ public class IntentProcessor extends BaseStAXArtifactProcessor implements StAXAr
         }
     }
 
-    private void warn(String message, Object model, Object... messageParameters) {
+    private void warn(Monitor monitor, String message, Object model, Object... messageParameters) {
         if (monitor != null) {
             Problem problem =
                 monitor.createProblem(this.getClass().getName(),
@@ -102,11 +101,11 @@ public class IntentProcessor extends BaseStAXArtifactProcessor implements StAXAr
         }
     }
 
-    public Intent read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+    public Intent read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException, XMLStreamException {
         Intent intent = null;
         String intentLocalName = reader.getAttributeValue(null, NAME);
         if (intentLocalName == null) {
-            error("IntentNameMissing", reader);
+            error(context.getMonitor(), "IntentNameMissing", reader);
             return null;
         }
 
@@ -182,7 +181,7 @@ public class IntentProcessor extends BaseStAXArtifactProcessor implements StAXAr
         return intent;
     }
 
-    public void write(Intent intent, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
+    public void write(Intent intent, XMLStreamWriter writer, ProcessorContext context) throws ContributionWriteException, XMLStreamException {
         // Write an <sca:intent>
         writer.writeStartElement(PolicyConstants.SCA11_NS, INTENT);
         writer.writeNamespace(intent.getName().getPrefix(), intent.getName().getNamespaceURI());
@@ -225,7 +224,7 @@ public class IntentProcessor extends BaseStAXArtifactProcessor implements StAXAr
         writer.writeEndElement();
     }
 
-    private void resolveContrainedTypes(Intent intent, ModelResolver resolver) throws ContributionResolveException {
+    private void resolveContrainedTypes(Intent intent, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
         Collection<ExtensionType> resolvedTypes = new HashSet<ExtensionType>();
         for (ExtensionType extensionType : intent.getConstrainedTypes()) {
             if (ExtensionType.BINDING_BASE.equals(extensionType.getType()) || ExtensionType.IMPLEMENTATION_BASE
@@ -234,11 +233,11 @@ public class IntentProcessor extends BaseStAXArtifactProcessor implements StAXAr
                 extensionType.setUnresolved(false);
                 resolvedTypes.add(extensionType);
             } else {
-                ExtensionType resolved = resolver.resolveModel(ExtensionType.class, extensionType);
+                ExtensionType resolved = resolver.resolveModel(ExtensionType.class, extensionType, context);
                 if (!resolved.isUnresolved() || resolved != extensionType) {
                     resolvedTypes.add(resolved);
                 } else {
-                    warn("ConstrainedTypeNotFound", intent, extensionType, intent);
+                    warn(context.getMonitor(), "ConstrainedTypeNotFound", intent, extensionType, intent);
                 }
             }
         }
@@ -246,7 +245,8 @@ public class IntentProcessor extends BaseStAXArtifactProcessor implements StAXAr
         intent.getConstrainedTypes().addAll(resolvedTypes);
     }
 
-    private void resolveProfileIntent(Intent intent, ModelResolver resolver) throws ContributionResolveException {
+    private void resolveProfileIntent(Intent intent, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
+        Monitor monitor = context.getMonitor();
         // FIXME: Need to check for cyclic references first i.e an A requiring B
         // and then B requiring A...
         if (intent != null && !intent.getRequiredIntents().isEmpty()) {
@@ -254,13 +254,13 @@ public class IntentProcessor extends BaseStAXArtifactProcessor implements StAXAr
             List<Intent> requiredIntents = new ArrayList<Intent>();
             for (Intent required : intent.getRequiredIntents()) {
                 if (required.isUnresolved()) {
-                    Intent resolved = resolver.resolveModel(Intent.class, required);
+                    Intent resolved = resolver.resolveModel(Intent.class, required, context);
                     // At this point, when the required intent is not resolved, it does not mean 
                     // its undeclared, chances are that their dependency are not resolved yet. 
                     // Lets try to resolve them first.
                     if (resolved.isUnresolved()) {
                         if (((resolved).getRequiredIntents()).contains(intent)) {
-                            error("CyclicReferenceFound", resolver, required, intent);
+                            error(monitor, "CyclicReferenceFound", resolver, required, intent);
                             return;
                         }
                     }
@@ -268,7 +268,7 @@ public class IntentProcessor extends BaseStAXArtifactProcessor implements StAXAr
                     if (!resolved.isUnresolved() || resolved != required) {
                         requiredIntents.add(resolved);
                     } else {
-                        error("RequiredIntentNotFound", resolver, required, intent);
+                        error(monitor, "RequiredIntentNotFound", resolver, required, intent);
                         return;
                         //throw new ContributionResolveException("Required Intent - " + requiredIntent
                         //+ " not found for Intent " + policyIntent);
@@ -282,7 +282,7 @@ public class IntentProcessor extends BaseStAXArtifactProcessor implements StAXAr
         }
     }
 
-    private void resolveQualifiedIntent(Intent qualifed, ModelResolver resolver) throws ContributionResolveException {
+    private void resolveQualifiedIntent(Intent qualifed, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
         if (qualifed != null) {
             //resolve the qualifiable intent
             Intent parent = qualifed.getQualifiableIntent();
@@ -290,7 +290,7 @@ public class IntentProcessor extends BaseStAXArtifactProcessor implements StAXAr
                 return;
             }
             if (parent.isUnresolved()) {
-                Intent resolved = resolver.resolveModel(Intent.class, parent);
+                Intent resolved = resolver.resolveModel(Intent.class, parent, context);
                 // At this point, when the qualifiable intent is not resolved, it does not mean 
                 // its undeclared, chances are that their dependency are not resolved yet. 
                 // Lets try to resolve them first.
@@ -298,7 +298,7 @@ public class IntentProcessor extends BaseStAXArtifactProcessor implements StAXAr
                 if (!resolved.isUnresolved() || resolved != qualifed) {
                     qualifed.setQualifiableIntent(resolved);
                 } else {
-                    error("QualifiableIntentNotFound", resolver, parent, qualifed);
+                    error(context.getMonitor(), "QualifiableIntentNotFound", resolver, parent, qualifed);
                     //throw new ContributionResolveException("Qualifiable Intent - " + qualifiableIntent
                     //+ " not found for Intent " + policyIntent);
                 }
@@ -306,11 +306,12 @@ public class IntentProcessor extends BaseStAXArtifactProcessor implements StAXAr
         }
     }
 
-    public void resolve(Intent intent, ModelResolver resolver) throws ContributionResolveException {
-        resolveProfileIntent(intent, resolver);
-        resolveExcludedIntents(intent, resolver);
-        resolveQualifiedIntent(intent, resolver);
-        resolveContrainedTypes(intent, resolver);
+    public void resolve(Intent intent, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
+        Monitor monitor = context.getMonitor();
+        resolveProfileIntent(intent, resolver, context);
+        resolveExcludedIntents(intent, resolver, context);
+        resolveQualifiedIntent(intent, resolver, context);
+        resolveContrainedTypes(intent, resolver, context);
         intent.setUnresolved(false);
     }
 
@@ -359,18 +360,18 @@ public class IntentProcessor extends BaseStAXArtifactProcessor implements StAXAr
         }
     }
 
-    private void resolveExcludedIntents(Intent policyIntent, ModelResolver resolver)
+    private void resolveExcludedIntents(Intent policyIntent, ModelResolver resolver, ProcessorContext context)
         throws ContributionResolveException {
         if (policyIntent != null) {
             // resolve all excluded intents
             List<Intent> excludedIntents = new ArrayList<Intent>();
             for (Intent excludedIntent : policyIntent.getExcludedIntents()) {
                 if (excludedIntent.isUnresolved()) {
-                    Intent resolvedExcludedIntent = resolver.resolveModel(Intent.class, excludedIntent);
+                    Intent resolvedExcludedIntent = resolver.resolveModel(Intent.class, excludedIntent, context);
                     if (!resolvedExcludedIntent.isUnresolved() || resolvedExcludedIntent != excludedIntent) {
                         excludedIntents.add(resolvedExcludedIntent);
                     } else {
-                        error("ExcludedIntentNotFound", resolver, excludedIntent, policyIntent);
+                        error(context.getMonitor(), "ExcludedIntentNotFound", resolver, excludedIntent, policyIntent);
                         return;
                         //throw new ContributionResolveException("Excluded Intent " + excludedIntent
                         //+ " not found for intent " + policyIntent);

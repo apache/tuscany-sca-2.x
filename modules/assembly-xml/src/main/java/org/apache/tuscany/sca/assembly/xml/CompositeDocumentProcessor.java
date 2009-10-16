@@ -32,6 +32,7 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.common.java.io.IOHelper;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ValidatingXMLInputFactory;
@@ -46,7 +47,7 @@ import org.apache.tuscany.sca.monitor.Monitor;
  */
 public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements URLArtifactProcessor<Composite> {
     private XMLInputFactory inputFactory;
-    private Monitor monitor;
+    
 
     /**
      * Constructs a composite document processor
@@ -55,11 +56,9 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
      * @param monitor
      */
     public CompositeDocumentProcessor(FactoryExtensionPoint modelFactories,
-                                      StAXArtifactProcessor<?> staxProcessor,
-                                      Monitor monitor) {
-        super(modelFactories, staxProcessor, monitor);
+                                      StAXArtifactProcessor<?> staxProcessor) {
+        super(modelFactories, staxProcessor);
         this.inputFactory = modelFactories.getFactory(ValidatingXMLInputFactory.class);
-        this.monitor = monitor;
     }
     
     /**
@@ -69,7 +68,7 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
      * @param url - the URL of the composite document
      * @return a Composite object built from the supplied Composite document
      */
-    public Composite read(URL contributionURL, URI uri, URL url) throws ContributionReadException {
+    public Composite read(URL contributionURL, URI uri, URL url, ProcessorContext context) throws ContributionReadException {
     	if( uri == null || url == null ) {
     		throw new ContributionReadException("Request to read composite with uri or url NULL");
     	} // end if
@@ -79,17 +78,17 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
             scdlStream = IOHelper.openStream(url);;
         } catch (IOException e) {
             ContributionReadException ce = new ContributionReadException("Exception reading " + uri, e);
-            error("ContributionReadException", url, ce);
+            error(context.getMonitor(), "ContributionReadException", url, ce);
             throw ce;
         } 
-        return read(uri, scdlStream);
+        return read(uri, scdlStream, context);
     }
 
-    public Composite read(URI uri, InputStream scdlStream) throws ContributionReadException {
+    public Composite read(URI uri, InputStream scdlStream, ProcessorContext context) throws ContributionReadException {
         try {       
             
             Composite composite = null;
-            
+            Monitor monitor = context.getMonitor();
             // Tag the monitor with the name of the composite artifact
             if( monitor != null ) {
             	monitor.setArtifactName(uri.toString());
@@ -100,7 +99,7 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
             reader.nextTag();
             
             // Read the composite model
-            composite = (Composite)extensionProcessor.read(reader);
+            composite = (Composite)extensionProcessor.read(reader, context);
             if (composite != null) {
                 composite.setURI(uri.toString());
             }
@@ -109,7 +108,7 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
             
         } catch (XMLStreamException e) {
         	ContributionReadException ce = new ContributionReadException("Exception reading " + uri, e);
-        	error("ContributionReadException", inputFactory, ce);
+        	error(context.getMonitor(), "ContributionReadException", inputFactory, ce);
             throw ce;
         } finally {
             try {
@@ -123,10 +122,10 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
         }
     }
     
-    public void resolve(Composite composite, ModelResolver resolver) throws ContributionResolveException {
+    public void resolve(Composite composite, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
     	try {
 	        if (composite != null)
-	    	    extensionProcessor.resolve(composite, resolver);
+	    	    extensionProcessor.resolve(composite, resolver, context);
     	} catch (Throwable e ) {
     		// Add information about which composite was being processed when the exception occurred
     		String newMessage = "Processing composite " + composite.getName() + ": " + e.getMessage();

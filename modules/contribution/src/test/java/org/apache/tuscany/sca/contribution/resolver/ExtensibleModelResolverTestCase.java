@@ -24,10 +24,10 @@ import static org.junit.Assert.assertTrue;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.DefaultContributionFactory;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.DefaultFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.monitor.Monitor;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -40,16 +40,17 @@ public class ExtensibleModelResolverTestCase {
     private ExtensibleModelResolver resolver;
 
     private ContributionFactory factory;
+    private ProcessorContext context;
 
     @Before
     public void setUp() throws Exception {
 
         ModelResolverExtensionPoint resolvers = new DefaultModelResolverExtensionPoint();
         resolvers.addResolver(Model.class, TestModelResolver.class);
-
+        context = new ProcessorContext();
         FactoryExtensionPoint factories = new DefaultFactoryExtensionPoint(new DefaultExtensionPointRegistry());
 
-        resolver = new ExtensibleModelResolver(null, resolvers, factories, (Monitor)null);
+        resolver = new ExtensibleModelResolver(null, resolvers, factories);
 
         factory = new DefaultContributionFactory();
     }
@@ -57,32 +58,32 @@ public class ExtensibleModelResolverTestCase {
     @Test
     public void testResolvedDefault() {
         OtherModel a = new OtherModel("a");
-        resolver.addModel(a);
+        resolver.addModel(a, context);
         OtherModel x = new OtherModel("a");
-        x = resolver.resolveModel(OtherModel.class, x);
+        x = resolver.resolveModel(OtherModel.class, x, context);
         assertTrue(x == a);
     }
 
     @Test
     public void testResolvedRegisteredClass() {
         Model a = new Model("a");
-        resolver.addModel(a);
+        resolver.addModel(a, context);
         Model x = new Model("a");
-        x = resolver.resolveModel(Model.class, x);
+        x = resolver.resolveModel(Model.class, x, context);
         assertTrue(x == a);
     }
 
     @Test
     public void testUnresolvedDefault() {
         OtherModel x = new OtherModel("a");
-        OtherModel y = resolver.resolveModel(OtherModel.class, x);
+        OtherModel y = resolver.resolveModel(OtherModel.class, x, context);
         assertTrue(x == y);
     }
 
     @Test
     public void testUnresolved() {
         Model x = new Model("a");
-        Model y = resolver.resolveModel(Model.class, x);
+        Model y = resolver.resolveModel(Model.class, x, context);
         assertTrue(x == y);
     }
 
@@ -90,10 +91,10 @@ public class ExtensibleModelResolverTestCase {
     public void testResolvedArtifact() {
         Artifact artifact = factory.createArtifact();
         artifact.setURI("foo/bar");
-        resolver.addModel(artifact);
+        resolver.addModel(artifact, context);
         Artifact x = factory.createArtifact();
         x.setURI("foo/bar");
-        x = resolver.resolveModel(Artifact.class, x);
+        x = resolver.resolveModel(Artifact.class, x, context);
         assertTrue(x == artifact);
     }
 

@@ -31,25 +31,20 @@ import org.apache.tuscany.sca.common.xml.stax.StAXHelper;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.monitor.Monitor;
 
 public class AnyElementProcessor implements StAXArtifactProcessor<Extension> {
     private AssemblyFactory assemblyFactory;
     private StAXHelper helper;
     
-    @SuppressWarnings("unused")
-    private Monitor monitor;
-
-
-    public AnyElementProcessor(ExtensionPointRegistry extensionPoints, StAXArtifactProcessor<Object> extensionProcessor, Monitor monitor) {
+    public AnyElementProcessor(ExtensionPointRegistry extensionPoints, StAXArtifactProcessor<Object> extensionProcessor) {
         FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         this.helper = StAXHelper.getInstance(extensionPoints);
-        this.monitor = monitor;
     }
 
     public QName getArtifactType() {
@@ -68,7 +63,7 @@ public class AnyElementProcessor implements StAXArtifactProcessor<Extension> {
      * @return
      * @throws XMLStreamException
      */
-    public Extension read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+    public Extension read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException, XMLStreamException {
         QName name = reader.getName();
         String xml = helper.saveAsString(reader);
         Extension ext = assemblyFactory.createExtension();
@@ -84,7 +79,7 @@ public class AnyElementProcessor implements StAXArtifactProcessor<Extension> {
      * @param model
      * @param writer
      */
-    public void write(Extension model, XMLStreamWriter writer) throws XMLStreamException {
+    public void write(Extension model, XMLStreamWriter writer, ProcessorContext context) throws XMLStreamException {
         Object value = model.getValue();
         if (!(value instanceof String)) {
             return;
@@ -96,6 +91,6 @@ public class AnyElementProcessor implements StAXArtifactProcessor<Extension> {
         helper.save(reader, writer);
     }
 
-    public void resolve(Extension model, ModelResolver resolver) throws ContributionResolveException {
+    public void resolve(Extension model, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
     }
 }

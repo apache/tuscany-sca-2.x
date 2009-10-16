@@ -33,6 +33,7 @@ import org.apache.tuscany.sca.assembly.xml.PolicySubjectProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
@@ -61,17 +62,16 @@ public class SpringImplementationProcessor implements StAXArtifactProcessor<Spri
     private JavaInterfaceFactory javaFactory;
     private PolicyFactory policyFactory;
     private PolicySubjectProcessor policyProcessor;
-    private Monitor monitor;
+    
 
     private FactoryExtensionPoint factories;
 
-    public SpringImplementationProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
+    public SpringImplementationProcessor(FactoryExtensionPoint modelFactories) {
         this.factories = modelFactories;
         this.assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         this.javaFactory = modelFactories.getFactory(JavaInterfaceFactory.class);
         this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
         this.policyProcessor = new PolicySubjectProcessor(policyFactory);
-        this.monitor = monitor;
     }
 
     /**
@@ -81,7 +81,7 @@ public class SpringImplementationProcessor implements StAXArtifactProcessor<Spri
      * @param message
      * @param model
      */
-    private void error(String message, Object model, Exception ex) {
+    private void error(Monitor monitor, String message, Object model, Exception ex) {
     	 if (monitor != null) {
 	        Problem problem = monitor.createProblem(this.getClass().getName(), "impl-spring-validation-messages", Severity.ERROR, model, message, ex);
 	        monitor.problem(problem);
@@ -95,7 +95,7 @@ public class SpringImplementationProcessor implements StAXArtifactProcessor<Spri
      * @param message
      * @param model
      */
-    private void error(String message, Object model, Object... messageParameters) {
+    private void error(Monitor monitor, String message, Object model, Object... messageParameters) {
     	 if (monitor != null) {
 	        Problem problem = monitor.createProblem(this.getClass().getName(), "impl-spring-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
 	        monitor.problem(problem);
@@ -121,7 +121,7 @@ public class SpringImplementationProcessor implements StAXArtifactProcessor<Spri
      * then the default behaviour is to build an application context using all the *.xml files
      * in the METAINF/spring directory.
      */
-    public SpringImplementation read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+    public SpringImplementation read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException, XMLStreamException {
 
         // Create the Spring implementation
         SpringImplementation springImplementation = null;
@@ -134,7 +134,7 @@ public class SpringImplementationProcessor implements StAXArtifactProcessor<Spri
         	springImplementation.setUnresolved(true);
             processComponentType(springImplementation);
         } else {
-        	error("LocationAttributeMissing", reader);
+        	error(context.getMonitor(), "LocationAttributeMissing", reader);
             //throw new ContributionReadException(MSG_LOCATION_MISSING);
         }
 
@@ -169,7 +169,7 @@ public class SpringImplementationProcessor implements StAXArtifactProcessor<Spri
      * Write out the XML representation of the Spring implementation
      * <implementation.spring location="..." />
      */
-    public void write(SpringImplementation springImplementation, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
+    public void write(SpringImplementation springImplementation, XMLStreamWriter writer, ProcessorContext context) throws ContributionWriteException, XMLStreamException {
 
         // Write <implementation.spring>
         writer.writeStartElement(Constants.SCA11_NS, IMPLEMENTATION_SPRING);
@@ -187,30 +187,31 @@ public class SpringImplementationProcessor implements StAXArtifactProcessor<Spri
      * Resolves the Spring implementation - loads the Spring application-context XML and
      * derives the spring implementation componentType from it
      */
-    public void resolve(SpringImplementation springImplementation, ModelResolver resolver)
+    public void resolve(SpringImplementation springImplementation, ModelResolver resolver, ProcessorContext context)
         throws ContributionResolveException {
 
     	if (springImplementation == null)
     		return;
 
+    	Monitor monitor = context.getMonitor();
         /* Load the Spring component type by reading the Spring application context */
         SpringXMLComponentTypeLoader springLoader =
             new SpringXMLComponentTypeLoader(factories, assemblyFactory, javaFactory, policyFactory, monitor);
         try {
             // Load the Spring Implementation information from its application context file...
-            springLoader.load(springImplementation, resolver);
+            springLoader.load(springImplementation, resolver, context);
         } catch (ContributionReadException e) {
         	ContributionResolveException ce = new ContributionResolveException(e);
-        	error("ContributionResolveException", resolver, ce);
+        	error(monitor, "ContributionResolveException", resolver, ce);
             throw ce;
         }
 
         ComponentType ct = springImplementation.getComponentType();
         if (ct.isUnresolved()) {
             // If the introspection fails to resolve, try to find a side file...
-            ComponentType componentType = resolver.resolveModel(ComponentType.class, ct);
+            ComponentType componentType = resolver.resolveModel(ComponentType.class, ct, context);
             if (componentType.isUnresolved()) {
-            	error("UnableToResolveComponentType", resolver);
+            	error(monitor, "UnableToResolveComponentType", resolver);
                 //throw new ContributionResolveException("SpringArtifactProcessor: unable to resolve componentType for Spring component");
             } else {
                 springImplementation.setComponentType(componentType);

@@ -27,6 +27,7 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
@@ -45,12 +46,13 @@ public class NodeConfigurationProcessorTestCase {
     private static FactoryExtensionPoint factories;
     private static StAXArtifactProcessor processor;
 
-    /**
-     * @throws java.lang.Exception
-     */
+    private static ProcessorContext context;
+
     @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
+    public static void setUp() throws Exception {
         ExtensionPointRegistry registry = new DefaultExtensionPointRegistry();
+        context = new ProcessorContext(registry);
+
         factories = new DefaultFactoryExtensionPoint(registry);
         StAXArtifactProcessorExtensionPoint processors =
             registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
@@ -64,12 +66,12 @@ public class NodeConfigurationProcessorTestCase {
         XMLStreamReader reader = xmlInputFactory.createXMLStreamReader(is);
         is.close();
         reader.nextTag();
-        NodeConfiguration config = (NodeConfiguration) processor.read(reader);
+        NodeConfiguration config = (NodeConfiguration) processor.read(reader, context);
         StringWriter sw = new StringWriter();
         XMLOutputFactory xmlOutputFactory = factories.getFactory(XMLOutputFactory.class);
         xmlOutputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.TRUE);
         XMLStreamWriter writer = xmlOutputFactory.createXMLStreamWriter(sw);
-        processor.write(config, writer);
+        processor.write(config, writer, context);
         writer.flush();
         System.out.println(sw.toString());
     }

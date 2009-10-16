@@ -44,7 +44,7 @@ public class OperationsActivator implements BundleActivator {
         logger.info("Starting " + context.getBundle());
 
         Dictionary<String, Object> props = new Hashtable<String, Object>();
-        props.put("service.exported.configs", new String[] {"sca"});
+        props.put("service.exported.configs", new String[] {"org.osgi.sca"});
         props.put("service.exported.interfaces", new String[] {"*"});
         
         logger.info("Registering " + AddService.class.getName());

@@ -95,7 +95,7 @@ public class OSGiServiceExporter implements ServiceTrackerCustomizer, LifeCycleL
                 Component component = contribution.getDeployables().get(0).getComponents().get(0);
                 ComponentService service = component.getServices().get(0);
                 for (Endpoint endpoint : service.getEndpoints()) {
-                    EndpointDescription endpointDescription = createEndpointDescription(endpoint);
+                    EndpointDescription endpointDescription = createEndpointDescription(context, endpoint);
                     ExportRegistration exportRegistration =
                         new ExportRegistrationImpl(node, reference, endpointDescription);
                     exportedServices.add(exportRegistration);

@@ -20,8 +20,6 @@
 package org.apache.tuscany.sca.assembly.builder;
 
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.definitions.Definitions;
-import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  * A builder that handles the configuration of the components inside a
@@ -42,13 +40,12 @@ public interface CompositeBuilder {
      * Build a composite.
      * 
      * @param composite The composite
-     * @param definitions SCA definitions
-     * @param monitor
+     * @param context The builder context
      * @return The composite built from the original one. In most cases, it is the same as the orginal one as
      * most builders only change the content of the composite. 
      * 
      * @throws CompositeBuilderException
      */
-    Composite build(Composite composite, Definitions definitions, Monitor monitor) throws CompositeBuilderException;
+    Composite build(Composite composite, BuilderContext context) throws CompositeBuilderException;
 
 }

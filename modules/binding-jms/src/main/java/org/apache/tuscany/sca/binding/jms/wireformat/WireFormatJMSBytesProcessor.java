@@ -28,10 +28,10 @@ import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  *
@@ -43,17 +43,17 @@ public class WireFormatJMSBytesProcessor extends BaseStAXArtifactProcessor imple
         return WireFormatJMSBytes.WIRE_FORMAT_JMS_BYTES_QNAME;
     }
     
-    public WireFormatJMSBytesProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
+    public WireFormatJMSBytesProcessor(FactoryExtensionPoint modelFactories) {
     }
 
     
-    public WireFormatJMSBytes read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+    public WireFormatJMSBytes read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException, XMLStreamException {
         WireFormatJMSBytes wireFormat = new WireFormatJMSBytes();
          
         return wireFormat;
     }
 
-    public void write(WireFormatJMSBytes wireFormat, XMLStreamWriter writer) 
+    public void write(WireFormatJMSBytes wireFormat, XMLStreamWriter writer, ProcessorContext context) 
         throws ContributionWriteException, XMLStreamException {
         String prefix = "tuscany";
         writer.writeStartElement(prefix, 
@@ -68,7 +68,7 @@ public class WireFormatJMSBytesProcessor extends BaseStAXArtifactProcessor imple
         return WireFormatJMSBytes.class;
     }
 
-    public void resolve(WireFormatJMSBytes arg0, ModelResolver arg1) throws ContributionResolveException {
+    public void resolve(WireFormatJMSBytes arg0, ModelResolver arg1, ProcessorContext context) throws ContributionResolveException {
 
     }
     

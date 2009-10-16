@@ -24,7 +24,6 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Contract;
-import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  * A builder that handles any build-time configuration needed by bindings.
@@ -38,8 +37,9 @@ public interface BindingBuilder<B extends Binding> {
      * 
      * @param component The component for the binding's service or reference
      * @param contract The binding's service or reference
+     * @param context TODO
      */
-    void build(Component component, Contract contract, B binding, Monitor monitor);
+    void build(Component component, Contract contract, B binding, BuilderContext context);
 
     /**
      * Get QName of the binding type

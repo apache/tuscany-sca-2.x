@@ -22,16 +22,16 @@ package org.apache.tuscany.sca.implementation.web.impl;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.Component;
+import org.apache.tuscany.sca.assembly.builder.BuilderContext;
 import org.apache.tuscany.sca.assembly.builder.ImplementationBuilder;
 import org.apache.tuscany.sca.implementation.web.WebImplementation;
-import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  * 
  */
 public class WebImplementationBuilder implements ImplementationBuilder<WebImplementation> {
 
-    public void build(Component component, WebImplementation implmentation, Monitor monitor) {
+    public void build(Component component, WebImplementation implmentation, BuilderContext context) {
         ((WebImplementationImpl)implmentation).build(component);
 
     }

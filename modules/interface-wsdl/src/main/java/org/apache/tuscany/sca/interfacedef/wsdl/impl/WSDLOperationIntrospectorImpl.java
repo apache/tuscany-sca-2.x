@@ -34,6 +34,7 @@ import javax.wsdl.Part;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.interfacedef.ConversationSequence;
 import org.apache.tuscany.sca.interfacedef.DataType;
@@ -46,6 +47,7 @@ import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLOperation;
+import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.xsd.XSDFactory;
 import org.apache.tuscany.sca.xsd.XSDefinition;
 import org.apache.ws.commons.schema.XmlSchemaComplexType;
@@ -68,6 +70,7 @@ public class WSDLOperationIntrospectorImpl {
 
     private XSDFactory xsdFactory;
     private ModelResolver resolver;
+    private ProcessorContext context;
     private WSDLDefinition wsdlDefinition;
     private javax.wsdl.Operation operation;
     private WSDLOperation operationModel;
@@ -87,7 +90,8 @@ public class WSDLOperationIntrospectorImpl {
                                          javax.wsdl.Operation operation,
                                          WSDLDefinition wsdlDefinition,
                                          String dataBinding,
-                                         ModelResolver resolver) {
+                                         ModelResolver resolver,
+                                         Monitor monitor) {
         super();
         this.xsdFactory = xsdFactory;
         this.operation = operation;
@@ -95,6 +99,7 @@ public class WSDLOperationIntrospectorImpl {
         this.resolver = resolver;
         this.dataBinding = dataBinding;
         this.wrapper = new Wrapper();
+        this.context = new ProcessorContext(monitor);
     }
 
     private Wrapper wrapper;
@@ -235,7 +240,7 @@ public class WSDLOperationIntrospectorImpl {
             XSDefinition definition = xsdFactory.createXSDefinition();
             definition.setUnresolved(true);
             definition.setNamespace(elementName.getNamespaceURI());
-            definition = resolver.resolveModel(XSDefinition.class, definition);
+            definition = resolver.resolveModel(XSDefinition.class, definition, context);
             if (definition.getSchema() != null) {
                 element = definition.getSchema().getElementByName(elementName);
             }
@@ -249,7 +254,7 @@ public class WSDLOperationIntrospectorImpl {
             XSDefinition definition = xsdFactory.createXSDefinition();
             definition.setUnresolved(true);
             definition.setNamespace(typeName.getNamespaceURI());
-            definition = resolver.resolveModel(XSDefinition.class, definition);
+            definition = resolver.resolveModel(XSDefinition.class, definition, context);
             if (definition.getSchema() != null) {
                 type = definition.getSchema().getTypeByName(typeName);
             }

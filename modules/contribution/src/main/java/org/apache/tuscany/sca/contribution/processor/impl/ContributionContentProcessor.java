@@ -37,6 +37,7 @@ import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ExtendedURLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
@@ -64,35 +65,19 @@ public class ContributionContentProcessor implements ExtendedURLArtifactProcesso
     private FactoryExtensionPoint modelFactories;
     private URLArtifactProcessor<Object> artifactProcessor;
     private StAXArtifactProcessor<Object> extensionProcessor;
-    // private UtilityExtensionPoint utilities;
-    private Monitor monitor;
     private ContributionScannerExtensionPoint scanners;
     // Marks pre-resolve phase completed
     private boolean preResolved = false;
 
-    public ContributionContentProcessor(ExtensionPointRegistry extensionPoints, StAXArtifactProcessor<Object> extensionProcessor, Monitor monitor) {
+    public ContributionContentProcessor(ExtensionPointRegistry extensionPoints, StAXArtifactProcessor<Object> extensionProcessor) {
         this.modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         this.modelResolvers = extensionPoints.getExtensionPoint(ModelResolverExtensionPoint.class);
-        this.monitor = monitor;
         URLArtifactProcessorExtensionPoint artifactProcessors = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
-        this.artifactProcessor = new ExtensibleURLArtifactProcessor(artifactProcessors, this.monitor);
+        this.artifactProcessor = new ExtensibleURLArtifactProcessor(artifactProcessors);
         this.extensionProcessor = extensionProcessor;
         this.contributionFactory = modelFactories.getFactory(ContributionFactory.class);
         this.scanners = extensionPoints.getExtensionPoint(ContributionScannerExtensionPoint.class);
     }
-
-    /*
-    public ContributionContentProcessor(FactoryExtensionPoint modelFactories, ModelResolverExtensionPoint modelResolvers,
-                                        URLArtifactProcessor<Object> artifactProcessor, StAXArtifactProcessor<Object> extensionProcessor, Monitor monitor) {
-        this.modelFactories = modelFactories;
-        this.modelResolvers = modelResolvers;
-        hackResolvers(modelResolvers);
-        this.artifactProcessor = artifactProcessor;
-        this.extensionProcessor = extensionProcessor;
-        this.contributionFactory = modelFactories.getFactory(ContributionFactory.class);
-        this.monitor = monitor;
-    }
-    */
 
     public String getArtifactType() {
         return ".contribution/content";
@@ -116,19 +101,21 @@ public class ContributionContentProcessor implements ExtendedURLArtifactProcesso
         return null;
     }
 
-    public Contribution read(URL parentURL, URI contributionURI, URL contributionURL) throws ContributionReadException {
+    public Contribution read(URL parentURL, URI contributionURI, URL contributionURL, ProcessorContext context) throws ContributionReadException {
 
         
         // Create contribution model
         Contribution contribution = contributionFactory.createContribution();
         contribution.setURI(contributionURI.toString());
         contribution.setLocation(contributionURL.toString());
-        ModelResolver modelResolver = new ExtensibleModelResolver(contribution, modelResolvers, modelFactories, monitor);
+        ModelResolver modelResolver = new ExtensibleModelResolver(contribution, modelResolvers, modelFactories);
         contribution.setModelResolver(modelResolver);
         contribution.setUnresolved(true);
         
+        Monitor monitor = context.getMonitor();
         monitor.pushContext("Contribution: " + contribution.getURI());
 
+        Contribution old = context.setContribution(contribution);
         try {
             // Create a contribution scanner
             ContributionScanner scanner = scanners.getContributionScanner(contributionURL.getProtocol());
@@ -153,18 +140,19 @@ public class ContributionContentProcessor implements ExtendedURLArtifactProcesso
                 artifact.setURI(artifactURI);
                 artifact.setLocation(artifactURL.toString());
                 artifacts.add(artifact);
-                modelResolver.addModel(artifact);
+                modelResolver.addModel(artifact, context);
                 
                 monitor.pushContext("Artifact: " + artifactURI);
     
+                old = context.setContribution(contribution);
                 try {
                     // Read each artifact
-                    Object model = artifactProcessor.read(contributionURL, URI.create(artifactURI), artifactURL);
+                    Object model = artifactProcessor.read(contributionURL, URI.create(artifactURI), artifactURL, context);
                     if (model != null) {
                         artifact.setModel(model);
         
                         // Add the loaded model to the model resolver
-                        modelResolver.addModel(model);
+                        modelResolver.addModel(model, context);
         
                         // Merge contribution metadata into the contribution model
                         if (model instanceof ContributionMetadata) {
@@ -179,6 +167,7 @@ public class ContributionContentProcessor implements ExtendedURLArtifactProcesso
                     }
                 } finally {
                     monitor.popContext();
+                    context.setContribution(old);
                 }                    
             }
     
@@ -200,6 +189,7 @@ public class ContributionContentProcessor implements ExtendedURLArtifactProcesso
             }
         } finally {
             monitor.popContext();
+            context.setContribution(old);
         }
         
         return contribution;
@@ -213,26 +203,28 @@ public class ContributionContentProcessor implements ExtendedURLArtifactProcesso
      * @param resolver - the Resolver to use
      * @throws ContributionResolveException
      */
-    public void preResolve(Contribution contribution, ModelResolver resolver) throws ContributionResolveException {
+    public void preResolve(Contribution contribution, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
         // Resolve the contribution model itself
         ModelResolver contributionResolver = contribution.getModelResolver();
         contribution.setUnresolved(false);
-        contributionResolver.addModel(contribution);
+        contributionResolver.addModel(contribution, context);
 
         // Resolve Exports
-        resolveExports(contribution, contributionResolver);
+        resolveExports(contribution, contributionResolver, context);
         // Resolve Imports
-        resolveImports(contribution, contributionResolver);
+        resolveImports(contribution, contributionResolver, context);
 
         preResolved = true;
     } // end method preResolve
 
-    public void resolve(Contribution contribution, ModelResolver resolver) throws ContributionResolveException {
+    public void resolve(Contribution contribution, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
 
+        Monitor monitor = context.getMonitor();
+        Contribution old = context.setContribution(contribution);
     	try {
     		monitor.pushContext("Contribution: " + contribution.getURI());
     		
-	    	if( !preResolved ) preResolve( contribution, resolver);
+	    	if( !preResolved ) preResolve( contribution, resolver, context);
 	    	ModelResolver contributionResolver = contribution.getModelResolver();
 	
 	        // Resolve all artifact models
@@ -240,7 +232,7 @@ public class ContributionContentProcessor implements ExtendedURLArtifactProcesso
 	            Object model = artifact.getModel();
 	            if (model != null) {
 	                try {
-	                   artifactProcessor.resolve(model, contributionResolver);
+	                   artifactProcessor.resolve(model, contributionResolver, context);
 	                } catch (Throwable e) {
 	                    throw new ContributionResolveException(e);
 	                }
@@ -251,13 +243,14 @@ public class ContributionContentProcessor implements ExtendedURLArtifactProcesso
 	        List<Composite> deployables = contribution.getDeployables();
 	        for (int i = 0, n = deployables.size(); i < n; i++) {
 	            Composite deployable = deployables.get(i);
-	            Composite resolved = (Composite)contributionResolver.resolveModel(Composite.class, deployable);
+	            Composite resolved = (Composite)contributionResolver.resolveModel(Composite.class, deployable, context);
 	            if (resolved != deployable) {
 	                deployables.set(i, resolved);
 	            }
 	        } // end for
     	} finally {
     		monitor.popContext();
+    		context.setContribution(old);
     	} // end try
     } // end method resolve
 
@@ -266,13 +259,13 @@ public class ContributionContentProcessor implements ExtendedURLArtifactProcesso
      * @param contribution
      * @param resolver
      */
-    private void resolveExports(Contribution contribution, ModelResolver resolver) throws ContributionResolveException {
+    private void resolveExports(Contribution contribution, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
     	for (Export export: contribution.getExports()) {
             if (export instanceof DefaultExport) {
                 // Initialize the default export's resolver
                 export.setModelResolver(resolver);
             } else {
-                extensionProcessor.resolve(export, resolver);
+                extensionProcessor.resolve(export, resolver, context);
             } // end if
         } // end for
 
@@ -283,9 +276,9 @@ public class ContributionContentProcessor implements ExtendedURLArtifactProcesso
      * @param contribution
      * @param resolver
      */
-    private void resolveImports(Contribution contribution, ModelResolver resolver) throws ContributionResolveException {
+    private void resolveImports(Contribution contribution, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
         for (Import import_: contribution.getImports()) {
-            extensionProcessor.resolve(import_, resolver);
+            extensionProcessor.resolve(import_, resolver, context);
         } // end for
     } // end method resolveImports
 

@@ -33,10 +33,12 @@ import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
+import org.apache.tuscany.sca.assembly.builder.BuilderContext;
 import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.contribution.processor.DefaultURLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
@@ -65,10 +67,12 @@ public class BuildPolicyTestCase {
     private static CompositeBuilder compositeBuilder;
     private static Composite composite;
     private static Monitor monitor;
-
+    private static ProcessorContext context;
+    
     @BeforeClass
     public static void setUp() throws Exception {
         DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
+        context = new ProcessorContext(extensionPoints);
         FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
 
         compositeBuilder =
@@ -84,7 +88,7 @@ public class BuildPolicyTestCase {
 
         URLArtifactProcessorExtensionPoint documentProcessors =
             new DefaultURLArtifactProcessorExtensionPoint(extensionPoints);
-        documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors, null);
+        documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors);
         policyDefinitionsProcessor = documentProcessors.getProcessor(Definitions.class);
 
         StAXArtifactProcessorExtensionPoint staxProcessors =
@@ -93,19 +97,20 @@ public class BuildPolicyTestCase {
 
         URL url = BuildPolicyTestCase.class.getResource("Calculator.composite");
         URI uri = URI.create("TestAllCalculator.composite");
-        composite = (Composite)documentProcessor.read(null, uri, url);
+        composite = (Composite)documentProcessor.read(null, uri, url, context);
         assertNotNull(composite);
 
         url = BuildPolicyTestCase.class.getResource("test_definitions.xml");
         uri = URI.create("test_definitions.xml");
-        Definitions definitions = (Definitions)policyDefinitionsProcessor.read(null, uri, url);
+        Definitions definitions = (Definitions)policyDefinitionsProcessor.read(null, uri, url, context);
         assertNotNull(definitions);
         policyDefinitions.add(definitions);
 
-        documentProcessor.resolve(definitions, resolver);
-        documentProcessor.resolve(composite, resolver);
+        documentProcessor.resolve(definitions, resolver, context);
+        documentProcessor.resolve(composite, resolver, context);
 
-        compositeBuilder.build(composite, definitions, monitor);
+        BuilderContext builderContext = new BuilderContext(definitions, null, monitor);
+        compositeBuilder.build(composite, builderContext);
     }
 
     @Test

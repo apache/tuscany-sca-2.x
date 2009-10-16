@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.contribution.java.impl;
 import java.util.List;
 
 import org.apache.tuscany.sca.contribution.Contribution;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 
 /**
@@ -48,15 +49,15 @@ public class JavaImportModelResolver implements ModelResolver {
         return contributions;
     }
     
-    public void addModel(Object resolved) {
-        modelResolver.addModel(resolved);
+    public void addModel(Object resolved, ProcessorContext context) {
+        modelResolver.addModel(resolved, context);
     }
 
-    public Object removeModel(Object resolved) {
-        return modelResolver.removeModel(resolved);
+    public Object removeModel(Object resolved, ProcessorContext context) {
+        return modelResolver.removeModel(resolved, context);
     }
 
-    public <T> T resolveModel(Class<T> modelClass, T unresolved) {
-        return modelResolver.resolveModel(modelClass, unresolved);
+    public <T> T resolveModel(Class<T> modelClass, T unresolved, ProcessorContext context) {
+        return modelResolver.resolveModel(modelClass, unresolved, context);
     }
 }

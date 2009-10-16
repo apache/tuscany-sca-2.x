@@ -45,6 +45,7 @@ import org.apache.tuscany.sca.assembly.xml.PolicySubjectProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ClassReference;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
@@ -72,14 +73,13 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
     private AssemblyFactory assemblyFactory;
     private PolicyFactory policyFactory;
     private PolicySubjectProcessor policyProcessor;
-    private Monitor monitor;
+    
 
-    public JavaImplementationProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
+    public JavaImplementationProcessor(FactoryExtensionPoint modelFactories) {
         this.assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
         this.javaFactory = modelFactories.getFactory(JavaImplementationFactory.class);
         this.policyProcessor = new PolicySubjectProcessor(policyFactory);
-        this.monitor = monitor;
     }
 
     /**
@@ -89,7 +89,7 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
      * @param message
      * @param model
      */
-    private void error(String message, Object model, Object... messageParameters) {
+    private void error(Monitor monitor, String message, Object model, Object... messageParameters) {
         if (monitor != null) {
             Problem problem =
                 monitor.createProblem(this.getClass().getName(),
@@ -109,7 +109,7 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
      * @param message
      * @param model
      */
-    private void error(String message, Object model, Exception ex) {
+    private void error(Monitor monitor, String message, Object model, Exception ex) {
         if (monitor != null) {
             Problem problem =
                 monitor.createProblem(this.getClass().getName(),
@@ -122,7 +122,7 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
         }
     }
 
-    public JavaImplementation read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+    public JavaImplementation read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException, XMLStreamException {
 
         // Read an <implementation.java>
         JavaImplementation javaImplementation = javaFactory.createJavaImplementation();
@@ -149,7 +149,7 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
         return javaImplementation;
     }
 
-    public void write(JavaImplementation javaImplementation, XMLStreamWriter writer) throws ContributionWriteException,
+    public void write(JavaImplementation javaImplementation, XMLStreamWriter writer, ProcessorContext context) throws ContributionWriteException,
         XMLStreamException {
 
         // Write an <implementation.java>
@@ -163,15 +163,15 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
         writer.writeEndElement();
     }
 
-    public void resolve(JavaImplementation javaImplementation, ModelResolver resolver)
+    public void resolve(JavaImplementation javaImplementation, ModelResolver resolver, ProcessorContext context)
         throws ContributionResolveException {
-
+        Monitor monitor = context.getMonitor();
     	try {
 	        ClassReference classReference = new ClassReference(javaImplementation.getName());
-	        classReference = resolver.resolveModel(ClassReference.class, classReference);
+	        classReference = resolver.resolveModel(ClassReference.class, classReference, context);
 	        Class<?> javaClass = classReference.getJavaClass();
 	        if (javaClass == null) {
-	            error("ClassNotFoundException", resolver, javaImplementation.getName());
+	            error(monitor, "ClassNotFoundException", resolver, javaImplementation.getName());
 	            //throw new ContributionResolveException(new ClassNotFoundException(javaImplementation.getName()));
 	            return;
 	        }
@@ -182,13 +182,13 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
 	            javaFactory.createJavaImplementation(javaImplementation, javaImplementation.getJavaClass());
 	        } catch (IntrospectionException e) {
 	            ContributionResolveException ce = new ContributionResolveException(e);
-	            error("ContributionResolveException", javaFactory, ce);
+	            error(monitor, "ContributionResolveException", javaFactory, ce);
 	            //throw ce;
 	            return;
 	        }
 
 	        javaImplementation.setUnresolved(false);
-	        mergeComponentType(resolver, javaImplementation);
+	        mergeComponentType(resolver, javaImplementation, context);
 
 	        // FIXME the introspector should always create at least one service
 	        if (javaImplementation.getServices().isEmpty()) {
@@ -227,9 +227,9 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
      * @param resolver
      * @param impl
      */
-    private void mergeComponentType(ModelResolver resolver, JavaImplementation impl) {
+    private void mergeComponentType(ModelResolver resolver, JavaImplementation impl, ProcessorContext context) {
         // FIXME: Need to clarify how to merge
-        ComponentType componentType = getComponentType(resolver, impl);
+        ComponentType componentType = getComponentType(resolver, impl, context);
         if (componentType != null && !componentType.isUnresolved()) {
             Map<String, Reference> refMap = new HashMap<String, Reference>();
             for (Reference ref : impl.getReferences()) {
@@ -284,13 +284,13 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
         }
     }
 
-    private ComponentType getComponentType(ModelResolver resolver, JavaImplementation impl) {
+    private ComponentType getComponentType(ModelResolver resolver, JavaImplementation impl, ProcessorContext context) {
         String className = impl.getJavaClass().getName();
         String componentTypeURI = className.replace('.', '/') + ".componentType";
         ComponentType componentType = assemblyFactory.createComponentType();
         componentType.setUnresolved(true);
         componentType.setURI(componentTypeURI);
-        componentType = resolver.resolveModel(ComponentType.class, componentType);
+        componentType = resolver.resolveModel(ComponentType.class, componentType, context);
         if (!componentType.isUnresolved()) {
             return componentType;
         }

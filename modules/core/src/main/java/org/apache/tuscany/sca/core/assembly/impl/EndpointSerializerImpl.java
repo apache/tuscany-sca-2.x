@@ -30,6 +30,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
@@ -37,12 +38,14 @@ import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.runtime.EndpointSerializer;
 
 public class EndpointSerializerImpl implements EndpointSerializer {
+    private ExtensionPointRegistry registry;
     private XMLInputFactory inputFactory;
     private XMLOutputFactory outputFactory;
     private StAXArtifactProcessor<Endpoint> processor;
     private StAXArtifactProcessor<EndpointReference> refProcessor;
 
     public EndpointSerializerImpl(ExtensionPointRegistry registry) {
+        this.registry =registry;
         FactoryExtensionPoint factories = registry.getExtensionPoint(FactoryExtensionPoint.class);
         inputFactory = factories.getFactory(XMLInputFactory.class);
         outputFactory = factories.getFactory(XMLOutputFactory.class);
@@ -55,7 +58,7 @@ public class EndpointSerializerImpl implements EndpointSerializer {
     public void read(Endpoint endpoint, String xml) throws IOException {
         try {
             XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(xml));
-            Endpoint result = processor.read(reader);
+            Endpoint result = processor.read(reader, new ProcessorContext(registry));
             endpoint.setComponent(result.getComponent());
             endpoint.setService(result.getService());
             endpoint.setBinding(result.getBinding());
@@ -70,7 +73,7 @@ public class EndpointSerializerImpl implements EndpointSerializer {
         StringWriter sw = new StringWriter();
         try {
             XMLStreamWriter writer = outputFactory.createXMLStreamWriter(sw);
-            processor.write(endpoint, writer);
+            processor.write(endpoint, writer, new ProcessorContext(registry));
             writer.flush();
             writer.close();
             return sw.toString();
@@ -82,7 +85,7 @@ public class EndpointSerializerImpl implements EndpointSerializer {
     public void read(EndpointReference endpointReference, String xml) throws IOException {
         try {
             XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(xml));
-            EndpointReference result = refProcessor.read(reader);
+            EndpointReference result = refProcessor.read(reader, new ProcessorContext(registry));
             reader.close();
             endpointReference.setComponent(result.getComponent());
             endpointReference.setReference(result.getReference());
@@ -97,7 +100,7 @@ public class EndpointSerializerImpl implements EndpointSerializer {
         StringWriter sw = new StringWriter();
         try {
             XMLStreamWriter writer = outputFactory.createXMLStreamWriter(sw);
-            refProcessor.write(endpointReference, writer);
+            refProcessor.write(endpointReference, writer, new ProcessorContext(registry));
             writer.flush();
             writer.close();
             return sw.toString();

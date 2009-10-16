@@ -331,7 +331,7 @@ public class BindingWSDLGenerator {
         wsdlInterface.setPortType(portType);
 
         try {
-            wsdlFactory.createWSDLInterface(wsdlInterface, portType, wsdlDefinition, resolver);
+            wsdlFactory.createWSDLInterface(wsdlInterface, portType, wsdlDefinition, resolver, monitor);
         } catch (InvalidInterfaceException e) {
             throw new WSDLGenerationException(e);
         }

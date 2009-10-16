@@ -20,6 +20,7 @@ package org.apache.tuscany.sca.itest.builder;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+
 import javax.wsdl.Definition;
 import javax.wsdl.Port;
 import javax.wsdl.WSDLException;
@@ -31,11 +32,11 @@ import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.stream.XMLStreamWriter;
-import junit.framework.TestCase;
+
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
-import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.ComponentReference;
+import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.assembly.Endpoint;
@@ -46,8 +47,7 @@ import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.impl.EndpointImpl;
 import org.apache.tuscany.sca.assembly.impl.EndpointReferenceImpl;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
-import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
-import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
@@ -184,7 +184,7 @@ public class TestUtils {
         // Print out a composite
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         XMLStreamWriter writer = customBuilder.getOutputFactory().createXMLStreamWriter(bos);
-        customBuilder.getModelProcessor().write(composite, writer);
+        customBuilder.getModelProcessor().write(composite, writer, new ProcessorContext());
         
         // Parse and write again to pretty format it
         DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();

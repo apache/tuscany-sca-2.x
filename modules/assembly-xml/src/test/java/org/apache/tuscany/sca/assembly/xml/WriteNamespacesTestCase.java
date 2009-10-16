@@ -33,6 +33,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
@@ -50,10 +51,13 @@ public class WriteNamespacesTestCase {
     private static StAXArtifactProcessor<Composite> compositeProcessor;
     private static XMLOutputFactory outputFactory;
     private static XMLInputFactory inputFactory;
-
+    private static ProcessorContext context;
+    
     @BeforeClass
     public static void setUp() throws Exception {
         ExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
+        context = new ProcessorContext(extensionPoints);
+        
         FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         outputFactory = modelFactories.getFactory(XMLOutputFactory.class);
         //outputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.TRUE);
@@ -69,7 +73,7 @@ public class WriteNamespacesTestCase {
         // Read
         InputStream is = getClass().getResourceAsStream("NestedCalculator.composite");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-        Composite composite = compositeProcessor.read(reader);
+        Composite composite = compositeProcessor.read(reader, context);
         Component component = composite.getComponents().get(0);
         Composite implementation = (Composite)component.getImplementation();
         QName qname = implementation.getName();
@@ -77,13 +81,13 @@ public class WriteNamespacesTestCase {
         // Write
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         XMLStreamWriter writer = outputFactory.createXMLStreamWriter(bos);
-        compositeProcessor.write(composite, writer);
+        compositeProcessor.write(composite, writer, context);
         System.out.println(bos);
         
         // Read again
         is = new ByteArrayInputStream(bos.toByteArray());
         reader = inputFactory.createXMLStreamReader(is);
-        composite = compositeProcessor.read(reader);
+        composite = compositeProcessor.read(reader, context);
         
         // Compare
         component = composite.getComponents().get(0);

@@ -26,6 +26,7 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 
@@ -39,18 +40,18 @@ public class TestPolicyProcessor implements StAXArtifactProcessor<MockPolicy> {
         return new QName("http://schemas.xmlsoap.org/ws/2004/09/policy", "PolicyAttachment");
     }
 
-    public MockPolicy read(XMLStreamReader arg0) throws ContributionReadException, XMLStreamException {
+    public MockPolicy read(XMLStreamReader arg0, ProcessorContext context) throws ContributionReadException, XMLStreamException {
         return new MockPolicy();
     }
 
-    public void write(MockPolicy arg0, XMLStreamWriter arg1) throws ContributionWriteException, XMLStreamException {
+    public void write(MockPolicy arg0, XMLStreamWriter arg1, ProcessorContext context) throws ContributionWriteException, XMLStreamException {
     }
 
     public Class<MockPolicy> getModelType() {
         return MockPolicy.class;
     }
 
-    public void resolve(MockPolicy arg0, ModelResolver arg1) throws ContributionResolveException {
+    public void resolve(MockPolicy arg0, ModelResolver arg1, ProcessorContext context) throws ContributionResolveException {
 
     }
 

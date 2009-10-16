@@ -32,13 +32,16 @@ import javax.xml.stream.XMLStreamWriter;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
+
 /**
  * Test the reading of ws config params policy.
  *
  * @version $Rev$ $Date$
  */
 public class PolicyReadTestCase extends TestCase {
-
+    private ProcessorContext context = new ProcessorContext();
+    
     @Override
     public void setUp() throws Exception {
     }
@@ -48,7 +51,7 @@ public class PolicyReadTestCase extends TestCase {
     }
 
     public void testPolicyReading() throws Exception { 
-        JDKLoggingPolicyProcessor processor = new JDKLoggingPolicyProcessor(null, null);
+        JDKLoggingPolicyProcessor processor = new JDKLoggingPolicyProcessor(null);
         
         URL url = getClass().getResource("mock_policies.xml");
         XMLInputFactory inputFactory = XMLInputFactory.newInstance();
@@ -57,14 +60,14 @@ public class PolicyReadTestCase extends TestCase {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(urlStream);
         
         
-        JDKLoggingPolicy policy = processor.read(reader);
+        JDKLoggingPolicy policy = processor.read(reader, context);
         assertEquals(policy.getLoggerName(), "test.logger");
         assertEquals(policy.getLogLevel(), Level.INFO );
         assertEquals(policy.getResourceBundleName(), "Trace_Messages.properties");
     }
     
     public void testPolicyWriting() throws Exception {
-        JDKLoggingPolicyProcessor processor = new JDKLoggingPolicyProcessor(null, null);
+        JDKLoggingPolicyProcessor processor = new JDKLoggingPolicyProcessor(null);
         
         JDKLoggingPolicy policy = new JDKLoggingPolicy();
         policy.setLoggerName("test.logger");
@@ -74,14 +77,14 @@ public class PolicyReadTestCase extends TestCase {
         XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
         StringWriter sw = new StringWriter();
         XMLStreamWriter writer = outputFactory.createXMLStreamWriter(sw);
-        processor.write(policy, writer);
+        processor.write(policy, writer, context);
         writer.close();
         
         XMLInputFactory inputFactory = XMLInputFactory.newInstance();
         StringReader sr = new StringReader(sw.toString());
         XMLStreamReader reader = inputFactory.createXMLStreamReader(sr);
         
-        policy = processor.read(reader);
+        policy = processor.read(reader, context);
         assertEquals(policy.getLoggerName(), "test.logger");
         assertEquals(policy.getLogLevel(), Level.INFO );
         assertEquals(policy.getResourceBundleName(), "Trace_Messages.properties");

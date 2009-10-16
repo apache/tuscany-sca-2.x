@@ -25,6 +25,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.assembly.ComponentType;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.DefaultFactoryExtensionPoint;
 import org.junit.AfterClass;
@@ -69,9 +70,8 @@ public class BluePrintComponentsProcessorTestCase {
     @Test
     public void testLoad() throws Exception {
         BluePrintComponentsProcessor processor =
-            new BluePrintComponentsProcessor(new DefaultFactoryExtensionPoint(new DefaultExtensionPointRegistry()),
-                                             null);
-        ComponentType ct = processor.read(reader);
+            new BluePrintComponentsProcessor(new DefaultFactoryExtensionPoint(new DefaultExtensionPointRegistry()));
+        ComponentType ct = processor.read(reader, new ProcessorContext());
         Assert.assertEquals(1, ct.getServices().size());
         Assert.assertEquals(4, ct.getReferences().size());
     }

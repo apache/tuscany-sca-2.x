@@ -31,10 +31,10 @@ import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.node.configuration.ContributionConfiguration;
 import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
 import org.apache.tuscany.sca.node.configuration.NodeConfigurationFactory;
@@ -57,7 +57,7 @@ public class NodeConfigurationATOMProcessor extends BaseStAXArtifactProcessor im
 
     private NodeConfigurationFactory factory;
 
-    public NodeConfigurationATOMProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
+    public NodeConfigurationATOMProcessor(FactoryExtensionPoint modelFactories) {
         this.factory = modelFactories.getFactory(NodeConfigurationFactory.class);
     }
 
@@ -70,7 +70,7 @@ public class NodeConfigurationATOMProcessor extends BaseStAXArtifactProcessor im
         return NodeConfiguration.class;
     }
 
-    public NodeConfiguration read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+    public NodeConfiguration read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException, XMLStreamException {
 
         NodeConfiguration config = factory.createNodeConfiguration();
 
@@ -151,10 +151,10 @@ public class NodeConfigurationATOMProcessor extends BaseStAXArtifactProcessor im
         return config;
     }
 
-    public void resolve(NodeConfiguration implementation, ModelResolver resolver) throws ContributionResolveException {
+    public void resolve(NodeConfiguration implementation, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
     }
 
-    public void write(NodeConfiguration implementation, XMLStreamWriter writer) throws ContributionWriteException,
+    public void write(NodeConfiguration implementation, XMLStreamWriter writer, ProcessorContext context) throws ContributionWriteException,
         XMLStreamException {
     }
 }

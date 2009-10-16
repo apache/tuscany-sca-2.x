@@ -22,15 +22,15 @@ package org.apache.tuscany.sca.implementation.spring;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.Component;
+import org.apache.tuscany.sca.assembly.builder.BuilderContext;
 import org.apache.tuscany.sca.assembly.builder.ImplementationBuilder;
-import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  * 
  */
 public class SpringImplementationBuilder implements ImplementationBuilder<SpringImplementation> {
 
-    public void build(Component component, SpringImplementation implmentation, Monitor monitor) {
+    public void build(Component component, SpringImplementation implmentation, BuilderContext context) {
         implmentation.build(component);
     }
 

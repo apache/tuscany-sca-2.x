@@ -27,8 +27,8 @@ import java.util.Map;
 import org.apache.tuscany.sca.osgi.service.remoteadmin.EndpointDescription;
 import org.apache.tuscany.sca.osgi.service.remoteadmin.ExportRegistration;
 import org.apache.tuscany.sca.osgi.service.remoteadmin.ImportRegistration;
-import org.apache.tuscany.sca.osgi.service.remoteadmin.RemoteAdminListener;
 import org.apache.tuscany.sca.osgi.service.remoteadmin.RemoteServiceAdmin;
+import org.apache.tuscany.sca.osgi.service.remoteadmin.RemoteServiceAdminListener;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -59,7 +59,7 @@ public class RemoteServiceAdminImpl implements RemoteServiceAdmin {
         exporter.start();
         importer.start();
         registration = context.registerService(RemoteServiceAdmin.class.getName(), this, null);
-        listeners = new ServiceTracker(this.context, RemoteAdminListener.class.getName(), null);
+        listeners = new ServiceTracker(this.context, RemoteServiceAdminListener.class.getName(), null);
         listeners.open();
     }
 

@@ -31,6 +31,7 @@ import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
@@ -73,7 +74,7 @@ public class SCABindingProcessor implements StAXArtifactProcessor<SCABinding> {
         return SCABinding.class;
     }
 
-    public SCABinding read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+    public SCABinding read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException, XMLStreamException {
         SCABinding scaBinding = scaBindingFactory.createSCABinding();
         ExtensionType bindingType = intentAttachPointTypeFactory.createBindingType();
         bindingType.setType(getArtifactType());
@@ -104,11 +105,11 @@ public class SCABindingProcessor implements StAXArtifactProcessor<SCABinding> {
         return scaBinding;
     }
 
-    public void resolve(SCABinding model, ModelResolver resolver) throws ContributionResolveException {
-        policyProcessor.resolvePolicies(model, resolver);
+    public void resolve(SCABinding model, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
+        policyProcessor.resolvePolicies(model, resolver, context);
     }
 
-    public void write(SCABinding scaBinding, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
+    public void write(SCABinding scaBinding, XMLStreamWriter writer, ProcessorContext context) throws ContributionWriteException, XMLStreamException {
 
         // Write <binding.sca>
         writer.writeStartElement(SCA11_NS, BINDING_SCA);

@@ -31,10 +31,10 @@ import org.apache.tuscany.sca.assembly.ConfiguredOperation;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 
 /**
@@ -47,16 +47,15 @@ public class ConfiguredOperationProcessor implements StAXArtifactProcessor<Confi
     private AssemblyFactory assemblyFactory;
     private PolicySubjectProcessor policyProcessor;
     private PolicyFactory policyFactory;
-    private Monitor monitor;
+    
 
-    public ConfiguredOperationProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
+    public ConfiguredOperationProcessor(FactoryExtensionPoint modelFactories) {
         this.assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
         this.policyProcessor = new PolicySubjectProcessor(policyFactory);
-        this.monitor = monitor;
     }
 
-    public ConfiguredOperation read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+    public ConfiguredOperation read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException, XMLStreamException {
         ConfiguredOperation  configuredOp = assemblyFactory.createConfiguredOperation();
 
         //Read an <operation>
@@ -77,7 +76,7 @@ public class ConfiguredOperationProcessor implements StAXArtifactProcessor<Confi
         return configuredOp;
     }
 
-    public void write(ConfiguredOperation configuredOperation, XMLStreamWriter writer)
+    public void write(ConfiguredOperation configuredOperation, XMLStreamWriter writer, ProcessorContext context)
         throws ContributionWriteException, XMLStreamException {
 
         // Write an <operation>
@@ -91,7 +90,7 @@ public class ConfiguredOperationProcessor implements StAXArtifactProcessor<Confi
         writer.writeEndElement();
     }
 
-    public void resolve(ConfiguredOperation configuredOperation, ModelResolver resolver)
+    public void resolve(ConfiguredOperation configuredOperation, ModelResolver resolver, ProcessorContext context)
         throws ContributionResolveException {
     }
 

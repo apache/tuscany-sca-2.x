@@ -25,8 +25,8 @@ import java.util.Map;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.DefaultImport;
 import org.apache.tuscany.sca.contribution.Import;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  * A default implementation of a model resolver based on a map.
@@ -41,11 +41,11 @@ public class DefaultModelResolver implements ModelResolver {
     public DefaultModelResolver() {
     }
     
-    public DefaultModelResolver(Contribution contribution, FactoryExtensionPoint modelFactories, Monitor monitor) {
+    public DefaultModelResolver(Contribution contribution, FactoryExtensionPoint modelFactories) {
         this.contribution = contribution;
     }    
     
-    public <T> T resolveModel(Class<T> modelClass, T unresolved) {
+    public <T> T resolveModel(Class<T> modelClass, T unresolved, ProcessorContext context) {
         Object resolved = map.get(unresolved);
         if (resolved != null) {
             
@@ -59,7 +59,7 @@ public class DefaultModelResolver implements ModelResolver {
             if (contribution != null){
                 for (Import _import : contribution.getImports()){
                     if (_import instanceof DefaultImport){
-                        resolved = _import.getModelResolver().resolveModel(modelClass, unresolved);
+                        resolved = _import.getModelResolver().resolveModel(modelClass, unresolved, context);
                         if (resolved != unresolved){
                             return modelClass.cast(resolved);
                         }
@@ -72,11 +72,11 @@ public class DefaultModelResolver implements ModelResolver {
         }
     }
     
-    public void addModel(Object resolved) {
+    public void addModel(Object resolved, ProcessorContext context) {
         map.put(resolved, resolved);
     }
     
-    public Object removeModel(Object resolved) {
+    public Object removeModel(Object resolved, ProcessorContext context) {
         return map.remove(resolved);
     }
     

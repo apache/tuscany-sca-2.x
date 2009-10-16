@@ -38,10 +38,6 @@ import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
 import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
-import org.apache.tuscany.sca.monitor.Monitor;
-import org.apache.tuscany.sca.monitor.MonitorFactory;
-import org.apache.tuscany.sca.monitor.Problem;
-import org.apache.tuscany.sca.monitor.Problem.Severity;
 
 /**
  * The default implementation of a URL artifact processor extension point.
@@ -54,7 +50,6 @@ public class DefaultURLArtifactProcessorExtensionPoint extends
     private ExtensionPointRegistry extensionPoints;
     private StAXArtifactProcessor<?> staxProcessor;
     private boolean loaded;
-    private Monitor monitor = null;
 
     /**
      * Constructs a new extension point.
@@ -65,32 +60,9 @@ public class DefaultURLArtifactProcessorExtensionPoint extends
         XMLInputFactory inputFactory = modelFactories.getFactory(XMLInputFactory.class);
         XMLOutputFactory outputFactory = modelFactories.getFactory(XMLOutputFactory.class);
         UtilityExtensionPoint utilities = this.extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
-        MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
-        if (monitorFactory != null)
-            this.monitor = monitorFactory.createMonitor();
         StAXArtifactProcessorExtensionPoint staxProcessors =
             extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, outputFactory, this.monitor);
-    }
-
-    /**
-     * Report a exception.
-     *
-     * @param problems
-     * @param message
-     * @param model
-    */
-    private void error(String message, Object model, Exception ex) {
-        if (monitor != null) {
-            Problem problem =
-                monitor.createProblem(this.getClass().getName(),
-                                      "contribution-validation-messages",
-                                      Severity.ERROR,
-                                      model,
-                                      message,
-                                      ex);
-            monitor.problem(problem);
-        }
+        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, outputFactory);
     }
 
     public void addArtifactProcessor(URLArtifactProcessor<?> artifactProcessor) {
@@ -232,7 +204,6 @@ public class DefaultURLArtifactProcessorExtensionPoint extends
                 ServiceDiscovery.getInstance().getServiceDeclarations(URLArtifactProcessor.class.getName());
         } catch (IOException e) {
             IllegalStateException ie = new IllegalStateException(e);
-            error("IllegalStateException", staxProcessor, ie);
             throw ie;
         }
 
@@ -245,7 +216,7 @@ public class DefaultURLArtifactProcessorExtensionPoint extends
             // Create a processor wrapper and register it
             URLArtifactProcessor<?> processor =
                 new LazyURLArtifactProcessor(artifactType, modelTypeName, processorDeclaration, extensionPoints,
-                                             staxProcessor, monitor);
+                                             staxProcessor);
             addArtifactProcessor(processor);
         }
 
@@ -265,37 +236,21 @@ public class DefaultURLArtifactProcessorExtensionPoint extends
         private URLArtifactProcessor<?> processor;
         private Class<?> modelType;
         private StAXArtifactProcessor<?> staxProcessor;
-        private Monitor monitor;
 
         LazyURLArtifactProcessor(String artifactType,
                                  String modelTypeName,
                                  ServiceDeclaration processorDeclaration,
                                  ExtensionPointRegistry extensionPoints,
-                                 StAXArtifactProcessor<?> staxProcessor,
-                                 Monitor monitor) {
+                                 StAXArtifactProcessor<?> staxProcessor) {
             this.artifactType = artifactType;
             this.modelTypeName = modelTypeName;
             this.processorDeclaration = processorDeclaration;
             this.extensionPoints = extensionPoints;
             this.staxProcessor = staxProcessor;
-            this.monitor = monitor;
         }
 
         public String getArtifactType() {
             return artifactType;
-        }
-
-        private void error(String message, Object model, Exception ex) {
-            if (monitor != null) {
-                Problem problem =
-                    monitor.createProblem(this.getClass().getName(),
-                                          "contribution-validation-messages",
-                                          Severity.ERROR,
-                                          model,
-                                          message,
-                                          ex);
-                monitor.problem(problem);
-            }
         }
 
         @SuppressWarnings("unchecked")
@@ -308,35 +263,32 @@ public class DefaultURLArtifactProcessorExtensionPoint extends
                         (Class<URLArtifactProcessor>)processorDeclaration.loadClass();
                     try {
                         Constructor<URLArtifactProcessor> constructor =
-                            processorClass.getConstructor(FactoryExtensionPoint.class, Monitor.class);
-                        processor = constructor.newInstance(modelFactories, monitor);
+                            processorClass.getConstructor(FactoryExtensionPoint.class);
+                        processor = constructor.newInstance(modelFactories);
                     } catch (NoSuchMethodException e) {
                         try {
                             Constructor<URLArtifactProcessor> constructor =
                                 processorClass.getConstructor(FactoryExtensionPoint.class,
-                                                              StAXArtifactProcessor.class,
-                                                              Monitor.class);
-                            processor = constructor.newInstance(modelFactories, staxProcessor, monitor);
+                                                              StAXArtifactProcessor.class);
+                            processor = constructor.newInstance(modelFactories, staxProcessor);
                         } catch (NoSuchMethodException e2) {
                             Constructor<URLArtifactProcessor> constructor =
                                 processorClass.getConstructor(ExtensionPointRegistry.class,
-                                                              StAXArtifactProcessor.class,
-                                                              Monitor.class);
-                            processor = constructor.newInstance(extensionPoints, staxProcessor, monitor);
+                                                              StAXArtifactProcessor.class);
+                            processor = constructor.newInstance(extensionPoints, staxProcessor);
                         }
                     }
                 } catch (Throwable e) {
                     IllegalStateException ie = new IllegalStateException("Exception during getProcessor() for " + 
                     		                                             processorDeclaration.getClassName(), e);
-                    error("IllegalStateException", processor, ie);
                     throw ie;
                 }
             }
             return processor;
         }
 
-        public Object read(URL contributionURL, URI artifactURI, URL artifactURL) throws ContributionReadException {
-            return getProcessor().read(contributionURL, artifactURI, artifactURL);
+        public Object read(URL contributionURL, URI artifactURI, URL artifactURL, ProcessorContext context) throws ContributionReadException {
+            return getProcessor().read(contributionURL, artifactURI, artifactURL, context);
         }
 
         public Class<?> getModelType() {
@@ -345,7 +297,6 @@ public class DefaultURLArtifactProcessorExtensionPoint extends
                     modelType = processorDeclaration.loadClass(modelTypeName);
                 } catch (ClassNotFoundException e) {
                     IllegalStateException ie = new IllegalStateException(e);
-                    error("IllegalStateException", processorDeclaration, ie);
                     throw ie;
                 }
             }
@@ -353,18 +304,18 @@ public class DefaultURLArtifactProcessorExtensionPoint extends
         }
 
         @SuppressWarnings("unchecked")
-        public void resolve(Object model, ModelResolver resolver) throws ContributionResolveException {
-            getProcessor().resolve(model, resolver);
+        public void resolve(Object model, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
+            getProcessor().resolve(model, resolver, context);
         } // end method resolve
         
         /**
          * Preresolve phase, for ExtendedURLArtifactProcessors only
          */
         @SuppressWarnings("unchecked")
-        public void preResolve( Object model, ModelResolver resolver ) throws ContributionResolveException {
+        public void preResolve( Object model, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
         	URLArtifactProcessor<?> processor = getProcessor();
         	if( processor instanceof ExtendedURLArtifactProcessor ) {
-        		((ExtendedURLArtifactProcessor)processor).preResolve(model, resolver);
+        		((ExtendedURLArtifactProcessor)processor).preResolve(model, resolver, context);
         	} // end if
         } // end method resolve
 

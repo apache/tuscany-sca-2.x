@@ -32,9 +32,11 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
+import org.apache.tuscany.sca.assembly.builder.BuilderContext;
 import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
+import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
@@ -64,13 +66,17 @@ public class ReadTestCase {
     private static URLArtifactProcessor<Definitions> policyDefinitionsProcessor;
     private static CompositeBuilder compositeBuilder;
     private static Monitor monitor;
+    private static ProcessorContext context;
+    private static BuilderContext builderContext;
     
     @BeforeClass
     public static void setUp() throws Exception {
         DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
+        context = new ProcessorContext(extensionPoints);
+        builderContext = new BuilderContext(extensionPoints);
         inputFactory = XMLInputFactory.newInstance();
         StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null, null);
+        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null);
 
         compositeBuilder = extensionPoints.getExtensionPoint(BuilderExtensionPoint.class).getCompositeBuilder("org.apache.tuscany.sca.assembly.builder.CompositeBuilder");
         
@@ -86,10 +92,10 @@ public class ReadTestCase {
     public void testReadComposite() throws Exception {
         InputStream is = getClass().getResourceAsStream("Calculator.composite");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-        Composite composite = (Composite)staxProcessor.read(reader);
+        Composite composite = (Composite)staxProcessor.read(reader, context);
         assertNotNull(composite);
 
-        compositeBuilder.build(composite, null, monitor);
+        compositeBuilder.build(composite, builderContext);
 
     }
 
@@ -100,17 +106,18 @@ public class ReadTestCase {
         
         URL url = getClass().getResource("definitions.xml");
         URI uri = URI.create("definitions.xml");
-        Definitions scaDefns = policyDefinitionsProcessor.read(null, uri, url);
+        Definitions scaDefns = policyDefinitionsProcessor.read(null, uri, url, context);
                 
         InputStream is = getClass().getResourceAsStream("Calculator.composite");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-        Composite composite = (Composite)staxProcessor.read(reader);
+        Composite composite = (Composite)staxProcessor.read(reader, context);
         assertNotNull(composite);
         
-        staxProcessor.resolve(scaDefns, resolver);
-        staxProcessor.resolve(composite, resolver);
+        staxProcessor.resolve(scaDefns, resolver, context);
+        staxProcessor.resolve(composite, resolver, context);
 
-        compositeBuilder.build(composite, null, monitor);
+        builderContext.setDefinitions(scaDefns);
+        compositeBuilder.build(composite, builderContext);
         
         //intents are computed and aggregate intents from ancestor elements
         assertEquals(((PolicySubject)composite.getComponents().get(0)).getRequiredIntents().size(), 3);
@@ -168,11 +175,11 @@ public class ReadTestCase {
         
         URL url = getClass().getResource("definitions_with_policysets.xml");
         URI uri = URI.create("definitions_with_policysets.xml");
-        Definitions policyDefinitions = policyDefinitionsProcessor.read(null, uri, url);
+        Definitions policyDefinitions = policyDefinitionsProcessor.read(null, uri, url, context);
                 
         InputStream is = getClass().getResourceAsStream("Calculator.composite");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-        Composite composite = (Composite)staxProcessor.read(reader);
+        Composite composite = (Composite)staxProcessor.read(reader, context);
         assertNotNull(composite);
         
         for ( Component component : composite.getComponents() ) {
@@ -181,10 +188,11 @@ public class ReadTestCase {
             }
         }
         
-        staxProcessor.resolve(policyDefinitions, resolver);
-        staxProcessor.resolve(composite, resolver);
+        staxProcessor.resolve(policyDefinitions, resolver, context);
+        staxProcessor.resolve(composite, resolver, context);
 
-        compositeBuilder.build(composite, null, monitor);
+        builderContext.setDefinitions(policyDefinitions);
+        compositeBuilder.build(composite, builderContext);
         
         //test for determination of policysets for implementation
         assertEquals(((PolicySubject)composite.getComponents().get(0)).getPolicySets().size(), 1);

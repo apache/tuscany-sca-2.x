@@ -37,12 +37,12 @@ import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.assembly.builder.BuilderContext;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.assembly.builder.PolicyBuilder;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.definitions.Definitions;
-import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentMap;
 import org.apache.tuscany.sca.policy.PolicyExpression;
@@ -66,10 +66,11 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
         return "org.apache.tuscany.sca.assembly.builder.CompositePolicyBuilder";
     }
 
-    public Composite build(Composite composite, Definitions definitions, Monitor monitor)
+    public Composite build(Composite composite, BuilderContext context)
         throws CompositeBuilderException {
-        computePolicies(composite, definitions, monitor);
-        buildPolicies(composite, definitions, monitor);
+        Definitions definitions = context.getDefinitions();
+        computePolicies(composite, definitions, context);
+        buildPolicies(composite, definitions, context);
         return composite;
     }
 
@@ -97,14 +98,14 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
      * @param monitor 
      * @return
      */
-    private boolean checkMutualExclusion(PolicySubject subject1, PolicySubject subject2, Monitor monitor) {
+    private boolean checkMutualExclusion(PolicySubject subject1, PolicySubject subject2, BuilderContext context) {
         if (subject1 == subject2 || subject1 == null || subject2 == null) {
             return false;
         }
         for (Intent i1 : subject1.getRequiredIntents()) {
             for (Intent i2 : subject1.getRequiredIntents()) {
                 if (i1.getExcludedIntents().contains(i2) || i2.getExcludedIntents().contains(i1)) {
-                    error(monitor, "MutuallyExclusiveIntents", new Object[] {subject1, subject2}, i1, i2);
+                    error(context.getMonitor(), "MutuallyExclusiveIntents", new Object[] {subject1, subject2}, i1, i2);
                     return true;
                 }
             }
@@ -206,7 +207,7 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
         return null;
     }
 
-    private void resolveAndNormalize(PolicySubject subject, Definitions definitions, Monitor monitor) {
+    private void resolveAndNormalize(PolicySubject subject, Definitions definitions, BuilderContext context) {
 
         Set<Intent> intents = new HashSet<Intent>();
         if (definitions != null) {
@@ -215,7 +216,7 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
                 if (resolved != null) {
                     intents.add(resolved);
                 } else {
-                    warning(monitor, "IntentNotFound", subject, i);
+                    warning(context.getMonitor(), "IntentNotFound", subject, i);
                     // Intent cannot be resolved
                 }
             }
@@ -267,7 +268,7 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
                     policySets.add(definitions.getPolicySets().get(index));
                 } else {
                     // PolicySet cannot be resolved
-                    warning(monitor, "PolicySetNotFound", subject, policySet);
+                    warning(context.getMonitor(), "PolicySetNotFound", subject, policySet);
                 }
             }
         }
@@ -296,30 +297,30 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
 
     }
 
-    protected void computePolicies(Composite composite, Definitions definitions, Monitor monitor) {
+    protected void computePolicies(Composite composite, Definitions definitions, BuilderContext context) {
 
         // compute policies recursively
         for (Component component : composite.getComponents()) {
             Implementation implementation = component.getImplementation();
             if (implementation instanceof Composite) {
-                computePolicies((Composite)implementation, definitions, monitor);
+                computePolicies((Composite)implementation, definitions, context);
             }
         }
 
         for (Component component : composite.getComponents()) {
             // Check component against implementation
-            checkMutualExclusion(component, component.getImplementation(), monitor);
+            checkMutualExclusion(component, component.getImplementation(), context);
 
             for (ComponentService componentService : component.getServices()) {
                 // Check component/service against componentType/service 
-                checkMutualExclusion(componentService, componentService.getService(), monitor);
+                checkMutualExclusion(componentService, componentService.getService(), context);
 
                 if (componentService.getInterfaceContract() != null && componentService.getService() != null) {
                     checkMutualExclusion(componentService.getInterfaceContract().getInterface(), componentService
-                        .getService().getInterfaceContract().getInterface(), monitor);
+                        .getService().getInterfaceContract().getInterface(), context);
                     checkMutualExclusion(componentService.getInterfaceContract().getCallbackInterface(),
                                          componentService.getService().getInterfaceContract().getCallbackInterface(),
-                                         monitor);
+                                         context);
                 }
 
                 for (Endpoint ep : componentService.getEndpoints()) {
@@ -337,7 +338,7 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
                     if (componentService.getService() != null) {
                         for (Binding binding : componentService.getService().getBindings()) {
                             if (isEqual(ep.getBinding().getName(), binding.getName()) && (binding instanceof PolicySubject)) {
-                                checkMutualExclusion((PolicySubject)ep.getBinding(), (PolicySubject)binding, monitor);
+                                checkMutualExclusion((PolicySubject)ep.getBinding(), (PolicySubject)binding, context);
                                 // Inherit from componentType.service.binding
                                 inherit(ep, binding);
                                 break;
@@ -353,21 +354,21 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
                     // Remove the intents whose @contraints do not include the current element
                     // Replace unqualified intents if there is a qualified intent in the list
                     // Replace qualifiable intents with the default qualied intent
-                    resolveAndNormalize(ep, definitions, monitor);
+                    resolveAndNormalize(ep, definitions, context);
                 }
             }
 
             for (ComponentReference componentReference : component.getReferences()) {
                 // Check component/reference against componentType/reference
-                checkMutualExclusion(componentReference, componentReference.getReference(), monitor);
+                checkMutualExclusion(componentReference, componentReference.getReference(), context);
 
                 if (componentReference.getInterfaceContract() != null && componentReference.getReference() != null) {
                     checkMutualExclusion(componentReference.getInterfaceContract().getInterface(), componentReference
-                        .getReference().getInterfaceContract().getInterface(), monitor);
+                        .getReference().getInterfaceContract().getInterface(), context);
                     checkMutualExclusion(componentReference.getInterfaceContract().getCallbackInterface(),
                                          componentReference.getReference().getInterfaceContract()
                                              .getCallbackInterface(),
-                                         monitor);
+                                         context);
                 }
 
                 for (EndpointReference epr : componentReference.getEndpointReferences()) {
@@ -387,7 +388,7 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
                         for (Binding binding : componentReference.getReference().getBindings()) {
                             if (epr.getBinding() != null && isEqual(epr.getBinding().getName(), binding.getName())
                                 && (binding instanceof PolicySubject)) {
-                                checkMutualExclusion((PolicySubject)epr.getBinding(), (PolicySubject)binding, monitor);
+                                checkMutualExclusion((PolicySubject)epr.getBinding(), (PolicySubject)binding, context);
                                 // Inherit from componentType.reference.binding
                                 inherit(epr, binding);
                                 break;
@@ -402,7 +403,7 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
                     // Remove the intents whose @contraints do not include the current element
                     // Replace unqualified intents if there is a qualified intent in the list
                     // Replace qualifiable intents with the default qualied intent
-                    resolveAndNormalize(epr, definitions, monitor);
+                    resolveAndNormalize(epr, definitions, context);
                 }
             }
 
@@ -427,13 +428,13 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
         return names;
     }
     
-    protected void buildPolicies(Composite composite, Definitions definitions, Monitor monitor) {
+    protected void buildPolicies(Composite composite, Definitions definitions, BuilderContext context) {
 
         // compute policies recursively
         for (Component component : composite.getComponents()) {
             Implementation implementation = component.getImplementation();
             if (implementation instanceof Composite) {
-                buildPolicies((Composite)implementation, definitions, monitor);
+                buildPolicies((Composite)implementation, definitions, context);
             }
         }
 
@@ -444,7 +445,7 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
                     for (QName policyType : getPolicyNames(ep)) {
                         PolicyBuilder builder = builders.getPolicyBuilder(policyType);
                         if (builder != null) {
-                            builder.build(ep, definitions, monitor);
+                            builder.build(ep, context);
                         }
                     }
                 }
@@ -455,7 +456,7 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
                     for (QName policyType : getPolicyNames(epr)) {
                         PolicyBuilder builder = builders.getPolicyBuilder(policyType);
                         if (builder != null) {
-                            builder.build(epr, definitions, monitor);
+                            builder.build(epr, context);
                         }
                     }
                 }
@@ -466,7 +467,7 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
                 for (QName policyType : getPolicyNames(implementation)) {
                     PolicyBuilder builder = builders.getPolicyBuilder(policyType);
                     if (builder != null) {
-                        builder.build(component, implementation, definitions, monitor);
+                        builder.build(component, implementation, context);
                     }
                 }
             }

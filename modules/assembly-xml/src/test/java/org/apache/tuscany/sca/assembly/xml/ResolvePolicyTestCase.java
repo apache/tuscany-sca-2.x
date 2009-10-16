@@ -31,6 +31,7 @@ import java.net.URL;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
@@ -52,14 +53,16 @@ public class ResolvePolicyTestCase {
     private static URLArtifactProcessor<Object> documentProcessor;
     private static ModelResolver resolver;
     private static URLArtifactProcessor<Definitions> policyDefinitionsProcessor;
+    private static ProcessorContext context;
 
     @BeforeClass
     public static void setUp() throws Exception {
         DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
+        context = new ProcessorContext(extensionPoints);
         resolver = new DefaultModelResolver();
 
         URLArtifactProcessorExtensionPoint documentProcessors = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
-        documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors, null);
+        documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors);
         policyDefinitionsProcessor = documentProcessors.getProcessor(Definitions.class);
 
         // Create StAX processors
@@ -72,23 +75,23 @@ public class ResolvePolicyTestCase {
 
         URL url = getClass().getResource("CalculatorComponent.constrainingType");
         URI uri = URI.create("CalculatorComponent.constrainingType");
-        ConstrainingType constrainingType = (ConstrainingType)documentProcessor.read(null, uri, url);
+        ConstrainingType constrainingType = (ConstrainingType)documentProcessor.read(null, uri, url, context);
         assertNotNull(constrainingType);
-        resolver.addModel(constrainingType);
+        resolver.addModel(constrainingType, context);
 
         url = getClass().getResource("TestAllCalculator.composite");
         uri = URI.create("TestAllCalculator.composite");
-        Composite composite = (Composite)documentProcessor.read(null, uri, url);
+        Composite composite = (Composite)documentProcessor.read(null, uri, url, context);
         assertNotNull(composite);
 
         url = getClass().getResource("test_definitions.xml");
         uri = URI.create("test_definitions.xml");
-        Definitions scaDefns = (Definitions)policyDefinitionsProcessor.read(null, uri, url);
+        Definitions scaDefns = (Definitions)policyDefinitionsProcessor.read(null, uri, url, context);
         assertNotNull(scaDefns);
 
         preResolvePolicyTests(composite);
-        documentProcessor.resolve(scaDefns, resolver);
-        documentProcessor.resolve(composite, resolver);
+        documentProcessor.resolve(scaDefns, resolver, context);
+        documentProcessor.resolve(composite, resolver, context);
 
         // Comment out the post resolving test
         // postResolvePolicyTests(composite);
@@ -155,15 +158,15 @@ public class ResolvePolicyTestCase {
     public void testResolveComposite() throws Exception {
         URL url = getClass().getResource("Calculator.composite");
         URI uri = URI.create("Calculator.composite");
-        Composite nestedComposite = (Composite)documentProcessor.read(null, uri, url);
+        Composite nestedComposite = (Composite)documentProcessor.read(null, uri, url, context);
         assertNotNull(nestedComposite);
-        resolver.addModel(nestedComposite);
+        resolver.addModel(nestedComposite, context);
 
         url = getClass().getResource("TestAllCalculator.composite");
         uri = URI.create("TestAllCalculator.composite");
-        Composite composite = (Composite)documentProcessor.read(null, uri, url);
+        Composite composite = (Composite)documentProcessor.read(null, uri, url, context);
 
-        documentProcessor.resolve(composite, resolver);
+        documentProcessor.resolve(composite, resolver, context);
 
         assertEquals(composite.getComponents().get(2).getImplementation(), nestedComposite);
     }

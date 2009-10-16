@@ -56,6 +56,7 @@ import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.resolver.ClassReference;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
@@ -150,7 +151,7 @@ public class SpringXMLComponentTypeLoader {
      * Spring implementation
      *
      */
-    public void load(SpringImplementation implementation, ModelResolver resolver) throws ContributionReadException {
+    public void load(SpringImplementation implementation, ModelResolver resolver, ProcessorContext context) throws ContributionReadException {
         //System.out.println("Spring TypeLoader - load method start");
     	ComponentType componentType = implementation.getComponentType();
         /* Check that there is a component type object already set	*/
@@ -159,16 +160,16 @@ public class SpringXMLComponentTypeLoader {
         }
         if (componentType.isUnresolved()) {
             /* Fetch the location of the application-context file from the implementation */
-            loadFromXML(implementation, resolver);
+            loadFromXML(implementation, resolver, context);
             if (!componentType.isUnresolved())
                 implementation.setUnresolved(false);
         } // end if
         //System.out.println("Spring TypeLoader - load method complete");
     } // end method load
 
-    private Class<?> resolveClass(ModelResolver resolver, String className) throws ClassNotFoundException {
+    private Class<?> resolveClass(ModelResolver resolver, String className, ProcessorContext context) throws ClassNotFoundException {
         ClassReference classReference = new ClassReference(className);
-        classReference = resolver.resolveModel(ClassReference.class, classReference);
+        classReference = resolver.resolveModel(ClassReference.class, classReference, context);
         if (classReference.isUnresolved()) {
             throw new ClassNotFoundException(className);
         }
@@ -183,7 +184,7 @@ public class SpringXMLComponentTypeLoader {
      * @param implementation SpringImplementation into which to load the component type information
      * @throws ContributionReadException Failed to read the contribution
      */
-    private void loadFromXML(SpringImplementation implementation, ModelResolver resolver) throws ContributionReadException {
+    private void loadFromXML(SpringImplementation implementation, ModelResolver resolver, ProcessorContext context) throws ContributionReadException {
         XMLStreamReader reader;
         List<SpringBeanElement> beans = new ArrayList<SpringBeanElement>();
         List<SpringSCAServiceElement> services = new ArrayList<SpringSCAServiceElement>();
@@ -195,10 +196,10 @@ public class SpringXMLComponentTypeLoader {
         String contextPath = implementation.getLocation();
 
         try {        	
-            resource = resolveLocation(resolver, contextPath);
+            resource = resolveLocation(resolver, contextPath, context);
             contextResources = getApplicationContextResource(resource);
             
-            implementation.setClassLoader(new ContextClassLoader(resolver));
+            implementation.setClassLoader(new ContextClassLoader(resolver, context));
             implementation.setResource(contextResources);
             // The URI is used to uniquely identify the Implementation
             implementation.setURI(resource.toString());
@@ -210,7 +211,7 @@ public class SpringXMLComponentTypeLoader {
                 List<SpringSCAPropertyElement> appCxtProperties = new ArrayList<SpringSCAPropertyElement>();
             	reader = xmlInputFactory.createXMLStreamReader(contextResource.openStream());
             	// Read the beans, services, references and properties for individual application context
-            	readContextDefinition(resolver, reader, contextPath, appCxtBeans, appCxtServices, appCxtReferences, appCxtProperties);
+            	readContextDefinition(resolver, reader, contextPath, appCxtBeans, appCxtServices, appCxtReferences, appCxtProperties, context);
             	// Validate the beans from individual application context for uniqueness
             	validateBeans(appCxtBeans, appCxtServices, appCxtReferences, appCxtProperties);
             	// Add all the validated beans to the generic list
@@ -229,12 +230,12 @@ public class SpringXMLComponentTypeLoader {
         /* At this point, the complete application-context.xml file has been read and its contents  */
         /* stored in the lists of beans, services, references.  These are now used to generate      */
         /* the implied componentType for the application context								    */
-        generateComponentType(implementation, resolver, beans, services, references, scaproperties);
+        generateComponentType(implementation, resolver, beans, services, references, scaproperties, context);
 
         return;
     } // end method loadFromXML
 
-    private URL resolveLocation(ModelResolver resolver, String contextPath) throws MalformedURLException,
+    private URL resolveLocation(ModelResolver resolver, String contextPath, ProcessorContext context) throws MalformedURLException,
         ContributionReadException {
         URL resource = null;
         URI uri = URI.create(contextPath);
@@ -242,7 +243,7 @@ public class SpringXMLComponentTypeLoader {
             Artifact artifact = contributionFactory.createArtifact();
             artifact.setUnresolved(true);
             artifact.setURI(contextPath);
-            artifact = resolver.resolveModel(Artifact.class, artifact);
+            artifact = resolver.resolveModel(Artifact.class, artifact, context);
             if (!artifact.isUnresolved()) {
                 resource = new URL(artifact.getLocation());
             } else {
@@ -258,10 +259,10 @@ public class SpringXMLComponentTypeLoader {
      * Method which returns the XMLStreamReader for the Spring application-context.xml file
      * specified in the location attribute
      */
-    private XMLStreamReader getApplicationContextReader(ModelResolver resolver, String location) throws ContributionReadException {
+    private XMLStreamReader getApplicationContextReader(ModelResolver resolver, String location, ProcessorContext context) throws ContributionReadException {
 
         try {
-            URL resource = getApplicationContextResource(resolveLocation(resolver, location)).get(0);
+            URL resource = getApplicationContextResource(resolveLocation(resolver, location, context)).get(0);
             XMLStreamReader reader =
             	xmlInputFactory.createXMLStreamReader(resource.openStream());
             return reader;
@@ -275,6 +276,7 @@ public class SpringXMLComponentTypeLoader {
     /**
      * Method which reads the spring context definitions from Spring application-context.xml
      * file and identifies the defined beans, properties, services and references
+     * @param context 
      */
     private void readContextDefinition(ModelResolver resolver,
                                        XMLStreamReader reader,
@@ -282,7 +284,7 @@ public class SpringXMLComponentTypeLoader {
                                        List<SpringBeanElement> beans,
                                        List<SpringSCAServiceElement> services,
                                        List<SpringSCAReferenceElement> references,
-                                       List<SpringSCAPropertyElement> scaproperties) throws ContributionReadException {
+                                       List<SpringSCAPropertyElement> scaproperties, ProcessorContext context) throws ContributionReadException {
 
         SpringBeanElement bean = null;
 
@@ -299,9 +301,9 @@ public class SpringXMLComponentTypeLoader {
                             if (location != null) {
                             	// FIXME - need to find a right way of generating this path
                                 String resourcePath = contextPath.substring(0, contextPath.lastIndexOf("/")+1) + location;
-                                XMLStreamReader ireader = getApplicationContextReader(resolver, resourcePath);
+                                XMLStreamReader ireader = getApplicationContextReader(resolver, resourcePath, context);
                                 // Read the context definition for the identified imported resource
-                                readContextDefinition(resolver, ireader, contextPath, beans, services, references, scaproperties);
+                                readContextDefinition(resolver, ireader, contextPath, beans, services, references, scaproperties, context);
                             }
                         } else if (SpringImplementationConstants.SCA_SERVICE_ELEMENT.equals(qname)) {
                         	// The value of the @name attribute of an <sca:service/> subelement of a <beans/> 
@@ -538,7 +540,8 @@ public class SpringXMLComponentTypeLoader {
                                        List<SpringBeanElement> beans,
                                        List<SpringSCAServiceElement> services,
                                        List<SpringSCAReferenceElement> references,
-                                       List<SpringSCAPropertyElement> scaproperties) throws ContributionReadException {
+                                       List<SpringSCAPropertyElement> scaproperties,
+                                       ProcessorContext context) throws ContributionReadException {
         /*
          * 1. Each sca:service becomes a service in the component type
          * 2. Each sca:reference becomes a reference in the component type
@@ -558,7 +561,7 @@ public class SpringXMLComponentTypeLoader {
             Iterator<SpringSCAServiceElement> its = services.iterator();
             while (its.hasNext()) {
                 SpringSCAServiceElement serviceElement = its.next();                
-                Class<?> interfaze = resolveClass(resolver, serviceElement.getType());
+                Class<?> interfaze = resolveClass(resolver, serviceElement.getType(), context);
                 Service theService = createService(interfaze, serviceElement.getName());
                 // Spring allows duplication of bean definitions in multiple context scenario,
                 // in such cases, the latest bean definition overrides the older ones, hence 
@@ -590,7 +593,7 @@ public class SpringXMLComponentTypeLoader {
             Iterator<SpringSCAReferenceElement> itr = references.iterator();
             while (itr.hasNext()) {
                 SpringSCAReferenceElement referenceElement = itr.next();
-                Class<?> interfaze = resolveClass(resolver, referenceElement.getType());
+                Class<?> interfaze = resolveClass(resolver, referenceElement.getType(), context);
                 Reference theReference = createReference(interfaze, referenceElement.getName());
                 // Override the older bean definition with the latest ones
                 // for the duplicate definitions found.
@@ -647,7 +650,7 @@ public class SpringXMLComponentTypeLoader {
                     // If its not a valid bean for service, ignore it
                     if (!isvalidBeanForService(beanElement)) continue;
                     // Load the Spring bean class
-                    Class<?> beanClass = resolveClass(resolver, beanElement.getClassName());
+                    Class<?> beanClass = resolveClass(resolver, beanElement.getClassName(), context);
                     // Introspect the bean
                     beanIntrospector =
                         new SpringBeanIntrospector(assemblyFactory, javaFactory, policyFactory, beanElement.getCustructorArgs());
@@ -674,7 +677,7 @@ public class SpringXMLComponentTypeLoader {
                 if (beanElement.getProperties().isEmpty() && beanElement.getCustructorArgs().isEmpty())
                 	continue;
 
-                Class<?> beanClass = resolveClass(resolver, beanElement.getClassName());
+                Class<?> beanClass = resolveClass(resolver, beanElement.getClassName(), context);
                 // Introspect the bean
                 beanIntrospector =
                     new SpringBeanIntrospector(assemblyFactory, javaFactory, policyFactory, beanElement.getCustructorArgs());
@@ -709,7 +712,7 @@ public class SpringXMLComponentTypeLoader {
 	                            	// The name of the reference in this case is the string in
 	                                // the @ref attribute of the Spring property element, NOT the
 	                                // name of the field in the Spring bean....
-	                            	Class<?> interfaze = resolveClass(resolver, (propertyMap.get(propertyElement.getName()).getType()).getName());
+	                            	Class<?> interfaze = resolveClass(resolver, (propertyMap.get(propertyElement.getName()).getType()).getName(), context);
 	                                Reference theReference = createReference(interfaze, propertyRef);
 	                                implementation.setUnresolvedBeanRef(propertyRef, theReference);
 	                            } // end if
@@ -725,7 +728,7 @@ public class SpringXMLComponentTypeLoader {
 	                	if (propertyRefUnresolved(constructorArgRef, beans, references, scaproperties)) {
 	                    	for (JavaParameterImpl parameter : constructor.getParameters()) {
 	                    		String paramType = parameter.getType().getName();
-	                    		Class<?> interfaze = resolveClass(resolver, paramType);
+	                    		Class<?> interfaze = resolveClass(resolver, paramType, context);
 	                    		// Create a component type reference/property if the constructor-arg element has a
 	                            // type attribute OR index attribute declared...
 	                    		if ((conArgElement.getType() != null && paramType.equals(conArgElement.getType())) ||
@@ -1113,22 +1116,24 @@ public class SpringXMLComponentTypeLoader {
     }
     
     private class ContextClassLoader extends ClassLoader {
-    	public ContextClassLoader(ModelResolver resolver) {
+    	public ContextClassLoader(ModelResolver resolver, ProcessorContext context) {
     		super();
     		this.resolver = resolver;
+    		this.context = context;
     	}
 
 		private ModelResolver resolver;
+		private ProcessorContext context;
 		
 		@Override
 		protected Class<?> findClass(String name) throws ClassNotFoundException {
-			return SpringXMLComponentTypeLoader.this.resolveClass(resolver, name);
+			return SpringXMLComponentTypeLoader.this.resolveClass(resolver, name, context);
 		}
 		
 		@Override
 		protected URL findResource(String name) {
 			try {
-				return resolveLocation(resolver, name);
+				return resolveLocation(resolver, name, context);
 			} catch (Exception e) {
 				return null;
 			}

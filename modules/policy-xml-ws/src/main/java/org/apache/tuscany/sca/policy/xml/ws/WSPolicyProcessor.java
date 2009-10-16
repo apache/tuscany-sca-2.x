@@ -36,10 +36,10 @@ import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.monitor.Monitor;
 
 
 /**
@@ -56,7 +56,7 @@ public class WSPolicyProcessor extends BaseStAXArtifactProcessor implements StAX
     public WSPolicyProcessor() {
     }
     
-    public WSPolicyProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
+    public WSPolicyProcessor(FactoryExtensionPoint modelFactories) {
     }
     
     public QName getArtifactType() {
@@ -67,7 +67,7 @@ public class WSPolicyProcessor extends BaseStAXArtifactProcessor implements StAX
         return org.apache.neethi.Policy.class;
     }
 
-    public org.apache.neethi.Policy read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+    public org.apache.neethi.Policy read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException, XMLStreamException {
 		org.apache.neethi.Policy wsPolicy = null;
 
 		int event = reader.getEventType();
@@ -81,7 +81,7 @@ public class WSPolicyProcessor extends BaseStAXArtifactProcessor implements StAX
 		return wsPolicy;
     }
         
-    public void write(org.apache.neethi.Policy wsPolicy, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
+    public void write(org.apache.neethi.Policy wsPolicy, XMLStreamWriter writer, ProcessorContext context) throws ContributionWriteException, XMLStreamException {
 
         // Write an <sca:policySet>
         writer.writeStartElement(WS_POLICY_NS, WS_POLICY);
@@ -91,7 +91,7 @@ public class WSPolicyProcessor extends BaseStAXArtifactProcessor implements StAX
         writer.writeEndElement();
     }
 
-    public void resolve(org.apache.neethi.Policy wsPolicy, ModelResolver resolver) throws ContributionResolveException {
+    public void resolve(org.apache.neethi.Policy wsPolicy, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
 
     }   
 

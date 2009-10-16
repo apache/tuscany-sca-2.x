@@ -29,13 +29,13 @@ import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.implementation.osgi.BindingDescriptions;
 import org.apache.tuscany.sca.implementation.osgi.ServiceDescriptionsFactory;
-import org.apache.tuscany.sca.monitor.Monitor;
 
 /*
 <?xml version="1.0" encoding="UTF-8"?>
@@ -45,20 +45,17 @@ import org.apache.tuscany.sca.monitor.Monitor;
 </bindings>
 */
 public class BindingDescriptionsProcessor implements StAXArtifactProcessor<BindingDescriptions> {
-    private Monitor monitor;
     private StAXArtifactProcessor processor;
     private ServiceDescriptionsFactory factory;
 
     public BindingDescriptionsProcessor(ExtensionPointRegistry registry,
-                                        StAXArtifactProcessor processor,
-                                        Monitor monitor) {
-        this.monitor = monitor;
+                                        StAXArtifactProcessor processor) {
         this.processor = processor;
         this.factory =
             registry.getExtensionPoint(FactoryExtensionPoint.class).getFactory(ServiceDescriptionsFactory.class);
     }
 
-    public BindingDescriptions read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+    public BindingDescriptions read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException, XMLStreamException {
         BindingDescriptions bindings = factory.createBindingDescriptions();
         boolean exit = false;
         while (!exit) {
@@ -69,7 +66,7 @@ public class BindingDescriptionsProcessor implements StAXArtifactProcessor<Bindi
                     if (!"bindings".equals(name.getLocalPart())) {
                         Object element = null;
                         try {
-                            element = processor.read(reader);
+                            element = processor.read(reader, context);
                         } catch (ContributionReadException e) {
                             throw e;
                         }
@@ -98,11 +95,11 @@ public class BindingDescriptionsProcessor implements StAXArtifactProcessor<Bindi
         return BindingDescriptions.BINDINGS_QNAME;
     }
 
-    public void write(BindingDescriptions model, XMLStreamWriter writer) throws ContributionWriteException,
+    public void write(BindingDescriptions model, XMLStreamWriter writer, ProcessorContext context) throws ContributionWriteException,
         XMLStreamException {
         writer.writeStartElement(BindingDescriptions.OSGI_SD_NS, "bindings");
         for (Binding binding : model) {
-            processor.write(model, writer);
+            processor.write(model, writer, context);
         }
         writer.writeEndElement();
     }
@@ -111,7 +108,7 @@ public class BindingDescriptionsProcessor implements StAXArtifactProcessor<Bindi
         return BindingDescriptions.class;
     }
 
-    public void resolve(BindingDescriptions model, ModelResolver resolver) throws ContributionResolveException {
+    public void resolve(BindingDescriptions model, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
         // TODO: To be implemented
     }
 }

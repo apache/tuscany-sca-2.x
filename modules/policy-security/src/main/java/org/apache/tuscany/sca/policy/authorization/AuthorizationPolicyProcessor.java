@@ -31,6 +31,7 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
@@ -44,14 +45,12 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
  */
 public class AuthorizationPolicyProcessor implements StAXArtifactProcessor<AuthorizationPolicy> {
     private static final String ROLES = "roles";
-    private Monitor monitor;
 
     public QName getArtifactType() {
         return AuthorizationPolicy.NAME;
     }
 
-    public AuthorizationPolicyProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
-        this.monitor = monitor;
+    public AuthorizationPolicyProcessor(FactoryExtensionPoint modelFactories) {
     }
     
     /**
@@ -61,14 +60,14 @@ public class AuthorizationPolicyProcessor implements StAXArtifactProcessor<Autho
      * @param message
      * @param model
      */
-    private void error(String message, Object model, Object... messageParameters) {
+    private void error(Monitor monitor, String message, Object model, Object... messageParameters) {
         if (monitor != null) {
             Problem problem = monitor.createProblem(this.getClass().getName(), "policy-security-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
             monitor.problem(problem);
         }        
     }    
 
-    public AuthorizationPolicy read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+    public AuthorizationPolicy read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException, XMLStreamException {
         AuthorizationPolicy policy = new AuthorizationPolicy();
         int event = reader.getEventType();
         QName start = reader.getName();
@@ -80,7 +79,7 @@ public class AuthorizationPolicyProcessor implements StAXArtifactProcessor<Autho
                         policy.setAccessControl(AuthorizationPolicy.AcessControl.allow);
                         String roleNames = reader.getAttributeValue(null, ROLES);
                         if (roleNames == null) {
-                            error("RequiredAttributeRolesMissing", reader);
+                            error(context.getMonitor(), "RequiredAttributeRolesMissing", reader);
                             //throw new IllegalArgumentException("Required attribute 'roles' is missing.");
                         } else {
                             StringTokenizer st = new StringTokenizer(roleNames);
@@ -111,7 +110,7 @@ public class AuthorizationPolicyProcessor implements StAXArtifactProcessor<Autho
         }
     }
 
-    public void write(AuthorizationPolicy policy, XMLStreamWriter writer) throws ContributionWriteException,
+    public void write(AuthorizationPolicy policy, XMLStreamWriter writer, ProcessorContext context) throws ContributionWriteException,
         XMLStreamException {
         writer.writeStartElement(AuthorizationPolicy.NAME.getLocalPart());
 
@@ -136,7 +135,7 @@ public class AuthorizationPolicyProcessor implements StAXArtifactProcessor<Autho
         return AuthorizationPolicy.class;
     }
 
-    public void resolve(AuthorizationPolicy policy, ModelResolver resolver) throws ContributionResolveException {
+    public void resolve(AuthorizationPolicy policy, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
         
         if ((policy.getAccessControl() == AuthorizationPolicy.AcessControl.allow) &&
             (policy.getRoleNames().isEmpty())){

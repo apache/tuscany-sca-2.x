@@ -29,15 +29,12 @@ import javax.xml.stream.XMLStreamReader;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
-import org.apache.tuscany.sca.core.UtilityExtensionPoint;
-import org.apache.tuscany.sca.monitor.Monitor;
-import org.apache.tuscany.sca.monitor.MonitorFactory;
 
 /**
  * Tests for JMS binding XML writes.
@@ -49,7 +46,6 @@ public class JMSBindingProcessorWriteTestCase extends TestCase {
     private XMLInputFactory inputFactory;
     private XMLOutputFactory outputFactory;
     private StAXArtifactProcessor<Object> staxProcessor;
-    private Monitor monitor;
     
     public static final String DEFAULT =
         "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 
@@ -71,13 +67,16 @@ public class JMSBindingProcessorWriteTestCase extends TestCase {
             + " </component>"
             + "</composite>";
 
+    private ProcessorContext context;
+
     @Override
     protected void setUp() throws Exception {
         DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
+        context = new ProcessorContext(extensionPoints);
         inputFactory = XMLInputFactory.newInstance();
         outputFactory = XMLOutputFactory.newInstance();
         StAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(extensionPoints);
-        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, outputFactory, null);
+        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, outputFactory);
     }
 
     /**
@@ -86,17 +85,17 @@ public class JMSBindingProcessorWriteTestCase extends TestCase {
      */
     public void testLoadValidComposite() throws Exception {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(JMSBindingProcessorTestCase.COMPOSITE));       
-        Composite composite = (Composite)staxProcessor.read(reader);
+        Composite composite = (Composite)staxProcessor.read(reader, context);
         JMSBinding binding = (JMSBinding)composite.getComponents().get(0).getServices().get(0).getBindings().get(0);       
         assertNotNull(binding);
 
         // Write out JMSBinding model to stream.
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        staxProcessor.write(composite, outputFactory.createXMLStreamWriter(bos));
+        staxProcessor.write(composite, outputFactory.createXMLStreamWriter(bos), context);
 
         // Read written JMSBinding to a different JMSBinding model.
         XMLStreamReader reader2 = inputFactory.createXMLStreamReader(new StringReader(bos.toString()));       
-        Composite composite2 = (Composite)staxProcessor.read(reader2);
+        Composite composite2 = (Composite)staxProcessor.read(reader2, context);
         JMSBinding binding2 = (JMSBinding)composite2.getComponents().get(0).getServices().get(0).getBindings().get(0);       
         assertNotNull(binding2);
         
@@ -105,17 +104,17 @@ public class JMSBindingProcessorWriteTestCase extends TestCase {
     }
 
     public void testHeaders1() throws Exception {
-        Composite composite = (Composite)staxProcessor.read(inputFactory.createXMLStreamReader(new StringReader(JMSBindingProcessorTestCase.HEADERS1)));
+        Composite composite = (Composite)staxProcessor.read(inputFactory.createXMLStreamReader(new StringReader(JMSBindingProcessorTestCase.HEADERS1)), context);
         JMSBinding binding = (JMSBinding)composite.getComponents().get(0).getServices().get(0).getBindings().get(0);
         assertNotNull(binding);
         
         // Write out JMSBinding model to stream.
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        staxProcessor.write(composite, outputFactory.createXMLStreamWriter(bos));
+        staxProcessor.write(composite, outputFactory.createXMLStreamWriter(bos), context);
 
         // Read written JMSBinding to a different JMSBinding model.
         XMLStreamReader reader2 = inputFactory.createXMLStreamReader(new StringReader(bos.toString()));       
-        Composite composite2 = (Composite)staxProcessor.read(reader2);
+        Composite composite2 = (Composite)staxProcessor.read(reader2, context);
         JMSBinding binding2 = (JMSBinding)composite2.getComponents().get(0).getServices().get(0).getBindings().get(0);       
         assertNotNull(binding2);
         
@@ -125,17 +124,17 @@ public class JMSBindingProcessorWriteTestCase extends TestCase {
 
     public void testProperties1() throws Exception {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(JMSBindingProcessorTestCase.PROPERTIES1));        
-        Composite composite = (Composite)staxProcessor.read(reader);
+        Composite composite = (Composite)staxProcessor.read(reader, context);
         JMSBinding binding = (JMSBinding)   composite.getComponents().get(0).getServices().get(0).getBindings().get(0);       
         assertNotNull(binding);
         
         // Write out JMSBinding model to stream.
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        staxProcessor.write(composite, outputFactory.createXMLStreamWriter(bos));
+        staxProcessor.write(composite, outputFactory.createXMLStreamWriter(bos), context);
 
         // Read written JMSBinding to a different JMSBinding model.
         XMLStreamReader reader2 = inputFactory.createXMLStreamReader(new StringReader(bos.toString()));       
-        Composite composite2 = (Composite)staxProcessor.read(reader2);
+        Composite composite2 = (Composite)staxProcessor.read(reader2, context);
         JMSBinding binding2 = (JMSBinding)composite2.getComponents().get(0).getServices().get(0).getBindings().get(0);       
         assertNotNull(binding2);
         
@@ -145,17 +144,17 @@ public class JMSBindingProcessorWriteTestCase extends TestCase {
 
     public void testOpProperties1() throws Exception {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(JMSBindingProcessorTestCase.OP_PROPERTIES1));       
-        Composite composite = (Composite)staxProcessor.read(reader);
+        Composite composite = (Composite)staxProcessor.read(reader, context);
         JMSBinding binding = (JMSBinding)   composite.getComponents().get(0).getServices().get(0).getBindings().get(0);        
         assertNotNull(binding);
   
         // Write out JMSBinding model to stream.
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        staxProcessor.write(composite, outputFactory.createXMLStreamWriter(bos));
+        staxProcessor.write(composite, outputFactory.createXMLStreamWriter(bos), context);
 
         // Read written JMSBinding to a different JMSBinding model.
         XMLStreamReader reader2 = inputFactory.createXMLStreamReader(new StringReader(bos.toString()));
-        Composite composite2 = (Composite)staxProcessor.read(reader2);
+        Composite composite2 = (Composite)staxProcessor.read(reader2, context);
         JMSBinding binding2 = (JMSBinding)composite2.getComponents().get(0).getServices().get(0).getBindings().get(0);
         assertNotNull(binding2);
 
@@ -166,17 +165,17 @@ public class JMSBindingProcessorWriteTestCase extends TestCase {
     public void testSubscriptionHeaders() throws Exception {
         XMLStreamReader reader =
             inputFactory.createXMLStreamReader(new StringReader(JMSBindingProcessorTestCase.SELECTOR));
-        Composite composite = (Composite)staxProcessor.read(reader);
+        Composite composite = (Composite)staxProcessor.read(reader, context);
         JMSBinding binding = (JMSBinding)composite.getComponents().get(0).getServices().get(0).getBindings().get(0);
         assertNotNull(binding);
 
         // Write out JMSBinding model to stream.
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        staxProcessor.write(composite, outputFactory.createXMLStreamWriter(bos));
+        staxProcessor.write(composite, outputFactory.createXMLStreamWriter(bos), context);
 
         // Read written JMSBinding to a different JMSBinding model.
         XMLStreamReader reader2 = inputFactory.createXMLStreamReader(new StringReader(bos.toString()));
-        Composite composite2 = (Composite)staxProcessor.read(reader2);
+        Composite composite2 = (Composite)staxProcessor.read(reader2, context);
         JMSBinding binding2 = (JMSBinding)composite2.getComponents().get(0).getServices().get(0).getBindings().get(0);
         assertNotNull(binding2);
 
@@ -186,16 +185,16 @@ public class JMSBindingProcessorWriteTestCase extends TestCase {
 
     public void testDestinationProperties() throws Exception {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(JMSBindingProcessorTestCase.DEST_PROPS));        
-        Composite composite = (Composite)staxProcessor.read(reader);
+        Composite composite = (Composite)staxProcessor.read(reader, context);
         JMSBinding binding = (JMSBinding)   composite.getComponents().get(0).getServices().get(0).getBindings().get(0);
 
         // Write out JMSBinding model to stream.
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        staxProcessor.write(composite, outputFactory.createXMLStreamWriter(bos));
+        staxProcessor.write(composite, outputFactory.createXMLStreamWriter(bos), context);
 
         // Read written JMSBinding to a different JMSBinding model.
         XMLStreamReader reader2 = inputFactory.createXMLStreamReader(new StringReader(bos.toString()));
-        Composite composite2 = (Composite)staxProcessor.read(reader2);
+        Composite composite2 = (Composite)staxProcessor.read(reader2, context);
         JMSBinding binding2 = (JMSBinding)composite2.getComponents().get(0).getServices().get(0).getBindings().get(0);
         assertNotNull(binding2);
 
@@ -205,17 +204,17 @@ public class JMSBindingProcessorWriteTestCase extends TestCase {
     
     public void testConnectionFactoryProperties() throws Exception {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(JMSBindingProcessorTestCase.CF_PROPS));
-        Composite composite = (Composite)staxProcessor.read(reader);
+        Composite composite = (Composite)staxProcessor.read(reader, context);
         JMSBinding binding = (JMSBinding)   composite.getComponents().get(0).getServices().get(0).getBindings().get(0);
         assertNotNull(binding);
 
         // Write out JMSBinding model to stream.
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        staxProcessor.write(composite, outputFactory.createXMLStreamWriter(bos));
+        staxProcessor.write(composite, outputFactory.createXMLStreamWriter(bos), context);
 
         // Read written JMSBinding to a different JMSBinding model.
         XMLStreamReader reader2 = inputFactory.createXMLStreamReader(new StringReader(bos.toString()));
-        Composite composite2 = (Composite)staxProcessor.read(reader2);
+        Composite composite2 = (Composite)staxProcessor.read(reader2, context);
         JMSBinding binding2 = (JMSBinding)composite2.getComponents().get(0).getServices().get(0).getBindings().get(0);
         assertNotNull(binding2);
 
@@ -225,17 +224,17 @@ public class JMSBindingProcessorWriteTestCase extends TestCase {
     
     public void testActivationSpecProperties() throws Exception {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(JMSBindingProcessorTestCase.AS_PROPS));       
-        Composite composite = (Composite)staxProcessor.read(reader);
+        Composite composite = (Composite)staxProcessor.read(reader, context);
         JMSBinding binding = (JMSBinding)   composite.getComponents().get(0).getServices().get(0).getBindings().get(0);        
         assertNotNull(binding);
         
         // Write out JMSBinding model to stream.
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        staxProcessor.write(composite, outputFactory.createXMLStreamWriter(bos));
+        staxProcessor.write(composite, outputFactory.createXMLStreamWriter(bos), context);
 
         // Read written JMSBinding to a different JMSBinding model.
         XMLStreamReader reader2 = inputFactory.createXMLStreamReader(new StringReader(bos.toString()));
-        Composite composite2 = (Composite)staxProcessor.read(reader2);
+        Composite composite2 = (Composite)staxProcessor.read(reader2, context);
         JMSBinding binding2 = (JMSBinding)composite2.getComponents().get(0).getServices().get(0).getBindings().get(0);
         assertNotNull(binding2);
 
@@ -245,17 +244,17 @@ public class JMSBindingProcessorWriteTestCase extends TestCase {
 
     public void testResponseDestinationProperties() throws Exception {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(JMSBindingProcessorTestCase.RESP_DEST_PROPS));        
-        Composite composite = (Composite)staxProcessor.read(reader);
+        Composite composite = (Composite)staxProcessor.read(reader, context);
         JMSBinding binding = (JMSBinding)   composite.getComponents().get(0).getServices().get(0).getBindings().get(0);        
         assertNotNull(binding);
 
         // Write out JMSBinding model to stream.
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        staxProcessor.write(composite, outputFactory.createXMLStreamWriter(bos));
+        staxProcessor.write(composite, outputFactory.createXMLStreamWriter(bos), context);
 
         // Read written JMSBinding to a different JMSBinding model.
         XMLStreamReader reader2 = inputFactory.createXMLStreamReader(new StringReader(bos.toString()));
-        Composite composite2 = (Composite)staxProcessor.read(reader2);
+        Composite composite2 = (Composite)staxProcessor.read(reader2, context);
         JMSBinding binding2 = (JMSBinding)composite2.getComponents().get(0).getServices().get(0).getBindings().get(0);
         assertNotNull(binding2);
 
@@ -265,17 +264,17 @@ public class JMSBindingProcessorWriteTestCase extends TestCase {
     
     public void testResponseConnectionFactoryProperties() throws Exception {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(JMSBindingProcessorTestCase.RESP_CF_PROPS));
-        Composite composite = (Composite)staxProcessor.read(reader);
+        Composite composite = (Composite)staxProcessor.read(reader, context);
         JMSBinding binding = (JMSBinding)   composite.getComponents().get(0).getServices().get(0).getBindings().get(0);       
         assertNotNull(binding);
 
         // Write out JMSBinding model to stream.
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        staxProcessor.write(composite, outputFactory.createXMLStreamWriter(bos));
+        staxProcessor.write(composite, outputFactory.createXMLStreamWriter(bos), context);
 
         // Read written JMSBinding to a different JMSBinding model.
         XMLStreamReader reader2 = inputFactory.createXMLStreamReader(new StringReader(bos.toString()));
-        Composite composite2 = (Composite)staxProcessor.read(reader2);
+        Composite composite2 = (Composite)staxProcessor.read(reader2, context);
         JMSBinding binding2 = (JMSBinding)composite2.getComponents().get(0).getServices().get(0).getBindings().get(0);
         assertNotNull(binding2);
 
@@ -285,17 +284,17 @@ public class JMSBindingProcessorWriteTestCase extends TestCase {
     
     public void testResponseActivationSpecProperties() throws Exception {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(JMSBindingProcessorTestCase.RESP_AS_PROPS));        
-        Composite composite = (Composite)staxProcessor.read(reader);
+        Composite composite = (Composite)staxProcessor.read(reader, context);
         JMSBinding binding = (JMSBinding)   composite.getComponents().get(0).getServices().get(0).getBindings().get(0);        
         assertNotNull(binding);
 
         // Write out JMSBinding model to stream.
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        staxProcessor.write(composite, outputFactory.createXMLStreamWriter(bos));
+        staxProcessor.write(composite, outputFactory.createXMLStreamWriter(bos), context);
 
         // Read written JMSBinding to a different JMSBinding model.
         XMLStreamReader reader2 = inputFactory.createXMLStreamReader(new StringReader(bos.toString()));
-        Composite composite2 = (Composite)staxProcessor.read(reader2);
+        Composite composite2 = (Composite)staxProcessor.read(reader2, context);
         JMSBinding binding2 = (JMSBinding)composite2.getComponents().get(0).getServices().get(0).getBindings().get(0);
         assertNotNull(binding2);
 
@@ -305,17 +304,17 @@ public class JMSBindingProcessorWriteTestCase extends TestCase {
     
     public void testOperationPropertiesProperties() throws Exception {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(JMSBindingProcessorTestCase.OP_PROPS_PROPS));       
-        Composite composite = (Composite)staxProcessor.read(reader);
+        Composite composite = (Composite)staxProcessor.read(reader, context);
         JMSBinding binding = (JMSBinding)   composite.getComponents().get(0).getServices().get(0).getBindings().get(0);        
         assertNotNull(binding);
 
         // Write out JMSBinding model to stream.
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        staxProcessor.write(composite, outputFactory.createXMLStreamWriter(bos));
+        staxProcessor.write(composite, outputFactory.createXMLStreamWriter(bos), context);
 
         // Read written JMSBinding to a different JMSBinding model.
         XMLStreamReader reader2 = inputFactory.createXMLStreamReader(new StringReader(bos.toString()));
-        Composite composite2 = (Composite)staxProcessor.read(reader2);
+        Composite composite2 = (Composite)staxProcessor.read(reader2, context);
         JMSBinding binding2 = (JMSBinding)composite2.getComponents().get(0).getServices().get(0).getBindings().get(0);
         assertNotNull(binding2);
 
@@ -326,17 +325,17 @@ public class JMSBindingProcessorWriteTestCase extends TestCase {
     public void testResouceAdapterProperties() throws Exception {
         XMLStreamReader reader =
             inputFactory.createXMLStreamReader(new StringReader(JMSBindingProcessorTestCase.RES_ADPT_PROPS));
-        Composite composite = (Composite)staxProcessor.read(reader);
+        Composite composite = (Composite)staxProcessor.read(reader, context);
         JMSBinding binding = (JMSBinding)composite.getComponents().get(0).getServices().get(0).getBindings().get(0);
         assertNotNull(binding);
 
         // Write out JMSBinding model to stream.
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        staxProcessor.write(composite, outputFactory.createXMLStreamWriter(bos));
+        staxProcessor.write(composite, outputFactory.createXMLStreamWriter(bos), context);
 
         // Read written JMSBinding to a different JMSBinding model.
         XMLStreamReader reader2 = inputFactory.createXMLStreamReader(new StringReader(bos.toString()));
-        Composite composite2 = (Composite)staxProcessor.read(reader2);
+        Composite composite2 = (Composite)staxProcessor.read(reader2, context);
         JMSBinding binding2 = (JMSBinding)composite2.getComponents().get(0).getServices().get(0).getBindings().get(0);
         assertNotNull(binding2);
 
@@ -347,17 +346,17 @@ public class JMSBindingProcessorWriteTestCase extends TestCase {
     public void testConfiguredOperations() throws Exception {
         XMLStreamReader reader =
             inputFactory.createXMLStreamReader(new StringReader(JMSBindingProcessorTestCase.CONFIGURED_OPERATIONS));
-        Composite composite = (Composite)staxProcessor.read(reader);
+        Composite composite = (Composite)staxProcessor.read(reader, context);
         JMSBinding binding = (JMSBinding)composite.getComponents().get(0).getServices().get(0).getBindings().get(0);
         assertNotNull(binding);
 
         // Write out JMSBinding model to stream.
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        staxProcessor.write(composite, outputFactory.createXMLStreamWriter(bos));
+        staxProcessor.write(composite, outputFactory.createXMLStreamWriter(bos), context);
 
         // Read written JMSBinding to a different JMSBinding model.
         XMLStreamReader reader2 = inputFactory.createXMLStreamReader(new StringReader(bos.toString()));
-        Composite composite2 = (Composite)staxProcessor.read(reader2);
+        Composite composite2 = (Composite)staxProcessor.read(reader2, context);
         JMSBinding binding2 = (JMSBinding)composite2.getComponents().get(0).getServices().get(0).getBindings().get(0);
         assertNotNull(binding2);
 
@@ -368,17 +367,17 @@ public class JMSBindingProcessorWriteTestCase extends TestCase {
     public void testWireFormat() throws Exception {
         XMLStreamReader reader =
             inputFactory.createXMLStreamReader(new StringReader(JMSBindingProcessorTestCase.WIRE_FORMAT));
-        Composite composite = (Composite)staxProcessor.read(reader);
+        Composite composite = (Composite)staxProcessor.read(reader, context);
         JMSBinding binding = (JMSBinding)composite.getComponents().get(0).getServices().get(0).getBindings().get(0);
         assertNotNull(binding);
 
         // Write out JMSBinding model to stream.
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        staxProcessor.write(composite, outputFactory.createXMLStreamWriter(bos));
+        staxProcessor.write(composite, outputFactory.createXMLStreamWriter(bos), context);
 
         // Read written JMSBinding to a different JMSBinding model.
         XMLStreamReader reader2 = inputFactory.createXMLStreamReader(new StringReader(bos.toString()));
-        Composite composite2 = (Composite)staxProcessor.read(reader2);
+        Composite composite2 = (Composite)staxProcessor.read(reader2, context);
         JMSBinding binding2 = (JMSBinding)composite2.getComponents().get(0).getServices().get(0).getBindings().get(0);
         assertNotNull(binding2);
 
@@ -391,12 +390,12 @@ public class JMSBindingProcessorWriteTestCase extends TestCase {
     public void testDefault() throws Exception {
         XMLStreamReader reader =
             inputFactory.createXMLStreamReader(new StringReader(DEFAULT));
-        Composite composite = (Composite)staxProcessor.read(reader);
+        Composite composite = (Composite)staxProcessor.read(reader, context);
         JMSBinding binding = (JMSBinding)composite.getComponents().get(0).getServices().get(0).getBindings().get(0);
         assertNotNull(binding);
         
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        staxProcessor.write(composite, outputFactory.createXMLStreamWriter(bos));
+        staxProcessor.write(composite, outputFactory.createXMLStreamWriter(bos), context);
         
         System.out.println(bos.toString());
         assertEquals(bos.toString(),
@@ -419,17 +418,17 @@ public class JMSBindingProcessorWriteTestCase extends TestCase {
     public void testOperationPropertiesName() throws Exception {
         XMLStreamReader reader =
             inputFactory.createXMLStreamReader(new StringReader(JMSBindingProcessorTestCase.OP_PROP_NAME));
-        Composite composite = (Composite)staxProcessor.read(reader);
+        Composite composite = (Composite)staxProcessor.read(reader, context);
         JMSBinding binding = (JMSBinding)composite.getComponents().get(0).getServices().get(0).getBindings().get(0);
         assertNotNull(binding);
 
         // Write out JMSBinding model to stream.
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        staxProcessor.write(composite, outputFactory.createXMLStreamWriter(bos));
+        staxProcessor.write(composite, outputFactory.createXMLStreamWriter(bos), context);
 
         // Read written JMSBinding to a different JMSBinding model.
         XMLStreamReader reader2 = inputFactory.createXMLStreamReader(new StringReader(bos.toString()));
-        Composite composite2 = (Composite)staxProcessor.read(reader2);
+        Composite composite2 = (Composite)staxProcessor.read(reader2, context);
         JMSBinding binding2 = (JMSBinding)composite2.getComponents().get(0).getServices().get(0).getBindings().get(0);
         assertNotNull(binding2);
 

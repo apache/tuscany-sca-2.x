@@ -27,6 +27,7 @@ import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXAttributeProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 
@@ -42,11 +43,11 @@ public class TestAttributeProcessor extends BaseStAXArtifactProcessor implements
         return ATTRIBUTE;
     }
 
-    public String read(QName attributeName, XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+    public String read(QName attributeName, XMLStreamReader reader, ProcessorContext context) throws ContributionReadException, XMLStreamException {
         return reader.getAttributeValue(attributeName.getNamespaceURI(), attributeName.getLocalPart());
     }
 
-    public void write(String value, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
+    public void write(String value, XMLStreamWriter writer, ProcessorContext context) throws ContributionWriteException, XMLStreamException {
     	writer.setPrefix(ATTRIBUTE.getPrefix(), ATTRIBUTE.getNamespaceURI());
     	writer.writeAttribute(ATTRIBUTE.getLocalPart(), value);
     } 
@@ -55,7 +56,7 @@ public class TestAttributeProcessor extends BaseStAXArtifactProcessor implements
         return String.class;
     }
 
-    public void resolve(String arg0, ModelResolver arg1) throws ContributionResolveException {
+    public void resolve(String arg0, ModelResolver arg1, ProcessorContext context) throws ContributionResolveException {
     	
     }
 }

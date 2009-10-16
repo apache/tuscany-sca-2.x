@@ -28,6 +28,7 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.Import;
 import org.apache.tuscany.sca.contribution.namespace.NamespaceImport;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.monitor.Monitor;
@@ -43,12 +44,11 @@ public class CompositeModelResolver implements ModelResolver {
     private Map<QName, Composite> map = new HashMap<QName, Composite>();
     private Monitor monitor;
 
-    public CompositeModelResolver(Contribution contribution, FactoryExtensionPoint modelFactories, Monitor monitor) {
+    public CompositeModelResolver(Contribution contribution, FactoryExtensionPoint modelFactories) {
         this.contribution = contribution;
-        this.monitor = monitor;
     }
 
-    public void addModel(Object resolved) {
+    public void addModel(Object resolved, ProcessorContext context) {
         Composite composite = (Composite)resolved;
         Composite old = map.put(composite.getName(), composite);
         if (old != null) {
@@ -61,11 +61,11 @@ public class CompositeModelResolver implements ModelResolver {
         }
     }
 
-    public Object removeModel(Object resolved) {
+    public Object removeModel(Object resolved, ProcessorContext context) {
         return map.remove(((Composite)resolved).getName());
     }
 
-    public <T> T resolveModel(Class<T> modelClass, T unresolved) {
+    public <T> T resolveModel(Class<T> modelClass, T unresolved, ProcessorContext context) {
 
         // Lookup a definition for the given namespace
         QName qname = ((Composite)unresolved).getName();
@@ -81,7 +81,7 @@ public class CompositeModelResolver implements ModelResolver {
                 if (namespaceImport.getNamespace().equals(qname.getNamespaceURI())) {
 
                     // Delegate the resolution to the import resolver
-                    resolved = namespaceImport.getModelResolver().resolveModel(Composite.class, (Composite)unresolved);
+                    resolved = namespaceImport.getModelResolver().resolveModel(Composite.class, (Composite)unresolved, context);
                     if (!resolved.isUnresolved()) {
                         return modelClass.cast(resolved);
                     }

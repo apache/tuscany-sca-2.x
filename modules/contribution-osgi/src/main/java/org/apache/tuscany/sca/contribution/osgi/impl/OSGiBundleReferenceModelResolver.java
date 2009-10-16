@@ -25,9 +25,9 @@ import java.util.Map;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.Import;
 import org.apache.tuscany.sca.contribution.osgi.BundleReference;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.monitor.Monitor;
 import org.osgi.framework.Bundle;
 
 /**
@@ -41,32 +41,33 @@ public class OSGiBundleReferenceModelResolver implements ModelResolver {
 
     private OSGiBundleProcessor bundleProcessor;
 
-    public OSGiBundleReferenceModelResolver(Contribution contribution, FactoryExtensionPoint modelFactories, Monitor monitor) {
+    public OSGiBundleReferenceModelResolver(Contribution contribution, FactoryExtensionPoint modelFactories) {
         this.contribution = contribution;
         this.bundleProcessor = new OSGiBundleProcessor();
     }
 
-    public void addModel(Object resolved) {
+    public void addModel(Object resolved, ProcessorContext context) {
         BundleReference bundleRef = (BundleReference)resolved;
         refs.put(bundleRef, bundleRef);
     }
 
-    public Object removeModel(Object resolved) {
+    public Object removeModel(Object resolved, ProcessorContext context) {
         return refs.remove(resolved);
     }
 
     /**
      * Handle artifact resolution when the specific class reference is imported from another contribution
      * @param unresolved
+     * @param context 
      * @return
      */
-    private BundleReference resolveImportedModel(BundleReference unresolved) {
+    private BundleReference resolveImportedModel(BundleReference unresolved, ProcessorContext context) {
         BundleReference resolved = unresolved;
 
         if (this.contribution != null) {
             for (Import import_ : this.contribution.getImports()) {
 
-                resolved = import_.getModelResolver().resolveModel(BundleReference.class, unresolved);
+                resolved = import_.getModelResolver().resolveModel(BundleReference.class, unresolved, context);
                 if (resolved != unresolved)
                     break;
             }
@@ -75,7 +76,7 @@ public class OSGiBundleReferenceModelResolver implements ModelResolver {
         return resolved;
     }
 
-    public <T> T resolveModel(Class<T> modelClass, T unresolved) {
+    public <T> T resolveModel(Class<T> modelClass, T unresolved, ProcessorContext context) {
         Object resolved = refs.get(unresolved);
 
         if (resolved != null) {
@@ -108,7 +109,7 @@ public class OSGiBundleReferenceModelResolver implements ModelResolver {
             return modelClass.cast(bundleReference);
         } else {
             //delegate resolution of the class
-            resolved = this.resolveImportedModel((BundleReference)unresolved);
+            resolved = this.resolveImportedModel((BundleReference)unresolved, context);
             return modelClass.cast(resolved);
         }
 

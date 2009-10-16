@@ -20,7 +20,6 @@
 package org.apache.tuscany.sca.builder.impl;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,9 +35,9 @@ import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.assembly.builder.BuilderContext;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
-import org.apache.tuscany.sca.assembly.builder.DeployedCompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.Messages;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.definitions.Definitions;
@@ -49,7 +48,7 @@ import org.apache.tuscany.sca.monitor.Monitor;
  *
  * @version $Rev$ $Date$
  */
-public class StructuralURIBuilderImpl implements CompositeBuilder, DeployedCompositeBuilder {
+public class StructuralURIBuilderImpl implements CompositeBuilder {
 
     public StructuralURIBuilderImpl(ExtensionPointRegistry registry) {
     }
@@ -115,109 +114,6 @@ public class StructuralURIBuilderImpl implements CompositeBuilder, DeployedCompo
                     }
                 }
             }
-        }
-    }
-
-    /**
-     * Generic URI construction for bindings based on Assembly Specification section 1.7.2
-     *
-     * @param componentURIString the string version of the URI part that comes from the component name
-     * @param service the service in question
-     * @param binding the binding for which the URI is being constructed
-     * @param includeBindingName when set true the serviceBindingURI part should be used
-     * @param defaultBindings the list of default binding configurations
-     * @throws CompositeBuilderException
-     */
-    private void constructBindingURI(String componentURIString,
-                                     Service service,
-                                     Binding binding,
-                                     Map<QName, List<String>> defaultBindings,
-                                     Monitor monitor) throws CompositeBuilderException {
-
-        try {
-
-            boolean includeBindingName = !service.getName().equals(binding.getName());
-
-            // calculate the service binding URI
-            URI bindingURI;
-            if (binding.getURI() != null) {
-                bindingURI = new URI(binding.getURI());
-
-                // if the user has provided an absolute binding URI then use it
-                if (bindingURI.isAbsolute()) {
-                    return;
-                }
-            } else {
-                bindingURI = null;
-            }
-
-            String serviceName = service.getName();
-            // Get the service binding name
-            String bindingName;
-            if (binding.getName() != null) {
-                bindingName = binding.getName();
-            } else {
-                bindingName = serviceName;
-            }
-
-            // calculate the component URI
-            URI componentURI;
-            if (componentURIString != null) {
-                componentURI = new URI(addSlashToPath(componentURIString));
-            } else {
-                componentURI = null;
-            }
-
-            // if the user has provided an absolute component URI then use it
-            if (componentURI != null && componentURI.isAbsolute()) {
-                binding.setURI(constructBindingURI(null,
-                                                   componentURI,
-                                                   bindingURI,
-                                                   serviceName,
-                                                   includeBindingName,
-                                                   bindingName));
-                return;
-            }
-
-            // calculate the base URI
-            URI baseURI = null;
-            if (defaultBindings != null) {
-                List<String> uris = defaultBindings.get(binding.getType());
-                if (uris != null && uris.size() > 0) {
-                    baseURI = new URI(addSlashToPath(uris.get(0)));
-                }
-            }
-
-            binding.setURI(constructBindingURI(baseURI,
-                                               componentURI,
-                                               bindingURI,
-                                               serviceName,
-                                               includeBindingName,
-                                               bindingName));
-        } catch (URISyntaxException ex) {
-            Monitor.error(monitor,
-                          this,
-                          Messages.ASSEMBLY_VALIDATION,
-                          "URLSyntaxException",
-                          componentURIString,
-                          service.getName(),
-                          binding.getName());
-        }
-    }
-
-    /**
-     * Use to ensure that URI paths end in "/" as here we want to maintain the
-     * last path element of an base URI when other URI are resolved against it. This is
-     * not the default behaviour of URI resolution as defined in RFC 2369
-     *
-     * @param path the path string to which the "/" is to be added
-     * @return the resulting path with a "/" added if it not already there
-     */
-    private static String addSlashToPath(String path) {
-        if (path.endsWith("/") || path.endsWith("#")) {
-            return path;
-        } else {
-            return path + "/";
         }
     }
 
@@ -304,22 +200,14 @@ public class StructuralURIBuilderImpl implements CompositeBuilder, DeployedCompo
         return URI.create(baseURI.toString() + str).normalize();
     }
 
-    public Composite build(Composite composite, Definitions definitions, Monitor monitor)
+    public Composite build(Composite composite, BuilderContext context)
         throws CompositeBuilderException {
-        configureStructuralURIs(composite, null, definitions, null, monitor);
+        configureStructuralURIs(composite, null, context.getDefinitions(), context.getBindingBaseURIs(), context.getMonitor());
         return composite;
     }
 
     public String getID() {
         return "org.apache.tuscany.sca.assembly.builder.StructualURIBuilder";
-    }
-
-    public Composite build(Composite composite,
-                           Definitions definitions,
-                           Map<QName, List<String>> bindingBaseURIs,
-                           Monitor monitor) throws CompositeBuilderException {
-        configureStructuralURIs(composite, null, definitions, bindingBaseURIs, monitor);
-        return composite;
     }
 
     private void configureStructuralURIs(Composite composite,

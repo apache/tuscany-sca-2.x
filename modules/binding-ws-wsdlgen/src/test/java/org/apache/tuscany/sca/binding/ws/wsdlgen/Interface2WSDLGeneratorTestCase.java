@@ -62,7 +62,7 @@ public class Interface2WSDLGeneratorTestCase {
         DocumentBuilderFactory documentBuilderFactory = modelFactories.getFactory(DocumentBuilderFactory.class);
         WSDLDefinition wsdlDefinition = wFactory.createWSDLDefinition();
         XSDFactory factory = new DefaultXSDFactory();
-        Interface2WSDLGenerator generator = new Interface2WSDLGenerator(false, new XSDModelResolver(null, null, null), dataBindings, factory, documentBuilderFactory, null);
+        Interface2WSDLGenerator generator = new Interface2WSDLGenerator(false, new XSDModelResolver(null, null), dataBindings, factory, documentBuilderFactory, null);
         Definition definition = generator.generate(iface, wsdlDefinition);
 
         // print the generated WSDL file and inline schemas

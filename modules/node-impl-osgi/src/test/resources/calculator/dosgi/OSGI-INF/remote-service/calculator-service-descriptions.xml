@@ -23,7 +23,7 @@
     <service-description>
         <provide interface="calculator.dosgi.operations.AddService" />
         <property name="service.intents">sca:SOAP sca:HTTP</property>
-        <property name="osgi.remote.configuration.type">sca</property>
+        <property name="osgi.remote.configuration.type">org.osgi.sca</property>
         <property name="osgi.remote.configuration.sca.componentType">
             OSGI-INF/sca/bundle.componentType
              </property>
@@ -34,7 +34,7 @@
     <service-description>
         <provide interface="calculator.dosgi.operations.SubtractService" />
         <property name="service.intents">sca:SOAP sca:HTTP</property>
-        <property name="osgi.remote.configuration.type">sca</property>
+        <property name="osgi.remote.configuration.type">org.osgi.sca</property>
         <property name="osgi.remote.configuration.sca.componentType">
             OSGI-INF/sca/bundle.componentType
              </property>
@@ -45,7 +45,7 @@
     <service-description>
         <provide interface="calculator.dosgi.operations.MultiplyService" />
         <property name="service.intents">sca:SOAP sca:HTTP</property>
-        <property name="osgi.remote.configuration.type">sca</property>
+        <property name="osgi.remote.configuration.type">org.osgi.sca</property>
         <property name="osgi.remote.configuration.sca.componentType">
             OSGI-INF/sca/bundle.componentType
              </property>
@@ -56,7 +56,7 @@
     <service-description>
         <provide interface="calculator.dosgi.operations.DivideService" />
         <property name="service.intents">sca:SOAP sca:HTTP</property>
-        <property name="osgi.remote.configuration.type">sca</property>
+        <property name="osgi.remote.configuration.type">org.osgi.sca</property>
         <property name="osgi.remote.configuration.sca.componentType">
             OSGI-INF/sca/bundle.componentType
              </property>

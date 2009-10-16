@@ -69,8 +69,7 @@ public class DefaultStAXAttributeProcessorExtensionPoint extends
         if (monitorFactory != null) {
             this.monitor = monitorFactory.createMonitor();
         }
-        this.extensibleStAXAttributeProcessor =
-            new ExtensibleStAXAttributeProcessor(this, inputFactory, outputFactory, this.monitor);
+        this.extensibleStAXAttributeProcessor = new ExtensibleStAXAttributeProcessor(this, inputFactory, outputFactory);
     }
 
     /**
@@ -158,8 +157,7 @@ public class DefaultStAXAttributeProcessorExtensionPoint extends
             // Create a processor wrapper and register it
             StAXAttributeProcessor<?> processor =
                 new LazyStAXAttributeProcessor(artifactType, modelTypeName, factoryName, processorDeclaration,
-                                               extensionPoints, modelFactories, extensibleStAXAttributeProcessor,
-                                               monitor);
+                                               extensionPoints, modelFactories, extensibleStAXAttributeProcessor);
             addArtifactProcessor(processor);
         }
 
@@ -180,7 +178,6 @@ public class DefaultStAXAttributeProcessorExtensionPoint extends
         private StAXAttributeProcessor<?> processor;
         private Class<?> modelType;
         private StAXAttributeProcessor<Object> extensionProcessor;
-        private Monitor monitor;
 
         LazyStAXAttributeProcessor(QName artifactType,
                                    String modelTypeName,
@@ -188,8 +185,7 @@ public class DefaultStAXAttributeProcessorExtensionPoint extends
                                    ServiceDeclaration processorDeclaration,
                                    ExtensionPointRegistry extensionPoints,
                                    FactoryExtensionPoint modelFactories,
-                                   StAXAttributeProcessor<Object> extensionProcessor,
-                                   Monitor monitor) {
+                                   StAXAttributeProcessor<Object> extensionProcessor) {
 
             this.extensionPoints = extensionPoints;
             this.artifactType = artifactType;
@@ -197,24 +193,10 @@ public class DefaultStAXAttributeProcessorExtensionPoint extends
             this.factoryName = factoryName;
             this.processorDeclaration = processorDeclaration;
             this.extensionProcessor = extensionProcessor;
-            this.monitor = monitor;
         }
 
         public QName getArtifactType() {
             return artifactType;
-        }
-
-        private void error(String message, Object model, Exception ex) {
-            if (monitor != null) {
-                Problem problem =
-                    monitor.createProblem(this.getClass().getName(),
-                                          "contribution-validation-messages",
-                                          Severity.ERROR,
-                                          model,
-                                          message,
-                                          ex);
-                monitor.problem(problem);
-            }
         }
 
         @SuppressWarnings("unchecked")
@@ -228,27 +210,25 @@ public class DefaultStAXAttributeProcessorExtensionPoint extends
                         (Class<StAXAttributeProcessor>)processorDeclaration.loadClass();
                     try {
                         Constructor<StAXAttributeProcessor> constructor =
-                            processorClass.getConstructor(FactoryExtensionPoint.class, Monitor.class);
-                        processor = constructor.newInstance(modelFactories, monitor);
+                            processorClass.getConstructor(FactoryExtensionPoint.class);
+                        processor = constructor.newInstance(modelFactories);
                     } catch (NoSuchMethodException e) {
                         try {
                             Constructor<StAXAttributeProcessor> constructor =
-                                processorClass.getConstructor(ExtensionPointRegistry.class, Monitor.class);
-                            processor = constructor.newInstance(extensionPoints, monitor);
+                                processorClass.getConstructor(ExtensionPointRegistry.class);
+                            processor = constructor.newInstance(extensionPoints);
                         } catch (NoSuchMethodException e1) {
                             try {
                                 Constructor<StAXAttributeProcessor> constructor =
                                     processorClass.getConstructor(FactoryExtensionPoint.class,
-                                                                  StAXArtifactProcessor.class,
-                                                                  Monitor.class);
-                                processor = constructor.newInstance(modelFactories, extensionProcessor, monitor);
+                                                                  StAXArtifactProcessor.class);
+                                processor = constructor.newInstance(modelFactories, extensionProcessor);
                             } catch (NoSuchMethodException e2) {
                                 try {
                                     Constructor<StAXAttributeProcessor> constructor =
                                         processorClass.getConstructor(ExtensionPointRegistry.class,
-                                                                      StAXArtifactProcessor.class,
-                                                                      Monitor.class);
-                                    processor = constructor.newInstance(extensionPoints, extensionProcessor, monitor);
+                                                                      StAXArtifactProcessor.class);
+                                    processor = constructor.newInstance(extensionPoints, extensionProcessor);
                                 } catch (NoSuchMethodException e3) {
                                     try {
                                         Constructor<StAXAttributeProcessor> constructor =
@@ -260,18 +240,11 @@ public class DefaultStAXAttributeProcessorExtensionPoint extends
                                                 processorClass.getConstructor(ExtensionPointRegistry.class);
                                             processor = constructor.newInstance(extensionPoints);
                                         } catch (NoSuchMethodException e4a) {
-                                            try {
-                                                Constructor<StAXAttributeProcessor> constructor =
-                                                    processorClass.getConstructor(FactoryExtensionPoint.class,
-                                                                                  StAXArtifactProcessor.class);
-                                                processor = constructor.newInstance(modelFactories, extensionProcessor);
-                                            } catch (NoSuchMethodException e5) {
-                                                Constructor<StAXAttributeProcessor> constructor =
-                                                    processorClass.getConstructor(ExtensionPointRegistry.class,
-                                                                                  StAXArtifactProcessor.class);
-                                                processor =
-                                                    constructor.newInstance(extensionPoints, extensionProcessor);
-                                            }
+
+                                            Constructor<StAXAttributeProcessor> constructor =
+                                                processorClass.getConstructor();
+                                            processor = constructor.newInstance();
+
                                         }
                                     }
                                 }
@@ -280,7 +253,6 @@ public class DefaultStAXAttributeProcessorExtensionPoint extends
                     }
                 } catch (Exception e) {
                     IllegalStateException ie = new IllegalStateException(e);
-                    error("IllegalStateException", processor, ie);
                     throw ie;
                 }
 
@@ -288,15 +260,15 @@ public class DefaultStAXAttributeProcessorExtensionPoint extends
             return processor;
         }
 
-        public Object read(QName attributeName, XMLStreamReader inputSource) throws ContributionReadException,
-            XMLStreamException {
-            return getProcessor().read(attributeName, inputSource);
+        public Object read(QName attributeName, XMLStreamReader inputSource, ProcessorContext context)
+            throws ContributionReadException, XMLStreamException {
+            return getProcessor().read(attributeName, inputSource, context);
         }
 
         @SuppressWarnings("unchecked")
-        public void write(Object model, XMLStreamWriter outputSource) throws ContributionWriteException,
-            XMLStreamException {
-            getProcessor().write(model, outputSource);
+        public void write(Object model, XMLStreamWriter outputSource, ProcessorContext context)
+            throws ContributionWriteException, XMLStreamException {
+            getProcessor().write(model, outputSource, context);
         }
 
         public Class<?> getModelType() {
@@ -305,7 +277,6 @@ public class DefaultStAXAttributeProcessorExtensionPoint extends
                     modelType = processorDeclaration.loadClass(modelTypeName);
                 } catch (Exception e) {
                     IllegalStateException ie = new IllegalStateException(e);
-                    error("IllegalStateException", processorDeclaration, ie);
                     throw ie;
                 }
             }
@@ -313,8 +284,9 @@ public class DefaultStAXAttributeProcessorExtensionPoint extends
         }
 
         @SuppressWarnings("unchecked")
-        public void resolve(Object model, ModelResolver resolver) throws ContributionResolveException {
-            getProcessor().resolve(model, resolver);
+        public void resolve(Object model, ModelResolver resolver, ProcessorContext context)
+            throws ContributionResolveException {
+            getProcessor().resolve(model, resolver, context);
         }
 
     }

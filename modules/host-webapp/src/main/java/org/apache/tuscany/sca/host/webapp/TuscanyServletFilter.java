@@ -21,6 +21,8 @@ package org.apache.tuscany.sca.host.webapp;
 
 import java.io.IOException;
 import java.util.Enumeration;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterConfig;
@@ -33,7 +35,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.tuscany.sca.host.http.ServletHost;
 
-
 /**
  * A Servlet filter that forwards service requests to the Servlets registered with
  * the Tuscany ServletHost.
@@ -42,18 +43,29 @@ import org.apache.tuscany.sca.host.http.ServletHost;
  */
 public class TuscanyServletFilter implements Filter {
     private static final long serialVersionUID = 1L;
-    
+    private Logger logger = Logger.getLogger(TuscanyServletFilter.class.getName());
+
     private transient ServletContext context;
     private transient ServletHost servletHost;
 
+    public TuscanyServletFilter() {
+        super();
+    }
+
     public void init(final FilterConfig config) throws ServletException {
-        context = config.getServletContext();
-        for (Enumeration<String> e = config.getInitParameterNames(); e.hasMoreElements();) {
-            String name = e.nextElement();
-            String value = config.getInitParameter(name);
-            context.setAttribute(name, value);
+        try {
+            context = config.getServletContext();
+            for (Enumeration<String> e = config.getInitParameterNames(); e.hasMoreElements();) {
+                String name = e.nextElement();
+                String value = config.getInitParameter(name);
+                context.setAttribute(name, value);
+            }
+            servletHost = ServletHostHelper.init(context);
+        } catch (Throwable e) {
+            logger.log(Level.SEVERE, e.getMessage(), e);
+            context.log(e.getMessage(), e);
+            throw new ServletException(e);
         }
-        servletHost = ServletHostHelper.init(context);
     }
 
     public void destroy() {
@@ -63,29 +75,34 @@ public class TuscanyServletFilter implements Filter {
 
     public void doFilter(ServletRequest request, ServletResponse response, javax.servlet.FilterChain chain)
         throws IOException, ServletException {
+        try {
+            // Get the Servlet path
+            HttpServletRequest httpRequest = (HttpServletRequest)request;
+            String path = httpRequest.getPathInfo();
+            if (path == null) {
+                path = httpRequest.getServletPath();
+            }
+            if (path == null) {
+                path = "/";
+            }
 
-        // Get the Servlet path
-        HttpServletRequest httpRequest = (HttpServletRequest)request;
-        String path = httpRequest.getPathInfo();
-        if (path == null) {
-            path = httpRequest.getServletPath();
-        }
-        if (path == null) {
-            path = "/";
-        }
+            // Get a request dispatcher for the Servlet mapped to that path
+            RequestDispatcher dispatcher = servletHost.getRequestDispatcher(path);
+            if (dispatcher != null) {
 
-        // Get a request dispatcher for the Servlet mapped to that path
-        RequestDispatcher dispatcher = servletHost.getRequestDispatcher(path);
-        if (dispatcher != null) {
+                // Let the dispatcher forward the request to the Servlet 
+                dispatcher.forward(request, response);
 
-            // Let the dispatcher forward the request to the Servlet 
-            dispatcher.forward(request, response);
+            } else {
 
-        } else {
+                // Proceed down the filter chain
+                chain.doFilter(request, response);
 
-            // Proceed down the filter chain
-            chain.doFilter(request, response);
-
+            }
+        } catch (Throwable e) {
+            logger.log(Level.SEVERE, e.getMessage(), e);
+            context.log(e.getMessage(), e);
+            throw new ServletException(e);
         }
     }
 

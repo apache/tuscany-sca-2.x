@@ -31,10 +31,10 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  *
@@ -50,11 +50,11 @@ public class JDKLoggingPolicyProcessor implements StAXArtifactProcessor<JDKLoggi
         return JDK_LOGGING_POLICY_QNAME;
     }
     
-    public JDKLoggingPolicyProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
+    public JDKLoggingPolicyProcessor(FactoryExtensionPoint modelFactories) {
     }
 
     
-    public JDKLoggingPolicy read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+    public JDKLoggingPolicy read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException, XMLStreamException {
         JDKLoggingPolicy policy = new JDKLoggingPolicy();
         int event = reader.getEventType();
         QName name = null;
@@ -94,7 +94,7 @@ public class JDKLoggingPolicyProcessor implements StAXArtifactProcessor<JDKLoggi
         return policy;
     }
 
-    public void write(JDKLoggingPolicy policy, XMLStreamWriter writer) throws ContributionWriteException,
+    public void write(JDKLoggingPolicy policy, XMLStreamWriter writer, ProcessorContext context) throws ContributionWriteException,
                                                         XMLStreamException {
         String prefix = "tuscany";
         writer.writeStartElement(prefix, 
@@ -128,7 +128,7 @@ public class JDKLoggingPolicyProcessor implements StAXArtifactProcessor<JDKLoggi
         return JDKLoggingPolicy.class;
     }
 
-    public void resolve(JDKLoggingPolicy arg0, ModelResolver arg1) throws ContributionResolveException {
+    public void resolve(JDKLoggingPolicy arg0, ModelResolver arg1, ProcessorContext context) throws ContributionResolveException {
 
     }
     

@@ -38,6 +38,7 @@ import org.apache.tuscany.sca.contribution.processor.DefaultValidatingXMLInputFa
 import org.apache.tuscany.sca.contribution.processor.DefaultValidationSchemaExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
@@ -66,18 +67,20 @@ public class ReadDocumentTestCase {
     private static XMLInputFactory inputFactory;
     private static StAXArtifactProcessor<Object> staxProcessor;
     private static ValidatorHandler handler;
+    private static ProcessorContext context;
 
     @BeforeClass
     public static void setUp() throws Exception {
         DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
+        context = new ProcessorContext(extensionPoints);
         URLArtifactProcessorExtensionPoint documentProcessors =
             extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
-        documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors, null);
+        documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors);
 
         StAXArtifactProcessorExtensionPoint staxProcessors =
             extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         inputFactory = XMLInputFactory.newInstance();
-        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null, null);
+        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null);
 
         resolver = new DefaultModelResolver();
         handler = getValidationHandler();
@@ -132,11 +135,11 @@ public class ReadDocumentTestCase {
         factories.addFactory(validatingInputFactory);
 
         CompositeDocumentProcessor compositeDocumentProcessor =
-            new CompositeDocumentProcessor(factories, staxProcessor, null);
+            new CompositeDocumentProcessor(factories, staxProcessor);
 
         URL url = getClass().getResource("Calculator.composite");
         URI uri = URI.create("Calculator.composite");
-        Composite composite = (Composite)compositeDocumentProcessor.read(null, uri, url);
+        Composite composite = (Composite)compositeDocumentProcessor.read(null, uri, url, context);
         assertNotNull(composite);
     }
 
@@ -159,11 +162,11 @@ public class ReadDocumentTestCase {
         DefaultFactoryExtensionPoint factories = new DefaultFactoryExtensionPoint(new DefaultExtensionPointRegistry());
         factories.addFactory(validatingInputFactory);
         CompositeDocumentProcessor compositeDocumentProcessor =
-            new CompositeDocumentProcessor(factories, staxProcessor, null);
+            new CompositeDocumentProcessor(factories, staxProcessor);
 
         URL url = getClass().getResource("RMIBindingTest.composite");
         URI uri = URI.create("RMIBindingTest.composite");
-        Composite composite = (Composite)compositeDocumentProcessor.read(null, uri, url);
+        Composite composite = (Composite)compositeDocumentProcessor.read(null, uri, url, context);
         assertNotNull(composite);
     }
 
@@ -172,16 +175,16 @@ public class ReadDocumentTestCase {
 
         URL url = getClass().getResource("CalculatorComponent.constrainingType");
         URI uri = URI.create("CalculatorComponent.constrainingType");
-        ConstrainingType constrainingType = (ConstrainingType)documentProcessor.read(null, uri, url);
+        ConstrainingType constrainingType = (ConstrainingType)documentProcessor.read(null, uri, url, context);
         assertNotNull(constrainingType);
-        resolver.addModel(constrainingType);
+        resolver.addModel(constrainingType, context);
 
         url = getClass().getResource("TestAllCalculator.composite");
         uri = URI.create("TestAllCalculator.composite");
-        Composite composite = (Composite)documentProcessor.read(null, uri, url);
+        Composite composite = (Composite)documentProcessor.read(null, uri, url, context);
         assertNotNull(composite);
 
-        documentProcessor.resolve(composite, resolver);
+        documentProcessor.resolve(composite, resolver, context);
 
         assertEquals(composite.getConstrainingType(), constrainingType);
         assertEquals(composite.getComponents().get(0).getConstrainingType(), constrainingType);
@@ -191,15 +194,15 @@ public class ReadDocumentTestCase {
     public void testResolveComposite() throws Exception {
         URL url = getClass().getResource("Calculator.composite");
         URI uri = URI.create("Calculator.composite");
-        Composite nestedComposite = (Composite)documentProcessor.read(null, uri, url);
+        Composite nestedComposite = (Composite)documentProcessor.read(null, uri, url, context);
         assertNotNull(nestedComposite);
-        resolver.addModel(nestedComposite);
+        resolver.addModel(nestedComposite, context);
 
         url = getClass().getResource("TestAllCalculator.composite");
         uri = URI.create("TestAllCalculator.composite");
-        Composite composite = (Composite)documentProcessor.read(null, uri, url);
+        Composite composite = (Composite)documentProcessor.read(null, uri, url, context);
 
-        documentProcessor.resolve(composite, resolver);
+        documentProcessor.resolve(composite, resolver, context);
 
         assertEquals(composite.getComponents().get(2).getImplementation(), nestedComposite);
     }

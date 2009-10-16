@@ -32,13 +32,13 @@ import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.sca.monitor.Monitor;
 
 /*
 <scr:component name="CalculatorComponent" 
@@ -66,15 +66,14 @@ public class OSGiComponentProcessor implements StAXArtifactProcessor<ComponentTy
 
     private AssemblyFactory factory;
     private JavaInterfaceFactory javaInterfaceFactory;
-    private Monitor monitor;
+    
 
-    public OSGiComponentProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
-        this.monitor = monitor;
+    public OSGiComponentProcessor(FactoryExtensionPoint modelFactories) {
         this.factory = modelFactories.getFactory(AssemblyFactory.class);
         this.javaInterfaceFactory = modelFactories.getFactory(JavaInterfaceFactory.class);
     }
 
-    public ComponentType read(XMLStreamReader reader) throws XMLStreamException {
+    public ComponentType read(XMLStreamReader reader, ProcessorContext context) throws XMLStreamException {
         int event = reader.getEventType();
         ComponentType componentType = factory.createComponentType();
         while (true) {
@@ -160,7 +159,7 @@ public class OSGiComponentProcessor implements StAXArtifactProcessor<ComponentTy
         return COMPONENT_QNAME;
     }
 
-    public void write(ComponentType model, XMLStreamWriter writer) throws ContributionWriteException,
+    public void write(ComponentType model, XMLStreamWriter writer, ProcessorContext context) throws ContributionWriteException,
         XMLStreamException {
         // TODO: To be implemented
     }
@@ -169,7 +168,7 @@ public class OSGiComponentProcessor implements StAXArtifactProcessor<ComponentTy
         return ComponentType.class;
     }
 
-    public void resolve(ComponentType model, ModelResolver resolver) throws ContributionResolveException {
+    public void resolve(ComponentType model, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
         // TODO: To be implemented
     }
 }

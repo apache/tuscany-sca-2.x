@@ -31,10 +31,10 @@ import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  *
@@ -46,11 +46,11 @@ public class JMSTokenAuthenticationPolicyProcessor extends BaseStAXArtifactProce
         return JMSTokenAuthenticationPolicy.JMS_TOKEN_AUTHENTICATION_POLICY_QNAME;
     }
     
-    public JMSTokenAuthenticationPolicyProcessor(ExtensionPointRegistry modelFactories, Monitor monitor) {
+    public JMSTokenAuthenticationPolicyProcessor(ExtensionPointRegistry registry) {
     }
 
     
-    public JMSTokenAuthenticationPolicy read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+    public JMSTokenAuthenticationPolicy read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException, XMLStreamException {
         JMSTokenAuthenticationPolicy policy = new JMSTokenAuthenticationPolicy();
         int event = reader.getEventType();
         QName name = null;
@@ -82,7 +82,7 @@ public class JMSTokenAuthenticationPolicyProcessor extends BaseStAXArtifactProce
         return policy;
     }
 
-    public void write(JMSTokenAuthenticationPolicy policy, XMLStreamWriter writer) 
+    public void write(JMSTokenAuthenticationPolicy policy, XMLStreamWriter writer, ProcessorContext context) 
         throws ContributionWriteException, XMLStreamException {
         String prefix = "tuscany";
         writer.writeStartElement(prefix, 
@@ -104,7 +104,7 @@ public class JMSTokenAuthenticationPolicyProcessor extends BaseStAXArtifactProce
         return JMSTokenAuthenticationPolicy.class;
     }
 
-    public void resolve(JMSTokenAuthenticationPolicy arg0, ModelResolver arg1) throws ContributionResolveException {
+    public void resolve(JMSTokenAuthenticationPolicy arg0, ModelResolver arg1, ProcessorContext context) throws ContributionResolveException {
 
     }
     

@@ -31,6 +31,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.policy.authorization.AuthorizationPolicy;
 import org.apache.tuscany.sca.policy.authorization.AuthorizationPolicyProcessor;
@@ -59,12 +60,12 @@ public class PolicyProcessorTestCase {
     public void testRead() throws Exception {
         List<String> results = new ArrayList<String>();
         Map<QName, StAXArtifactProcessor> processors = new HashMap<QName, StAXArtifactProcessor>();
-        processors.put(AuthorizationPolicy.NAME, new AuthorizationPolicyProcessor(null,null));
-        processors.put(SecurityIdentityPolicy.NAME, new SecurityIdentityPolicyProcessor(null,null));
-        processors.put(new QName(SCA11_NS, "allow"), new AuthorizationPolicyProcessor(null,null));
-        processors.put(new QName(SCA11_NS, "permitAll"), new AuthorizationPolicyProcessor(null,null));
-        processors.put(new QName(SCA11_NS, "denyAll"), new AuthorizationPolicyProcessor(null,null));
-        processors.put(new QName(SCA11_NS, "runAs"), new SecurityIdentityPolicyProcessor(null,null));
+        processors.put(AuthorizationPolicy.NAME, new AuthorizationPolicyProcessor(null));
+        processors.put(SecurityIdentityPolicy.NAME, new SecurityIdentityPolicyProcessor(null));
+        processors.put(new QName(SCA11_NS, "allow"), new AuthorizationPolicyProcessor(null));
+        processors.put(new QName(SCA11_NS, "permitAll"), new AuthorizationPolicyProcessor(null));
+        processors.put(new QName(SCA11_NS, "denyAll"), new AuthorizationPolicyProcessor(null));
+        processors.put(new QName(SCA11_NS, "runAs"), new SecurityIdentityPolicyProcessor(null));
         InputStream is = getClass().getResourceAsStream("mock_policy_definitions.xml");
         XMLInputFactory factory = XMLInputFactory.newInstance();
         XMLStreamReader reader = factory.createXMLStreamReader(is);
@@ -73,7 +74,7 @@ public class PolicyProcessorTestCase {
             if (event == XMLStreamConstants.START_ELEMENT) {
                 if ("policySet".equals(reader.getName().getLocalPart())) {
                     reader.nextTag();
-                    results.add(processors.get(reader.getName()).read(reader).toString());
+                    results.add(processors.get(reader.getName()).read(reader, new ProcessorContext()).toString());
                 }
             }
             if (reader.hasNext()) {

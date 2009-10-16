@@ -40,6 +40,7 @@ import org.apache.tuscany.sca.binding.jms.policy.authentication.token.JMSTokenAu
 import org.apache.tuscany.sca.binding.jms.policy.authentication.token.JMSTokenAuthenticationPolicyProcessor;
 import org.apache.tuscany.sca.binding.jms.policy.header.JMSHeaderPolicy;
 import org.apache.tuscany.sca.binding.jms.policy.header.JMSHeaderPolicyProcessor;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -57,27 +58,27 @@ public class PolicyProcessorTestCase {
     public void testRead() throws Exception {
         List<String> results = new ArrayList<String>();
         Map<QName, StAXArtifactProcessor> processors = new HashMap<QName, StAXArtifactProcessor>();
-        processors.put(JMSHeaderPolicy.JMS_HEADER_POLICY_QNAME, new JMSHeaderPolicyProcessor(null, null));
-        processors.put(JMSTokenAuthenticationPolicy.JMS_TOKEN_AUTHENTICATION_POLICY_QNAME, new JMSTokenAuthenticationPolicyProcessor(null, null));
+        processors.put(JMSHeaderPolicy.JMS_HEADER_POLICY_QNAME, new JMSHeaderPolicyProcessor(null));
+        processors.put(JMSTokenAuthenticationPolicy.JMS_TOKEN_AUTHENTICATION_POLICY_QNAME, new JMSTokenAuthenticationPolicyProcessor(null));
         
         InputStream is = getClass().getResourceAsStream("mock_policy_definitions.xml");
         XMLInputFactory inputFactory = XMLInputFactory.newInstance();
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
         
         XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
-        
+        ProcessorContext context =new ProcessorContext();
         while (true) {
             int event = reader.getEventType();
             if (event == XMLStreamConstants.START_ELEMENT) {
                 if ("policySet".equals(reader.getName().getLocalPart())) {
                     reader.nextTag();
                     StAXArtifactProcessor processor = processors.get(reader.getName());
-                    Object xxx = processor.read(reader);
+                    Object xxx = processor.read(reader, context);
 //                    Policy policy = (Policy)processor.read(reader);
 
                     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
                     XMLStreamWriter writer = outputFactory.createXMLStreamWriter(outputStream);
-                    processor.write(xxx, writer);
+                    processor.write(xxx, writer, context);
 //                    processor.write(policy, writer);
                     writer.flush();
                     results.add(outputStream.toString());

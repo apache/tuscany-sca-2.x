@@ -26,10 +26,10 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
-import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.implementation.osgi.ServiceDescription;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -71,26 +71,26 @@ public class ServiceDescriptionsTestCase {
     private static ServiceDescriptionsProcessor processor;
     private static XMLStreamReader reader;
 
-    /**
-     * @throws java.lang.Exception
-     */
+    private static ProcessorContext context;
+
     @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
-        ExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
+    public static void setUp() throws Exception {
+        DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
+        context = new ProcessorContext(extensionPoints);
 
         XMLInputFactory factory = XMLInputFactory.newInstance();
         StAXArtifactProcessorExtensionPoint staxProcessors =
             extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        StAXArtifactProcessor staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, factory, null, null);
+        StAXArtifactProcessor staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, factory, null);
 
-        processor = new ServiceDescriptionsProcessor(extensionPoints, staxProcessor, null);
+        processor = new ServiceDescriptionsProcessor(extensionPoints, staxProcessor);
 
         reader = factory.createXMLStreamReader(new StringReader(xml));
     }
 
     @Test
     public void testLoad() throws Exception {
-        List<ServiceDescription> descriptions = processor.read(reader);
+        List<ServiceDescription> descriptions = processor.read(reader, context);
         Assert.assertEquals(2, descriptions.size());
         System.out.println(descriptions);
     }

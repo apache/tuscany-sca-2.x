@@ -27,10 +27,10 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.runtime.ReferenceParameters;
 
 /**
@@ -47,7 +47,7 @@ public class ReferenceParameterProcessor implements StAXArtifactProcessor<Refere
      * 
      * @param modelFactories
      */
-    public ReferenceParameterProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
+    public ReferenceParameterProcessor(FactoryExtensionPoint modelFactories) {
     }
 
     /**
@@ -58,18 +58,18 @@ public class ReferenceParameterProcessor implements StAXArtifactProcessor<Refere
     }
 
     /**
-     * @see org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor#read(javax.xml.stream.XMLStreamReader)
+     * @see org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor#read(javax.xml.stream.XMLStreamReader, ProcessorContext)
      */
-    public ReferenceParameters read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+    public ReferenceParameters read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException, XMLStreamException {
         ReferenceParameters parameters = new ReferenceParametersImpl();
         parameters.setCallbackID(reader.getAttributeValue(null, "callbackID"));
         return parameters;
     }
 
     /**
-     * @see org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor#write(java.lang.Object, javax.xml.stream.XMLStreamWriter)
+     * @see org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor#write(java.lang.Object, javax.xml.stream.XMLStreamWriter, ProcessorContext)
      */
-    public void write(ReferenceParameters model, XMLStreamWriter writer) throws ContributionWriteException,
+    public void write(ReferenceParameters model, XMLStreamWriter writer, ProcessorContext context) throws ContributionWriteException,
         XMLStreamException {
         writer.writeStartElement(REFERENCE_PARAMETERS.getPrefix(),
                                  REFERENCE_PARAMETERS.getLocalPart(),
@@ -90,9 +90,9 @@ public class ReferenceParameterProcessor implements StAXArtifactProcessor<Refere
     }
 
     /**
-     * @see org.apache.tuscany.sca.contribution.processor.ArtifactProcessor#resolve(java.lang.Object, org.apache.tuscany.sca.contribution.resolver.ModelResolver)
+     * @see org.apache.tuscany.sca.contribution.processor.ArtifactProcessor#resolve(java.lang.Object, org.apache.tuscany.sca.contribution.resolver.ModelResolver, ProcessorContext)
      */
-    public void resolve(ReferenceParameters model, ModelResolver resolver) throws ContributionResolveException {
+    public void resolve(ReferenceParameters model, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
     }
 
 }

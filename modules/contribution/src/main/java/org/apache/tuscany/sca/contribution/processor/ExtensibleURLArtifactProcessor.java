@@ -37,16 +37,14 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
 public class ExtensibleURLArtifactProcessor implements URLArtifactProcessor<Object> {
 
     private URLArtifactProcessorExtensionPoint processors;
-    private Monitor monitor;
 
     /**
      * Constructs a new ExtensibleURLArtifactProcessor.
      * 
      * @param processors
      */
-    public ExtensibleURLArtifactProcessor(URLArtifactProcessorExtensionPoint processors, Monitor monitor) {
+    public ExtensibleURLArtifactProcessor(URLArtifactProcessorExtensionPoint processors) {
         this.processors = processors;
-        this.monitor = monitor;
     }
 
     /**
@@ -56,7 +54,7 @@ public class ExtensibleURLArtifactProcessor implements URLArtifactProcessor<Obje
      * @param message
      * @param model
      */
-    private void error(String message, Object model, Object... messageParameters) {
+    private void error(Monitor monitor, String message, Object model, Object... messageParameters) {
         if (monitor != null) {
             Problem problem =
                 monitor.createProblem(this.getClass().getName(),
@@ -70,7 +68,7 @@ public class ExtensibleURLArtifactProcessor implements URLArtifactProcessor<Obje
     }
 
     @SuppressWarnings("unchecked")
-    public Object read(URL contributionURL, URI sourceURI, URL sourceURL) throws ContributionReadException {
+    public Object read(URL contributionURL, URI sourceURI, URL sourceURL, ProcessorContext context) throws ContributionReadException {
         URLArtifactProcessor<Object> processor = null;
         if (sourceURI != null) {
             //try to retrieve a processor for the specific URI
@@ -108,51 +106,40 @@ public class ExtensibleURLArtifactProcessor implements URLArtifactProcessor<Obje
         if (processor == null) {
             return null;
         }
-        return processor.read(contributionURL, sourceURI, sourceURL);
+        return processor.read(contributionURL, sourceURI, sourceURL, context);
     }
 
     @SuppressWarnings("unchecked")
-    public void resolve(Object model, ModelResolver resolver) throws ContributionResolveException {
+    public void resolve(Object model, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
 
         // Delegate to the processor associated with the model type
         if (model != null) {
             URLArtifactProcessor processor = processors.getProcessor(model.getClass());
             if (processor != null) {
-                processor.resolve(model, resolver);
+                processor.resolve(model, resolver, context);
             }
         }
     }
 
-    public <M> M read(URL contributionURL, URI artifactURI, URL artifactUrl, Class<M> type)
+    public <M> M read(URL contributionURL, URI artifactURI, URL artifactUrl, ProcessorContext context, Class<M> type)
         throws ContributionReadException {
-        Object mo = read(contributionURL, artifactURI, artifactUrl);
+        Object mo = read(contributionURL, artifactURI, artifactUrl, context);
         if (type.isInstance(mo)) {
             return type.cast(mo);
         } else {
             UnrecognizedElementException e = new UnrecognizedElementException(null);
             e.setResourceURI(artifactURI.toString());
-            error("UnrecognizedElementException", processors, artifactURI.toString());
+            error(context.getMonitor(), "UnrecognizedElementException", processors, artifactURI.toString());
             throw e;
         }
     }
 
     public String getArtifactType() {
-        return null;
+        return "";
     }
 
     public Class<Object> getModelType() {
-        return null;
+        return Object.class;
     }
 
-    /**
-     * Returns the file name from a URL.
-     * @param url
-     * @return
-     */
-    private static String getFileName(URL url) {
-        String fileName = url.getPath();
-        int pos = fileName.lastIndexOf("/");
-
-        return fileName.substring(pos + 1);
-    }
 }

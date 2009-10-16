@@ -25,12 +25,11 @@ import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.builder.BindingBuilder;
+import org.apache.tuscany.sca.assembly.builder.BuilderContext;
 import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.definitions.Definitions;
-import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  * A composite builder that performs any additional building steps that
@@ -49,19 +48,19 @@ public class ComponentServiceBindingBuilderImpl implements CompositeBuilder {
         return "org.apache.tuscany.sca.assembly.builder.ComponentServiceBindingBuilder";
     }
 
-    public Composite build(Composite composite, Definitions definitions, Monitor monitor)
+    public Composite build(Composite composite, BuilderContext context)
         throws CompositeBuilderException {
-        buildServiceBindings(composite, monitor);
+        buildServiceBindings(composite, context);
         return composite;
     }
 
-    private void buildServiceBindings(Composite composite, Monitor monitor) {
+    private void buildServiceBindings(Composite composite, BuilderContext context) {
 
         // build bindings recursively
         for (Component component : composite.getComponents()) {
             Implementation implementation = component.getImplementation();
             if (implementation instanceof Composite) {
-                buildServiceBindings((Composite)implementation, monitor);
+                buildServiceBindings((Composite)implementation, context);
             }
         }
 
@@ -71,7 +70,7 @@ public class ComponentServiceBindingBuilderImpl implements CompositeBuilder {
                 for (Binding binding : componentService.getBindings()) {
                     BindingBuilder builder = builders.getBindingBuilder(binding.getType());
                     if (builder != null) {
-                        builder.build(component, componentService, binding, monitor);
+                        builder.build(component, componentService, binding, context);
                     }
                 }
             }

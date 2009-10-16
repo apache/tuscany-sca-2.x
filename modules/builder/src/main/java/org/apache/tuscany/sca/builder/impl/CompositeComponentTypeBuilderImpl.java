@@ -39,6 +39,7 @@ import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.assembly.builder.BuilderContext;
 import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
 import org.apache.tuscany.sca.assembly.builder.Messages;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
@@ -49,7 +50,6 @@ import org.apache.tuscany.sca.interfacedef.IncompatibleInterfaceContractExceptio
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
-import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.policy.ExtensionType;
 import org.apache.tuscany.sca.policy.PolicySubject;
 
@@ -67,7 +67,6 @@ public class CompositeComponentTypeBuilderImpl {
     protected static final QName BINDING_SCA_QNAME = new QName(SCA11_NS, BINDING_SCA);
 
     private ComponentBuilderImpl componentBuilder;
-    private Monitor monitor;
     private AssemblyFactory assemblyFactory;
     private SCABindingFactory scaBindingFactory;
     private InterfaceContractMapper interfaceContractMapper;
@@ -75,8 +74,6 @@ public class CompositeComponentTypeBuilderImpl {
 
     public CompositeComponentTypeBuilderImpl(ExtensionPointRegistry registry) {
         UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
-        MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
-        monitor = monitorFactory.createMonitor();
 
         FactoryExtensionPoint modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
         assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
@@ -96,8 +93,9 @@ public class CompositeComponentTypeBuilderImpl {
      * @param implementation
      * @return component type
      */
-    public void createComponentType(Component outerComponent, Composite composite) {
+    public void createComponentType(Component outerComponent, Composite composite, BuilderContext context) {
 
+        Monitor monitor = context.getMonitor();
         monitor.pushContext("Composite: " + composite.getName().toString());
         
         try {
@@ -125,7 +123,7 @@ public class CompositeComponentTypeBuilderImpl {
                 }
     
                 // configure the component from its component type
-                componentBuilder.configureComponentFromComponentType(outerComponent, composite, component);
+                componentBuilder.configureComponentFromComponentType(outerComponent, composite, component, context);
             }
     
             // create the composite component type based on the promoted artifacts
@@ -139,10 +137,10 @@ public class CompositeComponentTypeBuilderImpl {
             indexComponentsServicesAndReferences(composite, components, componentServices, componentReferences);
     
             // services
-            calculateServices(composite, components, componentServices);
+            calculateServices(composite, components, componentServices, monitor);
     
             // references
-            calculateReferences(composite, components, componentReferences);
+            calculateReferences(composite, components, componentReferences, monitor);
     
             // properties
             // Properties on the composite component are unaffected by properties 
@@ -216,11 +214,12 @@ public class CompositeComponentTypeBuilderImpl {
      */
     private void calculateServices(ComponentType componentType,
                                    Map<String, Component> components,
-                                   Map<String, ComponentService> componentServices) {
+                                   Map<String, ComponentService> componentServices,
+                                   Monitor monitor) {
 
         // Connect this component type's services to the 
         // services from child components which it promotes
-        connectPromotedServices(componentType, components, componentServices);
+        connectPromotedServices(componentType, components, componentServices, monitor);
 
         // look at each component type service in turn and 
         // calculate its configuration based on OASIS rules
@@ -229,7 +228,7 @@ public class CompositeComponentTypeBuilderImpl {
             ComponentService promotedComponentService = compositeService.getPromotedService();
 
             // promote interface contracts
-            calculatePromotedServiceInterfaceContract(compositeService, promotedComponentService);
+            calculatePromotedServiceInterfaceContract(compositeService, promotedComponentService, monitor);
 
             // promote bindings
             calculatePromotedBindings(compositeService, promotedComponentService);
@@ -251,11 +250,11 @@ public class CompositeComponentTypeBuilderImpl {
      */
     private void calculateReferences(ComponentType componentType,
                                      Map<String, Component> components,
-                                     Map<String, ComponentReference> componentReferences) {
+                                     Map<String, ComponentReference> componentReferences, Monitor monitor) {
 
         // Connect this component type's references to the 
         // references from child components which it promotes
-        connectPromotedReferences(componentType, components, componentReferences);
+        connectPromotedReferences(componentType, components, componentReferences, monitor);
 
         // look at each component type reference in turn and 
         // calculate its configuration based on OASIS rules
@@ -266,7 +265,7 @@ public class CompositeComponentTypeBuilderImpl {
             for (ComponentReference promotedComponentReference : promotedReferences) {
 
                 // promote interface contracts
-                calculatePromotedReferenceInterfaceContract(compositeReference, promotedComponentReference);
+                calculatePromotedReferenceInterfaceContract(compositeReference, promotedComponentReference, monitor);
 
                 // promote bindings
                 // Don't need to promote reference bindings as any lower level binding will
@@ -291,7 +290,8 @@ public class CompositeComponentTypeBuilderImpl {
      */
     private void connectPromotedServices(ComponentType componentType,
                                          Map<String, Component> components,
-                                         Map<String, ComponentService> componentServices) {
+                                         Map<String, ComponentService> componentServices,
+                                         Monitor monitor) {
 
         for (Service service : componentType.getServices()) {
             // Connect composite (component type) services to the component services 
@@ -345,7 +345,8 @@ public class CompositeComponentTypeBuilderImpl {
      */
     private void connectPromotedReferences(ComponentType componentType,
                                            Map<String, Component> components,
-                                           Map<String, ComponentReference> componentReferences) {
+                                           Map<String, ComponentReference> componentReferences,
+                                           Monitor monitor) {
 
         // Connect composite (component type) references to the component references that they promote
         for (Reference reference : componentType.getReferences()) {
@@ -417,7 +418,7 @@ public class CompositeComponentTypeBuilderImpl {
      * @param topContract the top contract 
      * @param bottomContract the bottom contract
      */
-    private void calculatePromotedServiceInterfaceContract(Service topContract, Service bottomContract) {
+    private void calculatePromotedServiceInterfaceContract(Service topContract, Service bottomContract, Monitor monitor) {
         // Use the interface contract from the bottom level contract if
         // none is specified on the top level contract
         InterfaceContract topInterfaceContract = topContract.getInterfaceContract();
@@ -455,7 +456,7 @@ public class CompositeComponentTypeBuilderImpl {
      * @param topContract the top contract 
      * @param bottomContract the bottom contract
      */    
-    private void calculatePromotedReferenceInterfaceContract(Reference topContract, Reference bottomContract) {
+    private void calculatePromotedReferenceInterfaceContract(Reference topContract, Reference bottomContract, Monitor monitor) {
         // Use the interface contract from the bottom level contract if
         // none is specified on the top level contract
         InterfaceContract topInterfaceContract = topContract.getInterfaceContract();

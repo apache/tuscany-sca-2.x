@@ -51,6 +51,7 @@ import org.apache.tuscany.sca.contribution.processor.ContributionResolveExceptio
 import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtendedURLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
@@ -59,6 +60,7 @@ import org.apache.tuscany.sca.contribution.resolver.ExtensibleModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.definitions.Definitions;
@@ -71,53 +73,61 @@ import org.apache.tuscany.sca.monitor.Problem;
 
 public class SCDLUtils {
 
-//  private static final String SCA11_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.1";
+    //  private static final String SCA11_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.1";
 
     public static Composite readComposite(InputStream is) throws XMLStreamException, ContributionReadException {
         DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
+        ProcessorContext context = new ProcessorContext(extensionPoints);
         XMLInputFactory inputFactory = XMLInputFactory.newInstance();
         UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
         MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
         Monitor monitor = monitorFactory.createMonitor();
-        StAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(extensionPoints);
-        StAXArtifactProcessor<Object> staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null, monitor);
+        StAXArtifactProcessorExtensionPoint staxProcessors =
+            new DefaultStAXArtifactProcessorExtensionPoint(extensionPoints);
+        StAXArtifactProcessor<Object> staxProcessor =
+            new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null);
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-        Composite composite = (Composite)staxProcessor.read(reader);
-        
+        Composite composite = (Composite)staxProcessor.read(reader, context);
+
         List<Problem> ps = monitor.getProblems();
         if (ps.size() > 0) {
             throw new ContributionReadException(ps.get(0).toString());
         }
-        
+
         return composite;
     }
 
     public static Contribution readContribution(String location) throws Exception {
-        
+
         DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
+        ProcessorContext context = new ProcessorContext(extensionPoints);
         extensionPoints.start();
-        
+
         UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
         MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
         Monitor monitor = monitorFactory.createMonitor();
-        URLArtifactProcessorExtensionPoint docProcessorExtensions = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
-        ExtendedURLArtifactProcessor<Contribution> contributionProcessor = (ExtendedURLArtifactProcessor<Contribution>) docProcessorExtensions.getProcessor(Contribution.class);
-        
+        URLArtifactProcessorExtensionPoint docProcessorExtensions =
+            extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
+        ExtendedURLArtifactProcessor<Contribution> contributionProcessor =
+            (ExtendedURLArtifactProcessor<Contribution>)docProcessorExtensions.getProcessor(Contribution.class);
+
         File f = new File(location);
         List<Contribution> contributions = new ArrayList<Contribution>();
-        contributions.add(contributionProcessor.read(null, f.toURI(), f.toURI().toURL()));
+        contributions.add(contributionProcessor.read(null, f.toURI(), f.toURI().toURL(), context));
 
         FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
-//        AssemblyFactory assemblyFactory = new RuntimeAssemblyFactory(extensionPoints);
-//        modelFactories.addFactory(assemblyFactory);
+        //        AssemblyFactory assemblyFactory = new RuntimeAssemblyFactory(extensionPoints);
+        //        modelFactories.addFactory(assemblyFactory);
 
         monitor = monitorFactory.createMonitor();
 
         ContributionFactory contributionFactory = modelFactories.getFactory(ContributionFactory.class);
 
-        contributionProcessor = (ExtendedURLArtifactProcessor<Contribution>) docProcessorExtensions.getProcessor(Contribution.class);
+        contributionProcessor =
+            (ExtendedURLArtifactProcessor<Contribution>)docProcessorExtensions.getProcessor(Contribution.class);
 
-        ModelResolverExtensionPoint modelResolvers = extensionPoints.getExtensionPoint(ModelResolverExtensionPoint.class);
+        ModelResolverExtensionPoint modelResolvers =
+            extensionPoints.getExtensionPoint(ModelResolverExtensionPoint.class);
 
         DefinitionsFactory definitionsFactory = modelFactories.getFactory(DefinitionsFactory.class);
         Definitions systemDefinitions = definitionsFactory.createDefinitions();
@@ -127,7 +137,8 @@ public class SCDLUtils {
         Contribution systemContribution = contributionFactory.createContribution();
         systemContribution.setURI("http://tuscany.apache.org/SystemContribution");
         systemContribution.setLocation("http://tuscany.apache.org/SystemContribution");
-        ModelResolver modelResolverSys = new ExtensibleModelResolver(systemContribution, modelResolvers, modelFactories, monitor);
+        ModelResolver modelResolverSys =
+            new ExtensibleModelResolver(systemContribution, modelResolvers, modelFactories);
         systemContribution.setModelResolver(modelResolverSys);
         systemContribution.setUnresolved(true);
 
@@ -145,17 +156,18 @@ public class SCDLUtils {
         // definitions.xml picture
 
         monitor.pushContext("Extension points definitions");
-        DefinitionsExtensionPoint definitionsExtensionPoint = extensionPoints.getExtensionPoint(DefinitionsExtensionPoint.class);
-        for(Definitions defs: definitionsExtensionPoint.getDefinitions()) {
+        DefinitionsExtensionPoint definitionsExtensionPoint =
+            extensionPoints.getExtensionPoint(DefinitionsExtensionPoint.class);
+        for (Definitions defs : definitionsExtensionPoint.getDefinitions()) {
             DefinitionsUtil.aggregate(defs, systemDefinitions, monitor);
         }
         monitor.popContext();
-        
+
         // get all definitions.xml artifacts from contributions and aggregate
         // into the system contribution. In turn add a default import into
         // each contribution so that for unresolved items the resolution
         // processing will look in the system contribution
-        for (Contribution contribution: contributions) {
+        for (Contribution contribution : contributions) {
             monitor.pushContext("Contribution: " + contribution.getURI());
             // aggregate definitions
             for (Artifact artifact : contribution.getArtifacts()) {
@@ -177,79 +189,81 @@ public class SCDLUtils {
             monitor.popContext();
         }
 
-        ExtensibleModelResolver modelResolver = new ExtensibleModelResolver(new Contributions(contributions), modelResolvers, modelFactories, monitor);
+        ExtensibleModelResolver modelResolver =
+            new ExtensibleModelResolver(new Contributions(contributions), modelResolvers, modelFactories);
 
-        contributionProcessor.resolve(systemContribution, modelResolver);
+        contributionProcessor.resolve(systemContribution, modelResolver, context);
         contributions.add(systemContribution);
 
         // TODO - Now we can calculate applicable policy sets for each composite
 
         // pre-resolve the contributions
-        contributionsPreresolve(contributionProcessor, contributions, modelResolver);
+        contributionsPreresolve(contributionProcessor, contributions, modelResolver, context);
 
         // Build the contribution dependencies
         Set<Contribution> resolved = new HashSet<Contribution>();
-        for (Contribution contribution: contributions) {
+        for (Contribution contribution : contributions) {
             buildDependencies(contribution, contributions, monitor);
 
             // Resolve contributions
-            for (Contribution dependency: contribution.getDependencies()) {
+            for (Contribution dependency : contribution.getDependencies()) {
                 if (!resolved.contains(dependency)) {
                     resolved.add(dependency);
-                    contributionProcessor.resolve(dependency, modelResolver);
+                    contributionProcessor.resolve(dependency, modelResolver, context);
                 }
             }
         }
 
-//    // Create a top level composite to host our composite
-//    // This is temporary to make the activator happy
-//        AssemblyFactory assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
-////      AssemblyFactory assemblyFactory = new RuntimeAssemblyFactory(extensionPoints);
-////      modelFactories.addFactory(assemblyFactory);
-//    Composite tempComposite = assemblyFactory.createComposite();
-//    tempComposite.setName(new QName(SCA11_TUSCANY_NS, "_tempComposite"));
-//    tempComposite.setURI(SCA11_TUSCANY_NS);
-//
-//    for (Contribution contribution : contributions) {
-//        for (Composite composite : contribution.getDeployables()) {
-//            // Include the node composite in the top-level composite
-//            tempComposite.getIncludes().add(composite);
-//        }
-//    }
-//
-//    
-//    CompositeActivator compositeActivator = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class).getUtility(CompositeActivator.class);
-//
-//        // get the top level composite for this node
-//        compositeActivator.setDomainComposite(tempComposite);
-//
-//        // Activate the composite
-//        compositeActivator.activate(compositeActivator.getDomainComposite());
-//
-//        // Start the composite
-//        compositeActivator.start(compositeActivator.getDomainComposite());
-//    
-//    
-////    // TODO - EPR - create a binding map to pass down into the builders
-////    //              for use during URI calculation.
-////    Map<QName, List<String>> bindingMap = new HashMap<QName, List<String>>();
-////    for (BindingConfiguration config : configuration.getBindings()) {
-////        bindingMap.put(config.getBindingType(), config.getBaseURIs());
-////    }
-//
-//        CompositeBuilderExtensionPoint compositeBuilders = extensionPoints.getExtensionPoint(CompositeBuilderExtensionPoint.class);
-//        CompositeBuilder compositeBuilder = compositeBuilders.getCompositeBuilder("org.apache.tuscany.sca.assembly.builder.CompositeBuilder");
-//    ((CompositeBuilderTmp)compositeBuilder).build(tempComposite, systemDefinitions, new HashMap<QName, List<String>>(), monitor);
-////    analyzeProblems();
-//
-////    endpointReferenceBuilder.buildtimeBuild(tempComposite);
-////    analyzeProblems();
-//
-////    return tempComposite;
-////    Composite xxx = configureNode(extensionPoints, cs, monitor);
-    return contributions.get(0);
+        //    // Create a top level composite to host our composite
+        //    // This is temporary to make the activator happy
+        //        AssemblyFactory assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
+        ////      AssemblyFactory assemblyFactory = new RuntimeAssemblyFactory(extensionPoints);
+        ////      modelFactories.addFactory(assemblyFactory);
+        //    Composite tempComposite = assemblyFactory.createComposite();
+        //    tempComposite.setName(new QName(SCA11_TUSCANY_NS, "_tempComposite"));
+        //    tempComposite.setURI(SCA11_TUSCANY_NS);
+        //
+        //    for (Contribution contribution : contributions) {
+        //        for (Composite composite : contribution.getDeployables()) {
+        //            // Include the node composite in the top-level composite
+        //            tempComposite.getIncludes().add(composite);
+        //        }
+        //    }
+        //
+        //    
+        //    CompositeActivator compositeActivator = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class).getUtility(CompositeActivator.class);
+        //
+        //        // get the top level composite for this node
+        //        compositeActivator.setDomainComposite(tempComposite);
+        //
+        //        // Activate the composite
+        //        compositeActivator.activate(compositeActivator.getDomainComposite());
+        //
+        //        // Start the composite
+        //        compositeActivator.start(compositeActivator.getDomainComposite());
+        //    
+        //    
+        ////    // TODO - EPR - create a binding map to pass down into the builders
+        ////    //              for use during URI calculation.
+        ////    Map<QName, List<String>> bindingMap = new HashMap<QName, List<String>>();
+        ////    for (BindingConfiguration config : configuration.getBindings()) {
+        ////        bindingMap.put(config.getBindingType(), config.getBaseURIs());
+        ////    }
+        //
+        //        CompositeBuilderExtensionPoint compositeBuilders = extensionPoints.getExtensionPoint(CompositeBuilderExtensionPoint.class);
+        //        CompositeBuilder compositeBuilder = compositeBuilders.getCompositeBuilder("org.apache.tuscany.sca.assembly.builder.CompositeBuilder");
+        //    ((CompositeBuilderTmp)compositeBuilder).build(tempComposite, systemDefinitions, new HashMap<QName, List<String>>(), monitor);
+        ////    analyzeProblems();
+        //
+        ////    endpointReferenceBuilder.buildtimeBuild(tempComposite);
+        ////    analyzeProblems();
+        //
+        ////    return tempComposite;
+        ////    Composite xxx = configureNode(extensionPoints, cs, monitor);
+        return contributions.get(0);
 
-}
+    }
+
     /**
      * Pre-resolve phase for contributions, to set up handling of imports and exports prior to full resolution
      * @param contributionProcessor 
@@ -257,11 +271,13 @@ public class SCDLUtils {
      * @param resolver - the ModelResolver to use
      * @throws ContributionResolveException
      */
-    private static void contributionsPreresolve( ExtendedURLArtifactProcessor<Contribution> contributionProcessor, List<Contribution> contributions, ModelResolver resolver )
-        throws ContributionResolveException {
+    private static void contributionsPreresolve(ExtendedURLArtifactProcessor<Contribution> contributionProcessor,
+                                                List<Contribution> contributions,
+                                                ModelResolver resolver,
+                                                ProcessorContext context) throws ContributionResolveException {
 
-        for( Contribution contribution : contributions ) {
-                contributionProcessor.preResolve(contribution, resolver);
+        for (Contribution contribution : contributions) {
+            contributionProcessor.preResolve(contribution, resolver, context);
         } // end for
     } // end method contributionsPreresolve
 
@@ -279,23 +295,28 @@ public class SCDLUtils {
 
         contribution.getDependencies().addAll(dependencies);
     }
+
     /**
      * Analyze a contribution and add its dependencies to the given dependency set.
      */
-    private static void addContributionDependencies(Contribution contribution, List<Contribution> contributions, List<Contribution> dependencies, Set<Contribution> set, Monitor monitor) {
+    private static void addContributionDependencies(Contribution contribution,
+                                                    List<Contribution> contributions,
+                                                    List<Contribution> dependencies,
+                                                    Set<Contribution> set,
+                                                    Monitor monitor) {
 
         // Go through the contribution imports
-        for (Import import_: contribution.getImports()) {
+        for (Import import_ : contribution.getImports()) {
             boolean resolved = false;
 
             // Go through all contribution candidates and their exports
             List<Export> matchingExports = new ArrayList<Export>();
-            for (Contribution dependency: contributions) {
+            for (Contribution dependency : contributions) {
                 if (dependency == contribution) {
                     // Do not self import
                     continue;
                 }
-                for (Export export: dependency.getExports()) {
+                for (Export export : dependency.getExports()) {
 
                     // If an export from a contribution matches the import in hand
                     // add that contribution to the dependency set
@@ -322,16 +343,17 @@ public class SCDLUtils {
             } else {
                 // Record import resolution issue
                 if (!(import_ instanceof DefaultImport)) {
-                        // Add the (empty) matchingExports List and report a warning
-                        import_.setModelResolver(new DefaultImportModelResolver(matchingExports));
-//                    warning(monitor, "UnresolvedImport", import_, import_);
+                    // Add the (empty) matchingExports List and report a warning
+                    import_.setModelResolver(new DefaultImportModelResolver(matchingExports));
+                    //                    warning(monitor, "UnresolvedImport", import_, import_);
                 }
             } // end if
         }
     }
 
-    
-    private static List<Contribution> loadContributions(DefaultExtensionPointRegistry extensionPoints, String s) throws MalformedURLException, ContributionReadException, XMLStreamException, IOException, UnsupportedEncodingException, Exception {
+    private static List<Contribution> loadContributions(ExtensionPointRegistry extensionPoints, String s, ProcessorContext context)
+        throws MalformedURLException, ContributionReadException, XMLStreamException, IOException,
+        UnsupportedEncodingException, Exception {
         List<Contribution> contributions = new ArrayList<Contribution>();
 
         URI contributionURI = createURI(s);
@@ -342,68 +364,77 @@ public class SCDLUtils {
         }
         URL contributionURL = uri.toURL();
 
-            URLArtifactProcessorExtensionPoint docProcessorExtensions = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
-            ExtendedURLArtifactProcessor<Contribution> contributionProcessor = (ExtendedURLArtifactProcessor<Contribution>) docProcessorExtensions.getProcessor(Contribution.class);
+        URLArtifactProcessorExtensionPoint docProcessorExtensions =
+            extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
+        ExtendedURLArtifactProcessor<Contribution> contributionProcessor =
+            (ExtendedURLArtifactProcessor<Contribution>)docProcessorExtensions.getProcessor(Contribution.class);
 
-            // Load the contribution
-            Contribution contribution = contributionProcessor.read(null, contributionURI, contributionURL);
-            contributions.add(contribution);
+        // Load the contribution
+        Contribution contribution = contributionProcessor.read(null, contributionURI, contributionURL, context);
+        contributions.add(contribution);
 
-            boolean attached = false;
-//            for (DeploymentComposite dc : contrib.getDeploymentComposites()) {
-//                if (dc.getContent() != null) {
-//                    Reader xml = new StringReader(dc.getContent());
-//                    attached = attachDeploymentComposite(extensionPoints, contribution, xml, null, attached);
-//                } else if (dc.getLocation() != null) {
-//                    URI dcURI = createURI(dc.getLocation());
-//                    if (!dcURI.isAbsolute()) {
-//                        Composite composite = null;
-//                        // The location is pointing to an artifact within the contribution
-//                        for (Artifact a : contribution.getArtifacts()) {
-//                            if (dcURI.toString().equals(a.getURI())) {
-//                                composite = (Composite)a.getModel();
-//                                if (!attached) {
-//                                    contribution.getDeployables().clear();
-//                                    attached = true;
-//                                }
-//                                contribution.getDeployables().add(composite);
-//                                break;
-//                            }
-//                        }
-//                        if (composite == null) {
-//                            // Not found
-//                            throw new ServiceRuntimeException("Deployment composite " + dcURI
-//                                + " cannot be found within contribution "
-//                                + contribution.getLocation());
-//                        }
-//                    } else {
-//                        URL url = dcURI.toURL();
-//                        InputStream is = openStream(url);
-//                        Reader xml = new InputStreamReader(is, "UTF-8");
-//                        attached = attachDeploymentComposite(extensionPoints, contribution, xml, url.toString(), attached);
-//                    }
-//                }
-////            analyzeProblems();
-//        }
-    return contributions;
-}
+        boolean attached = false;
+        //            for (DeploymentComposite dc : contrib.getDeploymentComposites()) {
+        //                if (dc.getContent() != null) {
+        //                    Reader xml = new StringReader(dc.getContent());
+        //                    attached = attachDeploymentComposite(extensionPoints, contribution, xml, null, attached);
+        //                } else if (dc.getLocation() != null) {
+        //                    URI dcURI = createURI(dc.getLocation());
+        //                    if (!dcURI.isAbsolute()) {
+        //                        Composite composite = null;
+        //                        // The location is pointing to an artifact within the contribution
+        //                        for (Artifact a : contribution.getArtifacts()) {
+        //                            if (dcURI.toString().equals(a.getURI())) {
+        //                                composite = (Composite)a.getModel();
+        //                                if (!attached) {
+        //                                    contribution.getDeployables().clear();
+        //                                    attached = true;
+        //                                }
+        //                                contribution.getDeployables().add(composite);
+        //                                break;
+        //                            }
+        //                        }
+        //                        if (composite == null) {
+        //                            // Not found
+        //                            throw new ServiceRuntimeException("Deployment composite " + dcURI
+        //                                + " cannot be found within contribution "
+        //                                + contribution.getLocation());
+        //                        }
+        //                    } else {
+        //                        URL url = dcURI.toURL();
+        //                        InputStream is = openStream(url);
+        //                        Reader xml = new InputStreamReader(is, "UTF-8");
+        //                        attached = attachDeploymentComposite(extensionPoints, contribution, xml, url.toString(), attached);
+        //                    }
+        //                }
+        ////            analyzeProblems();
+        //        }
+        return contributions;
+    }
 
-    private boolean attachDeploymentComposite(DefaultExtensionPointRegistry extensionPoints, Contribution contribution, Reader xml, String location, boolean attached) throws XMLStreamException, ContributionReadException {
+    private boolean attachDeploymentComposite(ExtensionPointRegistry extensionPoints,
+                                              Contribution contribution,
+                                              Reader xml,
+                                              String location,
+                                              boolean attached,
+                                              ProcessorContext context) throws XMLStreamException,
+        ContributionReadException {
 
         XMLInputFactory inputFactory = XMLInputFactory.newInstance();
         XMLStreamReader reader = inputFactory.createXMLStreamReader(xml);
         reader.nextTag();
 
-        StAXArtifactProcessorExtensionPoint xmlProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        StAXArtifactProcessorExtensionPoint xmlProcessors =
+            extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         StAXArtifactProcessor<Composite> compositeProcessor = xmlProcessors.getProcessor(Composite.class);
-        
+
         // Read the composite model
-        Composite composite = (Composite)compositeProcessor.read(reader);
+        Composite composite = (Composite)compositeProcessor.read(reader, context);
         reader.close();
 
         FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         ContributionFactory contributionFactory = modelFactories.getFactory(ContributionFactory.class);
-        
+
         // Create an artifact for the deployment composite
         Artifact artifact = contributionFactory.createArtifact();
         String uri = composite.getName().getLocalPart() + ".composite";

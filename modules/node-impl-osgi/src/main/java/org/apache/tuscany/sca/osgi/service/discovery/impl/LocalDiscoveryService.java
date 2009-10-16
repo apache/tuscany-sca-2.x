@@ -41,6 +41,7 @@ import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.common.java.io.IOHelper;
 import org.apache.tuscany.sca.common.xml.stax.StAXHelper;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
@@ -51,6 +52,7 @@ import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.osgi.service.remoteadmin.EndpointDescription;
 import org.apache.tuscany.sca.osgi.service.remoteadmin.RemoteConstants;
+import org.apache.tuscany.sca.osgi.service.remoteadmin.impl.EndpointHelper;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
@@ -84,7 +86,7 @@ public class LocalDiscoveryService extends AbstractDiscoveryService implements B
         }
         processor =
             new ExtensibleStAXArtifactProcessor(processors, staxHelper.getInputFactory(),
-                                                staxHelper.getOutputFactory(), monitor);
+                                                staxHelper.getOutputFactory());
         processExistingBundles();
     }
 
@@ -154,11 +156,14 @@ public class LocalDiscoveryService extends AbstractDiscoveryService implements B
     private EndpointDescription createEndpointDescription(ServiceDescription sd) {
         Map<String, Object> props = new HashMap<String, Object>(sd.getProperties());
         props.put(Constants.OBJECTCLASS, sd.getInterfaces().toArray(new String[sd.getInterfaces().size()]));
-        if (!props.containsKey(RemoteConstants.ENDPOINT_REMOTE_SERVICE_ID)) {
-            props.put(RemoteConstants.ENDPOINT_REMOTE_SERVICE_ID, UUID.randomUUID().toString());
+        if (!props.containsKey(RemoteConstants.SERVICE_REMOTE_ID)) {
+            props.put(RemoteConstants.SERVICE_REMOTE_ID, String.valueOf(System.currentTimeMillis()));
         }
-        if (!props.containsKey(RemoteConstants.ENDPOINT_URI)) {
-            props.put(RemoteConstants.ENDPOINT_URI, UUID.randomUUID().toString());
+        if (!props.containsKey(RemoteConstants.SERVICE_REMOTE_FRAMEWORK_UUID)) {
+            props.put(RemoteConstants.SERVICE_REMOTE_FRAMEWORK_UUID, EndpointHelper.getFrameworkUUID(context));
+        }
+        if (!props.containsKey(RemoteConstants.SERVICE_REMOTE_URI)) {
+            props.put(RemoteConstants.SERVICE_REMOTE_URI, UUID.randomUUID().toString());
         }
 
         EndpointDescription sed = new EndpointDescription(props);
@@ -194,7 +199,7 @@ public class LocalDiscoveryService extends AbstractDiscoveryService implements B
         try {
             XMLStreamReader reader = staxHelper.createXMLStreamReader(is);
             reader.nextTag();
-            Object model = processor.read(reader);
+            Object model = processor.read(reader, new ProcessorContext(registry));
             if (model instanceof ServiceDescriptions) {
                 return (ServiceDescriptions)model;
             } else {

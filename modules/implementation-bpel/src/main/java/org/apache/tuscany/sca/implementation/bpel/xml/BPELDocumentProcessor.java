@@ -37,6 +37,7 @@ import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
@@ -57,16 +58,14 @@ public class BPELDocumentProcessor extends BaseStAXArtifactProcessor implements 
     
     private final static XMLInputFactory inputFactory = XMLInputFactory.newInstance();
     
-    private final BPELFactory 	factory;
-    private WSDLFactory 		WSDLfactory;
-    private AssemblyFactory 	assemblyFactory;
-    private Monitor monitor;
+    private final BPELFactory factory;
+    private WSDLFactory WSDLfactory;
+    private AssemblyFactory assemblyFactory;
 
-    public BPELDocumentProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
-        this.factory     		= modelFactories.getFactory(BPELFactory.class);
-        this.WSDLfactory 		= modelFactories.getFactory(WSDLFactory.class);
-        this.assemblyFactory 	= modelFactories.getFactory(AssemblyFactory.class);
-        this.monitor = monitor;
+    public BPELDocumentProcessor(FactoryExtensionPoint modelFactories) {
+        this.factory = modelFactories.getFactory(BPELFactory.class);
+        this.WSDLfactory = modelFactories.getFactory(WSDLFactory.class);
+        this.assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
     }
     
     public String getArtifactType() {
@@ -84,24 +83,24 @@ public class BPELDocumentProcessor extends BaseStAXArtifactProcessor implements 
      * @param artifactURL		- URL of the artifact containing the BPEL Process definition
      * @return BPELProcessDefinition - SCA model of the BPEL Process
      */
-    public BPELProcessDefinition read(URL contributionURL, URI artifactURI, URL artifactURL) throws ContributionReadException {
+    public BPELProcessDefinition read(URL contributionURL, URI artifactURI, URL artifactURL, ProcessorContext context) throws ContributionReadException {
         BPELProcessDefinition processDefinition = null;
         try {
-            processDefinition = readProcessDefinition(artifactURL);
+            processDefinition = readProcessDefinition(artifactURL, context.getMonitor());
             processDefinition.setURI(artifactURI.toString());
             processDefinition.setUnresolved(true);
         } catch (Exception e) {
             ContributionReadException ce = new ContributionReadException(e);
-            error("ContributionReadException", artifactURL, ce);
+            error(context.getMonitor(), "ContributionReadException", artifactURL, ce);
         }
 
         return processDefinition;
     }
 
-    public void resolve(BPELProcessDefinition model, ModelResolver resolver) throws ContributionResolveException {
+    public void resolve(BPELProcessDefinition model, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
     	// Delegate resolving to model resolver
     	if (model != null || model.isUnresolved()) {
-    		resolver.resolveModel(BPELProcessDefinition.class, model);
+    		resolver.resolveModel(BPELProcessDefinition.class, model, context);
     	}
     	
     } // end resolve
@@ -113,7 +112,7 @@ public class BPELDocumentProcessor extends BaseStAXArtifactProcessor implements 
      * @return
      * @throws Exception
      */
-    private BPELProcessDefinition readProcessDefinition(URL doc) throws Exception {
+    private BPELProcessDefinition readProcessDefinition(URL doc, Monitor monitor) throws Exception {
         BPELProcessDefinition processDefinition = factory.createBPELProcessDefinition();
         processDefinition.setUnresolved(true);
         processDefinition.setLocation(doc.toString());
@@ -145,12 +144,12 @@ public class BPELDocumentProcessor extends BaseStAXArtifactProcessor implements 
                             QName processName = new QName(getString(reader, BPELProcessorConstants.TARGET_NAMESPACE), getString(reader, BPELProcessorConstants.NAME_ELEMENT));
                             processDefinition.setName(processName);
                         } else if (BPELProcessorConstants.PARTNERLINK_ELEMENT.equals(qname) || BPELProcessorConstants.PARTNERLINK_ELEMENT_20.equals(qname)) {
-                            processDefinition.getPartnerLinks().add(processPartnerLinkElement(reader));
+                            processDefinition.getPartnerLinks().add(processPartnerLinkElement(reader, monitor));
                         } else if (BPELProcessorConstants.ONEVENT_ELEMENT.equals(qname) || BPELProcessorConstants.RECEIVE_ELEMENT.equals(qname) || BPELProcessorConstants.ONMESSAGE_ELEMENT.equals(qname) || 
                         		BPELProcessorConstants.ONEVENT_ELEMENT_20.equals(qname) || BPELProcessorConstants.RECEIVE_ELEMENT_20.equals(qname) || BPELProcessorConstants.ONMESSAGE_ELEMENT_20.equals(qname)) {
-                            processPartnerLinkAsService(reader.getAttributeValue(null, "partnerLink"), processDefinition.getPartnerLinks());
+                            processPartnerLinkAsService(reader.getAttributeValue(null, "partnerLink"), processDefinition.getPartnerLinks(), monitor);
                         } else if (BPELProcessorConstants.INVOKE_ELEMENT.equals(qname) || BPELProcessorConstants.INVOKE_ELEMENT_20.equals(qname)) {
-                            processPartnerLinkAsReference(reader.getAttributeValue(null, "partnerLink"), processDefinition.getPartnerLinks());
+                            processPartnerLinkAsReference(reader.getAttributeValue(null, "partnerLink"), processDefinition.getPartnerLinks(), monitor);
                         } else if (BPELProcessorConstants.IMPORT_ELEMENT.equals(qname) || BPELProcessorConstants.IMPORT_ELEMENT_20.equals(qname)) {
                             processDefinition.getImports().add(processImportElement(reader));
                         } else if (BPELProcessorConstants.VARIABLE_ELEMENT.equals(qname) || BPELProcessorConstants.VARIABLE_ELEMENT_20.equals(qname)) {
@@ -217,7 +216,7 @@ public class BPELDocumentProcessor extends BaseStAXArtifactProcessor implements 
      * 
      * @param reader
      */
-    private BPELPartnerLinkElement processPartnerLinkElement(XMLStreamReader reader) throws ContributionReadException {
+    private BPELPartnerLinkElement processPartnerLinkElement(XMLStreamReader reader, Monitor monitor) throws ContributionReadException {
         BPELPartnerLinkElement partnerLink = new BPELPartnerLinkElement( reader.getAttributeValue(null, "name"),
                                                                          getQNameValue(reader, reader.getAttributeValue(null, "partnerLinkType")),
                                                                          reader.getAttributeValue(null, "myRole"),
@@ -228,7 +227,7 @@ public class BPELDocumentProcessor extends BaseStAXArtifactProcessor implements 
         String scaReference = reader.getAttributeValue(BPELProcessorConstants.SCA_BPEL_NS, "reference");
         if ((scaService != null) && (scaReference != null)) {
             // It is incorrect to set both service & reference attributes
-            error("PartnerLinkHasBothAttr", partnerLink, reader.getAttributeValue(null, "name"));
+            error(monitor, "PartnerLinkHasBothAttr", partnerLink, reader.getAttributeValue(null, "name"));
             throw new ContributionReadException("BPEL PartnerLink " + reader.getAttributeValue(null, "name") + " has both sca:reference and sca:service attributes set");
         }
         
@@ -261,10 +260,10 @@ public class BPELDocumentProcessor extends BaseStAXArtifactProcessor implements 
      * @param partnerLinkName
      * @param partnerLinks
      */
-    private void processPartnerLinkAsService(String partnerLinkName, List<BPELPartnerLinkElement> partnerLinks) {
+    private void processPartnerLinkAsService(String partnerLinkName, List<BPELPartnerLinkElement> partnerLinks, Monitor monitor) {
         BPELPartnerLinkElement partnerLink = findPartnerLinkByName(partnerLinks, partnerLinkName);
         if (partnerLink == null) {
-            warning("ReferencePartnerLinkNotInList", partnerLinkName, partnerLinkName);
+            warning(monitor, "ReferencePartnerLinkNotInList", partnerLinkName, partnerLinkName);
         } else {
             // Set the type of the partnerLink to "service" if not already
             // set...
@@ -280,10 +279,10 @@ public class BPELDocumentProcessor extends BaseStAXArtifactProcessor implements 
      * @param partnerLinkName
      * @param partnerLinks
      */
-    private void processPartnerLinkAsReference(String partnerLinkName, List<BPELPartnerLinkElement> partnerLinks) {
+    private void processPartnerLinkAsReference(String partnerLinkName, List<BPELPartnerLinkElement> partnerLinks, Monitor monitor) {
         BPELPartnerLinkElement partnerLink = findPartnerLinkByName(partnerLinks, partnerLinkName);
         if (partnerLink == null) {
-            warning("ReferencePartnerLinkNotInList", partnerLinkName, partnerLinkName);
+            warning(monitor, "ReferencePartnerLinkNotInList", partnerLinkName, partnerLinkName);
         } else {
             // Set the type of the partnerLink to "service" if not already
             // set...
@@ -318,7 +317,7 @@ public class BPELDocumentProcessor extends BaseStAXArtifactProcessor implements 
      * @param message
      * @param model
      */
-    private void warning(String message, Object model, Object... messageParameters) {
+    private void warning(Monitor monitor, String message, Object model, Object... messageParameters) {
         if (monitor != null) {
             Problem problem = monitor.createProblem(this.getClass().getName(), "impl-bpel-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
             monitor.problem(problem);
@@ -332,7 +331,7 @@ public class BPELDocumentProcessor extends BaseStAXArtifactProcessor implements 
      * @param message
      * @param model
      */
-    private void error(String message, Object model, Object... messageParameters) {
+    private void error(Monitor monitor, String message, Object model, Object... messageParameters) {
         if (monitor != null) {
             Problem problem = monitor.createProblem(this.getClass().getName(), "impl-bpel-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
             monitor.problem(problem);
@@ -346,7 +345,7 @@ public class BPELDocumentProcessor extends BaseStAXArtifactProcessor implements 
      * @param message
      * @param model
      */
-    private void error(String message, Object model, Exception ex) {
+    private void error(Monitor monitor, String message, Object model, Exception ex) {
         if (monitor != null) {
             Problem problem = monitor.createProblem(this.getClass().getName(), "impl-bpel-validation-messages", Severity.ERROR, model, message, ex);
             monitor.problem(problem);

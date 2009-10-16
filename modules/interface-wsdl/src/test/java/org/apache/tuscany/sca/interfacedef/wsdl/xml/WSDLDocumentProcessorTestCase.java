@@ -28,6 +28,7 @@ import java.util.List;
 import javax.wsdl.Import;
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.junit.Assert;
 import org.junit.Test;
@@ -39,22 +40,22 @@ public class WSDLDocumentProcessorTestCase extends AbstractWSDLTestCase {
 
     @Test
     public void testWSDL() throws Exception {
-       
+        ProcessorContext context = new ProcessorContext();
         URL url = getClass().getResource("/wsdl/helloworld-service.wsdl");
-        WSDLDefinition definition = (WSDLDefinition)documentProcessor.read(null, URI.create("wsdl/helloworld-service.wsdl"), url);
+        WSDLDefinition definition = (WSDLDefinition)documentProcessor.read(null, URI.create("wsdl/helloworld-service.wsdl"), url, context);
         
         Assert.assertNull(definition.getDefinition());
         Assert.assertEquals("http://helloworld", definition.getNamespace());
         URL url1 = getClass().getResource("/wsdl/helloworld-interface.wsdl");
-        WSDLDefinition definition1 = (WSDLDefinition)documentProcessor.read(null, URI.create("wsdl/helloworld-interface.wsdl"), url1);
+        WSDLDefinition definition1 = (WSDLDefinition)documentProcessor.read(null, URI.create("wsdl/helloworld-interface.wsdl"), url1, context);
         Assert.assertNull(definition1.getDefinition());
         Assert.assertEquals("http://helloworld", definition1.getNamespace());
 
-        resolver.addModel(definition);
-        resolver.addModel(definition1);
-        resolver.resolveModel(WSDLDefinition.class, definition);
-        resolver.resolveModel(WSDLDefinition.class, definition1);
-        WSDLDefinition resolved = resolver.resolveModel(WSDLDefinition.class, definition);
+        resolver.addModel(definition, context);
+        resolver.addModel(definition1, context);
+        resolver.resolveModel(WSDLDefinition.class, definition, context);
+        resolver.resolveModel(WSDLDefinition.class, definition1, context);
+        WSDLDefinition resolved = resolver.resolveModel(WSDLDefinition.class, definition, context);
         List imports = (List)definition.getDefinition().getImports().get("http://helloworld");
         Assert.assertNotNull(imports);
         Assert.assertNotNull(((Import)imports.get(0)).getDefinition());

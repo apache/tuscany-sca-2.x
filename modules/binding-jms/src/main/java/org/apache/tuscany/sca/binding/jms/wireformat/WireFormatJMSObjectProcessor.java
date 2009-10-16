@@ -28,10 +28,10 @@ import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  *
@@ -43,11 +43,11 @@ public class WireFormatJMSObjectProcessor extends BaseStAXArtifactProcessor impl
         return WireFormatJMSObject.WIRE_FORMAT_JMS_BYTES_QNAME;
     }
     
-    public WireFormatJMSObjectProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
+    public WireFormatJMSObjectProcessor(FactoryExtensionPoint modelFactories) {
     }
 
     
-    public WireFormatJMSObject read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+    public WireFormatJMSObject read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException, XMLStreamException {
         WireFormatJMSObject wireFormat = new WireFormatJMSObject();
         
         String wrappedSingleInput = reader.getAttributeValue(null, WireFormatJMSObject.WIRE_FORMAT_JMS_OBJECT_WRAP_SINGLE_ATTR);
@@ -64,7 +64,7 @@ public class WireFormatJMSObjectProcessor extends BaseStAXArtifactProcessor impl
         return wireFormat;
     }
 
-    public void write(WireFormatJMSObject wireFormat, XMLStreamWriter writer) 
+    public void write(WireFormatJMSObject wireFormat, XMLStreamWriter writer, ProcessorContext context) 
         throws ContributionWriteException, XMLStreamException {
         String prefix = "tuscany";
         writer.writeStartElement(prefix, 
@@ -81,7 +81,7 @@ public class WireFormatJMSObjectProcessor extends BaseStAXArtifactProcessor impl
         return WireFormatJMSObject.class;
     }
 
-    public void resolve(WireFormatJMSObject arg0, ModelResolver arg1) throws ContributionResolveException {
+    public void resolve(WireFormatJMSObject arg0, ModelResolver arg1, ProcessorContext context) throws ContributionResolveException {
 
     }
     

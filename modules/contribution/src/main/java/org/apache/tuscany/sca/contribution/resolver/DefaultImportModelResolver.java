@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Base;
 import org.apache.tuscany.sca.contribution.Export;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 
 /**
  * A model resolver implementation that delegates to a list of exports.
@@ -37,22 +38,22 @@ public class DefaultImportModelResolver implements ModelResolver {
         this.exports = exports;
     }
 
-    public void addModel(Object resolved) {
+    public void addModel(Object resolved, ProcessorContext context) {
         throw new IllegalStateException();
     }
 
-    public Object removeModel(Object resolved) {
+    public Object removeModel(Object resolved, ProcessorContext context) {
         throw new IllegalStateException();
     }
 
-    public <T> T resolveModel(Class<T> modelClass, T unresolved) {
+    public <T> T resolveModel(Class<T> modelClass, T unresolved, ProcessorContext context) {
         
         //TODO optimize and cache results of the resolution later
         
         // Go over all exports
         for (Export export: exports) {
             
-            Object resolved = export.getModelResolver().resolveModel(modelClass, unresolved);
+            Object resolved = export.getModelResolver().resolveModel(modelClass, unresolved, context);
             
             // Return the resolved model object
             if (resolved instanceof Base) {

@@ -29,10 +29,10 @@ import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  *
@@ -44,17 +44,17 @@ public class OperationSelectorJMSDefaultProcessor extends BaseStAXArtifactProces
         return OperationSelectorJMSDefault.OPERATION_SELECTOR_JMS_DEFAULT_QNAME;
     }
     
-    public OperationSelectorJMSDefaultProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
+    public OperationSelectorJMSDefaultProcessor(FactoryExtensionPoint modelFactories) {
     }
 
     
-    public OperationSelectorJMSDefault read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+    public OperationSelectorJMSDefault read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException, XMLStreamException {
         OperationSelectorJMSDefault wireFormat = new OperationSelectorJMSDefault();
          
         return wireFormat;
     }
 
-    public void write(OperationSelectorJMSDefault wireFormat, XMLStreamWriter writer) 
+    public void write(OperationSelectorJMSDefault wireFormat, XMLStreamWriter writer, ProcessorContext context) 
         throws ContributionWriteException, XMLStreamException {
         String prefix = "tuscany";
         writer.writeStartElement(prefix, 
@@ -69,7 +69,7 @@ public class OperationSelectorJMSDefaultProcessor extends BaseStAXArtifactProces
         return OperationSelectorJMSDefault.class;
     }
 
-    public void resolve(OperationSelectorJMSDefault arg0, ModelResolver arg1) throws ContributionResolveException {
+    public void resolve(OperationSelectorJMSDefault arg0, ModelResolver arg1, ProcessorContext context) throws ContributionResolveException {
 
     }
     

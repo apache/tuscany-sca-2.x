@@ -29,10 +29,10 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  *
@@ -45,11 +45,11 @@ public class BasicAuthenticationPolicyProcessor implements StAXArtifactProcessor
         return BasicAuthenticationPolicy.BASIC_AUTHENTICATION_POLICY_QNAME;
     }
     
-    public BasicAuthenticationPolicyProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
+    public BasicAuthenticationPolicyProcessor(FactoryExtensionPoint modelFactories) {
     }
 
     
-    public BasicAuthenticationPolicy read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+    public BasicAuthenticationPolicy read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException, XMLStreamException {
         BasicAuthenticationPolicy policy = new BasicAuthenticationPolicy();
         int event = reader.getEventType();
         QName name = null;
@@ -85,7 +85,7 @@ public class BasicAuthenticationPolicyProcessor implements StAXArtifactProcessor
         return policy;
     }
 
-    public void write(BasicAuthenticationPolicy policy, XMLStreamWriter writer) 
+    public void write(BasicAuthenticationPolicy policy, XMLStreamWriter writer, ProcessorContext context) 
         throws ContributionWriteException, XMLStreamException {
         String prefix = "tuscany";
         writer.writeStartElement(prefix, 
@@ -116,7 +116,7 @@ public class BasicAuthenticationPolicyProcessor implements StAXArtifactProcessor
         return BasicAuthenticationPolicy.class;
     }
 
-    public void resolve(BasicAuthenticationPolicy arg0, ModelResolver arg1) throws ContributionResolveException {
+    public void resolve(BasicAuthenticationPolicy arg0, ModelResolver arg1, ProcessorContext context) throws ContributionResolveException {
 
     }
     

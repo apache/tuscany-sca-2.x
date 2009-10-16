@@ -30,10 +30,10 @@ import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  *
@@ -46,11 +46,11 @@ public class Axis2HeaderPolicyProcessor extends BaseStAXArtifactProcessor implem
         return Axis2HeaderPolicy.AXIS2_HEADER_POLICY_QNAME;
     }
     
-    public Axis2HeaderPolicyProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
+    public Axis2HeaderPolicyProcessor(FactoryExtensionPoint modelFactories) {
     }
 
     
-    public Axis2HeaderPolicy read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+    public Axis2HeaderPolicy read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException, XMLStreamException {
         Axis2HeaderPolicy policy = new Axis2HeaderPolicy();
         int event = reader.getEventType();
         QName name = null;
@@ -82,7 +82,7 @@ public class Axis2HeaderPolicyProcessor extends BaseStAXArtifactProcessor implem
         return policy;
     }
 
-    public void write(Axis2HeaderPolicy policy, XMLStreamWriter writer) 
+    public void write(Axis2HeaderPolicy policy, XMLStreamWriter writer, ProcessorContext context) 
         throws ContributionWriteException, XMLStreamException {
         String prefix = "tuscany";
         writer.writeStartElement(prefix, 
@@ -105,7 +105,7 @@ public class Axis2HeaderPolicyProcessor extends BaseStAXArtifactProcessor implem
         return Axis2HeaderPolicy.class;
     }
 
-    public void resolve(Axis2HeaderPolicy arg0, ModelResolver arg1) throws ContributionResolveException {
+    public void resolve(Axis2HeaderPolicy arg0, ModelResolver arg1, ProcessorContext context) throws ContributionResolveException {
 
     }
     

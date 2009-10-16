@@ -32,6 +32,7 @@ import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
@@ -65,7 +66,7 @@ public class WebImplementationProcessor extends BaseStAXArtifactProcessor implem
         return WebImplementation.class;
     }
 
-    public WebImplementation read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+    public WebImplementation read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException, XMLStreamException {
         
         // Read an <implementation.web> element
         WebImplementation implementation = implementationFactory.createWebImplementation();
@@ -90,14 +91,14 @@ public class WebImplementationProcessor extends BaseStAXArtifactProcessor implem
         return implementation;
     }
 
-    public void resolve(WebImplementation implementation, ModelResolver resolver) throws ContributionResolveException {
+    public void resolve(WebImplementation implementation, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
         
         // Resolve the component type
         String uri = implementation.getURI();
         if (uri != null) {
             ComponentType componentType = assemblyFactory.createComponentType();
             componentType.setURI("web.componentType");
-            componentType = resolver.resolveModel(ComponentType.class, componentType);
+            componentType = resolver.resolveModel(ComponentType.class, componentType, context);
             if (!componentType.isUnresolved()) {
                 
                 // Initialize the implementation's services, references and properties
@@ -109,7 +110,7 @@ public class WebImplementationProcessor extends BaseStAXArtifactProcessor implem
         implementation.setUnresolved(false);
     }
 
-    public void write(WebImplementation implementation, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
+    public void write(WebImplementation implementation, XMLStreamWriter writer, ProcessorContext context) throws ContributionWriteException, XMLStreamException {
         
         // Write <implementation.web>
         writeStart(writer, IMPLEMENTATION_WEB.getNamespaceURI(), IMPLEMENTATION_WEB.getLocalPart(),

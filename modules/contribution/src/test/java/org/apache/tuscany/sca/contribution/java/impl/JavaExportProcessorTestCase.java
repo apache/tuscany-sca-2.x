@@ -29,14 +29,12 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.contribution.java.JavaExport;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.core.UtilityExtensionPoint;
-import org.apache.tuscany.sca.monitor.DefaultMonitorFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
-import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -60,20 +58,17 @@ public class JavaExportProcessorTestCase {
     private static XMLInputFactory inputFactory;
     private static StAXArtifactProcessor<Object> staxProcessor;
     private static Monitor monitor;
+    private static ProcessorContext context;
+
 
     @BeforeClass
     public static void setUp() throws Exception {
         ExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
+        context = new ProcessorContext(extensionPoints);
+        monitor = context.getMonitor();
         inputFactory = XMLInputFactory.newInstance();
-        // Create a monitor
-        UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
-        MonitorFactory monitorFactory = new DefaultMonitorFactory();  
-        if (monitorFactory != null) {
-        	monitor = monitorFactory.createMonitor();
-        	utilities.addUtility(monitorFactory);
-        }
         StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null, null);
+        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null);
     }
 
     /**
@@ -83,7 +78,7 @@ public class JavaExportProcessorTestCase {
     @Test
     public void testLoad() throws Exception {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(VALID_XML));
-        JavaExport javaExport = (JavaExport)staxProcessor.read(reader);
+        JavaExport javaExport = (JavaExport)staxProcessor.read(reader, context);
         Assert.assertEquals("org.apache.tuscany.sca.contribution.java", javaExport.getPackage());
     }
 
@@ -100,7 +95,7 @@ public class JavaExportProcessorTestCase {
         } catch (ContributionReadException e) {
             assertTrue(true);
         }*/
-        staxProcessor.read(reader);
+        staxProcessor.read(reader, context);
         Problem problem = monitor.getLastProblem();           
         assertNotNull(problem);
         assertEquals("AttributePackageMissing", problem.getMessageId());

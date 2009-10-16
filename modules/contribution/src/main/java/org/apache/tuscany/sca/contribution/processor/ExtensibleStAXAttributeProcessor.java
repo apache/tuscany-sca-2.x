@@ -57,8 +57,6 @@ public class ExtensibleStAXAttributeProcessor implements StAXAttributeProcessor<
     private XMLInputFactory inputFactory;
     private XMLOutputFactory outputFactory;
     private StAXAttributeProcessorExtensionPoint processors;
-    private Monitor monitor;
-
     /**
      * Constructs a new ExtensibleStAXArtifactProcessor.
      * @param processors
@@ -67,8 +65,7 @@ public class ExtensibleStAXAttributeProcessor implements StAXAttributeProcessor<
      */
     public ExtensibleStAXAttributeProcessor(StAXAttributeProcessorExtensionPoint processors,
                                             XMLInputFactory inputFactory,
-                                            XMLOutputFactory outputFactory,
-                                            Monitor monitor) {
+                                            XMLOutputFactory outputFactory) {
         super();
         this.processors = processors;
         this.inputFactory = inputFactory;
@@ -76,7 +73,6 @@ public class ExtensibleStAXAttributeProcessor implements StAXAttributeProcessor<
         if (this.outputFactory != null) {
             this.outputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.TRUE);
         }
-        this.monitor = monitor;
     }
 
     /**
@@ -86,7 +82,7 @@ public class ExtensibleStAXAttributeProcessor implements StAXAttributeProcessor<
      * @param message
      * @param model
      */
-    private void warning(String message, Object model, Object... messageParameters) {
+    private void warning(Monitor monitor, String message, Object model, Object... messageParameters) {
         if (monitor != null) {
             Problem problem =
                 monitor.createProblem(this.getClass().getName(),
@@ -106,7 +102,7 @@ public class ExtensibleStAXAttributeProcessor implements StAXAttributeProcessor<
      * @param message
      * @param model
      */
-    private void error(String message, Object model, Object... messageParameters) {
+    private void error(Monitor monitor, String message, Object model, Object... messageParameters) {
         if (monitor != null) {
             Problem problem =
                 monitor.createProblem(this.getClass().getName(),
@@ -126,7 +122,7 @@ public class ExtensibleStAXAttributeProcessor implements StAXAttributeProcessor<
      * @param message
      * @param model
      */
-    private void error(String message, Object model, Exception ex) {
+    private void error(Monitor monitor, String message, Object model, Exception ex) {
         if (monitor != null) {
             Problem problem =
                 monitor.createProblem(this.getClass().getName(),
@@ -139,7 +135,7 @@ public class ExtensibleStAXAttributeProcessor implements StAXAttributeProcessor<
         }
     }
 
-    public Object read(QName attributeName, XMLStreamReader source) throws ContributionReadException,
+    public Object read(QName attributeName, XMLStreamReader source, ProcessorContext context) throws ContributionReadException,
         XMLStreamException {
         // Delegate to the processor associated with the attribute QName
         int event = source.getEventType();
@@ -158,10 +154,10 @@ public class ExtensibleStAXAttributeProcessor implements StAXAttributeProcessor<
                 if (logger.isLoggable(Level.WARNING)) {
                     logger.warning("Attribute " + attributeName + " cannot be processed. (" + location + ")");
                 }
-                warning("AttributeCannotBeProcessed", processors, attributeName, location);
+                warning(context.getMonitor(), "AttributeCannotBeProcessed", processors, attributeName, location);
             }
         } else {
-            return processor.read(attributeName, source);
+            return processor.read(attributeName, source, context);
         }
 
         //handle extension attributes without processors
@@ -171,14 +167,14 @@ public class ExtensibleStAXAttributeProcessor implements StAXAttributeProcessor<
             if (logger.isLoggable(Level.WARNING)) {
                 logger.warning("Could not find Default Attribute processor !");
             }
-            warning("DefaultAttributeProcessorNotAvailable", processors, ANY_ATTRIBUTE, location);
+            warning(context.getMonitor(), "DefaultAttributeProcessorNotAvailable", processors, ANY_ATTRIBUTE, location);
         }
 
-        return processor == null ? null : processor.read(attributeName, source);
+        return processor == null ? null : processor.read(attributeName, source, context);
     }
 
     @SuppressWarnings("unchecked")
-    public void write(Object model, XMLStreamWriter outputSource) throws ContributionWriteException, XMLStreamException {
+    public void write(Object model, XMLStreamWriter outputSource, ProcessorContext context) throws ContributionWriteException, XMLStreamException {
 
         if (model == null) {
             return;
@@ -191,10 +187,10 @@ public class ExtensibleStAXAttributeProcessor implements StAXAttributeProcessor<
                 if (logger.isLoggable(Level.WARNING)) {
                     logger.warning("No StAX processor is configured to handle " + model.getClass());
                 }
-                warning("NoStaxProcessor", processors, model.getClass());
+                warning(context.getMonitor(), "NoStaxProcessor", processors, model.getClass());
             }
         } else {
-            processor.write(model, outputSource);
+            processor.write(model, outputSource, context);
             return;
         }
 
@@ -204,21 +200,21 @@ public class ExtensibleStAXAttributeProcessor implements StAXAttributeProcessor<
             if (logger.isLoggable(Level.WARNING)) {
                 logger.warning("No Default StAX processor is configured to handle " + model.getClass());
             }
-            warning("NoDefaultStaxProcessor", processors, model.getClass());
+            warning(context.getMonitor(), "NoDefaultStaxProcessor", processors, model.getClass());
         } else {
-            processor.write(model, outputSource);
+            processor.write(model, outputSource, context);
             return;
         }
     }
 
     @SuppressWarnings("unchecked")
-    public void resolve(Object model, ModelResolver resolver) throws ContributionResolveException {
+    public void resolve(Object model, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
 
         // Delegate to the processor associated with the model type
         if (model != null) {
             StAXAttributeProcessor processor = processors.getProcessor(model.getClass());
             if (processor != null) {
-                processor.resolve(model, resolver);
+                processor.resolve(model, resolver, context);
             }
         }
     }
@@ -240,15 +236,15 @@ public class ExtensibleStAXAttributeProcessor implements StAXAttributeProcessor<
      * @param os
      * @throws ContributionWriteException
      */
-    public void write(Object model, OutputStream os) throws ContributionWriteException {
+    public void write(Object model, OutputStream os, ProcessorContext context) throws ContributionWriteException {
         try {
             XMLStreamWriter writer = outputFactory.createXMLStreamWriter(os);
-            write(model, writer);
+            write(model, writer, context);
             writer.flush();
             writer.close();
         } catch (XMLStreamException e) {
             ContributionWriteException cw = new ContributionWriteException(e);
-            error("ContributionWriteException", outputFactory, cw);
+            error(context.getMonitor(), "ContributionWriteException", outputFactory, cw);
             throw cw;
         }
     }
@@ -258,6 +254,6 @@ public class ExtensibleStAXAttributeProcessor implements StAXAttributeProcessor<
     }
 
     public Class<Object> getModelType() {
-        return null;
+        return Object.class;
     }
 }

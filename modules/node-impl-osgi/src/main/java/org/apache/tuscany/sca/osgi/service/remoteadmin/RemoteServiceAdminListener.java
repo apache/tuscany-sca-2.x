@@ -7,9 +7,10 @@ package org.apache.tuscany.sca.osgi.service.remoteadmin;
  * @ThreadSafe
  */
 
-public interface RemoteAdminListener {
-	/**
-	 * @param event
-	 */
-	void remoteAdminEvent( RemoteAdminEvent event);
+public interface RemoteServiceAdminListener {
+    /**
+     * Receive a Remote Service Admin event.
+     * @param event
+     */
+    void remoteAdminEvent(RemoteServiceAdminEvent event);
 }

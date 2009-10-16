@@ -38,10 +38,10 @@ import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.policy.PolicySubject;
 
 /**
@@ -61,9 +61,8 @@ public class DefaultBeanModelProcessor<T> extends BaseAssemblyProcessor implemen
     public DefaultBeanModelProcessor(FactoryExtensionPoint modeFactories,
                                      QName artifactType,
                                      Class<T> modelClass,
-                                     Object modelFactory,
-                                     Monitor monitor) {
-        super(modeFactories, null, monitor);
+                                     Object modelFactory) {
+        super(modeFactories, null);
         this.artifactType = artifactType;
         this.modelClass = modelClass;
         this.modelFactory = modelFactory;
@@ -119,7 +118,7 @@ public class DefaultBeanModelProcessor<T> extends BaseAssemblyProcessor implemen
         }
     }
 
-    public T read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+    public T read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException, XMLStreamException {
 
         // Read an element
         try {
@@ -165,12 +164,12 @@ public class DefaultBeanModelProcessor<T> extends BaseAssemblyProcessor implemen
 
         } catch (Exception e) {
         	ContributionReadException ce = new ContributionReadException(e);
-        	error("ContributionReadException", reader, ce);
+        	error(context.getMonitor(), "ContributionReadException", reader, ce);
             throw ce;
         }
     }
 
-    public void write(T bean, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
+    public void write(T bean, XMLStreamWriter writer, ProcessorContext context) throws ContributionWriteException, XMLStreamException {
         try {
             // Write the bean properties as attributes
             List<XAttr> attrs = new ArrayList<XAttr>();
@@ -189,12 +188,12 @@ public class DefaultBeanModelProcessor<T> extends BaseAssemblyProcessor implemen
 
         } catch (Exception e) {
         	ContributionWriteException ce = new ContributionWriteException(e);
-        	error("ContributionWriteException", writer, ce);
+        	error(context.getMonitor(), "ContributionWriteException", writer, ce);
             throw ce;
         }
     }
 
-    public void resolve(T bean, ModelResolver resolver) throws ContributionResolveException {
+    public void resolve(T bean, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
 
         // Resolve and merge the component type associated with an
         // implementation model
@@ -211,7 +210,7 @@ public class DefaultBeanModelProcessor<T> extends BaseAssemblyProcessor implemen
                     componentType.setURI(uri);
                     componentType.setUnresolved(true);
 
-                    componentType = resolver.resolveModel(ComponentType.class, componentType);
+                    componentType = resolver.resolveModel(ComponentType.class, componentType, context);
                     if (componentType != null && !componentType.isUnresolved()) {
 
                         // We found a component type, merge it into the implementation model

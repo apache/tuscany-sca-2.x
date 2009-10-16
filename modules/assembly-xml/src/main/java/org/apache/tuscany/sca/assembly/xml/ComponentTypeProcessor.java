@@ -55,6 +55,7 @@ import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXAttributeProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
@@ -62,7 +63,6 @@ import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.OperationImpl;
-import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.policy.PolicySubject;
 import org.w3c.dom.Document;
 
@@ -83,12 +83,11 @@ public class ComponentTypeProcessor extends BaseAssemblyProcessor implements StA
      */
     public ComponentTypeProcessor(FactoryExtensionPoint modelFactories,
                                   StAXArtifactProcessor extensionProcessor,
-                                  StAXAttributeProcessor extensionAttributeProcessor,
-                                  Monitor monitor) {
-        super(modelFactories, extensionProcessor, monitor);
+                                  StAXAttributeProcessor extensionAttributeProcessor) {
+        super(modelFactories, extensionProcessor);
     }
     
-    public ComponentType read(XMLStreamReader reader) throws ContributionReadException {
+    public ComponentType read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException {
         ComponentType componentType = null;
         Service service = null;
         Reference reference = null;
@@ -136,11 +135,11 @@ public class ComponentTypeProcessor extends BaseAssemblyProcessor implements StA
     
                             // Read a <property>
                             property = assemblyFactory.createProperty();
-                            readAbstractProperty(property, reader);
+                            readAbstractProperty(property, reader, context);
                             policyProcessor.readPolicies(property, reader);
                             
                             // Read the property value
-                            Document value = readPropertyValue(property.getXSDElement(), property.getXSDType(), property.isMany(), reader);
+                            Document value = readPropertyValue(property.getXSDElement(), property.getXSDType(), property.isMany(), reader, context);
                             property.setValue(value);
                             
                             componentType.getProperties().add(property);
@@ -171,7 +170,7 @@ public class ComponentTypeProcessor extends BaseAssemblyProcessor implements StA
                         } else {
     
                             // Read an extension element
-                            Object extension = extensionProcessor.read(reader);
+                            Object extension = extensionProcessor.read(reader, context);
                             if (extension != null) {
                                 if (extension instanceof InterfaceContract) {
     
@@ -231,13 +230,13 @@ public class ComponentTypeProcessor extends BaseAssemblyProcessor implements StA
         }
         catch (XMLStreamException e) {
             ContributionReadException ex = new ContributionReadException(e);
-            error("XMLStreamException", reader, ex);
+            error(context.getMonitor(), "XMLStreamException", reader, ex);
         }
         
         return componentType;
     }
     
-    public void write(ComponentType componentType, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
+    public void write(ComponentType componentType, XMLStreamWriter writer, ProcessorContext context) throws ContributionWriteException, XMLStreamException {
         
         // Write <componentType> element
         writeStartDocument(writer, COMPONENT_TYPE,
@@ -249,11 +248,11 @@ public class ComponentTypeProcessor extends BaseAssemblyProcessor implements StA
                        policyProcessor.writePolicies(service));
 
             if (service.getInterfaceContract() != null) {
-                extensionProcessor.write(service.getInterfaceContract(), writer);
+                extensionProcessor.write(service.getInterfaceContract(), writer, context);
             }
             
             for (Binding binding: service.getBindings()) {
-                extensionProcessor.write(binding, writer);
+                extensionProcessor.write(binding, writer, context);
             }
             
             if (service.getCallback() != null) {
@@ -261,17 +260,17 @@ public class ComponentTypeProcessor extends BaseAssemblyProcessor implements StA
                 writeStart(writer, CALLBACK, policyProcessor.writePolicies(callback));
 
                 for (Binding binding: callback.getBindings()) {
-                    extensionProcessor.write(binding, writer);
+                    extensionProcessor.write(binding, writer, context);
                 }
                 for (Object extension: callback.getExtensions()) {
-                    extensionProcessor.write(extension, writer);
+                    extensionProcessor.write(extension, writer, context);
                 }
                 
                 writeEnd(writer);
             }
             
             for (Object extension: service.getExtensions()) {
-                extensionProcessor.write(extension, writer);
+                extensionProcessor.write(extension, writer, context);
             }
             
             writeEnd(writer);
@@ -286,10 +285,10 @@ public class ComponentTypeProcessor extends BaseAssemblyProcessor implements StA
                   writeTargets(reference),
                   policyProcessor.writePolicies(reference));
 
-            extensionProcessor.write(reference.getInterfaceContract(), writer);
+            extensionProcessor.write(reference.getInterfaceContract(), writer, context);
             
             for (Binding binding: reference.getBindings()) {
-                extensionProcessor.write(binding, writer);
+                extensionProcessor.write(binding, writer, context);
             }
             
             if (reference.getCallback() != null) {
@@ -298,17 +297,17 @@ public class ComponentTypeProcessor extends BaseAssemblyProcessor implements StA
                            policyProcessor.writePolicies(callback));
 
                 for (Binding binding: callback.getBindings()) {
-                    extensionProcessor.write(binding, writer);
+                    extensionProcessor.write(binding, writer, context);
                 }
                 for (Object extension: callback.getExtensions()) {
-                    extensionProcessor.write(extension, writer);
+                    extensionProcessor.write(extension, writer, context);
                 }
                 
                 writeEnd(writer);
             }
 
             for (Object extension: reference.getExtensions()) {
-                extensionProcessor.write(extension, writer);
+                extensionProcessor.write(extension, writer, context);
             }
             
             writeEnd(writer);
@@ -330,7 +329,7 @@ public class ComponentTypeProcessor extends BaseAssemblyProcessor implements StA
 
             // Write extensions
             for (Object extension : property.getExtensions()) {
-                extensionProcessor.write(extension, writer);
+                extensionProcessor.write(extension, writer, context);
             }
 
             writeEnd(writer);
@@ -339,7 +338,7 @@ public class ComponentTypeProcessor extends BaseAssemblyProcessor implements StA
         // Write extension elements
         if (componentType instanceof Extensible) {
             for (Object extension: ((Extensible)componentType).getExtensions()) {
-                extensionProcessor.write(extension, writer);
+                extensionProcessor.write(extension, writer, context);
             }
         }
         
@@ -364,11 +363,11 @@ public class ComponentTypeProcessor extends BaseAssemblyProcessor implements StA
         writeEndDocument(writer);
     }
     
-    public void resolve(ComponentType componentType, ModelResolver resolver) throws ContributionResolveException {
+    public void resolve(ComponentType componentType, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
 
         // Resolve component type services and references
-        resolveContracts(componentType.getServices(), resolver);
-        resolveContracts(componentType.getReferences(), resolver);
+        resolveContracts(componentType.getServices(), resolver, context);
+        resolveContracts(componentType.getReferences(), resolver, context);
     }
     
     public QName getArtifactType() {

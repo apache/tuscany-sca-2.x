@@ -35,21 +35,23 @@ public interface StAXAttributeProcessor<M> extends ArtifactProcessor<M>{
 
     /**
      * Reads a model from an XMLStreamReader.
-     * 
      * @param reader The XMLStreamReader
+     * @param context The context
+     * 
      * @return A model representation of the input.
      */
-    M read(QName attributeName, XMLStreamReader reader) throws ContributionReadException, XMLStreamException;
+    M read(QName attributeName, XMLStreamReader reader, ProcessorContext context) throws ContributionReadException, XMLStreamException;
     
     /**
      * Writes a model to an XMLStreamWriter.
      * 
      * @param model A model representing the source
      * @param writer The XML stream writer
+     * @param context The context
      * @throws ContributionWriteException
      * @throws XMLStreamException
      */
-    void write(M model, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException;
+    void write(M model, XMLStreamWriter writer, ProcessorContext context) throws ContributionWriteException, XMLStreamException;
     
     /**
      * Returns the type of artifact handled by this artifact processor.

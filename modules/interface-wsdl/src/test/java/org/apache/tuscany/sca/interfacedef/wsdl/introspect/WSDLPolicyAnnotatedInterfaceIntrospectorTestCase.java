@@ -25,6 +25,7 @@ import java.net.URL;
 import javax.wsdl.PortType;
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.interfacedef.ConversationSequence;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -47,22 +48,24 @@ public class WSDLPolicyAnnotatedInterfaceIntrospectorTestCase extends AbstractWS
 
     private PortType portType;
     private WSDLDefinition definition;
+    private ProcessorContext context;
+
 
     @Before
     @Override
     public void setUp() throws Exception {
         super.setUp();
-
+        context = new ProcessorContext();
         URL url = getClass().getResource("/policy/stockquote_policy.wsdl");
-        definition = (WSDLDefinition)documentProcessor.read(null, new URI("stockquote.wsdl"), url);
-        resolver.addModel(definition);
-        definition = resolver.resolveModel(WSDLDefinition.class, definition);
+        definition = (WSDLDefinition)documentProcessor.read(null, new URI("stockquote.wsdl"), url, context);
+        resolver.addModel(definition, context);
+        definition = resolver.resolveModel(WSDLDefinition.class, definition, context);
         portType = definition.getDefinition().getPortType(PORTTYPE_NAME);
     }
 
     @Test
     public final void testIntrospectPortType() throws InvalidInterfaceException {
-        WSDLInterface contract = wsdlFactory.createWSDLInterface(portType, definition, resolver);
+        WSDLInterface contract = wsdlFactory.createWSDLInterface(portType, definition, resolver, context.getMonitor());
         Assert.assertEquals(contract.getName().getLocalPart(), "StockQuotePortType");
         Assert.assertTrue(contract.isConversational());
         

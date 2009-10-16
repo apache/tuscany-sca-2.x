@@ -31,6 +31,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXAttributeProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXAttributeProcessorExtensionPoint;
@@ -56,7 +57,7 @@ public class ReadWriteAnyAttributeTestCase {
     
     private XMLInputFactory inputFactory;
     private ExtensibleStAXArtifactProcessor staxProcessor;
-
+    private ProcessorContext context;
 
     /**
      * Initialize the test environment
@@ -67,6 +68,7 @@ public class ReadWriteAnyAttributeTestCase {
      */
     private void init(StAXAttributeProcessor<?> attributeProcessor) throws Exception {
     	ExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
+    	context = new ProcessorContext(extensionPoints);
     	inputFactory = XMLInputFactory.newInstance();
     	StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
 
@@ -75,7 +77,7 @@ public class ReadWriteAnyAttributeTestCase {
     		staxAttributeProcessors.addArtifactProcessor(attributeProcessor);
     	}
     	
-    	staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance(), null);
+    	staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
     }
 
     /**
@@ -88,12 +90,12 @@ public class ReadWriteAnyAttributeTestCase {
     	init(new TestAttributeProcessor());
 
     	XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(XML));
-    	Composite composite = (Composite) staxProcessor.read(reader);
+    	Composite composite = (Composite) staxProcessor.read(reader, context);
     	assertNotNull(composite);
     	reader.close();
 
     	ByteArrayOutputStream bos = new ByteArrayOutputStream();
-    	staxProcessor.write(composite, bos);
+    	staxProcessor.write(composite, bos, context);
 
     	// used for debug comparison
     	// System.out.println(XML);
@@ -112,12 +114,12 @@ public class ReadWriteAnyAttributeTestCase {
     	init(null);
 
     	XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(XML));
-    	Composite composite = (Composite) staxProcessor.read(reader);
+    	Composite composite = (Composite) staxProcessor.read(reader, context);
     	assertNotNull(composite);
     	reader.close();
 
     	ByteArrayOutputStream bos = new ByteArrayOutputStream();
-    	staxProcessor.write(composite, bos);
+    	staxProcessor.write(composite, bos, context);
 
     	// used for debug comparison
     	// System.out.println(XML);

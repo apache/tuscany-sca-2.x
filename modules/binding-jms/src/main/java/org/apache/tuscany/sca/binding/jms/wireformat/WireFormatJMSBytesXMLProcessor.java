@@ -28,10 +28,10 @@ import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.monitor.Monitor;
 
 
 public class WireFormatJMSBytesXMLProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<WireFormatJMSBytesXML> {
@@ -40,17 +40,17 @@ public class WireFormatJMSBytesXMLProcessor extends BaseStAXArtifactProcessor im
         return WireFormatJMSBytesXML.WIRE_FORMAT_JMS_BYTES_QNAME;
     }
     
-    public WireFormatJMSBytesXMLProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
+    public WireFormatJMSBytesXMLProcessor(FactoryExtensionPoint modelFactories) {
     }
 
     
-    public WireFormatJMSBytesXML read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+    public WireFormatJMSBytesXML read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException, XMLStreamException {
         WireFormatJMSBytesXML wireFormat = new WireFormatJMSBytesXML();
          
         return wireFormat;
     }
 
-    public void write(WireFormatJMSBytesXML wireFormat, XMLStreamWriter writer) 
+    public void write(WireFormatJMSBytesXML wireFormat, XMLStreamWriter writer, ProcessorContext context) 
         throws ContributionWriteException, XMLStreamException {
         String prefix = "tuscany";
         writer.writeStartElement(prefix, 
@@ -65,7 +65,7 @@ public class WireFormatJMSBytesXMLProcessor extends BaseStAXArtifactProcessor im
         return WireFormatJMSBytesXML.class;
     }
 
-    public void resolve(WireFormatJMSBytesXML arg0, ModelResolver arg1) throws ContributionResolveException {
+    public void resolve(WireFormatJMSBytesXML arg0, ModelResolver arg1, ProcessorContext context) throws ContributionResolveException {
 
     }
     

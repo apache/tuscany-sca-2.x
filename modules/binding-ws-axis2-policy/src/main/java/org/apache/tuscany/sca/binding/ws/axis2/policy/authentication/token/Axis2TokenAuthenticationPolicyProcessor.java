@@ -30,10 +30,10 @@ import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  *
@@ -47,11 +47,11 @@ public class Axis2TokenAuthenticationPolicyProcessor extends BaseStAXArtifactPro
         return Axis2TokenAuthenticationPolicy.AXIS2_TOKEN_AUTHENTICATION_POLICY_QNAME;
     }
     
-    public Axis2TokenAuthenticationPolicyProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
+    public Axis2TokenAuthenticationPolicyProcessor(FactoryExtensionPoint modelFactories) {
     }
 
     
-    public Axis2TokenAuthenticationPolicy read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+    public Axis2TokenAuthenticationPolicy read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException, XMLStreamException {
         Axis2TokenAuthenticationPolicy policy = new Axis2TokenAuthenticationPolicy();
         int event = reader.getEventType();
         QName name = null;
@@ -83,7 +83,7 @@ public class Axis2TokenAuthenticationPolicyProcessor extends BaseStAXArtifactPro
         return policy;
     }
 
-    public void write(Axis2TokenAuthenticationPolicy policy, XMLStreamWriter writer) 
+    public void write(Axis2TokenAuthenticationPolicy policy, XMLStreamWriter writer, ProcessorContext context) 
         throws ContributionWriteException, XMLStreamException {
         String prefix = "tuscany";
         writer.writeStartElement(prefix, 
@@ -106,7 +106,7 @@ public class Axis2TokenAuthenticationPolicyProcessor extends BaseStAXArtifactPro
         return Axis2TokenAuthenticationPolicy.class;
     }
 
-    public void resolve(Axis2TokenAuthenticationPolicy arg0, ModelResolver arg1) throws ContributionResolveException {
+    public void resolve(Axis2TokenAuthenticationPolicy arg0, ModelResolver arg1, ProcessorContext context) throws ContributionResolveException {
 
     }
     

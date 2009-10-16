@@ -26,6 +26,7 @@ import java.util.List;
 import javax.wsdl.PortType;
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -54,16 +55,17 @@ public class WSDLInterfaceIntrospectorTestCase extends AbstractWSDLTestCase {
         super.setUp();
 
         URL url = getClass().getResource("../xml/stockquote.wsdl");
-        definition = (WSDLDefinition)documentProcessor.read(null, new URI("stockquote.wsdl"), url);
-        resolver.addModel(definition);
-        definition = resolver.resolveModel(WSDLDefinition.class, definition);
+        ProcessorContext context = new ProcessorContext();
+        definition = (WSDLDefinition)documentProcessor.read(null, new URI("stockquote.wsdl"), url, context);
+        resolver.addModel(definition, context);
+        definition = resolver.resolveModel(WSDLDefinition.class, definition, context);
         portType = definition.getDefinition().getPortType(PORTTYPE_NAME);
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public final void testIntrospectPortType() throws InvalidInterfaceException {
-        WSDLInterface contract = wsdlFactory.createWSDLInterface(portType, definition, resolver);
+        WSDLInterface contract = wsdlFactory.createWSDLInterface(portType, definition, resolver, null);
         Assert.assertEquals(contract.getName().getLocalPart(), "StockQuotePortType");
         List<Operation> operations = contract.getOperations();
         Assert.assertEquals(1, operations.size());

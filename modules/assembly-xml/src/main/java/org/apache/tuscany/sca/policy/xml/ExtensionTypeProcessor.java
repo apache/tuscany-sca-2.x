@@ -32,6 +32,7 @@ import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.monitor.Monitor;
@@ -52,16 +53,14 @@ abstract class ExtensionTypeProcessor extends BaseStAXArtifactProcessor implemen
     StAXArtifactProcessor<ExtensionType>, PolicyConstants {
 
     private PolicyFactory policyFactory;
-    private Monitor monitor;
+    
 
-    protected abstract ExtensionType resolveExtensionType(ExtensionType extnType, ModelResolver resolver)
+    protected abstract ExtensionType resolveExtensionType(ExtensionType extnType, ModelResolver resolver, ProcessorContext context)
         throws ContributionResolveException;
 
     public ExtensionTypeProcessor(PolicyFactory policyFactory,
-                                  StAXArtifactProcessor<Object> extensionProcessor,
-                                  Monitor monitor) {
+                                  StAXArtifactProcessor<Object> extensionProcessor) {
         this.policyFactory = policyFactory;
-        this.monitor = monitor;
     }
 
     /**
@@ -71,7 +70,7 @@ abstract class ExtensionTypeProcessor extends BaseStAXArtifactProcessor implemen
      * @param message
      * @param model
      */
-    private void error(String message, Object model, Object... messageParameters) {
+    private void error(Monitor monitor, String message, Object model, Object... messageParameters) {
         if (monitor != null) {
             Problem problem =
                 monitor.createProblem(this.getClass().getName(),
@@ -84,7 +83,7 @@ abstract class ExtensionTypeProcessor extends BaseStAXArtifactProcessor implemen
         }
     }
 
-    public ExtensionType read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+    public ExtensionType read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException, XMLStreamException {
         QName extType = getArtifactType();
         QName type = getQName(reader, "type");
 
@@ -95,7 +94,7 @@ abstract class ExtensionTypeProcessor extends BaseStAXArtifactProcessor implemen
             } else if (IMPLEMENTATION_TYPE_QNAME.equals(extType)) {
                 extensionType = policyFactory.createImplementationType();
             } else {
-                error("UnrecognizedExtensionType", reader, type);
+                error(context.getMonitor(), "UnrecognizedExtensionType", reader, type);
                 return null;
                 //throw new ContributionReadException("Unrecognized ExtensionType - " + type);
             }
@@ -107,7 +106,7 @@ abstract class ExtensionTypeProcessor extends BaseStAXArtifactProcessor implemen
             return extensionType;
 
         } else {
-            error("RequiredAttributeMissing", reader, extType);
+            error(context.getMonitor(), "RequiredAttributeMissing", reader, extType);
             //throw new ContributionReadException("Required attribute '" + TYPE + 
             //"' missing from BindingType Definition");
         }
@@ -140,7 +139,7 @@ abstract class ExtensionTypeProcessor extends BaseStAXArtifactProcessor implemen
         }
     }
 
-    public void write(ExtensionType extnType, XMLStreamWriter writer) throws ContributionWriteException,
+    public void write(ExtensionType extnType, XMLStreamWriter writer, ProcessorContext context) throws ContributionWriteException,
         XMLStreamException {
 
         // Write an <sca:bindingType or sca:implementationType>
@@ -185,28 +184,28 @@ abstract class ExtensionTypeProcessor extends BaseStAXArtifactProcessor implemen
         }
     }
 
-    public void resolve(ExtensionType extnType, ModelResolver resolver) throws ContributionResolveException {
+    public void resolve(ExtensionType extnType, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
 
         if (extnType != null && extnType.isUnresolved()) {
-            resolveAlwaysProvidedIntents(extnType, resolver);
-            resolveMayProvideIntents(extnType, resolver);
+            resolveAlwaysProvidedIntents(extnType, resolver, context);
+            resolveMayProvideIntents(extnType, resolver, context);
             extnType.setUnresolved(false);
             //resolveExtensionType(extnType, resolver);
         }
     }
 
-    private void resolveAlwaysProvidedIntents(ExtensionType extensionType, ModelResolver resolver)
+    private void resolveAlwaysProvidedIntents(ExtensionType extensionType, ModelResolver resolver, ProcessorContext context)
         throws ContributionResolveException {
         if (extensionType != null) {
             // resolve all provided intents
             List<Intent> alwaysProvided = new ArrayList<Intent>();
             for (Intent providedIntent : extensionType.getAlwaysProvidedIntents()) {
                 if (providedIntent.isUnresolved()) {
-                    providedIntent = resolver.resolveModel(Intent.class, providedIntent);
+                    providedIntent = resolver.resolveModel(Intent.class, providedIntent, context);
                     if (!providedIntent.isUnresolved()) {
                         alwaysProvided.add(providedIntent);
                     } else {
-                        error("AlwaysProvidedIntentNotFound", resolver, providedIntent, extensionType);
+                        error(context.getMonitor(), "AlwaysProvidedIntentNotFound", resolver, providedIntent, extensionType);
                         //throw new ContributionResolveException("Always Provided Intent - " + providedIntent
                         //+ " not found for ExtensionType "
                         //+ extensionType);
@@ -220,18 +219,18 @@ abstract class ExtensionTypeProcessor extends BaseStAXArtifactProcessor implemen
         }
     }
 
-    private void resolveMayProvideIntents(ExtensionType extensionType, ModelResolver resolver)
+    private void resolveMayProvideIntents(ExtensionType extensionType, ModelResolver resolver, ProcessorContext context)
         throws ContributionResolveException {
         if (extensionType != null) {
             // resolve all provided intents
             List<Intent> mayProvide = new ArrayList<Intent>();
             for (Intent providedIntent : extensionType.getMayProvidedIntents()) {
                 if (providedIntent.isUnresolved()) {
-                    providedIntent = resolver.resolveModel(Intent.class, providedIntent);
+                    providedIntent = resolver.resolveModel(Intent.class, providedIntent, context);
                     if (!providedIntent.isUnresolved()) {
                         mayProvide.add(providedIntent);
                     } else {
-                        error("MayProvideIntentNotFound", resolver, providedIntent, extensionType);
+                        error(context.getMonitor(), "MayProvideIntentNotFound", resolver, providedIntent, extensionType);
                         //throw new ContributionResolveException("May Provide Intent - " + providedIntent
                         //+ " not found for ExtensionType "
                         //+ extensionType);

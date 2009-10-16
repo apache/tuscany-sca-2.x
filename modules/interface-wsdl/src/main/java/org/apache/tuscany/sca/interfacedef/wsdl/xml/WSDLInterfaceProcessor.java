@@ -30,6 +30,7 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
@@ -53,21 +54,15 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
 public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfaceContract>, WSDLConstants {
 
     private WSDLFactory wsdlFactory;
-    private Monitor monitor;
+    
     private InterfaceContractMapper interfaceContractMapper;
 
-//    public WSDLInterfaceProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
-//        this.wsdlFactory = modelFactories.getFactory(WSDLFactory.class);
-//        this.monitor = monitor;
-//    }
-    
-    public WSDLInterfaceProcessor(ExtensionPointRegistry registry, Monitor monitor) {
+    public WSDLInterfaceProcessor(ExtensionPointRegistry registry) {
         FactoryExtensionPoint modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
         this.interfaceContractMapper =
             registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(InterfaceContractMapper.class);
         
         this.wsdlFactory = modelFactories.getFactory(WSDLFactory.class);
-        this.monitor = monitor;
     }
     /**
      * Report a warning.
@@ -76,7 +71,7 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
      * @param message
      * @param model
      */
-    private void warning(String message, Object model, Object... messageParameters) {
+    private void warning(Monitor monitor, String message, Object model, Object... messageParameters) {
         if (monitor != null) {
             Problem problem = monitor.createProblem(this.getClass().getName(), "interface-wsdlxml-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
             monitor.problem(problem);
@@ -90,7 +85,7 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
      * @param message
      * @param model
      */
-    private void error(String message, Object model, Object... messageParameters) {
+    private void error(Monitor monitor, String message, Object model, Object... messageParameters) {
         if (monitor != null) {
             Problem problem = monitor.createProblem(this.getClass().getName(), "interface-wsdlxml-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
             monitor.problem(problem);
@@ -104,7 +99,7 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
     * @param message
     * @param model
     */
-    private void error(String message, Object model, Exception ex) {
+    private void error(Monitor monitor, String message, Object model, Exception ex) {
         if (monitor != null) {
             Problem problem = monitor.createProblem(this.getClass().getName(), "interface-wsdlxml-validation-messages", Severity.ERROR, model, message, ex);
             monitor.problem(problem);
@@ -119,7 +114,7 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
      */
     private static String FRAGMENT_INTERFACE = "wsdl.interface";
     private static String FRAGMENT_PORTTYPE = "wsdl.porttype";
-    private WSDLInterface createWSDLInterface(String uri) throws ContributionReadException {
+    private WSDLInterface createWSDLInterface(String uri, Monitor monitor) throws ContributionReadException {
         
     	WSDLInterface wsdlInterface = null;        
 
@@ -127,7 +122,7 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
         // namespace#wsdl.interface(name)
         int index = uri.indexOf('#');
         if (index == -1) {
-        	error("InvalidWSDLInterfaceAttr", wsdlFactory, uri);
+        	error(monitor, "InvalidWSDLInterfaceAttr", wsdlFactory, uri);
             //throw new ContributionReadException("Invalid WSDL interface attribute: " + uri);
         } else {
         	// Read the URI and extract namespace and fragment
@@ -143,7 +138,7 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
         		porttype = name.substring("wsdl.porttype(".length(), name.length() - 1);
         	} // end if
         	if( porttype == null ) {
-        		error("InvalidWSDLInterfaceAttr", wsdlFactory, uri);
+        		error(monitor, "InvalidWSDLInterfaceAttr", wsdlFactory, uri);
         		return null;
         	} // end if
         	wsdlInterface = wsdlFactory.createWSDLInterface();
@@ -167,9 +162,10 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
      * @param reader - XMLStreamReader holding the <interface.wsdl/> element
      * @return - the WSDLInterfaceContract
      */
-    public WSDLInterfaceContract read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+    public WSDLInterfaceContract read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException, XMLStreamException {
         // Read an <interface.wsdl>
         WSDLInterfaceContract wsdlInterfaceContract = wsdlFactory.createWSDLInterfaceContract();
+        Monitor monitor = context.getMonitor();
         
         // Read wsdlLocation
         String location = reader.getAttributeValue(WSDLI_NS, WSDL_LOCATION);
@@ -177,14 +173,14 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
         
         String uri = reader.getAttributeValue(null, INTERFACE);
         if (uri != null) {
-            WSDLInterface wsdlInterface = createWSDLInterface(uri);
+            WSDLInterface wsdlInterface = createWSDLInterface(uri, monitor);
             if (wsdlInterface != null)
                 wsdlInterfaceContract.setInterface(wsdlInterface);
         }
         
         uri = reader.getAttributeValue(null, CALLBACK_INTERFACE);
         if (uri != null) {
-            WSDLInterface wsdlCallbackInterface = createWSDLInterface(uri);
+            WSDLInterface wsdlCallbackInterface = createWSDLInterface(uri, monitor);
             if (wsdlCallbackInterface != null)
                 wsdlInterfaceContract.setCallbackInterface(wsdlCallbackInterface);
         }
@@ -209,7 +205,7 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
         return wsdlInterfaceContract;
     }
     
-    public void write(WSDLInterfaceContract wsdlInterfaceContract, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
+    public void write(WSDLInterfaceContract wsdlInterfaceContract, XMLStreamWriter writer, ProcessorContext context) throws ContributionWriteException, XMLStreamException {
         // Write an <interface.wsdl>
         writer.writeStartElement(WSDLConstants.SCA11_NS, INTERFACE_WSDL);
 
@@ -236,12 +232,12 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
         writer.writeEndElement();
     }
     
-    private WSDLInterface resolveWSDLInterface(WSDLInterface wsdlInterface, ModelResolver resolver) throws ContributionResolveException {
+    private WSDLInterface resolveWSDLInterface(WSDLInterface wsdlInterface, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
         
         if (wsdlInterface != null && wsdlInterface.isUnresolved()) {
-
+            Monitor monitor = context.getMonitor();
             // Resolve the WSDL interface
-            wsdlInterface = resolver.resolveModel(WSDLInterface.class, wsdlInterface);
+            wsdlInterface = resolver.resolveModel(WSDLInterface.class, wsdlInterface, context);
             if (wsdlInterface.isUnresolved()) {
 
                 // If the WSDL interface has never been resolved yet, do it now
@@ -249,7 +245,7 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
                 WSDLDefinition wsdlDefinition = wsdlFactory.createWSDLDefinition();
                 wsdlDefinition.setUnresolved(true);
                 wsdlDefinition.setNamespace(wsdlInterface.getName().getNamespaceURI());
-                WSDLDefinition resolved = resolver.resolveModel(WSDLDefinition.class, wsdlDefinition);
+                WSDLDefinition resolved = resolver.resolveModel(WSDLDefinition.class, wsdlDefinition, context);
                 if (!resolved.isUnresolved()) {
                     wsdlDefinition.setDefinition(resolved.getDefinition());
                     wsdlDefinition.setLocation(resolved.getLocation());
@@ -263,24 +259,24 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
                         // WSDLInterface to the resolver
                         try {
                             wsdlDefinition.setDefinition(portType.getDefinition());
-                            wsdlInterface = wsdlFactory.createWSDLInterface(portType.getElement(), wsdlDefinition, resolver);
+                            wsdlInterface = wsdlFactory.createWSDLInterface(portType.getElement(), wsdlDefinition, resolver, monitor);
                             wsdlInterface.setWsdlDefinition(wsdlDefinition);
-                            resolver.addModel(wsdlInterface);
+                            resolver.addModel(wsdlInterface, context);
                         } catch (InvalidInterfaceException e) {
                         	ContributionResolveException ce = new ContributionResolveException("Invalid interface when resolving " + 
                         			                                                            portType.toString(), e);
-                        	error("ContributionResolveException", wsdlFactory, ce);
+                        	error(monitor, "ContributionResolveException", wsdlFactory, ce);
                             //throw ce;
                         } // end try                      
                     }
                     else {
-                    	warning("WsdlInterfaceDoesNotMatch", wsdlDefinition, wsdlInterface.getName());
+                    	warning(monitor, "WsdlInterfaceDoesNotMatch", wsdlDefinition, wsdlInterface.getName());
                     } // end if
                 } else {
                 	// If we get here, the WSDLDefinition is unresolved...
                 	ContributionResolveException ce = new ContributionResolveException("WSDLDefinition unresolved " + 
                 			wsdlInterface.getName() );
-                    error("ContributionResolveException", wsdlFactory, ce);
+                    error(monitor, "ContributionResolveException", wsdlFactory, ce);
                 } // end if
             } // end if
         } // end if
@@ -291,8 +287,9 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
     		                                   Monitor monitor, WSDLFactory wsdlFactory) {
         if (wsdlInterface != null && wsdlInterface.isUnresolved()) {
 
+            ProcessorContext context = new ProcessorContext(monitor);
             // Resolve the WSDL interface
-            wsdlInterface = resolver.resolveModel(WSDLInterface.class, wsdlInterface);
+            wsdlInterface = resolver.resolveModel(WSDLInterface.class, wsdlInterface, context);
             if (wsdlInterface.isUnresolved()) {
 
                 // If the WSDL interface has never been resolved yet, do it now
@@ -300,7 +297,7 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
                 WSDLDefinition wsdlDefinition = wsdlFactory.createWSDLDefinition();
                 wsdlDefinition.setUnresolved(true);
                 wsdlDefinition.setNamespace(wsdlInterface.getName().getNamespaceURI());
-                WSDLDefinition resolved = resolver.resolveModel(WSDLDefinition.class, wsdlDefinition);
+                WSDLDefinition resolved = resolver.resolveModel(WSDLDefinition.class, wsdlDefinition, context);
                 if (!resolved.isUnresolved()) {
                     wsdlDefinition.setDefinition(resolved.getDefinition());
                     wsdlDefinition.setLocation(resolved.getLocation());
@@ -314,9 +311,9 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
                         // WSDLInterface to the resolver
                         try {
                             wsdlDefinition.setDefinition(portType.getDefinition());
-                            wsdlInterface = wsdlFactory.createWSDLInterface(portType.getElement(), wsdlDefinition, resolver);
+                            wsdlInterface = wsdlFactory.createWSDLInterface(portType.getElement(), wsdlDefinition, resolver, monitor);
                             wsdlInterface.setWsdlDefinition(wsdlDefinition);
-                            resolver.addModel(wsdlInterface);
+                            resolver.addModel(wsdlInterface, context);
                         } catch (InvalidInterfaceException e) {
                         	ContributionResolveException ce = new ContributionResolveException("Invalid interface when resolving " + 
                         			                                                            portType.toString(), e);
@@ -347,23 +344,23 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
     /**
      * Resolve a WSDLInterfaceContract
      */
-    public void resolve(WSDLInterfaceContract wsdlInterfaceContract, ModelResolver resolver) throws ContributionResolveException {
-        
+    public void resolve(WSDLInterfaceContract wsdlInterfaceContract, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
+        Monitor monitor = context.getMonitor();
         // Resolve the interface and callback interface
-        WSDLInterface wsdlInterface = resolveWSDLInterface((WSDLInterface)wsdlInterfaceContract.getInterface(), resolver);
+        WSDLInterface wsdlInterface = resolveWSDLInterface((WSDLInterface)wsdlInterfaceContract.getInterface(), resolver, context);
         wsdlInterfaceContract.setInterface(wsdlInterface);
         
         // The forward interface (portType) may have a callback interface declared on it using an sca:callback attribute
         WSDLInterface intrinsicWSDLCallbackInterface = wsdlInterface.getCallbackInterface();
         
         // There may be a callback interface explicitly declared on the <interface.wsdl .../> element
-        WSDLInterface wsdlCallbackInterface = resolveWSDLInterface((WSDLInterface)wsdlInterfaceContract.getCallbackInterface(), resolver);
+        WSDLInterface wsdlCallbackInterface = resolveWSDLInterface((WSDLInterface)wsdlInterfaceContract.getCallbackInterface(), resolver, context);
         if( intrinsicWSDLCallbackInterface != null ) {
         	if( wsdlCallbackInterface != null ) {
         		// If there is both a callback interface declared on the forward interface and also one declared on the
         		// interface.wsdl element, then the two interfaces must match [ASM80011]
         		if( !interfaceContractMapper.isEqual(intrinsicWSDLCallbackInterface, wsdlCallbackInterface) ) {
-                    Monitor.error(monitor, WSDLInterfaceProcessor.class.getName(), 
+                    Monitor.error(context.getMonitor(), WSDLInterfaceProcessor.class.getName(), 
                 			"interface-wsdlxml-validation-messages", "IncompatibleCallbacks", 
                 			intrinsicWSDLCallbackInterface.getName().toString(), 
                 			wsdlCallbackInterface.getName().toString() );

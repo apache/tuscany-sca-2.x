@@ -42,11 +42,13 @@ import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.assembly.Implementation;
+import org.apache.tuscany.sca.assembly.builder.BuilderContext;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.common.xml.dom.DOMHelper;
 import org.apache.tuscany.sca.common.xml.stax.StAXHelper;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
@@ -72,9 +74,11 @@ import org.xml.sax.SAXException;
 public class PolicyAttachmentBuilderImpl implements CompositeBuilder {
     private StAXHelper staxHelper;
     private DOMHelper domHelper;
+    private ExtensionPointRegistry registry;
     private StAXArtifactProcessor<Composite> processor;
 
     public PolicyAttachmentBuilderImpl(ExtensionPointRegistry registry) {
+        this.registry = registry;
         domHelper = DOMHelper.getInstance(registry);
         staxHelper = StAXHelper.getInstance(registry);
         StAXArtifactProcessorExtensionPoint processors =
@@ -86,10 +90,10 @@ public class PolicyAttachmentBuilderImpl implements CompositeBuilder {
         return "org.apache.tuscany.sca.policy.builder.PolicyAttachmentBuilder";
     }
 
-    public Composite build(Composite composite, Definitions definitions, Monitor monitor)
+    public Composite build(Composite composite, BuilderContext context)
         throws CompositeBuilderException {
         try {
-            Composite patched = applyXPath(composite, definitions, monitor);
+            Composite patched = applyXPath(composite, context.getDefinitions(), context.getMonitor());
             return patched;
         } catch (Exception e) {
             throw new CompositeBuilderException(e);
@@ -162,7 +166,7 @@ public class PolicyAttachmentBuilderImpl implements CompositeBuilder {
         StringWriter sw = new StringWriter();
         XMLStreamWriter writer = staxHelper.createXMLStreamWriter(sw);
         // Write the composite into a DOM document
-        processor.write(composite, writer);
+        processor.write(composite, writer, new ProcessorContext(registry));
         writer.close();
 
         Document document = domHelper.load(sw.toString());

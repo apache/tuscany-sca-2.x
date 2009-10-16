@@ -29,6 +29,7 @@ import junit.framework.TestCase;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
@@ -41,19 +42,21 @@ public class ReadTestCase extends TestCase {
 
     private XMLInputFactory inputFactory;
     private StAXArtifactProcessor<Object> staxProcessor;
+    private ProcessorContext context;
 
     @Override
     public void setUp() throws Exception {
         DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
+        context = new ProcessorContext(extensionPoints);
         inputFactory = XMLInputFactory.newInstance();
         StAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(extensionPoints);
-        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null, null);
+        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null);
     }
 
     public void testReadComposite() throws Exception {
         InputStream is = getClass().getResourceAsStream("TestWeb.composite");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-        Composite composite = (Composite) staxProcessor.read(reader);
+        Composite composite = (Composite) staxProcessor.read(reader, context);
         assertNotNull(composite);
         assertTrue(((WebImplementation) composite.getComponents().get(0).getImplementation()).getWebURI().equals("MyWebapp"));
     }

@@ -35,14 +35,12 @@ import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXAttributeProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.monitor.Monitor;
-import org.apache.tuscany.sca.monitor.Problem;
-import org.apache.tuscany.sca.monitor.Problem.Severity;
 
 public class HTTPBindingProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<HTTPBinding> {
     private static final String NAME = "name";
@@ -51,17 +49,15 @@ public class HTTPBindingProcessor extends BaseStAXArtifactProcessor implements S
     private HTTPBindingFactory httpBindingFactory;
     private StAXArtifactProcessor<Object> extensionProcessor;
     private StAXAttributeProcessor<Object> extensionAttributeProcessor;
-    private Monitor monitor;
+    
 
     public HTTPBindingProcessor(ExtensionPointRegistry extensionPoints, 
                                 StAXArtifactProcessor extensionProcessor,
-                                StAXAttributeProcessor extensionAttributeProcessor, 
-                                Monitor monitor) {
+                                StAXAttributeProcessor extensionAttributeProcessor) {
         FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         this.httpBindingFactory = modelFactories.getFactory(HTTPBindingFactory.class);
         this.extensionProcessor = (StAXArtifactProcessor<Object>)extensionProcessor;
         this.extensionAttributeProcessor = extensionAttributeProcessor;
-        this.monitor = monitor;
     }
 
     public QName getArtifactType() {
@@ -72,7 +68,7 @@ public class HTTPBindingProcessor extends BaseStAXArtifactProcessor implements S
         return HTTPBinding.class;
     }
 
-    public HTTPBinding read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+    public HTTPBinding read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException, XMLStreamException {
         HTTPBinding httpBinding = httpBindingFactory.createHTTPBinding();
 
         while(reader.hasNext()) {
@@ -94,7 +90,7 @@ public class HTTPBindingProcessor extends BaseStAXArtifactProcessor implements S
                         }
                     } else {
                         // Read an extension element
-                        Object extension = extensionProcessor.read(reader);
+                        Object extension = extensionProcessor.read(reader, context);
                         if (extension != null) {
                             if (extension instanceof WireFormat) {
                                 httpBinding.setRequestWireFormat((WireFormat)extension);
@@ -118,7 +114,7 @@ public class HTTPBindingProcessor extends BaseStAXArtifactProcessor implements S
         return httpBinding;
     }
 
-    public void write(HTTPBinding httpBinding, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
+    public void write(HTTPBinding httpBinding, XMLStreamWriter writer, ProcessorContext context) throws ContributionWriteException, XMLStreamException {
         //writer.writeStartElement(Constants.SCA10_NS, BINDING_HTTP);
 
         writeStart(writer, HTTPBinding.TYPE.getNamespaceURI(), HTTPBinding.TYPE.getLocalPart());
@@ -138,37 +134,9 @@ public class HTTPBindingProcessor extends BaseStAXArtifactProcessor implements S
     }
 
 
-    public void resolve(HTTPBinding model, ModelResolver resolver) throws ContributionResolveException {
+    public void resolve(HTTPBinding model, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
         // Should not need to do anything here for now... 
 
     }
-
-    /**
-     * Report a warning.
-     * 
-     * @param problems
-     * @param message
-     * @param model
-     */
-    private void warning(String message, Object model, Object... messageParameters) {
-        if (monitor != null) {
-            Problem problem = monitor.createProblem(this.getClass().getName(), "binding-http-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
-            monitor.problem(problem);
-        }
-    }
-
-    /**
-     * Report a error.
-     * 
-     * @param problems
-     * @param message
-     * @param model
-     */
-    private void error(String message, Object model, Object... messageParameters) {
-        if (monitor != null) {
-            Problem problem = monitor.createProblem(this.getClass().getName(), "binding-http-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
-            monitor.problem(problem);
-        }        
-    }    
 
 }

@@ -25,12 +25,11 @@ import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.builder.BindingBuilder;
+import org.apache.tuscany.sca.assembly.builder.BuilderContext;
 import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.definitions.Definitions;
-import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  * A composite builder that performs any additional building steps that
@@ -46,9 +45,9 @@ public class ComponentReferenceBindingBuilderImpl implements CompositeBuilder {
         this.builders = registry.getExtensionPoint(BuilderExtensionPoint.class);
     }
 
-    public Composite build(Composite composite, Definitions definitions, Monitor monitor)
+    public Composite build(Composite composite, BuilderContext context)
         throws CompositeBuilderException {
-        buildReferenceBindings(composite, monitor);
+        buildReferenceBindings(composite, context);
         return composite;
     }
 
@@ -56,7 +55,7 @@ public class ComponentReferenceBindingBuilderImpl implements CompositeBuilder {
         return "org.apache.tuscany.sca.assembly.builder.ComponentReferenceBindingBuilder";
     }
 
-    private void buildReferenceBindings(Composite composite, Monitor monitor) {
+    private void buildReferenceBindings(Composite composite, BuilderContext context) {
 
         // find all the component reference bindings (starting at top level)     
         for (Component component : composite.getComponents()) {
@@ -64,7 +63,7 @@ public class ComponentReferenceBindingBuilderImpl implements CompositeBuilder {
                 for (Binding binding : componentReference.getBindings()) {
                     BindingBuilder builder = builders.getBindingBuilder(binding.getType());
                     if (builder != null) {
-                        builder.build(component, componentReference, binding, monitor);
+                        builder.build(component, componentReference, binding, context);
                     }
                 }
             }
@@ -74,7 +73,7 @@ public class ComponentReferenceBindingBuilderImpl implements CompositeBuilder {
         for (Component component : composite.getComponents()) {
             Implementation implementation = component.getImplementation();
             if (implementation instanceof Composite) {
-                buildReferenceBindings((Composite)implementation, monitor);
+                buildReferenceBindings((Composite)implementation, context);
             }
         }
     }

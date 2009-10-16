@@ -60,6 +60,7 @@ import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ExtensibleModelResolver;
@@ -76,7 +77,6 @@ import org.apache.tuscany.sca.implementation.osgi.ServiceDescriptionsFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.osgi.service.remoteadmin.EndpointDescription;
 import org.apache.tuscany.sca.policy.Intent;
@@ -102,7 +102,6 @@ public class EndpointIntrospector {
     private XMLOutputFactory xmlOutputFactory;
     private JavaInterfaceFactory javaInterfaceFactory;
     private StAXArtifactProcessor processor;
-    private Monitor monitor;
 
     /**
      * @param intentName
@@ -145,10 +144,7 @@ public class EndpointIntrospector {
             registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         UtilityExtensionPoint utilities = this.registry.getExtensionPoint(UtilityExtensionPoint.class);
         MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
-        if (monitorFactory != null) {
-            monitor = monitorFactory.createMonitor();
-        }
-        processor = new ExtensibleStAXArtifactProcessor(processors, xmlInputFactory, xmlOutputFactory, monitor);
+        processor = new ExtensibleStAXArtifactProcessor(processors, xmlInputFactory, xmlOutputFactory);
     }
 
     private Intent getIntent(String intent) {
@@ -285,7 +281,7 @@ public class EndpointIntrospector {
         contribution.setURI("urn:" + id);
         contribution.setLocation(bundle.getEntry("/").toString());
         contribution.getDeployables().add(composite);
-        ModelResolver modelResolver = new ExtensibleModelResolver(contribution, modelResolvers, factories, monitor);
+        ModelResolver modelResolver = new ExtensibleModelResolver(contribution, modelResolvers, factories);
         contribution.setModelResolver(modelResolver);
         contribution.setUnresolved(true);
         return contribution;
@@ -361,7 +357,7 @@ public class EndpointIntrospector {
         contribution.setURI("urn:" + id);
         contribution.setLocation(bundle.getEntry("/").toString());
         contribution.getDeployables().add(composite);
-        ModelResolver modelResolver = new ExtensibleModelResolver(contribution, modelResolvers, factories, monitor);
+        ModelResolver modelResolver = new ExtensibleModelResolver(contribution, modelResolvers, factories);
         contribution.setModelResolver(modelResolver);
         contribution.setUnresolved(true);
         return contribution;
@@ -409,7 +405,7 @@ public class EndpointIntrospector {
         contribution.setURI("urn:" + id);
         contribution.setLocation(bundle.getEntry("/").toString());
         contribution.getDeployables().add(composite);
-        ModelResolver modelResolver = new ExtensibleModelResolver(contribution, modelResolvers, factories, monitor);
+        ModelResolver modelResolver = new ExtensibleModelResolver(contribution, modelResolvers, factories);
         contribution.setModelResolver(modelResolver);
         contribution.setUnresolved(true);
         return contribution;
@@ -436,7 +432,7 @@ public class EndpointIntrospector {
         try {
             XMLStreamReader reader = xmlInputFactory.createXMLStreamReader(is);
             reader.nextTag();
-            Object model = processor.read(reader);
+            Object model = processor.read(reader, new ProcessorContext(registry));
             if (model instanceof BindingDescriptions) {
                 return ((BindingDescriptions)model);
             } else {

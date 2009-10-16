@@ -34,7 +34,8 @@ public interface ExtendedArtifactProcessor<M> extends ArtifactProcessor<M> {
      * 
      * @param model The model to resolve
      * @param resolver The resolver to use to resolve referenced models
+     * @param context The context
      */
-    void preResolve(M model, ModelResolver resolver) throws ContributionResolveException;
+    void preResolve(M model, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException;
     
 } // end interface

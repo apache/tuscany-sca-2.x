@@ -29,6 +29,7 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ClassReference;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
@@ -47,14 +48,13 @@ public class JaasAuthenticationPolicyProcessor implements StAXArtifactProcessor<
     private static final String SCA10_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.1";
     public static final QName CALLBACK_HANDLER_QNAME = new QName(SCA10_TUSCANY_NS, callbackHandler);
     public static final QName CONFIGURATION_QNAME = new QName(SCA10_TUSCANY_NS, "configurationName");
-    private Monitor monitor;
+    
     
     public QName getArtifactType() {
         return JAAS_AUTHENTICATION_POLICY_QNAME;
     }
     
-    public JaasAuthenticationPolicyProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
-    	this.monitor = monitor;
+    public JaasAuthenticationPolicyProcessor(FactoryExtensionPoint modelFactories) {
     }
     
     /**
@@ -64,14 +64,14 @@ public class JaasAuthenticationPolicyProcessor implements StAXArtifactProcessor<
      * @param message
      * @param model
      */
-    private void error(String message, Object model, Object... messageParameters) {
+    private void error(Monitor monitor, String message, Object model, Object... messageParameters) {
     	 if (monitor != null) {
     		 Problem problem = monitor.createProblem(this.getClass().getName(), "policy-security-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
     	     monitor.problem(problem);
     	 }        
     }
     
-    public JaasAuthenticationPolicy read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+    public JaasAuthenticationPolicy read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException, XMLStreamException {
         JaasAuthenticationPolicy policy = new JaasAuthenticationPolicy();
         int event = reader.getEventType();
         QName name = null;
@@ -113,7 +113,7 @@ public class JaasAuthenticationPolicyProcessor implements StAXArtifactProcessor<
         return policy;
     }
 
-    public void write(JaasAuthenticationPolicy policy, XMLStreamWriter writer) throws ContributionWriteException,
+    public void write(JaasAuthenticationPolicy policy, XMLStreamWriter writer, ProcessorContext context) throws ContributionWriteException,
                                                         XMLStreamException {
         String prefix = "tuscany";
         writer.writeStartElement(prefix, 
@@ -129,14 +129,14 @@ public class JaasAuthenticationPolicyProcessor implements StAXArtifactProcessor<
         return JaasAuthenticationPolicy.class;
     }
 
-    public void resolve(JaasAuthenticationPolicy policy, ModelResolver resolver) throws ContributionResolveException {
+    public void resolve(JaasAuthenticationPolicy policy, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
 
          if (policy.getCallbackHandlerClassName() != null) {
              ClassReference classReference = new ClassReference(policy.getCallbackHandlerClassName());
-             classReference = resolver.resolveModel(ClassReference.class, classReference);
+             classReference = resolver.resolveModel(ClassReference.class, classReference, context);
              Class<?> callbackClass = classReference.getJavaClass();
              if (callbackClass == null) {
-            	 error("ClassNotFoundException", resolver, policy.getCallbackHandlerClassName());
+            	 error(context.getMonitor(), "ClassNotFoundException", resolver, policy.getCallbackHandlerClassName());
                  //throw new ContributionResolveException(new ClassNotFoundException(policy.getCallbackHandlerClassName()));
              } else {
                  policy.setCallbackHandlerClass(callbackClass);

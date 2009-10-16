@@ -23,7 +23,6 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Implementation;
-import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  * A builder that handles any build-time configuration needed by implementations.
@@ -36,9 +35,10 @@ public interface ImplementationBuilder<I extends Implementation> {
      * Configure a component implementation.
      * 
      * @param component The component 
+     * @param context TODO
      * @param contract The implementation
      */
-    void build(Component component, I implmentation, Monitor monitor);
+    void build(Component component, I implmentation, BuilderContext context);
 
     /**
      * Get the QName of the implementation type

@@ -23,8 +23,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tuscany.sca.contribution.Contribution;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  * A test implementation of a model resolver, based on a map.
@@ -35,10 +35,10 @@ public class TestModelResolver implements ModelResolver {
 
     private Map<Object, Object> map = new HashMap<Object, Object>();
 
-    public TestModelResolver(Contribution contribution, FactoryExtensionPoint modelFactories, Monitor monitor) {
+    public TestModelResolver(Contribution contribution, FactoryExtensionPoint modelFactories) {
     }
 
-    public <T> T resolveModel(Class<T> modelClass, T unresolved) {
+    public <T> T resolveModel(Class<T> modelClass, T unresolved, ProcessorContext context) {
         Object resolved = map.get(unresolved);
         if (resolved != null) {
             // Return the resolved object
@@ -48,11 +48,11 @@ public class TestModelResolver implements ModelResolver {
         return unresolved;
     }
 
-    public void addModel(Object resolved) {
+    public void addModel(Object resolved, ProcessorContext context) {
         map.put(resolved, resolved);
     }
 
-    public Object removeModel(Object resolved) {
+    public Object removeModel(Object resolved, ProcessorContext context) {
         return map.remove(resolved);
     }
 

@@ -34,8 +34,9 @@ public interface ArtifactProcessor<M> {
      * 
      * @param model The model to resolve
      * @param resolver The resolver to use to resolve referenced models
+     * @param context The context for the processor
      */
-    void resolve(M model, ModelResolver resolver) throws ContributionResolveException;
+    void resolve(M model, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException;
     
     /**
      * Returns the type of model handled by this artifact processor.

@@ -36,9 +36,9 @@ import org.apache.tuscany.sca.contribution.DefaultImport;
 import org.apache.tuscany.sca.contribution.Import;
 import org.apache.tuscany.sca.contribution.namespace.NamespaceImport;
 import org.apache.tuscany.sca.contribution.processor.ContributionRuntimeException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.xsd.DefaultXSDFactory;
 import org.apache.tuscany.sca.xsd.XSDFactory;
 import org.apache.tuscany.sca.xsd.XSDefinition;
@@ -61,14 +61,13 @@ public class XSDModelResolver implements ModelResolver {
     private Map<String, List<XSDefinition>> map = new HashMap<String, List<XSDefinition>>();
     private XmlSchemaCollection schemaCollection;
 
-    public XSDModelResolver(Contribution contribution, FactoryExtensionPoint modelFactories, Monitor monitor) {
+    public XSDModelResolver(Contribution contribution, FactoryExtensionPoint modelFactories) {
         this.contribution = contribution;
         this.schemaCollection = new XmlSchemaCollection();
-        schemaCollection.setSchemaResolver(new URIResolverImpl(contribution));
         this.factory = new DefaultXSDFactory();
     }
 
-    public void addModel(Object resolved) {
+    public void addModel(Object resolved, ProcessorContext context) {
         XSDefinition definition = (XSDefinition)resolved;
         List<XSDefinition> list = map.get(definition.getNamespace());
         if (list == null) {
@@ -78,7 +77,7 @@ public class XSDModelResolver implements ModelResolver {
         list.add(definition);
     }
 
-    public Object removeModel(Object resolved) {
+    public Object removeModel(Object resolved, ProcessorContext context) {
         XSDefinition definition = (XSDefinition)resolved;
         List<XSDefinition> list = map.get(definition.getNamespace());
         if (list == null) {
@@ -88,8 +87,8 @@ public class XSDModelResolver implements ModelResolver {
         }
     }
 
-    public <T> T resolveModel(Class<T> modelClass, T unresolved) {
-
+    public <T> T resolveModel(Class<T> modelClass, T unresolved, ProcessorContext context) {
+        schemaCollection.setSchemaResolver(new URIResolverImpl(contribution, context));
     	XSDefinition definition = (XSDefinition)unresolved;        
         String namespace = definition.getNamespace();
         XSDefinition resolved = null;
@@ -233,9 +232,11 @@ public class XSDModelResolver implements ModelResolver {
      */
     public static class URIResolverImpl implements URIResolver {
         private Contribution contribution;
+        private ProcessorContext context;
 
-        public URIResolverImpl(Contribution contribution) {
+        public URIResolverImpl(Contribution contribution, ProcessorContext context) {
             this.contribution = contribution;
+            this.context = context;
         }
 
         public org.xml.sax.InputSource resolveEntity(java.lang.String targetNamespace,
@@ -265,7 +266,7 @@ public class XSDModelResolver implements ModelResolver {
                         	if (namespaceImport.getLocation() == null) {
         	                    // Delegate the resolution to the namespace import resolver
         	                    resolved =
-        	                        namespaceImport.getModelResolver().resolveModel(XSDefinition.class, (XSDefinition)unresolved);
+        	                        namespaceImport.getModelResolver().resolveModel(XSDefinition.class, (XSDefinition)unresolved, context);
         	                    if (!resolved.isUnresolved()) {
         	                        return XMLDocumentHelper.getInputSource(resolved.getLocation().toURL());
         	                    }
@@ -279,7 +280,7 @@ public class XSDModelResolver implements ModelResolver {
                     } else if (import_ instanceof DefaultImport) {
                         // Delegate the resolution to the default import resolver
                         resolved =
-                            import_.getModelResolver().resolveModel(XSDefinition.class, (XSDefinition)unresolved);
+                            import_.getModelResolver().resolveModel(XSDefinition.class, (XSDefinition)unresolved, context);
                         if (!resolved.isUnresolved()) {
                         	return XMLDocumentHelper.getInputSource(resolved.getLocation().toURL());
                         }
@@ -291,7 +292,7 @@ public class XSDModelResolver implements ModelResolver {
                 	NamespaceImport namespaceImport = (NamespaceImport)locationMap.get(location);
                 	// Delegate the resolution to the namespace import resolver
                     resolved =
-                        namespaceImport.getModelResolver().resolveModel(XSDefinition.class, (XSDefinition)unresolved);
+                        namespaceImport.getModelResolver().resolveModel(XSDefinition.class, (XSDefinition)unresolved, context);
                     if (!resolved.isUnresolved()) {
                     	return XMLDocumentHelper.getInputSource(resolved.getLocation().toURL());
                     }

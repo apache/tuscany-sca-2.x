@@ -24,9 +24,9 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.assembly.builder.BindingBuilder;
+import org.apache.tuscany.sca.assembly.builder.BuilderContext;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  * A factory for the calculated WSDL document needed by Web Service bindings.
@@ -44,8 +44,8 @@ public class WebServiceBindingBuilder implements BindingBuilder<WebServiceBindin
     /**
      * Create a calculated WSDL document and save it in the Web Service binding. 
      */
-    public void build(Component component, Contract contract, WebServiceBinding binding, Monitor monitor) {
-        BindingWSDLGenerator.generateWSDL(component, contract, binding, extensionPoints, monitor);
+    public void build(Component component, Contract contract, WebServiceBinding binding, BuilderContext context) {
+        BindingWSDLGenerator.generateWSDL(component, contract, binding, extensionPoints, context.getMonitor());
     }
 
     public QName getBindingType() {

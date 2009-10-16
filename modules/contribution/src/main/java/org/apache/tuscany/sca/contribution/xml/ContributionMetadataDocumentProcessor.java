@@ -31,6 +31,7 @@ import org.apache.tuscany.sca.common.java.io.IOHelper;
 import org.apache.tuscany.sca.contribution.ContributionMetadata;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ValidatingXMLInputFactory;
@@ -48,22 +49,17 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
 public class ContributionMetadataDocumentProcessor implements URLArtifactProcessor<ContributionMetadata>{
     private final StAXArtifactProcessor staxProcessor;
     private final XMLInputFactory inputFactory;
-    private final Monitor monitor;
 
     public ContributionMetadataDocumentProcessor(XMLInputFactory inputFactory,
-                                                 StAXArtifactProcessor staxProcessor,
-                                                 Monitor monitor) {
+                                                 StAXArtifactProcessor staxProcessor) {
         this.inputFactory = inputFactory;
         this.staxProcessor = staxProcessor;
-        this.monitor = monitor;
     }
 
     public ContributionMetadataDocumentProcessor(FactoryExtensionPoint modelFactories,
-                                                 StAXArtifactProcessor staxProcessor,
-                                                 Monitor monitor) {
+                                                 StAXArtifactProcessor staxProcessor) {
         this.inputFactory = modelFactories.getFactory(ValidatingXMLInputFactory.class);
         this.staxProcessor = staxProcessor;
-        this.monitor = monitor;
     }
 
     /**
@@ -73,7 +69,7 @@ public class ContributionMetadataDocumentProcessor implements URLArtifactProcess
      * @param message
      * @param model
      */
-    private void error(String message, Object model, Exception ex) {
+    private void error(Monitor monitor, String message, Object model, Exception ex) {
     	if (monitor != null) {
 	        Problem problem = monitor.createProblem(this.getClass().getName(), "contribution-xml-validation-messages", Severity.ERROR, model, message, ex);
 	        monitor.problem(problem);
@@ -88,7 +84,7 @@ public class ContributionMetadataDocumentProcessor implements URLArtifactProcess
         return ContributionMetadata.class;
     }
 
-    public ContributionMetadata read(URL contributionURL, URI uri, URL url) throws ContributionReadException {
+    public ContributionMetadata read(URL contributionURL, URI uri, URL url, ProcessorContext context) throws ContributionReadException {
         InputStream urlStream = null;
         try {
 
@@ -98,17 +94,17 @@ public class ContributionMetadataDocumentProcessor implements URLArtifactProcess
             reader.nextTag();
 
             // Read the contribution model
-            ContributionMetadata contribution = (ContributionMetadata)staxProcessor.read(reader);
+            ContributionMetadata contribution = (ContributionMetadata)staxProcessor.read(reader, context);
 
             return contribution;
 
         } catch (XMLStreamException e) {
         	ContributionReadException ex = new ContributionReadException(e);
-        	error("XMLStreamException", inputFactory, ex);
+        	error(context.getMonitor(), "XMLStreamException", inputFactory, ex);
         	throw ex;
         } catch (IOException e) {
         	ContributionReadException ex = new ContributionReadException(e);
-        	error("IOException", inputFactory, ex);
+        	error(context.getMonitor(), "IOException", inputFactory, ex);
             throw ex;
         } finally {
             try {
@@ -122,8 +118,8 @@ public class ContributionMetadataDocumentProcessor implements URLArtifactProcess
         }
     }
 
-    public void resolve(ContributionMetadata contribution, ModelResolver resolver) throws ContributionResolveException {
-        staxProcessor.resolve(contribution, resolver);
+    public void resolve(ContributionMetadata contribution, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
+        staxProcessor.resolve(contribution, resolver, context);
     }
 
 }

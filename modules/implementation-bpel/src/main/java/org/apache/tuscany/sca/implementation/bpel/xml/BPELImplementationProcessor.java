@@ -23,9 +23,7 @@ import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.wsdl.PortType;
 import javax.xml.namespace.QName;
@@ -43,6 +41,7 @@ import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
@@ -76,13 +75,12 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
     private AssemblyFactory assemblyFactory;
     private BPELFactory bpelFactory;
     private WSDLFactory wsdlFactory;
-    private Monitor monitor;
     
-    public BPELImplementationProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
+    
+    public BPELImplementationProcessor(FactoryExtensionPoint modelFactories) {
         this.assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         this.wsdlFactory = modelFactories.getFactory(WSDLFactory.class);
         this.bpelFactory = modelFactories.getFactory(BPELFactory.class);
-        this.monitor = monitor;
     }
 
     public QName getArtifactType() {
@@ -95,14 +93,14 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
         return BPELImplementation.class;
     }
 
-    public BPELImplementation read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+    public BPELImplementation read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException, XMLStreamException {
         assert IMPLEMENTATION_BPEL_QNAME.equals(reader.getName());
         
         // Read an <implementation.bpel> element
         BPELImplementation implementation = null;
         
         // Read the process attribute. 
-        QName process = getAttributeValueNS(reader, PROCESS);
+        QName process = getAttributeValueNS(reader, PROCESS, context.getMonitor());
         if (process == null) {
         	return implementation;
         }
@@ -122,21 +120,21 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
         return implementation;
     }
 
-    public void resolve(BPELImplementation implementation, ModelResolver resolver) throws ContributionResolveException {
+    public void resolve(BPELImplementation implementation, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
         
     	if( implementation != null && implementation.isUnresolved()) 
     	{
     	    implementation.setModelResolver(resolver);
     	    
-            BPELProcessDefinition processDefinition = resolveBPELProcessDefinition(implementation, resolver);
+            BPELProcessDefinition processDefinition = resolveBPELProcessDefinition(implementation, resolver, context);
             //resolveBPELImports(processDefinition, resolver);
             if(processDefinition.isUnresolved()) {
-            	error("BPELProcessNotFound", implementation, processDefinition.getName());
+            	error(context.getMonitor(), "BPELProcessNotFound", implementation, processDefinition.getName());
             } else {            
                 implementation.setProcessDefinition(processDefinition);
             
                 // Get the component type from the process definition
-                generateComponentType( implementation );
+                generateComponentType( implementation, context.getMonitor() );
                         
                 //set current implementation resolved 
                 implementation.setUnresolved(false);
@@ -146,7 +144,7 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
     } // end resolve
 
     public void write( BPELImplementation bpelImplementation, 
-    		           XMLStreamWriter writer ) throws ContributionWriteException, XMLStreamException {
+    		           XMLStreamWriter writer, ProcessorContext context ) throws ContributionWriteException, XMLStreamException {
         //FIXME Deal with policy processing...
         // Write <implementation.bpel process="..."/>
         // policyProcessor.writePolicyPrefixes(bpelImplementation, writer);
@@ -161,16 +159,16 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
 
     } // end write
 
-    private BPELProcessDefinition resolveBPELProcessDefinition(BPELImplementation impl, ModelResolver resolver) throws ContributionResolveException {
+    private BPELProcessDefinition resolveBPELProcessDefinition(BPELImplementation impl, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
         QName processName = impl.getProcess();
         BPELProcessDefinition processDefinition = this.bpelFactory.createBPELProcessDefinition();
         processDefinition.setName(processName);
         processDefinition.setUnresolved(true);
         
-        return resolver.resolveModel(BPELProcessDefinition.class, processDefinition);
+        return resolver.resolveModel(BPELProcessDefinition.class, processDefinition, context);
     } // end resolveBPELProcessDefinition
     
-    private void resolveBPELImports(BPELProcessDefinition processDefinition, ModelResolver resolver) throws ContributionResolveException {
+    private void resolveBPELImports(BPELProcessDefinition processDefinition, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
     	for (BPELImportElement bpelImport : processDefinition.getImports()) {
     		String namespace = bpelImport.getNamespace();
     		String location = bpelImport.getLocation();
@@ -182,7 +180,7 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
         				wsdl.setUnresolved(true);
         				wsdl.setNamespace(bpelImport.getNamespace());
 						wsdl.setLocation(new URI(null, bpelImport.getLocation(), null));
-						wsdl = resolver.resolveModel(WSDLDefinition.class, wsdl);
+						wsdl = resolver.resolveModel(WSDLDefinition.class, wsdl, context);
 						
 						if(! wsdl.isUnresolved()) {
 							bpelImport.setWSDLDefinition(wsdl);
@@ -207,7 +205,7 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
      * @param impl
      * @throws ContributionResolveException
      */
-    private void generateComponentType(BPELImplementation impl) throws ContributionResolveException {
+    private void generateComponentType(BPELImplementation impl, Monitor monitor) throws ContributionResolveException {
 
         // Create a ComponentType and mark it unresolved
         ComponentType componentType = assemblyFactory.createComponentType();
@@ -226,9 +224,9 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
             if (pLink.isSCATyped()) {
                 String scaName = pLink.getSCAName();
                 if (pLink.querySCAType().equals("reference")) {
-                    componentType.getReferences().add(generateReference(scaName, pLink.getMyRolePortType(), pLink.getPartnerRolePortType(), theProcess.getInterfaces()));
+                    componentType.getReferences().add(generateReference(scaName, pLink.getMyRolePortType(), pLink.getPartnerRolePortType(), theProcess.getInterfaces(), monitor));
                 } else {
-                    componentType.getServices().add(generateService(scaName, pLink.getMyRolePortType(), pLink.getPartnerRolePortType(), theProcess.getInterfaces()));
+                    componentType.getServices().add(generateService(scaName, pLink.getMyRolePortType(), pLink.getPartnerRolePortType(), theProcess.getInterfaces(), monitor));
                 } // end if
             } // end if
         } // end for
@@ -249,7 +247,7 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
      * @return
      */
     private Reference generateReference( String name, PortType myRolePT, 
-    		PortType partnerRolePT, Collection<WSDLInterface> theInterfaces) throws ContributionResolveException {
+    		PortType partnerRolePT, Collection<WSDLInterface> theInterfaces, Monitor monitor) throws ContributionResolveException {
         
         Reference reference = assemblyFactory.createReference();
         WSDLInterfaceContract interfaceContract = wsdlFactory.createWSDLInterfaceContract();
@@ -272,7 +270,7 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
 
         // No interfaces mean an error
         if (callPT == null && callbackPT == null) {
-            error("MyRolePartnerRoleNull", theInterfaces);
+            error(monitor, "MyRolePartnerRoleNull", theInterfaces);
         } // end if
 
         // Set the name of the reference to the supplied name and the
@@ -289,7 +287,7 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
                     callInterface = anInterface;
             } // end for
             if (callInterface == null) {
-                error("NoInterfaceForPortType", theInterfaces, callPT.getQName().toString());
+                error(monitor, "NoInterfaceForPortType", theInterfaces, callPT.getQName().toString());
             } else
                 reference.getInterfaceContract().setInterface(callInterface);
         } // end if
@@ -303,7 +301,7 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
                     callbackInterface = anInterface;
             } // end for
             if (callbackInterface == null) {
-                error("NoInterfaceForPortType", theInterfaces, callbackPT.getQName().toString());
+                error(monitor, "NoInterfaceForPortType", theInterfaces, callbackPT.getQName().toString());
             } else
                 reference.getInterfaceContract().setCallbackInterface(callbackInterface);
         } // end if
@@ -320,7 +318,7 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
      * @return
      */
     private Service generateService( String name, PortType myRolePT, 
-    		PortType partnerRolePT, Collection<WSDLInterface> theInterfaces ) 
+    		PortType partnerRolePT, Collection<WSDLInterface> theInterfaces, Monitor monitor ) 
     		throws ContributionResolveException {
         Service service = assemblyFactory.createService();
         WSDLInterfaceContract interfaceContract = wsdlFactory.createWSDLInterfaceContract();
@@ -347,7 +345,7 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
 
         // No interfaces mean an error
         if (callPT == null && callbackPT == null) {
-            error("MyRolePartnerRoleNull", theInterfaces);
+            error(monitor, "MyRolePartnerRoleNull", theInterfaces);
         } // end if
 
         if (callPT != null) {
@@ -358,7 +356,7 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
                     callInterface = anInterface;
             } // end for
             if (callInterface == null) {
-                error("NoInterfaceForPortType", theInterfaces, callPT.getQName().toString());
+                error(monitor, "NoInterfaceForPortType", theInterfaces, callPT.getQName().toString());
             } else
                 service.getInterfaceContract().setInterface(callInterface);
         } // end if
@@ -372,7 +370,7 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
                     callbackInterface = anInterface;
             } // end for
             if (callbackInterface == null) {
-                error("NoInterfaceForPortType", theInterfaces, callbackPT.getQName().toString());
+                error(monitor, "NoInterfaceForPortType", theInterfaces, callbackPT.getQName().toString());
             } else
                 service.getInterfaceContract().setCallbackInterface(callbackInterface);
         } // end if
@@ -398,10 +396,10 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
      * 
      *  ie:  {http://example.com/somenamespace}SomeName
      */
-    private QName getAttributeValueNS(XMLStreamReader reader, String attribute) {
+    private QName getAttributeValueNS(XMLStreamReader reader, String attribute, Monitor monitor) {
         String fullValue = reader.getAttributeValue(null, attribute);
         if (fullValue == null) {
-            error("AttributeProcessMissing", reader);
+            error(monitor, "AttributeProcessMissing", reader);
             return null;
         }
 
@@ -417,21 +415,21 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
                 // This exception happens if the attribute begins with '{' but
                 // doesn't conform
                 // to the XML Namespaces recommendation format
-                error("AttributeWithoutNamespace", reader, attribute, fullValue);
+                error(monitor, "AttributeWithoutNamespace", reader, attribute, fullValue);
                 return null;
             }
         } // endif
 
         // Deal with the attribute in the local name + prefix format
         if (fullValue.indexOf(":") < 0) {
-            error("AttributeWithoutPrefix", reader, attribute, fullValue);
+            error(monitor, "AttributeWithoutPrefix", reader, attribute, fullValue);
             return null;
         }
         String prefix = fullValue.substring(0, fullValue.indexOf(":"));
         String name = fullValue.substring(fullValue.indexOf(":") + 1);
         String nsUri = reader.getNamespaceContext().getNamespaceURI(prefix);
         if (nsUri == null) {
-            error("AttributeUnrecognizedNamespace", reader, attribute, fullValue);
+            error(monitor, "AttributeUnrecognizedNamespace", reader, attribute, fullValue);
             return null;
         }
         return new QName(nsUri, name, prefix);
@@ -444,7 +442,7 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
      * @param message
      * @param model
      */
-    private void error(String message, Object model, Object... messageParameters) {
+    private void error(Monitor monitor, String message, Object model, Object... messageParameters) {
          if (monitor != null) {
                 Problem problem = monitor.createProblem(this.getClass().getName(), "impl-bpel-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
                 monitor.problem(problem);

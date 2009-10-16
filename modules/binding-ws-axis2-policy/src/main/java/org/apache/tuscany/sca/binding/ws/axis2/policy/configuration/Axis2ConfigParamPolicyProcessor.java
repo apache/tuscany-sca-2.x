@@ -33,10 +33,10 @@ import org.apache.axiom.om.OMFactory;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  *
@@ -49,10 +49,10 @@ public class Axis2ConfigParamPolicyProcessor implements StAXArtifactProcessor<Ax
         return AXIS2_CONFIG_PARAM_POLICY_QNAME;
     }
     
-    public Axis2ConfigParamPolicyProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
+    public Axis2ConfigParamPolicyProcessor(FactoryExtensionPoint modelFactories) {
     }
 
-    public Axis2ConfigParamPolicy read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+    public Axis2ConfigParamPolicy read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException, XMLStreamException {
         Axis2ConfigParamPolicy policy = new Axis2ConfigParamPolicy();
         int event = reader.getEventType();
         QName name = null;
@@ -87,7 +87,7 @@ public class Axis2ConfigParamPolicyProcessor implements StAXArtifactProcessor<Ax
         return policy;
     }
 
-    public void write(Axis2ConfigParamPolicy arg0, XMLStreamWriter arg1) throws ContributionWriteException,
+    public void write(Axis2ConfigParamPolicy arg0, XMLStreamWriter arg1, ProcessorContext context) throws ContributionWriteException,
                                                         XMLStreamException {
     }
 
@@ -95,7 +95,7 @@ public class Axis2ConfigParamPolicyProcessor implements StAXArtifactProcessor<Ax
         return Axis2ConfigParamPolicy.class;
     }
 
-    public void resolve(Axis2ConfigParamPolicy arg0, ModelResolver arg1) throws ContributionResolveException {
+    public void resolve(Axis2ConfigParamPolicy arg0, ModelResolver arg1, ProcessorContext context) throws ContributionResolveException {
 
     }
     

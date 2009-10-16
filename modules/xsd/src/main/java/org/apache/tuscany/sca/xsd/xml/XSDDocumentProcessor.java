@@ -28,6 +28,7 @@ import javax.xml.stream.XMLInputFactory;
 import org.apache.tuscany.sca.common.xml.stax.StAXHelper;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
@@ -48,13 +49,12 @@ public class XSDDocumentProcessor implements URLArtifactProcessor<XSDefinition> 
     private StAXHelper helper;
     private XSDFactory factory;
     private XMLInputFactory inputFactory;
-    private Monitor monitor;
+    
 
-    public XSDDocumentProcessor(ExtensionPointRegistry registry, StAXArtifactProcessor processor, Monitor monitor) {
+    public XSDDocumentProcessor(ExtensionPointRegistry registry, StAXArtifactProcessor processor) {
         FactoryExtensionPoint modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
         this.factory = modelFactories.getFactory(XSDFactory.class);
         this.inputFactory = modelFactories.getFactory(XMLInputFactory.class);
-        this.monitor = monitor;
         this.helper = StAXHelper.getInstance(registry);
     }
     
@@ -65,24 +65,24 @@ public class XSDDocumentProcessor implements URLArtifactProcessor<XSDefinition> 
      * @param message
      * @param model
      */
-    private void error(String message, Object model, Exception ex) {
+    private void error(Monitor monitor, String message, Object model, Exception ex) {
         if (monitor != null) {
             Problem problem = monitor.createProblem(this.getClass().getName(), "xsd-xml-validation-messages", Severity.ERROR, model, message, ex);
             monitor.problem(problem);
         }        
     }
 
-    public XSDefinition read(URL contributionURL, URI artifactURI, URL artifactURL) throws ContributionReadException {
+    public XSDefinition read(URL contributionURL, URI artifactURI, URL artifactURL, ProcessorContext context) throws ContributionReadException {
         try {
             return indexRead(artifactURL);
         } catch (Exception e) {
             ContributionReadException ce = new ContributionReadException(e);
-            error("ContributionReadException", artifactURL, ce);
+            error(context.getMonitor(), "ContributionReadException", artifactURL, ce);
             throw ce;
         }
     }
 
-    public void resolve(XSDefinition model, ModelResolver resolver) throws ContributionResolveException {
+    public void resolve(XSDefinition model, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
     }
 
     public String getArtifactType() {

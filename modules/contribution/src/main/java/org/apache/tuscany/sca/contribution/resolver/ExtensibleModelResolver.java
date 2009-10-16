@@ -24,8 +24,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tuscany.sca.contribution.Contribution;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  * An implementation of an extensible model resolver which delegates to the
@@ -42,31 +42,6 @@ public class ExtensibleModelResolver implements ModelResolver {
     private final Map<Class<?>, ModelResolver> resolversByImplementationClass = new HashMap<Class<?>, ModelResolver>();
     private Map<Object, Object> map = new HashMap<Object, Object>();
     private Object lastUnresolved;
-    private Monitor monitor;
-
-    /**
-     * Constructs an extensible model resolver
-     * 
-     * @param contribution
-     * @param resolverExtensions
-     * @param modelFactories
-     * @param defaultResolver
-     */
-    @Deprecated
-    public ExtensibleModelResolver(Contribution contribution,
-                                   ModelResolverExtensionPoint resolverExtensions,
-                                   FactoryExtensionPoint modelFactories,
-                                   ModelResolver defaultResolver,
-                                   Monitor monitor) {
-        this.contribution = contribution;
-        this.resolverExtensions = resolverExtensions;
-        this.modelFactories = modelFactories;
-        //FIXME Remove this default resolver, this is currently used to resolve policy declarations
-        // but they should be handled by the contribution import/export mechanism instead of this
-        // defaultResolver hack.
-        this.defaultResolver = defaultResolver;
-        this.monitor = monitor;
-    }
 
     /**
      * Constructs an extensible model resolver
@@ -77,12 +52,10 @@ public class ExtensibleModelResolver implements ModelResolver {
      */
     public ExtensibleModelResolver(Contribution contribution,
                                    ModelResolverExtensionPoint resolverExtensions,
-                                   FactoryExtensionPoint modelFactories, 
-                                   Monitor monitor) {
+                                   FactoryExtensionPoint modelFactories) {
         this.contribution = contribution;
         this.resolverExtensions = resolverExtensions;
         this.modelFactories = modelFactories;
-        this.monitor = monitor;
     }
 
     /**
@@ -123,10 +96,10 @@ public class ExtensibleModelResolver implements ModelResolver {
                 try {
                     Constructor<? extends ModelResolver> constructor =
                         resolverClass
-                            .getConstructor(new Class[] {Contribution.class, FactoryExtensionPoint.class, Monitor.class});
+                            .getConstructor(new Class[] {Contribution.class, FactoryExtensionPoint.class});
                     if (constructor != null) {
 
-                        resolverInstance = constructor.newInstance(contribution, modelFactories, monitor);
+                        resolverInstance = constructor.newInstance(contribution, modelFactories);
                         resolversByImplementationClass.put(resolverClass, resolverInstance);
                         resolversByModelType.put(c, resolverInstance);
                         return resolverInstance;
@@ -140,25 +113,25 @@ public class ExtensibleModelResolver implements ModelResolver {
         return null;
     }
 
-    public void addModel(Object resolved) {
+    public void addModel(Object resolved, ProcessorContext context) {
         ModelResolver resolver = getModelResolverInstance(resolved.getClass());
         if (resolver != null) {
-            resolver.addModel(resolved);
+            resolver.addModel(resolved, context);
         } else {
             map.put(resolved, resolved);
         }
     }
 
-    public Object removeModel(Object resolved) {
+    public Object removeModel(Object resolved, ProcessorContext context) {
         ModelResolver resolver = getModelResolverInstance(resolved.getClass());
         if (resolver != null) {
-            return resolver.removeModel(resolved);
+            return resolver.removeModel(resolved, context);
         } else {
             return map.remove(resolved);
         }
     }
 
-    public <T> T resolveModel(Class<T> modelClass, T unresolved) {
+    public <T> T resolveModel(Class<T> modelClass, T unresolved, ProcessorContext context) {
         // Protect against dependency cycles causing infinite recursion
         // Save the current unresolved object and check later if we are trying
         // to resolve the same object again
@@ -169,7 +142,7 @@ public class ExtensibleModelResolver implements ModelResolver {
         
         ModelResolver resolver = getModelResolverInstance(unresolved.getClass());
         if (resolver != null) {
-            Object resolved = resolver.resolveModel(modelClass, unresolved);
+            Object resolved = resolver.resolveModel(modelClass, unresolved, context);
             if (resolved != null && resolved != unresolved) {
                 lastUnresolved = null;
                 return modelClass.cast(resolved);
@@ -179,7 +152,7 @@ public class ExtensibleModelResolver implements ModelResolver {
             // but they should be handled by the contribution import/export mechanism instead of this
             // defaultResolver hack.
             if (defaultResolver != null) {
-                Object resolved = defaultResolver.resolveModel(modelClass, unresolved);
+                Object resolved = defaultResolver.resolveModel(modelClass, unresolved, context);
                 if (resolved != null && resolved != unresolved) {
                     lastUnresolved = null;
                     return modelClass.cast(resolved);

@@ -32,6 +32,7 @@ import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.common.java.io.IOHelper;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ValidatingXMLInputFactory;
@@ -53,14 +54,14 @@ public class ComponentTypeDocumentProcessor extends BaseAssemblyProcessor implem
      * @param staxProcessor
      */
     public ComponentTypeDocumentProcessor(FactoryExtensionPoint modelFactories,
-                                          StAXArtifactProcessor staxProcessor,
-                                          Monitor monitor) {
-        super(modelFactories, staxProcessor, monitor);
+                                          StAXArtifactProcessor staxProcessor) {
+        super(modelFactories, staxProcessor);
         this.inputFactory = modelFactories.getFactory(ValidatingXMLInputFactory.class);
     }
     
-    public ComponentType read(URL contributionURL, URI uri, URL url) throws ContributionReadException {
+    public ComponentType read(URL contributionURL, URI uri, URL url, ProcessorContext context) throws ContributionReadException {
         InputStream urlStream = null;
+        Monitor monitor = context.getMonitor();
         try {
             
             // Create a stream reader
@@ -69,7 +70,7 @@ public class ComponentTypeDocumentProcessor extends BaseAssemblyProcessor implem
             reader.nextTag();
             
             // Reader the componentType model 
-            ComponentType componentType = (ComponentType)extensionProcessor.read(reader);
+            ComponentType componentType = (ComponentType)extensionProcessor.read(reader, context);
             if (componentType != null) {
                 componentType.setURI(uri.toString());
             }
@@ -96,11 +97,11 @@ public class ComponentTypeDocumentProcessor extends BaseAssemblyProcessor implem
             
         } catch (XMLStreamException e) {
         	ContributionReadException ce = new ContributionReadException(e);
-        	error("ContributionReadException", inputFactory, ce);
+        	error(monitor, "ContributionReadException", inputFactory, ce);
             throw ce;
         } catch (IOException e) {
         	ContributionReadException ce = new ContributionReadException(e);
-        	error("ContributionReadException", inputFactory, ce);
+        	error(monitor, "ContributionReadException", inputFactory, ce);
             throw ce;
         } finally {
             try {
@@ -114,8 +115,8 @@ public class ComponentTypeDocumentProcessor extends BaseAssemblyProcessor implem
         }
     }
     
-    public void resolve(ComponentType componentType, ModelResolver resolver) throws ContributionResolveException {
-        extensionProcessor.resolve(componentType, resolver);
+    public void resolve(ComponentType componentType, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
+        extensionProcessor.resolve(componentType, resolver, context);
     }
     
     public String getArtifactType() {

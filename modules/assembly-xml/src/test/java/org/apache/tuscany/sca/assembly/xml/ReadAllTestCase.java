@@ -38,6 +38,7 @@ import org.apache.tuscany.sca.assembly.CompositeReference;
 import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
@@ -55,19 +56,21 @@ import org.w3c.dom.Element;
 public class ReadAllTestCase {
     private static StAXArtifactProcessor<Object> staxProcessor;
     private static XMLInputFactory inputFactory;
-
+    private static ProcessorContext context;
+    
     @BeforeClass
     public static void setUp() throws Exception {
         DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
+        context = new ProcessorContext(extensionPoints);
         StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         inputFactory = XMLInputFactory.newInstance();
-        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null, null);
+        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null);
     }
 
     @Test
     public void testReadComposite() throws Exception {
         InputStream is = getClass().getResourceAsStream("TestAllCalculator.composite");
-        Composite composite = (Composite)staxProcessor.read(inputFactory.createXMLStreamReader(is));
+        Composite composite = (Composite)staxProcessor.read(inputFactory.createXMLStreamReader(is), context);
         assertNotNull(composite);
         assertEquals(composite.getName(), new QName("http://calc", "TestAllCalculator"));
         assertEquals(composite.getConstrainingType().getName(), new QName("http://calc", "CalculatorComponent"));

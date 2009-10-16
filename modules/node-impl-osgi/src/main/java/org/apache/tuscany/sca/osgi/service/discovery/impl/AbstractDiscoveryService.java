@@ -118,7 +118,7 @@ public abstract class AbstractDiscoveryService implements Discovery, LifeCycleLi
         props.put(PRODUCT_NAME, "Apache Tuscany SCA");
         props.put(PRODUCT_VERSION, headers.get(Constants.BUNDLE_VERSION));
         props.put(VENDOR_NAME, headers.get(Constants.BUNDLE_VENDOR));
-        props.put(SUPPORTED_PROTOCOLS, new String[] {"local", "sca"});
+        props.put(SUPPORTED_PROTOCOLS, new String[] {"local", "org.osgi.sca"});
         return props;
     }
 
@@ -194,14 +194,14 @@ public abstract class AbstractDiscoveryService implements Discovery, LifeCycleLi
     private void triggerCallbacks(EndpointListener listener, String matchedFilter, EndpointDescription sd, int type) {
         switch (type) {
             case ADDED:
-                listener.addEndpoint(sd, matchedFilter);
+                listener.endpointAdded(sd, matchedFilter);
                 break;
             case REMOVED:
-                listener.removeEndpoint(sd);
+                listener.endpointRemoved(sd, matchedFilter);
                 break;
             case MODIFIED:
-                listener.removeEndpoint(sd);
-                listener.addEndpoint(sd, matchedFilter);
+                listener.endpointRemoved(sd, matchedFilter);
+                listener.endpointAdded(sd, matchedFilter);
                 break;
         }
     }

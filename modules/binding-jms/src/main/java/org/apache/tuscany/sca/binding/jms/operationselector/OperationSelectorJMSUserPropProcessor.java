@@ -29,10 +29,10 @@ import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  *
@@ -44,11 +44,11 @@ public class OperationSelectorJMSUserPropProcessor extends BaseStAXArtifactProce
         return OperationSelectorJMSUserProp.OPERATION_SELECTOR_JMS_USERPROP_QNAME;
     }
     
-    public OperationSelectorJMSUserPropProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
+    public OperationSelectorJMSUserPropProcessor(FactoryExtensionPoint modelFactories) {
     }
 
     
-    public OperationSelectorJMSUserProp read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+    public OperationSelectorJMSUserProp read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException, XMLStreamException {
         OperationSelectorJMSUserProp opSelector = new OperationSelectorJMSUserProp();
         String propertyName = reader.getAttributeValue(null, OperationSelectorJMSUserProp.OPERATION_SELECTOR_JMS_USERPROP_ATTR);
         if (propertyName != null && propertyName.length() > 0) {
@@ -61,7 +61,7 @@ public class OperationSelectorJMSUserPropProcessor extends BaseStAXArtifactProce
         return opSelector;
     }
 
-    public void write(OperationSelectorJMSUserProp opSelector, XMLStreamWriter writer) 
+    public void write(OperationSelectorJMSUserProp opSelector, XMLStreamWriter writer, ProcessorContext context) 
         throws ContributionWriteException, XMLStreamException {
         String prefix = "tuscany";
         writer.writeStartElement(prefix, 
@@ -80,7 +80,7 @@ public class OperationSelectorJMSUserPropProcessor extends BaseStAXArtifactProce
         return OperationSelectorJMSUserProp.class;
     }
 
-    public void resolve(OperationSelectorJMSUserProp arg0, ModelResolver arg1) throws ContributionResolveException {
+    public void resolve(OperationSelectorJMSUserProp arg0, ModelResolver arg1, ProcessorContext context) throws ContributionResolveException {
 
     }
     

@@ -23,9 +23,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tuscany.sca.contribution.Contribution;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  * A Model Resolver for Contribution models.
@@ -36,19 +36,19 @@ public class ContributionModelResolver implements ModelResolver {
 
     private Map<String, Contribution> map = new HashMap<String, Contribution>();
     
-    public ContributionModelResolver(Contribution contribution, FactoryExtensionPoint modelFactories, Monitor monitor) {
+    public ContributionModelResolver(Contribution contribution, FactoryExtensionPoint modelFactories) {
     }
 
-    public void addModel(Object resolved) {
+    public void addModel(Object resolved, ProcessorContext context) {
         Contribution contribution = (Contribution)resolved;
         map.put(contribution.getURI(), contribution);
     }
     
-    public Object removeModel(Object resolved) {
+    public Object removeModel(Object resolved, ProcessorContext context) {
         return map.remove(((Contribution)resolved).getURI());
     }
     
-    public <T> T resolveModel(Class<T> modelClass, T unresolved) {
+    public <T> T resolveModel(Class<T> modelClass, T unresolved, ProcessorContext context) {
         
         // Lookup a contribution for the given URI
         String uri = ((Contribution)unresolved).getURI();

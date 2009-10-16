@@ -20,10 +20,10 @@
 package org.apache.tuscany.sca.contribution.osgi.impl;
 
 import org.apache.tuscany.sca.contribution.Contribution;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.resolver.ClassReference;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.monitor.Monitor;
 import org.osgi.framework.Bundle;
 
 /**
@@ -35,19 +35,19 @@ public class OSGiClassReferenceModelResolver implements ModelResolver {
     // private Contribution contribution;
     private Bundle bundle;
 
-    public OSGiClassReferenceModelResolver(Contribution contribution, FactoryExtensionPoint modelFactories, Monitor monitor) {
+    public OSGiClassReferenceModelResolver(Contribution contribution, FactoryExtensionPoint modelFactories) {
         // this.contribution = contribution;
         this.bundle = OSGiBundleActivator.findBundle(contribution.getLocation());
     }
 
-    public void addModel(Object resolved) {
+    public void addModel(Object resolved, ProcessorContext context) {
     }
 
-    public Object removeModel(Object resolved) {
+    public Object removeModel(Object resolved, ProcessorContext context) {
         return resolved;
     }
 
-    public <T> T resolveModel(Class<T> modelClass, T unresolved) {
+    public <T> T resolveModel(Class<T> modelClass, T unresolved, ProcessorContext context) {
         //Load a class on demand
         Class<?> clazz = null;
         if (bundle != null) {
