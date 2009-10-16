@@ -150,6 +150,11 @@ public class ServiceProcessor extends BaseJavaClassVisitor {
         if (annotation == null) {
             return;
         }
+        
+        if (!(annotation.value() == null || annotation.value() == Void.class)) {
+            throw new IllegalCallbackReferenceException("JCA90046 @Callback on field of method must not have any parameters: " + type.getName() + "." + method.getName());
+        }
+        
         if(Modifier.isPrivate(method.getModifiers())) {
             throw new IllegalCallbackReferenceException("Illegal annotation @Callback found on "+method, method);
         }
@@ -166,6 +171,9 @@ public class ServiceProcessor extends BaseJavaClassVisitor {
         Callback annotation = field.getAnnotation(Callback.class);
         if (annotation == null) {
             return;
+        }
+        if (!(annotation.value() == null || annotation.value() == Void.class)) {
+            throw new IllegalCallbackReferenceException("JCA90046 @Callback on field of method must not have any parameters: " + type.getName() + "." + field.getName());
         }
         if(Modifier.isPrivate(field.getModifiers())) {
             throw new IllegalCallbackReferenceException("Illegal annotation @Callback found on "+field, field);
