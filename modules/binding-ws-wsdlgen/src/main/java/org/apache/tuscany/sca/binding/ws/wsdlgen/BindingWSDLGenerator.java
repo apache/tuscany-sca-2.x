@@ -169,13 +169,13 @@ public class BindingWSDLGenerator {
                 }
             } else if (ex.getCause() instanceof Exception) {
                 warning(monitor, "WsdlGenException", wsBinding, component.getName(), contract.getName());
-                error(monitor, "UnexpectedException", wsBinding, (Exception)ex.getCause());
+                error(monitor, "WsdlGenException2", wsBinding, (Exception)ex.getCause());
             } else { // should never happen
                 throw new IllegalStateException(ex);
             }
         } catch (RuntimeException ex) {
             warning(monitor, "WsdlGenException", wsBinding, component.getName(), contract.getName());
-            error(monitor, "UnexpectedException", wsBinding, ex);
+            error(monitor, "WsdlGenException2", wsBinding, ex.getMessage());
         }    
     }        
 
