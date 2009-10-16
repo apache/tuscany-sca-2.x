@@ -40,7 +40,19 @@
             <artifactId>tuscany-node-impl-osgi</artifactId>
             <version>2.0-SNAPSHOT</version>
         </dependency>
+        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-node-launcher</artifactId>
+            <version>2.0-SNAPSHOT</version>
+        </dependency>        
 
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-node-launcher-equinox</artifactId>
+            <version>2.0-SNAPSHOT</version>
+        </dependency> 
+        
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-java-runtime</artifactId>
@@ -54,15 +66,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-otests-asm-General</artifactId>
-            <version>2.0-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-otests-asm-General_Java</artifactId>
-            <version>2.0-SNAPSHOT</version>
+            <groupId>org.oasis-open.sca.assembly</groupId>
+            <artifactId>General_Java</artifactId>
+            <version>1.0</version>
         </dependency>
 
         <dependency>
