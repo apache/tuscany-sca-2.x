@@ -64,6 +64,12 @@
             <artifactId>tuscany-binding-ws-axis2</artifactId>
             <version>2.0-SNAPSHOT</version>
         </dependency>
+        
+         <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-host-jetty</artifactId>
+            <version>2.0-SNAPSHOT</version>
+        </dependency>
 
         <dependency>
             <groupId>org.oasis-open.sca.assembly</groupId>
