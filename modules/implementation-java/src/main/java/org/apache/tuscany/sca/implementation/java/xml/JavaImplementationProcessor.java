@@ -25,6 +25,7 @@ import static org.apache.tuscany.sca.implementation.java.xml.JavaImplementationC
 import static org.apache.tuscany.sca.implementation.java.xml.JavaImplementationConstants.IMPLEMENTATION_JAVA_QNAME;
 import static org.apache.tuscany.sca.implementation.java.xml.JavaImplementationConstants.SCA11_NS;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -187,6 +188,8 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
 	            return;
 	        }
 
+	        checkNoStaticAnnotations(monitor, javaImplementation);
+	        
 	        javaImplementation.setUnresolved(false);
 	        mergeComponentType(resolver, javaImplementation, context);
 
@@ -198,6 +201,30 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
     		throw new ContributionResolveException( "Resolving Java implementation: " + javaImplementation.getName(), e);
     	} // end try
     } // end method
+
+    private void checkNoStaticAnnotations(Monitor monitor, JavaImplementation javaImplementation) {
+        if (javaImplementation.getJavaClass() != null) {
+            Class<?> clazz = javaImplementation.getJavaClass();
+            for (Method m : clazz.getMethods()) {
+                if (Modifier.isStatic(m.getModifiers())) {
+                    for (Annotation a : m.getAnnotations()) {
+                        if (a.annotationType().getName().startsWith("org.oasisopen.sca.annotation")) {
+                            error(monitor, "IllegalSCAAnnotation", javaFactory, javaImplementation.getName(), m.getName());
+                        }
+                    }
+                }
+            }
+            for (Field f : clazz.getFields()) {
+                if (Modifier.isStatic(f.getModifiers())) {
+                    for (Annotation a : f.getAnnotations()) {
+                        if (a.annotationType().getName().startsWith("org.oasisopen.sca.annotation")) {
+                            error(monitor, "IllegalSCAAnnotation", javaFactory, javaImplementation.getName(), f.getName());
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     private JavaElementImpl getMemeber(JavaImplementation impl, String name, Class<?> type) {
         String setter = JavaIntrospectionHelper.toSetter(name);
