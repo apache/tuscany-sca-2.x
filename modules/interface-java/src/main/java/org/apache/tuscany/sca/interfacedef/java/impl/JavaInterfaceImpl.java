@@ -18,8 +18,9 @@
  */
 package org.apache.tuscany.sca.interfacedef.java.impl;
 
-import javax.xml.namespace.QName;
+import java.lang.ref.WeakReference;
 
+import javax.xml.namespace.QName;
 import org.apache.tuscany.sca.interfacedef.impl.InterfaceImpl;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 
@@ -31,7 +32,7 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 public class JavaInterfaceImpl extends InterfaceImpl implements JavaInterface {
 
     private String className;
-    private Class<?> javaClass;
+    private WeakReference<Class<?>> javaClass;
     private Class<?> callbackClass;
     private QName qname;
     
@@ -42,7 +43,7 @@ public class JavaInterfaceImpl extends InterfaceImpl implements JavaInterface {
         if (isUnresolved()) {
             return className;
         } else if (javaClass != null) {
-            return javaClass.getName();
+            return javaClass.get().getName();
         } else {
             return null;
         }
@@ -64,11 +65,15 @@ public class JavaInterfaceImpl extends InterfaceImpl implements JavaInterface {
     }
 
     public Class<?> getJavaClass() {
-        return javaClass;
+        if (javaClass != null){
+            return javaClass.get();
+        } else {
+            return null;
+        }
     }
 
     public void setJavaClass(Class<?> javaClass) {
-        this.javaClass = javaClass;
+        this.javaClass = new WeakReference<Class<?>>(javaClass);
         if (javaClass != null) {
             this.className = javaClass.getName();
         }
@@ -119,7 +124,7 @@ public class JavaInterfaceImpl extends InterfaceImpl implements JavaInterface {
             if (javaClass == null) {
                 if (other.javaClass != null)
                     return false;
-            } else if (!javaClass.equals(other.javaClass))
+            } else if (!javaClass.get().equals(other.javaClass.get()))
                 return false;
             if (callbackClass == null) {
                 if (other.callbackClass != null)
