@@ -19,11 +19,13 @@
 
 package org.apache.tuscany.sca.host.webapp;
 
+import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -209,6 +211,8 @@ public class WebAppServletHost implements ServletHost {
         }
         
         ServletHostHelper.init(servletContext);
+        
+        initContextPath(config);
 
         // Initialize the registered Servlets
         for (Servlet servlet : servlets.values()) {
@@ -216,6 +220,32 @@ public class WebAppServletHost implements ServletHost {
         }
         
     }
+    
+    /**
+     * Initializes the contextPath
+     * The 2.5 Servlet API has a getter for this, for pre 2.5 Servlet
+     * containers use an init parameter.
+     */
+    @SuppressWarnings("unchecked")
+    public void initContextPath(ServletConfig config) {
+        
+        if (Collections.list(config.getInitParameterNames()).contains("contextPath")) {
+            contextPath = config.getInitParameter("contextPath");
+        } else {
+            // The getContextPath() is introduced since Servlet 2.5
+            ServletContext context = config.getServletContext();
+            try {
+                // Try to get the method anyway since some ServletContext impl has this method even before 2.5
+                Method m = context.getClass().getMethod("getContextPath", new Class[] {});
+                contextPath = (String)m.invoke(context, new Object[] {});
+            } catch (Exception e) {
+                logger.warning("Servlet level is: " + context.getMajorVersion() + "." + context.getMinorVersion());
+                throw new IllegalStateException("'contextPath' init parameter must be set for pre-2.5 servlet container");
+            }
+        }
+
+        logger.info("ContextPath: " + contextPath);
+    }    
     
     void destroy() {
 
