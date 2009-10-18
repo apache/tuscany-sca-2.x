@@ -51,15 +51,13 @@ public class ContributionMetadataDocumentProcessor implements URLArtifactProcess
     private final XMLInputFactory inputFactory;
 
     public ContributionMetadataDocumentProcessor(XMLInputFactory inputFactory,
-                                                 StAXArtifactProcessor staxProcessor,
-                                                 Monitor monitor) {
+                                                 StAXArtifactProcessor staxProcessor) {
         this.inputFactory = inputFactory;
         this.staxProcessor = staxProcessor;
     }
 
     public ContributionMetadataDocumentProcessor(FactoryExtensionPoint modelFactories,
-                                                 StAXArtifactProcessor staxProcessor,
-                                                 Monitor monitor) {
+                                                 StAXArtifactProcessor staxProcessor) {
         this.inputFactory = modelFactories.getFactory(ValidatingXMLInputFactory.class);
         this.staxProcessor = staxProcessor;
     }
