@@ -538,12 +538,11 @@
                 <module>modules/databinding</module>
                 <module>modules/databinding-axiom</module>
                 <module>modules/databinding-jaxb</module>
-                <module>modules/definitions-xml</module>
                 <module>modules/domain-node</module>
                 <module>modules/endpoint-tribes</module>
-                <module>modules/endpoint-wrapper</module>
                 <module>modules/extensibility</module>
                 <module>modules/host-http</module>
+                <module>modules/host-jetty</module>
                 <module>modules/host-webapp</module>
                 <module>modules/implementation-java</module>
                 <module>modules/implementation-java-runtime</module>
@@ -556,7 +555,6 @@
                 <module>modules/interface-wsdl</module>
                 <module>modules/node-api</module>
                 <module>modules/node-impl</module>
-                <module>modules/policy-xml</module>
                 <module>modules/policy-security</module>
                 <module>modules/sca-api</module>
                 <module>modules/sca-client-impl</module>
@@ -570,6 +568,109 @@
                 <module>modules/binding-jms-runtime</module>
                 <module>samples/webapps/helloworld-jms</module>
                 <module>itest/jms</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>scajcaa</id>
+            <modules>
+<!-- base -->
+                <module>modules/assembly</module>
+                <module>modules/assembly-xml</module>
+                <module>modules/assembly-xsd</module>
+                <module>modules/binding-sca-runtime</module>
+                <module>modules/binding-ws</module>
+                <module>modules/binding-ws-axis2-policy</module>
+                <module>modules/binding-ws-wsdlgen</module>
+                <module>modules/builder</module>
+                <module>modules/common-java</module>
+                <module>modules/common-xml</module>
+                <module>modules/contribution</module>
+                <module>modules/core</module>
+                <module>modules/core-databinding</module>
+                <module>modules/core-spi</module>
+                <module>modules/databinding</module>
+                <module>modules/databinding-axiom</module>
+                <module>modules/databinding-jaxb</module>
+                <module>modules/domain-node</module>
+                <module>modules/endpoint-tribes</module>
+                <module>modules/extensibility</module>
+                <module>modules/host-http</module>
+                <module>modules/host-jetty</module>
+                <module>modules/implementation-java</module>
+                <module>modules/implementation-java-runtime</module>
+                <module>modules/implementation-web</module>
+                <module>modules/implementation-web-runtime</module>
+                <module>modules/interface-java</module>
+                <module>modules/interface-java-jaxws</module>
+                <module>modules/interface-wsdl</module>
+                <module>modules/monitor</module>
+                <module>modules/interface-wsdl</module>
+                <module>modules/node-api</module>
+                <module>modules/node-impl</module>
+                <module>modules/policy-security</module>
+                <module>modules/sca-api</module>
+                <module>modules/sca-client-impl</module>
+                <module>modules/xsd</module>
+<!-- WS -->
+                <module>modules/databinding-jaxb-axiom</module>
+                <module>modules/policy-xml-ws</module>
+                <module>modules/binding-ws-axis2</module>
+<!-- OSGi -->
+                <module>modules/extensibility-equinox</module>
+                <module>modules/node-launcher-equinox</module>
+<!-- SCA-J CAA  -->
+<!--
+                <module>otest\newlayout\sca-java-caa</module>
+-->
+                <module>otest\newlayout\sca-java-caa\JCA_0000</module>
+                <module>otest\newlayout\sca-java-caa\JCA_10001</module>
+                <module>otest\newlayout\sca-java-caa\JCA_10002</module>
+                <module>otest\newlayout\sca-java-caa\JCA_10003</module>
+                <module>otest\newlayout\sca-java-caa\JCA_10004</module>
+                <module>otest\newlayout\sca-java-caa\JCA_10006</module>
+                <module>otest\newlayout\sca-java-caa\JCA_10007</module>
+                <module>otest\newlayout\sca-java-caa\JCA_10008</module>
+                <module>otest\newlayout\sca-java-caa\JCA_10009</module>
+                <module>otest\newlayout\sca-java-caa\JCA_10010</module>
+                <module>otest\newlayout\sca-java-caa\JCA_10011</module>
+                <module>otest\newlayout\sca-java-caa\JCA_10014</module>
+                <module>otest\newlayout\sca-java-caa\JCA_10015</module>
+                <module>otest\newlayout\sca-java-caa\JCA_10046</module>
+                <module>otest\newlayout\sca-java-caa\JCA_10047</module>
+                <module>otest\newlayout\sca-java-caa\JCA_10048</module>
+                <module>otest\newlayout\sca-java-caa\JCA_10049</module>
+                <module>otest\newlayout\sca-java-caa\JCA_10050</module>
+                <module>otest\newlayout\sca-java-caa\JCA_10051</module>
+                <module>otest\newlayout\sca-java-caa\JCA_10052</module>
+                <module>otest\newlayout\sca-java-caa\JCA_11005</module>
+                <module>otest\newlayout\sca-java-caa\JCA_2001</module>
+                <module>otest\newlayout\sca-java-caa\JCA_2002</module>
+                <module>otest\newlayout\sca-java-caa\JCA_2003</module>
+                <module>otest\newlayout\sca-java-caa\JCA_2004</module>
+                <module>otest\newlayout\sca-java-caa\JCA_3001</module>
+                <module>otest\newlayout\sca-java-caa\JCA_3002</module>
+                <module>otest\newlayout\sca-java-caa\JCA_3003</module>
+                <module>otest\newlayout\sca-java-caa\JCA_3004</module>
+                <module>otest\newlayout\sca-java-caa\JCA_3005</module>
+                <module>otest\newlayout\sca-java-caa\JCA_3006</module>
+                <module>otest\newlayout\sca-java-caa\JCA_3007</module>
+                <module>otest\newlayout\sca-java-caa\JCA_3008</module>
+                <module>otest\newlayout\sca-java-caa\JCA_3009</module>
+                <module>otest\newlayout\sca-java-caa\JCA_3010</module>
+                <module>otest\newlayout\sca-java-caa\JCA_3011</module>
+                <module>otest\newlayout\sca-java-caa\JCA_3012</module>
+                <module>otest\newlayout\sca-java-caa\JCA_8001</module>
+                <module>otest\newlayout\sca-java-caa\JCA_8002</module>
+                <module>otest\newlayout\sca-java-caa\JCA_8003</module>
+                <module>otest\newlayout\sca-java-caa\JCA_8004</module>
+                <module>otest\newlayout\sca-java-caa\JCA_8006</module>
+                <module>otest\newlayout\sca-java-caa\JCA_8008</module>
+                <module>otest\newlayout\sca-java-caa\JCA_8009</module>
+                <module>otest\newlayout\sca-java-caa\JCA_8010</module>
+                <module>otest\newlayout\sca-java-caa\JCA_General_POJO</module>
+<!-- Tuscany SCA-J CAA  -->
+                <module>otest\newlayout\tuscany-java-caa-test-runner</module>
             </modules>
         </profile>
 
