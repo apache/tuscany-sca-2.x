@@ -62,20 +62,6 @@ public class ContributionMetadataDocumentProcessor implements URLArtifactProcess
         this.staxProcessor = staxProcessor;
     }
 
-    /**
-     * Report a exception.
-     *
-     * @param problems
-     * @param message
-     * @param model
-     */
-    private void error(Monitor monitor, String message, Object model, Exception ex) {
-    	if (monitor != null) {
-	        Problem problem = monitor.createProblem(this.getClass().getName(), "contribution-xml-validation-messages", Severity.ERROR, model, message, ex);
-	        monitor.problem(problem);
-    	}
-    }
-
     public String getArtifactType() {
         return "/META-INF/sca-contribution.xml";
     }
@@ -122,4 +108,17 @@ public class ContributionMetadataDocumentProcessor implements URLArtifactProcess
         staxProcessor.resolve(contribution, resolver, context);
     }
 
+    /**
+     * Report a exception.
+     *
+     * @param problems
+     * @param message
+     * @param model
+     */
+    private void error(String message, Object model, Exception ex) {
+        if (monitor != null) {
+            Problem problem = monitor.createProblem(this.getClass().getName(), "contribution-xml-validation-messages", Severity.ERROR, model, message, ex);
+            monitor.problem(problem);
+        }
+    }
 }
