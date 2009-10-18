@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.tuscany.sca.osgi.service.remoteadmin;
+package org.apache.tuscany.sca.osgi.remoteserviceadmin;
 
 import java.util.Arrays;
 import java.util.Collections;

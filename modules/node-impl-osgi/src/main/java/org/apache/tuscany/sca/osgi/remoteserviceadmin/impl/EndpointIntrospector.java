@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.osgi.service.remoteadmin.impl;
+package org.apache.tuscany.sca.osgi.remoteserviceadmin.impl;
 
 import static org.apache.tuscany.sca.assembly.Base.SCA11_TUSCANY_NS;
 import static org.apache.tuscany.sca.implementation.osgi.OSGiProperty.SCA_BINDINGS;
@@ -33,11 +33,14 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.xml.namespace.QName;
@@ -78,11 +81,12 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
-import org.apache.tuscany.sca.osgi.service.remoteadmin.EndpointDescription;
+import org.apache.tuscany.sca.osgi.remoteserviceadmin.EndpointDescription;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 
 /**
@@ -168,17 +172,50 @@ public class EndpointIntrospector {
         return intentList;
     }
 
-    private Map<String, Object> getProperties(ServiceReference reference) {
+    /**
+     * Any property in the map overrides the service reference properties, regardless of
+     * case. That is, if the map contains a key then it will override any case variant
+     * of this key in the Service Reference.<p>
+     * If the map contains the objectClass or service. id property key in any case
+     * variant, then these properties must not override the Service Reference’s value. This 
+     * implies that the map can provide the service.exported. interfaces, property allowing 
+     * the Topology Manager to export any registered service, also services not specifically 
+     * marked to be exported.
+     * @param reference
+     * @param props
+     * @return
+     */
+    private Map<String, Object> getProperties(ServiceReference reference, Map<String, Object> props) {
         String[] names = reference.getPropertyKeys();
+        Map<String, Object> properties = new HashMap<String, Object>();
         if (names != null) {
-            Map<String, Object> properties = new HashMap<String, Object>();
             for (String name : names) {
                 properties.put(name, reference.getProperty(name));
             }
-            return properties;
-        } else {
-            return Collections.emptyMap();
         }
+        if (props != null) {
+            // Create a map of names (key = lowcase name, value = name)
+            Map<String, String> nameMap = new HashMap<String, String>();
+            if (names != null) {
+                for (String name : names) {
+                    nameMap.put(name.toLowerCase(), name);
+                }
+            }
+            for (Map.Entry<String, Object> p : props.entrySet()) {
+                if (Constants.OBJECTCLASS.equalsIgnoreCase(p.getKey())) {
+                    throw new IllegalArgumentException(Constants.OBJECTCLASS + " property cannot be overridden.");
+                } else if (Constants.SERVICE_ID.equalsIgnoreCase(p.getKey())) {
+                    throw new IllegalArgumentException(Constants.SERVICE_ID + " property cannot be overridden.");
+                }
+                String key = nameMap.get(p.getKey().toLowerCase());
+                if (key != null) {
+                    properties.put(key, p.getValue());
+                } else {
+                    properties.put(p.getKey(), p.getValue());
+                }
+            }
+        }
+        return properties;
     }
 
     /**
@@ -204,11 +241,12 @@ public class EndpointIntrospector {
      * Introspect a local OSGi Service represented by the ServiceReference to create 
      * an SCA service with the required intents and bindings 
      * @param reference The service reference for a local OSGi service 
+     * @param props Addiontal properties
      * @return An SCA contribution with a deployable composite for the SCA service
      * @throws Exception
      */
-    public Contribution introspect(ServiceReference reference) throws Exception {
-        Map<String, Object> properties = getProperties(reference);
+    public Contribution introspect(ServiceReference reference, Map<String, Object> props) throws Exception {
+        Map<String, Object> properties = getProperties(reference, props);
 
         OSGiProperty serviceID = implementationFactory.createOSGiProperty();
         serviceID.setName(SERVICE_ID);
@@ -237,6 +275,12 @@ public class EndpointIntrospector {
             remoteInterfaces = getStrings(reference.getProperty(OBJECTCLASS));
         } else {
             remoteInterfaces = parse(remoteInterfaces);
+            String[] objectClasses = getStrings(reference.getProperty(OBJECTCLASS));
+            Set<String> objectClassSet = new HashSet<String>(Arrays.asList(objectClasses));
+            if (!objectClassSet.containsAll(Arrays.asList(remoteInterfaces))) {
+                throw new IllegalArgumentException("The exported interfaces are not a subset of the types" 
+                                                   + " listed in the objectClass service property from the Service Reference");
+            }
         }
         for (String intf : remoteInterfaces) {
             Service service = assemblyFactory.createService();

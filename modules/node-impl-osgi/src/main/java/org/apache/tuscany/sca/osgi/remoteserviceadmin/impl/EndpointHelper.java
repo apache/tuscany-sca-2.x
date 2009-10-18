@@ -17,9 +17,8 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.osgi.service.remoteadmin.impl;
+package org.apache.tuscany.sca.osgi.remoteserviceadmin.impl;
 
-import java.net.URL;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -29,8 +28,8 @@ import java.util.UUID;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
-import org.apache.tuscany.sca.osgi.service.remoteadmin.EndpointDescription;
-import org.apache.tuscany.sca.osgi.service.remoteadmin.RemoteConstants;
+import org.apache.tuscany.sca.osgi.remoteserviceadmin.EndpointDescription;
+import org.apache.tuscany.sca.osgi.remoteserviceadmin.RemoteConstants;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 
@@ -38,8 +37,7 @@ import org.osgi.framework.Constants;
  * Implementation of {@link EndpointDescription}
  */
 public class EndpointHelper {
-    private static final String FRAMEWORK_UUID = UUID.randomUUID().toString();
-    
+    private final static String FRAMEWORK_UUID = "org.osgi.framework.uuid";
     private EndpointHelper() {
     }
 
@@ -68,14 +66,12 @@ public class EndpointHelper {
         return props;
     }
 
-    public static String getFrameworkUUID(BundleContext bundleContext) {
-        String uuid = null;
-        if (bundleContext != null) {
-            URL url = bundleContext.getBundle(0).getEntry("/"); // bundleentry://0.fwk24942249/
-            uuid = url.getHost();
-        } else {
-            uuid = FRAMEWORK_UUID;
+    public synchronized static String getFrameworkUUID(BundleContext bundleContext) {
+        String uuid = System.getProperty(FRAMEWORK_UUID);
+        if (uuid == null) {
+            uuid = UUID.randomUUID().toString();
         }
+        System.setProperty(FRAMEWORK_UUID, uuid);
         return uuid;
     }
 

@@ -19,13 +19,13 @@
 
 package org.apache.tuscany.sca.osgi.service.discovery.impl;
 
-import static org.apache.tuscany.sca.osgi.service.remoteadmin.impl.EndpointHelper.createEndpointDescription;
+import static org.apache.tuscany.sca.osgi.remoteserviceadmin.impl.EndpointHelper.createEndpointDescription;
 
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.implementation.osgi.OSGiImplementation;
-import org.apache.tuscany.sca.osgi.service.remoteadmin.EndpointDescription;
+import org.apache.tuscany.sca.osgi.remoteserviceadmin.EndpointDescription;
 import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.EndpointListener;
 import org.osgi.framework.BundleContext;

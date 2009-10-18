@@ -17,11 +17,11 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.osgi.service.remoteadmin.impl;
+package org.apache.tuscany.sca.osgi.remoteserviceadmin.impl;
 
 import static org.apache.tuscany.sca.implementation.osgi.OSGiProperty.SERVICE_EXPORTED_INTERFACES;
-import static org.apache.tuscany.sca.osgi.service.remoteadmin.RemoteConstants.SERVICE_EXPORTED_CONFIGS;
-import static org.apache.tuscany.sca.osgi.service.remoteadmin.RemoteConstants.SERVICE_IMPORTED;
+import static org.apache.tuscany.sca.osgi.remoteserviceadmin.RemoteConstants.SERVICE_EXPORTED_CONFIGS;
+import static org.apache.tuscany.sca.osgi.remoteserviceadmin.RemoteConstants.SERVICE_IMPORTED;
 
 import java.util.Collection;
 import java.util.Dictionary;
@@ -37,13 +37,13 @@ import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.common.java.collection.CollectionMap;
 import org.apache.tuscany.sca.core.LifeCycleListener;
-import org.apache.tuscany.sca.osgi.service.remoteadmin.EndpointDescription;
-import org.apache.tuscany.sca.osgi.service.remoteadmin.EndpointListener;
-import org.apache.tuscany.sca.osgi.service.remoteadmin.ExportRegistration;
-import org.apache.tuscany.sca.osgi.service.remoteadmin.ImportRegistration;
-import org.apache.tuscany.sca.osgi.service.remoteadmin.RemoteServiceAdmin;
-import org.apache.tuscany.sca.osgi.service.remoteadmin.RemoteServiceAdminEvent;
-import org.apache.tuscany.sca.osgi.service.remoteadmin.RemoteServiceAdminListener;
+import org.apache.tuscany.sca.osgi.remoteserviceadmin.EndpointDescription;
+import org.apache.tuscany.sca.osgi.remoteserviceadmin.EndpointListener;
+import org.apache.tuscany.sca.osgi.remoteserviceadmin.ExportRegistration;
+import org.apache.tuscany.sca.osgi.remoteserviceadmin.ImportRegistration;
+import org.apache.tuscany.sca.osgi.remoteserviceadmin.RemoteServiceAdmin;
+import org.apache.tuscany.sca.osgi.remoteserviceadmin.RemoteServiceAdminEvent;
+import org.apache.tuscany.sca.osgi.remoteserviceadmin.RemoteServiceAdminListener;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
@@ -58,9 +58,9 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 /**
  * Implementation of Remote Controller
  */
-public class RemoteControllerImpl implements ListenerHook, RemoteServiceAdminListener, EndpointListener,
+public class TopologyManagerImpl implements ListenerHook, RemoteServiceAdminListener, EndpointListener,
     ServiceTrackerCustomizer, LifeCycleListener /*, EventHook */{
-    private final static Logger logger = Logger.getLogger(RemoteControllerImpl.class.getName());
+    private final static Logger logger = Logger.getLogger(TopologyManagerImpl.class.getName());
     public final static String ENDPOINT_LOCAL = "service.local";
 
     private BundleContext context;
@@ -81,7 +81,7 @@ public class RemoteControllerImpl implements ListenerHook, RemoteServiceAdminLis
 
     private Filter remotableServiceFilter;
 
-    public RemoteControllerImpl(BundleContext context) {
+    public TopologyManagerImpl(BundleContext context) {
         this.context = context;
     }
 
@@ -312,7 +312,7 @@ public class RemoteControllerImpl implements ListenerHook, RemoteServiceAdminLis
     }
 
     /**
-     * @see org.apache.tuscany.sca.osgi.service.remoteadmin.EndpointListener#addEndpoint(org.apache.tuscany.sca.osgi.service.remoteadmin.EndpointDescription,
+     * @see org.apache.tuscany.sca.osgi.remoteserviceadmin.EndpointListener#addEndpoint(org.apache.tuscany.sca.osgi.remoteserviceadmin.EndpointDescription,
      *      java.lang.String)
      */
     public void endpointAdded(EndpointDescription endpoint, String matchedFilter) {
@@ -320,7 +320,7 @@ public class RemoteControllerImpl implements ListenerHook, RemoteServiceAdminLis
     }
 
     /**
-     * @see org.apache.tuscany.sca.osgi.service.remoteadmin.EndpointListener#removeEndpoint(org.apache.tuscany.sca.osgi.service.remoteadmin.EndpointDescription)
+     * @see org.apache.tuscany.sca.osgi.remoteserviceadmin.EndpointListener#removeEndpoint(org.apache.tuscany.sca.osgi.remoteserviceadmin.EndpointDescription)
      */
     public void endpointRemoved(EndpointDescription endpoint, String matchedFilter) {
         unimportService(endpoint);

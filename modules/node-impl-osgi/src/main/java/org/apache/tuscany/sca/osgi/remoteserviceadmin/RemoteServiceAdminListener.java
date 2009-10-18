@@ -1,4 +1,4 @@
-package org.apache.tuscany.sca.osgi.service.remoteadmin;
+package org.apache.tuscany.sca.osgi.remoteserviceadmin;
 
 /**
  * A Remote Service Admin Listener is notified asynchronously of any export or

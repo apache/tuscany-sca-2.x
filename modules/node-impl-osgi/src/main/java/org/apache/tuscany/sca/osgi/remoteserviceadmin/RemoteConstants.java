@@ -1,4 +1,4 @@
-package org.apache.tuscany.sca.osgi.service.remoteadmin;
+package org.apache.tuscany.sca.osgi.remoteserviceadmin;
 
 /**
  * Provide the definition of the constants used in the Remote Services API.

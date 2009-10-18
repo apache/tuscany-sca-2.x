@@ -17,11 +17,11 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.osgi.service.remoteadmin.impl;
+package org.apache.tuscany.sca.osgi.remoteserviceadmin.impl;
 
 import org.apache.tuscany.sca.node.Node;
-import org.apache.tuscany.sca.osgi.service.remoteadmin.EndpointDescription;
-import org.apache.tuscany.sca.osgi.service.remoteadmin.ImportRegistration;
+import org.apache.tuscany.sca.osgi.remoteserviceadmin.EndpointDescription;
+import org.apache.tuscany.sca.osgi.remoteserviceadmin.ImportRegistration;
 import org.osgi.framework.ServiceReference;
 
 /**
@@ -61,7 +61,7 @@ public class ImportRegistrationImpl implements ImportRegistration {
     }
 
     /**
-     * @see org.apache.tuscany.sca.osgi.service.remoteadmin.ImportRegistration#close()
+     * @see org.apache.tuscany.sca.osgi.remoteserviceadmin.ImportRegistration#close()
      */
     public void close() {
         if (node != null) {

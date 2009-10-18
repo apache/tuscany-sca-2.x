@@ -1,4 +1,4 @@
-package org.apache.tuscany.sca.osgi.service.remoteadmin;
+package org.apache.tuscany.sca.osgi.remoteserviceadmin;
 
 // TODO Hacked from ServiePermission
 

@@ -17,13 +17,14 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.osgi.service.remoteadmin.impl;
+package org.apache.tuscany.sca.osgi.remoteserviceadmin.impl;
 
-import static org.apache.tuscany.sca.osgi.service.remoteadmin.impl.EndpointHelper.createEndpointDescription;
+import static org.apache.tuscany.sca.osgi.remoteserviceadmin.impl.EndpointHelper.createEndpointDescription;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentService;
@@ -35,8 +36,8 @@ import org.apache.tuscany.sca.node.NodeFactory;
 import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
 import org.apache.tuscany.sca.node.impl.NodeFactoryImpl;
 import org.apache.tuscany.sca.node.impl.NodeImpl;
-import org.apache.tuscany.sca.osgi.service.remoteadmin.EndpointDescription;
-import org.apache.tuscany.sca.osgi.service.remoteadmin.ExportRegistration;
+import org.apache.tuscany.sca.osgi.remoteserviceadmin.EndpointDescription;
+import org.apache.tuscany.sca.osgi.remoteserviceadmin.ExportRegistration;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
@@ -77,12 +78,13 @@ public class OSGiServiceExporter implements ServiceTrackerCustomizer, LifeCycleL
     }
 
     public Object addingService(ServiceReference reference) {
-        return exportService(reference);
+        return exportService(reference, null);
     }
 
-    public List<ExportRegistration> exportService(ServiceReference reference) {
+    public List<ExportRegistration> exportService(ServiceReference reference, Map<String, Object> properties) {
+        // FIXME: [rfeng] We need to check if a corresponding endpoint has been exported
         try {
-            Contribution contribution = introspector.introspect(reference);
+            Contribution contribution = introspector.introspect(reference, properties);
             if (contribution != null) {
 
                 NodeConfiguration configuration = nodeFactory.createNodeConfiguration();
@@ -112,7 +114,7 @@ public class OSGiServiceExporter implements ServiceTrackerCustomizer, LifeCycleL
 
     public void modifiedService(ServiceReference reference, Object service) {
         removedService(reference, service);
-        exportService(reference);
+        exportService(reference, null);
     }
 
     public void removedService(ServiceReference reference, Object service) {

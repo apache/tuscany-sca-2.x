@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.osgi.service.discovery.impl;
 
-import static org.apache.tuscany.sca.osgi.service.remoteadmin.EndpointListener.ENDPOINT_LISTENER_SCOPE;
+import static org.apache.tuscany.sca.osgi.remoteserviceadmin.EndpointListener.ENDPOINT_LISTENER_SCOPE;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -37,10 +37,10 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.LifeCycleListener;
 import org.apache.tuscany.sca.node.NodeFactory;
 import org.apache.tuscany.sca.node.impl.NodeFactoryImpl;
-import org.apache.tuscany.sca.osgi.service.remoteadmin.EndpointDescription;
-import org.apache.tuscany.sca.osgi.service.remoteadmin.EndpointListener;
-import org.apache.tuscany.sca.osgi.service.remoteadmin.RemoteConstants;
-import org.apache.tuscany.sca.osgi.service.remoteadmin.impl.OSGiHelper;
+import org.apache.tuscany.sca.osgi.remoteserviceadmin.EndpointDescription;
+import org.apache.tuscany.sca.osgi.remoteserviceadmin.EndpointListener;
+import org.apache.tuscany.sca.osgi.remoteserviceadmin.RemoteConstants;
+import org.apache.tuscany.sca.osgi.remoteserviceadmin.impl.OSGiHelper;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;

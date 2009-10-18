@@ -1,4 +1,4 @@
-package org.apache.tuscany.sca.osgi.service.remoteadmin;
+package org.apache.tuscany.sca.osgi.remoteserviceadmin;
 
 /**
  * A white board service that represents a listener for endpoints.
