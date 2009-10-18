@@ -51,13 +51,15 @@ public class ContributionMetadataDocumentProcessor implements URLArtifactProcess
     private final XMLInputFactory inputFactory;
 
     public ContributionMetadataDocumentProcessor(XMLInputFactory inputFactory,
-                                                 StAXArtifactProcessor staxProcessor) {
+                                                 StAXArtifactProcessor staxProcessor,
+                                                 Monitor monitor) {
         this.inputFactory = inputFactory;
         this.staxProcessor = staxProcessor;
     }
 
     public ContributionMetadataDocumentProcessor(FactoryExtensionPoint modelFactories,
-                                                 StAXArtifactProcessor staxProcessor) {
+                                                 StAXArtifactProcessor staxProcessor,
+                                                 Monitor monitor) {
         this.inputFactory = modelFactories.getFactory(ValidatingXMLInputFactory.class);
         this.staxProcessor = staxProcessor;
     }
@@ -115,10 +117,11 @@ public class ContributionMetadataDocumentProcessor implements URLArtifactProcess
      * @param message
      * @param model
      */
-    private void error(String message, Object model, Exception ex) {
+    private void error(Monitor monitor, String message, Object model, Exception ex) {
         if (monitor != null) {
             Problem problem = monitor.createProblem(this.getClass().getName(), "contribution-xml-validation-messages", Severity.ERROR, model, message, ex);
             monitor.problem(problem);
         }
     }
+
 }
