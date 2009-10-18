@@ -20,7 +20,6 @@ package org.apache.tuscany.sca.implementation.java.introspect.impl;
 
 import static org.apache.tuscany.sca.implementation.java.introspect.JavaIntrospectionHelper.getAllInterfaces;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -77,7 +76,7 @@ public class ServiceProcessor extends BaseJavaClassVisitor {
                     ) {
                     Service service;
                     try {
-                        service = createService(interfaze);
+                        service = createService(interfaze, null);
                     } catch (InvalidInterfaceException e) {
                         throw new IntrospectionException(e);
                     }
@@ -104,10 +103,9 @@ public class ServiceProcessor extends BaseJavaClassVisitor {
 
         //validate no scope on servce interface
         for (Class<?> iface : interfaces) {
-            for (Annotation aaa : iface.getAnnotations()) {
-                if (iface.getAnnotation(org.oasisopen.sca.annotation.Scope.class) != null) {
-                    throw new IntrospectionException("JCA90041 @Scope annotation not allowed on service interface " + iface.getName());
-                }
+            if (iface.getAnnotation(org.oasisopen.sca.annotation.Scope.class) != null) {
+                throw new IntrospectionException("JCA90041 @Scope annotation not allowed on service interface " + iface
+                    .getName());
             }
         }
         
@@ -123,10 +121,8 @@ public class ServiceProcessor extends BaseJavaClassVisitor {
         
         for (int i=0; i < interfaces.length; i++) {
             try {
-                Service service = createService(interfaces[i]);
-                if (annotation.names().length > 0) {
-                    service.setName(annotation.names()[i]);
-                }
+                String name = (annotation.names().length > 0) ? annotation.names()[i] : null;
+                Service service = createService(interfaces[i], name);
                 type.getServices().add(service);
             } catch (InvalidInterfaceException e) {
                 throw new IntrospectionException(e);
@@ -182,13 +178,16 @@ public class ServiceProcessor extends BaseJavaClassVisitor {
         createCallback(type, element);
     }
 
-    public Service createService(Class<?> interfaze) throws InvalidInterfaceException {
+    public Service createService(Class<?> interfaze, String name) throws InvalidInterfaceException {
         Service service = assemblyFactory.createService();
         JavaInterfaceContract interfaceContract = javaFactory.createJavaInterfaceContract();
         service.setInterfaceContract(interfaceContract);
 
-        // create a relative URI
-        service.setName(interfaze.getSimpleName());
+        if (name == null) {
+            service.setName(interfaze.getSimpleName());
+        } else {
+            service.setName(name);
+        }
 
         JavaInterface callInterface = javaFactory.createJavaInterface(interfaze);
         service.getInterfaceContract().setInterface(callInterface);
