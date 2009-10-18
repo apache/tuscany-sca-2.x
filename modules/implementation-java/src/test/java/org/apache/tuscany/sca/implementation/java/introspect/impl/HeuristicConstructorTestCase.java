@@ -28,6 +28,8 @@ import java.lang.reflect.Constructor;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.JavaElementImpl;
@@ -51,8 +53,9 @@ public class HeuristicConstructorTestCase extends AbstractProcessorTest {
     private JavaImplementationFactory javaImplementationFactory;
 
     public HeuristicConstructorTestCase() {
-        factory = new DefaultAssemblyFactory();
-        javaFactory = new DefaultJavaInterfaceFactory();
+        ExtensionPointRegistry registry = new DefaultExtensionPointRegistry();
+        factory = new DefaultAssemblyFactory(registry);
+        javaFactory = new DefaultJavaInterfaceFactory(registry);        
         javaImplementationFactory = new DefaultJavaImplementationFactory();
         processor = new HeuristicPojoProcessor(factory, javaFactory);
     }

@@ -19,10 +19,11 @@
 package org.apache.tuscany.sca.implementation.java.introspect.impl;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.JavaConstructorImpl;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
@@ -46,8 +47,9 @@ public abstract class AbstractProcessorTest {
 
 
     protected AbstractProcessorTest() {
-        factory = new DefaultAssemblyFactory();
-        javaFactory = new DefaultJavaInterfaceFactory();
+        ExtensionPointRegistry registry = new DefaultExtensionPointRegistry();
+        factory = new DefaultAssemblyFactory(registry);
+        javaFactory = new DefaultJavaInterfaceFactory(registry);
         referenceProcessor = new ReferenceProcessor(factory, javaFactory);
         propertyProcessor = new PropertyProcessor(factory);
         resourceProcessor = new ResourceProcessor(factory);

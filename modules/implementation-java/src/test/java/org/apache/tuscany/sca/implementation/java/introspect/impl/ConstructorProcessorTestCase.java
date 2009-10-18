@@ -34,6 +34,8 @@ import java.util.Set;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.assembly.Multiplicity;
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
@@ -97,8 +99,9 @@ public class ConstructorProcessorTestCase {
         Constructor<Mixed> ctor1 = Mixed.class.getConstructor(String.class, String.class, String.class);
         processor.visitConstructor(ctor1, type);
 
-        AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
-        JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory();
+        ExtensionPointRegistry registry = new DefaultExtensionPointRegistry();
+        AssemblyFactory assemblyFactory = new DefaultAssemblyFactory(registry);
+        JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory(registry);
         ReferenceProcessor referenceProcessor = new ReferenceProcessor(assemblyFactory, javaFactory);
         PropertyProcessor propertyProcessor = new PropertyProcessor(assemblyFactory);
         JavaParameterImpl[] parameters = type.getConstructor().getParameters();
@@ -172,8 +175,9 @@ public class ConstructorProcessorTestCase {
                                                                     Set.class,
                                                                     String[].class);
         processor.visitConstructor(ctor1, type);
+        ExtensionPointRegistry registry = new DefaultExtensionPointRegistry();
         AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
-        JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory();
+        JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory(registry);
         ReferenceProcessor referenceProcessor = new ReferenceProcessor(assemblyFactory, javaFactory);
         PropertyProcessor propertyProcessor = new PropertyProcessor(assemblyFactory);
         JavaParameterImpl[] parameters = type.getConstructor().getParameters();

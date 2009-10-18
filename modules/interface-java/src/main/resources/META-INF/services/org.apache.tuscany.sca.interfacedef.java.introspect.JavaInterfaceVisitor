@@ -14,5 +14,4 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License. 
-org.apache.tuscany.sca.interfacedef.java.jaxws.WebServiceInterfaceProcessor;ranking=400
-org.apache.tuscany.sca.interfacedef.java.jaxws.JAXWSJavaInterfaceProcessor;ranking=100
+org.apache.tuscany.sca.interfacedef.java.impl.PolicyJavaInterfaceVisitor;ranking=1000

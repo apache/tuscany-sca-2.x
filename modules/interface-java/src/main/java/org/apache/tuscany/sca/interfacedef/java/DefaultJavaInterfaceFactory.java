@@ -24,20 +24,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
 import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceFactoryImpl;
-import org.apache.tuscany.sca.interfacedef.java.impl.PolicyJavaInterfaceVisitor;
 import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceVisitor;
-import org.apache.tuscany.sca.monitor.Monitor;
-import org.apache.tuscany.sca.monitor.MonitorFactory;
-import org.apache.tuscany.sca.monitor.Problem;
-import org.apache.tuscany.sca.monitor.Problem.Severity;
-import org.apache.tuscany.sca.policy.PolicyFactory;
 
 /**
  * A factory for the Java interface model.
@@ -48,37 +39,13 @@ public class DefaultJavaInterfaceFactory extends JavaInterfaceFactoryImpl implem
     private static final Logger logger = Logger.getLogger(DefaultJavaInterfaceFactory.class.getName());
     
     private ExtensionPointRegistry extensionPointRegistry;
-    private FactoryExtensionPoint modelFactoryExtensionPoint;
-    private Monitor monitor = null;
+    // private Monitor monitor = null;
     private boolean loadedVisitors; 
     
-    public DefaultJavaInterfaceFactory() {
+    public DefaultJavaInterfaceFactory(ExtensionPointRegistry registry) {
         super();
-        this.extensionPointRegistry = new DefaultExtensionPointRegistry();
-        
-        UtilityExtensionPoint utilities = this.extensionPointRegistry.getExtensionPoint(UtilityExtensionPoint.class);
-        MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
-        if (monitorFactory != null) {
-            this.monitor = monitorFactory.createMonitor();
-        }
-
+        this.extensionPointRegistry = registry;
     }
-    
-    /*
-    public DefaultJavaInterfaceFactory(FactoryExtensionPoint modelFactoryExtensionPoint) {
-        this.extensionPointRegistry = new DefaultExtensionPointRegistry();
-        
-        this.extensionPointRegistry = new DefaultExtensionPointRegistry();
-        this.modelFactoryExtensionPoint = modelFactoryExtensionPoint;
-        
-        UtilityExtensionPoint utilities = this.extensionPointRegistry.getExtensionPoint(UtilityExtensionPoint.class);
-        MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
-        if (monitorFactory != null) {
-            this.monitor = monitorFactory.createMonitor();
-        }
-
-    }
-    */
     
     @Override
     public List<JavaInterfaceVisitor> getInterfaceVisitors() {
@@ -94,17 +61,10 @@ public class DefaultJavaInterfaceFactory extends JavaInterfaceFactoryImpl implem
         if (loadedVisitors)
             return;
         
-        if (modelFactoryExtensionPoint != null) {
-            PolicyFactory policyFactory = modelFactoryExtensionPoint.getFactory(PolicyFactory.class);
-            if (policyFactory != null) {
-                addInterfaceVisitor(new PolicyJavaInterfaceVisitor(policyFactory));
-            }
-        }
-        
         // Get the databinding service declarations
         Collection<ServiceDeclaration> visitorDeclarations; 
         try {
-            visitorDeclarations = ServiceDiscovery.getInstance().getServiceDeclarations(JavaInterfaceVisitor.class.getName());
+            visitorDeclarations = ServiceDiscovery.getInstance().getServiceDeclarations(JavaInterfaceVisitor.class, true);
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
@@ -125,7 +85,6 @@ public class DefaultJavaInterfaceFactory extends JavaInterfaceFactoryImpl implem
                 
             } catch (Exception e) {
                 IllegalStateException ie = new IllegalStateException(e);
-                error("IllegalStateException", visitor, ie);
                 throw ie;
             }
             
@@ -137,24 +96,5 @@ public class DefaultJavaInterfaceFactory extends JavaInterfaceFactoryImpl implem
         loadedVisitors = true;
     }
 
-    
-    /**
-     * Report a exception.
-     *
-     * @param problems
-     * @param message
-     * @param model
-    */
-    private void error(String message, Object model, Exception ex) {
-        if (monitor != null) {
-            Problem problem =
-                monitor.createProblem(this.getClass().getName(),
-                                      "interface-javaxml-validation-messages.properties",
-                                      Severity.ERROR,
-                                      model,
-                                      message,
-                                      ex);
-            monitor.problem(problem);
-        }
-    }
+
 }

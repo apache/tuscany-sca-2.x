@@ -25,6 +25,9 @@ import java.util.logging.Logger;
 import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.Implementation;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.invocation.CallbackInterfaceInterceptor;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.interfacedef.Interface;
@@ -47,11 +50,19 @@ public class JavaCallbackRuntimeWireProcessor implements RuntimeWireProcessor {
     private InterfaceContractMapper interfaceContractMapper;
     private JavaInterfaceFactory javaInterfaceFactory;
 
+    public JavaCallbackRuntimeWireProcessor(ExtensionPointRegistry registry) {
+        FactoryExtensionPoint factories = registry.getExtensionPoint(FactoryExtensionPoint.class);
+        this.javaInterfaceFactory = factories.getFactory(JavaInterfaceFactory.class);
+
+        UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
+        this.interfaceContractMapper = utilities.getUtility(InterfaceContractMapper.class);
+    }
+    
     /**
      * @param interfaceContractMapper
      * @param javaInterfaceFactory
      */
-    public JavaCallbackRuntimeWireProcessor(InterfaceContractMapper interfaceContractMapper,
+    protected JavaCallbackRuntimeWireProcessor(InterfaceContractMapper interfaceContractMapper,
                                             JavaInterfaceFactory javaInterfaceFactory) {
         super();
         this.interfaceContractMapper = interfaceContractMapper;

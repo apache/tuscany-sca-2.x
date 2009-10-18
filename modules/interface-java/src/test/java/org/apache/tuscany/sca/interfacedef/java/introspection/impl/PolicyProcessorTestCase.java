@@ -20,11 +20,11 @@ package org.apache.tuscany.sca.interfacedef.java.introspection.impl;
 
 import static org.junit.Assert.assertEquals;
 
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.sca.interfacedef.java.impl.PolicyJavaInterfaceVisitor;
-import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.oasisopen.sca.annotation.Authentication;
@@ -36,13 +36,13 @@ import org.oasisopen.sca.annotation.Requires;
  * @version $Rev$ $Date$
  */
 public class PolicyProcessorTestCase {
-    private JavaInterfaceFactory factory = new DefaultJavaInterfaceFactory();
-    private PolicyJavaInterfaceVisitor policyProcessor;
+    private JavaInterfaceFactory factory;
+    // private PolicyJavaInterfaceVisitor policyProcessor;
 
     @Test
     public void testInterfaceLevel() throws Exception {
         JavaInterface type = factory.createJavaInterface(Interface1.class);
-        policyProcessor.visitInterface(type);
+        // policyProcessor.visitInterface(type);
         assertEquals(2, type.getRequiredIntents().size());
         assertEquals(1, type.getPolicySets().size());
     }
@@ -50,7 +50,7 @@ public class PolicyProcessorTestCase {
     @Test
     public void testMethodLevel() throws Exception {
         JavaInterface type = factory.createJavaInterface(Interface2.class);
-        policyProcessor.visitInterface(type);
+        // policyProcessor.visitInterface(type);
         assertEquals(0, type.getRequiredIntents().size());
         assertEquals(3, type.getOperations().get(0).getRequiredIntents().size());
         assertEquals(1, type.getOperations().get(1).getRequiredIntents().size());
@@ -62,7 +62,7 @@ public class PolicyProcessorTestCase {
     @Test
     public void testInterfaceAndMethodLevel() throws Exception {
         JavaInterface type = factory.createJavaInterface(Interface3.class);
-        policyProcessor.visitInterface(type);
+        // policyProcessor.visitInterface(type);
         assertEquals(2, type.getRequiredIntents().size());
         assertEquals(1, type.getOperations().get(0).getRequiredIntents().size());
         assertEquals(1, type.getOperations().get(1).getRequiredIntents().size());
@@ -73,7 +73,9 @@ public class PolicyProcessorTestCase {
 
     @Before
     public void setUp() throws Exception {
-        policyProcessor = new PolicyJavaInterfaceVisitor(new DefaultPolicyFactory());
+        ExtensionPointRegistry registry = new DefaultExtensionPointRegistry();
+        factory = new DefaultJavaInterfaceFactory(registry);
+        // policyProcessor = new PolicyJavaInterfaceVisitor(registry);
     }
 
     // @Remotable

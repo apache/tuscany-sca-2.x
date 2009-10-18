@@ -24,6 +24,8 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
@@ -167,7 +169,8 @@ public class JavaInterfaceUtilDuplicateRemotableTestCase {
     @Test
     public void testDuplicateOpeartionOnRemotableInterface()
     {
-        JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory();
+        ExtensionPointRegistry registry = new DefaultExtensionPointRegistry();
+        JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory(registry);
         JavaInterfaceIntrospectorImpl introspector = new JavaInterfaceIntrospectorImpl(javaFactory);
         JavaInterfaceImpl javaInterface = new JavaInterfaceImpl();
 

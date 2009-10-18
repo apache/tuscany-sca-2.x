@@ -27,6 +27,8 @@ import java.util.Set;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
@@ -47,9 +49,9 @@ import org.oasisopen.sca.annotation.Requires;
 public class PolicyJavaInterfaceVisitor implements JavaInterfaceVisitor {
     private PolicyFactory policyFactory;
 
-    public PolicyJavaInterfaceVisitor(PolicyFactory policyFactory) {
+    public PolicyJavaInterfaceVisitor(ExtensionPointRegistry registry) {
         super();
-        this.policyFactory = policyFactory;
+        this.policyFactory = registry.getExtensionPoint(FactoryExtensionPoint.class).getFactory(PolicyFactory.class);
     }
 
     private QName getQName(String intentName) {

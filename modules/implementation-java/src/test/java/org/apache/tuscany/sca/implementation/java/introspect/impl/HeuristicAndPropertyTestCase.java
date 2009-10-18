@@ -24,6 +24,8 @@ import java.lang.reflect.Constructor;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.JavaConstructorImpl;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
@@ -60,8 +62,9 @@ public class HeuristicAndPropertyTestCase {
 
     @Before
     public void setUp() throws Exception {
+        ExtensionPointRegistry registry = new DefaultExtensionPointRegistry();
         propertyProcessor = new PropertyProcessor(assemblyFactory);
-        heuristicProcessor = new HeuristicPojoProcessor(assemblyFactory, new DefaultJavaInterfaceFactory());
+        heuristicProcessor = new HeuristicPojoProcessor(assemblyFactory, new DefaultJavaInterfaceFactory(registry));
     }
 
     public static class Foo {

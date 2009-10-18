@@ -30,6 +30,8 @@ import java.util.List;
 
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.assembly.Multiplicity;
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
@@ -50,9 +52,10 @@ public class ReferenceProcessorTestCase {
 
     @Before
     public void setUp() throws Exception {
+        ExtensionPointRegistry registry = new DefaultExtensionPointRegistry();
         JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory();
         type = javaImplementationFactory.createJavaImplementation();
-        processor = new ReferenceProcessor(new DefaultAssemblyFactory(), new DefaultJavaInterfaceFactory());
+        processor = new ReferenceProcessor(new DefaultAssemblyFactory(), new DefaultJavaInterfaceFactory(registry));
     }
 
     @Test

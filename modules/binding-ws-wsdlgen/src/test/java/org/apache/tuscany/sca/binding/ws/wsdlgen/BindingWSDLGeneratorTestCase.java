@@ -53,7 +53,7 @@ public class BindingWSDLGeneratorTestCase extends TestCase {
         WSDLFactory wsdlFactory = modelFactories.getFactory(WSDLFactory.class);
         XSDFactory xsdFactory = modelFactories.getFactory(XSDFactory.class);
         DocumentBuilderFactory documentBuilderFactory = modelFactories.getFactory(DocumentBuilderFactory.class);
-        JavaInterfaceFactory factory = new DefaultJavaInterfaceFactory();
+        JavaInterfaceFactory factory = new DefaultJavaInterfaceFactory(registry);
         JavaInterfaceContract javaIC = factory.createJavaInterfaceContract();
         JavaInterface iface = factory.createJavaInterface(HelloWorld.class);
         DefaultDataBindingExtensionPoint dataBindings = new DefaultDataBindingExtensionPoint(registry);

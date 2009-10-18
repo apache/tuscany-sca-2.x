@@ -30,6 +30,8 @@ import javax.jws.WebService;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.JavaConstructorImpl;
@@ -56,7 +58,8 @@ public class HeuristicPojoProcessorTestCase extends AbstractProcessorTest {
     private JavaImplementationFactory javaImplementationFactory;
 
     public HeuristicPojoProcessorTestCase() {
-        processor = new HeuristicPojoProcessor(new DefaultAssemblyFactory(), new DefaultJavaInterfaceFactory());
+        ExtensionPointRegistry registry = new DefaultExtensionPointRegistry();
+        processor = new HeuristicPojoProcessor(new DefaultAssemblyFactory(), new DefaultJavaInterfaceFactory(registry));
         javaImplementationFactory = new DefaultJavaImplementationFactory();
     }
 

@@ -28,10 +28,7 @@ import javax.jws.soap.SOAPBinding;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
-import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
-import org.apache.tuscany.sca.databinding.DefaultDataBindingExtensionPoint;
-import org.apache.tuscany.sca.databinding.jaxb.DefaultXMLAdapterExtensionPoint;
-import org.apache.tuscany.sca.databinding.jaxb.XMLAdapterExtensionPoint;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
@@ -46,21 +43,23 @@ import com.example.stock.StockExceptionTest;
  * @version $Rev$ $Date$
  */
 public class JAXWSJavaInterfaceProcessorTestCase {
-    private JAXWSJavaInterfaceProcessor interfaceProcessor;
+    private ExtensionPointRegistry registry;
+    // private JAXWSJavaInterfaceProcessor interfaceProcessor;
 
     @Before
     public void setUp() throws Exception {
-        DataBindingExtensionPoint db = new DefaultDataBindingExtensionPoint(new DefaultExtensionPointRegistry());
-        XMLAdapterExtensionPoint xa = new DefaultXMLAdapterExtensionPoint();
-        interfaceProcessor = new JAXWSJavaInterfaceProcessor(db, new JAXWSFaultExceptionMapper(db, xa), xa);
+        registry = new DefaultExtensionPointRegistry();
+//        DataBindingExtensionPoint db = new DefaultDataBindingExtensionPoint(registry);
+//        XMLAdapterExtensionPoint xa = new DefaultXMLAdapterExtensionPoint();
+        // interfaceProcessor = new JAXWSJavaInterfaceProcessor(db, new JAXWSFaultExceptionMapper(db, xa), xa);
     }
 
     @Test
     public void testWrapper() throws Exception {
-        DefaultJavaInterfaceFactory iFactory = new DefaultJavaInterfaceFactory();
+        DefaultJavaInterfaceFactory iFactory = new DefaultJavaInterfaceFactory(registry);
         JavaInterface contract = iFactory.createJavaInterface(StockExceptionTest.class);
 
-        interfaceProcessor.visitInterface(contract);
+        // interfaceProcessor.visitInterface(contract);
         Operation op = contract.getOperations().get(0);
         Assert.assertTrue(!op.isWrapperStyle());
         Assert.assertEquals(new QName("http://www.example.com/stock", "stockQuoteOffer"), op.getWrapper().getInputWrapperElement().getQName());
@@ -73,14 +72,14 @@ public class JAXWSJavaInterfaceProcessorTestCase {
      */
     @Test
     public final void testProcessor() throws Exception {
-        DefaultJavaInterfaceFactory iFactory = new DefaultJavaInterfaceFactory();
+        DefaultJavaInterfaceFactory iFactory = new DefaultJavaInterfaceFactory(registry);
         JavaInterface contract = iFactory.createJavaInterface(WebServiceInterfaceWithoutAnnotation.class);
 
-        interfaceProcessor.visitInterface(contract);
+        // interfaceProcessor.visitInterface(contract);
         assertFalse(contract.isRemotable());
 
         contract = iFactory.createJavaInterface(WebServiceInterfaceWithAnnotation.class);
-        interfaceProcessor.visitInterface(contract);
+        // interfaceProcessor.visitInterface(contract);
         assertTrue(contract.isRemotable());
 
         Operation op1 = contract.getOperations().get(0);
