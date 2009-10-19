@@ -25,6 +25,7 @@ import org.apache.tuscany.sca.core.scope.TargetDestructionException;
 import org.apache.tuscany.sca.core.scope.TargetNotFoundException;
 import org.apache.tuscany.sca.core.scope.TargetResolutionException;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
+import org.oasisopen.sca.ServiceUnavailableException;
 
 /**
  * A scope context which manages atomic component instances keyed by composite
@@ -54,8 +55,12 @@ public class CompositeScopeContainer<KEY> extends AbstractScopeContainer<KEY> {
     @Override
     public synchronized InstanceWrapper getWrapper(KEY contextId) throws TargetResolutionException {
         if (wrapper == null) {
-            wrapper = createInstanceWrapper();
-            wrapper.start();
+            try {
+                wrapper = createInstanceWrapper();
+                wrapper.start();
+            } catch (Exception e) {
+                throw new ServiceUnavailableException(e);
+            }
         }
         return wrapper;
     }
