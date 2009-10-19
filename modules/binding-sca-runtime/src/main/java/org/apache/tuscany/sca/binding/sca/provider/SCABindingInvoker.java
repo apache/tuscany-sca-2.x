@@ -65,7 +65,8 @@ public class SCABindingInvoker implements Interceptor, DataExchangeSemantics {
      * @see org.apache.tuscany.sca.invocation.DataExchangeSemantics#allowsPassByReference()
      */
     public boolean allowsPassByReference() {
-        return chain.allowsPassByReference();
+        return false;
+//        return chain.allowsPassByReference();
     }
 
 }
