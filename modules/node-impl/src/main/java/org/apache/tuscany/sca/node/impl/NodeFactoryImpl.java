@@ -291,7 +291,11 @@ public class NodeFactoryImpl extends NodeFactory {
                 if (!(import_ instanceof DefaultImport)) {
                 	// Add the (empty) matchingExports List and report a warning
                 	import_.setModelResolver(new DefaultImportModelResolver(matchingExports));
-                    warning(monitor, "UnresolvedImport", import_, import_);
+                	Monitor.error(monitor, 
+                	              this, 
+                	              "node-impl-validation-messages", 
+                	              "UnresolvedImport", 
+                	              import_);
                 }
             } // end if
         }
