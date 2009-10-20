@@ -43,7 +43,16 @@ public class ReflectiveInstanceWrapper<T> implements InstanceWrapper<T> {
 
     public void start() throws TargetInitializationException {
         if (initInvoker != null) {
-            initInvoker.invokeEvent(instance);
+            try {
+                initInvoker.invokeEvent(instance);
+            } catch (Exception e) {
+                try {
+                    stop();
+                } catch (TargetDestructionException e1) {
+                    throw new TargetInitializationException("TargetDestructionException while handling init exception", e);
+                }
+                throw new TargetInitializationException(e);
+            }
         }
     }
 
