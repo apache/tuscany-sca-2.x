@@ -29,10 +29,8 @@ import org.apache.tuscany.sca.monitor.impl.MonitorImpl;
 public class DefaultMonitorFactory implements MonitorFactory {
     private ThreadLocal<Monitor> contextMonitor = new InheritableThreadLocal<Monitor>();
 
-    // [HACK] This is a hack to reuse the same monitor on the thread 
     public Monitor createMonitor() {
-        return getContextMonitor(true);
-        // return new MonitorImpl();
+        return new MonitorImpl();
     }
 
     public Monitor getContextMonitor() {

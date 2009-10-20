@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.monitor;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.monitor.Problem.Severity;
 
@@ -29,27 +30,246 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
  * @version $Rev$ $Date$
  */
 public abstract class Monitor {
-    /**
-     * Reports a build problem.
-     * 
-     * @param problem
-     */
-    public abstract void problem(Problem problem);
+    private static class ContextFinder extends SecurityManager {
+        private final static ContextFinder instance = new ContextFinder();
+        
+        // This is sensitive to the calling stack
+        private static Class<?> getContextClass() {
+            Class[] classes = instance.getClassContext();
+            // 0: ContextFinder (getClassContext)
+            // 1: ContextFinder (getContextClass)
+            // 2: Monitor (getSourceClassName)
+            // 3: Monitor (error/warning)
+            return classes[4];
+        }
+        
+    }
+    private final static Logger logger = Logger.getLogger(Monitor.class.getName());
 
-    /** 
-     * Returns a list of reported problems. 
+    /**
+     * A utility function for raising an error. It creates the problem and 
+     * adds it to the monitor
      * 
-     * @return the list of problems. The list may be empty
+     * @param monitor
+     * @param reportingObject
+     * @param messageBundle
+     * @param messageId
+     * @param messageParameters
      */
-    public abstract List<Problem> getProblems();
+    public static void error (Monitor monitor, 
+                              Object reportingObject,
+                              String messageBundle,
+                              String messageId, 
+                              Object... messageParameters){
+        String contextClassName = getSourceClassName(reportingObject);
+        if (monitor != null) {
+            Problem problem =
+                monitor.createProblem(contextClassName,
+                                      messageBundle,
+                                      Severity.ERROR,
+                                      reportingObject,
+                                      messageId,
+                                      messageParameters);
+            monitor.problem(problem);
+        } else {
+            logNullMonitor(messageId, contextClassName);
+        }
+    }
 
     /**
-     * Returns the last logged problem.
+     * A utility function for raising an error. It creates the problem and 
+     * adds it to the monitor
      * 
+     * @param monitor
+     * @param reportingObject
+     * @param messageBundle
+     * @param messageId
+     * @param exception
+     */
+    public static void error (Monitor monitor, 
+                              Object reportingObject,
+                              String messageBundle,
+                              String messageId, 
+                              Throwable cause){
+        String contextClassName = getSourceClassName(reportingObject);
+        if (monitor != null) {
+            Problem problem =
+                monitor.createProblem(contextClassName,
+                                      messageBundle,
+                                      Severity.ERROR,
+                                      reportingObject,
+                                      messageId,
+                                      cause);
+            monitor.problem(problem);
+        } else {
+            logNullMonitor(messageId, contextClassName);
+        }
+    }
+
+    /**
+     * A utility function for raising an error. It creates the problem and 
+     * adds it to the monitor
+     * 
+     * @param monitor
+     * @param reportingObject
+     * @param messageBundle
+     * @param messageId
+     * @param exception
+     */
+    public static void error (Monitor monitor, 
+                              Object reportingObject,
+                              String messageBundle,
+                              String messageId, 
+                              Throwable cause,
+                              Object... messageParameters) {
+        String contextClassName = getSourceClassName(reportingObject);
+        if (monitor != null) {
+            Problem problem =
+                monitor.createProblem(contextClassName,
+                                      messageBundle,
+                                      Severity.ERROR,
+                                      reportingObject,
+                                      messageId,
+                                      cause,
+                                      messageParameters);
+            monitor.problem(problem);
+        } else {
+            logNullMonitor(messageId, contextClassName);
+        }
+    }
+
+    private static String getSourceClassName(Object reportingObject) {
+        String contextClassName = null;
+        if (reportingObject != null) {
+            contextClassName = reportingObject.getClass().getName();
+        } else {
+            contextClassName = ContextFinder.getContextClass().getName();
+        }
+        return contextClassName;
+    }
+
+    private static void logNullMonitor(String messageId, String contextClassName) {
+        logger.warning("Attempt to report error with id " + 
+                messageId + 
+                " from class " + 
+                contextClassName +
+                " but the monitor object was null");
+    }
+
+    /**
+     * A utility function for raising a warning. It creates the problem and 
+     * adds it to the monitor
+     * 
+     * @param monitor
+     * @param reportingObject
+     * @param messageBundle
+     * @param messageId
+     * @param messageParameters
+     */
+    public static void warning (Monitor monitor, 
+                                Object reportingObject,
+                                String messageBundle,
+                                String messageId, 
+                                Object... messageParameters){
+        String contextClassName = getSourceClassName(reportingObject);
+        if (monitor != null) {
+            Problem problem =
+                monitor.createProblem(contextClassName,
+                                      messageBundle,
+                                      Severity.WARNING,
+                                      reportingObject,
+                                      messageId,
+                                      messageParameters);
+            monitor.problem(problem);
+        } else {
+            logNullMonitor(messageId, contextClassName);
+        }
+    }
+    
+    // =====================================================
+    // TUSCANY-3132 - new approach to monitoring errors
+    //           
+    
+    /**
+     * A utility function for raising an error. It creates the problem and 
+     * adds it to the monitor
+     * 
+     * @param monitor
+     * @param reportingObject
+     * @param messageBundle
+     * @param messageId
+     * @param exception
+     */
+    public static void warning (Monitor monitor, 
+                              Object reportingObject,
+                              String messageBundle,
+                              String messageId, 
+                              Throwable cause){
+        String contextClassName = getSourceClassName(reportingObject);
+        if (monitor != null) {
+            Problem problem =
+                monitor.createProblem(contextClassName,
+                                      messageBundle,
+                                      Severity.ERROR,
+                                      reportingObject,
+                                      messageId,
+                                      cause);
+            monitor.problem(problem);
+        } else {
+            logNullMonitor(messageId, contextClassName);
+        }
+    }
+    
+    /**
+     * A utility function for raising an error. It creates the problem and 
+     * adds it to the monitor
+     * 
+     * @param monitor
+     * @param reportingObject
+     * @param messageBundle
+     * @param messageId
+     * @param exception
+     */
+    public static void warning (Monitor monitor, 
+                              Object reportingObject,
+                              String messageBundle,
+                              String messageId, 
+                              Throwable cause,
+                              Object... messageParameters) {
+        String contextClassName = getSourceClassName(reportingObject);
+        if (monitor != null) {
+            Problem problem =
+                monitor.createProblem(contextClassName,
+                                      messageBundle,
+                                      Severity.ERROR,
+                                      reportingObject,
+                                      messageId,
+                                      cause,
+                                      messageParameters);
+            monitor.problem(problem);
+        } else {
+            logNullMonitor(messageId, contextClassName);
+        }
+    }
+    
+    /**
+     * Create a new problem.
+     *  
+     * @param sourceClassName   the class name reporting the problem
+     * @param bundleName        the name of the message bundle to use
+     * @param severity          the severity of the problem
+     * @param problemObject     the model object for which the problem is being reported
+     * @param messageId         the id of the problem message
+     * @param messageParams     the parameters of the problem message
      * @return
      */
-    public abstract Problem getLastProblem();
-
+    public abstract Problem createProblem(String sourceClassName,
+                                   String bundleName,
+                                   Severity severity,
+                                   Object problemObject,
+                                   String messageId,
+                                   Object... messageParams);
+    
     /**
      * Create a new problem.
      * 
@@ -69,160 +289,54 @@ public abstract class Monitor {
                                           Throwable cause);
 
     /**
-     * Create a new problem.
-     *  
-     * @param sourceClassName   the class name reporting the problem
-     * @param bundleName        the name of the message bundle to use
-     * @param severity          the severity of the problem
-     * @param problemObject     the model object for which the problem is being reported
-     * @param messageId         the id of the problem message
-     * @param messageParams     the parameters of the problem message
-     * @return
-     */
-    public abstract Problem createProblem(String sourceClassName,
-                                   String bundleName,
-                                   Severity severity,
-                                   Object problemObject,
-                                   String messageId,
-                                   Object... messageParams);
-
-    /**
-     * Set the name of an artifact for which errors are Monitored
-     * @param artifactName the artifact name
-     */
-    public abstract void setArtifactName(String artifactName);
-
-    /**
      * Get the name of the artifact for which errors are Monitored
      * @return the name of the Artifact or null if no artifact name has been set
      */
     public abstract String getArtifactName();
-    
-    // =====================================================
-    // TUSCANY-3132 - new approach to monitoring errors
-    //           
+
+    /**
+     * Returns the last logged problem.
+     * 
+     * @return
+     */
+    public abstract Problem getLastProblem();
+   
+    /** 
+     * Returns a list of reported problems. 
+     * 
+     * @return the list of problems. The list may be empty
+     */
+    public abstract List<Problem> getProblems();
+
+    /**
+     * Remove the most recent context string from the 
+     * context stack
+     * @return The object popped 
+     */
+    public abstract Object popContext();
+
+    /**
+     * Reports a build problem.
+     * 
+     * @param problem
+     */
+    public abstract void problem(Problem problem);
     
     /**
      * Add a context string to the context stack
      * @param context the context string to add
      */
-    public abstract void pushContext(String context);
-    
-    /**
-     * Remove the most recent context string from the 
-     * context stack
-     */
-    public abstract void popContext();
-    
-    /**
-     * Remove all of the context strings from the 
-     * context stack
-     */
-    public abstract void clearContext();
+    public abstract void pushContext(Object context);
     
     /**
      * Clear context and problems
      */
-    public abstract void reset();
-    
+    public abstract void reset();    
     /**
-     * A utility function for raising a warning. It creates the problem and 
-     * adds it to the monitor
-     * 
-     * @param monitor
-     * @param reportingObject
-     * @param messageBundle
-     * @param messageId
-     * @param messageParameters
+     * Set the name of an artifact for which errors are Monitored
+     * @param artifactName the artifact name
      */
-    public static void warning (Monitor monitor, 
-                                Object reportingObject,
-                                String messageBundle,
-                                String messageId, 
-                                Object... messageParameters){
-        if (monitor != null) {
-            Problem problem =
-                monitor.createProblem(reportingObject.getClass().getName(),
-                                      messageBundle,
-                                      Severity.WARNING,
-                                      null,
-                                      messageId,
-                                      messageParameters);
-            monitor.problem(problem);
-        } else {
-            System.out.println("Attempt to report warning with id " + 
-                               messageId + 
-                               " from class " + 
-                               reportingObject.getClass().getName() +
-                               " but the monitor object was null");
-        }
-    }
-   
-    /**
-     * A utility function for raising an error. It creates the problem and 
-     * adds it to the monitor
-     * 
-     * @param monitor
-     * @param reportingObject
-     * @param messageBundle
-     * @param messageId
-     * @param messageParameters
-     */
-    public static void error (Monitor monitor, 
-                              Object reportingObject,
-                              String messageBundle,
-                              String messageId, 
-                              Object... messageParameters){
-        if (monitor != null) {
-            Problem problem =
-                monitor.createProblem(reportingObject.getClass().getName(),
-                                      messageBundle,
-                                      Severity.ERROR,
-                                      null,
-                                      messageId,
-                                      messageParameters);
-            monitor.problem(problem);
-        } else {
-            System.out.println("Attempt to report error with id " + 
-                    messageId + 
-                    " from class " + 
-                    reportingObject.getClass().getName() +
-                    " but the monitor object was null");
-        }
-    }
-    
-    /**
-     * A utility function for raising an error. It creates the problem and 
-     * adds it to the monitor
-     * 
-     * @param monitor
-     * @param reportingObject
-     * @param messageBundle
-     * @param messageId
-     * @param exception
-     */
-    public static void error (Monitor monitor, 
-                              Object reportingObject,
-                              String messageBundle,
-                              String messageId, 
-                              Throwable cause){
-        if (monitor != null) {
-            Problem problem =
-                monitor.createProblem(reportingObject.getClass().getName(),
-                                      messageBundle,
-                                      Severity.ERROR,
-                                      null,
-                                      messageId,
-                                      cause);
-            monitor.problem(problem);
-        } else {
-            System.out.println("Attempt to report error with id " + 
-                    messageId + 
-                    " from class " + 
-                    reportingObject.getClass().getName() +
-                    " but the monitor object was null");
-        }
-    }    
+    public abstract void setArtifactName(String artifactName);
     
     // =====================================================
 }

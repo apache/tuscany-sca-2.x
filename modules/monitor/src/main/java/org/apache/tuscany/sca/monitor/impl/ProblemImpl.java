@@ -79,6 +79,34 @@ public class ProblemImpl implements Problem {
      * @param context           the string indicating where the error occurred
      * @param problemObject     the model object for which the problem is being reported
      * @param messageId         the id of the problem message
+     * @param messageParams     the parameters of the problem message
+     */
+    public ProblemImpl(String sourceClassName,
+                       String bundleName,
+                       Severity severity,
+                       String context,
+                       Object problemObject,
+                       String messageId,
+                       Throwable cause,
+                       Object... messageParams) {
+        this.sourceClassName = sourceClassName;
+        this.bundleName = bundleName;
+        this.severity = severity;
+        this.context = context;
+        this.problemObject = problemObject;
+        this.messageId = messageId;
+        this.cause = cause;
+        this.messageParams = messageParams;
+    }    
+    /**
+     * Construct a new problem
+     * 
+     * @param sourceClassName   the class name reporting the problem
+     * @param bundleName        the name of the message bundle to use
+     * @param severity          the severity of the problem
+     * @param context           the string indicating where the error occurred
+     * @param problemObject     the model object for which the problem is being reported
+     * @param messageId         the id of the problem message
      * @param cause             the exception which caused the problem
      */
     public ProblemImpl(String sourceClassName,

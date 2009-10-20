@@ -38,7 +38,7 @@ public class MonitorImpl extends Monitor {
     private static final Logger logger = Logger.getLogger(MonitorImpl.class.getName());
     
     // stack of context information that is printed alongside each problem
-    private Stack<String> contextStack = new Stack<String>();
+    private Stack<Object> contextStack = new Stack<Object>();
 
     // Cache all the problem reported to monitor for further analysis
     private List<Problem> problemCache = new ArrayList<Problem>();
@@ -106,6 +106,16 @@ public class MonitorImpl extends Monitor {
                                  Object... messageParams) {
         return new ProblemImpl(sourceClassName, bundleName, severity, contextStack.toString(), problemObject, messageId, messageParams);
     }
+    
+    public Problem createProblem(String sourceClassName,
+                                 String bundleName,
+                                 Severity severity,
+                                 Object problemObject,
+                                 String messageId,
+                                 Throwable cause,
+                                 Object... messageParams) {
+        return new ProblemImpl(sourceClassName, bundleName, severity, contextStack.toString(), problemObject, messageId, cause, messageParams);
+    }
 
     public String getArtifactName() {
         return artifactName;
@@ -116,23 +126,18 @@ public class MonitorImpl extends Monitor {
     }
     
     @Override
-    public void pushContext(String context) {
+    public void pushContext(Object context) {
         contextStack.push(context);
     }
     
     @Override
-    public void popContext() {
-        contextStack.pop();
-    }
-    
-    @Override
-    public void clearContext() {
-        contextStack.clear();  
+    public Object popContext() {
+        return contextStack.pop();
     }
     
     @Override
     public void reset() {
-        clearContext();
+        contextStack.clear();
         problemCache.clear();
         artifactName = null;
     }
