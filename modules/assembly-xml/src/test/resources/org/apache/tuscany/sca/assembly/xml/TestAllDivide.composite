@@ -18,7 +18,6 @@
  * under the License.    
 -->
 <composite autowire="false"
-	constrainingType="tns:Calculator"
 	local="true"
 	name="TestAllDivide"
 	policySets="" requires=""
@@ -47,7 +46,7 @@
     </callback>
   </service>
   
-   <component name="CalculatorDivideComponent" autowire="false" constrainingType="tns:CalculatorServiceComponent" policySets="" requires="">
+   <component name="CalculatorDivideComponent" autowire="false" policySets="" requires="">
    		<service name="DivideService" policySets="" requires="">
    			<interface.java interface="calculator.DivideService" callbackInterface="calculator.DivideCallback"/>
    		</service>

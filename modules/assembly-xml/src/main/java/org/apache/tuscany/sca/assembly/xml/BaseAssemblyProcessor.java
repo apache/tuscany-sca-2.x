@@ -65,9 +65,7 @@ import org.apache.tuscany.sca.assembly.Base;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentService;
-import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.assembly.Extensible;
 import org.apache.tuscany.sca.assembly.Implementation;
@@ -288,22 +286,6 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
         return null;
     }
 
-    /**
-     * Returns the value of a constrainingType attribute.
-     * @param reader
-     * @return
-     */
-    protected ConstrainingType readConstrainingType(XMLStreamReader reader) {
-        QName constrainingTypeName = getQName(reader, Constants.CONSTRAINING_TYPE);
-        if (constrainingTypeName != null) {
-            ConstrainingType constrainingType = assemblyFactory.createConstrainingType();
-            constrainingType.setName(constrainingTypeName);
-            constrainingType.setUnresolved(true);
-            return constrainingType;
-        } else {
-            return null;
-        }
-    }
 
     /**
      * Reads an abstract property element.
@@ -424,88 +406,6 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
         }
     }
 
-    /**
-     * Returns a constrainingType attribute.
-     * @param componentType
-     * @return
-     */
-    protected XAttr writeConstrainingType(ComponentType componentType) {
-        ConstrainingType constrainingType = componentType.getConstrainingType();
-        if (constrainingType != null)
-            return new XAttr(Constants.CONSTRAINING_TYPE, constrainingType.getName());
-        else
-            return null;
-    }
-
-    /*
-    protected List<Extension> readPropertyValue(XMLStreamReader reader) throws XMLStreamException,
-        ContributionReadException {
-        List<Extension> values = new ArrayList<Extension>();
-        QName name = reader.getName(); // Should be sca:property
-
-        // SCA 1.1 supports the @value for simple types
-        String valueAttr = getString(reader, VALUE);
-        if (valueAttr != null) {
-            Extension ext = assemblyFactory.createExtension();
-            ext.setValue(valueAttr);
-            ext.setQName(VALUE_QNAME);
-            ext.setAttribute(true);
-            values.add(ext);
-        }
-
-        boolean isTextForProperty = true;
-        StringBuffer text = new StringBuffer();
-
-        int event = reader.getEventType();
-        while (true) {
-            switch (event) {
-                case START_ELEMENT:
-                    name = reader.getName();
-                    if (PROPERTY_QNAME.equals(name)) {
-                        isTextForProperty = true;
-                        break;
-                    }
-                    isTextForProperty = false;
-                    // Read <value>
-                    if (VALUE_QNAME.equals(name)) {
-                        Object value = extensionProcessor.read(reader);
-                        // Assume the value is the XMLStreamReader for the content
-                        Extension ext = assemblyFactory.createExtension();
-                        ext.setValue(value);
-                        ext.setQName(name);
-                        values.add(ext);
-                    } else {
-                        // Global elements
-                        // FIXME: do we want to check if the element mataches property.element
-                        Object value = extensionProcessor.read(reader);
-                        Extension ext = assemblyFactory.createExtension();
-                        ext.setValue(value);
-                        ext.setQName(name);
-                        values.add(ext);
-                    }
-                    break;
-                case XMLStreamConstants.CHARACTERS:
-                case XMLStreamConstants.CDATA:
-                    if (isTextForProperty) {
-                        text.append(reader.getText());
-                    }
-                    break;
-                case END_ELEMENT:
-                    name = reader.getName();
-                    if (PROPERTY_QNAME.equals(name)) {
-                        return values;
-                    }
-                    break;
-            }
-            if (reader.hasNext()) {
-                event = reader.next();
-            } else {
-                return values;
-            }
-        }
-    }
-    */
-    
     /**
      * Read a property value into a DOM document.
      * @param element

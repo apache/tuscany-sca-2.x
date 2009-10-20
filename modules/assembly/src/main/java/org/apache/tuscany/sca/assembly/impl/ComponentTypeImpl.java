@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.ComponentType;
-import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
@@ -37,7 +36,6 @@ import org.apache.tuscany.sca.policy.PolicySet;
  */
 public class ComponentTypeImpl extends ExtensibleImpl implements ComponentType, Cloneable {
     private String uri;
-    private ConstrainingType constrainingType;
     private List<Property> properties = new ArrayList<Property>();
     private List<Reference> references = new ArrayList<Reference>();
     private List<Service> services = new ArrayList<Service>();
@@ -77,10 +75,6 @@ public class ComponentTypeImpl extends ExtensibleImpl implements ComponentType, 
 
     public void setURI(String uri) {
         this.uri = uri;
-    }
-
-    public ConstrainingType getConstrainingType() {
-        return constrainingType;
     }
 
     public List<Property> getProperties() {
@@ -133,10 +127,6 @@ public class ComponentTypeImpl extends ExtensibleImpl implements ComponentType, 
         
         return service;
     }  
-
-    public void setConstrainingType(ConstrainingType constrainingType) {
-        this.constrainingType = constrainingType;
-    }
 
     @Override
     public int hashCode() {

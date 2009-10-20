@@ -32,7 +32,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
@@ -54,7 +53,7 @@ import org.junit.Test;
  * 
  * @version $Rev$ $Date$
  */
-public class WireTestCase {
+public class WireTestCase { 
 
     private static XMLInputFactory inputFactory;
     private static StAXArtifactProcessor<Object> staxProcessor;
@@ -77,34 +76,6 @@ public class WireTestCase {
 
         URLArtifactProcessorExtensionPoint documentProcessors = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
         policyDefinitionsProcessor = documentProcessors.getProcessor(Definitions.class);
-    }
-
-    @Test
-    public void testResolveConstrainingType() throws Exception {
-        InputStream is = getClass().getResourceAsStream("CalculatorComponent.constrainingType");
-        XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-        ConstrainingType constrainingType = (ConstrainingType)staxProcessor.read(reader, context);
-        is.close();
-        assertNotNull(constrainingType);
-        resolver.addModel(constrainingType, context);
-
-        is = getClass().getResourceAsStream("TestAllCalculator.composite");
-        reader = inputFactory.createXMLStreamReader(is);
-        Composite composite = (Composite)staxProcessor.read(reader, context);
-        is.close();
-        assertNotNull(composite);
-        
-        URL url = getClass().getResource("test_definitions.xml");
-        URI uri = URI.create("test_definitions.xml");
-        Definitions scaDefns = (Definitions)policyDefinitionsProcessor.read(null, uri, url, context);
-        assertNotNull(scaDefns);
-        
-        policyDefinitionsProcessor.resolve(scaDefns, resolver, context);
-        
-        staxProcessor.resolve(composite, resolver, context);
-        
-        assertEquals(composite.getConstrainingType(), constrainingType);
-        assertEquals(composite.getComponents().get(0).getConstrainingType(), constrainingType);
     }
 
     @Test

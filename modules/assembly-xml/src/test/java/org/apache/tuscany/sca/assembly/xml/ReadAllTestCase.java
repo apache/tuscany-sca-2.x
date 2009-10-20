@@ -73,7 +73,6 @@ public class ReadAllTestCase {
         Composite composite = (Composite)staxProcessor.read(inputFactory.createXMLStreamReader(is), context);
         assertNotNull(composite);
         assertEquals(composite.getName(), new QName("http://calc", "TestAllCalculator"));
-        assertEquals(composite.getConstrainingType().getName(), new QName("http://calc", "CalculatorComponent"));
         assertTrue(composite.isLocal());
         assertFalse(composite.getAutowire() == Boolean.TRUE);
         assertEquals(((PolicySubject)composite).getRequiredIntents().get(0).getName(), new QName("http://test",
@@ -102,8 +101,6 @@ public class ReadAllTestCase {
         Component calcComponent = composite.getComponents().get(0);
         assertEquals(calcComponent.getName(), "CalculatorServiceComponent");
         assertEquals(calcComponent.getAutowire(), Boolean.FALSE);
-        assertEquals(calcComponent.getConstrainingType().getName(), new QName("http://calc",
-                                                                              "CalculatorComponent"));
         assertEquals(calcComponent.getRequiredIntents().get(0).getName(), new QName("http://test",
                                                                                     "confidentiality"));
         assertEquals(calcComponent.getPolicySets().get(0).getName(), new QName("http://test", "SecureReliablePolicy"));

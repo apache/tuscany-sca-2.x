@@ -29,7 +29,6 @@ import javax.xml.stream.XMLOutputFactory;
 
 import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
@@ -69,15 +68,6 @@ public class WriteTestCase {
         assertNotNull(componentType);
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         staxProcessor.write(componentType, outputFactory.createXMLStreamWriter(bos), context);
-    }
-
-    @Test
-    public void testReadWriteConstrainingType() throws Exception {
-        InputStream is = getClass().getResourceAsStream("CalculatorComponent.constrainingType");
-        ConstrainingType constrainingType = (ConstrainingType)staxProcessor.read(inputFactory.createXMLStreamReader(is), context);
-        assertNotNull(constrainingType);
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        staxProcessor.write(constrainingType, outputFactory.createXMLStreamWriter(bos), context);
     }
 
     @Test

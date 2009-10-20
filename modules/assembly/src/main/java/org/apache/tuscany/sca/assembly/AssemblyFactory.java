@@ -110,13 +110,6 @@ public interface AssemblyFactory {
     CompositeService createCompositeService();
 
     /**
-     * Create a new constraining type.
-     * 
-     * @return a new constraining type
-     */
-    ConstrainingType createConstrainingType();
-
-    /**
      * Create a new property.
      * 
      * @return a new property

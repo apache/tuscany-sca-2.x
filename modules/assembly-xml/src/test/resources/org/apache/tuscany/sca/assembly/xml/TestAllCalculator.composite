@@ -18,7 +18,7 @@
  * under the License.    
 -->
 
-<composite autowire="false" constrainingType="tns:CalculatorComponent" local="true" name="TestAllCalculator" policySets="sns:SecureReliablePolicy"
+<composite autowire="false" local="true" name="TestAllCalculator" policySets="sns:SecureReliablePolicy"
     requires="cns:confidentiality" targetNamespace="http://calc" xmlns:tns="http://calc"
     xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -45,7 +45,7 @@
         </callback>
     </service>
 
-    <component name="CalculatorServiceComponent" autowire="false" constrainingType="tns:CalculatorComponent"
+    <component name="CalculatorServiceComponent" autowire="false" 
         policySets="sns:SecureReliablePolicy" requires="cns:confidentiality">
         <ext:testExtension/>
         <service name="CalculatorService" policySets="sns:SecureReliablePolicy" requires="cns:confidentiality">

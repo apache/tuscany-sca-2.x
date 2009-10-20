@@ -29,7 +29,6 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
@@ -68,14 +67,6 @@ public class ReadTestCase {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
         ComponentType componentType = (ComponentType)staxProcessor.read(reader, context);
         assertNotNull(componentType);
-    }
-
-    @Test
-    public void testReadConstrainingType() throws Exception {
-        InputStream is = getClass().getResourceAsStream("CalculatorComponent.constrainingType");
-        XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-        ConstrainingType constrainingType = (ConstrainingType)staxProcessor.read(reader, context);
-        assertNotNull(constrainingType);
     }
 
     @Test

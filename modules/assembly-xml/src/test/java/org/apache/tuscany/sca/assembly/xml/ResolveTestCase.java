@@ -28,7 +28,6 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
@@ -58,29 +57,6 @@ public class ResolveTestCase {
         inputFactory = XMLInputFactory.newInstance();
         staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         resolver = new DefaultModelResolver();
-    }
-
-    @Test
-    public void testResolveConstrainingType() throws Exception {
-        InputStream is = getClass().getResourceAsStream("CalculatorComponent.constrainingType");
-        StAXArtifactProcessor<ConstrainingType> constrainingTypeReader = staxProcessors.getProcessor(ConstrainingType.class);
-        XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-        ConstrainingType constrainingType = constrainingTypeReader.read(reader, context);
-        is.close();
-        assertNotNull(constrainingType);
-        resolver.addModel(constrainingType, context);
-
-        is = getClass().getResourceAsStream("TestAllCalculator.composite");
-        StAXArtifactProcessor<Composite> compositeReader = staxProcessors.getProcessor(Composite.class);
-        reader = inputFactory.createXMLStreamReader(is);
-        Composite composite = compositeReader.read(reader, context);
-        is.close();
-        assertNotNull(composite);
-        
-        compositeReader.resolve(composite, resolver, context);
-        
-        assertEquals(composite.getConstrainingType(), constrainingType);
-        assertEquals(composite.getComponents().get(0).getConstrainingType(), constrainingType);
     }
 
     @Test

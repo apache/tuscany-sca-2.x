@@ -52,11 +52,6 @@ public class AssemblyFactoryTestCase {
         createComposite();
     }
 
-    @Test
-    public void testCreateConstrainingType() {
-        createConstrainingType();
-    }
-
     /**
      * Create a composite
      */
@@ -96,9 +91,6 @@ public class AssemblyFactoryTestCase {
     Component createComponent(String name) {
         Component c = assemblyFactory.createComponent();
         c.setName(name);
-
-        ConstrainingType constraint = createConstrainingType();
-        c.setConstrainingType(constraint);
 
         Implementation i = new TestImplementation(assemblyFactory);
         c.setImplementation(i);
@@ -171,41 +163,6 @@ public class AssemblyFactoryTestCase {
         s.setInterfaceContract(new TestInterfaceContract(assemblyFactory));
         ctype.getServices().add(s);
         s.getBindings().add(new TestBinding(assemblyFactory));
-
-        return ctype;
-    }
-
-    /**
-     * Create a new constraining type
-     * 
-     * @return
-     */
-    ConstrainingType createConstrainingType() {
-        ConstrainingType ctype = assemblyFactory.createConstrainingType();
-
-        AbstractProperty p = assemblyFactory.createAbstractProperty();
-        p.setName("currency");
-        p.setValue("USD");
-        p.setMustSupply(true);
-        p.setXSDType(new QName("", ""));
-        ctype.getProperties().add(p);
-
-        AbstractReference ref1 = assemblyFactory.createAbstractReference();
-        ref1.setName("accountDataService");
-        ref1.setInterfaceContract(new TestInterfaceContract(assemblyFactory));
-        ref1.setMultiplicity(Multiplicity.ONE_ONE);
-        ctype.getReferences().add(ref1);
-
-        AbstractReference ref2 = assemblyFactory.createAbstractReference();
-        ref2.setName("stockQuoteService");
-        ref2.setInterfaceContract(new TestInterfaceContract(assemblyFactory));
-        ref2.setMultiplicity(Multiplicity.ONE_ONE);
-        ctype.getReferences().add(ref2);
-
-        AbstractService s = assemblyFactory.createAbstractService();
-        s.setName("AccountService");
-        s.setInterfaceContract(new TestInterfaceContract(assemblyFactory));
-        ctype.getServices().add(s);
 
         return ctype;
     }

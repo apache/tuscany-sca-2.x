@@ -33,7 +33,6 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeReference;
 import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.ConfiguredOperation;
-import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.Extension;
@@ -103,10 +102,6 @@ public abstract class AssemblyFactoryImpl implements AssemblyFactory {
 
     public CompositeService createCompositeService() {
         return new CompositeServiceImpl();
-    }
-
-    public ConstrainingType createConstrainingType() {
-        return new ConstrainingTypeImpl();
     }
 
     public Property createProperty() {

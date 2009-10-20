@@ -307,9 +307,6 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
             impl.getProperties().clear();
             impl.getProperties().addAll(propMap.values());
 
-            if (componentType.getConstrainingType() != null) {
-                impl.setConstrainingType(componentType.getConstrainingType());
-            }
         }
     }
 

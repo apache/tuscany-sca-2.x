@@ -301,7 +301,6 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
         for (Property property : properties) {
             impl.getProperties().add(property);
         }
-        impl.setConstrainingType(componentType.getConstrainingType());
     }
 
     private Class<?> getJavaClass(ModelResolver resolver, String className, ProcessorContext context) {

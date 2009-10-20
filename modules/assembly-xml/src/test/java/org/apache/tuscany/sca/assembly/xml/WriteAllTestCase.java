@@ -34,7 +34,6 @@ import javax.xml.stream.XMLOutputFactory;
 
 import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
@@ -124,15 +123,7 @@ public class WriteAllTestCase {
         staxProcessor.write(componentType, bos, context);
     }
 
-    @Test
-    public void testReadWriteConstrainingType() throws Exception {
-        InputStream is = getClass().getResourceAsStream("CalculatorComponent.constrainingType");
-        ConstrainingType constrainingType = staxProcessor.read(is, ConstrainingType.class, context);
-        staxProcessor.resolve(constrainingType, resolver, context);
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        staxProcessor.write(constrainingType, bos, context);
-    }
-    
+   
     private void verifyComposite(Composite composite) {
         assertEquals(composite.getProperties().get(0).getName(),"prop1");
         assertEquals(composite.getProperties().get(0).isMany(), true);

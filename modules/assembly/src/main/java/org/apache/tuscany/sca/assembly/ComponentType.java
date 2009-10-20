@@ -86,18 +86,4 @@ public interface ComponentType extends Base, PolicySubject {
      */
     Property getProperty(String name);
 
-    /**
-     * Returns a constraining type defining the shape of the implementation.
-     * 
-     * @return a constraining type
-     */
-    ConstrainingType getConstrainingType();
-
-    /**
-     * Sets a constraining type defining the shape of the implementation.
-     * 
-     * @param constrainingType the constraining type to set
-     */
-    void setConstrainingType(ConstrainingType constrainingType);
-
 }

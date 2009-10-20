@@ -26,7 +26,6 @@ import org.apache.tuscany.sca.assembly.ComponentProperty;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.policy.ExtensionType;
 import org.apache.tuscany.sca.policy.Intent;
@@ -38,7 +37,6 @@ import org.apache.tuscany.sca.policy.PolicySet;
  * @version $Rev$ $Date$
  */
 public class ComponentImpl extends ExtensibleImpl implements Component, Cloneable {
-    private ConstrainingType constrainingType;
     private Implementation implementation;
     private String name;
     private String uri;
@@ -93,10 +91,6 @@ public class ComponentImpl extends ExtensibleImpl implements Component, Cloneabl
         this.uri = uri;
     }
 
-    public ConstrainingType getConstrainingType() {
-        return constrainingType;
-    }
-
     public Implementation getImplementation() {
         return implementation;
     }
@@ -142,10 +136,6 @@ public class ComponentImpl extends ExtensibleImpl implements Component, Cloneabl
             }
         }
         return null;
-    }
-
-    public void setConstrainingType(ConstrainingType constrainingType) {
-        this.constrainingType = constrainingType;
     }
 
     public void setImplementation(Implementation implementation) {

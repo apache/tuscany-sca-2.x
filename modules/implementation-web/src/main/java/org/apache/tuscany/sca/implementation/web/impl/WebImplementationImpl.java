@@ -23,7 +23,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Component;
-import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
@@ -51,11 +50,6 @@ class WebImplementationImpl extends ImplementationImpl implements WebImplementat
         super(TYPE);
     }
 
-    public ConstrainingType getConstrainingType() {
-        // The Web implementation does not support constrainingTypes
-        return null;
-    }
-
     public List<Property> getProperties() {
         return properties;
     }
@@ -67,10 +61,6 @@ class WebImplementationImpl extends ImplementationImpl implements WebImplementat
 
     public List<Reference> getReferences() {
         return references;
-    }
-
-    public void setConstrainingType(ConstrainingType constrainingType) {
-        // The Web implementation does not support constrainingTypes
     }
 
     public String getURI() {

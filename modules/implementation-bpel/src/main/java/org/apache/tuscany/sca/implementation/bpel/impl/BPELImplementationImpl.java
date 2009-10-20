@@ -18,13 +18,11 @@
  */
 package org.apache.tuscany.sca.implementation.bpel.impl;
 
-import java.util.Collections;
 import java.util.List;
 
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.ComponentType;
-import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
@@ -74,12 +72,6 @@ class BPELImplementationImpl extends ImplementationImpl implements BPELImplement
     @Override
     public void setURI(String uri) {
         // The BPEL implementation does not have a URI
-    }
-
-    @Override
-    public ConstrainingType getConstrainingType() {
-        // The BPEL implementation does not support constrainingTypes
-        return null;
     }
 
     @Override

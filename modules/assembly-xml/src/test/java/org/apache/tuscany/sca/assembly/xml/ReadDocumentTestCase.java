@@ -33,7 +33,6 @@ import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.ValidatorHandler;
 
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.contribution.processor.DefaultValidatingXMLInputFactory;
 import org.apache.tuscany.sca.contribution.processor.DefaultValidationSchemaExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
@@ -168,26 +167,6 @@ public class ReadDocumentTestCase {
         URI uri = URI.create("RMIBindingTest.composite");
         Composite composite = (Composite)compositeDocumentProcessor.read(null, uri, url, context);
         assertNotNull(composite);
-    }
-
-    @Test
-    public void testResolveConstrainingType() throws Exception {
-
-        URL url = getClass().getResource("CalculatorComponent.constrainingType");
-        URI uri = URI.create("CalculatorComponent.constrainingType");
-        ConstrainingType constrainingType = (ConstrainingType)documentProcessor.read(null, uri, url, context);
-        assertNotNull(constrainingType);
-        resolver.addModel(constrainingType, context);
-
-        url = getClass().getResource("TestAllCalculator.composite");
-        uri = URI.create("TestAllCalculator.composite");
-        Composite composite = (Composite)documentProcessor.read(null, uri, url, context);
-        assertNotNull(composite);
-
-        documentProcessor.resolve(composite, resolver, context);
-
-        assertEquals(composite.getConstrainingType(), constrainingType);
-        assertEquals(composite.getComponents().get(0).getConstrainingType(), constrainingType);
     }
 
     @Test

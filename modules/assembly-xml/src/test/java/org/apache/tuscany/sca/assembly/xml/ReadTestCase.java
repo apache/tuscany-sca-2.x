@@ -66,15 +66,6 @@ public class ReadTestCase {
     }
 
     @Test
-    public void testReadConstrainingType() throws Exception {
-        InputStream is = getClass().getResourceAsStream("CalculatorComponent.constrainingType");
-        XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-        assertNotNull(staxProcessor.read(reader, context));
-        is.close();
-
-    }
-
-    @Test
     public void testReadComposite() throws Exception {
         InputStream is = getClass().getResourceAsStream("Calculator.composite");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);

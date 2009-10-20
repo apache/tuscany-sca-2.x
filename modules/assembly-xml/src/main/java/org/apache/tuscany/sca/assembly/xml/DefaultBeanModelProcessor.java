@@ -217,7 +217,6 @@ public class DefaultBeanModelProcessor<T> extends BaseAssemblyProcessor implemen
                         implementation.getServices().addAll(componentType.getServices());
                         implementation.getReferences().addAll(componentType.getReferences());
                         implementation.getProperties().addAll(componentType.getProperties());
-                        implementation.setConstrainingType(componentType.getConstrainingType());
 
                         if (implementation instanceof PolicySubject &&
                                 componentType instanceof PolicySubject ) {

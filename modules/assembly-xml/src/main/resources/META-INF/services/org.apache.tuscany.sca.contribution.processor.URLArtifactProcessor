@@ -17,6 +17,5 @@
 
 # Implementation class for the artifact processor extension
 org.apache.tuscany.sca.assembly.xml.ComponentTypeDocumentProcessor;type=.componentType,model=org.apache.tuscany.sca.assembly.ComponentType
-org.apache.tuscany.sca.assembly.xml.ConstrainingTypeDocumentProcessor;type=.constrainingType,model=org.apache.tuscany.sca.assembly.ConstrainingType
 org.apache.tuscany.sca.assembly.xml.CompositeDocumentProcessor;type=.composite,model=org.apache.tuscany.sca.assembly.Composite
 org.apache.tuscany.sca.definitions.xml.DefinitionsDocumentProcessor;type=/META-INF/definitions.xml,model=org.apache.tuscany.sca.definitions.Definitions

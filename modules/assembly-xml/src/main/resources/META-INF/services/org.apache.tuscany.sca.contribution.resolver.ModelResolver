@@ -16,6 +16,5 @@
 # under the License. 
 
 org.apache.tuscany.sca.assembly.xml.CompositeModelResolver;model=org.apache.tuscany.sca.assembly.Composite
-org.apache.tuscany.sca.assembly.xml.ConstrainingTypeModelResolver;model=org.apache.tuscany.sca.assembly.ConstrainingType
 org.apache.tuscany.sca.assembly.xml.ComponentTypeModelResolver;model=org.apache.tuscany.sca.assembly.ComponentType
 org.apache.tuscany.sca.contribution.resolver.DefaultModelResolver;model=org.apache.tuscany.sca.policy.Intent

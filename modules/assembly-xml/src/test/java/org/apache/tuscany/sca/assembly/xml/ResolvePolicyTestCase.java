@@ -29,7 +29,6 @@ import java.net.URI;
 import java.net.URL;
 
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
@@ -68,36 +67,6 @@ public class ResolvePolicyTestCase {
         // Create StAX processors
         StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         staxProcessors.addArtifactProcessor(new TestPolicyProcessor());
-    }
-
-    @Test
-    public void testResolveConstrainingType() throws Exception {
-
-        URL url = getClass().getResource("CalculatorComponent.constrainingType");
-        URI uri = URI.create("CalculatorComponent.constrainingType");
-        ConstrainingType constrainingType = (ConstrainingType)documentProcessor.read(null, uri, url, context);
-        assertNotNull(constrainingType);
-        resolver.addModel(constrainingType, context);
-
-        url = getClass().getResource("TestAllCalculator.composite");
-        uri = URI.create("TestAllCalculator.composite");
-        Composite composite = (Composite)documentProcessor.read(null, uri, url, context);
-        assertNotNull(composite);
-
-        url = getClass().getResource("test_definitions.xml");
-        uri = URI.create("test_definitions.xml");
-        Definitions scaDefns = (Definitions)policyDefinitionsProcessor.read(null, uri, url, context);
-        assertNotNull(scaDefns);
-
-        preResolvePolicyTests(composite);
-        documentProcessor.resolve(scaDefns, resolver, context);
-        documentProcessor.resolve(composite, resolver, context);
-
-        // Comment out the post resolving test
-        // postResolvePolicyTests(composite);
-
-        assertEquals(composite.getConstrainingType(), constrainingType);
-        assertEquals(composite.getComponents().get(0).getConstrainingType(), constrainingType);
     }
 
     private void preResolvePolicyTests(Composite composite) {

@@ -46,9 +46,6 @@ public interface Constants {
     String PROPERTY = "property";
     QName PROPERTY_QNAME = new QName(SCA11_NS, PROPERTY);
     
-    String CONSTRAINING_TYPE = "constrainingType";
-    QName CONSTRAINING_TYPE_QNAME = new QName(SCA11_NS, CONSTRAINING_TYPE);
-    
     String COMPOSITE = "composite";
     QName COMPOSITE_QNAME = new QName(SCA11_NS, COMPOSITE);
     

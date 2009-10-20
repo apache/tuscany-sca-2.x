@@ -108,7 +108,6 @@ public class ComponentTypeProcessor extends BaseAssemblyProcessor implements StA
     
                             // Read a <componentType>
                             componentType = assemblyFactory.createComponentType();
-                            componentType.setConstrainingType(readConstrainingType(reader));
     
                         } else if (Constants.SERVICE_QNAME.equals(name)) {
     
@@ -239,8 +238,7 @@ public class ComponentTypeProcessor extends BaseAssemblyProcessor implements StA
     public void write(ComponentType componentType, XMLStreamWriter writer, ProcessorContext context) throws ContributionWriteException, XMLStreamException {
         
         // Write <componentType> element
-        writeStartDocument(writer, COMPONENT_TYPE,
-               writeConstrainingType(componentType));
+        writeStartDocument(writer, COMPONENT_TYPE);
 
         // Write <service> elements
         for (Service service : componentType.getServices()) {

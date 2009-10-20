@@ -118,20 +118,6 @@ public interface Component extends Base, Extensible, PolicySubject, Cloneable {
     ComponentProperty getProperty(String name);    
 
     /**
-     * Returns a constraining type defining the shape of the component.
-     * 
-     * @return a constraining type
-     */
-    ConstrainingType getConstrainingType();
-
-    /**
-     * Sets a constraining type defining the shape of the component.
-     * 
-     * @param constrainingType the constraining type
-     */
-    void setConstrainingType(ConstrainingType constrainingType);
-
-    /**
      * Return the Boolean value of autowire
      * @return null/TRUE/FALSE
      */

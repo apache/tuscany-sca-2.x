@@ -77,7 +77,6 @@ import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeReference;
 import org.apache.tuscany.sca.assembly.CompositeService;
-import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Property;
@@ -195,7 +194,6 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                             this.readExtendedAttributes(reader, name, composite, extensionAttributeProcessor, context);
 
                             composite.setLocal(getBoolean(reader, LOCAL));
-                            composite.setConstrainingType(readConstrainingType(reader));
                             policyProcessor.readPolicies(composite, reader);
 
                         } else if (INCLUDE_QNAME.equals(name)) {
@@ -416,7 +414,6 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                             //handle extension attributes
                             this.readExtendedAttributes(reader, name, component, extensionAttributeProcessor, context);
 
-                            component.setConstrainingType(readConstrainingType(reader));
                             composite.getComponents().add(component);
                             policyProcessor.readPolicies(component, reader);
 
@@ -600,7 +597,6 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
         // Write <composite> element
         writeStartDocument(writer,
                            COMPOSITE,
-                           writeConstrainingType(composite),
                            new XAttr(TARGET_NAMESPACE, composite.getName().getNamespaceURI()),
                            new XAttr(NAME, composite.getName().getLocalPart()),
                            new XAttr(LOCAL, composite.isLocal() ? Boolean.TRUE : null),
@@ -947,13 +943,6 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
         try {
             monitor.pushContext("Composite: " + composite.getName());
 
-            // Resolve constraining type
-            ConstrainingType constrainingType = composite.getConstrainingType();
-            if (constrainingType != null) {
-                constrainingType = resolver.resolveModel(ConstrainingType.class, constrainingType, context);
-                composite.setConstrainingType(constrainingType);
-            }
-
             // Resolve includes in the composite
             for (int i = 0, n = composite.getIncludes().size(); i < n; i++) {
                 Composite include = composite.getIncludes().get(i);
@@ -990,11 +979,6 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
 
             // Resolve component implementations, services and references
             for (Component component : composite.getComponents()) {
-                constrainingType = component.getConstrainingType();
-                if (constrainingType != null) {
-                    constrainingType = resolver.resolveModel(ConstrainingType.class, constrainingType, context);
-                    component.setConstrainingType(constrainingType);
-                }
 
                 //resolve component services and references
                 resolveContracts(component, component.getServices(), resolver, context);
