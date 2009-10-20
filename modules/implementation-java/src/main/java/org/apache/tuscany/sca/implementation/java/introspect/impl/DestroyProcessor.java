@@ -22,6 +22,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.introspect.BaseJavaClassVisitor;
@@ -38,6 +39,10 @@ public class DestroyProcessor extends BaseJavaClassVisitor {
     public DestroyProcessor(AssemblyFactory factory) {
         super(factory);
     }
+    
+    public DestroyProcessor(ExtensionPointRegistry registry) {
+        super(registry);
+    }    
 
     @Override
     public void visitMethod(Method method, JavaImplementation type) throws IntrospectionException {

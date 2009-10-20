@@ -19,9 +19,8 @@
 
 package org.apache.tuscany.sca.core;
 
-import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
+import static org.apache.tuscany.sca.extensibility.ServiceHelper.newInstance;
+
 import java.lang.reflect.Modifier;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
@@ -82,25 +81,6 @@ public class DefaultUtilityExtensionPoint implements UtilityExtensionPoint {
         } else {
             utilities.put(key, utility);
         }
-    }
-
-    private Constructor<?> getConstructor(Constructor<?>[] constructors, Class<?>... paramTypes) {
-        for (Constructor<?> c : constructors) {
-            Class<?>[] types = c.getParameterTypes();
-            if (c.getParameterTypes().length == paramTypes.length) {
-                boolean found = true;
-                for (int i = 0; i < types.length; i++) {
-                    if (types[i] != paramTypes[i]) {
-                        found = false;
-                        break;
-                    }
-                }
-                if (found) {
-                    return c;
-                }
-            }
-        }
-        return null;
     }
 
     /**
@@ -190,21 +170,13 @@ public class DefaultUtilityExtensionPoint implements UtilityExtensionPoint {
                 }
                 if (utilityClass != null) {
                     // Construct the utility
-                    Constructor<?>[] constructors = utilityClass.getConstructors();
-                    Constructor<?> constructor = getConstructor(constructors, ExtensionPointRegistry.class, Map.class);
-                    if (constructor != null) {
-                        utility = constructor.newInstance(extensionPoints, utilityDeclaration.getAttributes());
+                    if (utilityDeclaration != null) {
+                        utility = newInstance(extensionPoints, utilityDeclaration);
                     } else {
-                        constructor = getConstructor(constructors, ExtensionPointRegistry.class);
-                        if (constructor != null) {
-                            utility = constructor.newInstance(extensionPoints);
-                        } else {
-                            constructor = getConstructor(constructors);
-                            if (constructor != null) {
-                                utility = constructor.newInstance();
-                            } else {
-                                throw new IllegalArgumentException("No valid constructor is found for " + utilityClass);
-                            }
+                        try {
+                            utility = newInstance(utilityClass, ExtensionPointRegistry.class, extensionPoints);
+                        } catch (NoSuchMethodException e) {
+                            utility = newInstance(utilityClass);
                         }
                     }
                     // Cache the loaded utility
@@ -214,17 +186,9 @@ public class DefaultUtilityExtensionPoint implements UtilityExtensionPoint {
                         addUtility(key, utility);
                     }
                 }
-            } catch (InvocationTargetException e) {
+            } catch (Throwable e) {
                 throw new IllegalArgumentException(e);
-            } catch (IOException e) {
-                throw new IllegalArgumentException(e);
-            } catch (ClassNotFoundException e) {
-                throw new IllegalArgumentException(e);
-            } catch (InstantiationException e) {
-                throw new IllegalArgumentException(e);
-            } catch (IllegalAccessException e) {
-                throw new IllegalArgumentException(e);
-            }
+            } 
         }
         return utilityType.cast(utility);
     }

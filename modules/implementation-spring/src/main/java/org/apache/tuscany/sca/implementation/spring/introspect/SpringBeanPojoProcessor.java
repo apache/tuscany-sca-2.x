@@ -43,6 +43,7 @@ import javax.jws.WebService;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.assembly.Multiplicity;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.JavaConstructorImpl;
 import org.apache.tuscany.sca.implementation.java.JavaElementImpl;
@@ -80,13 +81,16 @@ import org.oasisopen.sca.annotation.Remotable;
  * @version $Rev$ $Date$
  */
 public class SpringBeanPojoProcessor extends BaseJavaClassVisitor {
-    private JavaInterfaceFactory javaFactory;
     private List<SpringConstructorArgElement> conArgs;
 
     public SpringBeanPojoProcessor(AssemblyFactory assemblyFactory, JavaInterfaceFactory javaFactory, List<SpringConstructorArgElement> conArgs) {
         super(assemblyFactory);
-        this.javaFactory = javaFactory;
+        this.javaInterfaceFactory = javaFactory;
         this.conArgs = conArgs;
+    }
+    
+    public SpringBeanPojoProcessor(ExtensionPointRegistry registry) {
+        super(registry);
     }
 
     @Override
@@ -582,13 +586,13 @@ public class SpringBeanPojoProcessor extends BaseJavaClassVisitor {
         throws IntrospectionException {
         org.apache.tuscany.sca.assembly.Reference reference = assemblyFactory.createReference();
         reference.setName(name);
-        JavaInterfaceContract interfaceContract = javaFactory.createJavaInterfaceContract();
+        JavaInterfaceContract interfaceContract = javaInterfaceFactory.createJavaInterfaceContract();
         reference.setInterfaceContract(interfaceContract);
         try {
-            JavaInterface callInterface = javaFactory.createJavaInterface(paramType);
+            JavaInterface callInterface = javaInterfaceFactory.createJavaInterface(paramType);
             reference.getInterfaceContract().setInterface(callInterface);
             if (callInterface.getCallbackClass() != null) {
-                JavaInterface callbackInterface = javaFactory.createJavaInterface(callInterface.getCallbackClass());
+                JavaInterface callbackInterface = javaInterfaceFactory.createJavaInterface(callInterface.getCallbackClass());
                 reference.getInterfaceContract().setCallbackInterface(callbackInterface);
             }
             reference.setMultiplicity(Multiplicity.ZERO_ONE);
@@ -609,13 +613,13 @@ public class SpringBeanPojoProcessor extends BaseJavaClassVisitor {
         org.apache.tuscany.sca.assembly.Service service = assemblyFactory.createService();
         service.setName(interfaze.getSimpleName());
 
-        JavaInterfaceContract interfaceContract = javaFactory.createJavaInterfaceContract();
+        JavaInterfaceContract interfaceContract = javaInterfaceFactory.createJavaInterfaceContract();
         service.setInterfaceContract(interfaceContract);
 
-        JavaInterface callInterface = javaFactory.createJavaInterface(interfaze);
+        JavaInterface callInterface = javaInterfaceFactory.createJavaInterface(interfaze);
         service.getInterfaceContract().setInterface(callInterface);
         if (callInterface.getCallbackClass() != null) {
-            JavaInterface callbackInterface = javaFactory.createJavaInterface(callInterface.getCallbackClass());
+            JavaInterface callbackInterface = javaInterfaceFactory.createJavaInterface(callInterface.getCallbackClass());
             service.getInterfaceContract().setCallbackInterface(callbackInterface);
         }
 
@@ -631,7 +635,7 @@ public class SpringBeanPojoProcessor extends BaseJavaClassVisitor {
             Class<?> callbackClass = callback.value();
             JavaInterface javaInterface;
             try {
-                javaInterface = javaFactory.createJavaInterface(callbackClass);
+                javaInterface = javaInterfaceFactory.createJavaInterface(callbackClass);
                 contract.getInterfaceContract().setCallbackInterface(javaInterface);
             } catch (InvalidInterfaceException e) {
                 throw new InvalidServiceTypeException("Invalid callback interface "+callbackClass, interfaze);

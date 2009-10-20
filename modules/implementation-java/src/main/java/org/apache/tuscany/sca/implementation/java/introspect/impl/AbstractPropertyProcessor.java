@@ -27,8 +27,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Property;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.JavaElementImpl;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
@@ -46,8 +46,8 @@ import org.apache.tuscany.sca.interfacedef.util.JavaXMLMapper;
 public abstract class AbstractPropertyProcessor<A extends Annotation> extends BaseJavaClassVisitor {
     private final Class<A> annotationClass;
 
-    protected AbstractPropertyProcessor(AssemblyFactory assemblyFactory, Class<A> annotationClass) {
-        super(assemblyFactory);
+    protected AbstractPropertyProcessor(ExtensionPointRegistry registry, Class<A> annotationClass) {
+        super(registry);
         this.annotationClass = annotationClass;
     }
     

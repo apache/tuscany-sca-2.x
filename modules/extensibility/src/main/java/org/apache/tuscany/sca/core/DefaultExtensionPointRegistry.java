@@ -19,9 +19,8 @@
 
 package org.apache.tuscany.sca.core;
 
-import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
+import static org.apache.tuscany.sca.extensibility.ServiceHelper.newInstance;
+
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -31,6 +30,7 @@ import java.util.Set;
 
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
 import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
+import org.apache.tuscany.sca.extensibility.ServiceHelper;
 
 /**
  * Default implementation of a registry to hold all the Tuscany core extension
@@ -65,9 +65,8 @@ public class DefaultExtensionPointRegistry implements ExtensionPointRegistry {
         if (extensionPoint == null) {
             throw new IllegalArgumentException("Cannot register null as an ExtensionPoint");
         }
-        if (extensionPoint instanceof LifeCycleListener) {
-            ((LifeCycleListener)extensionPoint).start();
-        }
+        ServiceHelper.start(extensionPoint);
+        
         Set<Class<?>> interfaces = getAllInterfaces(extensionPoint.getClass());
         for (Class<?> i : interfaces) {
             registerExtensionPoint(i, extensionPoint, declaration);
@@ -76,25 +75,6 @@ public class DefaultExtensionPointRegistry implements ExtensionPointRegistry {
 
     protected void registerExtensionPoint(Class<?> i, Object extensionPoint, ServiceDeclaration declaration) {
         extensionPoints.put(i, extensionPoint);
-    }
-
-    private Constructor<?> getConstructor(Constructor<?>[] constructors, Class<?>[] paramTypes) {
-        for (Constructor<?> c : constructors) {
-            Class<?>[] types = c.getParameterTypes();
-            if (c.getParameterTypes().length == paramTypes.length) {
-                boolean found = true;
-                for (int i = 0; i < types.length; i++) {
-                    if (types[i] != paramTypes[i]) {
-                        found = false;
-                        break;
-                    }
-                }
-                if (found) {
-                    return c;
-                }
-            }
-        }
-        return null;
     }
 
     /**
@@ -116,38 +96,13 @@ public class DefaultExtensionPointRegistry implements ExtensionPointRegistry {
             // Dynamically load an extension point class declared under META-INF/services
             try {
                 ServiceDeclaration extensionPointDeclaration =
-                    ServiceDiscovery.getInstance().getServiceDeclaration(extensionPointType.getName());
+                    ServiceDiscovery.getInstance().getServiceDeclaration(extensionPointType);
                 if (extensionPointDeclaration != null) {
-                    Class<?> extensionPointClass = extensionPointDeclaration.loadClass();
-
-                    // Construct the extension point
-                    Constructor<?>[] constructors = extensionPointClass.getConstructors();
-                    Constructor<?> constructor =
-                        getConstructor(constructors, new Class<?>[] {ExtensionPointRegistry.class});
-                    if (constructor != null) {
-                        extensionPoint = constructor.newInstance(this);
-                    } else {
-                        constructor = getConstructor(constructors, new Class<?>[] {});
-                        if (constructor != null) {
-                            extensionPoint = constructor.newInstance();
-                        } else {
-                            throw new IllegalArgumentException(
-                                                               "No valid constructor is found for " + extensionPointClass);
-                        }
-                    }
-
+                    extensionPoint = newInstance(this, extensionPointDeclaration);
                     // Cache the loaded extension point
                     addExtensionPoint(extensionPoint, extensionPointDeclaration);
                 }
-            } catch (InvocationTargetException e) {
-                throw new IllegalArgumentException(e);
-            } catch (IOException e) {
-                throw new IllegalArgumentException(e);
-            } catch (ClassNotFoundException e) {
-                throw new IllegalArgumentException(e);
-            } catch (InstantiationException e) {
-                throw new IllegalArgumentException(e);
-            } catch (IllegalAccessException e) {
+            } catch (Throwable e) {
                 throw new IllegalArgumentException(e);
             }
         }
@@ -170,9 +125,7 @@ public class DefaultExtensionPointRegistry implements ExtensionPointRegistry {
             throw new IllegalArgumentException("Cannot remove null as an ExtensionPoint");
         }
 
-        if (extensionPoint instanceof LifeCycleListener) {
-            ((LifeCycleListener)extensionPoint).stop();
-        }
+        ServiceHelper.stop(extensionPoint);
 
         Set<Class<?>> interfaces = getAllInterfaces(extensionPoint.getClass());
         for (Class<?> i : interfaces) {
@@ -222,9 +175,7 @@ public class DefaultExtensionPointRegistry implements ExtensionPointRegistry {
                 map.put(listener, listener);
             }
         }
-        for (LifeCycleListener listener : map.values()) {
-            listener.stop();
-        }
+        ServiceHelper.stop(map.values());
         extensionPoints.clear();
     }
 

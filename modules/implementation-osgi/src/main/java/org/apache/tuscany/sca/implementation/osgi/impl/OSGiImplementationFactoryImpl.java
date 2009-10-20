@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.implementation.osgi.impl;
 
-import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.implementation.osgi.OSGiImplementation;
 import org.apache.tuscany.sca.implementation.osgi.OSGiImplementationFactory;
 import org.apache.tuscany.sca.implementation.osgi.OSGiProperty;
@@ -28,15 +28,12 @@ import org.apache.tuscany.sca.implementation.osgi.OSGiProperty;
  * 
  */
 public class OSGiImplementationFactoryImpl implements OSGiImplementationFactory {
-    private final FactoryExtensionPoint factoryExtensionPoint;
-
-    public OSGiImplementationFactoryImpl(FactoryExtensionPoint factoryExtensionPoint) {
+    public OSGiImplementationFactoryImpl(ExtensionPointRegistry registry) {
         super();
-        this.factoryExtensionPoint = factoryExtensionPoint;
     }
 
     public OSGiImplementation createOSGiImplementation() {
-        return new OSGiImplementationImpl(factoryExtensionPoint);
+        return new OSGiImplementationImpl();
     }
 
     public OSGiProperty createOSGiProperty() {

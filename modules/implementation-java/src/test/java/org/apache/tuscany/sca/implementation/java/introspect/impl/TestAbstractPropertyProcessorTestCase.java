@@ -29,8 +29,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.assembly.Property;
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.JavaConstructorImpl;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
@@ -129,7 +129,7 @@ public class TestAbstractPropertyProcessorTestCase {
     private class TestProcessor extends AbstractPropertyProcessor<Bar> {
 
         public TestProcessor() {
-            super(new DefaultAssemblyFactory(), Bar.class);
+            super(new DefaultExtensionPointRegistry(), Bar.class);
         }
 
         @Override

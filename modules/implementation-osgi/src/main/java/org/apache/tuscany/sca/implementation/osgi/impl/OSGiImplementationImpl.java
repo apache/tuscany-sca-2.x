@@ -19,7 +19,6 @@
 package org.apache.tuscany.sca.implementation.osgi.impl;
 
 import org.apache.tuscany.sca.assembly.impl.ImplementationImpl;
-import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.implementation.osgi.OSGiImplementation;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Constants;
@@ -37,18 +36,14 @@ public class OSGiImplementationImpl extends ImplementationImpl implements OSGiIm
     private String bundleVersion;
     private Bundle osgiBundle;
 
-    private FactoryExtensionPoint modelFactories;
-
-    protected OSGiImplementationImpl(FactoryExtensionPoint modelFactories) {
+    protected OSGiImplementationImpl() {
         super(TYPE);
-        this.modelFactories = modelFactories;
     }
 
-    public OSGiImplementationImpl(FactoryExtensionPoint modelFactories, String bundleSymbolicName, String bundleVersion) {
+    public OSGiImplementationImpl(String bundleSymbolicName, String bundleVersion) {
         super(TYPE);
         this.bundleSymbolicName = bundleSymbolicName;
         this.bundleVersion = bundleVersion;
-        this.modelFactories = modelFactories;
     }
 
     public String getBundleSymbolicName() {
@@ -57,10 +52,6 @@ public class OSGiImplementationImpl extends ImplementationImpl implements OSGiIm
 
     public String getBundleVersion() {
         return bundleVersion;
-    }
-
-    public FactoryExtensionPoint getModelFactories() {
-        return modelFactories;
     }
 
     /**

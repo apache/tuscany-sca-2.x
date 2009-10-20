@@ -31,6 +31,7 @@ import java.util.List;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Multiplicity;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.JavaElementImpl;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
@@ -52,12 +53,15 @@ import org.oasisopen.sca.annotation.Reference;
  * @version $Rev$ $Date$
  */
 public class ReferenceProcessor extends BaseJavaClassVisitor {
-    private JavaInterfaceFactory javaFactory;
 
     public ReferenceProcessor(AssemblyFactory assemblyFactory, JavaInterfaceFactory javaFactory) {
         super(assemblyFactory);
-        this.javaFactory = javaFactory;
+        this.javaInterfaceFactory = javaFactory;
     }
+    
+    public ReferenceProcessor(ExtensionPointRegistry registry) {
+        super(registry);
+    }    
 
     @Override
     public void visitMethod(Method method, JavaImplementation type) throws IntrospectionException {
@@ -173,7 +177,7 @@ public class ReferenceProcessor extends BaseJavaClassVisitor {
     private org.apache.tuscany.sca.assembly.Reference createReference(JavaElementImpl element, String name)
         throws IntrospectionException {
         org.apache.tuscany.sca.assembly.Reference reference = assemblyFactory.createReference();
-        JavaInterfaceContract interfaceContract = javaFactory.createJavaInterfaceContract();
+        JavaInterfaceContract interfaceContract = javaInterfaceFactory.createJavaInterfaceContract();
         reference.setInterfaceContract(interfaceContract);
 
         // reference.setMember((Member)element.getAnchor());
@@ -207,10 +211,10 @@ public class ReferenceProcessor extends BaseJavaClassVisitor {
             baseType = JavaIntrospectionHelper.getBusinessInterface(baseType, genericType);
         }
         try {
-            JavaInterface callInterface = javaFactory.createJavaInterface(baseType);
+            JavaInterface callInterface = javaInterfaceFactory.createJavaInterface(baseType);
             reference.getInterfaceContract().setInterface(callInterface);
             if (callInterface.getCallbackClass() != null) {
-                JavaInterface callbackInterface = javaFactory.createJavaInterface(callInterface.getCallbackClass());
+                JavaInterface callbackInterface = javaInterfaceFactory.createJavaInterface(callInterface.getCallbackClass());
                 reference.getInterfaceContract().setCallbackInterface(callbackInterface);
             }
         } catch (InvalidInterfaceException e) {

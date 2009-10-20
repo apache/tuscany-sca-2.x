@@ -103,7 +103,7 @@ public class ConstructorProcessorTestCase {
         AssemblyFactory assemblyFactory = new DefaultAssemblyFactory(registry);
         JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory(registry);
         ReferenceProcessor referenceProcessor = new ReferenceProcessor(assemblyFactory, javaFactory);
-        PropertyProcessor propertyProcessor = new PropertyProcessor(assemblyFactory);
+        PropertyProcessor propertyProcessor = new PropertyProcessor(registry);
         JavaParameterImpl[] parameters = type.getConstructor().getParameters();
         for (int i = 0; i < parameters.length; i++) {
             referenceProcessor.visitConstructorParameter(parameters[i], type);
@@ -179,7 +179,7 @@ public class ConstructorProcessorTestCase {
         AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
         JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory(registry);
         ReferenceProcessor referenceProcessor = new ReferenceProcessor(assemblyFactory, javaFactory);
-        PropertyProcessor propertyProcessor = new PropertyProcessor(assemblyFactory);
+        PropertyProcessor propertyProcessor = new PropertyProcessor(registry);
         JavaParameterImpl[] parameters = type.getConstructor().getParameters();
         for (int i = 0; i < parameters.length; i++) {
             referenceProcessor.visitConstructorParameter(parameters[i], type);

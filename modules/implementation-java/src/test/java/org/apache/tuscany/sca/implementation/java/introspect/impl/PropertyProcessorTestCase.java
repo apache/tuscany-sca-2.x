@@ -28,7 +28,7 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.JavaElementImpl;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
@@ -50,7 +50,7 @@ public class PropertyProcessorTestCase {
     public void setUp() throws Exception {
         JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory();
         type = javaImplementationFactory.createJavaImplementation();
-        processor = new PropertyProcessor(new DefaultAssemblyFactory());
+        processor = new PropertyProcessor(new DefaultExtensionPointRegistry());
     }
 
     @Test

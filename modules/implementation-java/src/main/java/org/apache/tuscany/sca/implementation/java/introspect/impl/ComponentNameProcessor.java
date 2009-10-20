@@ -22,6 +22,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.JavaElementImpl;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
@@ -41,6 +42,10 @@ public class ComponentNameProcessor extends BaseJavaClassVisitor {
     
     public ComponentNameProcessor(AssemblyFactory factory) {
         super(factory);
+    }
+    
+    public ComponentNameProcessor(ExtensionPointRegistry registry) {
+        super(registry);
     }
 
     @Override

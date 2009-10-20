@@ -28,12 +28,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Logger;
 
 import javax.jws.WebService;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.JavaElementImpl;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
@@ -55,12 +55,14 @@ import org.oasisopen.sca.annotation.Remotable;
  * @version $Rev$ $Date$
  */
 public class ServiceProcessor extends BaseJavaClassVisitor {
-    private static final Logger logger = Logger.getLogger(ServiceProcessor.class.getName());
-    private JavaInterfaceFactory javaFactory;
     
     public ServiceProcessor(AssemblyFactory assemblyFactory, JavaInterfaceFactory javaFactory) {
         super(assemblyFactory);
-        this.javaFactory = javaFactory;
+        this.javaInterfaceFactory = javaFactory;
+    }
+    
+    public ServiceProcessor(ExtensionPointRegistry registry) {
+        super(registry);
     }
 
     @Override
@@ -180,7 +182,7 @@ public class ServiceProcessor extends BaseJavaClassVisitor {
 
     public Service createService(Class<?> interfaze, String name) throws InvalidInterfaceException {
         Service service = assemblyFactory.createService();
-        JavaInterfaceContract interfaceContract = javaFactory.createJavaInterfaceContract();
+        JavaInterfaceContract interfaceContract = javaInterfaceFactory.createJavaInterfaceContract();
         service.setInterfaceContract(interfaceContract);
 
         if (name == null) {
@@ -189,10 +191,10 @@ public class ServiceProcessor extends BaseJavaClassVisitor {
             service.setName(name);
         }
 
-        JavaInterface callInterface = javaFactory.createJavaInterface(interfaze);
+        JavaInterface callInterface = javaInterfaceFactory.createJavaInterface(interfaze);
         service.getInterfaceContract().setInterface(callInterface);
         if (callInterface.getCallbackClass() != null) {
-            JavaInterface callbackInterface = javaFactory.createJavaInterface(callInterface.getCallbackClass());
+            JavaInterface callbackInterface = javaInterfaceFactory.createJavaInterface(callInterface.getCallbackClass());
             service.getInterfaceContract().setCallbackInterface(callbackInterface);
         }
         return service;

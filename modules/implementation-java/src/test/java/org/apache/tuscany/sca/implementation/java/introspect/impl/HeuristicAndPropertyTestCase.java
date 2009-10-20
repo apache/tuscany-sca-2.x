@@ -22,15 +22,12 @@ import static org.junit.Assert.assertEquals;
 
 import java.lang.reflect.Constructor;
 
-import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.JavaConstructorImpl;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
-import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.oasisopen.sca.annotation.Property;
@@ -42,7 +39,6 @@ public class HeuristicAndPropertyTestCase {
 
     private PropertyProcessor propertyProcessor;
     private HeuristicPojoProcessor heuristicProcessor;
-    private AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
     private JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory();
 
     /**
@@ -63,8 +59,8 @@ public class HeuristicAndPropertyTestCase {
     @Before
     public void setUp() throws Exception {
         ExtensionPointRegistry registry = new DefaultExtensionPointRegistry();
-        propertyProcessor = new PropertyProcessor(assemblyFactory);
-        heuristicProcessor = new HeuristicPojoProcessor(assemblyFactory, new DefaultJavaInterfaceFactory(registry));
+        propertyProcessor = new PropertyProcessor(registry);
+        heuristicProcessor = new HeuristicPojoProcessor(registry);
     }
 
     public static class Foo {

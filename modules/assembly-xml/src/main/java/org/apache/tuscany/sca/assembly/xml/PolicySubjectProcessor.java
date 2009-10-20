@@ -34,6 +34,8 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicyFactory;
@@ -51,6 +53,11 @@ public class PolicySubjectProcessor extends BaseStAXArtifactProcessor {
     
     public PolicySubjectProcessor(PolicyFactory policyFactory) {
         this.policyFactory = policyFactory;
+    }
+    
+    public PolicySubjectProcessor(ExtensionPointRegistry registry) {
+        FactoryExtensionPoint factories = registry.getExtensionPoint(FactoryExtensionPoint.class);
+        this.policyFactory = factories.getFactory(PolicyFactory.class);
     }
 
     /**

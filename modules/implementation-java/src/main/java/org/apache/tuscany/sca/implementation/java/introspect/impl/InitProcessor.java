@@ -22,6 +22,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.introspect.BaseJavaClassVisitor;
@@ -38,6 +39,10 @@ public class InitProcessor extends BaseJavaClassVisitor {
     public InitProcessor(AssemblyFactory factory) {
         super(factory);
     }
+
+    public InitProcessor(ExtensionPointRegistry registry) {
+        super(registry);
+    }    
 
     @Override
     public void visitMethod(Method method, JavaImplementation type) throws IntrospectionException {

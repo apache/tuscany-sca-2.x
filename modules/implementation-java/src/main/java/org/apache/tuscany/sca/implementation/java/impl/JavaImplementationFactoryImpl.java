@@ -18,13 +18,20 @@
  */
 package org.apache.tuscany.sca.implementation.java.impl;
 
+import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
+import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.introspect.JavaClassVisitor;
+
 
 /**
  * A factory for the Java model.
@@ -35,9 +42,11 @@ public abstract class JavaImplementationFactoryImpl implements JavaImplementatio
     
     private List<JavaClassVisitor> visitors = new ArrayList<JavaClassVisitor>();
     private JavaClassIntrospectorImpl introspector;
+    private boolean loaded;
+    protected ExtensionPointRegistry registry;
     
-    public JavaImplementationFactoryImpl() {
-        introspector = new JavaClassIntrospectorImpl(visitors);
+    public JavaImplementationFactoryImpl(ExtensionPointRegistry registry) {
+        this.registry = registry;
     }
 
     public JavaImplementation createJavaImplementation() {
@@ -47,12 +56,12 @@ public abstract class JavaImplementationFactoryImpl implements JavaImplementatio
     
     public JavaImplementation createJavaImplementation(Class<?> implementationClass) throws IntrospectionException {
         JavaImplementation javaImplementation = createJavaImplementation();
-        introspector.introspectClass(javaImplementation, implementationClass);
+        getIntrospector().introspectClass(javaImplementation, implementationClass);
         return javaImplementation;
     }
     
     public void createJavaImplementation(JavaImplementation javaImplementation, Class<?> implementationClass) throws IntrospectionException {
-        introspector.introspectClass(javaImplementation, implementationClass);
+        getIntrospector().introspectClass(javaImplementation, implementationClass);
     }
 
     public void addClassVisitor(JavaClassVisitor visitor) {
@@ -71,7 +80,57 @@ public abstract class JavaImplementationFactoryImpl implements JavaImplementatio
     }
     
     public List<JavaClassVisitor> getClassVisitors() {
+        loadVisitors();
         return visitors;
+    }
+    
+    /**
+     * Load visitors declared under META-INF/services
+     */
+    @SuppressWarnings("unchecked")
+    private synchronized void loadVisitors() {
+        if (loaded)
+            return;
+        
+        // Get the databinding service declarations
+        Collection<ServiceDeclaration> visitorDeclarations; 
+        try {
+            visitorDeclarations = ServiceDiscovery.getInstance().getServiceDeclarations(JavaClassVisitor.class, true);
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+        
+        // Load data bindings
+        for (ServiceDeclaration visitorDeclaration: visitorDeclarations) {
+            JavaClassVisitor visitor = null;
+            try {
+                Class<JavaClassVisitor> visitorClass = (Class<JavaClassVisitor>)visitorDeclaration.loadClass();
+                
+                try {
+                    Constructor<JavaClassVisitor> constructor = visitorClass.getConstructor(ExtensionPointRegistry.class);
+                    visitor = constructor.newInstance(registry);
+                } catch (NoSuchMethodException e) {
+                    visitor = visitorClass.newInstance();
+                }
+                
+                
+            } catch (Exception e) {
+                IllegalStateException ie = new IllegalStateException(e);
+                throw ie;
+            }
+            
+            addClassVisitor(visitor);
+        }
+        
+        loaded = true;
+    }
+
+    private synchronized JavaClassIntrospectorImpl getIntrospector() {
+        if (introspector != null) {
+            return introspector;
+        }
+        introspector = new JavaClassIntrospectorImpl(getClassVisitors());
+        return introspector;
     }
 
 }

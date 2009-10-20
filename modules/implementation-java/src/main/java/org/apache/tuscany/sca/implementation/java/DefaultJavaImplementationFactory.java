@@ -23,11 +23,18 @@ package org.apache.tuscany.sca.implementation.java;
  *
  * @version $Rev$ $Date$
  */
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.implementation.java.impl.JavaImplementationFactoryImpl;
 
 public class DefaultJavaImplementationFactory extends JavaImplementationFactoryImpl implements JavaImplementationFactory {
 
-    public DefaultJavaImplementationFactory() {
+    public DefaultJavaImplementationFactory(ExtensionPointRegistry registry) {
+        super(registry);
     }
-
+    
+    // For UNIT test only
+    public DefaultJavaImplementationFactory() {
+        super(new DefaultExtensionPointRegistry());
+    }
 }

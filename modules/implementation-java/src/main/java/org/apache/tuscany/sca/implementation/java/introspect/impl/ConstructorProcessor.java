@@ -21,13 +21,12 @@ package org.apache.tuscany.sca.implementation.java.introspect.impl;
 import java.lang.reflect.Constructor;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.JavaConstructorImpl;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaParameterImpl;
 import org.apache.tuscany.sca.implementation.java.introspect.BaseJavaClassVisitor;
-import org.oasisopen.sca.annotation.Property;
-import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Handles processing of a constructor decorated with
@@ -40,6 +39,10 @@ public class ConstructorProcessor extends BaseJavaClassVisitor {
     
     public ConstructorProcessor(AssemblyFactory factory) {
         super(factory);
+    }
+    
+    public ConstructorProcessor(ExtensionPointRegistry registry) {
+        super(registry);
     }
 
     @Override

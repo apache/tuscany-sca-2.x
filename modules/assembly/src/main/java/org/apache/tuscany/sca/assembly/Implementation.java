@@ -18,7 +18,11 @@
  */
 package org.apache.tuscany.sca.assembly;
 
+import java.util.List;
+
 import javax.xml.namespace.QName;
+
+import org.apache.tuscany.sca.interfacedef.Operation;
 
 /**
  * Represents a component implementation.
@@ -27,4 +31,5 @@ import javax.xml.namespace.QName;
  */
 public interface Implementation extends ComponentType {
     QName getType();
+    List<Operation> getOperations();
 }

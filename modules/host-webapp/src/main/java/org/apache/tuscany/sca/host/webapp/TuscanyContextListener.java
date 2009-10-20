@@ -19,22 +19,41 @@
 
 package org.apache.tuscany.sca.host.webapp;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-
 
 /**
  * A ServletContextListener to create and close the SCADomain
  * when the webapp is initialized or destroyed.
  */
 public class TuscanyContextListener implements ServletContextListener {
+    private final Logger logger = Logger.getLogger(TuscanyContextListener.class.getName());
+    private boolean inited;
 
     public void contextInitialized(ServletContextEvent event) {
-        ServletHostHelper.init(event.getServletContext());
+        logger.info(event.getServletContext().getServletContextName() + " is starting.");
+        try {
+            ServletHostHelper.init(event.getServletContext());
+        } catch (Throwable e) {
+            logger.log(Level.SEVERE, e.getMessage(), e);
+        }
+        inited = true;
     }
 
     public void contextDestroyed(ServletContextEvent event) {
-        ServletHostHelper.stop(event.getServletContext());
+        logger.info(event.getServletContext().getServletContextName() + " is stopping.");
+        if (!inited) {
+            return;
+        }
+        try {
+            ServletHostHelper.stop(event.getServletContext());
+        } catch (Throwable e) {
+            logger.log(Level.SEVERE, e.getMessage(), e);
+        }
+        inited = false;
     }
 
 }

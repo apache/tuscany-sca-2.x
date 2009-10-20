@@ -19,6 +19,7 @@
 package org.apache.tuscany.sca.implementation.java.introspect.impl;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaScopeImpl;
@@ -34,6 +35,10 @@ public class ScopeProcessor extends BaseJavaClassVisitor {
     public ScopeProcessor(AssemblyFactory factory) {
         super(factory);
     }
+    
+    public ScopeProcessor(ExtensionPointRegistry registry) {
+        super(registry);
+    }    
 
     @Override
     public <T> void visitClass(Class<T> clazz,

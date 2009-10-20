@@ -36,14 +36,13 @@ import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
 import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.implementation.spring.SpringImplementation;
 import org.apache.tuscany.sca.implementation.spring.introspect.SpringXMLComponentTypeLoader;
-import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
-import org.apache.tuscany.sca.policy.PolicyFactory;
 
 /**
  * SpringArtifactProcessor is responsible for processing the XML of an <implementation.spring.../>
@@ -58,20 +57,18 @@ public class SpringImplementationProcessor implements StAXArtifactProcessor<Spri
     private static final QName IMPLEMENTATION_SPRING_QNAME = new QName(Constants.SCA11_NS, IMPLEMENTATION_SPRING);
     private static final String MSG_LOCATION_MISSING = "Reading implementation.spring - location attribute missing";
 
+    private ExtensionPointRegistry registry;
     private AssemblyFactory assemblyFactory;
-    private JavaInterfaceFactory javaFactory;
-    private PolicyFactory policyFactory;
     private PolicySubjectProcessor policyProcessor;
     
 
     private FactoryExtensionPoint factories;
 
-    public SpringImplementationProcessor(FactoryExtensionPoint modelFactories) {
-        this.factories = modelFactories;
-        this.assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
-        this.javaFactory = modelFactories.getFactory(JavaInterfaceFactory.class);
-        this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
-        this.policyProcessor = new PolicySubjectProcessor(policyFactory);
+    public SpringImplementationProcessor(ExtensionPointRegistry registry) {
+        this.registry = registry;
+        this.factories = registry.getExtensionPoint(FactoryExtensionPoint.class);
+        this.assemblyFactory = factories.getFactory(AssemblyFactory.class);
+        this.policyProcessor = new PolicySubjectProcessor(registry);
     }
 
     /**
@@ -196,7 +193,7 @@ public class SpringImplementationProcessor implements StAXArtifactProcessor<Spri
     	Monitor monitor = context.getMonitor();
         /* Load the Spring component type by reading the Spring application context */
         SpringXMLComponentTypeLoader springLoader =
-            new SpringXMLComponentTypeLoader(factories, assemblyFactory, javaFactory, policyFactory, monitor);
+            new SpringXMLComponentTypeLoader(registry, monitor);
         try {
             // Load the Spring Implementation information from its application context file...
             springLoader.load(springImplementation, resolver, context);

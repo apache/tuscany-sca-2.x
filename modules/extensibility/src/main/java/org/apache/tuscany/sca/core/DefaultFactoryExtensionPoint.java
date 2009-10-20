@@ -19,7 +19,8 @@
 
 package org.apache.tuscany.sca.core;
 
-import java.lang.reflect.Constructor;
+import static org.apache.tuscany.sca.extensibility.ServiceHelper.newInstance;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.security.AccessController;
@@ -109,33 +110,20 @@ public class DefaultFactoryExtensionPoint implements FactoryExtensionPoint {
             // Dynamically load a factory class declared under META-INF/services 
             try {
                 ServiceDeclaration factoryDeclaration =
-                    ServiceDiscovery.getInstance().getServiceDeclaration(factoryInterface.getName());
+                    ServiceDiscovery.getInstance().getServiceDeclaration(factoryInterface);
                 if (factoryDeclaration != null) {
-                    Class<?> factoryClass = factoryDeclaration.loadClass();
                     try {
-                        
-                        // Default empty constructor
-                        Constructor<?> constructor = factoryClass.getConstructor();
-                        factory = constructor.newInstance();
+                        // Constructor taking the extension point registry
+                        factory = newInstance(extensionPointRegistry, factoryDeclaration);
                     } catch (NoSuchMethodException e) {
-                        try {
-
-                            // Constructor taking the model factory extension point
-                            Constructor<?> constructor = factoryClass.getConstructor(FactoryExtensionPoint.class);
-                            factory = constructor.newInstance(this);
-                        } catch (NoSuchMethodException e1) {
-
-                            // Constructor taking the extension point registry
-                            Constructor<?> constructor = factoryClass.getConstructor(ExtensionPointRegistry.class);
-                            factory = constructor.newInstance(extensionPointRegistry);
-                        }
+                        factory = newInstance(factoryDeclaration.loadClass(), FactoryExtensionPoint.class, this);
                     }
 
                     // Cache the loaded factory
                     factories.put(factoryInterface, factory);
-                    
-                    return  factoryInterface.cast(factory);
-                    
+
+                    return factoryInterface.cast(factory);
+
                 } else {
                     
                     // If the input interface is an abstract class

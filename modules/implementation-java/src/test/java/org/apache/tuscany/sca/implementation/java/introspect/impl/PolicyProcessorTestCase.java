@@ -35,7 +35,6 @@ import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.impl.PolicyJavaInterfaceVisitor;
-import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySubject;
 import org.junit.Before;
@@ -246,7 +245,7 @@ public class PolicyProcessorTestCase {
     public void setUp() throws Exception {
         ExtensionPointRegistry registry = new DefaultExtensionPointRegistry();
         serviceProcessor = new ServiceProcessor(new DefaultAssemblyFactory(), new DefaultJavaInterfaceFactory(registry));
-        policyProcessor = new PolicyProcessor(new DefaultAssemblyFactory(), new DefaultPolicyFactory());
+        policyProcessor = new PolicyProcessor(registry);
         visitor = new PolicyJavaInterfaceVisitor(registry);
         JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory();
         type = javaImplementationFactory.createJavaImplementation();

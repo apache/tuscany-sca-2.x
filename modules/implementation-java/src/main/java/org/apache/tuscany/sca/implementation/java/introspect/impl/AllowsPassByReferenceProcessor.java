@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.implementation.java.introspect.impl;
 import java.lang.reflect.Method;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.introspect.BaseJavaClassVisitor;
@@ -37,6 +38,10 @@ public class AllowsPassByReferenceProcessor extends BaseJavaClassVisitor {
         super(factory);
     }
 
+    public AllowsPassByReferenceProcessor(ExtensionPointRegistry registry) {
+        super(registry);
+    }
+                                          
     @Override
     public <T> void visitClass(Class<T> clazz, JavaImplementation type) throws IntrospectionException {
         type.setAllowsPassByReference(clazz.isAnnotationPresent(AllowsPassByReference.class));

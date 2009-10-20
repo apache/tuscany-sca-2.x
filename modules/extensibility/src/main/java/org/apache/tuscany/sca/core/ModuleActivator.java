@@ -28,7 +28,18 @@ package org.apache.tuscany.sca.core;
  * "META-INF/services/org.apache.tuscany.core.ModuleActivator"
  * 
  * The content of the file is the class name of the ModuleActivator implementation. 
- * The implementation class must have a no-arg constructor. The same instance 
+ * The implementation class can have different flavors of constructors. The following
+ * order will be searched:
+ * <ul>
+ * <li>(ExtensionRegistry.class) 
+ * <li>(ExtensionRegistry.class, Map.class)
+ * <li>()
+ * </ul>
+ *  
+ * 
+ * 
+ * 
+ * The same instance 
  * will be used to invoke all the methods during different phases of the module 
  * activation. Note that the start and stop methods defined by this interface
  * take a reference to the Tuscany SCA runtime ExtensionPointRegistry. This 
@@ -38,23 +49,23 @@ package org.apache.tuscany.sca.core;
  * 
  * @version $Rev$ $Date$
  */
-public interface ModuleActivator {
+public interface ModuleActivator extends LifeCycleListener {
 
     /**
-     * This method is invoked when the module is started by the Tuscany system.
+     * This method is invoked when the module is started by the Tuscany runtime.
      * It can be used by this module to register extensions against extension
      * points.
      * 
      * @param registry The extension point registry
      */
-    void start(ExtensionPointRegistry registry);
+    void start();
 
     /**
-     * This method is invoked when the module is stopped by the Tuscany system.
+     * This method is invoked when the module is stopped by the Tuscany runtime.
      * It can be used by this module to unregister extensions against the
      * extension points.
      * 
      * @param registry The extension point registry
      */
-    void stop(ExtensionPointRegistry registry);
+    void stop();
 }

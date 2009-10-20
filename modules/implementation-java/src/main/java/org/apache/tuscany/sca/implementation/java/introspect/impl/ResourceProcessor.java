@@ -23,6 +23,7 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.JavaElementImpl;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
@@ -42,6 +43,10 @@ public class ResourceProcessor extends BaseJavaClassVisitor {
     public ResourceProcessor(AssemblyFactory factory) {
         super(factory);
     }
+    
+    public ResourceProcessor(ExtensionPointRegistry registry) {
+        super(registry);
+    }    
 
     @Override
     public void visitMethod(Method method, JavaImplementation type) throws IntrospectionException {

@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.interfacedef.java.impl;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -28,6 +29,7 @@ import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
+import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
 import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceVisitor;
 
 /**
@@ -80,5 +82,12 @@ public abstract class JavaInterfaceFactoryImpl implements JavaInterfaceFactory {
 
     public List<JavaInterfaceVisitor> getInterfaceVisitors() {
         return visitors;
+    }
+
+    public JavaOperation createJavaOperation(Method method) {
+        JavaOperation op =  new JavaOperationImpl();
+        op.setJavaMethod(method);
+        op.setName(method.getName());
+        return op;
     }
 }

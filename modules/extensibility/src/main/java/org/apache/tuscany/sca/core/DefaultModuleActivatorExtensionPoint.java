@@ -19,8 +19,9 @@
 
 package org.apache.tuscany.sca.core;
 
+import static org.apache.tuscany.sca.extensibility.ServiceHelper.newInstance;
+
 import java.io.IOException;
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -61,7 +62,7 @@ public class DefaultModuleActivatorExtensionPoint implements ModuleActivatorExte
 
     public void removeModuleActivator(ModuleActivator activator) {
         if (activators.remove(activator)) {
-            activator.stop(registry);
+            activator.stop();
         }
     }
 
@@ -89,14 +90,20 @@ public class DefaultModuleActivatorExtensionPoint implements ModuleActivatorExte
             ModuleActivator activator = null;
             try {
                 Class<ModuleActivator> activatorClass = (Class<ModuleActivator>)activatorDeclaration.loadClass();
-                Constructor<ModuleActivator> constructor = null;
                 try {
-                    constructor = activatorClass.getConstructor();
-                    activator = constructor.newInstance();
+                    activator = newInstance(activatorClass, ExtensionPointRegistry.class, registry);
                 } catch (NoSuchMethodException e) {
-                    // Try the one that takes a Map<String, String>
-                    constructor = activatorClass.getConstructor(Map.class);
-                    activator = constructor.newInstance(activatorDeclaration.getAttributes());
+                    try {
+                        activator =
+                            newInstance(activatorClass,
+                                        new Class<?>[] {ExtensionPointRegistry.class, Map.class},
+                                        registry,
+                                        activatorDeclaration.getAttributes());
+
+                    } catch (NoSuchMethodException e1) {
+                        activator = newInstance(activatorClass);
+
+                    }
                 }
             } catch (Throwable e) {
                 String optional = activatorDeclaration.getAttributes().get("optional");
@@ -121,7 +128,7 @@ public class DefaultModuleActivatorExtensionPoint implements ModuleActivatorExte
         getModuleActivators();
         for (ModuleActivator activator : activators) {
             try {
-                activator.start(registry);
+                activator.start();
             } catch (Throwable e) {
                 // Ignore the failing module for now
                 logger.log(Level.SEVERE, e.getMessage(), e);
@@ -136,7 +143,7 @@ public class DefaultModuleActivatorExtensionPoint implements ModuleActivatorExte
         }
         for (int i = activators.size() - 1; i >= 0; i--) {
             try {
-                activators.get(i).stop(registry);
+                activators.get(i).stop();
             } catch (Throwable e) {
                 // Ignore the failing module for now
                 logger.log(Level.SEVERE, e.getMessage(), e);

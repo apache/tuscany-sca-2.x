@@ -19,9 +19,13 @@
 
 package org.apache.tuscany.sca.assembly.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.Implementation;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.policy.ExtensionType;
 import org.apache.tuscany.sca.policy.PolicySubject;
 
@@ -33,6 +37,7 @@ import org.apache.tuscany.sca.policy.PolicySubject;
 public abstract class ImplementationImpl extends ComponentTypeImpl implements Implementation, PolicySubject {
     private QName type;
     private ExtensionType extensionType;
+    private List<Operation> operations = new ArrayList<Operation>();
 
     protected ImplementationImpl(QName type) {
         super();
@@ -53,5 +58,19 @@ public abstract class ImplementationImpl extends ComponentTypeImpl implements Im
     
     public String toString() {
         return String.valueOf(getType());
+    }
+
+    public List<Operation> getOperations() {
+        return operations;
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        ImplementationImpl impl = (ImplementationImpl)super.clone();
+        impl.operations = new ArrayList<Operation>();
+        for (Operation operation : operations) {
+            impl.operations.add((Operation)operation.clone());
+        }
+        return impl;
     }
 }

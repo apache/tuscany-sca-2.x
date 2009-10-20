@@ -51,11 +51,11 @@ public abstract class AbstractProcessorTest {
         factory = new DefaultAssemblyFactory(registry);
         javaFactory = new DefaultJavaInterfaceFactory(registry);
         referenceProcessor = new ReferenceProcessor(factory, javaFactory);
-        propertyProcessor = new PropertyProcessor(factory);
+        propertyProcessor = new PropertyProcessor(registry);
         resourceProcessor = new ResourceProcessor(factory);
         constructorProcessor = new ConstructorProcessor(factory);
         referenceProcessor = new ReferenceProcessor(factory, javaFactory);
-        propertyProcessor = new PropertyProcessor(factory);
+        propertyProcessor = new PropertyProcessor(registry);
     }
 
     protected <T> void visitConstructor(Constructor<T> constructor,

@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.implementation.osgi;
 
-import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.implementation.osgi.impl.OSGiImplementationFactoryImpl;
 
 /**
@@ -27,8 +27,8 @@ import org.apache.tuscany.sca.implementation.osgi.impl.OSGiImplementationFactory
  */
 public class DefaultOSGiImplementationFactory extends OSGiImplementationFactoryImpl {
 
-    public DefaultOSGiImplementationFactory(FactoryExtensionPoint factoryExtensionPoint) {
-        super(factoryExtensionPoint);
+    public DefaultOSGiImplementationFactory(ExtensionPointRegistry registry) {
+        super(registry);
     }
 
 }

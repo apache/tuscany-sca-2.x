@@ -59,6 +59,7 @@ import org.apache.tuscany.sca.contribution.processor.ContributionResolveExceptio
 import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.resolver.ClassReference;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.implementation.java.JavaConstructorImpl;
 import org.apache.tuscany.sca.implementation.java.JavaElementImpl;
@@ -89,7 +90,7 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
  * @version $Rev$ $Date$
  */
 public class SpringXMLComponentTypeLoader {
-
+    private ExtensionPointRegistry registry;
     private XMLInputFactory xmlInputFactory;
     private ContributionFactory contributionFactory;
     private AssemblyFactory assemblyFactory;
@@ -99,15 +100,14 @@ public class SpringXMLComponentTypeLoader {
     private Monitor monitor;
     private SpringBeanIntrospector beanIntrospector;
 
-    public SpringXMLComponentTypeLoader(FactoryExtensionPoint factories,
-                                        AssemblyFactory assemblyFactory,
-                                        JavaInterfaceFactory javaFactory,
-                                        PolicyFactory policyFactory,
+    public SpringXMLComponentTypeLoader(ExtensionPointRegistry registry,
                                         Monitor monitor) {
         super();
-        this.assemblyFactory = assemblyFactory;
-        this.javaFactory = javaFactory;
-        this.policyFactory = policyFactory;
+        this.registry = registry;
+        FactoryExtensionPoint factories = registry.getExtensionPoint(FactoryExtensionPoint.class);
+        this.assemblyFactory = factories.getFactory(AssemblyFactory.class);
+        this.javaFactory = factories.getFactory(JavaInterfaceFactory.class);
+        this.policyFactory = factories.getFactory(PolicyFactory.class);
         this.policyProcessor = new PolicySubjectProcessor(policyFactory);
         this.contributionFactory = factories.getFactory(ContributionFactory.class);
         this.xmlInputFactory = factories.getFactory(XMLInputFactory.class);
@@ -653,7 +653,7 @@ public class SpringXMLComponentTypeLoader {
                     Class<?> beanClass = resolveClass(resolver, beanElement.getClassName(), context);
                     // Introspect the bean
                     beanIntrospector =
-                        new SpringBeanIntrospector(assemblyFactory, javaFactory, policyFactory, beanElement.getCustructorArgs());
+                        new SpringBeanIntrospector(registry, beanElement.getCustructorArgs());
                     ComponentType beanComponentType = assemblyFactory.createComponentType();
                     javaImplementation = beanIntrospector.introspectBean(beanClass, beanComponentType);
                     // Set the service name as bean name
@@ -680,7 +680,7 @@ public class SpringXMLComponentTypeLoader {
                 Class<?> beanClass = resolveClass(resolver, beanElement.getClassName(), context);
                 // Introspect the bean
                 beanIntrospector =
-                    new SpringBeanIntrospector(assemblyFactory, javaFactory, policyFactory, beanElement.getCustructorArgs());
+                    new SpringBeanIntrospector(registry, beanElement.getCustructorArgs());
                 ComponentType beanComponentType = assemblyFactory.createComponentType();
                 javaImplementation = beanIntrospector.introspectBean(beanClass, beanComponentType);
                 Map<String, JavaElementImpl> propertyMap = javaImplementation.getPropertyMembers();

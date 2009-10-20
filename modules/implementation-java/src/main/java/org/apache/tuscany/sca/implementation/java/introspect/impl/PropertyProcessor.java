@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.sca.implementation.java.introspect.impl;
 
-import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.oasisopen.sca.annotation.Property;
 
 /**
@@ -29,10 +29,10 @@ import org.oasisopen.sca.annotation.Property;
  */
 public class PropertyProcessor extends AbstractPropertyProcessor<Property> {
 
-    public PropertyProcessor(AssemblyFactory assemblyFactory) {
-        super(assemblyFactory, Property.class);
+    public PropertyProcessor(ExtensionPointRegistry registry) {
+        super(registry, Property.class);
     }
-
+    
     @Override
     protected String getName(Property annotation) {
         return annotation.name();

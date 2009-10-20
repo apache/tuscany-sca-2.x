@@ -19,6 +19,7 @@
 package org.apache.tuscany.sca.implementation.java.introspect.impl;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.introspect.BaseJavaClassVisitor;
@@ -34,6 +35,10 @@ public class EagerInitProcessor extends BaseJavaClassVisitor {
     public EagerInitProcessor(AssemblyFactory factory) {
         super(factory);
     }
+
+    public EagerInitProcessor(ExtensionPointRegistry registry) {
+        super(registry);
+    }    
 
     @Override
     public <T> void visitClass(Class<T> clazz,

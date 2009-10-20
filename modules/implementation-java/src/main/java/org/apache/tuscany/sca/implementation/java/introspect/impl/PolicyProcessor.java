@@ -19,26 +19,29 @@
 package org.apache.tuscany.sca.implementation.java.introspect.impl;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.assembly.Callback;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
+import org.apache.tuscany.sca.implementation.java.JavaElementImpl;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.introspect.BaseJavaClassVisitor;
-import org.apache.tuscany.sca.implementation.java.introspect.JavaIntrospectionHelper;
-import org.apache.tuscany.sca.interfacedef.InterfaceContract;
-import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
-import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
+import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
+import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
+import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
@@ -56,57 +59,16 @@ public class PolicyProcessor extends BaseJavaClassVisitor {
     
     private PolicyFactory policyFactory;
 
-    public PolicyProcessor(AssemblyFactory assemblyFactory, PolicyFactory policyFactory) {
+    public PolicyProcessor(AssemblyFactory assemblyFactory, PolicyFactory policyFactory, JavaInterfaceFactory javaInterfaceFactory) {
         super(assemblyFactory);
         this.policyFactory = policyFactory;
+        this.javaInterfaceFactory = javaInterfaceFactory;
     }
-
-
-    @Override
-    public void visitField(Field field, JavaImplementation type) throws IntrospectionException {
-        org.oasisopen.sca.annotation.Reference annotation = 
-            field.getAnnotation( org.oasisopen.sca.annotation.Reference.class);
-        if (annotation == null) {
-            return;
-        }
-        String name = annotation.name();
-        if ("".equals(name)) {
-            name = field.getName();
-        }
-        
-        Reference reference = null;
-        if ( (reference = getReferenceByName(name, type)) != null ) {
-            readIntents(field.getAnnotation(Requires.class), reference.getRequiredIntents());
-            readSpecificIntents(field.getAnnotations(), reference.getRequiredIntents());
-            readPolicySets(field.getAnnotation(PolicySets.class), reference.getPolicySets());
-        }
-    }
-
-    @Override
-    public void visitMethod(Method method, JavaImplementation type) throws IntrospectionException {
-        Reference reference = null;
-        if ( (reference = getReference(method, type)) != null ) {
-            readIntents(method.getAnnotation(Requires.class), reference.getRequiredIntents());
-            readSpecificIntents(method.getAnnotations(), reference.getRequiredIntents());
-            readPolicySets(method.getAnnotation(PolicySets.class), reference.getPolicySets());
-        } else {
-            /*
-            if ( type instanceof OperationsConfigurator ) {
-                //Read the intents specified on the given implementation method
-                if ( (method.getAnnotation(Requires.class) != null || 
-                        method.getAnnotation(PolicySets.class) != null ) && 
-                            (type instanceof PolicySubject )) {
-                    ConfiguredOperation confOp = assemblyFactory.createConfiguredOperation();
-                    confOp.setName(method.getName());
-                    ((OperationsConfigurator)type).getConfiguredOperations().add(confOp);
-            
-                
-                    readIntents(method.getAnnotation(Requires.class), confOp.getRequiredIntents());
-                    readPolicySets(method.getAnnotation(PolicySets.class), confOp.getPolicySets());
-                }
-            }
-            */
-        }
+    
+    public PolicyProcessor(ExtensionPointRegistry registry) {
+        super(registry);
+        FactoryExtensionPoint factories = registry.getExtensionPoint(FactoryExtensionPoint.class);
+        this.policyFactory = factories.getFactory(PolicyFactory.class);
     }
 
     @Override
@@ -118,72 +80,53 @@ public class PolicyProcessor extends BaseJavaClassVisitor {
                                      ((PolicySubject)type).getRequiredIntents(),
                                      ((PolicySubject)type).getPolicySets());
         }
-        
-        // Process annotations on the service interfaces
-        //TODO This will have to move to a JavaInterface introspector later
-        for (Service service: type.getServices()) {
-            InterfaceContract interfaceContract = service.getInterfaceContract();
-            if (interfaceContract instanceof JavaInterfaceContract) {
-                JavaInterfaceContract javaInterfaceContract = (JavaInterfaceContract)interfaceContract;
 
-                // Read intents on the service interface
-                if (javaInterfaceContract.getInterface() != null) {
-                    JavaInterface javaInterface = (JavaInterface)javaInterfaceContract.getInterface();
-                    if (javaInterface.getJavaClass() != null) {
-                        readIntentsAndPolicySets(javaInterface.getJavaClass(), 
-                                                 service.getRequiredIntents(),
-                                                 service.getPolicySets());
-
-                        /*
-                        // Read intents on the service interface methods 
-                        Method[] methods = javaInterface.getJavaClass().getMethods();
-                        ConfiguredOperation confOp = null;
-                        for (Method method: methods) {
-                            if ( method.getAnnotation(Requires.class) != null  ||    
-                                method.getAnnotation(PolicySets.class) != null ) {
-                                confOp = assemblyFactory.createConfiguredOperation();
-                                confOp.setName(method.getName());
-                                confOp.setContractName(service.getName());
-                            
-                                service.getConfiguredOperations().add(confOp);
-                                readIntents(method.getAnnotation(Requires.class), confOp.getRequiredIntents());
-                                readPolicySets(method.getAnnotation(PolicySets.class), confOp.getPolicySets());
-                            }
-                        }
-                        */
-                    }
-                    
+        // FIXME: [rfeng] We might want to refactor this out
+        // Find the business methods in the implementation class for all services
+        Set<Method> methods = new HashSet<Method>();
+        for (Service service : type.getServices()) {
+            for (Operation op : service.getInterfaceContract().getInterface().getOperations()) {
+                Method method;
+                try {
+                    method = JavaInterfaceUtil.findMethod(clazz, op);
+                } catch (NoSuchMethodException e1) {
+                    throw new IntrospectionException(e1);
                 }
-                
-                // Read intents on the callback interface 
-                if (javaInterfaceContract.getCallbackInterface() != null) {
-                    JavaInterface javaCallbackInterface = (JavaInterface)javaInterfaceContract.getCallbackInterface();
-                    if (javaCallbackInterface.getJavaClass() != null) {
-                        Callback callback = service.getCallback();
-                        if (callback == null) {
-                            callback = assemblyFactory.createCallback();
-                            service.setCallback(callback);
-                        }
-                        readIntentsAndPolicySets(javaCallbackInterface.getJavaClass(), 
-                                                 callback.getRequiredIntents(),
-                                                 callback.getPolicySets());
-
-                        /*
-                        // Read intents on the callback interface methods 
-                        Method[] methods = javaCallbackInterface.getJavaClass().getMethods();
-                        ConfiguredOperation confOp = null;
-                        for (Method method: methods) {
-                            confOp = assemblyFactory.createConfiguredOperation();
-                            confOp.setName(method.getName());
-                            callback.getConfiguredOperations().add(confOp);
-                            readIntents(method.getAnnotation(Requires.class), confOp.getRequiredIntents());
-                            readPolicySets(method.getAnnotation(PolicySets.class), confOp.getPolicySets());
-                        }
-                        */
-                    }
+                if (method != null) {
+                    methods.add(method);
                 }
             }
         }
+        for (Method method : methods) {
+            JavaOperation op = javaInterfaceFactory.createJavaOperation(method);
+            type.getOperations().add(op);
+        }
+
+        // Read the operation-level policy settings for the implementation
+        for (Operation op : type.getOperations()) {
+            JavaOperation operation = (JavaOperation)op;
+            PolicySubject subject = op;
+            Method method = operation.getJavaMethod();
+            if (subject != null) {
+                readIntents(method.getAnnotation(Requires.class), subject.getRequiredIntents());
+                readSpecificIntents(method.getAnnotations(), subject.getRequiredIntents());
+                readPolicySets(method.getAnnotation(PolicySets.class), subject.getPolicySets());
+            }
+        }
+
+        // Start to process annotations on the reference members
+        Map<String, Reference> referenceMap = new HashMap<String, Reference>();
+        for(Reference ref: type.getReferences()) {
+            referenceMap.put(ref.getName(), ref);
+        }
+        Map<String, JavaElementImpl> members = type.getReferenceMembers();
+        for(Map.Entry<String, JavaElementImpl> e: members.entrySet()) {
+            Reference reference = referenceMap.get(e.getKey());
+            readIntents(e.getValue().getAnnotation(Requires.class), reference.getRequiredIntents());
+            readSpecificIntents(e.getValue().getAnnotations(), reference.getRequiredIntents());
+            readPolicySets(e.getValue().getAnnotation(PolicySets.class), reference.getPolicySets());            
+        }
+
     }
     
     private void readSpecificIntents(Annotation[] annotations, List<Intent> requiredIntents) {
@@ -342,44 +285,5 @@ public class PolicyProcessor extends BaseJavaClassVisitor {
         }
         return qname;
     }
-    
-
-    /**
-     * 
-     * @param name
-     * @param type
-     * @return
-     */
-    private static Reference getReferenceByName(String name, JavaImplementation type) {
-        for ( Reference reference : type.getReferences() ) {
-            if ( reference.getName().equals(name) ) {
-                return reference;
-            }
-        }
-        return null;
-    }
-    
-
-    /**
-     * 
-     * @param method
-     * @param type
-     * @return
-     */
-    private static Reference getReference(Method method, JavaImplementation type) {
-        //since the ReferenceProcessor is called ahead of the PolicyProcessor the type should have
-        //picked up the reference setter method
-        org.oasisopen.sca.annotation.Reference annotation = 
-                                        method.getAnnotation(org.oasisopen.sca.annotation.Reference.class);
-        if (annotation != null) {
-            if (JavaIntrospectionHelper.isSetter(method)) {
-                String name = annotation.name();
-                if ("".equals(name)) {
-                    name = JavaIntrospectionHelper.toPropertyName(method.getName());
-                }
-                return getReferenceByName(name, type);
-            }
-        }
-        return null;
-    }
+   
 }

@@ -20,29 +20,14 @@ package org.apache.tuscany.sca.implementation.spring.introspect;
 
 import java.util.List;
 
-import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
-import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
-import org.apache.tuscany.sca.implementation.java.introspect.BaseJavaClassVisitor;
-import org.apache.tuscany.sca.implementation.java.introspect.JavaClassVisitor;
-import org.apache.tuscany.sca.implementation.java.introspect.impl.ComponentNameProcessor;
-import org.apache.tuscany.sca.implementation.java.introspect.impl.ConstructorProcessor;
-import org.apache.tuscany.sca.implementation.java.introspect.impl.ContextProcessor;
-import org.apache.tuscany.sca.implementation.java.introspect.impl.DestroyProcessor;
-import org.apache.tuscany.sca.implementation.java.introspect.impl.EagerInitProcessor;
-import org.apache.tuscany.sca.implementation.java.introspect.impl.InitProcessor;
-import org.apache.tuscany.sca.implementation.java.introspect.impl.PolicyProcessor;
-import org.apache.tuscany.sca.implementation.java.introspect.impl.PropertyProcessor;
-import org.apache.tuscany.sca.implementation.java.introspect.impl.ReferenceProcessor;
-import org.apache.tuscany.sca.implementation.java.introspect.impl.ResourceProcessor;
-import org.apache.tuscany.sca.implementation.java.introspect.impl.ServiceProcessor;
 import org.apache.tuscany.sca.implementation.spring.SpringConstructorArgElement;
-import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.sca.policy.PolicyFactory;
 
 /**
  * Provides introspection functions for Spring beans
@@ -62,32 +47,11 @@ public class SpringBeanIntrospector {
      * @param javaFactory The Java Interface Factory to use
      * @param policyFactory The Policy Factory to use.
      */
-    public SpringBeanIntrospector(AssemblyFactory assemblyFactory,
-                                  JavaInterfaceFactory javaFactory,
-                                  PolicyFactory policyFactory,
+    public SpringBeanIntrospector(ExtensionPointRegistry registry,
                                   List<SpringConstructorArgElement> conArgs) {
 
-        javaImplementationFactory = new DefaultJavaImplementationFactory();
-        
-        // Create the list of class visitors
-        BaseJavaClassVisitor[] extensions =
-            new BaseJavaClassVisitor[] {
-                                        new ConstructorProcessor(assemblyFactory),
-                                        new ComponentNameProcessor(assemblyFactory),
-                                        new ContextProcessor(assemblyFactory),
-                                        new DestroyProcessor(assemblyFactory),
-                                        new EagerInitProcessor(assemblyFactory),
-                                        new InitProcessor(assemblyFactory),
-                                        new PropertyProcessor(assemblyFactory),
-                                        new ReferenceProcessor(assemblyFactory, javaFactory),
-                                        new ResourceProcessor(assemblyFactory),
-                                        new ServiceProcessor(assemblyFactory, javaFactory),
-                                        new SpringBeanPojoProcessor(assemblyFactory, javaFactory, conArgs),
-                                        new PolicyProcessor(assemblyFactory, policyFactory)};
-        for (JavaClassVisitor extension : extensions) {
-            javaImplementationFactory.addClassVisitor(extension);
-        }
-
+        FactoryExtensionPoint factories = registry.getExtensionPoint(FactoryExtensionPoint.class);
+        javaImplementationFactory = factories.getFactory(JavaImplementationFactory.class);
     } // end constructor 
 
     /**

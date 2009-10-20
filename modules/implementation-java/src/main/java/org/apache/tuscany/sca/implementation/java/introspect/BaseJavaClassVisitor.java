@@ -23,9 +23,12 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaParameterImpl;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 
 /**
  * A convenience class for annotation processors which alleviates the need to
@@ -35,9 +38,17 @@ import org.apache.tuscany.sca.implementation.java.JavaParameterImpl;
  */
 public abstract class BaseJavaClassVisitor implements JavaClassVisitor {
     protected AssemblyFactory assemblyFactory;
+    protected JavaInterfaceFactory javaInterfaceFactory;
     
     protected BaseJavaClassVisitor(AssemblyFactory factory) {
         this.assemblyFactory = factory;
+    }
+
+    protected BaseJavaClassVisitor(ExtensionPointRegistry registry) {
+        super();
+        FactoryExtensionPoint factories = registry.getExtensionPoint(FactoryExtensionPoint.class);
+        this.assemblyFactory = factories.getFactory(AssemblyFactory.class);
+        this.javaInterfaceFactory = factories.getFactory(JavaInterfaceFactory.class);
     }
 
     public <T> void visitClass(Class<T> clazz, JavaImplementation type) throws IntrospectionException {

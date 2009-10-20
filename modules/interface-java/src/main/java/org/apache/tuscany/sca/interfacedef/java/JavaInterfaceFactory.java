@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.interfacedef.java;
 
+import java.lang.reflect.Method;
 import java.util.List;
 
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
@@ -51,6 +52,13 @@ public interface JavaInterfaceFactory {
      * @return
      */
     void createJavaInterface(JavaInterface javaInterface, Class<?> interfaceClass) throws InvalidInterfaceException;
+    
+    /**
+     * Create a JavaOperation
+     * @param method
+     * @return
+     */
+    JavaOperation createJavaOperation(Method method);
     
     /**
      * Creates a new Java interface contract.
