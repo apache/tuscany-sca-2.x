@@ -414,12 +414,12 @@ public class PolicyProcessorTestCase {
     @Service(Interface6.class)
     @Requires( {"transaction.global.Service6"})
     private class Service6 implements Interface6 {
-        @Requires( {"transaction.global.Service6.method1"})
+        // @Requires( {"transaction.global.Service6.method1"})
         public int method1() {
             return 0;
         }
 
-        @Requires( {"transaction.global.Service6.method1"})
+        // @Requires( {"transaction.global.Service6.method1"})
         public int method2() {
             return 0;
         }

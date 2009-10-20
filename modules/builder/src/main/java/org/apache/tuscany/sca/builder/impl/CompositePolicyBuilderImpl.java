@@ -112,6 +112,23 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
         }
         return false;
     }
+    
+    private boolean checkMutualExclusion(PolicySubject subject, BuilderContext context) {
+        if (subject == null) {
+            return false;
+        }
+        // FIXME: [rfeng] When should the intents be resolved?
+        resolveAndNormalize(subject, context.getDefinitions(), context);
+        for (Intent i1 : subject.getRequiredIntents()) {
+            for (Intent i2 : subject.getRequiredIntents()) {
+                if (i1 != i2 && i1.getExcludedIntents().contains(i2) || i2.getExcludedIntents().contains(i1)) {
+                    error(context.getMonitor(), "MutuallyExclusiveIntents", subject, i1, i2);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
     /**
      * Inherit the policySets and intents from the implementation hierarchy
@@ -298,7 +315,8 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
     }
 
     protected void computePolicies(Composite composite, Definitions definitions, BuilderContext context) {
-
+        checkMutualExclusion(composite, context);
+        
         // compute policies recursively
         for (Component component : composite.getComponents()) {
             Implementation implementation = component.getImplementation();
@@ -308,10 +326,16 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
         }
 
         for (Component component : composite.getComponents()) {
+            checkMutualExclusion(component, context);
+            checkMutualExclusion(component.getImplementation(), context);
+            
             // Check component against implementation
             checkMutualExclusion(component, component.getImplementation(), context);
 
             for (ComponentService componentService : component.getServices()) {
+                checkMutualExclusion(componentService, context);
+                checkMutualExclusion(componentService.getService(), context);
+
                 // Check component/service against componentType/service 
                 checkMutualExclusion(componentService, componentService.getService(), context);
 
@@ -337,6 +361,7 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
                     // Find the corresponding binding in the componentType and inherit the intents/policySets
                     if (componentService.getService() != null) {
                         for (Binding binding : componentService.getService().getBindings()) {
+                            checkMutualExclusion((PolicySubject) binding, context);
                             if (isEqual(ep.getBinding().getName(), binding.getName()) && (binding instanceof PolicySubject)) {
                                 checkMutualExclusion((PolicySubject)ep.getBinding(), (PolicySubject)binding, context);
                                 // Inherit from componentType.service.binding
@@ -359,6 +384,9 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
             }
 
             for (ComponentReference componentReference : component.getReferences()) {
+                checkMutualExclusion(componentReference, context);
+                checkMutualExclusion(componentReference.getReference(), context);
+
                 // Check component/reference against componentType/reference
                 checkMutualExclusion(componentReference, componentReference.getReference(), context);
 
@@ -388,6 +416,7 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
                         for (Binding binding : componentReference.getReference().getBindings()) {
                             if (epr.getBinding() != null && isEqual(epr.getBinding().getName(), binding.getName())
                                 && (binding instanceof PolicySubject)) {
+                                checkMutualExclusion((PolicySubject) binding, context);
                                 checkMutualExclusion((PolicySubject)epr.getBinding(), (PolicySubject)binding, context);
                                 // Inherit from componentType.reference.binding
                                 inherit(epr, binding);

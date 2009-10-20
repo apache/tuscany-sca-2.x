@@ -19,6 +19,8 @@
 package org.apache.tuscany.sca.implementation.java.introspect.impl;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -31,21 +33,19 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Reference;
-import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.JavaElementImpl;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
+import org.apache.tuscany.sca.implementation.java.JavaParameterImpl;
 import org.apache.tuscany.sca.implementation.java.introspect.BaseJavaClassVisitor;
-import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
-import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySubject;
+import org.oasisopen.sca.ServiceRuntimeException;
 import org.oasisopen.sca.annotation.PolicySets;
 import org.oasisopen.sca.annotation.Qualifier;
 import org.oasisopen.sca.annotation.Requires;
@@ -56,15 +56,17 @@ import org.oasisopen.sca.annotation.Requires;
  * @version $Rev$ $Date$
  */
 public class PolicyProcessor extends BaseJavaClassVisitor {
-    
+
     private PolicyFactory policyFactory;
 
-    public PolicyProcessor(AssemblyFactory assemblyFactory, PolicyFactory policyFactory, JavaInterfaceFactory javaInterfaceFactory) {
+    public PolicyProcessor(AssemblyFactory assemblyFactory,
+                           PolicyFactory policyFactory,
+                           JavaInterfaceFactory javaInterfaceFactory) {
         super(assemblyFactory);
         this.policyFactory = policyFactory;
         this.javaInterfaceFactory = javaInterfaceFactory;
     }
-    
+
     public PolicyProcessor(ExtensionPointRegistry registry) {
         super(registry);
         FactoryExtensionPoint factories = registry.getExtensionPoint(FactoryExtensionPoint.class);
@@ -73,14 +75,11 @@ public class PolicyProcessor extends BaseJavaClassVisitor {
 
     @Override
     public <T> void visitClass(Class<T> clazz, JavaImplementation type) throws IntrospectionException {
-        
-        // Read intents on the Java implementation class
-        if ( type instanceof PolicySubject ) {
-            readIntentsAndPolicySets(clazz, 
-                                     ((PolicySubject)type).getRequiredIntents(),
-                                     ((PolicySubject)type).getPolicySets());
-        }
 
+        // Read intents on the Java implementation class
+        readPolicySetAndIntents((PolicySubject)type, clazz);
+
+        /*
         // FIXME: [rfeng] We might want to refactor this out
         // Find the business methods in the implementation class for all services
         Set<Method> methods = new HashSet<Method>();
@@ -108,27 +107,36 @@ public class PolicyProcessor extends BaseJavaClassVisitor {
             PolicySubject subject = op;
             Method method = operation.getJavaMethod();
             if (subject != null) {
-                readIntents(method.getAnnotation(Requires.class), subject.getRequiredIntents());
-                readSpecificIntents(method.getAnnotations(), subject.getRequiredIntents());
-                readPolicySets(method.getAnnotation(PolicySets.class), subject.getPolicySets());
+                readPolicySetAndIntents(subject, method);
             }
         }
+        */
 
         // Start to process annotations on the reference members
         Map<String, Reference> referenceMap = new HashMap<String, Reference>();
-        for(Reference ref: type.getReferences()) {
+        for (Reference ref : type.getReferences()) {
             referenceMap.put(ref.getName(), ref);
         }
         Map<String, JavaElementImpl> members = type.getReferenceMembers();
-        for(Map.Entry<String, JavaElementImpl> e: members.entrySet()) {
+        for (Map.Entry<String, JavaElementImpl> e : members.entrySet()) {
             Reference reference = referenceMap.get(e.getKey());
-            readIntents(e.getValue().getAnnotation(Requires.class), reference.getRequiredIntents());
-            readSpecificIntents(e.getValue().getAnnotations(), reference.getRequiredIntents());
-            readPolicySets(e.getValue().getAnnotation(PolicySets.class), reference.getPolicySets());            
+            readPolicySetAndIntents(reference, e.getValue().getAnchor());
         }
 
     }
+
+    private void readPolicySetAndIntents(PolicySubject subject, AnnotatedElement element) {
+        readIntents(element.getAnnotation(Requires.class), subject.getRequiredIntents());
+        readSpecificIntents(element.getAnnotations(), subject.getRequiredIntents());
+        readPolicySets(element.getAnnotation(PolicySets.class), subject.getPolicySets());
+    }
     
+    private void readPolicySetAndIntents(PolicySubject subject, JavaElementImpl element) {
+        readIntents(element.getAnnotation(Requires.class), subject.getRequiredIntents());
+        readSpecificIntents(element.getAnnotations(), subject.getRequiredIntents());
+        readPolicySets(element.getAnnotation(PolicySets.class), subject.getPolicySets());
+    }
+
     private void readSpecificIntents(Annotation[] annotations, List<Intent> requiredIntents) {
         for (Annotation a : annotations) {
             org.oasisopen.sca.annotation.Intent intentAnnotation =
@@ -144,14 +152,14 @@ public class PolicyProcessor extends BaseJavaClassVisitor {
                 qname = new QName(intentAnnotation.targetNamespace(), intentAnnotation.localPart());
             }
             Set<String> qualifiers = new HashSet<String>();
-            for(Method m: a.annotationType().getMethods()) {
+            for (Method m : a.annotationType().getMethods()) {
                 Qualifier qualifier = m.getAnnotation(Qualifier.class);
                 if (qualifier != null && m.getReturnType() == String[].class) {
                     try {
-                        qualifiers.addAll(Arrays.asList((String[]) m.invoke(a)));
+                        qualifiers.addAll(Arrays.asList((String[])m.invoke(a)));
                     } catch (Throwable e) {
                         e.printStackTrace();
-                    } 
+                    }
                 }
             }
             qualifiers.remove("");
@@ -172,45 +180,6 @@ public class PolicyProcessor extends BaseJavaClassVisitor {
         }
     }
 
-    /**
-     * Read policy intents on the given interface or class 
-     * @param clazz
-     * @param requiredIntents
-     */
-    private void readIntentsAndPolicySets(Class<?> clazz, 
-                                          List<Intent> requiredIntents, 
-                                          List<PolicySet> policySets) {
-        Requires intentAnnotation = clazz.getAnnotation(Requires.class);
-        if (intentAnnotation != null) {
-            String[] intentNames = intentAnnotation.value();
-            if (intentNames.length != 0) {
-                for (String intentName : intentNames) {
-
-                    // Add each intent to the list
-                    Intent intent = policyFactory.createIntent();
-                    intent.setName(getQName(intentName));
-                    requiredIntents.add(intent);
-                }
-            }
-        }
-        
-        readSpecificIntents(clazz.getAnnotations(), requiredIntents);
-
-        PolicySets policySetAnnotation = clazz.getAnnotation(PolicySets.class);
-        if (policySetAnnotation != null) {
-            String[] policySetNames = policySetAnnotation.value();
-            if (policySetNames.length != 0) {
-                for (String policySetName : policySetNames) {
-
-                    // Add each intent to the list
-                    PolicySet policySet = policyFactory.createPolicySet();
-                    policySet.setName(getQName(policySetName));
-                    policySets.add(policySet);
-                }
-            }
-        }
-    }
-    
     /**
      * Read intent annotations on the given interface or class
      * @param intentAnnotation
@@ -236,7 +205,6 @@ public class PolicyProcessor extends BaseJavaClassVisitor {
             }
         }
     }
-
 
     /**
      * Read policy set annotations on a given interface or class
@@ -265,7 +233,7 @@ public class PolicyProcessor extends BaseJavaClassVisitor {
     /**
      * Utility methods
      */
-    
+
     /**
      * 
      * @param intentName
@@ -285,5 +253,51 @@ public class PolicyProcessor extends BaseJavaClassVisitor {
         }
         return qname;
     }
-   
+
+    @Override
+    public void visitField(Field field, JavaImplementation type) throws IntrospectionException {
+        // Check if a field that is not an SCA reference has any policySet/intent annotations
+        JavaElementImpl element = new JavaElementImpl(field);
+        if (!type.getReferenceMembers().values().contains(element)) {
+            PolicySubject subject = assemblyFactory.createComponent();
+            readPolicySetAndIntents(subject, field);
+            if (subject.getPolicySets().isEmpty() && subject.getRequiredIntents().isEmpty()) {
+                return;
+            }
+            throw new ServiceRuntimeException(
+                                              "Field that is not an SCA reference cannot have policySet/intent annotations: " + field);
+        }
+    }
+
+    @Override
+    public void visitConstructorParameter(JavaParameterImpl parameter, JavaImplementation type) {
+        if (!type.getReferenceMembers().values().contains(parameter)) {
+            PolicySubject subject = assemblyFactory.createComponent();
+            readPolicySetAndIntents(subject, parameter);
+            if (subject.getPolicySets().isEmpty() && subject.getRequiredIntents().isEmpty()) {
+                return;
+            }
+            throw new ServiceRuntimeException(
+                                              "Constructor parameter that is not an SCA reference cannot have policySet/intent annotations: " + parameter);
+        }
+    }
+
+    @Override
+    public void visitMethod(Method method, JavaImplementation type) throws IntrospectionException {
+        Set<AnnotatedElement> annotatedElements = new HashSet<AnnotatedElement>();
+        for (JavaElementImpl element : type.getReferenceMembers().values()) {
+            annotatedElements.add(element.getAnchor());
+        }
+        // Check if a field that is not an SCA reference has any policySet/intent annotations
+        if (!annotatedElements.contains(method)) {
+            PolicySubject subject = assemblyFactory.createComponent();
+            readPolicySetAndIntents(subject, method);
+            if (subject.getPolicySets().isEmpty() && subject.getRequiredIntents().isEmpty()) {
+                return;
+            }
+            throw new ServiceRuntimeException(
+                                              "Method that is not an SCA reference cannot have policySet/intent annotations: " + method);
+        }
+    }
+
 }

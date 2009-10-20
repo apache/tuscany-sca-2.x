@@ -19,6 +19,7 @@
 package org.apache.tuscany.sca.otest;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.BufferedWriter;
@@ -165,8 +166,8 @@ public class TuscanyRuntimeBridge implements RuntimeBridge {
         // and where the only relevant part is the start of the message - in this case the expected
         // message only contains the stem section which is unchanging...
         if( receivedMessage.length() > expectedMessage.length() ) {
-            // Truncate the received message to the length of the expected message
-            receivedMessage = receivedMessage.substring(0, expectedMessage.length() );
+            assertTrue("Received message should contain the expected message", receivedMessage.contains(expectedMessage));
+            return;
         } // end if
         
         if (!expectedMessage.equals(receivedMessage)) {

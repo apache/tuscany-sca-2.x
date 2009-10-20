@@ -197,9 +197,11 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
 	        if (javaImplementation.getServices().isEmpty()) {
 	            javaImplementation.getServices().add(assemblyFactory.createService());
 	        }
-    	} catch (Throwable e ) {
-    		throw new ContributionResolveException( "Resolving Java implementation: " + javaImplementation.getName(), e);
-    	} // end try
+        } catch (Throwable e) {
+            throw new ContributionResolveException("Resolving Java implementation: " + javaImplementation.getName()
+                + ", "
+                + e.getMessage(), e);
+        } // end try
     } // end method
 
     private void checkNoStaticAnnotations(Monitor monitor, JavaImplementation javaImplementation) {
