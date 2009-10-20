@@ -732,18 +732,6 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
         }
     }
 
-    protected void addInheritedIntents(List<Intent> sourceList, List<Intent> targetList) {
-        if (sourceList != null) {
-            targetList.addAll(sourceList);
-        }
-    }
-
-    protected void addInheritedPolicySets(List<PolicySet> sourceList, List<PolicySet> targetList) {
-        if (sourceList != null) {
-            targetList.addAll(sourceList);
-        }
-    }
-
     /**
      * 
      * @param reader
