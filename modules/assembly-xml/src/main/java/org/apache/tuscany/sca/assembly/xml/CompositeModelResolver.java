@@ -42,7 +42,6 @@ public class CompositeModelResolver implements ModelResolver {
 
     private Contribution contribution;
     private Map<QName, Composite> map = new HashMap<QName, Composite>();
-    private Monitor monitor;
 
     public CompositeModelResolver(Contribution contribution, FactoryExtensionPoint modelFactories) {
         this.contribution = contribution;
@@ -52,7 +51,7 @@ public class CompositeModelResolver implements ModelResolver {
         Composite composite = (Composite)resolved;
         Composite old = map.put(composite.getName(), composite);
         if (old != null) {
-            Monitor.error(monitor,
+            Monitor.error(context.getMonitor(),
                           this,
                           Messages.RESOURCE_BUNDLE,
                           "DuplicateCompositeName",
