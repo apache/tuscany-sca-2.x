@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.builder.impl;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.xml.namespace.QName;
@@ -66,11 +67,9 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
         return "org.apache.tuscany.sca.assembly.builder.CompositePolicyBuilder";
     }
 
-    public Composite build(Composite composite, BuilderContext context)
-        throws CompositeBuilderException {
-        Definitions definitions = context.getDefinitions();
-        computePolicies(composite, definitions, context);
-        buildPolicies(composite, definitions, context);
+    public Composite build(Composite composite, BuilderContext context) throws CompositeBuilderException {
+        computePolicies(composite, context);
+        buildPolicies(composite, context);
         return composite;
     }
 
@@ -103,7 +102,7 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
             return false;
         }
         for (Intent i1 : subject1.getRequiredIntents()) {
-            for (Intent i2 : subject1.getRequiredIntents()) {
+            for (Intent i2 : subject2.getRequiredIntents()) {
                 if (i1.getExcludedIntents().contains(i2) || i2.getExcludedIntents().contains(i1)) {
                     error(context.getMonitor(), "MutuallyExclusiveIntents", new Object[] {subject1, subject2}, i1, i2);
                     return true;
@@ -112,15 +111,19 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
         }
         return false;
     }
-    
-    private boolean checkMutualExclusion(PolicySubject subject, BuilderContext context) {
+
+    private boolean resolveAndCheck(PolicySubject subject, BuilderContext context) {
         if (subject == null) {
             return false;
         }
-        // FIXME: [rfeng] When should the intents be resolved?
-        resolveAndNormalize(subject, context.getDefinitions(), context);
-        for (Intent i1 : subject.getRequiredIntents()) {
-            for (Intent i2 : subject.getRequiredIntents()) {
+        // FIXME: [rfeng] Should we resolve the intents during the "build" phase?
+        resolveAndNormalize(subject, context);
+        List<Intent> intents = subject.getRequiredIntents();
+        int size = intents.size();
+        for (int i = 0; i < size; i++) {
+            for (int j = i + 1; j < size; j++) {
+                Intent i1 = intents.get(i);
+                Intent i2 = intents.get(j);
                 if (i1 != i2 && i1.getExcludedIntents().contains(i2) || i2.getExcludedIntents().contains(i1)) {
                     error(context.getMonitor(), "MutuallyExclusiveIntents", subject, i1, i2);
                     return true;
@@ -224,8 +227,8 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
         return null;
     }
 
-    private void resolveAndNormalize(PolicySubject subject, Definitions definitions, BuilderContext context) {
-
+    private void resolveAndNormalize(PolicySubject subject, BuilderContext context) {
+        Definitions definitions = context.getDefinitions();
         Set<Intent> intents = new HashSet<Intent>();
         if (definitions != null) {
             for (Intent i : subject.getRequiredIntents()) {
@@ -314,34 +317,47 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
 
     }
 
-    protected void computePolicies(Composite composite, Definitions definitions, BuilderContext context) {
-        checkMutualExclusion(composite, context);
-        
-        // compute policies recursively
-        for (Component component : composite.getComponents()) {
-            Implementation implementation = component.getImplementation();
-            if (implementation instanceof Composite) {
-                computePolicies((Composite)implementation, definitions, context);
+    protected void computePolicies(Composite composite, BuilderContext context) {
+        resolveAndCheck(composite, context);
+
+        for (Service service : composite.getServices()) {
+            CompositeService compositeService = (CompositeService)service;
+            checkMutualExclusion(compositeService, compositeService.getPromotedService(), context);
+        }
+
+        for (Reference reference : composite.getReferences()) {
+            CompositeReference compositeReference = (CompositeReference)reference;
+            for (Reference promoted : compositeReference.getPromotedReferences()) {
+                checkMutualExclusion(compositeReference, promoted, context);
             }
         }
 
+        // compute policies recursively
         for (Component component : composite.getComponents()) {
-            checkMutualExclusion(component, context);
-            checkMutualExclusion(component.getImplementation(), context);
-            
+            Implementation implementation = component.getImplementation();
+            resolveAndCheck(component, context);
+
             // Check component against implementation
             checkMutualExclusion(component, component.getImplementation(), context);
 
             for (ComponentService componentService : component.getServices()) {
-                checkMutualExclusion(componentService, context);
-                checkMutualExclusion(componentService.getService(), context);
+                resolveAndCheck(componentService, context);
+                resolveAndCheck(componentService.getService(), context);
 
                 // Check component/service against componentType/service 
                 checkMutualExclusion(componentService, componentService.getService(), context);
 
                 if (componentService.getInterfaceContract() != null && componentService.getService() != null) {
+                    resolveAndCheck(componentService.getInterfaceContract().getInterface(), context);
+                    resolveAndCheck(componentService.getService().getInterfaceContract().getInterface(), context);
+
                     checkMutualExclusion(componentService.getInterfaceContract().getInterface(), componentService
                         .getService().getInterfaceContract().getInterface(), context);
+
+                    resolveAndCheck(componentService.getInterfaceContract().getCallbackInterface(), context);
+                    resolveAndCheck(componentService.getService().getInterfaceContract().getCallbackInterface(),
+                                    context);
+
                     checkMutualExclusion(componentService.getInterfaceContract().getCallbackInterface(),
                                          componentService.getService().getInterfaceContract().getCallbackInterface(),
                                          context);
@@ -361,7 +377,7 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
                     // Find the corresponding binding in the componentType and inherit the intents/policySets
                     if (componentService.getService() != null) {
                         for (Binding binding : componentService.getService().getBindings()) {
-                            checkMutualExclusion((PolicySubject) binding, context);
+                            resolveAndCheck((PolicySubject)binding, context);
                             if (isEqual(ep.getBinding().getName(), binding.getName()) && (binding instanceof PolicySubject)) {
                                 checkMutualExclusion((PolicySubject)ep.getBinding(), (PolicySubject)binding, context);
                                 // Inherit from componentType.service.binding
@@ -379,20 +395,28 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
                     // Remove the intents whose @contraints do not include the current element
                     // Replace unqualified intents if there is a qualified intent in the list
                     // Replace qualifiable intents with the default qualied intent
-                    resolveAndNormalize(ep, definitions, context);
+                    resolveAndNormalize(ep, context);
                 }
             }
 
             for (ComponentReference componentReference : component.getReferences()) {
-                checkMutualExclusion(componentReference, context);
-                checkMutualExclusion(componentReference.getReference(), context);
+                resolveAndCheck(componentReference, context);
+                resolveAndCheck(componentReference.getReference(), context);
 
                 // Check component/reference against componentType/reference
                 checkMutualExclusion(componentReference, componentReference.getReference(), context);
 
                 if (componentReference.getInterfaceContract() != null && componentReference.getReference() != null) {
+                    resolveAndCheck(componentReference.getInterfaceContract().getInterface(), context);
+                    resolveAndCheck(componentReference.getReference().getInterfaceContract().getInterface(), context);
+
                     checkMutualExclusion(componentReference.getInterfaceContract().getInterface(), componentReference
                         .getReference().getInterfaceContract().getInterface(), context);
+
+                    resolveAndCheck(componentReference.getInterfaceContract().getCallbackInterface(), context);
+                    resolveAndCheck(componentReference.getReference().getInterfaceContract().getCallbackInterface(),
+                                    context);
+
                     checkMutualExclusion(componentReference.getInterfaceContract().getCallbackInterface(),
                                          componentReference.getReference().getInterfaceContract()
                                              .getCallbackInterface(),
@@ -416,7 +440,7 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
                         for (Binding binding : componentReference.getReference().getBindings()) {
                             if (epr.getBinding() != null && isEqual(epr.getBinding().getName(), binding.getName())
                                 && (binding instanceof PolicySubject)) {
-                                checkMutualExclusion((PolicySubject) binding, context);
+                                resolveAndCheck((PolicySubject)binding, context);
                                 checkMutualExclusion((PolicySubject)epr.getBinding(), (PolicySubject)binding, context);
                                 // Inherit from componentType.reference.binding
                                 inherit(epr, binding);
@@ -432,18 +456,23 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
                     // Remove the intents whose @contraints do not include the current element
                     // Replace unqualified intents if there is a qualified intent in the list
                     // Replace qualifiable intents with the default qualied intent
-                    resolveAndNormalize(epr, definitions, context);
+                    resolveAndNormalize(epr, context);
                 }
             }
-
-            Implementation implementation = component.getImplementation();
-            if (implementation != null) {
+            
+            if (implementation instanceof Composite) {
                 inherit(implementation, component, composite);
+                computePolicies((Composite)implementation, context);
+            } else {
+                resolveAndCheck(implementation, context);
+                if (implementation != null) {
+                    inherit(implementation, component, composite);
+                }
             }
-            // How to deal with implementation level policySets/intents
         }
+
     }
-    
+
     private Set<QName> getPolicyNames(PolicySubject subject) {
         if (subject == null) {
             return Collections.emptySet();
@@ -456,14 +485,14 @@ public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements Compo
         }
         return names;
     }
-    
-    protected void buildPolicies(Composite composite, Definitions definitions, BuilderContext context) {
+
+    protected void buildPolicies(Composite composite, BuilderContext context) {
 
         // compute policies recursively
         for (Component component : composite.getComponents()) {
             Implementation implementation = component.getImplementation();
             if (implementation instanceof Composite) {
-                buildPolicies((Composite)implementation, definitions, context);
+                buildPolicies((Composite)implementation, context);
             }
         }
 
