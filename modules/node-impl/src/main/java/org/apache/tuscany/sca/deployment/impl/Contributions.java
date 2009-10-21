@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.tuscany.sca.node.impl;
+package org.apache.tuscany.sca.deployment.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;

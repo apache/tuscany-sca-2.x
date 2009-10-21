@@ -78,14 +78,12 @@ import org.apache.tuscany.sca.definitions.xml.DefinitionsExtensionPoint;
 import org.apache.tuscany.sca.deployment.Deployer;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
-import org.apache.tuscany.sca.node.impl.Contributions;
-import org.apache.tuscany.sca.node.impl.NodeImpl;
 
 /**
  * 
  */
 public class DeployerImpl implements Deployer {
-    protected static final Logger logger = Logger.getLogger(NodeImpl.class.getName());
+    protected static final Logger logger = Logger.getLogger(DeployerImpl.class.getName());
 
     protected boolean inited;
     protected boolean schemaValidationEnabled;
