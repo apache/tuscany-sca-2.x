@@ -29,52 +29,28 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.assembly.Base;
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.assembly.builder.BuilderContext;
-import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
-import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.common.java.io.IOHelper;
-import org.apache.tuscany.sca.common.xml.stax.StAXHelper;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
-import org.apache.tuscany.sca.contribution.ContributionFactory;
-import org.apache.tuscany.sca.contribution.DefaultImport;
-import org.apache.tuscany.sca.contribution.Export;
-import org.apache.tuscany.sca.contribution.Import;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
-import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
-import org.apache.tuscany.sca.contribution.processor.ExtendedURLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
-import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
-import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
-import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ValidationSchemaExtensionPoint;
-import org.apache.tuscany.sca.contribution.resolver.DefaultImportModelResolver;
-import org.apache.tuscany.sca.contribution.resolver.ExtensibleModelResolver;
-import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
-import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
@@ -84,12 +60,8 @@ import org.apache.tuscany.sca.core.assembly.RuntimeAssemblyFactory;
 import org.apache.tuscany.sca.core.invocation.ExtensibleProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactoryExtensionPoint;
-import org.apache.tuscany.sca.definitions.Definitions;
-import org.apache.tuscany.sca.definitions.DefinitionsFactory;
-import org.apache.tuscany.sca.definitions.util.DefinitionsUtil;
-import org.apache.tuscany.sca.definitions.xml.DefinitionsExtensionPoint;
-import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
-import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
+import org.apache.tuscany.sca.deployment.Deployer;
+import org.apache.tuscany.sca.deployment.impl.DeployerImpl;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.monitor.Problem;
@@ -113,20 +85,9 @@ public class NodeFactoryImpl extends NodeFactory {
     protected boolean inited;
     protected Map<Object, Node> nodes = new ConcurrentHashMap<Object, Node>();
 
-    private AssemblyFactory assemblyFactory;
-    private CompositeBuilder compositeBuilder;
-    private StAXArtifactProcessor<Composite> compositeProcessor;
-    private ContributionFactory contributionFactory;
-    private ExtendedURLArtifactProcessor<Contribution> contributionProcessor;
-    protected ExtensionPointRegistry extensionPoints;
-    private XMLInputFactory inputFactory;
-    protected FactoryExtensionPoint modelFactories;
-    private ModelResolverExtensionPoint modelResolvers;
+    protected Deployer deployer;
+    protected ExtensionPointRegistry registry;
     protected ProxyFactory proxyFactory;
-    private Contribution systemContribution;
-    private Definitions systemDefinitions;
-    private StAXArtifactProcessorExtensionPoint xmlProcessors;
-    
     protected MonitorFactory monitorFactory;
 
 
@@ -153,33 +114,13 @@ public class NodeFactoryImpl extends NodeFactory {
         nodes.put(getNodeKey(configuration), node);
     }
 
-    /**
-     * @param <T>
-     * @param factory
-     * @return
-     * @throws Exception
-     */
-    private <T> T getFactory(Class<T> factory) throws Exception {
-        ServiceDeclaration sd = ServiceDiscovery.getInstance().getServiceDeclaration(factory.getName());
-        if (sd != null) {
-            return factory.cast(sd.loadClass().newInstance());
-        } else {
-            return factory.cast(factory.getMethod("newInstance").invoke(null));
-        }
-    }
-
     @Override
     public NodeConfiguration loadConfiguration(InputStream xml, URL base) {
         try {
             init();
-            StAXHelper helper = StAXHelper.getInstance(extensionPoints);
-            XMLStreamReader reader = helper.createXMLStreamReader(xml);
-            StAXArtifactProcessorExtensionPoint processors =
-                extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-            StAXArtifactProcessor processor = processors.getProcessor(NodeConfiguration.class);
-            reader.nextTag();
-            NodeConfiguration config = (NodeConfiguration)processor.read(reader, new ProcessorContext(extensionPoints));
-            xml.close();
+            InputStreamReader reader = new InputStreamReader(xml, "UTF-8");
+            ProcessorContext context = deployer.createProcessorContext();
+            NodeConfiguration config = deployer.loadXMLDocument(reader, context.getMonitor());
             if (base != null && config != null) {
                 // Resolve the contribution location against the node.xml
                 for (ContributionConfiguration c : config.getContributions()) {
@@ -197,20 +138,6 @@ public class NodeFactoryImpl extends NodeFactory {
         }
     }
     
-    private File toFile(URL url) {
-        if("file".equalsIgnoreCase(url.getProtocol())) {
-            try {
-                return new File(url.toURI());
-            } catch(URISyntaxException e) {
-                return new File(url.getPath());
-            } catch(IllegalArgumentException e) {
-                // Hack for file:./a.txt or file:../a/c.wsdl
-                return new File(url.getPath());
-            }
-        }
-        return null;
-    }
-
     public Map<Object, Node> getNodes() {
         return nodes;
     }
@@ -226,78 +153,9 @@ public class NodeFactoryImpl extends NodeFactory {
                 node.destroy();
             }
             nodes.clear();
-            extensionPoints.stop();
+            deployer.stop();
+            registry.stop();
             inited = false;
-        }
-    }
-
-    protected static String getSystemProperty(final String name) {
-        return AccessController.doPrivileged(new PrivilegedAction<String>() {
-            public String run() {
-                return System.getProperty(name);
-            }
-        });
-    }
-
-    private static void warning(Monitor monitor, String message, Object model, Object... messageParameters) {
-        if (monitor != null) {
-            Problem problem = monitor.createProblem(NodeImpl.class.getName(), "node-impl-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
-            monitor.problem(problem);
-        }
-    }
-
-    /**
-     * Analyze a contribution and add its dependencies to the given dependency set.
-     */
-    private void addContributionDependencies(Contribution contribution, List<Contribution> contributions, List<Contribution> dependencies, Set<Contribution> set, Monitor monitor) {
-
-        // Go through the contribution imports
-        for (Import import_: contribution.getImports()) {
-            boolean resolved = false;
-
-            // Go through all contribution candidates and their exports
-            List<Export> matchingExports = new ArrayList<Export>();
-            for (Contribution dependency: contributions) {
-                if (dependency == contribution) {
-                    // Do not self import
-                    continue;
-                }
-                for (Export export: dependency.getExports()) {
-
-                    // If an export from a contribution matches the import in hand
-                    // add that contribution to the dependency set
-                    if (import_.match(export)) {
-                        resolved = true;
-                        matchingExports.add(export);
-
-                        if (!set.contains(dependency)) {
-                            set.add(dependency);
-                            dependencies.add(dependency);
-
-                            // Now add the dependencies of that contribution
-                            addContributionDependencies(dependency, contributions, dependencies, set, monitor);
-                        } // end if
-                    } // end if 
-                } // end for
-            } // end for
-
-            if (resolved) {
-                // Initialize the import's model resolver with a delegating model
-                // resolver which will delegate to the matching exports
-                import_.setModelResolver(new DefaultImportModelResolver(matchingExports));
-
-            } else {
-                // Record import resolution issue
-                if (!(import_ instanceof DefaultImport)) {
-                	// Add the (empty) matchingExports List and report a warning
-                	import_.setModelResolver(new DefaultImportModelResolver(matchingExports));
-                	Monitor.error(monitor, 
-                	              this, 
-                	              "node-impl-validation-messages", 
-                	              "UnresolvedImport", 
-                	              import_);
-                }
-            } // end if
         }
     }
 
@@ -325,78 +183,21 @@ public class NodeFactoryImpl extends NodeFactory {
 
     private boolean attachDeploymentComposite(Contribution contribution, Reader xml, String location, boolean attached, ProcessorContext context)
         throws XMLStreamException, ContributionReadException {
-        XMLStreamReader reader = inputFactory.createXMLStreamReader(xml);
-        reader.nextTag();
 
         // Read the composite model
-        Composite composite = (Composite)compositeProcessor.read(reader, context);
-        reader.close();
-
-        // Create an artifact for the deployment composite
-        Artifact artifact = contributionFactory.createArtifact();
-        String uri = composite.getName().getLocalPart() + ".composite";
-        artifact.setURI(uri);
-        // Set the location to avoid NPE
-        if (location == null) {
-            location = uri;
-        }
-        artifact.setLocation(location);
-        artifact.setModel(composite);
-        artifact.setUnresolved(false);
-        // Add it to the contribution
-        contribution.getArtifacts().add(artifact);
+        Composite composite = deployer.loadXMLDocument(xml, context.getMonitor());
 
         // Replace the deployable composites with the deployment composites
         // Clear the deployable composites if it's the first deployment composite
+        deployer.attachDeploymentComposite(contribution, composite, attached);
         if (!attached) {
-            contribution.getDeployables().clear();
             attached = true;
-        }
-        contribution.getDeployables().add(composite);
-
+        } 
         return attached;
     }
 
-    private void buildDependencies(Contribution contribution, List<Contribution> contributions, Monitor monitor) {
-        contribution.getDependencies().clear();
-
-        List<Contribution> dependencies = new ArrayList<Contribution>();
-        Set<Contribution> set = new HashSet<Contribution>();
-
-        dependencies.add(contribution);
-        set.add(contribution);
-        addContributionDependencies(contribution, contributions, dependencies, set, monitor);
-
-        Collections.reverse(dependencies);
-
-        contribution.getDependencies().addAll(dependencies);
-    }
-
-    /**
-     * Pre-resolve phase for contributions, to set up handling of imports and exports prior to full resolution
-     * @param contributions - the contributions to preresolve
-     * @param resolver - the ModelResolver to use
-     * @throws ContributionResolveException
-     */
-    private void contributionsPreresolve( List<Contribution> contributions, ModelResolver resolver, ProcessorContext context)
-        throws ContributionResolveException {
-
-        for( Contribution contribution : contributions ) {
-                contributionProcessor.preResolve(contribution, resolver, context);
-        } // end for
-    } // end method contributionsPreresolve
-
     public ExtensionPointRegistry getExtensionPoints() {
-        return extensionPoints;
-    }
-
-    protected boolean isSchemaValidationEnabled() {
-        String enabled = getSystemProperty(ValidationSchemaExtensionPoint.class.getName() + ".enabled");
-        if (enabled == null) {
-            enabled = "true";
-        }
-        boolean debug = logger.isLoggable(Level.FINE);
-        return "true".equals(enabled) || debug;
+        return registry;
     }
 
     public synchronized void init() {
@@ -406,92 +207,36 @@ public class NodeFactoryImpl extends NodeFactory {
         long start = currentTimeMillis();
 
         // Create extension point registry
-        extensionPoints = createExtensionPointRegistry();
-        extensionPoints.start();
-
-        // Enable schema validation only of the logger level is FINE or higher
-        if (isSchemaValidationEnabled()) {
-            ValidationSchemaExtensionPoint schemas =
-                extensionPoints.getExtensionPoint(ValidationSchemaExtensionPoint.class);
-            if (schemas != null) {
-                schemas.setEnabled(true);
-            }
-        }
-
+        registry = createExtensionPointRegistry();
+        registry.start();
+        
         // Use the runtime-enabled assembly factory
-        modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
-        assemblyFactory = new RuntimeAssemblyFactory(extensionPoints);
+        FactoryExtensionPoint modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
+        AssemblyFactory assemblyFactory = new RuntimeAssemblyFactory(registry);
         modelFactories.addFactory(assemblyFactory);
 
+        deployer = new DeployerImpl(registry);
+
+        // Enable schema validation only of the logger level is FINE or higher
+        deployer.setSchemaValidationEnabled(isSchemaValidationEnabled());
+        deployer.start();
+
         // Create a monitor
-        UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
+        UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
 
         monitorFactory = utilities.getUtility(MonitorFactory.class);
 
         // Initialize the Tuscany module activators
         // The module activators will be started
-        extensionPoints.getExtensionPoint(ModuleActivatorExtensionPoint.class);
-
-        // Get XML input/output factories
-        inputFactory = modelFactories.getFactory(XMLInputFactory.class);
-
-        // Get contribution workspace and assembly model factories
-        contributionFactory = modelFactories.getFactory(ContributionFactory.class);
-
-        // Create XML artifact processors
-        xmlProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        compositeProcessor = xmlProcessors.getProcessor(Composite.class);
-
-        // Create contribution content processor
-        URLArtifactProcessorExtensionPoint docProcessorExtensions = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
-        contributionProcessor = (ExtendedURLArtifactProcessor<Contribution>) docProcessorExtensions.getProcessor(Contribution.class);
-
-        // Get the model resolvers
-        modelResolvers = extensionPoints.getExtensionPoint(ModelResolverExtensionPoint.class);
-
-        // Get composite builders
-        BuilderExtensionPoint compositeBuilders = extensionPoints.getExtensionPoint(BuilderExtensionPoint.class);
-        compositeBuilder = compositeBuilders.getCompositeBuilder("org.apache.tuscany.sca.assembly.builder.CompositeBuilder");
+        registry.getExtensionPoint(ModuleActivatorExtensionPoint.class);
 
         // Initialize runtime
 
         // Get proxy factory
-        ProxyFactoryExtensionPoint proxyFactories = extensionPoints.getExtensionPoint(ProxyFactoryExtensionPoint.class);
+        ProxyFactoryExtensionPoint proxyFactories = registry.getExtensionPoint(ProxyFactoryExtensionPoint.class);
         proxyFactory = new ExtensibleProxyFactory(proxyFactories);
 
         utilities.getUtility(WorkScheduler.class);
-
-        DefinitionsFactory definitionsFactory = modelFactories.getFactory(DefinitionsFactory.class);
-        systemDefinitions = definitionsFactory.createDefinitions();
-
-        DefinitionsExtensionPoint definitionsExtensionPoint = extensionPoints.getExtensionPoint(DefinitionsExtensionPoint.class);
-        Monitor monitor = monitorFactory.createMonitor();
-        monitor.pushContext("Extension points definitions");
-        try {
-            for (Definitions defs : definitionsExtensionPoint.getDefinitions()) {
-                DefinitionsUtil.aggregate(defs, systemDefinitions, monitor);
-            }
-        } finally {
-            monitor.popContext();
-        }
-
-        // create a system contribution to hold the definitions. The contribution
-        // will be extended later with definitions from application contributions
-        systemContribution = contributionFactory.createContribution();
-        systemContribution.setURI("http://tuscany.apache.org/SystemContribution");
-        systemContribution.setLocation("http://tuscany.apache.org/SystemContribution");
-        ModelResolver modelResolver = new ExtensibleModelResolver(systemContribution, modelResolvers, modelFactories);
-        systemContribution.setModelResolver(modelResolver);
-        systemContribution.setUnresolved(true);
-
-        // create an artifact to represent the system defintions and
-        // add it to the contribution
-        List<Artifact> artifacts = systemContribution.getArtifacts();
-        Artifact artifact = contributionFactory.createArtifact();
-        artifact.setURI("http://tuscany.apache.org/SystemContribution/Definitions");
-        artifact.setLocation("Derived");
-        artifact.setModel(systemDefinitions);
-        artifacts.add(artifact);
 
         inited = true;
 
@@ -504,6 +249,15 @@ public class NodeFactoryImpl extends NodeFactory {
     protected ExtensionPointRegistry createExtensionPointRegistry() {
         return new DefaultExtensionPointRegistry();
     }
+    
+    protected boolean isSchemaValidationEnabled() {
+        String enabled = getSystemProperty(ValidationSchemaExtensionPoint.class.getName() + ".enabled");
+        if (enabled == null) {
+            enabled = "true";
+        }
+        boolean debug = logger.isLoggable(Level.FINE);
+        return "true".equals(enabled) || debug;
+    }    
 
     protected Composite configureNode(NodeConfiguration configuration, List<Contribution> contributions, ProcessorContext context)
         throws Throwable {
@@ -511,87 +265,13 @@ public class NodeFactoryImpl extends NodeFactory {
             // Load contributions
             contributions = loadContributions(configuration, context);
         }
-        // Build an aggregated SCA definitions model. Must be done before we try and
-        // resolve any contributions or composites as they may depend on the full
-        // definitions.xml picture
-
-        // get all definitions.xml artifacts from contributions and aggregate
-        // into the system contribution. In turn add a default import into
-        // each contribution so that for unresolved items the resolution
-        // processing will look in the system contribution
+        
         Monitor monitor = context.getMonitor();
-        for (Contribution contribution: contributions) {
-            monitor.pushContext("Contribution: " + contribution.getURI());
-            // aggregate definitions
-            for (Artifact artifact : contribution.getArtifacts()) {
-                Object model = artifact.getModel();
-                // FIXME: Should we check the artifact URI is META-INF/definitions.xml?
-                if (model instanceof Definitions) {
-                    monitor.pushContext("Definitions: " + artifact.getLocation());
-                    DefinitionsUtil.aggregate((Definitions)model, systemDefinitions, monitor);
-                    monitor.popContext();
-                }
-            }
-
-            // create a default import and wire it up to the system contribution
-            // model resolver. This is the trick that makes the resolution processing
-            // skip over to the system contribution if resolution is unsuccessful
-            // in the current contribution
-            DefaultImport defaultImport = contributionFactory.createDefaultImport();
-            defaultImport.setModelResolver(systemContribution.getModelResolver());
-            contribution.getImports().add(defaultImport);
-            monitor.popContext();
-        }
-
-        ExtensibleModelResolver modelResolver = new ExtensibleModelResolver(new Contributions(contributions), modelResolvers, modelFactories);
-
-        // now resolve and add the system contribution
-        contributionProcessor.resolve(systemContribution, modelResolver, context);
-        contributions.add(systemContribution);
-
-        // TODO - Now we can calculate applicable policy sets for each composite
-
-        // pre-resolve the contributions
-        contributionsPreresolve(contributions, modelResolver, context);
-
-        // Build the contribution dependencies
-        Set<Contribution> resolved = new HashSet<Contribution>();
-        for (Contribution contribution: contributions) {
-            buildDependencies(contribution, contributions, monitor);
-
-            // Resolve contributions
-            for (Contribution dependency: contribution.getDependencies()) {
-                if (!resolved.contains(dependency)) {
-                    resolved.add(dependency);
-                    contributionProcessor.resolve(dependency, modelResolver, context);
-                }
-            }
-        }
-
-        // Create a top level composite to host our composite
-        // This is temporary to make the activator happy
-        Composite domainComposite = assemblyFactory.createComposite();
-        domainComposite.setName(Composite.DOMAIN_COMPOSITE);
-        domainComposite.setURI(Base.SCA11_NS);
-
-        for (Contribution contribution : contributions) {
-            for (Composite composite : contribution.getDeployables()) {
-                // Include the node composite in the top-level composite
-                domainComposite.getIncludes().add(composite);
-                logger.log(Level.INFO, "Adding composite: " + composite.getName() + " to domain " + getDomainURI());
-            }
-        }
-
-        // TODO - EPR - create a binding map to pass down into the builders
-        //              for use during URI calculation.
-        Map<QName, List<String>> bindingMap = new HashMap<QName, List<String>>();
+        Map<QName, List<String>> bindingBaseURIs = new HashMap<QName, List<String>>();
         for (BindingConfiguration config : configuration.getBindings()) {
-            bindingMap.put(config.getBindingType(), config.getBaseURIs());
+            bindingBaseURIs.put(config.getBindingType(), config.getBaseURIs());
         }
-
-        // build the top level composite
-        BuilderContext builderContext = new BuilderContext(systemDefinitions, bindingMap, monitor);
-        compositeBuilder.build(domainComposite, builderContext);
+        Composite domainComposite = deployer.build(contributions, bindingBaseURIs, monitor);
         analyzeProblems(monitor);
 
         return domainComposite;
@@ -612,7 +292,7 @@ public class NodeFactoryImpl extends NodeFactory {
 
             // Load the contribution
             logger.log(Level.INFO, "Loading contribution: " + contributionURL);
-            Contribution contribution = contributionProcessor.read(null, contributionURI, contributionURL, context);
+            Contribution contribution = deployer.loadContribution(contributionURI, contributionURL, context.getMonitor());
             contributions.add(contribution);
 
             boolean attached = false;
@@ -653,6 +333,14 @@ public class NodeFactoryImpl extends NodeFactory {
             analyzeProblems(context.getMonitor());
         }
         return contributions;
+    }
+
+    protected static String getSystemProperty(final String name) {
+        return AccessController.doPrivileged(new PrivilegedAction<String>() {
+            public String run() {
+                return System.getProperty(name);
+            }
+        });
     }
 
     protected static class NodeKey {

@@ -114,7 +114,7 @@ public class NodeImpl implements Node, Client {
         manager.init();
         manager.addNode(configuration, this);
         this.proxyFactory = manager.proxyFactory;
-        UtilityExtensionPoint utilities = manager.extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
+        UtilityExtensionPoint utilities = manager.registry.getExtensionPoint(UtilityExtensionPoint.class);
         
         DomainRegistryFactory domainRegistryFactory = utilities.getUtility(DomainRegistryFactory.class);
         EndpointRegistry endpointRegistry =
@@ -135,7 +135,7 @@ public class NodeImpl implements Node, Client {
                 domainComposite = manager.configureNode(configuration, contributions, context);
 
                 this.compositeContext =
-                    new CompositeContextImpl(manager.extensionPoints, endpointRegistry, domainComposite);
+                    new CompositeContextImpl(manager.registry, endpointRegistry, domainComposite);
             } finally {
                 // Reset the thread context monitor
                 manager.monitorFactory.setContextMonitor(tcm);
@@ -207,7 +207,7 @@ public class NodeImpl implements Node, Client {
             } // end if
 
             manager.removeNode(configuration);
-            manager.extensionPoints.getExtensionPoint(UtilityExtensionPoint.class).removeUtility(compositeActivator);
+            manager.registry.getExtensionPoint(UtilityExtensionPoint.class).removeUtility(compositeActivator);
             this.compositeActivator = null;
             this.proxyFactory = null;
             this.domainComposite = null;
@@ -343,7 +343,7 @@ public class NodeImpl implements Node, Client {
                 .getFactory(XMLOutputFactory.class);
         
         try {
-            compositeProcessor.write(composite, outputFactory.createXMLStreamWriter(bos), new ProcessorContext(manager.extensionPoints));
+            compositeProcessor.write(composite, outputFactory.createXMLStreamWriter(bos), new ProcessorContext(manager.registry));
         } catch(Exception ex) {
             return ex.toString();
         }

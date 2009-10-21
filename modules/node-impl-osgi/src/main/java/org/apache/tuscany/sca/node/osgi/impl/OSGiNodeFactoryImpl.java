@@ -26,6 +26,7 @@ import java.util.Hashtable;
 import java.util.logging.Level;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.extensibility.equinox.OSGiExtensionPointRegistry;
 import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
 import org.apache.tuscany.sca.node.configuration.NodeConfigurationFactory;
@@ -56,6 +57,7 @@ public class OSGiNodeFactoryImpl extends NodeFactoryImpl {
         init();
 
         // Create a node configuration
+        FactoryExtensionPoint modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
         NodeConfigurationFactory configurationFactory = modelFactories.getFactory(NodeConfigurationFactory.class);
         NodeConfiguration configuration = configurationFactory.createNodeConfiguration();
 
@@ -86,7 +88,7 @@ public class OSGiNodeFactoryImpl extends NodeFactoryImpl {
             // Register the ExtensionPointRegistry as an OSGi service
             Dictionary<Object, Object> props = new Hashtable<Object, Object>();
             registration =
-                bundleContext.registerService(ExtensionPointRegistry.class.getName(), extensionPoints, props);
+                bundleContext.registerService(ExtensionPointRegistry.class.getName(), registry, props);
         }
     }
 
