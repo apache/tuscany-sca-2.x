@@ -93,8 +93,6 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
         this.inputFactory = factoryExtensionPoint.getFactory(XMLInputFactory.class);
         this.documentBuilderFactory = factoryExtensionPoint.getFactory(DocumentBuilderFactory.class);
         this.schemas = registry.getExtensionPoint(ValidationSchemaExtensionPoint.class);
-        this.monitor =
-            registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(MonitorFactory.class).createMonitor();
         this.helper = StAXHelper.getInstance(registry);
     }
 
@@ -107,6 +105,11 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
     public DefaultValidatingXMLInputFactory(XMLInputFactory inputFactory, ValidationSchemaExtensionPoint schemas, Monitor monitor) {
         this.inputFactory = inputFactory;
         this.schemas = schemas;
+        this.monitor = monitor;
+    }
+    
+    @Override
+    public void setMonitor(Monitor monitor) {
         this.monitor = monitor;
     }
 

@@ -21,10 +21,21 @@ package org.apache.tuscany.sca.contribution.processor;
 
 import javax.xml.stream.XMLInputFactory;
 
+import org.apache.tuscany.sca.monitor.Monitor;
+
 /**
  * Base marker class for validating XML input factories.
  *
  * @version $Rev$ $Date$
  */
 public abstract class ValidatingXMLInputFactory extends XMLInputFactory {
+    
+    /**
+     * Allows the monitor to be set in lieu of the context being passed
+     * into the create methods. The base definitions of the create methods 
+     * don't allow for this. 
+     * 
+     * @param monitor the current monitor object
+     */
+    public abstract void setMonitor(Monitor monitor);
 }

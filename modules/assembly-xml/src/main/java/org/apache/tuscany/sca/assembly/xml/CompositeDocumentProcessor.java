@@ -46,7 +46,7 @@ import org.apache.tuscany.sca.monitor.Monitor;
  * @version $Rev$ $Date$
  */
 public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements URLArtifactProcessor<Composite> {
-    private XMLInputFactory inputFactory;
+    private ValidatingXMLInputFactory inputFactory;
     
 
     /**
@@ -93,6 +93,11 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
             if( monitor != null ) {
             	monitor.setArtifactName(uri.toString());
             } //end if
+            
+            // set the monitor on the input factory as the standard XMLInputFactory
+            // methods used for creating readers don't allow for the context to
+            // be passed in
+            inputFactory.setMonitor(context.getMonitor());
             
             XMLStreamReader reader = inputFactory.createXMLStreamReader(scdlStream);
             
