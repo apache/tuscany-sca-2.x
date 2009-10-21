@@ -77,6 +77,8 @@ public class ContributionMetadataDocumentProcessor implements URLArtifactProcess
             // Create a stream reader
             urlStream = IOHelper.openStream(url);
             XMLStreamReader reader = inputFactory.createXMLStreamReader(url.toString(), urlStream);
+            ValidatingXMLInputFactory.setMonitor(reader, context.getMonitor());
+
             reader.nextTag();
 
             // Read the contribution model

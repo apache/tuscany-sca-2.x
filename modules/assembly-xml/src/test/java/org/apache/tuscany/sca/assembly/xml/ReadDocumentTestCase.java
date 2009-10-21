@@ -47,6 +47,7 @@ import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.DefaultFactoryExtensionPoint;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.xml.sax.InputSource;
@@ -129,7 +130,7 @@ public class ReadDocumentTestCase {
 
         ValidationSchemaExtensionPoint schemas = new DefaultValidationSchemaExtensionPoint();
         schemas.addSchema(getClass().getClassLoader().getResource(TUSCANY_11_XSD).toString());
-        XMLInputFactory validatingInputFactory = new DefaultValidatingXMLInputFactory(inputFactory, schemas, null);
+        XMLInputFactory validatingInputFactory = new DefaultValidatingXMLInputFactory(inputFactory, schemas);
         DefaultFactoryExtensionPoint factories = new DefaultFactoryExtensionPoint(new DefaultExtensionPointRegistry());
         factories.addFactory(validatingInputFactory);
 
@@ -155,10 +156,11 @@ public class ReadDocumentTestCase {
     @Test
     public void testReadBinding() throws Exception {
 
+        ExtensionPointRegistry registry = new DefaultExtensionPointRegistry();
         ValidationSchemaExtensionPoint schemas = new DefaultValidationSchemaExtensionPoint();
         schemas.addSchema(getClass().getClassLoader().getResource(TUSCANY_11_XSD).toString());
-        XMLInputFactory validatingInputFactory = new DefaultValidatingXMLInputFactory(inputFactory, schemas, null);
-        DefaultFactoryExtensionPoint factories = new DefaultFactoryExtensionPoint(new DefaultExtensionPointRegistry());
+        XMLInputFactory validatingInputFactory = new DefaultValidatingXMLInputFactory(inputFactory, schemas);
+        DefaultFactoryExtensionPoint factories = new DefaultFactoryExtensionPoint(registry);
         factories.addFactory(validatingInputFactory);
         CompositeDocumentProcessor compositeDocumentProcessor =
             new CompositeDocumentProcessor(factories, staxProcessor);

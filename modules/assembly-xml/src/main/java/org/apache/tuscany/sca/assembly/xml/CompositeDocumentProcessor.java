@@ -24,7 +24,6 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 
-import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -94,12 +93,11 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
             	monitor.setArtifactName(uri.toString());
             } //end if
             
+            XMLStreamReader reader = inputFactory.createXMLStreamReader(scdlStream);
             // set the monitor on the input factory as the standard XMLInputFactory
             // methods used for creating readers don't allow for the context to
             // be passed in
-            inputFactory.setMonitor(context.getMonitor());
-            
-            XMLStreamReader reader = inputFactory.createXMLStreamReader(scdlStream);
+            ValidatingXMLInputFactory.setMonitor(reader, context.getMonitor());
             
             reader.nextTag();
             

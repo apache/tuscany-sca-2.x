@@ -124,16 +124,22 @@ public class NodeImpl implements Node, Client {
         this.compositeActivator = utilities.getUtility(CompositeActivator.class);
         try {
             Monitor monitor = manager.monitorFactory.createMonitor();
-            monitor.reset();
-            
             ProcessorContext context = new ProcessorContext(monitor);
             
-            if (contributions == null) {
-                contributions = manager.loadContributions(configuration, context);
+            // Set up the thead context monitor
+            Monitor tcm = manager.monitorFactory.setContextMonitor(monitor);
+            try {
+                if (contributions == null) {
+                    contributions = manager.loadContributions(configuration, context);
+                }
+                domainComposite = manager.configureNode(configuration, contributions, context);
+
+                this.compositeContext =
+                    new CompositeContextImpl(manager.extensionPoints, endpointRegistry, domainComposite);
+            } finally {
+                // Reset the thread context monitor
+                manager.monitorFactory.setContextMonitor(tcm);
             }
-            domainComposite = manager.configureNode(configuration, contributions, context);
-            
-            this.compositeContext = new CompositeContextImpl(manager.extensionPoints, endpointRegistry, domainComposite);
             
             // Activate the composite
             compositeActivator.activate(compositeContext, domainComposite);

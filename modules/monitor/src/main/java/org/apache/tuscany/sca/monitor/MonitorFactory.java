@@ -48,12 +48,14 @@ public interface MonitorFactory {
 
     /**
      * Remove the monitor on the thread
+     * @return The existing instance
      */
-    void removeContextMonitor();
+    Monitor removeContextMonitor();
 
     /**
      * Set the monitor onto the thread
-     * @param value
+     * @param value The new instance
+     * @return The old instance
      */
-    void setContextMonitor(Monitor monitor);
+    Monitor setContextMonitor(Monitor monitor);
 }

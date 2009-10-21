@@ -51,7 +51,8 @@ class ValidatingXMLStreamReader extends StreamReaderDelegate implements XMLStrea
     private static final Logger logger = Logger.getLogger(ValidatingXMLStreamReader.class.getName());
     
     private ValidatorHandler handler;
-    private final Monitor monitor;
+    private Schema schema;
+    private Monitor monitor;
     
     /**
      * Constructs a new ValidatingXMLStreamReader.
@@ -63,10 +64,16 @@ class ValidatingXMLStreamReader extends StreamReaderDelegate implements XMLStrea
     ValidatingXMLStreamReader(XMLStreamReader reader, Schema schema, Monitor monitor) throws XMLStreamException {
         super(reader);
         this.monitor = monitor;
-        if (schema == null) {
-            return;
+    }
+    
+    void setMonitor(Monitor monitor) {
+        this.monitor = monitor;
+    }
+
+    private synchronized ValidatorHandler getHandler() throws XMLStreamException {
+        if (schema == null || handler!=null) {
+            return handler;
         }
-        
         handler = schema.newValidatorHandler();
         handler.setDocumentLocator(new LocatorAdapter());
         try {
@@ -117,6 +124,7 @@ class ValidatingXMLStreamReader extends StreamReaderDelegate implements XMLStrea
             	return artifactName;
             }
         });
+        return handler;
     }
     
     /**
@@ -149,7 +157,7 @@ class ValidatingXMLStreamReader extends StreamReaderDelegate implements XMLStrea
 
     @Override
     public int next() throws XMLStreamException {
-        if (handler == null) {
+        if (getHandler() == null) {
             return super.next();
         }
 
@@ -197,7 +205,7 @@ class ValidatingXMLStreamReader extends StreamReaderDelegate implements XMLStrea
     
     @Override
     public int nextTag() throws XMLStreamException {
-        if (handler == null) {
+        if (getHandler() == null) {
             return super.nextTag();
         }
         while (true) {
@@ -232,7 +240,7 @@ class ValidatingXMLStreamReader extends StreamReaderDelegate implements XMLStrea
     
     @Override
     public String getElementText() throws XMLStreamException {
-        if (handler == null) {
+        if (getHandler() == null) {
             return super.getElementText();
         }
 

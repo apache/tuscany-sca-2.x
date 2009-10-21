@@ -24,7 +24,6 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 
-import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -46,7 +45,7 @@ import org.apache.tuscany.sca.monitor.Monitor;
  * @version $Rev$ $Date$
  */
 public class ComponentTypeDocumentProcessor extends BaseAssemblyProcessor implements URLArtifactProcessor<ComponentType> {
-    private XMLInputFactory inputFactory;
+    private ValidatingXMLInputFactory inputFactory;
     
     /**
      * Constructs a new componentType processor.
@@ -67,6 +66,7 @@ public class ComponentTypeDocumentProcessor extends BaseAssemblyProcessor implem
             // Create a stream reader
             urlStream = IOHelper.openStream(url);
             XMLStreamReader reader = inputFactory.createXMLStreamReader(url.toString(), urlStream);
+            ValidatingXMLInputFactory.setMonitor(reader, monitor);
             reader.nextTag();
             
             // Reader the componentType model 

@@ -61,8 +61,6 @@ import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
-import org.apache.tuscany.sca.monitor.Problem;
-import org.apache.tuscany.sca.monitor.Problem.Severity;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSInput;
@@ -82,7 +80,7 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
     private DocumentBuilderFactory documentBuilderFactory;
     private DOMImplementationLS ls;
     private ValidationSchemaExtensionPoint schemas;
-    private Monitor monitor;
+    private MonitorFactory monitorFactory;
     private boolean initialized;
     private boolean hasSchemas;
     private Schema aggregatedSchema;
@@ -93,6 +91,8 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
         this.inputFactory = factoryExtensionPoint.getFactory(XMLInputFactory.class);
         this.documentBuilderFactory = factoryExtensionPoint.getFactory(DocumentBuilderFactory.class);
         this.schemas = registry.getExtensionPoint(ValidationSchemaExtensionPoint.class);
+        this.monitorFactory =
+            registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(MonitorFactory.class);
         this.helper = StAXHelper.getInstance(registry);
     }
 
@@ -102,16 +102,11 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
      * @param inputFactory
      * @param schemas
      */
-    public DefaultValidatingXMLInputFactory(XMLInputFactory inputFactory, ValidationSchemaExtensionPoint schemas, Monitor monitor) {
+    public DefaultValidatingXMLInputFactory(XMLInputFactory inputFactory, ValidationSchemaExtensionPoint schemas) {
         this.inputFactory = inputFactory;
         this.schemas = schemas;
-        this.monitor = monitor;
     }
     
-    @Override
-    public void setMonitor(Monitor monitor) {
-        this.monitor = monitor;
-    }
 
     /**
      * Report a exception.
@@ -120,30 +115,12 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
      * @param message
      * @param model
      */
-    private void error(String message, Object model, Throwable ex) {
-        if (monitor != null) {
-            Problem problem =
-                monitor.createProblem(this.getClass().getName(),
-                                      "contribution-validation-messages",
-                                      Severity.ERROR,
-                                      model,
-                                      message,
-                                      ex);
-            monitor.problem(problem);
-        }
+    private void error(Monitor monitor, String message, Object model, Throwable ex) {
+        Monitor.error(monitor, this, "contribution-validation-messages", message, ex);
     }
 
-    private void warn(String message, Object model, Throwable ex) {
-        if (monitor != null) {
-            Problem problem =
-                monitor.createProblem(this.getClass().getName(),
-                                      "contribution-validation-messages",
-                                      Severity.WARNING,
-                                      model,
-                                      message,
-                                      ex);
-            monitor.problem(problem);
-        }
+    private void warn(Monitor monitor, String message, Object model, Throwable ex) {
+        Monitor.warning(monitor, this, "contribution-validation-messages", message, ex);
     }
     
     public static final QName XSD = new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, "schema");
@@ -187,8 +164,9 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
     /**
      * Initialize the registered schemas and create an aggregated schema for
      * validation.
+     * @param monitor TODO
      */
-    private synchronized void initializeSchemas() {
+    private synchronized void initializeSchemas(Monitor monitor) {
         if (initialized) {
             return;
         }
@@ -231,7 +209,7 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
                     }
                 });
             } catch (PrivilegedActionException e) {
-            	warn("PrivilegedActionException", schemaFactory, (SAXException)e.getException());
+            	warn(monitor, "PrivilegedActionException", schemaFactory, (SAXException)e.getException());
             	hasSchemas = false;
                 throw (SAXException)e.getException();
             }
@@ -242,7 +220,7 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
 //            throw ie;
         } catch (Throwable e) {
             //FIXME Log this, some old JDKs don't support XMLSchema validation
-            warn(e.getMessage(), schemas, e);
+            warn(monitor, e.getMessage(), schemas, e);
             hasSchemas = false;
         }
     }
@@ -294,7 +272,8 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
 
     @Override
     public XMLStreamReader createXMLStreamReader(InputStream arg0, String arg1) throws XMLStreamException {
-        initializeSchemas();
+        Monitor monitor = monitorFactory.getContextMonitor();
+        initializeSchemas(monitor);
         if (hasSchemas) {
             return new ValidatingXMLStreamReader(inputFactory.createXMLStreamReader(arg0, arg1), aggregatedSchema, monitor);
         }else {
@@ -304,7 +283,8 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
 
     @Override
     public XMLStreamReader createXMLStreamReader(InputStream arg0) throws XMLStreamException {
-        initializeSchemas();
+        Monitor monitor = monitorFactory.getContextMonitor();
+        initializeSchemas(monitor);
         if (hasSchemas) {
             return new ValidatingXMLStreamReader(inputFactory.createXMLStreamReader(arg0), aggregatedSchema, monitor);
         } else {
@@ -314,7 +294,8 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
 
     @Override
     public XMLStreamReader createXMLStreamReader(Reader arg0) throws XMLStreamException {
-        initializeSchemas();
+        Monitor monitor = monitorFactory.getContextMonitor();
+        initializeSchemas(monitor);
         if (hasSchemas) {
             return new ValidatingXMLStreamReader(inputFactory.createXMLStreamReader(arg0), aggregatedSchema, monitor);
         } else {
@@ -324,7 +305,8 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
 
     @Override
     public XMLStreamReader createXMLStreamReader(Source arg0) throws XMLStreamException {
-        initializeSchemas();
+        Monitor monitor = monitorFactory.getContextMonitor();
+        initializeSchemas(monitor);
         if (hasSchemas) {
             return new ValidatingXMLStreamReader(inputFactory.createXMLStreamReader(arg0), aggregatedSchema, monitor);
         } else {
@@ -334,7 +316,8 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
 
     @Override
     public XMLStreamReader createXMLStreamReader(String arg0, InputStream arg1) throws XMLStreamException {
-        initializeSchemas();
+        Monitor monitor = monitorFactory.getContextMonitor();
+        initializeSchemas(monitor);
         if (hasSchemas) {
             return new ValidatingXMLStreamReader(inputFactory.createXMLStreamReader(arg0, arg1), aggregatedSchema, monitor);
         } else {
@@ -344,7 +327,8 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
 
     @Override
     public XMLStreamReader createXMLStreamReader(String arg0, Reader arg1) throws XMLStreamException {
-        initializeSchemas();
+        Monitor monitor = monitorFactory.getContextMonitor();
+        initializeSchemas(monitor);
         if (hasSchemas) {
             return new ValidatingXMLStreamReader(inputFactory.createXMLStreamReader(arg0, arg1), aggregatedSchema, monitor);
         } else {

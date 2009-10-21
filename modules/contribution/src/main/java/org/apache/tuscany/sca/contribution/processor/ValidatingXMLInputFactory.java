@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.contribution.processor;
 
 import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.monitor.Monitor;
 
@@ -35,7 +36,12 @@ public abstract class ValidatingXMLInputFactory extends XMLInputFactory {
      * into the create methods. The base definitions of the create methods 
      * don't allow for this. 
      * 
+     * @param reader the XMLStreamReader instance
      * @param monitor the current monitor object
      */
-    public abstract void setMonitor(Monitor monitor);
+    public static void setMonitor(XMLStreamReader reader, Monitor monitor) {
+        if (reader instanceof ValidatingXMLStreamReader) {
+            ((ValidatingXMLStreamReader)reader).setMonitor(monitor);
+        }
+    }
 }

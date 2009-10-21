@@ -46,11 +46,15 @@ public class DefaultMonitorFactory implements MonitorFactory {
         return monitor;
     }
 
-    public void removeContextMonitor() {
+    public Monitor removeContextMonitor() {
+        Monitor old = contextMonitor.get();
         contextMonitor.remove();
+        return old;
     }
 
-    public void setContextMonitor(Monitor value) {
+    public Monitor setContextMonitor(Monitor value) {
+        Monitor old = contextMonitor.get();
         contextMonitor.set(value);
+        return old;
     }
 }

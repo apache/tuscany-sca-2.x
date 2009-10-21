@@ -70,6 +70,7 @@ public class ServiceDescriptionsDocumentProcessor implements URLArtifactProcesso
         }
         try {
             XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
+            ValidatingXMLInputFactory.setMonitor(reader, context.getMonitor());
             Object result = extensionProcessor.read(reader, context);
             return (ServiceDescriptions)result;
         } catch (XMLStreamException e) {

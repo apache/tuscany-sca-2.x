@@ -113,7 +113,7 @@ public class DefinitionsDocumentProcessor implements URLArtifactProcessor<Defini
 
             //urlStream = createInputStream(url);
             XMLStreamReader reader = inputFactory.createXMLStreamReader(url.toString(), urlStream);
-
+            ValidatingXMLInputFactory.setMonitor(reader, context.getMonitor());
             Definitions definitions = definitionsFactory.createDefinitions();
             int event = reader.getEventType();
             while (reader.hasNext()) {

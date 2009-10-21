@@ -24,7 +24,6 @@ import static org.junit.Assert.assertNotNull;
 import java.io.ByteArrayOutputStream;
 import java.io.StringReader;
 
-import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamReader;
 
@@ -74,7 +73,7 @@ public class ReadWriteAnyElementTestCase {
         "</composite>";
     
     
-    private XMLInputFactory inputFactory;
+    private ValidatingXMLInputFactory inputFactory;
     private ExtensibleStAXArtifactProcessor staxProcessor;
     private ProcessorContext context;
 
@@ -97,6 +96,7 @@ public class ReadWriteAnyElementTestCase {
     @Test
     public void testReadWriteExtendedRecursiveElement() throws Exception {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(XML_RECURSIVE_EXTENDED_ELEMENT));
+        ValidatingXMLInputFactory.setMonitor(reader, context.getMonitor());
         Composite composite = (Composite)staxProcessor.read(reader, context);
         assertNotNull(composite);
         reader.close();
