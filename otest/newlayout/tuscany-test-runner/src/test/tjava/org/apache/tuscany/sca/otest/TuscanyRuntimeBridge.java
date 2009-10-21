@@ -26,6 +26,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import java.util.StringTokenizer;
 
 import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.ContributionLocationHelper;
@@ -160,6 +161,25 @@ public class TuscanyRuntimeBridge implements RuntimeBridge {
             // allow using * to ignore a message comparison
             return;
         }
+        
+        // Deal with the case where the message has variable parts within it
+        // marked with the characters ***. Here we tokenize the epected string 
+        // and make sure all the individual parts are present in the results string
+        String expectedMessageParts[] = expectedMessage.split("\\*\\*\\*");
+        
+        if (expectedMessageParts.length > 1){
+            int foundParts = 0;
+            for(int i = 0; i < expectedMessageParts.length; i++){
+                if (receivedMessage.indexOf(expectedMessageParts[i]) > -1 ){
+                    foundParts++;
+                }
+            }
+            
+            if (foundParts == expectedMessageParts.length){
+                return;
+            }
+        }
+
         
         // Deal with the case where the end of the message is variable (eg contains absolute filenames) 
         // and where the only relevant part is the start of the message - in this case the expected
