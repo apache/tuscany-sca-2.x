@@ -16,8 +16,7 @@
     * KIND, either express or implied.  See the License for the
     * specific language governing permissions and limitations
     * under the License.    
--->
-<project>
+--><project>
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
@@ -162,4 +161,7 @@
         </profile>
     </profiles>
 
+  <modules>
+    <module>jaxws</module>
+  </modules>
 </project>
