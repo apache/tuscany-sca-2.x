@@ -68,6 +68,8 @@ public interface Deployer extends LifeCycleListener {
     Composite build(List<Contribution> contributions, Map<QName, List<String>> bindingBaseURIs, Monitor monitor)
         throws ContributionResolveException, CompositeBuilderException;
 
+    Monitor createMonitor();
+    
     /**
      * Create an instance of {@link BuilderContext}
      * @return

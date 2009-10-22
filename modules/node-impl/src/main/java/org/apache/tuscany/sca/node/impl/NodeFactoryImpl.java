@@ -61,7 +61,6 @@ import org.apache.tuscany.sca.core.invocation.ExtensibleProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactoryExtensionPoint;
 import org.apache.tuscany.sca.deployment.Deployer;
-import org.apache.tuscany.sca.deployment.impl.DeployerImpl;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.monitor.Problem;
@@ -215,16 +214,14 @@ public class NodeFactoryImpl extends NodeFactory {
         AssemblyFactory assemblyFactory = new RuntimeAssemblyFactory(registry);
         modelFactories.addFactory(assemblyFactory);
 
-        deployer = new DeployerImpl(registry);
+        UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
+        monitorFactory = utilities.getUtility(MonitorFactory.class);
+        
+        // Load the Deployer
+        deployer = utilities.getUtility(Deployer.class);
 
         // Enable schema validation only of the logger level is FINE or higher
         deployer.setSchemaValidationEnabled(isSchemaValidationEnabled());
-        deployer.start();
-
-        // Create a monitor
-        UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
-
-        monitorFactory = utilities.getUtility(MonitorFactory.class);
 
         // Initialize the Tuscany module activators
         // The module activators will be started

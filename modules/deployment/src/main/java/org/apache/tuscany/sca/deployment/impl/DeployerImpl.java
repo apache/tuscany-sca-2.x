@@ -19,8 +19,6 @@
 
 package org.apache.tuscany.sca.deployment.impl;
 
-import static java.lang.System.currentTimeMillis;
-
 import java.io.Reader;
 import java.io.Writer;
 import java.net.URI;
@@ -31,7 +29,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
@@ -102,8 +99,8 @@ public class DeployerImpl implements Deployer {
 
     protected MonitorFactory monitorFactory;
 
-    protected static final String NODE_IMPL_VALIDATION_MESSAGES =
-        "org.apache.tuscany.sca.node.impl.node-impl-validation-messages";
+    protected static final String DEPLOYER_IMPL_VALIDATION_MESSAGES =
+        "org.apache.tuscany.sca.deployment.impl.deployer-impl-validation-messages";
 
     /**
      * @param registry
@@ -112,7 +109,12 @@ public class DeployerImpl implements Deployer {
         super();
         this.registry = registry;
     }
-    
+
+    public Monitor createMonitor() {
+        init();
+        return monitorFactory.createMonitor();
+    }
+
     public synchronized void stop() {
         if (inited) {
             staxHelper = null;
@@ -135,10 +137,10 @@ public class DeployerImpl implements Deployer {
      * Analyze a contribution and add its dependencies to the given dependency set.
      */
     protected void addContributionDependencies(Contribution contribution,
-                                             List<Contribution> contributions,
-                                             List<Contribution> dependencies,
-                                             Set<Contribution> set,
-                                             Monitor monitor) {
+                                               List<Contribution> contributions,
+                                               List<Contribution> dependencies,
+                                               Set<Contribution> set,
+                                               Monitor monitor) {
 
         // Go through the contribution imports
         for (Import import_ : contribution.getImports()) {
@@ -180,7 +182,7 @@ public class DeployerImpl implements Deployer {
                 if (!(import_ instanceof DefaultImport)) {
                     // Add the (empty) matchingExports List and report a warning
                     import_.setModelResolver(new DefaultImportModelResolver(matchingExports));
-                    Monitor.error(monitor, this, NODE_IMPL_VALIDATION_MESSAGES, "UnresolvedImport", import_);
+                    Monitor.error(monitor, this, DEPLOYER_IMPL_VALIDATION_MESSAGES, "UnresolvedImport", import_);
                 }
             } // end if
         }
@@ -208,8 +210,8 @@ public class DeployerImpl implements Deployer {
      * @throws ContributionResolveException
      */
     protected void contributionsPreresolve(List<Contribution> contributions,
-                                         ModelResolver resolver,
-                                         ProcessorContext context) throws ContributionResolveException {
+                                           ModelResolver resolver,
+                                           ProcessorContext context) throws ContributionResolveException {
 
         for (Contribution contribution : contributions) {
             contributionProcessor.preResolve(contribution, resolver, context);
@@ -219,17 +221,19 @@ public class DeployerImpl implements Deployer {
     public ExtensionPointRegistry getExtensionPointRegistry() {
         return registry;
     }
+
+    public void start() {
+        // Defer to the init() method
+    }
     
-    public synchronized void start() {
+    public synchronized void init() {
         if (inited) {
             return;
         }
-        long start = currentTimeMillis();
 
         // Enable schema validation only of the logger level is FINE or higher
         if (isSchemaValidationEnabled()) {
-            ValidationSchemaExtensionPoint schemas =
-                registry.getExtensionPoint(ValidationSchemaExtensionPoint.class);
+            ValidationSchemaExtensionPoint schemas = registry.getExtensionPoint(ValidationSchemaExtensionPoint.class);
             if (schemas != null) {
                 schemas.setEnabled(true);
             }
@@ -259,7 +263,7 @@ public class DeployerImpl implements Deployer {
         URLArtifactProcessorExtensionPoint docProcessorExtensions =
             registry.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
         artifactProcessor = new ExtensibleURLArtifactProcessor(docProcessorExtensions);
-        
+
         contributionProcessor =
             (ExtendedURLArtifactProcessor<Contribution>)docProcessorExtensions.getProcessor(Contribution.class);
 
@@ -275,10 +279,6 @@ public class DeployerImpl implements Deployer {
 
         inited = true;
 
-        if (logger.isLoggable(Level.FINE)) {
-            long end = currentTimeMillis();
-            logger.fine("The tuscany runtime started in " + (end - start) + " ms.");
-        }
     }
 
     protected void loadSystemContribution(Monitor monitor) {
@@ -314,9 +314,9 @@ public class DeployerImpl implements Deployer {
         artifact.setModel(systemDefinitions);
         artifacts.add(artifact);
     }
-    
+
     protected Contribution cloneSystemContribution(Monitor monitor) {
-        start();
+        init();
         Contribution contribution = contributionFactory.createContribution();
         contribution.setURI(systemContribution.getURI());
         contribution.setLocation(systemContribution.getLocation());
@@ -339,7 +339,7 @@ public class DeployerImpl implements Deployer {
     }
 
     public void attachDeploymentComposite(Contribution contribution, Composite composite, boolean appending) {
-        start();
+        init();
         // Create an artifact for the deployment composite
         Artifact artifact = contributionFactory.createArtifact();
         String uri = composite.getName().getLocalPart() + ".composite";
@@ -359,8 +359,11 @@ public class DeployerImpl implements Deployer {
         contribution.getDeployables().add(composite);
     }
 
-    public Composite build(List<Contribution> contributions, Map<QName, List<String>> bindingMap, Monitor monitor) throws ContributionResolveException, CompositeBuilderException {
-        start();
+    public Composite build(List<Contribution> contributions, Map<QName, List<String>> bindingMap, Monitor monitor)
+        throws ContributionResolveException, CompositeBuilderException {
+        init();
+        List<Contribution> contributionList = new ArrayList<Contribution>(contributions);
+        
         Contribution systemContribution = cloneSystemContribution(monitor);
         Definitions systemDefinitions = systemContribution.getArtifacts().get(0).getModel();
         // Build an aggregated SCA definitions model. Must be done before we try and
@@ -372,7 +375,7 @@ public class DeployerImpl implements Deployer {
         // each contribution so that for unresolved items the resolution
         // processing will look in the system contribution
         ProcessorContext context = new ProcessorContext(monitor);
-        for (Contribution contribution : contributions) {
+        for (Contribution contribution : contributionList) {
             monitor.pushContext("Contribution: " + contribution.getURI());
             try {
                 // aggregate definitions
@@ -401,19 +404,19 @@ public class DeployerImpl implements Deployer {
         }
 
         ExtensibleModelResolver modelResolver =
-            new ExtensibleModelResolver(new Contributions(contributions), modelResolvers, modelFactories);
+            new ExtensibleModelResolver(new Contributions(contributionList), modelResolvers, modelFactories);
 
         // now resolve and add the system contribution
         contributionProcessor.resolve(systemContribution, modelResolver, context);
-        contributions.add(systemContribution);
+        contributionList.add(systemContribution);
 
         // pre-resolve the contributions
-        contributionsPreresolve(contributions, modelResolver, context);
+        contributionsPreresolve(contributionList, modelResolver, context);
 
         // Build the contribution dependencies
         Set<Contribution> resolved = new HashSet<Contribution>();
-        for (Contribution contribution : contributions) {
-            buildDependencies(contribution, contributions, monitor);
+        for (Contribution contribution : contributionList) {
+            buildDependencies(contribution, contributionList, monitor);
 
             // Resolve contributions
             for (Contribution dependency : contribution.getDependencies()) {
@@ -430,7 +433,7 @@ public class DeployerImpl implements Deployer {
         domainComposite.setName(Composite.DOMAIN_COMPOSITE);
         domainComposite.setURI(Base.SCA11_NS);
 
-        for (Contribution contribution : contributions) {
+        for (Contribution contribution : contributionList) {
             for (Composite composite : contribution.getDeployables()) {
                 // Include the node composite in the top-level composite
                 domainComposite.getIncludes().add(composite);
@@ -446,7 +449,7 @@ public class DeployerImpl implements Deployer {
     }
 
     public Artifact loadArtifact(URI uri, URL location, Monitor monitor) throws ContributionReadException {
-        start();
+        init();
         Artifact artifact = contributionFactory.createArtifact();
         artifact.setLocation(location.toString());
         artifact.setURI(uri.toString());
@@ -457,16 +460,16 @@ public class DeployerImpl implements Deployer {
         artifact.setModel(model);
         return artifact;
     }
-    
+
     @SuppressWarnings("unchecked")
     public <T> T loadDocument(URI uri, URL location, Monitor monitor) throws ContributionReadException {
-        start();
+        init();
         Object model = artifactProcessor.read(null, uri, location, new ProcessorContext(monitor));
-        return (T) model;
+        return (T)model;
     }
 
     public <T> T loadXMLDocument(URL document, Monitor monitor) throws XMLStreamException, ContributionReadException {
-        start();
+        init();
         XMLStreamReader reader = staxHelper.createXMLStreamReader(document);
         reader.nextTag();
         ValidatingXMLInputFactory.setMonitor(reader, monitor);
@@ -476,29 +479,29 @@ public class DeployerImpl implements Deployer {
             reader.close();
         }
     }
-    
+
     public void saveXMLDocument(Object model, Writer writer, Monitor monitor) throws XMLStreamException,
         ContributionWriteException {
-        start();
+        init();
         XMLStreamWriter streamWriter = staxHelper.createXMLStreamWriter(writer);
         staxProcessor.write(model, streamWriter, new ProcessorContext(monitor));
     }
 
-    public void saveXMLElement(Object model, XMLStreamWriter writer, Monitor monitor)
-        throws XMLStreamException, ContributionWriteException {
-        start();
+    public void saveXMLElement(Object model, XMLStreamWriter writer, Monitor monitor) throws XMLStreamException,
+        ContributionWriteException {
+        init();
         staxProcessor.write(model, writer, new ProcessorContext(monitor));
     }
 
     @SuppressWarnings("unchecked")
     public <T> T loadXMLElement(XMLStreamReader reader, Monitor monitor) throws ContributionReadException,
         XMLStreamException {
-        start();
+        init();
         return (T)staxProcessor.read(reader, new ProcessorContext(monitor));
     }
-    
+
     public <T> T loadXMLDocument(Reader document, Monitor monitor) throws XMLStreamException, ContributionReadException {
-        start();
+        init();
         XMLStreamReader reader = staxHelper.createXMLStreamReader(document);
         ValidatingXMLInputFactory.setMonitor(reader, monitor);
         reader.nextTag();
@@ -510,20 +513,20 @@ public class DeployerImpl implements Deployer {
     }
 
     public Contribution loadContribution(URI uri, URL location, Monitor monitor) throws ContributionReadException {
-        start();
+        init();
         ProcessorContext context = new ProcessorContext(monitor);
         // Load the contribution
         Contribution contribution = contributionProcessor.read(null, uri, location, context);
         return contribution;
     }
-    
+
     public ProcessorContext createProcessorContext() {
-        start();
+        init();
         return new ProcessorContext(monitorFactory.createMonitor());
     }
-    
+
     public BuilderContext createBuilderContext() {
-        start();
+        init();
         return new BuilderContext(monitorFactory.createMonitor());
     }
 
