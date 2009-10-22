@@ -58,6 +58,7 @@ public class JSONRPCReferenceBindingProvider implements ReferenceBindingProvider
         this.reference = (RuntimeComponentReference) endpointReference.getReference();
         
         //clone the service contract to avoid databinding issues
+        /*
         try {
             this.referenceContract = (InterfaceContract)reference.getInterfaceContract().clone();
         } catch(CloneNotSupportedException e) {
@@ -65,6 +66,7 @@ public class JSONRPCReferenceBindingProvider implements ReferenceBindingProvider
         }
         
         JSONRPCDatabindingHelper.setDataBinding(referenceContract.getInterface());
+        */
         
         // Create an HTTP client
         HttpParams defaultParameters = new BasicHttpParams();
@@ -82,7 +84,8 @@ public class JSONRPCReferenceBindingProvider implements ReferenceBindingProvider
     }
 
     public InterfaceContract getBindingInterfaceContract() {
-        return referenceContract;
+        //return referenceContract;
+        return reference.getInterfaceContract();
     }
 
     public Invoker createInvoker(Operation operation) {
