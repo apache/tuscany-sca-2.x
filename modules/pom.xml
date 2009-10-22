@@ -98,10 +98,9 @@
         <module>policy-logging</module>
         <module>sca-api</module>
         <module>sca-client-impl</module>
-        <module>scdl</module>
         <module>stripes</module>
         <module>xsd</module>
-        <!-- OSGi RFC 119 -->
+        <!-- OSGi Remote Services with SCA -->
         <module>contribution-osgi</module>
         <module>implementation-osgi</module>
         <module>implementation-osgi-runtime</module>

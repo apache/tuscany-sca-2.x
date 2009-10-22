@@ -19,6 +19,9 @@
 
 package org.apache.tuscany.sca.itest.scdl;
 
+import java.io.File;
+import java.net.URL;
+import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -28,8 +31,10 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.contribution.Contribution;
+import org.apache.tuscany.sca.deployment.DefaultDeployer;
+import org.apache.tuscany.sca.deployment.Deployer;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
-import org.apache.tuscany.sca.scdl.SCDLUtils;
+import org.apache.tuscany.sca.monitor.Monitor;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,7 +46,12 @@ public class ContributionTestCase {
 
     @Test
     public void testRead() throws Exception {
-        Contribution contribution = SCDLUtils.readContribution("../../samples/calculator/target/sample-calculator.jar");
+        Deployer deployer = new DefaultDeployer();
+        File file = new File("../../samples/calculator/target/sample-calculator.jar");
+        URL url = file.toURI().toURL();
+        Monitor monitor = deployer.createMonitor();
+        Contribution contribution = deployer.loadContribution(url.toURI(), url, monitor);
+        deployer.build(Arrays.asList(contribution), null, monitor);
         
         // Ferkle around in the contribution verifying it looks as expected
         Assert.assertNotNull(contribution);

@@ -68,6 +68,6 @@ public class ValidateDependenciesTestCase {
         Assert.assertTrue(dependenciesDir.exists());
         
         File[] dependencyFiles = dependenciesDir.listFiles();
-        Assert.assertEquals(25, dependencyFiles.length);
+        Assert.assertEquals(20, dependencyFiles.length);
     }
 }

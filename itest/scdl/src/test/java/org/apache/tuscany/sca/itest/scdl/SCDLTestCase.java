@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.itest.scdl;
 
-import java.io.InputStream;
+import java.net.URL;
 
 import javax.xml.stream.XMLStreamException;
 
@@ -32,7 +32,10 @@ import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.binding.jsonp.JSONPBinding;
 import org.apache.tuscany.sca.binding.rmi.RMIBinding;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
-import org.apache.tuscany.sca.scdl.SCDLUtils;
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
+import org.apache.tuscany.sca.deployment.Deployer;
 import org.junit.Test;
 
 /**
@@ -42,8 +45,11 @@ public class SCDLTestCase {
 
     @Test
     public void testRead() throws ContributionReadException, XMLStreamException {
-        InputStream r = getClass().getClassLoader().getResourceAsStream("test.composite");
-        Composite composite = SCDLUtils.readComposite(r);
+        ExtensionPointRegistry registry = new DefaultExtensionPointRegistry();
+        Deployer deployer = registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(Deployer.class);
+        
+        URL r = getClass().getResource("/test.composite");
+        Composite composite = deployer.loadXMLDocument(r, null);
         Assert.assertNotNull(composite);
 
         Component JavaComp = composite.getComponent("JavaComponent");
