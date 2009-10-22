@@ -20,13 +20,13 @@
 package org.apache.tuscany.sca.node.impl;
 
 import java.io.ByteArrayOutputStream;
-import java.lang.management.ManagementFactory;
+//import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.management.MBeanServer;
+//import javax.management.MBeanServer;
 import javax.xml.stream.XMLOutputFactory;
 
 import org.apache.tuscany.sca.assembly.Component;
@@ -152,9 +152,11 @@ public class NodeImpl implements Node, Client {
             // FIXME: [rfeng] We should turn the management capability into a system utility.
             // In certain environment such as Google App Engine, the JMX API is not allowed
             try {
+                /*
                 MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
                 mbean = new NodeManager(this);
                 mBeanServer.registerMBean(mbean, mbean.getName());
+                */
                 /*
                 LocateRegistry.createRegistry(9999);
                 JMXServiceURL url =
@@ -184,6 +186,7 @@ public class NodeImpl implements Node, Client {
                 return;
             }
 
+            /*
             if (mbean != null) {
                 try {
                     MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
@@ -194,6 +197,7 @@ public class NodeImpl implements Node, Client {
                     mbean = null;
                 }
             }
+            */
 
             NodeFinder.removeNode(this);
             if( domainComposite != null ) {
