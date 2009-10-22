@@ -16,3 +16,4 @@
 # under the License. 
 org.apache.tuscany.sca.interfacedef.java.jaxws.WebServiceInterfaceProcessor;ranking=400
 org.apache.tuscany.sca.interfacedef.java.jaxws.JAXWSJavaInterfaceProcessor;ranking=100
+org.apache.tuscany.sca.interfacedef.java.jaxws.JAXWSAsyncInterfaceProcessor
