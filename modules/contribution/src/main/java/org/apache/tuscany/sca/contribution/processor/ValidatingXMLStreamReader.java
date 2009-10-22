@@ -64,6 +64,7 @@ class ValidatingXMLStreamReader extends StreamReaderDelegate implements XMLStrea
     ValidatingXMLStreamReader(XMLStreamReader reader, Schema schema, Monitor monitor) throws XMLStreamException {
         super(reader);
         this.monitor = monitor;
+        this.schema = schema;
     }
     
     void setMonitor(Monitor monitor) {
