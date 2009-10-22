@@ -67,70 +67,77 @@ public class EndpointBuilderImpl implements CompositeBuilder {
         
         for (Component component : composite.getComponents()) {
 
-            monitor.pushContext("Component: " + component.getName().toString());
-
-            // recurse for composite implementations
-            Implementation implementation = component.getImplementation();
-            if (implementation instanceof Composite) {
-                processComponentServices((Composite)implementation, context);
-            }
-
-            // create an endpoint for each component service binding
-            for (ComponentService service : component.getServices()) {
-                monitor.pushContext("Service: " + service.getName());
-                
-                //verify JAX-WS async assertions as in JavaCAA section 11.1
-                List<Operation> asyncOperations = null;
-                try {
-                    asyncOperations = (List<Operation>) service.getInterfaceContract().getInterface().getAttributes().get("JAXWS-ASYNC-OPERATIONS");
-                }catch(Exception e) {
-                    //ignore
+            try {
+                monitor.pushContext("Component: " + component.getName().toString());
+    
+                // recurse for composite implementations
+                Implementation implementation = component.getImplementation();
+                if (implementation instanceof Composite) {
+                    processComponentServices((Composite)implementation, context);
                 }
-                
-
-                if(asyncOperations != null) {
-                    if( ! asyncOperations.isEmpty()) {
-
-                        //error JCA100006
-
-                        //FIXME create a java validation message resource bundle
-                        Monitor.error(monitor, 
-                                      this, 
-                                      null,
-                                      "[JCA100006] JAX-WS client-side asynchronous pooling and callback methods are not allowed in service interfaces", 
-                                      service, 
-                                      service.getName());                  
-                    }
+    
+                // create an endpoint for each component service binding
+                for (ComponentService service : component.getServices()) {
+                    try {
+                        monitor.pushContext("Service: " + service.getName());
+                        
+                        //verify JAX-WS async assertions as in JavaCAA section 11.1
+                        List<Operation> asyncOperations = null;
+                        try {
+                            asyncOperations = (List<Operation>) service.getInterfaceContract().getInterface().getAttributes().get("JAXWS-ASYNC-OPERATIONS");
+                        }catch(Exception e) {
+                            //ignore
+                        }
+                        
+                        if(asyncOperations != null) {
+                            if( ! asyncOperations.isEmpty()) {
+        
+                                //error JCA100006
+        
+                                //FIXME create a java validation message resource bundle
+                                Monitor.error(monitor, 
+                                              this, 
+                                              null,
+                                              "[JCA100006] JAX-WS client-side asynchronous pooling and callback methods are not allowed in service interfaces", 
+                                              service, 
+                                              service.getName());                  
+                            }
+                        }
+        
+        
+                        
+        
+                        /* change to finding the promoted component and service
+                         * when the wire is created as storing them here leads to 
+                         * the wrong URI being calculated
+                        Component endpointComponent = component;
+                        ComponentService endpointService = service;
+        
+                        // TODO - EPR - We maintain all endpoints at the right level now
+                        //              but endpoints for promoting services must point down
+                        //              to the services they promote. 
+                        if (service.getService() instanceof CompositeService) {
+                            CompositeService compositeService = (CompositeService)service.getService();
+                            endpointService = ServiceConfigurationUtil.getPromotedComponentService(compositeService);
+                            endpointComponent = ServiceConfigurationUtil.getPromotedComponent(compositeService);
+                        } // end if
+                        */
+        
+                        for (Binding binding : service.getBindings()) {
+                            Endpoint endpoint = assemblyFactory.createEndpoint();
+                            endpoint.setComponent(component);
+                            endpoint.setService(service);
+                            endpoint.setBinding(binding);
+                            endpoint.setUnresolved(false);
+                            service.getEndpoints().add(endpoint);
+                        } // end for
+                    } finally {
+                        monitor.popContext();
+                    }                   
                 }
-
-
-                
-
-                /* change to finding the promoted component and service
-                 * when the wire is created as storing them here leads to 
-                 * the wrong URI being calculated
-                Component endpointComponent = component;
-                ComponentService endpointService = service;
-
-                // TODO - EPR - We maintain all endpoints at the right level now
-                //              but endpoints for promoting services must point down
-                //              to the services they promote. 
-                if (service.getService() instanceof CompositeService) {
-                    CompositeService compositeService = (CompositeService)service.getService();
-                    endpointService = ServiceConfigurationUtil.getPromotedComponentService(compositeService);
-                    endpointComponent = ServiceConfigurationUtil.getPromotedComponent(compositeService);
-                } // end if
-                */
-
-                for (Binding binding : service.getBindings()) {
-                    Endpoint endpoint = assemblyFactory.createEndpoint();
-                    endpoint.setComponent(component);
-                    endpoint.setService(service);
-                    endpoint.setBinding(binding);
-                    endpoint.setUnresolved(false);
-                    service.getEndpoints().add(endpoint);
-                } // end for
-            }
+            } finally {
+                monitor.popContext();
+            }                  
         }
     }
 

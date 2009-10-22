@@ -168,25 +168,28 @@ public class SCDLUtils {
         // each contribution so that for unresolved items the resolution
         // processing will look in the system contribution
         for (Contribution contribution : contributions) {
-            monitor.pushContext("Contribution: " + contribution.getURI());
-            // aggregate definitions
-            for (Artifact artifact : contribution.getArtifacts()) {
-                Object model = artifact.getModel();
-                if (model instanceof Definitions) {
-                    monitor.pushContext("Definitions: " + artifact.getLocation());
-                    DefinitionsUtil.aggregate((Definitions)model, systemDefinitions, monitor);
-                    monitor.popContext();
+            try {
+                monitor.pushContext("Contribution: " + contribution.getURI());
+                // aggregate definitions
+                for (Artifact artifact : contribution.getArtifacts()) {
+                    Object model = artifact.getModel();
+                    if (model instanceof Definitions) {
+                        monitor.pushContext("Definitions: " + artifact.getLocation());
+                        DefinitionsUtil.aggregate((Definitions)model, systemDefinitions, monitor);
+                        monitor.popContext();
+                    }
                 }
+    
+                // create a default import and wire it up to the system contribution
+                // model resolver. This is the trick that makes the resolution processing
+                // skip over to the system contribution if resolution is unsuccessful
+                // in the current contribution
+                DefaultImport defaultImport = contributionFactory.createDefaultImport();
+                defaultImport.setModelResolver(systemContribution.getModelResolver());
+                contribution.getImports().add(defaultImport);
+            } finally {
+                monitor.popContext();
             }
-
-            // create a default import and wire it up to the system contribution
-            // model resolver. This is the trick that makes the resolution processing
-            // skip over to the system contribution if resolution is unsuccessful
-            // in the current contribution
-            DefaultImport defaultImport = contributionFactory.createDefaultImport();
-            defaultImport.setModelResolver(systemContribution.getModelResolver());
-            contribution.getImports().add(defaultImport);
-            monitor.popContext();
         }
 
         ExtensibleModelResolver modelResolver =

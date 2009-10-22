@@ -386,8 +386,12 @@ public class DeployerImpl implements Deployer {
                     Object model = artifact.getModel();
                     // FIXME: Should we check the artifact URI is META-INF/definitions.xml?
                     if (model instanceof Definitions) {
-                        monitor.pushContext("Definitions: " + artifact.getLocation());
-                        DefinitionsUtil.aggregate((Definitions)model, systemDefinitions, monitor);
+                        try {
+                            monitor.pushContext("Definitions: " + artifact.getLocation());
+                            DefinitionsUtil.aggregate((Definitions)model, systemDefinitions, monitor);
+                        } finally {
+                            monitor.popContext();
+                        }                            
                     }
                 }
 
