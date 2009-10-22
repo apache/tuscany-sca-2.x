@@ -166,7 +166,11 @@ public class TuscanyRuntimeBridge implements RuntimeBridge {
         // and where the only relevant part is the start of the message - in this case the expected
         // message only contains the stem section which is unchanging...
         if( receivedMessage.length() > expectedMessage.length() ) {
-            assertTrue("Received message should contain the expected message", receivedMessage.contains(expectedMessage));
+        	if (receivedMessage.contains(expectedMessage)) {
+        		return;
+        	} else {
+                receivedMessage = receivedMessage.substring(0, expectedMessage.length() );
+        	} 
             return;
         } // end if
         
