@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.builder.impl;
 
+import java.util.List;
+
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
@@ -31,6 +33,8 @@ import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  * creates endpoint models for component services.
@@ -50,26 +54,57 @@ public class EndpointBuilderImpl implements CompositeBuilder {
      * @param definitions
      * @param monitor - a Monitor for logging errors
      */
-    public Composite build(Composite composite, BuilderContext context)
-        throws CompositeBuilderException {
+    public Composite build(Composite composite, BuilderContext context) throws CompositeBuilderException {
 
-        processComponentServices(composite);
+        processComponentServices(composite, context);
         return composite;
 
-    } // end method build
+    } 
 
-    private void processComponentServices(Composite composite) {
+    private void processComponentServices(Composite composite, BuilderContext context) {
 
+        Monitor monitor = context.getMonitor();
+        
         for (Component component : composite.getComponents()) {
+
+            monitor.pushContext("Component: " + component.getName().toString());
 
             // recurse for composite implementations
             Implementation implementation = component.getImplementation();
             if (implementation instanceof Composite) {
-                processComponentServices((Composite)implementation);
+                processComponentServices((Composite)implementation, context);
             }
 
             // create an endpoint for each component service binding
             for (ComponentService service : component.getServices()) {
+                monitor.pushContext("Service: " + service.getName());
+                
+                //verify JAX-WS async assertions as in JavaCAA section 11.1
+                List<Operation> asyncOperations = null;
+                try {
+                    asyncOperations = (List<Operation>) service.getInterfaceContract().getInterface().getAttributes().get("JAXWS-ASYNC-OPERATIONS");
+                }catch(Exception e) {
+                    //ignore
+                }
+                
+
+                if(asyncOperations != null) {
+                    if( ! asyncOperations.isEmpty()) {
+
+                        //error JCA100006
+
+                        //FIXME create a java validation message resource bundle
+                        Monitor.error(monitor, 
+                                      this, 
+                                      null,
+                                      "[JCA100006] JAX-WS client-side asynchronous pooling and callback methods are not allowed in service interfaces", 
+                                      service, 
+                                      service.getName());                  
+                    }
+                }
+
+
+                
 
                 /* change to finding the promoted component and service
                  * when the wire is created as storing them here leads to 
