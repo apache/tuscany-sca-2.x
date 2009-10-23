@@ -20,10 +20,15 @@ package org.apache.tuscany.sca.core.invocation.impl;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.List;
+import java.util.concurrent.Future;
+
+import javax.xml.ws.AsyncHandler;
+import javax.xml.ws.Response;
 
 import org.apache.tuscany.sca.common.java.collection.LRUCache;
 import org.apache.tuscany.sca.core.LifeCycleListener;
@@ -63,7 +68,12 @@ public class JDKProxyFactory implements ProxyFactory, LifeCycleListener {
     public <T> T createProxy(ServiceReference<T> callableReference) throws ProxyCreationException {
         assert callableReference != null;
         final Class<T> interfaze = callableReference.getBusinessInterface();
-        InvocationHandler handler = new JDKInvocationHandler(messageFactory, callableReference);
+        InvocationHandler handler;
+        if (isAsync(interfaze)) {
+            handler = new AsyncJDKInvocationHandler(messageFactory, callableReference);
+        } else {
+            handler = new JDKInvocationHandler(messageFactory, callableReference);
+        }
         // Allow privileged access to class loader. Requires RuntimePermission in security policy.
         ClassLoader cl = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
             public ClassLoader run() {
@@ -73,6 +83,24 @@ public class JDKProxyFactory implements ProxyFactory, LifeCycleListener {
         Object proxy = newProxyInstance(cl, new Class[] {interfaze}, handler);
         ((ServiceReferenceImpl)callableReference).setProxy(proxy);
         return interfaze.cast(proxy);
+    }
+    
+    private boolean isAsync(Class<?> interfaze) {
+        for (Method method : interfaze.getMethods()) {
+            if (method.getName().endsWith("Async")) {
+                if (method.getReturnType().isAssignableFrom(Future.class)) {
+                    if (method.getParameterTypes().length > 0) {
+                        if (method.getParameterTypes()[method.getParameterTypes().length-1].isAssignableFrom(AsyncHandler.class)) {
+                            return true;
+                        }
+                    }
+                }
+                if (method.getReturnType().isAssignableFrom(Response.class)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public <T> T createCallbackProxy(Class<T> interfaze, List<RuntimeWire> wires) throws ProxyCreationException {
