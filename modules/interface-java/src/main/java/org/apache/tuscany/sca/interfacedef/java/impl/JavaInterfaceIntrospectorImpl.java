@@ -31,8 +31,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Future;
 
 import javax.xml.namespace.QName;
+import javax.xml.ws.AsyncHandler;
+import javax.xml.ws.Response;
 
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.InvalidAnnotationException;
@@ -187,7 +190,7 @@ public class JavaInterfaceIntrospectorImpl {
             if (remotable && names.contains(name)) {
                 throw new OverloadedOperationException(method);
             }
-            if (remotable) {
+            if (remotable && !jaxwsAsyncMethod(method)) {
                 names.add(name);
             }
 
@@ -252,6 +255,24 @@ public class JavaInterfaceIntrospectorImpl {
             operations.add(operation);
         }
         return operations;
+    }
+
+    private boolean jaxwsAsyncMethod(Method method) {
+        if (method.getName().endsWith("Async")) {
+            if (method.getName().endsWith("Async")) {
+                if (method.getReturnType().isAssignableFrom(Future.class)) {
+                    if (method.getParameterTypes().length > 0) {
+                        if (method.getParameterTypes()[method.getParameterTypes().length-1].isAssignableFrom(AsyncHandler.class)) {
+                            return true;
+                        }
+                    }
+                }
+                if (method.getReturnType().isAssignableFrom(Response.class)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 }
