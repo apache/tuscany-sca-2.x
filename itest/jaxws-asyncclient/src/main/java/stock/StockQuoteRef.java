@@ -35,5 +35,5 @@ public interface StockQuoteRef extends StockQuote {
     
     Response<Float> getPriceAsync(String ticker);
     
-//    Future<?> getPriceAsync(String ticker, AsyncHandler<Float> callback);
+    Future<?> getPriceAsync(String ticker, AsyncHandler<Float> callback);
 }

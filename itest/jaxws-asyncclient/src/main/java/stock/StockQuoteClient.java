@@ -43,27 +43,27 @@ public class StockQuoteClient {
     Object mutex = new Object();
     Exception exception;
 
-//    public float getPriceAsyncCallback(String ticker) throws Exception {
-//        AsyncHandler<Float> callback = new AsyncHandler<Float>() {
-//            public void handleResponse(Response<Float> arg) {
-//                synchronized (mutex) {
-//                    try {
-//                        price = arg.get();
-//                    } catch (Exception e) {
-//                        exception = e;
-//                    }
-//                    mutex.notify();
-//                }
-//            }
-//        };
-//        stockQuote.getPriceAsync("foo", callback);
-//        synchronized (mutex) {
-//            if (price == 0f)
-//                wait(5000); // wait for up to 5 seconds
-//        }
-//
-//        if (exception != null) throw exception;
-//        return price;
-//    }
+    public float getPriceAsyncCallback(String ticker) throws Exception {
+        AsyncHandler<Float> callback = new AsyncHandler<Float>() {
+            public void handleResponse(Response<Float> arg) {
+                synchronized (mutex) {
+                    try {
+                        price = arg.get();
+                    } catch (Exception e) {
+                        exception = e;
+                    }
+                    mutex.notify();
+                }
+            }
+        };
+        stockQuote.getPriceAsync("foo", callback);
+        synchronized (mutex) {
+            if (price == 0f)
+                mutex.wait(5000); // wait for up to 5 seconds
+        }
+
+        if (exception != null) throw exception;
+        return price;
+    }
 
 }

@@ -58,10 +58,10 @@ public class AsyncServiceTestCase {
         Assert.assertEquals(10.0f, sc.getPriceAsyncPoll("foo"));
     }
 
-//    @Test
-//    public void invokeAsyncCallback() throws Exception {
-//        StockQuoteClient sc = node.getService(StockQuoteClient.class, "StockQuoteClient");
-//        Assert.assertEquals(10.0f, sc.getPriceAsyncCallback("foo"));
-//    }
+    @Test
+    public void invokeAsyncCallback() throws Exception {
+        StockQuoteClient sc = node.getService(StockQuoteClient.class, "StockQuoteClient");
+        Assert.assertEquals(10.0f, sc.getPriceAsyncCallback("foo"));
+    }
 
 }
