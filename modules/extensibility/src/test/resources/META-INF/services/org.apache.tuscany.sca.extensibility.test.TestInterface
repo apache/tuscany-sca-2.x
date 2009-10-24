@@ -15,5 +15,5 @@
 # specific language governing permissions and limitations
 # under the License. 
 org.apache.tuscany.sca.extensibility.test.TestImpl;ranking=10;attr=123
-org.apache.tuscany.sca.extensibility.test.Test2Impl;ranking=20;attr=abc
+org.apache.tuscany.sca.extensibility.test.Test2Impl;ranking=20,attr=abc,qname=http://sample#Test2,model=org.apache.tuscany.sca.extensibility.test.TestInterface
 org.apache.tuscany.sca.extensibility.test.DummyImpl

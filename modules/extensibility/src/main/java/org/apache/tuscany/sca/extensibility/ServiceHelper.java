@@ -20,6 +20,9 @@
 package org.apache.tuscany.sca.extensibility;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.Collection;
 import java.util.Map;
 
@@ -137,4 +140,86 @@ public class ServiceHelper {
         return instance;
     }
 
+    public static <T> T newLazyInstance(ExtensionPointRegistry registry, ServiceDeclaration sd, Class<T> serviceType) {
+        return serviceType.cast(Proxy.newProxyInstance(serviceType.getClassLoader(),
+                                                       new Class<?>[] {serviceType, LifeCycleListener.class},
+                                                       new InvocationHandlerImpl(registry, serviceType, sd)));
+    }
+
+    private static class InvocationHandlerImpl implements InvocationHandler {
+        private ExtensionPointRegistry registry;
+        private Class<?> type;
+        private ServiceDeclaration sd;
+        private Object instance;
+
+        private final static Method STOP_METHOD = getMethod(LifeCycleListener.class, "stop");
+        private final static Method START_METHOD = getMethod(LifeCycleListener.class, "start");
+        private final static Method EQUALS_METHOD = getMethod(Object.class, "equals");
+        private final static Method HASHCODE_METHOD = getMethod(Object.class, "hashCode");
+        private final static Method TOSTRING_METHOD = getMethod(Object.class, "toString");
+
+        private static Method getMethod(Class<?> type, String name) {
+            Method[] methods = type.getMethods();
+            for (Method method : methods) {
+                if (name.equals(method.getName())) {
+                    return method;
+                }
+            }
+            return null;
+        }
+
+        public InvocationHandlerImpl(ExtensionPointRegistry registry, Class<?> type, ServiceDeclaration sd) {
+            super();
+            this.registry = registry;
+            this.sd = sd;
+            this.type = type;
+        }
+
+        private Object getAttribute(Method method) throws Exception {
+            if (method.getParameterTypes().length != 0) {
+                return null;
+            }
+            String name = method.getName();
+            if (name.equals("getModelType") && method.getReturnType() == Class.class) {
+                return sd.loadClass(sd.getAttributes().get("model"));
+            } else if (name.equals("getArtifactType")) {
+                return ServiceDeclarationParser.getQName(sd.getAttributes().get("qname"));
+            }
+            return null;
+        }
+
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+            synchronized (this) {
+                // Check if the method is to get the qname/model attribute
+                Object value = getAttribute(method);
+                if (value != null) {
+                    return value;
+                }
+                if (instance == null && method.getDeclaringClass() == type) {
+                    // Only initialize the instance when a method on the service type is invoked
+                    instance = newInstance(registry, sd);
+                    start(instance);
+                }
+                if (method.equals(EQUALS_METHOD)) {
+                    return proxy == args[0];
+                } else if (method.equals(HASHCODE_METHOD)) {
+                    return System.identityHashCode(proxy);
+                } else if (method.equals(TOSTRING_METHOD)) {
+                    return "Proxy: " + sd.toString();
+                }
+                if (instance == null) {
+                    return null;
+                }
+            }
+            if (method.equals(STOP_METHOD)) {
+                stop(instance);
+                return null;
+            } else if (method.equals(START_METHOD)) {
+                // Skip the start()
+                return null;
+            } else {
+                return method.invoke(instance, args);
+            }
+        }
+    }
 }

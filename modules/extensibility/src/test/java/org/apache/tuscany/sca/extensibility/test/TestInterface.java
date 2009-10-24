@@ -19,9 +19,12 @@
 
 package org.apache.tuscany.sca.extensibility.test;
 
+import javax.xml.namespace.QName;
+
 /**
  * 
  */
 public interface TestInterface {
-    void test(String str);
+    String test(String str);
+    QName getArtifactType();
 }

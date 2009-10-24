@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.extensibility.test;
 
+import javax.xml.namespace.QName;
+
 /**
  * 
  */
@@ -27,8 +29,14 @@ public class TestImpl implements TestInterface {
     /* (non-Javadoc)
      * @see org.apache.tuscany.sca.extensibility.test.TestInterface#test(java.lang.String)
      */
-    public void test(String str) {
+    public String test(String str) {
         System.out.println("Test: " + str);
+        return "Test: " + str;
+    }
+
+    public QName getArtifactType() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }
