@@ -1,29 +1,32 @@
 Manifest-Version: 1.0
-Export-Package: org.apache.tuscany.sca.implementation.web.runtime.utils;ver
- sion="2.0"
 Tool: Bnd-0.0.255
-Bundle-Name: Apache Tuscany SCA Web Implementation Web Runtime
+Bundle-Name: Apache Tuscany SCA Web Implementation Web Client
 Created-By: 1.6.0_07 (Sun Microsystems Inc.)
 Bundle-Vendor: The Apache Software Foundation
 Bundle-Version: 2.0.0
 Bnd-LastModified: 1225397153500
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
-Bundle-Description: Apache Tuscany SCA Implementation Web Runtime
-Bundle-SymbolicName: org.apache.tuscany.sca.implementation.web.runtime
+Bundle-Description: Apache Tuscany SCA Implementation Web Client
+Bundle-SymbolicName: org.apache.tuscany.sca.implementation.web.client
 Bundle-DocURL: http://www.apache.org/
 Import-Package: javax.servlet,
- javax.servlet.jsp,
- javax.servlet.jsp.tagext,
+ javax.servlet.http,
  org.apache.tuscany.sca.assembly;version="2.0.0",
  org.apache.tuscany.sca.core;version="2.0.0",
  org.apache.tuscany.sca.host.http;version="2.0.0",
  org.apache.tuscany.sca.implementation.web;version="2.0.0",
+ org.apache.tuscany.sca.implementation.web.runtime;version="2.0.0",
  org.apache.tuscany.sca.interfacedef;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef.java;version="2.0.0",
  org.apache.tuscany.sca.invocation;version="2.0.0",
  org.apache.tuscany.sca.policy;version="2.0.0",
  org.apache.tuscany.sca.provider;version="2.0.0",
  org.apache.tuscany.sca.runtime;version="2.0.0",
+ org.directwebremoting;version="2.0.3",
+ org.directwebremoting.create;version="2.0.3",
+ org.directwebremoting.extend;version="2.0.3",
+ org.directwebremoting.sevlet;version="2.0.3",
  org.oasisopen.sca.annotation;version="2.0.0",
  org.oasisopen.sca;version="2.0.0"
 Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6
