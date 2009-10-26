@@ -86,6 +86,9 @@ class WebAppRequestDispatcher implements RequestDispatcher {
      * Remove any path suffix thats part of the Servlet context path
      */
     protected String fiddlePath(String path, String servletPath) {
+        if (path.startsWith(servletPath)) {
+            return path.substring(servletPath.length());
+        }
         StringTokenizer st = new StringTokenizer(path, "/");
         if (st.countTokens() == 1) {
             return path;
