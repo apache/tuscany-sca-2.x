@@ -133,7 +133,7 @@ public class DefaultProviderFactoryExtensionPoint implements ProviderFactoryExte
         Collection<ServiceDeclaration> factoryDeclarations;
         ServiceDiscovery serviceDiscovery = ServiceDiscovery.getInstance();
         try {
-            factoryDeclarations = serviceDiscovery.getServiceDeclarations(factoryClass.getName());
+            factoryDeclarations = serviceDiscovery.getServiceDeclarations(factoryClass.getName(), true);
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
