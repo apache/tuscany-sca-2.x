@@ -82,6 +82,7 @@
         <module>implementation-spring</module>
         <module>implementation-spring-sca</module>
         <module>implementation-web</module>
+        <module>implementation-web-client</module>
         <module>implementation-web-runtime</module>
         <module>interface-java</module>
         <module>interface-java-jaxws</module>
