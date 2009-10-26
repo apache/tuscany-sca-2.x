@@ -25,8 +25,10 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -229,6 +231,8 @@ public class WebAppServletHost implements ServletHost {
     @SuppressWarnings("unchecked")
     public void initContextPath(ServletConfig config) {
         
+        String oldContextPath = contextPath;
+        
         if (Collections.list(config.getInitParameterNames()).contains("contextPath")) {
             contextPath = config.getInitParameter("contextPath");
         } else {
@@ -245,6 +249,22 @@ public class WebAppServletHost implements ServletHost {
         }
 
         logger.info("ContextPath: " + contextPath);
+
+        // if the context path changes after some servlets have been registered then
+        // need to reregister them (this can happen if extensions start before webapp init)
+        if (!oldContextPath.endsWith(contextPath)) {
+            List<String> oldServletURIs = new ArrayList<String>();
+            for (String oldServletURI : servlets.keySet()) {
+                if (oldServletURI.startsWith(oldContextPath)) {
+                    oldServletURIs.add(oldServletURI);
+                }
+            }
+            for (String oldURI : oldServletURIs) {
+                String ns = contextPath + "/" + oldURI.substring(oldContextPath.length());
+                servlets.put(ns, servlets.remove(oldURI));
+            }
+        }
+        
     }    
     
     void destroy() {
