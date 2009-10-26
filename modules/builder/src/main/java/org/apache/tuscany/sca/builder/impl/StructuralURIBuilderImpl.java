@@ -71,6 +71,10 @@ public class StructuralURIBuilderImpl implements CompositeBuilder {
             Binding existed = bindingMap.put(binding.getName(), binding);
             // Check that multiple bindings do not have the same name
             if (existed != null && existed != binding) {
+                if(binding.getClass() != existed.getClass()) {
+                    // Look for a binding of the same type
+                    continue;
+                }
                 if (contract instanceof Service) {
                     Monitor.error(monitor, this, Messages.ASSEMBLY_VALIDATION, "MultipleBindingsForService", contract
                         .getName(), binding.getName());
