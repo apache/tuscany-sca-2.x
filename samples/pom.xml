@@ -64,6 +64,7 @@
                 <module>webapps/helloworld</module>
                 <module>webapps/helloworld-bpel</module>
                 <module>webapps/helloworld-jms</module>
+                <module>webapps/helloworld-js-client</module>
                 <module>webapps/helloworld-jsp</module>
                 <module>webapps/helloworld-stripes</module>
                 <module>webapps/helloworld-servlet</module>
