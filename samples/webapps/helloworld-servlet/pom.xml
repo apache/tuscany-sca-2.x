@@ -34,21 +34,21 @@
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-sca-api</artifactId>
+            <artifactId>tuscany-implementation-web-runtime</artifactId>
             <version>2.0-SNAPSHOT</version>
-            <scope>provided</scope>
         </dependency>
 
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>2.5</version>
-            <scope>provided</scope>
-        </dependency>
     </dependencies>
 
     <build>
        <finalName>${artifactId}</finalName>
+       <plugins>
+          <plugin>
+             <groupId>org.mortbay.jetty</groupId>
+             <artifactId>maven-jetty-plugin</artifactId>
+             <version>6.1.18</version>
+          </plugin>
+       </plugins>
     </build>
 </project>
 

@@ -24,6 +24,8 @@
 
     <display-name>Apache Tuscany Helloworld Servlet Sample</display-name>
 
+	<listener><listener-class>org.apache.tuscany.sca.host.webapp.TuscanyContextListener</listener-class></listener>
+
     <servlet>
         <servlet-name>HelloworldServlet</servlet-name>
         <servlet-class>sample.HelloworldServlet</servlet-class>

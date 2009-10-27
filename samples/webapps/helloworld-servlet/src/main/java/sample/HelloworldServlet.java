@@ -21,10 +21,13 @@ package sample;
 import java.io.IOException;
 import java.io.Writer;
 
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.oasisopen.sca.ComponentContext;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -35,8 +38,13 @@ public class HelloworldServlet extends HttpServlet {
     @Reference
     protected HelloworldService service;
 
-    public HelloworldServlet() {
-        System.out.println("HelloworldServlet");
+    @Override
+    public void init(ServletConfig servletConfig) throws ServletException {
+        if (service == null) {
+            System.out.println("HelloworldServlet reference injection failed, using ComponentContext");
+            ComponentContext cc = (ComponentContext)servletConfig.getServletContext().getAttribute("org.oasisopen.sca.ComponentContext");
+            service = cc.getService(HelloworldService.class, "service");
+        }
     }
 
     @Override
