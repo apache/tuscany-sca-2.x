@@ -79,7 +79,6 @@ public interface Constants {
     String REPLACE = "replace";
     String REQUIRES = "requires";
     String POLICY_SETS = "policySets"; 
-    String APPLICABLE_POLICY_SETS = "applicablePolicySets";
     String PROMOTE = "promote";
     String TARGET = "target";
     String WIRED_BY_IMPL = "wiredByImpl";

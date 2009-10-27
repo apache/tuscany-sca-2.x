@@ -60,7 +60,7 @@ public class CalculatorActivator implements BundleActivator {
         props.put("sca.service", "CalculatorComponent#service-name(Calculator)");
         props.put("calculator", "Calculator");
         props.put("service.exported.configs", new String[] {"org.osgi.sca"});
-        props.put("sca.bindings", new String[] {"OSGI-INF/sca/calculator-service.bindings"});
+        props.put("org.osgi.sca.bindings", new String[] {"{http://sample}Calculator"});
         props.put("service.exported.interfaces", new String[] {"*"});
         logger.info("Registering " + CalculatorService.class.getName());
         CalculatorService calculator = new CalculatorServiceImpl(context);

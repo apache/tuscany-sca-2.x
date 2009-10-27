@@ -53,10 +53,8 @@ import org.apache.tuscany.sca.policy.PolicySet;
  * @version $Rev$ $Date$
  */
 public class DefinitionsProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<Definitions> {
-
     private StAXArtifactProcessor<Object> extensionProcessor;
     private DefinitionsFactory definitionsFactory;
-    
 
     public static final String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200903";
     public static final String BINDING = "binding";
@@ -144,6 +142,10 @@ public class DefinitionsProcessor extends BaseStAXArtifactProcessor implements S
         for (PolicySet policySet : definitions.getPolicySets()) {
             extensionProcessor.write(policySet, writer, context);
         }
+        
+        for (Binding binding : definitions.getBindings()) {
+            extensionProcessor.write(binding, writer, context);
+        }
 
         for (BindingType bindingType : definitions.getBindingTypes()) {
             extensionProcessor.write(bindingType, writer, context);
@@ -203,7 +205,11 @@ public class DefinitionsProcessor extends BaseStAXArtifactProcessor implements S
 
         for (PolicySet policySet : referredPolicySets)
             extensionProcessor.resolve(policySet, resolver, context);
-
+        
+        for (Binding binding : scaDefns.getBindings()) {
+            extensionProcessor.resolve(binding, resolver, context);
+        }
+        
         for (BindingType bindingType : scaDefns.getBindingTypes()) {
             extensionProcessor.resolve(bindingType, resolver, context);
         }

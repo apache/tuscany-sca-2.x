@@ -18,3 +18,6 @@ Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-DocURL: http://www.apache.org/
 Service-Component-Disabled: OSGI-INF/calculator-component.xml
 Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6
+SCA-Configuration: OSGI-INF/sca-config/calculator-config.xml
+Remote-Service: OSGI-INF/remote-service/*.xml
+

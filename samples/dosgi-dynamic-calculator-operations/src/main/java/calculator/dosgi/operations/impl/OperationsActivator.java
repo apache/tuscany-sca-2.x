@@ -49,22 +49,22 @@ public class OperationsActivator implements BundleActivator {
         
         logger.info("Registering " + AddService.class.getName());
         props.put("sca.service", "AddComponent#service-name(Add)");
-        props.put("sca.bindings", new String[] {"OSGI-INF/sca/add-service.bindings"});
+        props.put("org.osgi.sca.bindings", new String[] {"{http://sample}Add"});
         context.registerService(AddService.class.getName(), new AddServiceImpl(), props);
 
         logger.info("Registering " + SubtractService.class.getName());
         props.put("sca.service", "SubtractComponent#service-name(Subtract)");
-        props.put("sca.bindings", new String[] {"OSGI-INF/sca/subtract-service.bindings"});
+        props.put("org.osgi.sca.bindings", new String[] {"{http://sample}Subtract"});
         context.registerService(SubtractService.class.getName(), new SubtractServiceImpl(), props);
 
         logger.info("Registering " + MultiplyService.class.getName());
         props.put("sca.service", "MultiplyComponent#service-name(Multiply)");
-        props.put("sca.bindings", new String[] {"OSGI-INF/sca/multiply-service.bindings"});
+        props.put("org.osgi.sca.bindings", new String[] {"{http://sample}Multiply"});
         context.registerService(MultiplyService.class.getName(), new MultiplyServiceImpl(), props);
 
         logger.info("Registering " + DivideService.class.getName());
         props.put("sca.service", "DivideComponent#service-name(Divide)");
-        props.put("sca.bindings", new String[] {"OSGI-INF/sca/divide-service.bindings"});
+        props.put("org.osgi.sca.bindings", new String[] {"{http://sample}Divide"});
         context.registerService(DivideService.class.getName(), new DivideServiceImpl(), props);
 
         getBundle(context, AddService.class);

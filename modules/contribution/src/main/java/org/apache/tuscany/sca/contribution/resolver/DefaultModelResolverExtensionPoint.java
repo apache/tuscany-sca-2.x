@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
 import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
@@ -103,11 +104,19 @@ public class DefaultModelResolverExtensionPoint implements ModelResolverExtensio
         }
         
         // Load model resolvers
-        for (ServiceDeclaration modelResolverDeclaration: modelResolverDeclarations) {
+        for (ServiceDeclaration modelResolverDeclaration : modelResolverDeclarations) {
             Map<String, String> attributes = modelResolverDeclaration.getAttributes();
             String model = attributes.get("model");
+            // The model can be a list of interfaces so that one model resolver can be used
+            // to resolve different types of models
+            if (model != null) {
+                StringTokenizer tokenizer = new StringTokenizer(model);
+                while (tokenizer.hasMoreTokens()) {
+                    String key = tokenizer.nextToken();
+                    loadedResolvers.put(key, modelResolverDeclaration);
+                }
 
-            loadedResolvers.put(model, modelResolverDeclaration);
+            }
         }
     }
 

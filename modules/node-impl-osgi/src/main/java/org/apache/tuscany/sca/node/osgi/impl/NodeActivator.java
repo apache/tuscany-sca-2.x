@@ -21,8 +21,8 @@ package org.apache.tuscany.sca.node.osgi.impl;
 
 import static org.apache.tuscany.sca.node.osgi.impl.NodeManager.isSCABundle;
 
-import org.apache.tuscany.sca.osgi.remoteserviceadmin.impl.TopologyManagerImpl;
 import org.apache.tuscany.sca.osgi.remoteserviceadmin.impl.RemoteServiceAdminImpl;
+import org.apache.tuscany.sca.osgi.remoteserviceadmin.impl.TopologyManagerImpl;
 import org.apache.tuscany.sca.osgi.service.discovery.impl.DiscoveryActivator;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
@@ -63,13 +63,10 @@ public class NodeActivator implements BundleActivator, SynchronousBundleListener
         remoteAdmin = new RemoteServiceAdminImpl(context);
         remoteAdmin.start();
         
+        discoveryActivator.start(context);
+        
         controller = new TopologyManagerImpl(context);
         controller.start();
-        
-//        exporter = new OSGiServiceExporter(context);
-//        exporter.start();
-        
-        discoveryActivator.start(context);
         
         boolean found = false;
         for (Bundle b : context.getBundles()) {

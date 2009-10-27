@@ -20,3 +20,4 @@ Service-Component-Disabled: OSGI-INF/add-component.xml,
  OSGI-INF/multiply-component.xml,
  OSGI-INF/divide-component.xml
 Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6
+SCA-Configuration: OSGI-INF/sca-config/*.xml

@@ -78,7 +78,7 @@ public class OSGiDistributionProvider {
         props.put(PRODUCT_NAME, "Apache Tuscany SCA");
         props.put(PRODUCT_VERSION, headers.get(Constants.BUNDLE_VERSION));
         props.put(VENDOR_NAME, headers.get(Constants.BUNDLE_VENDOR));
-        props.put(REMOTE_CONFIGS_SUPPORTED, new String[] {"sca"});
+        props.put(REMOTE_CONFIGS_SUPPORTED, new String[] {"org.osgi.sca"});
         // FIXME: We need to populate the list of intents from the SCA definitions
         props.put(REMOTE_INTENTS_SUPPORTED, new String[] {});
         return props;

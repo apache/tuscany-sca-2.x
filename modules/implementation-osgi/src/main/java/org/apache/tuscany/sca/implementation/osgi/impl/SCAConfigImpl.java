@@ -19,18 +19,40 @@
 
 package org.apache.tuscany.sca.implementation.osgi.impl;
 
-import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.implementation.osgi.BindingDescriptions;
+import org.apache.tuscany.sca.implementation.osgi.SCAConfig;
+import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
  * 
  */
-public class BindingDescriptionsImpl extends ArrayList<Binding> implements BindingDescriptions {
-    private static final long serialVersionUID = 7647814680087128002L;
+public class SCAConfigImpl implements SCAConfig {
+    private String targetNamespace = null;
+    private List<Intent> intents = new CopyOnWriteArrayList<Intent>();
+    private List<PolicySet> policySets = new CopyOnWriteArrayList<PolicySet>();
+    private List<Binding> bindings = new CopyOnWriteArrayList<Binding>();
 
-    public BindingDescriptionsImpl() {
-        super();
+    public List<Intent> getIntents() {
+        return intents;
+    }
+
+    public List<PolicySet> getPolicySets() {
+        return policySets;
+    }
+
+    public String getTargetNamespace() {
+        return targetNamespace;
+    }
+
+    public void setTargetNamespace(String ns) {
+        this.targetNamespace = ns;
+    }
+
+    public List<Binding> getBindings() {
+        return bindings;
     }
 }

@@ -33,6 +33,7 @@ import org.apache.tuscany.sca.node.impl.NodeFactoryImpl;
 import org.apache.tuscany.sca.node.impl.NodeImpl;
 import org.apache.tuscany.sca.osgi.remoteserviceadmin.EndpointDescription;
 import org.apache.tuscany.sca.osgi.remoteserviceadmin.ImportRegistration;
+import org.apache.tuscany.sca.osgi.service.discovery.impl.LocalDiscoveryService;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -46,6 +47,7 @@ public class OSGiServiceImporter implements LifeCycleListener {
     private BundleContext context;
     private NodeFactoryImpl nodeFactory;
     private EndpointIntrospector introspector;
+    private ServiceTracker discoveryTracker;
 
     /**
      * @param context
@@ -60,7 +62,9 @@ public class OSGiServiceImporter implements LifeCycleListener {
         if (nodeFactory == null) {
             this.nodeFactory = (NodeFactoryImpl)NodeFactory.newInstance();
             this.nodeFactory.init();
-            this.introspector = new EndpointIntrospector(context, getExtensionPointRegistry());
+            this.discoveryTracker = LocalDiscoveryService.getTracker(context);
+            discoveryTracker.open();
+            this.introspector = new EndpointIntrospector(context, getExtensionPointRegistry(), discoveryTracker);
         }
     }
 
@@ -68,6 +72,12 @@ public class OSGiServiceImporter implements LifeCycleListener {
     }
 
     public void stop() {
+        discoveryTracker.close();
+        discoveryTracker = null;
+        introspector = null;
+        nodeFactory = null;
+        registry = null;
+        context = null;
     }
 
     public ImportRegistration importService(Bundle bundle, EndpointDescription endpointDescription) {

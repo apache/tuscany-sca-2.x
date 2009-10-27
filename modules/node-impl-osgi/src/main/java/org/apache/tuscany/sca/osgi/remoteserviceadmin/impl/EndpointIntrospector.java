@@ -28,10 +28,6 @@ import static org.osgi.framework.Constants.OBJECTCLASS;
 import static org.osgi.framework.Constants.SERVICE_ID;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -44,10 +40,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Base;
@@ -62,50 +55,48 @@ import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
-import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
-import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
-import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
-import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ExtensibleModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
-import org.apache.tuscany.sca.implementation.osgi.BindingDescriptions;
+import org.apache.tuscany.sca.deployment.Deployer;
 import org.apache.tuscany.sca.implementation.osgi.OSGiImplementation;
 import org.apache.tuscany.sca.implementation.osgi.OSGiImplementationFactory;
 import org.apache.tuscany.sca.implementation.osgi.OSGiProperty;
-import org.apache.tuscany.sca.implementation.osgi.ServiceDescriptionsFactory;
+import org.apache.tuscany.sca.implementation.osgi.SCAConfig;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.osgi.remoteserviceadmin.EndpointDescription;
+import org.apache.tuscany.sca.osgi.service.discovery.impl.LocalDiscoveryService;
+import org.apache.tuscany.sca.osgi.service.discovery.impl.LocalDiscoveryService.ExtenderConfiguration;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicyFactory;
+import org.oasisopen.sca.ServiceRuntimeException;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
+import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * Introspect an OSGi Service to create an SCA composite that contains a single component with
  * implementation.osgi
  */
 public class EndpointIntrospector {
+    private BundleContext context;
     private AssemblyFactory assemblyFactory;
     private ContributionFactory contributionFactory;
     private OSGiImplementationFactory implementationFactory;
-    private ServiceDescriptionsFactory serviceDescriptionsFactory;
     private PolicyFactory policyFactory;
     private ExtensionPointRegistry registry;
     private FactoryExtensionPoint factories;
     private ModelResolverExtensionPoint modelResolvers;
-    private XMLInputFactory xmlInputFactory;
-    private XMLOutputFactory xmlOutputFactory;
     private JavaInterfaceFactory javaInterfaceFactory;
-    private StAXArtifactProcessor processor;
+    private Deployer deployer;
+    private ServiceTracker discoveryTracker;
 
     /**
      * @param intentName
@@ -131,8 +122,10 @@ public class EndpointIntrospector {
      * @param context TODO
      * @param registry
      */
-    public EndpointIntrospector(BundleContext context, ExtensionPointRegistry registry) {
+    public EndpointIntrospector(BundleContext context, ExtensionPointRegistry registry, ServiceTracker discoveryTracker) {
         super();
+        this.context = context;
+        this.discoveryTracker = discoveryTracker;
         this.registry = registry;
         this.factories = registry.getExtensionPoint(FactoryExtensionPoint.class);
         this.modelResolvers = registry.getExtensionPoint(ModelResolverExtensionPoint.class);
@@ -140,15 +133,8 @@ public class EndpointIntrospector {
         this.contributionFactory = factories.getFactory(ContributionFactory.class);
         this.policyFactory = factories.getFactory(PolicyFactory.class);
         this.implementationFactory = factories.getFactory(OSGiImplementationFactory.class);
-        this.serviceDescriptionsFactory = factories.getFactory(ServiceDescriptionsFactory.class);
-        this.xmlInputFactory = factories.getFactory(XMLInputFactory.class);
-        this.xmlOutputFactory = factories.getFactory(XMLOutputFactory.class);
         this.javaInterfaceFactory = factories.getFactory(JavaInterfaceFactory.class);
-        StAXArtifactProcessorExtensionPoint processors =
-            registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        UtilityExtensionPoint utilities = this.registry.getExtensionPoint(UtilityExtensionPoint.class);
-        MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
-        processor = new ExtensibleStAXArtifactProcessor(processors, xmlInputFactory, xmlOutputFactory);
+        this.deployer = registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(Deployer.class);
     }
 
     private Intent getIntent(String intent) {
@@ -278,8 +264,8 @@ public class EndpointIntrospector {
             String[] objectClasses = getStrings(reference.getProperty(OBJECTCLASS));
             Set<String> objectClassSet = new HashSet<String>(Arrays.asList(objectClasses));
             if (!objectClassSet.containsAll(Arrays.asList(remoteInterfaces))) {
-                throw new IllegalArgumentException("The exported interfaces are not a subset of the types" 
-                                                   + " listed in the objectClass service property from the Service Reference");
+                throw new IllegalArgumentException(
+                                                   "The exported interfaces are not a subset of the types" + " listed in the objectClass service property from the Service Reference");
             }
         }
         for (String intf : remoteInterfaces) {
@@ -311,8 +297,8 @@ public class EndpointIntrospector {
         String[] requiredIntentsExtra = getStrings(properties.get(SERVICE_EXPORTED_INTENTS_EXTRA));
         List<Intent> extraIntents = getIntents(requiredIntentsExtra);
 
-        String[] bindingDocuments = getStrings(properties.get(SCA_BINDINGS));
-        List<Binding> bindings = loadBindings(reference.getBundle(), bindingDocuments);
+        String[] bindingNames = getStrings(properties.get(SCA_BINDINGS));
+        Collection<Binding> bindings = loadBindings(bindingNames);
 
         for (ComponentService componentService : component.getServices()) {
             componentService.getRequiredIntents().addAll(intents);
@@ -332,7 +318,7 @@ public class EndpointIntrospector {
     }
 
     public Contribution introspect(Bundle bundle, EndpointDescription endpoint) throws Exception {
-        Endpoint ep = (Endpoint) endpoint.getProperties().get(Endpoint.class.getName());
+        Endpoint ep = (Endpoint)endpoint.getProperties().get(Endpoint.class.getName());
         if (ep != null) {
             return introspect(bundle, ep);
         }
@@ -382,19 +368,12 @@ public class EndpointIntrospector {
         String[] requiredIntents = getStrings(properties.get(SERVICE_EXPORTED_INTENTS));
         List<Intent> intents = getIntents(requiredIntents);
 
-        String[] bindingDocuments = getStrings(properties.get(SCA_BINDINGS));
-        List<Binding> bindings = loadBindings(bundle, bindingDocuments);
-
-        List<Binding> bindingList = new ArrayList<Binding>(bindings);
-        BindingDescriptions bindingDescriptions =
-            (BindingDescriptions)properties.get(BindingDescriptions.BINDINGS_QNAME.toString());
-        if (bindingDescriptions != null) {
-            bindingList.addAll(bindingDescriptions);
-        }
+        String[] bindingNames = getStrings(properties.get(SCA_BINDINGS));
+        Collection<Binding> bindings = loadBindings(bindingNames);
 
         for (ComponentReference componentReference : component.getReferences()) {
             componentReference.getRequiredIntents().addAll(intents);
-            componentReference.getBindings().addAll(bindingList);
+            componentReference.getBindings().addAll(bindings);
         }
         // FIXME: Should we scan the owning bundle to create the SCA contribution?
         Contribution contribution = contributionFactory.createContribution();
@@ -455,46 +434,42 @@ public class EndpointIntrospector {
         return contribution;
     }
 
-    private List<Binding> loadBindings(Bundle bundle, String[] bindingDocuments) throws IOException,
-        ContributionReadException {
-        if (bindingDocuments == null || bindingDocuments.length == 0) {
+    private Collection<Binding> loadBindings(String[] qnames) throws IOException,
+        ContributionReadException, XMLStreamException {
+        if (qnames == null || qnames.length == 0) {
             return Collections.emptyList();
         }
-        List<Binding> bindings = new ArrayList<Binding>();
-        for (String doc : bindingDocuments) {
-            URL url = locate(bundle, doc);
-            if (url == null) {
-                throw new IOException("Entry " + doc + " cannot be found in bundle " + bundle);
-            }
-            bindings.addAll(loadBindings(url));
+        QName[] bindingNames = new QName[qnames.length];
+        int index = 0;
+        for (String name : qnames) {
+            bindingNames[index++] = getQName(name);
         }
-        return bindings;
-    }
 
-    private List<Binding> loadBindings(URL url) throws ContributionReadException, IOException {
-        InputStream is = url.openStream();
-        try {
-            XMLStreamReader reader = xmlInputFactory.createXMLStreamReader(is);
-            reader.nextTag();
-            Object model = processor.read(reader, new ProcessorContext(registry));
-            if (model instanceof BindingDescriptions) {
-                return ((BindingDescriptions)model);
-            } else {
-                return Collections.emptyList();
-            }
-        } catch (XMLStreamException e) {
-            throw new ContributionReadException(e);
-        } finally {
-            is.close();
-        }
-    }
+        LocalDiscoveryService discoveryService = (LocalDiscoveryService)discoveryTracker.getService();
 
-    private URL locate(Bundle bundle, String location) throws MalformedURLException {
-        URI uri = URI.create(location);
-        if (uri.isAbsolute()) {
-            return uri.toURL();
+        Map<QName, Binding> bindingMap = new HashMap<QName, Binding>();
+        if (discoveryService != null) {
+            for (ExtenderConfiguration config : discoveryService.getConfigurations()) {
+                for (SCAConfig sc : config.getSCAConfigs()) {
+                    for (QName bindingName : bindingNames) {
+                        if (sc.getTargetNamespace().equals(bindingName.getNamespaceURI())) {
+                            for (Binding binding : sc.getBindings()) {
+                                if (bindingName.getLocalPart().equals(binding.getName())) {
+                                    bindingMap.put(bindingName, binding);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
-        return bundle.getEntry(location);
+        for (QName bindingName : bindingNames) {
+            if (!bindingMap.containsKey(bindingName)) {
+                throw new ServiceRuntimeException("Binding cannot be resolved: " + bindingName);
+            }
+        }
+        return bindingMap.values();
     }
 
     /**

@@ -118,7 +118,7 @@ public abstract class AbstractDiscoveryService implements Discovery, LifeCycleLi
         props.put(PRODUCT_NAME, "Apache Tuscany SCA");
         props.put(PRODUCT_VERSION, headers.get(Constants.BUNDLE_VERSION));
         props.put(VENDOR_NAME, headers.get(Constants.BUNDLE_VENDOR));
-        props.put(SUPPORTED_PROTOCOLS, new String[] {"local", "org.osgi.sca"});
+        // props.put(SUPPORTED_PROTOCOLS, new String[] {"local", "org.osgi.sca"});
         return props;
     }
 

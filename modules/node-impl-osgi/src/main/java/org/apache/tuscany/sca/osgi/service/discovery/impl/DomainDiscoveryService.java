@@ -21,6 +21,8 @@ package org.apache.tuscany.sca.osgi.service.discovery.impl;
 
 import static org.apache.tuscany.sca.osgi.remoteserviceadmin.impl.EndpointHelper.createEndpointDescription;
 
+import java.util.Dictionary;
+
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
@@ -105,5 +107,11 @@ public class DomainDiscoveryService extends AbstractDiscoveryService implements 
         domainRegistryFactory.removeListener(this);
         super.stop();
     }
-
+    
+    @Override
+    protected Dictionary<String, Object> getProperties() {
+        Dictionary<String, Object> props = super.getProperties();
+        props.put(SUPPORTED_PROTOCOLS, new String[] {"org.osgi.sca"});
+        return props;
+    }
 }

@@ -24,58 +24,38 @@
     <!-- Describe a remote OSGi service  -->
     <service-description>
         <provide interface="calculator.dosgi.operations.AddService" />
-        <property name="service.exported.intents">sca:SOAP sca:HTTP</property>
-        <property name="service.exported.configs">sca</property>
-        <property name="sca.componentType">
-            OSGI-INF/sca/bundle.componentType
-             </property>
+        <property name="remote.exported.intents"></property>
+        <property name="remote.configs.supported">org.osgi.sca</property>
         <property name="sca.reference">
             addService
              </property>
-        <bindings>
-            <tuscany:binding.rmi uri="rmi://localhost:8085/AddService" />
-        </bindings>
+        <property name="org.osgi.sca.bindings">{http://sample}Add</property>
     </service-description>
     <service-description>
         <provide interface="calculator.dosgi.operations.SubtractService" />
-        <property name="service.exported.intents">sca:SOAP sca:HTTP</property>
-        <property name="service.exported.configs">sca</property>
-        <property name="sca.componentType">
-            OSGI-INF/sca/bundle.componentType
-             </property>
+        <property name="remote.exported.intents"></property>
+        <property name="remote.configs.supported">org.osgi.sca</property>
         <property name="sca.reference">
             subtractService
              </property>
-        <bindings>
-            <tuscany:binding.rmi uri="rmi://localhost:8085/SubtractService" />
-        </bindings>
+        <property name="org.osgi.sca.bindings">{http://sample}Subtract</property>
     </service-description>
     <service-description>
         <provide interface="calculator.dosgi.operations.MultiplyService" />
-        <property name="service.exported.intents">sca:SOAP sca:HTTP</property>
-        <property name="service.exported.configs">sca</property>
-        <property name="sca.componentType">
-            OSGI-INF/sca/bundle.componentType
-             </property>
+        <property name="remote.exported.intents"></property>
+        <property name="remote.configs.supported">org.osgi.sca</property>
         <property name="sca.reference">
             multiplyService
              </property>
-        <bindings>
-            <tuscany:binding.rmi uri="rmi://localhost:8085/MultiplyService" />
-        </bindings>
+        <property name="org.osgi.sca.bindings">{http://sample}Multiply</property>
     </service-description>
     <service-description>
         <provide interface="calculator.dosgi.operations.DivideService" />
-        <property name="service.exported.intents">sca:SOAP sca:HTTP</property>
-        <property name="service.exported.configs">sca</property>
-        <property name="sca.componentType">
-            OSGI-INF/sca/bundle.componentType
-             </property>
+        <property name="remote.exported.intents"></property>
+        <property name="remote.configs.supported">org.osgi.sca</property>
         <property name="sca.reference">
             divideService
              </property>
-        <bindings>
-            <tuscany:binding.rmi uri="rmi://localhost:8085/DivideService" />
-        </bindings>
+        <property name="org.osgi.sca.bindings">{http://sample}Divide</property>
     </service-description>
 </service-descriptions>

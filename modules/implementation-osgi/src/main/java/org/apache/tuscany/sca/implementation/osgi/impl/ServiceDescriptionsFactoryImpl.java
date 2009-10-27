@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.implementation.osgi.impl;
 
-import org.apache.tuscany.sca.implementation.osgi.BindingDescriptions;
+import org.apache.tuscany.sca.implementation.osgi.SCAConfig;
 import org.apache.tuscany.sca.implementation.osgi.ServiceDescription;
 import org.apache.tuscany.sca.implementation.osgi.ServiceDescriptions;
 import org.apache.tuscany.sca.implementation.osgi.ServiceDescriptionsFactory;
@@ -41,8 +41,8 @@ public class ServiceDescriptionsFactoryImpl implements ServiceDescriptionsFactor
         return new ServiceDescriptionsImpl();
     }
 
-    public BindingDescriptions createBindingDescriptions() {
-        return new BindingDescriptionsImpl();
+    public SCAConfig createSCAConfig() {
+        return new SCAConfigImpl();
     }
 
 }
