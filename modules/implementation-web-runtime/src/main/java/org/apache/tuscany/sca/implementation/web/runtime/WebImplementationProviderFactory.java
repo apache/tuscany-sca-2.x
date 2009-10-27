@@ -45,6 +45,7 @@ public class WebImplementationProviderFactory implements ImplementationProviderF
 
     public ImplementationProvider createImplementationProvider(RuntimeComponent component, WebImplementation implementation) {
         servletHost.setAttribute("org.apache.tuscany.sca.implementation.web.RuntimeComponent", component);
+        servletHost.setAttribute("org.oasisopen.sca.ComponentContext", new ComponentContextProxy(component));
 
         return new ImplementationProvider() {
             
