@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.core;
 
+import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
+
 
 /**
  * The registry for the Tuscany core extension points. As the point of contact
@@ -53,4 +55,10 @@ public interface ExtensionPointRegistry extends LifeCycleListener {
      * @throws IllegalArgumentException if extensionPoint is null
      */
     void removeExtensionPoint(Object extensionPoint);
+    
+    /**
+     * Get an instance of the ServiceDiscovery
+     * @return an instance of the ServiceDiscovery associated with the environment
+     */
+    ServiceDiscovery getServiceDiscovery();
 }

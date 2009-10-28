@@ -24,8 +24,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
-import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 
 
 /**
@@ -37,11 +37,13 @@ public class DefaultModelResolverExtensionPoint implements ModelResolverExtensio
     
     private final Map<Class<?>, Class<? extends ModelResolver>> resolvers = new HashMap<Class<?>, Class<? extends ModelResolver>>();
     private Map<String, ServiceDeclaration> loadedResolvers;
+    private ExtensionPointRegistry registry;
 
     /**
      * Constructs a new DefaultModelResolverExtensionPoint.
      */
-    public DefaultModelResolverExtensionPoint() {
+    public DefaultModelResolverExtensionPoint(ExtensionPointRegistry registry) {
+        this.registry = registry;
     }
 
     public void addResolver(Class<?> modelType, Class<? extends ModelResolver> resolver) {
@@ -98,7 +100,7 @@ public class DefaultModelResolverExtensionPoint implements ModelResolverExtensio
         // Get the model resolver service declarations
         Collection<ServiceDeclaration> modelResolverDeclarations; 
         try {
-            modelResolverDeclarations = ServiceDiscovery.getInstance().getServiceDeclarations(ModelResolver.class.getName());
+            modelResolverDeclarations = registry.getServiceDiscovery().getServiceDeclarations(ModelResolver.class.getName());
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }

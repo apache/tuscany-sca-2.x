@@ -33,10 +33,8 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
 import org.apache.tuscany.sca.extensibility.ServiceDeclarationParser;
-import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
@@ -49,7 +47,7 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
 public class DefaultStAXArtifactProcessorExtensionPoint extends
     DefaultArtifactProcessorExtensionPoint<StAXArtifactProcessor<?>> implements StAXArtifactProcessorExtensionPoint {
 
-    private ExtensionPointRegistry extensionPoints;
+    private ExtensionPointRegistry registry;
     private FactoryExtensionPoint modelFactories;
     private boolean loaded;
     private StAXArtifactProcessor<Object> extensibleStAXProcessor;
@@ -59,11 +57,10 @@ public class DefaultStAXArtifactProcessorExtensionPoint extends
      * Constructs a new extension point.
      */
     public DefaultStAXArtifactProcessorExtensionPoint(ExtensionPointRegistry extensionPoints) {
-        this.extensionPoints = extensionPoints;
+        this.registry = extensionPoints;
         this.modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         XMLInputFactory inputFactory = modelFactories.getFactory(XMLInputFactory.class);
         XMLOutputFactory outputFactory = modelFactories.getFactory(XMLOutputFactory.class);
-        UtilityExtensionPoint utilities = this.extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
         this.extensibleStAXProcessor = new ExtensibleStAXArtifactProcessor(this, inputFactory, outputFactory);
 
         StAXAttributeProcessorExtensionPoint attributeExtensionPoint =
@@ -113,7 +110,7 @@ public class DefaultStAXArtifactProcessorExtensionPoint extends
         Collection<ServiceDeclaration> processorDeclarations;
         try {
             processorDeclarations =
-                ServiceDiscovery.getInstance().getServiceDeclarations(StAXArtifactProcessor.class.getName());
+                registry.getServiceDiscovery().getServiceDeclarations(StAXArtifactProcessor.class.getName());
         } catch (IOException e) {
             IllegalStateException ie = new IllegalStateException(e);
             throw ie;
@@ -136,7 +133,7 @@ public class DefaultStAXArtifactProcessorExtensionPoint extends
             // Create a processor wrapper and register it
             StAXArtifactProcessor<?> processor =
                 new LazyStAXArtifactProcessor(artifactType, modelTypeName, factoryName, processorDeclaration,
-                                              extensionPoints, modelFactories, extensibleStAXProcessor,
+                                              registry, modelFactories, extensibleStAXProcessor,
                                               extensibleStAXAttributeProcessor);
             addArtifactProcessor(processor);
         }

@@ -26,9 +26,9 @@ import java.lang.reflect.Modifier;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
-import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 
 
 
@@ -38,14 +38,14 @@ import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
  * @version $Rev$ $Date$
  */
 public class DefaultFactoryExtensionPoint implements FactoryExtensionPoint {
-    private ExtensionPointRegistry extensionPointRegistry;
-    private HashMap<Class<?>, Object> factories = new HashMap<Class<?>, Object>();
+    private ExtensionPointRegistry registry;
+    private Map<Class<?>, Object> factories = new HashMap<Class<?>, Object>();
     
     /**
      * Constructs a new DefaultModelFactoryExtensionPoint.
      */
     public DefaultFactoryExtensionPoint(ExtensionPointRegistry extensionPointRegistry) {
-        this.extensionPointRegistry = extensionPointRegistry;
+        this.registry = extensionPointRegistry;
     }
 
     /**
@@ -53,7 +53,7 @@ public class DefaultFactoryExtensionPoint implements FactoryExtensionPoint {
      * 
      * @param factory The factory to add
      */
-    public void addFactory(Object factory) {
+    public synchronized void addFactory(Object factory) {
         Class<?>[] interfaces = factory.getClass().getInterfaces();
         if (interfaces.length == 0) {
             Class<?> sc = factory.getClass().getSuperclass();
@@ -72,7 +72,7 @@ public class DefaultFactoryExtensionPoint implements FactoryExtensionPoint {
      *  
      * @param factory The factory to remove
      */
-    public void removeFactory(Object factory) {
+    public synchronized void removeFactory(Object factory) {
         Class<?>[] interfaces = factory.getClass().getInterfaces();
         if (interfaces.length == 0) {
             Class<?> sc = factory.getClass().getSuperclass();
@@ -103,18 +103,18 @@ public class DefaultFactoryExtensionPoint implements FactoryExtensionPoint {
      * @param factoryInterface The lookup key (factory interface)
      * @return The factory
      */    
-    public <T> T getFactory(Class<T> factoryInterface) {
+    public synchronized <T> T getFactory(Class<T> factoryInterface) {
         Object factory = factories.get(factoryInterface);
         if (factory == null) {
 
             // Dynamically load a factory class declared under META-INF/services 
             try {
                 ServiceDeclaration factoryDeclaration =
-                    ServiceDiscovery.getInstance().getServiceDeclaration(factoryInterface);
+                    registry.getServiceDiscovery().getServiceDeclaration(factoryInterface);
                 if (factoryDeclaration != null) {
                     try {
                         // Constructor taking the extension point registry
-                        factory = newInstance(extensionPointRegistry, factoryDeclaration);
+                        factory = newInstance(registry, factoryDeclaration);
                     } catch (NoSuchMethodException e) {
                         factory = newInstance(factoryDeclaration.loadClass(), FactoryExtensionPoint.class, this);
                     }

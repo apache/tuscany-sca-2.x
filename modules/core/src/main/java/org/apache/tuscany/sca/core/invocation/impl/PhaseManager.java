@@ -49,8 +49,10 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
-import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 import org.apache.tuscany.sca.invocation.Phase;
 import org.oasisopen.sca.ServiceRuntimeException;
 
@@ -59,7 +61,7 @@ import org.oasisopen.sca.ServiceRuntimeException;
  */
 public class PhaseManager {
     private static final Logger log = Logger.getLogger(PhaseManager.class.getName());
-
+    
     public static final String STAGE_REFERENCE = "reference";
     public static final String STAGE_REFERENCE_BINDING = "reference.binding";
     public static final String STAGE_SERVICE_BINDING = "service.binding";
@@ -80,6 +82,7 @@ public class PhaseManager {
 
     private static final String[] SYSTEM_IMPLEMENTATION_PHASES = {IMPLEMENTATION_POLICY, IMPLEMENTATION};
 
+    private ExtensionPointRegistry registry;
     private String pattern = Phase.class.getName();
     private Map<String, Stage> stages;
     private List<String> phases;
@@ -121,14 +124,25 @@ public class PhaseManager {
             return name + phases;
         }
     }
-
+    
+    /**
+     * @param registry
+     */
+    public PhaseManager(ExtensionPointRegistry registry) {
+        super();
+        this.registry = registry;
+    }
+    
+    public static PhaseManager getInstance(ExtensionPointRegistry registry) {
+        UtilityExtensionPoint utilityExtensionPoint = registry.getExtensionPoint(UtilityExtensionPoint.class);
+        return utilityExtensionPoint.getUtility(PhaseManager.class);
+    }
+    
     // For unit test purpose
     PhaseManager(String pattern) {
         super();
         this.pattern = pattern;
-    }
-
-    public PhaseManager() {
+        this.registry = new DefaultExtensionPointRegistry();
     }
 
     private List<String> getPhases(String stage) {
@@ -176,7 +190,7 @@ public class PhaseManager {
 
         Collection<ServiceDeclaration> services;
         try {
-            services = ServiceDiscovery.getInstance().getServiceDeclarations(pattern);
+            services = registry.getServiceDiscovery().getServiceDeclarations(pattern);
         } catch (IOException e) {
             throw new ServiceRuntimeException(e);
         }

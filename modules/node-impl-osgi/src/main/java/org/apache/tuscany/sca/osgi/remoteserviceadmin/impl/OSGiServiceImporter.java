@@ -24,30 +24,19 @@ import java.util.Collections;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.contribution.Contribution;
-import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.core.LifeCycleListener;
 import org.apache.tuscany.sca.node.Node;
-import org.apache.tuscany.sca.node.NodeFactory;
 import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
-import org.apache.tuscany.sca.node.impl.NodeFactoryImpl;
 import org.apache.tuscany.sca.node.impl.NodeImpl;
 import org.apache.tuscany.sca.osgi.remoteserviceadmin.EndpointDescription;
 import org.apache.tuscany.sca.osgi.remoteserviceadmin.ImportRegistration;
-import org.apache.tuscany.sca.osgi.service.discovery.impl.LocalDiscoveryService;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
-import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * Watching and exporting OSGi services 
  */
-public class OSGiServiceImporter implements LifeCycleListener {
-    private ExtensionPointRegistry registry;
-    private BundleContext context;
-    private NodeFactoryImpl nodeFactory;
-    private EndpointIntrospector introspector;
-    private ServiceTracker discoveryTracker;
+public class OSGiServiceImporter extends AbstractOSGiServiceHandler {
 
     /**
      * @param context
@@ -55,29 +44,10 @@ public class OSGiServiceImporter implements LifeCycleListener {
      * @param customizer
      */
     public OSGiServiceImporter(BundleContext context) {
-        this.context = context;
-    }
-
-    private synchronized void init() {
-        if (nodeFactory == null) {
-            this.nodeFactory = (NodeFactoryImpl)NodeFactory.newInstance();
-            this.nodeFactory.init();
-            this.discoveryTracker = LocalDiscoveryService.getTracker(context);
-            discoveryTracker.open();
-            this.introspector = new EndpointIntrospector(context, getExtensionPointRegistry(), discoveryTracker);
-        }
+        super(context);
     }
 
     public void start() {
-    }
-
-    public void stop() {
-        discoveryTracker.close();
-        discoveryTracker = null;
-        introspector = null;
-        nodeFactory = null;
-        registry = null;
-        context = null;
     }
 
     public ImportRegistration importService(Bundle bundle, EndpointDescription endpointDescription) {
@@ -87,6 +57,9 @@ public class OSGiServiceImporter implements LifeCycleListener {
             if (contribution != null) {
 
                 NodeConfiguration configuration = nodeFactory.createNodeConfiguration();
+                if (domainRegistry != null) {
+                    configuration.setDomainRegistryURI(domainRegistry);
+                }
                 configuration.setURI(contribution.getURI());
                 configuration.getExtensions().add(bundle);
                 // FIXME: Configure the domain and node URI
@@ -113,17 +86,6 @@ public class OSGiServiceImporter implements LifeCycleListener {
     public void unimportService(ImportRegistration importRegistration) {
         Node node = (Node)importRegistration.getImportedService().getProperty("sca.node");
         node.stop();
-    }
-
-    protected ExtensionPointRegistry getExtensionPointRegistry() {
-        if (registry == null) {
-            ServiceTracker tracker = new ServiceTracker(context, ExtensionPointRegistry.class.getName(), null);
-            tracker.open();
-            // tracker.waitForService(1000);
-            registry = (ExtensionPointRegistry)tracker.getService();
-            tracker.close();
-        }
-        return registry;
     }
 
 }

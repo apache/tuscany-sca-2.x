@@ -27,8 +27,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
-import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 
 /**
  * Default implementation of an extension point for XML schemas.
@@ -39,7 +39,13 @@ public class DefaultValidationSchemaExtensionPoint implements ValidationSchemaEx
     private boolean enabled = true;
     private List<String> schemas = new ArrayList<String>();
     private boolean loaded;
-
+    private ExtensionPointRegistry registry;
+    
+    public DefaultValidationSchemaExtensionPoint(ExtensionPointRegistry registry) {
+        super();
+        this.registry = registry;
+    }
+    
     public void addSchema(String uri) {
         schemas.add(uri);
     }
@@ -60,7 +66,7 @@ public class DefaultValidationSchemaExtensionPoint implements ValidationSchemaEx
         Collection<ServiceDeclaration> schemaDeclarations;
         try {
             schemaDeclarations =
-                ServiceDiscovery.getInstance()
+                registry.getServiceDiscovery()
                     .getServiceDeclarations("org.apache.tuscany.sca.contribution.processor.ValidationSchema");
         } catch (IOException e) {
             throw new IllegalStateException(e);

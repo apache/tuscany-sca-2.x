@@ -35,9 +35,7 @@ import javax.xml.stream.XMLOutputFactory;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
-import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 
 /**
  * The default implementation of a URL artifact processor extension point.
@@ -47,7 +45,7 @@ import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 public class DefaultURLArtifactProcessorExtensionPoint extends
     DefaultArtifactProcessorExtensionPoint<URLArtifactProcessor<?>> implements URLArtifactProcessorExtensionPoint {
 
-    private ExtensionPointRegistry extensionPoints;
+    private ExtensionPointRegistry registry;
     private StAXArtifactProcessor<?> staxProcessor;
     private boolean loaded;
 
@@ -55,11 +53,10 @@ public class DefaultURLArtifactProcessorExtensionPoint extends
      * Constructs a new extension point.
      */
     public DefaultURLArtifactProcessorExtensionPoint(ExtensionPointRegistry extensionPoints) {
-        this.extensionPoints = extensionPoints;
-        FactoryExtensionPoint modelFactories = this.extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
+        this.registry = extensionPoints;
+        FactoryExtensionPoint modelFactories = this.registry.getExtensionPoint(FactoryExtensionPoint.class);
         XMLInputFactory inputFactory = modelFactories.getFactory(XMLInputFactory.class);
         XMLOutputFactory outputFactory = modelFactories.getFactory(XMLOutputFactory.class);
-        UtilityExtensionPoint utilities = this.extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
         StAXArtifactProcessorExtensionPoint staxProcessors =
             extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, outputFactory);
@@ -201,7 +198,7 @@ public class DefaultURLArtifactProcessorExtensionPoint extends
         Collection<ServiceDeclaration> processorDeclarations;
         try {
             processorDeclarations =
-                ServiceDiscovery.getInstance().getServiceDeclarations(URLArtifactProcessor.class.getName());
+                registry.getServiceDiscovery().getServiceDeclarations(URLArtifactProcessor.class.getName());
         } catch (IOException e) {
             IllegalStateException ie = new IllegalStateException(e);
             throw ie;
@@ -215,7 +212,7 @@ public class DefaultURLArtifactProcessorExtensionPoint extends
 
             // Create a processor wrapper and register it
             URLArtifactProcessor<?> processor =
-                new LazyURLArtifactProcessor(artifactType, modelTypeName, processorDeclaration, extensionPoints,
+                new LazyURLArtifactProcessor(artifactType, modelTypeName, processorDeclaration, registry,
                                              staxProcessor);
             addArtifactProcessor(processor);
         }

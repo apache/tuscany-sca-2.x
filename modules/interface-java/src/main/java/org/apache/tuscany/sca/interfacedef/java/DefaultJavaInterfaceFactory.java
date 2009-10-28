@@ -26,7 +26,6 @@ import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
-import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceFactoryImpl;
 import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceVisitor;
 
@@ -38,13 +37,13 @@ import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceVisitor;
 public class DefaultJavaInterfaceFactory extends JavaInterfaceFactoryImpl implements JavaInterfaceFactory {
     private static final Logger logger = Logger.getLogger(DefaultJavaInterfaceFactory.class.getName());
     
-    private ExtensionPointRegistry extensionPointRegistry;
+    private ExtensionPointRegistry registry;
     // private Monitor monitor = null;
     private boolean loadedVisitors; 
     
     public DefaultJavaInterfaceFactory(ExtensionPointRegistry registry) {
         super();
-        this.extensionPointRegistry = registry;
+        this.registry = registry;
     }
     
     @Override
@@ -64,7 +63,7 @@ public class DefaultJavaInterfaceFactory extends JavaInterfaceFactoryImpl implem
         // Get the databinding service declarations
         Collection<ServiceDeclaration> visitorDeclarations; 
         try {
-            visitorDeclarations = ServiceDiscovery.getInstance().getServiceDeclarations(JavaInterfaceVisitor.class, true);
+            visitorDeclarations = registry.getServiceDiscovery().getServiceDeclarations(JavaInterfaceVisitor.class, true);
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
@@ -77,7 +76,7 @@ public class DefaultJavaInterfaceFactory extends JavaInterfaceFactoryImpl implem
                 
                 try {
                     Constructor<JavaInterfaceVisitor> constructor = visitorClass.getConstructor(ExtensionPointRegistry.class);
-                    visitor = constructor.newInstance(extensionPointRegistry);
+                    visitor = constructor.newInstance(registry);
                 } catch (NoSuchMethodException e) {
                     visitor = visitorClass.newInstance();
                 }

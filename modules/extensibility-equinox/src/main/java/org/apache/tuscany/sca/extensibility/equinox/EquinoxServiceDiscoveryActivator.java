@@ -38,6 +38,7 @@ public class EquinoxServiceDiscoveryActivator implements BundleActivator {
     }
 
     public void stop(BundleContext context) throws Exception {
+        ServiceDiscovery.getInstance().setServiceDiscoverer(null);
     }
 
 }

@@ -28,6 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.LifeCycleListener;
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
+import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
@@ -42,7 +43,7 @@ public class OSGiExtensionPointRegistry extends DefaultExtensionPointRegistry {
     private BundleContext bundleContext;
 
     public OSGiExtensionPointRegistry(BundleContext bundleContext) {
-        super();
+        super(ServiceDiscovery.getInstance(new EquinoxServiceDiscoverer(bundleContext)));
         this.bundleContext = bundleContext;
     }
 
@@ -102,7 +103,7 @@ public class OSGiExtensionPointRegistry extends DefaultExtensionPointRegistry {
     }
 
     @Override
-    public void stop() {
+    public synchronized void stop() {
         // Get a unique map as an extension point may exist in the map by different keys
         Map<LifeCycleListener, LifeCycleListener> map = new IdentityHashMap<LifeCycleListener, LifeCycleListener>();
         for (ServiceRegistration reg : services.values()) {

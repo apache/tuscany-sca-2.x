@@ -95,7 +95,7 @@ public abstract class JavaImplementationFactoryImpl implements JavaImplementatio
         // Get the databinding service declarations
         Collection<ServiceDeclaration> visitorDeclarations; 
         try {
-            visitorDeclarations = ServiceDiscovery.getInstance().getServiceDeclarations(JavaClassVisitor.class, true);
+            visitorDeclarations = registry.getServiceDiscovery().getServiceDeclarations(JavaClassVisitor.class, true);
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }

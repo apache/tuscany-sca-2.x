@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.extensibility;
 
 import java.io.Serializable;
 
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.DefaultUtilityExtensionPoint;
 import org.apache.tuscany.sca.core.LifeCycleListener;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
@@ -41,7 +42,7 @@ public class DefaultUtilityExtensionPointTestCase {
      */
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        ep = new DefaultUtilityExtensionPoint(null);
+        ep = new DefaultUtilityExtensionPoint(new DefaultExtensionPointRegistry());
         ep.start();
     }
     

@@ -98,7 +98,7 @@ public class DefaultBuilderExtensionPoint implements BuilderExtensionPoint, Life
 
         // Get the provider factory service declarations
         Collection<ServiceDeclaration> builderDeclarations;
-        ServiceDiscovery serviceDiscovery = ServiceDiscovery.getInstance();
+        ServiceDiscovery serviceDiscovery = registry.getServiceDiscovery();
         try {
             builderDeclarations = serviceDiscovery.getServiceDeclarations(CompositeBuilder.class.getName());
         } catch (Exception e) {

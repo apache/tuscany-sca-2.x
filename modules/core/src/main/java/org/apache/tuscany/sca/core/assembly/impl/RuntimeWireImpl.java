@@ -43,6 +43,7 @@ import org.apache.tuscany.sca.core.invocation.ExtensibleWireProcessor;
 import org.apache.tuscany.sca.core.invocation.NonBlockingInterceptor;
 import org.apache.tuscany.sca.core.invocation.RuntimeWireInvoker;
 import org.apache.tuscany.sca.core.invocation.impl.InvocationChainImpl;
+import org.apache.tuscany.sca.core.invocation.impl.PhaseManager;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -88,6 +89,7 @@ public class RuntimeWireImpl implements RuntimeWire {
     private transient RuntimeWireProcessor wireProcessor;
     private transient InterfaceContractMapper interfaceContractMapper;
     private transient WorkScheduler workScheduler;
+    private transient PhaseManager phaseManager;
     private transient MessageFactory messageFactory;
     private transient RuntimeWireInvoker invoker;
 
@@ -135,6 +137,7 @@ public class RuntimeWireImpl implements RuntimeWire {
 
         UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
         this.eprBinder = utilities.getUtility(EndpointReferenceBinder.class);
+        this.phaseManager = utilities.getUtility(PhaseManager.class);
         this.providerFactories = extensionPoints.getExtensionPoint(ProviderFactoryExtensionPoint.class);
     }
 
@@ -158,6 +161,7 @@ public class RuntimeWireImpl implements RuntimeWire {
        this.invoker = new RuntimeWireInvoker(this.messageFactory, this);
 
        this.eprBinder = utilities.getUtility(EndpointReferenceBinder.class);
+       this.phaseManager = utilities.getUtility(PhaseManager.class);
        this.providerFactories = extensionPoints.getExtensionPoint(ProviderFactoryExtensionPoint.class);
    }
     
@@ -170,7 +174,7 @@ public class RuntimeWireImpl implements RuntimeWire {
 
     public synchronized InvocationChain getBindingInvocationChain() {
         if (bindingInvocationChain == null) {
-            bindingInvocationChain = new InvocationChainImpl(null, null, isReferenceWire);
+            bindingInvocationChain = new InvocationChainImpl(null, null, isReferenceWire, phaseManager);
             if (isReferenceWire) {
                 initReferenceBindingInvocationChains();
             } else {
@@ -289,7 +293,7 @@ public class RuntimeWireImpl implements RuntimeWire {
                         + "#"
                         + reference.getName());
                 }
-                InvocationChain chain = new InvocationChainImpl(operation, targetOperation, true);
+                InvocationChain chain = new InvocationChainImpl(operation, targetOperation, true, phaseManager);
                 if (operation.isNonBlocking()) {
                     addNonBlockingInterceptor(reference, refBinding, chain);
                 }
@@ -315,7 +319,7 @@ public class RuntimeWireImpl implements RuntimeWire {
                         + "#"
                         + service.getName());
                 }
-                InvocationChain chain = new InvocationChainImpl(operation, targetOperation, false);
+                InvocationChain chain = new InvocationChainImpl(operation, targetOperation, false, phaseManager);
                 if (operation.isNonBlocking()) {
                     addNonBlockingInterceptor(service, serviceBinding, chain);
                 }

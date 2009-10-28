@@ -13,6 +13,10 @@
 # "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
-# under the License. 
+# under the License.
+#
+# Eclipse Equinox 
 org.apache.tuscany.sca.contribution.osgi.impl.OSGiBundleContributionScanner;type=bundleentry
 org.apache.tuscany.sca.contribution.osgi.impl.OSGiBundleContributionScanner;type=bundleresource
+# Apache Felix
+org.apache.tuscany.sca.contribution.osgi.impl.OSGiBundleContributionScanner;type=bundle

@@ -118,7 +118,7 @@ public class DefaultTransformerExtensionPoint implements TransformerExtensionPoi
         Collection<ServiceDeclaration> transformerDeclarations;
 
         try {
-            transformerDeclarations = ServiceDiscovery.getInstance().getServiceDeclarations(transformerClass.getName());
+            transformerDeclarations = registry.getServiceDiscovery().getServiceDeclarations(transformerClass.getName());
 
         } catch (IOException e) {
             throw new IllegalStateException(e);

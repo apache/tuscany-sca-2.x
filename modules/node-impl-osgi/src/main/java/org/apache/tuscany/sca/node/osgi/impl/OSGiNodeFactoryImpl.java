@@ -33,6 +33,7 @@ import org.apache.tuscany.sca.node.configuration.NodeConfigurationFactory;
 import org.apache.tuscany.sca.node.impl.NodeFactoryImpl;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceRegistration;
 
 /**
@@ -44,10 +45,22 @@ public class OSGiNodeFactoryImpl extends NodeFactoryImpl {
     private ServiceRegistration registration;
     private BundleContext bundleContext;
 
+    public OSGiNodeFactoryImpl() {
+        super();
+        Bundle bundle = FrameworkUtil.getBundle(OSGiNodeFactoryImpl.class);
+        if (bundle != null) {
+            this.bundleContext = bundle.getBundleContext();
+            autoDestroy = false;
+            setNodeFactory(this);
+        } else {
+            throw new IllegalStateException(OSGiNodeFactoryImpl.class + " is not loaded by OSGi");
+        }
+    }
     /**
      * Constructs a new Node controller
      */
     public OSGiNodeFactoryImpl(BundleContext bundleContext) {
+        super();
         this.bundleContext = bundleContext;
         autoDestroy = false;
         setNodeFactory(this);

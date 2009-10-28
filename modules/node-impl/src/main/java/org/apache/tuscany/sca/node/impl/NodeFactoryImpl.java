@@ -154,6 +154,7 @@ public class NodeFactoryImpl extends NodeFactory {
             nodes.clear();
             deployer.stop();
             registry.stop();
+            super.destroy();
             inited = false;
         }
     }

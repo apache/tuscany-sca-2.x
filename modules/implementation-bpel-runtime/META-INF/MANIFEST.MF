@@ -53,7 +53,7 @@ Import-Package: javax.resource.spi,
  org.apache.tuscany.sca.policy;version="2.0.0",
  org.apache.tuscany.sca.provider;version="2.0",
  org.apache.tuscany.sca.runtime;version="2.0",
- org.eclipse.core.runtime;common=split,
+ org.eclipse.core.runtime;resolution:=optional;common=split,
  org.oasisopen.sca.annotation;version="2.0",
  org.w3c.dom;resolution:=optional
 Bundle-SymbolicName: org.apache.tuscany.sca.implementation.bpel.ode

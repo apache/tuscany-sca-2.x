@@ -21,7 +21,9 @@ package org.apache.tuscany.sca.osgi.remoteserviceadmin.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
@@ -36,6 +38,8 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.cm.ConfigurationException;
+import org.osgi.service.cm.ManagedService;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
 import org.osgi.util.tracker.ServiceTracker;
@@ -43,9 +47,10 @@ import org.osgi.util.tracker.ServiceTracker;
 /**
  * SCA Implementation of {@link RemoteServiceAdmin}
  */
-public class RemoteServiceAdminImpl implements RemoteServiceAdmin {
+public class RemoteServiceAdminImpl implements RemoteServiceAdmin, ManagedService {
     private BundleContext context;
     private ServiceRegistration registration;
+    private ServiceRegistration managedService;
     private ServiceTracker listeners;
 
     private OSGiServiceExporter exporter;
@@ -64,6 +69,9 @@ public class RemoteServiceAdminImpl implements RemoteServiceAdmin {
         exporter.start();
         importer.start();
         registration = context.registerService(RemoteServiceAdmin.class.getName(), this, null);
+        Hashtable<String, Object> props = new Hashtable<String, Object>();
+        props.put(Constants.SERVICE_PID, RemoteServiceAdminImpl.class.getName());
+        managedService = context.registerService(ManagedService.class.getName(), this, props);
         listeners = new ServiceTracker(this.context, RemoteServiceAdminListener.class.getName(), null);
         listeners.open();
     }
@@ -72,6 +80,10 @@ public class RemoteServiceAdminImpl implements RemoteServiceAdmin {
         if (registration != null) {
             registration.unregister();
             registration = null;
+        }
+        if (managedService != null) {
+            managedService.unregister();
+            managedService = null;
         }
         if (listeners != null) {
             listeners.close();
@@ -248,5 +260,13 @@ public class RemoteServiceAdminImpl implements RemoteServiceAdmin {
             importedEndpoints.add(importReg);
         }
         return importReg;
+    }
+
+    public synchronized void updated(Dictionary props) throws ConfigurationException {
+        String domainRegistry = (String)props.get("org.osgi.sca.domain.registry");
+        if (domainRegistry != null) {
+            exporter.setDomainRegistry(domainRegistry);
+            importer.setDomainRegistry(domainRegistry);
+        }
     }
 }

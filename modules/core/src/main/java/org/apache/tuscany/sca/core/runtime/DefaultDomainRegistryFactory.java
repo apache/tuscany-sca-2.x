@@ -32,7 +32,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.LifeCycleListener;
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
-import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.EndpointListener;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
@@ -58,7 +57,7 @@ public class DefaultDomainRegistryFactory implements DomainRegistryFactory, Life
     public void start() {
         Collection<ServiceDeclaration> sds = null;
         try {
-            sds = ServiceDiscovery.getInstance().getServiceDeclarations(EndpointRegistry.class);
+            sds = extensionRegistry.getServiceDiscovery().getServiceDeclarations(EndpointRegistry.class);
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }

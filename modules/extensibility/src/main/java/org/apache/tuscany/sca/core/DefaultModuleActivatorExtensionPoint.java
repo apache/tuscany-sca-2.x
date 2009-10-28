@@ -77,7 +77,7 @@ public class DefaultModuleActivatorExtensionPoint implements ModuleActivatorExte
         Collection<ServiceDeclaration> activatorDeclarations;
         try {
             // Load the module activators by ranking
-            activatorDeclarations = ServiceDiscovery.getInstance().getServiceDeclarations(ModuleActivator.class.getName(), true);
+            activatorDeclarations = registry.getServiceDiscovery().getServiceDeclarations(ModuleActivator.class.getName(), true);
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }

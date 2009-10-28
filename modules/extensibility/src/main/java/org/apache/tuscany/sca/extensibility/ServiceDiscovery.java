@@ -53,6 +53,11 @@ public final class ServiceDiscovery implements ServiceDiscoverer {
         super();
     }
 
+    private ServiceDiscovery(ServiceDiscoverer discoverer) {
+        super();
+        this.discoverer = discoverer;
+    }
+
     /**
      * Get an instance of Service discovery, one instance is created per
      * ClassLoader that this class is loaded from
@@ -61,6 +66,10 @@ public final class ServiceDiscovery implements ServiceDiscoverer {
      */
     public static ServiceDiscovery getInstance() {
         return INSTANCE;
+    }
+    
+    public static ServiceDiscovery getInstance(ServiceDiscoverer discoverer) {
+        return new ServiceDiscovery(discoverer);
     }
 
     public ServiceDiscoverer getServiceDiscoverer() {
@@ -80,8 +89,8 @@ public final class ServiceDiscovery implements ServiceDiscoverer {
     }
 
     public void setServiceDiscoverer(ServiceDiscoverer sd) {
-        if (discoverer != null) {
-            throw new IllegalStateException("The ServiceDiscoverer cannot be reset");
+        if (discoverer != null && sd != null) {
+            logger.warning("ServiceDiscoverer is reset to " + sd);
         }
         discoverer = sd;
     }
@@ -255,9 +264,9 @@ public final class ServiceDiscovery implements ServiceDiscoverer {
 
         @Override
         protected Class<?> findClass(String className) throws ClassNotFoundException {
-            for (ClassLoader parent : classLoaders) {
+            for (ClassLoader delegate : classLoaders) {
                 try {
-                    return parent.loadClass(className);
+                    return delegate.loadClass(className);
                 } catch (ClassNotFoundException e) {
                     continue;
                 }
@@ -267,8 +276,8 @@ public final class ServiceDiscovery implements ServiceDiscoverer {
 
         @Override
         protected URL findResource(String resName) {
-            for (ClassLoader parent : classLoaders) {
-                URL url = parent.getResource(resName);
+            for (ClassLoader delegate : classLoaders) {
+                URL url = delegate.getResource(resName);
                 if (url != null) {
                     return url;
                 }
@@ -279,8 +288,8 @@ public final class ServiceDiscovery implements ServiceDiscoverer {
         @Override
         protected Enumeration<URL> findResources(String resName) throws IOException {
             Set<URL> urlSet = new HashSet<URL>();
-            for (ClassLoader parent : classLoaders) {
-                Enumeration<URL> urls = parent.getResources(resName);
+            for (ClassLoader delegate : classLoaders) {
+                Enumeration<URL> urls = delegate.getResources(resName);
                 if (urls != null) {
                     while (urls.hasMoreElements()) {
                         urlSet.add(urls.nextElement());
@@ -327,6 +336,13 @@ public final class ServiceDiscovery implements ServiceDiscoverer {
         return loaders;
     }
 
+    /**
+     * Set the thread context classloader (TCCL) to a classloader that delegates to a collection
+     * of classloaders 
+     * @param parent The parent classloader
+     * @param delegates A list of classloaders to try
+     * @return The existing TCCL 
+     */
     public ClassLoader setContextClassLoader(ClassLoader parent, ClassLoader... delegates) {
         ClassLoader tccl = Thread.currentThread().getContextClassLoader();
         List<ClassLoader> loaders = new ArrayList<ClassLoader>();

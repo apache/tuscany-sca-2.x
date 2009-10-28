@@ -76,7 +76,7 @@ public class DefaultServletHostExtensionPoint implements ServletHostExtensionPoi
         // Get the databinding service declarations
         Collection<ServiceDeclaration> sds;
         try {
-            sds = ServiceDiscovery.getInstance().getServiceDeclarations(ServletHost.class, true);
+            sds = registry.getServiceDiscovery().getServiceDeclarations(ServletHost.class, true);
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }

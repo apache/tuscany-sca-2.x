@@ -90,7 +90,7 @@ public class DefaultWireProcessorExtensionPoint implements RuntimeWireProcessorE
         }
         try {
             Collection<ServiceDeclaration> sds =
-                ServiceDiscovery.getInstance().getServiceDeclarations(RuntimeWireProcessor.class, true);
+                registry.getServiceDiscovery().getServiceDeclarations(RuntimeWireProcessor.class, true);
             for (ServiceDeclaration sd : sds) {
                 Class type = sd.loadClass();
                 Constructor constructor = null;

@@ -40,15 +40,15 @@ public class InvocationChainImpl implements InvocationChain {
     private Operation targetOperation;
     private List<Node> nodes = new ArrayList<Node>();
 
-    // FIXME: Not a good practice to use static reference
-    private static final PhaseManager phaseManager = new PhaseManager();
+    private final PhaseManager phaseManager;
     private boolean forReference;
     private boolean allowsPassByReference;
 
-    public InvocationChainImpl(Operation sourceOperation, Operation targetOperation, boolean forReference) {
+    public InvocationChainImpl(Operation sourceOperation, Operation targetOperation, boolean forReference, PhaseManager phaseManager) {
         this.targetOperation = targetOperation;
         this.sourceOperation = sourceOperation;
         this.forReference = forReference;
+        this.phaseManager = phaseManager;
     }
 
     public Operation getTargetOperation() {

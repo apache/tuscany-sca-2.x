@@ -80,7 +80,7 @@ public class DefaultDefinitionsExtensionPoint implements DefinitionsExtensionPoi
         // Get the definitions declarations
         Collection<ServiceDeclaration> definitionsDeclarations;
         try {
-            definitionsDeclarations = ServiceDiscovery.getInstance().getServiceDeclarations(DEFINITIONS_FILE);
+            definitionsDeclarations = registry.getServiceDiscovery().getServiceDeclarations(DEFINITIONS_FILE);
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }

@@ -107,7 +107,7 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
         // Get the databinding service declarations
         Collection<ServiceDeclaration> dataBindingDeclarations;
         try {
-            dataBindingDeclarations = ServiceDiscovery.getInstance().getServiceDeclarations(DataBinding.class.getName());
+            dataBindingDeclarations = registry.getServiceDiscovery().getServiceDeclarations(DataBinding.class.getName());
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }

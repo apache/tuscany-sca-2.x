@@ -127,11 +127,11 @@ public class ReadDocumentTestCase {
 
     @Test
     public void testReadImplementation() throws Exception {
-
-        ValidationSchemaExtensionPoint schemas = new DefaultValidationSchemaExtensionPoint();
+        ExtensionPointRegistry registry = new DefaultExtensionPointRegistry();
+        ValidationSchemaExtensionPoint schemas = new DefaultValidationSchemaExtensionPoint(registry);
         schemas.addSchema(getClass().getClassLoader().getResource(TUSCANY_11_XSD).toString());
         XMLInputFactory validatingInputFactory = new DefaultValidatingXMLInputFactory(inputFactory, schemas);
-        DefaultFactoryExtensionPoint factories = new DefaultFactoryExtensionPoint(new DefaultExtensionPointRegistry());
+        DefaultFactoryExtensionPoint factories = new DefaultFactoryExtensionPoint(registry);
         factories.addFactory(validatingInputFactory);
 
         CompositeDocumentProcessor compositeDocumentProcessor =
@@ -157,7 +157,7 @@ public class ReadDocumentTestCase {
     public void testReadBinding() throws Exception {
 
         ExtensionPointRegistry registry = new DefaultExtensionPointRegistry();
-        ValidationSchemaExtensionPoint schemas = new DefaultValidationSchemaExtensionPoint();
+        ValidationSchemaExtensionPoint schemas = new DefaultValidationSchemaExtensionPoint(registry);
         schemas.addSchema(getClass().getClassLoader().getResource(TUSCANY_11_XSD).toString());
         XMLInputFactory validatingInputFactory = new DefaultValidatingXMLInputFactory(inputFactory, schemas);
         DefaultFactoryExtensionPoint factories = new DefaultFactoryExtensionPoint(registry);

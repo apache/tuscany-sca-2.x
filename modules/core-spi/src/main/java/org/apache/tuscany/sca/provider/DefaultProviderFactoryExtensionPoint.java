@@ -131,7 +131,7 @@ public class DefaultProviderFactoryExtensionPoint implements ProviderFactoryExte
 
         // Get the provider factory service declarations
         Collection<ServiceDeclaration> factoryDeclarations;
-        ServiceDiscovery serviceDiscovery = ServiceDiscovery.getInstance();
+        ServiceDiscovery serviceDiscovery = registry.getServiceDiscovery();
         try {
             factoryDeclarations = serviceDiscovery.getServiceDeclarations(factoryClass.getName(), true);
         } catch (Exception e) {

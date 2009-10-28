@@ -20,6 +20,7 @@ package org.apache.tuscany.sca.core.invocation.impl;
 
 import static org.junit.Assert.assertEquals;
 
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.OperationImpl;
 import org.apache.tuscany.sca.invocation.Interceptor;
@@ -37,7 +38,7 @@ public class InvocationChainImplTestCase {
     @Test
     public void testInsertAtEnd() throws Exception {
         Operation op = newOperation("foo");
-        InvocationChain chain = new InvocationChainImpl(op, op, true);
+        InvocationChain chain = new InvocationChainImpl(op, op, true, new PhaseManager(new DefaultExtensionPointRegistry()));
         Interceptor inter2 = new MockInterceptor();
         Interceptor inter1 = new MockInterceptor();
         chain.addInterceptor(inter1);
@@ -50,7 +51,7 @@ public class InvocationChainImplTestCase {
     @Test
     public void testAddByPhase() throws Exception {
         Operation op = newOperation("foo");
-        InvocationChain chain = new InvocationChainImpl(op, op, false);
+        InvocationChain chain = new InvocationChainImpl(op, op, false, new PhaseManager(new DefaultExtensionPointRegistry()));
         Interceptor inter1 = new MockInterceptor();
         Interceptor inter2 = new MockInterceptor();
         Interceptor inter3 = new MockInterceptor();

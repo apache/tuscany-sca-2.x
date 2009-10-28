@@ -27,6 +27,7 @@ import org.apache.tuscany.sca.contribution.DefaultContributionFactory;
 import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.DefaultFactoryExtensionPoint;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,11 +45,11 @@ public class ExtensibleModelResolverTestCase {
 
     @Before
     public void setUp() throws Exception {
-
-        ModelResolverExtensionPoint resolvers = new DefaultModelResolverExtensionPoint();
+        ExtensionPointRegistry registry = new DefaultExtensionPointRegistry();
+        ModelResolverExtensionPoint resolvers = new DefaultModelResolverExtensionPoint(registry);
         resolvers.addResolver(Model.class, TestModelResolver.class);
         context = new ProcessorContext();
-        FactoryExtensionPoint factories = new DefaultFactoryExtensionPoint(new DefaultExtensionPointRegistry());
+        FactoryExtensionPoint factories = new DefaultFactoryExtensionPoint(registry);
 
         resolver = new ExtensibleModelResolver(null, resolvers, factories);
 

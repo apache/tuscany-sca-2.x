@@ -42,11 +42,16 @@ import org.apache.tuscany.sca.extensibility.ServiceHelper;
  */
 public class DefaultExtensionPointRegistry implements ExtensionPointRegistry {
     private Map<Class<?>, Object> extensionPoints = new HashMap<Class<?>, Object>();
-
+    private ServiceDiscovery discovery;
     /**
      * Constructs a new registry.
      */
     public DefaultExtensionPointRegistry() {
+        this.discovery = ServiceDiscovery.getInstance();
+    }
+    
+    protected DefaultExtensionPointRegistry(ServiceDiscovery discovery) {
+        this.discovery = discovery;
     }
 
     /**
@@ -162,11 +167,11 @@ public class DefaultExtensionPointRegistry implements ExtensionPointRegistry {
         }
     }
 
-    public void start() {
+    public synchronized void start() {
         // Do nothing
     }
 
-    public void stop() {
+    public synchronized void stop() {
         // Get a unique map as an extension point may exist in the map by different keys
         Map<LifeCycleListener, LifeCycleListener> map = new IdentityHashMap<LifeCycleListener, LifeCycleListener>();
         for (Object extp : extensionPoints.values()) {
@@ -177,6 +182,10 @@ public class DefaultExtensionPointRegistry implements ExtensionPointRegistry {
         }
         ServiceHelper.stop(map.values());
         extensionPoints.clear();
+    }
+
+    public ServiceDiscovery getServiceDiscovery() {
+        return discovery;
     }
 
 }

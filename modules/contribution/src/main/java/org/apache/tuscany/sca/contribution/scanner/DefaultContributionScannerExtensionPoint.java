@@ -29,8 +29,8 @@ import java.util.Map;
 
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
-import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 
 /**
  * Default implementation of a contribution scanner extension point.
@@ -41,8 +41,10 @@ public class DefaultContributionScannerExtensionPoint implements ContributionSca
 
     private Map<String, ContributionScanner> scanners = new HashMap<String, ContributionScanner>();
     private boolean loaded;
+    private ExtensionPointRegistry registry;
 
-    public DefaultContributionScannerExtensionPoint() {
+    public DefaultContributionScannerExtensionPoint(ExtensionPointRegistry registry) {
+        this.registry = registry;
     }
 
     public void addContributionScanner(ContributionScanner scanner) {
@@ -65,7 +67,7 @@ public class DefaultContributionScannerExtensionPoint implements ContributionSca
         // Get the scanner service declarations
         Collection<ServiceDeclaration> scannerDeclarations;
         try {
-            scannerDeclarations = ServiceDiscovery.getInstance().getServiceDeclarations(ContributionScanner.class.getName());
+            scannerDeclarations = registry.getServiceDiscovery().getServiceDeclarations(ContributionScanner.class.getName());
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }

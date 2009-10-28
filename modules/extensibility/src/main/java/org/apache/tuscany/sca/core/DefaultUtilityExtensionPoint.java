@@ -30,7 +30,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
-import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 
 /**
  * Default implementation of an extension point to hold Tuscany utility utilities.
@@ -40,12 +39,12 @@ import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 public class DefaultUtilityExtensionPoint implements UtilityExtensionPoint {
     private Map<Object, Object> utilities = new ConcurrentHashMap<Object, Object>();
 
-    private ExtensionPointRegistry extensionPoints;
+    private ExtensionPointRegistry registry;
     /**
      * Constructs a new extension point.
      */
     public DefaultUtilityExtensionPoint(ExtensionPointRegistry extensionPoints) {
-        this.extensionPoints = extensionPoints;
+        this.registry = extensionPoints;
     }
 
     /**
@@ -56,11 +55,11 @@ public class DefaultUtilityExtensionPoint implements UtilityExtensionPoint {
      *
      * @throws IllegalArgumentException if utility is null
      */
-    public void addUtility(Object utility) {
+    public synchronized void addUtility(Object utility) {
         addUtility(null, utility);
     }
     
-    public void addUtility(Object key, Object utility) {
+    public synchronized void addUtility(Object key, Object utility) {
         if (utility == null) {
             throw new IllegalArgumentException("Cannot register null as a Service");
         }
@@ -91,7 +90,7 @@ public class DefaultUtilityExtensionPoint implements UtilityExtensionPoint {
      *
      * @throws IllegalArgumentException if utilityType is null
      */
-    public <T> T getUtility(Class<T> utilityType) {
+    public synchronized <T> T getUtility(Class<T> utilityType) {
         return getUtility(utilityType, null);
     }
 
@@ -102,7 +101,7 @@ public class DefaultUtilityExtensionPoint implements UtilityExtensionPoint {
      *
      * @throws IllegalArgumentException if utility is null
      */
-    public void removeUtility(Object utility) {
+    public synchronized void removeUtility(Object utility) {
         if (utility == null) {
             throw new IllegalArgumentException("Cannot remove null as a Service");
         }
@@ -144,7 +143,7 @@ public class DefaultUtilityExtensionPoint implements UtilityExtensionPoint {
         }
     }
 
-    public <T> T getUtility(Class<T> utilityType, Object key) {
+    public synchronized <T> T getUtility(Class<T> utilityType, Object key) {
         if (utilityType == null) {
             throw new IllegalArgumentException("Cannot lookup Service of type null");
         }
@@ -160,7 +159,7 @@ public class DefaultUtilityExtensionPoint implements UtilityExtensionPoint {
             // Dynamically load a utility class declared under META-INF/services/"utilityType"
             try {
                 ServiceDeclaration utilityDeclaration =
-                    ServiceDiscovery.getInstance().getServiceDeclaration(utilityType.getName());
+                    registry.getServiceDiscovery().getServiceDeclaration(utilityType.getName());
                 Class<?> utilityClass = null;
                 if (utilityDeclaration != null) {
                     utilityClass = utilityDeclaration.loadClass();
@@ -171,10 +170,10 @@ public class DefaultUtilityExtensionPoint implements UtilityExtensionPoint {
                 if (utilityClass != null) {
                     // Construct the utility
                     if (utilityDeclaration != null) {
-                        utility = newInstance(extensionPoints, utilityDeclaration);
+                        utility = newInstance(registry, utilityDeclaration);
                     } else {
                         try {
-                            utility = newInstance(utilityClass, ExtensionPointRegistry.class, extensionPoints);
+                            utility = newInstance(utilityClass, ExtensionPointRegistry.class, registry);
                         } catch (NoSuchMethodException e) {
                             utility = newInstance(utilityClass);
                         }
@@ -198,11 +197,11 @@ public class DefaultUtilityExtensionPoint implements UtilityExtensionPoint {
         return !utilityType.isInterface() && Modifier.isPublic(modifiers) && !Modifier.isAbstract(modifiers);
     }
 
-    public void start() {
+    public synchronized void start() {
         // NOOP
     }
 
-    public void stop() {
+    public synchronized void stop() {
         // Get a unique map as an extension point may exist in the map by different keys
         Map<LifeCycleListener, LifeCycleListener> map = new IdentityHashMap<LifeCycleListener, LifeCycleListener>();
         for (Object util : utilities.values()) {

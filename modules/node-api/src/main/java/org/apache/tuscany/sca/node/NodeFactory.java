@@ -166,8 +166,8 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
                     Class<?> discoveryClass = Class.forName("org.apache.tuscany.sca.extensibility.ServiceDiscovery");
                     Object instance = discoveryClass.getMethod("getInstance").invoke(null);
                     Object factoryDeclaration =
-                        discoveryClass.getMethod("getServiceDeclaration", String.class).invoke(instance,
-                                                                                               NodeFactory.class.getName());
+                        discoveryClass.getMethod("getServiceDeclaration", Class.class).invoke(instance,
+                                                                                              NodeFactory.class);
                     if (factoryDeclaration != null) {
                         Class<?> factoryImplClass =
                             (Class<?>)factoryDeclaration.getClass().getMethod("loadClass").invoke(factoryDeclaration);
@@ -177,11 +177,13 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
                     // Ignore
                 }
 
-                // Fail back to default impl
-                String className = "org.apache.tuscany.sca.node.impl.NodeFactoryImpl";
+                if (nodeFactory == null) {
+                    // Fail back to default impl
+                    String className = "org.apache.tuscany.sca.node.impl.NodeFactoryImpl";
 
-                Class<?> cls = Class.forName(className);
-                nodeFactory = (NodeFactory)cls.newInstance();
+                    Class<?> cls = Class.forName(className);
+                    nodeFactory = (NodeFactory)cls.newInstance();
+                }
 
             } catch (Exception e) {
                 throw new ServiceRuntimeException(e);
