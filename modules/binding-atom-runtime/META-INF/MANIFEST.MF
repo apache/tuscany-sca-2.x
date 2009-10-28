@@ -42,8 +42,7 @@ Import-Package: javax.servlet,
  org.apache.tuscany.sca.provider;version="2.0.0",
  org.apache.tuscany.sca.runtime;version="2.0.0",
  org.oasisopen.sca;version="2.0.0",
- org.oasisopen.sca.annotation;version="2.0.0",
- version="2.0.0";resolution:=optional
+ org.oasisopen.sca.annotation;version="2.0.0";resolution:=optional
 Bundle-SymbolicName: org.apache.tuscany.sca.binding.atom.abdera
 Bundle-DocURL: http://www.apache.org/
 
