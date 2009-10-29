@@ -56,6 +56,7 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.transform.Source;
 
 import org.apache.tuscany.sca.databinding.util.LRUCache;
+import org.apache.tuscany.sca.extensibility.ClassLoaderContext;
 import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 
 /**
@@ -125,9 +126,10 @@ public class JAXBContextCache {
                 public JAXBContext run() throws JAXBException {
                     // Try to set up TCCL so that JAXBContext service discovery works in OSGi
                     ClassLoader tccl =
-                        ServiceDiscovery.getInstance().setContextClassLoader(JAXBContextCache.class.getClassLoader(),
-                                                                             JAXBContext.class.getName(),
-                                                                             DatatypeFactory.class.getName());
+                        ClassLoaderContext.setContextClassLoader(JAXBContextCache.class.getClassLoader(),
+                                                                 ServiceDiscovery.getInstance(),
+                                                                 JAXBContext.class,
+                                                                 DatatypeFactory.class);
                     try {
                         JAXBContext context = JAXBContext.newInstance(classesToBeBound);
                         return context;

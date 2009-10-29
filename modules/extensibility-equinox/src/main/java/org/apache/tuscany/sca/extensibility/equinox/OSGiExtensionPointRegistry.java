@@ -21,14 +21,10 @@ package org.apache.tuscany.sca.extensibility.equinox;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
-import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
-import org.apache.tuscany.sca.core.LifeCycleListener;
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
 import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 import org.osgi.framework.Bundle;
@@ -38,11 +34,10 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 
 /**
- *
+ * OSGi ServiceRegistry based extension point registry
  */
 public class OSGiExtensionPointRegistry extends DefaultExtensionPointRegistry {
-    private static final Logger logger = Logger.getLogger(OSGiExtensionPointRegistry.class.getName());
-    private Map<Class<?>, ServiceRegistration> services = new ConcurrentHashMap<Class<?>, ServiceRegistration>();
+    private Map<Class<?>, ServiceRegistration> registrations = new ConcurrentHashMap<Class<?>, ServiceRegistration>();
     private BundleContext bundleContext;
 
     public OSGiExtensionPointRegistry(BundleContext bundleContext) {
@@ -51,27 +46,9 @@ public class OSGiExtensionPointRegistry extends DefaultExtensionPointRegistry {
     }
 
     @Override
-    protected <T> Object findExtensionPoint(Class<T> extensionPointType) {
-        ServiceRegistration registration = services.get(extensionPointType);
-        if (registration != null) {
-            ServiceReference ref = registration.getReference();
-            if (ref != null) {
-                return ref.getBundle().getBundleContext().getService(ref);
-            }
-        }
-        /*
-        else {
-            ServiceReference ref = bundleContext.getServiceReference(extensionPointType.getName());
-            if (ref != null) {
-                return bundleContext.getService(ref);
-            }
-        }
-        */
-        return null;
-    }
-
-    @Override
-    protected void registerExtensionPoint(Class<?> i, Object extensionPoint, ServiceDeclaration declaration) {
+    protected void registerExtensionPoint(Class<?> extensionPointType,
+                                          Object extensionPoint,
+                                          ServiceDeclaration declaration) {
         BundleContext context = bundleContext;
         if (declaration instanceof EquinoxServiceDiscoverer.ServiceDeclarationImpl) {
             EquinoxServiceDiscoverer.ServiceDeclarationImpl declarationImpl =
@@ -92,46 +69,34 @@ public class OSGiExtensionPointRegistry extends DefaultExtensionPointRegistry {
             context = bundle.getBundleContext();
         }
         Dictionary<Object, Object> props = new Hashtable<Object, Object>();
-        ServiceRegistration registration = context.registerService(i.getName(), extensionPoint, props);
-        services.put(i, registration);
+        ServiceRegistration registration = context.registerService(extensionPointType.getName(), extensionPoint, props);
+        registrations.put(extensionPointType, registration);
+        super.registerExtensionPoint(extensionPointType, extensionPoint, declaration);
     }
 
     @Override
     protected void unregisterExtensionPoint(Class<?> i) {
-        ServiceRegistration registration = services.get(i);
+        ServiceRegistration registration = registrations.remove(i);
         if (registration != null) {
             registration.unregister();
         }
-        services.remove(i);
+        super.unregisterExtensionPoint(i);
     }
 
     @Override
     public synchronized void stop() {
-        // Get a unique map as an extension point may exist in the map by different keys
-        Map<LifeCycleListener, LifeCycleListener> map = new IdentityHashMap<LifeCycleListener, LifeCycleListener>();
-        for (ServiceRegistration reg : services.values()) {
+        for (ServiceRegistration reg : registrations.values()) {
             try {
                 ServiceReference ref = reg.getReference();
                 if (ref != null) {
-                    Object service = bundleContext.getService(ref);
-                    if (service instanceof LifeCycleListener) {
-                        LifeCycleListener activator = (LifeCycleListener)service;
-                        map.put(activator, activator);
-                    }
                     reg.unregister();
                 }
-            } catch (Throwable e) {
-                logger.log(Level.WARNING, e.getMessage(), e);
+            } catch (IllegalStateException e) {
+                // Ignore it, the service has been unregistered when the owning bundle stops
             }
         }
-        for (LifeCycleListener activator : map.values()) {
-            try {
-                activator.stop();
-            } catch (Throwable e) {
-                logger.log(Level.WARNING, e.getMessage(), e);
-            }
-        }
-        services.clear();
+        registrations.clear();
+        super.stop();
     }
 
 }

@@ -62,9 +62,9 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
     protected static Map<String, NodeFactory> nodeFactories = new HashMap<String, NodeFactory>();
 
     protected static void setNodeFactory(NodeFactory factory) {
-        if (nodeFactories.get(Node.DEFAULT_DOMAIN_URI) != null) {
-            throw new IllegalStateException();
-        }
+//        if (nodeFactories.get(Node.DEFAULT_DOMAIN_URI) != null) {
+//            throw new IllegalStateException();
+//        }
         nodeFactories.put(Node.DEFAULT_DOMAIN_URI, factory);
     }
 

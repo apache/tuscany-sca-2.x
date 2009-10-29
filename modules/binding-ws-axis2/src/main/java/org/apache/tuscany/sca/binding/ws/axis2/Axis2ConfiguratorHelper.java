@@ -26,7 +26,7 @@ import java.security.PrivilegedExceptionAction;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.deployment.URLBasedAxisConfigurator;
-import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
+import org.apache.tuscany.sca.extensibility.ClassLoaderContext;
 import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
@@ -56,7 +56,7 @@ public class Axis2ConfiguratorHelper {
                         // The axis2 class loader
                         ClassLoader cl1 = URLBasedAxisConfigurator.class.getClassLoader();
                         
-                        ClassLoader tccl = ServiceDiscovery.getInstance().setContextClassLoader(cl0, cl1);
+                        ClassLoader tccl = ClassLoaderContext.setContextClassLoader(cl0, cl1);
                         
                         try {
                             return new TuscanyAxisConfigurator(isRampartRequired).getConfigurationContext();

@@ -20,19 +20,16 @@
 package org.apache.tuscany.sca.extensibility;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Enumeration;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.tuscany.sca.extensibility.impl.ClassLoaderDelegate;
 import org.apache.tuscany.sca.extensibility.impl.LDAPFilter;
 
 /**
@@ -242,131 +239,6 @@ public final class ServiceDiscovery implements ServiceDiscoverer {
 
     public ClassLoader getContextClassLoader() {
         return discoverer.getContextClassLoader();
-    }
-    
-    private static class ClassLoaderDelegate extends ClassLoader {
-        private final List<ClassLoader> classLoaders = new ArrayList<ClassLoader>();
-
-        /**
-         * @param parent The parent classloaders
-         * @param loaders A list of classloaders to be used to load classes or resources
-         */
-        public ClassLoaderDelegate(ClassLoader parent, Collection<ClassLoader> loaders) {
-            super(parent);
-            if (loaders != null) {
-                for (ClassLoader cl : loaders) {
-                    if (cl != null && cl != parent && !classLoaders.contains(cl)) {
-                        this.classLoaders.add(cl);
-                    }
-                }
-            }
-        }
-
-        @Override
-        protected Class<?> findClass(String className) throws ClassNotFoundException {
-            for (ClassLoader delegate : classLoaders) {
-                try {
-                    return delegate.loadClass(className);
-                } catch (ClassNotFoundException e) {
-                    continue;
-                }
-            }
-            throw new ClassNotFoundException(className);
-        }
-
-        @Override
-        protected URL findResource(String resName) {
-            for (ClassLoader delegate : classLoaders) {
-                URL url = delegate.getResource(resName);
-                if (url != null) {
-                    return url;
-                }
-            }
-            return null;
-        }
-
-        @Override
-        protected Enumeration<URL> findResources(String resName) throws IOException {
-            Set<URL> urlSet = new HashSet<URL>();
-            for (ClassLoader delegate : classLoaders) {
-                Enumeration<URL> urls = delegate.getResources(resName);
-                if (urls != null) {
-                    while (urls.hasMoreElements()) {
-                        urlSet.add(urls.nextElement());
-                    }
-                }
-            }
-            return Collections.enumeration(urlSet);
-        }
-    }
-
-    private ClassLoader getClassLoader(String serviceProvider) {
-        try {
-            ServiceDeclaration sd = getServiceDeclaration(serviceProvider);
-            if (sd != null) {
-                return sd.loadClass().getClassLoader();
-            }
-        } catch (Exception e) {
-            // Ignore
-        }
-        return null;
-    }
-    
-    /**
-     * Set the context classloader so that it can access the list of service providers
-     * @param parent The parent classloader
-     * @param serviceProviders A list of service provider names
-     * @return The old TCCL if a new one is set, otherwise null
-     */
-    public ClassLoader setContextClassLoader(ClassLoader parent, String... serviceProviders) {
-        List<ClassLoader> loaders = getClassLoaders(serviceProviders);
-        return setContextClassLoader(parent, loaders.toArray(new ClassLoader[loaders.size()]));
-    }
-
-    private List<ClassLoader> getClassLoaders(String... serviceProviders) {
-        List<ClassLoader> loaders = new ArrayList<ClassLoader>();
-        for (String sp : serviceProviders) {
-            ClassLoader loader = getClassLoader(sp);
-            if (loader != null) {
-                if (!loaders.contains(loader)) {
-                    loaders.add(loader);
-                }
-            }
-        }
-        return loaders;
-    }
-
-    /**
-     * Set the thread context classloader (TCCL) to a classloader that delegates to a collection
-     * of classloaders 
-     * @param parent The parent classloader
-     * @param delegates A list of classloaders to try
-     * @return The existing TCCL 
-     */
-    public ClassLoader setContextClassLoader(ClassLoader parent, ClassLoader... delegates) {
-        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
-        List<ClassLoader> loaders = new ArrayList<ClassLoader>();
-        for (ClassLoader loader : delegates) {
-            if (loader != null && loader != tccl && loader != parent) {
-                if (!loaders.contains(loader)) {
-                    loaders.add(loader);
-                }
-            }
-        }
-        if (!loaders.isEmpty()) {
-            ClassLoader cl = getContextClassLoader();
-            if (cl != parent) {
-                loaders.add(cl);
-            }
-            if (tccl != parent) {
-                loaders.add(tccl);
-            }
-            ClassLoader newTccl = new ClassLoaderDelegate(parent, loaders);
-            Thread.currentThread().setContextClassLoader(newTccl);
-            return tccl;
-        } else {
-            return null;
-        }
     }
 
 }

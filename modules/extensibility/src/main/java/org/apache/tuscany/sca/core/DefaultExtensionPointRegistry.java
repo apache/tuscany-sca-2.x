@@ -41,7 +41,7 @@ import org.apache.tuscany.sca.extensibility.ServiceHelper;
  * @version $Rev$ $Date$
  */
 public class DefaultExtensionPointRegistry implements ExtensionPointRegistry {
-    private Map<Class<?>, Object> extensionPoints = new HashMap<Class<?>, Object>();
+    protected Map<Class<?>, Object> extensionPoints = new HashMap<Class<?>, Object>();
     private ServiceDiscovery discovery;
     /**
      * Constructs a new registry.
