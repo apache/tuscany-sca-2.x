@@ -25,3 +25,4 @@ org.apache.tuscany.sca.policy.identity.SecurityIdentityPolicyProcessor;qname=htt
 org.apache.tuscany.sca.policy.identity.SecurityIdentityPolicyProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.1#securityIdentity,model=org.apache.tuscany.sca.policy.identity.SecurityIdentityPolicy
 org.apache.tuscany.sca.policy.security.jaas.JaasAuthenticationPolicyProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.1#jaasAuthentication,model=org.apache.tuscany.sca.policy.security.jaas.JaasAuthenticationPolicy
 org.apache.tuscany.sca.policy.authentication.basic.BasicAuthenticationPolicyProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.1#basicAuthentication,model=org.apache.tuscany.sca.policy.authentication.basic.BasicAuthenticationPolicy
+

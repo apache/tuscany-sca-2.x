@@ -17,3 +17,4 @@
 
 # implementation classes for the databindings
 org.apache.tuscany.sca.databinding.jaxb.JAXBDataBinding;name=javax.xml.bind.JAXBElement
+

@@ -17,3 +17,4 @@
 
 # Implementation class for the artifact processor extension
 org.apache.tuscany.sca.assembly.xml.DefaultBeanModelProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.1#binding.jsonp,model=org.apache.tuscany.sca.binding.jsonp.JSONPBinding,factory=org.apache.tuscany.sca.binding.jsonp.JSONPBindingFactory
+

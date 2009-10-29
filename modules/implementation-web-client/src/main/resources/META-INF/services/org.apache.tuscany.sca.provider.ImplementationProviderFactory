@@ -19,3 +19,4 @@
 org.apache.tuscany.sca.implementation.web.client.ClientProviderFactory;model=org.apache.tuscany.sca.implementation.web.WebImplementation;ranking=1234
 
 
+

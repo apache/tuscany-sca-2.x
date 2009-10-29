@@ -15,3 +15,4 @@
 # specific language governing permissions and limitations
 # under the License.
 org.apache.tuscany.sca.node.configuration.xml.NodeConfigurationProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.1#node,model=org.apache.tuscany.sca.node.configuration.NodeConfiguration
+

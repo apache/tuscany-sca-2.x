@@ -38,3 +38,4 @@ org.apache.tuscany.sca.databinding.xml.Source2StringTransformer;source=javax.xml
 
 org.apache.tuscany.sca.databinding.xml.Node2SourceTransformer;source=org.w3c.dom.Node,target=javax.xml.transform.Source,weight=80
 org.apache.tuscany.sca.databinding.xml.String2SourceTransformer;source=java.lang.String,target=javax.xml.transform.Source,weight=80
+

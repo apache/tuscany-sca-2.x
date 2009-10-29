@@ -27,3 +27,4 @@ org.apache.tuscany.sca.core.databinding.transformers.Input2InputTransformer;sour
 org.apache.tuscany.sca.core.databinding.transformers.Output2OutputTransformer;source=idl:output,target=idl:output,weight=10,public=false
 # Group to Group
 org.apache.tuscany.sca.databinding.impl.Group2GroupTransformer;source=databinding:group,target=databinding:group,weight=10,public=false
+

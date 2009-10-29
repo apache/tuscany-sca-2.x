@@ -16,3 +16,4 @@
 # under the License. 
 
 org.apache.tuscany.sca.contribution.osgi.impl.OSGiBundleReferenceModelResolver;model=org.apache.tuscany.sca.contribution.osgi.BundleReference
+

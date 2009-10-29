@@ -17,3 +17,4 @@
 
 # Implementation class for model factory
 org.apache.tuscany.sca.binding.http.impl.HTTPBindingFactoryImpl
+

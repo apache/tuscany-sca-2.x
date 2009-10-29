@@ -19,3 +19,4 @@
 org.apache.tuscany.sca.binding.ws.axis2.policy.configuration.Axis2ConfigParamPolicyProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.1#wsConfigParam,model=org.apache.tuscany.sca.binding.ws.axis2.policy.configuration.Axis2ConfigParamPolicy
 org.apache.tuscany.sca.binding.ws.axis2.policy.authentication.token.Axis2TokenAuthenticationPolicyProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.1#axis2TokenAuthentication,model=org.apache.tuscany.sca.binding.ws.axis2.policy.authentication.token.Axis2TokenAuthenticationPolicy
 org.apache.tuscany.sca.binding.ws.axis2.policy.header.Axis2HeaderPolicyProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.1#axis2Header,model=org.apache.tuscany.sca.binding.ws.axis2.policy.header.Axis2HeaderPolicy
+

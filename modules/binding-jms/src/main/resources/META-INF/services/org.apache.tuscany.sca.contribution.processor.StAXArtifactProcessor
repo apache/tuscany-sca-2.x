@@ -27,3 +27,4 @@ org.apache.tuscany.sca.binding.jms.operationselector.OperationSelectorJMSDefault
 org.apache.tuscany.sca.binding.jms.operationselector.OperationSelectorJMSUserPropProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.1#operationSelector.jmsUserProp,model=org.apache.tuscany.sca.binding.jms.operationselector.OperationSelectorJMSUserProp
 org.apache.tuscany.sca.binding.jms.policy.authentication.token.JMSTokenAuthenticationPolicyProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.0#jmsTokenAuthentication,model=org.apache.tuscany.sca.binding.jms.policy.authentication.token.JMSTokenAuthenticationPolicy
 org.apache.tuscany.sca.binding.jms.policy.header.JMSHeaderPolicyProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.0#jmsHeader,model=org.apache.tuscany.sca.binding.jms.policy.header.JMSHeaderPolicy
+

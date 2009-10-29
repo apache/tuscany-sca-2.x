@@ -17,3 +17,4 @@
 
 # Implementation class for the artifact processor extension
 org.apache.tuscany.sca.implementation.osgi.xml.ServiceDescriptionsDocumentProcessor;type=/OSGI-INF/remote-service/*.xml,model=org.apache.tuscany.sca.implementation.osgi.ServiceDescriptions
+

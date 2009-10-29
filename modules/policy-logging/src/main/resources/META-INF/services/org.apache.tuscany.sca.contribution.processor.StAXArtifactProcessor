@@ -17,3 +17,4 @@
 
 # Implementation class for the artifact processor extension
 org.apache.tuscany.sca.policy.logging.jdk.JDKLoggingPolicyProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.1#jdkLogger,model=org.apache.tuscany.sca.policy.logging.jdk.JDKLoggingPolicy
+

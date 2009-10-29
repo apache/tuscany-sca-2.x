@@ -17,3 +17,4 @@
 
 # Implementation class for the binding extension
 org.apache.tuscany.sca.binding.sca.axis2.impl.Axis2SCABindingProviderFactory;model=org.apache.tuscany.sca.assembly.DistributedSCABinding
+

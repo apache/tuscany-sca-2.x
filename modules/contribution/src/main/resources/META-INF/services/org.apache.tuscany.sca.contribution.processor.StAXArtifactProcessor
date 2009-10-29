@@ -22,3 +22,4 @@ org.apache.tuscany.sca.contribution.namespace.impl.NamespaceImportProcessor;qnam
 org.apache.tuscany.sca.contribution.namespace.impl.NamespaceExportProcessor;qname=http://docs.oasis-open.org/ns/opencsa/sca/200903#export,model=org.apache.tuscany.sca.contribution.namespace.NamespaceExport
 org.apache.tuscany.sca.contribution.java.impl.JavaImportProcessor;qname=http://docs.oasis-open.org/ns/opencsa/sca/200903#import.java,model=org.apache.tuscany.sca.contribution.java.JavaImport
 org.apache.tuscany.sca.contribution.java.impl.JavaExportProcessor;qname=http://docs.oasis-open.org/ns/opencsa/sca/200903#export.java,model=org.apache.tuscany.sca.contribution.java.JavaExport
+

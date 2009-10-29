@@ -17,3 +17,4 @@
 
 # Implementation class for the artifact processor extension
 org.apache.tuscany.sca.implementation.spring.xml.SpringImplementationProcessor;qname=http://docs.oasis-open.org/ns/opencsa/sca/200903#implementation.spring,model=org.apache.tuscany.sca.implementation.spring.SpringImplementation
+

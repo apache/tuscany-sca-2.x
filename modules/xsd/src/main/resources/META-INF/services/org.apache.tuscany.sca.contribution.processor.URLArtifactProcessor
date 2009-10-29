@@ -17,3 +17,4 @@
 
 # Implementation class for the artifact processor extension
 org.apache.tuscany.sca.xsd.xml.XSDDocumentProcessor;type=.xsd,model=org.apache.tuscany.sca.xsd.XSDefinition
+

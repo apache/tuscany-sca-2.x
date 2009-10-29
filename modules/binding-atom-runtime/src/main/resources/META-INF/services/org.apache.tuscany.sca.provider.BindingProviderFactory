@@ -17,3 +17,4 @@
 
 # Implementation class for the binding extension
 org.apache.tuscany.sca.binding.atom.provider.AtomBindingProviderFactory;model=org.apache.tuscany.sca.binding.atom.AtomBinding
+

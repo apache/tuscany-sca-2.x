@@ -24,3 +24,4 @@ org.apache.tuscany.sca.databinding.jaxb.axiom.OMElement2JAXB;source=org.apache.a
 org.apache.tuscany.sca.databinding.jaxb.axiom.OMElement2JAXB;source=org.apache.axiom.om.OMElement,target=java:complexType,weight=90000,public=false
 org.apache.tuscany.sca.databinding.jaxb.axiom.OMElement2JAXB;source=org.apache.axiom.om.OMElement,target=java:simpleType,weight=90000,public=false
 
+

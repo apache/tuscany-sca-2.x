@@ -17,3 +17,4 @@
 
 # Implementation class for the artifact processor extension
 org.apache.tuscany.sca.implementation.java.xml.JavaImplementationProcessor;qname=http://docs.oasis-open.org/ns/opencsa/sca/200903#implementation.java,model=org.apache.tuscany.sca.implementation.java.JavaImplementation
+

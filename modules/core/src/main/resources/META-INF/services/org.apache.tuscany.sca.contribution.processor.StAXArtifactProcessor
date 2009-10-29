@@ -17,3 +17,4 @@
 
 # Implementation class for the artifact processor extension
 org.apache.tuscany.sca.core.assembly.impl.ReferenceParameterProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.1#referenceParameters,model=org.apache.tuscany.sca.runtime.ReferenceParameters
+

@@ -17,3 +17,4 @@
 
 # Implementation class for the artifact processor extension
 org.apache.tuscany.sca.binding.ejb.impl.EJBBindingProcessor;qname=http://docs.oasis-open.org/ns/opencsa/sca/200903#binding.ejb,model=org.apache.tuscany.sca.binding.ejb.EJBBinding
+

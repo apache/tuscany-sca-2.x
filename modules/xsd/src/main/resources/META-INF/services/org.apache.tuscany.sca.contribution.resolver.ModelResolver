@@ -16,3 +16,4 @@
 # under the License. 
 
 org.apache.tuscany.sca.xsd.xml.XSDModelResolver;model=org.apache.tuscany.sca.xsd.XSDefinition
+

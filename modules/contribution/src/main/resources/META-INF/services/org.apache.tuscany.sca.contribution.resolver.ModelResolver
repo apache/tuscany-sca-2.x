@@ -17,3 +17,4 @@
 
 org.apache.tuscany.sca.contribution.xml.ContributionModelResolver;model=org.apache.tuscany.sca.contribution.Contribution
 org.apache.tuscany.sca.contribution.java.impl.ClassLoaderModelResolver;model=org.apache.tuscany.sca.contribution.resolver.ClassReference
+

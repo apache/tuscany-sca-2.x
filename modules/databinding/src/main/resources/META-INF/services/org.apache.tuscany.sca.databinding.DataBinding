@@ -23,3 +23,4 @@ org.apache.tuscany.sca.databinding.javabeans.JavaBeansDataBinding;name=java:comp
 org.apache.tuscany.sca.databinding.javabeans.SimpleJavaDataBinding;name=java:simpleType
 org.apache.tuscany.sca.databinding.javabeans.JavaExceptionDataBinding;name=java:exception
 org.apache.tuscany.sca.databinding.externalizable.ExternalizableDataBinding;name=java.io.Externalizable
+

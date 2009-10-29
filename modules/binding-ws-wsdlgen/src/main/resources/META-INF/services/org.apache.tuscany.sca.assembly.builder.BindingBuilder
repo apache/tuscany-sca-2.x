@@ -15,3 +15,4 @@
 # specific language governing permissions and limitations
 # under the License. 
 org.apache.tuscany.sca.binding.ws.wsdlgen.WebServiceBindingBuilder;qname=http://docs.oasis-open.org/ns/opencsa/sca/200903#binding.ws
+

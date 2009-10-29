@@ -15,3 +15,4 @@
 # specific language governing permissions and limitations
 # under the License.
 org.apache.tuscany.sca.endpoint.tribes.ReplicatedEndpointRegistry;ranking=150,address=planetlab2.fem.tu-ilmenau.de,port=3998,timeout=50
+

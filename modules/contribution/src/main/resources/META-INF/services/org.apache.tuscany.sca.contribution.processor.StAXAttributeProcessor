@@ -17,3 +17,4 @@
 
 # Implementation class for the attribute processor extension
 org.apache.tuscany.sca.contribution.processor.xml.AnyAttributeProcessor;qname=http://www.w3.org/2001/XMLSchema#anyAttribute,model=org.apache.tuscany.sca.assembly.Extension
+

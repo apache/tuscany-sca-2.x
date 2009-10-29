@@ -26,3 +26,4 @@ org.apache.tuscany.sca.policy.xml.BindingTypeProcessor;qname=http://docs.oasis-o
 org.apache.tuscany.sca.policy.xml.ImplementationTypeProcessor;qname=http://docs.oasis-open.org/ns/opencsa/sca/200903#implementationType,model=org.apache.tuscany.sca.policy.ImplementationType
 org.apache.tuscany.sca.policy.xml.IntentProcessor;qname=http://docs.oasis-open.org/ns/opencsa/sca/200903#intent,model=org.apache.tuscany.sca.policy.Intent
 org.apache.tuscany.sca.policy.xml.PolicySetProcessor;qname=http://docs.oasis-open.org/ns/opencsa/sca/200903#policySet,model=org.apache.tuscany.sca.policy.PolicySet
+

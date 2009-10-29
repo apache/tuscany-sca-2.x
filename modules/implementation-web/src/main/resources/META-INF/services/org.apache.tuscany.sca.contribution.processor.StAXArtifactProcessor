@@ -17,3 +17,4 @@
 
 # Implementation class for the artifact processor extension
 org.apache.tuscany.sca.implementation.web.xml.WebImplementationProcessor;qname=http://docs.oasis-open.org/ns/opencsa/sca/200903#implementation.web,model=org.apache.tuscany.sca.implementation.web.WebImplementation,factory=org.apache.tuscany.sca.implementation.web.WebImplementationFactory
+

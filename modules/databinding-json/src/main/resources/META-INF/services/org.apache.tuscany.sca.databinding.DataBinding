@@ -17,3 +17,4 @@
 
 # implementation classes for the databindings
 org.apache.tuscany.sca.databinding.json.JSONDataBinding;name=JSON
+

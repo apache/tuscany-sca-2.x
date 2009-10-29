@@ -17,3 +17,4 @@
 
 # Implementation class for the binding extension
 org.apache.tuscany.sca.binding.http.provider.HTTPBindingProviderFactory;model=org.apache.tuscany.sca.binding.http.HTTPBinding
+

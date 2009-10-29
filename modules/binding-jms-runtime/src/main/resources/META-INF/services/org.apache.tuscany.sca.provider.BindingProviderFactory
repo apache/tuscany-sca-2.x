@@ -17,3 +17,4 @@
 
 # Implementation class for the binding extension
 org.apache.tuscany.sca.binding.jms.provider.JMSBindingProviderFactory;model=org.apache.tuscany.sca.binding.jms.JMSBinding
+

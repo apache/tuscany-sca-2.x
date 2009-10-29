@@ -19,3 +19,4 @@
 org.apache.tuscany.sca.policy.security.jaas.JaasAuthenticationPolicyProviderFactory;model=org.apache.tuscany.sca.policy.security.jaas.JaasAuthenticationPolicy
 org.apache.tuscany.sca.policy.authentication.basic.BasicAuthenticationPolicyProviderFactory;model=org.apache.tuscany.sca.policy.authentication.basic.BasicAuthenticationPolicy
 org.apache.tuscany.sca.policy.identity.SecurityIdentityPolicyProviderFactory;model=org.apache.tuscany.sca.policy.identity.SecurityIdentityPolicy
+

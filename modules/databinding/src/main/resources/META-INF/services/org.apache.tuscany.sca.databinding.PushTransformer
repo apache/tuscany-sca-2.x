@@ -24,3 +24,4 @@ org.apache.tuscany.sca.databinding.xml.Reader2SAX;source=java.io.Reader,target=o
 org.apache.tuscany.sca.databinding.xml.Source2ResultTransformer;source=javax.xml.transform.Source,target=javax.xml.transform.Result,weight=80
 org.apache.tuscany.sca.databinding.xml.String2SAX;source=java.lang.String,target=org.xml.sax.ContentHandler,weight=80
 org.apache.tuscany.sca.databinding.xml.XMLStreamReader2SAX;source=javax.xml.stream.XMLStreamReader,target=org.xml.sax.ContentHandler,weight=70
+

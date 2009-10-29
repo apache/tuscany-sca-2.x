@@ -18,3 +18,4 @@
 # Implementation class for the binding extension
 org.apache.tuscany.sca.binding.jms.operationselector.jmsdefault.runtime.OperationSelectorJMSDefaultProviderFactory;model=org.apache.tuscany.sca.binding.jms.operationselector.OperationSelectorJMSDefault
 org.apache.tuscany.sca.binding.jms.operationselector.jmsuserprop.runtime.OperationSelectorJMSUserPropProviderFactory;model=org.apache.tuscany.sca.binding.jms.operationselector.OperationSelectorJMSUserProp
+
