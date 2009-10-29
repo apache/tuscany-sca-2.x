@@ -206,9 +206,11 @@ public class NodeFactoryImpl extends NodeFactory {
         }
         long start = currentTimeMillis();
 
-        // Create extension point registry
-        registry = createExtensionPointRegistry();
-        registry.start();
+        if (registry == null) {
+            // Create extension point registry
+            registry = createExtensionPointRegistry();
+            registry.start();
+        }
         
         // Use the runtime-enabled assembly factory
         FactoryExtensionPoint modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
