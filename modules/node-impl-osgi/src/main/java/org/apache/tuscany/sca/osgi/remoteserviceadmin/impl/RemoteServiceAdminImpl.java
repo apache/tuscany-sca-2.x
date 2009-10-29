@@ -78,11 +78,19 @@ public class RemoteServiceAdminImpl implements RemoteServiceAdmin, ManagedServic
 
     public void stop() {
         if (registration != null) {
-            registration.unregister();
+            try {
+                registration.unregister();
+            } catch (IllegalStateException e) {
+                // The service has been unregistered, ignore it
+            }
             registration = null;
         }
         if (managedService != null) {
-            managedService.unregister();
+            try {
+                managedService.unregister();
+            } catch (IllegalStateException e) {
+                // The service has been unregistered, ignore it
+            }
             managedService = null;
         }
         if (listeners != null) {

@@ -111,7 +111,11 @@ public class OSGiNodeFactoryImpl extends NodeFactoryImpl {
     public synchronized void destroy() {
         if (inited) {
             if (registration != null) {
-                registration.unregister();
+                try {
+                    registration.unregister();
+                } catch (IllegalStateException e) {
+                    // The service has been unregistered, ignore it
+                }
                 registration = null;
             }
             super.destroy();

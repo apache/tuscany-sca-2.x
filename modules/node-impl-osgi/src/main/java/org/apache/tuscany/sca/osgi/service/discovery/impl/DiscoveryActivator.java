@@ -44,7 +44,11 @@ public class DiscoveryActivator implements BundleActivator {
 
     public void stop(BundleContext context) {
         for (ServiceRegistration registration : discoveryServiceRegistrations) {
-            registration.unregister();
+            try {
+                registration.unregister();
+            } catch (IllegalStateException e) {
+                // The service has been unregistered, ignore it
+            }        
         }
         for (AbstractDiscoveryService service : discoveryServices) {
             service.stop();

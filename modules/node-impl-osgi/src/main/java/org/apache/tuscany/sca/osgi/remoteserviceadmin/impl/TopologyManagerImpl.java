@@ -374,7 +374,11 @@ public class TopologyManagerImpl implements ListenerHook, RemoteServiceAdminList
         remotableServices.close();
 
         if (registration != null) {
-            registration.unregister();
+            try {
+                registration.unregister();
+            } catch (IllegalStateException e) {
+                // The service has been unregistered, ignore it
+            }
             registration = null;
         }
         if (remoteAdmins != null) {

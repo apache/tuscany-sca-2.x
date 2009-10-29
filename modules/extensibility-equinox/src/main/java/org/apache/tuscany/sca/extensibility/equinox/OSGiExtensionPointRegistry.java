@@ -78,7 +78,11 @@ public class OSGiExtensionPointRegistry extends DefaultExtensionPointRegistry {
     protected void unregisterExtensionPoint(Class<?> i) {
         ServiceRegistration registration = registrations.remove(i);
         if (registration != null) {
-            registration.unregister();
+            try {
+                registration.unregister();
+            } catch (IllegalStateException e) {
+                // The service has been unregistered, ignore it
+            }        
         }
         super.unregisterExtensionPoint(i);
     }

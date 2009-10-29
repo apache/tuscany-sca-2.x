@@ -39,7 +39,11 @@ public class OSGiImplementationRuntimeActivator implements BundleActivator {
 
     public void stop(BundleContext context) throws Exception {
         if (distributionProvider != null) {
-            distributionProvider.unregister();
+            try {
+                distributionProvider.unregister();
+            } catch (IllegalStateException e) {
+                // The service has been unregistered, ignore it
+            }        
         }
         bundleContext = null;
     }
