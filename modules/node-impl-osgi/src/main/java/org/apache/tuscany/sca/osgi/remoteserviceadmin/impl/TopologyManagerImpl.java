@@ -104,7 +104,8 @@ public class TopologyManagerImpl implements ListenerHook, RemoteServiceAdminList
         remoteAdmins.open();
 
         // DO NOT register EventHook.class.getName() as it cannot report existing services
-        String interfaceNames[] = new String[] {ListenerHook.class.getName(), RemoteServiceAdminListener.class.getName()};
+        String interfaceNames[] =
+            new String[] {ListenerHook.class.getName(), RemoteServiceAdminListener.class.getName()};
         // The registration will trigger the added() method before registration is assigned
         registration = context.registerService(interfaceNames, this, null);
 
@@ -189,39 +190,41 @@ public class TopologyManagerImpl implements ListenerHook, RemoteServiceAdminList
      * @see org.osgi.framework.hooks.service.ListenerHook#added(java.util.Collection)
      */
     public void added(Collection listeners) {
-        try {
-            Collection<ListenerInfo> listenerInfos = (Collection<ListenerInfo>)listeners;
-            boolean changed = false;
-            for (ListenerInfo l : listenerInfos) {
-                if (!l.isRemoved() && l.getBundleContext() != context) {
-                    String key = l.getFilter();
-                    if (key == null) {
-                        // key = "";
-                        // FIXME: It should always match, let's ignore it for now
-                        logger.warning("Service listner without a filter is skipped: " + l);
-                        continue;
+        synchronized (serviceListeners) {
+            try {
+                Collection<ListenerInfo> listenerInfos = (Collection<ListenerInfo>)listeners;
+                boolean changed = false;
+                for (ListenerInfo l : listenerInfos) {
+                    if (!l.isRemoved() && l.getBundleContext() != context) {
+                        String key = l.getFilter();
+                        if (key == null) {
+                            // key = "";
+                            // FIXME: It should always match, let's ignore it for now
+                            logger.warning("Service listner without a filter is skipped: " + l);
+                            continue;
+                        }
+                        Collection<ListenerInfo> infos = serviceListeners.get(key);
+                        if (infos == null) {
+                            infos = new HashSet<ListenerInfo>();
+                            serviceListeners.put(key, infos);
+                        }
+                        infos.add(l);
+                        changed = true;
                     }
-                    Collection<ListenerInfo> infos = serviceListeners.get(key);
-                    if (infos == null) {
-                        infos = new HashSet<ListenerInfo>();
-                        serviceListeners.put(key, infos);
-                    }
-                    infos.add(l);
-                    changed = true;
                 }
-            }
-            if (changed) {
-                updateEndpointListenerScope();
-            }
-        } catch (Throwable e) {
-            logger.log(Level.SEVERE, e.getMessage(), e);
-            if (e instanceof Error) {
-                throw (Error)e;
-            } else if (e instanceof RuntimeException) {
-                throw (RuntimeException)e;
-            } else {
-                // Should not happen
-                throw new RuntimeException(e);
+                if (changed) {
+                    updateEndpointListenerScope();
+                }
+            } catch (Throwable e) {
+                logger.log(Level.SEVERE, e.getMessage(), e);
+                if (e instanceof Error) {
+                    throw (Error)e;
+                } else if (e instanceof RuntimeException) {
+                    throw (RuntimeException)e;
+                } else {
+                    // Should not happen
+                    throw new RuntimeException(e);
+                }
             }
         }
     }
@@ -235,60 +238,74 @@ public class TopologyManagerImpl implements ListenerHook, RemoteServiceAdminList
     }
 
     private CollectionMap<Class<?>, ListenerInfo> findServiceListeners(EndpointDescription endpointDescription,
-                                                                           String matchedFilter) {
-        // First find all the listeners that have the matching filter
-        Collection<ListenerInfo> listeners = serviceListeners.get(matchedFilter);
-        if (listeners == null) {
-            return null;
-        }
+                                                                       String matchedFilter) {
+        synchronized (serviceListeners) {
 
-        // Try to partition the listeners by the interface classes 
-        List<String> interfaceNames = endpointDescription.getInterfaces();
-        CollectionMap<Class<?>, ListenerInfo> interfaceToListeners =
-            new CollectionMap<Class<?>, ListenerInfo>();
-        for (String i : interfaceNames) {
-            for (ListenerInfo listener : listeners) {
-                try {
-                    Class<?> interfaceClass = listener.getBundleContext().getBundle().loadClass(i);
-                    interfaceToListeners.putValue(interfaceClass, listener);
-                } catch (ClassNotFoundException e) {
-                    // Ignore the listener as it cannot load the interface class
+            // First find all the listeners that have the matching filter
+            Collection<ListenerInfo> listeners = serviceListeners.get(matchedFilter);
+            if (listeners == null) {
+                return null;
+            }
+
+            // Try to partition the listeners by the interface classes 
+            List<String> interfaceNames = endpointDescription.getInterfaces();
+            CollectionMap<Class<?>, ListenerInfo> interfaceToListeners = new CollectionMap<Class<?>, ListenerInfo>();
+            for (String i : interfaceNames) {
+                for (Iterator<ListenerInfo> it = listeners.iterator(); it.hasNext();) {
+                    try {
+                        ListenerInfo listener = it.next();
+                        if (listener.isRemoved()) {
+                            it.remove();
+                            continue;
+                        }
+                        try {
+                            Class<?> interfaceClass = listener.getBundleContext().getBundle().loadClass(i);
+                            interfaceToListeners.putValue(interfaceClass, listener);
+                        } catch (IllegalStateException e) {
+                            logger.log(Level.WARNING, e.getMessage(), e);
+                            // Ignore the exception
+                        }
+                    } catch (ClassNotFoundException e) {
+                        // Ignore the listener as it cannot load the interface class
+                    }
                 }
             }
+            return interfaceToListeners;
         }
-        return interfaceToListeners;
     }
 
     /**
      * @see org.osgi.framework.hooks.service.ListenerHook#removed(java.util.Collection)
      */
     public void removed(Collection listeners) {
-        try {
-            Collection<ListenerInfo> listenerInfos = (Collection<ListenerInfo>)listeners;
-            boolean changed = false;
-            for (ListenerInfo l : listenerInfos) {
-                if (registration != null && l.getBundleContext() != context) {
-                    String key = l.getFilter();
-                    if (key == null) {
-                        continue;
-                    }
-                    if (serviceListeners.removeValue(key, l)) {
-                        changed = true;
+        synchronized (serviceListeners) {
+            try {
+                Collection<ListenerInfo> listenerInfos = (Collection<ListenerInfo>)listeners;
+                boolean changed = false;
+                for (ListenerInfo l : listenerInfos) {
+                    if (registration != null && l.getBundleContext() != context) {
+                        String key = l.getFilter();
+                        if (key == null) {
+                            continue;
+                        }
+                        if (serviceListeners.removeValue(key, l)) {
+                            changed = true;
+                        }
                     }
                 }
-            }
-            if (changed) {
-                updateEndpointListenerScope();
-            }
-        } catch (Throwable e) {
-            logger.log(Level.SEVERE, e.getMessage(), e);
-            if (e instanceof Error) {
-                throw (Error)e;
-            } else if (e instanceof RuntimeException) {
-                throw (RuntimeException)e;
-            } else {
-                // Should not happen
-                throw new RuntimeException(e);
+                if (changed) {
+                    updateEndpointListenerScope();
+                }
+            } catch (Throwable e) {
+                logger.log(Level.SEVERE, e.getMessage(), e);
+                if (e instanceof Error) {
+                    throw (Error)e;
+                } else if (e instanceof RuntimeException) {
+                    throw (RuntimeException)e;
+                } else {
+                    // Should not happen
+                    throw new RuntimeException(e);
+                }
             }
         }
     }
@@ -385,9 +402,9 @@ public class TopologyManagerImpl implements ListenerHook, RemoteServiceAdminList
             remoteAdmins.close();
             remoteAdmins = null;
         }
-        for (Collection<ListenerInfo> infos : serviceListeners.values()) {
+        synchronized (serviceListeners) {
+            serviceListeners.clear();
         }
-        serviceListeners.clear();
     }
 
 }
