@@ -127,7 +127,12 @@ public class OSGiImplementationProvider implements ImplementationProvider {
 
     public void stop() {
         for (ServiceRegistration registration : registrations) {
-            registration.unregister();
+            try {
+                registration.unregister();
+            } catch (IllegalStateException e) {
+                // The service has been unregistered
+                // Ignore
+            }
         }
         registrations.clear();
         try {
