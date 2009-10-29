@@ -48,6 +48,7 @@ public class OSGiServiceImporter extends AbstractOSGiServiceHandler {
     }
 
     public void start() {
+        // Defer init() to importService()
     }
 
     public ImportRegistration importService(Bundle bundle, EndpointDescription endpointDescription) {

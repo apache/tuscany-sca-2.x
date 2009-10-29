@@ -73,12 +73,14 @@ public class AbstractOSGiServiceHandler implements LifeCycleListener {
     }
 
     public void stop() {
-        discoveryTracker.close();
-        discoveryTracker = null;
-        introspector = null;
-        nodeFactory = null;
-        registry = null;
-        context = null;
+        if (nodeFactory != null) {
+            discoveryTracker.close();
+            discoveryTracker = null;
+            introspector = null;
+            nodeFactory = null;
+            registry = null;
+            context = null;
+        }
     }
 
     public void setDomainRegistry(String domainRegistry) {

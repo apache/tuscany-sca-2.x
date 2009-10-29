@@ -96,12 +96,15 @@ public class OSGiNodeFactoryImpl extends NodeFactoryImpl {
 
     public synchronized void init() {
         if (!inited) {
-            super.init();
-
             // Register the ExtensionPointRegistry as an OSGi service
             Dictionary<Object, Object> props = new Hashtable<Object, Object>();
+            registry = createExtensionPointRegistry();
+            registry.start();
             registration =
                 bundleContext.registerService(ExtensionPointRegistry.class.getName(), registry, props);
+
+            // Call super.init after the extension point registry is registered
+            super.init();
         }
     }
 

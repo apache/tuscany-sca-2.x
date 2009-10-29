@@ -21,6 +21,9 @@ package org.apache.tuscany.sca.node.osgi.impl;
 
 import static org.apache.tuscany.sca.node.osgi.impl.NodeManager.isSCABundle;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.apache.tuscany.sca.osgi.remoteserviceadmin.impl.RemoteServiceAdminImpl;
 import org.apache.tuscany.sca.osgi.remoteserviceadmin.impl.TopologyManagerImpl;
 import org.apache.tuscany.sca.osgi.service.discovery.impl.DiscoveryActivator;
@@ -34,10 +37,11 @@ import org.osgi.framework.SynchronousBundleListener;
  * Bundle activator to receive the BundleContext
  */
 public class NodeActivator implements BundleActivator, SynchronousBundleListener {
+    private final static Logger logger = Logger.getLogger(NodeActivator.class.getName());
     private static BundleContext bundleContext;
     private boolean inited;
     private NodeManager manager;
-    
+
     private DiscoveryActivator discoveryActivator = new DiscoveryActivator();
     private RemoteServiceAdminImpl remoteAdmin;
     private TopologyManagerImpl controller;
@@ -55,50 +59,57 @@ public class NodeActivator implements BundleActivator, SynchronousBundleListener
     }
 
     public void start(BundleContext context) throws Exception {
-        bundleContext = context;
+        try {
+            bundleContext = context;
 
-        // FIXME: We should try to avoid aggressive initialization
-        init();
-        
-        remoteAdmin = new RemoteServiceAdminImpl(context);
-        remoteAdmin.start();
-        
-        discoveryActivator.start(context);
-        
-        controller = new TopologyManagerImpl(context);
-        controller.start();
-        
-        boolean found = false;
-        for (Bundle b : context.getBundles()) {
-            if (isSCABundle(b)) {
-                found = true;
-                break;
-            }
-        }
-
-        if (found) {
+            // FIXME: We should try to avoid aggressive initialization
             init();
-        } else {
-            context.addBundleListener(this);
+
+            remoteAdmin = new RemoteServiceAdminImpl(context);
+            remoteAdmin.start();
+
+            discoveryActivator.start(context);
+
+            controller = new TopologyManagerImpl(context);
+            controller.start();
+
+            boolean found = false;
+            for (Bundle b : context.getBundles()) {
+                if (isSCABundle(b)) {
+                    found = true;
+                    break;
+                }
+            }
+
+            if (found) {
+                init();
+            } else {
+                context.addBundleListener(this);
+            }
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, e.getMessage(), e);
+            throw e;
         }
     }
 
     public void stop(BundleContext context) throws Exception {
-        context.removeBundleListener(this);
-        controller.stop();
-        controller = null;
+        if (inited) {
+            context.removeBundleListener(this);
+            controller.stop();
+            controller = null;
 
-        discoveryActivator.stop(context);
-        discoveryActivator = null;
-        
-        remoteAdmin.stop();
-        remoteAdmin = null;
-        
-        manager.stop();
-        bundleContext.removeBundleListener(manager);
-        manager = null;
-        bundleContext = null;
-        inited = false;
+            discoveryActivator.stop(context);
+            discoveryActivator = null;
+
+            remoteAdmin.stop();
+            remoteAdmin = null;
+
+            manager.stop();
+            bundleContext.removeBundleListener(manager);
+            manager = null;
+            bundleContext = null;
+            inited = false;
+        }
     }
 
     public static BundleContext getBundleContext() {
