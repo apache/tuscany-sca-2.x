@@ -5,7 +5,7 @@ Highlights include:
 - Passes the OASIS conformance test suite for the SCA-J CAA Specification! 
 - Almost passes the OASIS conformance test suite for the SCA Assembly Specification with 
   a small number of test failures that will be fixed in the next release  
-- Support for <binding.jms> and the OASIS SCA BPEL specification
+- Support for <binding.jms> and the OASIS SCA JMS specification
 - Support for <binding.ejb> on references and partial support of the OASIS SCA EJB specification
 - A new Tuscany specific binding for JSONP support
 - Several Tuscany specific extensions ported up from the 1.x runtime including bindings for ATOM, 
