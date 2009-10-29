@@ -263,6 +263,10 @@ public class RemoteServiceAdminImpl implements RemoteServiceAdmin, ManagedServic
     }
 
     public synchronized void updated(Dictionary props) throws ConfigurationException {
+        if (props == null) {
+            // It can be null in Apache Felix
+            return;
+        }
         String domainRegistry = (String)props.get("org.osgi.sca.domain.registry");
         if (domainRegistry != null) {
             exporter.setDomainRegistry(domainRegistry);
