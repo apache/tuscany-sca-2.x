@@ -101,7 +101,7 @@ public class DefaultExtensionPointRegistry implements ExtensionPointRegistry {
             // Dynamically load an extension point class declared under META-INF/services
             try {
                 ServiceDeclaration extensionPointDeclaration =
-                    ServiceDiscovery.getInstance().getServiceDeclaration(extensionPointType);
+                    getServiceDiscovery().getServiceDeclaration(extensionPointType);
                 if (extensionPointDeclaration != null) {
                     extensionPoint = newInstance(this, extensionPointDeclaration);
                     // Cache the loaded extension point

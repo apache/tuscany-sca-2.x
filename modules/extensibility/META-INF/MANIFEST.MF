@@ -1,6 +1,4 @@
 Manifest-Version: 1.0
-Tuscany-Comment1: Export the META-INF.services under an "internal" attribute 
- so that it can be seen only by the bundle itself without following the DynamicImport-Package * 
 Export-Package: org.apache.tuscany.sca.core;version="2.0.0";
  uses:="org.apache.tuscany.sca.extensibility",
  org.apache.tuscany.sca.extensibility;version="2.0.0"
@@ -16,6 +14,7 @@ Bundle-Description: Apache Tuscany SCA Extensibility
 Import-Package: javax.xml.namespace,
  org.apache.tuscany.sca.core;version="2.0.0",
  org.apache.tuscany.sca.extensibility;version="2.0.0"
+DynamicImport-Package: org.apache.tuscany.sca.extensibility.equinox 
 Bundle-SymbolicName: org.apache.tuscany.sca.extensibility
 Bundle-DocURL: http://www.apache.org/
 Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6
