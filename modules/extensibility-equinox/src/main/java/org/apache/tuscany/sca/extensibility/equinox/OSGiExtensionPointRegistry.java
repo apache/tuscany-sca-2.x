@@ -24,6 +24,8 @@ import java.util.Hashtable;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.LifeCycleListener;
@@ -39,6 +41,7 @@ import org.osgi.framework.ServiceRegistration;
  *
  */
 public class OSGiExtensionPointRegistry extends DefaultExtensionPointRegistry {
+    private static final Logger logger = Logger.getLogger(OSGiExtensionPointRegistry.class.getName());
     private Map<Class<?>, ServiceRegistration> services = new ConcurrentHashMap<Class<?>, ServiceRegistration>();
     private BundleContext bundleContext;
 
@@ -107,18 +110,26 @@ public class OSGiExtensionPointRegistry extends DefaultExtensionPointRegistry {
         // Get a unique map as an extension point may exist in the map by different keys
         Map<LifeCycleListener, LifeCycleListener> map = new IdentityHashMap<LifeCycleListener, LifeCycleListener>();
         for (ServiceRegistration reg : services.values()) {
-            ServiceReference ref = reg.getReference();
-            if (ref != null) {
-                Object service = bundleContext.getService(ref);
-                if (service instanceof LifeCycleListener) {
-                    LifeCycleListener activator = (LifeCycleListener)service;
-                    map.put(activator, activator);
+            try {
+                ServiceReference ref = reg.getReference();
+                if (ref != null) {
+                    Object service = bundleContext.getService(ref);
+                    if (service instanceof LifeCycleListener) {
+                        LifeCycleListener activator = (LifeCycleListener)service;
+                        map.put(activator, activator);
+                    }
+                    reg.unregister();
                 }
-                reg.unregister();
+            } catch (Throwable e) {
+                logger.log(Level.WARNING, e.getMessage(), e);
             }
         }
         for (LifeCycleListener activator : map.values()) {
-            activator.stop();
+            try {
+                activator.stop();
+            } catch (Throwable e) {
+                logger.log(Level.WARNING, e.getMessage(), e);
+            }
         }
         services.clear();
     }
