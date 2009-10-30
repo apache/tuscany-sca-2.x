@@ -358,6 +358,7 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry, LifeCycleLi
             logger.info(id + " Remote endpoint added: " + entry.getValue());
         }
         Endpoint newEp = (Endpoint)entry.getValue();
+        newEp.setExtensionPointRegistry(registry);
         for (EndpointListener listener : listeners) {
             listener.endpointAdded(newEp);
         }

@@ -26,6 +26,10 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
 
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.implementation.osgi.OSGiImplementationFactory;
+import org.apache.tuscany.sca.implementation.osgi.OSGiProperty;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
@@ -131,5 +135,11 @@ public class OSGiHelper {
         }
         return files;
     }
+    
+    public static Collection<OSGiProperty> getOSGiProperties(ExtensionPointRegistry registry, ServiceReference reference) {
+        FactoryExtensionPoint factoryExtensionPoint = registry.getExtensionPoint(FactoryExtensionPoint.class);
+        OSGiImplementationFactory implementationFactory= factoryExtensionPoint.getFactory(OSGiImplementationFactory.class);
+        return implementationFactory.createOSGiProperties(reference);
+    }    
 
 }

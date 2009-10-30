@@ -23,6 +23,8 @@ import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import static org.apache.tuscany.sca.implementation.osgi.OSGiProperty.NAME;
 import static org.apache.tuscany.sca.implementation.osgi.OSGiProperty.PROPERTY_QNAME;
+import static org.apache.tuscany.sca.implementation.osgi.OSGiProperty.TYPE;
+import static org.apache.tuscany.sca.implementation.osgi.OSGiProperty.VALUE;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -57,14 +59,18 @@ public class OSGiPropertyProcessor implements StAXArtifactProcessor<OSGiProperty
                 case START_ELEMENT:
                     QName name = reader.getName();
                     if (PROPERTY_QNAME.equals(name)) {
-                        prop = factory.createOSGiProperty();
-                        prop.setName(reader.getAttributeValue(null, NAME));
-                        // After the following call, the reader will be positioned at END_ELEMENT
-                        String text = reader.getElementText();
-                        if (text != null) {
-                            text = text.trim();
+                        String propName = reader.getAttributeValue(null, NAME);
+                        String propValue = reader.getAttributeValue(null, VALUE);
+                        String propType = reader.getAttributeValue(null, TYPE);
+
+                        if (propValue == null) {
+                            propValue = reader.getElementText();
                         }
-                        prop.setValue(text);
+                        if (propValue != null) {
+                            propValue = propValue.trim();
+                        }
+
+                        prop = factory.createOSGiProperty(propName, propValue, propType);
                         return prop;
                     }
                     break;
@@ -90,7 +96,8 @@ public class OSGiPropertyProcessor implements StAXArtifactProcessor<OSGiProperty
     public void write(OSGiProperty model, XMLStreamWriter writer, ProcessorContext context) throws ContributionWriteException, XMLStreamException {
         writer.writeStartElement(PROPERTY_QNAME.getNamespaceURI(), PROPERTY_QNAME.getLocalPart());
         writer.writeAttribute(NAME, model.getName());
-        writer.writeCharacters(model.getValue());
+        writer.writeAttribute(TYPE, model.getName());
+        writer.writeCharacters(model.getStringValue());
         writer.writeEndElement();
     }
 

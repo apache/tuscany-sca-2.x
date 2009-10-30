@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.implementation.osgi.OSGiProperty;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.osgi.remoteserviceadmin.EndpointDescription;
@@ -54,11 +55,21 @@ public class EndpointHelper {
     private static Map<String, Object> getProperties(BundleContext bundleContext, Endpoint endpoint) {
         Map<String, Object> props = new HashMap<String, Object>();
         
-        String uuid = getFrameworkUUID(bundleContext);
+        if (!endpoint.isRemote()) {
+            String uuid = getFrameworkUUID(bundleContext);
+            props.put(RemoteConstants.SERVICE_REMOTE_FRAMEWORK_UUID, uuid);
+        }
         
-        props.put(RemoteConstants.SERVICE_REMOTE_FRAMEWORK_UUID, uuid);
+        for (Object ext : endpoint.getService().getExtensions()) {
+            if (ext instanceof OSGiProperty) {
+                OSGiProperty prop = (OSGiProperty)ext;
+                props.put(prop.getName(), prop.getStringValue());
+            }
+        }
+        
+        props.put(RemoteConstants.SERVICE_REMOTE_ID, props.get(Constants.SERVICE_ID));
         props.put(RemoteConstants.SERVICE_REMOTE_URI, endpoint.getURI());
-        props.put(RemoteConstants.SERVICE_REMOTE_ID, String.valueOf(System.currentTimeMillis()));
+        // FIXME: [rfeng] How to pass in the remote service id from the endpoint XML
         props.put(RemoteConstants.SERVICE_EXPORTED_CONFIGS, new String[] {"org.osgi.sca"});
         props.put(Endpoint.class.getName(), endpoint);
         List<String> interfaces = getInterfaces(endpoint);
@@ -67,7 +78,12 @@ public class EndpointHelper {
     }
 
     public synchronized static String getFrameworkUUID(BundleContext bundleContext) {
-        String uuid = System.getProperty(FRAMEWORK_UUID);
+        String uuid = null;
+        if (bundleContext != null) {
+            uuid = bundleContext.getProperty(FRAMEWORK_UUID);
+        } else {
+            uuid = System.getProperty(FRAMEWORK_UUID);
+        }
         if (uuid == null) {
             uuid = UUID.randomUUID().toString();
         }

@@ -70,14 +70,19 @@ public class OSGiServiceExporter extends AbstractOSGiServiceHandler implements S
                 if (domainRegistry != null) {
                     configuration.setDomainRegistryURI(domainRegistry);
                 }
+                if (domainURI != null) {
+                    configuration.setDomainURI(domainURI);
+                }
                 configuration.setURI(contribution.getURI());
                 configuration.getExtensions().add(reference.getBundle());
+                Component component = contribution.getDeployables().get(0).getComponents().get(0);
+                ComponentService service = component.getServices().get(0);
+                service.getExtensions().addAll(OSGiHelper.getOSGiProperties(registry, reference));
+
                 // FIXME: Configure the domain and node URI
                 NodeImpl node = new NodeImpl(nodeFactory, configuration, Collections.singletonList(contribution));
                 node.start();
                 List<ExportRegistration> exportedServices = new ArrayList<ExportRegistration>();
-                Component component = contribution.getDeployables().get(0).getComponents().get(0);
-                ComponentService service = component.getServices().get(0);
                 for (Endpoint endpoint : service.getEndpoints()) {
                     EndpointDescription endpointDescription = createEndpointDescription(context, endpoint);
                     ExportRegistration exportRegistration =

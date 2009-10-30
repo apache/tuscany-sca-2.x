@@ -19,8 +19,10 @@
 package org.apache.tuscany.sca.implementation.osgi.runtime;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.invocation.ProxyFactoryExtensionPoint;
 import org.apache.tuscany.sca.implementation.osgi.OSGiImplementation;
+import org.apache.tuscany.sca.implementation.osgi.OSGiImplementationFactory;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.provider.ImplementationProviderFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -32,20 +34,20 @@ import org.osgi.framework.BundleException;
  * @version $Rev$ $Date$
  */
 public class OSGiImplementationProviderFactory implements ImplementationProviderFactory<OSGiImplementation> {
-
+    private OSGiImplementationFactory implementationFactory;
     private ProxyFactoryExtensionPoint proxyFactoryExtensionPoint;
 
-    public OSGiImplementationProviderFactory(ExtensionPointRegistry extensionPoints) {
-        proxyFactoryExtensionPoint = extensionPoints.getExtensionPoint(ProxyFactoryExtensionPoint.class);
+    public OSGiImplementationProviderFactory(ExtensionPointRegistry registry) {
+        proxyFactoryExtensionPoint = registry.getExtensionPoint(ProxyFactoryExtensionPoint.class);
+        FactoryExtensionPoint factoryExtensionPoint = registry.getExtensionPoint(FactoryExtensionPoint.class);
+        this.implementationFactory = factoryExtensionPoint.getFactory(OSGiImplementationFactory.class);
     }
 
     public ImplementationProvider createImplementationProvider(RuntimeComponent component,
                                                                OSGiImplementation implementation) {
-
         try {
-
-            return new OSGiImplementationProvider(component, implementation, proxyFactoryExtensionPoint);
-
+            return new OSGiImplementationProvider(component, implementation, proxyFactoryExtensionPoint,
+                                                  implementationFactory);
         } catch (BundleException e) {
             throw new RuntimeException(e);
         }

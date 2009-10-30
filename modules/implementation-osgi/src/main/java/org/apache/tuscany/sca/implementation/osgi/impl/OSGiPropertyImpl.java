@@ -25,12 +25,14 @@ import org.apache.tuscany.sca.implementation.osgi.OSGiProperty;
  * Implementation of OSGiProperty
  */
 public class OSGiPropertyImpl implements OSGiProperty {
+    private String name;
+    private String type;
+    private Object value;
+    private String stringValue;
+
     public OSGiPropertyImpl() {
         super();
     }
-
-    private String name;
-    private String value;
 
     public String getName() {
         return name;
@@ -40,12 +42,28 @@ public class OSGiPropertyImpl implements OSGiProperty {
         this.name = name;
     }
 
-    public String getValue() {
+    public Object getValue() {
         return value;
     }
 
-    public void setValue(String value) {
+    public void setValue(Object value) {
         this.value = value;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getStringValue() {
+        return stringValue;
+    }
+
+    public void setStringValue(String stringValue) {
+        this.stringValue = stringValue;
     }
 
 }

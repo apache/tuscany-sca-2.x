@@ -61,6 +61,9 @@ public class OSGiServiceImporter extends AbstractOSGiServiceHandler {
                 if (domainRegistry != null) {
                     configuration.setDomainRegistryURI(domainRegistry);
                 }
+                if (domainURI != null) {
+                    configuration.setDomainURI(domainURI);
+                }
                 configuration.setURI(contribution.getURI());
                 configuration.getExtensions().add(bundle);
                 // FIXME: Configure the domain and node URI

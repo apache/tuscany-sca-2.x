@@ -186,71 +186,7 @@ public class EquinoxHost {
         try {
             if (injectedBundleContext == null) {
 
-                String version = getSystemProperty("java.specification.version");
-                
-                /**
-                 * [rfeng] I have to remove javax.transaction.* packages from the system bundle
-                 * See: http://www.mail-archive.com/dev@geronimo.apache.org/msg70761.html
-                 */
-                String profile = "J2SE-1.5.profile";
-                if (version.startsWith("1.6")) {
-                    profile = "JavaSE-1.6.profile";
-                }
-                Properties props = new Properties();
-                InputStream is = getClass().getResourceAsStream(profile);
-                if (is != null) {
-                    props.load(is);
-                    is.close();
-                }
-
-                props.putAll(getSystemProperties());
-
-                // Configure Eclipse properties
-
-                // Use the boot classloader as the parent classloader
-                put(props, PROP_OSGI_CONTEXT_CLASS_LOADER_PARENT, "app");
-
-                // Set startup properties
-                put(props, PROP_OSGI_CLEAN, "true");
-
-                // Set location properties
-                // FIXME Use proper locations
-                String tmpDir = getSystemProperty("java.io.tmpdir");
-                File root = new File(tmpDir);
-                // Add user name as the prefix. For multiple users on the same Lunix,
-                // there will be permission issue if one user creates the .tuscany folder
-                // first under /tmp with no write permission for others.
-                String userName = getSystemProperty(PROP_USER_NAME);
-                if (userName != null) {
-                    root = new File(root, userName);
-                }
-                root = new File(root, ".tuscany/equinox/" + UUID.randomUUID().toString());
-                if (logger.isLoggable(Level.FINE)) {
-                    logger.fine("Equinox location: " + root);
-                }
-
-                put(props, PROP_INSTANCE_AREA_DEFAULT, new File(root, "workspace").toURI().toString());
-                put(props, PROP_INSTALL_AREA, new File(root, "install").toURI().toString());
-                put(props, PROP_CONFIG_AREA_DEFAULT, new File(root, "config").toURI().toString());
-                put(props, PROP_USER_AREA_DEFAULT, new File(root, "user").toURI().toString());
-
-                // Test if the configuration/config.ini or osgi.bundles has been set
-                // If yes, try to avoid discovery of bundles
-                if (bundleLocations == null) {
-                    if (props.getProperty("osgi.bundles") != null) {
-                        bundleLocations = Collections.emptySet();
-                    } else {
-                        String config = props.getProperty(PROP_CONFIG_AREA);
-                        File ini = new File(config, "config.ini");
-                        if (ini.isFile()) {
-                            Properties iniProps = new Properties();
-                            iniProps.load(new FileInputStream(ini));
-                            if (iniProps.getProperty("osgi.bundles") != null) {
-                                bundleLocations = Collections.emptySet();
-                            }
-                        }
-                    }
-                }
+                Properties props = configureProperties();
                 startFramework(props);
 
             } else {
@@ -394,6 +330,75 @@ public class EquinoxHost {
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
+    }
+
+    protected Properties configureProperties() throws IOException, FileNotFoundException {
+        String version = getSystemProperty("java.specification.version");
+        
+        /**
+         * [rfeng] I have to remove javax.transaction.* packages from the system bundle
+         * See: http://www.mail-archive.com/dev@geronimo.apache.org/msg70761.html
+         */
+        String profile = "J2SE-1.5.profile";
+        if (version.startsWith("1.6")) {
+            profile = "JavaSE-1.6.profile";
+        }
+        Properties props = new Properties();
+        InputStream is = getClass().getResourceAsStream(profile);
+        if (is != null) {
+            props.load(is);
+            is.close();
+        }
+
+        props.putAll(getSystemProperties());
+
+        // Configure Eclipse properties
+
+        // Use the boot classloader as the parent classloader
+        put(props, PROP_OSGI_CONTEXT_CLASS_LOADER_PARENT, "app");
+
+        // Set startup properties
+        put(props, PROP_OSGI_CLEAN, "true");
+
+        // Set location properties
+        // FIXME Use proper locations
+        String tmpDir = getSystemProperty("java.io.tmpdir");
+        File root = new File(tmpDir);
+        // Add user name as the prefix. For multiple users on the same Lunix,
+        // there will be permission issue if one user creates the .tuscany folder
+        // first under /tmp with no write permission for others.
+        String userName = getSystemProperty(PROP_USER_NAME);
+        if (userName != null) {
+            root = new File(root, userName);
+        }
+        root = new File(root, ".tuscany/equinox/" + UUID.randomUUID().toString());
+        if (logger.isLoggable(Level.FINE)) {
+            logger.fine("Equinox location: " + root);
+        }
+
+        put(props, PROP_INSTANCE_AREA_DEFAULT, new File(root, "workspace").toURI().toString());
+        put(props, PROP_INSTALL_AREA, new File(root, "install").toURI().toString());
+        put(props, PROP_CONFIG_AREA_DEFAULT, new File(root, "config").toURI().toString());
+        put(props, PROP_USER_AREA_DEFAULT, new File(root, "user").toURI().toString());
+
+        // Test if the configuration/config.ini or osgi.bundles has been set
+        // If yes, try to avoid discovery of bundles
+        if (bundleLocations == null) {
+            if (props.getProperty("osgi.bundles") != null) {
+                bundleLocations = Collections.emptySet();
+            } else {
+                String config = props.getProperty(PROP_CONFIG_AREA);
+                File ini = new File(config, "config.ini");
+                if (ini.isFile()) {
+                    Properties iniProps = new Properties();
+                    iniProps.load(new FileInputStream(ini));
+                    if (iniProps.getProperty("osgi.bundles") != null) {
+                        bundleLocations = Collections.emptySet();
+                    }
+                }
+            }
+        }
+        return props;
     }
 
     private boolean isServiceProvider(Bundle bundle, Set<String> serviceProviders) {

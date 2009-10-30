@@ -37,6 +37,7 @@ import org.apache.tuscany.sca.assembly.Extensible;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactoryExtensionPoint;
 import org.apache.tuscany.sca.implementation.osgi.OSGiImplementation;
+import org.apache.tuscany.sca.implementation.osgi.OSGiImplementationFactory;
 import org.apache.tuscany.sca.implementation.osgi.OSGiProperty;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -65,12 +66,15 @@ public class OSGiImplementationProvider implements ImplementationProvider {
     private Bundle osgiBundle;
     private OSGiImplementation implementation;
     private List<ServiceRegistration> registrations = new ArrayList<ServiceRegistration>();
+    private OSGiImplementationFactory implementationFactory;
 
     public OSGiImplementationProvider(RuntimeComponent component,
                                       OSGiImplementation impl,
-                                      ProxyFactoryExtensionPoint proxyFactoryExtensionPoint) throws BundleException {
+                                      ProxyFactoryExtensionPoint proxyFactoryExtensionPoint,
+                                      OSGiImplementationFactory implementationFactory) throws BundleException {
         this.component = component;
         this.proxyFactoryExtensionPoint = proxyFactoryExtensionPoint;
+        this.implementationFactory = implementationFactory;
         this.implementation = impl;
         this.osgiBundle = impl.getBundle();
     }
@@ -123,6 +127,14 @@ public class OSGiImplementationProvider implements ImplementationProvider {
                 registrations.add(registration);
             }
         }
+        
+        // Set the OSGi service reference properties into the SCA service
+        for (ComponentService service : component.getServices()) {
+            ServiceReference serviceReference = getServiceReference(osgiBundle.getBundleContext(), service);
+            if (serviceReference != null) {
+                service.getExtensions().addAll(implementationFactory.createOSGiProperties(serviceReference));
+            }
+        }
     }
 
     public void stop() {
@@ -165,24 +177,29 @@ public class OSGiImplementationProvider implements ImplementationProvider {
     }
 
     protected Object getOSGiService(ComponentService service) {
-        JavaInterface javaInterface = (JavaInterface)service.getInterfaceContract().getInterface();
-        // String filter = getOSGiFilter(provider.getOSGiProperties(service));
-        // FIXME: What is the filter?
-        String filter = "(!(" + SERVICE_IMPORTED + "=*))";
-        // "(sca.service=" + component.getURI() + "#service-name\\(" + service.getName() + "\\))";
         BundleContext bundleContext = osgiBundle.getBundleContext();
-        ServiceReference ref;
-        try {
-            ref = bundleContext.getServiceReferences(javaInterface.getName(), filter)[0];
-        } catch (InvalidSyntaxException e) {
-            throw new ServiceRuntimeException(e);
-        }
+        ServiceReference ref = getServiceReference(bundleContext, service);
         if (ref != null) {
             Object instance = bundleContext.getService(ref);
             return instance;
         } else {
             return null;
         }
+    }
+
+    private ServiceReference getServiceReference(BundleContext bundleContext, ComponentService service) {
+        JavaInterface javaInterface = (JavaInterface)service.getInterfaceContract().getInterface();
+        // String filter = getOSGiFilter(provider.getOSGiProperties(service));
+        // FIXME: What is the filter?
+        String filter = "(!(" + SERVICE_IMPORTED + "=*))";
+        // "(sca.service=" + component.getURI() + "#service-name\\(" + service.getName() + "\\))";
+        ServiceReference ref;
+        try {
+            ref = bundleContext.getServiceReferences(javaInterface.getName(), filter)[0];
+        } catch (InvalidSyntaxException e) {
+            throw new ServiceRuntimeException(e);
+        }
+        return ref;
     }
 
     RuntimeComponent getComponent() {
