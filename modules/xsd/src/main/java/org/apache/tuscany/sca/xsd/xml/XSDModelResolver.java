@@ -139,7 +139,17 @@ public class XSDModelResolver implements ModelResolver {
             if (definition.getLocation() != null) {
                 uri = definition.getLocation().toString();
             }
-            XmlSchema schema = schemaCollection.read(definition.getDocument(), uri, null);
+            XmlSchema schema = null;
+            try {
+                schema = schemaCollection.read(definition.getDocument(), uri, null);
+            } catch (RuntimeException e) {
+                // find original cause of the problem
+                Throwable cause = e;
+                while (cause.getCause() != null && cause != cause.getCause()) {
+                    cause = cause.getCause();
+                }
+                throw new ContributionRuntimeException(cause);
+            }
             definition.setSchemaCollection(schemaCollection);
             definition.setSchema(schema);
             definition.setUnresolved(false);
@@ -151,7 +161,7 @@ public class XSDModelResolver implements ModelResolver {
             // Read an XSD document
             XmlSchema schema = null;
             for (XmlSchema d : schemaCollection.getXmlSchemas()) {
-                if (d.getTargetNamespace().equals(definition.getNamespace())) {
+                if (isSameNamespace(d.getTargetNamespace(), definition.getNamespace()))  {
                     if (d.getSourceURI().equals(definition.getLocation().toString())) {
                         schema = d;
                         break;
@@ -159,14 +169,36 @@ public class XSDModelResolver implements ModelResolver {
                 }
             }
             if (schema == null) {
-                InputSource xsd = XMLDocumentHelper.getInputSource(definition.getLocation().toURL());
-                schema = schemaCollection.read(xsd, null);
+                InputSource xsd = null;
+                try {
+                    xsd = XMLDocumentHelper.getInputSource(definition.getLocation().toURL());
+                } catch (IOException e) {
+                    throw new ContributionRuntimeException(e);
+                }
+
+                try {
+                    schema = schemaCollection.read(xsd, null);
+                } catch (RuntimeException e) {
+                    // find original cause of the problem
+                    Throwable cause = e;
+                    while (cause.getCause() != null && cause != cause.getCause()) {
+                        cause = cause.getCause();
+                    }
+                    throw new ContributionRuntimeException(cause);
+                }
             }
             definition.setSchemaCollection(schemaCollection);
             definition.setSchema(schema);
         }
     }
 
+    private boolean isSameNamespace(String ns1, String ns2) {
+        if (ns1 == null) {
+            return ns2 == null;
+        } else {
+            return ns1.equals(ns2);
+        }
+    }
     /**
      * Create a facade XmlSchema which includes all the definitions
      * 
@@ -242,8 +274,7 @@ public class XSDModelResolver implements ModelResolver {
         public org.xml.sax.InputSource resolveEntity(java.lang.String targetNamespace,
                                                      java.lang.String schemaLocation,
                                                      java.lang.String baseUri) {
-            try 
-            {
+            try {
                 if (schemaLocation == null) {
                     return null;
                 }
@@ -255,27 +286,17 @@ public class XSDModelResolver implements ModelResolver {
                 unresolved.setUnresolved(true);
                 unresolved.setLocation(new URI(schemaLocation));
                 unresolved.setNamespace(targetNamespace);
-                
-                // Collection of namespace imports with location
-                List<String> locations = new ArrayList<String>();                
-                Map<String, NamespaceImport> locationMap = new HashMap<String, NamespaceImport>();                
+                                
                 for (Import import_ : this.contribution.getImports()) {
                     if (import_ instanceof NamespaceImport) {
                         NamespaceImport namespaceImport = (NamespaceImport)import_;
-                        if (namespaceImport.getNamespace().equals(targetNamespace)) {
-                        	if (namespaceImport.getLocation() == null) {
-        	                    // Delegate the resolution to the namespace import resolver
-        	                    resolved =
-        	                        namespaceImport.getModelResolver().resolveModel(XSDefinition.class, (XSDefinition)unresolved, context);
-        	                    if (!resolved.isUnresolved()) {
-        	                        return XMLDocumentHelper.getInputSource(resolved.getLocation().toURL());
-        	                    }
-                        	} else {
-                        		// We might have multiple imports for the same namespace,
-                        		// need to search them in lexical order.
-                        		locations.add(namespaceImport.getLocation());
-                        		locationMap.put(namespaceImport.getLocation(), namespaceImport);
-                        	}
+                        if (namespaceImport.getNamespace().equals(targetNamespace)) {                        	
+                        	// Delegate the resolution to the namespace import resolver
+        	                resolved =
+        	                    namespaceImport.getModelResolver().resolveModel(XSDefinition.class, (XSDefinition)unresolved, context);
+        	                if (!resolved.isUnresolved()) {
+        	                	return XMLDocumentHelper.getInputSource(resolved.getLocation().toURL());
+        	                }
                         }
                     } else if (import_ instanceof DefaultImport) {
                         // Delegate the resolution to the default import resolver
@@ -284,17 +305,6 @@ public class XSDModelResolver implements ModelResolver {
                         if (!resolved.isUnresolved()) {
                         	return XMLDocumentHelper.getInputSource(resolved.getLocation().toURL());
                         }
-                    }
-                }                
-                // Search namespace imports with location in lexical order
-                Collections.sort(locations);
-                for (String location : locations) {
-                	NamespaceImport namespaceImport = (NamespaceImport)locationMap.get(location);
-                	// Delegate the resolution to the namespace import resolver
-                    resolved =
-                        namespaceImport.getModelResolver().resolveModel(XSDefinition.class, (XSDefinition)unresolved, context);
-                    if (!resolved.isUnresolved()) {
-                    	return XMLDocumentHelper.getInputSource(resolved.getLocation().toURL());
                     }
                 }
                 
@@ -308,6 +318,11 @@ public class XSDModelResolver implements ModelResolver {
                             url = new URL(a.getLocation());
                             break;
                         }
+                    }
+                    if (url == null) {
+                        // URI not found in the contribution; return a default InputSource
+                        // so that the XmlSchema code will produce a useful diagnostic
+                        return new InputSource(schemaLocation);
                     }
                 } else {
                     url = new URL(new URL(baseUri), schemaLocation);

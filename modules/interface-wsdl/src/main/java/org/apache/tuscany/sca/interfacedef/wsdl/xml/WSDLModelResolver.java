@@ -47,6 +47,10 @@ import javax.wsdl.extensions.schema.Schema;
 import javax.wsdl.xml.WSDLLocator;
 import javax.wsdl.xml.WSDLReader;
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.common.java.io.IOHelper;
 import org.apache.tuscany.sca.common.xml.XMLDocumentHelper;
@@ -62,6 +66,7 @@ import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
+import org.apache.tuscany.sca.interfacedef.wsdl.impl.WSDLDefinitionImpl;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.xsd.XSDFactory;
 import org.apache.tuscany.sca.xsd.XSDefinition;
@@ -80,6 +85,7 @@ import org.xml.sax.InputSource;
 public class WSDLModelResolver implements ModelResolver {
     //Schema element names
     public static final String ELEM_SCHEMA = "schema";
+    public static final QName WSDL11_IMPORT = new QName("http://schemas.xmlsoap.org/wsdl/", "import");
 
     //Schema URI
     public static final String NS_URI_XSD_1999 = "http://www.w3.org/1999/XMLSchema";
@@ -160,11 +166,13 @@ public class WSDLModelResolver implements ModelResolver {
         private InputStream inputStream;
         private URL base;
         private String latestImportURI;
+        private Map<String, String> wsdlImports;
 
-        public WSDLLocatorImpl(ProcessorContext context, URL base, InputStream is) {
+        public WSDLLocatorImpl(ProcessorContext context, URL base, InputStream is, Map<String, String> imports) {
             this.context = context;
             this.base = base;
             this.inputStream = is;
+            this.wsdlImports = imports;
         }
 
         public void close() {
@@ -218,7 +226,26 @@ public class WSDLModelResolver implements ModelResolver {
                 }
                 latestImportURI = url.toString();
                 return XMLDocumentHelper.getInputSource(url); 
-            } catch (Exception e) {
+            } catch (IOException e) {            	
+                // If we are not able to resolve the imports using location, then 
+            	// try resolving them using the namespace.
+            	try {
+	            	if (! wsdlImports.isEmpty()) {
+	                	for (Artifact artifact : contribution.getArtifacts()) {
+	            			if (artifact.getModel() instanceof WSDLDefinitionImpl) {
+	            				String namespace = ((WSDLDefinitionImpl)artifact.getModel()).getNamespace();
+	            				for (Map.Entry<String, String> entry : ((Map<String, String>)wsdlImports).entrySet()) {
+		                            if (entry.getKey().equals(namespace)) {
+		                            	URL url = ((WSDLDefinitionImpl)artifact.getModel()).getLocation().toURL();	            					
+			                            return XMLDocumentHelper.getInputSource(url);
+		                            }
+	            				}
+	            			}
+	            	    }
+	                }   
+            	} catch (IOException ex) {
+            		throw new ContributionRuntimeException(ex);
+            	}            	
                 throw new ContributionRuntimeException(e);
             }
         }
@@ -262,18 +289,18 @@ public class WSDLModelResolver implements ModelResolver {
      * @return The aggregated WSDL definition
      */
     @SuppressWarnings("unchecked")
-	private WSDLDefinition aggregate(List<WSDLDefinition> definitions, ProcessorContext context) {
+	private WSDLDefinition aggregate(List<WSDLDefinition> definitions, ProcessorContext context) throws ContributionReadException {
         if (definitions == null || definitions.size() == 0) {
             return null;
         }
         if (definitions.size() == 1) {
             WSDLDefinition d = definitions.get(0);
-            loadOnDemand(d, context);
+            loadDefinition(d, context);
             return d;
         }
         WSDLDefinition aggregated = wsdlFactory.createWSDLDefinition();
         for (WSDLDefinition d : definitions) {
-            loadOnDemand(d, context);
+        	loadDefinition(d, context);
         }
         Definition facade = wsdl4jFactory.newDefinition();
         String ns = definitions.get(0).getNamespace();
@@ -310,31 +337,20 @@ public class WSDLModelResolver implements ModelResolver {
             return modelClass.cast(unresolved);
         }    	
     	
-    	// Lookup a definition for the given namespace, from imports
-    	List<String> locations = new ArrayList<String>();
-        // Collection of namespace imports with location
-        Map<String, NamespaceImport> locationMap = new HashMap<String, NamespaceImport>();        
+    	// Lookup a definition for the given namespace, from imports        
         for (Import import_ : this.contribution.getImports()) {
             if (import_ instanceof NamespaceImport) {
                 NamespaceImport namespaceImport = (NamespaceImport)import_;
                 if (namespaceImport.getNamespace().equals(namespace)) {
-                	if (namespaceImport.getLocation() == null) {
-	                    // Delegate the resolution to the namespace import resolver
-	                    resolved =
-	                        namespaceImport.getModelResolver().resolveModel(WSDLDefinition.class,
+                	// Delegate the resolution to the namespace import resolver
+	                resolved =
+	                	namespaceImport.getModelResolver().resolveModel(WSDLDefinition.class,
 	                                                                        (WSDLDefinition)unresolved, context);
-	                    if (!resolved.isUnresolved()) {
-	                        return modelClass.cast(resolved);
-	                    }
-                    } else {
-                    	// We might have multiple imports for the same namespace,
-                		// need to search them in lexical order.
-                		locations.add(namespaceImport.getLocation());
-                		locationMap.put(namespaceImport.getLocation(), namespaceImport);
-                    }
+	                if (!resolved.isUnresolved()) {
+	                	return modelClass.cast(resolved);
+	                }
                 }
-            } else if (import_ instanceof DefaultImport) {
-                
+            } else if (import_ instanceof DefaultImport) {                
                 // Delegate the resolution to the default import resolver
                 resolved =
                     import_.getModelResolver().resolveModel(WSDLDefinition.class,
@@ -343,24 +359,16 @@ public class WSDLModelResolver implements ModelResolver {
                     return modelClass.cast(resolved);
                 }
             }
-        }        
-        // Search namespace imports with locations in lexical order
-        Collections.sort(locations);
-        for (String location : locations) {
-        	NamespaceImport namespaceImport = (NamespaceImport)locationMap.get(location);
-        	// Delegate the resolution to the namespace import resolver
-            resolved =
-                namespaceImport.getModelResolver().resolveModel(WSDLDefinition.class,
-                                                                (WSDLDefinition)unresolved, context);
-            if (!resolved.isUnresolved()) {
-                return modelClass.cast(resolved);
-            }
         }
         
         
         // Not found, lookup a definition for the given namespace, within contribution
         List<WSDLDefinition> list = map.get(namespace);
-        resolved = aggregate(list, context);
+        try {
+        	resolved = aggregate(list, context);
+        } catch (ContributionReadException e) {
+        	throw new RuntimeException(e);
+        }        
         if (resolved != null && !resolved.isUnresolved()) {
             return modelClass.cast(resolved);
         }
@@ -369,22 +377,52 @@ public class WSDLModelResolver implements ModelResolver {
     }
 
     /**
-     * Load the WSDL definition on demand
-     * @param def
+     * Use non-sca mechanism to resolve the import location, 
+     * if not found then use the sca mechanism
+     * 
+     * @param modelClass
+     * @param unresolved
      * @param context 
+     * @throws ContributionReadException
      */
-    private void loadOnDemand(WSDLDefinition def, ProcessorContext context) {
-        if (def.getDefinition() == null && def.getLocation() != null) {
-            // Load the definition on-demand
+    private <T> T resolveImports (Class<T> modelClass, WSDLDefinition unresolved, ProcessorContext context) throws ContributionReadException {
+    	
+    	WSDLDefinition resolved = null;
+    	if (unresolved.getDefinition() == null && unresolved.getLocation() != null) {            
             try {
-                loadDefinition(def, context);
+            	// Load the definition using non-sca mechanism.
+            	List<WSDLDefinition> list = new ArrayList<WSDLDefinition>();
+                list.add(unresolved);
+                map.put(unresolved.getNamespace(), list);            	
+            	resolved = aggregate(list, context);            	
+            	// if no exception then its resolved.
+            	if (unresolved.getNamespace().equals(resolved.getDefinition().getTargetNamespace())) {
+            		resolved.setNamespace(resolved.getDefinition().getTargetNamespace());
+            		resolved.setUnresolved(false);
+            		resolved.setURI(resolved.getLocation());
+            		return modelClass.cast(resolved);
+            	}
             } catch (ContributionReadException e) {
-                throw new RuntimeException(e);
+            	// Resolve the wsdl definition using the namespace, by searching the
+            	// contribution artifacts for wsdl definition for the given namespace.
+            	for (Artifact artifact : contribution.getArtifacts()) {
+        			if (artifact.getModel() instanceof WSDLDefinitionImpl) {
+        				String namespace = ((WSDLDefinitionImpl)artifact.getModel()).getNamespace();
+        				if (unresolved.getNamespace().equals(namespace)) {        					
+        					WSDLDefinition wsdlDefinition = (WSDLDefinition)artifact.getModel();
+        					if (wsdlDefinition.getDefinition() == null) {
+        						loadDefinition(wsdlDefinition, context);
+        					}
+                            return modelClass.cast(wsdlDefinition);
+        				}
+        			}
+        	    }
             }
         }
-    }
+        
+        return modelClass.cast(unresolved);
+    }    
 
-    // private Map<String, WSDLDefinition> loadedDefinitions = new Hashtable<String, WSDLDefinition>();
 
     /**
      * Load the WSDL definition and inline schemas
@@ -408,7 +446,9 @@ public class WSDLModelResolver implements ModelResolver {
             // reader.setFeature("javax.wsdl.importDocuments", false);
             reader.setExtensionRegistry(wsdlExtensionRegistry);  // use a custom registry
 
-            WSDLLocatorImpl locator = new WSDLLocatorImpl(context, artifactURL, is);
+            // Collection of namespace,location for wsdl:import definition
+            Map<String, String> wsdlImports = indexRead(wsdlDef.getLocation().toURL());
+            WSDLLocatorImpl locator = new WSDLLocatorImpl(context, artifactURL, is, wsdlImports);
             Definition definition = reader.readWSDL(locator);
             wsdlDef.setDefinition(definition);
 
@@ -420,29 +460,43 @@ public class WSDLModelResolver implements ModelResolver {
                     WSDLDefinition wsdlDefinition = wsdlFactory.createWSDLDefinition();
                     wsdlDefinition.setUnresolved(true);
                     wsdlDefinition.setNamespace(entry.getKey());
-                    WSDLDefinition resolved = resolveModel(WSDLDefinition.class, wsdlDefinition, context);
-                    if (!resolved.isUnresolved()) {
-                        for (javax.wsdl.Import imp : entry.getValue()) {
-                            if (resolved.getDefinition().getDocumentBaseURI().equals(imp.getDefinition().getDocumentBaseURI())) {
-                                // this WSDLDefinition contains the imported document
-                                wsdlDef.getImportedDefinitions().add(resolved);
-                            } else {
-                                // this is a facade, so look in its imported definitions
-                                for (WSDLDefinition def : resolved.getImportedDefinitions()) {
-                                    if (def.getDefinition().getDocumentBaseURI().equals(imp.getDefinition().getDocumentBaseURI())) {
-                                        wsdlDef.getImportedDefinitions().add(def);
-                                        break;
+                    WSDLDefinition resolved = null;
+                    for (javax.wsdl.Import imp : entry.getValue()) {
+                    	if (imp.getDefinition() == null)
+                            throw new IllegalArgumentException("Required attribute 'location' is missing.");
+                    	
+                    	try {
+                    		wsdlDefinition.setLocation(new URI(imp.getDefinition().getDocumentBaseURI()));
+                    		resolved = resolveImports(WSDLDefinition.class, wsdlDefinition, context);
+                    		if (!resolved.isUnresolved()) {
+                    			if (resolved.getImportedDefinitions().isEmpty()) {
+                    				if (resolved.getDefinition().getTargetNamespace().equals(imp.getDefinition().getTargetNamespace())) {
+	                    				// this WSDLDefinition contains the imported document
+	                                    wsdlDef.getImportedDefinitions().add(resolved);
+	                                    imp.setLocationURI(resolved.getURI().toString());
+                    				}
+                    			} else {
+                    				// this is a facade, so look in its imported definitions
+                    				for (WSDLDefinition def : resolved.getImportedDefinitions()) {
+                                        if (def.getDefinition().getTargetNamespace().equals(imp.getDefinition().getTargetNamespace())) {
+                                            wsdlDef.getImportedDefinitions().add(def);
+                                            imp.setLocationURI(def.getURI().toString());
+                                            break;
+                                        }
                                     }
-                                }
-                            }
-                        }
+                    			}
+                    		}
+                    	} catch (Exception e) {
+                    		throw new ContributionReadException(e);
+                    	}
                     }
                 }
-            }
-
+            }            
             //Read inline schemas 
             readInlineSchemas(wsdlDef, definition, context);
         } catch (WSDLException e) {
+            throw new ContributionReadException(e);
+        } catch (XMLStreamException e) {
             throw new ContributionReadException(e);
         } catch (IOException e) {
             throw new ContributionReadException(e);
@@ -531,5 +585,40 @@ public class WSDLModelResolver implements ModelResolver {
             }
         }
     }
-
+    
+    /**
+     * Read the namespace and location for the WSDL imports
+     * 
+     * @param doc
+     * @return
+     * @throws IOException
+     * @throws XMLStreamException
+     */
+    protected Map<String, String> indexRead(URL doc) throws IOException, XMLStreamException {
+        
+    	Map<String, String> wsdlImports = new HashMap<String, String>();
+    	InputStream is = doc.openStream();
+        try {
+        	XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+            XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
+            int eventType = reader.getEventType();
+            while (true) {
+                if (eventType == XMLStreamConstants.START_ELEMENT) {
+                    if (WSDL11_IMPORT.equals(reader.getName())) {
+                        String ns = reader.getAttributeValue(null, "namespace");
+                        String loc = reader.getAttributeValue(null, "location");
+                        wsdlImports.put(ns, loc);                        
+                    }
+                }
+                if (reader.hasNext()) {
+                    eventType = reader.next();
+                } else {
+                    break;
+                }
+            }
+            return wsdlImports;
+        } finally {
+            is.close();
+        }
+    }
 }

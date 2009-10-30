@@ -68,12 +68,9 @@ public class CompositeModelResolver implements ModelResolver {
 
         // Lookup a definition for the given namespace
         QName qname = ((Composite)unresolved).getName();
-        Composite resolved = (Composite) map.get(qname);
-        if (resolved != null) {
-            return modelClass.cast(resolved);
-        }
-
-        // No definition found, delegate the resolution to the imports
+        Composite resolved = null;
+        
+        // Delegate the resolution to the imports
         for (Import import_ : this.contribution.getImports()) {
             if (import_ instanceof NamespaceImport) {
                 NamespaceImport namespaceImport = (NamespaceImport)import_;
@@ -87,7 +84,13 @@ public class CompositeModelResolver implements ModelResolver {
                 }
             }
         }
+        
+        // No definition found, search within the current contribution
+        resolved = (Composite) map.get(qname);
+        if (resolved != null) {
+            return modelClass.cast(resolved);
+        }
+        
         return (T)unresolved;
     }
-
 }
