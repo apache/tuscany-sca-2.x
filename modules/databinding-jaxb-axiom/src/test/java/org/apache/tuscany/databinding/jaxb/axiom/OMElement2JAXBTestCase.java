@@ -27,6 +27,7 @@ import junit.framework.Assert;
 
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.impl.TransformationContextImpl;
 import org.apache.tuscany.sca.databinding.jaxb.axiom.OMElement2JAXB;
@@ -65,7 +66,7 @@ public class OMElement2JAXBTestCase {
         OMElement root = builder.getDocumentElement();
         OMElement next = (OMElement)root.getChildElements().next();
         OMElement po = (OMElement)next.getChildElements().next();
-        Object jaxb = new OMElement2JAXB().transform(po, tContext);
+        Object jaxb = new OMElement2JAXB(new DefaultExtensionPointRegistry()).transform(po, tContext);
         Assert.assertTrue(jaxb instanceof PurchaseOrderType);
     }
 }

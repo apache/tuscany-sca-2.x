@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.databinding.jaxb;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
@@ -32,16 +33,17 @@ import org.w3c.dom.Node;
  * @version $Rev$ $Date$
  */
 public class Node2JAXB extends BaseTransformer<Node, Object> implements PullTransformer<Node, Object> {
-
-    public Node2JAXB() {
-        super();
+    private JAXBContextHelper contextHelper;
+    
+    public Node2JAXB(ExtensionPointRegistry registry) {
+        contextHelper = JAXBContextHelper.getInstance(registry);
     }
 
     public Object transform(Node source, TransformationContext context) {
         if (source == null)
             return null;
         try {
-            JAXBContext jaxbContext = JAXBContextHelper.createJAXBContext(context, false);
+            JAXBContext jaxbContext = contextHelper.createJAXBContext(context, false);
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
             Object result = unmarshaller.unmarshal(source, JAXBContextHelper.getJavaType(context.getTargetDataType()));
             return JAXBContextHelper.createReturnValue(jaxbContext, context.getTargetDataType(), result);

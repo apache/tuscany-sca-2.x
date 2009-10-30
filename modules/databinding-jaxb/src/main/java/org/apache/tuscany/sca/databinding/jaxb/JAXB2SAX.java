@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.databinding.jaxb;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.databinding.PushTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
@@ -34,6 +35,12 @@ import org.xml.sax.ContentHandler;
 public class JAXB2SAX extends BaseTransformer<Object, ContentHandler> implements
     PushTransformer<Object, ContentHandler> {
 
+    private JAXBContextHelper contextHelper;
+    
+    public JAXB2SAX(ExtensionPointRegistry registry) {
+        contextHelper = JAXBContextHelper.getInstance(registry);
+    }
+    
     @Override
     protected Class<Object> getSourceType() {
         return Object.class;
@@ -49,7 +56,7 @@ public class JAXB2SAX extends BaseTransformer<Object, ContentHandler> implements
      */
     public void transform(Object source, ContentHandler target, TransformationContext tContext) {
         try {
-            JAXBContext context = JAXBContextHelper.createJAXBContext(tContext, true);
+            JAXBContext context = contextHelper.createJAXBContext(tContext, true);
             Marshaller marshaller = context.createMarshaller();
             Object jaxbElement = JAXBContextHelper.createJAXBElement(context, tContext.getSourceDataType(), source);
             marshaller.marshal(jaxbElement, target);

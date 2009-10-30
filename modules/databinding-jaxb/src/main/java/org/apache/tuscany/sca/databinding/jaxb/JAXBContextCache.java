@@ -55,9 +55,9 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.transform.Source;
 
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.databinding.util.LRUCache;
 import org.apache.tuscany.sca.extensibility.ClassLoaderContext;
-import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 
 /**
  * @version $Rev$ $Date$
@@ -108,28 +108,32 @@ public class JAXBContextCache {
 
     // protected JAXBContext commonContext;
     protected JAXBContext defaultContext;
-
-    public JAXBContextCache() {
-        this(CACHE_SIZE, CACHE_SIZE, CACHE_SIZE);
+    private ExtensionPointRegistry registry;
+    
+    public JAXBContextCache(ExtensionPointRegistry registry) {
+        this(CACHE_SIZE, CACHE_SIZE, CACHE_SIZE, registry);
     }
 
-    public JAXBContextCache(int contextSize, int marshallerSize, int unmarshallerSize) {
+    public JAXBContextCache(int contextSize, int marshallerSize, int unmarshallerSize, ExtensionPointRegistry registry) {
+        this.registry = registry;
         cache = new LRUCache<Object, JAXBContext>(contextSize);
         mpool = new Pool<JAXBContext, Marshaller>();
         upool = new Pool<JAXBContext, Unmarshaller>();
         defaultContext = getDefaultJAXBContext();
     }
     
-    private static JAXBContext newJAXBContext(final Class<?>... classesToBeBound) throws JAXBException {
+    private JAXBContext newJAXBContext(final Class<?>... classesToBeBound) throws JAXBException {
         try {
             return AccessController.doPrivileged(new PrivilegedExceptionAction<JAXBContext>() {
                 public JAXBContext run() throws JAXBException {
                     // Try to set up TCCL so that JAXBContext service discovery works in OSGi
                     ClassLoader tccl =
                         ClassLoaderContext.setContextClassLoader(JAXBContextCache.class.getClassLoader(),
-                                                                 ServiceDiscovery.getInstance(),
-                                                                 JAXBContext.class,
-                                                                 DatatypeFactory.class);
+                                                                 registry.getServiceDiscovery(),
+                                                                 // The service provider of JAXBContext doesn't extend JAXBContext
+                                                                 // We should use the service name instead of the class
+                                                                 JAXBContext.class.getName(), 
+                                                                 DatatypeFactory.class.getName());
                     try {
                         JAXBContext context = JAXBContext.newInstance(classesToBeBound);
                         return context;
@@ -146,7 +150,7 @@ public class JAXBContextCache {
     }
 
 
-    public static JAXBContext getDefaultJAXBContext() {
+    public JAXBContext getDefaultJAXBContext() {
         try {
             return newJAXBContext();
         } catch (JAXBException e) {

@@ -29,6 +29,7 @@ import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.databinding.util.LRUCache;
 import org.junit.Assert;
 import org.junit.Test;
@@ -42,7 +43,7 @@ import com.example.ipo.jaxb.PurchaseOrderType;
 public class JAXBContextCacheTestCase {
     @Test
     public void testCache() throws JAXBException {
-        JAXBContextCache cache = new JAXBContextCache();
+        JAXBContextCache cache = new JAXBContextCache(new DefaultExtensionPointRegistry());
         JAXBContext context1 = cache.getJAXBContext(String.class);
         JAXBContext context2 = cache.getJAXBContext(int.class);
         JAXBContext context3 = cache.getJAXBContext(String[].class);
@@ -85,7 +86,7 @@ public class JAXBContextCacheTestCase {
 
     @Test
     public void testPerf() throws JAXBException {
-        JAXBContextCache cache = new JAXBContextCache();
+        JAXBContextCache cache = new JAXBContextCache(new DefaultExtensionPointRegistry());
         
         // Test JAXBContext for simple java classes
         long start = System.currentTimeMillis();

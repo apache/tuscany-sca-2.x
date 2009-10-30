@@ -22,6 +22,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
@@ -34,16 +35,18 @@ import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
 public class XMLStreamReader2JAXB extends BaseTransformer<XMLStreamReader, Object> implements
     PullTransformer<XMLStreamReader, Object> {
 
-    public XMLStreamReader2JAXB() {
-        super();
+    private JAXBContextHelper contextHelper;
+    
+    public XMLStreamReader2JAXB(ExtensionPointRegistry registry) {
+        contextHelper = JAXBContextHelper.getInstance(registry);
     }
-
+    
     public Object transform(XMLStreamReader source, TransformationContext context) {
         if (source == null) {
             return null;
         }
         try {
-            JAXBContext jaxbContext = JAXBContextHelper.createJAXBContext(context, false);
+            JAXBContext jaxbContext = contextHelper.createJAXBContext(context, false);
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
             // FIXME: [rfeng] If the java type is Object.class, the unmarshalled result will be
             // a DOM Node

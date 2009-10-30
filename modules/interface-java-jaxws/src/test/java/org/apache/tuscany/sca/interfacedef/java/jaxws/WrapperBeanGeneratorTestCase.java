@@ -30,6 +30,7 @@ import java.util.Map;
 import javax.xml.bind.JAXBContext;
 import javax.xml.transform.stream.StreamSource;
 
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.databinding.jaxb.JAXBContextHelper;
 import org.apache.tuscany.sca.databinding.jaxb.JAXBTypeHelper;
 import org.junit.Test;
@@ -56,7 +57,7 @@ public class WrapperBeanGeneratorTestCase {
                 }
             }
         }
-        JAXBContext context = JAXBContextHelper.createJAXBContext(classes.toArray(new Class<?>[classes.size()]));
+        JAXBContext context = new JAXBContextHelper(new DefaultExtensionPointRegistry()).createJAXBContext(classes.toArray(new Class<?>[classes.size()]));
         for (Class<?> cls : classes) {
             Object obj = cls.newInstance();
             StringWriter sw = new StringWriter();
@@ -70,7 +71,7 @@ public class WrapperBeanGeneratorTestCase {
     @Test
     public void testGenerateSchema() throws Exception {
         List<Class<?>> classes = new WrapperBeanGenerator().generateWrapperBeans(TestInterface.class);
-        JAXBContext context = JAXBContextHelper.createJAXBContext(classes.toArray(new Class<?>[classes.size()]));
+        JAXBContext context = new JAXBContextHelper(new DefaultExtensionPointRegistry()).createJAXBContext(classes.toArray(new Class<?>[classes.size()]));
         Map<String, String> results = JAXBTypeHelper.generateSchema(context);
         for (String xsd : results.values()) {
             System.out.println(xsd);

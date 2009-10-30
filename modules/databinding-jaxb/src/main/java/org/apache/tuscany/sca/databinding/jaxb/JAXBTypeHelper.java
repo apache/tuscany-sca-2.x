@@ -36,6 +36,7 @@ import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.stream.StreamResult;
 
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.databinding.XMLTypeHelper;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Interface;
@@ -52,10 +53,11 @@ public class JAXBTypeHelper implements XMLTypeHelper {
     private static final String ANYTYPE_NAME = "anyType";
     private static final QName ANYTYPE_QNAME = new QName(SCHEMA_NS, ANYTYPE_NAME);
 
-    // private List<Class<?>> types = new ArrayList<Class<?>>();
-
-    public JAXBTypeHelper() {
+    private JAXBContextHelper contextHelper;
+    
+    public JAXBTypeHelper(ExtensionPointRegistry registry) {
         super();
+        contextHelper = JAXBContextHelper.getInstance(registry);
     }
 
     public TypeInfo getTypeInfo(Class javaType, Object logical) {
@@ -218,7 +220,7 @@ public class JAXBTypeHelper implements XMLTypeHelper {
 
     public List<XSDefinition> getSchemaDefinitions(XSDFactory factory, ModelResolver resolver, Interface intf) {
         try {
-            JAXBContext context = JAXBContextHelper.createJAXBContext(intf, false);
+            JAXBContext context = contextHelper.createJAXBContext(intf, false);
             List<XSDefinition> definitions = new ArrayList<XSDefinition>();
             generateSchemas(definitions, factory, context);
             return definitions;
@@ -230,7 +232,7 @@ public class JAXBTypeHelper implements XMLTypeHelper {
     public List<XSDefinition> getSchemaDefinitions(XSDFactory factory, ModelResolver resolver, List<DataType> dataTypes) {
         try {
 
-            JAXBContext context = JAXBContextHelper.createJAXBContext(dataTypes);
+            JAXBContext context = contextHelper.createJAXBContext(dataTypes);
             List<XSDefinition> definitions = new ArrayList<XSDefinition>();
             generateSchemas(definitions, factory, context);
             return definitions;

@@ -51,12 +51,14 @@ public class JAXBDataBinding extends BaseDataBinding {
     private JAXBWrapperHandler wrapperHandler;
     private JAXBTypeHelper xmlTypeHelper;
     private DOMHelper domHelper;
+    private JAXBContextHelper contextHelper;
     
     public JAXBDataBinding(ExtensionPointRegistry registry) {
         super(NAME, JAXBElement.class);
         this.wrapperHandler = new JAXBWrapperHandler();
-        this.xmlTypeHelper = new JAXBTypeHelper();
+        this.xmlTypeHelper = new JAXBTypeHelper(registry);
         this.domHelper = DOMHelper.getInstance(registry);
+        contextHelper = JAXBContextHelper.getInstance(registry);
     }
 
     @Override
@@ -106,7 +108,7 @@ public class JAXBDataBinding extends BaseDataBinding {
                 }
                 dataType = new DataTypeImpl<XMLType>(NAME, cls, XMLType.UNKNOWN);
             }
-            JAXBContext context = JAXBContextHelper.createJAXBContext(dataType);
+            JAXBContext context = contextHelper.createJAXBContext(dataType);
             arg = JAXBContextHelper.createJAXBElement(context, dataType, arg);
             Document doc = domHelper.newDocument();
             context.createMarshaller().marshal(arg, doc);

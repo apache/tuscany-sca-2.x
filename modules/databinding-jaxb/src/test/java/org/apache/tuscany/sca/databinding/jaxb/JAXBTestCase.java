@@ -75,7 +75,7 @@ public class JAXBTestCase {
 
     @Test
     public void testTransform() throws Exception {
-        Reader2JAXB t0 = new Reader2JAXB();
+        Reader2JAXB t0 = new Reader2JAXB(registry);
 
         DataType targetDataType = new DataTypeImpl<Class>(PurchaseOrderType.class, null);
 
@@ -94,7 +94,7 @@ public class JAXBTestCase {
 
         Assert.assertNotNull(node);
 
-        Node2JAXB t2 = new Node2JAXB();
+        Node2JAXB t2 = new Node2JAXB(registry);
         Object object2 = t2.transform(node, tContext);
         Assert.assertNotNull(object2);
 
@@ -102,7 +102,7 @@ public class JAXBTestCase {
 
     @Test
     public void testTransform2() throws Exception {
-        Reader2JAXB t0 = new Reader2JAXB();
+        Reader2JAXB t0 = new Reader2JAXB(registry);
 
         QName root = new QName("http://www.example.com/IPO", "purchaseOrder");
         DataType targetDataType = new DataTypeImpl<XMLType>(PurchaseOrderType.class, new XMLType(root, null));
@@ -123,7 +123,7 @@ public class JAXBTestCase {
 
         Assert.assertNotNull(node);
 
-        Node2JAXB t2 = new Node2JAXB();
+        Node2JAXB t2 = new Node2JAXB(registry);
         Object object2 = t2.transform(node, tContext);
         Assert.assertNotNull(object2);
 

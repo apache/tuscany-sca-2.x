@@ -41,6 +41,8 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.databinding.SimpleTypeMapper;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
@@ -60,14 +62,16 @@ import org.apache.tuscany.sca.interfacedef.util.XMLType;
  */
 // FIXME: [rfeng] We probably should turn this into a pluggable system service
 public final class JAXBContextHelper {
-    // public static final String JAXB_CLASSES = "jaxb.classes";
+    private final JAXBContextCache cache;
+    private final static SimpleTypeMapper SIMPLE_TYPE_MAPPER = new SimpleTypeMapperImpl();
 
-    // public static final String JAXB_CONTEXT_PATH = "jaxb.contextPath";
-
-    private static final JAXBContextCache cache = new JAXBContextCache();
-    private static final SimpleTypeMapper SIMPLE_TYPE_MAPPER = new SimpleTypeMapperImpl();
-
-    private JAXBContextHelper() {
+    public JAXBContextHelper(ExtensionPointRegistry registry) {
+        cache = new JAXBContextCache(registry);
+    }
+    
+    public static JAXBContextHelper getInstance(ExtensionPointRegistry registry) {
+        UtilityExtensionPoint utilityExtensionPoint = registry.getExtensionPoint(UtilityExtensionPoint.class);
+        return utilityExtensionPoint.getUtility(JAXBContextHelper.class);
     }
 
     /**
@@ -76,11 +80,11 @@ public final class JAXBContextHelper {
      * @return
      * @throws JAXBException
      */
-    public static JAXBContext createJAXBContext(Class<?> cls) throws JAXBException {
+    public JAXBContext createJAXBContext(Class<?> cls) throws JAXBException {
         return cache.getJAXBContext(cls);
     }
 
-    public static JAXBContext createJAXBContext(TransformationContext tContext, boolean source) throws JAXBException {
+    public JAXBContext createJAXBContext(TransformationContext tContext, boolean source) throws JAXBException {
         if (tContext == null)
             throw new TransformationException("JAXB context is not set for the transformation.");
 
@@ -116,23 +120,23 @@ public final class JAXBContextHelper {
         }
     }
 
-    public static JAXBContext createJAXBContext(DataType dataType) throws JAXBException {
+    public JAXBContext createJAXBContext(DataType dataType) throws JAXBException {
         return createJAXBContext(findClasses(dataType));
     }
 
-    public static Unmarshaller getUnmarshaller(JAXBContext context) throws JAXBException {
+    public Unmarshaller getUnmarshaller(JAXBContext context) throws JAXBException {
         return cache.getUnmarshaller(context);
     }
 
-    public static void releaseJAXBUnmarshaller(JAXBContext context, Unmarshaller unmarshaller) {
+    public void releaseJAXBUnmarshaller(JAXBContext context, Unmarshaller unmarshaller) {
         cache.releaseJAXBUnmarshaller(context, unmarshaller);
     }
     
-    public static Marshaller getMarshaller(JAXBContext context) throws JAXBException {
+    public Marshaller getMarshaller(JAXBContext context) throws JAXBException {
         return cache.getMarshaller(context);
     }
 
-    public static void releaseJAXBMarshaller(JAXBContext context, Marshaller marshaller) {
+    public void releaseJAXBMarshaller(JAXBContext context, Marshaller marshaller) {
         cache.releaseJAXBMarshaller(context, marshaller);
     }
     
@@ -191,11 +195,11 @@ public final class JAXBContextHelper {
      * @return
      * @throws JAXBException
      */
-    public static JAXBContext createJAXBContext(Class<?>[] classes) throws JAXBException {
+    public JAXBContext createJAXBContext(Class<?>[] classes) throws JAXBException {
         return cache.getJAXBContext(classes);
     }
 
-    public static JAXBContext createJAXBContext(Set<Class<?>> classes) throws JAXBException {
+    public JAXBContext createJAXBContext(Set<Class<?>> classes) throws JAXBException {
         return cache.getJAXBContext(classes);
     }
 
@@ -205,7 +209,7 @@ public final class JAXBContextHelper {
      * @return
      * @throws JAXBException
      */
-    public static JAXBContext createJAXBContext(Interface intf, boolean useWrapper) throws JAXBException {
+    public JAXBContext createJAXBContext(Interface intf, boolean useWrapper) throws JAXBException {
         synchronized (cache) {
             LRUCache<Object, JAXBContext> map = cache.getCache();
             Integer key = new Integer(System.identityHashCode(intf));
@@ -220,7 +224,7 @@ public final class JAXBContextHelper {
         }
     }
 
-    public static JAXBContext createJAXBContext(List<DataType> dataTypes) throws JAXBException {
+    public JAXBContext createJAXBContext(List<DataType> dataTypes) throws JAXBException {
         JAXBContext context;
         Set<Class<?>> classes = new HashSet<Class<?>>();
         Set<Type> visited = new HashSet<Type>();
@@ -296,7 +300,7 @@ public final class JAXBContextHelper {
         }
     }
 
-    public static JAXBContext createJAXBContext(Interface intf) throws JAXBException {
+    public JAXBContext createJAXBContext(Interface intf) throws JAXBException {
         return createJAXBContext(intf, true);
     }
 

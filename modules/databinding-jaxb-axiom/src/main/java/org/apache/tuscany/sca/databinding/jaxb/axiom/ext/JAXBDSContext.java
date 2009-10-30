@@ -51,6 +51,7 @@ public class JAXBDSContext {
     private static final boolean DEBUG_ENABLED = log.isLoggable(Level.FINER);
 
     private JAXBContext jaxbContext = null; // JAXBContext
+    private JAXBContextHelper contextHelper;
 
     /**
      * "Dispatch" Constructor Use this full constructor when the JAXBContent is provided by the
@@ -58,8 +59,9 @@ public class JAXBDSContext {
      *
      * @param jaxbContext
      */
-    public JAXBDSContext(JAXBContext jaxbContext) {
+    public JAXBDSContext(JAXBContext jaxbContext, JAXBContextHelper contextHelper) {
         this.jaxbContext = jaxbContext;
+        this.contextHelper = contextHelper;
     }
 
     public JAXBContext getJAXBContext() {
@@ -74,7 +76,7 @@ public class JAXBDSContext {
      */
     public Object unmarshal(XMLStreamReader reader) throws JAXBException {
 
-        Unmarshaller u = JAXBContextHelper.getUnmarshaller(getJAXBContext());
+        Unmarshaller u = contextHelper.getUnmarshaller(getJAXBContext());
 
         Object jaxb = null;
 
@@ -101,7 +103,7 @@ public class JAXBDSContext {
 
         // Very easy, use the Context to get the Marshaller.
         // Use the marshaller to write the object.
-        Marshaller m = JAXBContextHelper.getMarshaller(getJAXBContext());
+        Marshaller m = contextHelper.getMarshaller(getJAXBContext());
         AttachmentMarshaller am = m.getAttachmentMarshaller();
         boolean xop = am != null ? am.isXOPPackage() : false;
         // Marshal the object

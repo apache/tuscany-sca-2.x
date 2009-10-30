@@ -37,10 +37,12 @@ import org.w3c.dom.Node;
  */
 public class JAXB2Node extends BaseTransformer<Object, Node> implements PullTransformer<Object, Node> {
     private DOMHelper helper;
+    private JAXBContextHelper contextHelper;
     
     public JAXB2Node(ExtensionPointRegistry registry) {
         super();
         helper = DOMHelper.getInstance(registry);
+        contextHelper = JAXBContextHelper.getInstance(registry);
     }
     
     public Node transform(Object source, TransformationContext tContext) {
@@ -48,7 +50,7 @@ public class JAXB2Node extends BaseTransformer<Object, Node> implements PullTran
 //            return null;
 //        }
         try {
-            JAXBContext context = JAXBContextHelper.createJAXBContext(tContext, true);
+            JAXBContext context = contextHelper.createJAXBContext(tContext, true);
             Marshaller marshaller = context.createMarshaller();
             // FIXME: The default Marshaller doesn't support
             // marshaller.getNode()

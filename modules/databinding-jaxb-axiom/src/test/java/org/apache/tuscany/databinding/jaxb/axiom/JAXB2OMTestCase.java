@@ -27,6 +27,7 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.impl.TransformationContextImpl;
 import org.apache.tuscany.sca.databinding.jaxb.JAXB2Node;
@@ -57,11 +58,13 @@ public class JAXB2OMTestCase {
         tContext.setSourceDataType(sourceDataType);
         tContext.setTargetDataType(targetDataType);
 
+        ExtensionPointRegistry registry = new DefaultExtensionPointRegistry();
+        JAXBContextHelper contextHelper = JAXBContextHelper.getInstance(registry);
         // Force the JAXBContext to be cached
-        JAXBContextHelper.createJAXBContext(tContext, true);
+        contextHelper.createJAXBContext(tContext, true);
 
         long start = System.currentTimeMillis();
-        JAXB2OMElement t1 = new JAXB2OMElement();
+        JAXB2OMElement t1 = new JAXB2OMElement(registry);
         OMElement om = t1.transform(po, tContext);
         long duration1 = System.currentTimeMillis() - start;
         StringWriter sw = new StringWriter();
@@ -88,7 +91,7 @@ public class JAXB2OMTestCase {
         TransformationContext tContext = new TransformationContextImpl();
         tContext.setSourceDataType(sourceDataType);
         tContext.setTargetDataType(targetDataType);
-        OMElement om = new JAXB2OMElement().transform(po.getValue(), tContext);
+        OMElement om = new JAXB2OMElement(new DefaultExtensionPointRegistry()).transform(po.getValue(), tContext);
         StringWriter sw = new StringWriter();
         om.serializeAndConsume(sw);
         System.out.println(sw.toString());

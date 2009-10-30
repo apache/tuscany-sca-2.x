@@ -30,6 +30,7 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.util.StreamReaderDelegate;
 
 import org.apache.axiom.om.OMElement;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
@@ -40,7 +41,12 @@ import org.apache.tuscany.sca.databinding.jaxb.JAXBContextHelper;
  * @version $Rev$ $Date$
  */
 public class OMElement2JAXB extends BaseTransformer<OMElement, Object> implements PullTransformer<OMElement, Object> {
-
+    private JAXBContextHelper contextHelper;
+    
+    public OMElement2JAXB(ExtensionPointRegistry registry) {
+        super();
+        contextHelper = JAXBContextHelper.getInstance(registry);
+    }
     @Override
     public String getSourceDataBinding() {
         return org.apache.axiom.om.OMElement.class.getName();
@@ -56,9 +62,9 @@ public class OMElement2JAXB extends BaseTransformer<OMElement, Object> implement
                     // Marshalling directly to the output stream is faster than marshalling through the
                     // XMLStreamWriter. 
                     // Take advantage of this optimization if there is an output stream.
-                    JAXBContext jaxbContext = JAXBContextHelper.createJAXBContext(context, false);
+                    JAXBContext jaxbContext = contextHelper.createJAXBContext(context, false);
                     try {
-                        unmarshaller = JAXBContextHelper.getUnmarshaller(jaxbContext);
+                        unmarshaller = contextHelper.getUnmarshaller(jaxbContext);
                         reader = source.getXMLStreamReaderWithoutCaching();
                         // https://issues.apache.org/jira/browse/WSCOMMONS-395
                         reader = new StreamReaderDelegate(reader) {
@@ -73,7 +79,7 @@ public class OMElement2JAXB extends BaseTransformer<OMElement, Object> implement
                         if (reader != null) {
                             reader.close();
                         }
-                        JAXBContextHelper.releaseJAXBUnmarshaller(jaxbContext, unmarshaller);
+                        contextHelper.releaseJAXBUnmarshaller(jaxbContext, unmarshaller);
                     }
                     return JAXBContextHelper.createReturnValue(jaxbContext, context.getTargetDataType(), result);
                 }

@@ -26,6 +26,7 @@ import java.lang.annotation.Annotation;
 
 import javax.xml.bind.JAXBContext;
 
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.databinding.jaxb.JAXBContextHelper;
 import org.junit.Assert;
 import org.junit.Test;
@@ -55,7 +56,7 @@ public class FaultBeanGeneratorTestCase {
         //        XmlType xmlType = cls.getAnnotation(XmlType.class);
         //        System.out.println(xmlType);
         Object bean = cls.newInstance();
-        JAXBContext context = JAXBContextHelper.createJAXBContext(cls);
+        JAXBContext context = new JAXBContextHelper(new DefaultExtensionPointRegistry()).createJAXBContext(cls);
         StringWriter sw = new StringWriter();
         context.createMarshaller().marshal(bean, sw);
         System.out.println(sw.toString());

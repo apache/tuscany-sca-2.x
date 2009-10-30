@@ -24,6 +24,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
@@ -35,13 +36,17 @@ import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
  */
 public class Reader2JAXB extends BaseTransformer<Reader, Object> implements
     PullTransformer<Reader, Object> {
-
+    private JAXBContextHelper contextHelper;
+    
+    public Reader2JAXB(ExtensionPointRegistry registry) {
+        contextHelper = JAXBContextHelper.getInstance(registry);
+    }
     public Object transform(final Reader source, final TransformationContext context) {
         if (source == null) {
             return null;
         }
         try {
-            JAXBContext jaxbContext = JAXBContextHelper.createJAXBContext(context, false);
+            JAXBContext jaxbContext = contextHelper.createJAXBContext(context, false);
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
             StreamSource streamSource = new StreamSource(source);
             Object result = unmarshaller.unmarshal(streamSource, JAXBContextHelper.getJavaType(context.getTargetDataType()));

@@ -25,6 +25,7 @@ import javax.xml.namespace.QName;
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
@@ -38,11 +39,13 @@ import org.apache.tuscany.sca.databinding.jaxb.JAXBDataBinding;
  * @version $Rev$ $Date$
  */
 public class JAXB2OMElement extends BaseTransformer<Object, OMElement> implements PullTransformer<Object, OMElement> {
-    public JAXB2OMElement() {
-        super();
-    }
-
     private OMFactory factory = OMAbstractFactory.getOMFactory();
+    private JAXBContextHelper contextHelper;
+    
+    public JAXB2OMElement(ExtensionPointRegistry registry) {
+        super();
+        contextHelper = JAXBContextHelper.getInstance(registry);
+    }
 
     @Override
     public String getSourceDataBinding() {
@@ -52,13 +55,13 @@ public class JAXB2OMElement extends BaseTransformer<Object, OMElement> implement
     public OMElement transform(Object source, TransformationContext context) throws TransformationException {
         JAXBContext jaxbContext;
         try {
-            jaxbContext = JAXBContextHelper.createJAXBContext(context, true);
+            jaxbContext = contextHelper.createJAXBContext(context, true);
         } catch (JAXBException e) {
             throw new TransformationException(e);
         }
         Object element = JAXBContextHelper.createJAXBElement(jaxbContext, context.getTargetDataType(), source);
         QName name = jaxbContext.createJAXBIntrospector().getElementName(element);
-        JAXBDataSource dataSource = new JAXBDataSource(element, jaxbContext);
+        JAXBDataSource dataSource = new JAXBDataSource(element, jaxbContext, contextHelper);
         OMElement omElement = AxiomHelper.createOMElement(factory, name, dataSource);
         return omElement;
     }

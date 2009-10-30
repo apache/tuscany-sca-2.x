@@ -18,9 +18,6 @@
  */
 package org.apache.tuscany.sca.databinding.jaxb.axiom;
 
-import static org.apache.tuscany.sca.databinding.jaxb.JAXBContextHelper.getMarshaller;
-import static org.apache.tuscany.sca.databinding.jaxb.JAXBContextHelper.releaseJAXBMarshaller;
-
 import java.io.OutputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -38,6 +35,7 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.axiom.om.OMDataSource;
 import org.apache.axiom.om.OMOutputFormat;
 import org.apache.axiom.om.util.StAXUtils;
+import org.apache.tuscany.sca.databinding.jaxb.JAXBContextHelper;
 
 /**
  *
@@ -46,11 +44,12 @@ import org.apache.axiom.om.util.StAXUtils;
 public class JAXBDataSource implements OMDataSource {
     private JAXBContext context;
     private Object element;
-    // private Marshaller marshaller;
+    private JAXBContextHelper contextHelper; 
 
-    public JAXBDataSource(Object element, JAXBContext context) {
+    public JAXBDataSource(Object element, JAXBContext context, JAXBContextHelper contextHelper) {
         this.element = element;
         this.context = context;
+        this.contextHelper = contextHelper;
     }
 
     public XMLStreamReader getReader() throws XMLStreamException {
@@ -70,10 +69,10 @@ public class JAXBDataSource implements OMDataSource {
                 public Object run() throws Exception {
                     Marshaller marshaller = null;
                     try {
-                        marshaller = getMarshaller(context);
+                        marshaller = contextHelper.getMarshaller(context);
                         marshaller.marshal(element, xmlWriter);
                     } finally {
-                        releaseJAXBMarshaller(context, marshaller);
+                        contextHelper.releaseJAXBMarshaller(context, marshaller);
                     }
                     return null;
                 }
@@ -90,10 +89,10 @@ public class JAXBDataSource implements OMDataSource {
                 public Object run() throws Exception {
                     Marshaller marshaller = null;
                     try {
-                        marshaller = getMarshaller(context);
+                        marshaller = contextHelper.getMarshaller(context);
                         marshaller.marshal(element, output);
                     } finally {
-                        releaseJAXBMarshaller(context, marshaller);
+                        contextHelper.releaseJAXBMarshaller(context, marshaller);
                     }
                     return null;
                 }
@@ -109,10 +108,10 @@ public class JAXBDataSource implements OMDataSource {
                 public Object run() throws Exception {
                     Marshaller marshaller = null;
                     try {
-                        marshaller = getMarshaller(context);
+                        marshaller = contextHelper.getMarshaller(context);
                         marshaller.marshal(element, writer);
                     } finally {
-                        releaseJAXBMarshaller(context, marshaller);
+                        contextHelper.releaseJAXBMarshaller(context, marshaller);
                     }
                     return null;
                 }
