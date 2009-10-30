@@ -129,13 +129,6 @@
                       <version>${pom.version}</version>
                    </dependency>
                 </dependencies>
-                <dependencies>
-                   <dependency>
-                      <groupId>org.apache.tuscany.sca</groupId>
-                      <artifactId>tuscany-node-launcher-equinox</artifactId>
-                      <version>2.0-M4-SNAPSHOT</version>
-                   </dependency>
-                </dependencies>
                 <executions>
                     <execution>
                         <id>osgi-test</id>
