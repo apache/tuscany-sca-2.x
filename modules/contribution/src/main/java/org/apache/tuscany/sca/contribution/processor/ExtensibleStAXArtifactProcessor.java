@@ -33,6 +33,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.sca.assembly.Extension;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
@@ -56,7 +57,6 @@ public class ExtensibleStAXArtifactProcessor implements StAXArtifactProcessor<Ob
     private XMLInputFactory inputFactory;
     private XMLOutputFactory outputFactory;
     private StAXArtifactProcessorExtensionPoint processors;
-    
 
     /**
      * Constructs a new ExtensibleStAXArtifactProcessor.
@@ -172,7 +172,6 @@ public class ExtensibleStAXArtifactProcessor implements StAXArtifactProcessor<Ob
 
     @SuppressWarnings("unchecked")
     public void write(Object model, XMLStreamWriter outputSource, ProcessorContext context) throws ContributionWriteException, XMLStreamException {
-        Monitor monitor = context.getMonitor();
         // Delegate to the processor associated with the model type
         if (model != null) {
             StAXArtifactProcessor processor = processors.getProcessor(model.getClass());
@@ -182,11 +181,8 @@ public class ExtensibleStAXArtifactProcessor implements StAXArtifactProcessor<Ob
                 if (logger.isLoggable(Level.WARNING)) {
                     logger.warning("No StAX processor is configured to handle " + model.getClass());
                 }
-                if (!XMLStreamReader.class.isInstance(model)) {
-                    warning(monitor, "NoStaxProcessor", processors, model.getClass());
-                }
                 StAXArtifactProcessor anyElementProcessor = processors.getProcessor(ANY_ELEMENT);
-                if (anyElementProcessor != null) {
+                if ((model instanceof Extension) && anyElementProcessor != null) {
                     anyElementProcessor.write(model, outputSource, context);
                 }
             }
