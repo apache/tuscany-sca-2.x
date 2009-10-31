@@ -24,7 +24,7 @@ Overview
     It also includes implementations of many features not yet defined
     by SCA specifications, including:
 
-        - SCA bindings for RMI.
+        - SCA bindings for RMI, JSON-RPC, ATOM.
         - Databindings for JAXB, Axis2's AXIOM, DOM, SAX and StAX
         - Integration with various web frameworks
 
