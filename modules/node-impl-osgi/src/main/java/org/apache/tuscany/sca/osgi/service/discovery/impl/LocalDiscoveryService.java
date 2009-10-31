@@ -38,7 +38,7 @@ import org.apache.tuscany.sca.implementation.osgi.ServiceDescription;
 import org.apache.tuscany.sca.implementation.osgi.ServiceDescriptions;
 import org.apache.tuscany.sca.osgi.remoteserviceadmin.EndpointDescription;
 import org.apache.tuscany.sca.osgi.remoteserviceadmin.RemoteConstants;
-import org.apache.tuscany.sca.osgi.remoteserviceadmin.impl.EndpointHelper;
+import org.apache.tuscany.sca.osgi.remoteserviceadmin.impl.OSGiHelper;
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -92,7 +92,7 @@ public class LocalDiscoveryService extends AbstractDiscoveryService implements B
             props.put(RemoteConstants.SERVICE_REMOTE_ID, String.valueOf(System.currentTimeMillis()));
         }
         if (!props.containsKey(RemoteConstants.SERVICE_REMOTE_FRAMEWORK_UUID)) {
-            props.put(RemoteConstants.SERVICE_REMOTE_FRAMEWORK_UUID, EndpointHelper.getFrameworkUUID(context));
+            props.put(RemoteConstants.SERVICE_REMOTE_FRAMEWORK_UUID, OSGiHelper.getFrameworkUUID(context));
         }
         if (!props.containsKey(RemoteConstants.SERVICE_REMOTE_URI)) {
             props.put(RemoteConstants.SERVICE_REMOTE_URI, UUID.randomUUID().toString());

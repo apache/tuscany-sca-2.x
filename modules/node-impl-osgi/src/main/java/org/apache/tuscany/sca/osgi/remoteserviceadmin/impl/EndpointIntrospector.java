@@ -24,6 +24,7 @@ import static org.apache.tuscany.sca.implementation.osgi.OSGiProperty.SCA_BINDIN
 import static org.apache.tuscany.sca.implementation.osgi.OSGiProperty.SERVICE_EXPORTED_INTENTS;
 import static org.apache.tuscany.sca.implementation.osgi.OSGiProperty.SERVICE_EXPORTED_INTENTS_EXTRA;
 import static org.apache.tuscany.sca.implementation.osgi.OSGiProperty.SERVICE_EXPORTED_INTERFACES;
+import static org.apache.tuscany.sca.osgi.remoteserviceadmin.impl.OSGiHelper.getStringArray;
 import static org.osgi.framework.Constants.OBJECTCLASS;
 import static org.osgi.framework.Constants.SERVICE_ID;
 
@@ -55,17 +56,17 @@ import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
+import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.resolver.ExtensibleModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.core.UtilityExtensionPoint;
-import org.apache.tuscany.sca.deployment.Deployer;
 import org.apache.tuscany.sca.implementation.osgi.OSGiImplementation;
 import org.apache.tuscany.sca.implementation.osgi.OSGiImplementationFactory;
 import org.apache.tuscany.sca.implementation.osgi.OSGiProperty;
 import org.apache.tuscany.sca.implementation.osgi.SCAConfig;
+import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
@@ -86,16 +87,17 @@ import org.osgi.util.tracker.ServiceTracker;
  * implementation.osgi
  */
 public class EndpointIntrospector {
-    private BundleContext context;
+    // private BundleContext context;
     private AssemblyFactory assemblyFactory;
     private ContributionFactory contributionFactory;
     private OSGiImplementationFactory implementationFactory;
     private PolicyFactory policyFactory;
-    private ExtensionPointRegistry registry;
+    // private ExtensionPointRegistry registry;
     private FactoryExtensionPoint factories;
     private ModelResolverExtensionPoint modelResolvers;
+    // private StAXArtifactProcessor<Composite> compositeProcessor;
     private JavaInterfaceFactory javaInterfaceFactory;
-    private Deployer deployer;
+    // private Deployer deployer;
     private ServiceTracker discoveryTracker;
 
     /**
@@ -124,17 +126,19 @@ public class EndpointIntrospector {
      */
     public EndpointIntrospector(BundleContext context, ExtensionPointRegistry registry, ServiceTracker discoveryTracker) {
         super();
-        this.context = context;
+        // this.context = context;
         this.discoveryTracker = discoveryTracker;
-        this.registry = registry;
+        // this.registry = registry;
         this.factories = registry.getExtensionPoint(FactoryExtensionPoint.class);
         this.modelResolvers = registry.getExtensionPoint(ModelResolverExtensionPoint.class);
+//        this.compositeProcessor =
+//            registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class).getProcessor(Composite.class);
         this.assemblyFactory = factories.getFactory(AssemblyFactory.class);
         this.contributionFactory = factories.getFactory(ContributionFactory.class);
         this.policyFactory = factories.getFactory(PolicyFactory.class);
         this.implementationFactory = factories.getFactory(OSGiImplementationFactory.class);
         this.javaInterfaceFactory = factories.getFactory(JavaInterfaceFactory.class);
-        this.deployer = registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(Deployer.class);
+        // this.deployer = registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(Deployer.class);
     }
 
     private Intent getIntent(String intent) {
@@ -232,54 +236,79 @@ public class EndpointIntrospector {
      * @throws Exception
      */
     public Contribution introspect(ServiceReference reference, Map<String, Object> props) throws Exception {
-        Map<String, Object> properties = getProperties(reference, props);
-
-        OSGiProperty serviceID = implementationFactory.createOSGiProperty();
-        serviceID.setName(SERVICE_ID);
-        // The service.id is Long
-        serviceID.setValue(String.valueOf(reference.getProperty(SERVICE_ID)));
-
-        String id = "osgi.service." + UUID.randomUUID();
-        Composite composite = assemblyFactory.createComposite();
-        composite.setName(new QName(SCA11_TUSCANY_NS, id));
-
-        Component component = assemblyFactory.createComponent();
-        component.setName(id);
-        component.setAutowire(Boolean.TRUE);
-
-        composite.getComponents().add(component);
-
         Bundle bundle = reference.getBundle();
-        OSGiImplementation implementation = implementationFactory.createOSGiImplementation();
+        Map<String, Object> properties = getProperties(reference, props);
+        Long sid = (Long)reference.getProperty(SERVICE_ID);
 
-        implementation.setBundle(bundle);
-        component.setImplementation(implementation);
-        implementation.setUnresolved(false);
+        String[] requiredIntents = getStringArray(properties.get(SERVICE_EXPORTED_INTENTS));
+        List<Intent> intents = getIntents(requiredIntents);
+        String[] requiredIntentsExtra = getStringArray(properties.get(SERVICE_EXPORTED_INTENTS_EXTRA));
+        List<Intent> extraIntents = getIntents(requiredIntentsExtra);
+        Set<Intent> allIntents = new HashSet<Intent>(intents);
+        allIntents.addAll(extraIntents);
 
-        String[] remoteInterfaces = getStrings(reference.getProperty(SERVICE_EXPORTED_INTERFACES));
+        String[] bindingNames = getStringArray(properties.get(SCA_BINDINGS));
+        Collection<Binding> bindings = loadBindings(bindingNames);
+
+        String[] remoteInterfaces = getStringArray(reference.getProperty(SERVICE_EXPORTED_INTERFACES));
         if (remoteInterfaces == null || remoteInterfaces.length > 0 && "*".equals(remoteInterfaces[0])) {
-            remoteInterfaces = getStrings(reference.getProperty(OBJECTCLASS));
+            remoteInterfaces = getStringArray(reference.getProperty(OBJECTCLASS));
         } else {
             remoteInterfaces = parse(remoteInterfaces);
-            String[] objectClasses = getStrings(reference.getProperty(OBJECTCLASS));
+            String[] objectClasses = getStringArray(reference.getProperty(OBJECTCLASS));
             Set<String> objectClassSet = new HashSet<String>(Arrays.asList(objectClasses));
             if (!objectClassSet.containsAll(Arrays.asList(remoteInterfaces))) {
                 throw new IllegalArgumentException(
                                                    "The exported interfaces are not a subset of the types" + " listed in the objectClass service property from the Service Reference");
             }
         }
+
+        Contribution contribution = generateContribution(bundle, sid, remoteInterfaces, bindings, allIntents);
+        return contribution;
+    }
+
+    /**
+     * Generate a contribution that contains the composite for the exported service
+     * @param bundle The OSGi bundle
+     * @param sid The service id
+     * @param remoteInterfaces 
+     * @param bindings
+     * @param allIntents
+     * @return
+     * @throws ClassNotFoundException
+     * @throws InvalidInterfaceException
+     */
+    private Contribution generateContribution(Bundle bundle,
+                                              Long sid,
+                                              String[] remoteInterfaces,
+                                              Collection<Binding> bindings,
+                                              Set<Intent> allIntents) throws ClassNotFoundException,
+        InvalidInterfaceException {
+        String id = "osgi.service." + UUID.randomUUID();
+        Composite composite = assemblyFactory.createComposite();
+        composite.setName(new QName(SCA11_TUSCANY_NS, id));
+
+        Component component = assemblyFactory.createComponent();
+        component.setName(id);
+
+        composite.getComponents().add(component);
+
+        OSGiImplementation implementation = implementationFactory.createOSGiImplementation();
+
+        implementation.setBundle(bundle);
+        component.setImplementation(implementation);
+        implementation.setUnresolved(false);
+
+        OSGiProperty serviceID = implementationFactory.createOSGiProperty();
+        serviceID.setName(SERVICE_ID);
+        // The service.id is Long
+        serviceID.setValue(String.valueOf(sid));
+
         for (String intf : remoteInterfaces) {
             Service service = assemblyFactory.createService();
-            JavaInterfaceContract interfaceContract = javaInterfaceFactory.createJavaInterfaceContract();
-            Class<?> interfaceClass = bundle.loadClass(intf);
-            JavaInterface javaInterface = javaInterfaceFactory.createJavaInterface(interfaceClass);
-            interfaceContract.setInterface(javaInterface);
-            if (javaInterface.getCallbackClass() != null) {
-                interfaceContract.setCallbackInterface(javaInterfaceFactory.createJavaInterface(javaInterface
-                    .getCallbackClass()));
-            }
-
-            service.setName(interfaceClass.getSimpleName());
+            JavaInterfaceContract interfaceContract = createJavaInterfaceContract(bundle, intf);
+            String name = intf.substring(intf.lastIndexOf('.') + 1);
+            service.setName(name);
             service.setInterfaceContract(interfaceContract);
 
             service.getExtensions().add(serviceID);
@@ -292,39 +321,63 @@ public class EndpointIntrospector {
             componentService.setService(service);
         }
 
-        String[] requiredIntents = getStrings(properties.get(SERVICE_EXPORTED_INTENTS));
-        List<Intent> intents = getIntents(requiredIntents);
-        String[] requiredIntentsExtra = getStrings(properties.get(SERVICE_EXPORTED_INTENTS_EXTRA));
-        List<Intent> extraIntents = getIntents(requiredIntentsExtra);
-
-        String[] bindingNames = getStrings(properties.get(SCA_BINDINGS));
-        Collection<Binding> bindings = loadBindings(bindingNames);
-
         for (ComponentService componentService : component.getServices()) {
-            componentService.getRequiredIntents().addAll(intents);
-            componentService.getRequiredIntents().addAll(extraIntents);
+            componentService.getRequiredIntents().addAll(allIntents);
             componentService.getBindings().addAll(bindings);
         }
 
         // FIXME: Should we scan the owning bundle to create the SCA contribution?
+        Contribution contribution = createContribution(bundle, id, composite);
+        return contribution;
+    }
+
+    private Contribution createContribution(Bundle bundle, String id, Composite composite) {
         Contribution contribution = contributionFactory.createContribution();
+        contribution.setClassLoader(OSGiHelper.createBundleClassLoader(bundle));
         contribution.setURI("urn:" + id);
         contribution.setLocation(bundle.getEntry("/").toString());
         contribution.getDeployables().add(composite);
         ModelResolver modelResolver = new ExtensibleModelResolver(contribution, modelResolvers, factories);
         contribution.setModelResolver(modelResolver);
+        // compositeProcessor.resolve(composite, modelResolver, new ProcessorContext(registry));
         contribution.setUnresolved(true);
         return contribution;
     }
 
+    /**
+     * @param bundle
+     * @param endpoint
+     * @return
+     * @throws Exception
+     */
     public Contribution introspect(Bundle bundle, EndpointDescription endpoint) throws Exception {
+        Collection<Binding> bindings = Collections.emptyList();
+        Collection<String> interfaces = Collections.emptyList();
+        Collection<Intent> intents = Collections.emptyList();
         Endpoint ep = (Endpoint)endpoint.getProperties().get(Endpoint.class.getName());
         if (ep != null) {
-            return introspect(bundle, ep);
-        }
-        Map<String, Object> properties = endpoint.getProperties();
-        List<String> remoteInterfaces = endpoint.getInterfaces();
+            bindings = Collections.singletonList(ep.getBinding());
+            interfaces = Collections.singletonList(((JavaInterface)ep.getInterfaceContract().getInterface()).getName());
+            intents = ep.getRequiredIntents();
+        } else {
+            Map<String, Object> properties = endpoint.getProperties();
+            interfaces = endpoint.getInterfaces();
+            String[] requiredIntents = getStringArray(properties.get(SERVICE_EXPORTED_INTENTS));
+            intents = getIntents(requiredIntents);
 
+            String[] bindingNames = getStringArray(properties.get(SCA_BINDINGS));
+            bindings = loadBindings(bindingNames);
+        }
+
+        Contribution contribution = generateContribution(bundle, interfaces, bindings, intents);
+        return contribution;
+    }
+
+    private Contribution generateContribution(Bundle bundle,
+                                              Collection<String> remoteInterfaces,
+                                              Collection<Binding> bindings,
+                                              Collection<Intent> intents) throws ClassNotFoundException,
+        InvalidInterfaceException, ContributionResolveException {
         String id = "osgi.reference." + UUID.randomUUID();
         Composite composite = assemblyFactory.createComposite();
         composite.setName(new QName(Base.SCA11_TUSCANY_NS, id));
@@ -344,14 +397,7 @@ public class EndpointIntrospector {
         int count = 0;
         for (String intf : remoteInterfaces) {
             Reference reference = assemblyFactory.createReference();
-            JavaInterfaceContract interfaceContract = javaInterfaceFactory.createJavaInterfaceContract();
-            Class<?> interfaceClass = bundle.loadClass(intf);
-            JavaInterface javaInterface = javaInterfaceFactory.createJavaInterface(interfaceClass);
-            interfaceContract.setInterface(javaInterface);
-            if (javaInterface.getCallbackClass() != null) {
-                interfaceContract.setCallbackInterface(javaInterfaceFactory.createJavaInterface(javaInterface
-                    .getCallbackClass()));
-            }
+            JavaInterfaceContract interfaceContract = createJavaInterfaceContract(bundle, intf);
 
             reference.setName("ref" + (count++));
             reference.setInterfaceContract(interfaceContract);
@@ -365,77 +411,30 @@ public class EndpointIntrospector {
             componentReference.setWiredByImpl(true);
         }
 
-        String[] requiredIntents = getStrings(properties.get(SERVICE_EXPORTED_INTENTS));
-        List<Intent> intents = getIntents(requiredIntents);
-
-        String[] bindingNames = getStrings(properties.get(SCA_BINDINGS));
-        Collection<Binding> bindings = loadBindings(bindingNames);
-
         for (ComponentReference componentReference : component.getReferences()) {
             componentReference.getRequiredIntents().addAll(intents);
             componentReference.getBindings().addAll(bindings);
         }
-        // FIXME: Should we scan the owning bundle to create the SCA contribution?
-        Contribution contribution = contributionFactory.createContribution();
-        contribution.setURI("urn:" + id);
-        contribution.setLocation(bundle.getEntry("/").toString());
-        contribution.getDeployables().add(composite);
-        ModelResolver modelResolver = new ExtensibleModelResolver(contribution, modelResolvers, factories);
-        contribution.setModelResolver(modelResolver);
-        contribution.setUnresolved(true);
+
+        Contribution contribution = createContribution(bundle, id, composite);
         return contribution;
     }
 
-    public Contribution introspect(Bundle bundle, Endpoint endpoint) throws Exception {
-        String id = "osgi.reference." + UUID.randomUUID();
-        Composite composite = assemblyFactory.createComposite();
-        composite.setName(new QName(Base.SCA11_TUSCANY_NS, id));
-
-        Component component = assemblyFactory.createComponent();
-        component.setName(id);
-        // component.setAutowire(Boolean.TRUE);
-
-        composite.getComponents().add(component);
-
-        OSGiImplementation implementation = implementationFactory.createOSGiImplementation();
-
-        implementation.setBundle(bundle);
-        component.setImplementation(implementation);
-        implementation.setUnresolved(false);
-
-        Reference reference = assemblyFactory.createReference();
-        Service service = endpoint.getService().getService();
-        reference.setInterfaceContract(service.getInterfaceContract());
-        reference.setName("ref");
-
-        reference.getBindings().add(endpoint.getBinding());
-
-        /*
-        reference.getRequiredIntents().addAll(service.getRequiredIntents());
-        reference.getPolicySets().addAll(service.getPolicySets());
-        */
-
-        implementation.getReferences().add(reference);
-
-        ComponentReference componentReference = assemblyFactory.createComponentReference();
-        component.getReferences().add(componentReference);
-        componentReference.setReference(reference);
-        componentReference.setName(reference.getName());
-        componentReference.setWiredByImpl(true);
-
-        // FIXME: Should we scan the owning bundle to create the SCA contribution?
-        Contribution contribution = contributionFactory.createContribution();
-        contribution.setURI("urn:" + id);
-        contribution.setLocation(bundle.getEntry("/").toString());
-        contribution.getDeployables().add(composite);
-        ModelResolver modelResolver = new ExtensibleModelResolver(contribution, modelResolvers, factories);
-        contribution.setModelResolver(modelResolver);
-        contribution.setUnresolved(true);
-        return contribution;
+    private JavaInterfaceContract createJavaInterfaceContract(Bundle bundle, String intf)
+        throws ClassNotFoundException, InvalidInterfaceException {
+        JavaInterfaceContract interfaceContract = javaInterfaceFactory.createJavaInterfaceContract();
+        Class<?> interfaceClass = bundle.loadClass(intf);
+        JavaInterface javaInterface = javaInterfaceFactory.createJavaInterface(interfaceClass);
+        interfaceContract.setInterface(javaInterface);
+        if (javaInterface.getCallbackClass() != null) {
+            interfaceContract.setCallbackInterface(javaInterfaceFactory.createJavaInterface(javaInterface
+                .getCallbackClass()));
+        }
+        return interfaceContract;
     }
 
-    private Collection<Binding> loadBindings(String[] qnames) throws IOException,
-        ContributionReadException, XMLStreamException {
+    private Collection<Binding> loadBindings(String[] qnames) throws IOException, ContributionReadException,
+        XMLStreamException {
         if (qnames == null || qnames.length == 0) {
             return Collections.emptyList();
         }
@@ -470,25 +469,6 @@ public class EndpointIntrospector {
             }
         }
         return bindingMap.values();
-    }
-
-    /**
-     * In OSGi, the value of String+ can be a single String, String[] or Collection<String>
-     * @param value
-     * @return
-     */
-    private String[] getStrings(Object value) {
-        if (value == null) {
-            return null;
-        }
-        if (value instanceof String) {
-            return new String[] {(String)value};
-        } else if (value instanceof Collection) {
-            Collection<String> collection = (Collection)value;
-            return collection.toArray(new String[collection.size()]);
-        }
-        return (String[])value;
-
     }
 
 }

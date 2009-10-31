@@ -19,12 +19,15 @@
 
 package org.apache.tuscany.sca.osgi.remoteserviceadmin.impl;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.List;
+import java.util.UUID;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
@@ -40,6 +43,8 @@ import org.osgi.framework.ServiceReference;
  * 
  */
 public class OSGiHelper {
+    public final static String FRAMEWORK_UUID = "org.osgi.framework.uuid";
+
     private OSGiHelper() {
     }
 
@@ -140,6 +145,60 @@ public class OSGiHelper {
         FactoryExtensionPoint factoryExtensionPoint = registry.getExtensionPoint(FactoryExtensionPoint.class);
         OSGiImplementationFactory implementationFactory= factoryExtensionPoint.getFactory(OSGiImplementationFactory.class);
         return implementationFactory.createOSGiProperties(reference);
+    }
+    
+    public static OSGiProperty createOSGiProperty(ExtensionPointRegistry registry, String name, Object value) {
+        FactoryExtensionPoint factoryExtensionPoint = registry.getExtensionPoint(FactoryExtensionPoint.class);
+        OSGiImplementationFactory implementationFactory= factoryExtensionPoint.getFactory(OSGiImplementationFactory.class);
+        return implementationFactory.createOSGiProperty(name, value);
+    }
+
+
+    public synchronized static String getFrameworkUUID(BundleContext bundleContext) {
+        String uuid = null;
+        if (bundleContext != null) {
+            uuid = bundleContext.getProperty(FRAMEWORK_UUID);
+        } else {
+            uuid = System.getProperty(FRAMEWORK_UUID);
+        }
+        if (uuid == null) {
+            uuid = UUID.randomUUID().toString();
+        }
+        System.setProperty(FRAMEWORK_UUID, uuid);
+        return uuid;
+    }  
+    
+    public static ClassLoader createBundleClassLoader(Bundle bundle) {
+        return new BundleClassLoader(bundle);
+    }
+    
+    private static class BundleClassLoader extends ClassLoader {
+        private Bundle bundle;
+        public BundleClassLoader(Bundle bundle) {
+            super(null);
+            this.bundle = bundle;
+        }
+
+        @Override
+        protected Class<?> findClass(String name) throws ClassNotFoundException {
+            return bundle.loadClass(name);
+        }
+
+        @Override
+        protected URL findResource(String name) {
+            return bundle.getResource(name);
+        }
+
+        @Override
+        protected Enumeration<URL> findResources(String name) throws IOException {
+            Enumeration<URL> urls = bundle.getResources(name);
+            if (urls == null) {
+                List<URL> list = Collections.emptyList();
+                return Collections.enumeration(list);
+            } else {
+                return urls;
+            }
+        }
     }    
 
 }

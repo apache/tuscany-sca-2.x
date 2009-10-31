@@ -23,7 +23,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.implementation.osgi.OSGiProperty;
@@ -38,7 +37,6 @@ import org.osgi.framework.Constants;
  * Implementation of {@link EndpointDescription}
  */
 public class EndpointHelper {
-    private final static String FRAMEWORK_UUID = "org.osgi.framework.uuid";
     private EndpointHelper() {
     }
 
@@ -56,7 +54,7 @@ public class EndpointHelper {
         Map<String, Object> props = new HashMap<String, Object>();
         
         if (!endpoint.isRemote()) {
-            String uuid = getFrameworkUUID(bundleContext);
+            String uuid = OSGiHelper.getFrameworkUUID(bundleContext);
             props.put(RemoteConstants.SERVICE_REMOTE_FRAMEWORK_UUID, uuid);
         }
         
@@ -75,20 +73,6 @@ public class EndpointHelper {
         List<String> interfaces = getInterfaces(endpoint);
         props.put(Constants.OBJECTCLASS, interfaces.toArray(new String[interfaces.size()]));
         return props;
-    }
-
-    public synchronized static String getFrameworkUUID(BundleContext bundleContext) {
-        String uuid = null;
-        if (bundleContext != null) {
-            uuid = bundleContext.getProperty(FRAMEWORK_UUID);
-        } else {
-            uuid = System.getProperty(FRAMEWORK_UUID);
-        }
-        if (uuid == null) {
-            uuid = UUID.randomUUID().toString();
-        }
-        System.setProperty(FRAMEWORK_UUID, uuid);
-        return uuid;
     }
 
     public static Endpoint getEndpoint(EndpointDescription endpointDescription) {

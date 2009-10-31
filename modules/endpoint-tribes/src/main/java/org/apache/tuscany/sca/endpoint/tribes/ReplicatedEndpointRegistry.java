@@ -354,10 +354,11 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry, LifeCycleLi
 
     public void entryAdded(Object key, Object value) {
         MapEntry entry = (MapEntry)value;
+        Endpoint newEp = (Endpoint)entry.getValue();
         if (!isLocal(entry)) {
             logger.info(id + " Remote endpoint added: " + entry.getValue());
+            newEp.setRemote(true);
         }
-        Endpoint newEp = (Endpoint)entry.getValue();
         newEp.setExtensionPointRegistry(registry);
         for (EndpointListener listener : listeners) {
             listener.endpointAdded(newEp);

@@ -97,8 +97,8 @@ public class OSGiImplementationProvider implements ImplementationProvider {
         for (ComponentReference ref : component.getReferences()) {
             RuntimeComponentReference reference = (RuntimeComponentReference)ref;
             InterfaceContract interfaceContract = reference.getInterfaceContract();
-            JavaInterface javaInterface = (JavaInterface)interfaceContract.getInterface();
-            final Class<?> interfaceClass = javaInterface.getJavaClass();
+            final JavaInterface javaInterface = (JavaInterface)interfaceContract.getInterface();
+            // final Class<?> interfaceClass = javaInterface.getJavaClass();
 
             //            final Hashtable<String, Object> props = new Hashtable<String, Object>();
             //            props.put(FILTER_MATCH_CRITERIA, "");
@@ -113,14 +113,14 @@ public class OSGiImplementationProvider implements ImplementationProvider {
             osgiProps.put(SERVICE_IMPORTED_CONFIGS, new String[] {REMOTE_CONFIG_SCA});
 
             for (RuntimeWire wire : reference.getRuntimeWires()) {
-                final OSGiServiceFactory serviceFactory = new OSGiServiceFactory(interfaceClass.getName(), wire);
+                final OSGiServiceFactory serviceFactory = new OSGiServiceFactory(javaInterface.getName(), wire);
                 ServiceRegistration registration =
                     AccessController.doPrivileged(new PrivilegedAction<ServiceRegistration>() {
                         public ServiceRegistration run() {
                             // Register the proxy as OSGi service
                             BundleContext context = osgiBundle.getBundleContext();
                             ServiceRegistration registration =
-                                context.registerService(interfaceClass.getName(), serviceFactory, osgiProps);
+                                context.registerService(javaInterface.getName(), serviceFactory, osgiProps);
                             return registration;
                         }
                     });
@@ -130,6 +130,17 @@ public class OSGiImplementationProvider implements ImplementationProvider {
         
         // Set the OSGi service reference properties into the SCA service
         for (ComponentService service : component.getServices()) {
+            // The properties might have been set by the export service
+            boolean found = false;
+            for (Object ext : service.getExtensions()) {
+                if (ext instanceof OSGiProperty) {
+                    found = true;
+                    break;
+                }
+            }
+            if (found) {
+                continue;
+            }
             ServiceReference serviceReference = getServiceReference(osgiBundle.getBundleContext(), service);
             if (serviceReference != null) {
                 service.getExtensions().addAll(implementationFactory.createOSGiProperties(serviceReference));

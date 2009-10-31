@@ -19,7 +19,13 @@
 
 package org.apache.tuscany.sca.osgi.remoteserviceadmin.impl;
 
+import static org.apache.tuscany.sca.osgi.remoteserviceadmin.RemoteConstants.SERVICE_REMOTE_FRAMEWORK_UUID;
+import static org.apache.tuscany.sca.osgi.remoteserviceadmin.RemoteConstants.SERVICE_REMOTE_ID;
 import static org.apache.tuscany.sca.osgi.remoteserviceadmin.impl.EndpointHelper.createEndpointDescription;
+import static org.apache.tuscany.sca.osgi.remoteserviceadmin.impl.OSGiHelper.createOSGiProperty;
+import static org.apache.tuscany.sca.osgi.remoteserviceadmin.impl.OSGiHelper.getFrameworkUUID;
+import static org.apache.tuscany.sca.osgi.remoteserviceadmin.impl.OSGiHelper.getOSGiProperties;
+import static org.osgi.framework.Constants.SERVICE_ID;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -77,7 +83,13 @@ public class OSGiServiceExporter extends AbstractOSGiServiceHandler implements S
                 configuration.getExtensions().add(reference.getBundle());
                 Component component = contribution.getDeployables().get(0).getComponents().get(0);
                 ComponentService service = component.getServices().get(0);
-                service.getExtensions().addAll(OSGiHelper.getOSGiProperties(registry, reference));
+                service.getExtensions().addAll(getOSGiProperties(registry, reference));
+                service.getExtensions().add(createOSGiProperty(registry,
+                                                               SERVICE_REMOTE_FRAMEWORK_UUID,
+                                                               getFrameworkUUID(reference.getBundle()
+                                                                   .getBundleContext())));
+                service.getExtensions().add(createOSGiProperty(registry, SERVICE_REMOTE_ID, reference
+                    .getProperty(SERVICE_ID)));
 
                 // FIXME: Configure the domain and node URI
                 NodeImpl node = new NodeImpl(nodeFactory, configuration, Collections.singletonList(contribution));
