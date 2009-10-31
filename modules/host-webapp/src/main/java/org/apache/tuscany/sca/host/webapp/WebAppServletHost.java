@@ -256,7 +256,9 @@ public class WebAppServletHost implements ServletHost {
             List<String> oldServletURIs = new ArrayList<String>();
             for (String oldServletURI : servlets.keySet()) {
                 if (oldServletURI.startsWith(oldContextPath)) {
-                    oldServletURIs.add(oldServletURI);
+                    if (!oldServletURI.startsWith(contextPath)) {
+                        oldServletURIs.add(oldServletURI);
+                    }
                 }
             }
             for (String oldURI : oldServletURIs) {
