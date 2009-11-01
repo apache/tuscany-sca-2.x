@@ -96,6 +96,7 @@ public class TuscanyListingAgent extends ListingAgent {
                     for (Object p : ((Service)s).getPorts().values()) {
                         String endpointURL = Axis2ServiceProvider.getPortAddress((Port)p);
                         String modifiedURL = setIPAddress(endpointURL, url);
+                        modifiedURL = addContextRoot(modifiedURL, serviceName);
                         Axis2ServiceProvider.setPortAddress((Port)p, modifiedURL);
                     }
                 }
@@ -134,6 +135,18 @@ public class TuscanyListingAgent extends ListingAgent {
 
         // in all other cases, delegate to the Axis2 code
         super.processListService(req, res);
+    }
+
+    private String addContextRoot(String modifiedURL, String serviceName) {
+        if (!"/".equals(configContext.getContextRoot())) {
+            if (modifiedURL.endsWith(serviceName)) {
+                URI uri = URI.create(modifiedURL);
+                if (!uri.getPath().startsWith(configContext.getContextRoot())) {
+                    modifiedURL = modifiedURL.substring(0, modifiedURL.length() - serviceName.length()) + configContext.getContextRoot() + serviceName;
+                }
+            }
+        }
+        return modifiedURL;
     }
 
     private XmlSchema getSchema(XmlSchema parentSchema, String name) {
