@@ -18,7 +18,7 @@
  * under the License.    
 -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
-           xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
+           xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1"
            xmlns:hns="http://tuscany.apache.org/implementation/bpel/example/helloworld"
            targetNamespace="http://${package}"
            name="${artifactId}">
