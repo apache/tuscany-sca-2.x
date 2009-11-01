@@ -34,7 +34,7 @@
 
 	<properties>
 		<tuscany.version>2.0-M4-SNAPSHOT</tuscany.version>
-		<jetty.version>6.1.19</jetty.version>
+		<jetty.version>6.1.18</jetty.version>
 	</properties>
 
 	<dependencies>
