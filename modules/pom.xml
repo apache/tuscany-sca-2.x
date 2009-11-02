@@ -48,6 +48,7 @@
         <module>binding-rmi</module>
         <module>binding-rmi-runtime</module>
         <module>binding-sca-runtime</module>
+        <module>binding-sca-runtime-rmi</module>
         <module>binding-sca-axis2-runtime</module>
         <module>binding-ws</module>
         <module>binding-ws-axis2</module>
