@@ -64,6 +64,7 @@ public class OSGiImplementationProvider implements ImplementationProvider {
     private RuntimeComponent component;
     private ProxyFactoryExtensionPoint proxyFactoryExtensionPoint;
     private Bundle osgiBundle;
+    private boolean startedByMe;
     private OSGiImplementation implementation;
     private List<ServiceRegistration> registrations = new ArrayList<ServiceRegistration>();
     private OSGiImplementationFactory implementationFactory;
@@ -89,6 +90,7 @@ public class OSGiImplementationProvider implements ImplementationProvider {
             int state = osgiBundle.getState();
             if ((state & Bundle.STARTING) == 0 && (state & Bundle.ACTIVE) == 0) {
                 osgiBundle.start();
+                startedByMe = true;
             }
         } catch (BundleException e) {
             throw new ServiceRuntimeException(e);
@@ -157,13 +159,18 @@ public class OSGiImplementationProvider implements ImplementationProvider {
             }
         }
         registrations.clear();
-        try {
-            int state = osgiBundle.getState();
-            if ((state & Bundle.STOPPING) == 0 && (state & Bundle.ACTIVE) != 0) {
-                osgiBundle.stop();
+        // [REVIEW] Shoud it take care of stopping the bundle?
+        if (startedByMe) {
+            try {
+                int state = osgiBundle.getState();
+                if ((state & Bundle.STOPPING) == 0 && (state & Bundle.ACTIVE) != 0) {
+                    osgiBundle.stop();
+                }
+            } catch (BundleException e) {
+                throw new ServiceRuntimeException(e);
+            } finally {
+                startedByMe = false;
             }
-        } catch (BundleException e) {
-            throw new ServiceRuntimeException(e);
         }
     }
 
