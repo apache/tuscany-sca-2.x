@@ -1,4 +1,5 @@
 Manifest-Version: 1.0
+Export-Package: org.apache.tuscany.sca.binding.rmi.provider;version="2.0.0"
 Tool: Bnd-0.0.255
 Bundle-Name: Apache Tuscany SCA RMI Binding Extension
 Created-By: 1.6.0_07 (Sun Microsystems Inc.)
@@ -12,6 +13,7 @@ Import-Package: net.sf.cglib.core,
  net.sf.cglib.proxy,
  org.apache.tuscany.sca.assembly;version="2.0.0",
  org.apache.tuscany.sca.binding.rmi;version="2.0.0",
+ org.apache.tuscany.sca.binding.rmi.provider;version="2.0.0",
  org.apache.tuscany.sca.common.java.classloader;version="2.0.0",
  org.apache.tuscany.sca.core;version="2.0.0",
  org.apache.tuscany.sca.host.rmi;version="2.0.0",
