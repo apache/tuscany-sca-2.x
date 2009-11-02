@@ -273,17 +273,18 @@ public class LauncherMain {
         }
         
         if (!f.exists()) {
-            throw new FileNotFoundException(f.getName());
+//            throw new FileNotFoundException(f.getName());
+            properties.put("mainClass", "[firstArgJarManifestMainClass]|org.apache.tuscany.sca.domain.node.DomainNodeMain");
+        } else {
+            try {
+                FileInputStream fis = new FileInputStream(f);
+                properties.load(fis);
+                fis.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
 
-        try {
-            FileInputStream fis = new FileInputStream(f);
-            properties.load(fis);
-            fis.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        
         properties.put(LAUNCHER_ARGS, args);
         
         return properties;
