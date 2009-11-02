@@ -89,7 +89,7 @@
             <plugin>
                 <groupId>org.apache.tuscany.maven.plugins</groupId>
                 <artifactId>maven-osgi-junit-plugin</artifactId>
-                <version>1.0-SNAPSHOT</version>
+                <version>1.0</version>
                 <executions>
                     <execution>
                         <id>osgi-test</id>
