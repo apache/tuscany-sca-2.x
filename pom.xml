@@ -258,6 +258,7 @@
                 <module>samples</module>
                 <module>itest</module>
                 <module>features</module>
+                <module>shades</module>
                 <module>distribution</module>
                 <module>archetypes</module>
 <!--
@@ -378,7 +379,7 @@
                 <plugin>
                     <groupId>org.apache.tuscany.sca</groupId>
                     <artifactId>tuscany-maven-osgi-junit</artifactId>
-                    <version>2.0-SNAPSHOT</version>
+                    <version>1.0</version>
                     <executions>
                         <execution>
                             <id>osgi-test</id>
