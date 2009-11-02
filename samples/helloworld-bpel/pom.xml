@@ -90,6 +90,13 @@
                 <groupId>org.apache.tuscany.maven.plugins</groupId>
                 <artifactId>maven-osgi-junit-plugin</artifactId>
                 <version>1.0</version>
+                <dependencies>
+                   <dependency>
+                      <groupId>org.apache.tuscany.sca</groupId>
+                      <artifactId>tuscany-node-launcher-equinox</artifactId>
+                      <version>${pom.version}</version>
+                   </dependency>
+                </dependencies>
                 <executions>
                     <execution>
                         <id>osgi-test</id>
