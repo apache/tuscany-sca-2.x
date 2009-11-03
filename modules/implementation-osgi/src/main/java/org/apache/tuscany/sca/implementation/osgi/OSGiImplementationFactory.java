@@ -19,6 +19,10 @@
 
 package org.apache.tuscany.sca.implementation.osgi;
 
+import java.util.Collection;
+
+import org.osgi.framework.ServiceReference;
+
 /**
  * The factory interface to create OSGiImplementation instances
  */
@@ -34,4 +38,7 @@ public interface OSGiImplementationFactory {
      * @return
      */
     OSGiProperty createOSGiProperty();
+    OSGiProperty createOSGiProperty(String name, String stringValue, String type);
+    OSGiProperty createOSGiProperty(String name, Object value);
+    Collection<OSGiProperty> createOSGiProperties(ServiceReference reference); 
 }

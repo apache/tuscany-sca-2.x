@@ -276,9 +276,14 @@ public class RemoteServiceAdminImpl implements RemoteServiceAdmin, ManagedServic
             return;
         }
         String domainRegistry = (String)props.get("org.osgi.sca.domain.registry");
+        String domainURI = (String)props.get("org.osgi.sca.domain.uri");
         if (domainRegistry != null) {
             exporter.setDomainRegistry(domainRegistry);
             importer.setDomainRegistry(domainRegistry);
+        }
+        if (domainURI != null) {
+            exporter.setDomainURI(domainURI);
+            importer.setDomainURI(domainURI);
         }
     }
 }

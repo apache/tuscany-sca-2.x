@@ -30,6 +30,7 @@ import org.apache.tuscany.sca.implementation.osgi.OSGiImplementation;
 import org.apache.tuscany.sca.osgi.remoteserviceadmin.EndpointDescription;
 import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.EndpointListener;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -56,8 +57,13 @@ public class DomainDiscoveryService extends AbstractDiscoveryService implements 
             return;
         }
 
-        OSGiImplementation osgiImpl = (OSGiImplementation)impl;
-        BundleContext bundleContext = osgiImpl.getBundle().getBundleContext();
+        BundleContext bundleContext = null;
+        // Remote endpoint doesn't have a bundle
+        if (!endpoint.isRemote()) {
+            OSGiImplementation osgiImpl = (OSGiImplementation)impl;
+            Bundle bundle = osgiImpl.getBundle();
+            bundleContext = bundle != null ? bundle.getBundleContext() : null;
+        }
 
         /*
         if (!endpoint.isRemote()) {
@@ -114,4 +120,5 @@ public class DomainDiscoveryService extends AbstractDiscoveryService implements 
         props.put(SUPPORTED_PROTOCOLS, new String[] {"org.osgi.sca"});
         return props;
     }
+
 }

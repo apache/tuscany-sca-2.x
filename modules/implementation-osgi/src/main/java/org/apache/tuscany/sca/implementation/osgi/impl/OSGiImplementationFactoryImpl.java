@@ -19,10 +19,15 @@
 
 package org.apache.tuscany.sca.implementation.osgi.impl;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.implementation.osgi.OSGiImplementation;
 import org.apache.tuscany.sca.implementation.osgi.OSGiImplementationFactory;
 import org.apache.tuscany.sca.implementation.osgi.OSGiProperty;
+import org.osgi.framework.ServiceReference;
 
 /**
  * 
@@ -40,4 +45,72 @@ public class OSGiImplementationFactoryImpl implements OSGiImplementationFactory 
         return new OSGiPropertyImpl();
     }
 
+    public OSGiProperty createOSGiProperty(String propName, String propValue, String propType) {
+        OSGiProperty prop = new OSGiPropertyImpl();
+        if (propType == null) {
+            propType = "String";
+        }
+        prop.setName(propName);
+        prop.setStringValue(propValue);
+        prop.setType(propType);
+
+        Object value = propValue;
+        if ("Integer".equals(propType)) {
+            value = Integer.valueOf(propValue);
+        } else if ("Long".equals(propType)) {
+            value = Long.valueOf(propValue);
+        } else if ("Float".equals(propType)) {
+            value = Float.valueOf(propValue);
+        } else if ("Double".equals(propType)) {
+            value = Double.valueOf(propValue);
+        } else if ("Short".equals(propType)) {
+            value = Short.valueOf(propValue);
+        } else if ("Character".equals(propType)) {
+            value = propValue.charAt(0);
+        } else if ("Byte".equals(propType)) {
+            value = Byte.valueOf(propValue);
+        } else if ("Boolean".equals(propType)) {
+            value = Boolean.valueOf(propValue);
+        } else if ("String+".equals(propType)) {
+            value = propValue.split(" ");
+        } else {
+            // String
+            value = propValue;
+        }
+        prop.setValue(value);
+        return prop;
+    }
+
+    public OSGiProperty createOSGiProperty(String propName, Object value) {
+        OSGiProperty prop = new OSGiPropertyImpl();
+        prop.setName(propName);
+        prop.setValue(value);
+
+        if (value instanceof String[]) {
+            StringBuffer sb = new StringBuffer();
+            for (String s : (String[])value) {
+                sb.append(s).append(' ');
+            }
+            if (sb.length() > 0) {
+                sb.deleteCharAt(sb.length() - 1);
+            }
+            prop.setStringValue(sb.toString());
+            prop.setType("String+");
+        } else if (value != null) {
+            prop.setStringValue(String.valueOf(value));
+            prop.setType(value.getClass().getSimpleName());
+        }
+        return prop;
+    }
+    
+    public Collection<OSGiProperty> createOSGiProperties(ServiceReference reference) {
+        List<OSGiProperty> props = new ArrayList<OSGiProperty>();
+        for(String key: reference.getPropertyKeys()) {
+            Object value = reference.getProperty(key);
+            OSGiProperty prop = createOSGiProperty(key, value);
+            props.add(prop);
+        }
+        return props;
+    }        
+    
 }

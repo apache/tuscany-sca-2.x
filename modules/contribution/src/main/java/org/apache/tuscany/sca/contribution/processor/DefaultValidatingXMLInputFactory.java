@@ -39,6 +39,7 @@ import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParserFactory;
 import javax.xml.stream.EventFilter;
 import javax.xml.stream.StreamFilter;
 import javax.xml.stream.XMLEventReader;
@@ -49,6 +50,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.util.XMLEventAllocator;
 import javax.xml.transform.Source;
+import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
@@ -56,9 +58,11 @@ import javax.xml.validation.SchemaFactory;
 import org.apache.tuscany.sca.assembly.xsd.Constants;
 import org.apache.tuscany.sca.common.xml.XMLDocumentHelper;
 import org.apache.tuscany.sca.common.xml.stax.StAXHelper;
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
+import org.apache.tuscany.sca.extensibility.ClassLoaderContext;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.w3c.dom.DOMImplementation;
@@ -75,7 +79,7 @@ import org.xml.sax.SAXException;
  * @version $Rev$ $Date$
  */
 public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory implements LSResourceResolver {
-
+    private ExtensionPointRegistry registry;
     private XMLInputFactory inputFactory;
     private DocumentBuilderFactory documentBuilderFactory;
     private DOMImplementationLS ls;
@@ -87,6 +91,7 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
     private StAXHelper helper;
 
     public DefaultValidatingXMLInputFactory(ExtensionPointRegistry registry) {
+        this.registry = registry;
         FactoryExtensionPoint factoryExtensionPoint = registry.getExtensionPoint(FactoryExtensionPoint.class);
         this.inputFactory = factoryExtensionPoint.getFactory(XMLInputFactory.class);
         this.documentBuilderFactory = factoryExtensionPoint.getFactory(DocumentBuilderFactory.class);
@@ -102,9 +107,11 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
      * @param inputFactory
      * @param schemas
      */
+    // FOR Test only
     public DefaultValidatingXMLInputFactory(XMLInputFactory inputFactory, ValidationSchemaExtensionPoint schemas) {
         this.inputFactory = inputFactory;
         this.schemas = schemas;
+        this.registry = new DefaultExtensionPointRegistry();
     }
     
 
@@ -188,8 +195,7 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
             }
             final Collection<? extends Source> sources = aggregate(urls);            
 
-            // Create an aggregated validation schemas from all the XSDs
-            final SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+            final SchemaFactory schemaFactory = newSchemaFactory();
             DOMImplementation impl = null;
             try {
                 impl = documentBuilderFactory.newDocumentBuilder().getDOMImplementation();
@@ -222,6 +228,30 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
             //FIXME Log this, some old JDKs don't support XMLSchema validation
             warn(monitor, e.getMessage(), schemas, e);
             hasSchemas = false;
+        }
+    }
+
+    /**
+     * For OSGi:
+     * Create a SchemaFactory in the context of service provider classloaders
+     * @return
+     */
+    private SchemaFactory newSchemaFactory() {
+        ClassLoader cl =
+            ClassLoaderContext.setContextClassLoader(getClass().getClassLoader(),
+                                                     registry.getServiceDiscovery(),
+                                                     SchemaFactory.class,
+                                                     TransformerFactory.class,
+                                                     SAXParserFactory.class,
+                                                     DocumentBuilderFactory.class
+                                                     );
+        try {
+            // Create an aggregated validation schemas from all the XSDs
+            return SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+        } finally {
+            if (cl != null) {
+                Thread.currentThread().setContextClassLoader(cl);
+            }
         }
     }
 

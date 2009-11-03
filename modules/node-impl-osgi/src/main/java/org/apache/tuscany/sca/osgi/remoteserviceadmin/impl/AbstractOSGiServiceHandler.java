@@ -37,6 +37,7 @@ public class AbstractOSGiServiceHandler implements LifeCycleListener {
     protected EndpointIntrospector introspector;
     protected ServiceTracker discoveryTracker;
     protected String domainRegistry;
+    protected String domainURI;
 
     /**
      * @param context
@@ -45,6 +46,8 @@ public class AbstractOSGiServiceHandler implements LifeCycleListener {
      */
     protected AbstractOSGiServiceHandler(BundleContext context) {
         this.context = context;
+        this.domainRegistry = context.getProperty("org.osgi.sca.domain.registry");
+        this.domainURI = context.getProperty("org.osgi.sca.domain.uri");
     }
 
     protected ExtensionPointRegistry getExtensionPointRegistry() {
@@ -85,6 +88,10 @@ public class AbstractOSGiServiceHandler implements LifeCycleListener {
 
     public void setDomainRegistry(String domainRegistry) {
         this.domainRegistry = domainRegistry;
+    }
+
+    public void setDomainURI(String domainURI) {
+        this.domainURI = domainURI;
     }
 
 }

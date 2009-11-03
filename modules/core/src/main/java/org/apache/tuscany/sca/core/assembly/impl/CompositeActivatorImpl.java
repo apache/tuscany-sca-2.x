@@ -497,7 +497,26 @@ public class CompositeActivatorImpl implements CompositeActivator {
         }
 
         compositeContext.bindComponent(runtimeComponent);
+        Implementation implementation = component.getImplementation();
+        
+        if (implementation instanceof Composite) {
+            start(compositeContext, (Composite)implementation);
+        } else {
+            for (PolicyProvider policyProvider : runtimeComponent.getPolicyProviders()) {
+                policyProvider.start();
+            }
+            ImplementationProvider implementationProvider = runtimeComponent.getImplementationProvider();
+            if (implementationProvider != null) {
+                implementationProvider.start();
+            }
+        }
 
+        if (component instanceof ScopedRuntimeComponent) {
+            ScopedRuntimeComponent scopedRuntimeComponent = (ScopedRuntimeComponent)component;
+            if (scopedRuntimeComponent.getScopeContainer() != null) {
+                scopedRuntimeComponent.getScopeContainer().start();
+            }
+        }
         // Reference bindings aren't started until the wire is first used
 
         for (ComponentService service : component.getServices()) {
@@ -523,26 +542,6 @@ public class CompositeActivatorImpl implements CompositeActivator {
                     });
                     compositeContext.getEndpointRegistry().addEndpoint(endpoint);
                 }
-            }
-        }
-
-        Implementation implementation = component.getImplementation();
-        if (implementation instanceof Composite) {
-            start(compositeContext, (Composite)implementation);
-        } else {
-            for (PolicyProvider policyProvider : runtimeComponent.getPolicyProviders()) {
-                policyProvider.start();
-            }
-            ImplementationProvider implementationProvider = runtimeComponent.getImplementationProvider();
-            if (implementationProvider != null) {
-                implementationProvider.start();
-            }
-        }
-
-        if (component instanceof ScopedRuntimeComponent) {
-            ScopedRuntimeComponent scopedRuntimeComponent = (ScopedRuntimeComponent)component;
-            if (scopedRuntimeComponent.getScopeContainer() != null) {
-                scopedRuntimeComponent.getScopeContainer().start();
             }
         }
 

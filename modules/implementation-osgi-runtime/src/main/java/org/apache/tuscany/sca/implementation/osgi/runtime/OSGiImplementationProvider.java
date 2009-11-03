@@ -37,6 +37,7 @@ import org.apache.tuscany.sca.assembly.Extensible;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactoryExtensionPoint;
 import org.apache.tuscany.sca.implementation.osgi.OSGiImplementation;
+import org.apache.tuscany.sca.implementation.osgi.OSGiImplementationFactory;
 import org.apache.tuscany.sca.implementation.osgi.OSGiProperty;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -63,14 +64,18 @@ public class OSGiImplementationProvider implements ImplementationProvider {
     private RuntimeComponent component;
     private ProxyFactoryExtensionPoint proxyFactoryExtensionPoint;
     private Bundle osgiBundle;
+    private boolean startedByMe;
     private OSGiImplementation implementation;
     private List<ServiceRegistration> registrations = new ArrayList<ServiceRegistration>();
+    private OSGiImplementationFactory implementationFactory;
 
     public OSGiImplementationProvider(RuntimeComponent component,
                                       OSGiImplementation impl,
-                                      ProxyFactoryExtensionPoint proxyFactoryExtensionPoint) throws BundleException {
+                                      ProxyFactoryExtensionPoint proxyFactoryExtensionPoint,
+                                      OSGiImplementationFactory implementationFactory) throws BundleException {
         this.component = component;
         this.proxyFactoryExtensionPoint = proxyFactoryExtensionPoint;
+        this.implementationFactory = implementationFactory;
         this.implementation = impl;
         this.osgiBundle = impl.getBundle();
     }
@@ -85,6 +90,7 @@ public class OSGiImplementationProvider implements ImplementationProvider {
             int state = osgiBundle.getState();
             if ((state & Bundle.STARTING) == 0 && (state & Bundle.ACTIVE) == 0) {
                 osgiBundle.start();
+                startedByMe = true;
             }
         } catch (BundleException e) {
             throw new ServiceRuntimeException(e);
@@ -93,8 +99,8 @@ public class OSGiImplementationProvider implements ImplementationProvider {
         for (ComponentReference ref : component.getReferences()) {
             RuntimeComponentReference reference = (RuntimeComponentReference)ref;
             InterfaceContract interfaceContract = reference.getInterfaceContract();
-            JavaInterface javaInterface = (JavaInterface)interfaceContract.getInterface();
-            final Class<?> interfaceClass = javaInterface.getJavaClass();
+            final JavaInterface javaInterface = (JavaInterface)interfaceContract.getInterface();
+            // final Class<?> interfaceClass = javaInterface.getJavaClass();
 
             //            final Hashtable<String, Object> props = new Hashtable<String, Object>();
             //            props.put(FILTER_MATCH_CRITERIA, "");
@@ -109,18 +115,37 @@ public class OSGiImplementationProvider implements ImplementationProvider {
             osgiProps.put(SERVICE_IMPORTED_CONFIGS, new String[] {REMOTE_CONFIG_SCA});
 
             for (RuntimeWire wire : reference.getRuntimeWires()) {
-                final OSGiServiceFactory serviceFactory = new OSGiServiceFactory(interfaceClass.getName(), wire);
+                final OSGiServiceFactory serviceFactory = new OSGiServiceFactory(javaInterface.getName(), wire);
                 ServiceRegistration registration =
                     AccessController.doPrivileged(new PrivilegedAction<ServiceRegistration>() {
                         public ServiceRegistration run() {
                             // Register the proxy as OSGi service
                             BundleContext context = osgiBundle.getBundleContext();
                             ServiceRegistration registration =
-                                context.registerService(interfaceClass.getName(), serviceFactory, osgiProps);
+                                context.registerService(javaInterface.getName(), serviceFactory, osgiProps);
                             return registration;
                         }
                     });
                 registrations.add(registration);
+            }
+        }
+        
+        // Set the OSGi service reference properties into the SCA service
+        for (ComponentService service : component.getServices()) {
+            // The properties might have been set by the export service
+            boolean found = false;
+            for (Object ext : service.getExtensions()) {
+                if (ext instanceof OSGiProperty) {
+                    found = true;
+                    break;
+                }
+            }
+            if (found) {
+                continue;
+            }
+            ServiceReference serviceReference = getServiceReference(osgiBundle.getBundleContext(), service);
+            if (serviceReference != null) {
+                service.getExtensions().addAll(implementationFactory.createOSGiProperties(serviceReference));
             }
         }
     }
@@ -134,13 +159,18 @@ public class OSGiImplementationProvider implements ImplementationProvider {
             }
         }
         registrations.clear();
-        try {
-            int state = osgiBundle.getState();
-            if ((state & Bundle.STOPPING) == 0 && (state & Bundle.ACTIVE) != 0) {
-                osgiBundle.stop();
+        // [REVIEW] Shoud it take care of stopping the bundle?
+        if (startedByMe) {
+            try {
+                int state = osgiBundle.getState();
+                if ((state & Bundle.STOPPING) == 0 && (state & Bundle.ACTIVE) != 0) {
+                    osgiBundle.stop();
+                }
+            } catch (BundleException e) {
+                throw new ServiceRuntimeException(e);
+            } finally {
+                startedByMe = false;
             }
-        } catch (BundleException e) {
-            throw new ServiceRuntimeException(e);
         }
     }
 
@@ -165,24 +195,29 @@ public class OSGiImplementationProvider implements ImplementationProvider {
     }
 
     protected Object getOSGiService(ComponentService service) {
-        JavaInterface javaInterface = (JavaInterface)service.getInterfaceContract().getInterface();
-        // String filter = getOSGiFilter(provider.getOSGiProperties(service));
-        // FIXME: What is the filter?
-        String filter = "(!(" + SERVICE_IMPORTED + "=*))";
-        // "(sca.service=" + component.getURI() + "#service-name\\(" + service.getName() + "\\))";
         BundleContext bundleContext = osgiBundle.getBundleContext();
-        ServiceReference ref;
-        try {
-            ref = bundleContext.getServiceReferences(javaInterface.getName(), filter)[0];
-        } catch (InvalidSyntaxException e) {
-            throw new ServiceRuntimeException(e);
-        }
+        ServiceReference ref = getServiceReference(bundleContext, service);
         if (ref != null) {
             Object instance = bundleContext.getService(ref);
             return instance;
         } else {
             return null;
         }
+    }
+
+    private ServiceReference getServiceReference(BundleContext bundleContext, ComponentService service) {
+        JavaInterface javaInterface = (JavaInterface)service.getInterfaceContract().getInterface();
+        // String filter = getOSGiFilter(provider.getOSGiProperties(service));
+        // FIXME: What is the filter?
+        String filter = "(!(" + SERVICE_IMPORTED + "=*))";
+        // "(sca.service=" + component.getURI() + "#service-name\\(" + service.getName() + "\\))";
+        ServiceReference ref;
+        try {
+            ref = bundleContext.getServiceReferences(javaInterface.getName(), filter)[0];
+        } catch (InvalidSyntaxException e) {
+            throw new ServiceRuntimeException(e);
+        }
+        return ref;
     }
 
     RuntimeComponent getComponent() {

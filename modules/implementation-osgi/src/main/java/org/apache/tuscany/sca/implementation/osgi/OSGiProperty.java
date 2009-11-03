@@ -26,6 +26,8 @@ import javax.xml.namespace.QName;
  */
 public interface OSGiProperty {
     String NAME = "name";
+    String TYPE = "type";
+    String VALUE = "value";
     QName PROPERTY_QNAME = new QName(OSGiImplementation.SCA11_TUSCANY_NS, "osgi.property");
 
     String REMOTE_CONFIG_SCA = "org.osgi.sca";
@@ -169,11 +171,16 @@ public interface OSGiProperty {
     public final String SERVICE_IMPORTED_CONFIGS = "service.imported.configs";
     
 
-    String getValue();
-
-    void setValue(String value);
+    Object getValue();
+    void setValue(Object value);
 
     String getName();
 
     void setName(String name);
+    
+    String getType();
+    void setType(String type);
+    
+    String getStringValue();
+    void setStringValue(String value);
 }
