@@ -19,6 +19,11 @@
 
 package org.apache.tuscany.sca.binding.sca.rmi;
 
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.URI;
+import java.net.UnknownHostException;
 import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.assembly.DistributedSCABinding;
@@ -56,29 +61,29 @@ public class RMISCAServiceBindingProvider implements ServiceBindingProvider {
         rmiBinding = modelFactories.getFactory(RMIBindingFactory.class).createRMIBinding();
         rmiBinding.setName(this.binding.getName());
 
-//        URI uri = URI.create(binding.getURI());
-//        if (!uri.isAbsolute()) {
-//            int port = 8085;
-//            String host;
-//            try {
-//                host = InetAddress.getLocalHost().getHostAddress();
-//            } catch (UnknownHostException e) {
-//                host = "localhost";
-//                logger.warning("unable to determine host address, using localhost");
-//            }
-//            ServerSocket socket;
-//            try {
-//                socket = new ServerSocket(0);
-//                port = socket.getLocalPort();
-//                // host = socket.getInetAddress().getHostAddress();
-//                socket.close();
-//            } catch (IOException e) {
-//            }
-//            String bindURI = "http://" + host + ":" + port + binding.getURI();
-//
-//            // FIXME: We need to pass the full URI to the endpoint registry
-//            binding.setURI(bindURI);
-//        }
+        URI uri = URI.create(binding.getURI());
+        if (!uri.isAbsolute()) {
+            int port = 8085;
+            String host;
+            try {
+                host = InetAddress.getLocalHost().getHostAddress();
+            } catch (UnknownHostException e) {
+                host = "localhost";
+                logger.warning("unable to determine host address, using localhost");
+            }
+            ServerSocket socket;
+            try {
+                socket = new ServerSocket(0);
+                port = socket.getLocalPort();
+                // host = socket.getInetAddress().getHostAddress();
+                socket.close();
+            } catch (IOException e) {
+            }
+            String bindURI = "http://" + host + ":" + port + binding.getURI();
+
+            // FIXME: We need to pass the full URI to the endpoint registry
+            binding.setURI(bindURI);
+        }
 
         rmiBinding.setURI(this.binding.getURI());
 

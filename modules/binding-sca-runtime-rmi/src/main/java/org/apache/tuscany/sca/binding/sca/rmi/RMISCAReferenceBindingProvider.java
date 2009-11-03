@@ -56,8 +56,9 @@ public class RMISCAReferenceBindingProvider implements ReferenceBindingProvider 
         this.binding = ((DistributedSCABinding)endpointReference.getBinding()).getSCABinding();
         
         rmiBinding = modelFactories.getFactory(RMIBindingFactory.class).createRMIBinding();
-        rmiBinding.setName(this.binding.getName());         
-       
+        rmiBinding.setName(this.binding.getName());   
+        rmiBinding.setURI(this.binding.getURI());
+
         // create a copy of the endpoint reference but with the RMI binding in
         EndpointReference epr = null;
         try {
