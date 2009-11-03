@@ -48,19 +48,20 @@
                 <module>calculator-osgi</module>
                 <module>calculator-rmi-reference</module>
                 <module>calculator-rmi-service</module>
-
                 <module>dosgi-calculator</module>
                 <module>dosgi-calculator-operations</module>
-
                 <module>dosgi-dynamic-calculator</module>
 
-                <module>dosgi-dynamic-calculator-operations</module>
+<!-- *********
+    IF YOU ADD ANY SAMPLES THEN ALSO ADD THEM TO 
+        distribution\all\src\main\components\bin-samples.xml
+    OR THEY WONT GET IN RELEASES
+     ********* -->
 
+                <module>dosgi-dynamic-calculator-operations</module>
                 <module>helloworld-bpel</module>
-                
                 <module>implementation-java-calculator</module>
                 <module>binding-ws-calculator</module>
-
                 <module>webapps/helloworld</module>
                 <module>webapps/helloworld-bpel</module>
                 <module>webapps/helloworld-jms</module>
@@ -68,10 +69,6 @@
                 <module>webapps/helloworld-jsp</module>
                 <module>webapps/helloworld-stripes</module>
                 <module>webapps/helloworld-servlet</module>
-<!--
-                <module>webapps/helloworld-rest</module>
-                <module>webapps/helloworld-wicket</module>
--->
             </modules>
         </profile>
     </profiles>    
