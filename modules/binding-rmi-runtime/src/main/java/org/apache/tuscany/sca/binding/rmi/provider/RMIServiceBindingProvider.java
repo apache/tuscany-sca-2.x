@@ -33,6 +33,7 @@ import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 
 import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.binding.rmi.RMIBinding;
 import org.apache.tuscany.sca.common.java.classloader.ClassLoaderDelegate;
 import org.apache.tuscany.sca.host.rmi.RMIHost;
@@ -74,6 +75,20 @@ public class RMIServiceBindingProvider implements ServiceBindingProvider {
         // binding.setURI(uri.toString());
 
         wire = service.getRuntimeWire(binding);
+
+        // TODO - must be a better way to do this, which is copied from the Axis2ServiceProvider
+        // TODO - EPR - if there is no wire then find the wire for the SCA binding
+        //              because this WS endpoint is providing remote support for the 
+        //              SCA binding
+        if (wire == null){
+            for(RuntimeWire tmpWire : service.getRuntimeWires()){
+                if (tmpWire.getEndpoint().getBinding() instanceof SCABinding){
+                    wire = tmpWire;
+                    break;
+                }
+            }
+        }
+        
         Interface serviceInterface = service.getInterfaceContract().getInterface();
 
         rmiProxy = createRmiService(serviceInterface);
