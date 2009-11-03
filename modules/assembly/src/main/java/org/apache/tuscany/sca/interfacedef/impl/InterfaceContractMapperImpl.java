@@ -224,7 +224,7 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
         }
         
         if (source.getInterface() == target.getInterface()){
-            return true;
+            return ignoreCallback || isCallbackCompatible(source, target, silent);
         }
         
         if (source.getInterface() == null || target.getInterface() == null){
@@ -232,7 +232,7 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
         }
 
         if (source.getInterface().isDynamic() || target.getInterface().isDynamic()) {
-            return true;
+            return ignoreCallback || isCallbackCompatible(source, target, silent);
         }
 
         if (source.getInterface().isRemotable() != target.getInterface().isRemotable()) {
@@ -272,10 +272,11 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
             }
         }
 
-        if (ignoreCallback) {
-            return true;
-        }
+        return ignoreCallback || isCallbackCompatible(source, target, silent);
+    }
 
+
+    protected boolean isCallbackCompatible(InterfaceContract source, InterfaceContract target, boolean silent) throws IncompatibleInterfaceContractException {
         if (source.getCallbackInterface() == null && target.getCallbackInterface() == null) {
             return true;
         }
