@@ -32,9 +32,12 @@
                 <include>calculator-osgi/**/*</include>
                 <include>calculator-rmi-reference/**/*</include>
                 <include>calculator-rmi-service/**/*</include>
+                <include>helloworld-bpel/**/*</include>
                 <include>implementation-java-calculator/**/*</include>
                 <include>dosgi-calculator/**/*</include>
                 <include>dosgi-calculator-operations/**/*</include>
+                <include>dosgi-dynamic-calculator/**/*</include>
+                <include>dosgi-dynamic- calculator-operations/**/*</include>
                 <include>webapps/helloworld/**/*</include>
                 <include>webapps/helloworld-bpel/**/*</include>
                 <include>webapps/helloworld-jms/**/*</include>
