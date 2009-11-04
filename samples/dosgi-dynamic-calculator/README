@@ -7,10 +7,10 @@ general instructions about building and running samples. Take a look there
 first.
 
 On Windows, run
-java -jar ..\..\modules\osgi-3.4.0-v20080605-1900.jar -configuration ..\..\features\configuration -clean -console
+java -jar ..\..\modules\osgi-3.5.0-v20090520.jar -configuration ..\..\features\configuration -clean -console
 
 On *Unix, run
-java -jar ../../modules/osgi-3.4.0-v20080605-1900.jar -configuration ../../features/configuration -clean -console
+java -jar ../../modules/osgi-3.5.0-v20090520.jar -configuration ../../features/configuration -clean -console
 
 You should see the osgi console:
 
@@ -24,12 +24,12 @@ osgi> ss
 
 Then you can install and start the calculator.dosgi bundle:
 
-osgi> install file:./target/sample-dosgi-calculator.jar
+osgi> install file:./target/sample-dosgi-dynamic-calculator.jar
 Bundle id is 181
 
 osgi> start 181
 Jun 22, 2009 1:37:21 PM calculator.dosgi.impl.CalculatorActivator start
-INFO: Starting file:./target/sample-dosgi-calculator.jar [181]
+INFO: Starting file:./target/sample-dosgi-dynamic-calculator.jar [181]
 Jun 22, 2009 1:37:21 PM calculator.dosgi.impl.CalculatorActivator start
 INFO: Registering calculator.dosgi.CalculatorService
 Jun 22, 2009 1:37:21 PM calculator.dosgi.impl.CalculatorActivator getBundle
@@ -89,7 +89,7 @@ Jun 22, 2009 1:39:09 PM org.apache.tuscany.sca.http.jetty.JettyServer removeServ
 letMapping
 INFO: Removed Servlet mapping: /CalculatorService
 Jun 22, 2009 1:39:09 PM calculator.dosgi.impl.CalculatorActivator stop
-INFO: Stopping file:./target/sample-dosgi-calculator.jar [181]
+INFO: Stopping file:./target/sample-dosgi-dynamic-calculator.jar [181]
 
 To exit the console, run:
 osgi> exit
@@ -100,10 +100,10 @@ The application consists of two OSGi bundles:
  * The calculator bundle: It provides the calculator service. The service is implemented by a java class that
    consumes other services to perform the “add”, “subtract”, “multiply” and “divide” operations.
  * The operations bundle: It provides the add/subtract/multiply/divide services.
-   (See ../samples/dosgi-calculator-operations)
+   (See ../samples/dosgi-dynamic-calculator-operations)
 
 
-dosgi-calculator/
+dosgi-dynamic-calculator/
   src/
     main/
       java/
@@ -127,9 +127,10 @@ dosgi-calculator/
             META-INF/
                 sca-contribution.xml
             OSGI-INF/
-                sca/
-                    bundle.componentType - The component type for implementation.osgi of this bundle
-                    bundle.composite - The composite file
+                sca-config/
+                    calculator-config.xml - The SCA configuration file for OSGi remote services
+                remote-service/
+                    calculator-service-descriptions.xml - The OSGi remote service endpoint descriptions    
   test/
     java/
         src/

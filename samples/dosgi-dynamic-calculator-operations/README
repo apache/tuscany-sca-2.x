@@ -7,30 +7,27 @@ general instructions about building and running samples. Take a look there
 first.
 
 On Windows, run
-java -jar ..\..\modules\osgi-3.4.0-v20080605-1900.jar -configuration ..\..\features\configuration -clean -console
+java -jar ..\..\modules\osgi-3.5.0-v20090520.jar -configuration ..\..\features\configuration -clean -console
 
 On *Unix, run
-java -jar ../../modules/osgi-3.4.0-v20080605-1900.jar -configuration ../../features/configuration -clean -console
+java -jar ../../modules/osgi-3.5.0-v20090520.jar -configuration ../../features/configuration -clean -console
 
 You should see the osgi console:
 
 osgi>
-
-osgi> Jun 22, 2009 1:32:27 PM org.apache.tuscany.sca.extensibility.equinox.EquinoxServiceDiscoveryActivator start
-INFO: Equinox-based service discoverer is now configured.
 
 You can run "ss" command under the osgi> to see the status of the bundles.
 osgi> ss
 
 Then you can install and start the calculator.dosgi bundle:
 
-osgi> install file:./target/sample-dosgi-calculator-operations.jar
+osgi> install file:./target/sample-dosgi-dynamic-calculator-operations.jar
 Bundle id is 181
 
 osgi> start 181
 Jun 22, 2009 2:09:21 PM calculator.dosgi.operations.impl.OperationsActivator sta
 rt
-INFO: Starting file:./target/sample-dosgi-calculator-operations.jar [181]
+INFO: Starting file:./target/sample-dosgi-dynamic-calculator-operations.jar [181]
 Jun 22, 2009 2:09:21 PM calculator.dosgi.operations.impl.OperationsActivator sta
 rt
 INFO: Registering calculator.dosgi.operations.AddService
@@ -118,7 +115,7 @@ rService
 INFO: RMI service unregistered: rmi://localhost:8085/DivideService
 Jun 22, 2009 2:09:48 PM calculator.dosgi.operations.impl.OperationsActivator sto
 p
-INFO: Stopping file:./target/sample-dosgi-calculator-operations.jar [181]
+INFO: Stopping file:./target/sample-dosgi-dynamic-calculator-operations.jar [181]
 
 osgi>
 
@@ -131,10 +128,10 @@ The application consists of two OSGi bundles:
  * The calculator bundle: It provides the calculator service. The service is implemented by a java class that
    consumes other services to perform the “add”, “subtract”, “multiply” and “divide” operations.
  * The operations bundle: It provides the add/subtract/multiply/divide services.
-   (See ../samples/dosgi-calculator-operations)
+   (See ../samples/dosgi-dynamic-calculator-operations)
 
 
-dosgi-calculator-operations/
+dosgi-dynamic-calculator-operations/
   src/
     main/
       java/
@@ -154,10 +151,9 @@ dosgi-calculator-operations/
       resources/
             META-INF/
                 sca-contribution.xml
-            OSGI-INF/
-                sca/
-                    bundle.componentType - The component type for implementation.osgi of this bundle
-                    bundle.composite - The composite file
+           OSGI-INF/
+                sca-config/
+                    operations-config.xml - The SCA configuration file for OSGi remote services
   test/
     java/
         src/
@@ -178,6 +174,6 @@ Building And Running The Test Case Using Maven
 With either the binary or source distributions the sample can be built and run
 using Maven as follows.
 
-cd dosgi-calculator-operations
+cd dosgi-dynamic-calculator-operations
 mvn
 
