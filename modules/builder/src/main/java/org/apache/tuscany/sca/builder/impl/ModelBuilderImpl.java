@@ -48,7 +48,6 @@ public class ModelBuilderImpl implements CompositeBuilder {
     private ComponentReferenceBindingBuilderImpl componentReferenceBindingBuilder;
     private EndpointBuilderImpl endpointBuilder;
     private EndpointReferenceBuilderImpl endpointReferenceBuilder;
-    private ComponentReferencePromotionBuilderImpl componentReferencePromotionBuilder;
     
     private CompositeBuilder policyAttachmentBuilder;
     private CompositePolicyBuilderImpl compositePolicyBuilder;
@@ -76,7 +75,6 @@ public class ModelBuilderImpl implements CompositeBuilder {
         componentReferenceBindingBuilder = new ComponentReferenceBindingBuilderImpl(registry);
         endpointBuilder = new EndpointBuilderImpl(registry);
         endpointReferenceBuilder = new EndpointReferenceBuilderImpl(registry);
-        componentReferencePromotionBuilder = new ComponentReferencePromotionBuilderImpl(registry);
 
         policyAttachmentBuilder = new PolicyAttachmentBuilderImpl(registry);
         compositePolicyBuilder = new CompositePolicyBuilderImpl(registry);
@@ -127,7 +125,6 @@ public class ModelBuilderImpl implements CompositeBuilder {
             composite = componentReferenceBindingBuilder.build(composite, context); // binding specific build
             endpointBuilder.build(composite, context);
             endpointReferenceBuilder.build(composite, context);
-            //composite = componentReferencePromotionBuilder.build(composite, context); // move into the static build?
             composite = compositePolicyBuilder.build(composite, context); // the rest of the policy processing?
             
             // For debugging - in success cases

@@ -39,11 +39,16 @@ import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.builder.BuilderContext;
+import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
+import org.apache.tuscany.sca.assembly.builder.Messages;
 import org.apache.tuscany.sca.assembly.builder.PolicyBuilder;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.definitions.Definitions;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.Problem;
+import org.apache.tuscany.sca.monitor.Problem.Severity;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentMap;
 import org.apache.tuscany.sca.policy.PolicyExpression;
@@ -58,10 +63,55 @@ import org.apache.tuscany.sca.policy.Qualifier;
  *
  * @version $Rev$ $Date$
  */
-public class CompositePolicyBuilderImpl extends BaseBuilderImpl implements CompositeBuilder {
+public class CompositePolicyBuilderImpl implements CompositeBuilder {
+    
+    protected BuilderExtensionPoint builders;
+    
     public CompositePolicyBuilderImpl(ExtensionPointRegistry registry) {
-        super(registry);
+        this.builders = registry.getExtensionPoint(BuilderExtensionPoint.class);
     }
+
+    /**
+     * Report a warning.
+     *
+     * @param monitor
+     * @param problems
+     * @param message
+     * @param model
+     */
+    protected void warning(Monitor monitor, String message, Object model, Object... messageParameters) {
+        if (monitor != null) {
+            Problem problem =
+                monitor.createProblem(this.getClass().getName(),
+                                      Messages.ASSEMBLY_VALIDATION,
+                                      Severity.WARNING,
+                                      model,
+                                      message,
+                                      messageParameters);
+            monitor.problem(problem);
+        }
+    }
+
+    /**
+     * Report a error.
+     *
+     * @param monitor
+     * @param problems
+     * @param message
+     * @param model
+     */
+    private void error(Monitor monitor, String message, Object model, Object... messageParameters) {
+        if (monitor != null) {
+            Problem problem =
+                monitor.createProblem(this.getClass().getName(),
+                                      Messages.ASSEMBLY_VALIDATION,
+                                      Severity.ERROR,
+                                      model,
+                                      message,
+                                      messageParameters);
+            monitor.problem(problem);
+        }
+    }    
 
     public String getID() {
         return "org.apache.tuscany.sca.assembly.builder.CompositePolicyBuilder";
