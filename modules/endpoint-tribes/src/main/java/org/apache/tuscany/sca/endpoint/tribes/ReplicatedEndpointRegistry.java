@@ -384,6 +384,7 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry, LifeCycleLi
         }
         Endpoint oldEp = (Endpoint)oldEntry.getValue();
         Endpoint newEp = (Endpoint)newEntry.getValue();
+        newEp.setExtensionPointRegistry(registry);
         for (EndpointListener listener : listeners) {
             listener.endpointUpdated(oldEp, newEp);
         }
