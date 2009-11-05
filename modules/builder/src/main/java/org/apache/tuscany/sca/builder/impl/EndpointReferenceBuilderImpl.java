@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.builder.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -71,8 +72,12 @@ public class EndpointReferenceBuilderImpl {
         throws CompositeBuilderException {
         Monitor monitor = context.getMonitor();
 
-        // process component services
+        // process component references
         processComponentReferences(composite, monitor);
+        
+        // validate component references
+        validateComponentReferences(composite, monitor);
+        
         return composite;
     }
 
@@ -123,10 +128,23 @@ public class EndpointReferenceBuilderImpl {
                                 } // end if
                             } // end if
                         } // end for
+                        
+                        // push down endpoint references into the leaf component references
+                        // in the case where this component reference promotes a reference from
+                        // a composite implementation
+                        pushDownEndpointReferences(composite,
+                                                   component,
+                                                   reference,
+                                                   monitor);
+                        
                     } // end for
 
                     // Validate that references are wired or promoted, according
-                    // to their multiplicity   
+                    // to their multiplicity. This validates as we go and catches cases
+                    // where a reference has been configured directly incorrectly with its
+                    // immediate multiplicity setting. We re-run this validation again later
+                    // to catch to more complex cases where reference promotion causes 
+                    // multiplicity errors. 
                     validateReferenceMultiplicity(composite, component, monitor);
 
                 } finally {
@@ -139,6 +157,45 @@ public class EndpointReferenceBuilderImpl {
         }
 
     } // end method processCompoenntReferences
+    
+    
+    /**
+     * The validate stage is separate from the process stage as enpoint references are
+     * pushed down the hierarchy. We don't know the full set of endpoint references until
+     * all processing is complete. Hence we can't validate as we go
+     * 
+     * @param composite
+     * @param monitor
+     */
+    private void validateComponentReferences(Composite composite, Monitor monitor) {
+
+        monitor.pushContext("Composite: " + composite.getName().toString());
+        try {
+            // create endpoint references for each component's references
+            for (Component component : composite.getComponents()) {
+                monitor.pushContext("Component: " + component.getName());
+
+                try {
+
+                    // recurse for composite implementations
+                    Implementation implementation = component.getImplementation();
+                    if (implementation instanceof Composite) {
+                        validateComponentReferences((Composite)implementation, monitor);
+                    }
+                    // Validate that references are wired or promoted, according
+                    // to their multiplicity   
+                    validateReferenceMultiplicity(composite, component, monitor);
+
+                } finally {
+                    monitor.popContext();
+                }
+            }
+            
+        } finally {
+            monitor.popContext();
+        }
+
+    }        
 
     protected void indexComponentsServicesAndReferences(Composite composite,
                                                         Map<String, Component> components,
@@ -551,11 +608,111 @@ public class EndpointReferenceBuilderImpl {
         monitor.popContext();
 
     } // end method
+    
+    /**
+     * Reference targets have to be resolved in the context in which they are 
+     * defined so they can't be push down the hierarchy during the static build.
+     * So we wait until we have calculated the enpoint references before pushing them 
+     * down. Muliplicity errors will be caught by the multiplicity validation check that
+     * comes next 
+     * 
+     * @param composite
+     * @param component
+     * @param reference
+     * @param monitor
+     */
+    private void pushDownEndpointReferences(Composite composite,
+                                            Component component,
+                                            ComponentReference componentReference,
+                                            Monitor monitor) {
+        Reference reference = componentReference.getReference();
+        
+        if (reference instanceof CompositeReference) {
+            List<ComponentReference> leafComponentReferences = getPromotedComponentReferences((CompositeReference)reference);
+            
+            // for each leaf component reference copy in the endpoint references for this
+            // higher level (promoting) reference
+            // TODO - the elements are inserted starting at 0 here because the code allows references multiplicity 
+            //        validation constraints to be broken if the reference is autowire. At runtime the 
+            //        first one is chosen if max multiplicity is 1. We have an OSOA test that assumes that
+            //        promoted references overwrite leaf references. This insert gives the same effect in the
+            //        autowire case. We need to think about if there is a more correct answer. 
+            for (ComponentReference leafRef : leafComponentReferences){
+                int insertLocation = 0;
+                for (EndpointReference epr : componentReference.getEndpointReferences()){
+                    // copy the epr
+                    EndpointReference eprCopy = copyHigherReference(epr, leafRef);
+                    leafRef.getEndpointReferences().add(insertLocation, eprCopy);
+                    insertLocation++;
+                }
+            }
+        }
+        
+        // TODO - what to do about callbacks in the reference promotion case
+    }
+    
+    /**
+     * Follow a reference promotion chain down to the innermost (non composite)
+     * component references.
+     * 
+     * @param compositeReference
+     * @return
+     */
+    private List<ComponentReference> getPromotedComponentReferences(CompositeReference compositeReference) {
+        List<ComponentReference> componentReferences = new ArrayList<ComponentReference>();
+        collectPromotedComponentReferences(compositeReference, componentReferences);
+        return componentReferences;
+    }
+
+    /**
+     * Follow a reference promotion chain down to the innermost (non composite)
+     * component references.
+     * 
+     * @param compositeReference
+     * @param componentReferences
+     * @return
+     */
+    private void collectPromotedComponentReferences(CompositeReference compositeReference,
+                                                           List<ComponentReference> componentReferences) {
+        for (ComponentReference componentReference : compositeReference.getPromotedReferences()) {
+            Reference reference = componentReference.getReference();
+            if (reference instanceof CompositeReference) {
+
+                // Continue to follow the reference promotion chain
+                collectPromotedComponentReferences((CompositeReference)reference, componentReferences);
+
+            } else if (reference != null) {
+
+                // Found a non-composite reference
+                componentReferences.add(componentReference);
+            }
+        }
+    }
+    
+    /**
+     * Copy a higher level EndpointReference down to a lower level reference which it promotes 
+     * @param epRef - the endpoint reference
+     * @param promotedReference - the promoted reference
+     * @return - a copy of the EndpointReference with data merged from the promoted reference
+     */
+    private  EndpointReference copyHigherReference(EndpointReference epRef, ComponentReference promotedReference) {
+        EndpointReference epRefClone = null;
+        try {
+            epRefClone = (EndpointReference)epRef.clone();
+        } catch (Exception e) {
+            // Ignore (we know that EndpointReference2 can be cloned)
+        } // end try
+        // Copy across details of the inner reference
+        ComponentReference ref = epRefClone.getReference();
+        //FIXME
+        epRefClone.setReference(promotedReference);
+        return epRefClone;
+    }   
 
     private void validateReferenceMultiplicity(Composite composite, Component component, Monitor monitor) {
         for (ComponentReference componentReference : component.getReferences()) {
-            if (!ReferenceConfigurationUtil.validateMultiplicityAndTargets(componentReference.getMultiplicity(),
-                                                                           componentReference.getEndpointReferences())) {
+            if (!validateMultiplicity(componentReference.getMultiplicity(),
+                                      componentReference.getEndpointReferences())) {
                 if (componentReference.getEndpointReferences().isEmpty()) {
 
                     // No error if the reference is promoted out of the current composite
@@ -592,6 +749,38 @@ public class EndpointReferenceBuilderImpl {
         }
 
     }
+    
+    private boolean validateMultiplicity(Multiplicity multiplicity, List<EndpointReference> endpointReferences) {
+
+        // In some tests multiplicity is not set
+        if (multiplicity == null) {
+            return true;
+        }
+
+        // Count targets
+        int count = endpointReferences.size();
+
+        switch (multiplicity) {
+            case ZERO_N:
+                break;
+            case ZERO_ONE:
+                if (count > 1) {
+                    return false;
+                }
+                break;
+            case ONE_ONE:
+                if (count != 1) {
+                    return false;
+                }
+                break;
+            case ONE_N:
+                if (count < 1) {
+                    return false;
+                }
+                break;
+        }
+        return true;
+    }    
 
     /**
      * Evaluates whether the bindings attached to a reference identify one or more target services.

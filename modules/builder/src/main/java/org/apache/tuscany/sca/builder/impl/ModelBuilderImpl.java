@@ -98,7 +98,7 @@ public class ModelBuilderImpl implements CompositeBuilder {
             // and discards the included composite
             composite = compositeIncludeBuilder.build(composite, context);
 
-            // Set up the structural URIs for components (services/references/bindings?)
+            // Set up the structural URIs for components (services/references/bindings)
             composite = structuralURIBuilder.build(composite, context);
             
             // need to apply policy external attachment
@@ -127,7 +127,7 @@ public class ModelBuilderImpl implements CompositeBuilder {
             composite = componentReferenceBindingBuilder.build(composite, context); // binding specific build
             endpointBuilder.build(composite, context);
             endpointReferenceBuilder.build(composite, context);
-            composite = componentReferencePromotionBuilder.build(composite, context); // move into the static build?
+            //composite = componentReferencePromotionBuilder.build(composite, context); // move into the static build?
             composite = compositePolicyBuilder.build(composite, context); // the rest of the policy processing?
             
             // For debugging - in success cases

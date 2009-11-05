@@ -40,7 +40,6 @@ public class ReferenceImpl extends AbstractReferenceImpl implements Reference, C
     private boolean wiredByImpl;
     private List<ComponentService> targets = new ArrayList<ComponentService>();
     private Callback callback;
-    private boolean promotionOverride;
     private boolean overridingBindings;
     private List<EndpointReference> endpointReferences = new ArrayList<EndpointReference>();
 
@@ -97,14 +96,6 @@ public class ReferenceImpl extends AbstractReferenceImpl implements Reference, C
 
     public void setWiredByImpl(boolean wiredByImpl) {
         this.wiredByImpl = wiredByImpl;
-    }
-
-    public boolean isPromotionOverride() {
-        return promotionOverride;
-    }
-
-    public void setPromotionOverride(boolean promotionOverride) {
-        this.promotionOverride = promotionOverride;
     }
 
     public List<ComponentService> getTargets() {

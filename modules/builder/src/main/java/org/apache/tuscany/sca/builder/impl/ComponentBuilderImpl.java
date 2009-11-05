@@ -107,6 +107,7 @@ public class ComponentBuilderImpl {
     /**
      * Configure the component based on its component type using OASIS rules
      * 
+     * @Param outerCompoment the component that uses the parentComposite as its implementation
      * @Param parentComposite the composite that contains the component being configured. Required for property processing
      * @param component the component to be configured
      */
@@ -288,8 +289,8 @@ public class ComponentBuilderImpl {
             createCallbackService(component, componentReference);
 
             // intents - done later in CompositePolicyBuilder - discuss with RF
-            //calculateIntents(componentService,
-            //                 componentTypeService);
+            // calculateIntents(componentService,
+            //                  componentTypeService);
 
             // policy sets - done later in CompositePolicyBuilder - discuss with RF
             // calculatePolicySets(componentService,
@@ -301,10 +302,13 @@ public class ComponentBuilderImpl {
                 componentReference.setAutowire(component.getAutowire());
             }
 
-            // Reconcile targets copying then up the promotion hierarchy
-            if (componentReference.getTargets().isEmpty()) {
-                componentReference.getTargets().addAll(componentTypeReference.getTargets());
-            }
+            // TODO - we shouldn't do this as targets must be resolved in the 
+            //        context in which they are defined. Leaving here as a reminder
+            //        for the time being
+            // Reconcile targets copying them up the promotion hierarchy
+            //if (componentReference.getTargets().isEmpty()) {
+            //    componentReference.getTargets().addAll(componentTypeReference.getTargets());
+            //}
 
         }
     }

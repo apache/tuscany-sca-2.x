@@ -46,23 +46,6 @@ public interface Reference extends AbstractReference, Contract {
      */
     void setWiredByImpl(boolean wiredByImpl);
 
-    /**
-     * Returns a boolean value, "false" by default, which indicates whether
-     * the configuration of this reference is a promotion override for
-     * another more deeply nested reference.
-     * 
-     * @return true if the reference is a promotion override
-     */
-    boolean isPromotionOverride();
-
-    /**
-     * Sets a boolean value, "false" by default, which indicates whether
-     * the configuration of this reference is a promotion override for
-     * another more deeply nested reference.
-     * 
-     * @param promotionOverride whether the reference is a promotion override
-     */
-    void setPromotionOverride(boolean promotionOverride);
 
     /**
      * Returns the targets of this reference.
