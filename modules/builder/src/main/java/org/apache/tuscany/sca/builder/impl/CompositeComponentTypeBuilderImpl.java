@@ -450,7 +450,7 @@ public class CompositeComponentTypeBuilderImpl {
     /**
      * Interface contract from higher in the implementation hierarchy takes precedence. 
      * When it comes to checking compatibility the top level reference interface is a 
-     * superset of the promoted reference interface so treat the treat the promoted
+     * superset of the promoted reference interface so treat the promoted
      * (bottom) interface as the source
      * 
      * @param topContract the top contract 
