@@ -22,100 +22,115 @@ osgi> ss
 Then you can install and start the calculator.dosgi bundle:
 
 osgi> install file:./target/sample-dosgi-dynamic-calculator-operations.jar
-Bundle id is 181
+Bundle id is 198
 
-osgi> start 181
-Jun 22, 2009 2:09:21 PM calculator.dosgi.operations.impl.OperationsActivator sta
-rt
-INFO: Starting file:./target/sample-dosgi-dynamic-calculator-operations.jar [181]
-Jun 22, 2009 2:09:21 PM calculator.dosgi.operations.impl.OperationsActivator sta
-rt
+osgi> start 198
+Nov 4, 2009 5:16:51 PM calculator.dosgi.operations.impl.OperationsActivator star
+t
+INFO: Starting calculator.dosgi.dynamic.operations_1.0.0 [198]
+Nov 4, 2009 5:16:51 PM calculator.dosgi.operations.impl.OperationsActivator star
+t
 INFO: Registering calculator.dosgi.operations.AddService
-Jun 22, 2009 2:09:21 PM calculator.dosgi.operations.impl.OperationsActivator sta
-rt
-INFO: Registering calculator.dosgi.operations.SubtractService
-Jun 22, 2009 2:09:21 PM calculator.dosgi.operations.impl.OperationsActivator sta
-rt
-INFO: Registering calculator.dosgi.operations.MultiplyService
-Jun 22, 2009 2:09:21 PM calculator.dosgi.operations.impl.OperationsActivator sta
-rt
-INFO: Registering calculator.dosgi.operations.DivideService
-Jun 22, 2009 2:09:21 PM calculator.dosgi.operations.impl.OperationsActivator get
-Bundle
-INFO: calculator.dosgi.operations.AddService is loaded by bundle: calculator.dos
-gi.operations
-Jun 22, 2009 2:09:21 PM org.apache.tuscany.sca.node.impl.NodeImpl start
-INFO: Starting node: calculator.dosgi.operations
-Jun 22, 2009 2:09:21 PM org.apache.tuscany.sca.node.impl.NodeFactoryImpl configu
-reNode
-INFO: Loading contribution: bundleentry://181/
-Jun 22, 2009 2:09:21 PM org.apache.tuscany.sca.endpoint.tribes.ReplicatedEndpoin
-tRegistry addEndpoint
-INFO: EndpointRegistry: Add endpoint - Endpoint:  URI = OperationsComponent#serv
-ice-binding(AddService/AddService)
-Jun 22, 2009 2:09:21 PM org.apache.tuscany.sca.host.rmi.DefaultRMIHost registerS
-ervice
+Nov 4, 2009 5:16:51 PM org.apache.tuscany.sca.node.impl.NodeImpl start
+INFO: Starting node: urn:osgi.service.d3cadb93-e9b9-4486-87eb-07ece11888f6 domai
+n: tuscany.apache.org
+Nov 4, 2009 5:16:51 PM org.apache.tuscany.sca.host.rmi.DefaultRMIHost registerSe
+rvice
 INFO: RMI service registered: rmi://localhost:8085/AddService
-Jun 22, 2009 2:09:21 PM org.apache.tuscany.sca.endpoint.tribes.ReplicatedEndpoin
-tRegistry addEndpoint
-INFO: EndpointRegistry: Add endpoint - Endpoint:  URI = OperationsComponent#serv
-ice-binding(SubtractService/SubtractService)
-Jun 22, 2009 2:09:21 PM org.apache.tuscany.sca.host.rmi.DefaultRMIHost registerS
-ervice
+Nov 4, 2009 5:16:51 PM org.apache.tuscany.sca.core.assembly.impl.EndpointRegistr
+yImpl addEndpoint
+INFO: Add endpoint - (@8144744)Endpoint:  URI = osgi.service.d3cadb93-e9b9-4486-
+87eb-07ece11888f6#service-binding(AddService/Add)
+Nov 4, 2009 5:16:51 PM calculator.dosgi.operations.impl.OperationsActivator star
+t
+INFO: Registering calculator.dosgi.operations.SubtractService
+Nov 4, 2009 5:16:51 PM org.apache.tuscany.sca.node.impl.NodeImpl start
+INFO: Starting node: urn:osgi.service.b6259ccc-6ae4-41f0-b61b-c5a8c7f42b35 domai
+n: tuscany.apache.org
+Nov 4, 2009 5:16:51 PM org.apache.tuscany.sca.host.rmi.DefaultRMIHost registerSe
+rvice
 INFO: RMI service registered: rmi://localhost:8085/SubtractService
-Jun 22, 2009 2:09:21 PM org.apache.tuscany.sca.endpoint.tribes.ReplicatedEndpoin
-tRegistry addEndpoint
-INFO: EndpointRegistry: Add endpoint - Endpoint:  URI = OperationsComponent#serv
-ice-binding(MultiplyService/MultiplyService)
-Jun 22, 2009 2:09:21 PM org.apache.tuscany.sca.host.rmi.DefaultRMIHost registerS
-ervice
+Nov 4, 2009 5:16:51 PM org.apache.tuscany.sca.core.assembly.impl.EndpointRegistr
+yImpl addEndpoint
+INFO: Add endpoint - (@30229114)Endpoint:  URI = osgi.service.b6259ccc-6ae4-41f0
+-b61b-c5a8c7f42b35#service-binding(SubtractService/Subtract)
+Nov 4, 2009 5:16:51 PM calculator.dosgi.operations.impl.OperationsActivator star
+t
+INFO: Registering calculator.dosgi.operations.MultiplyService
+Nov 4, 2009 5:16:51 PM org.apache.tuscany.sca.node.impl.NodeImpl start
+INFO: Starting node: urn:osgi.service.8469c64c-9a28-47b3-bc4a-c5fa8d471057 domai
+n: tuscany.apache.org
+Nov 4, 2009 5:16:51 PM org.apache.tuscany.sca.host.rmi.DefaultRMIHost registerSe
+rvice
 INFO: RMI service registered: rmi://localhost:8085/MultiplyService
-Jun 22, 2009 2:09:21 PM org.apache.tuscany.sca.endpoint.tribes.ReplicatedEndpoin
-tRegistry addEndpoint
-INFO: EndpointRegistry: Add endpoint - Endpoint:  URI = OperationsComponent#serv
-ice-binding(DivideService/DivideService)
-Jun 22, 2009 2:09:21 PM org.apache.tuscany.sca.host.rmi.DefaultRMIHost registerS
-ervice
+Nov 4, 2009 5:16:51 PM org.apache.tuscany.sca.core.assembly.impl.EndpointRegistr
+yImpl addEndpoint
+INFO: Add endpoint - (@3312704)Endpoint:  URI = osgi.service.8469c64c-9a28-47b3-
+bc4a-c5fa8d471057#service-binding(MultiplyService/Multiply)
+Nov 4, 2009 5:16:51 PM calculator.dosgi.operations.impl.OperationsActivator star
+t
+INFO: Registering calculator.dosgi.operations.DivideService
+Nov 4, 2009 5:16:51 PM org.apache.tuscany.sca.node.impl.NodeImpl start
+INFO: Starting node: urn:osgi.service.b43555f0-9509-444e-b22a-06d347ab7e98 domai
+n: tuscany.apache.org
+Nov 4, 2009 5:16:51 PM org.apache.tuscany.sca.host.rmi.DefaultRMIHost registerSe
+rvice
 INFO: RMI service registered: rmi://localhost:8085/DivideService
+Nov 4, 2009 5:16:51 PM org.apache.tuscany.sca.core.assembly.impl.EndpointRegistr
+yImpl addEndpoint
+INFO: Add endpoint - (@8010288)Endpoint:  URI = osgi.service.b43555f0-9509-444e-
+b22a-06d347ab7e98#service-binding(DivideService/Divide)
+Nov 4, 2009 5:16:51 PM calculator.dosgi.operations.impl.OperationsActivator getB
+undle
+INFO: calculator.dosgi.operations.AddService is loaded by bundle: calculator.dos
+gi.dynamic.operations
 
 osgi>
 
 To stop the bundle:
 
-osgi> stop 181
-Jun 22, 2009 2:09:48 PM org.apache.tuscany.sca.node.impl.NodeImpl stop
-INFO: Stopping node: calculator.dosgi.operations
-Jun 22, 2009 2:09:48 PM org.apache.tuscany.sca.endpoint.tribes.ReplicatedEndpoin
-tRegistry removeEndpoint
-INFO: EndpointRegistry: Remove endpoint - Endpoint:  URI = OperationsComponent#s
-ervice-binding(AddService/AddService)
-Jun 22, 2009 2:09:48 PM org.apache.tuscany.sca.host.rmi.DefaultRMIHost unregiste
-rService
-INFO: RMI service unregistered: rmi://localhost:8085/AddService
-Jun 22, 2009 2:09:48 PM org.apache.tuscany.sca.endpoint.tribes.ReplicatedEndpoin
-tRegistry removeEndpoint
-INFO: EndpointRegistry: Remove endpoint - Endpoint:  URI = OperationsComponent#s
-ervice-binding(SubtractService/SubtractService)
-Jun 22, 2009 2:09:48 PM org.apache.tuscany.sca.host.rmi.DefaultRMIHost unregiste
-rService
-INFO: RMI service unregistered: rmi://localhost:8085/SubtractService
-Jun 22, 2009 2:09:48 PM org.apache.tuscany.sca.endpoint.tribes.ReplicatedEndpoin
-tRegistry removeEndpoint
-INFO: EndpointRegistry: Remove endpoint - Endpoint:  URI = OperationsComponent#s
-ervice-binding(MultiplyService/MultiplyService)
-Jun 22, 2009 2:09:48 PM org.apache.tuscany.sca.host.rmi.DefaultRMIHost unregiste
-rService
-INFO: RMI service unregistered: rmi://localhost:8085/MultiplyService
-Jun 22, 2009 2:09:48 PM org.apache.tuscany.sca.endpoint.tribes.ReplicatedEndpoin
-tRegistry removeEndpoint
-INFO: EndpointRegistry: Remove endpoint - Endpoint:  URI = OperationsComponent#s
-ervice-binding(DivideService/DivideService)
-Jun 22, 2009 2:09:48 PM org.apache.tuscany.sca.host.rmi.DefaultRMIHost unregiste
-rService
+osgi> stop 198
+Nov 4, 2009 5:18:43 PM org.apache.tuscany.sca.node.impl.NodeImpl stop
+INFO: Stopping node: urn:osgi.service.b43555f0-9509-444e-b22a-06d347ab7e98
+Nov 4, 2009 5:18:43 PM org.apache.tuscany.sca.core.assembly.impl.EndpointRegistr
+yImpl endpointRemoved
+INFO: Remove endpoint - (@8010288)Endpoint:  URI = osgi.service.b43555f0-9509-44
+4e-b22a-06d347ab7e98#service-binding(DivideService/Divide)
+Nov 4, 2009 5:18:43 PM org.apache.tuscany.sca.host.rmi.DefaultRMIHost unregister
+Service
 INFO: RMI service unregistered: rmi://localhost:8085/DivideService
-Jun 22, 2009 2:09:48 PM calculator.dosgi.operations.impl.OperationsActivator sto
-p
-INFO: Stopping file:./target/sample-dosgi-dynamic-calculator-operations.jar [181]
+Nov 4, 2009 5:18:43 PM calculator.dosgi.operations.impl.OperationsActivator stop
+
+INFO: Stopping calculator.dosgi.dynamic.operations_1.0.0 [198]
+Nov 4, 2009 5:18:43 PM org.apache.tuscany.sca.node.impl.NodeImpl stop
+INFO: Stopping node: urn:osgi.service.d3cadb93-e9b9-4486-87eb-07ece11888f6
+Nov 4, 2009 5:18:43 PM org.apache.tuscany.sca.core.assembly.impl.EndpointRegistr
+yImpl endpointRemoved
+INFO: Remove endpoint - (@8144744)Endpoint:  URI = osgi.service.d3cadb93-e9b9-44
+86-87eb-07ece11888f6#service-binding(AddService/Add)
+Nov 4, 2009 5:18:43 PM org.apache.tuscany.sca.host.rmi.DefaultRMIHost unregister
+Service
+INFO: RMI service unregistered: rmi://localhost:8085/AddService
+Nov 4, 2009 5:18:43 PM org.apache.tuscany.sca.node.impl.NodeImpl stop
+INFO: Stopping node: urn:osgi.service.b6259ccc-6ae4-41f0-b61b-c5a8c7f42b35
+Nov 4, 2009 5:18:43 PM org.apache.tuscany.sca.core.assembly.impl.EndpointRegistr
+yImpl endpointRemoved
+INFO: Remove endpoint - (@30229114)Endpoint:  URI = osgi.service.b6259ccc-6ae4-4
+1f0-b61b-c5a8c7f42b35#service-binding(SubtractService/Subtract)
+Nov 4, 2009 5:18:43 PM org.apache.tuscany.sca.host.rmi.DefaultRMIHost unregister
+Service
+INFO: RMI service unregistered: rmi://localhost:8085/SubtractService
+Nov 4, 2009 5:18:43 PM org.apache.tuscany.sca.node.impl.NodeImpl stop
+INFO: Stopping node: urn:osgi.service.8469c64c-9a28-47b3-bc4a-c5fa8d471057
+Nov 4, 2009 5:18:43 PM org.apache.tuscany.sca.core.assembly.impl.EndpointRegistr
+yImpl endpointRemoved
+INFO: Remove endpoint - (@3312704)Endpoint:  URI = osgi.service.8469c64c-9a28-47
+b3-bc4a-c5fa8d471057#service-binding(MultiplyService/Multiply)
+Nov 4, 2009 5:18:43 PM org.apache.tuscany.sca.host.rmi.DefaultRMIHost unregister
+Service
+INFO: RMI service unregistered: rmi://localhost:8085/MultiplyService
+Nov 4, 2009 5:18:43 PM org.apache.tuscany.sca.node.impl.NodeImpl stop
+INFO: Stopping node: urn:osgi.service.b43555f0-9509-444e-b22a-06d347ab7e98
 
 osgi>
 

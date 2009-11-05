@@ -25,51 +25,36 @@ osgi> ss
 Then you can install and start the calculator.dosgi bundle:
 
 osgi> install file:./target/sample-dosgi-dynamic-calculator.jar
-Bundle id is 181
+Bundle id is 198
 
-osgi> start 181
-Jun 22, 2009 1:37:21 PM calculator.dosgi.impl.CalculatorActivator start
-INFO: Starting file:./target/sample-dosgi-dynamic-calculator.jar [181]
-Jun 22, 2009 1:37:21 PM calculator.dosgi.impl.CalculatorActivator start
+osgi> start 198
+Nov 4, 2009 5:20:21 PM calculator.dosgi.impl.CalculatorActivator start
+INFO: Starting calculator.dosgi.dynamic_1.0.0 [198]
+Nov 4, 2009 5:20:21 PM calculator.dosgi.impl.CalculatorActivator start
 INFO: Registering calculator.dosgi.CalculatorService
-Jun 22, 2009 1:37:21 PM calculator.dosgi.impl.CalculatorActivator getBundle
-INFO: calculator.dosgi.operations.AddService is loaded by bundle: calculator.dos
-gi
-Jun 22, 2009 1:37:21 PM org.apache.tuscany.sca.node.impl.NodeImpl start
-INFO: Starting node: calculator.dosgi
-Jun 22, 2009 1:37:21 PM org.apache.tuscany.sca.node.impl.NodeFactoryImpl configu
-reNode
-INFO: Loading contribution: bundleentry://181/
-Jun 22, 2009 1:37:21 PM org.apache.tuscany.sca.endpoint.tribes.ReplicatedEndpoin
-tRegistry addEndpoint
-INFO: EndpointRegistry: Add endpoint - Endpoint:  URI = CalculatorComponent#serv
-ice-binding(CalculatorService/CalculatorService)
-2009-06-22 13:37:21.953::INFO:  jetty-6.1.x
-2009-06-22 13:37:21.953::INFO:  Started SelectChannelConnector@0.0.0.0:8086
-Jun 22, 2009 1:37:21 PM org.apache.tuscany.sca.http.jetty.JettyServer addServlet
-Mapping
+Nov 4, 2009 5:20:21 PM org.apache.tuscany.sca.node.impl.NodeImpl start
+INFO: Starting node: urn:osgi.service.d5a06834-ae15-42b3-9287-71fe6537c869 domai
+n: tuscany.apache.org
+log4j:WARN No appenders could be found for logger (org.apache.axiom.om.util.StAX
+Utils).
+log4j:WARN Please initialize the log4j system properly.
+Nov 4, 2009 5:20:24 PM org.mortbay.log.Slf4jLog info
+INFO: Logging to org.slf4j.impl.JDK14LoggerAdapter(org.mortbay.log) via org.mort
+bay.log.Slf4jLog
+Nov 4, 2009 5:20:25 PM org.apache.tuscany.sca.http.jetty.JettyLogger info
+INFO: jetty-6.1.x
+Nov 4, 2009 5:20:25 PM org.apache.tuscany.sca.http.jetty.JettyLogger info
+INFO: Started SelectChannelConnector@0.0.0.0:8086
+Nov 4, 2009 5:20:25 PM org.apache.tuscany.sca.http.jetty.JettyServer addServletM
+apping
 INFO: Added Servlet mapping: http://rfengt61p:8086/CalculatorService
-Jun 22, 2009 1:37:21 PM org.apache.tuscany.sca.endpoint.tribes.ReplicatedEndpoin
-tRegistry addEndpointReference
-INFO: EndpointRegistry: Add endpoint reference - Endpoint Reference:  URI = Calc
-ulatorComponent#reference-binding(addService/addService) Target = Endpoint:
-Jun 22, 2009 1:37:21 PM org.apache.tuscany.sca.endpoint.tribes.ReplicatedEndpoin
-tRegistry addEndpointReference
-INFO: EndpointRegistry: Add endpoint reference - Endpoint Reference:  URI = Calc
-ulatorComponent#reference-binding(subtractService/subtractService) Target = Endp
-oint:
-Jun 22, 2009 1:37:21 PM org.apache.tuscany.sca.endpoint.tribes.ReplicatedEndpoin
-tRegistry addEndpointReference
-INFO: EndpointRegistry: Add endpoint reference - Endpoint Reference:  URI = Calc
-ulatorComponent#reference-binding(multiplyService/multiplyService) Target = Endp
-oint:
-Jun 22, 2009 1:37:21 PM org.apache.tuscany.sca.endpoint.tribes.ReplicatedEndpoin
-tRegistry addEndpointReference
-INFO: EndpointRegistry: Add endpoint reference - Endpoint Reference:  URI = Calc
-ulatorComponent#reference-binding(divideService/divideService) Target = Endpoint
-:
-
-osgi>
+Nov 4, 2009 5:20:25 PM org.apache.tuscany.sca.core.assembly.impl.EndpointRegistr
+yImpl addEndpoint
+INFO: Add endpoint - (@23394516)Endpoint:  URI = osgi.service.d5a06834-ae15-42b3
+-9287-71fe6537c869#service-binding(CalculatorService/Calculator)
+Nov 4, 2009 5:20:25 PM calculator.dosgi.impl.CalculatorActivator getBundle
+INFO: calculator.dosgi.operations.AddService is loaded by bundle: calculator.dos
+gi.dynamic
 
 You can point your browser to http://localhost:8086/CalculatorService?wsdl to see
 the WSDL.
@@ -78,18 +63,20 @@ You can also use the WebService Explorer from Eclipse WTP to test the Web Servic
 
 To stop the bundle:
 
-osgi> stop 181
-Jun 22, 2009 1:39:09 PM org.apache.tuscany.sca.node.impl.NodeImpl stop
-INFO: Stopping node: calculator.dosgi
-Jun 22, 2009 1:39:09 PM org.apache.tuscany.sca.endpoint.tribes.ReplicatedEndpoin
-tRegistry removeEndpoint
-INFO: EndpointRegistry: Remove endpoint - Endpoint:  URI = CalculatorComponent#s
-ervice-binding(CalculatorService/CalculatorService)
-Jun 22, 2009 1:39:09 PM org.apache.tuscany.sca.http.jetty.JettyServer removeServ
-letMapping
+osgi> stop 198
+Nov 4, 2009 5:21:16 PM org.apache.tuscany.sca.node.impl.NodeImpl stop
+INFO: Stopping node: urn:osgi.service.d5a06834-ae15-42b3-9287-71fe6537c869
+Nov 4, 2009 5:21:16 PM org.apache.tuscany.sca.core.assembly.impl.EndpointRegistr
+yImpl endpointRemoved
+INFO: Remove endpoint - (@23394516)Endpoint:  URI = osgi.service.d5a06834-ae15-4
+2b3-9287-71fe6537c869#service-binding(CalculatorService/Calculator)
+Nov 4, 2009 5:21:16 PM org.apache.tuscany.sca.http.jetty.JettyServer removeServl
+etMapping
 INFO: Removed Servlet mapping: /CalculatorService
-Jun 22, 2009 1:39:09 PM calculator.dosgi.impl.CalculatorActivator stop
-INFO: Stopping file:./target/sample-dosgi-dynamic-calculator.jar [181]
+Nov 4, 2009 5:21:16 PM calculator.dosgi.impl.CalculatorActivator stop
+INFO: Stopping calculator.dosgi.dynamic_1.0.0 [198]
+Nov 4, 2009 5:21:16 PM org.apache.tuscany.sca.node.impl.NodeImpl stop
+INFO: Stopping node: urn:osgi.service.d5a06834-ae15-42b3-9287-71fe6537c869
 
 To exit the console, run:
 osgi> exit
