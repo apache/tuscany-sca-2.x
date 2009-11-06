@@ -52,6 +52,21 @@ public class StructuralURIBuilderImpl implements CompositeBuilder {
 
     public StructuralURIBuilderImpl(ExtensionPointRegistry registry) {
     }
+    
+    public String getID() {
+        return "org.apache.tuscany.sca.assembly.builder.StructualURIBuilder";
+    }     
+    
+    public Composite build(Composite composite, BuilderContext context)
+            throws CompositeBuilderException {
+        configureStructuralURIs(composite, 
+                                null, 
+                                context.getDefinitions(),
+                                context.getBindingBaseURIs(), 
+                                context.getMonitor());
+        return composite;
+    }
+
 
     /**
      * If a binding name is not provided by the user, construct it based on the service
@@ -117,99 +132,6 @@ public class StructuralURIBuilderImpl implements CompositeBuilder {
         }
     }
 
-    /**
-     * Concatenate binding URI parts together based on Assembly Specification section 1.7.2
-     *
-     * @param baseURI the base of the binding URI
-     * @param componentURI the middle part of the binding URI derived from the component name
-     * @param bindingURI the end part of the binding URI
-     * @param includeBindingName when set true the binding name part should be used
-     * @param bindingName the binding name
-     * @return the resulting URI as a string
-     */
-    private static String constructBindingURI(URI baseURI,
-                                              URI componentURI,
-                                              URI bindingURI,
-                                              String serviceName,
-                                              boolean includeBindingName,
-                                              String bindingName) {
-        String name = includeBindingName ? serviceName + "/" + bindingName : serviceName;
-        String uriString;
-
-        if (baseURI == null) {
-            if (componentURI == null) {
-                if (bindingURI != null) {
-                    uriString = name + "/" + bindingURI.toString();
-                } else {
-                    uriString = name;
-                }
-            } else {
-                if (bindingURI != null) {
-                    if (bindingURI.toString().startsWith("/")) {
-                        uriString = componentURI.resolve(bindingURI).toString();
-                    } else {
-                        uriString = componentURI.resolve(name + "/" + bindingURI).toString();
-                    }
-                } else {
-                    uriString = componentURI.resolve(name).toString();
-                }
-            }
-        } else {
-            if (componentURI == null) {
-                if (bindingURI != null) {
-                    uriString = basedURI(baseURI, bindingURI).toString();
-                } else {
-                    uriString = basedURI(baseURI, URI.create(name)).toString();
-                }
-            } else {
-                if (bindingURI != null) {
-                    uriString = basedURI(baseURI, componentURI.resolve(bindingURI)).toString();
-                } else {
-                    uriString = basedURI(baseURI, componentURI.resolve(name)).toString();
-                }
-            }
-        }
-
-        // tidy up by removing any trailing "/"
-        if (uriString.endsWith("/")) {
-            uriString = uriString.substring(0, uriString.length() - 1);
-        }
-
-        URI uri = URI.create(uriString);
-        if (!uri.isAbsolute()) {
-            uri = URI.create("/").resolve(uri);
-        }
-        return uri.toString();
-    }
-
-    /**
-     * Combine a URI with a base URI.
-     *
-     * @param baseURI
-     * @param uri
-     * @return
-     */
-    private static URI basedURI(URI baseURI, URI uri) {
-        if (uri.getScheme() != null) {
-            return uri;
-        }
-        String str = uri.toString();
-        if (str.startsWith("/")) {
-            str = str.substring(1);
-        }
-        return URI.create(baseURI.toString() + str).normalize();
-    }
-
-    public Composite build(Composite composite, BuilderContext context)
-        throws CompositeBuilderException {
-        configureStructuralURIs(composite, null, context.getDefinitions(), context.getBindingBaseURIs(), context.getMonitor());
-        return composite;
-    }
-
-    public String getID() {
-        return "org.apache.tuscany.sca.assembly.builder.StructualURIBuilder";
-    }
-
     private void configureStructuralURIs(Composite composite,
                                          String parentComponentURI,
                                          Definitions definitions,
@@ -242,13 +164,6 @@ public class StructuralURIBuilderImpl implements CompositeBuilder {
                 try {
                     for (ComponentService service : component.getServices()) {
                         constructBindingNames(service, monitor);
-
-                        /*
-                        // Initialize binding names and URIs
-                        for (Binding binding : service.getBindings()) {
-                            constructBindingURI(componentURI, service, binding, defaultBindings, monitor);
-                        }
-                        */
                     }
                     for (ComponentReference service : component.getReferences()) {
                         constructBindingNames(service, monitor);

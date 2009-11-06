@@ -301,15 +301,6 @@ public class ComponentBuilderImpl {
             if (componentReference.getAutowire() == null) {
                 componentReference.setAutowire(component.getAutowire());
             }
-
-            // TODO - we shouldn't do this as targets must be resolved in the 
-            //        context in which they are defined. Leaving here as a reminder
-            //        for the time being
-            // Reconcile targets copying them up the promotion hierarchy
-            //if (componentReference.getTargets().isEmpty()) {
-            //    componentReference.getTargets().addAll(componentTypeReference.getTargets());
-            //}
-
         }
     }
 

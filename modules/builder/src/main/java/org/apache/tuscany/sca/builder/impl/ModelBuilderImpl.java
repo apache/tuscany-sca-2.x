@@ -97,9 +97,12 @@ public class ModelBuilderImpl implements CompositeBuilder {
             composite = compositeIncludeBuilder.build(composite, context);
 
             // Set up the structural URIs for components (services/references/bindings)
+            // TODO does this need to happen before policy attachment
             composite = structuralURIBuilder.build(composite, context);
             
-            // need to apply policy external attachment
+            // Apply policy external attachment. Happens before the composite type
+            // is created so that suitable promotion and structural processing is
+            // applied to the attached policies
             composite = policyAttachmentBuilder.build(composite, context);
 
             // Process the implementation hierarchy by calculating the component type 
@@ -108,24 +111,22 @@ public class ModelBuilderImpl implements CompositeBuilder {
             // components that depend on them
             compositeComponentTypeBuilder.createComponentType(null, composite, context);
 
-            // create the runtime model by updating the static model we have just 
-            // created. This involves things like creating
-            //  component URIs
-            //  binding URIs
-            //  binding specific build processing
-            //  callback references - currently done in static pass
-            //  callback services - currently done in static pass
-            //  Endpoints
-            //  Endoint References
-            //  Policies
-            // TODO - called here at the moment but we could have a separate build phase 
-            //        to call these. Also we need to re-org these builders 
+            // Calculate the URI associated with service bindings
             composite = bindingURIBuilder.build(composite, context);
+            
+            // perform any binding specific build processing
             composite = componentServiceBindingBuilder.build(composite, context); // binding specific build
             composite = componentReferenceBindingBuilder.build(composite, context); // binding specific build
+
+            // compute all the service endpoints
             endpointBuilder.build(composite, context);
+            
+            // compute all the reference endpoint references
             endpointReferenceBuilder.build(composite, context);
-            composite = compositePolicyBuilder.build(composite, context); // the rest of the policy processing?
+            
+            // calculate intents and policy sets across the model hierarchy
+            // relies on the endpoints and endpoint references having been calculated
+            composite = compositePolicyBuilder.build(composite, context); 
             
             // For debugging - in success cases
             //System.out.println(dumpBuiltComposite(composite));

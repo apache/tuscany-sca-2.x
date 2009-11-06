@@ -94,20 +94,10 @@ public class BindingURIBuilderImpl implements CompositeBuilder {
         try {
             // Process nested composites recursively
             for (Component component : composite.getComponents()) {
-
-                // Initialize component URI
-                String componentURI;
-                if (parentComponentURI == null) {
-                    componentURI = component.getName();
-                } else {
-                    componentURI = URI.create(parentComponentURI + '/').resolve(component.getName()).toString();
-                }
-                component.setURI(componentURI);
-
                 Implementation implementation = component.getImplementation();
                 if (implementation instanceof Composite) {
                     // Process nested composite
-                    configureBindingURIs((Composite)implementation, componentURI, definitions, defaultBindings, monitor);
+                    configureBindingURIs((Composite)implementation, component.getURI(), definitions, defaultBindings, monitor);
                 }
             }
 
@@ -125,9 +115,7 @@ public class BindingURIBuilderImpl implements CompositeBuilder {
             for (Component component : composite.getComponents()) {
 
                 monitor.pushContext("Component: " + component.getName());
-
                 try {
-
                     for (ComponentService service : component.getServices()) {
 
                         // Initialize binding names and URIs
