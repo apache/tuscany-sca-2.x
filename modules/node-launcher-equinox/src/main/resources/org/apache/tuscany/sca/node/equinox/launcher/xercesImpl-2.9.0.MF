@@ -1,0 +1,426 @@
+Manifest-Version: 1.0
+Export-Package: org.apache.html.dom;version="2.9.0";
+  uses:="org.apache.xerces.dom,
+   org.w3c.dom.html,
+   org.w3c.dom,
+   org.xml.sax",
+ org.apache.wml;version="2.9.0";
+  uses:="org.w3c.dom",
+ org.apache.wml.dom;version="2.9.0";
+  uses:="org.apache.wml,
+   org.apache.xerces.dom,org.w3c.dom",
+ org.apache.xerces.dom;version="2.9.0";
+  uses:="org.apache.xerces.parsers,
+   org.apache.xerces.dom3.as,
+   org.w3c.dom,
+   org.apache.xerces.impl.xs,
+   org.apache.xerces.xs,
+   org.apache.xerces.xni,
+   org.apache.xerces.impl.dv.xs,
+   org.apache.xerces.impl,
+   org.apache.xerces.impl.dtd,
+   org.apache.xerces.util,
+   org.w3c.dom.ls,
+   org.apache.xml.serialize,
+   org.w3c.dom.events,
+   org.apache.xerces.xni.grammars,
+   org.apache.xerces.xni.parser,
+   org.apache.xerces.impl.validation,
+   org.apache.xerces.impl.dv,
+   org.apache.xerces.impl.msg,
+   org.apache.xerces.impl.xs.util,
+   org.apache.xerces.dom.events,
+   org.w3c.dom.traversal,
+   org.w3c.dom.ranges",
+ org.apache.xerces.dom.events;version="2.9.0";
+  uses:="org.w3c.dom.events,org.w3c.dom",
+ org.apache.xerces.dom3.as;version="2.9.0";
+  uses:="org.w3c.dom,org.w3c.dom.ls",
+ org.apache.xerces.impl;version="2.9.0";
+  uses:="org.apache.xerces.xni.grammars,
+   org.apache.xerces.xni,
+   org.apache.xerces.xni.parser,
+   org.apache.xerces.util,
+   org.apache.xerces.impl.dtd,
+   org.apache.xerces.impl.io,
+   org.apache.xerces.impl.validation,
+   org.xml.sax",
+ org.apache.xerces.impl.dtd;version="2.9.0";
+  uses:="org.apache.xerces.util,
+   org.apache.xerces.xni,
+   org.apache.xerces.impl.validation,
+   org.apache.xerces.xni.grammars,
+   org.apache.xerces.impl.dv,
+   org.apache.xerces.impl.dtd.models,
+   org.apache.xerces.xni.parser,
+   org.apache.xerces.impl,
+   org.apache.xerces.impl.msg",
+ org.apache.xerces.impl.dtd.models;version="2.9.0";
+  uses:="org.apache.xerces.xni",
+ org.apache.xerces.impl.dv;version="2.9.0";
+  uses:="org.apache.xerces.util,
+   org.apache.xerces.xs,
+   org.apache.xerces.impl.xs.util",
+ org.apache.xerces.impl.dv.dtd;version="2.9.0";
+  uses:="org.apache.xerces.impl.dv,
+   org.apache.xerces.util",
+ org.apache.xerces.impl.dv.util;version="2.9.0";
+  uses:="org.apache.xerces.xs,
+   org.apache.xerces.xs.datatypes",
+ org.apache.xerces.impl.dv.xs;version="2.9.0";
+  uses:="org.apache.xerces.xs.datatypes,
+   javax.xml.datatype,
+   org.apache.xerces.jaxp.datatype,
+   org.apache.xerces.impl.dv,
+   org.apache.xerces.util,
+   org.apache.xerces.impl.dv.util,
+   org.apache.xerces.xs,
+   org.apache.xerces.xni,
+   javax.xml.namespace,
+   org.apache.xerces.impl.xs,
+   org.apache.xerces.impl.xs.util,
+   org.apache.xerces.impl.xpath.regex,
+   org.w3c.dom",
+ org.apache.xerces.impl.io;version="2.9.0";
+  uses:="org.apache.xerces.util,
+   org.apache.xerces.impl.msg",
+ org.apache.xerces.impl.msg;version="2.9.0";
+  uses:="org.apache.xerces.util",
+ org.apache.xerces.impl.validation;version="2.9.0";
+  uses:="org.apache.xerces.util,
+   org.apache.xerces.impl.dv,
+    org.apache.xerces.xni",
+ org.apache.xerces.impl.xpath;version="2.9.0";
+  uses:="org.apache.xerces.util,
+   org.apache.xerces.xni",
+ org.apache.xerces.impl.xpath.regex;version="2.9.0",
+ org.apache.xerces.impl.xs;version="2.9.0";
+  uses:="org.apache.xerces.xs,
+   org.apache.xerces.impl.xs.util,
+   org.apache.xerces.impl.dv,
+   org.apache.xerces.util,
+   org.apache.xerces.xni.grammars,
+   org.apache.xerces.parsers,
+   org.apache.xerces.xni,
+   org.apache.xerces.xni.parser,
+   org.xml.sax,
+   org.apache.xerces.impl.xs.identity,
+   org.w3c.dom,
+   org.apache.xerces.impl.xs.opti,
+   org.apache.xerces.impl.xs.traversers,
+   org.w3c.dom.ls,
+   org.apache.xerces.impl.xs.models,
+   org.apache.xerces.dom,
+   org.apache.xerces.impl,
+   javax.xml.namespace,
+   org.apache.xerces.impl.validation,
+   org.apache.xerces.impl.dv.xs",
+ org.apache.xerces.impl.xs.identity;version="2.9.0";
+  uses:="org.apache.xerces.xs,
+   org.apache.xerces.impl.xs.util,
+   org.apache.xerces.impl.xpath,
+   org.apache.xerces.util,
+   org.apache.xerces.xni,
+   org.apache.xerces.impl.xs",
+ org.apache.xerces.impl.xs.models;version="2.9.0";
+  uses:="org.apache.xerces.xs,
+   org.apache.xerces.impl.dtd.models,
+   org.apache.xerces.impl.xs,
+   org.apache.xerces.util,
+   org.apache.xerces.xni.parser,
+   org.apache.xerces.impl,
+   org.apache.xerces.xni",
+ org.apache.xerces.impl.xs.opti;version="2.9.0";
+  uses:="org.w3c.dom,
+   org.apache.xerces.xni.parser,
+   org.apache.xerces.xni,
+   org.apache.xerces.util,
+   org.apache.xerces.impl.xs,
+   org.apache.xerces.impl,
+   org.apache.xerces.xni.grammars,
+   org.apache.xerces.parsers,
+   org.apache.xerces.impl.validation,
+   org.apache.xerces.impl.dv,
+   org.apache.xerces.impl.msg",
+ org.apache.xerces.impl.xs.traversers;version="2.9.0";
+  uses:="org.apache.xerces.util,
+   org.apache.xerces.impl.xs.opti,
+   org.apache.xerces.xni,
+   org.apache.xerces.xni.parser,
+   org.w3c.dom,
+   org.xml.sax.helpers,
+   org.xml.sax,
+   org.apache.xerces.xs,
+   org.apache.xerces.impl.validation,
+   org.apache.xerces.impl.xs.util,
+   org.apache.xerces.impl.dv,
+   org.apache.xerces.impl.xs,
+   org.apache.xerces.impl.xs.identity,
+   org.apache.xerces.impl.xpath,
+   org.apache.xerces.xni.grammars,
+   org.apache.xerces.parsers,
+   org.apache.xerces.impl,
+   org.apache.xerces.impl.dv.xs",
+ org.apache.xerces.impl.xs.util;version="2.9.0";
+  uses:="org.apache.xerces.xs,
+   org.apache.xerces.xni,
+   org.apache.xerces.util,
+   org.apache.xerces.xni.grammars,
+   org.apache.xerces.impl.xs",
+ org.apache.xerces.jaxp;version="2.9.0";
+  uses:="org.xml.sax.helpers,
+   org.xml.sax,
+   org.apache.xerces.util,
+   org.apache.xerces.parsers,
+   javax.xml.parsers,
+   javax.xml.validation,
+   org.apache.xerces.jaxp.validation,
+   org.apache.xerces.xni.parser,
+   org.w3c.dom,
+   org.apache.xerces.impl.validation,
+   org.apache.xerces.dom,
+   org.apache.xerces.xni,
+   org.apache.xerces.impl.xs,
+   org.apache.xerces.impl,
+   org.w3c.dom.ls,
+   org.apache.xerces.impl.xs.opti,
+   org.apache.xerces.xs,
+   org.apache.xerces.xni.grammars",
+ org.apache.xerces.jaxp.datatype;version="2.9.0";
+  uses:="javax.xml.datatype,
+   org.apache.xerces.util,
+    javax.xml.namespace",
+ org.apache.xerces.jaxp.validation;version="2.9.0";
+  uses:="org.apache.xerces.xni.grammars,
+   javax.xml.validation,
+   org.apache.xerces.xni,
+   javax.xml.transform.dom,
+   org.w3c.dom,
+   org.apache.xerces.xs,
+   org.apache.xerces.impl.dv,
+   org.apache.xerces.dom,
+   org.apache.xerces.xni.parser,
+   org.apache.xerces.util,
+   org.apache.xerces.impl.xs.util,
+   javax.xml.parsers,
+   org.xml.sax,
+   org.apache.xerces.impl.validation,
+   javax.xml.transform,
+   org.apache.xerces.impl.xs,
+   org.apache.xerces.impl,
+   org.apache.xerces.parsers,
+   javax.xml.transform.stream,
+   org.apache.xerces.impl.msg,
+   org.w3c.dom.ls,
+   org.xml.sax.ext,
+   javax.xml.transform.sax",
+ org.apache.xerces.parsers;version="2.9.0";
+  uses:="org.apache.xerces.util,
+   org.apache.xerces.xs,
+   org.w3c.dom.ls,
+   org.apache.xerces.impl.dv,
+   org.apache.xerces.dom,
+   org.apache.xerces.xni.parser,
+   org.apache.xerces.xni,
+   org.w3c.dom,
+   org.xml.sax.helpers,
+   org.xml.sax.ext,
+   org.xml.sax,
+   org.apache.xerces.xni.grammars,
+   org.apache.xerces.impl.xs,
+   org.apache.xerces.dom3.as,
+   org.apache.xerces.impl,
+   org.apache.xerces.impl.dtd,
+   org.apache.xerces.impl.validation,
+   org.apache.xerces.impl.msg,
+   org.apache.xerces.xinclude,
+   org.apache.xerces.xpointer",
+ org.apache.xerces.util;version="2.9.0";
+  uses:="org.xml.sax.ext,
+   org.apache.xerces.xni,
+   org.xml.sax,
+   org.w3c.dom.ls,
+   org.apache.xerces.xni.grammars,
+   org.apache.xerces.xni.parser,
+   org.apache.xerces.dom,
+   org.w3c.dom,
+   org.apache.xerces.impl.xs.opti,
+   org.apache.xerces.impl,
+   javax.xml.namespace,
+   javax.xml.parsers,
+   org.apache.xml.resolver.readers,
+   org.apache.xerces.jaxp,
+   org.apache.xml.resolver",
+ org.apache.xerces.xinclude;version="2.9.0";
+  uses:="org.apache.xerces.util,
+   org.apache.xerces.xni,
+   org.apache.xerces.xni.parser,
+   org.apache.xerces.impl.io,
+   org.apache.xerces.xpointer,
+   org.apache.xerces.impl",
+ org.apache.xerces.xni;version="2.9.0";
+  uses:="org.apache.xerces.xni.parser",
+ org.apache.xerces.xni.grammars;version="2.9.0";
+  uses:="org.apache.xerces.xni,
+   org.apache.xerces.xni.parser,
+   org.apache.xerces.xs",
+ org.apache.xerces.xni.parser;version="2.9.0";
+  uses:="org.apache.xerces.xni",
+ org.apache.xerces.xpointer;version="2.9.0";
+  uses:="org.apache.xerces.util,
+   org.apache.xerces.xni,
+   org.apache.xerces.xni.parser,
+   org.apache.xerces.impl,
+   org.apache.xerces.xs,
+   org.apache.xerces.impl.dv,
+   org.apache.xerces.xinclude",
+ org.apache.xerces.xs;version="2.9.0";
+  uses:="org.w3c.dom.ls,
+   org.w3c.dom",
+ org.apache.xerces.xs.datatypes;version="2.9.0";
+  uses:="org.apache.xerces.xs,
+   javax.xml.datatype,
+   org.apache.xerces.xni,
+   javax.xml.namespace",
+ org.apache.xml.serialize;version="2.9.0";
+  uses:="org.apache.xerces.util,
+   org.w3c.dom.ls,
+   org.xml.sax.ext,
+   org.apache.xerces.dom,
+   org.w3c.dom.traversal,
+   org.w3c.dom,
+   org.xml.sax,
+   org.apache.xerces.impl,
+   sun.io,
+   org.w3c.dom.html,
+   org.apache.xerces.xni,
+   org.xml.sax.helpers",
+ org.w3c.dom.html;version="2.9.0";
+  uses:="org.w3c.dom"
+Ant-Version: Apache Ant version 1.6.5 compiled on June 2 2005
+Bundle-Version: 2.9.0
+Tool: Bnd-0.0.313
+Bnd-LastModified: 1251261457125
+Bundle-Name: xercesImpl
+Bundle-ManifestVersion: 2
+Created-By: 1.6.0_13 (Sun Microsystems Inc.)
+Import-Package: javax.xml.datatype;resolution:=optional,
+ javax.xml.namespace;resolution:=optional,
+ javax.xml.parsers;resolution:=optional,
+ javax.xml.transform;resolution:=optional,
+ javax.xml.transform.dom;resolution:=optional,
+ javax.xml.transform.sax;resolution:=optional,
+ javax.xml.transform.stream;resolution:=optional,
+ javax.xml.validation;resolution:=optional,
+ org.apache.xml.resolver;resolution:=optional,
+ org.apache.xml.resolver.readers;resolution:=optional,
+ org.w3c.dom;resolution:=optional,
+ org.w3c.dom.events;resolution:=optional,
+ org.w3c.dom.html;resolution:=optional,
+ org.w3c.dom.ls;resolution:=optional,
+ org.w3c.dom.ranges;resolution:=optional,
+ org.w3c.dom.traversal;resolution:=optional,
+ org.xml.sax;resolution:=optional,
+ org.xml.sax.ext;resolution:=optional,
+ org.xml.sax.helpers;resolution:=optional,
+ sun.io;resolution:=optional
+Bundle-SymbolicName: xercesImpl
+Originally-Created-By: 1.3.1 (IBM Corporation)
+
+Name: javax/xml/datatype/
+Implementation-Vendor: Apache Software Foundation
+Implementation-Title: javax.xml.datatype
+Implementation-Version: 1.3.03
+Specification-Vendor: Sun Microsystems Inc.
+Specification-Title: Java API for XML Processing
+Implementation-URL: http://xml.apache.org/commons/
+Specification-Version: 1.3
+Comment: based on xml-commons external 1.3.03
+
+Name: org/apache/xerces/xni/
+Implementation-Vendor: Apache Software Foundation
+Implementation-Title: org.apache.xerces.xni
+Implementation-Version: 1.2
+Specification-Vendor: Apache Software Foundation
+Specification-Title: Xerces Native Interface
+Implementation-URL: http://xerces.apache.org/xerces2-j/
+Specification-Version: 1.2
+Comment: Xerces Native Interface
+
+Name: javax/xml/parsers/
+Implementation-Vendor: Apache Software Foundation
+Implementation-Title: javax.xml.parsers
+Implementation-Version: 1.3.03
+Specification-Vendor: Sun Microsystems Inc.
+Specification-Title: Java API for XML Processing
+Implementation-URL: http://xml.apache.org/commons/
+Specification-Version: 1.3
+Comment: based on xml-commons external 1.3.03
+
+Name: org/w3c/dom/ls/
+Implementation-Vendor: World Wide Web Consortium
+Implementation-Title: org.w3c.dom.ls
+Implementation-Version: 1.0
+Specification-Vendor: World Wide Web Consortium
+Specification-Title: Document Object Model, Level 3 Load and Save
+Implementation-URL: http://www.w3c.org/DOM/
+Specification-Version: 1.0
+Comment: based on xml-commons external 1.3.03
+
+Name: javax/xml/transform/
+Implementation-Vendor: Apache Software Foundation
+Implementation-Title: javax.xml.transform
+Implementation-Version: 1.3.03
+Specification-Vendor: Sun Microsystems Inc.
+Specification-Title: Java API for XML Processing
+Implementation-URL: http://xml.apache.org/commons/
+Specification-Version: 1.3
+Comment: based on xml-commons external 1.3.03
+
+Name: org/xml/sax/
+Implementation-Vendor: David Megginson
+Implementation-Title: org.xml.sax
+Implementation-Version: 2.0.2
+Specification-Vendor: David Megginson
+Specification-Title: Simple API for XML
+Implementation-URL: http://www.saxproject.org/
+Specification-Version: 2.0.2
+Comment: based on xml-commons external 1.3.03
+
+Name: org/w3c/dom/
+Implementation-Vendor: World Wide Web Consortium
+Implementation-Title: org.w3c.dom
+Implementation-Version: 1.0
+Specification-Vendor: World Wide Web Consortium
+Specification-Title: Document Object Model, Level 3 Core
+Implementation-URL: http://www.w3c.org/DOM/
+Specification-Version: 1.0
+Comment: based on xml-commons external 1.3.03
+
+Name: org/apache/xerces/impl/Version.class
+Implementation-Vendor: Apache Software Foundation
+Implementation-Title: org.apache.xerces.impl.Version
+Implementation-Version: 2.9.0
+Implementation-URL: http://xerces.apache.org/xerces2-j/
+Comment: Xerces-J 2.9.0
+
+Name: javax/xml/xpath/
+Implementation-Vendor: Apache Software Foundation
+Implementation-Title: javax.xml.xpath
+Implementation-Version: 1.3.03
+Specification-Vendor: Sun Microsystems Inc.
+Specification-Title: Java API for XML Processing
+Implementation-URL: http://xml.apache.org/commons/
+Specification-Version: 1.3
+Comment: based on xml-commons external 1.3.03
+
+Name: javax/xml/validation/
+Implementation-Vendor: Apache Software Foundation
+Implementation-Title: javax.xml.validation
+Implementation-Version: 1.3.03
+Specification-Vendor: Sun Microsystems Inc.
+Specification-Title: Java API for XML Processing
+Implementation-URL: http://xml.apache.org/commons/
+Specification-Version: 1.3
+Comment: based on xml-commons external 1.3.03
+
