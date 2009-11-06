@@ -30,6 +30,7 @@ import org.apache.tuscany.sca.assembly.impl.ImplementationImpl;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.implementation.bpel.BPELImplementation;
 import org.apache.tuscany.sca.implementation.bpel.BPELProcessDefinition;
+import org.apache.tuscany.sca.implementation.bpel.xml.BPELPartnerLinkElement;
 
 /**
  * The model representing a BPEL implementation in an SCA assembly model.
@@ -124,4 +125,28 @@ class BPELImplementationImpl extends ImplementationImpl implements BPELImplement
             return false;
         }
     }
+
+	public String getReferencePartnerlinkName(String referenceName) {
+		if( referenceName == null ) return null;
+		// Find the partnerLink which has its SCAName set to the supplied name
+		List<BPELPartnerLinkElement> partnerLinks = processDefinition.getPartnerLinks();
+		for( BPELPartnerLinkElement partnerLink : partnerLinks ) {
+			if( referenceName.equals(partnerLink.getSCAName()) ) {
+				return partnerLink.getName();
+			} // end if
+		} // end for
+		return null;
+	} // end method getReferencePartnerlinkName
+
+	public String getServicePartnerlinkName(String serviceName) {
+		if( serviceName == null ) return null;
+		// Find the partnerLink which has its SCAName set to the supplied name
+		List<BPELPartnerLinkElement> partnerLinks = processDefinition.getPartnerLinks();
+		for( BPELPartnerLinkElement partnerLink : partnerLinks ) {
+			if( serviceName.equals(partnerLink.getSCAName()) ) {
+				return partnerLink.getName();
+			} // end if
+		} // end for		
+		return null;
+	} // end method getServicePartnerlinkName
 }

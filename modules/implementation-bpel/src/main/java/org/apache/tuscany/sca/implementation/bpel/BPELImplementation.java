@@ -88,4 +88,22 @@ public interface BPELImplementation extends Implementation {
      * @param modelResolver
      */
     void setModelResolver(ModelResolver modelResolver);
+    
+    /**
+     * Gets the name of the partnerLink which corresponds to the SCA service with the supplied name
+     * This deals in particular with cases where the SCA service name is an alias which is not the
+     * same as the partnerLink name
+     * @param serviceName - the name of the SCA service
+     * @return
+     */
+    String getServicePartnerlinkName( String serviceName );
+    
+    /**
+     * Gets the name of the partnerLink which corresponds to the SCA reference with the supplied name
+     * This deals in particular with cases where the SCA reference name is an alias which is not the
+     * same as the partnerLink name
+     * @param referenceName - the name of the SCA reference
+     * @return
+     */
+    String getReferencePartnerlinkName( String referenceName );
 }

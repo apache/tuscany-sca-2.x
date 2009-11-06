@@ -311,7 +311,7 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
     
     /**
      * Create an SCA service for a partnerLink
-     * @param name - name of the reference
+     * @param name - name of the service
      * @param myRolePT - partner link type of myRole
      * @param partnerRolePT - partner link type of partnerRole
      * @param theInterfaces - list of WSDL interfaces associated with the BPEL process

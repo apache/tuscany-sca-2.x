@@ -228,8 +228,9 @@ public class BPELDocumentProcessor extends BaseStAXArtifactProcessor implements 
         if ((scaService != null) && (scaReference != null)) {
             // It is incorrect to set both service & reference attributes
             error(monitor, "PartnerLinkHasBothAttr", partnerLink, reader.getAttributeValue(null, "name"));
-            throw new ContributionReadException("BPEL PartnerLink " + reader.getAttributeValue(null, "name") + " has both sca:reference and sca:service attributes set");
-        }
+            throw new ContributionReadException("BPEL PartnerLink " + reader.getAttributeValue(null, "name") + 
+            		   " has both sca:reference and sca:service attributes set");
+        } // end if
         
         // Set the SCA type and the related name, if present
         if (scaService != null)
