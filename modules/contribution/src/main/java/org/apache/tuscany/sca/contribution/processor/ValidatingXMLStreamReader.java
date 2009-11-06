@@ -118,9 +118,12 @@ class ValidatingXMLStreamReader extends StreamReaderDelegate implements XMLStrea
             }
             
             private String getArtifactName( String input ) {
-            	String artifactName = input;
+            	String artifactName = null;
             	if( ValidatingXMLStreamReader.this.monitor != null ) {
             		artifactName = ValidatingXMLStreamReader.this.monitor.getArtifactName();
+            	}
+            	if (artifactName == null){
+            	    artifactName = input;
             	}
             	return artifactName;
             }
