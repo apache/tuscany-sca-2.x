@@ -115,8 +115,19 @@ public class TuscanyProcessConfImpl implements ProcessConf {
     
     public void stop() {
     	// If the BPEL file was rewritten, destroy the rewritten version of it so that
-    	// it is not used again.
+    	// it is not used again. Also delete the related compiled cbp file
     	if( rewritten ) {
+    		try {
+    			String cbpName = theBPELFile.getCanonicalPath();
+    			// Remove the "bpel_tmp" suffix and add "cbp"
+    			if ( cbpName.endsWith("bpel_tmp") ) {
+    				cbpName = cbpName.substring( 0, cbpName.length() - 8) + "cbp";
+    				File cbpFile = new File( cbpName );
+    				if ( cbpFile.exists() ) cbpFile.delete();
+    			} // end if
+    		} catch (Exception e ) {
+    			// Do nothing with an exception
+    		} // end try
     		theBPELFile.delete();
     	} // end if
     	
@@ -284,14 +295,18 @@ public class TuscanyProcessConfImpl implements ProcessConf {
             // services that have a callback interface
             List<ComponentReference> theReferences = component.getReferences();
             //List<Reference> theReferences = implementation.getReferences();
-            // Create an endpoint for each reference, using the reference name as the "service"
-            // name, combined with http://tuscany.apache.org to make a QName
+            // Create an endpoint for each reference, using the reference name combined with 
+            // http://tuscany.apache.org to make a QName
+            // Note that the key used for this put operation MUST be the name of one of the partnerLinks of the
+            // BPEL process.  The SCA reference MAY have an alias for the name (can be given using the sca-bpel:reference
+            // element, if present) and this alias must not be used
             for( Reference reference : theReferences ) {
+            	String partnerlinkName = implementation.getReferencePartnerlinkName( reference.getName() );
             	// Check that there is at least 1 configured SCA endpointReference for the reference, since it is
             	// possible for 0..1 multiplicity references to have no SCA endpointReferences configured
             	List<org.apache.tuscany.sca.assembly.EndpointReference> eprs = reference.getEndpointReferences();
             	String eprCount =  Integer.toString( eprs.size() );
-                invokeEndpoints.put( reference.getName(), 
+                invokeEndpoints.put( partnerlinkName, 
                                      new Endpoint( new QName( TUSCANY_NAMESPACE, reference.getName() ), eprCount)); 
             } // end for
         } // end if
@@ -342,13 +357,17 @@ public class TuscanyProcessConfImpl implements ProcessConf {
             String componentURI = component.getURI();
             // Get a collection of the services - note that the Component services include additional
             // "pseudo-services" for each reference that has a callback...
-            //List<Service> theServices = implementation.getServices();
+            
             List<ComponentService> theServices = component.getServices();
-            // Create an endpoint for each reference, using the reference name as the "service"
-            // name, combined with http://tuscany.apache.org to make a QName
+            // Create an endpoint for each service, using the service name combined with 
+            // http://tuscany.apache.org to make a QName
+            // Note that the key used for this put operation MUST be the name of one of the partnerLinks of the
+            // BPEL process.  The SCA service MAY have an alias for the name (can be given using the sca-bpel:service
+            // element, if present) and this alias must not be used
             for( ComponentService service : theServices ) {
+            	String partnerlinkName = implementation.getServicePartnerlinkName( service.getName() );
             	// MJE 14/07/2009 - added componentURI to the service name to get unique service name
-                provideEndpoints.put( service.getName(), 
+                provideEndpoints.put( partnerlinkName, 
                                       new Endpoint( new QName( TUSCANY_NAMESPACE, componentURI + service.getName() ), 
                                     		        "ServicePort"));
             } // end for
@@ -492,8 +511,19 @@ public class TuscanyProcessConfImpl implements ProcessConf {
     	Element initializer = getInitializerSequence( bpelDOM, property );
     	if( initializer == null ) return;
     	
-    	// Insert the initializer sequence as the immediate child of the insertion point
-    	insertionElement.insertBefore( initializer, insertionElement.getFirstChild() );
+    	// Insert the initializer sequence as the next sibling element of the insertion point
+    	Element parent = (Element)insertionElement.getParentNode();
+    	// Get the next sibling element, if there is one
+    	Node sibling = insertionElement.getNextSibling();
+    	while( sibling != null && sibling.getNodeType() != Node.ELEMENT_NODE ) {
+    		sibling = sibling.getNextSibling();
+    	} // end while
+    	// Either insert at the end or before the next element
+    	if ( sibling == null ) {
+    		parent.appendChild( initializer );
+    	} else {
+    		parent.insertBefore( initializer, sibling );
+    	} // end if
     	
     } // end insertSCAPropertyInitializer
     
@@ -514,18 +544,18 @@ public class TuscanyProcessConfImpl implements ProcessConf {
     			// Simple types
     			String NS_URI = bpelDOM.getDocumentElement().getNamespaceURI();
     			String valueText = getPropertyValueText( property.getValue() );
-    			Element literalElement = bpelDOM.createElement("literal");
+    			Element literalElement = bpelDOM.createElementNS(NS_URI, "literal");
     			literalElement.setTextContent(valueText);
-    			Element fromElement = bpelDOM.createElement("from");
+    			Element fromElement = bpelDOM.createElementNS(NS_URI, "from");
     			fromElement.appendChild(literalElement);
-    			Element toElement = bpelDOM.createElement("to");
-    			Attr variableAttribute = bpelDOM.createAttribute("variable");
+    			Element toElement = bpelDOM.createElementNS(NS_URI, "to");
+    			Attr variableAttribute = bpelDOM.createAttributeNS(NS_URI, "variable");
     			variableAttribute.setValue( property.getName() );
     			toElement.setAttributeNode( variableAttribute );
-    			Element copyElement = bpelDOM.createElement("copy");
+    			Element copyElement = bpelDOM.createElementNS(NS_URI, "copy");
     			copyElement.appendChild(fromElement);
     			copyElement.appendChild(toElement);
-    			Element assignElement = bpelDOM.createElement("assign");
+    			Element assignElement = bpelDOM.createElementNS(NS_URI, "assign");
     			assignElement.appendChild(copyElement);
     			return assignElement;
     		} // end if
@@ -573,18 +603,54 @@ public class TuscanyProcessConfImpl implements ProcessConf {
     	return null;
     } // end method findInitializerInsertionPoint
     
-    private static String	SEQUENCE_ELEMENT = "sequence";
     /**
-     * Determine if an Element is a BPEL Activity element which can have an Assign
+     * A WS-BPEL activity can be any of the following:
+     *  <receive>
+     *  <reply>
+     *  <invoke>
+     *  <assign>
+     *  <throw>
+     *  <exit>
+     *  <wait>
+     *  <empty>
+     *  <sequence>
+     *  <if>
+     *  <while>
+     *  <repeatUntil>
+     *  <forEach>
+     *  <pick>
+     *  <flow>
+     *  <scope>
+     *  <compensate>
+     *  <compensateScope>
+     *  <rethrow>
+     *  <validate>
+     *  <extensionActivity>
+     *  A WS-BPEL start activity is a <receive> or <pick> with @create_instance="yes"
+     */
+    private static String	SEQUENCE_ELEMENT 	= "sequence";
+    private static String	REPLY_ELEMENT 		= "reply";
+    private static String	INVOKE_ELEMENT 		= "invoke";
+    private static String	ASSIGN_ELEMENT 		= "assign";
+    private static String	PICK_ELEMENT 		= "pick";
+    private static String	RECEIVE_ELEMENT 	= "receive";
+    private static String	FLOW_ELEMENT 		= "flow";
+    private static String	SCOPE_ELEMENT 		= "scope";
+    /**
+     * Determine if an Element is a BPEL start activity element which can have an Assign
      * inserted following it
-     * @param element - the Element
+     * @param element - a DOM Element containing the BPEL activity
      * @return - true if the Element is a BPEL Activity element, false otherwise
      */
     private boolean isInsertableActivityElement( Element element ) {
     	String name = element.getTagName();
-    	// For the present, only <sequence/> elements count 
-    	// TODO - extend this to cover other insertable cases
-    	if( SEQUENCE_ELEMENT.equalsIgnoreCase(name) ) return true;
+    	// For the present, only <receive/> and <pick/> elements with create_instance="yes" count 
+    	// if( SEQUENCE_ELEMENT.equalsIgnoreCase(name) ) return true;
+    	String start = element.getAttribute("createInstance");
+    	if( start == null ) return false;
+    	if( !"yes".equals(start) ) return false;
+    	if( RECEIVE_ELEMENT.equalsIgnoreCase(name) ) return true;
+    	if( PICK_ELEMENT.equalsIgnoreCase(name) ) return true;
     	return false;
     } // end method isActivityElement
     
@@ -596,6 +662,8 @@ public class TuscanyProcessConfImpl implements ProcessConf {
     private Document readDOMFromProcess( File bpelFile ) {
     	try {
 	    	DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+	    	docFactory.setNamespaceAware(true);
+	    	docFactory.setXIncludeAware(true);
 	    	DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 	    	
 	    	Document bpelDOM = docBuilder.parse( bpelFile );

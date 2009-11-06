@@ -10,42 +10,34 @@ Bundle-Version: 2.0
 Bnd-LastModified: 1225397447609
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
-Bundle-ClassPath: .,ode-bpel-epr-1.3.2.jar,ode-bpel-store-1.3.2.jar,
- ode-bpel-dao-1.3.2.jar,ode-dao-jpa-1.3.2.jar,
- ode-bpel-runtime-1.3.2.jar,ode-bpel-api-1.3.2.jar,
- ode-scheduler-simple-1.3.2.jar,ode-utils-1.3.2.jar,
- ode-bpel-compiler-1.3.2.jar,ode-bpel-schemas-1.3.2.jar,
- ode-bpel-obj-1.3.2.jar,ode-jacob-1.3.2.jar,ode-jacob-ap-1.3.2.jar,
- geronimo-jta_1.1_spec-1.1.jar,geronimo-transaction-2.0.1.jar,
- persistence-api-1.0.jar,ode-agents-1.3.2.jar,
- ode-dao-hibernate-1.3.2.jar,
- geronimo-connector-2.0.1.jar,openjpa-1.3.0-SNAPSHOT.jar
+Bundle-ClassPath: .
 Bundle-Description: Apache Tuscany SCA BPEL ODE Implementation Extensi
  on
-Import-Package: javax.resource.spi,
+Import-Package: javax.persistence;version="1.0.0",
+ javax.persistence.spi;version="1.0.0",
+ javax.resource.spi,
  javax.transaction;version="1.1.0",
  javax.wsdl;resolution:=optional,
  javax.xml.namespace;resolution:=optional,
- javax.xml.transform,
- javax.xml.transform.dom,
- javax.xml.transform.stream,
  org.apache.commons.logging;resolution:=optional,
  org.apache.geronimo.transaction.manager,
- org.apache.ode.bpel.compiler,
- org.apache.ode.bpel.dao,
- org.apache.ode.bpel.engine,
- org.apache.ode.bpel.evt,
- org.apache.ode.bpel.iapi,
- org.apache.ode.bpel.memdao,
- org.apache.ode.il.config,
- org.apache.ode.il.dbutil,
- org.apache.ode.scheduler.simple,
- org.apache.ode.utils,
+ org.apache.ode.bpel.compiler;version="1.3.2",
+ org.apache.ode.bpel.dao;version="1.3.2",
+ org.apache.ode.bpel.engine;version="1.3.2",
+ org.apache.ode.bpel.evt;version="1.3.2",
+ org.apache.ode.bpel.iapi;version="1.3.2",
+ org.apache.ode.bpel.memdao;version="1.3.2",
+ org.apache.ode.dao.jpa;version="1.3.2",
+ org.apache.ode.il.config;version="1.3.2",
+ org.apache.ode.il.dbutil;version="1.3.2",
+ org.apache.ode.scheduler.simple;version="1.3.2",
+ org.apache.ode.utils;version="1.3.2",
  org.apache.tuscany.sca.assembly;version="2.0",
  org.apache.tuscany.sca.core;version="2.0",
  org.apache.tuscany.sca.databinding;version="2.0",
  org.apache.tuscany.sca.databinding.impl;version="2.0",
  org.apache.tuscany.sca.databinding.xml;version="2.0",
+ org.apache.tuscany.sca.extensibility;version="2.0.0",
  org.apache.tuscany.sca.implementation.bpel;version="2.0",
  org.apache.tuscany.sca.interfacedef;version="2.0",
  org.apache.tuscany.sca.interfacedef.wsdl;version="2.0",
@@ -56,6 +48,6 @@ Import-Package: javax.resource.spi,
  org.eclipse.core.runtime;resolution:=optional;common=split,
  org.oasisopen.sca.annotation;version="2.0",
  org.w3c.dom;resolution:=optional
-Bundle-SymbolicName: org.apache.tuscany.sca.implementation.bpel.ode
+Bundle-SymbolicName: org.apache.tuscany.sca.implementation.bpel.runtime
 Bundle-DocURL: http://www.apache.org/
 Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6

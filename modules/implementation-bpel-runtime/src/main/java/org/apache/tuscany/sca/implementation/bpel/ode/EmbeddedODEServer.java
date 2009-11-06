@@ -32,15 +32,12 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import javax.persistence.spi.PersistenceProvider;
 import javax.transaction.TransactionManager;
 import javax.xml.namespace.QName;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-//import org.apache.ode.axis2.BindingContextImpl;
-//import org.apache.ode.axis2.EndpointReferenceContextImpl;
-//import org.apache.ode.axis2.MessageExchangeContextImpl;
-//import org.apache.ode.axis2.EndpointReferenceContextImpl;
 import org.apache.ode.bpel.dao.BpelDAOConnectionFactoryJDBC;
 import org.apache.ode.bpel.engine.BpelServerImpl;
 import org.apache.ode.bpel.engine.CountLRUDehydrationPolicy;
@@ -51,6 +48,7 @@ import org.apache.ode.bpel.evt.ProcessMessageExchangeEvent;
 import org.apache.ode.bpel.iapi.BpelEventListener;
 import org.apache.ode.bpel.iapi.Scheduler;
 import org.apache.ode.bpel.memdao.BpelDAOConnectionFactoryImpl;
+import org.apache.ode.dao.jpa.ProcessDAOImpl;
 import org.apache.ode.il.config.OdeConfigProperties;
 import org.apache.ode.il.dbutil.Database;
 import org.apache.ode.scheduler.simple.JdbcDelegate;
@@ -58,6 +56,7 @@ import org.apache.ode.scheduler.simple.SimpleScheduler;
 import org.apache.ode.utils.GUID;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
+import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 import org.apache.tuscany.sca.implementation.bpel.BPELImplementation;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.eclipse.core.runtime.FileLocator;
@@ -105,50 +104,41 @@ public class EmbeddedODEServer {
     }
     
     public void init() throws ODEInitializationException {
-    	ClassLoader tccl = Thread.currentThread().getContextClassLoader();
-    	ClassLoader bpelcl = this.getClass().getClassLoader();
-    	try{
-    		// Switch TCCL - under OSGi this causes the TCCL to be set to the Bundle
-    		// classloader - this is then used by 3rd party code from ODE and its dependencies
-    		if( bpelcl != tccl ) Thread.currentThread().setContextClassLoader(bpelcl);
-	        Properties p = System.getProperties();
-	        p.put("derby.system.home", "target");
-	
-	        Properties confProps = new Properties();
-	        confProps.put("openjpa.jdbc.SynchronizeMappings", "buildSchema(ForeignKeys=false)");
-	        
-	        _config = new OdeConfigProperties(confProps, "ode-sca");
-	
-	        // Setting work root as the directory containing our database
-	        try {
-	        	_workRoot = getDatabaseLocationAsFile();
-	        } catch (URISyntaxException e) {
-	            throw new ODEInitializationException(e);
-	        }
-	
-	        initTxMgr();
-	        initPersistence();
-	        initBpelServer();
-	
-	        try {
-	            _bpelServer.start();
-	        } catch (Exception ex) {
-	            String errmsg = "An error occured during the ODE BPEL server startup.";
-	            __log.error(errmsg, ex);
-	            throw new ODEInitializationException(errmsg, ex);
-	        }
-	        
-	        // Added MJE, 24/06/2009 - for 1.3.2 version of ODE
-	        _scheduler.start();
-	        // end of addition
-	
-	        __log.info("ODE BPEL server started.");
-	        _initialized = true;
-    	} finally {
-    		// Restore the TCCL if we changed it
-    		if( bpelcl != tccl ) Thread.currentThread().setContextClassLoader(tccl);
-    	}
-    }
+
+        Properties p = System.getProperties();
+        p.put("derby.system.home", "target");
+
+        Properties confProps = new Properties();
+        confProps.put("openjpa.jdbc.SynchronizeMappings", "buildSchema(ForeignKeys=false)");
+        
+        _config = new OdeConfigProperties(confProps, "ode-sca");
+
+        // Setting work root as the directory containing our database
+        try {
+        	_workRoot = getDatabaseLocationAsFile();
+        } catch (URISyntaxException e) {
+            throw new ODEInitializationException(e);
+        }
+
+        initTxMgr();
+        initPersistence();
+        initBpelServer();
+
+        try {
+            _bpelServer.start();
+        } catch (Exception ex) {
+            String errmsg = "An error occured during the ODE BPEL server startup.";
+            __log.error(errmsg, ex);
+            throw new ODEInitializationException(errmsg, ex);
+        }
+        
+        // Start ODE scheduler
+        _scheduler.start();
+        
+        __log.info("ODE BPEL server started.");
+        _initialized = true;
+
+    } // end method init()
     
     /**
      * Gets the location of the database used for the ODE BPEL engine as a File object for
@@ -159,23 +149,35 @@ public class EmbeddedODEServer {
      */
     private File getDatabaseLocationAsFile() throws ODEInitializationException,
                                                     URISyntaxException {
-    	File locationFile = null;
-    	// TODO - provide a system property / environment variable to set the path to the DB
+    	File locationFile 	= null;
+    	URL dbLocation		= null;
     	
-        URL dbLocation = getClass().getClassLoader().getResource("jpadb");
-        if (dbLocation == null) {
-            throw new ODEInitializationException("Couldn't find database in the classpath");
-        }
-        // Handle OSGI bundle case
-        if( dbLocation.getProtocol() == "bundleresource" ) {
-        	try {
-	        	dbLocation = FileLocator.toFileURL( dbLocation );
-        	} catch (Exception ce ) {
-        		throw new ODEInitializationException("Couldn't find database in the OSGi bundle");
-        	} // end try
-        } // end if 
-
-        locationFile = new File(dbLocation.toURI()).getParentFile();
+    	// An environment variable to set the path to the DB
+    	String dbFile 		= System.getenv("TUSCANY_IMPL_BPEL_DBLOCATION");
+    	if( dbFile != null ) {
+    		try {
+    			locationFile = new File(dbFile).getParentFile();
+    		} catch (Exception e ) {
+    			System.out.println("Environment variable TUSCANY_IMPL_BPEL_LOCATION has the wrong format: " + dbFile);
+    			System.out.println("Exception is: " + e.getClass().toString() + " " + e.getMessage());
+    		} // end try
+    	} else {
+	        dbLocation = getClass().getClassLoader().getResource("jpadb");
+	        if (dbLocation == null) {
+	            throw new ODEInitializationException("Couldn't find database in the classpath:" + 
+	            		    " try setting the TUSCANY_IMPL_BPEL_LOCATION environment variable");
+	        }
+	        // Handle OSGI bundle case
+	        if( dbLocation.getProtocol() == "bundleresource" ) {
+	        	try {
+		        	dbLocation = FileLocator.toFileURL( dbLocation );
+	        	} catch (Exception ce ) {
+	        		throw new ODEInitializationException("Couldn't find database in the OSGi bundle");
+	        	} // end try
+	        } // end if 
+	        locationFile = new File(dbLocation.toURI()).getParentFile();
+    	} // end if
+        
     	return locationFile;
     } // end method getDatabaseLocationAsFile
 

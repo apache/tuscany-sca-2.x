@@ -21,14 +21,18 @@ package org.apache.tuscany.sca.implementation.bpel.ode.provider;
 import java.io.File;
 import java.net.URI;
 
+import javax.persistence.spi.PersistenceProvider;
 import javax.transaction.TransactionManager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.ode.dao.jpa.ProcessDAOImpl;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.databinding.xml.DOMDataBinding;
+import org.apache.tuscany.sca.extensibility.ClassLoaderContext;
+import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 import org.apache.tuscany.sca.implementation.bpel.BPELImplementation;
 import org.apache.tuscany.sca.implementation.bpel.ode.EmbeddedODEServer;
 import org.apache.tuscany.sca.implementation.bpel.ode.ODEDeployment;
@@ -111,15 +115,14 @@ public class BPELImplementationProvider implements ImplementationProvider {
             __log.info("Starting " + component.getName());
         } // end if
         
-    	ClassLoader tccl = Thread.currentThread().getContextClassLoader();
-    	ClassLoader bpelcl = this.getClass().getClassLoader();
+		// Switch TCCL - under OSGi this causes the TCCL to be set to the Bundle
+		// classloader - this is then used by 3rd party code from ODE and its dependencies
+    	ClassLoader tccl = ClassLoaderContext.setContextClassLoader(EmbeddedODEServer.class.getClassLoader(),
+    			              PersistenceProvider.class.getClassLoader(),
+           					  ProcessDAOImpl.class.getClassLoader() );
 
         try {
-    		// Switch TCCL - under OSGi this causes the TCCL to be set to the Bundle
-    		// classloader - this is then used by 3rd party code from ODE and its dependencies
-    		if( bpelcl != tccl ) Thread.currentThread().setContextClassLoader(bpelcl);
-    		
-            if (!odeServer.isInitialized()) {
+    		if (!odeServer.isInitialized()) {
                 // start ode server
                 odeServer.init();
             }
@@ -151,7 +154,7 @@ public class BPELImplementationProvider implements ImplementationProvider {
             throw new RuntimeException("BPEL Component Type Implementation initialization failure : " + e.getMessage(), e);
     	} finally {
     		// Restore the TCCL if we changed it
-    		if( bpelcl != tccl ) Thread.currentThread().setContextClassLoader(tccl);
+    		if( tccl != null ) Thread.currentThread().setContextClassLoader(tccl);
         } // end try
     } // end method start()
 
