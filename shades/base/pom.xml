@@ -170,7 +170,7 @@
                               <relocation>
                                  <pattern>net.sf.cglib</pattern>
                                  <shadedPattern>org.apache.tuscany.cglib</shadedPattern>
-                              </relocation -->
+                              </relocation>
                               <relocation>
                                  <pattern>org.apache.catalina.tribes</pattern>
                                  <shadedPattern>org.apache.tuscany.tribes</shadedPattern>
@@ -178,7 +178,7 @@
                               <relocation>
                                  <pattern>org.apache.juli</pattern>
                                  <shadedPattern>org.apache.tuscany.juli</shadedPattern>
-                              </relocation>
+                              </relocation -->
                            </relocations>
                            <transformers>
                               <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
