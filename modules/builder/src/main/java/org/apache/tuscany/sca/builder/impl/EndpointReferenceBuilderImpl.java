@@ -21,8 +21,10 @@ package org.apache.tuscany.sca.builder.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
@@ -46,6 +48,7 @@ import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.policy.Intent;
 
 /**
  * Creates endpoint reference models.
@@ -357,16 +360,19 @@ public class EndpointReferenceBuilderImpl {
                 for (ComponentService targetComponentService : targetComponent.getServices()) {
                     if (reference.getInterfaceContract() == null || interfaceContractMapper.isCompatible(reference
                         .getInterfaceContract(), targetComponentService.getInterfaceContract())) {
+                        
+                        if (intentsMatch(reference.getRequiredIntents(), targetComponentService.getRequiredIntents())) {
+                            EndpointReference endpointRef = createEndpointRef(component, reference, false);
+                            endpointRef.setTargetEndpoint(createEndpoint(targetComponent, targetComponentService, true));
+                            endpointRef.setStatus(EndpointReference.WIRED_TARGET_FOUND_READY_FOR_MATCHING);
+                            reference.getEndpointReferences().add(endpointRef);
 
-                        EndpointReference endpointRef = createEndpointRef(component, reference, false);
-                        endpointRef.setTargetEndpoint(createEndpoint(targetComponent, targetComponentService, true));
-                        endpointRef.setStatus(EndpointReference.WIRED_TARGET_FOUND_READY_FOR_MATCHING);
-                        reference.getEndpointReferences().add(endpointRef);
+                            // Stop with the first match for 0..1 and 1..1 references
+                            if (multiplicity == Multiplicity.ZERO_ONE || multiplicity == Multiplicity.ONE_ONE) {
+                                break;
+                            } // end if
+                        }
 
-                        // Stop with the first match for 0..1 and 1..1 references
-                        if (multiplicity == Multiplicity.ZERO_ONE || multiplicity == Multiplicity.ONE_ONE) {
-                            break;
-                        } // end if
                     } // end if
                 } // end for
             } // end for
@@ -609,6 +615,12 @@ public class EndpointReferenceBuilderImpl {
 
     } // end method
     
+    private boolean intentsMatch(List<Intent> referenceIntents, List<Intent> serviceIntents) {
+        Set<Intent> referenceIntentSet = new HashSet<Intent>(referenceIntents);
+        Set<Intent> serviceIntentSet = new HashSet<Intent>(serviceIntents);
+        return referenceIntentSet.equals(serviceIntentSet);
+    }
+
     /**
      * Reference targets have to be resolved in the context in which they are 
      * defined so they can't be push down the hierarchy during the static build.
