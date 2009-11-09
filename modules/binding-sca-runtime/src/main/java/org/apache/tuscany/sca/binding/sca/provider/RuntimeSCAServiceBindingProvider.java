@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.binding.sca.provider;
 
 import java.net.URI;
+import java.util.Collection;
 
 import org.apache.tuscany.sca.assembly.DistributedSCABinding;
 import org.apache.tuscany.sca.assembly.Endpoint;
@@ -28,10 +29,13 @@ import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
+import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
+import org.apache.tuscany.sca.runtime.EndpointRegistry;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
@@ -55,8 +59,7 @@ public class RuntimeSCAServiceBindingProvider implements ServiceBindingProvider 
     private DistributedSCABinding distributedBinding;
     
 
-    public RuntimeSCAServiceBindingProvider(ExtensionPointRegistry extensionPoints,
-                                            Endpoint endpoint) {
+    public RuntimeSCAServiceBindingProvider(ExtensionPointRegistry extensionPoints, Endpoint endpoint) {
         this.component = (RuntimeComponent)endpoint.getComponent();
         this.service = (RuntimeComponentService)endpoint.getService();
         this.binding = (SCABinding)endpoint.getBinding();
@@ -74,7 +77,7 @@ public class RuntimeSCAServiceBindingProvider implements ServiceBindingProvider 
                 (BindingProviderFactory<DistributedSCABinding>)factoryExtensionPoint
                     .getProviderFactory(DistributedSCABinding.class);
 
-            if (distributedProviderFactory != null) {
+            if (isDistributed(extensionPoints, endpoint)) {
 
                 SCABindingFactory scaBindingFactory =
                     extensionPoints.getExtensionPoint(FactoryExtensionPoint.class).getFactory(SCABindingFactory.class);
@@ -96,6 +99,21 @@ public class RuntimeSCAServiceBindingProvider implements ServiceBindingProvider 
                     distributedProviderFactory.createServiceBindingProvider(ep);
             } 
         }
+    }
+    
+    protected boolean isDistributed(ExtensionPointRegistry extensionPoints, Endpoint endpoint) {
+        // find if the node config is for distributed endpoints
+        // TODO: temp, need a much better way to do this
+        if (distributedProviderFactory != null) {
+            UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
+            DomainRegistryFactory domainRegistryFactory = utilities.getUtility(DomainRegistryFactory.class);
+            Collection<EndpointRegistry> eprs = domainRegistryFactory.getEndpointRegistries();
+            if (eprs.size() > 0) {
+                String eprName = eprs.iterator().next().getClass().getName();
+                return !eprName.equals("org.apache.tuscany.sca.core.assembly.impl.EndpointRegistryImpl");
+            }
+        }
+        return false;
     }
 
     public InterfaceContract getBindingInterfaceContract() {
