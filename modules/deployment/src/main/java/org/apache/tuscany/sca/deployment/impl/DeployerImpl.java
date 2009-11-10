@@ -50,6 +50,7 @@ import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.DefaultImport;
 import org.apache.tuscany.sca.contribution.Export;
 import org.apache.tuscany.sca.contribution.Import;
+import org.apache.tuscany.sca.contribution.namespace.NamespaceImport;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
@@ -153,6 +154,18 @@ public class DeployerImpl implements Deployer {
                     // Do not self import
                     continue;
                 }
+                
+                // When a contribution contains a reference to an artifact from a namespace that 
+                // is declared in an import statement of the contribution, if the SCA artifact 
+                // resolution mechanism is used to resolve the artifact, the SCA runtime MUST resolve 
+                // artifacts from the locations identified by the import statement(s) for the namespace.
+                if (import_ instanceof NamespaceImport) {
+                	NamespaceImport namespaceImport = (NamespaceImport)import_;
+                	if (namespaceImport.getLocation() != null)
+	                	if (!namespaceImport.getLocation().equals(dependency.getURI())) 
+	                		continue;
+                }
+                
                 for (Export export : dependency.getExports()) {
 
                     // If an export from a contribution matches the import in hand
