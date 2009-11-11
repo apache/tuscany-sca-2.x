@@ -50,6 +50,9 @@ import org.oasisopen.sca.ServiceRuntimeException;
  */
 public class AbstractDistributedMap<V> extends AbstractMap<String, V> implements Map<String, V>, Watcher {
     protected ZooKeeper zooKeeper;
+    protected ClassLoader classLoader;
+    protected String root;
+
     /**
      * @param zooKeeper
      * @param root
@@ -60,12 +63,21 @@ public class AbstractDistributedMap<V> extends AbstractMap<String, V> implements
         this.zooKeeper = zooKeeper;
         this.root = root;
         this.classLoader = classLoader;
-        // FIXME:
-        this.zooKeeper.register(this);
     }
 
-    protected ClassLoader classLoader;
-    protected String root;
+    public void start() {
+        // FIXME:
+        this.zooKeeper.register(this);
+        try {
+            String path = getPath(root);
+            Stat stat = zooKeeper.exists(path, false);
+            if (stat == null) {
+                zooKeeper.create(path, new byte[0], Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+            }
+        } catch (Exception e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
 
     @Override
     public Set<Map.Entry<String, V>> entrySet() {
@@ -268,7 +280,7 @@ public class AbstractDistributedMap<V> extends AbstractMap<String, V> implements
                 public void remove() {
                     childrenIterator.remove();
                     try {
-                        zooKeeper.delete(path, -1);
+                        zooKeeper.delete(getPath(root, path), -1);
                     } catch (Throwable e) {
                         throw new ServiceRuntimeException(e);
                     }
