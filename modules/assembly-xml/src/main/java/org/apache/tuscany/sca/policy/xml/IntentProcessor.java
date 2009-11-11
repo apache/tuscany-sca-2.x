@@ -121,7 +121,7 @@ public class IntentProcessor extends BaseStAXArtifactProcessor implements StAXAr
         intent.setName(new QName(intentLocalName));
         intent.setType(Type.valueOf(intentType));
 
-        readRequiredIntents(intent, reader);
+        readRequiredIntents(intent, reader, context);
         readExcludedIntents(intent, reader);
 
         readConstrainedTypes(intent, reader);
@@ -352,7 +352,7 @@ public class IntentProcessor extends BaseStAXArtifactProcessor implements StAXAr
         }
     }
 
-    private void readRequiredIntents(Intent intent, XMLStreamReader reader) {
+    private void readRequiredIntents(Intent intent, XMLStreamReader reader, ProcessorContext context) {
         String value = reader.getAttributeValue(null, REQUIRES);
         if (value != null) {
             List<Intent> requiredIntents = intent.getRequiredIntents();
@@ -362,6 +362,17 @@ public class IntentProcessor extends BaseStAXArtifactProcessor implements StAXAr
                 required.setName(qname);
                 required.setUnresolved(true);
                 requiredIntents.add(required);
+            }
+            
+            // Check that a profile intent does not have "." in its name 
+            if (requiredIntents.size() > 0) {
+                if (intent.getName().getLocalPart().contains(".")){
+                    Monitor.error(context.getMonitor(), 
+                                  this, 
+                                  Messages.RESOURCE_BUNDLE, 
+                                  "ProfileIntentNameWithPeriod", 
+                                  intent.getName().toString());
+                }
             }
         }
     }
