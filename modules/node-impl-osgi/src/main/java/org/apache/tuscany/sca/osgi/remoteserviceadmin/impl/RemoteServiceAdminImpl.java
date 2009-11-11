@@ -131,7 +131,7 @@ public class RemoteServiceAdminImpl implements RemoteServiceAdmin, ManagedServic
     private void fireExportEvents(Bundle source, List<ExportRegistration> exportRegistrations) {
         for (ExportRegistration registration : exportRegistrations) {
             RemoteServiceAdminEvent rsaEvent =
-                new RemoteServiceAdminEvent(RemoteServiceAdminEvent.EXPORT_REGISTRATION, source, registration,
+                new RemoteServiceAdminEvent(RemoteServiceAdminEvent.EXPORT_REGISTRATION, source, registration.getExportReference(),
                                             registration.getException());
             EventAdmin eventAdmin = getEventAdmin();
             if (eventAdmin != null) {
@@ -211,13 +211,13 @@ public class RemoteServiceAdminImpl implements RemoteServiceAdmin, ManagedServic
         props.put("bundle-symbolicname", rsaBundle.getSymbolicName());
         props.put("bundle-version", rsaBundle.getHeaders().get(Constants.BUNDLE_VERSION));
         props.put("cause", rsaEvent.getException());
-        props.put("import.registration", rsaEvent.getImportRegistration());
-        props.put("export.registration", rsaEvent.getExportRegistration());
+        props.put("import.reference", rsaEvent.getImportReference());
+        props.put("export.reference", rsaEvent.getExportReference());
         EndpointDescription ep = null;
-        if (rsaEvent.getImportRegistration() != null) {
-            ep = rsaEvent.getImportRegistration().getImportedEndpointDescription();
+        if (rsaEvent.getImportReference() != null) {
+            ep = rsaEvent.getImportReference().getImportedEndpointDescription();
         } else {
-            ep = rsaEvent.getExportRegistration().getEndpointDescription();
+            ep = rsaEvent.getExportReference().getEndpointDescription();
         }
         props.put("service.remote.id", ep.getRemoteServiceID());
         props.put("service.remote.uuid", ep.getRemoteFrameworkUUID());
@@ -231,7 +231,7 @@ public class RemoteServiceAdminImpl implements RemoteServiceAdmin, ManagedServic
 
     private void fireImportEvents(Bundle source, ImportRegistration registration) {
         RemoteServiceAdminEvent rsaEvent =
-            new RemoteServiceAdminEvent(RemoteServiceAdminEvent.IMPORT_REGISTRATION, source, registration, registration
+            new RemoteServiceAdminEvent(RemoteServiceAdminEvent.IMPORT_REGISTRATION, source, registration.getImportedReference(), registration
                 .getException());
         EventAdmin eventAdmin = getEventAdmin();
         if (eventAdmin != null) {

@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.osgi.remoteserviceadmin.impl;
 
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.osgi.remoteserviceadmin.EndpointDescription;
+import org.apache.tuscany.sca.osgi.remoteserviceadmin.ExportReference;
 import org.apache.tuscany.sca.osgi.remoteserviceadmin.ExportRegistration;
 import org.osgi.framework.ServiceReference;
 
@@ -32,6 +33,7 @@ public class ExportRegistrationImpl implements ExportRegistration {
     private ServiceReference exportedService;
     private EndpointDescription endpointDescription;
     private Throwable exception;
+    private ExportReference exportReference;
 
     /**
      * @param exportedService
@@ -84,6 +86,11 @@ public class ExportRegistrationImpl implements ExportRegistration {
 
     public Node getNode() {
         return node;
+    }
+
+    public ExportReference getExportReference() throws IllegalStateException {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

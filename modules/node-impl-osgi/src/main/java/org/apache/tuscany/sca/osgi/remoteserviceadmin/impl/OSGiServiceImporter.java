@@ -88,7 +88,7 @@ public class OSGiServiceImporter extends AbstractOSGiServiceHandler {
     }
 
     public void unimportService(ImportRegistration importRegistration) {
-        Node node = (Node)importRegistration.getImportedService().getProperty("sca.node");
+        Node node = (Node)importRegistration.getImportedReference().getImportedService().getProperty("sca.node");
         node.stop();
     }
 

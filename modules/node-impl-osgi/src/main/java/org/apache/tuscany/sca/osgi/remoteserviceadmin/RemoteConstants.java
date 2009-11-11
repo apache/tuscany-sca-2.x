@@ -131,7 +131,7 @@ public class RemoteConstants {
      *
      * The value of this property is of type <code>String+</code>.
      */
-    public final String SERVICE_IMPORTED_CONFIGS = "service.imported.configs";
+    public final static String SERVICE_IMPORTED_CONFIGS = "service.imported.configs";
 
     /**
      * A list of intents that this service implements. This property has dual
@@ -152,19 +152,19 @@ public class RemoteConstants {
      * endpoint following the URI syntax. As far as this specification is
      * concerned, this unique id is opaque.
      */
-    final public static String SERVICE_REMOTE_URI = "service.remote.uri";
+    public final static String SERVICE_REMOTE_URI = "service.remote.uri";
 
     /**
      * The property key for the endpoint service id. This is a unique id for a
      * service based on the framework id '.' service id or another model. As far as this specification is
      * concerned, this unique id is opaque.
      */
-    final public static String SERVICE_REMOTE_ID = "service.remote.id";
+    public final static String SERVICE_REMOTE_ID = "service.remote.id";
 
     /**
      * The property key for the endpoint service id. This is a unique id for a
      * service based on the framework id '.' service id or another model. As far as this specification is
      * concerned, this unique id is opaque.
      */
-    final public static String SERVICE_REMOTE_FRAMEWORK_UUID = "service.remote.framework.id";
+    public final static String SERVICE_REMOTE_FRAMEWORK_UUID = "service.remote.framework.id";
 }

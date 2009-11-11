@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.osgi.remoteserviceadmin.impl;
 
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.osgi.remoteserviceadmin.EndpointDescription;
+import org.apache.tuscany.sca.osgi.remoteserviceadmin.ImportReference;
 import org.apache.tuscany.sca.osgi.remoteserviceadmin.ImportRegistration;
 import org.osgi.framework.ServiceReference;
 
@@ -29,8 +30,7 @@ import org.osgi.framework.ServiceReference;
  */
 public class ImportRegistrationImpl implements ImportRegistration {
     private Node node;
-    private ServiceReference exportedService;
-    private EndpointDescription endpointDescription;
+    private ImportReference importReference;
     private Throwable exception;
 
     /**
@@ -39,13 +39,12 @@ public class ImportRegistrationImpl implements ImportRegistration {
      * @param exception
      */
     public ImportRegistrationImpl(Node node,
-                                  ServiceReference exportedService,
+                                  ServiceReference importedService,
                                   EndpointDescription endpointDescription,
                                   Throwable exception) {
         super();
         this.node = node;
-        this.exportedService = exportedService;
-        this.endpointDescription = endpointDescription;
+        this.importReference = new ImportReferenceImpl(importedService, endpointDescription);
         this.exception = exception;
     }
 
@@ -53,11 +52,10 @@ public class ImportRegistrationImpl implements ImportRegistration {
      * @param exportedService
      * @param endpointDescription
      */
-    public ImportRegistrationImpl(Node node, ServiceReference exportedService, EndpointDescription endpointDescription) {
+    public ImportRegistrationImpl(Node node, ServiceReference importedService, EndpointDescription endpointDescription) {
         super();
         this.node = node;
-        this.exportedService = exportedService;
-        this.endpointDescription = endpointDescription;
+        this.importReference = new ImportReferenceImpl(importedService, endpointDescription);
     }
 
     /**
@@ -69,16 +67,7 @@ public class ImportRegistrationImpl implements ImportRegistration {
             node = null;
         }
         exception = null;
-        endpointDescription = null;
-        exportedService = null;
-    }
-
-    public ServiceReference getImportedService() {
-        return exportedService;
-    }
-
-    public EndpointDescription getImportedEndpointDescription() {
-        return endpointDescription;
+        importReference = null;
     }
 
     public Throwable getException() {
@@ -87,6 +76,10 @@ public class ImportRegistrationImpl implements ImportRegistration {
 
     public Node getNode() {
         return node;
+    }
+
+    public ImportReference getImportedReference() {
+        return importReference;
     }
 
 }

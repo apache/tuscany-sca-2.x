@@ -76,8 +76,8 @@ public class RemoteServiceAdminEvent {
      */
     public static final int IMPORT_WARNING = 8;
 
-    private final ImportRegistration importRegistration;
-    private final ExportRegistration exportRegistration;
+    private final ImportReference importReference;
+    private final ExportReference exportReference;
     private final Throwable exception;
     private final int type;
     private final Bundle source;
@@ -87,19 +87,19 @@ public class RemoteServiceAdminEvent {
      * 
      * @param type The event type
      * @param source The source bundle, must not be <code>null</code>.
-     * @param importRegistration The importRegistration, can be <code>null</code>.
-     * @param exportRegistration The exportRegistration, can be <code>null</code>.
+     * @param importReference The importReference, can be <code>null</code>.
+     * @param exportReference The exportReference, can be <code>null</code>.
      * @param exception Any exceptions encountered, can be <code>null</code>
      */
     RemoteServiceAdminEvent(int type,
                             Bundle source,
-                            ImportRegistration importRegistration,
-                            ExportRegistration exportRegistration,
+                            ImportReference importReference,
+                            ExportReference exportReference,
                             Throwable exception) {
         this.type = type;
         this.source = source;
-        this.importRegistration = importRegistration;
-        this.exportRegistration = exportRegistration;
+        this.importReference = importReference;
+        this.exportReference = exportReference;
         this.exception = exception;
     }
 
@@ -108,10 +108,11 @@ public class RemoteServiceAdminEvent {
      * 
      * @param type The event type
      * @param source The source bundle, must not be <code>null</code>.
-     * @param exportRegistration The exportRegistration, can not be <code>null</code>.
+     * @param exportRegistration The exportRegistration, can not be
+     *        <code>null</code>.
      * @param exception Any exceptions encountered, can be <code>null</code>
      */
-    public RemoteServiceAdminEvent(int type, Bundle source, ExportRegistration exportRegistration, Throwable exception) {
+    public RemoteServiceAdminEvent(int type, Bundle source, ExportReference exportRegistration, Throwable exception) {
         this(type, source, null, exportRegistration, exception);
     }
 
@@ -120,25 +121,26 @@ public class RemoteServiceAdminEvent {
      * 
      * @param type The event type
      * @param source The source bundle, must not be <code>null</code>.
-     * @param importRegistration The importRegistration, can not be <code>null</code>.
+     * @param importRegistration The importRegistration, can not be
+     *        <code>null</code>.
      * @param exception Any exceptions encountered, can be <code>null</code>
      */
-    public RemoteServiceAdminEvent(int type, Bundle source, ImportRegistration importRegistration, Throwable exception) {
+    public RemoteServiceAdminEvent(int type, Bundle source, ImportReference importRegistration, Throwable exception) {
         this(type, source, importRegistration, null, exception);
     }
 
     /**
      * @return the importRegistration or <code>null</code>
      */
-    public ImportRegistration getImportRegistration() {
-        return importRegistration;
+    public ImportReference getImportReference() {
+        return importReference;
     }
 
     /**
      * @return the exportRegistration or <code>null</code>
      */
-    public ExportRegistration getExportRegistration() {
-        return exportRegistration;
+    public ExportReference getExportReference() {
+        return exportReference;
     }
 
     /**

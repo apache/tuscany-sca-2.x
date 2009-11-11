@@ -15,14 +15,21 @@
  */
 package org.apache.tuscany.sca.osgi.remoteserviceadmin;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.Dictionary;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.osgi.framework.Constants;
+import org.osgi.framework.Filter;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.Version;
 
@@ -36,28 +43,20 @@ import org.osgi.framework.Version;
  * 
  * An Endpoint Description reflects the perspective of an importer. That is, the
  * property keys have been chosen to match filters that are created by client
- * bundles that need a service.
+ * bundles that need a service. Therefore the map must not contain any
+ * service.exported.* property and must contain the service.imported.* ones.
  * 
- * TODO Automatically calculate versions of interface packages?
- * 
- * TODO Constructor that takes a class?
- * 
- * TODO Skipping of service.exported.* properties?
- * 
- * TODO qualified intents?
- * 
- * 
+ * The service.intents property contains the intents provided by the service
+ * itself combined with the intents added by the exporting distribution
+ * provider. Qualified intents appear expanded on this property.
  * 
  * @Immutable
  * @version $Revision$
  */
 
 public class EndpointDescription {
-    private final Map /* <String,Object> */properties = new HashMap/*
-                                                                    * <String ,
-                                                                    * Object >
-                                                                    */();
-    private final List /* String */interfaces;
+    private final Map<String, Object> properties;
+    private final List<String> interfaces;
     private final long remoteServiceId;
     private final String remoteFrameworkUUID;
     private final String remoteUri;
@@ -65,103 +64,91 @@ public class EndpointDescription {
     /**
      * Create an Endpoint Description based on a Map.
      * 
-     * @param properties
+     * @param properties The map to create the Endpoint Description from.
      * @throws IllegalArgumentException When the properties are not proper for
      *         an Endpoint Description
      */
 
-    public EndpointDescription(Map/* <String,Object> */properties) throws IllegalArgumentException {
-        this.properties.putAll(properties);
-
-        interfaces = verifyInterfacesProperty();
-        remoteServiceId = verifyLongProperty(RemoteConstants.SERVICE_REMOTE_ID);
-        remoteFrameworkUUID = verifyStringProperty(RemoteConstants.SERVICE_REMOTE_FRAMEWORK_UUID);
-        remoteUri = verifyStringProperty(RemoteConstants.SERVICE_REMOTE_URI);
+    public EndpointDescription(Map<String, Object> properties) {
+        this(properties, null);
     }
 
     /**
      * Create an Endpoint Description based on a reference and optionally a map
-     * of additional properties.
+     * of additional properties. The properties on the original service take
+     * precedence over the ones in the map.
      * 
-     * @param ref A service reference that can be exported
+     * @param reference A service reference that can be exported
      * @param properties Additional properties to add. Can be <code>null</code>.
-     * @throws IllegalArgumentException
+     * @throws IllegalArgumentException When the properties are not proper for
+     *         an Endpoint Description
      */
-    public EndpointDescription(ServiceReference ref, Map /* <String,Object> */properties)
-        throws IllegalArgumentException {
-        if (properties != null) {
-            this.properties.putAll(properties);
+    public EndpointDescription(ServiceReference reference, Map<String, Object> properties) {
+        this(properties, reference);
+        if (reference == null) {
+            throw new NullPointerException("reference must not be null");
+        }
+    }
+
+    private EndpointDescription(Map<String, Object> map, ServiceReference reference) {
+        Map<String, Object> props = new TreeMap<String, Object>(String.CASE_INSENSITIVE_ORDER);
+
+        if (map != null) {
+            try {
+                props.putAll(map);
+            } catch (ClassCastException e) {
+                IllegalArgumentException iae = new IllegalArgumentException("non-String key in properties");
+                iae.initCause(e);
+                throw iae;
+            }
+            if (props.size() < map.size()) {
+                throw new IllegalArgumentException("duplicate keys with different cases in properties");
+            }
         }
 
-        String[] keys = ref.getPropertyKeys();
-        for (int i = 0; i > keys.length; i++)
-            properties.put(keys[i], ref.getProperty(keys[i]));
+        if (reference != null) {
+            for (String key : reference.getPropertyKeys()) {
+                if (!props.containsKey(key)) {
+                    props.put(key, reference.getProperty(key));
+                }
+            }
+        }
 
+        properties = Collections.unmodifiableMap(props);
+        /* properties must be initialized before calling the following methods */
         interfaces = verifyInterfacesProperty();
         remoteServiceId = verifyLongProperty(RemoteConstants.SERVICE_REMOTE_ID);
         remoteFrameworkUUID = verifyStringProperty(RemoteConstants.SERVICE_REMOTE_FRAMEWORK_UUID);
         remoteUri = verifyStringProperty(RemoteConstants.SERVICE_REMOTE_URI);
-    }
-
-    /**
-     * Create an Endpoint Description based on the URI, the remote service ID
-     * and the interface names, and optionally service properties.
-     * 
-     * @param uri The URI of the remote service.
-     * @param interfaceNames The names of the interfaces of the service to
-     *        consider.
-     * @param remoteServiceId the remote service ID.
-     * @param properties Optionally service properties.
-     */
-    public EndpointDescription(String uri, String[] interfaceNames, int remoteServiceId, Map properties) {
-        if (uri == null) {
-            throw new IllegalArgumentException("URI must not be null");
-        }
-        if (interfaceNames == null) {
-            throw new IllegalArgumentException("Interfaces must not be null");
-        }
-        this.remoteUri = uri;
-        this.interfaces = Arrays.asList(interfaceNames);
-        this.remoteServiceId = remoteServiceId;
-        this.remoteFrameworkUUID = (String)properties.get(RemoteConstants.SERVICE_REMOTE_FRAMEWORK_UUID);
-        if (properties != null) {
-            this.properties.putAll(properties);
-        }
-        if (interfaceNames != null) {
-            this.properties.put(Constants.OBJECTCLASS, interfaceNames);
-        }
-        this.properties.put(RemoteConstants.SERVICE_REMOTE_URI, uri);
-        if (remoteServiceId <= 0) {
-            this.properties.put(RemoteConstants.SERVICE_REMOTE_ID, new Integer(remoteServiceId));
-        }
     }
 
     /**
      * Verify and obtain the interface list from the properties.
      * 
      * @return A list with the interface names.
-     * @throws IllegalArgumentException when
+     * @throws IllegalArgumentException When the properties do not contain the
+     *         right values for and interface list.
+     * 
      */
-    private List /* <String> */verifyInterfacesProperty() {
-        List l = null;
-
-        Object objectClass = properties.get(Constants.OBJECTCLASS);
-        if (objectClass == null)
-            l = Collections.EMPTY_LIST;
-        else if (!(objectClass instanceof String[]))
+    private List<String> verifyInterfacesProperty() {
+        Object o = properties.get(Constants.OBJECTCLASS);
+        if (o == null) {
+            return Collections.EMPTY_LIST;
+        }
+        if (!(o instanceof String[])) {
             throw new IllegalArgumentException("objectClass must be a String[]");
-        else {
-            l = Collections.unmodifiableList(Arrays.asList((String[])objectClass));
-            for (Iterator i = l.iterator(); i.hasNext();) {
-                String interf = (String)i.next();
-                try {
-                    getInterfaceVersion(interf);
-                } catch (Exception e) {
-                    throw new IllegalArgumentException("Improper version for interface " + interf + " caused by " + e);
-                }
+        }
+        String[] objectClass = (String[])o;
+        for (String interf : objectClass) {
+            try {
+                getInterfaceVersion(interf);
+            } catch (IllegalArgumentException e) {
+                IllegalArgumentException iae = new IllegalArgumentException("Improper version for interface " + interf);
+                iae.initCause(e);
+                throw iae;
             }
         }
-        return l;
+        return Collections.unmodifiableList(Arrays.asList(objectClass));
     }
 
     /**
@@ -178,7 +165,7 @@ public class EndpointDescription {
             throw new IllegalArgumentException("Required property not set: " + propName);
         }
         if (!(r instanceof String)) {
-            throw new IllegalArgumentException("Required property is not a string: " + propName);
+            throw new IllegalArgumentException("Required property is not a String: " + propName);
         }
         return (String)r;
     }
@@ -193,7 +180,6 @@ public class EndpointDescription {
      */
     private long verifyLongProperty(String propName) {
         Object r = properties.get(propName);
-        long result;
         if (r == null) {
             throw new IllegalArgumentException("Required property not set: " + propName);
         }
@@ -201,11 +187,13 @@ public class EndpointDescription {
             throw new IllegalArgumentException("Required property is not a string: " + propName);
         }
         try {
-            result = Long.parseLong((String)r);
+            return Long.parseLong((String)r);
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Required property cannot be parsed as a long: " + propName);
+            IllegalArgumentException iae =
+                new IllegalArgumentException("Required property cannot be parsed as a long: " + propName);
+            iae.initCause(e);
+            throw iae;
         }
-        return result;
     }
 
     /**
@@ -225,7 +213,7 @@ public class EndpointDescription {
     }
 
     /**
-     * Answer the list of interfaces implemented by the exported service.
+     * Provide the list of interfaces implemented by the exported service.
      * 
      * If this Endpoint Description does not map to a service, then this List
      * must be empty.
@@ -236,43 +224,42 @@ public class EndpointDescription {
      * @return The read only list of Java interface names accessible by this
      *         endpoint.
      */
-    public List/* <String> */getInterfaces() {
+    public List<String> getInterfaces() {
         return interfaces;
     }
 
     /**
-     * Answer the version of the given interface.
+     * Provide the version of the given interface.
      * 
      * The version is encoded by prefixing the given interface name with
      * <code>endpoint.version.</code>, and then using this as a property key.
-     * The value must then be the <code>Version</code> object. For example:
+     * For example:
      * 
      * <pre>
      * endpoint.version.com.acme.Foo
      * </pre>
+     * 
+     * The value of this property is in String format and will be converted to a
+     * <code>Version</code> object by this method.
      * 
      * @param name The name of the interface for which a version is requested
      * @return The version of the given interface or <code>null</code> if the
      *         interface has no version in this Endpoint Description
      */
     public Version getInterfaceVersion(String name) {
-        String v = (String)properties.get("endpoint.version." + name);
-        if (v == null) {
-            return Version.emptyVersion;
-        } else {
-            return new Version(v);
-        }
+        String version = (String)properties.get("endpoint.version." + name);
+        return Version.parseVersion(version);
     }
 
     /**
-     * Returns the service id for the service exported through this
-     * endpoint.
+     * Returns the service id for the service exported through this endpoint.
      * 
-     * This is the service id under which the framework has registered the service. This
-     * field together with the Framework UUID is a globally unique id for a service.
+     * This is the service id under which the framework has registered the
+     * service. This field together with the Framework UUID is a globally unique
+     * id for a service.
      * 
-     * @return Service id of a service or 0 if this Endpoint
-     *         Description does not relate to an OSGi service
+     * @return Service id of a service or 0 if this Endpoint Description does
+     *         not relate to an OSGi service
      * 
      */
     public long getRemoteServiceID() {
@@ -293,12 +280,11 @@ public class EndpointDescription {
      * This value represents the
      * {@link RemoteConstants#SERVICE_IMPORTED_CONFIGS}
      * 
-     * @return The configuration type used for the associated endpoint and
-     *         optionally synonyms.
+     * @return An unmodifiable list of the configuration types used for the
+     *         associated endpoint and optionally synonyms.
      */
-    public List/* <String> */getConfigurationTypes() {
-        // TODO
-        return null;
+    public List<String> getConfigurationTypes() {
+        return getStringPlusProperty(RemoteConstants.SERVICE_IMPORTED_CONFIGS);
     }
 
     /**
@@ -311,21 +297,66 @@ public class EndpointDescription {
      * The property the intents come from is
      * {@link RemoteConstants#SERVICE_INTENTS}
      * 
-     * @return A list of expanded intents that are provided by this endpoint.
+     * @return An unmodifiable list of expanded intents that are provided by
+     *         this endpoint.
      */
-    public List/* <String> */getIntents() {
-        // TODO
-        return null;
-
+    public List<String> getIntents() {
+        return getStringPlusProperty(RemoteConstants.SERVICE_INTENTS);
     }
 
     /**
-     * Return the framework UUID, if present.
+     * Reads a 'String+' property from the properties map, which may be of type
+     * String, String[] or Collection<String> and returns it as an unmodifiable
+     * List.
      * 
-     * The property the intents come from is
+     * @param key The property
+     * @return An unmodifiable list
+     * @throws Illegal
+     */
+    private List<String> getStringPlusProperty(String key) {
+        Object value = properties.get(key);
+        if (value == null) {
+            return Collections.EMPTY_LIST;
+        }
+
+        if (value instanceof String) {
+            return Collections.singletonList((String)value);
+        }
+
+        if (value instanceof String[]) {
+            String[] values = (String[])value;
+            List<String> result = new ArrayList<String>(values.length);
+            for (String v : values) {
+                if (v != null) {
+                    result.add(v);
+                }
+            }
+            return result;
+        }
+
+        if (value instanceof Collection<?>) {
+            Collection<?> values = (Collection<?>)value;
+            List<String> result = new ArrayList<String>(values.size());
+            for (Iterator<?> iter = values.iterator(); iter.hasNext();) {
+                Object v = iter.next();
+                if ((v != null) && (v instanceof String)) {
+                    result.add((String)v);
+                }
+            }
+            return result;
+        }
+
+        return Collections.EMPTY_LIST;
+    }
+
+    /**
+     * Return the framework UUID for the remote service, if present.
+     * 
+     * The property the framework UUID comes from is
      * {@link RemoteConstants#SERVICE_REMOTE_FRAMEWORK_UUID}
      * 
-     * @return Remote Framework UUID, or null if this endpoint is not associated with an OSGi service
+     * @return Remote Framework UUID, or null if this endpoint is not associated
+     *         with an OSGi service
      */
     public String getRemoteFrameworkUUID() {
         return remoteFrameworkUUID;
@@ -337,9 +368,8 @@ public class EndpointDescription {
      * @return An unmodifiable map referring to the properties of this Endpoint
      *         Description.
      */
-    public Map/* <String, Object> */getProperties() {
-        // TODO
-        return Collections.unmodifiableMap(properties);
+    public Map<String, Object> getProperties() {
+        return properties;
     }
 
     /**
@@ -366,20 +396,77 @@ public class EndpointDescription {
     /**
      * Two endpoints are equal if their URIs are equal, the hash code is
      * therefore derived from the URI.
+     * 
+     * @return The hashcode of this endpoint.
      */
     public int hashCode() {
-        // TODO
         return getRemoteURI().hashCode();
     }
 
     /**
      * Two endpoints are equal if their URIs are equal.
+     * 
+     * @return
      */
     public boolean equals(Object other) {
-        if (other instanceof EndpointDescription) {
-            return getRemoteURI().equals(((EndpointDescription)other).getRemoteURI());
+        if (this == other) {
+            return true;
         }
-        return false;
+        if (!(other instanceof EndpointDescription)) {
+            return false;
+        }
+        return getRemoteURI().equals(((EndpointDescription)other).getRemoteURI());
     }
 
+    /**
+     * TODO
+     * 
+     * @param filter
+     * @return
+     * @throws InvalidSyntaxException
+     */
+    public boolean match(String filter) throws InvalidSyntaxException {
+        Filter f = FrameworkUtil.createFilter(filter);
+        Dictionary<String, Object> d = new UnmodifiableDictionary<String, Object>(properties);
+        return f.matchCase(d);
+    }
+
+    /**
+     * Unmodifiable wrapper for Dictionary.
+     */
+    private static class UnmodifiableDictionary<K, V> extends Dictionary<K, V> {
+        private final Map<? extends K, ? extends V> wrapped;
+
+        UnmodifiableDictionary(Map<? extends K, ? extends V> wrapped) {
+            this.wrapped = wrapped;
+        }
+
+        public Enumeration<V> elements() {
+            return (Enumeration<V>)Collections.enumeration(wrapped.values());
+        }
+
+        public V get(Object key) {
+            return wrapped.get(key);
+        }
+
+        public boolean isEmpty() {
+            return wrapped.isEmpty();
+        }
+
+        public Enumeration<K> keys() {
+            return (Enumeration<K>)Collections.enumeration(wrapped.keySet());
+        }
+
+        public V put(K key, V value) {
+            throw new UnsupportedOperationException();
+        }
+
+        public V remove(Object key) {
+            throw new UnsupportedOperationException();
+        }
+
+        public int size() {
+            return wrapped.size();
+        }
+    }
 }

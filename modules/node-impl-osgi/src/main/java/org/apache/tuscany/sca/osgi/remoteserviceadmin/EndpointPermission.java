@@ -58,6 +58,12 @@ import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 
 /**
+ * <pre>
+ * -------------------------------------------------------------
+ * THIS CLASS IS A PLACEHOLDER (COPIED FROM SERVICE PERMISSION)!
+ * -------------------------------------------------------------
+ * </pre>
+ * 
  * A bundle's authority to register or get a service.
  * <ul>
  * <li>The <code>register</code> action allows a bundle to register a service
