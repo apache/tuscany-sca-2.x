@@ -141,7 +141,7 @@ public class DeployerImpl implements Deployer {
                                                List<Contribution> contributions,
                                                List<Contribution> dependencies,
                                                Set<Contribution> set,
-                                               Monitor monitor) {
+                                               Monitor monitor) {   
 
         // Go through the contribution imports
         for (Import import_ : contribution.getImports()) {
@@ -195,7 +195,13 @@ public class DeployerImpl implements Deployer {
                 if (!(import_ instanceof DefaultImport)) {
                     // Add the (empty) matchingExports List and report a warning
                     import_.setModelResolver(new DefaultImportModelResolver(matchingExports));
+                    
+                    // push context here as the "stack" in this case is a list of nexted contributions
+                    // through which imports have been chased which may not make much sense to the 
+                    // user so just report the contribution in error
+                    monitor.pushContext("Contribution: " + contribution.getLocation());
                     Monitor.error(monitor, this, DEPLOYER_IMPL_VALIDATION_MESSAGES, "UnresolvedImport", import_);
+                    monitor.popContext();
                 }
             } // end if
         }
@@ -385,7 +391,7 @@ public class DeployerImpl implements Deployer {
 
         // get all definitions.xml artifacts from contributions and aggregate
         // into the system contribution. In turn add a default import into
-        // each contribution so that for unresolved items the resolution
+        // each contribution so that, for unresolved items, the resolution
         // processing will look in the system contribution
         ProcessorContext context = new ProcessorContext(monitor);
         for (Contribution contribution : contributionList) {
