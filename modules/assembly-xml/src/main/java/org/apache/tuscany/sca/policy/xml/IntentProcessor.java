@@ -159,7 +159,19 @@ public class IntentProcessor extends BaseStAXArtifactProcessor implements StAXAr
                                               intent.getName().toString());
                             }
                         }
-                        intent.getQualifiedIntents().add(qualified);
+                        
+                        // check that the qualifier is unique
+                        if ( !intent.getQualifiedIntents().contains(qualified)){
+                            intent.getQualifiedIntents().add(qualified);
+                        } else {
+                            Monitor.error(context.getMonitor(), 
+                                          this, 
+                                          Messages.RESOURCE_BUNDLE, 
+                                          "QualifierIsNotUnique", 
+                                          intent.getName().toString(),
+                                          qualifierName);
+                        }
+                        
                         qualified.setQualifiableIntent(intent);
                         current = qualified;
                     }
