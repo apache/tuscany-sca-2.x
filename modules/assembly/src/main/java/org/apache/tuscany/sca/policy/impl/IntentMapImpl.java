@@ -58,4 +58,21 @@ public class IntentMapImpl implements IntentMap {
     public List<Qualifier> getQualifiers() {
         return qualifiers;
     }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        IntentMapImpl other = (IntentMapImpl)obj;
+        if (providedIntent == null) {
+            if (other.providedIntent != null)
+                return false;
+        } else if (!providedIntent.equals(other.providedIntent))
+            return false;
+        return true;
+    }    
 }

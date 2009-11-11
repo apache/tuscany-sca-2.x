@@ -194,7 +194,6 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
                                 readIntentMap(reader, policySet, mappedIntent, context);
                             } else {
                                 error(monitor, "IntentNotSpecified", policySet, policySetName);
-                                //throw new ContributionReadException("Intent Map provides for Intent not specified as provided by parent PolicySet - " + policySetName);
                             }
                         } else {
                             error(monitor, "IntentMapProvidesMissing", reader, policySetName);
@@ -248,7 +247,16 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
             QName intentName = getQName(reader, INTENT_MAP);
             intentMap.setProvidedIntent(mappedIntent);
 
-            policySet.getIntentMaps().add(intentMap);
+            if (!policySet.getIntentMaps().contains(intentMap)){
+                policySet.getIntentMaps().add(intentMap);
+            } else {
+                Monitor.error(context.getMonitor(), 
+                              this, 
+                              Messages.RESOURCE_BUNDLE, 
+                              "IntentMapIsNotUnique", 
+                              policySet.getName().toString(),
+                              mappedIntent.getName().getLocalPart());
+            }
 
             String qualifierName = null;
             String qualfiedIntentName = null;
