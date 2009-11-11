@@ -260,16 +260,23 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
                 // Only one constructor, take it
                 constructor = constructors[0];
             } else {
-                // FIXME multiple constructors, none yet done
                 Constructor<T> selected = null;
-                int sites = type.getPropertyMembers().size() + type.getReferenceMembers().size();
                 for (Constructor<T> ctor : constructors) {
-                    if (ctor.getParameterTypes().length == 0) {
+                    if (allArgsAnnotated(ctor)) {
                         selected = ctor;
+                        for (Constructor<T> ctor2 : constructors) {
+                            if (selected != ctor2 && allArgsAnnotated(ctor2)) {
+                                throw new InvalidConstructorException("Multiple annotated constructors");
+                            }
+                        }
                     }
-                    if (ctor.getParameterTypes().length == sites) {
-                        selected = ctor;
-                        break;
+                }
+                if (selected == null) {
+                    for (Constructor<T> ctor : constructors) {
+                        if (ctor.getParameterTypes().length == 0) {
+                            selected = ctor;
+                            break;
+                        }
                     }
                 }
                 if (selected == null) {
@@ -278,7 +285,6 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
                 constructor = selected;
                 definition = type.getConstructors().get(selected);
                 type.setConstructor(definition);
-                // return;
             }
             definition = type.getConstructors().get(constructor);
             type.setConstructor(definition);
@@ -319,6 +325,18 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
 
             }
         }
+    }
+    
+    private boolean allArgsAnnotated(Constructor<?> ctor) {
+        if (ctor.getParameterTypes().length < 1) {
+            return false;
+        }
+        for (Annotation[] as : ctor.getParameterAnnotations()) {
+           if (as.length < 1) {
+               return false;
+           }
+        }
+        return true;
     }
 
     private void calcParamNames(JavaParameterImpl[] parameters,
