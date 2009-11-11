@@ -149,7 +149,15 @@ public class IntentProcessor extends BaseStAXArtifactProcessor implements StAXAr
                         qualified.setType(intent.getType());
                         qualified.setName(new QName(qualifiedIntentName));
                         if (isDefault) {
-                            intent.setDefaultQualifiedIntent(qualified);
+                            if (intent.getDefaultQualifiedIntent() == null){
+                                intent.setDefaultQualifiedIntent(qualified);
+                            } else {
+                                Monitor.error(context.getMonitor(), 
+                                              this, 
+                                              Messages.RESOURCE_BUNDLE, 
+                                              "MultipleDefaultQualifiers", 
+                                              intent.getName().toString());
+                            }
                         }
                         intent.getQualifiedIntents().add(qualified);
                         qualified.setQualifiableIntent(intent);
