@@ -20,30 +20,50 @@
 package org.apache.tuscany.sca.endpoint.zookeeper;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.LifeCycleListener;
 import org.apache.tuscany.sca.runtime.EndpointListener;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
+import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.ZooKeeper;
 import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
  * 
  */
-public class DistributedRegistry implements EndpointRegistry, LifeCycleListener {
+public class DistributedRegistry extends AbstractDistributedMap<Endpoint> implements EndpointRegistry,
+    LifeCycleListener {
+
+    private static final Logger logger = Logger.getLogger(DistributedRegistry.class.getName());
+    private List<EndpointListener> listeners = new CopyOnWriteArrayList<EndpointListener>();
+    private List<EndpointReference> endpointreferences = new CopyOnWriteArrayList<EndpointReference>();
+
+    private ExtensionPointRegistry registry;
     private String domainURI;
     private String registryURI;
-    private ZooKeeper zooKeeper;
 
     /**
      * 
      */
-    public DistributedRegistry(String domainURI, String registryURI) {
+    public DistributedRegistry(ExtensionPointRegistry registry,
+                               Map<String, String> attributes,
+                               String domainRegistryURI,
+                               String domainURI) {
+        super(null, null, null);
         this.domainURI = domainURI;
-        this.registryURI = registryURI;
+        this.registryURI = domainRegistryURI;
+        Map<String, String> config = parseURI(attributes, domainRegistryURI);
     }
 
     public void start() {
@@ -65,108 +85,200 @@ public class DistributedRegistry implements EndpointRegistry, LifeCycleListener 
         }
     }
 
-    /* (non-Javadoc)
-     * @see org.apache.tuscany.sca.runtime.EndpointRegistry#addEndpoint(org.apache.tuscany.sca.assembly.Endpoint)
-     */
+    private Map<String, String> parseURI(Map<String, String> attributes, String domainRegistryURI) {
+        Map<String, String> map = new HashMap<String, String>();
+        if (attributes != null) {
+            map.putAll(attributes);
+        }
+        // Should be zookeeper:host1:port1,host2:port2?sessionTimeout=100
+        int index = domainRegistryURI.indexOf(':');
+        String path = domainRegistryURI.substring(index + 1);
+
+        index = path.indexOf('?');
+        if (index == -1) {
+            map.put("hosts", path);
+            return map;
+        }
+        map.put("hosts", path.substring(0, index));
+        String query = path.substring(index + 1);
+        try {
+            query = URLDecoder.decode(query, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalArgumentException(e);
+        }
+        String[] params = query.split("&");
+        for (String param : params) {
+            index = param.indexOf('=');
+            if (index != -1) {
+                map.put(param.substring(0, index), param.substring(index + 1));
+            }
+        }
+        return map;
+    }
+
     public void addEndpoint(Endpoint endpoint) {
-        // TODO Auto-generated method stub
-
+        put(endpoint.getURI(), endpoint);
+        logger.info("Add endpoint - " + endpoint);
     }
 
-    /* (non-Javadoc)
-     * @see org.apache.tuscany.sca.runtime.EndpointRegistry#addEndpointReference(org.apache.tuscany.sca.assembly.EndpointReference)
-     */
     public void addEndpointReference(EndpointReference endpointReference) {
-        // TODO Auto-generated method stub
-
+        endpointreferences.add(endpointReference);
+        logger.fine("Add endpoint reference - " + endpointReference);
     }
 
-    /* (non-Javadoc)
-     * @see org.apache.tuscany.sca.runtime.EndpointRegistry#addListener(org.apache.tuscany.sca.runtime.EndpointListener)
-     */
     public void addListener(EndpointListener listener) {
-        // TODO Auto-generated method stub
-
+        listeners.add(listener);
     }
 
-    /* (non-Javadoc)
-     * @see org.apache.tuscany.sca.runtime.EndpointRegistry#findEndpoint(org.apache.tuscany.sca.assembly.EndpointReference)
+    /**
+     * Parse the component/service/binding URI into an array of parts (componentURI, serviceName, bindingName)
+     * @param uri
+     * @return
      */
+    private String[] parse(String uri) {
+        String[] names = new String[3];
+        int index = uri.lastIndexOf('#');
+        if (index == -1) {
+            names[0] = uri;
+        } else {
+            names[0] = uri.substring(0, index);
+            String str = uri.substring(index + 1);
+            if (str.startsWith("service-binding(") && str.endsWith(")")) {
+                str = str.substring("service-binding(".length(), str.length() - 1);
+                String[] parts = str.split("/");
+                if (parts.length != 2) {
+                    throw new IllegalArgumentException("Invalid service-binding URI: " + uri);
+                }
+                names[1] = parts[0];
+                names[2] = parts[1];
+            } else if (str.startsWith("service(") && str.endsWith(")")) {
+                str = str.substring("service(".length(), str.length() - 1);
+                names[1] = str;
+            } else {
+                throw new IllegalArgumentException("Invalid component/service/binding URI: " + uri);
+            }
+        }
+        return names;
+    }
+
+    private boolean matches(String target, String uri) {
+        String[] parts1 = parse(target);
+        String[] parts2 = parse(uri);
+        for (int i = 0; i < parts1.length; i++) {
+            if (parts1[i] == null || parts1[i].equals(parts2[i])) {
+                continue;
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public List<Endpoint> findEndpoint(EndpointReference endpointReference) {
-        // TODO Auto-generated method stub
-        return null;
+        List<Endpoint> foundEndpoints = new ArrayList<Endpoint>();
+
+        logger.fine("Find endpoint for reference - " + endpointReference);
+
+        if (endpointReference.getReference() != null) {
+            Endpoint targetEndpoint = endpointReference.getTargetEndpoint();
+            for (Object v : values()) {
+                Endpoint endpoint = (Endpoint)v;
+                // TODO: implement more complete matching
+                logger.fine("Matching against - " + endpoint);
+                if (matches(targetEndpoint.getURI(), endpoint.getURI())) {
+                    // if (!entry.isPrimary()) {
+                    endpoint.setExtensionPointRegistry(registry);
+                    // }
+                    foundEndpoints.add(endpoint);
+                    logger.fine("Found endpoint with matching service  - " + endpoint);
+                }
+                // else the service name doesn't match
+            }
+        }
+        return foundEndpoints;
     }
 
-    /* (non-Javadoc)
-     * @see org.apache.tuscany.sca.runtime.EndpointRegistry#findEndpointReference(org.apache.tuscany.sca.assembly.Endpoint)
-     */
     public List<EndpointReference> findEndpointReference(Endpoint endpoint) {
-        // TODO Auto-generated method stub
-        return null;
+        return endpointreferences;
     }
 
-    /* (non-Javadoc)
-     * @see org.apache.tuscany.sca.runtime.EndpointRegistry#getEndpoint(java.lang.String)
-     */
     public Endpoint getEndpoint(String uri) {
-        // TODO Auto-generated method stub
-        return null;
+        return get(uri);
     }
 
-    /* (non-Javadoc)
-     * @see org.apache.tuscany.sca.runtime.EndpointRegistry#getEndpointRefereneces()
-     */
     public List<EndpointReference> getEndpointRefereneces() {
-        // TODO Auto-generated method stub
-        return null;
+        return endpointreferences;
     }
 
-    /* (non-Javadoc)
-     * @see org.apache.tuscany.sca.runtime.EndpointRegistry#getEndpoints()
-     */
     public List<Endpoint> getEndpoints() {
-        // TODO Auto-generated method stub
-        return null;
+        return new ArrayList<Endpoint>(values());
     }
 
-    /* (non-Javadoc)
-     * @see org.apache.tuscany.sca.runtime.EndpointRegistry#getListeners()
-     */
     public List<EndpointListener> getListeners() {
-        // TODO Auto-generated method stub
-        return null;
+        return listeners;
     }
 
-    /* (non-Javadoc)
-     * @see org.apache.tuscany.sca.runtime.EndpointRegistry#removeEndpoint(org.apache.tuscany.sca.assembly.Endpoint)
-     */
     public void removeEndpoint(Endpoint endpoint) {
-        // TODO Auto-generated method stub
-
+        remove(endpoint.getURI());
+        logger.info("Remove endpoint - " + endpoint);
     }
 
-    /* (non-Javadoc)
-     * @see org.apache.tuscany.sca.runtime.EndpointRegistry#removeEndpointReference(org.apache.tuscany.sca.assembly.EndpointReference)
-     */
     public void removeEndpointReference(EndpointReference endpointReference) {
-        // TODO Auto-generated method stub
-
+        endpointreferences.remove(endpointReference);
+        logger.fine("Remove endpoint reference - " + endpointReference);
     }
 
-    /* (non-Javadoc)
-     * @see org.apache.tuscany.sca.runtime.EndpointRegistry#removeListener(org.apache.tuscany.sca.runtime.EndpointListener)
-     */
     public void removeListener(EndpointListener listener) {
-        // TODO Auto-generated method stub
-
+        listeners.remove(listener);
     }
 
-    /* (non-Javadoc)
-     * @see org.apache.tuscany.sca.runtime.EndpointRegistry#updateEndpoint(java.lang.String, org.apache.tuscany.sca.assembly.Endpoint)
-     */
     public void updateEndpoint(String uri, Endpoint endpoint) {
-        // TODO Auto-generated method stub
+        Endpoint oldEndpoint = getEndpoint(uri);
+        if (oldEndpoint == null) {
+            throw new IllegalArgumentException("Endpoint is not found: " + uri);
+        }
+        put(endpoint.getURI(), endpoint);
+    }
 
+    public void entryAdded(Endpoint value) {
+        value.setExtensionPointRegistry(registry);
+        for (EndpointListener listener : listeners) {
+            listener.endpointAdded(value);
+        }
+    }
+
+    public void entryRemoved(Endpoint value) {
+        for (EndpointListener listener : listeners) {
+            listener.endpointRemoved(value);
+        }
+    }
+
+    public void entryUpdated(Endpoint oldEp, Endpoint newEp) {
+        newEp.setExtensionPointRegistry(registry);
+        for (EndpointListener listener : listeners) {
+            listener.endpointUpdated(oldEp, newEp);
+        }
+    }
+
+    @Override
+    public void process(WatchedEvent event) {
+        super.process(event);
+        String path = event.getPath();
+        if (path == null || !path.startsWith(getPath(root))) {
+            return;
+        }
+        switch (event.getType()) {
+            case NodeChildrenChanged:
+                break;
+            case NodeCreated:
+            case NodeDataChanged:
+                Endpoint ep = getData(path);
+                entryAdded(ep);
+                break;
+            case NodeDeleted:
+                entryRemoved(null);
+                break;
+        }
     }
 
 }

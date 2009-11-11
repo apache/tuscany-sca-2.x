@@ -22,13 +22,9 @@ package org.apache.tuscany.sca.endpoint.zookeeper;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
@@ -170,37 +166,7 @@ public class ZooKeeperHelper implements Watcher {
         return null;
     }
     
-    private Map<String, String> parseURI(Map<String, String> attributes, String domainRegistryURI) {
-        Map<String, String> map = new HashMap<String, String>();
-        if (attributes != null) {
-            map.putAll(attributes);
-        }
-        URI uri = URI.create(domainRegistryURI);
-        if (uri.getHost() != null) {
-            map.put("host", uri.getHost());
-        }
-        if (uri.getPort() != -1) {
-            map.put("port", String.valueOf(uri.getPort()));
-        }
-        int index = domainRegistryURI.indexOf('?');
-        if (index == -1) {
-            return map;
-        }
-        String query = domainRegistryURI.substring(index + 1);
-        try {
-            query = URLDecoder.decode(query, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException(e);
-        }
-        String[] params = query.split("&");
-        for (String param : params) {
-            index = param.indexOf('=');
-            if (index != -1) {
-                map.put(param.substring(0, index), param.substring(index + 1));
-            }
-        }
-        return map;
-    }    
+
 
     public static void main(final String[] args) throws Exception {
         final String options[] =

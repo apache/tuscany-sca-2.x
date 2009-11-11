@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamClass;
-import java.io.UnsupportedEncodingException;
 import java.util.AbstractMap;
 import java.util.AbstractSet;
 import java.util.Collection;
@@ -113,14 +112,6 @@ public class AbstractDistributedMap<V> extends AbstractMap<String, V> implements
         return buffer.toString();
     }
 
-    private byte[] getBytes(String str) {
-        try {
-            return str.getBytes("UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
     protected byte[] serialize(V value) throws IOException {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(bos);
@@ -150,6 +141,10 @@ public class AbstractDistributedMap<V> extends AbstractMap<String, V> implements
     @Override
     public V get(Object key) {
         String path = getPath(root, getName(key));
+        return getData(path);
+    }
+
+    protected V getData(String path) {
         try {
             Stat stat = new Stat();
             byte[] data = zooKeeper.getData(path, false, stat);
@@ -163,6 +158,7 @@ public class AbstractDistributedMap<V> extends AbstractMap<String, V> implements
         } catch (Throwable e) {
             throw new ServiceRuntimeException(e);
         }
+
     }
 
     @Override
