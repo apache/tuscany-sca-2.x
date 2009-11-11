@@ -56,6 +56,7 @@ public class DefinitionsUtil {
                               intent.getName().toString());
             } else {          
                 target.getIntents().add(intent);
+                intents.add(intent);
             }
         }
         
@@ -69,6 +70,7 @@ public class DefinitionsUtil {
                               policySet.getName().toString());
             } else {          
                 target.getPolicySets().add(policySet);
+                policySets.add(policySet);
             }
         }        
 
@@ -82,6 +84,7 @@ public class DefinitionsUtil {
                               bindingType.getType().toString());
             } else {          
                 target.getBindingTypes().add(bindingType);
+                bindingTypes.add(bindingType);
             }
         }   
 
@@ -95,6 +98,7 @@ public class DefinitionsUtil {
                               implementationType.getType().toString());
             } else {          
                 target.getImplementationTypes().add(implementationType);
+                implementationTypes.add(implementationType);
             }
         }        
       
