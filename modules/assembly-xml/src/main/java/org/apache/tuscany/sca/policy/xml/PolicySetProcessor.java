@@ -459,6 +459,34 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
                     // FIXME: How to resolve the policies?
                 }
             }
+            // validate that the intent map has a qualifier for each 
+            // intent qualifier. The above code has already checked that the
+            // qualifiers that are there are resolved
+            Intent providedIntent = intentMap.getProvidedIntent();
+            if (intentMap.getQualifiers().size() != providedIntent.getQualifiedIntents().size()){
+                String missingQualifiers = "";
+                for (Intent loopQualifiedIntent : providedIntent.getQualifiedIntents()){
+                    boolean found = false;
+                    for (Qualifier loopQualifier : intentMap.getQualifiers()){
+                        if (loopQualifier.getIntent().getName().equals(loopQualifiedIntent.getName())){
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found){
+                        missingQualifiers += loopQualifiedIntent.getName().getLocalPart() + " ";
+                    }
+                }
+                if (missingQualifiers.length() > 0){
+                    Monitor.error(context.getMonitor(), 
+                                  this, 
+                                  Messages.RESOURCE_BUNDLE, 
+                                  "IntentMapMissingQualifiers", 
+                                  policySet.getName().toString(),
+                                  providedIntent.getName().getLocalPart(),
+                                  missingQualifiers);
+                }
+            }
         }
 
     }
