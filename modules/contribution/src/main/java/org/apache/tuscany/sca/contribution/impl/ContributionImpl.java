@@ -42,7 +42,6 @@ class ContributionImpl extends ExtensibleImpl implements Contribution {
     private String location;
     private Object model;
     private byte[] contents;
-    private boolean unresolved;
     private List<Export> exports = new ArrayList<Export>();
     private List<Import> imports = new ArrayList<Import>();
     private List<Composite> deployables = new ArrayList<Composite>();
@@ -98,14 +97,6 @@ class ContributionImpl extends ExtensibleImpl implements Contribution {
 
     public void setContents(byte[] contents) {
         this.contents = contents;
-    }
-
-    public boolean isUnresolved() {
-        return unresolved;
-    }
-
-    public void setUnresolved(boolean unresolved) {
-        this.unresolved = unresolved;
     }
 
     public ModelResolver getModelResolver() {
