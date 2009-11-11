@@ -268,10 +268,8 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
                         selected = ctor;
                     }
                     if (ctor.getParameterTypes().length == sites) {
-                        // TODO finish
-                        // selected = constructor;
-                        // select constructor
-                        // break;
+                        selected = ctor;
+                        break;
                     }
                 }
                 if (selected == null) {
