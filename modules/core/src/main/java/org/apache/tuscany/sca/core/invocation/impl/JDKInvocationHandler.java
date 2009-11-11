@@ -23,7 +23,7 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -41,7 +41,6 @@ import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
-import org.oasisopen.sca.SCARuntimeException;
 import org.oasisopen.sca.ServiceReference;
 import org.oasisopen.sca.ServiceRuntimeException;
 
@@ -61,7 +60,7 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
 
     protected boolean fixedWire = true;
 
-    protected transient Map<Method, InvocationChain> chains = new HashMap<Method, InvocationChain>();
+    protected transient Map<Method, InvocationChain> chains = new IdentityHashMap<Method, InvocationChain>();
 
     public JDKInvocationHandler(MessageFactory messageFactory, Class<?> businessInterface, RuntimeWire wire) {
         this.messageFactory = messageFactory;

@@ -52,6 +52,7 @@ import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.implementation.java.JavaConstructorImpl;
 import org.apache.tuscany.sca.implementation.java.JavaElementImpl;
 import org.apache.tuscany.sca.implementation.java.JavaResourceImpl;
+import org.apache.tuscany.sca.implementation.java.context.InstanceFactory;
 import org.apache.tuscany.sca.implementation.java.injection.JavaPropertyValueObjectFactory;
 import org.apache.tuscany.sca.implementation.java.introspect.JavaIntrospectionHelper;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -72,6 +73,7 @@ public class JavaComponentContextProvider {
     private RuntimeComponent component;
     private JavaInstanceFactoryProvider<?> instanceFactoryProvider;
     private ProxyFactory proxyFactory;
+    private InstanceFactory instanceFactory;
 
     public JavaComponentContextProvider(RuntimeComponent component,
                                         JavaInstanceFactoryProvider configuration,
@@ -92,7 +94,7 @@ public class JavaComponentContextProvider {
     }
 
     InstanceWrapper<?> createInstanceWrapper() throws ObjectCreationException {
-        return instanceFactoryProvider.createFactory().newInstance();
+        return instanceFactory.newInstance();
     }
 
     void configureProperties(List<ComponentProperty> definedProperties) {
@@ -259,6 +261,8 @@ public class JavaComponentContextProvider {
         }
 
         //setUpPolicyHandlers();
+        this.instanceFactory = instanceFactoryProvider.createFactory();
+
     }
 
     void addResourceFactory(String name, ObjectFactory<?> factory) {

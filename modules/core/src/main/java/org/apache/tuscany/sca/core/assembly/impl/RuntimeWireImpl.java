@@ -24,6 +24,8 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
@@ -101,6 +103,8 @@ public class RuntimeWireImpl implements RuntimeWire {
     private RuntimeWireImpl clonedFrom;
 
     private List<InvocationChain> chains;
+    private transient final Map<Operation, InvocationChain> invocationChainMap =
+        new ConcurrentHashMap<Operation, InvocationChain>();
     private InvocationChain bindingInvocationChain;
 
     private EndpointReferenceBinder eprBinder;
@@ -185,18 +189,27 @@ public class RuntimeWireImpl implements RuntimeWire {
     }
 
     public InvocationChain getInvocationChain(Operation operation) {
-        for (InvocationChain chain : getInvocationChains()) {
-            Operation op = null;
-            if (isReferenceWire) {
-                op = chain.getSourceOperation();
-            } else {
-                op = chain.getTargetOperation();
+        InvocationChain cached = invocationChainMap.get(operation);
+        if (cached == null) {
+            for (InvocationChain chain : getInvocationChains()) {
+                Operation op = null;
+                if (isReferenceWire) {
+                    // Reference chain
+                    op = chain.getSourceOperation();
+                } else {
+                    // Service chain
+                    op = chain.getTargetOperation();
+                }
+                if (interfaceContractMapper.isCompatible(operation, op, op.getInterface().isRemotable())) {
+                    invocationChainMap.put(operation, chain);
+                    return chain;
+                }
             }
-            if (interfaceContractMapper.isCompatible(operation, op, op.getInterface().isRemotable())) {
-                return chain;
-            }
+            invocationChainMap.put(operation, null);
+            return null;
+        } else {
+            return cached;
         }
-        return null;
     }
 
     public Object invoke(Message msg) throws InvocationTargetException {
