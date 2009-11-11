@@ -208,10 +208,10 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
                             error(monitor, "PolicySetReferenceNameMissing", reader, policySetName);
                         }
                     } /*else if ( WS_POLICY_QNAME.equals(name) )  {
-                                                                                                                                                                                OMElement policyElement = loadElement(reader);
-                                                                                                                                                                                org.apache.neethi.Policy wsPolicy = PolicyEngine.getPolicy(policyElement);
-                                                                                                                                                                                policySet.getPolicies().add(wsPolicy);
-                                                                                                                                                                            } */else {
+                        OMElement policyElement = loadElement(reader);
+                        org.apache.neethi.Policy wsPolicy = PolicyEngine.getPolicy(policyElement);
+                        policySet.getPolicies().add(wsPolicy);
+                    } */else {
                         Object extension = extensionProcessor.read(reader, context);
                         if (extension != null) {
                             PolicyExpression exp = policyFactory.createPolicyExpression();
