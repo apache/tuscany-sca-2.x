@@ -51,6 +51,7 @@ import org.apache.tuscany.sca.contribution.DefaultImport;
 import org.apache.tuscany.sca.contribution.Export;
 import org.apache.tuscany.sca.contribution.Import;
 import org.apache.tuscany.sca.contribution.namespace.NamespaceImport;
+import org.apache.tuscany.sca.contribution.java.JavaImport;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
@@ -163,6 +164,12 @@ public class DeployerImpl implements Deployer {
                 	NamespaceImport namespaceImport = (NamespaceImport)import_;
                 	if (namespaceImport.getLocation() != null)
 	                	if (!namespaceImport.getLocation().equals(dependency.getURI())) 
+	                		continue;
+                }                
+                if (import_ instanceof JavaImport) {
+                	JavaImport javaImport = (JavaImport)import_;
+                	if (javaImport.getLocation() != null)
+	                	if (!javaImport.getLocation().equals(dependency.getURI())) 
 	                		continue;
                 }
                 
