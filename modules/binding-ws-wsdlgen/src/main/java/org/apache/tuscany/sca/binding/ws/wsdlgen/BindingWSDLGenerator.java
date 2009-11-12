@@ -32,6 +32,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Contract;
+import org.apache.tuscany.sca.assembly.builder.BuilderContext;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ResolverExtension;
@@ -157,6 +158,9 @@ public class BindingWSDLGenerator {
                                     WebServiceBinding wsBinding,
                                     ExtensionPointRegistry extensionPoints,
                                     Monitor monitor) {
+        if (monitor == null) {
+            monitor = new BuilderContext(extensionPoints).getMonitor();
+        }
         try {
             createWSDLDocument(component, contract, wsBinding, extensionPoints, monitor);
         } catch (WSDLGenerationException ex) {
