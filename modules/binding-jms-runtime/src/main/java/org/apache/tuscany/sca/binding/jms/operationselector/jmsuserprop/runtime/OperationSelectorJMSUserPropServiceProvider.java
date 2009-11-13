@@ -19,30 +19,23 @@
 
 package org.apache.tuscany.sca.binding.jms.operationselector.jmsuserprop.runtime;
 
-import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Phase;
 import org.apache.tuscany.sca.provider.OperationSelectorProvider;
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.runtime.RuntimeComponentService;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 
 public class OperationSelectorJMSUserPropServiceProvider implements OperationSelectorProvider {
-    private RuntimeComponent component;
-    private RuntimeComponentService service;
-    private Binding binding;
+    private RuntimeEndpoint endpoint;
 
-    public OperationSelectorJMSUserPropServiceProvider(RuntimeComponent component, RuntimeComponentService service, Binding binding) {
+    public OperationSelectorJMSUserPropServiceProvider(RuntimeEndpoint endpoint) {
         super();
-        this.component = component;
-        this.service = service;
-        this.binding = binding;
+        this.endpoint = endpoint;
     }
 
     /**
      */
     public Interceptor createInterceptor() {
-        return new OperationSelectorJMSUserPropServiceInterceptor((JMSBinding)binding, service.getRuntimeWire(binding));
+        return new OperationSelectorJMSUserPropServiceInterceptor(endpoint);
     }
 
     /**

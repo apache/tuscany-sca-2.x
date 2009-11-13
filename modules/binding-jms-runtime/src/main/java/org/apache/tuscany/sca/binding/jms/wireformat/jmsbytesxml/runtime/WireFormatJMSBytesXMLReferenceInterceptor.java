@@ -36,22 +36,22 @@ import org.apache.tuscany.sca.interfacedef.util.FaultException;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
-import org.apache.tuscany.sca.runtime.RuntimeWire;
+import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 
 
 public class WireFormatJMSBytesXMLReferenceInterceptor implements Interceptor {
 
     private Invoker next;
-    private RuntimeWire runtimeWire;
+    private RuntimeEndpointReference endpointReference;
     private JMSResourceFactory jmsResourceFactory;
     private JMSBinding jmsBinding;
     private JMSMessageProcessor requestMessageProcessor;
     private JMSMessageProcessor responseMessageProcessor;
 
-    public WireFormatJMSBytesXMLReferenceInterceptor(ExtensionPointRegistry registry, JMSBinding jmsBinding, JMSResourceFactory jmsResourceFactory, RuntimeWire runtimeWire) {
+    public WireFormatJMSBytesXMLReferenceInterceptor(ExtensionPointRegistry registry, JMSResourceFactory jmsResourceFactory, RuntimeEndpointReference endpointReference) {
         super();
-        this.jmsBinding = jmsBinding;
-        this.runtimeWire = runtimeWire;
+        this.jmsBinding = (JMSBinding) endpointReference.getBinding();
+        this.endpointReference = endpointReference;
         this.jmsResourceFactory = jmsResourceFactory;
         this.requestMessageProcessor = JMSMessageProcessorUtil.getRequestMessageProcessor(registry, jmsBinding);
         this.responseMessageProcessor = JMSMessageProcessorUtil.getResponseMessageProcessor(registry, jmsBinding); 

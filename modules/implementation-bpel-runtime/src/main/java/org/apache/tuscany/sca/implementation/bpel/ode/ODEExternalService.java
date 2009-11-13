@@ -26,7 +26,6 @@ import javax.xml.namespace.QName;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.ode.bpel.iapi.Endpoint;
 import org.apache.ode.bpel.iapi.Message;
 import org.apache.ode.bpel.iapi.MessageExchange;
 import org.apache.ode.bpel.iapi.PartnerRoleMessageExchange;
@@ -38,7 +37,7 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
-import org.apache.tuscany.sca.runtime.RuntimeWire;
+import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -89,10 +88,10 @@ public class ODEExternalService {
                                 // Fetching the reference based on the data held in the PRC / Endpoint
                                 String refName = channel.getEndpoint().serviceName.getLocalPart();
                                 RuntimeComponentReference runtimeComponentReference = getReferenceByName( tuscanyRuntimeComponent, refName );
-                                RuntimeWire runtimeWire = getRuntimeWire( runtimeComponentReference, partnerRoleMessageExchange );
+                                RuntimeEndpointReference epr = getEndpointReference( runtimeComponentReference, partnerRoleMessageExchange );
                                 // convert operations
                                 Operation operation =
-                                    findOperation(partnerRoleMessageExchange.getOperation().getName(), runtimeComponentReference);
+                                    findOperation(partnerRoleMessageExchange.getOperation().getName(), epr);
 
                                 /*
                                  This is how a request looks like (payload is wrapped with extra info) 
@@ -122,7 +121,7 @@ public class ODEExternalService {
                                     boolean success = false;
 
                                     try {
-                                        result = runtimeWire.invoke(operation, args);
+                                        result = epr.invoke(operation, args);
                                         success = true;
                                     } catch (Exception e) {
                                     	e.printStackTrace();
@@ -194,7 +193,7 @@ public class ODEExternalService {
      * @param componentReference - the reference
      * @return - the RuntimeWire - null if it cannot be found
      */
-    private RuntimeWire getRuntimeWire( RuntimeComponentReference componentReference,
+    private RuntimeEndpointReference getEndpointReference( RuntimeComponentReference componentReference,
     									PartnerRoleMessageExchange mex) {
     	if( componentReference.isForCallback() ) {
     		// Where there is a callback, it is necessary to create a specialized wire, based on callback information
@@ -205,42 +204,42 @@ public class ODEExternalService {
     		Long processID = _server.getProcessIDFromMex(mex.getMessageExchangeId());
     		org.apache.tuscany.sca.assembly.EndpointReference callbackEPR = 
     			_server.getCallbackMetadata(processID, componentReference.getName());
-    		RuntimeWire wire = selectCallbackWire( callbackEPR.getTargetEndpoint(), componentReference );
+    		RuntimeEndpointReference wire = selectCallbackWire( callbackEPR.getTargetEndpoint(), componentReference );
     		wire = clone_bind( componentReference, callbackEPR.getCallbackEndpoint() );
     		return wire;
     	} else {
     		// No callback case...
     		//TODO - fix the x..n multiplicity case, which needs to select the correct ONE of multiple
     		// EndpointReferences here
-    		return componentReference.getRuntimeWire(componentReference.getEndpointReferences().get(0));
+    		return (RuntimeEndpointReference) componentReference.getEndpointReferences().get(0);
     	} // end if
-    } // end method getRuntimeWire
+    } // end method getEndpointReference
     
-    private RuntimeWire selectCallbackWire(	org.apache.tuscany.sca.assembly.Endpoint endpoint,
+    private RuntimeEndpointReference selectCallbackWire(	org.apache.tuscany.sca.assembly.Endpoint endpoint,
     		                                RuntimeComponentReference componentReference) {
         // Look for callback binding with same name as service binding
         if (endpoint == null) {
             throw new RuntimeException("Destination for forward call is not available");
         }
         
-        for (RuntimeWire wire : componentReference.getRuntimeWires()) {
-            if (wire.getEndpointReference().getBinding().getName().equals(endpoint.getBinding().getName())) {
-			    return wire;
+        for (EndpointReference epr : componentReference.getEndpointReferences()) {
+            if (epr.getBinding().getName().equals(endpoint.getBinding().getName())) {
+                return (RuntimeEndpointReference) epr;
             }
-        } // end for
+        }
 
         // if no match, look for callback binding with same type as service binding
-        for (RuntimeWire wire : componentReference.getRuntimeWires()) {
-            if (wire.getEndpointReference().getBinding().getClass() == endpoint.getBinding().getClass()) {
-			    return wire;
+        for (EndpointReference epr : componentReference.getEndpointReferences()) {
+            if (epr.getBinding().getType().equals(endpoint.getBinding().getType())) {
+                return (RuntimeEndpointReference) epr;
             }
-        } // end for
+        }
 
         // no suitable callback wire was found
         return null;
     } // end method selectCallbackWire
     
-    private  RuntimeWire clone_bind(RuntimeComponentReference reference,
+    private  RuntimeEndpointReference clone_bind(RuntimeComponentReference reference,
     		org.apache.tuscany.sca.assembly.Endpoint callbackEndpoint) {
 
 		try {
@@ -258,9 +257,7 @@ public class ODEExternalService {
 			
 			// The callback endpoint will be resolved when the wire chains are created
 			ref.getEndpointReferences().add(callbackEndpointReference);
-			RuntimeWire wire = ref.getRuntimeWires().get(0);
-			
-			return wire;
+			return (RuntimeEndpointReference) ref.getEndpointReferences().get(0);
 		} catch ( CloneNotSupportedException e ) {
 			return null;
 		} // end try clone_bind
@@ -274,16 +271,16 @@ public class ODEExternalService {
      * @param runtimeComponentReference
      * @return
      */
-    private Operation findOperation(String operationName, RuntimeComponentReference runtimeComponentReference) {
-    	Operation reseultOperation = null;
-    	
-    	for(Operation operation : runtimeComponentReference.getInterfaceContract().getInterface().getOperations()) {
-    		if (operationName.equalsIgnoreCase(operation.getName())) {
-    			reseultOperation = operation;
-    			break;
-    		}
-    	}
-    	return reseultOperation;
+    private Operation findOperation(String operationName, RuntimeEndpointReference epr) {
+        Operation reseultOperation = null;
+
+        for (Operation operation : epr.getReferenceInterfaceContract().getInterface().getOperations()) {
+            if (operationName.equalsIgnoreCase(operation.getName())) {
+                reseultOperation = operation;
+                break;
+            }
+        }
+        return reseultOperation;
     }
     
     /**

@@ -26,7 +26,7 @@ import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.OMNamespace;
-import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSDefault;
@@ -41,27 +41,25 @@ import org.apache.tuscany.sca.interfacedef.util.ElementInfo;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Phase;
 import org.apache.tuscany.sca.provider.WireFormatProvider;
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
+import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 
 /**
  * @version $Rev$ $Date$
  */
 public class WireFormatJMSDefaultReferenceProvider implements WireFormatProvider {
     private ExtensionPointRegistry registry;
-    private RuntimeComponent component;
-    private RuntimeComponentReference reference;
+    private RuntimeEndpointReference endpointReference;
+    private ComponentReference reference;
     private JMSBinding binding;
     private InterfaceContract interfaceContract;
     private HashMap<String, Boolean> inputWrapperMap;
     private HashMap<String, OMElement> outputWrapperMap;
 
-    public WireFormatJMSDefaultReferenceProvider(ExtensionPointRegistry registry, RuntimeComponent component, RuntimeComponentReference reference, Binding binding) {
+    public WireFormatJMSDefaultReferenceProvider(ExtensionPointRegistry registry, RuntimeEndpointReference endpointReference) {
         super();
         this.registry = registry;
-        this.component = component;
-        this.reference = reference;
-        this.binding = (JMSBinding) binding;
+        this.endpointReference = endpointReference;
+        this.binding = (JMSBinding) endpointReference.getBinding();
 
         this.inputWrapperMap = new HashMap<String, Boolean>();
         this.outputWrapperMap = new HashMap<String, OMElement>();
@@ -78,6 +76,7 @@ public class WireFormatJMSDefaultReferenceProvider implements WireFormatProvider
             this.binding.setResponseMessageProcessorName(JMSBindingConstants.DEFAULT_MP_CLASSNAME);
         }
 
+        this.reference = endpointReference.getReference();
         // TODO - can be null if it's a $self$ reference. Need to decide if 
         //        that's valid
         if (reference.getReference() == null){
@@ -96,7 +95,7 @@ public class WireFormatJMSDefaultReferenceProvider implements WireFormatProvider
         if (reference.getInterfaceContract() != null && !isAsIs()) {
             WebServiceBindingFactory wsFactory = registry.getExtensionPoint(WebServiceBindingFactory.class);
             WebServiceBinding wsBinding = wsFactory.createWebServiceBinding();
-            BindingWSDLGenerator.generateWSDL(component, reference, wsBinding, registry, null);
+            BindingWSDLGenerator.generateWSDL(endpointReference.getComponent(), reference, wsBinding, registry, null);
             interfaceContract = wsBinding.getBindingInterfaceContract();
             interfaceContract.getInterface().resetDataBinding(OMElement.class.getName());
 
@@ -189,7 +188,7 @@ public class WireFormatJMSDefaultReferenceProvider implements WireFormatProvider
     }   
 
     public Interceptor createInterceptor() {
-        return new WireFormatJMSDefaultReferenceInterceptor(registry, (JMSBinding) binding, null, reference.getRuntimeWire(binding), inputWrapperMap, outputWrapperMap);
+        return new WireFormatJMSDefaultReferenceInterceptor(registry, null, endpointReference, inputWrapperMap, outputWrapperMap);
     }
 
     public String getPhase() {

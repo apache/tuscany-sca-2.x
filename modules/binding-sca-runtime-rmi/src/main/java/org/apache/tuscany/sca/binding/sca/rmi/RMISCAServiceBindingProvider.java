@@ -37,6 +37,7 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 
 /**
  * The service binding provider for the remote sca binding implementation. Relies on the
@@ -88,9 +89,9 @@ public class RMISCAServiceBindingProvider implements ServiceBindingProvider {
         rmiBinding.setURI(this.binding.getURI());
 
         // create a copy of the endpoint  but with the web service binding in
-        Endpoint ep = null;
+        RuntimeEndpoint ep = null;
         try {
-            ep = (Endpoint)endpoint.clone();
+            ep = (RuntimeEndpoint)endpoint.clone();
         } catch (Exception ex){
             // we know we can clone endpoint references
         }
@@ -99,6 +100,9 @@ public class RMISCAServiceBindingProvider implements ServiceBindingProvider {
         ProviderFactoryExtensionPoint providerFactories = extensionPoints.getExtensionPoint(ProviderFactoryExtensionPoint.class);
         BindingProviderFactory<?> providerFactory = (BindingProviderFactory<?>) providerFactories.getProviderFactory(RMIBinding.class);
         serviceBindingProvider = providerFactory.createServiceBindingProvider(ep);
+        
+        // Set the service binding provider so that it can be used to start/stop
+        ((RuntimeEndpoint) endpoint).setBindingProvider(serviceBindingProvider);
         
         logger.info("Service using RMI SCA Binding: " + rmiBinding.getURI());
     }

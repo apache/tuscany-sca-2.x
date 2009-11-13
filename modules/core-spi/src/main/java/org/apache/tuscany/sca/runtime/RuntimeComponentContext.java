@@ -20,7 +20,6 @@
 package org.apache.tuscany.sca.runtime;
 
 import org.apache.tuscany.sca.assembly.ComponentService;
-import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.context.CompositeContext;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.oasisopen.sca.ComponentContext;
@@ -40,27 +39,12 @@ public interface RuntimeComponentContext extends ComponentContext {
      * Get the CallableReference for a given component reference
      * @param <B>
      * @param businessInterface The business interface
-     * @param reference The reference to be wired
      * @param endpointReference The endpointReference to be used
      * @return A service reference representing the wire
      */
     <B> ServiceReference<B> getServiceReference(Class<B> businessInterface,
-                                                RuntimeComponentReference reference,
-                                                EndpointReference endpointReference);
+                                                RuntimeEndpointReference endpointReference);
 
-    /**
-     * Bind the reference to a target component/componentService
-     * @param <B>
-     * @param businessInterface The business interface
-     * @param reference The reference to be wired
-     * @param component The target component
-     * @param service The target component service
-     * @return A service reference representing the wire
-     */
-    <B> ServiceReference<B> getServiceReference(Class<B> businessInterface,
-                                                RuntimeComponentReference reference,
-                                                RuntimeComponent component,
-                                                RuntimeComponentService service);
 
     /**
      * Create a CallableReference for the given component service
@@ -70,9 +54,7 @@ public interface RuntimeComponentContext extends ComponentContext {
      * @param service
      * @return
      */
-    <B> ServiceReference<B> getCallableReference(Class<B> businessInterface,
-                                                  RuntimeComponent component,
-                                                  RuntimeComponentService service);
+    <B> ServiceReference<B> getServiceReference(Class<B> businessInterface, RuntimeEndpoint endpoint);
 
     /**
      * @param <B>
@@ -81,7 +63,8 @@ public interface RuntimeComponentContext extends ComponentContext {
      * @return
      */
     <B> ServiceReference<B> createSelfReference(Class<B> businessInterface, ComponentService service);
-    
+
     ExtensionPointRegistry getExtensionPointRegistry();
+
     CompositeContext getCompositeContext();
 }

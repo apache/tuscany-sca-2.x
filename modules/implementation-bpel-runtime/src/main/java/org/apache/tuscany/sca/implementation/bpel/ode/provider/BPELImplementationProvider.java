@@ -28,11 +28,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.ode.dao.jpa.ProcessDAOImpl;
 import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.databinding.xml.DOMDataBinding;
 import org.apache.tuscany.sca.extensibility.ClassLoaderContext;
-import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 import org.apache.tuscany.sca.implementation.bpel.BPELImplementation;
 import org.apache.tuscany.sca.implementation.bpel.ode.EmbeddedODEServer;
 import org.apache.tuscany.sca.implementation.bpel.ode.ODEDeployment;
@@ -42,6 +42,8 @@ import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
+import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 
 /**
  * BPEL Implementation provider
@@ -86,16 +88,20 @@ public class BPELImplementationProvider implements ImplementationProvider {
         	// contract and leave it to the Endpoints only
             service.getInterfaceContract().getInterface().resetDataBinding(DOMDataBinding.NAME);
             for( Endpoint endpoint : service.getEndpoints() ) {
-                if (endpoint.getInterfaceContract() != null) {
-                    endpoint.getInterfaceContract().getInterface().resetDataBinding(DOMDataBinding.NAME);
+                RuntimeEndpoint ep = (RuntimeEndpoint) endpoint;
+                if (ep.getServiceInterfaceContract() != null) {
+                    ep.getServiceInterfaceContract().getInterface().resetDataBinding(DOMDataBinding.NAME);
                 }
             } // end for
         } // end for
 
-        for (Reference reference: component.getReferences()) {
+        for (Reference reference : component.getReferences()) {
             reference.getInterfaceContract().getInterface().resetDataBinding(DOMDataBinding.NAME);
-            /* for( EndpointReference epr : reference.getEndpointReferences() ) {
-            	epr.getInterfaceContract().getInterface().resetDataBinding(DOMDataBinding.NAME);
+            for (EndpointReference endpointReference : reference.getEndpointReferences()) {
+                RuntimeEndpointReference epr = (RuntimeEndpointReference)endpointReference;
+                if (epr.getReferenceInterfaceContract() != null) {
+                    epr.getReferenceInterfaceContract().getInterface().resetDataBinding(DOMDataBinding.NAME);
+                }
             } // end for */
         } // end for
 

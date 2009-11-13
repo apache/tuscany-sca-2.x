@@ -33,7 +33,24 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentContext;
  * 
  * @version $Rev$ $Date$
  */
-public abstract class CompositeContext {
+public class CompositeContext {
+    protected ExtensionPointRegistry extensionPointRegistry;
+    protected EndpointRegistry endpointRegistry;
+    protected ComponentContextFactory componentContextFactory;
+    protected Composite domainComposite;
+    
+    public CompositeContext(ExtensionPointRegistry registry, EndpointRegistry endpointRegistry, Composite domainComposite) {
+        this.extensionPointRegistry = registry;
+        this.endpointRegistry = endpointRegistry;
+        ContextFactoryExtensionPoint contextFactories = registry.getExtensionPoint(ContextFactoryExtensionPoint.class);
+        this.componentContextFactory = contextFactories.getFactory(ComponentContextFactory.class);
+        this.domainComposite = domainComposite;
+    }    
+    
+    public CompositeContext(ExtensionPointRegistry registry, EndpointRegistry endpointRegistry) {
+        this(registry, endpointRegistry, null);
+    }
+    
     /**
      * @return
      */
@@ -62,30 +79,37 @@ public abstract class CompositeContext {
         return null;
     }
 
-    /**
-     * Attach a component context to the component
-     * @param runtimeComponent
-     */
-    public abstract void bindComponent(RuntimeComponent runtimeComponent);
-    
+    public void bindComponent(RuntimeComponent runtimeComponent) {
+        RuntimeComponentContext componentContext =
+            (RuntimeComponentContext)componentContextFactory.createComponentContext(this, runtimeComponent);
+        runtimeComponent.setComponentContext(componentContext);
+    }    
     /**
      * 
      * @param endpointReference
      */
-    public abstract void bindEndpointReference(EndpointReference endpointReference);
+    public void bindEndpointReference(EndpointReference endpointReference) {
+        
+    }
 
     /**
      * Get the ExtensionPointRegistry for this node
      * @return The ExtensionPointRegistry
      */
-    public abstract ExtensionPointRegistry getExtensionPointRegistry();
+    public ExtensionPointRegistry getExtensionPointRegistry() {
+        return extensionPointRegistry;
+    }
 
     /**
      * Get the EndpointRegistry
      * @return The EndpointRegistry for this node
      */
-    public abstract EndpointRegistry getEndpointRegistry();
+    public EndpointRegistry getEndpointRegistry() {
+        return endpointRegistry; 
+    }
     
-    public abstract Composite getDomainComposite();
+    public Composite getDomainComposite() {
+        return domainComposite; 
+    }
 
 }

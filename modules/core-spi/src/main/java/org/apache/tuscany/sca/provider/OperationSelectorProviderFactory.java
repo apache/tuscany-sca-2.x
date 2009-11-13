@@ -19,11 +19,9 @@
 
 package org.apache.tuscany.sca.provider;
 
-import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.OperationSelector;
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
-import org.apache.tuscany.sca.runtime.RuntimeComponentService;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
+import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 
 /**
  * @version $Rev$ $Date$
@@ -31,23 +29,15 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 public interface OperationSelectorProviderFactory<M extends OperationSelector> extends ProviderFactory<M> {
     /**
      * Create wire format provider for a given reference binding
-     * @param component
-     * @param reference
-     * @param binding
+     * @param endpointReference TODO
      * @return
      */
-    OperationSelectorProvider createReferenceOperationSelectorProvider(RuntimeComponent component,
-                                                                       RuntimeComponentReference reference,
-                                                                       Binding binding);
+    OperationSelectorProvider createReferenceOperationSelectorProvider(RuntimeEndpointReference endpointReference);
 
     /**
      * Create policy provider for a given service binding
-     * @param component
-     * @param service
-     * @param binding
+     * @param endpoint TODO
      * @return
      */
-    OperationSelectorProvider createServiceOperationSelectorProvider(RuntimeComponent component,
-                                                                     RuntimeComponentService service,
-                                                                     Binding binding);
+    OperationSelectorProvider createServiceOperationSelectorProvider(RuntimeEndpoint endpoint);
 }

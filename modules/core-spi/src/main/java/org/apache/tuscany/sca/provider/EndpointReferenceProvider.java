@@ -19,19 +19,18 @@
 
 package org.apache.tuscany.sca.provider;
 
-import org.apache.tuscany.sca.invocation.PhasedInterceptor;
 
 /**
  * TODO RRB experiment
  * This is an experiment extension to try out the request response
  * binding function
+ * 
  * @version $Rev$ $Date$
  */
-public interface PolicyProviderRRB extends PolicyProvider {
+public interface EndpointReferenceProvider extends ReferenceBindingProvider {
     /**
-     * Create a binding interceptor 
-     * @return An interceptor that realize the policySet
+     * Configure the binding invocation chain
      */
-    PhasedInterceptor createBindingInterceptor();
+    void configure();
 
 }

@@ -36,6 +36,7 @@ import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtens
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.runtime.EndpointSerializer;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 public class EndpointSerializerImpl implements EndpointSerializer {
     private ExtensionPointRegistry registry;
@@ -91,8 +92,10 @@ public class EndpointSerializerImpl implements EndpointSerializer {
             endpointReference.setReference(result.getReference());
             endpointReference.setBinding(result.getBinding());
             endpointReference.setInterfaceContract(result.getReference().getInterfaceContract());
+            endpointReference.setTargetEndpoint(result.getTargetEndpoint());
+            endpointReference.setCallbackEndpoint(result.getCallbackEndpoint());
         } catch (Exception e) {
-            throw new IOException(e.getMessage());
+            throw new ServiceRuntimeException(e);
         }
     }
 
@@ -105,7 +108,7 @@ public class EndpointSerializerImpl implements EndpointSerializer {
             writer.close();
             return sw.toString();
         } catch (Exception e) {
-            throw new IOException(e.getMessage());
+            throw new ServiceRuntimeException(e);
         }
     }
 }

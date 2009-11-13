@@ -35,6 +35,7 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.LifeCycleListener;
 import org.apache.tuscany.sca.runtime.EndpointListener;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.ZooKeeper;
 import org.oasisopen.sca.ServiceRuntimeException;
@@ -187,7 +188,7 @@ public class DistributedRegistry extends AbstractDistributedMap<Endpoint> implem
                 logger.fine("Matching against - " + endpoint);
                 if (matches(targetEndpoint.getURI(), endpoint.getURI())) {
                     // if (!entry.isPrimary()) {
-                    endpoint.setExtensionPointRegistry(registry);
+                    ((RuntimeEndpoint) endpoint).bind(registry, this);
                     // }
                     foundEndpoints.add(endpoint);
                     logger.fine("Found endpoint with matching service  - " + endpoint);
@@ -241,7 +242,7 @@ public class DistributedRegistry extends AbstractDistributedMap<Endpoint> implem
     }
 
     public void entryAdded(Endpoint value) {
-        value.setExtensionPointRegistry(registry);
+        ((RuntimeEndpoint) value).bind(registry, this);
         for (EndpointListener listener : listeners) {
             listener.endpointAdded(value);
         }
@@ -254,7 +255,7 @@ public class DistributedRegistry extends AbstractDistributedMap<Endpoint> implem
     }
 
     public void entryUpdated(Endpoint oldEp, Endpoint newEp) {
-        newEp.setExtensionPointRegistry(registry);
+        ((RuntimeEndpoint) newEp).bind(registry, this);
         for (EndpointListener listener : listeners) {
             listener.endpointUpdated(oldEp, newEp);
         }

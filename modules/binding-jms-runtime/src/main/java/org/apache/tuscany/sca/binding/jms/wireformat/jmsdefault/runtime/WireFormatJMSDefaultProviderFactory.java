@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.binding.jms.wireformat.jmsdefault.runtime;
 
-import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory;
 import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactoryExtensionPoint;
@@ -27,9 +26,8 @@ import org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSDefault;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.provider.WireFormatProvider;
 import org.apache.tuscany.sca.provider.WireFormatProviderFactory;
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
-import org.apache.tuscany.sca.runtime.RuntimeComponentService;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
+import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 
 /**
  * @version $Rev$ $Date$
@@ -46,16 +44,15 @@ public class WireFormatJMSDefaultProviderFactory implements WireFormatProviderFa
 
     /**
      */
-    public WireFormatProvider createReferenceWireFormatProvider(RuntimeComponent component, RuntimeComponentReference reference,
-            Binding binding) {
-        return new WireFormatJMSDefaultReferenceProvider(registry, component, reference, binding);
+    public WireFormatProvider createReferenceWireFormatProvider(RuntimeEndpointReference endpointReference) {
+        return new WireFormatJMSDefaultReferenceProvider(registry, endpointReference);
     }
 
     /**
       */
-    public WireFormatProvider createServiceWireFormatProvider(RuntimeComponent component, RuntimeComponentService service, Binding binding) {
-        JMSResourceFactory jmsRF = jmsRFEP.createJMSResourceFactory((JMSBinding) binding);
-        return new WireFormatJMSDefaultServiceProvider(registry, component, service, binding, jmsRF);
+    public WireFormatProvider createServiceWireFormatProvider(RuntimeEndpoint endpoint) {
+        JMSResourceFactory jmsRF = jmsRFEP.createJMSResourceFactory((JMSBinding) endpoint.getBinding());
+        return new WireFormatJMSDefaultServiceProvider(registry, endpoint, jmsRF);
     }
 
     /**

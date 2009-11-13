@@ -32,9 +32,10 @@ import org.apache.tuscany.sca.invocation.PhasedInterceptor;
 import org.apache.tuscany.sca.policy.PolicyExpression;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySubject;
-import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
+import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
-import org.apache.tuscany.sca.runtime.RuntimeWire;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
+import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 
 /**
  * Abstract base class for policy providers
@@ -129,30 +130,26 @@ public abstract class BasePolicyProvider<T> implements PolicyProvider {
         return null;
     }
 
-    private InvocationChain getInvocationChain() {
-        if (subject instanceof Endpoint) {
-            Endpoint endpoint = (Endpoint)subject;
-            RuntimeComponentService service = (RuntimeComponentService)endpoint.getService();
-            RuntimeWire wire = service.getRuntimeWire(endpoint.getBinding());
-            List<InvocationChain> chains = wire.getInvocationChains();
+    protected InvocationChain getInvocationChain() {
+        if (subject instanceof RuntimeEndpoint) {
+            RuntimeEndpoint endpoint = (RuntimeEndpoint)subject;
+            List<InvocationChain> chains = endpoint.getInvocationChains();
             for (InvocationChain chain : chains) {
                 configure(chain, chain.getTargetOperation());
             }
 
-        } else if (subject instanceof EndpointReference) {
-            EndpointReference endpointReference = (EndpointReference)subject;
-            RuntimeComponentReference reference = (RuntimeComponentReference)endpointReference.getReference();
-            RuntimeWire wire = reference.getRuntimeWire(endpointReference.getBinding());
-            List<InvocationChain> chains = wire.getInvocationChains();
+        } else if (subject instanceof RuntimeEndpointReference) {
+            RuntimeEndpointReference endpointReference = (RuntimeEndpointReference)subject;
+            List<InvocationChain> chains = endpointReference.getInvocationChains();
             for (InvocationChain chain : chains) {
                 configure(chain, chain.getSourceOperation());
             }
-        } else if (subject instanceof Component) {
-            Component component = (Component)subject;
+        } else if (subject instanceof RuntimeComponent) {
+            RuntimeComponent component = (RuntimeComponent)subject;
             for (ComponentService s : component.getServices()) {
                 RuntimeComponentService service = (RuntimeComponentService)s;
-                for (RuntimeWire wire : service.getRuntimeWires()) {
-                    List<InvocationChain> chains = wire.getInvocationChains();
+                for (Endpoint ep : service.getEndpoints()) {
+                    List<InvocationChain> chains = ((RuntimeEndpoint)ep).getInvocationChains();
                     for (InvocationChain chain : chains) {
                         configure(chain, chain.getTargetOperation());
                     }

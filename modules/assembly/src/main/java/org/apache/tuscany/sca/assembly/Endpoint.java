@@ -21,7 +21,6 @@ package org.apache.tuscany.sca.assembly;
 import java.io.Serializable;
 import java.util.List;
 
-import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.policy.PolicySubject;
 
@@ -113,14 +112,6 @@ public interface Endpoint extends Base, PolicySubject, Cloneable, Serializable {
     List<EndpointReference> getCallbackEndpointReferences();
 
     /**
-     * Set the extension point registry against the endpoint after it is deserialized as
-     * the registry needs to be re-attached
-     *
-     * @param registry
-     */
-    void setExtensionPointRegistry(ExtensionPointRegistry registry);
-
-    /**
      * Returns true if this endpoint represents a serivce that is not
      * running in this JVM
      * 
@@ -143,4 +134,11 @@ public interface Endpoint extends Base, PolicySubject, Cloneable, Serializable {
      * @throws CloneNotSupportedException
      */
     Object clone() throws CloneNotSupportedException;
+    
+    /*
+    String getDomainURI();
+    String getNodeURI();
+    void setDomainURI(String domainURI);
+    void setNodeURI(String nodeURI);
+    */
 }

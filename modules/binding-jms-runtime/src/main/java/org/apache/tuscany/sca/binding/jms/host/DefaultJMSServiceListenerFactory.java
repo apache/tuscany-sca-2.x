@@ -41,8 +41,8 @@ public class DefaultJMSServiceListenerFactory implements JMSServiceListenerFacto
 
             JMSResourceFactory rf = ((JMSBindingServiceBindingProvider)jmsSLD).getResourceFactory();
             
-            MessageListener listener = new DefaultServiceInvoker(jmsSLD.getJmsBinding(), jmsSLD.getService(), jmsSLD.getTargetBinding(), jmsSLD.getMessageFactory(), rf);
-            RuntimeComponentService service = jmsSLD.getService();
+            RuntimeComponentService service = (RuntimeComponentService) jmsSLD.getEndpoint().getService();
+            MessageListener listener = new DefaultServiceInvoker(jmsSLD.getEndpoint(), jmsSLD.getTargetBinding(), jmsSLD.getMessageFactory(), rf);
 
 //            return new ASFListener(listener, service.getName(), service.isCallback(), jmsSLD.getJmsBinding(), workScheduler, rf);
 // TODO: 2.x migration, service.isCallback()             

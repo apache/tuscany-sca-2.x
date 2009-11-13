@@ -34,7 +34,7 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
-import org.apache.tuscany.sca.runtime.RuntimeWire;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 
 /**
  * Policy handler to handle PolicySet related to Logging with the QName
@@ -44,7 +44,7 @@ import org.apache.tuscany.sca.runtime.RuntimeWire;
  */
 public class WireFormatJMSObjectServiceInterceptor implements Interceptor {
     private Invoker next;
-    private RuntimeWire runtimeWire;
+    private RuntimeEndpoint endpoint;
     private JMSResourceFactory jmsResourceFactory;
     private JMSBinding jmsBinding;
     private JMSMessageProcessor requestMessageProcessor;
@@ -52,11 +52,11 @@ public class WireFormatJMSObjectServiceInterceptor implements Interceptor {
     private HashMap<String,Class<?>> singleArgMap;
     private boolean wrapSingle;
 
-    public WireFormatJMSObjectServiceInterceptor(ExtensionPointRegistry registry, JMSBinding jmsBinding, JMSResourceFactory jmsResourceFactory, 
-            RuntimeWire runtimeWire, HashMap<String, Class<?>> singleArgMap, boolean wrapSingle) {
+    public WireFormatJMSObjectServiceInterceptor(ExtensionPointRegistry registry, JMSResourceFactory jmsResourceFactory, 
+            RuntimeEndpoint endpoint, HashMap<String, Class<?>> singleArgMap, boolean wrapSingle) {
         super();
-        this.jmsBinding = jmsBinding;
-        this.runtimeWire = runtimeWire;
+        this.jmsBinding = (JMSBinding) endpoint.getBinding();
+        this.endpoint = endpoint;
         this.jmsResourceFactory = jmsResourceFactory;
         this.requestMessageProcessor = JMSMessageProcessorUtil.getRequestMessageProcessor(registry, jmsBinding);
         this.responseMessageProcessor = JMSMessageProcessorUtil.getResponseMessageProcessor(registry, jmsBinding);

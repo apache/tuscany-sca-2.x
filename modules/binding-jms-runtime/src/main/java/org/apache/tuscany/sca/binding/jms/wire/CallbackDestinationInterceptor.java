@@ -30,15 +30,15 @@ import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
-import org.apache.tuscany.sca.runtime.RuntimeWire;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 
 public class CallbackDestinationInterceptor implements Interceptor {
     private Invoker next;
     private RuntimeComponentService service;
           
-    public CallbackDestinationInterceptor(RuntimeWire runtimeWire) {
+    public CallbackDestinationInterceptor(RuntimeEndpoint endpoint) {
         super();
-        this.service = (RuntimeComponentService) runtimeWire.getEndpoint().getService();
+        this.service = (RuntimeComponentService) endpoint.getService();
     }
 
     public Invoker getNext() {

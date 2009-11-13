@@ -19,8 +19,6 @@
 
 package org.apache.tuscany.sca.binding.jsonrpc.provider;
 
-import org.apache.tuscany.sca.assembly.Endpoint;
-import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.binding.jsonrpc.JSONRPCBinding;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
@@ -30,6 +28,8 @@ import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
+import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 
 /**
  * JSON-RPC Provider Factory
@@ -49,12 +49,12 @@ public class JSONRPCBindingProviderFactory implements BindingProviderFactory<JSO
         messageFactory = modelFactories.getFactory(MessageFactory.class);
     }
     
-    public ReferenceBindingProvider createReferenceBindingProvider(EndpointReference endpointReference) {
+    public ReferenceBindingProvider createReferenceBindingProvider(RuntimeEndpointReference endpointReference) {
         
         return new JSONRPCReferenceBindingProvider(endpointReference);
     }
 
-    public ServiceBindingProvider createServiceBindingProvider(Endpoint endpoint) {
+    public ServiceBindingProvider createServiceBindingProvider(RuntimeEndpoint endpoint) {
         return new JSONRPCServiceBindingProvider(endpoint, messageFactory, servletHost);
     }
 

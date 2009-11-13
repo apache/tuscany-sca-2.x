@@ -39,6 +39,7 @@ import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
+import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 
 /**
  * The reference binding provider for the remote sca binding implementation. Relies on the 
@@ -78,9 +79,9 @@ public class Axis2SCAReferenceBindingProvider implements ReferenceBindingProvide
         contract.getInterface().resetDataBinding(OMElement.class.getName());
         
         // create a copy of the endpoint reference but with the web service binding in
-        EndpointReference epr = null;
+        RuntimeEndpointReference epr = null;
         try {
-            epr = (EndpointReference)endpointReference.clone();
+            epr = (RuntimeEndpointReference)endpointReference.clone();
         } catch (Exception ex){
             // we know we can clone endpoint references
         }

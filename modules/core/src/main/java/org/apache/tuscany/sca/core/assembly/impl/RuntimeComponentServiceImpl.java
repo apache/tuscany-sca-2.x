@@ -19,22 +19,8 @@
 
 package org.apache.tuscany.sca.core.assembly.impl;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-
-import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.impl.ComponentServiceImpl;
-import org.apache.tuscany.sca.interfacedef.InterfaceContract;
-import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.invocation.InvocationChain;
-import org.apache.tuscany.sca.invocation.Invoker;
-import org.apache.tuscany.sca.provider.PolicyProvider;
-import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
-import org.apache.tuscany.sca.runtime.RuntimeWire;
-import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
  * Implementation of a Component Service.
@@ -42,124 +28,9 @@ import org.oasisopen.sca.ServiceRuntimeException;
  * @version $Rev$ $Date$
  */
 public class RuntimeComponentServiceImpl extends ComponentServiceImpl implements RuntimeComponentService {
-    private ArrayList<RuntimeWire> wires = new ArrayList<RuntimeWire>();
-    private ArrayList<RuntimeWire> callbackWires = new ArrayList<RuntimeWire>();
-    private HashMap<Binding, ServiceBindingProvider> bindingProviders = new HashMap<Binding, ServiceBindingProvider>();
-    private HashMap<Binding, List<PolicyProvider>> policyProviders = new HashMap<Binding, List<PolicyProvider>>();
 
     public RuntimeComponentServiceImpl() {
         super();
-    }
-
-    public List<RuntimeWire> getRuntimeWires() {
-        return wires;
-    }
-
-    public RuntimeWire getRuntimeWire(Binding binding) {
-        for (RuntimeWire wire : wires) {
-            if (wire.getEndpoint().getBinding() == binding) {
-                return wire;
-            }
-        }
-        return null;
-    }
-
-    public RuntimeWire getRuntimeWire(Binding binding, InterfaceContract interfaceContract) {
-        RuntimeWire wire = getRuntimeWire(binding);
-        if (wire == null) {
-            return null;
-        }
-        if (interfaceContract != null && interfaceContract != wire.getEndpointReference().getInterfaceContract()) {
-            try {
-                // FIXME: [rfeng] We could avoid clone() using a better comparison of the two interface contracts
-                wire = (RuntimeWire)wire.clone();
-                wire.getEndpointReference().setInterfaceContract(interfaceContract);
-                wire.rebuild();
-            } catch (CloneNotSupportedException e) {
-                throw new ServiceRuntimeException(e);
-            }
-        }
-
-        return wire;
-    }
-
-    public List<RuntimeWire> getCallbackWires() {
-        return callbackWires;
-    }
-
-    public ServiceBindingProvider getBindingProvider(Binding binding) {
-        return bindingProviders.get(binding);
-    }
-
-    public void setBindingProvider(Binding binding, ServiceBindingProvider bindingProvider) {
-        bindingProviders.put(binding, bindingProvider);
-    }
-
-    public Invoker getInvoker(Binding binding, Operation operation) {
-        return getInvoker(binding, null, operation);
-    }
-
-    public Invoker getInvoker(Binding binding, InterfaceContract interfaceContract, Operation operation) {
-        InvocationChain chain = getInvocationChain(binding, interfaceContract, operation);
-        if (chain != null) {
-            return chain.getHeadInvoker();
-        } else {
-            return null;
-        }
-    }
-
-    public InvocationChain getInvocationChain(Binding binding, InterfaceContract interfaceContract, Operation operation) {
-        RuntimeWire wire = getRuntimeWire(binding);
-        if (wire == null) {
-            return null;
-        }
-        if (interfaceContract != null && interfaceContract != wire.getEndpointReference().getInterfaceContract()) {
-            try {
-                // FIXME: [rfeng] We could avoid clone() using a better comparison of the two interface contracts
-                wire = (RuntimeWire)wire.clone();
-                wire.getEndpointReference().setInterfaceContract(interfaceContract);
-                wire.rebuild();
-            } catch (CloneNotSupportedException e) {
-                throw new ServiceRuntimeException(e);
-            }
-        }
-        return wire.getInvocationChain(operation);
-    }
-
-    public InvocationChain getInvocationChain(Binding binding, Operation operation) {
-        return getInvocationChain(binding, null, operation);
-    }
-
-    /**
-     * @see org.apache.tuscany.sca.assembly.impl.ComponentServiceImpl#clone()
-     */
-    @SuppressWarnings("unchecked")
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        RuntimeComponentServiceImpl clone = (RuntimeComponentServiceImpl)super.clone();
-        clone.bindingProviders = (HashMap<Binding, ServiceBindingProvider>)bindingProviders.clone();
-        clone.wires = (ArrayList<RuntimeWire>)wires.clone();
-        clone.callbackWires = (ArrayList<RuntimeWire>)callbackWires.clone();
-        clone.policyProviders = (HashMap<Binding, List<PolicyProvider>>)policyProviders.clone();
-        return clone;
-    }
-
-    public void addPolicyProvider(Binding binding, PolicyProvider policyProvider) {
-        List<PolicyProvider> providers = policyProviders.get(binding);
-        if (providers == null) {
-            providers = new ArrayList<PolicyProvider>();
-            policyProviders.put(binding, providers);
-        }
-        providers.add(policyProvider);
-    }
-
-    public List<PolicyProvider> getPolicyProviders(Binding binding) {
-        List<PolicyProvider> providers = policyProviders.get(binding);
-        if (providers == null) {
-            return Collections.emptyList();
-        } else {
-            return providers;
-        }
     }
 
     @Override

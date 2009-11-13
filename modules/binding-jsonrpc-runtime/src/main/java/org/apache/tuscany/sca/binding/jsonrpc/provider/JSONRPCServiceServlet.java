@@ -32,12 +32,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
-import org.apache.tuscany.sca.runtime.RuntimeComponentService;
-import org.apache.tuscany.sca.runtime.RuntimeWire;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.jabsorb.JSONRPCBridge;
 import org.jabsorb.JSONRPCResult;
 import org.jabsorb.JSONRPCServlet;
@@ -61,21 +59,17 @@ public class JSONRPCServiceServlet extends JSONRPCServlet {
     transient Binding binding;
     transient String serviceName;
     transient Object serviceInstance;
-    transient RuntimeComponentService componentService;
-    transient InterfaceContract serviceContract;
+    transient RuntimeEndpoint endpoint;
     transient Class<?> serviceInterface;
 
     public JSONRPCServiceServlet(MessageFactory messageFactory, 
-                                 Binding binding,
-                                 RuntimeComponentService componentService,
-                                 InterfaceContract serviceContract,
+                                 RuntimeEndpoint endpoint,
                                  Class<?> serviceInterface,
                                  Object serviceInstance) {
+        this.endpoint = endpoint;
         this.messageFactory = messageFactory;
-        this.binding = binding;
+        this.binding = endpoint.getBinding();
         this.serviceName = binding.getName();
-        this.componentService = componentService;
-        this.serviceContract = serviceContract;
         this.serviceInterface = serviceInterface;
         this.serviceInstance = serviceInstance;
     }
@@ -238,7 +232,6 @@ public class JSONRPCServiceServlet extends JSONRPCServlet {
         }
 
         // invoke the request
-        RuntimeWire wire = componentService.getRuntimeWire(binding, serviceContract);
         Operation jsonOperation = findOperation(method);
         Object result = null;
       
@@ -254,7 +247,7 @@ public class JSONRPCServiceServlet extends JSONRPCServlet {
         //result = wire.invoke(jsonOperation, args);
         Message responseMessage = null;
         try {
-            responseMessage = wire.getInvocationChain(jsonOperation).getHeadInvoker().invoke(requestMessage);
+            responseMessage = endpoint.getInvocationChain(jsonOperation).getHeadInvoker().invoke(requestMessage);
         } catch (RuntimeException re) {
             if (re.getCause() instanceof javax.security.auth.login.LoginException) {
                 throw re;
@@ -297,7 +290,7 @@ public class JSONRPCServiceServlet extends JSONRPCServlet {
             method = method.substring(method.lastIndexOf(".") + 1);
         }
     
-        List<Operation> operations = serviceContract.getInterface().getOperations();
+        List<Operation> operations = endpoint.getServiceInterfaceContract().getInterface().getOperations();
             //componentService.getBindingProvider(binding).getBindingInterfaceContract().getInterface().getOperations();
 
         

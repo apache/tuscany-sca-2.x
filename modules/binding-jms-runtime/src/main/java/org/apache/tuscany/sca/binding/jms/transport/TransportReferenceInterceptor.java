@@ -31,8 +31,7 @@ import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
-import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
-import org.apache.tuscany.sca.runtime.RuntimeWire;
+import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 
 /**
  * Policy handler to handle PolicySet related to Logging with the QName
@@ -43,11 +42,11 @@ import org.apache.tuscany.sca.runtime.RuntimeWire;
 public class TransportReferenceInterceptor implements Interceptor {
       
     private Invoker next;
-    private RuntimeWire runtimeWire;
+    private RuntimeEndpointReference runtimeWire;
     private JMSResourceFactory jmsResourceFactory;
     private JMSBinding jmsBinding;
 
-    public TransportReferenceInterceptor(JMSBinding jmsBinding, JMSResourceFactory jmsResourceFactory, RuntimeWire runtimeWire) {
+    public TransportReferenceInterceptor(JMSBinding jmsBinding, JMSResourceFactory jmsResourceFactory, RuntimeEndpointReference runtimeWire) {
         super();
         this.jmsBinding = jmsBinding;
         this.runtimeWire = runtimeWire;

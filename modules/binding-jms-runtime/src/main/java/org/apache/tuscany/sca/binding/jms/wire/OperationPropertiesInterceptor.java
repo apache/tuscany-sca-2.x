@@ -26,7 +26,7 @@ import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
-import org.apache.tuscany.sca.runtime.RuntimeWire;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 
 public class OperationPropertiesInterceptor implements Interceptor {
     private Invoker next;
@@ -34,10 +34,10 @@ public class OperationPropertiesInterceptor implements Interceptor {
     private RuntimeComponentService service;
     private List<Operation> serviceOperations;
           
-    public OperationPropertiesInterceptor(JMSBinding jmsBinding, RuntimeWire runtimeWire) {
+    public OperationPropertiesInterceptor(JMSBinding jmsBinding, RuntimeEndpoint endpoint) {
         super();
         this.jmsBinding = jmsBinding;
-        this.service = (RuntimeComponentService) runtimeWire.getEndpoint().getService();
+        this.service = (RuntimeComponentService) endpoint.getService();
         this.serviceOperations = service.getInterfaceContract().getInterface().getOperations();
     }
 

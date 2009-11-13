@@ -77,7 +77,6 @@ import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
-import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.axis2.Axis2ServiceClient.URIResolverImpl;
 import org.apache.tuscany.sca.binding.ws.axis2.policy.authentication.token.Axis2TokenAuthenticationPolicy;
@@ -98,8 +97,7 @@ import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySubject;
 import org.apache.tuscany.sca.policy.authentication.basic.BasicAuthenticationPolicy;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.runtime.RuntimeComponentService;
-import org.apache.tuscany.sca.runtime.RuntimeWire;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.apache.tuscany.sca.xsd.XSDefinition;
 import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaExternal;
@@ -117,6 +115,7 @@ public class Axis2ServiceProvider {
 
     private static final Logger logger = Logger.getLogger(Axis2ServiceProvider.class.getName());
 
+    private RuntimeEndpoint endpoint;
     private RuntimeComponent component;
     private AbstractContract contract;
     private WebServiceBinding wsBinding;
@@ -159,13 +158,14 @@ public class Axis2ServiceProvider {
     public static final List<QName> XSD_QNAME_LIST =
         Arrays.asList(new QName[] {Q_ELEM_XSD_1999, Q_ELEM_XSD_2000, Q_ELEM_XSD_2001});
 
-    public Axis2ServiceProvider(RuntimeComponent component,
+    public Axis2ServiceProvider(RuntimeEndpoint endpoint,
+                                RuntimeComponent component,
                                 AbstractContract contract,
                                 WebServiceBinding wsBinding,
                                 ServletHost servletHost,
                                 MessageFactory messageFactory,
                                 final FactoryExtensionPoint modelFactories) {
-
+        this.endpoint = endpoint;
         this.component = component;
         this.contract = contract;
         this.wsBinding = wsBinding;
@@ -696,27 +696,11 @@ public class Axis2ServiceProvider {
             from.setCallbackEndpoint(callbackEndpoint);
         }
 
-        // find the runtime wire and invoke it with the message
-        RuntimeWire wire = ((RuntimeComponentService)contract).getRuntimeWire(getBinding());
-        
-        // TODO - EPR - if there is no wire then find the wire for the SCA binding
-        //              because this WS endpoint is providing remote support for the 
-        //              SCA binding
-        if (wire == null){
-            for(RuntimeWire tmpWire : ((RuntimeComponentService)contract).getRuntimeWires()){
-                if (tmpWire.getEndpoint().getBinding() instanceof SCABinding){
-                    wire = tmpWire;
-                    break;
-                }
-            }
+        Message response = endpoint.invoke(op, msg);
+        if(response.isFault()) {
+            throw new InvocationTargetException((Throwable) response.getBody());
         }
-        Object response = wire.invoke(op, msg);
-
-        return response;
-    }
-
-    public boolean isConversational() {
-        return wsBinding.getBindingInterfaceContract().getInterface().isConversational();
+        return response.getBody();
     }
 
     /**

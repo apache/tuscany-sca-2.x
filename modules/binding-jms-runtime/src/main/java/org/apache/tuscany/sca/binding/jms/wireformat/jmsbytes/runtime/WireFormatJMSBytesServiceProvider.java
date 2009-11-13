@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.binding.jms.wireformat.jmsbytes.runtime;
 
-import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSBytes;
@@ -28,28 +27,23 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Phase;
 import org.apache.tuscany.sca.provider.WireFormatProvider;
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.runtime.RuntimeComponentService;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 
 /**
  * @version $Rev$ $Date$
  */
 public class WireFormatJMSBytesServiceProvider implements WireFormatProvider {
     private ExtensionPointRegistry registry;
-    private RuntimeComponent component;
-    private RuntimeComponentService service;
+    private RuntimeEndpoint endpoint;
     private JMSBinding binding;
     private InterfaceContract interfaceContract; 
 
     public WireFormatJMSBytesServiceProvider(ExtensionPointRegistry registry,
-                                             RuntimeComponent component, 
-                                             RuntimeComponentService service, 
-                                             Binding binding) {
+                                             RuntimeEndpoint endpoint) {
         super();
         this.registry = registry;
-        this.component = component;
-        this.service = service;
-        this.binding = (JMSBinding)binding;
+        this.endpoint = endpoint;
+        this.binding = (JMSBinding) endpoint.getBinding();
         
         // configure the service based on this wire format
         
@@ -65,7 +59,7 @@ public class WireFormatJMSBytesServiceProvider implements WireFormatProvider {
         
         // just point to the reference interface contract so no 
         // databinding transformation takes place
-        interfaceContract = service.getService().getInterfaceContract();
+        interfaceContract = endpoint.getService().getService().getInterfaceContract();
     }
        
     public InterfaceContract configureWireFormatInterfaceContract(InterfaceContract interfaceContract){
@@ -87,9 +81,7 @@ public class WireFormatJMSBytesServiceProvider implements WireFormatProvider {
     /**
      */
     public Interceptor createInterceptor() {
-        return new WireFormatJMSBytesServiceInterceptor(registry, (JMSBinding)binding,
-                                                         null,
-                                                        service.getRuntimeWire(binding));
+        return new WireFormatJMSBytesServiceInterceptor(registry, null, endpoint);
     }
 
     /**

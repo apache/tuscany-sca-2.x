@@ -22,9 +22,7 @@ package org.apache.tuscany.sca.binding.jsonrpc.provider;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.binding.jsonrpc.JSONRPCBinding;
-import org.apache.tuscany.sca.databinding.json.JSONDataBinding;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
@@ -33,6 +31,7 @@ import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 
 
 /**
@@ -43,7 +42,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 public class JSONRPCServiceBindingProvider implements ServiceBindingProvider {
     private MessageFactory messageFactory;
     
-    private Endpoint endpoint;
+    private RuntimeEndpoint endpoint;
     private RuntimeComponent component;
     private RuntimeComponentService service;
     private InterfaceContract serviceContract;
@@ -51,7 +50,7 @@ public class JSONRPCServiceBindingProvider implements ServiceBindingProvider {
     private ServletHost servletHost;
     private List<String> servletMappings = new ArrayList<String>();
 
-    public JSONRPCServiceBindingProvider(Endpoint endpoint,
+    public JSONRPCServiceBindingProvider(RuntimeEndpoint endpoint,
                                          MessageFactory messageFactory,
                                          ServletHost servletHost) {
         this.endpoint = endpoint;
@@ -72,7 +71,7 @@ public class JSONRPCServiceBindingProvider implements ServiceBindingProvider {
     }
 
     public InterfaceContract getBindingInterfaceContract() {
-        return service.getInterfaceContract();
+        return serviceContract;
     }
 
     public boolean supportsOneWayInvocation() {
@@ -81,7 +80,7 @@ public class JSONRPCServiceBindingProvider implements ServiceBindingProvider {
     
     public void start() {
         // Set default databinding to json
-        serviceContract.getInterface().resetDataBinding(JSONDataBinding.NAME);
+        // serviceContract.getInterface().resetDataBinding(JSONDataBinding.NAME);
 
         // Determine the service business interface
         Class<?> serviceInterface = getTargetJavaClass(serviceContract.getInterface());
@@ -91,7 +90,7 @@ public class JSONRPCServiceBindingProvider implements ServiceBindingProvider {
 
         // Create and register a Servlet for this service
         JSONRPCServiceServlet serviceServlet =
-            new JSONRPCServiceServlet(messageFactory, binding, service, serviceContract, serviceInterface, proxy);
+            new JSONRPCServiceServlet(messageFactory, endpoint, serviceInterface, proxy);
         String mapping = binding.getURI();
         if (!mapping.endsWith("/")) {
             mapping += "/";

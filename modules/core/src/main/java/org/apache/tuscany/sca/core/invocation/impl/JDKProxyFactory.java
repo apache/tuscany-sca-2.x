@@ -32,13 +32,14 @@ import javax.xml.ws.Response;
 
 import org.apache.tuscany.sca.common.java.collection.LRUCache;
 import org.apache.tuscany.sca.core.LifeCycleListener;
+import org.apache.tuscany.sca.core.context.ServiceReferenceExt;
 import org.apache.tuscany.sca.core.context.impl.CallbackServiceReferenceImpl;
 import org.apache.tuscany.sca.core.context.impl.ServiceReferenceImpl;
 import org.apache.tuscany.sca.core.invocation.ProxyCreationException;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.invocation.MessageFactory;
-import org.apache.tuscany.sca.runtime.RuntimeWire;
+import org.apache.tuscany.sca.runtime.Invocable;
 import org.oasisopen.sca.ServiceReference;
 
 
@@ -60,8 +61,8 @@ public class JDKProxyFactory implements ProxyFactory, LifeCycleListener {
      * The original createProxy method assumes that the proxy doesn't want to 
      * share conversation state so sets the conversation object to null
      */
-    public <T> T createProxy(Class<T> interfaze, RuntimeWire wire) throws ProxyCreationException {
-        ServiceReference<T> serviceReference = new ServiceReferenceImpl(interfaze, wire, this);
+    public <T> T createProxy(Class<T> interfaze, Invocable wire) throws ProxyCreationException {
+        ServiceReference<T> serviceReference = new ServiceReferenceImpl<T>(interfaze, wire, null);
         return createProxy(serviceReference);
     }
     
@@ -80,9 +81,9 @@ public class JDKProxyFactory implements ProxyFactory, LifeCycleListener {
                return interfaze.getClassLoader();
             }
         });
-        Object proxy = newProxyInstance(cl, new Class[] {interfaze}, handler);
-        ((ServiceReferenceImpl)callableReference).setProxy(proxy);
-        return interfaze.cast(proxy);
+        T proxy = interfaze.cast(newProxyInstance(cl, new Class[] {interfaze}, handler));
+        ((ServiceReferenceExt<T>)callableReference).setProxy(proxy);
+        return proxy;
     }
     
     private boolean isAsync(Class<?> interfaze) {
@@ -103,19 +104,19 @@ public class JDKProxyFactory implements ProxyFactory, LifeCycleListener {
         return false;
     }
 
-    public <T> T createCallbackProxy(Class<T> interfaze, List<RuntimeWire> wires) throws ProxyCreationException {
-        ServiceReferenceImpl<T> callbackReference = new CallbackServiceReferenceImpl(interfaze, wires, this);
+    public <T> T createCallbackProxy(Class<T> interfaze, List<? extends Invocable> wires) throws ProxyCreationException {
+        ServiceReferenceImpl<T> callbackReference = new CallbackServiceReferenceImpl(interfaze, wires);
         return callbackReference != null ? createCallbackProxy(callbackReference) : null;
     }
 
-    public <T> T createCallbackProxy(ServiceReferenceImpl<T> callbackReference) throws ProxyCreationException {
+    public <T> T createCallbackProxy(ServiceReference<T> callbackReference) throws ProxyCreationException {
         assert callbackReference != null;
         Class<T> interfaze = callbackReference.getBusinessInterface();
         InvocationHandler handler = new JDKCallbackInvocationHandler(messageFactory, callbackReference);
         ClassLoader cl = interfaze.getClassLoader();
-        Object proxy = newProxyInstance(cl, new Class[] {interfaze}, handler);
-        callbackReference.setProxy(proxy);
-        return interfaze.cast(proxy);
+        T proxy = interfaze.cast(newProxyInstance(cl, new Class[] {interfaze}, handler));
+        ((ServiceReferenceExt<T>) callbackReference).setProxy(proxy);
+        return proxy;
     }
 
     public <B, R extends ServiceReference<B>> R cast(B target) throws IllegalArgumentException {

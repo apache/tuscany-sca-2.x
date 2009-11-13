@@ -40,7 +40,7 @@ import org.apache.tuscany.sca.interfacedef.util.FaultException;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
-import org.apache.tuscany.sca.runtime.RuntimeWire;
+import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 
 /**
  * 
@@ -49,7 +49,7 @@ import org.apache.tuscany.sca.runtime.RuntimeWire;
 public class WireFormatJMSDefaultReferenceInterceptor implements Interceptor {
 
     private Invoker next;
-    private RuntimeWire runtimeWire;
+    private RuntimeEndpointReference endpointReference;
     private JMSResourceFactory jmsResourceFactory;
     private JMSBinding jmsBinding;
     private DefaultMessageProcessor requestMessageProcessor;
@@ -57,11 +57,11 @@ public class WireFormatJMSDefaultReferenceInterceptor implements Interceptor {
     private HashMap<String, Boolean> inputWrapperMap;
     private HashMap<String, OMElement> outputWrapperMap;
 
-    public WireFormatJMSDefaultReferenceInterceptor(ExtensionPointRegistry registry, JMSBinding jmsBinding, JMSResourceFactory jmsResourceFactory, RuntimeWire runtimeWire, HashMap<String, Boolean> inputWrapperMap,
+    public WireFormatJMSDefaultReferenceInterceptor(ExtensionPointRegistry registry, JMSResourceFactory jmsResourceFactory, RuntimeEndpointReference endpointReference, HashMap<String, Boolean> inputWrapperMap,
             HashMap<String, OMElement> outputWrapperMap) {
         super();
-        this.jmsBinding = jmsBinding;
-        this.runtimeWire = runtimeWire;
+        this.jmsBinding = (JMSBinding) endpointReference.getBinding();
+        this.endpointReference = endpointReference;
         this.jmsResourceFactory = jmsResourceFactory;
         // Note the default processor doesn't follow the normal processor pattern 
         // as it has to handle both text and bytes messages

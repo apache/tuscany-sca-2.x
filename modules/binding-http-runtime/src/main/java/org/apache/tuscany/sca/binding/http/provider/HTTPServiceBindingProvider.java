@@ -21,7 +21,6 @@ package org.apache.tuscany.sca.binding.http.provider;
 
 import javax.servlet.Servlet;
 
-import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.binding.http.HTTPBinding;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.host.http.ServletHost;
@@ -31,25 +30,25 @@ import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.invocation.Phase;
+import org.apache.tuscany.sca.provider.EndpointProvider;
 import org.apache.tuscany.sca.provider.OperationSelectorProvider;
 import org.apache.tuscany.sca.provider.OperationSelectorProviderFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
-import org.apache.tuscany.sca.provider.ServiceBindingProviderRRB;
 import org.apache.tuscany.sca.provider.WireFormatProvider;
 import org.apache.tuscany.sca.provider.WireFormatProviderFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
-import org.apache.tuscany.sca.runtime.RuntimeWire;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 
 /**
  * Implementation of an HTTP binding provider.
  *
  * @version $Rev$ $Date$
  */
-public class HTTPServiceBindingProvider implements ServiceBindingProviderRRB {
+public class HTTPServiceBindingProvider implements EndpointProvider {
     private ExtensionPointRegistry extensionPoints;
     
-    private Endpoint endpoint;
+    private RuntimeEndpoint endpoint;
     private RuntimeComponent component;
     private RuntimeComponentService service;  
     private InterfaceContract serviceContract;
@@ -63,7 +62,7 @@ public class HTTPServiceBindingProvider implements ServiceBindingProviderRRB {
     private String servletMapping;
     private HTTPBindingListenerServlet bindingListenerServlet;
    
-    public HTTPServiceBindingProvider(Endpoint endpoint,
+    public HTTPServiceBindingProvider(RuntimeEndpoint endpoint,
                                       ExtensionPointRegistry extensionPoints,
                                       MessageFactory messageFactory,
                                       ServletHost servletHost) {
@@ -86,7 +85,7 @@ public class HTTPServiceBindingProvider implements ServiceBindingProviderRRB {
             // Configure the interceptors for operation selection
             OperationSelectorProviderFactory osProviderFactory = (OperationSelectorProviderFactory) providerFactories.getProviderFactory(binding.getOperationSelector().getClass());
             if (osProviderFactory != null) {
-                this.osProvider = osProviderFactory.createServiceOperationSelectorProvider(component, service, binding);
+                this.osProvider = osProviderFactory.createServiceOperationSelectorProvider(endpoint);
             }            
         }
         
@@ -94,7 +93,7 @@ public class HTTPServiceBindingProvider implements ServiceBindingProviderRRB {
             // Configure the interceptors for wire format
             WireFormatProviderFactory wfProviderFactory = (WireFormatProviderFactory) providerFactories.getProviderFactory(binding.getRequestWireFormat().getClass());
             if (wfProviderFactory != null) {
-                this.wfProvider = wfProviderFactory.createServiceWireFormatProvider(component, service, binding);
+                this.wfProvider = wfProviderFactory.createServiceWireFormatProvider(endpoint);
             }            
         }
 
@@ -116,11 +115,9 @@ public class HTTPServiceBindingProvider implements ServiceBindingProviderRRB {
 
     public void start() {
         // Get the invokers for the supported operations
-        RuntimeComponentService componentService = (RuntimeComponentService) service;
-        RuntimeWire wire = componentService.getRuntimeWire(binding);
         Servlet servlet = null;
         bindingListenerServlet = new HTTPBindingListenerServlet(binding, messageFactory );
-        for (InvocationChain invocationChain : wire.getInvocationChains()) {
+        for (InvocationChain invocationChain : endpoint.getInvocationChains()) {
             Operation operation = invocationChain.getTargetOperation();
             String operationName = operation.getName();
             if (operationName.equals("get")) { 
@@ -195,9 +192,9 @@ public class HTTPServiceBindingProvider implements ServiceBindingProviderRRB {
      * Add specific http interceptor to invocation chain
      * @param runtimeWire
      */
-    public void configureBindingChain(RuntimeWire runtimeWire) {
+    public void configure() {
 
-        InvocationChain bindingChain = runtimeWire.getBindingInvocationChain();
+        InvocationChain bindingChain = endpoint.getBindingInvocationChain();
 
         if(osProvider != null) {
             bindingChain.addInterceptor(Phase.SERVICE_BINDING_OPERATION_SELECTOR, osProvider.createInterceptor());    

@@ -20,7 +20,6 @@
 package org.apache.tuscany.sca.binding.jms.wireformat.jmsbytesxml.runtime;
 
 import org.apache.axiom.om.OMElement;
-import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSBytesXML;
@@ -32,25 +31,20 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Phase;
 import org.apache.tuscany.sca.provider.WireFormatProvider;
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
+import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 
 public class WireFormatJMSBytesXMLReferenceProvider implements WireFormatProvider {
     private ExtensionPointRegistry registry;
-    private RuntimeComponent component;
-    private RuntimeComponentReference reference;
+    private RuntimeEndpointReference endpointReference;
     private JMSBinding binding;
     private InterfaceContract interfaceContract; 
 
     public WireFormatJMSBytesXMLReferenceProvider(ExtensionPointRegistry registry,
-                                               RuntimeComponent component,
-                                               RuntimeComponentReference reference,
-                                               Binding binding) {
+                                                  RuntimeEndpointReference endpointReference) {
         super();
         this.registry = registry;
-        this.component = component;
-        this.reference = reference;
-        this.binding = (JMSBinding)binding;
+        this.endpointReference = endpointReference;
+        this.binding = (JMSBinding)endpointReference.getBinding();
         
         // configure the reference based on this wire format
         
@@ -71,7 +65,7 @@ public class WireFormatJMSBytesXMLReferenceProvider implements WireFormatProvide
         // as required
         WebServiceBindingFactory wsFactory = registry.getExtensionPoint(WebServiceBindingFactory.class);
         WebServiceBinding wsBinding = wsFactory.createWebServiceBinding();
-        BindingWSDLGenerator.generateWSDL(component, reference, wsBinding, registry, null);
+        BindingWSDLGenerator.generateWSDL(endpointReference.getComponent(), endpointReference.getContract(), wsBinding, registry, null);
         interfaceContract = wsBinding.getBindingInterfaceContract();
         interfaceContract.getInterface().resetDataBinding(OMElement.class.getName());
     }
@@ -93,9 +87,7 @@ public class WireFormatJMSBytesXMLReferenceProvider implements WireFormatProvide
     }     
 
     public Interceptor createInterceptor() {
-        return new WireFormatJMSBytesXMLReferenceInterceptor(registry, binding, 
-                                                          null, 
-                                                          reference.getRuntimeWire(binding));
+        return new WireFormatJMSBytesXMLReferenceInterceptor(registry, null, endpointReference);
     }
 
     public String getPhase() {

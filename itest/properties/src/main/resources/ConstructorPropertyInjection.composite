@@ -17,7 +17,7 @@
 	* specific language governing permissions and limitations
 	* under the License.    
 -->
-<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903" name="ConstructorPropertyInjection">
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903" targetNamespace="http://foo" name="ConstructorPropertyInjection">
 
     <component name="Foo1Component">
         <implementation.java class="org.apache.tuscany.sca.itest.cdi.Foo1" />

@@ -19,8 +19,6 @@
 
 package org.apache.tuscany.sca.binding.jms.provider;
 
-import org.apache.tuscany.sca.assembly.Endpoint;
-import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.host.DefaultJMSHostExtensionPoint;
 import org.apache.tuscany.sca.binding.jms.host.JMSHostExtensionPoint;
@@ -29,9 +27,8 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
-import org.apache.tuscany.sca.runtime.RuntimeComponentService;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
+import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 
 /**
  * A factory from creating the JMS binding provider.
@@ -61,15 +58,15 @@ public class JMSBindingProviderFactory implements BindingProviderFactory<JMSBind
         serviceListenerFactory = jmsHostExtensionPoint.getJMSServiceListenerFactory();
     }
 
-    public ReferenceBindingProvider createReferenceBindingProvider(EndpointReference endpointReference) {
+    public ReferenceBindingProvider createReferenceBindingProvider(RuntimeEndpointReference endpointReference) {
         JMSResourceFactory jmsRF = jmsRFEP.createJMSResourceFactory((JMSBinding)endpointReference.getBinding());
-        return new JMSBindingReferenceBindingProvider((RuntimeComponent)endpointReference.getComponent(), (RuntimeComponentReference) endpointReference.getReference(), (JMSBinding)endpointReference.getBinding(), extensionPoints, jmsRF);
+        return new JMSBindingReferenceBindingProvider(endpointReference, extensionPoints, jmsRF);
     }
 
-    public ServiceBindingProvider createServiceBindingProvider(Endpoint endpoint) {
+    public ServiceBindingProvider createServiceBindingProvider(RuntimeEndpoint endpoint) {
         JMSBinding binding = (JMSBinding)endpoint.getBinding();
         JMSResourceFactory jmsRF = jmsRFEP.createJMSResourceFactory(binding);
-        return new JMSBindingServiceBindingProvider(extensionPoints, (RuntimeComponent)endpoint.getComponent(), (RuntimeComponentService)endpoint.getService(), binding, binding, serviceListenerFactory, extensionPoints, jmsRF);
+        return new JMSBindingServiceBindingProvider(extensionPoints, endpoint, serviceListenerFactory, extensionPoints, jmsRF);
     }
 
     public Class<JMSBinding> getModelType() {

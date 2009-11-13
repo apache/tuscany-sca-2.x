@@ -36,7 +36,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.runtime.RuntimeWire;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -44,11 +44,11 @@ import org.codehaus.jackson.map.ObjectMapper;
 public class JSONPServlet extends GenericServlet {
     private static final long serialVersionUID = 1L;
 
-    protected transient RuntimeWire wire;
+    protected transient RuntimeEndpoint wire;
     protected transient Operation operation;
     protected transient ObjectMapper mapper;
     
-    public JSONPServlet(RuntimeWire wire, Operation operation) {
+    public JSONPServlet(RuntimeEndpoint wire, Operation operation) {
         this.wire = wire;
         this.operation = operation;
         this.mapper = new ObjectMapper();

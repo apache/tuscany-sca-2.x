@@ -21,13 +21,11 @@ package org.apache.tuscany.sca.core.invocation.impl;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-
-import org.apache.tuscany.sca.core.assembly.impl.RuntimeWireImpl;
 import org.apache.tuscany.sca.core.context.impl.CallbackServiceReferenceImpl;
-import org.apache.tuscany.sca.core.context.impl.ServiceReferenceImpl;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.MessageFactory;
-import org.apache.tuscany.sca.runtime.RuntimeWire;
+import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
+import org.oasisopen.sca.ServiceReference;
 import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
@@ -39,7 +37,7 @@ import org.oasisopen.sca.ServiceRuntimeException;
 public class JDKCallbackInvocationHandler extends JDKInvocationHandler {
     private static final long serialVersionUID = -3350283555825935609L;
 
-    public JDKCallbackInvocationHandler(MessageFactory messageFactory, ServiceReferenceImpl ref) {
+    public JDKCallbackInvocationHandler(MessageFactory messageFactory, ServiceReference<?> ref) {
         super(messageFactory, ref);
         this.fixedWire = false;
     }
@@ -53,7 +51,7 @@ public class JDKCallbackInvocationHandler extends JDKInvocationHandler {
         }
    
         // obtain a dedicated wire to be used for this callback invocation
-        RuntimeWire wire = ((CallbackServiceReferenceImpl)callableReference).getCallbackWire();
+        RuntimeEndpointReference wire = ((CallbackServiceReferenceImpl)callableReference).getCallbackEPR();
         if (wire == null) {
             //FIXME: need better exception
             throw new ServiceRuntimeException("No callback wire found");
@@ -67,13 +65,12 @@ public class JDKCallbackInvocationHandler extends JDKInvocationHandler {
         }
 
         try {
-            return invoke(chain, args, wire, wire.getEndpointReference());
+            return invoke(chain, args, wire);
         } catch (InvocationTargetException e) {
             Throwable t = e.getCause();
-            throw e;
+            throw t;
         } finally {
             // allow the cloned wire to be reused by subsequent callbacks
-            ((RuntimeWireImpl)wire).releaseWire();
         }
     }
 

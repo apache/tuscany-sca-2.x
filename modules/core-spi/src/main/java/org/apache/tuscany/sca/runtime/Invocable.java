@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
+ * 
  *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.
+ * under the License.    
  */
 
 package org.apache.tuscany.sca.runtime;
@@ -22,38 +22,63 @@ package org.apache.tuscany.sca.runtime;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
-import org.apache.tuscany.sca.assembly.Endpoint;
-import org.apache.tuscany.sca.assembly.EndpointReference;
+import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.assembly.Component;
+import org.apache.tuscany.sca.assembly.Contract;
+import org.apache.tuscany.sca.context.CompositeContext;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Message;
+import org.apache.tuscany.sca.provider.PolicyProvider;
 
 /**
- * The runtime wire interface that connects a component reference to a
- *  component service (or an external service) over the selected binding
- *
- * @version $Rev$ $Date$
+ * The abstraction of an invocable model that contains invocation chains 
  */
-public interface RuntimeWire extends Cloneable {
+public interface Invocable {
     /**
-     * return the endpoint reference that configured this wire
-     *
-     * @return the endpoint reference that configured this wire
+     * Bind the invocable to the composite context
+     * @param context
      */
-    EndpointReference getEndpointReference();
+    void bind(CompositeContext context);
+    
+    /**
+     * Bind the invocable to the extension point registry and endpoint registry. This is typically
+     * called after the endpoint or endpoint reference is deserialized
+     * @param registry
+     * @param endpointRegistry
+     */
+    void bind(ExtensionPointRegistry registry, EndpointRegistry endpointRegistry);
+    
+    /**
+     * Get the associated composite context
+     * @return
+     */
+    CompositeContext getCompositeContext();
 
     /**
-     * return the endpoint that configured this wire
-     *
-     * @return the endpoint  that configured this wire
+     * Unbind the invocable from the composite context
      */
-    Endpoint getEndpoint();
+    void unbind();
 
     /**
-     * Force the invocation chains to be rebuilt
+     * Get the component
+     * @return
      */
-    void rebuild();
+    Component getComponent();
 
+    /**
+     * Get the service or reference (contract)
+     * @return
+     */
+    Contract getContract();
+
+    /**
+     * Get the binding
+     * @return
+     */
+    Binding getBinding();
+    
     /**
      * Returns the invocation chains for service operations associated with the
      * wire
@@ -72,7 +97,7 @@ public interface RuntimeWire extends Cloneable {
 
     /**
      * Get the invocation chain for the binding-specific handling
-     * @return
+     * @return The binding invocation chain
      */
     InvocationChain getBindingInvocationChain();
 
@@ -80,11 +105,10 @@ public interface RuntimeWire extends Cloneable {
      * This invoke method assumes that the binding invocation chain is in force
      * and that there will be an operation selector element there to
      * determine which operation to call
-     * @param msg The message
-     * @return The result
-     * @throws InvocationTargetException
+     * @param msg The request message
+     * @return The response message
      */
-    Object invoke(Message msg) throws InvocationTargetException;
+    Message invoke(Message msg);
 
     /**
      * Invoke an operation with given arguments
@@ -98,17 +122,15 @@ public interface RuntimeWire extends Cloneable {
     /**
      * Invoke an operation with a context message
      * @param operation The operation
-     * @param msg The message
-     * @return The result
+     * @param msg The request message
+     * @return The response message
      * @throws InvocationTargetException
      */
-    Object invoke(Operation operation, Message msg) throws InvocationTargetException;
+    Message invoke(Operation operation, Message msg);
 
     /**
-     * @return a clone of the runtime wire
-     * @throws CloneNotSupportedException
+     * Get a list of policy providers
+     * @return
      */
-    Object clone() throws CloneNotSupportedException;
-
-    boolean isOutOfDate();
+    List<PolicyProvider> getPolicyProviders();
 }

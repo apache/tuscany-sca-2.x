@@ -20,8 +20,6 @@ package org.apache.tuscany.sca.binding.ws.axis2;
 
 import java.util.List;
 
-import org.apache.tuscany.sca.assembly.Endpoint;
-import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
@@ -34,6 +32,8 @@ import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
+import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 
 /**
  * Axis2BindingProviderFactory
@@ -57,11 +57,11 @@ public class Axis2BindingProviderFactory implements BindingProviderFactory<WebSe
         dataBindings = extensionPoints.getExtensionPoint(DataBindingExtensionPoint.class);
     }
 
-    public ReferenceBindingProvider createReferenceBindingProvider(EndpointReference endpointReference) {
+    public ReferenceBindingProvider createReferenceBindingProvider(RuntimeEndpointReference endpointReference) {
         return new Axis2ReferenceBindingProvider(endpointReference, modelFactories, dataBindings);
     }
 
-    public ServiceBindingProvider createServiceBindingProvider(Endpoint endpoint) {
+    public ServiceBindingProvider createServiceBindingProvider(RuntimeEndpoint endpoint) {
         return new Axis2ServiceBindingProvider(endpoint, servletHost, modelFactories, dataBindings);
     }
     

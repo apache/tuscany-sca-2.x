@@ -26,7 +26,7 @@ import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.OMNamespace;
-import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory;
@@ -42,27 +42,26 @@ import org.apache.tuscany.sca.interfacedef.util.ElementInfo;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Phase;
 import org.apache.tuscany.sca.provider.WireFormatProvider;
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.runtime.RuntimeComponentService;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 
 /**
  * @version $Rev$ $Date$
  */
 public class WireFormatJMSDefaultServiceProvider implements WireFormatProvider {
     private ExtensionPointRegistry registry;
-    private RuntimeComponent component;
-    private RuntimeComponentService service;
+    private RuntimeEndpoint endpoint;
+    private ComponentService service;
     private JMSBinding binding;
     private JMSResourceFactory jmsResourceFactory;
     private InterfaceContract interfaceContract;
     private HashMap<String, OMElement> inputWrapperMap;
     private HashMap<String, Boolean> outputWrapperMap;
 
-    public WireFormatJMSDefaultServiceProvider(ExtensionPointRegistry registry, RuntimeComponent component, RuntimeComponentService service, Binding binding, JMSResourceFactory jmsResourceFactory) {
+    public WireFormatJMSDefaultServiceProvider(ExtensionPointRegistry registry, RuntimeEndpoint endpoint, JMSResourceFactory jmsResourceFactory) {
         super();
-        this.component = component;
-        this.service = service;
-        this.binding = (JMSBinding) binding;
+        this.endpoint = endpoint;
+        this.binding = (JMSBinding) endpoint.getBinding();
+        this.service = endpoint.getService();
         this.jmsResourceFactory = jmsResourceFactory;
 
         this.inputWrapperMap = new HashMap<String, OMElement>();
@@ -92,7 +91,7 @@ public class WireFormatJMSDefaultServiceProvider implements WireFormatProvider {
         if (service.getInterfaceContract() != null && !isAsIs()) {
             WebServiceBindingFactory wsFactory = registry.getExtensionPoint(WebServiceBindingFactory.class);
             WebServiceBinding wsBinding = wsFactory.createWebServiceBinding();
-            BindingWSDLGenerator.generateWSDL(component, service, wsBinding, registry, null);
+            BindingWSDLGenerator.generateWSDL(endpoint.getComponent(), service, wsBinding, registry, null);
             interfaceContract = wsBinding.getBindingInterfaceContract();
             interfaceContract.getInterface().resetDataBinding(OMElement.class.getName());
 
@@ -181,7 +180,7 @@ public class WireFormatJMSDefaultServiceProvider implements WireFormatProvider {
 
 
     public Interceptor createInterceptor() {
-        return new WireFormatJMSDefaultServiceInterceptor(registry, binding, jmsResourceFactory, service.getRuntimeWire(binding), this.inputWrapperMap, this.outputWrapperMap);
+        return new WireFormatJMSDefaultServiceInterceptor(registry, jmsResourceFactory, endpoint, this.inputWrapperMap, this.outputWrapperMap);
     }
 
     public String getPhase() {

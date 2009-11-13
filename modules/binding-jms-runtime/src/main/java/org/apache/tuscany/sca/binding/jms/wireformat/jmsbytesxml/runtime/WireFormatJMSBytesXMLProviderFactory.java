@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.binding.jms.wireformat.jmsbytesxml.runtime;
 
-import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory;
 import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactoryExtensionPoint;
@@ -27,9 +26,8 @@ import org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSBytes;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.provider.WireFormatProvider;
 import org.apache.tuscany.sca.provider.WireFormatProviderFactory;
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
-import org.apache.tuscany.sca.runtime.RuntimeComponentService;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
+import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 
 
 public class WireFormatJMSBytesXMLProviderFactory implements WireFormatProviderFactory<WireFormatJMSBytes> {
@@ -44,19 +42,15 @@ public class WireFormatJMSBytesXMLProviderFactory implements WireFormatProviderF
 
     /**
      */
-    public WireFormatProvider createReferenceWireFormatProvider(RuntimeComponent component,
-                                                        RuntimeComponentReference reference,
-                                                        Binding binding) {
-        return new WireFormatJMSBytesXMLReferenceProvider(registry, component, reference, binding);
+    public WireFormatProvider createReferenceWireFormatProvider(RuntimeEndpointReference endpointReference) {
+        return new WireFormatJMSBytesXMLReferenceProvider(registry, endpointReference);
     }
 
     /**
       */
-    public WireFormatProvider createServiceWireFormatProvider(RuntimeComponent component,
-                                                              RuntimeComponentService service,
-                                                              Binding binding) {
-        JMSResourceFactory jmsRF = jmsRFEP.createJMSResourceFactory((JMSBinding)binding);
-        return new WireFormatJMSBytesXMLServiceProvider(registry, component, service, binding, jmsRF);
+    public WireFormatProvider createServiceWireFormatProvider(RuntimeEndpoint endpoint) {
+        JMSResourceFactory jmsRF = jmsRFEP.createJMSResourceFactory((JMSBinding)endpoint.getBinding());
+        return new WireFormatJMSBytesXMLServiceProvider(registry, endpoint, jmsRF);
     }
 
     /**

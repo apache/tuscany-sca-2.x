@@ -20,13 +20,11 @@
 package org.apache.tuscany.sca.node.impl;
 
 import java.io.ByteArrayOutputStream;
-//import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-//import javax.management.MBeanServer;
 import javax.xml.stream.XMLOutputFactory;
 
 import org.apache.tuscany.sca.assembly.Component;
@@ -135,7 +133,7 @@ public class NodeImpl implements Node, Client {
                 domainComposite = manager.configureNode(configuration, contributions, context);
 
                 this.compositeContext =
-                    new CompositeContextImpl(manager.registry, endpointRegistry, domainComposite);
+                    new CompositeContext(manager.registry, endpointRegistry, domainComposite);
             } finally {
                 // Reset the thread context monitor
                 manager.monitorFactory.setContextMonitor(tcm);

@@ -19,18 +19,16 @@
 
 package org.apache.tuscany.sca.binding.atom.provider;
 
-import org.apache.tuscany.sca.assembly.Endpoint;
-import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.binding.atom.AtomBinding;
 import org.apache.tuscany.sca.databinding.Mediator;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
-import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
+import org.apache.tuscany.sca.runtime.Invocable;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
-import org.apache.tuscany.sca.runtime.RuntimeWire;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 
 /**
  * Implementation of the Atom binding provider.
@@ -40,7 +38,7 @@ import org.apache.tuscany.sca.runtime.RuntimeWire;
 class AtomServiceBindingProvider implements ServiceBindingProvider {
     private MessageFactory messageFactory;
 
-    private Endpoint endpoint;
+    private RuntimeEndpoint endpoint;
 
     private RuntimeComponent component;
     private RuntimeComponentService service;
@@ -52,7 +50,7 @@ class AtomServiceBindingProvider implements ServiceBindingProvider {
     private String servletMapping;
     private String bindingURI;
 
-    AtomServiceBindingProvider(Endpoint endpoint,
+    AtomServiceBindingProvider(RuntimeEndpoint endpoint,
                                MessageFactory messageFactory,
                                Mediator mediator,
                                ServletHost servletHost) {
@@ -66,16 +64,7 @@ class AtomServiceBindingProvider implements ServiceBindingProvider {
         this.mediator = mediator;
 
         // TUSCANY-3166
-        this.serviceContract = service.getInterfaceContract();
-        if (this.serviceContract instanceof WSDLInterfaceContract) {
-            for (Service componentService : component.getImplementation().getServices()) {
-                if (componentService.getName().equals(service.getName())) {
-                    this.serviceContract = (InterfaceContract) componentService.getInterfaceContract();
-                    break;
-                }
-            }
-
-        }      
+        this.serviceContract = endpoint.getServiceInterfaceContract();
     }
 
     public InterfaceContract getBindingInterfaceContract() {
@@ -87,8 +76,7 @@ class AtomServiceBindingProvider implements ServiceBindingProvider {
     }
 
     public void start() {
-        RuntimeComponentService componentService = (RuntimeComponentService)service;
-        RuntimeWire wire = componentService.getRuntimeWire(binding);
+        Invocable wire = (RuntimeEndpoint) endpoint;
 
         AtomBindingListenerServlet servlet =
             new AtomBindingListenerServlet(wire, messageFactory, mediator, binding.getTitle(), binding.getDescription());

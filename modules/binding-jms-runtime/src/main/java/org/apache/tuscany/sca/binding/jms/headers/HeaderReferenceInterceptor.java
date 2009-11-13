@@ -40,9 +40,8 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
-import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
-import org.apache.tuscany.sca.runtime.RuntimeComponentService;
-import org.apache.tuscany.sca.runtime.RuntimeWire;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
+import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 
 /**
  *
@@ -51,7 +50,7 @@ import org.apache.tuscany.sca.runtime.RuntimeWire;
 public class HeaderReferenceInterceptor implements Interceptor {
 
     private Invoker next;
-    private RuntimeWire runtimeWire;
+    private RuntimeEndpointReference runtimeWire;
     private JMSResourceFactory jmsResourceFactory;
     private JMSBinding jmsBinding;
     private JMSMessageProcessor requestMessageProcessor;
@@ -60,7 +59,7 @@ public class HeaderReferenceInterceptor implements Interceptor {
     private WireFormat requestWireFormat;
     private WireFormat responseWireFormat;
 
-    public HeaderReferenceInterceptor(JMSBinding jmsBinding, JMSResourceFactory jmsResourceFactory, RuntimeWire runtimeWire, ExtensionPointRegistry extensions) {
+    public HeaderReferenceInterceptor(ExtensionPointRegistry extensions, JMSBinding jmsBinding, JMSResourceFactory jmsResourceFactory, RuntimeEndpointReference runtimeWire) {
         super();
         this.jmsBinding = jmsBinding;
         this.runtimeWire = runtimeWire;
@@ -85,7 +84,7 @@ public class HeaderReferenceInterceptor implements Interceptor {
             
             Operation operation = tuscanyMsg.getOperation();
             String operationName = operation.getName();
-            RuntimeComponentReference reference = (RuntimeComponentReference)runtimeWire.getEndpointReference().getReference();
+            RuntimeEndpointReference reference = runtimeWire;
             
             // I think the OASIS spec suggests we do not need to do anything with
             // @nativeOperation here on the reference side.
@@ -145,11 +144,10 @@ public class HeaderReferenceInterceptor implements Interceptor {
     }
  
     
-    protected String getCallbackDestinationName(RuntimeComponentReference reference) {
-        RuntimeComponentService s = (RuntimeComponentService)reference.getCallbackService();
-        JMSBinding b = s.getBinding(JMSBinding.class);
-        if (b != null) {
-            JMSBindingServiceBindingProvider bp = (JMSBindingServiceBindingProvider)s.getBindingProvider(b);
+    protected String getCallbackDestinationName(RuntimeEndpointReference reference) {
+        RuntimeEndpoint endpoint = (RuntimeEndpoint) reference.getCallbackEndpoint();
+        if (endpoint != null) {
+            JMSBindingServiceBindingProvider bp = (JMSBindingServiceBindingProvider)endpoint.getBindingProvider();
             return bp.getDestinationName();
         }
         return null;

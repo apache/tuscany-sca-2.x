@@ -23,7 +23,6 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentProperty;
 import org.apache.tuscany.sca.assembly.ComponentReference;
@@ -31,8 +30,8 @@ import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.Multiplicity;
-import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.assembly.Reference;
+import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.context.CompositeContext;
 import org.apache.tuscany.sca.context.ContextFactoryExtensionPoint;
@@ -49,16 +48,14 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.sca.monitor.Monitor;
-import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.runtime.CompositeActivator;
 import org.apache.tuscany.sca.runtime.EndpointReferenceBinder;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentContext;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
-import org.apache.tuscany.sca.runtime.RuntimeComponentService;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
+import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 import org.oasisopen.sca.RequestContext;
-import org.oasisopen.sca.SCARuntimeException;
 import org.oasisopen.sca.ServiceReference;
 import org.oasisopen.sca.ServiceRuntimeException;
 
@@ -78,28 +75,27 @@ public class ComponentContextImpl implements RuntimeComponentContext {
     private final JavaInterfaceFactory javaInterfaceFactory;
     private final PropertyValueFactory propertyFactory;
     private final EndpointReferenceBinder eprBinder;
-    private final Monitor monitor;
-    
-    public ComponentContextImpl(ExtensionPointRegistry registry, CompositeContext compositeContext, RuntimeComponent component) {
+
+    public ComponentContextImpl(ExtensionPointRegistry registry,
+                                CompositeContext compositeContext,
+                                RuntimeComponent component) {
         this.component = component;
         FactoryExtensionPoint factories = registry.getExtensionPoint(FactoryExtensionPoint.class);
         this.assemblyFactory = factories.getFactory(AssemblyFactory.class);
         this.javaInterfaceFactory = factories.getFactory(JavaInterfaceFactory.class);
-        
+
         UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
         this.compositeContext = compositeContext;
-        
+
         this.compositeActivator = utilities.getUtility(CompositeActivator.class);
-        
+
         this.requestContextFactory =
             registry.getExtensionPoint(ContextFactoryExtensionPoint.class).getFactory(RequestContextFactory.class);
         this.proxyFactory = new ExtensibleProxyFactory(registry.getExtensionPoint(ProxyFactoryExtensionPoint.class));
         this.propertyFactory = factories.getFactory(PropertyValueFactory.class);
-        
+
         this.eprBinder = utilities.getUtility(EndpointReferenceBinder.class);
 
-        MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
-        this.monitor = monitorFactory.createMonitor();
     }
 
     public String getURI() {
@@ -116,31 +112,64 @@ public class ComponentContextImpl implements RuntimeComponentContext {
     }
 
     public <B> ServiceReference<B> getServiceReference(Class<B> businessInterface, String referenceName) {
-        try {
-            for (ComponentReference ref : component.getReferences()) {
-                if (referenceName.equals(ref.getName())) {
-                    /* ******************** Contribution for issue TUSCANY-2281 ******************** */
-                    Multiplicity multiplicity = ref.getMultiplicity();
-                    if (multiplicity == Multiplicity.ZERO_N || multiplicity == Multiplicity.ONE_N) {
-                        throw new IllegalArgumentException("Reference " + referenceName
-                            + " has multiplicity "
-                            + multiplicity);
-                    }
-                    /* ******************** Contribution for issue TUSCANY-2281 ******************** */
 
-                    return getServiceReference(businessInterface, (RuntimeComponentReference)ref, null);
+        for (ComponentReference ref : component.getReferences()) {
+            if (referenceName.equals(ref.getName())) {
+                Multiplicity multiplicity = ref.getMultiplicity();
+                if (multiplicity == Multiplicity.ZERO_N || multiplicity == Multiplicity.ONE_N) {
+                    throw new ServiceRuntimeException("Reference " + referenceName
+                        + " has multiplicity "
+                        + multiplicity);
+                }
+                return getServiceReference(businessInterface, (RuntimeEndpointReference)getEndpointReference(ref));
+            }
+        }
+        throw new ServiceRuntimeException("Reference not found: " + referenceName);
+
+    }
+
+    /**
+     * Select an endpoint reference from the component reference
+     * @param ref
+     * @return
+     */
+    private EndpointReference getEndpointReference(ComponentReference ref) {
+        List<EndpointReference> eprs = ref.getEndpointReferences();
+        if (eprs.size() == 1) {
+            // Return 1st one
+            return eprs.get(0);
+        } else {
+            for (EndpointReference epr : eprs) {
+                // Try to see if there is an EPR using binding.sca
+                if (epr.getBinding().getType().equals(SCABinding.TYPE)) {
+                    return epr;
                 }
             }
-            throw new ServiceRuntimeException("Reference not found: " + referenceName);
-        } catch (ServiceRuntimeException e) {
-            throw e;
-        } catch (Exception e) {
-            if (e instanceof RuntimeException) {
-                throw (RuntimeException)e;
-            }
-            throw new ServiceRuntimeException(e.getMessage(), e);
+            return eprs.get(0);
         }
     }
+    
+    /**
+     * Select an endpoint reference from the component reference
+     * @param ref
+     * @return
+     */
+    private Endpoint getEndpoint(ComponentService service) {
+        List<Endpoint> eps = service.getEndpoints();
+        if (eps.size() == 1) {
+            // Return 1st one
+            return eps.get(0);
+        } else {
+            for (Endpoint ep : eps) {
+                // Try to see if there is an EPR using binding.sca
+                if (ep.getBinding().getType().equals(SCABinding.TYPE)) {
+                    return ep;
+                }
+            }
+            return eps.get(0);
+        }
+    }
+
 
     /**
      * Gets the value for the specified property with the specified type.
@@ -190,7 +219,6 @@ public class ComponentContextImpl implements RuntimeComponentContext {
         return targetService;
     }
 
-
     public <B> ServiceReference<B> createSelfReference(Class<B> businessInterface) {
         ComponentService service = getSingleService(component);
         try {
@@ -223,10 +251,10 @@ public class ComponentContextImpl implements RuntimeComponentContext {
      */
     public <B> ServiceReference<B> createSelfReference(Class<B> businessInterface, ComponentService service) {
         try {
-            RuntimeComponentReference ref =
-                (RuntimeComponentReference)createSelfReference(component, service, businessInterface);
+            RuntimeEndpointReference ref =
+                (RuntimeEndpointReference)createSelfReference(component, service, businessInterface);
             ref.setComponent(component);
-            return getServiceReference(businessInterface, ref, null);
+            return getServiceReference(businessInterface, ref);
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);
         }
@@ -248,18 +276,17 @@ public class ComponentContextImpl implements RuntimeComponentContext {
      * @throws InvalidInterfaceException
      */
     public <B> ServiceReference<B> getServiceReference(Class<B> businessInterface,
-                                                       RuntimeComponentReference reference,
-                                                       EndpointReference endpointReference) {
+                                                       RuntimeEndpointReference endpointReference) {
         try {
-            RuntimeComponentReference ref = (RuntimeComponentReference)reference;
-            InterfaceContract interfaceContract = reference.getInterfaceContract();
-            Reference componentTypeReference = reference.getReference();
+            RuntimeComponentReference ref = (RuntimeComponentReference)endpointReference.getReference();
+            InterfaceContract interfaceContract = ref.getInterfaceContract();
+            Reference componentTypeReference = ref.getReference();
             if (componentTypeReference != null && componentTypeReference.getInterfaceContract() != null) {
                 interfaceContract = componentTypeReference.getInterfaceContract();
             }
             InterfaceContract refInterfaceContract = getInterfaceContract(interfaceContract, businessInterface);
             if (refInterfaceContract != interfaceContract) {
-                ref = (RuntimeComponentReference)reference.clone();
+                ref = (RuntimeComponentReference)ref.clone();
                 if (interfaceContract != null) {
                     ref.setInterfaceContract(interfaceContract);
                 } else {
@@ -267,71 +294,24 @@ public class ComponentContextImpl implements RuntimeComponentContext {
                 }
             }
             ref.setComponent(component);
-            return new ServiceReferenceImpl<B>(businessInterface, component, ref, endpointReference, proxyFactory,
-                                               component.getComponentContext().getCompositeContext());
+            return new ServiceReferenceImpl<B>(businessInterface, endpointReference, component
+                .getComponentContext().getCompositeContext());
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);
         }
     }
 
-    /**
-     * Bind a component reference to a component service
-     * @param <B>
-     * @param businessInterface
-     * @param reference
-     * @param service
-     * @return
-     * @throws CloneNotSupportedException
-     * @throws InvalidInterfaceException
-     */
     public <B> ServiceReference<B> getServiceReference(Class<B> businessInterface,
-                                                       RuntimeComponentReference reference,
-                                                       RuntimeComponent component,
-                                                       RuntimeComponentService service) {
-        try {
-            RuntimeComponentReference ref = (RuntimeComponentReference)reference.clone();
-            InterfaceContract interfaceContract = reference.getInterfaceContract();
-            Reference componentTypeReference = reference.getReference();
-            if (componentTypeReference != null && componentTypeReference.getInterfaceContract() != null) {
-                interfaceContract = componentTypeReference.getInterfaceContract();
-            }
-            InterfaceContract refInterfaceContract = getInterfaceContract(interfaceContract, businessInterface);
-            if (refInterfaceContract != interfaceContract) {
-                ref = (RuntimeComponentReference)reference.clone();
-                ref.setInterfaceContract(interfaceContract);
-            }
-            ref.getTargets().add(service);
-            ref.getBindings().clear();
-            for (Binding binding : service.getBindings()) {
-                if (binding instanceof OptimizableBinding) {
-                    OptimizableBinding optimizableBinding = (OptimizableBinding)((OptimizableBinding)binding).clone();
-                    optimizableBinding.setTargetBinding(binding);
-                    optimizableBinding.setTargetComponent(component);
-                    optimizableBinding.setTargetComponentService(service);
-                    ref.getBindings().add(optimizableBinding);
-                } else {
-                    ref.getBindings().add(binding);
-                }
-            }
-            return new ServiceReferenceImpl<B>(businessInterface, component, ref, null, proxyFactory, compositeContext);
-        } catch (Exception e) {
-            throw new ServiceRuntimeException(e);
-        }
-    }
-
-    public <B> ServiceReference<B> getCallableReference(Class<B> businessInterface,
-                                                         RuntimeComponent component,
-                                                         RuntimeComponentService service) {
+                                                       RuntimeEndpoint endpoint) {
         try {
             if (businessInterface == null) {
-                InterfaceContract contract = service.getInterfaceContract();
+                InterfaceContract contract = endpoint.getInterfaceContract();
                 businessInterface = (Class<B>)((JavaInterface)contract.getInterface()).getJavaClass();
             }
-            RuntimeComponentReference ref =
-                (RuntimeComponentReference)createSelfReference(component, service, businessInterface);
+            RuntimeEndpointReference ref =
+                (RuntimeEndpointReference)createSelfReference(component, endpoint.getService(), businessInterface);
             ref.setComponent(component);
-            return new ServiceReferenceImpl<B>(businessInterface, component, ref, null, proxyFactory,
-                                                compositeContext);
+            return new ServiceReferenceImpl<B>(businessInterface, ref, compositeContext);
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);
         }
@@ -344,13 +324,16 @@ public class ComponentContextImpl implements RuntimeComponentContext {
      * @throws CloneNotSupportedException 
      * @throws InvalidInterfaceException 
      */
-    private ComponentReference createSelfReference(Component component,
-                                                   ComponentService service,
-                                                   Class<?> businessInterface) throws CloneNotSupportedException,
+    private EndpointReference createSelfReference(Component component,
+                                                  ComponentService service,
+                                                  Class<?> businessInterface) throws CloneNotSupportedException,
         InvalidInterfaceException {
         ComponentReference componentReference = assemblyFactory.createComponentReference();
         componentReference.setName("$self$." + service.getName());
+
+        Endpoint endpoint = getEndpoint(service);
         
+        /*
         for (Binding binding : service.getBindings()) {
             if (binding instanceof OptimizableBinding) {
                 OptimizableBinding optimizableBinding = (OptimizableBinding)((OptimizableBinding)binding).clone();
@@ -362,11 +345,13 @@ public class ComponentContextImpl implements RuntimeComponentContext {
                 componentReference.getBindings().add(binding);
             }
         }
+        */
 
         componentReference.setCallback(service.getCallback());
         componentReference.getTargets().add(service);
         componentReference.getPolicySets().addAll(service.getPolicySets());
         componentReference.getRequiredIntents().addAll(service.getRequiredIntents());
+        componentReference.getBindings().add(endpoint.getBinding());
 
         InterfaceContract interfaceContract = service.getInterfaceContract();
         Service componentTypeService = service.getService();
@@ -377,32 +362,31 @@ public class ComponentContextImpl implements RuntimeComponentContext {
         componentReference.setInterfaceContract(interfaceContract);
         componentReference.setMultiplicity(Multiplicity.ONE_ONE);
         // component.getReferences().add(componentReference);
-        
+
         // create endpoint reference
-        EndpointReference endpointReference = assemblyFactory
-                .createEndpointReference();
+        EndpointReference endpointReference = assemblyFactory.createEndpointReference();
         endpointReference.setComponent(component);
         endpointReference.setReference(componentReference);
+        endpointReference.setBinding(endpoint.getBinding());
         endpointReference.setUnresolved(false);
+        endpointReference.setInterfaceContract(interfaceContract);
         endpointReference.setStatus(EndpointReference.WIRED_TARGET_FOUND_READY_FOR_MATCHING);
 
-        // create endpoint. 
-        Endpoint endpoint = assemblyFactory.createEndpoint();
-        endpoint.setComponent(component);
-        endpoint.setService(service);
-        endpoint.setUnresolved(true);
         endpointReference.setTargetEndpoint(endpoint);
-        
+
         componentReference.getEndpointReferences().add(endpointReference);
-        
+        ((RuntimeComponentReference)componentReference).setComponent((RuntimeComponent)component);
+        ((RuntimeEndpointReference) endpointReference).bind(compositeContext);
+
+        /*
         // do binding matching
         boolean ok = eprBinder.bind(compositeContext.getEndpointRegistry(), endpointReference);
-        
+
         if (!ok) {
             throw new SCARuntimeException("Unable to bind " + endpointReference);
         }
-        
-        return componentReference;
+        */
+        return endpointReference;
     }
 
     /**
@@ -446,7 +430,6 @@ public class ComponentContextImpl implements RuntimeComponentContext {
         compositeActivator.start(compositeContext, component, reference);
     }
 
-
     /* ******************** Contribution for issue TUSCANY-2281 ******************** */
 
     /**
@@ -470,8 +453,8 @@ public class ComponentContextImpl implements RuntimeComponentContext {
                 if (referenceName.equals(ref.getName())) {
                     ArrayList<ServiceReference<B>> serviceRefs = new ArrayList<ServiceReference<B>>();
                     for (EndpointReference endpointReference : ref.getEndpointReferences()) {
-                        serviceRefs
-                            .add(getServiceReference(businessInterface, (RuntimeComponentReference)ref, endpointReference));
+                        RuntimeEndpointReference epr = (RuntimeEndpointReference)endpointReference;
+                        serviceRefs.add(getServiceReference(businessInterface, epr));
                     }
                     return serviceRefs;
                 }
@@ -483,6 +466,7 @@ public class ComponentContextImpl implements RuntimeComponentContext {
             throw new ServiceRuntimeException(e.getMessage(), e);
         }
     }
+
     /* ******************** Contribution for issue TUSCANY-2281 ******************** */
 
     public CompositeContext getCompositeContext() {

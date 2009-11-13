@@ -19,7 +19,6 @@
 package org.apache.tuscany.sca.binding.ws.axis2;
 
 import org.apache.axiom.om.OMElement;
-import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
@@ -29,6 +28,7 @@ import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.oasisopen.sca.ServiceRuntimeException;
 
 public class Axis2ServiceBindingProvider implements ServiceBindingProvider {
@@ -39,7 +39,7 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider {
     
     private Axis2ServiceProvider axisProvider;
 
-    public Axis2ServiceBindingProvider(Endpoint endpoint,
+    public Axis2ServiceBindingProvider(RuntimeEndpoint endpoint,
                                        ServletHost servletHost,
                                        FactoryExtensionPoint modelFactories,
                                        DataBindingExtensionPoint dataBindings) {
@@ -62,7 +62,7 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider {
         InterfaceContract contract = wsBinding.getBindingInterfaceContract();
         contract.getInterface().resetDataBinding(OMElement.class.getName());
 
-        axisProvider = new Axis2ServiceProvider(component, service, wsBinding, servletHost, messageFactory, modelFactories);
+        axisProvider = new Axis2ServiceProvider(endpoint, component, service, wsBinding, servletHost, messageFactory, modelFactories);
     }
 
     public void start() {

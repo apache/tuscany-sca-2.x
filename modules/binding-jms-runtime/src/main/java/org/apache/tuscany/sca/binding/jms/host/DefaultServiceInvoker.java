@@ -28,11 +28,13 @@ import javax.jms.MessageListener;
 import javax.naming.NamingException;
 
 import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.context.JMSBindingContext;
 import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 
 /**
  * TODO RRB experiement
@@ -44,16 +46,18 @@ public class DefaultServiceInvoker implements MessageListener {
 
     private static final Logger logger = Logger.getLogger(DefaultServiceInvoker.class.getName());
 
+    private RuntimeEndpoint endpoint;
     private JMSBinding jmsBinding;
     private Binding targetBinding;
     private JMSResourceFactory jmsResourceFactory;
     private RuntimeComponentService service;
     private MessageFactory messageFactory;
 
-    public DefaultServiceInvoker(JMSBinding jmsBinding, RuntimeComponentService service, Binding targetBinding, MessageFactory messageFactory, JMSResourceFactory rf) throws NamingException {
-        this.jmsBinding = jmsBinding;
+    public DefaultServiceInvoker(RuntimeEndpoint endpoint, Binding targetBinding, MessageFactory messageFactory, JMSResourceFactory rf) throws NamingException {
+        this.endpoint = endpoint;
+        this.jmsBinding = (JMSBinding) endpoint.getBinding();
         this.jmsResourceFactory = rf;
-        this.service = service;
+        this.service = (RuntimeComponentService) endpoint.getService();
         this.targetBinding = targetBinding;
         this.messageFactory = messageFactory;
         
@@ -86,8 +90,17 @@ public class DefaultServiceInvoker implements MessageListener {
         
         // call the runtime wire - the response is handled by the 
         // transport interceptor
-        service.getRuntimeWire(targetBinding).invoke(tuscanyMsg);
+        getEndpoint(targetBinding).invoke(tuscanyMsg);
             
-    }   
+    } 
+    
+    private RuntimeEndpoint getEndpoint(Binding targetBinding) {
+        for(Endpoint ep: service.getEndpoints()) {
+            if(ep.getBinding() == targetBinding) {
+                return (RuntimeEndpoint) ep;
+            }
+        }
+        return endpoint; 
+    }
 
 }

@@ -18,9 +18,7 @@
  */
 package org.apache.tuscany.sca.core.invocation;
 
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -31,7 +29,6 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
-import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.apache.tuscany.sca.work.WorkScheduler;
 import org.oasisopen.sca.ServiceRuntimeException;
 
@@ -123,7 +120,7 @@ public class NonBlockingInterceptor implements Interceptor {
      */
     private static class ImmutableMessage implements Message {
 
-        public Object getBody() {
+        public <T> T getBody() {
             return null;
         }
 
@@ -131,10 +128,6 @@ public class NonBlockingInterceptor implements Interceptor {
             if (body != null) {
                 throw new UnsupportedOperationException();
             }
-        }
-
-        public void setCallbackWires(LinkedList<RuntimeWire> wires) {
-
         }
 
         public Object getMessageID() {
@@ -175,17 +168,6 @@ public class NonBlockingInterceptor implements Interceptor {
 
         public void setOperation(Operation op) {
             throw new UnsupportedOperationException();
-        }
-
-        /**
-         * @see org.apache.tuscany.sca.invocation.Message#getReplyTo()
-         */
-        public EndpointReference getReplyTo() {
-            return null;
-        }
-
-        public Map<String, Object> getQoSContext() {
-            return null;
         }
         
         public List<Object> getHeaders() {

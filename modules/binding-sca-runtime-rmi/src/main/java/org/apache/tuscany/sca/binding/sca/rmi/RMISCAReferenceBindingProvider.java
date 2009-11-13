@@ -34,6 +34,7 @@ import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
+import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 
 /**
  * The reference binding provider for the remote sca binding implementation. Relies on the 
@@ -60,9 +61,9 @@ public class RMISCAReferenceBindingProvider implements ReferenceBindingProvider 
         rmiBinding.setURI(this.binding.getURI());
 
         // create a copy of the endpoint reference but with the RMI binding in
-        EndpointReference epr = null;
+        RuntimeEndpointReference epr = null;
         try {
-            epr = (EndpointReference)endpointReference.clone();
+            epr = (RuntimeEndpointReference)endpointReference.clone();
         } catch (Exception ex){
             // we know we can clone endpoint references
         }
@@ -72,6 +73,8 @@ public class RMISCAReferenceBindingProvider implements ReferenceBindingProvider 
         ProviderFactoryExtensionPoint providerFactories = extensionPoints.getExtensionPoint(ProviderFactoryExtensionPoint.class);
         BindingProviderFactory<?> providerFactory = (BindingProviderFactory<?>)providerFactories.getProviderFactory(RMIBinding.class);
         referenceBindingProvider = providerFactory.createReferenceBindingProvider(epr);
+        // Set the reference binding provider so that it can be used to start/stop
+        ((RuntimeEndpointReference) endpointReference).setBindingProvider(referenceBindingProvider);
         logger.info("Reference using RMI SCA Binding: " + rmiBinding.getURI());
     }
 

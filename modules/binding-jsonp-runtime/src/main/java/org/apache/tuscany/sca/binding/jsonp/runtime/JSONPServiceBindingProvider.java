@@ -20,31 +20,28 @@
 package org.apache.tuscany.sca.binding.jsonp.runtime;
 
 import org.apache.tuscany.sca.assembly.ComponentService;
-import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
-import org.apache.tuscany.sca.runtime.RuntimeComponentService;
-import org.apache.tuscany.sca.runtime.RuntimeWire;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 
 public class JSONPServiceBindingProvider implements ServiceBindingProvider {
 
-    private Endpoint endpoint;
+    private RuntimeEndpoint endpoint;
     private ServletHost servletHost;
 
-    public JSONPServiceBindingProvider(Endpoint endpoint, ServletHost servletHost) {
+    public JSONPServiceBindingProvider(RuntimeEndpoint endpoint, ServletHost servletHost) {
         this.endpoint = endpoint;
         this.servletHost = servletHost;
     }
 
     public void start() {
         ComponentService service = endpoint.getService();
-        RuntimeWire wire = ((RuntimeComponentService)service).getRuntimeWire(endpoint.getBinding());
         Interface serviceInterface = service.getInterfaceContract().getInterface();
         for (Operation op : serviceInterface.getOperations()) {
-            JSONPServlet servlet = new JSONPServlet(wire, op);
+            JSONPServlet servlet = new JSONPServlet(endpoint, op);
             String path = endpoint.getBinding().getURI() + "/" + op.getName();
             servletHost.addServletMapping(path, servlet);
         }

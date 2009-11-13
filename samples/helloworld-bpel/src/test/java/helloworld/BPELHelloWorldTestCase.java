@@ -21,6 +21,8 @@ package helloworld;
 
 import junit.framework.Assert;
 
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.AfterClass;
@@ -42,8 +44,9 @@ public class BPELHelloWorldTestCase {
      */
     @BeforeClass
     public static void setUp() throws Exception {
-        
-        node = NodeFactory.newInstance().createNode();
+        // String location = ContributionLocationHelper.getContributionLocation(BPELClient.class);
+        String location = ContributionLocationHelper.getContributionLocation("helloworld.composite");
+        node = NodeFactory.newInstance().createNode(new Contribution("c1", location));
         node.start();
         
         bpelService = node.getService(Hello.class, "BPELHelloWorldComponent");

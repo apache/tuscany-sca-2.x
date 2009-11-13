@@ -97,7 +97,7 @@ public class ExceptionsTestCase {
             service.throwUnChecked();
             fail();
         } catch (Exception e) {
-            assertEquals("java.lang.RuntimeException: bla", e.getCause().getMessage());
+            assertEquals("bla", e.getCause().getMessage());
         }
     }
 

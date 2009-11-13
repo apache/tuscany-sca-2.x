@@ -24,7 +24,6 @@ import java.util.Collection;
 
 import org.apache.tuscany.sca.assembly.DistributedSCABinding;
 import org.apache.tuscany.sca.assembly.Endpoint;
-import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
@@ -38,6 +37,7 @@ import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 
 /**
  * The sca service binding provider mediates between the twin requirements of
@@ -59,7 +59,7 @@ public class RuntimeSCAServiceBindingProvider implements ServiceBindingProvider 
     private DistributedSCABinding distributedBinding;
     
 
-    public RuntimeSCAServiceBindingProvider(ExtensionPointRegistry extensionPoints, Endpoint endpoint) {
+    public RuntimeSCAServiceBindingProvider(ExtensionPointRegistry extensionPoints, RuntimeEndpoint endpoint) {
         this.component = (RuntimeComponent)endpoint.getComponent();
         this.service = (RuntimeComponentService)endpoint.getService();
         this.binding = (SCABinding)endpoint.getBinding();
@@ -87,9 +87,9 @@ public class RuntimeSCAServiceBindingProvider implements ServiceBindingProvider 
                 distributedBinding.setSCABinding(binding);
                 
                 // create a copy of the endpoint and change the binding
-                Endpoint ep = null;
+                RuntimeEndpoint ep = null;
                 try {
-                    ep = (Endpoint)endpoint.clone();
+                    ep = (RuntimeEndpoint)endpoint.clone();
                 } catch (Exception ex) {
                     // we know we can clone endpoint 
                 }

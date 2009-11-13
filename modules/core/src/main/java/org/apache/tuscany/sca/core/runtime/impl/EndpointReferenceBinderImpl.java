@@ -68,7 +68,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
     /**
      * Build a single endpoint reference
      *
-     * @param endpoint
+     * @param invocable
      * @param monitor
      */
     public boolean bind(EndpointRegistry endpointRegistry, EndpointReference endpointReference) {

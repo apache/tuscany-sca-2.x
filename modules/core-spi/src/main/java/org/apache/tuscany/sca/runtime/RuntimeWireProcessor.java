@@ -24,12 +24,15 @@ package org.apache.tuscany.sca.runtime;
  * @version $Rev$ $Date$
  */
 public interface RuntimeWireProcessor {
-
     /**
-     * Process the runtime wire to add interceptors
-     * 
-     * @param wire
+     * Configure the runtime endpoint 
+     * @param endpoint
      */
-    void process(RuntimeWire wire);
-
+    void process(RuntimeEndpoint endpoint);
+    
+    /**
+     * Configure the runtime endpoint reference
+     * @param endpointReference
+     */
+    void process(RuntimeEndpointReference endpointReference);
 }

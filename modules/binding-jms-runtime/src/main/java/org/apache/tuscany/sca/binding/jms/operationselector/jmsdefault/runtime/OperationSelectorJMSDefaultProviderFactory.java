@@ -19,14 +19,12 @@
 
 package org.apache.tuscany.sca.binding.jms.operationselector.jmsdefault.runtime;
 
-import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.binding.jms.operationselector.OperationSelectorJMSDefault;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.provider.OperationSelectorProvider;
 import org.apache.tuscany.sca.provider.OperationSelectorProviderFactory;
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
-import org.apache.tuscany.sca.runtime.RuntimeComponentService;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
+import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 
 /**
  * @version $Rev$ $Date$
@@ -41,18 +39,14 @@ public class OperationSelectorJMSDefaultProviderFactory implements OperationSele
     
     /**
      */
-    public OperationSelectorProvider createReferenceOperationSelectorProvider(RuntimeComponent component,
-                                                        RuntimeComponentReference reference,
-                                                        Binding binding) {
+    public OperationSelectorProvider createReferenceOperationSelectorProvider(RuntimeEndpointReference endpointReference) {
         return null;
     }
 
     /**
       */
-    public OperationSelectorProvider createServiceOperationSelectorProvider(RuntimeComponent component,
-                                                              RuntimeComponentService service,
-                                                              Binding binding) {
-        return new OperationSelectorJMSDefaultServiceProvider(registry, component, service, binding);
+    public OperationSelectorProvider createServiceOperationSelectorProvider(RuntimeEndpoint endpoint) {
+        return new OperationSelectorJMSDefaultServiceProvider(registry, endpoint);
     }
 
     /**

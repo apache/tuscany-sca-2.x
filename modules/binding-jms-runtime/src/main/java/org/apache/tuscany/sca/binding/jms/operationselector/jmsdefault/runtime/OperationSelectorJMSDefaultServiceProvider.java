@@ -19,38 +19,29 @@
 
 package org.apache.tuscany.sca.binding.jms.operationselector.jmsdefault.runtime;
 
-import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Phase;
 import org.apache.tuscany.sca.provider.OperationSelectorProvider;
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.runtime.RuntimeComponentService;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 
 /**
  * @version $Rev$ $Date$
  */
 public class OperationSelectorJMSDefaultServiceProvider implements OperationSelectorProvider {
-    private RuntimeComponent component;
-    private RuntimeComponentService service;
-    private Binding binding;
+    private RuntimeEndpoint endpoint;
     private ExtensionPointRegistry registry;
-    
-    public OperationSelectorJMSDefaultServiceProvider(ExtensionPointRegistry registry, RuntimeComponent component, RuntimeComponentService service, Binding binding) {
+
+    public OperationSelectorJMSDefaultServiceProvider(ExtensionPointRegistry registry, RuntimeEndpoint endpoint) {
         super();
-        this.component = component;
-        this.service = service;
-        this.binding = binding;
+        this.endpoint = endpoint;
         this.registry = registry;
     }
 
     /**
      */
     public Interceptor createInterceptor() {
-        return new OperationSelectorJMSDefaultServiceInterceptor(registry, (JMSBinding)binding,
-                                                                 null,
-                                                                 service.getRuntimeWire(binding));
+        return new OperationSelectorJMSDefaultServiceInterceptor(registry, null, endpoint);
     }
 
     /**

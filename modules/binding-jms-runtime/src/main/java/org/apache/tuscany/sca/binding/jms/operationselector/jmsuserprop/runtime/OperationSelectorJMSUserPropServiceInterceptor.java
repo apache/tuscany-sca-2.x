@@ -31,7 +31,7 @@ import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
-import org.apache.tuscany.sca.runtime.RuntimeWire;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 
 /**
   * Interceptor for user property based operation selection
@@ -42,18 +42,18 @@ import org.apache.tuscany.sca.runtime.RuntimeWire;
 public class OperationSelectorJMSUserPropServiceInterceptor implements Interceptor {
 
     private Invoker next;
-    private RuntimeWire runtimeWire;
+    private RuntimeEndpoint endpoint;
     private JMSBinding jmsBinding;
     private OperationSelectorJMSUserProp operationSelector;
     private RuntimeComponentService service;
     private List<Operation> serviceOperations;
 
-    public OperationSelectorJMSUserPropServiceInterceptor(JMSBinding jmsBinding, RuntimeWire runtimeWire) {
+    public OperationSelectorJMSUserPropServiceInterceptor(RuntimeEndpoint endpoint) {
         super();
-        this.jmsBinding = jmsBinding;
+        this.jmsBinding = (JMSBinding) endpoint.getBinding();
         this.operationSelector = (OperationSelectorJMSUserProp)jmsBinding.getOperationSelector();
-        this.runtimeWire = runtimeWire;
-        this.service = (RuntimeComponentService) runtimeWire.getEndpoint().getService();
+        this.endpoint = endpoint;
+        this.service = (RuntimeComponentService) endpoint.getService();
         this.serviceOperations = service.getInterfaceContract().getInterface().getOperations();
     }
 

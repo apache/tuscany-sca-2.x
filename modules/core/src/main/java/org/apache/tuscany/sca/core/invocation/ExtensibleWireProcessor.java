@@ -18,7 +18,8 @@
  */
 package org.apache.tuscany.sca.core.invocation;
 
-import org.apache.tuscany.sca.runtime.RuntimeWire;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
+import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeWireProcessor;
 import org.apache.tuscany.sca.runtime.RuntimeWireProcessorExtensionPoint;
 
@@ -28,16 +29,22 @@ import org.apache.tuscany.sca.runtime.RuntimeWireProcessorExtensionPoint;
  * @version $Rev$ $Date$
  */
 public class ExtensibleWireProcessor implements RuntimeWireProcessor {
-    
+
     private RuntimeWireProcessorExtensionPoint processors;
 
     public ExtensibleWireProcessor(RuntimeWireProcessorExtensionPoint processors) {
         this.processors = processors;
     }
-    
-    public void process(RuntimeWire wire) {
+
+    public void process(RuntimeEndpoint endpoint) {
         for (RuntimeWireProcessor processor : processors.getWireProcessors()) {
-            processor.process(wire);
+            processor.process(endpoint);
+        }
+    }
+
+    public void process(RuntimeEndpointReference endpointReference) {
+        for (RuntimeWireProcessor processor : processors.getWireProcessors()) {
+            processor.process(endpointReference);
         }
     }
 

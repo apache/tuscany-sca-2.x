@@ -19,13 +19,10 @@
 
 package org.apache.tuscany.sca.binding.sca.provider;
 
-import java.net.URI;
 import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.assembly.DistributedSCABinding;
 import org.apache.tuscany.sca.assembly.Endpoint;
-import org.apache.tuscany.sca.assembly.EndpointReference;
-import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
@@ -40,7 +37,8 @@ import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
-import org.apache.tuscany.sca.runtime.RuntimeWire;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
+import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 import org.oasisopen.sca.ServiceUnavailableException;
 
 /**
@@ -56,7 +54,7 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
 
     private static final Logger logger = Logger.getLogger(RuntimeSCAReferenceBindingProvider.class.getName());
 
-    private EndpointReference endpointReference;
+    private RuntimeEndpointReference endpointReference;
     private RuntimeComponent component;
     private RuntimeComponentReference reference;
     private SCABinding binding;
@@ -67,7 +65,7 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
     private SCABindingFactory scaBindingFactory;
 
     public RuntimeSCAReferenceBindingProvider(ExtensionPointRegistry extensionPoints,
-                                              EndpointReference endpointReference) {
+                                              RuntimeEndpointReference endpointReference) {
         this.endpointReference = endpointReference;
         this.component = (RuntimeComponent)endpointReference.getComponent();
         this.reference = (RuntimeComponentReference)endpointReference.getReference();
@@ -143,9 +141,9 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
                 distributedBinding.setSCABinding(binding);
                 
                 // create a copy of the endpoint reference and change the binding
-                EndpointReference epr = null;
+                RuntimeEndpointReference epr = null;
                 try {
-                    epr = (EndpointReference)endpointReference.clone();
+                    epr = (RuntimeEndpointReference)endpointReference.clone();
                 } catch (Exception ex) {
                     // we know we can clone endpoint references
                 }
@@ -163,10 +161,13 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
         if (isTargetRemote()) {
             return getDistributedProvider().getBindingInterfaceContract();
         } else {
-            if (reference.getReference() != null) {
-                return reference.getReference().getInterfaceContract();
+            // Check if there is a target
+            RuntimeEndpoint endpoint = (RuntimeEndpoint)endpointReference.getTargetEndpoint();
+            if (endpoint != null) {
+                // Use the target binding interface contract
+                return endpoint.getBindingInterfaceContract();
             } else {
-                return reference.getInterfaceContract();
+                return endpointReference.getReferenceInterfaceContract();
             }
         }
     }
@@ -179,14 +180,12 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
         }
     }
 
-    private Invoker getInvoker(RuntimeWire wire, Operation operation) {
-        Endpoint target = wire.getEndpoint();
+    private Invoker getInvoker(RuntimeEndpointReference epr, Operation operation) {
+        Endpoint target = epr.getTargetEndpoint();
         if (target != null) {
             RuntimeComponentService service = (RuntimeComponentService)target.getService();
             if (service != null) { // not a callback wire
-                SCABinding scaBinding = service.getBinding(SCABinding.class);
-                InvocationChain chain =
-                    service.getInvocationChain(scaBinding, wire.getEndpointReference().getInterfaceContract(), operation);
+                InvocationChain chain = ((RuntimeEndpoint) target).getInvocationChain(operation);
                 return chain == null ? null : new SCABindingInvoker(chain);
             }
         }
@@ -197,8 +196,7 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
         if (isTargetRemote()) {
             return getDistributedProvider().createInvoker(operation);
         } else {
-            RuntimeWire wire = reference.getRuntimeWire(binding);
-            Invoker invoker = getInvoker(wire, operation);
+            Invoker invoker = getInvoker(endpointReference, operation);
             if (invoker == null) {
                 throw new ServiceUnavailableException("Unable to create SCA binding invoker for local target " + component.getName()
                     + " reference "

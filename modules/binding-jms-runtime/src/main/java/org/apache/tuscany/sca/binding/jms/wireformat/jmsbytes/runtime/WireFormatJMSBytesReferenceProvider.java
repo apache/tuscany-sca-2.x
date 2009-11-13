@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.binding.jms.wireformat.jmsbytes.runtime;
 
-import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSBytes;
@@ -28,28 +27,23 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Phase;
 import org.apache.tuscany.sca.provider.WireFormatProvider;
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
+import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 
 /**
  * @version $Rev$ $Date$
  */
 public class WireFormatJMSBytesReferenceProvider implements WireFormatProvider {
     private ExtensionPointRegistry registry;
-    private RuntimeComponent component;
-    private RuntimeComponentReference reference;
+    private RuntimeEndpointReference endpointReference;
     private JMSBinding binding;
     private InterfaceContract interfaceContract; 
 
     public WireFormatJMSBytesReferenceProvider(ExtensionPointRegistry registry,
-                                               RuntimeComponent component,
-                                               RuntimeComponentReference reference,
-                                               Binding binding) {
+                                               RuntimeEndpointReference endpointReference) {
         super();
         this.registry = registry;
-        this.component = component;
-        this.reference = reference;
-        this.binding = (JMSBinding)binding;
+        this.endpointReference = endpointReference;
+        this.binding = (JMSBinding) endpointReference.getBinding();
         
         // configure the reference based on this wire format
         
@@ -65,7 +59,7 @@ public class WireFormatJMSBytesReferenceProvider implements WireFormatProvider {
         
         // just point to the reference interface contract so no 
         // databinding transformation takes place
-        interfaceContract = reference.getReference().getInterfaceContract();
+        interfaceContract = endpointReference.getReference().getReference().getInterfaceContract();
     }
         
     public InterfaceContract configureWireFormatInterfaceContract(InterfaceContract interfaceContract){
@@ -85,9 +79,7 @@ public class WireFormatJMSBytesReferenceProvider implements WireFormatProvider {
     }     
 
     public Interceptor createInterceptor() {
-        return new WireFormatJMSBytesReferenceInterceptor(registry, binding, 
-                                                          null, 
-                                                          reference.getRuntimeWire(binding));
+        return new WireFormatJMSBytesReferenceInterceptor(registry, null, endpointReference);
     }
 
     public String getPhase() {

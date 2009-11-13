@@ -19,21 +19,16 @@
 
 package org.apache.tuscany.sca.core.databinding.wire;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tuscany.sca.databinding.Mediator;
 import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
-import org.apache.tuscany.sca.interfacedef.util.FaultException;
-import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.apache.tuscany.sca.invocation.DataExchangeSemantics;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
-import org.apache.tuscany.sca.runtime.RuntimeWire;
-import org.oasisopen.sca.ServiceRuntimeException;
+import org.apache.tuscany.sca.runtime.Invocable;
 
 /**
  * An interceptor to transform data across databindings on the wire
@@ -46,10 +41,10 @@ public class DataTransformationInterceptor implements Interceptor, DataExchangeS
     private Operation sourceOperation;
 
     private Operation targetOperation;
-    private RuntimeWire wire;
+    private Invocable invocable;
     private Mediator mediator;
 
-    public DataTransformationInterceptor(RuntimeWire wire,
+    public DataTransformationInterceptor(Invocable invocable,
                                          Operation sourceOperation,
                                          Operation targetOperation,
                                          Mediator mediator) {
@@ -57,7 +52,7 @@ public class DataTransformationInterceptor implements Interceptor, DataExchangeS
         this.sourceOperation = sourceOperation;
         this.targetOperation = targetOperation;
         this.mediator = mediator;
-        this.wire = wire;
+        this.invocable = invocable;
     }
 
     public Invoker getNext() {
@@ -66,7 +61,7 @@ public class DataTransformationInterceptor implements Interceptor, DataExchangeS
 
     public Message invoke(Message msg) {
         Map<String, Object> metadata = new HashMap<String, Object>();
-        metadata.put("wire", wire);
+        metadata.put(Invocable.class.getName(), invocable);
         Object input = mediator.mediateInput(msg.getBody(), sourceOperation, targetOperation, metadata);
         msg.setBody(input);
         Message resultMsg = next.invoke(msg);
@@ -75,7 +70,6 @@ public class DataTransformationInterceptor implements Interceptor, DataExchangeS
             // Not to reset the message body
             return resultMsg;
         }
-
 
         if (resultMsg.isFault()) {
             Object transformedFault = null;

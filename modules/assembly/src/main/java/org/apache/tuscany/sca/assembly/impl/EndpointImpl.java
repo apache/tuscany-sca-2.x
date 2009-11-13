@@ -188,7 +188,7 @@ public class EndpointImpl implements Endpoint {
         this.uri = null;
     }
 
-    public void setExtensionPointRegistry(ExtensionPointRegistry registry) {
+    protected void setExtensionPointRegistry(ExtensionPointRegistry registry) {
         this.registry = registry;
     }
 

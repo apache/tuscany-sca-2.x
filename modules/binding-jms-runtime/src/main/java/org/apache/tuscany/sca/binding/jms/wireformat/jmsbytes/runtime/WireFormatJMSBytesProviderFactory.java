@@ -19,14 +19,12 @@
 
 package org.apache.tuscany.sca.binding.jms.wireformat.jmsbytes.runtime;
 
-import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSBytes;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.provider.WireFormatProvider;
 import org.apache.tuscany.sca.provider.WireFormatProviderFactory;
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
-import org.apache.tuscany.sca.runtime.RuntimeComponentService;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
+import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 
 /**
  * @version $Rev$ $Date$
@@ -41,18 +39,14 @@ public class WireFormatJMSBytesProviderFactory implements WireFormatProviderFact
 
     /**
      */
-    public WireFormatProvider createReferenceWireFormatProvider(RuntimeComponent component,
-                                                        RuntimeComponentReference reference,
-                                                        Binding binding) {
-        return new WireFormatJMSBytesReferenceProvider(registry, component, reference, binding);
+    public WireFormatProvider createReferenceWireFormatProvider(RuntimeEndpointReference endpointReference) {
+        return new WireFormatJMSBytesReferenceProvider(registry, endpointReference);
     }
 
     /**
       */
-    public WireFormatProvider createServiceWireFormatProvider(RuntimeComponent component,
-                                                              RuntimeComponentService service,
-                                                              Binding binding) {
-        return new WireFormatJMSBytesServiceProvider(registry, component, service, binding);
+    public WireFormatProvider createServiceWireFormatProvider(RuntimeEndpoint endpoint) {
+        return new WireFormatJMSBytesServiceProvider(registry, endpoint);
     }
 
     /**

@@ -51,6 +51,7 @@ import org.apache.tuscany.sca.endpoint.tribes.AbstractReplicatedMap.MapEntry;
 import org.apache.tuscany.sca.endpoint.tribes.MapStore.MapListener;
 import org.apache.tuscany.sca.runtime.EndpointListener;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 
 /**
  * A replicated EndpointRegistry based on Apache Tomcat Tribes
@@ -291,7 +292,7 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry, LifeCycleLi
                         endpoint.setRemote(true);
                     }
                     // if (!entry.isPrimary()) {
-                    endpoint.setExtensionPointRegistry(registry);
+                    ((RuntimeEndpoint) endpoint).bind(registry, this);
                     // }
                     foundEndpoints.add(endpoint);
                     logger.fine("Found endpoint with matching service  - " + endpoint);
@@ -359,7 +360,7 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry, LifeCycleLi
             logger.info(id + " Remote endpoint added: " + entry.getValue());
             newEp.setRemote(true);
         }
-        newEp.setExtensionPointRegistry(registry);
+        ((RuntimeEndpoint) newEp).bind(registry, this);
         for (EndpointListener listener : listeners) {
             listener.endpointAdded(newEp);
         }
@@ -384,7 +385,7 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry, LifeCycleLi
         }
         Endpoint oldEp = (Endpoint)oldEntry.getValue();
         Endpoint newEp = (Endpoint)newEntry.getValue();
-        newEp.setExtensionPointRegistry(registry);
+        ((RuntimeEndpoint) newEp).bind(registry, this);
         for (EndpointListener listener : listeners) {
             listener.endpointUpdated(oldEp, newEp);
         }

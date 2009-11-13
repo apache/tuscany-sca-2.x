@@ -21,17 +21,13 @@ package org.apache.tuscany.sca.core.context.impl;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.io.Reader;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.UUID;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
@@ -44,7 +40,6 @@ import org.apache.tuscany.sca.assembly.builder.BindingBuilder;
 import org.apache.tuscany.sca.assembly.builder.BuilderContext;
 import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
 import org.apache.tuscany.sca.context.CompositeContext;
-import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
 import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
@@ -52,19 +47,19 @@ import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtens
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.RuntimeAssemblyFactory;
-import org.apache.tuscany.sca.core.assembly.impl.ReferenceParametersImpl;
 import org.apache.tuscany.sca.core.context.ServiceReferenceExt;
 import org.apache.tuscany.sca.core.factory.ObjectCreationException;
 import org.apache.tuscany.sca.core.invocation.ExtensibleProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactoryExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.Interface;
+import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.sca.runtime.ReferenceParameters;
+import org.apache.tuscany.sca.runtime.Invocable;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
-import org.apache.tuscany.sca.runtime.RuntimeWire;
+import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
@@ -78,27 +73,25 @@ public class ServiceReferenceImpl<B> implements ServiceReferenceExt<B> {
 
     protected transient ProxyFactory proxyFactory;
     protected transient Class<B> businessInterface;
-    protected transient Object proxy;
+    protected transient B proxy;
 
     protected Object callbackID; // The callbackID should be serializable
 
-    protected transient RuntimeComponent component;
-    protected transient RuntimeComponentReference reference;
-    protected transient EndpointReference endpointReference;
+    protected transient RuntimeEndpointReference endpointReference;
 
-    protected String scdl;
-
-    private transient XMLStreamReader xmlReader;
+//    protected String scdl;
+//
+//    private transient XMLStreamReader xmlReader;
 
     protected transient CompositeContext compositeContext;
-    private ExtensionPointRegistry registry;
-    private FactoryExtensionPoint modelFactories;
+    protected ExtensionPointRegistry registry;
+    protected FactoryExtensionPoint modelFactories;
     protected RuntimeAssemblyFactory assemblyFactory;
-    private StAXArtifactProcessorExtensionPoint staxProcessors;
-    private StAXArtifactProcessor<EndpointReference> staxProcessor; 
-    private XMLInputFactory xmlInputFactory;
-    private XMLOutputFactory xmlOutputFactory;
-    private BuilderExtensionPoint builders;
+    protected StAXArtifactProcessorExtensionPoint staxProcessors;
+    protected StAXArtifactProcessor<EndpointReference> staxProcessor;
+    protected XMLInputFactory xmlInputFactory;
+    protected XMLOutputFactory xmlOutputFactory;
+    protected BuilderExtensionPoint builders;
 
     /*
      * Public constructor for Externalizable serialization/deserialization
@@ -107,56 +100,24 @@ public class ServiceReferenceImpl<B> implements ServiceReferenceExt<B> {
         super();
     }
 
-    /*
-     * Public constructor for use by XMLStreamReader2CallableReference
-     */
-    // TODO - EPR - Is this required
-    public ServiceReferenceImpl(XMLStreamReader xmlReader) throws Exception {
-        this.xmlReader = xmlReader;
-        resolve();
-    }
-
-    protected ServiceReferenceImpl(Class<B> businessInterface,
-                                    RuntimeComponent component,
-                                    RuntimeComponentReference reference,
-                                    EndpointReference endpointReference,
-                                    ProxyFactory proxyFactory,
-                                    CompositeContext compositeContext) {
-        this.proxyFactory = proxyFactory;
+    public ServiceReferenceImpl(Class<B> businessInterface,
+                                Invocable endpointReference,
+                                CompositeContext compositeContext) {
         this.businessInterface = businessInterface;
-        this.component = component;
-        this.reference = reference;
-        this.endpointReference = endpointReference;
-        this.compositeContext = compositeContext;
-        
-        getExtensions();
-
-        // FIXME: The SCA Specification is not clear how we should handle multiplicity
-        // for CallableReference
-        if (this.endpointReference == null) {
-
-            // TODO - EPR - If no endpoint reference specified assume the first one
-            //        This will happen when a self reference is created in which case the
-            //        the reference should only have one endpointReference so use that
-            if (this.reference.getEndpointReferences().size() == 0){
-                throw new ServiceRuntimeException("The reference " + reference.getName() + " in component " +
-                        component.getName() + " has no endpoint references");
-            }
-
-            if (this.reference.getEndpointReferences().size() > 1){
-                throw new ServiceRuntimeException("The reference " + reference.getName() + " in component " +
-                        component.getName() + " has more than one endpoint reference");
-            }
-
-            this.endpointReference = this.reference.getEndpointReferences().get(0);
+        this.endpointReference = (RuntimeEndpointReference) endpointReference;
+        if (compositeContext == null) {
+            compositeContext = endpointReference.getCompositeContext();
         }
-
-        // FIXME: Should we normalize the componentName/serviceName URI into an absolute SCA URI in the SCA binding?
-        // sca:component1/component11/component112/service1?
-        initCallbackID();
+        bind(compositeContext);
     }
     
-    private void getExtensions() {
+    public ServiceReferenceImpl(Class<B> businessInterface,
+                                Invocable endpointReference) {
+        this(businessInterface, endpointReference, null);
+    }
+
+    protected void bind(CompositeContext context) {
+        this.compositeContext = context;
         this.registry = compositeContext.getExtensionPointRegistry();
         this.modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
         this.assemblyFactory = (RuntimeAssemblyFactory)modelFactories.getFactory(AssemblyFactory.class);
@@ -165,50 +126,11 @@ public class ServiceReferenceImpl<B> implements ServiceReferenceExt<B> {
         this.staxProcessors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         this.staxProcessor = staxProcessors.getProcessor(EndpointReference.class);
         this.builders = registry.getExtensionPoint(BuilderExtensionPoint.class);
+        this.proxyFactory = new ExtensibleProxyFactory(registry.getExtensionPoint(ProxyFactoryExtensionPoint.class));
     }
 
-    public ServiceReferenceImpl(Class<B> businessInterface, RuntimeWire wire, ProxyFactory proxyFactory) {
-        this.proxyFactory = proxyFactory;
-        this.businessInterface = businessInterface;
-        //ExtensionPointRegistry registry = ((RuntimeWireImpl)wire).getExtensionPoints();
-        //this.modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
-        //this.assemblyFactory = (RuntimeAssemblyFactory)modelFactories.getFactory(AssemblyFactory.class);
-        bind(wire);
-    }
-
-    public RuntimeWire getRuntimeWire() {
-        try {
-            resolve();
-            if (endpointReference != null){
-                return reference.getRuntimeWire(endpointReference);
-            } else {
-                return null;
-            }
-        } catch (Exception e) {
-            throw new ServiceRuntimeException(e);
-        }
-    }
-    
-    public EndpointReference getEndpointReference() {
+    public RuntimeEndpointReference getEndpointReference() {
         return endpointReference;
-    }
-
-    protected void bind(RuntimeWire wire) {
-        if (wire != null) {
-            this.component = (RuntimeComponent)wire.getEndpointReference().getComponent();
-            this.reference = (RuntimeComponentReference)wire.getEndpointReference().getReference();
-            this.endpointReference = wire.getEndpointReference();
-            this.compositeContext = component.getComponentContext().getCompositeContext();
-            initCallbackID();
-        }
-    }
-
-    protected void initCallbackID() {
-        if (reference.getInterfaceContract() != null) {
-            if (reference.getInterfaceContract().getCallbackInterface() != null) {
-                this.callbackID = createCallbackID();
-            }
-        }
     }
 
     public B getProxy() throws ObjectCreationException {
@@ -216,17 +138,17 @@ public class ServiceReferenceImpl<B> implements ServiceReferenceExt<B> {
             if (proxy == null) {
                 proxy = createProxy();
             }
-            return businessInterface.cast(proxy);
+            return proxy;
         } catch (Exception e) {
             throw new ObjectCreationException(e);
         }
     }
 
-    public void setProxy(Object proxy) {
+    public void setProxy(B proxy) {
         this.proxy = proxy;
     }
 
-    protected Object createProxy() throws Exception {
+    protected B createProxy() throws Exception {
         return proxyFactory.createProxy(this);
     }
 
@@ -243,24 +165,6 @@ public class ServiceReferenceImpl<B> implements ServiceReferenceExt<B> {
         try {
             resolve();
             return businessInterface;
-        } catch (Exception e) {
-            throw new ServiceRuntimeException(e);
-        }
-    }
-
-    public boolean isConversational() {
-        try {
-            resolve();
-            return reference == null ? false : reference.getInterfaceContract().getInterface().isConversational();
-        } catch (Exception e) {
-            throw new ServiceRuntimeException(e);
-        }
-    }
-
-    public Object getCallbackID() {
-        try {
-            resolve();
-            return callbackID;
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);
         }
@@ -295,21 +199,23 @@ public class ServiceReferenceImpl<B> implements ServiceReferenceExt<B> {
     }
 
     // ============ WRITE AND READ THE REFERENCE TO EXTERNAL XML ========================
-    
+
     /**
      * write the reference to a stream
      * 
      * @see java.io.Externalizable#writeExternal(java.io.ObjectOutput)
      */
     public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(endpointReference);
+        /*
         try {
             String xml = null;
-            if (scdl == null){
+            if (scdl == null) {
                 xml = toXMLString();
             } else {
                 xml = scdl;
             }
-            
+
             if (xml == null) {
                 out.writeBoolean(false);
             } else {
@@ -320,73 +226,128 @@ public class ServiceReferenceImpl<B> implements ServiceReferenceExt<B> {
             // e.printStackTrace();
             throw new IOException(e.toString());
         }
-    }  
-    
+        */
+    }
+
     /**
      * write the endpoint reference into an xml string
      */
-    public String toXMLString() throws IOException, XMLStreamException, ContributionWriteException{
+    public String toXMLString() throws IOException, XMLStreamException, ContributionWriteException {
         StringWriter writer = new StringWriter();
         XMLStreamWriter streamWriter = xmlOutputFactory.createXMLStreamWriter(writer);
         staxProcessor.write(endpointReference, streamWriter, new ProcessorContext(registry));
         return writer.toString();
-    }   
-    
+    }
+
     /**
      * Read the reference from a stream
      * 
      * @see java.io.Externalizable#readExternal(java.io.ObjectInput)
      */
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        this.endpointReference = (RuntimeEndpointReference) in.readObject();
+        // Force resolve
+        endpointReference.getComponent();
+        bind(endpointReference.getCompositeContext());
+
+        RuntimeComponentReference reference = (RuntimeComponentReference)endpointReference.getReference();
+        reference.setComponent((RuntimeComponent)endpointReference.getComponent());
+
+        Interface i = reference.getInterfaceContract().getInterface();
+        if (i instanceof JavaInterface) {
+            JavaInterface javaInterface = (JavaInterface)i;
+            if (javaInterface.isUnresolved()) {
+                // Allow privileged access to get ClassLoader. Requires RuntimePermission in
+                // security policy.
+                ClassLoader classLoader = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+                    public ClassLoader run() {
+                        return Thread.currentThread().getContextClassLoader();
+                    }
+                });
+
+                javaInterface.setJavaClass(classLoader.loadClass(javaInterface.getName()));
+                JavaInterfaceFactory javaInterfaceFactory = getJavaInterfaceFactory(compositeContext);
+
+                try {
+                    javaInterfaceFactory.createJavaInterface(javaInterface, javaInterface.getJavaClass());
+                } catch (InvalidInterfaceException e) {
+                    throw new ServiceRuntimeException(e);
+                }
+                //FIXME: If the interface needs XSDs to be loaded (e.g., for static SDO),
+                // this needs to be done here.  We usually search for XSDs in the current
+                // contribution at resolve time.  Is it possible to locate the current
+                // contribution at runtime?
+            }
+            this.businessInterface = (Class<B>)javaInterface.getJavaClass();
+        }
+
+        Binding binding = endpointReference.getBinding();
+        if (binding != null) {
+            BindingBuilder bindingBuilder = builders.getBindingBuilder(binding.getType());
+            if (bindingBuilder != null) {
+                org.apache.tuscany.sca.assembly.builder.BuilderContext context = new BuilderContext(registry);
+                bindingBuilder.build(endpointReference.getComponent(), reference, endpointReference.getBinding(), context);
+            }
+        }
+
+        this.proxyFactory = getProxyFactory(this.compositeContext);
+
+        /*
+        endpointReference.bind(CompositeContext.getCurrentCompositeContext());
+        endpointReference.rebuild();
+        */
+        /*
         final boolean hasSCDL = in.readBoolean();
         if (hasSCDL) {
             this.scdl = in.readUTF();
         } else {
             this.scdl = null;
         }
-    }  
-    
+        */
+    }
+
     /**
      * Read xml string into the endpoint reference
      */
+    /*
     public void fromXMLString() throws IOException, XMLStreamException, ContributionReadException {
-        
+
         XMLStreamReader streamReader = xmlReader;
-        
-        if (scdl != null ){
+
+        if (scdl != null) {
             Reader reader = new StringReader(scdl);
-            
-            if (xmlInputFactory == null){
+
+            if (xmlInputFactory == null) {
                 // this is a reference being read from a external stream
                 // so set up enough of the reference in order to resolved the
                 // xml being read
-                this.compositeContext = CompositeContext.getCurrentCompositeContext();
-                getExtensions();
+                bind(CompositeContext.getCurrentCompositeContext());
             }
-            
+
             streamReader = xmlInputFactory.createXMLStreamReader(reader);
         }
-        
-        endpointReference = staxProcessor.read(streamReader, new ProcessorContext(registry));
-        
+
+        endpointReference = (RuntimeEndpointReference) staxProcessor.read(streamReader, new ProcessorContext(registry));
+
         // ok to GC
         xmlReader = null;
         scdl = null;
     }
-    
+    */
+
     /**
      * @throws IOException
      */
     private synchronized void resolve() throws Exception {
-        if ((scdl != null || xmlReader != null) && component == null && reference == null) {
+        /*
+        if ((scdl != null || xmlReader != null) && endpointReference == null) {
             fromXMLString();
-            
-            this.component = (RuntimeComponent)endpointReference.getComponent();
-            compositeContext.bindComponent(this.component);
-            
-            this.reference = (RuntimeComponentReference)endpointReference.getReference();
-            this.reference.setComponent(this.component);
-            
+
+            compositeContext.bindComponent((RuntimeComponent) endpointReference.getComponent());
+
+            RuntimeComponentReference reference = (RuntimeComponentReference)endpointReference.getReference();
+            reference.setComponent((RuntimeComponent)endpointReference.getComponent());
+
             ReferenceParameters parameters = null;
             for (Object ext : reference.getExtensions()) {
                 if (ext instanceof ReferenceParameters) {
@@ -394,7 +355,7 @@ public class ServiceReferenceImpl<B> implements ServiceReferenceExt<B> {
                     break;
                 }
             }
-            
+
             if (parameters != null) {
                 this.callbackID = parameters.getCallbackID();
             }
@@ -410,10 +371,10 @@ public class ServiceReferenceImpl<B> implements ServiceReferenceExt<B> {
                             return Thread.currentThread().getContextClassLoader();
                         }
                     });
-                    
+
                     javaInterface.setJavaClass(classLoader.loadClass(javaInterface.getName()));
                     JavaInterfaceFactory javaInterfaceFactory = getJavaInterfaceFactory(compositeContext);
-                    
+
                     javaInterfaceFactory.createJavaInterface(javaInterface, javaInterface.getJavaClass());
                     //FIXME: If the interface needs XSDs to be loaded (e.g., for static SDO),
                     // this needs to be done here.  We usually search for XSDs in the current
@@ -422,23 +383,24 @@ public class ServiceReferenceImpl<B> implements ServiceReferenceExt<B> {
                 }
                 this.businessInterface = (Class<B>)javaInterface.getJavaClass();
             }
-            
+
             Binding binding = endpointReference.getBinding();
             if (binding != null) {
                 BindingBuilder bindingBuilder = builders.getBindingBuilder(binding.getType());
                 if (bindingBuilder != null) {
                     BuilderContext context = new BuilderContext(registry);
-                    bindingBuilder.build(component, reference, endpointReference.getBinding(), context);
+                    bindingBuilder.build(endpointReference.getComponent(), reference, endpointReference.getBinding(), context);
                 }
             }
 
-            this.proxyFactory = getProxyFactory(this.compositeContext);       
+            this.proxyFactory = getProxyFactory(this.compositeContext);
         } else if (compositeContext == null) {
             this.compositeContext = CompositeContext.getCurrentCompositeContext();
             if (this.compositeContext != null) {
                 this.proxyFactory = getProxyFactory(this.compositeContext);
             }
-        }       
+        }
+        */
     }
 
     private JavaInterfaceFactory getJavaInterfaceFactory(CompositeContext compositeContext) {
@@ -447,35 +409,19 @@ public class ServiceReferenceImpl<B> implements ServiceReferenceExt<B> {
         JavaInterfaceFactory javaInterfaceFactory = factories.getFactory(JavaInterfaceFactory.class);
         return javaInterfaceFactory;
     }
-    
+
     private ProxyFactory getProxyFactory(CompositeContext compositeContext) {
         ExtensionPointRegistry extensionPointRegistry = compositeContext.getExtensionPointRegistry();
-        ProxyFactoryExtensionPoint proxyFactories = extensionPointRegistry.getExtensionPoint(ProxyFactoryExtensionPoint.class);
+        ProxyFactoryExtensionPoint proxyFactories =
+            extensionPointRegistry.getExtensionPoint(ProxyFactoryExtensionPoint.class);
         return new ExtensibleProxyFactory(proxyFactories);
     }
-    
+
     // ==================================================================================
 
-    /**
-     * Create a callback id
-     *
-     * @return the callback id
-     */
-    private String createCallbackID() {
-        return UUID.randomUUID().toString();
-    }
-
-    public void attachCallbackID(Object callbackID) {
-        this.callbackID = callbackID;
-    }
-
-    protected ReferenceParameters getReferenceParameters() {
-        ReferenceParameters parameters = new ReferenceParametersImpl();
-        parameters.setCallbackID(callbackID);
-        return parameters;
-    }
-
+    /*
     public XMLStreamReader getXMLReader() {
         return xmlReader;
     }
+    */
 }

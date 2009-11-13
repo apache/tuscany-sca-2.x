@@ -20,7 +20,6 @@ package org.apache.tuscany.sca.assembly;
 
 import java.io.Serializable;
 
-import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.policy.PolicySubject;
 
@@ -162,14 +161,6 @@ public interface EndpointReference extends Base, PolicySubject, Cloneable, Seria
      * @param remote set to true if the endpoint is remote
      */
     void setRemote(boolean remote);
-
-    /**
-     * Set the extension point registry against the endpoint after it is deserialized as
-     * the registry needs to be re-attached
-     *
-     * @param registry
-     */
-    void setExtensionPointRegistry(ExtensionPointRegistry registry);
 
     /**
      * Rather than relying on combinations of unresolved flags and 

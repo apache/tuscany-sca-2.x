@@ -23,6 +23,7 @@ import java.util.List;
 import javax.security.auth.Subject;
 
 import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.context.ThreadMessageContext;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.invocation.ExtensibleProxyFactory;
@@ -33,7 +34,7 @@ import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
-import org.apache.tuscany.sca.runtime.RuntimeWire;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.oasisopen.sca.RequestContext;
 import org.oasisopen.sca.ServiceReference;
 
@@ -68,12 +69,11 @@ public class RequestContextImpl implements RequestContext {
     public <B> ServiceReference<B> getServiceReference() {
         Message msgContext = ThreadMessageContext.getMessageContext();
         // FIXME: [rfeng] Is this the service reference matching the caller side?
-        Endpoint to = msgContext.getTo();
-        RuntimeComponentService service = (RuntimeComponentService) to.getService();
+        RuntimeEndpoint to = (RuntimeEndpoint) msgContext.getTo();
         RuntimeComponent component = (RuntimeComponent) to.getComponent();
         
-        ServiceReference<B> callableReference = component.getComponentContext().getCallableReference(null, component, service);
-                
+        ServiceReference<B> callableReference = component.getComponentContext().getServiceReference(null, to);
+        
         return callableReference;
     }
 
@@ -96,9 +96,9 @@ public class RequestContextImpl implements RequestContext {
         }
         JavaInterface javaInterface = (JavaInterface) callbackReference.getInterfaceContract().getInterface();
         Class<CB> javaClass = (Class<CB>)javaInterface.getJavaClass();
-        List<RuntimeWire> wires = callbackReference.getRuntimeWires();
+        List<EndpointReference> wires = callbackReference.getEndpointReferences();
         ProxyFactory proxyFactory = new ExtensibleProxyFactory(proxyFactoryExtensionPoint);
-        ServiceReferenceImpl ref = new CallbackServiceReferenceImpl(javaClass, wires, proxyFactory);
+        ServiceReferenceImpl ref = new CallbackServiceReferenceImpl(javaClass, wires);
 
         return ref;
     }

@@ -36,7 +36,7 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
-import org.apache.tuscany.sca.runtime.RuntimeWire;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 
 /**
  * Policy handler to handle PolicySet related to Logging with the QName {http://tuscany.apache.org/xmlns/sca/1.0/impl/java}LoggingPolicy
@@ -45,7 +45,7 @@ import org.apache.tuscany.sca.runtime.RuntimeWire;
  */
 public class WireFormatJMSDefaultServiceInterceptor implements Interceptor {
     private Invoker next;
-    private RuntimeWire runtimeWire;
+    private RuntimeEndpoint endpoint;
     private JMSResourceFactory jmsResourceFactory;
     private JMSBinding jmsBinding;
     private DefaultMessageProcessor requestMessageProcessor;
@@ -53,11 +53,11 @@ public class WireFormatJMSDefaultServiceInterceptor implements Interceptor {
     private HashMap<String,OMElement> inputWrapperMap;
     private HashMap<String, Boolean> outputWrapperMap;
 
-    public WireFormatJMSDefaultServiceInterceptor(ExtensionPointRegistry registry, JMSBinding jmsBinding, JMSResourceFactory jmsResourceFactory, RuntimeWire runtimeWire, HashMap<String, OMElement> inputWrapperMap,
+    public WireFormatJMSDefaultServiceInterceptor(ExtensionPointRegistry registry, JMSResourceFactory jmsResourceFactory, RuntimeEndpoint endpoint, HashMap<String, OMElement> inputWrapperMap,
             HashMap<String, Boolean> outputWrapperMap) {
         super();
-        this.jmsBinding = jmsBinding;
-        this.runtimeWire = runtimeWire;
+        this.jmsBinding = (JMSBinding) endpoint.getBinding();
+        this.endpoint = endpoint;
         this.jmsResourceFactory = jmsResourceFactory;
         // Note the default processor doesn't follow the normal processor pattern 
         // as it has to handle both text and bytes messages

@@ -22,7 +22,7 @@ package org.apache.tuscany.sca.binding.jms.wireformat.jmsobject.runtime;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSObject;
@@ -32,32 +32,28 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Phase;
 import org.apache.tuscany.sca.provider.WireFormatProvider;
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
+import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 
 /**
  * @version $Rev$ $Date$
  */
 public class WireFormatJMSObjectReferenceProvider implements WireFormatProvider {
     private ExtensionPointRegistry registry;
-    private RuntimeComponent component;
-    private RuntimeComponentReference reference;
+    private RuntimeEndpointReference endpointReference;
     private JMSBinding binding;
     private InterfaceContract interfaceContract; 
     
     private HashMap<String,String> singleArgMap; //map of one arg operations, leave empty if wrapSingleInput is true
 
     public WireFormatJMSObjectReferenceProvider(ExtensionPointRegistry registry,
-                                               RuntimeComponent component,
-                                               RuntimeComponentReference reference,
-                                               Binding binding) {
+                                               RuntimeEndpointReference endpointReference) {
         super();
         this.registry = registry;
-        this.component = component;
-        this.reference = reference;
-        this.binding = (JMSBinding)binding;
+        this.endpointReference = endpointReference;
+        this.binding = (JMSBinding)endpointReference.getBinding();
         
         this.singleArgMap = new HashMap<String,String>();
+        ComponentReference reference = endpointReference.getReference();
         
         // configure the reference based on this wire format
         
@@ -104,9 +100,7 @@ public class WireFormatJMSObjectReferenceProvider implements WireFormatProvider 
     }    
 
     public Interceptor createInterceptor() {
-        return new WireFormatJMSObjectReferenceInterceptor(registry, binding, 
-                                                          null, 
-                                                          reference.getRuntimeWire(binding), this.singleArgMap);
+        return new WireFormatJMSObjectReferenceInterceptor(registry, null, endpointReference, this.singleArgMap);
     }
 
     public String getPhase() {

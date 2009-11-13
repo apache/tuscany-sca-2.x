@@ -20,11 +20,10 @@ package org.apache.tuscany.sca.core.invocation;
 
 import java.util.List;
 
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.core.context.impl.CallbackServiceReferenceImpl;
-import org.apache.tuscany.sca.core.context.impl.ServiceReferenceImpl;
 import org.apache.tuscany.sca.core.factory.ObjectCreationException;
 import org.apache.tuscany.sca.core.factory.ObjectFactory;
-import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.oasisopen.sca.ServiceReference;
 
 /**
@@ -35,16 +34,16 @@ import org.oasisopen.sca.ServiceReference;
 public class CallbackReferenceObjectFactory implements ObjectFactory<ServiceReference<?>> {
     private Class<?> businessInterface;
     private ProxyFactory proxyFactory;
-    private List<RuntimeWire> wires;
+    private List<EndpointReference> wires;
 
-    public CallbackReferenceObjectFactory(Class<?> interfaze, ProxyFactory proxyFactory, List<RuntimeWire> wires) {
+    public CallbackReferenceObjectFactory(Class<?> interfaze, ProxyFactory proxyFactory, List<EndpointReference> wires) {
         this.businessInterface = interfaze;
         this.proxyFactory = proxyFactory;
         this.wires = wires;
     }
 
     public ServiceReference<?> getInstance() throws ObjectCreationException {
-        return new CallbackServiceReferenceImpl(businessInterface, wires, proxyFactory);
+        return new CallbackServiceReferenceImpl(businessInterface, wires);
     }
 
 }

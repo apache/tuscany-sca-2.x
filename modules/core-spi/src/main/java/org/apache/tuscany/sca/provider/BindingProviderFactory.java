@@ -20,8 +20,8 @@
 package org.apache.tuscany.sca.provider;
 
 import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.assembly.Endpoint;
-import org.apache.tuscany.sca.assembly.EndpointReference;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
+import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 
 /**
  * A factory for creating the runtime artifacts that represent bindings.
@@ -36,7 +36,7 @@ public interface BindingProviderFactory<M extends Binding> extends ProviderFacto
      * @param endpointReference defines the component/reference/binding against which to create the provider
      * @return The binding provider
      */
-    ReferenceBindingProvider createReferenceBindingProvider(EndpointReference endpointReference);
+    ReferenceBindingProvider createReferenceBindingProvider(RuntimeEndpointReference endpointReference);
 
     /**
      * Creates a new service binding provider for the given component and
@@ -45,6 +45,6 @@ public interface BindingProviderFactory<M extends Binding> extends ProviderFacto
      * @param endpoint defines the component/service/binding against which to create the provider
      * @return The binding provider
      */
-    ServiceBindingProvider createServiceBindingProvider(Endpoint endpoint);
+    ServiceBindingProvider createServiceBindingProvider(RuntimeEndpoint endpoint);
 
 }

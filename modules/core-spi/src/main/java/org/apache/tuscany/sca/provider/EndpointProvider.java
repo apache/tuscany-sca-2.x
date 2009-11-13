@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.provider;
 
-import org.apache.tuscany.sca.runtime.RuntimeWire;
 
 /**
  * TODO RRB experiment
@@ -28,8 +27,9 @@ import org.apache.tuscany.sca.runtime.RuntimeWire;
  * 
  * @version $Rev$ $Date$
  */
-public interface ServiceBindingProviderRRB extends ServiceBindingProvider {
-    
-    void configureBindingChain(RuntimeWire runtimeWire);
-
+public interface EndpointProvider extends ServiceBindingProvider {
+    /**
+     * Configure the binding invocation chain
+     */
+    void configure();
 }

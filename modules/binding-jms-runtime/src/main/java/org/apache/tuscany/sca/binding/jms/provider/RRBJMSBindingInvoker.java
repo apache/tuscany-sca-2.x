@@ -33,8 +33,7 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.util.FaultException;
 import org.apache.tuscany.sca.invocation.DataExchangeSemantics;
 import org.apache.tuscany.sca.invocation.Invoker;
-import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
-import org.apache.tuscany.sca.runtime.RuntimeWire;
+import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
@@ -51,18 +50,16 @@ public class RRBJMSBindingInvoker implements Invoker, DataExchangeSemantics {
     protected JMSResourceFactory jmsResourceFactory;
     protected Destination bindingRequestDest;
     protected Destination bindingReplyDest;
-    protected RuntimeComponentReference reference;
-    protected RuntimeWire runtimeWire;
+    protected RuntimeEndpointReference endpointReference;
 
-    public RRBJMSBindingInvoker(JMSBinding jmsBinding, Operation operation, JMSResourceFactory jmsResourceFactory, RuntimeComponentReference reference) {
+    public RRBJMSBindingInvoker(Operation operation, JMSResourceFactory jmsResourceFactory, RuntimeEndpointReference epr) {
 
         this.operation = operation;
         operationName = operation.getName();
 
-        this.jmsBinding = jmsBinding;
+        this.endpointReference = epr;
+        this.jmsBinding = (JMSBinding) epr.getBinding();
         this.jmsResourceFactory = jmsResourceFactory;
-        this.reference = reference;
-        this.runtimeWire = reference.getRuntimeWire(jmsBinding);
        
         try {
             // If this is a callback reference, the destination is determined dynamically based on
@@ -200,7 +197,7 @@ public class RRBJMSBindingInvoker implements Invoker, DataExchangeSemantics {
             context.setReplyToDestination(getReplyToDestination(session));
             
             try {
-                tuscanyMsg = runtimeWire.getBindingInvocationChain().getHeadInvoker().invoke(tuscanyMsg);
+                tuscanyMsg = endpointReference.getBindingInvocationChain().getHeadInvoker().invoke(tuscanyMsg);
             } catch (ServiceRuntimeException e) {
                 if (e.getCause() instanceof InvocationTargetException) {
                     if ((e.getCause().getCause() instanceof RuntimeException)) {

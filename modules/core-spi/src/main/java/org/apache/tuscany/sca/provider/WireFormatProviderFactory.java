@@ -19,11 +19,9 @@
 
 package org.apache.tuscany.sca.provider;
 
-import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.WireFormat;
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
-import org.apache.tuscany.sca.runtime.RuntimeComponentService;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
+import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 
 /**
  * @version $Rev$ $Date$
@@ -31,23 +29,15 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 public interface WireFormatProviderFactory<M extends WireFormat> extends ProviderFactory<M> {
     /**
      * Create wire format provider for a given reference binding
-     * @param component
-     * @param reference
-     * @param binding
+     * @param endpointReference The endpoint reference
      * @return
      */
-    WireFormatProvider createReferenceWireFormatProvider(RuntimeComponent component,
-                                                         RuntimeComponentReference reference,
-                                                         Binding binding);
+    WireFormatProvider createReferenceWireFormatProvider(RuntimeEndpointReference endpointReference);
 
     /**
      * Create policy provider for a given service binding
-     * @param component
-     * @param service
-     * @param binding
+     * @param endpoint TODO
      * @return
      */
-    WireFormatProvider createServiceWireFormatProvider(RuntimeComponent component,
-                                                       RuntimeComponentService service,
-                                                       Binding binding);
+    WireFormatProvider createServiceWireFormatProvider(RuntimeEndpoint endpoint);
 }

@@ -18,11 +18,10 @@
  */
 package org.apache.tuscany.sca.core.invocation;
 
-import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.core.factory.ObjectCreationException;
 import org.apache.tuscany.sca.core.factory.ObjectFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
+import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 import org.oasisopen.sca.ServiceReference;
 
 /**
@@ -32,9 +31,7 @@ import org.oasisopen.sca.ServiceReference;
  */
 public class CallableReferenceObjectFactory implements ObjectFactory<ServiceReference<?>> {
     private Class<?> businessInterface;
-    private RuntimeComponent component;
-    private RuntimeComponentReference reference;
-    private EndpointReference endpointReference;
+    private RuntimeEndpointReference endpointReference;
 
     /**
      * Constructor.
@@ -47,17 +44,14 @@ public class CallableReferenceObjectFactory implements ObjectFactory<ServiceRefe
      * @param binding the binding for the reference
      */
     public CallableReferenceObjectFactory(Class<?> businessInterface,
-                                          RuntimeComponent component,
-                                          RuntimeComponentReference reference,
-                                          EndpointReference endpointReference) {
+                                          RuntimeEndpointReference endpointReference) {
         this.businessInterface = businessInterface;
-        this.component = component;
-        this.reference = reference;
         this.endpointReference = endpointReference;
     }
 
     public ServiceReference<?> getInstance() throws ObjectCreationException {
-        return component.getComponentContext().getServiceReference(businessInterface, reference, endpointReference);
+        RuntimeComponent component = (RuntimeComponent) endpointReference.getComponent();
+        return component.getComponentContext().getServiceReference(businessInterface, endpointReference);
     }
 
 }

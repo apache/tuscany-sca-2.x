@@ -18,8 +18,6 @@
  */
 package org.apache.tuscany.sca.binding.ejb.provider;
 
-import org.apache.tuscany.sca.assembly.Endpoint;
-import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.binding.ejb.EJBBinding;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
@@ -27,6 +25,8 @@ import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
+import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 
 /**
  * A factory from creating the EJB binding provider.
@@ -39,13 +39,13 @@ public class EJBBindingProviderFactory implements BindingProviderFactory<EJBBind
     	// empty constructor
     }
     
-    public ReferenceBindingProvider createReferenceBindingProvider(EndpointReference endpointReference) {
+    public ReferenceBindingProvider createReferenceBindingProvider(RuntimeEndpointReference endpointReference) {
     	return new EJBBindingReferenceBindingProvider((RuntimeComponent)endpointReference.getComponent(), 
     												  (RuntimeComponentReference)endpointReference.getReference(), 
     												  (EJBBinding)endpointReference.getBinding());
     }
 
-    public ServiceBindingProvider createServiceBindingProvider(Endpoint endpoint) {
+    public ServiceBindingProvider createServiceBindingProvider(RuntimeEndpoint endpoint) {
     	// Service Binding not supported for EJB Binding
     	return null;
     }

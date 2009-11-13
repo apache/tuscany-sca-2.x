@@ -28,11 +28,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.sca.assembly.Endpoint;
-import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.context.ThreadMessageContext;
 import org.apache.tuscany.sca.core.context.ServiceReferenceExt;
-import org.apache.tuscany.sca.core.factory.InstanceWrapper;
-import org.apache.tuscany.sca.core.scope.TargetResolutionException;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
@@ -40,7 +37,8 @@ import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
-import org.apache.tuscany.sca.runtime.RuntimeWire;
+import org.apache.tuscany.sca.runtime.Invocable;
+import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 import org.oasisopen.sca.ServiceReference;
 import org.oasisopen.sca.ServiceRuntimeException;
 
@@ -52,9 +50,8 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
 
     protected boolean conversational;
     protected MessageFactory messageFactory;
-    protected EndpointReference source;
     protected Endpoint target;
-    protected RuntimeWire wire;
+    protected RuntimeEndpointReference source;
     protected ServiceReferenceExt<?> callableReference;
     protected Class<?> businessInterface;
 
@@ -62,11 +59,10 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
 
     protected transient Map<Method, InvocationChain> chains = new IdentityHashMap<Method, InvocationChain>();
 
-    public JDKInvocationHandler(MessageFactory messageFactory, Class<?> businessInterface, RuntimeWire wire) {
+    public JDKInvocationHandler(MessageFactory messageFactory, Class<?> businessInterface, RuntimeEndpointReference source) {
         this.messageFactory = messageFactory;
-        this.wire = wire;
+        this.source = source;
         this.businessInterface = businessInterface;
-        init(this.wire);
     }
 
     public JDKInvocationHandler(MessageFactory messageFactory, ServiceReference<?> callableReference) {
@@ -74,49 +70,40 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
         this.callableReference = (ServiceReferenceExt<?>)callableReference;
         if (callableReference != null) {
             this.businessInterface = callableReference.getBusinessInterface();
-            this.wire = ((ServiceReferenceExt<?>)callableReference).getRuntimeWire();
-            if (wire != null) {
-                init(wire);
-            }
+            this.source = (RuntimeEndpointReference) this.callableReference.getEndpointReference();
         }
     }
 
-    protected void init(RuntimeWire wire) {
-    }
 
     public Class<?> getBusinessInterface() {
         return businessInterface;
     }
     
     protected Object getCallbackID() {
-        return null;
+            return null;
     }
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         if (Object.class == method.getDeclaringClass()) {
             return invokeObjectMethod(method, args);
         }
-        if (wire == null) {
-            throw new ServiceRuntimeException("No runtime wire is available");
+        if (source == null) {
+            throw new ServiceRuntimeException("No runtime source is available");
         }
         
-        if (wire.isOutOfDate()) {
-            wire.rebuild();
+        if (source.isOutOfDate()) {
+            source.rebuild();
             chains.clear();
         }
         
-        InvocationChain chain = getInvocationChain(method, wire);
+        InvocationChain chain = getInvocationChain(method, source);
         
         if (chain == null) {
             throw new IllegalArgumentException("No matching operation is found: " + method);
         }
-
-        // The EndpointReference is not now resolved until the invocation chain 
-        // is first created so reset the source here 
-        source = wire.getEndpointReference();
         
-        // send the invocation down the wire
-        Object result = invoke(chain, args, wire, source);
+        // send the invocation down the source
+        Object result = invoke(chain, args, source);
 
         return result;
     }
@@ -200,12 +187,12 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
 
     }
 
-    protected synchronized InvocationChain getInvocationChain(Method method, RuntimeWire wire) {
+    protected synchronized InvocationChain getInvocationChain(Method method, Invocable source) {
         if (fixedWire && chains.containsKey(method)) {
             return chains.get(method);
         }
         InvocationChain found = null;
-        for (InvocationChain chain : wire.getInvocationChains()) {
+        for (InvocationChain chain : source.getInvocationChains()) {
             Operation operation = chain.getSourceOperation();
             if (operation.isDynamic()) {
                 operation.setName(method.getName());
@@ -226,14 +213,14 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
         this.target = endpoint;
     }
 
-    protected Object invoke(InvocationChain chain, Object[] args, RuntimeWire wire, EndpointReference source)
+    protected Object invoke(InvocationChain chain, Object[] args, RuntimeEndpointReference source)
                          throws Throwable {
         Message msg = messageFactory.createMessage();
         msg.setFrom(source);
         if (target != null) {
             msg.setTo(target);
         } else {
-            msg.setTo(wire.getEndpoint());
+            msg.setTo(source.getTargetEndpoint());
         }
         Invoker headInvoker = chain.getHeadInvoker();
         Operation operation = chain.getTargetOperation();
@@ -241,12 +228,11 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
         msg.setBody(args);
 
         Message msgContext = ThreadMessageContext.getMessageContext();
-               
-        handleCallback(msg, wire);
+        
         ThreadMessageContext.setMessageContext(msg);
-        boolean abnormalEndConversation = false;
+
         try {
-            // dispatch the wire down the chain and get the response
+            // dispatch the source down the chain and get the response
             Message resp = headInvoker.invoke(msg);
             Object body = resp.getBody();
             if (resp.isFault()) {
@@ -254,25 +240,8 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
             }
             return body;
         } finally {
-            //conversationPostInvoke(msg, wire, abnormalEndConversation);
+            //conversationPostInvoke(msg, source, abnormalEndConversation);
             ThreadMessageContext.setMessageContext(msgContext);
-        }
-    }
-
-    /**
-     * @param msg
-     * @param wire
-     * @param interfaze
-     * @throws TargetResolutionException
-     */
-    private void handleCallback(Message msg, RuntimeWire wire)
-        throws TargetResolutionException {
-        
-        //ReferenceParameters parameters = msg.getFrom().getReferenceParameters();
-        //parameters.setCallbackID(getCallbackID());
-        
-        if (msg.getFrom() == null || msg.getFrom().getCallbackEndpoint() == null) {
-            return;
         }
     }
 
@@ -288,31 +257,6 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
      */
     public void setCallableReference(ServiceReference<?> callableReference) {
         this.callableReference = (ServiceReferenceExt<?>)callableReference;
-    }
-
-    /**
-     * Minimal wrapper for a callback object contained in a ServiceReference
-     */
-    private static class CallbackObjectWrapper<T> implements InstanceWrapper<T> {
-
-        private T instance;
-
-        private CallbackObjectWrapper(T instance) {
-            this.instance = instance;
-        }
-
-        public T getInstance() {
-            return instance;
-        }
-
-        public void start() {
-            // do nothing
-        }
-
-        public void stop() {
-            // do nothing
-        }
-
     }
 
 }

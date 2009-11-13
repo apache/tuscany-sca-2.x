@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.apache.tuscany.sca.core.factory.ObjectCreationException;
 import org.apache.tuscany.sca.core.factory.ObjectFactory;
-import org.apache.tuscany.sca.runtime.RuntimeWire;
+import org.apache.tuscany.sca.runtime.Invocable;
 
 /**
  * Returns proxy instance for a wire callback
@@ -32,9 +32,9 @@ import org.apache.tuscany.sca.runtime.RuntimeWire;
 public class CallbackWireObjectFactory<B> implements ObjectFactory<B> {
     private Class<B> businessInterface;
     private ProxyFactory proxyFactory;
-    private List<RuntimeWire> wires;
+    private List<Invocable> wires;
 
-    public CallbackWireObjectFactory(Class<B> interfaze, ProxyFactory proxyFactory, List<RuntimeWire> wires) {
+    public CallbackWireObjectFactory(Class<B> interfaze, ProxyFactory proxyFactory, List<Invocable> wires) {
         this.businessInterface = interfaze;
         this.proxyFactory = proxyFactory;
         this.wires = wires;

@@ -39,7 +39,8 @@ import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Phase;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
-import org.apache.tuscany.sca.runtime.RuntimeWire;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
+import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeWireProcessor;
 
 /**
@@ -69,35 +70,6 @@ public class JavaCallbackRuntimeWireProcessor implements RuntimeWireProcessor {
         this.javaInterfaceFactory = javaInterfaceFactory;
     }
 
-    public void process(RuntimeWire wire) {
-        addCallbackInterfaceInterceptors(wire);
-    }
-
-    private void addCallbackInterfaceInterceptors(RuntimeWire wire) {
-        Contract contract = wire.getEndpointReference().getReference();
-        if (!(contract instanceof RuntimeComponentReference)) {
-            return;
-        }
-        RuntimeComponent component = (RuntimeComponent) wire.getEndpointReference().getComponent();
-        if (component == null) {
-            return;
-        }
-        Implementation implementation = component.getImplementation();
-        if (!(implementation instanceof JavaImplementation)) {
-            return;
-        }
-        JavaImplementation javaImpl = (JavaImplementation)implementation;
-        Endpoint callbackEndpoint = wire.getEndpointReference().getCallbackEndpoint();
-        if (callbackEndpoint != null) {
-            Interface iface = callbackEndpoint.getService().getInterfaceContract().getInterface();
-            if (!supportsCallbackInterface(iface, javaImpl)) {
-                // callback to this impl is not possible, so ensure a callback object is set
-                for (InvocationChain chain : wire.getInvocationChains()) {
-                    chain.addInterceptor(Phase.REFERENCE, new CallbackInterfaceInterceptor());
-                }
-            }
-        }
-    }
 
     private boolean supportsCallbackInterface(Interface iface, JavaImplementation impl) {
         if (iface instanceof JavaInterface) {
@@ -115,6 +87,40 @@ public class JavaCallbackRuntimeWireProcessor implements RuntimeWireProcessor {
         } catch (InvalidInterfaceException e) {
             logger.log(Level.WARNING, e.getMessage(), e);
             return false;
+        }
+    }
+
+    public void process(RuntimeEndpoint endpoint) {
+        // No operation
+    }
+
+    public void process(RuntimeEndpointReference endpointReference) {
+        if(!(endpointReference instanceof RuntimeEndpointReference)) {
+            return;
+        }
+        RuntimeEndpointReference epr = (RuntimeEndpointReference) endpointReference;
+        Contract contract = epr.getReference();
+        if (!(contract instanceof RuntimeComponentReference)) {
+            return;
+        }
+        RuntimeComponent component = (RuntimeComponent) epr.getComponent();
+        if (component == null) {
+            return;
+        }
+        Implementation implementation = component.getImplementation();
+        if (!(implementation instanceof JavaImplementation)) {
+            return;
+        }
+        JavaImplementation javaImpl = (JavaImplementation)implementation;
+        Endpoint callbackEndpoint = epr.getCallbackEndpoint();
+        if (callbackEndpoint != null) {
+            Interface iface = callbackEndpoint.getService().getInterfaceContract().getInterface();
+            if (!supportsCallbackInterface(iface, javaImpl)) {
+                // callback to this impl is not possible, so ensure a callback object is set
+                for (InvocationChain chain : epr.getInvocationChains()) {
+                    chain.addInterceptor(Phase.REFERENCE, new CallbackInterfaceInterceptor());
+                }
+            }
         }
     }
 }

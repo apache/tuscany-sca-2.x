@@ -21,40 +21,21 @@ package org.apache.tuscany.sca.core.context;
 
 import java.io.Externalizable;
 
-import javax.xml.stream.XMLStreamReader;
-
-import org.apache.tuscany.sca.assembly.EndpointReference;
-import org.apache.tuscany.sca.runtime.RuntimeWire;
+import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 import org.oasisopen.sca.ServiceReference;
 
 /**
  * Extended ServiceReference
  */
 public interface ServiceReferenceExt<B> extends ServiceReference<B>, Externalizable {
-    /**
-     * Return the wire that sits behind this service reference
-     * @return wire
-     */
-    RuntimeWire getRuntimeWire(); 
     
     /**
      * Return the EndpointReference that sits behind this service reference
      * @return endpoint reference
      */
-    EndpointReference getEndpointReference();
+    RuntimeEndpointReference getEndpointReference();
+    
+    B getProxy();
+    void setProxy(B proxy);
 
-    // TODO - EPR - the the following still required?
-    /**
-     * TBD
-     * 
-     * @param callbackID
-     */
-    void attachCallbackID(Object callbackID);
-
-    /**
-     * TBD
-     * 
-     * @return
-     */
-    XMLStreamReader getXMLReader();
 }

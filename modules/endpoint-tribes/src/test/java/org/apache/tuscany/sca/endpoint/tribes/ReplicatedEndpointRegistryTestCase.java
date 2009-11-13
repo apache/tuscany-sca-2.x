@@ -23,6 +23,7 @@ import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -42,7 +43,7 @@ public class ReplicatedEndpointRegistryTestCase {
 
         Endpoint e1 = assemblyFactory.createEndpoint();
         e1.setURI("e1uri");
-        e1.setExtensionPointRegistry(extensionPoints);
+        ((RuntimeEndpoint) e1).bind(extensionPoints, ep1);
         ep1.addEndpoint(e1);
 
         Endpoint e1p = ep1.getEndpoint("e1uri");

@@ -36,24 +36,26 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.invocation.Phase;
+import org.apache.tuscany.sca.provider.EndpointProvider;
 import org.apache.tuscany.sca.provider.OperationSelectorProvider;
 import org.apache.tuscany.sca.provider.OperationSelectorProviderFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
-import org.apache.tuscany.sca.provider.ServiceBindingProviderRRB;
 import org.apache.tuscany.sca.provider.WireFormatProvider;
 import org.apache.tuscany.sca.provider.WireFormatProviderFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
-import org.apache.tuscany.sca.runtime.RuntimeWire;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 
 /**
  * Implementation of the JMS service binding provider.
  * 
  * @version $Rev$ $Date$
  */
-public class JMSBindingServiceBindingProvider implements ServiceBindingProviderRRB, JMSServiceListenerDetails {
+public class JMSBindingServiceBindingProvider implements EndpointProvider, JMSServiceListenerDetails {
     private static final Logger logger = Logger.getLogger(JMSBindingServiceBindingProvider.class.getName());
 
+    private ExtensionPointRegistry registry;
+    private RuntimeEndpoint endpoint;
     private RuntimeComponentService service;
     private Binding targetBinding;
     private JMSBinding jmsBinding;
@@ -78,14 +80,13 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProviderR
     private WireFormatProviderFactory responseWireFormatProviderFactory;
     private WireFormatProvider responseWireFormatProvider;
 
-    private ExtensionPointRegistry registry;
-
-    public JMSBindingServiceBindingProvider(ExtensionPointRegistry registry, RuntimeComponent component, RuntimeComponentService service, Binding targetBinding, JMSBinding binding, JMSServiceListenerFactory serviceListenerFactory, ExtensionPointRegistry extensionPoints, JMSResourceFactory jmsResourceFactory) {
-        this.component = component;
-        this.service = service;
-        this.jmsBinding = binding;
+    public JMSBindingServiceBindingProvider(ExtensionPointRegistry registry, RuntimeEndpoint endpoint, JMSServiceListenerFactory serviceListenerFactory, ExtensionPointRegistry extensionPoints, JMSResourceFactory jmsResourceFactory) {
+        this.endpoint = endpoint;
+        this.component = (RuntimeComponent) endpoint.getComponent();
+        this.service = (RuntimeComponentService) endpoint.getService();
+        this.jmsBinding = (JMSBinding) endpoint.getBinding();
         this.serviceListenerFactory = serviceListenerFactory;
-        this.targetBinding = targetBinding;
+        this.targetBinding = jmsBinding;
         this.jmsResourceFactory = jmsResourceFactory;
         this.registry = registry;
 
@@ -109,20 +110,20 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProviderR
         this.operationSelectorProviderFactory =
             (OperationSelectorProviderFactory)providerFactories.getProviderFactory(jmsBinding.getOperationSelector().getClass());
         if (this.operationSelectorProviderFactory != null){
-            this.operationSelectorProvider = operationSelectorProviderFactory.createServiceOperationSelectorProvider(component, service, jmsBinding);
+            this.operationSelectorProvider = operationSelectorProviderFactory.createServiceOperationSelectorProvider(endpoint);
         }
         
         // Get the factories/providers for wire format        
         this.requestWireFormatProviderFactory = 
             (WireFormatProviderFactory)providerFactories.getProviderFactory(jmsBinding.getRequestWireFormat().getClass());
         if (this.requestWireFormatProviderFactory != null){
-            this.requestWireFormatProvider = requestWireFormatProviderFactory.createServiceWireFormatProvider(component, service, jmsBinding);
+            this.requestWireFormatProvider = requestWireFormatProviderFactory.createServiceWireFormatProvider(endpoint);
         }
         
         this.responseWireFormatProviderFactory = 
             (WireFormatProviderFactory)providerFactories.getProviderFactory(jmsBinding.getResponseWireFormat().getClass());
         if (this.responseWireFormatProviderFactory != null){
-            this.responseWireFormatProvider = responseWireFormatProviderFactory.createServiceWireFormatProvider(component, service, jmsBinding);
+            this.responseWireFormatProvider = responseWireFormatProviderFactory.createServiceWireFormatProvider(endpoint);
         }
         
         // create an interface contract that reflects both request and response
@@ -171,15 +172,15 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProviderR
     /*
      * Adds JMS specific interceptors to the binding chain
      */
-    public void configureBindingChain(RuntimeWire runtimeWire) {
+    public void configure() {
         
-        InvocationChain bindingChain = runtimeWire.getBindingInvocationChain();
+        InvocationChain bindingChain = endpoint.getBindingInvocationChain();
         
         // add transport interceptor
         bindingChain.addInterceptor(Phase.SERVICE_BINDING_TRANSPORT, 
                                     new TransportServiceInterceptor(registry, jmsBinding,
                                                                     jmsResourceFactory,
-                                                                    runtimeWire) );
+                                                                    endpoint) );
 
         // add operation selector interceptor
         bindingChain.addInterceptor(operationSelectorProvider.getPhase(), 
@@ -187,11 +188,11 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProviderR
 
         // add operationProperties interceptor after operation selector
         bindingChain.addInterceptor(Phase.SERVICE_BINDING_OPERATION_SELECTOR,
-                                    new OperationPropertiesInterceptor(jmsBinding, runtimeWire));
+                                    new OperationPropertiesInterceptor(jmsBinding, endpoint));
 
         // add callback destination interceptor after operation selector
         bindingChain.addInterceptor(Phase.SERVICE_BINDING_WIREFORMAT,
-                                    new CallbackDestinationInterceptor(runtimeWire));
+                                    new CallbackDestinationInterceptor(endpoint));
 
         // add request wire format
         bindingChain.addInterceptor(requestWireFormatProvider.getPhase(), 
@@ -226,6 +227,10 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProviderR
     
     public JMSResourceFactory getResourceFactory() {
         return jmsResourceFactory;
+    }
+
+    public RuntimeEndpoint getEndpoint() {
+        return endpoint;
     }
 
 }

@@ -33,6 +33,7 @@ import java.util.List;
 
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.Extensible;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactoryExtensionPoint;
@@ -47,7 +48,7 @@ import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
-import org.apache.tuscany.sca.runtime.RuntimeWire;
+import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -114,8 +115,8 @@ public class OSGiImplementationProvider implements ImplementationProvider {
             osgiProps.put(SERVICE_IMPORTED, "true");
             osgiProps.put(SERVICE_IMPORTED_CONFIGS, new String[] {REMOTE_CONFIG_SCA});
 
-            for (RuntimeWire wire : reference.getRuntimeWires()) {
-                final OSGiServiceFactory serviceFactory = new OSGiServiceFactory(javaInterface.getName(), wire);
+            for (EndpointReference epr : reference.getEndpointReferences()) {
+                final OSGiServiceFactory serviceFactory = new OSGiServiceFactory(javaInterface.getName(), epr);
                 ServiceRegistration registration =
                     AccessController.doPrivileged(new PrivilegedAction<ServiceRegistration>() {
                         public ServiceRegistration run() {
@@ -229,17 +230,17 @@ public class OSGiImplementationProvider implements ImplementationProvider {
     }
 
     public class OSGiServiceFactory implements ServiceFactory {
-        private RuntimeWire wire;
+        private RuntimeEndpointReference epr;
         private String interfaceName;
 
         /**
          * @param interfaceName
-         * @param wire
+         * @param epr
          */
-        public OSGiServiceFactory(String interfaceName, RuntimeWire wire) {
+        public OSGiServiceFactory(String interfaceName, EndpointReference epr) {
             super();
             this.interfaceName = interfaceName;
-            this.wire = wire;
+            this.epr = (RuntimeEndpointReference) epr;
         }
 
         public Object getService(Bundle bundle, ServiceRegistration registration) {
@@ -253,7 +254,7 @@ public class OSGiImplementationProvider implements ImplementationProvider {
             if (!interfaceClass.isInterface()) {
                 proxyService = proxyFactoryExtensionPoint.getClassProxyFactory();
             }
-            Object proxy = proxyService.createProxy(interfaceClass, wire);
+            Object proxy = proxyService.createProxy(interfaceClass, epr);
             return proxy;
         }
 

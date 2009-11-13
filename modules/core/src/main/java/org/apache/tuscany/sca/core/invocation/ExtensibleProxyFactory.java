@@ -21,8 +21,7 @@ package org.apache.tuscany.sca.core.invocation;
 
 import java.util.List;
 
-import org.apache.tuscany.sca.core.context.impl.ServiceReferenceImpl;
-import org.apache.tuscany.sca.runtime.RuntimeWire;
+import org.apache.tuscany.sca.runtime.Invocable;
 import org.oasisopen.sca.ServiceReference;
 
 /**
@@ -58,7 +57,7 @@ public class ExtensibleProxyFactory implements ProxyFactory {
      * @see org.apache.tuscany.sca.core.invocation.ProxyFactory#createCallbackProxy(java.lang.Class,
      *      java.util.List)
      */
-    public <T> T createCallbackProxy(Class<T> interfaze, List<RuntimeWire> wires) throws ProxyCreationException {
+    public <T> T createCallbackProxy(Class<T> interfaze, List<? extends Invocable> wires) throws ProxyCreationException {
         ProxyFactory interfaceFactory = proxyFactories.getInterfaceProxyFactory();
         ProxyFactory classFactory = proxyFactories.getClassProxyFactory();
         if (interfaze.isInterface()) {
@@ -78,7 +77,7 @@ public class ExtensibleProxyFactory implements ProxyFactory {
         }
     }
 
-    public <T> T createCallbackProxy(ServiceReferenceImpl<T> callbackReference) throws ProxyCreationException {
+    public <T> T createCallbackProxy(ServiceReference<T> callbackReference) throws ProxyCreationException {
         ProxyFactory interfaceFactory = proxyFactories.getInterfaceProxyFactory();
         ProxyFactory classFactory = proxyFactories.getClassProxyFactory();
         if (callbackReference.getBusinessInterface().isInterface()) {
@@ -90,9 +89,9 @@ public class ExtensibleProxyFactory implements ProxyFactory {
 
     /**
      * @see org.apache.tuscany.sca.core.invocation.ProxyFactory#createProxy(java.lang.Class,
-     *      org.apache.tuscany.sca.runtime.RuntimeWire)
+     *      org.apache.tuscany.sca.runtime.Invocable)
      */
-    public <T> T createProxy(Class<T> interfaze, RuntimeWire wire) throws ProxyCreationException {
+    public <T> T createProxy(Class<T> interfaze, Invocable wire) throws ProxyCreationException {
         ProxyFactory interfaceFactory = proxyFactories.getInterfaceProxyFactory();
         ProxyFactory classFactory = proxyFactories.getClassProxyFactory();
         if (interfaze.isInterface()) {

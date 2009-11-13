@@ -45,7 +45,7 @@ import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
-import org.apache.tuscany.sca.runtime.RuntimeWire;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 
 /**
  * Policy handler to handle PolicySet related to Logging with the QName
@@ -58,7 +58,7 @@ public class OperationSelectorJMSDefaultServiceInterceptor implements Intercepto
     private static final String ON_MESSAGE_METHOD_NAME = "onMessage";
     
     private Invoker next;
-    private RuntimeWire runtimeWire;
+    private RuntimeEndpoint endpint;
     private JMSResourceFactory jmsResourceFactory;
     private JMSBinding jmsBinding;
     private JMSMessageProcessor requestMessageProcessor;
@@ -67,15 +67,14 @@ public class OperationSelectorJMSDefaultServiceInterceptor implements Intercepto
     private List<Operation> serviceOperations;
     
 
-    public OperationSelectorJMSDefaultServiceInterceptor(ExtensionPointRegistry registry, JMSBinding jmsBinding, JMSResourceFactory jmsResourceFactory,
-            RuntimeWire runtimeWire) {
+    public OperationSelectorJMSDefaultServiceInterceptor(ExtensionPointRegistry registry, JMSResourceFactory jmsResourceFactory, RuntimeEndpoint endpoint) {
         super();
-        this.jmsBinding = jmsBinding;
-        this.runtimeWire = runtimeWire;
+        this.endpint = endpoint;
+        this.jmsBinding = (JMSBinding) endpoint.getBinding();
         this.jmsResourceFactory = jmsResourceFactory;
         this.requestMessageProcessor = JMSMessageProcessorUtil.getRequestMessageProcessor(registry, jmsBinding);
         this.responseMessageProcessor = JMSMessageProcessorUtil.getResponseMessageProcessor(registry, jmsBinding);
-        this.service = (RuntimeComponentService)runtimeWire.getEndpoint().getService();
+        this.service = (RuntimeComponentService)endpoint.getService();
         this.serviceOperations = service.getInterfaceContract().getInterface().getOperations();
     }
     

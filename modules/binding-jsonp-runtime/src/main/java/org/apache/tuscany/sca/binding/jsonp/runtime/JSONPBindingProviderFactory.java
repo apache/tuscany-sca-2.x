@@ -21,8 +21,6 @@ package org.apache.tuscany.sca.binding.jsonp.runtime;
 
 import java.util.List;
 
-import org.apache.tuscany.sca.assembly.Endpoint;
-import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.binding.jsonp.JSONPBinding;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.host.http.ServletHost;
@@ -30,6 +28,8 @@ import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
+import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 
 public class JSONPBindingProviderFactory implements BindingProviderFactory<JSONPBinding> {
 
@@ -47,11 +47,11 @@ public class JSONPBindingProviderFactory implements BindingProviderFactory<JSONP
         return JSONPBinding.class;
     }
 
-    public ReferenceBindingProvider createReferenceBindingProvider(EndpointReference endpoint) {
+    public ReferenceBindingProvider createReferenceBindingProvider(RuntimeEndpointReference endpoint) {
         return new JSONPReferenceBindingProvider(endpoint);
     }
 
-    public ServiceBindingProvider createServiceBindingProvider(Endpoint endpoint) {
+    public ServiceBindingProvider createServiceBindingProvider(RuntimeEndpoint endpoint) {
         return new JSONPServiceBindingProvider(endpoint, servletHost);
     }
 

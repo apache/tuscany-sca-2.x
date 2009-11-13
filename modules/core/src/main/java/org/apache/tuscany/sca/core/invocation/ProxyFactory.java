@@ -20,8 +20,7 @@ package org.apache.tuscany.sca.core.invocation;
 
 import java.util.List;
 
-import org.apache.tuscany.sca.core.context.impl.ServiceReferenceImpl;
-import org.apache.tuscany.sca.runtime.RuntimeWire;
+import org.apache.tuscany.sca.runtime.Invocable;
 import org.oasisopen.sca.ServiceReference;
 
 /**
@@ -36,11 +35,11 @@ public interface ProxyFactory {
      * Creates a Java proxy for the given wire
      *
      * @param interfaze the interface the proxy implements
-     * @param wire      the wire to proxy
+     * @param invocable the wire to proxy
      * @return the proxy
      * @throws ProxyCreationException
      */
-    <T> T createProxy(Class<T> interfaze, RuntimeWire wire) throws ProxyCreationException;
+    <T> T createProxy(Class<T> interfaze, Invocable invocable) throws ProxyCreationException;
 
     /**
      * Creates a Java proxy for the given CallableReference
@@ -58,7 +57,7 @@ public interface ProxyFactory {
      * @return the proxy
      * @throws ProxyCreationException
      */
-    <T> T createCallbackProxy(Class<T> interfaze, List<RuntimeWire> wires) throws ProxyCreationException;
+    <T> T createCallbackProxy(Class<T> interfaze, List<? extends Invocable> invocables) throws ProxyCreationException;
 
     /**
      * Creates a Java proxy for the given callback reference
@@ -67,7 +66,7 @@ public interface ProxyFactory {
      * @return the proxy
      * @throws ProxyCreationException
      */
-    <T> T createCallbackProxy(ServiceReferenceImpl<T> callbackReference) throws ProxyCreationException;
+    <T> T createCallbackProxy(ServiceReference<T> callbackReference) throws ProxyCreationException;
 
     /**
      * Cast a proxy to a CallableReference.

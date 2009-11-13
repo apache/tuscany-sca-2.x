@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.Implementation;
@@ -34,8 +33,8 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
 import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
-import org.apache.tuscany.sca.runtime.RuntimeComponentService;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
+import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 
 /**
  * Default implementation of a provider factory extension point.
@@ -237,12 +236,12 @@ public class DefaultProviderFactoryExtensionPoint implements ProviderFactoryExte
         }
 
         @SuppressWarnings("unchecked")
-        public ReferenceBindingProvider createReferenceBindingProvider(EndpointReference endpointReference) {
+        public ReferenceBindingProvider createReferenceBindingProvider(RuntimeEndpointReference endpointReference) {
             return getFactory().createReferenceBindingProvider(endpointReference);
         }
 
         @SuppressWarnings("unchecked")
-        public ServiceBindingProvider createServiceBindingProvider(Endpoint endpoint) {
+        public ServiceBindingProvider createServiceBindingProvider(RuntimeEndpoint endpoint) {
             return getFactory().createServiceBindingProvider(endpoint);
         }
 
@@ -409,16 +408,12 @@ public class DefaultProviderFactoryExtensionPoint implements ProviderFactoryExte
             return factory;
         }
 
-        public WireFormatProvider createReferenceWireFormatProvider(RuntimeComponent component,
-                                                                    RuntimeComponentReference reference,
-                                                                    Binding binding){
-            return getFactory().createReferenceWireFormatProvider(component, reference, binding);
+        public WireFormatProvider createReferenceWireFormatProvider(RuntimeEndpointReference endpointReference){
+            return getFactory().createReferenceWireFormatProvider(endpointReference);
         }
 
-        public WireFormatProvider createServiceWireFormatProvider(RuntimeComponent component,
-                                                                  RuntimeComponentService service,
-                                                                  Binding binding){
-            return getFactory().createServiceWireFormatProvider(component, service, binding);
+        public WireFormatProvider createServiceWireFormatProvider(RuntimeEndpoint endpoint){
+            return getFactory().createServiceWireFormatProvider(endpoint);
         }
 
         public Class<?> getModelType() {
@@ -470,16 +465,12 @@ public class DefaultProviderFactoryExtensionPoint implements ProviderFactoryExte
             return factory;
         }
 
-        public OperationSelectorProvider createReferenceOperationSelectorProvider(RuntimeComponent component,
-                                                                    RuntimeComponentReference reference,
-                                                                    Binding binding){
-            return getFactory().createReferenceOperationSelectorProvider(component, reference, binding);
+        public OperationSelectorProvider createReferenceOperationSelectorProvider(RuntimeEndpointReference endpointReference){
+            return getFactory().createReferenceOperationSelectorProvider(endpointReference);
         }
 
-        public OperationSelectorProvider createServiceOperationSelectorProvider(RuntimeComponent component,
-                                                                  RuntimeComponentService service,
-                                                                  Binding binding){
-            return getFactory().createServiceOperationSelectorProvider(component, service, binding);
+        public OperationSelectorProvider createServiceOperationSelectorProvider(RuntimeEndpoint endpoint){
+            return getFactory().createServiceOperationSelectorProvider(endpoint);
         }
 
         public Class<?> getModelType() {

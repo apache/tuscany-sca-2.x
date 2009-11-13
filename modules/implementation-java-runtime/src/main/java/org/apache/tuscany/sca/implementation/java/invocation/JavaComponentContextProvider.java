@@ -33,6 +33,7 @@ import java.util.Map;
 import org.apache.tuscany.sca.assembly.ComponentProperty;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.context.ComponentContextFactory;
@@ -60,7 +61,7 @@ import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
-import org.apache.tuscany.sca.runtime.RuntimeWire;
+import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 import org.oasisopen.sca.ServiceReference;
 
 /**
@@ -140,14 +141,14 @@ public class JavaComponentContextProvider {
 
     void start() {
         if (!instanceFactoryProvider.getImplementation().getCallbackMembers().isEmpty()) {
-            Map<String, List<RuntimeWire>> callbackWires = new HashMap<String, List<RuntimeWire>>();
+            Map<String, List<EndpointReference>> callbackWires = new HashMap<String, List<EndpointReference>>();
             for (ComponentService service : component.getServices()) {
 
                 RuntimeComponentReference callbackReference = (RuntimeComponentReference)service.getCallbackReference();
                 if (callbackReference != null) {
-                    List<RuntimeWire> wires = callbackReference.getRuntimeWires();
+                    List<EndpointReference> wires = callbackReference.getEndpointReferences();
                     if (!wires.isEmpty()) {
-                        callbackWires.put(wires.get(0).getEndpointReference().getInterfaceContract().getInterface().toString(),
+                        callbackWires.put(wires.get(0).getInterfaceContract().getInterface().toString(),
                                           wires);
                     }
                 }
@@ -155,7 +156,7 @@ public class JavaComponentContextProvider {
 
             for (Map.Entry<String, Collection<JavaElementImpl>> entry : instanceFactoryProvider.getImplementation()
                 .getCallbackMembers().entrySet()) {
-                List<RuntimeWire> wires = callbackWires.get(entry.getKey());
+                List<EndpointReference> wires = callbackWires.get(entry.getKey());
                 if (wires == null) {
                     // this can happen when there are no client wires to a
                     // component that has a callback
@@ -196,10 +197,10 @@ public class JavaComponentContextProvider {
                     }
                 }
                 ComponentReference componentReference = null;
-                List<RuntimeWire> wireList = null;
+                List<EndpointReference> wireList = null;
                 for (ComponentReference reference : component.getReferences()) {
                     if (reference.getName().equals(ref.getName())) {
-                        wireList = ((RuntimeComponentReference)reference).getRuntimeWires();
+                        wireList = ((RuntimeComponentReference)reference).getEndpointReferences();
                         componentReference = reference;
                         break;
                     }
@@ -215,11 +216,7 @@ public class JavaComponentContextProvider {
                             // Type businessType = JavaIntrospectionHelper.getParameterType(callableRefType);
                             Class<?> businessInterface =
                                 JavaIntrospectionHelper.getBusinessInterface(baseType, callableRefType);
-                            factory =
-                                new CallableReferenceObjectFactory(businessInterface, component,
-                                                                   (RuntimeComponentReference)wireList.get(i)
-                                                                       .getEndpointReference().getReference(), wireList.get(i)
-                                                                       .getEndpointReference());
+                            factory = new CallableReferenceObjectFactory(businessInterface, (RuntimeEndpointReference) wireList.get(i));
                         } else {
                             factory = createObjectFactory(baseType, wireList.get(i));
                         }
@@ -243,8 +240,7 @@ public class JavaComponentContextProvider {
                                 JavaIntrospectionHelper.getBusinessInterface(element.getType(), element
                                     .getGenericType());
                             factory =
-                                new CallableReferenceObjectFactory(businessInterface, component,
-                                                                   (RuntimeComponentReference)componentReference, wireList.get(0).getEndpointReference());
+                                new CallableReferenceObjectFactory(businessInterface, (RuntimeEndpointReference) wireList.get(0));
                         } else {
                             factory = createObjectFactory(element.getType(), wireList.get(0));
                         }
@@ -312,7 +308,7 @@ public class JavaComponentContextProvider {
 
     }
 
-    private <B> ObjectFactory<B> createObjectFactory(Class<B> interfaze, RuntimeWire wire) {
+    private <B> ObjectFactory<B> createObjectFactory(Class<B> interfaze, EndpointReference wire) {
         // FIXME: [rfeng] Disable the optimization for new as it needs more discussions
         /*
         boolean conversational = wire.getSource().getInterfaceContract().getInterface().isConversational();
@@ -347,7 +343,7 @@ public class JavaComponentContextProvider {
             }
         }
         */
-        return new WireObjectFactory<B>(interfaze, wire, proxyFactory);
+        return new WireObjectFactory<B>(interfaze, (RuntimeEndpointReference) wire, proxyFactory);
     }
 
     private ObjectFactory<?> createPropertyValueFactory(ComponentProperty property,

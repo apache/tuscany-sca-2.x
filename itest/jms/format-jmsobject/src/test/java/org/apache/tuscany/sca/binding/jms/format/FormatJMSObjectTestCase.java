@@ -48,7 +48,7 @@ public class FormatJMSObjectTestCase {
         assertEquals("Hello1 Fred Hello1 Bloggs Hello2 null Hello3 Fred Hello4 Fred Bloggs Hello5 Fred Bloggs Hello6 Fred Bloggs Hello7 Fred Bloggs", 
                      helloWorldService.getGreetingsWrapSingle("Fred", "Bloggs"));
         
-        assertEquals("Hello1 Fred Hello1 Bloggs Hello2 null Hello3 Fred Hello4 Fred Bloggs Hello5 Fred Bloggs Hello6 Fred Bloggs Hello7 Fred Bloggs foo java.lang.RuntimeException: bla", 
+        assertEquals("Hello1 Fred Hello1 Bloggs Hello2 null Hello3 Fred Hello4 Fred Bloggs Hello5 Fred Bloggs Hello6 Fred Bloggs Hello7 Fred Bloggs foo bla", 
                 helloWorldService.getGreetingsDontWrapSingle("Fred", "Bloggs"));        
 
     }

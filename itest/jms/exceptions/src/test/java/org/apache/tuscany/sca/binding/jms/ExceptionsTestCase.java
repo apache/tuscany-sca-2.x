@@ -105,7 +105,7 @@ public class ExceptionsTestCase {
         Object o = ((ObjectMessage)m).getObject();
         assertTrue(o instanceof RuntimeException);
         assertTrue("java.lang.RuntimeException".equals(o.getClass().getName()));
-        assertEquals("java.lang.RuntimeException: bla", ((RuntimeException)o).getMessage());
+        assertEquals("bla", ((RuntimeException)o).getMessage());
     }
 
     @Test
@@ -151,7 +151,7 @@ public class ExceptionsTestCase {
         Object o = ((ObjectMessage)m).getObject();
         assertTrue(o instanceof RuntimeException);
         assertTrue("java.lang.RuntimeException".equals(o.getClass().getName()));
-        assertEquals("java.lang.RuntimeException: bla", ((RuntimeException)o).getMessage());
+        assertEquals("bla", ((RuntimeException)o).getMessage());
     }
 
     @After

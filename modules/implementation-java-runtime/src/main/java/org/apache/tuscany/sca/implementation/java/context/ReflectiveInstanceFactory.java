@@ -80,7 +80,9 @@ public class ReflectiveInstanceFactory<T> implements InstanceFactory<T> {
                     try {
                         injector.inject(instance);
                     } catch (Exception e) {
-                        destroyInvoker.invokeEvent(instance);
+                        if (destroyInvoker != null) {
+                            destroyInvoker.invokeEvent(instance);
+                        }
                         throw new ObjectCreationException("Exception invoking injector", e);
                     }
             }

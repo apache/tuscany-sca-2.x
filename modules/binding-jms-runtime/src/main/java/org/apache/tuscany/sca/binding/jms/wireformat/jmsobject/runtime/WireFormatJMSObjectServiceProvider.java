@@ -23,7 +23,7 @@ package org.apache.tuscany.sca.binding.jms.wireformat.jmsobject.runtime;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSObject;
@@ -33,32 +33,27 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Phase;
 import org.apache.tuscany.sca.provider.WireFormatProvider;
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.runtime.RuntimeComponentService;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 
 /**
  * @version $Rev$ $Date$
  */
 public class WireFormatJMSObjectServiceProvider implements WireFormatProvider {
     private ExtensionPointRegistry registry;
-    private RuntimeComponent component;
-    private RuntimeComponentService service;
+    private RuntimeEndpoint endpoint;
     private JMSBinding binding;
     private InterfaceContract interfaceContract; 
     private HashMap<String,Class<?>> singleArgMap;
     private boolean wrapSingle = true;
 
-    public WireFormatJMSObjectServiceProvider(ExtensionPointRegistry registry,
-                                             RuntimeComponent component, 
-                                             RuntimeComponentService service, 
-                                             Binding binding) {
+    public WireFormatJMSObjectServiceProvider(ExtensionPointRegistry registry, RuntimeEndpoint endpoint) {
         super();
         this.registry = registry;
-        this.component = component;
-        this.service = service;
-        this.binding = (JMSBinding)binding;
+        this.endpoint = endpoint;
+        this.binding = (JMSBinding)endpoint.getBinding();
         this.singleArgMap = new HashMap<String,Class<?>>();
         
+        ComponentService service = endpoint.getService();
         // configure the service based on this wire format
         
         // currently maintaining the message processor structure which 
@@ -108,9 +103,8 @@ public class WireFormatJMSObjectServiceProvider implements WireFormatProvider {
     /**
      */
     public Interceptor createInterceptor() {
-        
-        return new WireFormatJMSObjectServiceInterceptor(registry, (JMSBinding)binding, null,service.getRuntimeWire(binding), 
-                this.singleArgMap, wrapSingle );
+
+        return new WireFormatJMSObjectServiceInterceptor(registry, null, endpoint, this.singleArgMap, wrapSingle);
     }
 
     /**

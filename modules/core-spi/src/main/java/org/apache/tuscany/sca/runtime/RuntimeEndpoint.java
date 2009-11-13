@@ -20,70 +20,15 @@
 package org.apache.tuscany.sca.runtime;
 
 import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
-import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Endpoint;
-import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.invocation.InvocationChain;
-import org.apache.tuscany.sca.invocation.Message;
-import org.apache.tuscany.sca.provider.PolicyProvider;
+import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 
 /**
  * The runtime representation of a service endpoint
  */
-public interface RuntimeEndpoint extends Endpoint, Serializable {
-    /**
-     * Returns the invocation chains for service operations associated with the
-     * wire
-     *
-     * @return the invocation chains for service operations associated with the
-     *         wire
-     */
-    List<InvocationChain> getInvocationChains();
-
-    /**
-     * Lookup the invocation chain by operation
-     * @param operation The operation
-     * @return The invocation chain for the given operation
-     */
-    InvocationChain getInvocationChain(Operation operation);
-
-    /**
-     * Get the invocation chain for the binding-specific handling
-     * @return The binding invocation chain
-     */
-    InvocationChain getBindingInvocationChain();
-
-    /**
-     * This invoke method assumes that the binding invocation chain is in force
-     * and that there will be an operation selector element there to
-     * determine which operation to call
-     * @param msg The message
-     * @return The result
-     * @throws InvocationTargetException
-     */
-    Object invoke(Message msg) throws InvocationTargetException;
-
-    /**
-     * Invoke an operation with given arguments
-     * @param operation The operation
-     * @param args The arguments
-     * @return The result
-     * @throws InvocationTargetException
-     */
-    Object invoke(Operation operation, Object[] args) throws InvocationTargetException;
-
-    /**
-     * Invoke an operation with a context message
-     * @param operation The operation
-     * @param msg The message
-     * @return The result
-     * @throws InvocationTargetException
-     */
-    Object invoke(Operation operation, Message msg) throws InvocationTargetException;
-
+public interface RuntimeEndpoint extends Endpoint, Invocable, Serializable {
     /**
      * Attach the service binding provider
      * @param provider
@@ -95,10 +40,19 @@ public interface RuntimeEndpoint extends Endpoint, Serializable {
      * @return
      */
     ServiceBindingProvider getBindingProvider();
-
+    
     /**
-     * Get a list of policy providers
-     * @return
+     * Get the interface contract for the binding. This represents the data types that the binding
+     * protocol stack can process.
+     * @return The binding interface contract
      */
-    List<PolicyProvider> getPolicyProviders();
+    InterfaceContract getBindingInterfaceContract();
+    
+    /**
+     * Get the interface contract of the service of the target component type, i.e., the
+     * componentType.service.interfaceContract. This represents the data types that the implementation
+     * code can process.
+     * @return The target component type service interface contract
+     */
+    InterfaceContract getServiceInterfaceContract();
 }

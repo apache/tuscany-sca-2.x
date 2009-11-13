@@ -40,7 +40,7 @@ import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
-import org.apache.tuscany.sca.runtime.RuntimeWire;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 
 /**
  *
@@ -50,7 +50,7 @@ public class TransportServiceInterceptor implements Interceptor {
     private static final Logger logger = Logger.getLogger(TransportServiceInterceptor.class.getName());
       
     private Invoker next;
-    private RuntimeWire runtimeWire;
+    private RuntimeEndpoint endpoint;
     private JMSResourceFactory jmsResourceFactory;
     private JMSBinding jmsBinding;
     private JMSMessageProcessor requestMessageProcessor;
@@ -59,14 +59,14 @@ public class TransportServiceInterceptor implements Interceptor {
     private String correlationScheme;
     
 
-    public TransportServiceInterceptor(ExtensionPointRegistry registry, JMSBinding jmsBinding, JMSResourceFactory jmsResourceFactory, RuntimeWire runtimeWire) {
+    public TransportServiceInterceptor(ExtensionPointRegistry registry, JMSBinding jmsBinding, JMSResourceFactory jmsResourceFactory, RuntimeEndpoint endpoint) {
         super();
         this.jmsBinding = jmsBinding;
-        this.runtimeWire = runtimeWire;
+        this.endpoint = endpoint;
         this.jmsResourceFactory = jmsResourceFactory;
         this.requestMessageProcessor = JMSMessageProcessorUtil.getRequestMessageProcessor(registry, jmsBinding);
         this.responseMessageProcessor = JMSMessageProcessorUtil.getResponseMessageProcessor(registry, jmsBinding);
-        this.service = (RuntimeComponentService)runtimeWire.getEndpoint().getService();
+        this.service = (RuntimeComponentService)endpoint.getService();
         this.correlationScheme = jmsBinding.getCorrelationScheme();
     }
     

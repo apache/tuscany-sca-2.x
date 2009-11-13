@@ -22,7 +22,7 @@ import org.apache.tuscany.sca.core.context.impl.ServiceReferenceImpl;
 import org.apache.tuscany.sca.core.factory.ObjectCreationException;
 import org.apache.tuscany.sca.core.factory.ObjectFactory;
 import org.apache.tuscany.sca.core.invocation.impl.NoMethodForOperationException;
-import org.apache.tuscany.sca.runtime.RuntimeWire;
+import org.apache.tuscany.sca.runtime.Invocable;
 
 /**
  * Uses a wire to return an object instance
@@ -31,7 +31,7 @@ import org.apache.tuscany.sca.runtime.RuntimeWire;
  */
 public class WireObjectFactory<T> implements ObjectFactory<T> {
     private Class<T> interfaze;
-    private RuntimeWire wire;
+    private Invocable wire;
     private ProxyFactory proxyService;
     
     /**
@@ -42,14 +42,14 @@ public class WireObjectFactory<T> implements ObjectFactory<T> {
      * @param proxyService the wire service to create the proxy
      * @throws NoMethodForOperationException
      */
-    public WireObjectFactory(Class<T> interfaze, RuntimeWire wire, ProxyFactory proxyService) {
+    public WireObjectFactory(Class<T> interfaze, Invocable wire, ProxyFactory proxyService) {
         this.interfaze = interfaze;
         this.wire = wire;
         this.proxyService = proxyService;
     }
 
     public T getInstance() throws ObjectCreationException {
-        return new ServiceReferenceImpl<T>(interfaze, wire, proxyService).getProxy();
+        return new ServiceReferenceImpl<T>(interfaze, wire, null).getProxy();
     }
 
 }

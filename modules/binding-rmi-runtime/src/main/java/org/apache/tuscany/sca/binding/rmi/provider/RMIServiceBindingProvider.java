@@ -32,8 +32,6 @@ import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 
-import org.apache.tuscany.sca.assembly.Endpoint;
-import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.binding.rmi.RMIBinding;
 import org.apache.tuscany.sca.common.java.classloader.ClassLoaderDelegate;
 import org.apache.tuscany.sca.host.rmi.RMIHost;
@@ -46,7 +44,7 @@ import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
-import org.apache.tuscany.sca.runtime.RuntimeWire;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
@@ -60,10 +58,11 @@ public class RMIServiceBindingProvider implements ServiceBindingProvider {
     private RuntimeComponentService service;
     private RMIBinding binding;
     private RMIHost rmiHost;
-    private RuntimeWire wire;
+    private RuntimeEndpoint endpoint;
     private Remote rmiProxy;
 
-    public RMIServiceBindingProvider(Endpoint endpoint, RMIHost rmiHost) {
+    public RMIServiceBindingProvider(RuntimeEndpoint endpoint, RMIHost rmiHost) {
+        this.endpoint = endpoint;
         this.component = (RuntimeComponent)endpoint.getComponent();
         this.service = (RuntimeComponentService)endpoint.getService();
         this.binding = (RMIBinding)endpoint.getBinding();
@@ -71,23 +70,6 @@ public class RMIServiceBindingProvider implements ServiceBindingProvider {
     }
 
     public void start() {
-        // URI uri = URI.create(component.getURI() + "/" + binding.getName());
-        // binding.setURI(uri.toString());
-
-        wire = service.getRuntimeWire(binding);
-
-        // TODO - must be a better way to do this, which is copied from the Axis2ServiceProvider
-        // TODO - EPR - if there is no wire then find the wire for the SCA binding
-        //              because this WS endpoint is providing remote support for the 
-        //              SCA binding
-        if (wire == null){
-            for(RuntimeWire tmpWire : service.getRuntimeWires()){
-                if (tmpWire.getEndpoint().getBinding() instanceof SCABinding){
-                    wire = tmpWire;
-                    break;
-                }
-            }
-        }
         
         Interface serviceInterface = service.getInterfaceContract().getInterface();
 
@@ -162,7 +144,7 @@ public class RMIServiceBindingProvider implements ServiceBindingProvider {
     }
     
     private Object invokeTarget(Operation op, Object[] args) throws InvocationTargetException {
-        return wire.invoke(op, args);
+        return endpoint.invoke(op, args);
     }
 
     private Class<?> getTargetJavaClass(Interface targetInterface) {

@@ -61,7 +61,7 @@ import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
-import org.apache.tuscany.sca.runtime.RuntimeWire;
+import org.apache.tuscany.sca.runtime.Invocable;
 
 /**
  * A resource collection binding listener, implemented as a Servlet and
@@ -81,7 +81,7 @@ class AtomBindingListenerServlet extends HttpServlet {
     private static final String CONTENTLOCATION = "Content-Location";    
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat( "EEE, dd MMM yyyy HH:mm:ss Z" ); // RFC 822 date time
 
-    private RuntimeWire wire;
+    private Invocable wire;
     private Invoker getFeedInvoker;
     private Invoker getAllInvoker;
     private Invoker queryInvoker;
@@ -106,7 +106,7 @@ class AtomBindingListenerServlet extends HttpServlet {
      * @param messageFactory
      * @param feedType
      */
-    AtomBindingListenerServlet(RuntimeWire wire, MessageFactory messageFactory, Mediator mediator, String title, String description) {
+    AtomBindingListenerServlet(Invocable wire, MessageFactory messageFactory, Mediator mediator, String title, String description) {
         this.wire = wire;
         this.messageFactory = messageFactory;
         this.mediator = mediator;
