@@ -82,49 +82,15 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
     }
 
     protected void init(RuntimeWire wire) {
-        // TODO - EPR not required for OASIS
-        /*
-        if (wire != null) {
-            try {
-                // Clone the endpoint reference so that reference parameters can be changed
-                source = (EndpointReference)wire.getSource().clone();
-            } catch (CloneNotSupportedException e) {
-                throw new ServiceRuntimeException(e);
-            }
-            initConversational(wire);
-        }
-        */
     }
-
-    /* TODO - EPR - not required for OASIS
-    protected void initConversational(RuntimeWire wire) {
-        InterfaceContract contract = wire.getSource().getInterfaceContract();
-        this.conversational = contract.getInterface().isConversational();
-    }
-    */
 
     public Class<?> getBusinessInterface() {
         return businessInterface;
     }
     
-    
     protected Object getCallbackID() {
-//        if (callableReference != null) {
-//            return callableReference.getCallbackID();
-//        } else {
-            return null;
-//        }
+        return null;
     }
-
-    /* TODO - EPR - Not reqiured for OASIS
-    protected Object getCallbackObject() {
-        if (callableReference != null && callableReference instanceof ServiceReference) {
-            return ((ServiceReference)callableReference).getService();
-        } else {
-            return null;
-        }
-    }
-    */
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         if (Object.class == method.getDeclaringClass()) {
@@ -275,11 +241,7 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
         msg.setBody(args);
 
         Message msgContext = ThreadMessageContext.getMessageContext();
-        
-        // TODO - EPR - not required for OASIS
-        //Object currentConversationID = msgContext.getFrom().getReferenceParameters().getConversationID();
-        //conversationPreinvoke(msg, wire);
-        
+               
         handleCallback(msg, wire);
         ThreadMessageContext.setMessageContext(msg);
         boolean abnormalEndConversation = false;
@@ -288,28 +250,6 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
             Message resp = headInvoker.invoke(msg);
             Object body = resp.getBody();
             if (resp.isFault()) {
-                /* TODO - EPR - not required in OASIS
-                // mark the conversation as ended if the exception is not a business exception
-                if (currentConversationID != null ){
-                    try {
-                        boolean businessException = false;
-                        
-                        for (DataType dataType : operation.getFaultTypes()){
-                            if (dataType.getPhysical() == ((Throwable)body).getClass()){
-                                businessException = true;
-                                break;
-                            }
-                        }
-                        
-                        if (businessException == false){
-                            abnormalEndConversation = true;
-                        }
-                    } catch (Exception ex){
-                        // TODO - sure what the best course of action is here. We have
-                        //        a system exception in the middle of a business exception 
-                    }
-                }
-                */
                 throw (Throwable)body;
             }
             return body;
@@ -334,165 +274,7 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
         if (msg.getFrom() == null || msg.getFrom().getCallbackEndpoint() == null) {
             return;
         }
-
-        /* TODO - EPR - not required for OASIS
-        parameters.setCallbackReference(msg.getFrom().getCallbackEndpoint());
-
-        // If we are passing out a callback target
-        // register the calling component instance against this 
-        // new conversation id so that stateful callbacks will be
-        // able to find it
-        Object callbackObject = getCallbackObject();
-        if (conversational && callbackObject == null) {
-            // the component instance is already registered
-            // so add another registration
-            ScopeContainer<Object> scopeContainer = getConversationalScopeContainer(wire);
-
-            if (scopeContainer != null && currentConversationID != null) {
-                scopeContainer.addWrapperReference(currentConversationID, conversation.getConversationID());
-            }
-        }
-        
-        Interface interfaze = msg.getFrom().getCallbackEndpoint().getInterfaceContract().getInterface();
-        if (callbackObject != null) {
-            if (callbackObject instanceof ServiceReference) {
-                CallableReferenceExt<?> callableReference = (CallableReferenceExt<?>)callbackObject;
-                EndpointReference callbackRef = callableReference.getEndpointReference();
-                
-                // TODO - EPR - create chains on the callback reference in case this hasn't already happened
-                //        needed as the bindings are not now matched until the chanins are created
-                callableReference.getRuntimeWire().getInvocationChains();
-                
-                parameters.setCallbackReference(callbackRef);
-            } else {
-                if (interfaze != null) {
-                    if (!interfaze.isConversational()) {
-                        throw new IllegalArgumentException(
-                                                           "Callback object for stateless callback is not a ServiceReference");
-                    } else {
-                        if (!(callbackObject instanceof Serializable)) {
-                            throw new IllegalArgumentException(
-                                          "Callback object for stateful callback is not Serializable");
-                        }
-                        ScopeContainer scopeContainer = getConversationalScopeContainer(wire);
-                        if (scopeContainer != null) {
-                            InstanceWrapper wrapper = new CallbackObjectWrapper(callbackObject);
-                            scopeContainer.registerWrapper(wrapper, conversation.getConversationID());
-                        }
-                        parameters.setCallbackObjectID(callbackObject);
-                    }
-                }
-            }
-        }
-        */
     }
-
-    /**
-     * Pre-invoke for the conversation handling
-     * @param msg
-     * @throws TargetResolutionException
-     */
-    /* TODO - EPR - not required for OASIS
-    private void conversationPreinvoke(Message msg, RuntimeWire wire) {
-        if (!conversational) {
-            // Not conversational or the conversation has been started
-            return;
-        }
-
-        ConversationManager conversationManager = ((RuntimeWireImpl2)wire).getConversationManager();
-
-        if (conversation == null || conversation.getState() == ConversationState.ENDED) {
-
-            conversation = conversationManager.startConversation(getConversationID());
-            
-            // if this is a local wire then set up the conversation timeouts here based on the 
-            // parameters from the component
-            if (wire.getEndpoint().getComponent() != null){
-                conversation.initializeConversationAttributes((RuntimeComponent)wire.getEndpoint().getComponent());
-            }
-            
-            // connect the conversation to the CallableReference so it can be retrieve in the future
-            if (callableReference != null) {
-                ((CallableReferenceImpl)callableReference).attachConversation(conversation);
-            }
-        } else if (conversation.isExpired()) {
-            throw new ConversationEndedException("Conversation " +  conversation.getConversationID() + " has expired.");
-        }
-
-        // if this is a local wire then schedule conversation timeouts based on the timeout
-        // parameters from the service implementation. If this isn't a local wire then
-        // the RuntimeWireInvoker will take care of this
-        if (wire.getEndpoint().getComponent() != null){
-            conversation.updateLastReferencedTime();
-        }
-
-        msg.getFrom().getReferenceParameters().setConversationID(conversation.getConversationID());
-
-    }
-    */
-
-    /**
-     * Post-invoke for the conversation handling
-     * @param wire
-     * @param operation
-     * @throws TargetDestructionException
-     */
-    /* TODO - not required for OASIS 
-    @SuppressWarnings("unchecked")
-    private void conversationPostInvoke(Message msg, RuntimeWire wire, boolean abnormalEndConversation)
-                     throws TargetDestructionException {
-        Operation operation = msg.getOperation();
-        ConversationSequence sequence = operation.getConversationSequence();
-        // We check that conversation has not already ended as there is only one
-        // conversation manager in the runtime and so, in the case of remote bindings, 
-        // the conversation will already have been stopped when we get back to the client
-        if ((sequence == ConversationSequence.CONVERSATION_END || abnormalEndConversation) &&
-            (conversation.getState() != ConversationState.ENDED)) {
-
-            // remove conversation id from scope container
-            ScopeContainer scopeContainer = getConversationalScopeContainer(wire);
-
-            if (scopeContainer != null) {
-                scopeContainer.remove(conversation.getConversationID());
-            }
-
-            conversation.end();
-        }
-    }
-   
-
-    private ScopeContainer<Object> getConversationalScopeContainer(RuntimeWire wire) {
-        ScopeContainer<Object> scopeContainer = null;
-
-        RuntimeComponent runtimeComponent = (RuntimeComponent)wire.getEndpointReference().getComponent();
-
-        if (runtimeComponent instanceof ScopedRuntimeComponent) {
-            ScopedRuntimeComponent scopedRuntimeComponent = (ScopedRuntimeComponent)runtimeComponent;
-            ScopeContainer<Object> tmpScopeContainer = scopedRuntimeComponent.getScopeContainer();
-
-            if ((tmpScopeContainer != null) && (tmpScopeContainer.getScope() == Scope.CONVERSATION)) {
-                scopeContainer = tmpScopeContainer;
-            }
-        }
-
-        return scopeContainer;
-    }
-     */
-
-    /**
-     * Creates a new conversation id
-     * 
-     * @return the conversation id
-     */
-    /* TODO - EPR - not required for OASIS
-    private Object createConversationID() {
-        if (getConversationID() != null) {
-            return getConversationID();
-        } else {
-            return UUID.randomUUID().toString();
-        }
-    }
-    */
 
     /**
      * @return the callableReference

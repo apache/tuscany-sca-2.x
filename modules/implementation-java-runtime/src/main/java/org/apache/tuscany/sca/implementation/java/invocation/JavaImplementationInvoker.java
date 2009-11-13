@@ -76,42 +76,11 @@ public class JavaImplementationInvoker implements Invoker, DataExchangeSemantics
         Object contextId = null;
 
         EndpointReference from = msg.getFrom();
-        /* TODO - EPR - not required for OASIS
-        ReferenceParameters parameters = null;
-        if (from != null) {
-            parameters = from.getReferenceParameters();
-        }
-        
-        // check what sort of context is required
-        if (scopeContainer != null) {
-            Scope scope = scopeContainer.getScope();
-            if (scope == Scope.REQUEST) {
-                contextId = Thread.currentThread();
-            } else if (scope == Scope.CONVERSATION && parameters != null) {
-                contextId = parameters.getConversationID();
-            }
-        }
-        */
 
         try {
             // The following call might create a new conversation, as a result, the msg.getConversationID() might 
             // return a new value
             InstanceWrapper wrapper = scopeContainer.getWrapper(contextId);
-
-            // detects whether the scope container has created a conversation Id. This will
-            // happen in the case that the component has conversational scope but only the
-            // callback interface is conversational. Or in the callback case if the service interface
-            // is conversational and the callback interface isn't. If we are in this situation we need
-            // to get the contextId of this component and remove it after we have invoked the method on 
-            // it. It is possible that the component instance will not go away when it is removed below 
-            // because a callback conversation will still be holding a reference to it
-            /* TODO - EPR - not required for OASIS
-            boolean removeTemporaryConversationalComponentAfterCall = false;
-            if (parameters != null && (contextId == null) && (parameters.getConversationID() != null)) {
-                contextId = parameters.getConversationID();
-                removeTemporaryConversationalComponentAfterCall = true;
-            }
-            */
 
             Object instance = wrapper.getInstance();
 
@@ -136,15 +105,6 @@ public class JavaImplementationInvoker implements Invoker, DataExchangeSemantics
             }
 
             scopeContainer.returnWrapper(wrapper, contextId);
-
-            /* TODO - EPR - not required for OASIS
-            if ((sequence == ConversationSequence.CONVERSATION_END) || (removeTemporaryConversationalComponentAfterCall)) {
-                // if end conversation, or we have the special case where a conversational
-                // object was created to service the stateless half of a stateful component
-                scopeContainer.remove(contextId);
-                parameters.setConversationID(null);
-            }
-            */
             
             msg.setBody(ret);
         } catch (InvocationTargetException e) {
@@ -174,9 +134,6 @@ public class JavaImplementationInvoker implements Invoker, DataExchangeSemantics
                     
                     if (!isChecked && contextId != null) {
                         scopeContainer.remove(contextId);
-                        /* TODO - EPR - not required for OASIS
-                        parameters.setConversationID(null);
-                        */
                     }
                 } catch (Exception ex){
                     // TODO - sure what the best course of action is here. We have

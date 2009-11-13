@@ -218,25 +218,16 @@ public class EndpointReferenceBuilderImpl {
                 String uri = component.getName() + '/' + componentService.getName();
                 componentServices.put(uri, componentService);
 
-                // TODO - EPR - $promoted$ no longer used but it doesn't do any
-                // harm here
-                boolean promotedService = false;
-                if (componentService.getName() != null && componentService.getName().indexOf("$promoted$") > -1) {
-                    promotedService = true;
-                }
-
-                // count how many non-callback, non-promoted services there are
+                // count how many non-callback services there are
                 // if there is only one the component name also acts as the
                 // service name
-                if ((!componentService.isForCallback()) && (!promotedService)) {
-
+                if (!componentService.isForCallback()) {
                     // Check how many non callback non-promoted services we have
                     if (nonCallbackServices == 0) {
                         nonCallbackService = componentService;
                     }
                     nonCallbackServices++;
                 }
-
             }
 
             if (nonCallbackServices == 1) {

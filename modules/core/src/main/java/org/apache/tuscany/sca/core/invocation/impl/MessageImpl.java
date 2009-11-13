@@ -44,9 +44,6 @@ public class MessageImpl implements Message {
     private Object bindingContext;
 
     public MessageImpl() {
-        // TODO - EPR - What to do by default?
-        //this.from = new EndpointReferenceImpl("/");
-        //this.to = new EndpointReferenceImpl("/");
         this.from = null;
         this.to = null;
     }

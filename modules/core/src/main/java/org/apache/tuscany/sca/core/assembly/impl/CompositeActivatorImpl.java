@@ -247,13 +247,6 @@ public class CompositeActivatorImpl implements CompositeActivator {
             return;
         }
 
-        /* TODO - EPR - activate services at all levels as promoted endpoin references are maintained
-         *              on the higher level services
-        if (service.getService() instanceof CompositeService) {
-            return;
-        }
-        */
-
         if (logger.isLoggable(Level.FINE)) {
             logger.fine("Activating component service: " + component.getURI() + "#" + service.getName());
         }
@@ -390,8 +383,6 @@ public class CompositeActivatorImpl implements CompositeActivator {
         // reference is asked to return it's runtime wires. If there are none the reference
         // asks the component context to start the reference which creates the wires
         reference.setComponent(component);
-
-        // TODO reference wires are added at component start for some reason
     }
 
     public void deactivate(RuntimeComponent component, RuntimeComponentReference reference) {
@@ -405,40 +396,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
             }
         }
     }
-/*
-    private ReferenceBindingProvider addReferenceBindingProvider(
-            RuntimeComponent component, RuntimeComponentReference reference,
-            Binding binding) {
-        BindingProviderFactory providerFactory = (BindingProviderFactory) providerFactories
-                .getProviderFactory(binding.getClass());
-        if (providerFactory != null) {
-            @SuppressWarnings("unchecked")
-            ReferenceBindingProvider bindingProvider = providerFactory
-                    .createReferenceBindingProvider(
-                            (RuntimeComponent) component,
-                            (RuntimeComponentReference) reference, binding);
-            if (bindingProvider != null) {
-                ((RuntimeComponentReference) reference).setBindingProvider(
-                        binding, bindingProvider);
-            }
-            for (PolicyProviderFactory f : providerFactories
-                    .getPolicyProviderFactories()) {
-                PolicyProvider policyProvider = f
-                        .createReferencePolicyProvider(component, reference,
-                                binding);
-                if (policyProvider != null) {
-                    reference.addPolicyProvider(binding, policyProvider);
-                }
-            }
 
-            return bindingProvider;
-        } else {
-            throw new IllegalStateException(
-                    "Provider factory not found for binding: "
-                            + binding.getClass().getType());
-        }
-    }
-*/
     private void removeReferenceBindingProvider(RuntimeComponent component,
             RuntimeComponentReference reference, Binding binding) {
         reference.setBindingProvider(binding, null);
@@ -454,11 +412,6 @@ public class CompositeActivatorImpl implements CompositeActivator {
         if (!(reference instanceof RuntimeComponentReference)) {
             return;
         }
-
-        // TODO - EPR what is this all about?
-        // [rfeng] Comment out the following statements to avoid the on-demand activation
-        // RuntimeComponentReference runtimeRef = (RuntimeComponentReference)reference;
-        // runtimeRef.getRuntimeWires().clear();
     }
 
     //=========================================================================
@@ -634,11 +587,10 @@ public class CompositeActivatorImpl implements CompositeActivator {
 
     // Service start/stop
 
-    // TODO - EPR done as part of the component start above
+    // done as part of the component start above
 
     // Reference start/stop
     // Used by component context start
-    // TODO - EPR I don't know why reference wires don't get added until component start
 
     public void start(CompositeContext compositeContext, RuntimeComponent component, RuntimeComponentReference componentReference) {
         synchronized (componentReference) {
@@ -646,46 +598,6 @@ public class CompositeActivatorImpl implements CompositeActivator {
             if (!(componentReference instanceof RuntimeComponentReference)) {
                 return;
             }
-
-            /* The way it was
-            // create a wire for each endpoint reference. An endpoint reference says that a
-            // target has been specified and hence the reference has been wired in some way.
-            // The service may not have been found yet, depending on the way the composite
-            // is deployed, but it is expected to be found. In the case where the reference
-            // is unwired (a target has not been specified) there will be no endpoint
-            // reference and this will lead to null being injected
-            for (EndpointReference2 endpointReference : componentReference.getEndpointReferences()){
-
-                // if there is a binding an endpoint has been found for the endpoint reference
-                if (endpointReference.getBinding() != null){
-
-                    // add the binding provider. This is apparently a repeat
-                    // of previous configuration as self references are created
-                    // on the fly and miss the previous point where providers are added
-                    RuntimeComponentReference runtimeRef = (RuntimeComponentReference)componentReference;
-
-                    if (runtimeRef.getBindingProvider(endpointReference.getBinding()) == null) {
-                        addReferenceBindingProvider(component, componentReference, endpointReference.getBinding());
-                    }
-
-                    // start the binding provider
-                    final ReferenceBindingProvider bindingProvider = runtimeRef.getBindingProvider(endpointReference.getBinding());
-
-                    if (bindingProvider != null) {
-                        // Allow bindings to add shutdown hooks. Requires RuntimePermission shutdownHooks in policy.
-                        AccessController.doPrivileged(new PrivilegedAction<Object>() {
-                            public Object run() {
-                                bindingProvider.start();
-                                return null;
-                              }
-                        });
-                    }
-
-                    // add the wire
-                    addReferenceWire(component, componentReference, endpointReference);
-                }
-            }
-            */
 
             // create a wire for each endpoint reference. An endpoint reference says either that
             // - a target has been specified and hence the reference has been wired in some way.
@@ -747,44 +659,6 @@ public class CompositeActivatorImpl implements CompositeActivator {
 
         endpointReference.setInterfaceContract(sourceContract.makeUnidirectional(false));
 
-/* TODO - EPR should have been done previously during matching
-        ComponentService callbackService = reference.getCallbackService();
-        if (callbackService != null) {
-            // select a reference callback binding to pass with invocations on this wire
-            Binding callbackBinding = null;
-            for (Binding binding : callbackService.getBindings()) {
-                // first look for a callback binding whose name matches the reference binding name
-                if (refBinding.getName().startsWith(binding.getName())) {
-                    callbackBinding = binding;
-                    break;
-                }
-            }
-            // if no callback binding found, try again based on reference binding type
-            if (callbackBinding == null) {
-                callbackBinding = callbackService.getBinding(refBinding.getClass());
-            }
-            InterfaceContract callbackContract = callbackService.getInterfaceContract();
-            EndpointReference callbackEndpoint =
-                new EndpointReferenceImpl((RuntimeComponent)refComponent, callbackService, callbackBinding,
-                                          callbackContract);
-            wireSource.setCallbackEndpoint(callbackEndpoint);
-        }
-*/
-
-/* TODO - EPR can't do this until the binding matches the EPR
-        InterfaceContract bindingContract = getInterfaceContract(reference, endpointReference.getBinding());
-        Endpoint2 endpoint = endpointReference.getTargetEndpoint();
-        endpoint.setInterfaceContract(bindingContract);
-*/
-
-/* TODO - EPR review in the light of new matching code
-        // TUSCANY-2029 - We should use the URI of the serviceBinding because the target may be a Component in a
-        // nested composite.
-        if (serviceBinding != null) {
-            wireTarget.setURI(serviceBinding.getURI());
-        }
-*/
-
         // create the wire
         // null endpoint passed in here as the endpoint reference may
         // not be resolved yet
@@ -811,35 +685,4 @@ public class CompositeActivatorImpl implements CompositeActivator {
         }
         return interfaceContract.makeUnidirectional(false);
     }
-
-
-    /* TODO - EPR - Resolved via registry now
-    public Component resolve(String componentURI) {
-        for (Composite composite : domainComposite.getIncludes()) {
-            Component component = resolve(composite, componentURI);
-            if (component != null) {
-                return component;
-            }
-        }
-        return null;
-    }
-    
-
-    public Component resolve(Composite composite, String componentURI) {
-        for (Component component : composite.getComponents()) {
-            String uri = component.getURI();
-            if (uri.equals(componentURI)) {
-                return component;
-            }
-            if (componentURI.startsWith(uri)) {
-                Implementation implementation = component.getImplementation();
-                if (!(implementation instanceof Composite)) {
-                    return null;
-                }
-                return resolve((Composite)implementation, componentURI);
-            }
-        }
-        return null;
-    }
-   */
 }

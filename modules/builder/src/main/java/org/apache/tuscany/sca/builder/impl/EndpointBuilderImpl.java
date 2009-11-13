@@ -104,25 +104,9 @@ public class EndpointBuilderImpl implements CompositeBuilder {
                             }
                         }
         
-        
-                        
-        
-                        /* change to finding the promoted component and service
-                         * when the wire is created as storing them here leads to 
-                         * the wrong URI being calculated
-                        Component endpointComponent = component;
-                        ComponentService endpointService = service;
-        
-                        // TODO - EPR - We maintain all endpoints at the right level now
-                        //              but endpoints for promoting services must point down
-                        //              to the services they promote. 
-                        if (service.getService() instanceof CompositeService) {
-                            CompositeService compositeService = (CompositeService)service.getService();
-                            endpointService = ServiceConfigurationUtil.getPromotedComponentService(compositeService);
-                            endpointComponent = ServiceConfigurationUtil.getPromotedComponent(compositeService);
-                        } // end if
-                        */
-        
+                        // We maintain all endpoints at the right level now
+                        // but endpoints for promoting services must point down
+                        // to the services they promote. 
                         for (Binding binding : service.getBindings()) {
                             Endpoint endpoint = assemblyFactory.createEndpoint();
                             endpoint.setComponent(component);

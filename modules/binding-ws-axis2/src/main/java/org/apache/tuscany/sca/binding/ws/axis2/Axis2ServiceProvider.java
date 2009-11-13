@@ -237,16 +237,6 @@ public class Axis2ServiceProvider {
         }
     }
 
-    // TODO - EPR - what to do with URI
-    /*
-    private EndpointReference2 createEndpointReference() {
-        FactoryExtensionPoint factories =
-            component.getComponentContext().getExtensionPointRegistry().getExtensionPoint(FactoryExtensionPoint.class);
-        RuntimeAssemblyFactory factory = (RuntimeAssemblyFactory)factories.getFactory(AssemblyFactory.class);
-        return factory.createEndpointReference();
-    }
-    */
-
     private String computeEndpointURI(String uri, ServletHost servletHost) {
 
         if (uri == null) {
@@ -673,24 +663,6 @@ public class Axis2ServiceProvider {
                         callbackAddress = callbackAddrElement.getText();
                     }
                 }
-
-/* TODO - EPR - not required by OASIS
-                OMElement params = from.getFirstChildWithName(QNAME_WSA_REFERENCE_PARAMETERS);
-                if (params != null) {
-                    OMElement convIDElement =
-                        params.getFirstChildWithName(Axis2BindingInvoker.CONVERSATION_ID_REFPARM_QN);
-                    if (convIDElement != null) {
-                        if (isConversational()) {
-                            conversationID = convIDElement.getText();
-                        }
-                    }
-                    OMElement callbackIDElement =
-                        params.getFirstChildWithName(Axis2BindingInvoker.CALLBACK_ID_REFPARM_QN);
-                    if (callbackIDElement != null) {
-                        callbackID = callbackIDElement.getText();
-                    }
-                }
-*/
             }
 
             // get policy specified headers
@@ -723,23 +695,6 @@ public class Axis2ServiceProvider {
             callbackEndpoint.setUnresolved(true);
             from.setCallbackEndpoint(callbackEndpoint);
         }
-
-        /* TODO - EPR - not required in OASIS
-        // set the reference parameters into the "From" EPR
-        if (callbackAddress != null) {
-            parameters.setCallbackReference(createEndpointReference(callbackAddress));
-        }
-        if (callbackID != null) {
-            parameters.setCallbackID(callbackID);
-        }
-        if (conversationID != null) {
-            parameters.setConversationID(conversationID);
-        }
-
-        if (basicAuthenticationPolicy != null) {
-            Axis2BindingBasicAuthenticationConfigurator.parseHTTPHeader(inMC, msg, basicAuthenticationPolicy);
-        }
-        */
 
         // find the runtime wire and invoke it with the message
         RuntimeWire wire = ((RuntimeComponentService)contract).getRuntimeWire(getBinding());

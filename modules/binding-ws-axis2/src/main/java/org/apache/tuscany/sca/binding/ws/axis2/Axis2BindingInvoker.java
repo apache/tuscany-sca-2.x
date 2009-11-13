@@ -221,33 +221,6 @@ public class Axis2BindingInvoker implements Invoker, DataExchangeSemantics {
 
         Endpoint callbackEndpoint = msg.getFrom().getCallbackEndpoint();
 
-/* TODO - EPR - not required for OASIS
-        // set callback endpoint and callback ID for WS-Addressing header
-        EndpointReference fromEPR = null;
-        org.apache.tuscany.sca.runtime.EndpointReference callbackEPR = parameters.getCallbackReference();
-        if (callbackEPR != null) {
-            fromEPR = new EndpointReference(callbackEPR.getBinding().getURI());
-        }
-        Object callbackID = parameters.getCallbackID();
-        if (callbackID != null) {
-            if (fromEPR == null) {
-                fromEPR = new EndpointReference(AddressingConstants.Final.WSA_ANONYMOUS_URL);
-            }
-            //FIXME: serialize callback ID to XML in case it is not a string
-            fromEPR.addReferenceParameter(CALLBACK_ID_REFPARM_QN, callbackID.toString());
-        }
-
-        // set conversation ID for WS-Addressing header
-        Object conversationId = parameters.getConversationID();
-        if (conversationId != null) {
-            if (fromEPR == null) {
-                fromEPR = new EndpointReference(AddressingConstants.Final.WSA_ANONYMOUS_URL);
-            }
-            //FIXME: serialize conversation ID to XML in case it is not a string
-            fromEPR.addReferenceParameter(CONVERSATION_ID_REFPARM_QN, conversationId.toString());
-        }
-*/
-
         // add WS-Addressing header
         //FIXME: is there any way to use the Axis2 addressing support for this?
         if (callbackEndpoint != null) {

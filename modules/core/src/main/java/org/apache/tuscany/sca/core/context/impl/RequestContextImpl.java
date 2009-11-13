@@ -73,12 +73,7 @@ public class RequestContextImpl implements RequestContext {
         RuntimeComponent component = (RuntimeComponent) to.getComponent();
         
         ServiceReference<B> callableReference = component.getComponentContext().getCallableReference(null, component, service);
-        
-        //TODO - EPR - not required for OASIS
-        //ReferenceParameters parameters = msgContext.getFrom().getReferenceParameters();
-        //((CallableReferenceExt<B>) callableReference).attachCallbackID(parameters.getCallbackID());
-        //((CallableReferenceExt<B>) callableReference).attachConversation(parameters.getConversationID());
-        
+                
         return callableReference;
     }
 
@@ -104,15 +99,7 @@ public class RequestContextImpl implements RequestContext {
         List<RuntimeWire> wires = callbackReference.getRuntimeWires();
         ProxyFactory proxyFactory = new ExtensibleProxyFactory(proxyFactoryExtensionPoint);
         ServiceReferenceImpl ref = new CallbackServiceReferenceImpl(javaClass, wires, proxyFactory);
-        if (ref != null) {  
-            //ref.resolveTarget();
-            // TODO - EPR - not required for OASIS
-            //ReferenceParameters parameters = msgContext.getFrom().getReferenceParameters();
-            //ref.attachCallbackID(parameters.getCallbackID());
-            //if (ref.getConversation() != null) {
-            //    ref.attachConversationID(parameters.getConversationID());
-            //}
-        }
+
         return ref;
     }
 }
