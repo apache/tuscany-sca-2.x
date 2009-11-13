@@ -43,6 +43,7 @@
     <module>webapp-helloworld-bpel</module>
     <module>webapp-helloworld-js-client</module>
     <module>webapp-helloworld-jsp</module>
+    <module>webapp-helloworld-servlet</module>
     <module>webapp-helloworld-stripes</module>
   </modules>
 
