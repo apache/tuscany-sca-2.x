@@ -27,6 +27,7 @@ import javax.jms.Session;
 
 import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.JMSBindingException;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 
 /**
  * MessageProcessor for sending/receiving javax.jms.BytesMessage with the JMSBinding.
@@ -36,7 +37,7 @@ import org.apache.tuscany.sca.binding.jms.JMSBindingException;
 public class BytesMessageProcessor extends AbstractMessageProcessor {
     private static final Logger logger = Logger.getLogger(AbstractMessageProcessor.class.getName());
 
-    public BytesMessageProcessor(JMSBinding jmsBinding) {
+    public BytesMessageProcessor(JMSBinding jmsBinding, ExtensionPointRegistry registry) {
         super(jmsBinding);
     }
 

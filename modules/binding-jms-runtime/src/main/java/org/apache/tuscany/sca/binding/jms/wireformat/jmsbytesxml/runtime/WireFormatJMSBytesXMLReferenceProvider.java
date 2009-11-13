@@ -93,7 +93,7 @@ public class WireFormatJMSBytesXMLReferenceProvider implements WireFormatProvide
     }     
 
     public Interceptor createInterceptor() {
-        return new WireFormatJMSBytesXMLReferenceInterceptor(binding, 
+        return new WireFormatJMSBytesXMLReferenceInterceptor(registry, binding, 
                                                           null, 
                                                           reference.getRuntimeWire(binding));
     }

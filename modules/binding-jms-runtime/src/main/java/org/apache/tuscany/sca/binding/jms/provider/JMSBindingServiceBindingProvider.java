@@ -78,13 +78,16 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProviderR
     private WireFormatProviderFactory responseWireFormatProviderFactory;
     private WireFormatProvider responseWireFormatProvider;
 
-    public JMSBindingServiceBindingProvider(RuntimeComponent component, RuntimeComponentService service, Binding targetBinding, JMSBinding binding, JMSServiceListenerFactory serviceListenerFactory, ExtensionPointRegistry extensionPoints, JMSResourceFactory jmsResourceFactory) {
+    private ExtensionPointRegistry registry;
+
+    public JMSBindingServiceBindingProvider(ExtensionPointRegistry registry, RuntimeComponent component, RuntimeComponentService service, Binding targetBinding, JMSBinding binding, JMSServiceListenerFactory serviceListenerFactory, ExtensionPointRegistry extensionPoints, JMSResourceFactory jmsResourceFactory) {
         this.component = component;
         this.service = service;
         this.jmsBinding = binding;
         this.serviceListenerFactory = serviceListenerFactory;
         this.targetBinding = targetBinding;
         this.jmsResourceFactory = jmsResourceFactory;
+        this.registry = registry;
 
         // Set the default destination when using a connection factory.
         // If an activation spec is being used, do not set the destination
@@ -174,7 +177,7 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProviderR
         
         // add transport interceptor
         bindingChain.addInterceptor(Phase.SERVICE_BINDING_TRANSPORT, 
-                                    new TransportServiceInterceptor(jmsBinding,
+                                    new TransportServiceInterceptor(registry, jmsBinding,
                                                                     jmsResourceFactory,
                                                                     runtimeWire) );
 

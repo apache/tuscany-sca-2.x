@@ -94,7 +94,7 @@ public class WireFormatJMSTextServiceProvider implements WireFormatProvider {
     /**
      */
     public Interceptor createInterceptor() {
-        return new WireFormatJMSTextServiceInterceptor((JMSBinding)binding,
+        return new WireFormatJMSTextServiceInterceptor(registry, (JMSBinding)binding,
                                                          null,
                                                         service.getRuntimeWire(binding));
     }

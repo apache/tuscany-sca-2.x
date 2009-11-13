@@ -30,6 +30,7 @@ import org.apache.tuscany.sca.binding.jms.context.JMSBindingContext;
 import org.apache.tuscany.sca.binding.jms.provider.DefaultMessageProcessor;
 import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory;
 import org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSDefault;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
@@ -52,7 +53,7 @@ public class WireFormatJMSDefaultServiceInterceptor implements Interceptor {
     private HashMap<String,OMElement> inputWrapperMap;
     private HashMap<String, Boolean> outputWrapperMap;
 
-    public WireFormatJMSDefaultServiceInterceptor(JMSBinding jmsBinding, JMSResourceFactory jmsResourceFactory, RuntimeWire runtimeWire, HashMap<String, OMElement> inputWrapperMap,
+    public WireFormatJMSDefaultServiceInterceptor(ExtensionPointRegistry registry, JMSBinding jmsBinding, JMSResourceFactory jmsResourceFactory, RuntimeWire runtimeWire, HashMap<String, OMElement> inputWrapperMap,
             HashMap<String, Boolean> outputWrapperMap) {
         super();
         this.jmsBinding = jmsBinding;
@@ -60,8 +61,8 @@ public class WireFormatJMSDefaultServiceInterceptor implements Interceptor {
         this.jmsResourceFactory = jmsResourceFactory;
         // Note the default processor doesn't follow the normal processor pattern 
         // as it has to handle both text and bytes messages
-        this.requestMessageProcessor = new DefaultMessageProcessor(jmsBinding);
-        this.responseMessageProcessor = new DefaultMessageProcessor(jmsBinding);
+        this.requestMessageProcessor = new DefaultMessageProcessor(jmsBinding, registry);
+        this.responseMessageProcessor = new DefaultMessageProcessor(jmsBinding, registry);
         this.inputWrapperMap = inputWrapperMap;
         this.outputWrapperMap = outputWrapperMap;
         

@@ -181,7 +181,7 @@ public class WireFormatJMSDefaultServiceProvider implements WireFormatProvider {
 
 
     public Interceptor createInterceptor() {
-        return new WireFormatJMSDefaultServiceInterceptor(binding, jmsResourceFactory, service.getRuntimeWire(binding), this.inputWrapperMap, this.outputWrapperMap);
+        return new WireFormatJMSDefaultServiceInterceptor(registry, binding, jmsResourceFactory, service.getRuntimeWire(binding), this.inputWrapperMap, this.outputWrapperMap);
     }
 
     public String getPhase() {

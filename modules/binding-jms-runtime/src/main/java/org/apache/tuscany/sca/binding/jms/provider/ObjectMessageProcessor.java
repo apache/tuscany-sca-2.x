@@ -29,6 +29,7 @@ import javax.jms.Session;
 
 import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.JMSBindingException;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
@@ -38,7 +39,7 @@ import org.oasisopen.sca.ServiceRuntimeException;
 public class ObjectMessageProcessor extends AbstractMessageProcessor {
     private static final Logger logger = Logger.getLogger(ObjectMessageProcessor.class.getName());
 
-    public ObjectMessageProcessor(JMSBinding jmsBinding) {
+    public ObjectMessageProcessor(JMSBinding jmsBinding, ExtensionPointRegistry registry) {
         super(jmsBinding);
     }
 

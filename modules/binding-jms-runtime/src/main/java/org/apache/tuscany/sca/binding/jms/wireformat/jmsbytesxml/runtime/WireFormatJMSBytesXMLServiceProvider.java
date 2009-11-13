@@ -99,7 +99,7 @@ public class WireFormatJMSBytesXMLServiceProvider implements WireFormatProvider 
     /**
      */
     public Interceptor createInterceptor() {
-        return new WireFormatJMSBytesXMLServiceInterceptor((JMSBinding)binding,
+        return new WireFormatJMSBytesXMLServiceInterceptor(registry, (JMSBinding)binding,
                                                           jmsResourceFactory,
                                                         service.getRuntimeWire(binding));
     }

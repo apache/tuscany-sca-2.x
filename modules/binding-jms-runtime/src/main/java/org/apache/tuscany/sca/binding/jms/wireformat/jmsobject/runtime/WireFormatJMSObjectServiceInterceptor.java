@@ -29,6 +29,7 @@ import org.apache.tuscany.sca.binding.jms.provider.JMSMessageProcessorUtil;
 import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory;
 import org.apache.tuscany.sca.binding.jms.provider.ObjectMessageProcessor;
 import org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSObject;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
@@ -51,14 +52,14 @@ public class WireFormatJMSObjectServiceInterceptor implements Interceptor {
     private HashMap<String,Class<?>> singleArgMap;
     private boolean wrapSingle;
 
-    public WireFormatJMSObjectServiceInterceptor(JMSBinding jmsBinding, JMSResourceFactory jmsResourceFactory, 
+    public WireFormatJMSObjectServiceInterceptor(ExtensionPointRegistry registry, JMSBinding jmsBinding, JMSResourceFactory jmsResourceFactory, 
             RuntimeWire runtimeWire, HashMap<String, Class<?>> singleArgMap, boolean wrapSingle) {
         super();
         this.jmsBinding = jmsBinding;
         this.runtimeWire = runtimeWire;
         this.jmsResourceFactory = jmsResourceFactory;
-        this.requestMessageProcessor = JMSMessageProcessorUtil.getRequestMessageProcessor(jmsBinding);
-        this.responseMessageProcessor = JMSMessageProcessorUtil.getResponseMessageProcessor(jmsBinding);
+        this.requestMessageProcessor = JMSMessageProcessorUtil.getRequestMessageProcessor(registry, jmsBinding);
+        this.responseMessageProcessor = JMSMessageProcessorUtil.getResponseMessageProcessor(registry, jmsBinding);
         this.singleArgMap = singleArgMap;
         this.wrapSingle = wrapSingle;
     }

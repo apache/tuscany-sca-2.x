@@ -109,7 +109,7 @@ public class WireFormatJMSObjectServiceProvider implements WireFormatProvider {
      */
     public Interceptor createInterceptor() {
         
-        return new WireFormatJMSObjectServiceInterceptor((JMSBinding)binding, null,service.getRuntimeWire(binding), 
+        return new WireFormatJMSObjectServiceInterceptor(registry, (JMSBinding)binding, null,service.getRuntimeWire(binding), 
                 this.singleArgMap, wrapSingle );
     }
 

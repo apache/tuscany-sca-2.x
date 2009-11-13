@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.binding.jms.operationselector.jmsdefault.runtime;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.binding.jms.JMSBinding;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Phase;
 import org.apache.tuscany.sca.provider.OperationSelectorProvider;
@@ -34,18 +35,20 @@ public class OperationSelectorJMSDefaultServiceProvider implements OperationSele
     private RuntimeComponent component;
     private RuntimeComponentService service;
     private Binding binding;
-
-    public OperationSelectorJMSDefaultServiceProvider(RuntimeComponent component, RuntimeComponentService service, Binding binding) {
+    private ExtensionPointRegistry registry;
+    
+    public OperationSelectorJMSDefaultServiceProvider(ExtensionPointRegistry registry, RuntimeComponent component, RuntimeComponentService service, Binding binding) {
         super();
         this.component = component;
         this.service = service;
         this.binding = binding;
+        this.registry = registry;
     }
 
     /**
      */
     public Interceptor createInterceptor() {
-        return new OperationSelectorJMSDefaultServiceInterceptor((JMSBinding)binding,
+        return new OperationSelectorJMSDefaultServiceInterceptor(registry, (JMSBinding)binding,
                                                                  null,
                                                                  service.getRuntimeWire(binding));
     }

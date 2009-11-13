@@ -160,7 +160,7 @@ public class JMSBindingReferenceBindingProvider implements ReferenceBindingProvi
         bindingChain.addInterceptor(Phase.REFERENCE_BINDING_WIREFORMAT, 
                                     new HeaderReferenceInterceptor(jmsBinding,
                                                                    jmsResourceFactory,
-                                                                   runtimeWire) );
+                                                                   runtimeWire, extensions) );
     }    
 
 }

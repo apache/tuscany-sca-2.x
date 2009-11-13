@@ -18,23 +18,23 @@
  */
 package org.apache.tuscany.sca.binding.jms.provider;
 
-import java.io.StringReader;
+import java.io.IOException;
 import java.util.logging.Logger;
 
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.Session;
 import javax.jms.TextMessage;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 
-import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.JMSBindingException;
+import org.apache.tuscany.sca.common.xml.dom.DOMHelper;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.util.FaultException;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.xml.sax.SAXException;
 
 /**
  * MessageProcessor for sending/receiving XML javax.jms.TextMessage with the JMSBinding.
@@ -44,8 +44,11 @@ import org.apache.tuscany.sca.interfacedef.util.FaultException;
 public class XMLTextMessageProcessor extends AbstractMessageProcessor {
     private static final Logger logger = Logger.getLogger(XMLTextMessageProcessor.class.getName());
 
-    public XMLTextMessageProcessor(JMSBinding jmsBinding) {
+    private DOMHelper domHelper;
+
+    public XMLTextMessageProcessor(JMSBinding jmsBinding, ExtensionPointRegistry registry) {
         super(jmsBinding);
+        this.domHelper = DOMHelper.getInstance(registry);
     }
 
     @Override
@@ -55,17 +58,17 @@ public class XMLTextMessageProcessor extends AbstractMessageProcessor {
             String xml = ((TextMessage)msg).getText();
             Object os;
             if (xml != null) {
-                XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(new StringReader(xml));
-                StAXOMBuilder builder = new StAXOMBuilder(reader);
-                os = builder.getDocumentElement();
+                os = domHelper.load(xml);
             } else {
                 os = null;
             }
             return os;
 
-        } catch (XMLStreamException e) {
+        } catch (IOException e) {
             throw new JMSBindingException(e);
         } catch (JMSException e) {
+            throw new JMSBindingException(e);
+        } catch (SAXException e) {
             throw new JMSBindingException(e);
         }
     }
@@ -89,10 +92,10 @@ public class XMLTextMessageProcessor extends AbstractMessageProcessor {
 
             TextMessage message = session.createTextMessage();
 
-            if (o instanceof OMElement) {
-                message.setText(o.toString());
-            } else if ((o instanceof Object[]) && ((Object[])o)[0] instanceof OMElement) {
-                message.setText(((Object[])o)[0].toString());
+            if (o instanceof Element) {
+                message.setText(domHelper.saveAsString((Node)o));
+            } else if ((o instanceof Object[]) && ((Object[])o)[0] instanceof Node) {
+                message.setText(domHelper.saveAsString((Node)((Object[])o)[0]));
             } else if (o != null) {
                 throw new IllegalStateException("expecting OMElement payload: " + o);
             }
@@ -114,7 +117,7 @@ public class XMLTextMessageProcessor extends AbstractMessageProcessor {
             try {
 
                 TextMessage message = session.createTextMessage();
-                message.setText(String.valueOf(((FaultException)o).getFaultInfo()));
+                message.setText(domHelper.saveAsString((Node)((FaultException)o).getFaultInfo()));
                 message.setBooleanProperty(JMSBindingConstants.FAULT_PROPERTY, true);
                 return message;
 

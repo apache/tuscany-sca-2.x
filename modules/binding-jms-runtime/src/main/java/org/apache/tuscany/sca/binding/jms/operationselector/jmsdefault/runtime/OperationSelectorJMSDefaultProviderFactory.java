@@ -52,7 +52,7 @@ public class OperationSelectorJMSDefaultProviderFactory implements OperationSele
     public OperationSelectorProvider createServiceOperationSelectorProvider(RuntimeComponent component,
                                                               RuntimeComponentService service,
                                                               Binding binding) {
-        return new OperationSelectorJMSDefaultServiceProvider(component, service, binding);
+        return new OperationSelectorJMSDefaultServiceProvider(registry, component, service, binding);
     }
 
     /**

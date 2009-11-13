@@ -35,6 +35,7 @@ import org.apache.tuscany.sca.binding.jms.provider.JMSBindingServiceBindingProvi
 import org.apache.tuscany.sca.binding.jms.provider.JMSMessageProcessor;
 import org.apache.tuscany.sca.binding.jms.provider.JMSMessageProcessorUtil;
 import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
@@ -59,13 +60,13 @@ public class HeaderReferenceInterceptor implements Interceptor {
     private WireFormat requestWireFormat;
     private WireFormat responseWireFormat;
 
-    public HeaderReferenceInterceptor(JMSBinding jmsBinding, JMSResourceFactory jmsResourceFactory, RuntimeWire runtimeWire) {
+    public HeaderReferenceInterceptor(JMSBinding jmsBinding, JMSResourceFactory jmsResourceFactory, RuntimeWire runtimeWire, ExtensionPointRegistry extensions) {
         super();
         this.jmsBinding = jmsBinding;
         this.runtimeWire = runtimeWire;
         this.jmsResourceFactory = jmsResourceFactory;
-        this.requestMessageProcessor = JMSMessageProcessorUtil.getRequestMessageProcessor(jmsBinding);
-        this.responseMessageProcessor = JMSMessageProcessorUtil.getResponseMessageProcessor(jmsBinding);
+        this.requestMessageProcessor = JMSMessageProcessorUtil.getRequestMessageProcessor(extensions, jmsBinding);
+        this.responseMessageProcessor = JMSMessageProcessorUtil.getResponseMessageProcessor(extensions, jmsBinding);
         this.correlationScheme = jmsBinding.getCorrelationScheme();
         
     }

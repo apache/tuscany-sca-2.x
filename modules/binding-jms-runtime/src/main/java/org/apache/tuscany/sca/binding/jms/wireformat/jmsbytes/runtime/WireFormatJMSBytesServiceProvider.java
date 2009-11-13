@@ -87,7 +87,7 @@ public class WireFormatJMSBytesServiceProvider implements WireFormatProvider {
     /**
      */
     public Interceptor createInterceptor() {
-        return new WireFormatJMSBytesServiceInterceptor((JMSBinding)binding,
+        return new WireFormatJMSBytesServiceInterceptor(registry, (JMSBinding)binding,
                                                          null,
                                                         service.getRuntimeWire(binding));
     }

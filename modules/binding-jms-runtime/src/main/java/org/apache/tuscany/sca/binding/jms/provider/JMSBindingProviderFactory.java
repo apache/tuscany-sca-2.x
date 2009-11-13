@@ -69,7 +69,7 @@ public class JMSBindingProviderFactory implements BindingProviderFactory<JMSBind
     public ServiceBindingProvider createServiceBindingProvider(Endpoint endpoint) {
         JMSBinding binding = (JMSBinding)endpoint.getBinding();
         JMSResourceFactory jmsRF = jmsRFEP.createJMSResourceFactory(binding);
-        return new JMSBindingServiceBindingProvider((RuntimeComponent)endpoint.getComponent(), (RuntimeComponentService)endpoint.getService(), binding, binding, serviceListenerFactory, extensionPoints, jmsRF);
+        return new JMSBindingServiceBindingProvider(extensionPoints, (RuntimeComponent)endpoint.getComponent(), (RuntimeComponentService)endpoint.getService(), binding, binding, serviceListenerFactory, extensionPoints, jmsRF);
     }
 
     public Class<JMSBinding> getModelType() {

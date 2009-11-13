@@ -39,6 +39,7 @@ import org.apache.tuscany.sca.binding.jms.provider.JMSMessageProcessorUtil;
 import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory;
 import org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSDefault;
 import org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSTextXML;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
@@ -66,14 +67,14 @@ public class OperationSelectorJMSDefaultServiceInterceptor implements Intercepto
     private List<Operation> serviceOperations;
     
 
-    public OperationSelectorJMSDefaultServiceInterceptor(JMSBinding jmsBinding, JMSResourceFactory jmsResourceFactory,
+    public OperationSelectorJMSDefaultServiceInterceptor(ExtensionPointRegistry registry, JMSBinding jmsBinding, JMSResourceFactory jmsResourceFactory,
             RuntimeWire runtimeWire) {
         super();
         this.jmsBinding = jmsBinding;
         this.runtimeWire = runtimeWire;
         this.jmsResourceFactory = jmsResourceFactory;
-        this.requestMessageProcessor = JMSMessageProcessorUtil.getRequestMessageProcessor(jmsBinding);
-        this.responseMessageProcessor = JMSMessageProcessorUtil.getResponseMessageProcessor(jmsBinding);
+        this.requestMessageProcessor = JMSMessageProcessorUtil.getRequestMessageProcessor(registry, jmsBinding);
+        this.responseMessageProcessor = JMSMessageProcessorUtil.getResponseMessageProcessor(registry, jmsBinding);
         this.service = (RuntimeComponentService)runtimeWire.getEndpoint().getService();
         this.serviceOperations = service.getInterfaceContract().getInterface().getOperations();
     }

@@ -94,7 +94,7 @@ public class WireFormatJMSTextReferenceProvider implements WireFormatProvider {
     }      
 
     public Interceptor createInterceptor() {
-        return new WireFormatJMSTextReferenceInterceptor(binding, 
+        return new WireFormatJMSTextReferenceInterceptor(registry, binding, 
                                                           null, 
                                                           reference.getRuntimeWire(binding));
     }

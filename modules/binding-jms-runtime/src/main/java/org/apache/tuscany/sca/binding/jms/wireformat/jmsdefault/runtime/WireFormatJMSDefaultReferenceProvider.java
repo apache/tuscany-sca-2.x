@@ -189,7 +189,7 @@ public class WireFormatJMSDefaultReferenceProvider implements WireFormatProvider
     }   
 
     public Interceptor createInterceptor() {
-        return new WireFormatJMSDefaultReferenceInterceptor((JMSBinding) binding, null, reference.getRuntimeWire(binding), inputWrapperMap, outputWrapperMap);
+        return new WireFormatJMSDefaultReferenceInterceptor(registry, (JMSBinding) binding, null, reference.getRuntimeWire(binding), inputWrapperMap, outputWrapperMap);
     }
 
     public String getPhase() {

@@ -23,6 +23,7 @@ import java.lang.reflect.Constructor;
 
 import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.JMSBindingException;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 
 /**
  * Utility methods to load JMS message processors.
@@ -64,12 +65,45 @@ public class JMSMessageProcessorUtil {
         return instance;
     }
 
-    public static JMSMessageProcessor getRequestMessageProcessor(JMSBinding binding) {
-        return (JMSMessageProcessor)instantiate(null, binding.getRequestMessageProcessorName(), binding);
+//    public static JMSMessageProcessor getRequestMessageProcessor(JMSBinding binding) {
+//        return (JMSMessageProcessor)instantiate(null, binding.getRequestMessageProcessorName(), binding);
+//    }
+//
+//    public static JMSMessageProcessor getResponseMessageProcessor(JMSBinding binding) {
+//        return (JMSMessageProcessor)instantiate(null, binding.getResponseMessageProcessorName(), binding);
+//    }
+//
+    private static Object instantiate(ClassLoader cl, String className, JMSBinding binding, ExtensionPointRegistry registry) {
+        Object instance;
+        if (cl == null) {
+            cl = binding.getClass().getClassLoader();
+        }
+
+        try {
+            Class<?> clazz;
+
+            try {
+                clazz = cl.loadClass(className);
+            } catch (ClassNotFoundException e) {
+                clazz = binding.getClass().getClassLoader().loadClass(className);
+            }
+
+            Constructor<?> constructor = clazz.getDeclaredConstructor(new Class[] {JMSBinding.class, ExtensionPointRegistry.class});
+            instance = constructor.newInstance(binding, registry);
+
+        } catch (Throwable e) {
+            throw new JMSBindingException("Exception instantiating OperationAndDataBinding class", e);
+        }
+
+        return instance;
     }
 
-    public static JMSMessageProcessor getResponseMessageProcessor(JMSBinding binding) {
-        return (JMSMessageProcessor)instantiate(null, binding.getResponseMessageProcessorName(), binding);
+    public static JMSMessageProcessor getRequestMessageProcessor(ExtensionPointRegistry registry, JMSBinding binding) {
+        return (JMSMessageProcessor)instantiate(null, binding.getRequestMessageProcessorName(), binding, registry);
     }
 
+    public static JMSMessageProcessor getResponseMessageProcessor(ExtensionPointRegistry registry, JMSBinding binding) {
+        return (JMSMessageProcessor)instantiate(null, binding.getResponseMessageProcessorName(), binding, registry);
+    }
+    
 }

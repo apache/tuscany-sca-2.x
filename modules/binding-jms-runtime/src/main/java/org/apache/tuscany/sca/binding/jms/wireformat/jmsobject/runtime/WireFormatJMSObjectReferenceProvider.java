@@ -104,7 +104,7 @@ public class WireFormatJMSObjectReferenceProvider implements WireFormatProvider 
     }    
 
     public Interceptor createInterceptor() {
-        return new WireFormatJMSObjectReferenceInterceptor(binding, 
+        return new WireFormatJMSObjectReferenceInterceptor(registry, binding, 
                                                           null, 
                                                           reference.getRuntimeWire(binding), this.singleArgMap);
     }

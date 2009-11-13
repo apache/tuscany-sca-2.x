@@ -34,6 +34,7 @@ import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.JMSBindingException;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.util.FaultException;
 
 /**
@@ -42,7 +43,7 @@ import org.apache.tuscany.sca.interfacedef.util.FaultException;
 public class XMLBytesMessageProcessor extends AbstractMessageProcessor {
     private static final Logger logger = Logger.getLogger(XMLBytesMessageProcessor.class.getName());
 
-    public XMLBytesMessageProcessor(JMSBinding jmsBinding) {
+    public XMLBytesMessageProcessor(JMSBinding jmsBinding, ExtensionPointRegistry registry) {
         super(jmsBinding);
     }
 

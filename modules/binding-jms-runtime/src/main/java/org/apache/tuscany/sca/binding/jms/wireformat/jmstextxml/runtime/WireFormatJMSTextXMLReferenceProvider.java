@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.binding.jms.wireformat.jmstextxml.runtime;
 
-import org.apache.axiom.om.OMElement;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.JMSBindingConstants;
@@ -28,6 +27,7 @@ import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.WebServiceBindingFactory;
 import org.apache.tuscany.sca.binding.ws.wsdlgen.BindingWSDLGenerator;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.databinding.xml.DOMDataBinding;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Phase;
@@ -77,7 +77,7 @@ public class WireFormatJMSTextXMLReferenceProvider implements WireFormatProvider
         WebServiceBinding wsBinding = wsFactory.createWebServiceBinding();
         BindingWSDLGenerator.generateWSDL(component, reference, wsBinding, registry, null);
         interfaceContract = wsBinding.getBindingInterfaceContract();
-        interfaceContract.getInterface().resetDataBinding(OMElement.class.getName()); 
+        interfaceContract.getInterface().resetDataBinding(DOMDataBinding.NAME); 
     }
     
     protected boolean isOnMessage() {
@@ -105,9 +105,7 @@ public class WireFormatJMSTextXMLReferenceProvider implements WireFormatProvider
     }    
     
     public Interceptor createInterceptor() {
-        return new WireFormatJMSTextXMLReferenceInterceptor((JMSBinding)binding, 
-                                                            null, 
-                                                            reference.getRuntimeWire(binding));
+        return new WireFormatJMSTextXMLReferenceInterceptor(registry, (JMSBinding)binding, null, reference.getRuntimeWire(binding));
     }
 
     public String getPhase() {
