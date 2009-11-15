@@ -1,0 +1,34 @@
+Manifest-Version: 1.0
+Export-Package: org.apache.tuscany.sca.implementation.widget.provider;
+ uses:="org.apache.tuscany.sca.runtime,org.apache.tuscany.sca.assembly
+ ,org.apache.tuscany.sca.web.javascript,org.w3c.dom,javax.servlet,java
+ x.servlet.http,org.apache.tuscany.sca.invocation,org.apache.tuscany.s
+ ca.provider,org.apache.tuscany.sca.interfacedef,org.apache.tuscany.sc
+ a.implementation.widget,org.apache.tuscany.sca.host.http,org.apache.t
+ uscany.sca.core";version=""
+Tool: Bnd-0.0.357
+Bundle-Name: Apache Tuscany SCA Widget Implementation Runtime
+Created-By: 1.6.0_15 (Apple Inc.)
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 2.0.0
+Bnd-LastModified: 1258145471895
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA Widget Implementation Runtime
+Import-Package: javax.servlet,
+ javax.servlet.http,
+ org.apache.tuscany.sca.assembly;version="2.0.0",
+ org.apache.tuscany.sca.core;version="2.0.0",
+ org.apache.tuscany.sca.host.http;version="2.0.0",
+ org.apache.tuscany.sca.implementation.widget;version="2.0.0",
+ org.apache.tuscany.sca.implementation.widget.provider;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef;version="2.0.0",
+ org.apache.tuscany.sca.invocation;version="2.0.0",
+ org.apache.tuscany.sca.provider;version="2.0.0",
+ org.apache.tuscany.sca.runtime;version="2.0.0",
+ org.apache.tuscany.sca.web.javascript;version="2.0.0",
+ org.w3c.dom
+Bundle-SymbolicName: org.apache.tuscany.sca.implementation.widget.runt
+ ime
+Bundle-DocURL: http://www.apache.org/
+
