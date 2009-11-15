@@ -34,6 +34,7 @@
         <module>assembly-xml</module>
         <module>assembly-xsd</module>
         <module>binding-atom</module>
+        <module>binding-atom-js-dojo</module>        
         <module>binding-atom-runtime</module>
         <module>binding-ejb</module>
         <module>binding-ejb-runtime</module>
@@ -43,7 +44,8 @@
         <module>binding-jms-runtime</module>
         <module>binding-jsonp</module>
         <module>binding-jsonp-runtime</module>
-        <module>binding-jsonrpc</module>
+        <module>binding-jsonrpc</module>        
+        <module>binding-jsonrpc-js-dojo</module>        
         <module>binding-jsonrpc-runtime</module>
         <module>binding-rmi</module>
         <module>binding-rmi-runtime</module>
@@ -85,6 +87,9 @@
         <module>implementation-web</module>
         <module>implementation-web-client</module>
         <module>implementation-web-runtime</module>
+        <module>implementation-widget</module>
+        <module>implementation-widget-runtime</module>
+        <module>implementation-widget-runtime-dojo</module>
         <module>interface-java</module>
         <module>interface-java-jaxws</module>
         <module>interface-wsdl</module>
@@ -102,12 +107,13 @@
         <module>sca-client-impl</module>
         <module>stripes</module>
         <module>xsd</module>
+        <module>web-javascript</module>
+        <module>web-javascript-dojo</module>        
         <!-- OSGi Remote Services with SCA -->
         <module>contribution-osgi</module>
         <module>implementation-osgi</module>
         <module>implementation-osgi-runtime</module>
         <module>node-impl-osgi</module>
-
     </modules>
 
     <profiles>
