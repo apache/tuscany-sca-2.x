@@ -28,7 +28,9 @@ import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 
 /**
- *
+ * A HTML Widget Introspector used to introspect references and property
+ * annotations in JavaScript code
+ * 
  * @version $Rev$ $Date$
  */
 class WidgetImplementationIntrospector {

@@ -29,16 +29,16 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
+import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
+import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
-import org.apache.tuscany.sca.contribution.service.ContributionReadException;
-import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
-import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
@@ -50,14 +50,12 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
  * @version $Rev$ $Date$
  */
 public class WidgetImplementationProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<WidgetImplementation> {
-    private static final QName IMPLEMENTATION_WIDGET = new QName(Constants.SCA10_TUSCANY_NS, "implementation.widget");
-
     private AssemblyFactory assemblyFactory;
     private ContributionFactory contributionFactory;
     private WidgetImplementationFactory implementationFactory;
     private Monitor monitor;
 
-    public WidgetImplementationProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
+    public WidgetImplementationProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
     	assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         contributionFactory = modelFactories.getFactory(ContributionFactory.class);
         implementationFactory = modelFactories.getFactory(WidgetImplementationFactory.class);
@@ -72,10 +70,10 @@ public class WidgetImplementationProcessor extends BaseStAXArtifactProcessor imp
      * @param model
      */
     private void error(String message, Object model, Exception ex) {
-    	 if (monitor != null) {
-	        Problem problem = monitor.createProblem(this.getClass().getName(), "impl-widget-validation-messages", Severity.ERROR, model, message, ex);
-	        monitor.problem(problem);
-    	 }
+        if (monitor != null) {
+            Problem problem = monitor.createProblem(this.getClass().getName(), "impl-widget-validation-messages", Severity.ERROR, model, message, ex);
+            monitor.problem(problem);
+        }
     }
 
     /**
@@ -94,7 +92,7 @@ public class WidgetImplementationProcessor extends BaseStAXArtifactProcessor imp
 
     public QName getArtifactType() {
         // Returns the QName of the XML element processed by this processor
-        return IMPLEMENTATION_WIDGET;
+        return WidgetImplementation.TYPE;
     }
 
     public Class<WidgetImplementation> getModelType() {
@@ -102,7 +100,7 @@ public class WidgetImplementationProcessor extends BaseStAXArtifactProcessor imp
         return WidgetImplementation.class;
     }
 
-    public WidgetImplementation read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+    public WidgetImplementation read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException, XMLStreamException {
 
         // Read an <implementation.widget> element
 
@@ -122,7 +120,7 @@ public class WidgetImplementationProcessor extends BaseStAXArtifactProcessor imp
 
         // Skip to end element
         while (reader.hasNext()) {
-            if (reader.next() == END_ELEMENT && IMPLEMENTATION_WIDGET.equals(reader.getName())) {
+            if (reader.next() == END_ELEMENT && WidgetImplementation.TYPE.equals(reader.getName())) {
                 break;
             }
         }
@@ -130,13 +128,13 @@ public class WidgetImplementationProcessor extends BaseStAXArtifactProcessor imp
         return implementation;
     }
 
-    public void resolve(WidgetImplementation implementation, ModelResolver resolver) throws ContributionResolveException {
+    public void resolve(WidgetImplementation implementation, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
 
     	if (implementation != null) {
     		// Resolve the resource directory location
             Artifact artifact = contributionFactory.createArtifact();
             artifact.setURI(implementation.getLocation());
-            Artifact resolved = resolver.resolveModel(Artifact.class, artifact);
+            Artifact resolved = resolver.resolveModel(Artifact.class, artifact, context);
             if (resolved.getLocation() != null) {
                 try {
                     implementation.setLocationURL(new URL(resolved.getLocation()));
@@ -159,9 +157,9 @@ public class WidgetImplementationProcessor extends BaseStAXArtifactProcessor imp
     	}
     }
 
-    public void write(WidgetImplementation implementation, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
+    public void write(WidgetImplementation implementation, XMLStreamWriter writer, ProcessorContext context) throws ContributionWriteException, XMLStreamException {
         // Write <implementation.widget>        
-        writeStart(writer, IMPLEMENTATION_WIDGET.getNamespaceURI(), IMPLEMENTATION_WIDGET.getLocalPart());
+        writeStart(writer, WidgetImplementation.TYPE.getNamespaceURI(), WidgetImplementation.TYPE.getLocalPart());
 
         if (implementation.getLocation() != null) {
             writer.writeAttribute("location", implementation.getLocation());

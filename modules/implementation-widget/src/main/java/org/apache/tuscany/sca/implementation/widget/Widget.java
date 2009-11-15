@@ -31,4 +31,5 @@ import org.apache.tuscany.sca.data.collection.Collection;
  * @version $Rev$ $Date$
  */
 public interface Widget extends Collection<String, InputStream> {
+
 }

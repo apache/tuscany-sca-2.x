@@ -26,6 +26,10 @@ package org.apache.tuscany.sca.implementation.widget;
  */
 public interface WidgetImplementationFactory {
     
+    /**
+     * Create a Widget Implementation model object
+     * @return
+     */
     WidgetImplementation createWidgetImplementation();
     
 }

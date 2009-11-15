@@ -19,15 +19,12 @@
 package org.apache.tuscany.sca.implementation.widget.impl;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+
+import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.assembly.ConstrainingType;
-import org.apache.tuscany.sca.assembly.Property;
-import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.assembly.impl.ImplementationImpl;
 import org.apache.tuscany.sca.implementation.widget.Widget;
 import org.apache.tuscany.sca.implementation.widget.WidgetImplementation;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
@@ -41,21 +38,20 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
  *
  * @version $Rev$ $Date$
  */
-public class WidgetImplementationImpl implements WidgetImplementation {
+public class WidgetImplementationImpl extends ImplementationImpl implements WidgetImplementation {
     private Service widgetService;
-    private List<Reference> references = new ArrayList<Reference>();
-    private List<Property> properties = new ArrayList<Property>();
-    
+
     private String location;
-    private URL url;
-    private boolean unresolved;
+    private URL locationUrl;
 
     /**
      * Constructs a new resource implementation.
      */
     WidgetImplementationImpl(AssemblyFactory assemblyFactory,
-                         JavaInterfaceFactory javaFactory) {
-
+                             JavaInterfaceFactory javaFactory) {
+        
+        super(TYPE);
+        
         // Resource implementation always provide a single service exposing
         // the Resource interface, and have no references and properties
         widgetService = assemblyFactory.createService();
@@ -73,6 +69,20 @@ public class WidgetImplementationImpl implements WidgetImplementation {
         widgetService.setInterfaceContract(interfaceContract);
     }
 
+    public QName getType() {
+        return TYPE;
+    }
+    
+    @Override
+    public String getURI() {
+        return location;
+    }
+
+    @Override
+    public void setURI(String uri) {
+        this.location = uri;
+    }
+    
     public String getLocation() {
         return location;
     }
@@ -82,51 +92,12 @@ public class WidgetImplementationImpl implements WidgetImplementation {
     }
 
     public URL getLocationURL() {
-        return url;
+        return locationUrl;
     }
     
     public void setLocationURL(URL url) {
-        this.url = url;
+        this.locationUrl = url;
     }
-    
-    public ConstrainingType getConstrainingType() {
-        // The resource implementation does not support constrainingTypes
-        return null;
-    }
-
-    public List<Property> getProperties() {
-        return properties;
-    }
-
-    public List<Service> getServices() {
-        // The resource implementation does not support services
-        return Collections.singletonList(widgetService);
-    }
-    
-    public List<Reference> getReferences() {
-        return references;
-    }
-
-    public String getURI() {
-        return location;
-    }
-
-    public void setConstrainingType(ConstrainingType constrainingType) {
-        // The resource implementation does not support constrainingTypes
-    }
-
-    public void setURI(String uri) {
-        this.location = uri;
-    }
-
-
-    public boolean isUnresolved() {
-        return unresolved;
-    }
-
-    public void setUnresolved(boolean unresolved) {
-        this.unresolved = unresolved;
-    }    
 
     @Override
     public String toString() {

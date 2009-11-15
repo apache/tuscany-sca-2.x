@@ -20,6 +20,8 @@ package org.apache.tuscany.sca.implementation.widget;
 
 import java.net.URL;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.sca.assembly.Implementation;
 
 
@@ -29,12 +31,29 @@ import org.apache.tuscany.sca.assembly.Implementation;
  * @version $Rev$ $Date$
  */
 public interface WidgetImplementation extends Implementation {
+    QName TYPE = new QName(SCA11_TUSCANY_NS, "implementation.widget");
     
+    /**
+     * Returns the location of the HTML file representing the Widget
+     * @return the location
+     */
     String getLocation();
 
+    /**
+     * Set the location of the HTML file representing the Widget
+     * @param location
+     */
     void setLocation(String location);
 
+    /**
+     * Returns the Location URL for the HTML file representing the Widget
+     * @return the location
+     */
     URL getLocationURL();
     
+    /**
+     * Set the Location URL for the HTML file representing the Widget 
+     * @param url the location
+     */
     void setLocationURL(URL url);
 }
