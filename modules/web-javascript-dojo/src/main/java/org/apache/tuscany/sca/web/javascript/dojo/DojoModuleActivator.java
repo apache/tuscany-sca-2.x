@@ -34,12 +34,16 @@ public class DojoModuleActivator implements ModuleActivator {
 
     private static final String tuscanyBaseUri = URI.create("/tuscany").toString();
     private static final String tuscanyUri = URI.create("/tuscany/*").toString();
-
+    
     private ServletHost servletHost;
 
-    public void start(ExtensionPointRegistry registry) {
+    public DojoModuleActivator(ExtensionPointRegistry registry) {
         ServletHostExtensionPoint servletHosts = registry.getExtensionPoint(ServletHostExtensionPoint.class);
-        this.servletHost = servletHosts.getServletHosts().get(0);
+        
+        this.servletHost = servletHosts.getServletHosts().get(0);        
+    }
+    
+    public void start() {
         
         if (servletHost == null) {
             throw new IllegalStateException("Can't find ServletHost reference !");
@@ -67,7 +71,7 @@ public class DojoModuleActivator implements ModuleActivator {
         
     }
 
-    public void stop(ExtensionPointRegistry registry) {
+    public void stop() {
         Servlet servlet = servletHost.getServletMapping(dojoBaseUri);
         if(servlet != null) {
             servletHost.removeServletMapping(dojoBaseUri);
@@ -80,5 +84,4 @@ public class DojoModuleActivator implements ModuleActivator {
         servletHost = null;
 
     }
-
 }

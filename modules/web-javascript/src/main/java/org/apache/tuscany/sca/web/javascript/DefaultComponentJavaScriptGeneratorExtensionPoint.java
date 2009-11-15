@@ -22,10 +22,10 @@ package org.apache.tuscany.sca.web.javascript;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.xml.namespace.QName;
 
@@ -35,9 +35,6 @@ import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
 import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
-import org.apache.tuscany.sca.monitor.Problem;
-import org.apache.tuscany.sca.monitor.Problem.Severity;
-import org.apache.tuscany.sca.monitor.impl.ProblemImpl;
 
 
 /**
@@ -72,10 +69,18 @@ public class DefaultComponentJavaScriptGeneratorExtensionPoint implements Compon
      * @param model
     */
     private void error(String message, Object model, Exception ex) {
+        /*
         if (monitor != null) {
-            Problem problem = new ProblemImpl(this.getClass().getName(), "web-javascript-validation-messages", Severity.ERROR, model, message, ex);
+            Problem problem =
+                monitor.createProblem(this.getClass().getName(),
+                                      Messages.RESOURCE_BUNDLE,
+                                      Severity.ERROR,
+                                      model,
+                                      message,
+                                      ex);
             monitor.problem(problem);
-        }        
+        }
+        */     
     }
     
     public void addComponentJavaScriptGenerator(ComponentJavaScriptGenerator componentScriptGenerator) {
@@ -120,7 +125,7 @@ public class DefaultComponentJavaScriptGeneratorExtensionPoint implements Compon
         }
 
         // Get the proxy factories declarations
-        Set<ServiceDeclaration> factoryDeclarations = null;
+        Collection<ServiceDeclaration> factoryDeclarations = null;
         try {
             factoryDeclarations = ServiceDiscovery.getInstance().getServiceDeclarations(ComponentJavaScriptGenerator.class);
         } catch (IOException e) {

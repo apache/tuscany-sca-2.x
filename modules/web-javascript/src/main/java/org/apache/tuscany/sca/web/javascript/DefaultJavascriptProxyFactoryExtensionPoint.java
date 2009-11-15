@@ -21,22 +21,19 @@ package org.apache.tuscany.sca.web.javascript;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
 import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
-import org.apache.tuscany.sca.monitor.Problem;
-import org.apache.tuscany.sca.monitor.Problem.Severity;
-import org.apache.tuscany.sca.monitor.impl.ProblemImpl;
 
 /**
  * Default extension point for javascript proxy factories
@@ -67,10 +64,18 @@ public class DefaultJavascriptProxyFactoryExtensionPoint implements JavascriptPr
      * @param model
     */
     private void error(String message, Object model, Exception ex) {
+        /*
         if (monitor != null) {
-            Problem problem = new ProblemImpl(this.getClass().getName(), "web-javascript-validation-messages", Severity.ERROR, model, message, ex);
+            Problem problem =
+                monitor.createProblem(this.getClass().getName(),
+                                      Messages.RESOURCE_BUNDLE,
+                                      Severity.WARNING,
+                                      model,
+                                      message,
+                                      (Object[])messageParameters);
             monitor.problem(problem);
-        }        
+        } 
+        */     
     }
     
     public void addProxyFactory(JavascriptProxyFactory javascriptProxyfactory) {
@@ -111,7 +116,7 @@ public class DefaultJavascriptProxyFactoryExtensionPoint implements JavascriptPr
         if (bindingType.isInterface()) {
             // Dynamically load a factory class declared under META-INF/services 
             try {
-                Class<?> factoryClass = ServiceDiscovery.getInstance().loadFirstServiceClass(bindingType);
+                Class<?> factoryClass = ServiceDiscovery.getInstance().getServiceDeclaration(bindingType).getClass();
                 if (factoryClass != null) {
 
                     try {
@@ -121,7 +126,7 @@ public class DefaultJavascriptProxyFactoryExtensionPoint implements JavascriptPr
                     } catch (NoSuchMethodException e) {
 
                         // Constructor taking the model factory extension point
-                        Constructor<?> constructor = factoryClass.getConstructor(ModelFactoryExtensionPoint.class);
+                        Constructor<?> constructor = factoryClass.getConstructor(FactoryExtensionPoint.class);
                         factory = (JavascriptProxyFactory) constructor.newInstance(this);
                     }
 
@@ -135,7 +140,7 @@ public class DefaultJavascriptProxyFactoryExtensionPoint implements JavascriptPr
 
             // Call the newInstance static method on the factory abstract class
             try {
-                factory = (JavascriptProxyFactory) ServiceDiscovery.getInstance().newFactoryClassInstance(bindingType);
+                factory = (JavascriptProxyFactory) ServiceDiscovery.getInstance().getServiceDeclaration(bindingType);
             } catch (Exception e) {
                 throw new IllegalArgumentException(e);
             }
@@ -186,7 +191,7 @@ public class DefaultJavascriptProxyFactoryExtensionPoint implements JavascriptPr
         }
 
         // Get the proxy factories declarations
-        Set<ServiceDeclaration> factoryDeclarations = null;
+        Collection<ServiceDeclaration> factoryDeclarations = null;
         try {
             factoryDeclarations = ServiceDiscovery.getInstance().getServiceDeclarations(JavascriptProxyFactory.class);
         } catch (IOException e) {
