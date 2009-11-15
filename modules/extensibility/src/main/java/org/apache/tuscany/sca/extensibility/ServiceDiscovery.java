@@ -150,10 +150,7 @@ public final class ServiceDiscovery implements ServiceDiscoverer {
         for (Iterator<ServiceDeclaration> i = sds.iterator(); i.hasNext();) {
             ServiceDeclaration sd = i.next();
             if (!sd.isAssignableTo(serviceType)) {
-                logger.log(Level.WARNING, "Service provider {0} is not a type of {1}", new Object[] {
-                                                                                                     sd,
-                                                                                                     serviceType
-                                                                                                         .getName()});
+                logger.log(Level.WARNING, "Service provider {0} is not a type of {1}", new Object[] {sd,serviceType.getName()});
                 i.remove();
             }
         }
