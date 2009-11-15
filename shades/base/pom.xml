@@ -63,6 +63,25 @@
         </dependency>
         <dependency>
             <groupId>${pom.groupId}</groupId>
+            <artifactId>tuscany-binding-jms-runtime</artifactId>
+            <version>${pom.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.tuscany.sca</groupId>
+                    <artifactId>tuscany-databinding-axiom</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.tuscany.sca</groupId>
+                    <artifactId>tuscany-binding-ws-wsdlgen</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.tuscany.sca</groupId>
+                    <artifactId>tuscany-interface-wsdl</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
             <artifactId>tuscany-host-jetty</artifactId>
             <version>${pom.version}</version>
             <exclusions>
