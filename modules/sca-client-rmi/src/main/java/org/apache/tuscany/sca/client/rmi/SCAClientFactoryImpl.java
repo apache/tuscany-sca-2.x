@@ -71,4 +71,15 @@ public class SCAClientFactoryImpl extends SCAClientFactory {
         return URI.create(uri).getHost();
     }
     
+    public void stop() {
+        extensionsRegistry.stop();
+    }
+
+    public EndpointRegistry getEndpointRegistry() {
+        return endpointRegistry;
+    }
+
+    public ExtensionPointRegistry getExtensionsRegistry() {
+        return extensionsRegistry;
+    }
 }
