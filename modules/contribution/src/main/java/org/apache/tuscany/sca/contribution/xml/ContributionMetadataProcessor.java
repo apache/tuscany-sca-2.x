@@ -34,6 +34,8 @@ import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.ContributionMetadata;
 import org.apache.tuscany.sca.contribution.Export;
 import org.apache.tuscany.sca.contribution.Import;
+import org.apache.tuscany.sca.contribution.java.JavaImport;
+import org.apache.tuscany.sca.contribution.java.JavaExport;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
@@ -157,8 +159,30 @@ public class ContributionMetadataProcessor extends BaseStAXArtifactProcessor imp
                             Object extension = extensionProcessor.read(reader, context);
                             if (extension != null && contribution != null) {
                                 if (extension instanceof Import) {
-                                    contribution.getImports().add((Import)extension);
+                                    // The value of the @package attribute on the <import.java/> element MUST be
+                                	// unique across all other <import.java/> elements within the contribution.
+                                	if (extension instanceof JavaImport) {
+                                		for (Import imports : contribution.getImports()) {
+                                			if (imports instanceof JavaImport) {
+                                				if (((JavaImport)extension).getPackage().equals(((JavaImport) imports).getPackage())) {
+                                					error(context.getMonitor(), "DuplicateJavaImports", reader);
+                                				}
+                                			}
+                                		}
+                                	}
+                                	contribution.getImports().add((Import)extension);
                                 } else if (extension instanceof Export) {
+                                	// The value of the @package attribute on the <export.java/> element MUST be
+                                	// unique across all other <export.java/> elements within the contribution.
+                                	if (extension instanceof JavaExport) {
+                                		for (Export exports : contribution.getExports()) {
+                                			if (exports instanceof JavaExport) {
+                                				if (((JavaExport)extension).getPackage().equals(((JavaExport) exports).getPackage())) {
+                                					error(context.getMonitor(), "DuplicateJavaExports", reader);
+                                				}
+                                			}
+                                		}
+                                	}
                                     contribution.getExports().add((Export)extension);
                                 } else {
                                     contribution.getExtensions().add(extension);
