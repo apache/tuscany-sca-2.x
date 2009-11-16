@@ -138,6 +138,20 @@ public class LauncherMain {
         return new URLClassLoader(jarURLs.toArray(new URL[]{}), parentCL);
     }
 
+    private static void argJars(Set<URL> jarURLs, Properties launcherProperties) throws IOException {
+        String[] args = (String[])launcherProperties.get(LAUNCHER_ARGS);
+        if (args != null && args.length > 0) {
+            for (String a : args) {
+                File f = new File(a);
+                if (!f.exists()) {
+                    throw new FileNotFoundException(args[0]);
+                }
+                jarURLs.add(f.toURI().toURL());
+            }
+        }
+        launcherProperties.put(LAUNCHER_ARGS, new String[]{});
+    }
+
     private static URL firstArgJarManifestMainClass(Properties launcherProperties) throws IOException {
         String[] args = (String[])launcherProperties.get(LAUNCHER_ARGS);
         if (args.length < 1) {
@@ -274,7 +288,14 @@ public class LauncherMain {
         
         if (!f.exists()) {
 //            throw new FileNotFoundException(f.getName());
-            properties.put("mainClass", "[firstArgJarManifestMainClass]|org.apache.tuscany.sca.domain.node.DomainNodeMain");
+            if (args.length > 0 && "client".equals(args[0])) {
+                properties.put("mainClass", "org.apache.tuscany.sca.client.javascript.TuscanyShell");
+                String[] args2 = new String[args.length-1];
+                System.arraycopy(args, 1, args2, 0, args.length-1);
+                args = args2;
+            } else {
+                properties.put("mainClass", "[firstArgJarManifestMainClass]|org.apache.tuscany.sca.domain.node.DomainNodeMain");
+            }
         } else {
             try {
                 FileInputStream fis = new FileInputStream(f);
