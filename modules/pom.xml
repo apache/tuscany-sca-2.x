@@ -105,6 +105,8 @@
         <module>policy-logging</module>
         <module>sca-api</module>
         <module>sca-client-impl</module>
+        <module>sca-client-javascript</module>
+        <module>sca-client-rmi</module>
         <module>stripes</module>
         <module>xsd</module>
         <module>web-javascript</module>
