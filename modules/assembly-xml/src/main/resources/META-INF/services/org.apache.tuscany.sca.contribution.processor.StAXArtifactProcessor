@@ -19,8 +19,8 @@
 org.apache.tuscany.sca.assembly.xml.ComponentTypeProcessor;qname=http://docs.oasis-open.org/ns/opencsa/sca/200903#componentType,model=org.apache.tuscany.sca.assembly.ComponentType
 org.apache.tuscany.sca.assembly.xml.CompositeProcessor;qname=http://docs.oasis-open.org/ns/opencsa/sca/200903#composite,model=org.apache.tuscany.sca.assembly.Composite
 org.apache.tuscany.sca.assembly.xml.SCABindingProcessor;qname=http://docs.oasis-open.org/ns/opencsa/sca/200903#binding.sca,model=org.apache.tuscany.sca.assembly.SCABinding
-org.apache.tuscany.sca.assembly.xml.EndpointProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.1#binding.rmi#endpoint,model=org.apache.tuscany.sca.assembly.Endpoint
-org.apache.tuscany.sca.assembly.xml.EndpointReferenceProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.1#binding.rmi#endpointReference,model=org.apache.tuscany.sca.assembly.EndpointReference
+org.apache.tuscany.sca.assembly.xml.EndpointProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.1#endpoint,model=org.apache.tuscany.sca.assembly.Endpoint
+org.apache.tuscany.sca.assembly.xml.EndpointReferenceProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.1#endpointReference,model=org.apache.tuscany.sca.assembly.EndpointReference
 org.apache.tuscany.sca.definitions.xml.DefinitionsProcessor;qname=http://docs.oasis-open.org/ns/opencsa/sca/200903#definitions,model=org.apache.tuscany.sca.definitions.Definitions
 org.apache.tuscany.sca.policy.xml.BindingTypeProcessor;qname=http://docs.oasis-open.org/ns/opencsa/sca/200903#bindingType,model=org.apache.tuscany.sca.policy.BindingType
 org.apache.tuscany.sca.policy.xml.ImplementationTypeProcessor;qname=http://docs.oasis-open.org/ns/opencsa/sca/200903#implementationType,model=org.apache.tuscany.sca.policy.ImplementationType

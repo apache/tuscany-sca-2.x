@@ -31,6 +31,10 @@ import org.apache.tuscany.sca.assembly.Implementation;
  * for SCA endpoints, endpoint references and component implementations
  */
 public interface PolicyBuilder<T> {
+    /**
+     * Get the policy type
+     * @return
+     */
     QName getPolicyType();
 
     /**

@@ -19,10 +19,9 @@
 
 package org.apache.tuscany.sca.core.assembly.impl;
 
-import java.io.Externalizable;
 import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
+import java.io.ObjectStreamException;
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +34,7 @@ import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.CompositeReference;
 import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.Contract;
+import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.impl.EndpointImpl;
 import org.apache.tuscany.sca.context.CompositeContext;
@@ -76,7 +76,7 @@ import org.oasisopen.sca.ServiceRuntimeException;
 /**
  * Runtime model for Endpoint that supports java serialization
  */
-public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint, Externalizable {
+public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint {
     private transient CompositeContext compositeContext;
     private transient EndpointRegistry endpointRegistry;
     private transient RuntimeWireProcessor wireProcessor;
@@ -99,6 +99,7 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
 
     protected InterfaceContract bindingInterfaceContract;
     protected InterfaceContract serviceInterfaceContract;
+
     /**
      * No-arg constructor for Java serilization
      */
@@ -114,7 +115,7 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
         this.compositeContext = compositeContext;
         bind(compositeContext.getExtensionPointRegistry(), compositeContext.getEndpointRegistry());
     }
-    
+
     public void bind(ExtensionPointRegistry registry, EndpointRegistry endpointRegistry) {
         if (compositeContext == null) {
             compositeContext = new CompositeContext(registry, endpointRegistry);
@@ -458,17 +459,6 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
     public CompositeContext getCompositeContext() {
         return compositeContext;
     }
-    
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        this.uri = in.readUTF();
-        this.xml = in.readUTF();
-        // Defer the loading to resolve();
-    }
-
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeUTF(getURI());
-        out.writeUTF(getSerializer().write(this));
-    }
 
     private synchronized EndpointSerializer getSerializer() {
         if (serializer == null) {
@@ -499,7 +489,7 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
         }
         super.resolve();
     }
-    
+
     public InterfaceContract getBindingInterfaceContract() {
         resolve();
         if (bindingInterfaceContract != null) {
@@ -528,6 +518,51 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
             serviceInterfaceContract = getInterfaceContract();
         }
         return serviceInterfaceContract;
+    }
+    
+    public Object writeReplace() throws ObjectStreamException {
+        return new EndpointProxy(getSerializer(), this);
+    }
+
+    public static class EndpointProxy implements Serializable {
+        private static final long serialVersionUID = 6708978267158501975L;
+        private String xml;
+
+        /**
+         * @param serializer
+         */
+        public EndpointProxy() {
+            super();
+        }
+
+        /**
+         * @param serializer
+         */
+        public EndpointProxy(EndpointSerializer serializer, Endpoint endpoint) {
+            super();
+            try {
+                this.xml = serializer.write(endpoint);
+            } catch (Exception e) {
+                throw new ServiceRuntimeException(e);
+            }
+        }
+
+        public Object readResolve() throws ObjectStreamException {
+            CompositeContext context = CompositeContext.getCurrentCompositeContext();
+            if (context == null) {
+                throw new IllegalStateException("No context is available for deserializing the endpoint");
+            }
+            UtilityExtensionPoint utilities =
+                context.getExtensionPointRegistry().getExtensionPoint(UtilityExtensionPoint.class);
+            EndpointSerializer serializer = utilities.getUtility(EndpointSerializer.class);
+            try {
+                RuntimeEndpoint endpoint = (RuntimeEndpoint) serializer.readEndpoint(xml);
+                endpoint.bind(context);
+                return endpoint;
+            } catch (IOException e) {
+                throw new ServiceRuntimeException(e);
+            }
+        }
     }
 
 }

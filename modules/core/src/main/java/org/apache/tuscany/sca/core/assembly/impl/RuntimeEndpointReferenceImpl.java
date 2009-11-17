@@ -19,10 +19,9 @@
 
 package org.apache.tuscany.sca.core.assembly.impl;
 
-import java.io.Externalizable;
 import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
+import java.io.ObjectStreamException;
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -78,7 +77,7 @@ import org.oasisopen.sca.ServiceRuntimeException;
 /**
  * Runtime model for Endpoint that supports java serialization
  */
-public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implements RuntimeEndpointReference, Externalizable {
+public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implements RuntimeEndpointReference {
     private transient CompositeContext compositeContext;
     private transient RuntimeWireProcessor wireProcessor;
     private transient InterfaceContractMapper interfaceContractMapper;
@@ -98,7 +97,6 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
     private transient ProviderFactoryExtensionPoint providerFactories;
     private transient List<PolicyProvider> policyProviders;
     private transient EndpointSerializer serializer;
-    private String xml;
 
     protected InterfaceContract bindingInterfaceContract;
     protected InterfaceContract referenceInterfaceContract;
@@ -425,17 +423,6 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
         return compositeContext;
     }
     
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        this.uri = in.readUTF();
-        this.xml = in.readUTF();
-        // Defer the loading to resolve();
-    }
-
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeUTF(getURI());
-        out.writeUTF(getSerializer().write(this));
-    }
-
     private synchronized EndpointSerializer getSerializer() {
         if (serializer == null) {
             if (registry != null) {
@@ -446,26 +433,6 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
             }
         }
         return serializer;
-    }
-
-    @Override
-    protected void reset() {
-        super.reset();
-        this.xml = null;
-    }
-
-    @Override
-    protected void resolve() {
-        if (component == null && xml != null) {
-            try {
-                bind(CompositeContext.getCurrentCompositeContext());
-                getSerializer().read(this, xml);
-                eprBinder.bind(endpointRegistry, this);
-            } catch (IOException e) {
-                throw new IllegalStateException(e);
-            }
-        }
-        super.resolve();
     }
 
     public InterfaceContract getBindingInterfaceContract() {
@@ -496,6 +463,52 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
             referenceInterfaceContract = getInterfaceContract();
         }
         return referenceInterfaceContract;
+    }
+    public Object writeReplace() throws ObjectStreamException {
+        return new EndpointReferenceProxy(getSerializer(), this);
+    }
+
+    public static class EndpointReferenceProxy implements Serializable {
+        private static final long serialVersionUID = 6708978267158501975L;
+        private String xml;
+
+        /**
+         * @param serializer
+         */
+        public EndpointReferenceProxy() {
+            super();
+        }
+
+        /**
+         * @param serializer
+         */
+        public EndpointReferenceProxy(EndpointSerializer serializer, EndpointReference endpointReference) {
+            super();
+            try {
+                this.xml = serializer.write(endpointReference);
+            } catch (Exception e) {
+                throw new ServiceRuntimeException(e);
+            }
+        }
+
+        public Object readResolve() throws ObjectStreamException {
+            CompositeContext context = CompositeContext.getCurrentCompositeContext();
+            if (context == null) {
+                throw new IllegalStateException("No context is available for deserializing the endpoint");
+            }
+            UtilityExtensionPoint utilities =
+                context.getExtensionPointRegistry().getExtensionPoint(UtilityExtensionPoint.class);
+            EndpointSerializer serializer = utilities.getUtility(EndpointSerializer.class);
+            EndpointReferenceBinder eprBinder = utilities.getUtility(EndpointReferenceBinder.class);
+            try {
+                RuntimeEndpointReference epr = (RuntimeEndpointReference) serializer.readEndpointReference(xml);
+                epr.bind(context);
+                eprBinder.bind(context.getEndpointRegistry(), epr);
+                return epr;
+            } catch (IOException e) {
+                throw new ServiceRuntimeException(e);
+            }
+        }
     }
 
 

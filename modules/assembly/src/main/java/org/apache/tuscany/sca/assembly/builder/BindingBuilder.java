@@ -37,13 +37,13 @@ public interface BindingBuilder<B extends Binding> {
      * 
      * @param component The component for the binding's service or reference
      * @param contract The binding's service or reference
-     * @param context TODO
+     * @param context The context for the builder
      */
     void build(Component component, Contract contract, B binding, BuilderContext context);
 
     /**
      * Get QName of the binding type
-     * @return
+     * @return The binding type
      */
     QName getBindingType();
 

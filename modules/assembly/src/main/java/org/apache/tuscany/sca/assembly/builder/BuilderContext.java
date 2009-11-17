@@ -33,7 +33,7 @@ import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 
 /**
- * 
+ * Context for builders
  */
 public class BuilderContext {
     protected Definitions definitions;
@@ -54,11 +54,19 @@ public class BuilderContext {
         this.monitor = monitor;
     }
 
+    /**
+     * Create a builder context with the monitor
+     * @param monitor
+     */
     public BuilderContext(Monitor monitor) {
         super();
         this.monitor = monitor;
     }
 
+    /**
+     * Create a builder context with the extension point registry
+     * @param registry
+     */
     public BuilderContext(ExtensionPointRegistry registry) {
         super();
         MonitorFactory monitorFactory =
@@ -66,6 +74,9 @@ public class BuilderContext {
         this.monitor = monitorFactory.createMonitor();
     }
 
+    /**
+     * Create a builder context with a default monitor
+     */
     public BuilderContext() {
         super();
         this.monitor = new DefaultMonitorFactory().createMonitor();

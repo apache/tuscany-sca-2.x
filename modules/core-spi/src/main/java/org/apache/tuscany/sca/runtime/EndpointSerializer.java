@@ -33,6 +33,8 @@ public interface EndpointSerializer {
     String write(Endpoint endpoint) throws IOException;
 
     void read(EndpointReference endpointReference, String xml) throws IOException;
+    EndpointReference readEndpointReference(String xml) throws IOException;
+    Endpoint readEndpoint(String xml) throws IOException;
 
     String write(EndpointReference endpointReference) throws IOException;
 }

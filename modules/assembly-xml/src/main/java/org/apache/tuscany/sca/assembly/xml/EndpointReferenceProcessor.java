@@ -45,8 +45,8 @@ import org.apache.tuscany.sca.core.FactoryExtensionPoint;
  *
  */
 public class EndpointReferenceProcessor extends BaseAssemblyProcessor implements StAXArtifactProcessor<EndpointReference> {
-    private final static String ENDPOINT = "endpointReference";
-    private final static QName ENDPOINT_QNAME = new QName(Constants.SCA11_TUSCANY_NS, ENDPOINT);
+    private final static String ENDPOINT_REFERENCE = "endpointReference";
+    private final static QName ENDPOINT_REFERENCE_QNAME = new QName(Constants.SCA11_TUSCANY_NS, ENDPOINT_REFERENCE);
 
     private ExtensionPointRegistry registry;
 
@@ -69,7 +69,7 @@ public class EndpointReferenceProcessor extends BaseAssemblyProcessor implements
     }
 
     public QName getArtifactType() {
-        return ENDPOINT_QNAME;
+        return ENDPOINT_REFERENCE_QNAME;
     }
 
     public EndpointReference read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException, XMLStreamException {
@@ -115,7 +115,7 @@ public class EndpointReferenceProcessor extends BaseAssemblyProcessor implements
     private Composite wrap(EndpointReference endpointReference) {
         try {
             Composite composite = assemblyFactory.createComposite();
-            composite.setName(ENDPOINT_QNAME);
+            composite.setName(ENDPOINT_REFERENCE_QNAME);
             composite.setLocal(false);
             Component component = (Component)endpointReference.getComponent().clone();
             composite.getComponents().add(component);
