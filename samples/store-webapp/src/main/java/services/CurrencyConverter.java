@@ -19,7 +19,7 @@
 
 package services;
 
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 
 @Remotable
 public interface CurrencyConverter {
