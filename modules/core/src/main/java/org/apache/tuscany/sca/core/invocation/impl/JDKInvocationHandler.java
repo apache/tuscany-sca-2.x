@@ -240,7 +240,6 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
             }
             return body;
         } finally {
-            //conversationPostInvoke(msg, source, abnormalEndConversation);
             ThreadMessageContext.setMessageContext(msgContext);
         }
     }
