@@ -35,7 +35,6 @@ import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 
@@ -48,8 +47,7 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
  * @version $Rev$ $Date$
  */
 public class RuntimeSCAServiceBindingProvider implements ServiceBindingProvider {
-
-    private RuntimeComponent component;
+    private RuntimeEndpoint endpoint;
     private RuntimeComponentService service;
     private SCABinding binding;
     
@@ -60,7 +58,7 @@ public class RuntimeSCAServiceBindingProvider implements ServiceBindingProvider 
     
 
     public RuntimeSCAServiceBindingProvider(ExtensionPointRegistry extensionPoints, RuntimeEndpoint endpoint) {
-        this.component = (RuntimeComponent)endpoint.getComponent();
+        this.endpoint = endpoint;
         this.service = (RuntimeComponentService)endpoint.getService();
         this.binding = (SCABinding)endpoint.getBinding();
         
@@ -120,11 +118,7 @@ public class RuntimeSCAServiceBindingProvider implements ServiceBindingProvider 
         if (distributedProvider != null) {
             return distributedProvider.getBindingInterfaceContract();
         } else {
-            if (service.getService() != null) {
-                return service.getService().getInterfaceContract();
-            } else {
-                return service.getInterfaceContract();
-            }
+            return endpoint.getServiceInterfaceContract();
         }
     }
 

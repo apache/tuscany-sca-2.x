@@ -232,7 +232,7 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
         //InterfaceContract targetContract = getInterfaceContract();
         // TODO - EPR - why is this looking at the component types. The endpoint should have the right interface contract by this time
         InterfaceContract targetContract = getServiceInterfaceContract();
-        setInterfaceContract(targetContract);
+        // setInterfaceContract(targetContract);
         for (Operation operation : sourceContract.getInterface().getOperations()) {
             Operation targetOperation = interfaceContractMapper.map(targetContract.getInterface(), operation);
             if (targetOperation == null) {
@@ -480,13 +480,6 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
 
     @Override
     public void resolve() {
-        if (component == null && xml != null) {
-            try {
-                getSerializer().read(this, xml);
-            } catch (IOException e) {
-                throw new IllegalStateException(e);
-            }
-        }
         super.resolve();
     }
 
@@ -496,11 +489,11 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
             return bindingInterfaceContract;
         }
         bindingInterfaceContract = getBindingProvider().getBindingInterfaceContract();
-        if (bindingInterfaceContract == null && service != null) {
-            bindingInterfaceContract = service.getInterfaceContract();
-        }
         if (bindingInterfaceContract == null) {
             bindingInterfaceContract = getInterfaceContract();
+        }
+        if (bindingInterfaceContract == null) {
+            bindingInterfaceContract = getServiceInterfaceContract();
         }
         return bindingInterfaceContract;
     }

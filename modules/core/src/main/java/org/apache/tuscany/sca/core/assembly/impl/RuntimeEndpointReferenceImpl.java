@@ -276,8 +276,8 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
             policyProvider.start();
         }
 
-        InterfaceContract bindingContract = getBindingInterfaceContract();
-        endpoint.setInterfaceContract(bindingContract);
+        // InterfaceContract bindingContract = getBindingInterfaceContract();
+        // endpoint.setInterfaceContract(bindingContract);
     }
 
 
@@ -441,11 +441,11 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
             return bindingInterfaceContract;
         }
         bindingInterfaceContract = getBindingProvider().getBindingInterfaceContract();
-        if (bindingInterfaceContract == null && reference != null) {
-            bindingInterfaceContract = reference.getInterfaceContract();
-        }
         if (bindingInterfaceContract == null) {
             bindingInterfaceContract = getInterfaceContract();
+        }
+        if (bindingInterfaceContract == null) {
+            bindingInterfaceContract = getReferenceInterfaceContract();
         }
         return bindingInterfaceContract;
     }

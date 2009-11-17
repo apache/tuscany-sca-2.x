@@ -102,6 +102,9 @@ public class EndpointImpl implements Endpoint {
 
     public InterfaceContract getInterfaceContract() {
         resolve();
+        if (interfaceContract == null && service != null) {
+            interfaceContract = service.getInterfaceContract();
+        }
         return interfaceContract;
     }
 

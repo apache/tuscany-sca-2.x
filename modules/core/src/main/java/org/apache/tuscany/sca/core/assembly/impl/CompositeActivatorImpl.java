@@ -244,7 +244,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
             if (targetService == null) {
                 targetService = service;
             }
-            endpoint.setInterfaceContract(targetService.getInterfaceContract().makeUnidirectional(false));
+            // endpoint.setInterfaceContract(targetService.getInterfaceContract().makeUnidirectional(false));
         }
     }
 
@@ -524,7 +524,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
             reference.setInterfaceContract(sourceContract);
         }
 
-        endpointReference.setInterfaceContract(sourceContract.makeUnidirectional(false));
+        // endpointReference.setInterfaceContract(sourceContract.makeUnidirectional(false));
     }
 
 

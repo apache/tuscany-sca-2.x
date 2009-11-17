@@ -125,6 +125,9 @@ public class EndpointReferenceImpl implements EndpointReference {
 
     public InterfaceContract getInterfaceContract() {
         resolve();
+        if (interfaceContract == null && reference != null) {
+            interfaceContract = reference.getInterfaceContract();
+        }
         return interfaceContract;
     }
 

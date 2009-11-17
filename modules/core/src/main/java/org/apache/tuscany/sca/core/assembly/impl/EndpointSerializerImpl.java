@@ -55,18 +55,6 @@ public class EndpointSerializerImpl implements EndpointSerializer {
         refProcessor = processors.getProcessor(EndpointReference.class);
     }
 
-    public void read(Endpoint endpoint, String xml) throws IOException {
-        try {
-            Endpoint result = readEndpoint(xml);
-            endpoint.setComponent(result.getComponent());
-            endpoint.setService(result.getService());
-            endpoint.setBinding(result.getBinding());
-            endpoint.setInterfaceContract(result.getService().getInterfaceContract());
-        } catch (Exception e) {
-            throw wrap(e);
-        }
-
-    }
 
     public Endpoint readEndpoint(String xml) throws IOException {
         try {
@@ -93,20 +81,6 @@ public class EndpointSerializerImpl implements EndpointSerializer {
             writer.flush();
             writer.close();
             return sw.toString();
-        } catch (Exception e) {
-            throw wrap(e);
-        }
-    }
-
-    public void read(EndpointReference endpointReference, String xml) throws IOException {
-        try {
-            EndpointReference result = readEndpointReference(xml);
-            endpointReference.setComponent(result.getComponent());
-            endpointReference.setReference(result.getReference());
-            endpointReference.setBinding(result.getBinding());
-            endpointReference.setInterfaceContract(result.getReference().getInterfaceContract());
-            endpointReference.setTargetEndpoint(result.getTargetEndpoint());
-            endpointReference.setCallbackEndpoint(result.getCallbackEndpoint());
         } catch (Exception e) {
             throw wrap(e);
         }

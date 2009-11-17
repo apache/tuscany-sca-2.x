@@ -28,13 +28,8 @@ import org.apache.tuscany.sca.assembly.EndpointReference;
  * A utility to seralize/deserialize Endpoint/EndpointReference objects
  */
 public interface EndpointSerializer {
-    void read(Endpoint endpoint, String xml) throws IOException;
-
-    String write(Endpoint endpoint) throws IOException;
-
-    void read(EndpointReference endpointReference, String xml) throws IOException;
     EndpointReference readEndpointReference(String xml) throws IOException;
-    Endpoint readEndpoint(String xml) throws IOException;
-
     String write(EndpointReference endpointReference) throws IOException;
+    Endpoint readEndpoint(String xml) throws IOException;
+    String write(Endpoint endpoint) throws IOException;
 }
