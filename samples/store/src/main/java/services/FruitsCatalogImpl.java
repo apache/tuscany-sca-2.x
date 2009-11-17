@@ -22,9 +22,9 @@ package services;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
 
 public class FruitsCatalogImpl implements Catalog {
     

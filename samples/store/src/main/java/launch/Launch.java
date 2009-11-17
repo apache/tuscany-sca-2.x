@@ -19,16 +19,21 @@
 
 package launch;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 
 public class Launch {
     public static void main(String[] args) throws Exception {
         System.out.println("Starting ...");
-        SCADomain scaDomain = SCADomain.newInstance("store.composite");
+        String contribution = ContributionLocationHelper.getContributionLocation(Launch.class);
+        Node node = NodeFactory.newInstance().createNode("store.composite", new Contribution("test", contribution));
         System.out.println("store.composite ready for big business !!!");
         System.in.read();
         System.out.println("Stopping ...");
-        scaDomain.close();
+        node.stop();
+        node.destroy();
         System.out.println();
     }
 }

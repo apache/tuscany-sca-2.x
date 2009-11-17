@@ -17,24 +17,24 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<composite	xmlns="http://www.osoa.org/xmlns/sca/1.0"
-		xmlns:t="http://tuscany.apache.org/xmlns/sca/1.0"
+<composite	xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+		xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1"
 		targetNamespace="http://store"
 		name="store">
 		
     <component name="Store">
-        <t:implementation.widget location="uiservices/store.html"/>
+        <tuscany:implementation.widget location="uiservices/store.html"/>
         <service name="Widget">
-        	<t:binding.http uri="/store"/>
+        	<tuscany:binding.http uri="/store"/>
         </service>
 		<reference name="catalog" target="Catalog">
-		 	<t:binding.jsonrpc/>
+		 	<tuscany:binding.jsonrpc/>
 		 </reference>
 		 <reference name="shoppingCart" target="ShoppingCart/Cart">
-		 	<t:binding.atom/>
+		 	<tuscany:binding.atom/>
 		 </reference>
 		 <reference name="shoppingTotal" target="ShoppingCart/Total">
-		 	<t:binding.jsonrpc/>
+		 	<tuscany:binding.jsonrpc/>
 		 </reference>
     </component>
     
@@ -42,7 +42,7 @@
 		<implementation.java class="services.FruitsCatalogImpl"/> 
 		<property name="currencyCode">USD</property>
 		<service name="Catalog">
-			<t:binding.jsonrpc/>
+			<tuscany:binding.jsonrpc/>
    		</service>
 		<reference name="currencyConverter" target="CurrencyConverter"/>	
 	</component> 
@@ -50,10 +50,10 @@
 	<component name="ShoppingCart">
 		<implementation.java class="services.ShoppingCartImpl"/>
 		<service name="Cart">
-			<t:binding.atom uri="/ShoppingCart/Cart"/>
+			<tuscany:binding.atom uri="/ShoppingCart/Cart"/>
 		</service>    	
 		<service name="Total">
-			<t:binding.jsonrpc/>
+			<tuscany:binding.jsonrpc/>
 		</service>    	
 	</component>
     
