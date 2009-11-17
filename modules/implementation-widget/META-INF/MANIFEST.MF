@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Export-Package: org.apache.tuscany.sca.implementation.widget
+Export-Package: org.apache.tuscany.sca.implementation.widget;version="2.0.0"
 Tool: Bnd-0.0.357
 Bundle-Name: Apache Tuscany SCA Widget Implementation Model
 Created-By: 1.6.0_15 (Apple Inc.)

@@ -5,7 +5,7 @@ Export-Package: org.apache.tuscany.sca.implementation.widget.provider;
  x.servlet.http,org.apache.tuscany.sca.invocation,org.apache.tuscany.s
  ca.provider,org.apache.tuscany.sca.interfacedef,org.apache.tuscany.sc
  a.implementation.widget,org.apache.tuscany.sca.host.http,org.apache.t
- uscany.sca.core";version=""
+ uscany.sca.core";version="2.0.0"
 Tool: Bnd-0.0.357
 Bundle-Name: Apache Tuscany SCA Widget Implementation Runtime
 Created-By: 1.6.0_15 (Apple Inc.)
