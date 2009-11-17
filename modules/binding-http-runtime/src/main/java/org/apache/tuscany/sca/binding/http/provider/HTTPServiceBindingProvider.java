@@ -190,7 +190,6 @@ public class HTTPServiceBindingProvider implements EndpointProvider {
     
     /**
      * Add specific http interceptor to invocation chain
-     * @param runtimeWire
      */
     public void configure() {
 
