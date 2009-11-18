@@ -30,8 +30,11 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.ComponentProperty;
 import org.apache.tuscany.sca.assembly.ComponentReference;
+import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
+import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 import org.apache.tuscany.sca.web.javascript.ComponentJavaScriptGenerator;
 import org.apache.tuscany.sca.web.javascript.JavascriptProxyFactory;
 import org.apache.tuscany.sca.web.javascript.JavascriptProxyFactoryExtensionPoint;
@@ -39,11 +42,14 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 public class DojoJavaScriptComponentGeneratorImpl implements ComponentJavaScriptGenerator {
-    private static final QName NAME = new QName("http://tuscany.apache.org/xmlns/sca/1.0", "component.script.generator.dojo");
+    private static final QName NAME = new QName("http://tuscany.apache.org/xmlns/sca/1.1", "component.script.generator.dojo");
+
+    private ExtensionPointRegistry extensionPoints;
 
     private JavascriptProxyFactoryExtensionPoint javascriptProxyFactories;
 
     public DojoJavaScriptComponentGeneratorImpl(ExtensionPointRegistry extensionPoints) {
+        this.extensionPoints = extensionPoints;        
         this.javascriptProxyFactories = extensionPoints.getExtensionPoint(JavascriptProxyFactoryExtensionPoint.class);
     }
     
@@ -59,19 +65,29 @@ public class DojoJavaScriptComponentGeneratorImpl implements ComponentJavaScript
         Map<String, Boolean> bindingClientProcessed = new HashMap<String, Boolean>();
 
         for(ComponentReference reference : component.getReferences()) {
-            for(Binding binding : reference.getBindings()) {
-                JavascriptProxyFactory jsProxyFactory = javascriptProxyFactories.getProxyFactory(binding.getClass());
-
-                String bindingProxyName = jsProxyFactory.getJavascriptProxyFile();
-                //check if binding client code was already processed and inject to the generated script
-                if(bindingProxyName != null) {
-                    Boolean processedFlag = bindingClientProcessed.get(bindingProxyName);
-                    if( processedFlag == null || processedFlag.booleanValue() == false) {
-                        generateJavaScriptBindingProxy(jsProxyFactory, pw);
-                        bindingClientProcessed.put(bindingProxyName, Boolean.TRUE);
-                    }
+            for(EndpointReference epr : reference.getEndpointReferences()) {
+                Endpoint targetEndpoint = epr.getTargetEndpoint();
+                if (targetEndpoint.isUnresolved()) {
+                    //force resolution and targetEndpoint binding calculations
+                    //by calling the getInvocationChain
+                    ((RuntimeEndpointReference) epr).getInvocationChains();
+                    targetEndpoint = epr.getTargetEndpoint();
                 }
+                
+                Binding binding = targetEndpoint.getBinding();
+                if (binding != null) {
+                    JavascriptProxyFactory jsProxyFactory = javascriptProxyFactories.getProxyFactory(binding.getClass());
 
+                    String bindingProxyName = jsProxyFactory.getJavascriptProxyFile();
+                    //check if binding client code was already processed and inject to the generated script
+                    if(bindingProxyName != null) {
+                        Boolean processedFlag = bindingClientProcessed.get(bindingProxyName);
+                        if( processedFlag == null || processedFlag.booleanValue() == false) {
+                            generateJavaScriptBindingProxy(jsProxyFactory, pw);
+                            bindingClientProcessed.put(bindingProxyName, Boolean.TRUE);
+                        }
+                    }                    
+                }
             }
         }
         
@@ -188,15 +204,22 @@ public class DojoJavaScriptComponentGeneratorImpl implements ComponentJavaScript
         
         pw.println("__tus.sca.referenceMap = {};");
         for(ComponentReference reference : component.getReferences()) {
-            Binding binding = reference.getBindings().get(0);
-           
-            if (binding != null) {
-
-                String referenceName = reference.getName();
-                JavascriptProxyFactory jsProxyFactory = javascriptProxyFactories.getProxyFactory(binding.getClass());
+            for(EndpointReference epr : reference.getEndpointReferences()) {
+                Endpoint targetEndpoint = epr.getTargetEndpoint();
+                if (targetEndpoint.isUnresolved()) {
+                    //force resolution and targetEndpoint binding calculations
+                    //by calling the getInvocationChain
+                    ((RuntimeEndpointReference) epr).getInvocationChains();
+                    targetEndpoint = epr.getTargetEndpoint();
+                }
                 
-                pw.println("__tus.sca.referenceMap." + referenceName + " = new " + jsProxyFactory.createJavascriptReference(reference) + ";");
-                
+                Binding binding = targetEndpoint.getBinding();
+                if (binding != null) {
+                    String referenceName = reference.getName();
+                    JavascriptProxyFactory jsProxyFactory = javascriptProxyFactories.getProxyFactory(binding.getClass());
+                    
+                    pw.println("__tus.sca.referenceMap." + referenceName + " = new " + jsProxyFactory.createJavascriptReference(reference) + ";");
+                }
             }
         }
         

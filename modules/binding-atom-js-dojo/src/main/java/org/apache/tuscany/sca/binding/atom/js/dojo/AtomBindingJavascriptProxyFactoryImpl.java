@@ -27,7 +27,10 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.ComponentReference;
+import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.binding.atom.AtomBinding;
+import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 import org.apache.tuscany.sca.web.javascript.JavascriptProxyFactory;
 
 public class AtomBindingJavascriptProxyFactoryImpl implements JavascriptProxyFactory {
@@ -50,7 +53,17 @@ public class AtomBindingJavascriptProxyFactoryImpl implements JavascriptProxyFac
     }
 
     public String createJavascriptReference(ComponentReference componentReference) throws IOException {
-        Binding binding = componentReference.getBindings().get(0);
+        EndpointReference epr = componentReference.getEndpointReferences().get(0);
+        Endpoint targetEndpoint = epr.getTargetEndpoint();
+        if (targetEndpoint.isUnresolved()) {
+            //force resolution and targetEndpoint binding calculations
+            //by calling the getInvocationChain
+            ((RuntimeEndpointReference) epr).getInvocationChains();
+            targetEndpoint = epr.getTargetEndpoint();
+        }
+        
+        Binding binding = targetEndpoint.getBinding();
+        
         URI targetURI = URI.create(binding.getURI());
         String targetPath = targetURI.getPath();
         

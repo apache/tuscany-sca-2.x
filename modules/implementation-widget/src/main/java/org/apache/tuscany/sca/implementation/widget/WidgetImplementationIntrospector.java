@@ -26,6 +26,8 @@ import java.util.Scanner;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 
 /**
  * A HTML Widget Introspector used to introspect references and property
@@ -40,9 +42,10 @@ class WidgetImplementationIntrospector {
     private AssemblyFactory assemblyFactory;
     private WidgetImplementation widgetImplementation;
     
-    WidgetImplementationIntrospector(AssemblyFactory assemblyFactory, WidgetImplementation widgetImplementation) {
+    WidgetImplementationIntrospector(ExtensionPointRegistry registry, WidgetImplementation widgetImplementation ) {
+        FactoryExtensionPoint modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
+        this.assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         this.widgetImplementation = widgetImplementation;
-        this.assemblyFactory = assemblyFactory;
     }
     
     

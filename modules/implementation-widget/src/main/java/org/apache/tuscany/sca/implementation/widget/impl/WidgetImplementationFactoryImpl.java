@@ -19,11 +19,9 @@
 
 package org.apache.tuscany.sca.implementation.widget.impl;
 
-import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.implementation.widget.WidgetImplementation;
 import org.apache.tuscany.sca.implementation.widget.WidgetImplementationFactory;
-import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 
 /**
  * Factory for the widget implementation model.
@@ -32,16 +30,14 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
  */
 public class WidgetImplementationFactoryImpl implements WidgetImplementationFactory {
     
-    private AssemblyFactory assemblyFactory;
-    private JavaInterfaceFactory javaFactory;
+    private ExtensionPointRegistry registry;
     
-    public WidgetImplementationFactoryImpl(FactoryExtensionPoint modelFactories) {
-        assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
-        javaFactory = modelFactories.getFactory(JavaInterfaceFactory.class);
+    public WidgetImplementationFactoryImpl(ExtensionPointRegistry registry) {
+        this.registry = registry;
     }
 
     public WidgetImplementation createWidgetImplementation() {
-        return new WidgetImplementationImpl(assemblyFactory, javaFactory);
+        return new WidgetImplementationImpl(registry);
     }
 
 }

@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.implementation.widget;
 import java.io.InputStream;
 
 import org.apache.tuscany.sca.data.collection.Collection;
+import org.oasisopen.sca.annotation.Remotable;
 
 /**
  * The service interface of widget implementations. This is not an API for application
@@ -30,6 +31,8 @@ import org.apache.tuscany.sca.data.collection.Collection;
  * 
  * @version $Rev$ $Date$
  */
+
+@Remotable
 public interface Widget extends Collection<String, InputStream> {
 
 }

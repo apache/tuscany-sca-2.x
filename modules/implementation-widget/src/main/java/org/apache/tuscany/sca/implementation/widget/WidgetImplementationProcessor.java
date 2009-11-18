@@ -28,7 +28,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
@@ -38,6 +37,7 @@ import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
 import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
@@ -50,45 +50,17 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
  * @version $Rev$ $Date$
  */
 public class WidgetImplementationProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<WidgetImplementation> {
-    private AssemblyFactory assemblyFactory;
+    private ExtensionPointRegistry registry;
     private ContributionFactory contributionFactory;
     private WidgetImplementationFactory implementationFactory;
-    private Monitor monitor;
 
-    public WidgetImplementationProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
-    	assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
+    public WidgetImplementationProcessor(ExtensionPointRegistry registry) {
+        this.registry = registry;
+        FactoryExtensionPoint modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
         contributionFactory = modelFactories.getFactory(ContributionFactory.class);
         implementationFactory = modelFactories.getFactory(WidgetImplementationFactory.class);
-        this.monitor = monitor;
     }
-
-    /**
-     * Report a exception.
-     *
-     * @param problems
-     * @param message
-     * @param model
-     */
-    private void error(String message, Object model, Exception ex) {
-        if (monitor != null) {
-            Problem problem = monitor.createProblem(this.getClass().getName(), "impl-widget-validation-messages", Severity.ERROR, model, message, ex);
-            monitor.problem(problem);
-        }
-    }
-
-    /**
-     * Report a error.
-     *
-     * @param problems
-     * @param message
-     * @param model
-     */
-    private void error(String message, Object model, Object... messageParameters) {
-        if (monitor != null) {
-            Problem problem = monitor.createProblem(this.getClass().getName(), "impl-widget-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
-            monitor.problem(problem);
-        }
-    }
+ 
 
     public QName getArtifactType() {
         // Returns the QName of the XML element processed by this processor
@@ -114,7 +86,7 @@ public class WidgetImplementationProcessor extends BaseStAXArtifactProcessor imp
             implementation.setLocation(location);
             implementation.setUnresolved(true);
         } else {
-            error("LocationAttributeMissing", reader);
+            error(context.getMonitor(), "LocationAttributeMissing", reader);
             //throw new ContributionReadException(MSG_LOCATION_MISSING);
         }
 
@@ -141,17 +113,17 @@ public class WidgetImplementationProcessor extends BaseStAXArtifactProcessor imp
 
                     //introspect implementation
                     WidgetImplementationIntrospector widgetIntrospector =
-                    	new WidgetImplementationIntrospector(assemblyFactory, implementation);
+                    	new WidgetImplementationIntrospector(registry, implementation);
                     widgetIntrospector.introspectImplementation();
 
                     implementation.setUnresolved(false);
                 } catch (IOException e) {
                 	ContributionResolveException ce = new ContributionResolveException(e);
-                	error("ContributionResolveException", resolver, ce);
+                	error(context.getMonitor(), "ContributionResolveException", resolver, ce);
                     //throw ce;
                 }
             } else {
-                error("CouldNotResolveLocation", resolver, implementation.getLocation());
+                error(context.getMonitor(), "CouldNotResolveLocation", resolver, implementation.getLocation());
                 //throw new ContributionResolveException("Could not resolve implementation.widget location: " + implementation.getLocation());
             }
     	}
@@ -167,4 +139,50 @@ public class WidgetImplementationProcessor extends BaseStAXArtifactProcessor imp
 
         writeEnd(writer);
     }
+    
+    /**
+     * Utility methods
+     */
+    
+    
+    /**
+     * Report a error.
+     *
+     * @param problems
+     * @param message
+     * @param model
+     */
+    private void error(Monitor monitor, String message, Object model, Object... messageParameters) {
+        if (monitor != null) {
+            Problem problem =
+                monitor.createProblem(this.getClass().getName(),
+                                      "impl-widget-validation-messages",
+                                      Severity.ERROR,
+                                      model,
+                                      message,
+                                      (Object[])messageParameters);
+            monitor.problem(problem);
+        }
+    }
+
+    /**
+     * Report a exception.
+     *
+     * @param problems
+     * @param message
+     * @param model
+     */
+    private void error(Monitor monitor, String message, Object model, Exception ex) {
+        if (monitor != null) {
+            Problem problem =
+                monitor.createProblem(this.getClass().getName(),
+                                      "impl-widget-validation-messages",
+                                      Severity.ERROR,
+                                      model,
+                                      message,
+                                      ex);
+            monitor.problem(problem);
+        }
+    }
+
 }
