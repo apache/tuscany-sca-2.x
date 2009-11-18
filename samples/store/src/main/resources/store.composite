@@ -27,15 +27,9 @@
         <service name="Widget">
         	<tuscany:binding.http uri="/store"/>
         </service>
-		<reference name="catalog" target="Catalog">
-		 	<tuscany:binding.jsonrpc/>
-		 </reference>
-		 <reference name="shoppingCart" target="ShoppingCart/Cart">
-		 	<tuscany:binding.atom/>
-		 </reference>
-		 <reference name="shoppingTotal" target="ShoppingCart/Total">
-		 	<tuscany:binding.jsonrpc/>
-		 </reference>
+		<reference name="catalog" target="Catalog"/>
+		 <reference name="shoppingCart" target="ShoppingCart/Cart"/>
+		 <reference name="shoppingTotal" target="ShoppingCart/Total"/>
     </component>
     
 	<component name="Catalog">
