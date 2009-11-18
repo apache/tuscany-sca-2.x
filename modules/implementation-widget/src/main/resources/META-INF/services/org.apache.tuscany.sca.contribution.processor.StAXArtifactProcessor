@@ -16,4 +16,4 @@
 # under the License. 
 
 # Implementation class for the artifact processor extension
-org.apache.tuscany.sca.implementation.widget.WidgetImplementationProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.0#implementation.widget,model=org.apache.tuscany.sca.implementation.widget.WidgetImplementation
+org.apache.tuscany.sca.implementation.widget.WidgetImplementationProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.1#implementation.widget,model=org.apache.tuscany.sca.implementation.widget.WidgetImplementation
