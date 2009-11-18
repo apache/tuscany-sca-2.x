@@ -147,6 +147,7 @@ public class EndpointReferenceImpl implements EndpointReference {
     }
 
     public ExtensionType getExtensionType() {
+        getBinding();
         if (binding instanceof PolicySubject) {
             return ((PolicySubject)binding).getExtensionType();
         }

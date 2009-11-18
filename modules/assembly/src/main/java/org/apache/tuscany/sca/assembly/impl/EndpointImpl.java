@@ -135,6 +135,7 @@ public class EndpointImpl implements Endpoint {
     }
 
     public ExtensionType getExtensionType() {
+        getBinding();
         if (binding instanceof PolicySubject) {
             return ((PolicySubject)binding).getExtensionType();
         }
