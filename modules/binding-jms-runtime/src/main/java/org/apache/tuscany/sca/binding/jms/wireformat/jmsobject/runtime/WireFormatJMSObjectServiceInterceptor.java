@@ -38,7 +38,7 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 
 /**
  * Policy handler to handle PolicySet related to Logging with the QName
- * {http://tuscany.apache.org/xmlns/sca/1.0/impl/java}LoggingPolicy
+ * {http://tuscany.apache.org/xmlns/sca/1.1/impl/java}LoggingPolicy
  *
  * @version $Rev$ $Date$
  */
