@@ -29,6 +29,7 @@ public class Launch {
         System.out.println("Starting ...");
         String contribution = ContributionLocationHelper.getContributionLocation(Launch.class);
         Node node = NodeFactory.newInstance().createNode("store.composite", new Contribution("test", contribution));
+        node.start();
         System.out.println("store.composite ready for big business !!!");
         System.in.read();
         System.out.println("Stopping ...");
