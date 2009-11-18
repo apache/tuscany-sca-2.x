@@ -31,7 +31,7 @@ import org.apache.tuscany.sca.binding.jsonrpc.JSONRPCBinding;
 import org.apache.tuscany.sca.web.javascript.JavascriptProxyFactory;
 
 public class JSONRPCBindingJavascriptProxyFactoryImpl implements JavascriptProxyFactory {
-    private static final QName NAME = new QName("http://tuscany.apache.org/xmlns/sca/1.0", "binding.jsonrpc");
+    private static final QName NAME = new QName("http://tuscany.apache.org/xmlns/sca/1.1", "binding.jsonrpc");
     
     public Class<?> getModelType() {
         return JSONRPCBinding.class;
