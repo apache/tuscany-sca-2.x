@@ -31,4 +31,5 @@
     <include schemaLocation="tuscany-sca-1.1-binding-rmi.xsd"/>
 
     <include schemaLocation="tuscany-sca-1.1-implementation-osgi.xsd"/>
+    <include schemaLocation="tuscany-sca-1.1-implementation-widget.xsd"/>
 </schema>
