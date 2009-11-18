@@ -164,9 +164,9 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
             // Check if there is a target
             RuntimeEndpoint endpoint = (RuntimeEndpoint)endpointReference.getTargetEndpoint();
             if (endpoint != null) {
-                return endpoint.getServiceInterfaceContract();
+                return endpoint.getComponentTypeServiceInterfaceContract();
             } else {
-                return endpointReference.getReferenceInterfaceContract();
+                return endpointReference.getComponentTypeReferenceInterfaceContract();
             }
         }
     }

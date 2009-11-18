@@ -118,7 +118,7 @@ public class RuntimeSCAServiceBindingProvider implements ServiceBindingProvider 
         if (distributedProvider != null) {
             return distributedProvider.getBindingInterfaceContract();
         } else {
-            return endpoint.getServiceInterfaceContract();
+            return endpoint.getComponentTypeServiceInterfaceContract();
         }
     }
 

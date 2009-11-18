@@ -34,6 +34,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentContext;
  * @version $Rev$ $Date$
  */
 public class CompositeContext {
+    protected final static InheritableThreadLocal<CompositeContext> context = new InheritableThreadLocal<CompositeContext>();
     protected ExtensionPointRegistry extensionPointRegistry;
     protected EndpointRegistry endpointRegistry;
     protected ComponentContextFactory componentContextFactory;
@@ -73,8 +74,12 @@ public class CompositeContext {
     public static CompositeContext getCurrentCompositeContext() {
         RuntimeComponent component = getCurrentComponent();
         if (component != null) {
-            RuntimeComponentContext context = component.getComponentContext();
-            return context.getCompositeContext();
+            RuntimeComponentContext componentContext = component.getComponentContext();
+            return componentContext.getCompositeContext();
+        }
+        CompositeContext compositeContext = context.get();
+        if (compositeContext != null) {
+            return compositeContext;
         }
         return null;
     }
@@ -111,5 +116,12 @@ public class CompositeContext {
     public Composite getDomainComposite() {
         return domainComposite; 
     }
-
+    
+    public static void setThreadCompositeContext(CompositeContext value) {
+        context.set(value);
+    }
+    
+    public static void removeCompositeContext() {
+        context.remove();
+    }
 }

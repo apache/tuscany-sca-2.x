@@ -149,7 +149,7 @@ public class JavaComponentContextProvider {
                     List<EndpointReference> wires = callbackReference.getEndpointReferences();
                     if (!wires.isEmpty()) {
                         RuntimeEndpointReference epr = (RuntimeEndpointReference) wires.get(0);
-                        callbackWires.put(epr.getReferenceInterfaceContract().getInterface().toString(),
+                        callbackWires.put(epr.getComponentTypeReferenceInterfaceContract().getInterface().toString(),
                                           wires);
                     }
                 }

@@ -134,6 +134,7 @@ public class NodeImpl implements Node, Client {
 
                 this.compositeContext =
                     new CompositeContext(manager.registry, endpointRegistry, domainComposite);
+                CompositeContext.setThreadCompositeContext(compositeContext);
             } finally {
                 // Reset the thread context monitor
                 manager.monitorFactory.setContextMonitor(tcm);
@@ -216,6 +217,7 @@ public class NodeImpl implements Node, Client {
             this.compositeContext = null;
             
             ThreadMessageContext.removeMessageContext();
+            CompositeContext.removeCompositeContext();
 
         } catch (ActivationException e) {
             throw new IllegalStateException(e);

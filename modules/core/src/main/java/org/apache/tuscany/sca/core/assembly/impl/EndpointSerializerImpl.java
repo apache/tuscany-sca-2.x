@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.core.assembly.impl;
 
-import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 
@@ -36,6 +35,7 @@ import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtens
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.runtime.EndpointSerializer;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 public class EndpointSerializerImpl implements EndpointSerializer {
     private ExtensionPointRegistry registry;
@@ -55,25 +55,18 @@ public class EndpointSerializerImpl implements EndpointSerializer {
         refProcessor = processors.getProcessor(EndpointReference.class);
     }
 
-
-    public Endpoint readEndpoint(String xml) throws IOException {
+    public Endpoint readEndpoint(String xml) {
         try {
             XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(xml));
             Endpoint result = processor.read(reader, new ProcessorContext(registry));
             reader.close();
             return result;
         } catch (Exception e) {
-            throw wrap(e);
+            throw new ServiceRuntimeException(e);
         }
     }
 
-    private IOException wrap(Exception e) {
-        IOException ex = new IOException(e.getMessage());
-        ex.initCause(e);
-        return ex;
-    }
-
-    public String write(Endpoint endpoint) throws IOException {
+    public String write(Endpoint endpoint) {
         StringWriter sw = new StringWriter();
         try {
             XMLStreamWriter writer = outputFactory.createXMLStreamWriter(sw);
@@ -82,22 +75,22 @@ public class EndpointSerializerImpl implements EndpointSerializer {
             writer.close();
             return sw.toString();
         } catch (Exception e) {
-            throw wrap(e);
+            throw new ServiceRuntimeException(e);
         }
     }
 
-    public EndpointReference readEndpointReference(String xml) throws IOException {
+    public EndpointReference readEndpointReference(String xml) {
         try {
             XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(xml));
             EndpointReference result = refProcessor.read(reader, new ProcessorContext(registry));
             reader.close();
             return result;
         } catch (Exception e) {
-            throw wrap(e);
+            throw new ServiceRuntimeException(e);
         }
     }
 
-    public String write(EndpointReference endpointReference) throws IOException {
+    public String write(EndpointReference endpointReference) {
         StringWriter sw = new StringWriter();
         try {
             XMLStreamWriter writer = outputFactory.createXMLStreamWriter(sw);
@@ -106,7 +99,7 @@ public class EndpointSerializerImpl implements EndpointSerializer {
             writer.close();
             return sw.toString();
         } catch (Exception e) {
-            throw wrap(e);
+            throw new ServiceRuntimeException(e);
         }
     }
 }

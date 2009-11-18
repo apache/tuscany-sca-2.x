@@ -53,7 +53,7 @@ public interface RuntimeEndpointReference extends EndpointReference, Invocable, 
      * implementation code uses to make the outbound call.
      * @return The source component type reference interface contract
      */
-    InterfaceContract getReferenceInterfaceContract();    
+    InterfaceContract getComponentTypeReferenceInterfaceContract();    
     boolean isOutOfDate();
     void rebuild();
 

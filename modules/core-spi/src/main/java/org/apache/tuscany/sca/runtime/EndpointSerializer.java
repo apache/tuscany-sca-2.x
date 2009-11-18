@@ -19,8 +19,6 @@
 
 package org.apache.tuscany.sca.runtime;
 
-import java.io.IOException;
-
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 
@@ -28,8 +26,11 @@ import org.apache.tuscany.sca.assembly.EndpointReference;
  * A utility to seralize/deserialize Endpoint/EndpointReference objects
  */
 public interface EndpointSerializer {
-    EndpointReference readEndpointReference(String xml) throws IOException;
-    String write(EndpointReference endpointReference) throws IOException;
-    Endpoint readEndpoint(String xml) throws IOException;
-    String write(Endpoint endpoint) throws IOException;
+    EndpointReference readEndpointReference(String xml);
+
+    String write(EndpointReference endpointReference);
+
+    Endpoint readEndpoint(String xml);
+
+    String write(Endpoint endpoint);
 }

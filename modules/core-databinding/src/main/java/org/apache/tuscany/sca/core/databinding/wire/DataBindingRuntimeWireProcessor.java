@@ -148,7 +148,7 @@ public class DataBindingRuntimeWireProcessor implements RuntimeWireProcessor {
 
     public void process(RuntimeEndpoint endpoint) {
         InterfaceContract sourceContract = endpoint.getBindingInterfaceContract();
-        InterfaceContract targetContract = endpoint.getServiceInterfaceContract();
+        InterfaceContract targetContract = endpoint.getComponentTypeServiceInterfaceContract();
         if (targetContract == null) {
             targetContract = sourceContract;
         }
@@ -184,7 +184,7 @@ public class DataBindingRuntimeWireProcessor implements RuntimeWireProcessor {
     }
 
     public void process(RuntimeEndpointReference endpointReference) {
-        InterfaceContract sourceContract = endpointReference.getReferenceInterfaceContract();
+        InterfaceContract sourceContract = endpointReference.getComponentTypeReferenceInterfaceContract();
         InterfaceContract targetContract = endpointReference.getBindingInterfaceContract();
         if (targetContract == null) {
             targetContract = sourceContract;

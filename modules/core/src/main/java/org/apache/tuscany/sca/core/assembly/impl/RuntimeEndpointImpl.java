@@ -19,9 +19,10 @@
 
 package org.apache.tuscany.sca.core.assembly.impl;
 
+import java.io.Externalizable;
 import java.io.IOException;
-import java.io.ObjectStreamException;
-import java.io.Serializable;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +35,6 @@ import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.CompositeReference;
 import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.Contract;
-import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.impl.EndpointImpl;
 import org.apache.tuscany.sca.context.CompositeContext;
@@ -76,25 +76,25 @@ import org.oasisopen.sca.ServiceRuntimeException;
 /**
  * Runtime model for Endpoint that supports java serialization
  */
-public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint {
+public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint, Externalizable {
     private transient CompositeContext compositeContext;
     private transient EndpointRegistry endpointRegistry;
     private transient RuntimeWireProcessor wireProcessor;
+    private transient ProviderFactoryExtensionPoint providerFactories;
     private transient InterfaceContractMapper interfaceContractMapper;
     private transient WorkScheduler workScheduler;
     private transient PhaseManager phaseManager;
     private transient MessageFactory messageFactory;
     private transient RuntimeInvoker invoker;
-    private transient ProviderFactoryExtensionPoint providerFactories;
+    private transient EndpointSerializer serializer;
 
     private transient List<InvocationChain> chains;
-    private transient final Map<Operation, InvocationChain> invocationChainMap =
+    private transient Map<Operation, InvocationChain> invocationChainMap =
         new ConcurrentHashMap<Operation, InvocationChain>();
     private transient InvocationChain bindingInvocationChain;
 
     private transient ServiceBindingProvider bindingProvider;
     private transient List<PolicyProvider> policyProviders;
-    private transient EndpointSerializer serializer;
     private String xml;
 
     protected InterfaceContract bindingInterfaceContract;
@@ -109,6 +109,37 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
 
     public RuntimeEndpointImpl(ExtensionPointRegistry registry) {
         super(registry);
+    }
+
+    protected void copyFrom(RuntimeEndpointImpl copy) {
+        this.xml = copy.xml;
+
+        this.component = copy.component;
+        this.service = copy.service;
+        this.interfaceContract = copy.interfaceContract;
+        this.serviceInterfaceContract = copy.serviceInterfaceContract;
+
+        this.binding = copy.binding;
+        this.bindingInterfaceContract = copy.interfaceContract;
+        this.bindingInvocationChain = copy.bindingInvocationChain;
+
+        this.callbackEndpointReferences = copy.callbackEndpointReferences;
+
+        this.requiredIntents = copy.requiredIntents;
+        this.policySets = copy.policySets;
+
+        this.uri = copy.uri;
+        this.remote = copy.remote;
+        this.unresolved = copy.unresolved;
+
+        this.chains = copy.chains;
+        this.invocationChainMap = copy.invocationChainMap;
+        this.bindingProvider = copy.bindingProvider;
+        this.policyProviders = copy.policyProviders;
+
+        if (this.compositeContext == null && copy.compositeContext != null) {
+            bind(copy.compositeContext);
+        }
     }
 
     public void bind(CompositeContext compositeContext) {
@@ -231,7 +262,7 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
 
         //InterfaceContract targetContract = getInterfaceContract();
         // TODO - EPR - why is this looking at the component types. The endpoint should have the right interface contract by this time
-        InterfaceContract targetContract = getServiceInterfaceContract();
+        InterfaceContract targetContract = getComponentTypeServiceInterfaceContract();
         // setInterfaceContract(targetContract);
         for (Operation operation : sourceContract.getInterface().getOperations()) {
             Operation targetOperation = interfaceContractMapper.map(targetContract.getInterface(), operation);
@@ -422,7 +453,7 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
         }
     }
 
-    public ServiceBindingProvider getBindingProvider() {
+    public synchronized ServiceBindingProvider getBindingProvider() {
         if (bindingProvider == null) {
             BindingProviderFactory factory =
                 (BindingProviderFactory)providerFactories.getProviderFactory(getBinding().getClass());
@@ -460,18 +491,6 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
         return compositeContext;
     }
 
-    private synchronized EndpointSerializer getSerializer() {
-        if (serializer == null) {
-            if (registry != null) {
-                serializer =
-                    registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(EndpointSerializer.class);
-            } else {
-                throw new IllegalStateException("No extension registry is set");
-            }
-        }
-        return serializer;
-    }
-
     @Override
     protected void reset() {
         super.reset();
@@ -479,7 +498,17 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
     }
 
     @Override
-    public void resolve() {
+    protected synchronized void resolve() {
+        if (xml != null && component == null) {
+            if (compositeContext == null) {
+                compositeContext = CompositeContext.getCurrentCompositeContext();
+                if (compositeContext != null) {
+                    bind(compositeContext);
+                }
+            }
+            RuntimeEndpointImpl ep = (RuntimeEndpointImpl)serializer.readEndpoint(xml);
+            copyFrom(ep);
+        }
         super.resolve();
     }
 
@@ -493,12 +522,12 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
             bindingInterfaceContract = getInterfaceContract();
         }
         if (bindingInterfaceContract == null) {
-            bindingInterfaceContract = getServiceInterfaceContract();
+            bindingInterfaceContract = getComponentTypeServiceInterfaceContract();
         }
         return bindingInterfaceContract;
     }
 
-    public InterfaceContract getServiceInterfaceContract() {
+    public InterfaceContract getComponentTypeServiceInterfaceContract() {
         resolve();
         if (serviceInterfaceContract != null) {
             return serviceInterfaceContract;
@@ -512,48 +541,21 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
         }
         return serviceInterfaceContract;
     }
-    
-    public Object writeReplace() throws ObjectStreamException {
-        return new EndpointProxy(getSerializer(), this);
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        this.uri = in.readUTF();
+        this.xml = in.readUTF();
     }
 
-    public static class EndpointProxy implements Serializable {
-        private static final long serialVersionUID = 6708978267158501975L;
-        private String xml;
-
-        /**
-         * @param serializer
-         */
-        public EndpointProxy() {
-            super();
-        }
-
-        /**
-         * @param serializer
-         */
-        public EndpointProxy(EndpointSerializer serializer, Endpoint endpoint) {
-            super();
-            try {
-                this.xml = serializer.write(endpoint);
-            } catch (Exception e) {
-                throw new ServiceRuntimeException(e);
-            }
-        }
-
-        public Object readResolve() throws ObjectStreamException {
-            CompositeContext context = CompositeContext.getCurrentCompositeContext();
-            if (context == null) {
-                throw new IllegalStateException("No context is available for deserializing the endpoint");
-            }
-            UtilityExtensionPoint utilities =
-                context.getExtensionPointRegistry().getExtensionPoint(UtilityExtensionPoint.class);
-            EndpointSerializer serializer = utilities.getUtility(EndpointSerializer.class);
-            try {
-                RuntimeEndpoint endpoint = (RuntimeEndpoint) serializer.readEndpoint(xml);
-                endpoint.bind(context);
-                return endpoint;
-            } catch (IOException e) {
-                throw new ServiceRuntimeException(e);
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeUTF(getURI());
+        if (serializer == null && xml != null) {
+            out.writeUTF(xml);
+        } else {
+            if (serializer != null) {
+                out.writeUTF(serializer.write(this));
+            } else {
+                throw new IllegalStateException("No serializer is configured");
             }
         }
     }

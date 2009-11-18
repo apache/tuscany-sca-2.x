@@ -54,5 +54,5 @@ public interface RuntimeEndpoint extends Endpoint, Invocable, Serializable {
      * code can process.
      * @return The target component type service interface contract
      */
-    InterfaceContract getServiceInterfaceContract();
+    InterfaceContract getComponentTypeServiceInterfaceContract();
 }

@@ -274,7 +274,7 @@ public class ODEExternalService {
     private Operation findOperation(String operationName, RuntimeEndpointReference epr) {
         Operation reseultOperation = null;
 
-        for (Operation operation : epr.getReferenceInterfaceContract().getInterface().getOperations()) {
+        for (Operation operation : epr.getComponentTypeReferenceInterfaceContract().getInterface().getOperations()) {
             if (operationName.equalsIgnoreCase(operation.getName())) {
                 reseultOperation = operation;
                 break;

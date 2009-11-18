@@ -64,7 +64,7 @@ class AtomServiceBindingProvider implements ServiceBindingProvider {
         this.mediator = mediator;
 
         // TUSCANY-3166
-        this.serviceContract = endpoint.getServiceInterfaceContract();
+        this.serviceContract = endpoint.getComponentTypeServiceInterfaceContract();
     }
 
     public InterfaceContract getBindingInterfaceContract() {

@@ -89,8 +89,8 @@ public class BPELImplementationProvider implements ImplementationProvider {
             service.getInterfaceContract().getInterface().resetDataBinding(DOMDataBinding.NAME);
             for( Endpoint endpoint : service.getEndpoints() ) {
                 RuntimeEndpoint ep = (RuntimeEndpoint) endpoint;
-                if (ep.getServiceInterfaceContract() != null) {
-                    ep.getServiceInterfaceContract().getInterface().resetDataBinding(DOMDataBinding.NAME);
+                if (ep.getComponentTypeServiceInterfaceContract() != null) {
+                    ep.getComponentTypeServiceInterfaceContract().getInterface().resetDataBinding(DOMDataBinding.NAME);
                 }
             } // end for
         } // end for
@@ -99,8 +99,8 @@ public class BPELImplementationProvider implements ImplementationProvider {
             reference.getInterfaceContract().getInterface().resetDataBinding(DOMDataBinding.NAME);
             for (EndpointReference endpointReference : reference.getEndpointReferences()) {
                 RuntimeEndpointReference epr = (RuntimeEndpointReference)endpointReference;
-                if (epr.getReferenceInterfaceContract() != null) {
-                    epr.getReferenceInterfaceContract().getInterface().resetDataBinding(DOMDataBinding.NAME);
+                if (epr.getComponentTypeReferenceInterfaceContract() != null) {
+                    epr.getComponentTypeReferenceInterfaceContract().getInterface().resetDataBinding(DOMDataBinding.NAME);
                 }
             } // end for */
         } // end for
