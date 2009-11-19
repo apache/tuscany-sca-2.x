@@ -32,7 +32,8 @@ public interface WireBuilder {
      * endpoint reference (such as targetEndpoint, policySets or requiredIntents)
      * @param endpointReference
      * @param endpoint
+     * @param context
      * @return true if the endpoint is a valid target for the endpoint reference
      */
-    boolean build(EndpointReference endpointReference, Endpoint endpoint);
+    boolean build(EndpointReference endpointReference, Endpoint endpoint, BuilderContext context);
 }
