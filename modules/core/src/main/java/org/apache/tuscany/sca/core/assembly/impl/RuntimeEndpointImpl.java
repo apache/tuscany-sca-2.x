@@ -454,6 +454,7 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
     }
 
     public synchronized ServiceBindingProvider getBindingProvider() {
+        resolve();
         if (bindingProvider == null) {
             BindingProviderFactory factory =
                 (BindingProviderFactory)providerFactories.getProviderFactory(getBinding().getClass());
@@ -467,6 +468,7 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
     }
 
     public synchronized List<PolicyProvider> getPolicyProviders() {
+        resolve();
         if (policyProviders == null) {
             policyProviders = new ArrayList<PolicyProvider>();
             for (PolicyProviderFactory factory : providerFactories.getPolicyProviderFactories()) {
@@ -484,7 +486,7 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
     }
 
     public Contract getContract() {
-        return service;
+        return getService();
     }
 
     public CompositeContext getCompositeContext() {

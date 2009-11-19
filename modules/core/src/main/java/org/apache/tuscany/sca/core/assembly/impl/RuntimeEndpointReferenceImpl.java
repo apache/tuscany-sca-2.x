@@ -451,8 +451,7 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
     }
 
     public Contract getContract() {
-        resolve();
-        return reference;
+        return getReference();
     }
 
     public CompositeContext getCompositeContext() {

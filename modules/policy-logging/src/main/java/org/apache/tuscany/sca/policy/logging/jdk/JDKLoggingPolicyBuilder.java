@@ -39,19 +39,22 @@ import org.apache.tuscany.sca.policy.PolicySubject;
  */
 public class JDKLoggingPolicyBuilder implements PolicyBuilder<JDKLoggingPolicy> {
 
-    public void build(Endpoint endpoint, BuilderContext context) {
+    public boolean build(Endpoint endpoint, BuilderContext context) {
         List<JDKLoggingPolicy> polices = getPolicies(endpoint);
         System.out.println(endpoint + ": " + polices);
+        return true;
     }
 
-    public void build(EndpointReference endpointReference, BuilderContext context) {
+    public boolean build(EndpointReference endpointReference, BuilderContext context) {
         List<JDKLoggingPolicy> polices = getPolicies(endpointReference);
         System.out.println(endpointReference + ": " + polices);
+        return true;
     }
 
-    public void build(Component component, Implementation implementation, BuilderContext context) {
+    public boolean build(Component component, Implementation implementation, BuilderContext context) {
         List<JDKLoggingPolicy> polices = getPolicies(implementation);
         System.out.println(implementation + ": " + polices);
+        return true;
     }
 
     public QName getPolicyType() {
@@ -68,6 +71,10 @@ public class JDKLoggingPolicyBuilder implements PolicyBuilder<JDKLoggingPolicy> 
             }
         }
         return polices;
+    }
+
+    public boolean build(EndpointReference endpointReference, Endpoint endpoint, BuilderContext context) {
+        return true;
     }
 
 }

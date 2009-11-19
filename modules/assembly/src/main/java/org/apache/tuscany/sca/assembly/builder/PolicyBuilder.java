@@ -41,21 +41,33 @@ public interface PolicyBuilder<T> {
      * Build (and validate) the policy settings on the endpoint
      * @param endpoint
      * @param monitor
+     * @return true if the policy setting is compatible
      */
-    void build(Endpoint endpoint, BuilderContext context);
+    boolean build(Endpoint endpoint, BuilderContext context);
 
     /**
      * Build (and validate) the policy settings on the endpoint reference
      * @param endpointReference
      * @param monitor
+     * @return true if the policy setting is compatible
      */
-    void build(EndpointReference endpointReference, BuilderContext context);
+    boolean build(EndpointReference endpointReference, BuilderContext context);
 
     /**
      * Build (and validate) the policy settings on the component implementation
      * @param component
      * @param implementation
      * @param monitor
+     * @return true if the policy setting is compatible
      */
-    void build(Component component, Implementation implementation, BuilderContext context);
+    boolean build(Component component, Implementation implementation, BuilderContext context);
+    
+    /**
+     * Build (and validate) the policy settings on the endpoint reference is compatible with the endpoint
+     * @param endpointReference 
+     * @param endpoint
+     * @param context
+     * @return if the policy setting is compatible
+     */
+    boolean build(EndpointReference endpointReference, Endpoint endpoint, BuilderContext context);
 }

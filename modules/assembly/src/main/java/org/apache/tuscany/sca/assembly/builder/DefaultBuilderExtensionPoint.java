@@ -31,6 +31,7 @@ import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
@@ -355,8 +356,8 @@ public class DefaultBuilderExtensionPoint implements BuilderExtensionPoint, Life
             this.qname = ServiceDeclarationParser.getQName(sd.getAttributes().get("qname"));
         }
 
-        public void build(Component component, Implementation implementation, BuilderContext context) {
-            getBuilder().build(component, implementation, context);
+        public boolean build(Component component, Implementation implementation, BuilderContext context) {
+            return getBuilder().build(component, implementation, context);
         }
 
         public QName getPolicyType() {
@@ -382,12 +383,16 @@ public class DefaultBuilderExtensionPoint implements BuilderExtensionPoint, Life
             return builder;
         }
 
-        public void build(Endpoint endpoint, BuilderContext context) {
-            getBuilder().build(endpoint, context);
+        public boolean build(Endpoint endpoint, BuilderContext context) {
+            return getBuilder().build(endpoint, context);
         }
 
-        public void build(org.apache.tuscany.sca.assembly.EndpointReference endpointReference, BuilderContext context) {
-            getBuilder().build(endpointReference, context);
+        public boolean build(org.apache.tuscany.sca.assembly.EndpointReference endpointReference, BuilderContext context) {
+            return getBuilder().build(endpointReference, context);
+        }
+
+        public boolean build(EndpointReference endpointReference, Endpoint endpoint, BuilderContext context) {
+            return getBuilder().build(endpointReference, endpoint, context);
         }
 
     }
