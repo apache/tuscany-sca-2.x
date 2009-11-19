@@ -96,10 +96,8 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ResolverExtension;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.monitor.Monitor;
-import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.policy.ExtensionType;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySubject;
@@ -1043,23 +1041,6 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
      */
     private static FactoryExtensionPoint modelFactories(ExtensionPointRegistry extensionPoints) {
         return extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
-    }
-
-    /**
-     * Returns the monitor to use.
-     *
-     * @param extensionPoints
-     * @return
-     */
-    private static Monitor monitor(ExtensionPointRegistry extensionPoints) {
-        UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
-        if (utilities != null) {
-            MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
-            if (monitorFactory != null) {
-                return monitorFactory.createMonitor();
-            }
-        }
-        return null;
     }
 
 }

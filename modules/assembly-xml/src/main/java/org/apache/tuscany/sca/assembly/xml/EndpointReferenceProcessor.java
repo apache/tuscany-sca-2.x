@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.assembly.xml;
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
@@ -74,7 +75,9 @@ public class EndpointReferenceProcessor extends BaseAssemblyProcessor implements
 
     public EndpointReference read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException, XMLStreamException {
         EndpointReference endpointReference = assemblyFactory.createEndpointReference();
-        reader.nextTag();
+        if (reader.getEventType() == XMLStreamConstants.START_DOCUMENT) {
+            reader.nextTag();
+        }
         Object model = extensionProcessor.read(reader, context);
         if (model instanceof Composite) {
             Composite composite = (Composite)model;
