@@ -19,6 +19,8 @@
 
 package helloworld;
 
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 
@@ -30,7 +32,8 @@ import org.apache.tuscany.sca.node.NodeFactory;
 public class BPELClient {
     public static void main(String[] args) throws Exception {
 
-        Node node = NodeFactory.newInstance().createNode();
+        String contribution = ContributionLocationHelper.getContributionLocation(BPELClient.class);
+        Node node = NodeFactory.newInstance().createNode("helloworld.composite", new Contribution("calculator", contribution));
         node.start();
         
         Hello bpelService = node.getService(Hello.class, "BPELHelloWorldComponent");
