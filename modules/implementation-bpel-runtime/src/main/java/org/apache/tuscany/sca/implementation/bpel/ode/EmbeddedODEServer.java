@@ -401,9 +401,9 @@ public class EmbeddedODEServer {
      * @param processID
      */
     public void addMexToProcessIDLink( String mexID, Long processID ) {
-    	System.out.println("Add mapping Mex - ProcessID = " + mexID + " " + processID.toString());
+    	//System.out.println("Add mapping Mex - ProcessID = " + mexID + " " + processID.toString());
     	if( mexID == null ) {
-    		System.out.println("Mex ID is null !");
+    		//System.out.println("Mex ID is null !");
     		return;
     	} // end if
     	metadataLock.lock();
@@ -424,7 +424,7 @@ public class EmbeddedODEServer {
      * @return - a Long which is the Process Instance ID
      */
     public Long getProcessIDFromMex( String mexID ) {
-    	System.out.println("Get mapping for Mex: " + mexID);
+    	//System.out.println("Get mapping for Mex: " + mexID);
     	metadataLock.lock();
     	try {
     		Long processID = mexToProcessMap.get(mexID);
@@ -456,7 +456,7 @@ public class EmbeddedODEServer {
      * @param callbackEndpoint - a Tuscany Endpoint which is the target of the callback
      */
     public void saveCallbackMetadata( Long processID, String serviceName, EndpointReference callbackEPR ) {
-    	System.out.println("Save callback metadata: ProcessID " + processID.toString() + " service: " + serviceName);
+    	//System.out.println("Save callback metadata: ProcessID " + processID.toString() + " service: " + serviceName);
     	metadataLock.lock();
     	try {
 	    	Map<String, EndpointReference> processMap = callbackMap.get(processID);
@@ -482,7 +482,7 @@ public class EmbeddedODEServer {
      */
     public EndpointReference getCallbackMetadata( Long processID, String serviceName ) {
     	EndpointReference theEPR;
-    	System.out.println("Get callback metadata: ProcessID " + processID.toString() + " service: " + serviceName);
+    	//System.out.println("Get callback metadata: ProcessID " + processID.toString() + " service: " + serviceName);
     	
     	metadataLock.lock();
     	try {
