@@ -68,26 +68,6 @@ public interface Deployer extends LifeCycleListener {
     Composite build(List<Contribution> contributions, Map<QName, List<String>> bindingBaseURIs, Monitor monitor)
         throws ContributionResolveException, CompositeBuilderException;
 
-    Monitor createMonitor();
-    
-    /**
-     * Create an instance of {@link BuilderContext}
-     * @return
-     */
-    BuilderContext createBuilderContext();
-
-    /**
-     * Create an instance of {@link ProcessorContext}
-     * @return
-     */
-    ProcessorContext createProcessorContext();
-
-    /**
-     * Get the {@link ExtensionPointRegistry}
-     * @return
-     */
-    ExtensionPointRegistry getExtensionPointRegistry();
-
     /**
      * Load an artifact from the given location
      * @param uri
@@ -170,6 +150,39 @@ public interface Deployer extends LifeCycleListener {
     void saveXMLElement(Object model, XMLStreamWriter writer, Monitor monitor) throws XMLStreamException,
         ContributionWriteException;
 
+    /**
+     * @return
+     */
+    boolean isSchemaValidationEnabled();
+    /**
+     * @param schemaValidationEnabled
+     */
+    void setSchemaValidationEnabled(boolean schemaValidationEnabled);
+    
+    /**
+     * 
+     * @return
+     */
+    Monitor createMonitor();
+    
+    /**
+     * Create an instance of {@link BuilderContext}
+     * @return
+     */
+    BuilderContext createBuilderContext();
+
+    /**
+     * Create an instance of {@link ProcessorContext}
+     * @return
+     */
+    ProcessorContext createProcessorContext();
+
+    /**
+     * Get the {@link ExtensionPointRegistry}
+     * @return
+     */
+    ExtensionPointRegistry getExtensionPointRegistry();
+    
     /* 
      * @see org.apache.tuscany.sca.core.LifeCycleListener#start()
      */
@@ -180,12 +193,4 @@ public interface Deployer extends LifeCycleListener {
      */
     void stop();
     
-    /**
-     * @return
-     */
-    boolean isSchemaValidationEnabled();
-    /**
-     * @param schemaValidationEnabled
-     */
-    void setSchemaValidationEnabled(boolean schemaValidationEnabled);
 }
