@@ -123,7 +123,7 @@ public class EndpointReferenceImpl implements EndpointReference {
         reset();
     }
 
-    public InterfaceContract getInterfaceContract() {
+    public InterfaceContract getComponentReferenceInterfaceContract() {
         resolve();
         if (interfaceContract == null && reference != null) {
             interfaceContract = reference.getInterfaceContract();

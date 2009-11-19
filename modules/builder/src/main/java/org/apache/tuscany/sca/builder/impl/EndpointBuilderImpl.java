@@ -111,9 +111,6 @@ public class EndpointBuilderImpl implements CompositeBuilder {
                             Endpoint endpoint = assemblyFactory.createEndpoint();
                             endpoint.setComponent(component);
                             endpoint.setService(service);
-                            if (service != null) {
-                                endpoint.setInterfaceContract(service.getInterfaceContract());
-                            }
                             endpoint.setBinding(binding);
                             endpoint.setUnresolved(false);
                             service.getEndpoints().add(endpoint);

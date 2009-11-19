@@ -465,7 +465,7 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
         }
         bindingInterfaceContract = getBindingProvider().getBindingInterfaceContract();
         if (bindingInterfaceContract == null) {
-            bindingInterfaceContract = getInterfaceContract();
+            bindingInterfaceContract = getComponentReferenceInterfaceContract();
         }
         if (bindingInterfaceContract == null) {
             bindingInterfaceContract = getComponentTypeReferenceInterfaceContract();
@@ -479,11 +479,11 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
             return referenceInterfaceContract;
         }
         if (reference == null) {
-            return getInterfaceContract();
+            return getComponentReferenceInterfaceContract();
         }
         referenceInterfaceContract = getLeafContract(reference).getInterfaceContract();
         if (referenceInterfaceContract == null) {
-            referenceInterfaceContract = getInterfaceContract();
+            referenceInterfaceContract = getComponentReferenceInterfaceContract();
         }
         return referenceInterfaceContract;
     }

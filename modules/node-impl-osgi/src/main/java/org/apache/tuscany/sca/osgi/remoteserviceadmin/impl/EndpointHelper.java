@@ -45,7 +45,7 @@ public class EndpointHelper {
     }
 
     private static List<String> getInterfaces(Endpoint endpoint) {
-        Interface intf = endpoint.getInterfaceContract().getInterface();
+        Interface intf = endpoint.getComponentServiceInterfaceContract().getInterface();
         JavaInterface javaInterface = (JavaInterface)intf;
         return Collections.singletonList(javaInterface.getName());
     }

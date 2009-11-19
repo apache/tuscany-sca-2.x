@@ -100,7 +100,7 @@ public class EndpointImpl implements Endpoint {
         reset();
     }
 
-    public InterfaceContract getInterfaceContract() {
+    public InterfaceContract getComponentServiceInterfaceContract() {
         resolve();
         if (interfaceContract == null && service != null) {
             interfaceContract = service.getInterfaceContract();

@@ -903,9 +903,6 @@ public class EndpointReferenceBuilderImpl {
         EndpointReference endpointRef = assemblyFactory.createEndpointReference();
         endpointRef.setComponent(component);
         endpointRef.setReference(reference);
-        if (reference != null) {
-            endpointRef.setInterfaceContract(reference.getInterfaceContract());
-        }
         endpointRef.setUnresolved(unresolved);
         return endpointRef;
     } // end method createEndpointRef
@@ -921,9 +918,6 @@ public class EndpointReferenceBuilderImpl {
         Endpoint endpoint = createEndpoint(unresolved);
         endpoint.setComponent(component);
         endpoint.setService(service);
-        if (service != null) {
-            endpoint.setInterfaceContract(service.getInterfaceContract());
-        }
         endpoint.setUnresolved(unresolved);
         return endpoint;
     } // end method createEndpoint

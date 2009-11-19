@@ -357,7 +357,7 @@ public class EndpointIntrospector {
         Endpoint ep = (Endpoint)endpoint.getProperties().get(Endpoint.class.getName());
         if (ep != null) {
             bindings = Collections.singletonList(ep.getBinding());
-            interfaces = Collections.singletonList(((JavaInterface)ep.getInterfaceContract().getInterface()).getName());
+            interfaces = Collections.singletonList(((JavaInterface)ep.getComponentServiceInterfaceContract().getInterface()).getName());
             intents = ep.getRequiredIntents();
         } else {
             Map<String, Object> properties = endpoint.getProperties();

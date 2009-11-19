@@ -93,14 +93,7 @@ public interface Endpoint extends Base, PolicySubject, Cloneable, Serializable {
      *
      * @return the interface contract
      */
-    InterfaceContract getInterfaceContract();
-
-    /**
-     * Sets the interface contract defining the interface
-     *
-     * @param interfaceContract the interface contract
-     */
-    void setInterfaceContract(InterfaceContract interfaceContract);
+    InterfaceContract getComponentServiceInterfaceContract();
 
     /**
      * Get the service's callback endpoint references that

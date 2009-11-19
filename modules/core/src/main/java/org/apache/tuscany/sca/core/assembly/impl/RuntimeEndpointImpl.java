@@ -521,7 +521,7 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
         }
         bindingInterfaceContract = getBindingProvider().getBindingInterfaceContract();
         if (bindingInterfaceContract == null) {
-            bindingInterfaceContract = getInterfaceContract();
+            bindingInterfaceContract = getComponentServiceInterfaceContract();
         }
         if (bindingInterfaceContract == null) {
             bindingInterfaceContract = getComponentTypeServiceInterfaceContract();
@@ -535,11 +535,11 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
             return serviceInterfaceContract;
         }
         if (service == null) {
-            return getInterfaceContract();
+            return getComponentServiceInterfaceContract();
         }
         serviceInterfaceContract = getLeafContract(service).getInterfaceContract();
         if (serviceInterfaceContract == null) {
-            serviceInterfaceContract = getInterfaceContract();
+            serviceInterfaceContract = getComponentServiceInterfaceContract();
         }
         return serviceInterfaceContract;
     }

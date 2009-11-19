@@ -305,7 +305,7 @@ public class ComponentContextImpl implements RuntimeComponentContext {
                                                        RuntimeEndpoint endpoint) {
         try {
             if (businessInterface == null) {
-                InterfaceContract contract = endpoint.getInterfaceContract();
+                InterfaceContract contract = endpoint.getComponentTypeServiceInterfaceContract();
                 businessInterface = (Class<B>)((JavaInterface)contract.getInterface()).getJavaClass();
             }
             RuntimeEndpointReference ref =
@@ -369,7 +369,6 @@ public class ComponentContextImpl implements RuntimeComponentContext {
         endpointReference.setReference(componentReference);
         endpointReference.setBinding(endpoint.getBinding());
         endpointReference.setUnresolved(false);
-        endpointReference.setInterfaceContract(interfaceContract);
         endpointReference.setStatus(EndpointReference.WIRED_TARGET_FOUND_READY_FOR_MATCHING);
 
         endpointReference.setTargetEndpoint(endpoint);

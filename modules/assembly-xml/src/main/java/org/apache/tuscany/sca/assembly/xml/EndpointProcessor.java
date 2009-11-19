@@ -104,7 +104,7 @@ public class EndpointProcessor extends BaseAssemblyProcessor implements StAXArti
             ComponentService service = (ComponentService)endpoint.getService().clone();
             component.getServices().add(service);
             service.getBindings().clear();
-            service.setInterfaceContract(endpoint.getInterfaceContract());
+            service.setInterfaceContract(endpoint.getComponentServiceInterfaceContract());
             Binding binding = (Binding)endpoint.getBinding().clone();
             service.getBindings().add(binding);
             return composite;

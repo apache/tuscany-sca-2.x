@@ -121,14 +121,7 @@ public interface EndpointReference extends Base, PolicySubject, Cloneable, Seria
      *
      * @return the interface contract
      */
-    InterfaceContract getInterfaceContract();
-
-    /**
-     * Sets the interface contract defining the interface
-     *
-     * @param interfaceContract the interface contract
-     */
-    void setInterfaceContract(InterfaceContract interfaceContract);
+    InterfaceContract getComponentReferenceInterfaceContract();
 
     /**
      * Get the reference callback endpoint that
