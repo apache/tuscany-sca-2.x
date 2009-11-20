@@ -46,6 +46,7 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;
+import org.osgi.framework.Version;
 
 /**
  * A ServiceDiscoverer that find META-INF/services/... in installed bundles
@@ -56,9 +57,27 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
     private static final Logger logger = Logger.getLogger(EquinoxServiceDiscoverer.class.getName());
 
     private BundleContext context;
+    private Version version;
 
     public EquinoxServiceDiscoverer(BundleContext context) {
         this.context = context;
+        Bundle bundle = context.getBundle();
+        this.version = getSCAVersion(bundle);
+    }
+
+    private Version getSCAVersion(Bundle bundle) {
+        Version scaVersion = Version.emptyVersion;
+        String header = (String)bundle.getHeaders().get("SCA-Version");
+        if (header == null) {
+            scaVersion = Version.parseVersion("1.1");
+        } else {
+            header = header.trim();
+            if (header.equals("")) {
+                header = "1.1";
+            }
+            scaVersion = Version.parseVersion(header);
+        }
+        return scaVersion;
     }
 
     public static class ServiceDeclarationImpl implements ServiceDeclaration {
@@ -175,6 +194,23 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
             return declarations.iterator().next();
         }
     }
+    
+    private boolean isProviderBundle(Bundle bundle) {
+        if (bundle.getBundleId() == 0 || bundle.getSymbolicName().startsWith("1.x-osgi-bundle")
+            || bundle.getHeaders().get(Constants.FRAGMENT_HOST) != null) {
+            // Skip system bundle as it has access to the application classloader
+            // Skip the 1.x runtime bundle as this has 1.x services in it
+            //    For testing running 1.x and 2.x in same VM. 
+            //    Don't know what final form will be yet.
+            // Skip bundle fragments too
+            return false;
+        }
+        if (bundle.getSymbolicName().startsWith("org.apache.tuscany.sca.")) {
+            Version scaVersion = getSCAVersion(bundle);
+            return scaVersion.compareTo(version) >= 0;
+        }
+        return true;
+    }
 
     public Collection<ServiceDeclaration> getServiceDeclarations(String serviceName) throws IOException {
         boolean debug = logger.isLoggable(Level.FINE);
@@ -187,14 +223,7 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
         Set<URL> visited = new HashSet<URL>();
         //System.out.println(">>>> getServiceDeclarations()");
         for (Bundle bundle : context.getBundles()) {
-            if (bundle.getBundleId() == 0 ||
-                bundle.getSymbolicName().startsWith("1.x-osgi-bundle") || 
-                bundle.getHeaders().get(Constants.FRAGMENT_HOST) != null) {
-                // Skip system bundle as it has access to the application classloader
-                // Skip the 1.x runtime bundle as this has 1.x services in it
-                //    For testing running 1.x and 2.x in same VM. 
-                //    Don't know what final form will be yet.
-                // Skip bundle fragments too
+            if (!isProviderBundle(bundle)) {
                 continue;
             }
             Enumeration<URL> urls = null;
