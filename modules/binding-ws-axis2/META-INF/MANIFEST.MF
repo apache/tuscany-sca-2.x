@@ -65,12 +65,10 @@ Private-Package: org.apache.tuscany.sca.binding.ws.axis2.engine.config
  modules;version="2.0.0",org.apache.tuscany.sca.binding.ws.axis2.engine.
  config.services;version="2.0.0",org.apache.tuscany.sca.binding.ws.axis2
  .policy.authentication.basic;version="2.0.0"
-Tool: Bnd-0.0.255
+SCA-Version: 1.1
 Bundle-Name: Apache Tuscany SCA Axis2-based WS Binding Extension
-Created-By: 1.6.0_07 (Sun Microsystems Inc.)
 Bundle-Vendor: The Apache Software Foundation
 Bundle-Version: 2.0.0
-Bnd-LastModified: 1225397353000
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Axis2-based WS Binding Extensio

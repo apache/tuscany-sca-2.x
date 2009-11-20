@@ -2,12 +2,10 @@ Manifest-Version: 1.0
 Private-Package: org.apache.tuscany.sca.binding.ejb.corba;version="2.0
  ",org.apache.tuscany.sca.binding.ejb.provider;version="2.0.0",org.apach
  e.tuscany.sca.binding.ejb.util;version="2.0.0"
-Tool: Bnd-0.0.255
+SCA-Version: 1.1
 Bundle-Name: Apache Tuscany SCA EJB Binding Runtime
-Created-By: 1.6.0_07 (Sun Microsystems Inc.)
 Bundle-Vendor: The Apache Software Foundation
 Bundle-Version: 2.0.0
-Bnd-LastModified: 1225397250828
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA EJB Binding Runtime

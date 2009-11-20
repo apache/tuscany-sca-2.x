@@ -196,13 +196,10 @@ Export-Package: org.apache.ode.bpel.elang.xpath10.runtime;version="1.3.2";
   uses:="org.apache.ode.utils.msg"
 Implementation-Title: Apache ODE
 Implementation-Version: 1.3.2
-Tool: Bnd-0.0.313
 Bundle-Name: ode-bpel-runtime
-Created-By: 1.6.0_13 (Sun Microsystems Inc.)
 Implementation-Vendor: Apache Software Foundation
 Bundle-Version: 1.3.2
 Build-Jdk: 1.6.0_13
-Bnd-LastModified: 1250921588109
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: ode-bpel-runtime
 Import-Package: javax.management,
@@ -256,6 +253,4 @@ Import-Package: javax.management,
  org.jaxen,
  org.jaxen.dom,
  org.w3c.dom
-Originally-Created-By: Buildr
-Build-By: MikeEdwards
 

@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
+SCA-Version: 1.1
 Bundle-Name: Apache Tuscany SCA Tomcat Tribes Based EndPoint Registry
-Created-By: 1.6.0_07 (Sun Microsystems Inc.)
 Bundle-Vendor: The Apache Software Foundation
 Bundle-Version: 2.0.0
 Bundle-ManifestVersion: 2

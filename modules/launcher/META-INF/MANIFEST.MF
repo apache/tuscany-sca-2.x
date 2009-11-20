@@ -1,26 +1,12 @@
 Manifest-Version: 1.0
-Archiver-Version: Plexus Archiver
-Created-By: 1.6.0 (IBM Corporation)
-Built-By: gb000131
-Build-Jdk: 1.6.0
-Extension-Name: tuscany-launcher
-Implementation-Title: Apache Tuscany Launcher
-Implementation-Vendor: The Apache Software Foundation
-Implementation-Vendor-Id: org.apache
-Implementation-Version: 2.0-SNAPSHOT
-Specification-Title: Apache Tuscany Launcher
-Specification-Vendor: The Apache Software Foundation
-Specification-Version: 2.0-SNAPSHOT
+Bundle-Version: 2.0.0
 Bundle-DocURL: http://www.apache.org/
 Bundle-SymbolicName: org.apache.tuscany.sca.launcher
-Originally-Created-By: 1.6.0 (IBM Corporation)
-Bundle-Version: 2.0
 Bundle-Description: Apache Tuscany Launcher
 Bundle-Vendor: The Apache Software Foundation
-Bnd-LastModified: 1231166325921
 Bundle-Name: Apache Tuscany Launcher
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
-Tool: Bnd-0.0.255
+SCA-Version: 1.1
 Bundle-ManifestVersion: 2
 Import-Package: org.apache.tuscany.sca.launcher;version="2.0"
 Export-Package: org.apache.tuscany.sca.launcher;version="2.0"

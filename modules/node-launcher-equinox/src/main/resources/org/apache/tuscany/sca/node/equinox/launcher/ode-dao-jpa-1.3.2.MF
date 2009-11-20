@@ -18,13 +18,10 @@ Export-Package: org.apache.ode.dao.jpa;version="1.3.2";
    org.apache.ode.bpel.iapi"
 Implementation-Title: Apache ODE
 Implementation-Version: 1.3.2
-Tool: Bnd-0.0.313
 Bundle-Name: ode-dao-jpa
-Created-By: 1.6.0_13 (Sun Microsystems Inc.)
 Implementation-Vendor: Apache Software Foundation
 Bundle-Version: 1.3.2
 Build-Jdk: 1.6.0_13
-Bnd-LastModified: 1250921589062
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: ode-dao-jpa
 Import-Package: javax.persistence,
@@ -44,6 +41,4 @@ Import-Package: javax.persistence,
  org.apache.openjpa.util,
  org.w3c.dom
 Eclipse-RegisterBuddy: org.apache.openjpa.openjpa
-Originally-Created-By: Buildr
-Build-By: MikeEdwards
 

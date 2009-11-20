@@ -2,12 +2,10 @@ Manifest-Version: 1.0
 Private-Package: org.apache.tuscany.sca.implementation.bpel.ode;versio
  n="2.0",org.apache.tuscany.sca.implementation.bpel.ode.provider;versi
  on="2.0"
-Tool: Bnd-0.0.255
+SCA-Version: 1.1
 Bundle-Name: Apache Tuscany SCA BPEL ODE Implementation Extension
-Created-By: 1.6.0_07 (Sun Microsystems Inc.)
 Bundle-Vendor: The Apache Software Foundation
 Bundle-Version: 2.0
-Bnd-LastModified: 1225397447609
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-ClassPath: .

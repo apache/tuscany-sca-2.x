@@ -1,10 +1,8 @@
 Manifest-Version: 1.0
-Tool: Bnd-0.0.357
+SCA-Version: 1.1
 Bundle-Name: Apache Tuscany SCA Widget Implementation Runtime (Dojo)
-Created-By: 1.6.0_15 (Apple Inc.)
 Bundle-Vendor: The Apache Software Foundation
 Bundle-Version: 2.0.0
-Bnd-LastModified: 1258090277695
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Widget Implementation Model

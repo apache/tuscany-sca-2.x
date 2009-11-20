@@ -21,13 +21,10 @@ Export-Package: org.apache.ode.bpel.elang.xpath10.o;version="1.3.2";
    org.apache.ode.utils.stl"
 Implementation-Title: Apache ODE
 Implementation-Version: 1.3.2
-Tool: Bnd-0.0.313
 Bundle-Name: ode-bpel-obj
-Created-By: 1.6.0_13 (Sun Microsystems Inc.)
 Implementation-Vendor: Apache Software Foundation
 Bundle-Version: 1.3.2
 Build-Jdk: 1.6.0_13
-Bnd-LastModified: 1250921587812
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: ode-bpel-obj
 Import-Package: javax.wsdl,
@@ -40,6 +37,4 @@ Import-Package: javax.wsdl,
  org.apache.ode.utils.stl;version="1.3.2",
  org.w3c.dom,
  org.xml.sax
-Originally-Created-By: Buildr
-Build-By: MikeEdwards
 

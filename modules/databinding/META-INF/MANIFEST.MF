@@ -27,12 +27,10 @@ Export-Package: org.apache.tuscany.sca.databinding;uses:="org.apache.t
  rsion="2.0.0"
 Private-Package: org.apache.tuscany.sca.databinding.externalizable;ver
  sion="2.0.0"
-Tool: Bnd-0.0.255
+SCA-Version: 1.1
 Bundle-Name: Apache Tuscany SCA DataBinding Framework
-Created-By: 1.6.0_07 (Sun Microsystems Inc.)
 Bundle-Vendor: The Apache Software Foundation
 Bundle-Version: 2.0.0
-Bnd-LastModified: 1225397181875
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA DataBinding Framework

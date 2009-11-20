@@ -48,13 +48,10 @@ Export-Package: org.apache.ode.daohib;version="1.3.2";
    org.apache.ode.utils"
 Implementation-Title: Apache ODE
 Implementation-Version: 1.3.2
-Tool: Bnd-0.0.313
 Bundle-Name: ode-dao-hibernate
-Created-By: 1.6.0_13 (Sun Microsystems Inc.)
 Implementation-Vendor: Apache Software Foundation
 Bundle-Version: 1.3.2
 Build-Jdk: 1.6.0_13
-Bnd-LastModified: 1250921588843
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: ode-dao-hibernate
 Import-Package: javax.sql,
@@ -83,6 +80,4 @@ Import-Package: javax.sql,
  org.hibernate.transform;resolution:=optional,
  org.w3c.dom,
  org.xml.sax
-Originally-Created-By: Buildr
-Build-By: MikeEdwards
 

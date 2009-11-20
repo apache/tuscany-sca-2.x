@@ -25,7 +25,6 @@ Export-Package: org.apache.axiom.attachments,
  org.apache.axiom.soap.impl.builder
 Archiver-Version: Plexus Archiver
 Build-Jdk: 1.5.0_15
-Created-By: Apache Maven
 Bundle-DocURL: http://www.apache.org/
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Built-By: dims

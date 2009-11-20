@@ -19,12 +19,10 @@ Export-Package: org.apache.tuscany.sca.binding.ws.axis2.policy.authentication.to
    org.apache.tuscany.sca.contribution.processor,
    org.oasisopen.sca",
  org.apache.tuscany.sca.binding.ws.axis2.policy.header;version="2.0.0"
-Tool: Bnd-0.0.255
+SCA-Version: 1.1
 Bundle-Name: Apache Tuscany Policy Model for Axis2 WS binding
-Created-By: 1.6.0_07 (Sun Microsystems Inc.)
 Bundle-Vendor: The Apache Software Foundation
 Bundle-Version: 2.0.0
-Bnd-LastModified: 1225397340328
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany Policy Model for Axis2 WS binding

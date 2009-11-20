@@ -2,12 +2,10 @@ Manifest-Version: 1.0
 Export-Package: org.apache.tuscany.sca.node.equinox.launcher;uses:="or
  g.osgi.framework,org.eclipse.core.runtime.adaptor";version="2.0.0"
 Eclipse-AutoStart: true
-Tool: Bnd-0.0.255
+SCA-Version: 1.1
 Bundle-Name: Apache Tuscany SCA Node Equinox OSGi Launcher
-Created-By: 1.6.0_07 (Sun Microsystems Inc.)
 Bundle-Vendor: The Apache Software Foundation
 Bundle-Version: 2.0.0
-Bnd-LastModified: 1225397473703
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Node Equinox OSGi Launcher

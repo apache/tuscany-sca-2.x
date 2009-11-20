@@ -24,13 +24,10 @@ Export-Package: org.apache.ode.bpel.dd;version="1.3.2";
 Private-Package: .
 Implementation-Title: Apache ODE
 Implementation-Version: 1.3.2
-Tool: Bnd-0.0.313
 Bundle-Name: ode-bpel-schemas
-Created-By: 1.6.0_13 (Sun Microsystems Inc.)
 Implementation-Vendor: Apache Software Foundation
 Bundle-Version: 1.3.2
 Build-Jdk: 1.6.0_13
-Bnd-LastModified: 1250921588453
 Bundle-ManifestVersion: 2
 Import-Package: javax.xml.namespace,
  javax.xml.stream,
@@ -40,6 +37,4 @@ Import-Package: javax.xml.namespace,
  org.w3c.dom
 Bundle-SymbolicName: ode-bpel-schemas
 Fragment-Host: ode-bpel-compiler;version="1.3.2"
-Originally-Created-By: Buildr
-Build-By: MikeEdwards
 

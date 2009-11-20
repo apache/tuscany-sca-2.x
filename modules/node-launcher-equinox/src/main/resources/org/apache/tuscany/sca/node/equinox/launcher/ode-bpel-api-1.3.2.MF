@@ -38,13 +38,10 @@ Export-Package: org.apache.ode.bpel.bdi.breaks;version="1.3.2",
    org.w3c.dom"
 Implementation-Title: Apache ODE
 Implementation-Version: 1.3.2
-Tool: Bnd-0.0.313
 Bundle-Name: ode-bpel-api
-Created-By: 1.6.0_13 (Sun Microsystems Inc.)
 Implementation-Vendor: Apache Software Foundation
 Bundle-Version: 1.3.2
 Build-Jdk: 1.6.0_13
-Bnd-LastModified: 1250921587359
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: ode-bpel-api
 Import-Package: javax.management,
@@ -58,6 +55,4 @@ Import-Package: javax.management,
  org.apache.ode.utils.stl;version="1.3.2",
  org.apache.ode.utils.xsd;version="1.3.2",
  org.w3c.dom
-Originally-Created-By: Buildr
-Build-By: MikeEdwards
 

@@ -120,13 +120,10 @@ Export-Package: org.apache.ode.bpel.compiler;version="1.3.2";
    net.sf.saxon.xqj"
 Implementation-Title: Apache ODE
 Implementation-Version: 1.3.2
-Tool: Bnd-0.0.313
 Bundle-Name: ode-bpel-compiler
-Created-By: 1.6.0_13 (Sun Microsystems Inc.)
 Implementation-Vendor: Apache Software Foundation
 Bundle-Version: 1.3.2
 Build-Jdk: 1.6.0_13
-Bnd-LastModified: 1250921587562
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: ode-bpel-compiler
 Import-Package: com.ibm.wsdl.util.xml,
@@ -170,6 +167,4 @@ Import-Package: com.ibm.wsdl.util.xml,
  org.w3c.dom,
  org.xml.sax,
  org.xml.sax.helpers
-Originally-Created-By: Buildr
-Build-By: MikeEdwards
 

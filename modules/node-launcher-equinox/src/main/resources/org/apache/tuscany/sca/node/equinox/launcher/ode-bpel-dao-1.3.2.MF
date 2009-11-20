@@ -8,13 +8,10 @@ Export-Package: org.apache.ode.bpel.dao;version="1.3.2";
    org.apache.ode.bpel.iapi"
 Implementation-Title: Apache ODE
 Implementation-Version: 1.3.2
-Tool: Bnd-0.0.313
 Bundle-Name: ode-bpel-dao
-Created-By: 1.6.0_13 (Sun Microsystems Inc.)
 Implementation-Vendor: Apache Software Foundation
 Bundle-Version: 1.3.2
 Build-Jdk: 1.6.0_13
-Bnd-LastModified: 1250921587703
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: ode-bpel-dao
 Import-Package: javax.sql,
@@ -23,6 +20,4 @@ Import-Package: javax.sql,
  org.apache.ode.bpel.evt;version="1.3.2",
  org.apache.ode.bpel.iapi;version="1.3.2",
  org.w3c.dom
-Originally-Created-By: Buildr
-Build-By: MikeEdwards
 

@@ -1,6 +1,5 @@
 Manifest-Version: 1.0
 Archiver-Version: Plexus Archiver
-Created-By: 1.4.2_17 (Sun Microsystems Inc.)
 Built-By: dims
 Build-Jdk: 1.4.2_17
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -50,7 +49,6 @@ Import-Package: com.ibm.wsdl.util,
  org.apache.xml.serialize,
  org.w3c.dom,
  org.xml.sax
-Bnd-LastModified: 1208980539265
 Export-Package: javax.xml.namespace,
  org.apache.woden.internal;version="1.0.0";
   uses:="org.apache.woden.wsdl20,
@@ -224,6 +222,5 @@ Bundle-DocURL: http://www.apache.org/
 Bundle-ManifestVersion: 2
 Bundle-Vendor: Apache Software Foundation
 Bundle-SymbolicName: org.apache.woden.woden-impl-dom
-Tool: Bnd-0.0.238
 
 

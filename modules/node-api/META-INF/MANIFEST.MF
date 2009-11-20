@@ -1,14 +1,12 @@
 Manifest-Version: 1.0
 Export-Package: org.apache.tuscany.sca.node;version="2.0.0";uses:="org.oasisopen.sca",
  org.apache.tuscany.sca.node.configuration;version="2.0.0"
-Tool: Bnd-0.0.255
+SCA-Version: 1.1
 Bundle-Name: Apache Tuscany SCA Node API
-Created-By: 1.6.0_07 (Sun Microsystems Inc.)
 DynamicImport-Package: org.apache.tuscany.sca.node.impl,org.apache.tus
  cany.sca.extensibility
 Bundle-Vendor: The Apache Software Foundation
 Bundle-Version: 2.0.0
-Bnd-LastModified: 1225397189093
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Node API

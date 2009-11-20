@@ -2,13 +2,11 @@ Manifest-Version: 1.0
 Private-Package: org.apache.tuscany.sca.extensibility.equinox;version=
  "2.0.0"
 Bundle-ActivationPolicy: lazy
-Tool: Bnd-0.0.255
+SCA-Version: 1.1
 Bundle-Name: Apache Tuscany SCA Extensibility for Eclipse Equinox
-Created-By: 1.6.0_07 (Sun Microsystems Inc.)
 Bundle-Vendor: The Apache Software Foundation
 Eclipse-LazyStart: true
 Bundle-Version: 2.0.0
-Bnd-LastModified: 1225397425625
 Bundle-Activator: org.apache.tuscany.sca.extensibility.equinox.Equinox
  ServiceDiscoveryActivator
 Bundle-ManifestVersion: 2

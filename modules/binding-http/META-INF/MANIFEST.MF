@@ -2,10 +2,9 @@ Manifest-Version: 1.0
 Export-Package: org.apache.tuscany.sca.binding.http;version="2.0.0";
  uses:="org.apache.tuscany.sca.assembly,javax.xml.namespace,javax.servlet.http"
 Bundle-Name: Apache Tuscany SCA HTTP Binding Model
-Created-By: 1.6.0_15 (Apple Inc.)
 Bundle-Vendor: The Apache Software Foundation
 Bundle-Version: 2.0.0
-Bnd-LastModified: 1253494834368
+SCA-Version: 1.1
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA HTTP Binding Model

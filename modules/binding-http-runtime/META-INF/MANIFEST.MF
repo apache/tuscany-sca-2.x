@@ -1,12 +1,10 @@
 Manifest-Version: 1.0
 Private-Package: org.apache.tuscany.sca.binding.http.provider;version="2.0.
  0",.;version="2.0.0"
-Tool: Bnd-0.0.311
+SCA-Version: 1.1
 Bundle-Name: Apache Tuscany SCA HTTP Binding Runtime
-Created-By: 1.6.0_15 (Apple Inc.)
 Bundle-Vendor: The Apache Software Foundation
 Bundle-Version: 2.0.0
-Bnd-LastModified: 1253494834368
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA HTTP Binding Runtime

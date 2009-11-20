@@ -2,13 +2,11 @@ Manifest-Version: 1.0
 Export-Package: org.apache.tuscany.sca.binding.atom.js.dojo;uses:="org
  .apache.tuscany.sca.assembly,org.apache.tuscany.sca.web.javascript,or
  g.apache.tuscany.sca.binding.atom,javax.xml.namespace";version="2.0.0"
-Tool: Bnd-0.0.357
+SCA-Version: 1.1
 Bundle-Name: Apache Tuscany SCA Atom Feed Binding JavaScript using Doj
  o
-Created-By: 1.6.0_15 (Apple Inc.)
 Bundle-Vendor: The Apache Software Foundation
 Bundle-Version: 0
-Bnd-LastModified: 1258087084297
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Atom Feed Binding JavaScript us

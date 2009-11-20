@@ -1,12 +1,10 @@
 Manifest-Version: 1.0
 Export-Package: org.apache.tuscany.sca.binding.jsonp;version="2.0.0";uses:="org.apache.tuscany.sca.assembly,javax.xml.namespace"
 Private-Package: org.apache.tuscany.sca.binding.jsonp.impl;version="2.0.0"
-Tool: Bnd-0.0.255
+SCA-Version: 1.1
 Bundle-Name: Apache Tuscany SCA JSONP Binding Model
-Created-By: 1.6.0_07 (Sun Microsystems Inc.)
 Bundle-Vendor: The Apache Software Foundation
 Bundle-Version: 2.0.0
-Bnd-LastModified: 1225397320062
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA JSONP Binding Model

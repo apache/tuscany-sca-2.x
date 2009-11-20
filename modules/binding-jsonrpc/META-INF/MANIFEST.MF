@@ -1,11 +1,9 @@
 Manifest-Version: 1.0
 Export-Package: org.apache.tuscany.sca.binding.jsonrpc;version="2.0.0";uses:="org.apache.tuscany.sca.assembly,javax.xml.namespace"
-Tool: Bnd-0.0.357
+SCA-Version: 1.1
 Bundle-Name: Apache Tuscany SCA JSON-RPC Binding Model
-Created-By: 1.6.0_15 (Apple Inc.)
 Bundle-Vendor: The Apache Software Foundation
 Bundle-Version: 2.0.0
-Bnd-LastModified: 1253941204236
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA JSON-RPC Binding Model

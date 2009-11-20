@@ -9,6 +9,7 @@ Eclipse-LazyStart: true
 Bundle-Activator: org.apache.tuscany.sca.contribution.osgi.impl.OSGiBundleActivator
 Bundle-Description: Apache Tuscany SCA OSGi Implementation
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+SCA-Version: 1.1
 Import-Package: org.apache.tuscany.sca.assembly;version="2.0.0",
  org.apache.tuscany.sca.contribution;version="2.0.0",
  org.apache.tuscany.sca.contribution.osgi;version="2.0.0",
