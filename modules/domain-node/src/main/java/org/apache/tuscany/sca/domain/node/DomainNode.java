@@ -20,13 +20,21 @@
 package org.apache.tuscany.sca.domain.node;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.management.ConfigAttributes;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
+import org.apache.tuscany.sca.node.impl.NodeImpl;
+import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
+import org.apache.tuscany.sca.runtime.EndpointRegistry;
 import org.oasisopen.sca.NoSuchDomainException;
 import org.oasisopen.sca.NoSuchServiceException;
 import org.oasisopen.sca.client.SCAClient;
@@ -159,12 +167,38 @@ public class DomainNode {
         return uri;
     }
     
+    public String getDomainConfigURI() {
+        return domainRegistryURI;
+    }
+    
+    public List<String> getServiceNames() {
+        List<String> serviceNames = new ArrayList<String>();
+        if (nodes.size() > 0) {
+            ExtensionPointRegistry extensionsRegistry = ((NodeImpl)nodes.values().iterator().next()).getExtensionPoints();
+            UtilityExtensionPoint utilities = extensionsRegistry.getExtensionPoint(UtilityExtensionPoint.class);
+            DomainRegistryFactory domainRegistryFactory = utilities.getUtility(DomainRegistryFactory.class);
+            EndpointRegistry endpointRegistry = domainRegistryFactory.getEndpointRegistry(getDomainConfigURI(), getDomainName());
+            for (Endpoint endpoint : endpointRegistry.getEndpoints()) {
+                // Would be nice if Endpoint.getURI() returned this:
+                String name = endpoint.getComponent().getName() + "/" + endpoint.getService().getName();
+                if (endpoint.getBinding() != null) {
+                    // TODO: shouldn't the binding name be null if its not explicitly specified? 
+                    //       For now don't include it if the same as the default
+                    if (!endpoint.getService().getName().equals(endpoint.getBinding().getName())) {
+                        name += "/" + endpoint.getBinding().getName();
+                    }
+                }
+                serviceNames.add(name);
+            }
+        }
+        return serviceNames;
+    }
+
     public <T> T getService(Class<T> interfaze, String uri) throws NoSuchServiceException {
         try {
-            return SCAClient.getService(interfaze, configAttributes.getAttributes().get(DOMAIN_NAME_ATTR) + "/" + uri);
+            return SCAClient.getService(interfaze, getDomainName() + "/" + uri);
         } catch (NoSuchDomainException e) {
             throw new IllegalStateException(e);
         }
     }
-    
 }
