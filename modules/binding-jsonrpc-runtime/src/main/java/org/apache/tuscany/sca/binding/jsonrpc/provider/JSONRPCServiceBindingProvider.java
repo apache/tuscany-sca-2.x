@@ -86,7 +86,7 @@ public class JSONRPCServiceBindingProvider implements ServiceBindingProvider {
         Class<?> serviceInterface = getTargetJavaClass(serviceContract.getInterface());
 
         // Create a Java proxy to the target service
-        Object proxy = component.getComponentContext().createSelfReference(serviceInterface, service).getService();
+        Object proxy = component.getComponentContext().getServiceReference(serviceInterface, endpoint).getService();
 
         // Create and register a Servlet for this service
         JSONRPCServiceServlet serviceServlet =
