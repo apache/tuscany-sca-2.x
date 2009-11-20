@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Export-Package: calculator.dosgi.operations;version="1.0.0"
+Bundle-Version: 1.0.0
+Bundle-Name: calculator.dosgi.operations
+Bundle-Activator: calculator.dosgi.operations.impl.OperationsActivator
+Bundle-ManifestVersion: 2
+Import-Package: calculator.dosgi.operations;version="1.0.0",
+ org.oasisopen.sca.annotation;version="2.0.0",
+ org.osgi.framework,
+ org.osgi.service.component;resolution:=optional,
+ org.osgi.service.packageadmin
+Bundle-SymbolicName: calculator.dosgi.operations
+Bundle-Vendor: The Apache Software Foundation
+Bundle-ActivationPolicy: lazy
+Eclipse-LazyStart: true
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-DocURL: http://www.apache.org/
+Service-Component: OSGI-INF/add-component.xml,
+ OSGI-INF/subtract-component.xml,
+ OSGI-INF/multiply-component.xml,
+ OSGI-INF/divide-component.xml
+Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6

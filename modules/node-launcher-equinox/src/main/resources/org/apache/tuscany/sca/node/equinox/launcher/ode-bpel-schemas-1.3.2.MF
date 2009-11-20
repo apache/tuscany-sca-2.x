@@ -1,0 +1,40 @@
+Manifest-Version: 1.0
+Export-Package: org.apache.ode.bpel.dd;version="1.3.2";
+  uses:="javax.xml.stream,
+   org.apache.xmlbeans,
+   org.w3c.dom,
+   org.apache.xmlbeans.xml.stream,
+   javax.xml.namespace",
+ org.apache.ode.bpel.dd.impl;version="1.3.2";
+  uses:="org.apache.xmlbeans.impl.values,
+   org.apache.xmlbeans,
+   org.apache.ode.bpel.dd,
+   javax.xml.namespace",
+ org.apache.ode.bpel.pmapi;version="1.3.2";
+  uses:="javax.xml.stream,
+   org.apache.xmlbeans,
+   org.w3c.dom,
+   org.apache.xmlbeans.xml.stream,
+   javax.xml.namespace",
+ org.apache.ode.bpel.pmapi.impl;version="1.3.2";
+  uses:="org.apache.xmlbeans.impl.values,
+   org.apache.xmlbeans,
+   org.apache.ode.bpel.pmapi,
+   javax.xml.namespace"
+Private-Package: .
+Implementation-Title: Apache ODE
+Implementation-Version: 1.3.2
+Bundle-Name: ode-bpel-schemas
+Implementation-Vendor: Apache Software Foundation
+Bundle-Version: 1.3.2
+Build-Jdk: 1.6.0_13
+Bundle-ManifestVersion: 2
+Import-Package: javax.xml.namespace,
+ javax.xml.stream,
+ org.apache.xmlbeans,
+ org.apache.xmlbeans.impl.values,
+ org.apache.xmlbeans.xml.stream,
+ org.w3c.dom
+Bundle-SymbolicName: ode-bpel-schemas
+Fragment-Host: ode-bpel-compiler;version="1.3.2"
+

@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Export-Package: org.apache.tuscany.sca.node.launcher;uses:="javax.serv
+ let";version="2.0.0"
+SCA-Version: 1.1
+Bundle-Name: Apache Tuscany SCA Node Launcher
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 2.0.0
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA Node Launcher
+Import-Package: javax.servlet,org.apache.tuscany.sca.node.launcher;ver
+ sion="2.0.0",org.apache.commons.cli;resolution:=optional
+Bundle-SymbolicName: org.apache.tuscany.sca.node.launcher
+Bundle-DocURL: http://www.apache.org/
+Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6

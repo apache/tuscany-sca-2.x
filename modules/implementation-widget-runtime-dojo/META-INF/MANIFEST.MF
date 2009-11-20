@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+SCA-Version: 1.1
+Bundle-Name: Apache Tuscany SCA Widget Implementation Runtime (Dojo)
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 2.0.0
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA Widget Implementation Model
+Import-Package: javax.xml.namespace,
+ javax.xml.stream;version="1.0",
+ org.apache.tuscany.sca.assembly;version="2.0.0",
+ org.apache.tuscany.sca.monitor;version="2.0.0"
+Bundle-SymbolicName: org.apache.tuscany.sca.implementation.widget.runtime.dojo
+Bundle-DocURL: http://www.apache.org/
+

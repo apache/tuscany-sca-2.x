@@ -1,0 +1,24 @@
+Manifest-Version: 1.0
+SCA-Version: 1.1
+Bundle-Name: Apache Tuscany SCA Spring Implementation Runtime Model
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 2.0.0
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA Spring Implementation Runtime Model
+Bundle-SymbolicName: org.apache.tuscany.sca.implementation.spring.runtime
+Bundle-DocURL: http://www.apache.org/
+Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6
+Import-Package: org.oasisopen.sca;version="2.0.0",
+ org.oasisopen.sca.annotation;version="2.0.0",
+ org.springframework.beans;version="2.5.5",
+ org.springframework.beans.factory;version="2.5.5",
+ org.springframework.beans.factory.annotation;version="2.5.5",
+ org.springframework.beans.factory.config;version="2.5.5",
+ org.springframework.beans.factory.support;version="2.5.5",
+ org.springframework.beans.factory.xml;version="2.5.5",
+ org.springframework.context;version="2.5.5",
+ org.springframework.context.support;version="2.5.5",
+ org.springframework.core.io;version="2.5.5",
+ org.springframework.util;version="2.5.5"
+

@@ -1,0 +1,38 @@
+${pom.name}
+Copyright (c) 2005 - 2009 The Apache Software Foundation
+
+This product includes software developed by
+The Apache Software Foundation (http://www.apache.org/).
+
+This product also includes software under the OASIS license 
+(see the LICENSE file contained in this distribution), with the following
+copyright:
+
+Copyright (C) OASIS(R) 2005, 2009. All Rights Reserved.
+OASIS trademark, IPR and other policies apply.
+
+This product also includes software under the W3C(r) Software License
+(see the LICENSE file contained in this distribution), with the following
+copyright:
+
+Copyright (c) 2004 World Wide Web Consortium (Massachusetts Institute of Technology, 
+European Research Consortium for Informatics and Mathematics, Keio University). 
+All Rights Reserved. This work is distributed under the W3C(r) Software License [1] 
+in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
+warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+    [1] http://www.w3.org/Consortium/Legal/2002/copyright-software-20021231
+
+This product also includes software under the W3C(c) Software License
+with the following copyright:
+
+Copyright 2001 The Internet Society and W3C (Massachusetts Institute
+of Technology, Institut National de Recherche en Informatique et en
+Automatique, Keio University). All Rights Reserved.
+http://www.w3.org/Consortium/Legal/
+
+This document is governed by the W3C Software License [1] as described
+in the FAQ [2].
+
+[1] http://www.w3.org/Consortium/Legal/copyright-software-19980720
+[2] http://www.w3.org/Consortium/Legal/IPR-FAQ-20000620.html#DTD

@@ -1,0 +1,28 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+# 
+#   http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License. 
+
+# Implementation class for the artifact processor extension
+org.apache.tuscany.sca.policy.authorization.AuthorizationPolicyProcessor;qname=http://docs.oasis-open.org/ns/opencsa/sca/200903#authorization,model=org.apache.tuscany.sca.policy.authorization.AuthorizationPolicy
+org.apache.tuscany.sca.policy.authorization.AuthorizationPolicyProcessor;qname=http://docs.oasis-open.org/ns/opencsa/sca/200903#allow,model=org.apache.tuscany.sca.policy.authorization.AuthorizationPolicy
+org.apache.tuscany.sca.policy.authorization.AuthorizationPolicyProcessor;qname=http://docs.oasis-open.org/ns/opencsa/sca/200903#permitAll,model=org.apache.tuscany.sca.policy.authorization.AuthorizationPolicy
+org.apache.tuscany.sca.policy.authorization.AuthorizationPolicyProcessor;qname=http://docs.oasis-open.org/ns/opencsa/sca/200903#denyAll,model=org.apache.tuscany.sca.policy.authorization.AuthorizationPolicy
+org.apache.tuscany.sca.policy.identity.SecurityIdentityPolicyProcessor;qname=http://docs.oasis-open.org/ns/opencsa/sca/200903#runAs,model=org.apache.tuscany.sca.policy.identity.SecurityIdentityPolicy
+org.apache.tuscany.sca.policy.identity.SecurityIdentityPolicyProcessor;qname=http://docs.oasis-open.org/ns/opencsa/sca/200903#securityIdentity,model=org.apache.tuscany.sca.policy.identity.SecurityIdentityPolicy
+org.apache.tuscany.sca.policy.identity.SecurityIdentityPolicyProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.1#securityIdentity,model=org.apache.tuscany.sca.policy.identity.SecurityIdentityPolicy
+org.apache.tuscany.sca.policy.security.jaas.JaasAuthenticationPolicyProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.1#jaasAuthentication,model=org.apache.tuscany.sca.policy.security.jaas.JaasAuthenticationPolicy
+org.apache.tuscany.sca.policy.authentication.basic.BasicAuthenticationPolicyProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.1#basicAuthentication,model=org.apache.tuscany.sca.policy.authentication.basic.BasicAuthenticationPolicy
+

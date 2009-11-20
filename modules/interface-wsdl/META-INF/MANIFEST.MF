@@ -1,0 +1,46 @@
+Manifest-Version: 1.0
+Export-Package: org.apache.tuscany.sca.interfacedef.wsdl;uses:="org.ap
+ ache.ws.commons.schema,org.apache.tuscany.sca.assembly,org.apache.tus
+ cany.sca.contribution.resolver,javax.wsdl.extensions,org.apache.tusca
+ ny.sca.core,org.apache.tuscany.sca.interfacedef,javax.wsdl,javax.xml.
+ namespace";version="2.0.0"
+Private-Package: org.apache.tuscany.sca.interfacedef.wsdl.impl;version
+ ="2.0.0"
+SCA-Version: 1.1
+Bundle-Name: Apache Tuscany SCA WSDL Interface Model
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 2.0.0
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA WSDL Interface Model
+Import-Package: javax.wsdl,
+ javax.wsdl.extensions,
+ javax.wsdl.extensions.schema,
+ javax.wsdl.factory,
+ javax.wsdl.xml,
+ javax.xml.namespace,
+ javax.xml.stream,
+ org.apache.tuscany.sca.assembly;version="2.0.0",
+ org.apache.tuscany.sca.common.java.io;version="2.0.0",
+ org.apache.tuscany.sca.common.xml;version="2.0.0",
+ org.apache.tuscany.sca.common.xml.stax;version="2.0.0",
+ org.apache.tuscany.sca.contribution;version="2.0.0";resolution:=optional,
+ org.apache.tuscany.sca.contribution.namespace;version="2.0.0",
+ org.apache.tuscany.sca.contribution.processor;version="2.0.0";resolution:=optional,
+ org.apache.tuscany.sca.contribution.resolver;version="2.0.0",
+ org.apache.tuscany.sca.core;version="2.0.0",
+ org.apache.tuscany.sca.definitions;version="2.0.0";resolution:=optional,
+ org.apache.tuscany.sca.interfacedef;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef.impl;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef.util;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef.wsdl;version="2.0.0",
+ org.apache.tuscany.sca.monitor;version="2.0.0";resolution:=optional,
+ org.apache.tuscany.sca.policy;version="2.0.0",
+ org.apache.tuscany.sca.xsd;version="2.0.0",
+ org.apache.tuscany.sca.xsd.xml;version="2.0.0",
+ org.apache.ws.commons.schema,
+ org.w3c.dom,
+ org.xml.sax
+Bundle-SymbolicName: org.apache.tuscany.sca.interface.wsdl
+Bundle-DocURL: http://www.apache.org/
+Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6

@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+-->
+<project>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apache.tuscany.sca</groupId>
+        <artifactId>tuscany-sca</artifactId>
+        <version>2.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <artifactId>tuscany-modules</artifactId>
+    <packaging>pom</packaging>
+    <name>Apache Tuscany SCA Implementation Modules</name>
+
+    <modules>
+        <module>assembly</module>
+        <module>assembly-xml</module>
+        <module>assembly-xsd</module>
+        <module>binding-atom</module>
+        <module>binding-atom-js-dojo</module>        
+        <module>binding-atom-runtime</module>
+        <module>binding-ejb</module>
+        <module>binding-ejb-runtime</module>
+        <module>binding-http</module>
+        <module>binding-http-runtime</module>
+        <module>binding-jms</module>
+        <module>binding-jms-runtime</module>
+        <module>binding-jsonp</module>
+        <module>binding-jsonp-runtime</module>
+        <module>binding-jsonrpc</module>        
+        <module>binding-jsonrpc-js-dojo</module>        
+        <module>binding-jsonrpc-runtime</module>
+        <module>binding-rmi</module>
+        <module>binding-rmi-runtime</module>
+        <module>binding-sca-runtime</module>
+        <module>binding-sca-runtime-rmi</module>
+        <module>binding-sca-axis2-runtime</module>
+        <module>binding-ws</module>
+        <module>binding-ws-axis2</module>
+        <module>binding-ws-axis2-policy</module>
+        <module>binding-ws-wsdlgen</module>
+        <module>builder</module>
+        <module>common-java</module>
+        <module>common-xml</module>
+        <module>contribution</module>
+        <module>core</module>
+        <module>core-databinding</module>
+        <module>core-spi</module>
+        <module>data-api</module>
+        <module>databinding</module>
+        <module>databinding-axiom</module>
+        <module>databinding-jaxb</module>
+        <module>databinding-jaxb-axiom</module>
+        <module>databinding-json</module>
+        <module>deployment</module>
+        <module>domain-node</module>
+        <module>endpoint-tribes</module>
+        <module>extensibility</module>
+        <module>extensibility-equinox</module>
+        <module>host-http</module>
+        <module>host-jetty</module>
+        <module>host-rmi</module>
+        <module>host-webapp</module>
+        <module>implementation-bpel</module>
+        <module>implementation-bpel-runtime</module>
+        <module>implementation-java</module>
+        <module>implementation-java-runtime</module>
+        <module>implementation-spring</module>
+        <module>implementation-spring-sca</module>
+        <module>implementation-web</module>
+        <module>implementation-web-client</module>
+        <module>implementation-web-runtime</module>
+        <module>implementation-widget</module>
+        <module>implementation-widget-runtime</module>
+        <module>implementation-widget-runtime-dojo</module>
+        <module>interface-java</module>
+        <module>interface-java-jaxws</module>
+        <module>interface-wsdl</module>
+        <module>launcher</module>
+        <module>monitor</module>
+        <module>myfaces</module>
+        <module>node-api</module>
+        <module>node-impl</module>
+        <module>node-launcher</module>
+        <module>node-launcher-equinox</module>
+        <module>policy-security</module>
+        <module>policy-xml-ws</module>
+        <module>policy-logging</module>
+        <module>sca-api</module>
+        <module>sca-client-impl</module>
+        <module>sca-client-javascript</module>
+        <module>sca-client-rmi</module>
+        <module>stripes</module>
+        <module>xsd</module>
+        <module>web-javascript</module>
+        <module>web-javascript-dojo</module>        
+        <!-- OSGi Remote Services with SCA -->
+        <module>contribution-osgi</module>
+        <module>implementation-osgi</module>
+        <module>implementation-osgi-runtime</module>
+        <module>node-impl-osgi</module>
+    </modules>
+
+    <profiles>
+         <profile>
+            <id>eclipse</id>
+            <build>
+                <defaultGoal>org.apache.tuscany.maven.plugins:maven-bundle-plugin:eclipse</defaultGoal>
+                <!--
+                <plugins>
+	            <plugin> 	 
+	                <groupId>org.apache.tuscany.maven.plugins</groupId> 	 
+	                <artifactId>maven-bundle-plugin</artifactId> 	 
+	                <version>1.0.4</version> 	 
+	                <extensions>true</extensions> 	 
+	                <executions> 	 
+	                    <execution> 	 
+	                        <id>generate-pde</id> 	 
+	                        <phase>generate-resources</phase> 	 
+	                        <goals> 	 
+	                                <goal>eclipse</goal> 	 
+	                        </goals> 	 
+	                        <configuration> 	 
+	                        </configuration> 	 
+	                    </execution> 	 
+	                </executions> 	 
+	            </plugin> 	 
+              </plugins>
+              -->
+            </build>
+        </profile>
+    </profiles>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.5</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+               <plugin>
+                   <artifactId>maven-jar-plugin</artifactId>
+                   <configuration>
+                       <archive>
+                           <manifestFile>${basedir}/META-INF/MANIFEST.MF</manifestFile>
+                       </archive>
+                   </configuration>
+               </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+    
+</project>

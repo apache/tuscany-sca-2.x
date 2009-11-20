@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+SCA-Version: 1.1
+Bundle-Name: Apache Tuscany SCA Common Java
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 2.0.0
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA Common Java
+Import-Package: org.apache.tuscany.sca.common.java.classloader;version="2.0.0",
+ org.apache.tuscany.sca.common.java.collection;version="2.0.0",
+ org.apache.tuscany.sca.common.java.io;version="2.0.0",
+ org.apache.tuscany.sca.common.java.reflection;version="2.0.0",
+ org.apache.tuscany.sca.core;version="2.0.0",
+ org.oasisopen.sca;version="2.0.0"
+Bundle-SymbolicName: org.apache.tuscany.sca.common.java
+Bundle-DocURL: http://www.apache.org/
+Export-Package: org.apache.tuscany.sca.common.java.classloader;version="2.0.0",
+ org.apache.tuscany.sca.common.java.collection;version="2.0.0",
+ org.apache.tuscany.sca.common.java.io;version="2.0.0",
+ org.apache.tuscany.sca.common.java.reflection;version="2.0.0";uses:="org.apache.tuscany.sca.core"
+
+

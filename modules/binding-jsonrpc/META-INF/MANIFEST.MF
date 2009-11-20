@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Export-Package: org.apache.tuscany.sca.binding.jsonrpc;version="2.0.0";uses:="org.apache.tuscany.sca.assembly,javax.xml.namespace"
+SCA-Version: 1.1
+Bundle-Name: Apache Tuscany SCA JSON-RPC Binding Model
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 2.0.0
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA JSON-RPC Binding Model
+Import-Package: javax.xml.namespace,
+ org.apache.tuscany.sca.assembly;version="2.0",
+ org.apache.tuscany.sca.assembly.xml;version="2.0.0",
+ org.apache.tuscany.sca.binding.jsonrpc;version="2.0.0"
+Bundle-SymbolicName: org.apache.tuscany.sca.binding.jsonrpc
+Bundle-DocURL: http://www.apache.org/
+

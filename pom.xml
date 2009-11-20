@@ -1,0 +1,738 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+-->
+<project>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apache</groupId>
+        <artifactId>apache</artifactId>
+        <version>4</version>
+    </parent>
+
+    <groupId>org.apache.tuscany.sca</groupId>
+    <artifactId>tuscany-sca</artifactId>
+    <packaging>pom</packaging>
+    <name>Apache Tuscany SCA Implementation Project (2.x)</name>
+    <url>http://tuscany.apache.org</url>
+    <version>2.0-SNAPSHOT</version>
+
+    <scm>
+        <connection>scm:svn:http://svn.apache.org/repos/asf/tuscany/java/sca</connection>
+        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/tuscany/java/sca</developerConnection>
+        <url>http://svn.apache.org/repos/asf/tuscany/java/sca</url>
+    </scm>
+
+    <prerequisites>
+        <maven>2.0.6</maven>
+    </prerequisites>
+
+    <properties>
+        <notice.dir>.</notice.dir>
+    </properties>
+
+    <issueManagement>
+        <system>jira</system>
+        <url>http://issues.apache.org/jira/browse/TUSCANY</url>
+    </issueManagement>
+
+    <repositories>
+       <repository>
+          <id>maven.central</id>
+          <url>http://repo2.maven.org/maven2</url>
+           <releases>
+               <enabled>true</enabled>
+           </releases>
+           <snapshots>
+               <enabled>false</enabled>
+           </snapshots>
+       </repository>
+       <repository>
+          <id>apache.incubator</id>
+          <url>http://people.apache.org/repo/m2-incubating-repository</url>
+           <releases>
+               <enabled>true</enabled>
+           </releases>
+           <snapshots>
+               <enabled>false</enabled>
+           </snapshots>
+       </repository>
+       <!-- Apache SNAPSHOT repository for unreleased artifacts -->
+       <repository>
+            <id>apache.snapshots</id>
+            <name>Apache SNAPSHOT Repository</name>
+            <url>http://people.apache.org/repo/m2-snapshot-repository</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <!-- Tuscany repository to hold artifacts that are not published in the public maven repos -->
+        <repository>
+            <id>tuscany.repo</id>
+            <name>Tuscany Maven 2.x Repository</name>
+            <url>http://svn.apache.org/repos/asf/tuscany/maven</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>apache.ws.zone</id>
+            <name>Apache WS Zone Repository</name>
+            <url>http://ws.zones.apache.org/repository2</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>indiana</id>
+            <url>http://ftp.ussg.iu.edu/eclipse/modeling/emf/emf/maven2/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>osuosl.org</id>
+            <url>http://ftp.osuosl.org/pub/eclipse/tools/emf/maven2</url>
+           <releases>
+               <enabled>true</enabled>
+           </releases>
+           <snapshots>
+               <enabled>false</enabled>
+           </snapshots>
+        </repository> 
+
+        <!-- for Saxon 9.x -->
+        <repository>
+            <id>intalio.org</id>
+            <url>http://www.intalio.org/public/maven2</url>
+           <releases>
+               <enabled>true</enabled>
+           </releases>
+           <snapshots>
+               <enabled>false</enabled>
+           </snapshots>
+        </repository>     
+
+        <!-- for java.net -->
+        <repository>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>java.net</id>
+            <name>java.net Maven 1.x Repository</name>
+            <url>http://download.java.net/maven/1</url>
+            <layout>legacy</layout>
+        </repository>
+
+        <repository>
+            <id>java.net2</id>
+            <name>java.net Maven 2.x Repository</name>
+            <url>http://download.java.net/maven/2</url>
+            <snapshots>
+              <enabled>false</enabled>
+            </snapshots>
+        </repository>
+
+    </repositories>
+
+    <pluginRepositories>
+        <!-- Apache repository for artifacts released by Apache TLP projects -->
+        <pluginRepository>
+            <id>apache</id>
+            <name>Apache Repository</name>
+            <url>http://people.apache.org/repo/m2-ibiblio-rsync-repository</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+
+        <!-- Apache Incubator repository for artifacts released by Incubator projects -->
+        <pluginRepository>
+            <id>apache.incubator</id>
+            <name>Apache Incubator Repository</name>
+            <url>http://people.apache.org/repo/m2-incubating-repository</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+
+        <!-- Apache SNAPSHOT repository for unreleased artifacts -->
+        <pluginRepository>
+            <id>apache.snapshots</id>
+            <name>Apache SNAPSHOT Repository</name>
+            <url>http://people.apache.org/repo/m2-snapshot-repository</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+
+        <!-- Codehaus SNAPSHOT repository -->
+        <pluginRepository>
+            <id>codehaus-snapshot</id>
+            <name>Codehaus Snapshot Repository</name>
+            <url>http://snapshots.repository.codehaus.org</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+
+       <!-- Maven central repository -->
+       <pluginRepository>
+          <id>maven.central</id>
+          <name>Maven Central Repository</name>
+          <url>http://repo2.maven.org/maven2</url>
+          <releases>
+              <enabled>true</enabled>
+          </releases>
+          <snapshots>
+              <enabled>false</enabled>
+          </snapshots>
+       </pluginRepository>
+
+        <pluginRepository>
+            <id>java.net2</id>
+            <name>java.net Maven 2.x Repository</name>
+            <url>http://download.java.net/maven/2</url>
+            <snapshots>
+              <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+
+    </pluginRepositories>
+
+    <distributionManagement>
+        <repository>
+            <id>apache.releases</id>
+            <name>Apache Release Distribution Repository</name>
+            <url>scp://people.apache.org/www/people.apache.org/repo/m2-ibiblio-rsync-repository</url>
+        </repository>
+        <snapshotRepository>
+            <id>apache.snapshots</id>
+            <name>Apache Development Snapshot Repository</name>
+            <url>scp://people.apache.org/www/people.apache.org/repo/m2-snapshot-repository</url>
+            <uniqueVersion>false</uniqueVersion>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <profiles>
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+                <module>modules</module>
+                <module>samples</module>
+                <module>itest</module>
+                <module>features</module>
+                <module>shades</module>
+                <module>distribution</module>
+                <module>archetypes</module>
+<!--
+                <module>stest</module>
+                <module>vtest</module>
+-->
+            </modules>
+        </profile>
+
+        <profile>
+            <id>distribution</id>
+            <modules>
+                <module>modules</module>
+                <module>samples</module>
+                <module>itest</module>
+                <module>features</module>
+                <module>distribution</module>
+                <module>archetypes</module>
+<!-- 
+                <module>vtest</module>
+-->
+            </modules>
+        </profile>
+
+        <profile>
+            <id>sources</id>
+            <modules>
+                <module>modules</module>
+                <module>samples</module>
+                <module>itest</module>
+                <module>vtest</module>
+                <module>tutorials</module>
+            </modules>
+            <properties>
+                <maven.test.skip>true</maven.test.skip>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <configuration>
+                            <attach>true</attach>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>         
+            </build>
+        </profile>
+
+        <profile>
+            <id>eclipse</id>
+<!--
+            <properties>
+                <notice.dir>src/main/resources</notice.dir>
+            </properties>
+-->
+            <modules>
+                <module>modules</module>
+                <module>samples</module>
+                <module>itest</module>
+                <!--module>vtest</module-->
+                <!--module>tutorials</module-->
+                <!--module>demos</module-->
+                <module>features</module>
+                <module>distribution</module>
+            </modules>
+           <build>
+                <defaultGoal>org.apache.tuscany.maven.plugins:maven-bundle-plugin:eclipse</defaultGoal>
+                <pluginManagement>
+                <plugins>
+                   <plugin> 
+                       <groupId>org.apache.tuscany.maven.plugins</groupId> 
+                       <artifactId>maven-bundle-plugin</artifactId> 
+                       <version>1.0.5-SNAPSHOT</version> 
+                       <extensions>true</extensions> 
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-eclipse-plugin</artifactId>
+                        <configuration>
+                            <skip>true</skip>
+                        </configuration>
+                     </plugin>
+                 </plugins>
+                 </pluginManagement>
+            </build>
+        </profile>
+        <profile>
+            <id>osgi</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <modules>
+               <module>samples</module>
+            </modules>
+            <build>
+                <pluginManagement>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <skip>true</skip>
+                        </configuration>
+                     </plugin>
+                 </plugins>
+                 </pluginManagement>
+                <plugins>
+                <plugin>
+                    <groupId>org.apache.tuscany.sca</groupId>
+                    <artifactId>tuscany-maven-osgi-junit</artifactId>
+                    <version>1.0</version>
+                    <executions>
+                        <execution>
+                            <id>osgi-test</id>
+                            <phase>test</phase>
+                            <goals>
+                                <goal>test</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                 </plugin>            
+                 </plugins>       
+            </build> 
+        </profile>  
+
+        <profile>
+            <id>dependencies</id>
+            <modules>
+                <module>modules</module>
+                <!--module>samples</module>
+                <module>tutorials</module>
+                <module>demos</module-->
+            </modules>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.tuscany.sca</groupId>
+                        <artifactId>tuscany-maven-dependency-lister</artifactId>
+                        <version>2.0-SNAPSHOT</version>
+                        <executions>
+                            <execution>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>execute</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>           
+                </plugins>         
+            </build>
+        </profile>
+        
+        <profile>
+            <id>security</id>
+            <modules>
+                <!-- <module>demos</module> -->
+                <module>itest</module>
+                <module>vtest</module>
+            </modules>
+            <activation>
+                <property>
+                    <name>tuscany.policy.file</name>
+                </property>
+            </activation>
+            <properties>
+                <tuscany.policy.file>file:///${java.home}/lib/security/tuscany.policy</tuscany.policy.file>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>2.4.3</version>
+                        <configuration>
+                            <includes>
+                                <include>**/*TestCase.java</include>
+                            </includes>
+                            <reportFormat>brief</reportFormat>
+                            <useFile>false</useFile>
+                            <forkMode>once</forkMode>
+                            <!-- Place tuscany.policy in your Java home security directory. Alternatively, hardcode the file location here. -->
+                            <argLine>-Djava.security.manager -Djava.security.policy=${tuscany.policy.file} -Dpolicy.allowSystemProperty=true -Djava.security.debug=policy</argLine>
+                        </configuration>
+                    </plugin>
+                </plugins>         
+            </build>
+        </profile>
+
+        <!-- profile for verifying source code correctness -->
+        <profile>
+            <id>sourcecheck</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-checkstyle-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-pmd-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <configuration>
+                            <source>1.5</source>
+                            <target>1.5</target>
+                            <showDeprecation>true</showDeprecation>
+                            <compilerArgument>-Xlint:unchecked,deprecation,fallthrough,finally</compilerArgument>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>release</id>
+            <modules>
+                <module>modules</module>
+                <module>archetypes</module>
+            </modules>
+            <build>
+                <plugins>
+
+                    <plugin>
+                        <inherited>true</inherited>
+                        <artifactId>maven-deploy-plugin</artifactId>
+                        <version>2.4</version>
+                        <configuration>
+                            <altDeploymentRepository>${deploy.altRepository}</altDeploymentRepository>
+                            <updateReleaseInfo>true</updateReleaseInfo>
+                        </configuration>
+                    </plugin>
+
+                    <plugin>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.0-alpha-4</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>base</id>
+            <modules>
+                <module>modules/assembly</module>
+                <module>modules/assembly-xml</module>
+                <module>modules/assembly-xsd</module>
+                <module>modules/binding-sca-runtime</module>
+                <module>modules/binding-ws</module>
+                <module>modules/binding-ws-axis2-policy</module>
+                <module>modules/binding-ws-wsdlgen</module>
+                <module>modules/builder</module>
+                <module>modules/common-java</module>
+                <module>modules/common-xml</module>
+                <module>modules/contribution</module>
+                <module>modules/core</module>
+                <module>modules/core-databinding</module>
+                <module>modules/core-spi</module>
+                <module>modules/databinding</module>
+                <module>modules/databinding-axiom</module>
+                <module>modules/databinding-jaxb</module>
+                <module>modules/domain-node</module>
+                <module>modules/endpoint-tribes</module>
+                <module>modules/extensibility</module>
+                <module>modules/host-http</module>
+                <module>modules/host-jetty</module>
+                <module>modules/host-webapp</module>
+                <module>modules/implementation-java</module>
+                <module>modules/implementation-java-runtime</module>
+                <module>modules/implementation-web</module>
+                <module>modules/implementation-web-runtime</module>
+                <module>modules/interface-java</module>
+                <module>modules/interface-java-jaxws</module>
+                <module>modules/interface-wsdl</module>
+                <module>modules/monitor</module>
+                <module>modules/interface-wsdl</module>
+                <module>modules/node-api</module>
+                <module>modules/node-impl</module>
+                <module>modules/policy-security</module>
+                <module>modules/sca-api</module>
+                <module>modules/sca-client-impl</module>
+                <module>modules/xsd</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>jms</id>
+            <modules>
+                <module>modules/binding-jms</module>
+                <module>modules/binding-jms-runtime</module>
+                <module>samples/webapps/helloworld-jms</module>
+                <module>itest/jms</module>
+            </modules>
+        </profile>
+
+    </profiles>
+ 
+
+    <build>
+        <defaultGoal>install</defaultGoal>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+<!--
+            <resource>
+                <directory>${notice.dir}</directory>
+                <targetPath>META-INF</targetPath>
+                <filtering>true</filtering>
+                <includes>
+                    <include>LICENSE</include>
+                    <include>NOTICE</include>
+                    <include>README</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>${basedir}/META-INF</directory>
+                <targetPath>META-INF</targetPath>
+                <includes>
+                    <include>MANIFEST.MF</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>${basedir}/OSGI-INF</directory>
+                <targetPath>OSGI-INF</targetPath>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+            </resource>
+-->
+            <resource>
+                <directory>${basedir}</directory>
+                <includes>
+                    <include>LICENSE</include>
+                    <include>NOTICE</include>
+                    <include>README</include>
+                    <include>META-INF/**/*</include>
+                    <include>OSGI-INF/**/*</include>
+                </includes>
+            </resource>
+
+        </resources>
+
+        <pluginManagement>
+            <plugins>
+
+                <!-- compiler plugin configuration -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>2.0.2</version>
+                    <configuration>
+                        <compilerId>tuscany-eclipse</compilerId>
+                        <source>1.5</source>
+                        <target>1.5</target>
+                        <compilerArguments>
+                            <osgi>true</osgi>
+                        </compilerArguments>
+                    </configuration>
+
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.apache.tuscany.maven.plugins</groupId>
+                            <artifactId>maven-eclipse-compiler</artifactId>
+                            <version>1.0.1</version>
+                            <scope>provided</scope>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+
+                <!-- surefire plugin configuration -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.4.3</version>
+                    <configuration>
+                        <includes>
+                            <include>**/*TestCase.java</include>
+                        </includes>
+                        <reportFormat>brief</reportFormat>
+                        <useFile>false</useFile>
+                        <forkMode>once</forkMode>
+                        <argLine>-ea -Xmx256m</argLine>
+                    </configuration>
+                </plugin>
+
+                <!-- jar plugin configuration -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>2.1</version>
+                    <configuration>
+                        <archive>
+                            <manifestEntries>
+                                <Extension-Name>${project.artifactId}</Extension-Name>
+                                <Specification-Title>${name}</Specification-Title>
+                                <Specification-Vendor>The Apache Software Foundation</Specification-Vendor>
+                                <Specification-Version>${version}</Specification-Version>
+                                <Implementation-Title>${name}</Implementation-Title>
+                                <Implementation-Vendor-Id>org.apache</Implementation-Vendor-Id>
+                                <Implementation-Vendor>The Apache Software Foundation</Implementation-Vendor>
+                                <Implementation-Version>${version}</Implementation-Version>
+                            </manifestEntries>
+                         </archive>
+                    </configuration>
+                </plugin>
+
+                <!-- code coverage check plugin configuration -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-clover-plugin</artifactId>
+                    <configuration>
+                        <jdk>1.5</jdk>
+                    </configuration>
+                </plugin>
+
+                <!-- ant plugin global configuration -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <version>1.3</version>
+
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.apache.ant</groupId>
+                            <artifactId>ant-trax</artifactId>
+                            <version>1.7.1</version>
+                        </dependency>
+                        <!-- this JDk dependency is a workaround for Maven bug - http://jira.codehaus.org/browse/MNG-1323  -->
+                        <dependency>
+                            <groupId>sun.jdk</groupId>
+                            <artifactId>tools</artifactId>
+                            <version>1.6</version>
+                            <scope>system</scope>
+                            <systemPath>${java.home}/../lib/tools.jar</systemPath>
+                            <optional>true</optional>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>2.0-beta-8</version>
+                    <configuration>
+                        <tagBase>https://svn.apache.org/repos/asf/tuscany/tags/java/sca</tagBase>
+                        <useReleaseProfile>false</useReleaseProfile>
+                        <preparationGoals>clean install</preparationGoals>
+                        <goals>deploy</goals>
+                        <arguments>-Prelease,deploy</arguments>
+                        <autoVersionSubmodules>true</autoVersionSubmodules>
+                    </configuration>
+                </plugin>
+
+            </plugins>
+        </pluginManagement>
+    </build>
+
+</project>

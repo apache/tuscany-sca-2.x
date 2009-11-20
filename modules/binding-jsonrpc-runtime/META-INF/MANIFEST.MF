@@ -1,0 +1,42 @@
+Manifest-Version: 1.0
+SCA-Version: 1.1
+Bundle-Name: Apache Tuscany SCA JSON-RPC Binding Runtime
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 0
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA JSON-RPC Binding Runtime
+Import-Package: javax.security.auth.login,
+ javax.servlet,
+ javax.servlet.http,
+ org.apache.http,
+ org.apache.http.client,
+ org.apache.http.client.methods,
+ org.apache.http.conn,
+ org.apache.http.conn.scheme,
+ org.apache.http.entity,
+ org.apache.http.impl.client,
+ org.apache.http.impl.conn.tsccm,
+ org.apache.http.params,
+ org.apache.http.protocol,
+ org.apache.http.util,
+ org.apache.tuscany.sca.assembly;version="2.0.0",
+ org.apache.tuscany.sca.binding.jsonrpc;version="2.0.0",
+ org.apache.tuscany.sca.core;version="2.0.0",
+ org.apache.tuscany.sca.databinding.javabeans;version="2.0.0",
+ org.apache.tuscany.sca.databinding.json;version="2.0.0",
+ org.apache.tuscany.sca.host.http;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef.java;version="2.0.0",
+ org.apache.tuscany.sca.invocation;version="2.0.0",
+ org.apache.tuscany.sca.node;version="2.0.0",
+ org.apache.tuscany.sca.provider;version="2.0.0",
+ org.apache.tuscany.sca.runtime;version="2.0.0",
+ org.jabsorb,
+ org.jabsorb.client,
+ org.json,
+ org.oasisopen.sca;version="2.0.0",
+ org.oasisopen.sca.annotation;version="2.0.0"
+Bundle-SymbolicName: org.apache.tuscany.sca.binding.jsonrpc.runtime
+Bundle-DocURL: http://www.apache.org/
+

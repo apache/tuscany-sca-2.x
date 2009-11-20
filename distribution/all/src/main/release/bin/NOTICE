@@ -1,0 +1,85 @@
+Apache Tuscany
+Copyright (c) 2005 - 2009 The Apache Software Foundation
+
+This product includes software developed at
+The Apache Software Foundation (http://www.apache.org/).
+
+This product includes/uses JSON-RPC-Java (http://oss.metaparadigm.com/jsonrpc/)
+
+This product includes/uses JSON-RPC JavaScript client (jsonrpc.js) 
+ Copyright (c) 2003-2004 Jan-Klaas Kollhof
+ Copyright (c) 2005 Michael Clark, Metaparadigm Pte Ltd
+
+This product includes/uses the Axion : the Open Source Java Database (http://axion.tigris.org/)
+ Copyright (c) 2002-2003 Axion Development Team. All rights reserved.
+
+This product includes/uses XmlSchema developed at 
+The Apache Software Foundation (http://ws.apache.org/commons/XmlSchema)
+ Portions Copyright 2006 International Business Machines Corp.
+
+This product includes/uses the Jetty Servlet Engine (http://jetty.mortbay.org),
+developed by Mort Bay Consulting  (http://www.mortbay.com)
+
+This product includes/uses DOM4J : the flexible XML framework for java (http://www.dom4j.org/) 
+ Copyright 2001-2005 (C) MetaStuff, Ltd. All Rights Reserved.
+
+This product includes/uses software, AOP alliance (http://aopalliance.sourceforge.net)
+License: Public Domain 
+
+This product includes/uses javacc (https://javacc.dev.java.net/)
+ Copyright (c) 2003 Sun Microsystems, Inc. All  Rights Reserved.
+
+This product includes software from the GlassFish project (https://glassfish.dev.java.net/)
+    Copyright (c) 2006, Sun Microsystems, Inc.
+    
+This product includes/uses the Sourceforge wsdl4j project (http://sourceforge.net/projects/wsdl4j/)
+
+This product includes/uses JDOM (http://www.jdom.org/)
+ Copyright (C) 2000-2004 Jason Hunter & Brett McLaughlin. All rights reserved.
+
+This product includes/uses javacc (https://javacc.dev.java.net/)
+ Copyright (c) 2003 Sun Microsystems, Inc. All  Rights Reserved.
+
+This product includes/uses ASM (http://asm.objectweb.org)
+   Copyright (c) 2000-2005 INRIA, France Telecom. All rights reserved.
+
+This product includes/uses Jaxen (http://jaxen.codehaus.org/)
+   Copyright 2003-2006 The Werken Company. All Rights Reserved.
+
+This product includes/uses Serp (http://serp.sourceforge.net/) under the BSD license:
+ Copyright (c) 2002, A. Abram White. All rights reserved.
+
+This product also includes software under the BSD license
+with the following copyright:
+ Copyright (c) 2006, Sun Microsystems, Inc. All rights reserved.
+
+The Program includes all or portions of the following software: "The 
+Saxon XSLT and XQuery Processor from Saxonica Limited" distributed under
+an MPL v1.0 license. Please refer to the homepage URL at 
+http://www.saxonica.com/.
+
+This product includes/uses Serp (http://serp.sourceforge.net/) under the BSD license:
+ Copyright (c) 2002, A. Abram White. All rights reserved.
+
+This product also includes "OSGi Materials."
+ Copyright (c) 2000, 2006
+ OSGi Alliance Bishop Ranch 6
+ 2400 Camino Ramon, Suite 375
+ San Ramon, CA 94583 USA
+ All Rights Reserved. 
+
+This product includes software under the Service Component Architecture JavaDoc, 
+Interface Definition files and XSD files license.
+  (c) Copyright SCA Collaboration 2006, 2007
+
+This product includes software under the Service Data Objects JavaDoc and 
+Interface Definition file license
+
+(c) Copyright BEA Systems, Inc., International Business Machines Corporation, 
+Oracle Corporation, Primeton Technologies Ltd., Rogue Wave Software, SAP AG., 
+Software AG., Sun Microsystems, Sybase Inc., Xcalia, Zend Technologies, 
+2005, 2006. All rights reserved.
+
+This product includes software under the OASIS license
+Copyright (C) OASIS(R) 2005, 2009. All Rights Reserved.
+

@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-Name: Apache Tuscany SCA Contribution ZIP
+Created-By: 1.6.0_07 (Sun Microsystems Inc.)
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 2.0.0
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA ZIP Contribution Archetype
+Bundle-SymbolicName: org.apache.tuscany.sca.archetype.contribution.zip 
+Bundle-DocURL: http://www.apache.org/
+Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6

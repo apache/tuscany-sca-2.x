@@ -1,0 +1,81 @@
+Changes With Apache Tuscany SCA 2.0-M4 November 2009
+====================================================
+
+Highlights include:
+- Passes the OASIS conformance test suite for the SCA-J CAA Specification! 
+- Almost passes the OASIS conformance test suite for the SCA Assembly Specification with 
+  a small number of test failures that will be fixed in the next release  
+- Support for <binding.jms> and the OASIS SCA JMS specification
+- Support for <binding.ejb> on references and partial support of the OASIS SCA EJB specification
+- A new Tuscany specific binding for JSONP support
+- Several Tuscany specific extensions ported up from the 1.x runtime including bindings for ATOM, 
+  HTTP, JSON-RPC, and implementation web clients, plus new support for JSON-RPC references
+- Improved distributed SCA domain support
+- Improve the implementation of OSGi remote services with SCA configuration type that supports dynamic 
+  OSGi remote service admin, including import, export and discovery
+- Add extension points for builders that can build implementation, binding and policy types
+- Add a Deployer utility to facilitate deployment-related functions
+- Improve the monitor usage so that monitors are isolated between requests
+- Numerous other bug fixes and improvements 
+
+
+Changes With Apache Tuscany SCA 2.0-M3 June 2009
+================================================
+
+Highlights include:
+- Support for <implementation.bpel> and the OASIS BPEL specification
+- Support for <implementation.spring> and the draft OASIS Spring specification
+- Support for the new SCACleint API as defined in the OASIS spec drafts
+- Runtime support for SCA contributions in ZIP archives from the OASIS Assembly spec
+- New Maven archetype to simplify create ZIP contributions
+- New tuscany:run maven plugin for easy running SCA contributions
+- Clean up and simplify the Tuscany module structure
+- Various fixes for Assembly spec compliance and improved error reporting 
+- New deep integration into Apache Tomcat 
+
+
+Changes With Apache Tuscany SCA 2.0-M2 April 2009
+=================================================
+
+Highlights include:
+- OSGi Enhancements including support for <implementation.osgi> and a new OSGi RFC119 prototype
+- Many updates towards support for OASIS OpenCSA specification and the use OASIS namespaces and schemas
+- Start to implement the SCA policy framework 1.1 spec draft from OASIS OpenCSA
+- New Endpoint and EndpoitReference structures
+- Webapps integration support including <implementation.web> and the web application composite along 
+- with support for various web technologies and frameworks including JSP support, JSF support with
+- Apache MyFaces, and integration with the Stripes Web Framework
+- New Maven Archetypes to make developing SCA applications easier, 
+  see http://cwiki.apache.org/confluence/display/TUSCANYWIKI/Tuscany+Maven+Archetypes
+
+Changes With Apache Tuscany SCA 2.0-M1 February 2009
+====================================================
+
+  The first milestone release for the 2.0 codebase 
+
+  Features and/or Enhancements
+
+  * SCA Specification support
+    - The change over from OSOA SCA specification support to OASIS SCA 
+      specification support is now in progress. As such we don't claim to 
+      support either the OSOA or OASIS SCA specifications in the 
+      2.0 codebase yet. 
+
+  * Core
+    - Enable Tuscany to run inside an OSGi runtime
+    - Updated SCA API package names. 
+     
+  * Other Extensions
+    - Binding RMI
+	- RMI Binding
+    - Binding WS
+        - WebServices Binding
+
+  * Samples/Tutorial/Demos
+	- binding-ws-calculator/
+	- calculator/
+	- calculator-equinox/
+	- calculator-osgi/
+	- calculator-rmi-reference/
+	- calculator-rmi-service/
+	- implementation-java-calculator

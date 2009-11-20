@@ -1,0 +1,32 @@
+Manifest-Version: 1.0
+Export-Package: org.apache.tuscany.sca.implementation.bpel;version="2.0.0"
+ ;uses:="org.apache.tuscany.sca.assembly,org.apache.tuscany.sca.contribution.
+ resolver,javax.xml.namespace"
+Private-Package: org.apache.tuscany.sca.implementation.bpel.impl;versi
+ on="2.0.0",org.apache.tuscany.sca.implementation.bpel.xml;version="2.0.0"
+SCA-Version: 1.1
+Bundle-Name: Apache Tuscany SCA BPEL Implementation Model
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 2.0.0
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA BPEL Implementation Model
+Import-Package: javax.wsdl,
+ javax.wsdl.extensions,
+ javax.xml.namespace,
+ javax.xml.stream,
+ org.apache.tuscany.sca.assembly;version="2.0.0",
+ org.apache.tuscany.sca.assembly.impl;version="2.0.0",
+ org.apache.tuscany.sca.contribution;version="2.0.0",
+ org.apache.tuscany.sca.contribution.namespace;version="2.0.0",
+ org.apache.tuscany.sca.contribution.processor;version="2.0.0",
+ org.apache.tuscany.sca.contribution.resolver;version="2.0.0",
+ org.apache.tuscany.sca.core;version="2.0.0",
+ org.apache.tuscany.sca.implementation.bpel;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef.wsdl;version="2.0.0",
+ org.apache.tuscany.sca.monitor;version="2.0.0",
+ org.apache.tuscany.sca.policy;version="2.0.0"
+Bundle-SymbolicName: org.apache.tuscany.sca.implementation.bpel
+Bundle-DocURL: http://www.apache.org/
+Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6

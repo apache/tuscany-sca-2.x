@@ -1,0 +1,183 @@
+Distributed OSGi Calculator Sample
+==================================
+This sample implements a distributed calculator using Distributed OSGi (RFC 119) over SCA.
+
+The README in the samples directory (the directory above this) provides
+general instructions about building and running samples. Take a look there
+first.
+
+On Windows, run
+java -jar ..\..\modules\osgi-3.5.0-v20090520.jar -configuration ..\..\features\configuration -clean -console
+
+On *Unix, run
+java -jar ../../modules/osgi-3.5.0-v20090520.jar -configuration ../../features/configuration -clean -console
+
+You should see the osgi console:
+
+osgi>
+
+osgi> Jun 22, 2009 1:32:27 PM org.apache.tuscany.sca.extensibility.equinox.EquinoxServiceDiscoveryActivator start
+INFO: Equinox-based service discoverer is now configured.
+
+You can run "ss" command under the osgi> to see the status of the bundles.
+osgi> ss
+
+Then you can install and start the calculator.dosgi bundle:
+
+osgi> install file:./target/sample-dosgi-calculator-operations.jar
+Bundle id is 198
+
+osgi> start 198
+Nov 4, 2009 9:51:56 AM calculator.dosgi.operations.impl.OperationsActivator star
+t
+INFO: Starting calculator.dosgi.operations_1.0.0 [198]
+Nov 4, 2009 9:51:56 AM calculator.dosgi.operations.impl.OperationsActivator star
+t
+INFO: Registering calculator.dosgi.operations.AddService
+Nov 4, 2009 9:51:56 AM calculator.dosgi.operations.impl.OperationsActivator star
+t
+INFO: Registering calculator.dosgi.operations.SubtractService
+Nov 4, 2009 9:51:56 AM calculator.dosgi.operations.impl.OperationsActivator star
+t
+INFO: Registering calculator.dosgi.operations.MultiplyService
+Nov 4, 2009 9:51:56 AM calculator.dosgi.operations.impl.OperationsActivator star
+t
+INFO: Registering calculator.dosgi.operations.DivideService
+Nov 4, 2009 9:51:56 AM calculator.dosgi.operations.impl.OperationsActivator getB
+undle
+INFO: calculator.dosgi.operations.AddService is loaded by bundle: calculator.dos
+gi.operations
+Nov 4, 2009 9:51:56 AM org.apache.tuscany.sca.node.impl.NodeImpl start
+INFO: Starting node: calculator.dosgi.operations domain: tuscany.apache.org
+Nov 4, 2009 9:51:56 AM org.apache.tuscany.sca.node.impl.NodeFactoryImpl loadCont
+ributions
+INFO: Loading contribution: bundleentry://198.fwk8152936/
+Nov 4, 2009 9:52:00 AM org.apache.tuscany.sca.host.rmi.DefaultRMIHost registerSe
+rvice
+INFO: RMI service registered: rmi://localhost:8085/AddService
+Nov 4, 2009 9:52:00 AM org.apache.tuscany.sca.core.assembly.impl.EndpointRegistr
+yImpl addEndpoint
+INFO: Add endpoint - (@27845948)Endpoint:  URI = OperationsComponent#service-bin
+ding(AddService/AddService)
+Nov 4, 2009 9:52:00 AM org.apache.tuscany.sca.host.rmi.DefaultRMIHost registerSe
+rvice
+INFO: RMI service registered: rmi://localhost:8085/SubtractService
+Nov 4, 2009 9:52:00 AM org.apache.tuscany.sca.core.assembly.impl.EndpointRegistr
+yImpl addEndpoint
+INFO: Add endpoint - (@10576215)Endpoint:  URI = OperationsComponent#service-bin
+ding(SubtractService/SubtractService)
+Nov 4, 2009 9:52:00 AM org.apache.tuscany.sca.host.rmi.DefaultRMIHost registerSe
+rvice
+INFO: RMI service registered: rmi://localhost:8085/MultiplyService
+Nov 4, 2009 9:52:00 AM org.apache.tuscany.sca.core.assembly.impl.EndpointRegistr
+yImpl addEndpoint
+INFO: Add endpoint - (@31713234)Endpoint:  URI = OperationsComponent#service-bin
+ding(MultiplyService/MultiplyService)
+Nov 4, 2009 9:52:00 AM org.apache.tuscany.sca.host.rmi.DefaultRMIHost registerSe
+rvice
+INFO: RMI service registered: rmi://localhost:8085/DivideService
+Nov 4, 2009 9:52:00 AM org.apache.tuscany.sca.core.assembly.impl.EndpointRegistr
+yImpl addEndpoint
+INFO: Add endpoint - (@10202447)Endpoint:  URI = OperationsComponent#service-bin
+ding(DivideService/DivideService)
+
+osgi>
+
+To stop the bundle:
+
+osgi> stop 198
+Nov 4, 2009 9:53:19 AM org.apache.tuscany.sca.node.impl.NodeImpl stop
+INFO: Stopping node: calculator.dosgi.operations
+Nov 4, 2009 9:53:19 AM org.apache.tuscany.sca.core.assembly.impl.EndpointRegistr
+yImpl endpointRemoved
+INFO: Remove endpoint - (@27845948)Endpoint:  URI = OperationsComponent#service-
+binding(AddService/AddService)
+Nov 4, 2009 9:53:19 AM org.apache.tuscany.sca.host.rmi.DefaultRMIHost unregister
+Service
+INFO: RMI service unregistered: rmi://localhost:8085/AddService
+Nov 4, 2009 9:53:19 AM org.apache.tuscany.sca.core.assembly.impl.EndpointRegistr
+yImpl endpointRemoved
+INFO: Remove endpoint - (@10576215)Endpoint:  URI = OperationsComponent#service-
+binding(SubtractService/SubtractService)
+Nov 4, 2009 9:53:19 AM org.apache.tuscany.sca.host.rmi.DefaultRMIHost unregister
+Service
+INFO: RMI service unregistered: rmi://localhost:8085/SubtractService
+Nov 4, 2009 9:53:19 AM org.apache.tuscany.sca.core.assembly.impl.EndpointRegistr
+yImpl endpointRemoved
+INFO: Remove endpoint - (@31713234)Endpoint:  URI = OperationsComponent#service-
+binding(MultiplyService/MultiplyService)
+Nov 4, 2009 9:53:19 AM org.apache.tuscany.sca.host.rmi.DefaultRMIHost unregister
+Service
+INFO: RMI service unregistered: rmi://localhost:8085/MultiplyService
+Nov 4, 2009 9:53:19 AM org.apache.tuscany.sca.core.assembly.impl.EndpointRegistr
+yImpl endpointRemoved
+INFO: Remove endpoint - (@10202447)Endpoint:  URI = OperationsComponent#service-
+binding(DivideService/DivideService)
+Nov 4, 2009 9:53:19 AM org.apache.tuscany.sca.host.rmi.DefaultRMIHost unregister
+Service
+INFO: RMI service unregistered: rmi://localhost:8085/DivideService
+Nov 4, 2009 9:53:19 AM calculator.dosgi.operations.impl.OperationsActivator stop
+
+INFO: Stopping calculator.dosgi.operations_1.0.0 [198]
+
+osgi>
+
+To exit the console, run:
+osgi> exit
+
+Sample Overview
+---------------
+The application consists of two OSGi bundles:
+ * The calculator bundle: It provides the calculator service. The service is implemented by a java class that
+   consumes other services to perform the “add”, “subtract”, “multiply” and “divide” operations.
+ * The operations bundle: It provides the add/subtract/multiply/divide services.
+   (See ../samples/dosgi-calculator-operations)
+
+
+dosgi-calculator-operations/
+  src/
+    main/
+      java/
+        calculator/
+            dosgi/
+                operations/
+                    AddService.java - Interface for Add
+                    SubtractService.java - Interface for Subtract
+                    MultiplyService.java - Interface for Multiply
+                    DivideService.java - Interface for Divide
+                    impl/
+                        OperationsActivator.java - OSGi bundle activator
+                        AddServiceImpl.java - Implementation for Add
+                        SubtractServiceImpl.java - Implementation for Subtract
+                        MultiplyServiceImpl.java - Implementation for Multiply
+                        DivideServiceImpl.java - Implementation for Divide
+      resources/
+            META-INF/
+                sca-contribution.xml
+            OSGI-INF/
+                sca/
+                    bundle.componentType - The component type for implementation.osgi of this bundle
+                    bundle.composite - The composite file
+  test/
+    java/
+        src/
+            calculator/
+                dosgi/
+                    operations/
+                        test/
+                            OperationsOSGiNodeTestCase.java - The JUNIT test case that tests this bundle using a RMI client
+
+  META-INF/
+    MANIFEST.MF - The OSGi manifest for this bundle
+  pom.xml                         - the Maven build file
+
+
+
+Building And Running The Test Case Using Maven
+-------------------------------------------
+With either the binary or source distributions the sample can be built and run
+using Maven as follows.
+
+cd dosgi-calculator-operations
+mvn
+

@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+SCA-Version: 1.1
+Bundle-Name: Apache Tuscany MyFaces JSF Integration
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 2.0
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA MyFaces JSF Integration
+Import-Package: javax.naming,
+ javax.servlet,
+ javax.faces.context;version="1.2.2",
+ org.apache.myfaces.config.annotation;version="1.2.2",
+ org.apache.myfaces.shared_impl.util;version="1.2.2",
+ org.apache.tuscany.sca.node.impl;version="2.0",
+ org.apache.tuscany.sca.implementation.web.runtime.utils;version="2.0"
+Bundle-SymbolicName: org.apache.tuscany.sca.myfaces
+Bundle-DocURL: http://www.apache.org/
+Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6

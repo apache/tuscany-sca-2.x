@@ -1,0 +1,24 @@
+Manifest-Version: 1.0
+Export-Package: org.apache.tuscany.sca.binding.atom.js.dojo;uses:="org
+ .apache.tuscany.sca.assembly,org.apache.tuscany.sca.web.javascript,or
+ g.apache.tuscany.sca.binding.atom,javax.xml.namespace";version="2.0.0"
+SCA-Version: 1.1
+Bundle-Name: Apache Tuscany SCA Atom Feed Binding JavaScript using Doj
+ o
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 0
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA Atom Feed Binding JavaScript us
+ ing Dojo
+Import-Package: javax.xml.namespace,
+ org.apache.tuscany.sca.assembly;version="2.0.0",
+ org.apache.tuscany.sca.assembly.xml;version="2.0.0",
+ org.apache.tuscany.sca.binding.atom;version="2.0.0",
+ org.apache.tuscany.sca.binding.atom.js.dojo;version="2.0.0",
+ org.apache.tuscany.sca.web.javascript;version="2.0.0",
+ org.apache.tuscany.sca.core,
+ org.apache.tuscany.sca.monitor 
+Bundle-SymbolicName: org.apache.tuscany.sca.binding.atom-js-dojo
+Bundle-DocURL: http://www.apache.org/
+

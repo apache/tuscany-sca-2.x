@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+-->
+<project>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apache.tuscany.sca</groupId>
+        <artifactId>tuscany-distribution</artifactId>
+        <version>2.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>tuscany-distribution-all</artifactId>
+    <name>Apache Tuscany SCA All-in-one Distribution</name>
+    <packaging>pom</packaging>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-feature-all</artifactId>
+            <type>pom</type>
+            <version>2.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-domain-node</artifactId>
+            <version>2.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-binding-ejb-runtime</artifactId>
+            <version>2.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-binding-jms-runtime</artifactId>
+            <version>2.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-implementation-web-client</artifactId>
+            <version>2.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.tuscany.maven.plugins</groupId> 
+                <artifactId>maven-bundle-plugin</artifactId> 
+                <version>1.0.5-SNAPSHOT</version>
+                <executions>
+                    <execution>
+                        <id>distribution-modules</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                             <goal>generate-modules</goal>
+                        </goals>
+                        <configuration>
+                             <targetDirectory>target/modules</targetDirectory>
+                             <useDistributionName>false</useDistributionName>
+                             <generateManifestJar>true</generateManifestJar>
+                             <artifactManifests>
+                                 <artifactManifest>
+                                     <groupId>org.apache.ws.commons.axiom</groupId>
+                                     <artifactId>axiom-api</artifactId>
+                                     <version>1.2.7</version>
+                                     <manifestFile>${basedir}/manifests/axiom-api-1.2.7.MF</manifestFile>
+                                 </artifactManifest>
+                                 <artifactManifest>
+                                     <groupId>org.apache.woden</groupId>
+                                     <artifactId>woden-impl-dom</artifactId>
+                                     <version>1.0M8</version>
+                                     <manifestFile>${basedir}/manifests/woden-impl-dom-1.0M8.MF</manifestFile>
+                                 </artifactManifest>
+                                 <artifactManifest>
+                                     <groupId>org.apache.axis2</groupId>
+                                     <artifactId>*</artifactId>
+                                     <version>*</version>
+                                 </artifactManifest>
+                             </artifactManifests>
+                        </configuration>
+                    </execution>
+                </executions>
+                <dependencies>
+                   <dependency>
+                      <groupId>org.eclipse</groupId>
+                      <artifactId>osgi</artifactId>
+                      <version>3.3.0-v20070530</version>
+                   </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>distribution-package</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>src/main/assembly/bin.xml</descriptor>
+                                <descriptor>src/main/assembly/src.xml</descriptor>
+                            </descriptors>
+                            <tarLongFileMode>gnu</tarLongFileMode>
+                            <finalName>apache-tuscany-sca-all-${version}</finalName>
+                            <appendAssemblyId>true</appendAssemblyId>
+                            <ignoreDirFormatExtensions>true</ignoreDirFormatExtensions>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

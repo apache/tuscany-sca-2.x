@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+SCA-Version: 1.1
+Bundle-Name: Apache Tuscany SCA Client Impl
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 2.0.0
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA Client Impl
+Import-Package: org.apache.tuscany.sca.node;version="2.0.0",
+ org.oasisopen.sca;version="2.0.0",
+ org.oasisopen.sca.client;version="2.0.0"
+Bundle-SymbolicName: org.apache.tuscany.sca.client.impl
+Bundle-DocURL: http://www.apache.org/
+

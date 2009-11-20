@@ -1,0 +1,23 @@
+Manifest-Version: 1.0
+Export-Package: org.apache.tuscany.sca.host.webapp;version="2.0.0";
+ uses:="javax.servlet,org.apache.tuscany.sca.host.http,org.apache.tuscany.sca.core"
+SCA-Version: 1.1
+Bundle-Name: Apache Tuscany SCA Webapp Host
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 2.0.0
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA Webapp Host
+Import-Package: javax.naming,
+ javax.servlet,
+ javax.servlet.http,
+ org.apache.tuscany.sca.core;version="2.0.0",
+ org.apache.tuscany.sca.host.http;version="2.0.0",
+ org.apache.tuscany.sca.host.webapp;version="2.0.0",
+ org.apache.tuscany.sca.node;version="2.0.0",
+ org.apache.tuscany.sca.node.configuration;version="2.0.0",
+ org.apache.tuscany.sca.node.impl;version="2.0.0",
+ org.oasisopen.sca;version="2.0.0"
+Bundle-SymbolicName: org.apache.tuscany.sca.host.webapp
+Bundle-DocURL: http://www.apache.org/
+Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6

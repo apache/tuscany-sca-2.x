@@ -1,0 +1,33 @@
+# Licensed to the Apache Software Foundation 
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+# 
+#   http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+# 
+# NOTE: The ranking attribute is important for the JavaClassVistors 
+# Some visitors need to be called after the others 
+org.apache.tuscany.sca.implementation.java.introspect.impl.ConstructorProcessor;ranking=200
+org.apache.tuscany.sca.implementation.java.introspect.impl.AllowsPassByReferenceProcessor;ranking=190
+org.apache.tuscany.sca.implementation.java.introspect.impl.ComponentNameProcessor;ranking=180
+org.apache.tuscany.sca.implementation.java.introspect.impl.ContextProcessor;ranking=170
+org.apache.tuscany.sca.implementation.java.introspect.impl.DestroyProcessor;ranking=160
+org.apache.tuscany.sca.implementation.java.introspect.impl.EagerInitProcessor;ranking=150
+org.apache.tuscany.sca.implementation.java.introspect.impl.InitProcessor;ranking=140
+org.apache.tuscany.sca.implementation.java.introspect.impl.PropertyProcessor;ranking=130
+org.apache.tuscany.sca.implementation.java.introspect.impl.ReferenceProcessor;ranking=120
+org.apache.tuscany.sca.implementation.java.introspect.impl.ResourceProcessor;ranking=110
+org.apache.tuscany.sca.implementation.java.introspect.impl.ScopeProcessor;ranking=100
+org.apache.tuscany.sca.implementation.java.introspect.impl.ServiceProcessor;ranking=90
+org.apache.tuscany.sca.implementation.java.introspect.impl.HeuristicPojoProcessor;ranking=80
+org.apache.tuscany.sca.implementation.java.introspect.impl.PolicyProcessor;ranking=70

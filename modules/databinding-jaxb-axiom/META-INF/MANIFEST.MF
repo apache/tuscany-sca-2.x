@@ -1,0 +1,38 @@
+Manifest-Version: 1.0
+Private-Package: org.apache.tuscany.sca.databinding.jaxb.axiom;version
+ ="1.4",org.apache.tuscany.sca.databinding.jaxb.axiom.ext;version="1.4
+ "
+SCA-Version: 1.1
+Bundle-Name: Apache Tuscany SCA Data Binding for JAXB-AXIOM
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 2.0.0
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA Data Binding for JAXB-AXIOM
+Import-Package: javax.xml.bind,
+ javax.xml.bind.annotation;resolution:=optional,
+ javax.xml.bind.attachment,
+ javax.xml.datatype;resolution:=optional,
+ javax.xml.namespace,
+ javax.xml.stream,
+ javax.xml.stream.util,
+ javax.xml.transform,
+ javax.xml.transform.stream,
+ org.apache.axiom.om,
+ org.apache.axiom.om.ds,
+ org.apache.axiom.om.impl,
+ org.apache.axiom.om.impl.builder,
+ org.apache.axiom.om.util,
+ org.apache.tuscany.sca.core;version="2.0.0",
+ org.apache.tuscany.sca.databinding;version="2.0.0",
+ org.apache.tuscany.sca.databinding.impl;version="2.0.0",
+ org.apache.tuscany.sca.databinding.jaxb;version="2.0.0",
+ org.apache.tuscany.sca.databinding.jaxb.axiom;resolution:=optional,
+ org.apache.tuscany.sca.databinding.xml;version="2.0.0";resolution:=optional,
+ org.apache.tuscany.sca.interfacedef;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef.impl;version="2.0.0";resolution:=optional,
+ org.apache.tuscany.sca.interfacedef.util;version="2.0.0",
+ org.w3c.dom;resolution:=optional
+Bundle-SymbolicName: org.apache.tuscany.sca.databinding.jaxb.axiom
+Bundle-DocURL: http://www.apache.org/
+Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6

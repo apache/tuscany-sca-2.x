@@ -1,0 +1,47 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Axiom API
+Bundle-SymbolicName: org.apache.ws.commons.axiom.axiom-api
+Bundle-Version: 1.2.7
+Bundle-ClassPath: axiom-api-1.2.7.jar
+Bundle-Vendor: Apache Software Foundation
+Export-Package: org.apache.axiom.attachments,
+ org.apache.axiom.attachments.impl,
+ org.apache.axiom.attachments.lifecycle,
+ org.apache.axiom.attachments.lifecycle.impl,
+ org.apache.axiom.attachments.utils,
+ org.apache.axiom.om,
+ org.apache.axiom.om.ds,
+ org.apache.axiom.om.ds.custombuilder,
+ org.apache.axiom.om.impl,
+ org.apache.axiom.om.impl.builder,
+ org.apache.axiom.om.impl.exception,
+ org.apache.axiom.om.impl.serialize,
+ org.apache.axiom.om.impl.traverse,
+ org.apache.axiom.om.impl.util,
+ org.apache.axiom.om.util,
+ org.apache.axiom.om.xpath,
+ org.apache.axiom.soap,
+ org.apache.axiom.soap.impl.builder
+Archiver-Version: Plexus Archiver
+Build-Jdk: 1.5.0_15
+Bundle-DocURL: http://www.apache.org/
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Built-By: dims
+Import-Package: javax.activation,
+ javax.mail,
+ javax.mail.internet,
+ javax.xml.namespace,
+ javax.xml.stream,
+ org.apache.axiom.om.impl.dom.factory;resolution:=optional,
+ org.apache.axiom.om.impl.llom.factory;resolution:=optional,
+ org.apache.axiom.soap.impl.dom.factory;resolution:=optional,
+ org.apache.axiom.soap.impl.llom.soap11;resolution:=optional,
+ org.apache.axiom.soap.impl.llom.soap12;resolution:=optional,
+ org.apache.commons.logging,
+ org.jaxen;resolution:=optional,
+ org.jaxen.saxpath;resolution:=optional,
+ org.jaxen.util;resolution:=optional,
+ org.w3c.dom,
+ org.xml.sax,
+ org.xml.sax.helpers

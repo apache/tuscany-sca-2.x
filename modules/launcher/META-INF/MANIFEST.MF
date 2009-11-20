@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-Version: 2.0.0
+Bundle-DocURL: http://www.apache.org/
+Bundle-SymbolicName: org.apache.tuscany.sca.launcher
+Bundle-Description: Apache Tuscany Launcher
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Name: Apache Tuscany Launcher
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+SCA-Version: 1.1
+Bundle-ManifestVersion: 2
+Import-Package: org.apache.tuscany.sca.launcher;version="2.0"
+Export-Package: org.apache.tuscany.sca.launcher;version="2.0"
+Main-Class: org.apache.tuscany.sca.launcher.LauncherMain
+Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6

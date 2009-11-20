@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+-->
+<project>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apache.tuscany.sca</groupId>
+        <artifactId>tuscany-shades</artifactId>
+        <version>2.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>tuscany-webservices</artifactId>
+    <name>Apache Tuscany SCA Web Services Jar</name>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>tuscany-binding-ws-axis2</artifactId>
+            <version>${pom.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>${pom.groupId}</groupId>
+                    <artifactId>tuscany-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>${pom.groupId}</groupId>
+                    <artifactId>tuscany-contribution</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>${pom.groupId}</groupId>
+                    <artifactId>tuscany-assembly-xml</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>${pom.groupId}</groupId>
+                    <artifactId>tuscany-interface-java</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>${pom.groupId}</groupId>
+                    <artifactId>tuscany-interface-java-jaxws</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>${pom.groupId}</groupId>
+                    <artifactId>tuscany-databinding</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>${pom.groupId}</groupId>
+                    <artifactId>tuscany-core-databinding</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>${pom.groupId}</groupId>
+                    <artifactId>tuscany-databinding-jaxb</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>${pom.groupId}</groupId>
+                    <artifactId>tuscany-host-http</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>${pom.groupId}</groupId>
+                    <artifactId>tuscany-core-spi</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>${pom.groupId}</groupId>
+                    <artifactId>tuscany-assembly</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>${pom.groupId}</groupId>
+                    <artifactId>tuscany-xsd</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.ws.commons.schema</groupId>
+                    <artifactId>XmlSchema</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.geronimo.specs</groupId>
+                    <artifactId>geronimo-activation_1.1_spec</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>servlet-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.geronimo.specs</groupId>
+                    <artifactId>geronimo-activation_1.1_spec</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.codehaus.woodstox</groupId>
+                    <artifactId>wstx-asl</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>javax.mail</groupId>
+                    <artifactId>mail</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>xalan</groupId>
+                    <artifactId>xalan</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>xml-apis</groupId>
+                    <artifactId>xml-apis</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.geronimo.specs</groupId>
+                    <artifactId>geronimo-stax-api_1.0_spec</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.rampart</groupId>
+                    <artifactId>rampart-trust</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>javax.activation</groupId>
+                    <artifactId>activation</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>jaxen</groupId>
+                    <artifactId>jaxen</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>opensaml</groupId>
+                    <artifactId>opensaml</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>xalan</groupId>
+                    <artifactId>xalan</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>xerces</groupId>
+                    <artifactId>xercesImpl</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>1.2.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

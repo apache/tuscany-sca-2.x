@@ -1,0 +1,41 @@
+Manifest-Version: 1.0
+Private-Package: org.apache.tuscany.sca.binding.sca.provider;version="2.0.0"
+SCA-Version: 1.1
+Bundle-Name: Apache Tuscany SCA Axis2-based Default Binding Model
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 2.0.0
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA Default Binding Model
+Import-Package: javax.jms;version="1.1.0",
+ javax.xml.namespace,
+ javax.xml.stream;resolution:=optional,
+ org.apache.axiom.om,
+ org.apache.commons.fileupload;version="1.2.0",
+ org.apache.tuscany.sca.assembly;version="2.0.0",
+ org.apache.tuscany.sca.assembly.builder;version="2.0.0",
+ org.apache.tuscany.sca.assembly.xml;version="2.0.0";resolution:=optional,
+ org.apache.tuscany.sca.binding.sca.axis2;version="2.0.0",
+ org.apache.tuscany.sca.binding.ws;version="2.0.0",
+ org.apache.tuscany.sca.binding.ws.axis2;version="2.0.0",
+ org.apache.tuscany.sca.binding.ws.wsdlgen;version="2.0.0",
+ org.apache.tuscany.sca.contribution;version="2.0.0";resolution:=optional,
+ org.apache.tuscany.sca.contribution.processor;version="2.0.0",
+ org.apache.tuscany.sca.contribution.resolver;version="2.0.0";resolution:=optional,
+ org.apache.tuscany.sca.core;version="2.0.0",
+ org.apache.tuscany.sca.databinding;version="2.0.0",
+ org.apache.tuscany.sca.definitions;version="2.0.0",
+ org.apache.tuscany.sca.host.http;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef;version="2.0.0",
+ org.apache.tuscany.sca.invocation;version="2.0.0",
+ org.apache.tuscany.sca.monitor;version="2.0.0";resolution:=optional,
+ org.apache.tuscany.sca.policy;version="2.0.0",
+ org.apache.tuscany.sca.provider;version="2.0.0",
+ org.apache.tuscany.sca.runtime;version="2.0.0",
+ org.oasisopen.sca;version="2.0.0",
+ org.oasisopen.sca.annotation;version="2.0.0"
+Bundle-SymbolicName: org.apache.tuscany.sca.binding.sca.axis2.runtime
+Bundle-DocURL: http://www.apache.org/
+Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6
+Export-Package: org.apache.tuscany.sca.binding.sca.axis2;version="2.0.0"
+

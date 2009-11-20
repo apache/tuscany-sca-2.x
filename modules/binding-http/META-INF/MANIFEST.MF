@@ -1,0 +1,23 @@
+Manifest-Version: 1.0
+Export-Package: org.apache.tuscany.sca.binding.http;version="2.0.0";
+ uses:="org.apache.tuscany.sca.assembly,javax.xml.namespace,javax.servlet.http"
+Bundle-Name: Apache Tuscany SCA HTTP Binding Model
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 2.0.0
+SCA-Version: 1.1
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA HTTP Binding Model
+Import-Package: javax.servlet.http,
+ javax.xml.namespace,
+ javax.xml.stream,
+ org.apache.tuscany.sca.assembly;version="2.0.0",
+ org.apache.tuscany.sca.binding.http;version="2.0.0",
+ org.apache.tuscany.sca.contribution.processor;version="2.0.0",
+ org.apache.tuscany.sca.contribution.resolver;version="2.0.0",
+ org.apache.tuscany.sca.core;version="2.0.0",
+ org.apache.tuscany.sca.monitor;version="2.0.0"
+Bundle-SymbolicName: org.apache.tuscany.sca.binding.http
+Bundle-DocURL: http://www.apache.org/
+Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6
+

@@ -1,0 +1,89 @@
+<!--
+    * Licensed to the Apache Software Foundation (ASF) under one
+    * or more contributor license agreements.  See the NOTICE file
+    * distributed with this work for additional information
+    * regarding copyright ownership.  The ASF licenses this file
+    * to you under the Apache License, Version 2.0 (the
+    * "License"); you may not use this file except in compliance
+    * with the License.  You may obtain a copy of the License at
+    *
+    *   http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing,
+    * software distributed under the License is distributed on an
+    * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    * KIND, either express or implied.  See the License for the
+    * specific language governing permissions and limitations
+    * under the License.
+-->
+<component>
+    <fileSets>
+        <!-- Add top level samples files -->
+        <fileSet>
+            <directory>../../samples</directory>
+            <outputDirectory>samples</outputDirectory>
+            <includes>
+                <include>README</include>
+                <include>logging.properties</include>
+                <include>build-common.xml</include>
+                <include>binding-ws-calculator/**/*</include>
+                <include>calculator/**/*</include>
+                <include>calculator-equinox/**/*</include>
+                <include>calculator-osgi/**/*</include>
+                <include>calculator-rmi-reference/**/*</include>
+                <include>calculator-rmi-service/**/*</include>
+                <include>helloworld-bpel/**/*</include>
+                <include>implementation-java-calculator/**/*</include>
+                <include>dosgi-calculator/**/*</include>
+                <include>dosgi-calculator-operations/**/*</include>
+                <include>dosgi-dynamic-calculator/**/*</include>
+                <include>dosgi-dynamic-calculator-operations/**/*</include>
+                <include>webapps/helloworld/**/*</include>
+                <include>webapps/helloworld-bpel/**/*</include>
+                <include>webapps/helloworld-jms/**/*</include>
+                <include>webapps/helloworld-js-client/**/*</include>
+                <include>webapps/helloworld-jsf/**/*</include>
+                <include>webapps/helloworld-jsp/**/*</include>
+                <include>webapps/helloworld-servlet/**/*</include>
+                <include>webapps/helloworld-stripes/**/*</include>
+            </includes>
+            <excludes>
+                <!-- General file/folders to exclude -->
+                <exclude>**/.*</exclude>
+                <exclude>**/.*/**</exclude>
+                <exclude>**/*.log</exclude>
+                <exclude>**/*.svg</exclude>
+                <exclude>**/maven-eclipse.xml</exclude>
+
+                <!-- Sample specific files/folders to exclude -->
+                <exclude>pom.xml</exclude>
+                <!-- exclude>**/target</exclude -->
+                <!-- exclude>**/target/**/*</exclude -->
+                <exclude>*/target/mvn-eclipse-cache.properties</exclude>
+                <exclude>*/target/pom-transformed.xml</exclude>
+                <exclude>*/target/classes</exclude>
+                <exclude>*/target/classes/**/*</exclude>
+                <exclude>*/target/dependency-maven-plugin-markers</exclude>
+                <exclude>*/target/dependency-maven-plugin-markers/**/*</exclude>
+                <exclude>*/target/.felix</exclude>
+                <exclude>*/target/.felix/**/*</exclude>
+                <exclude>*/target/maven-archiver</exclude>
+                <exclude>*/target/maven-archiver/**/*</exclude>
+                <exclude>*/target/test-classes</exclude>
+                <exclude>*/target/test-classes/**/*</exclude>
+                <exclude>*/target/surefire-reports</exclude>
+                <exclude>*/target/surefire-reports/**/*</exclude>
+                <exclude>*/target/surefire-osgi-reports</exclude>
+                <exclude>*/target/surefire-osgi-reports/**/*</exclude>
+                <exclude>webapps/helloworld/target/**/*</exclude>
+                <exclude>webapps/helloworld-bpel/target/**/*</exclude>
+                <exclude>webapps/helloworld-jms/target/**/*</exclude>
+                <exclude>webapps/helloworld-js-client/target/**/*</exclude>
+                <exclude>webapps/helloworld-jsf/target/**/*</exclude>
+                <exclude>webapps/helloworld-jsp/target/**/*</exclude>
+                <exclude>webapps/helloworld-servlet/target/**/*</exclude>
+                <exclude>webapps/helloworld-stripes/target/**/*</exclude>
+            </excludes>
+        </fileSet>
+    </fileSets>
+</component>

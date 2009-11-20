@@ -1,0 +1,24 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: org.apache.tuscany.sca.contribution.osgi
+Bundle-Version: 2.0.0
+Bundle-ActivationPolicy: lazy
+Bundle-Name: Apache Tuscany SCA Contribution OSGi Bundle
+Bundle-Vendor: The Apache Software Foundation
+Eclipse-LazyStart: true
+Bundle-Activator: org.apache.tuscany.sca.contribution.osgi.impl.OSGiBundleActivator
+Bundle-Description: Apache Tuscany SCA OSGi Implementation
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+SCA-Version: 1.1
+Import-Package: org.apache.tuscany.sca.assembly;version="2.0.0",
+ org.apache.tuscany.sca.contribution;version="2.0.0",
+ org.apache.tuscany.sca.contribution.osgi;version="2.0.0",
+ org.apache.tuscany.sca.contribution.processor;version="2.0.0",
+ org.apache.tuscany.sca.contribution.resolver;version="2.0.0",
+ org.apache.tuscany.sca.contribution.scanner;version="2.0.0",
+ org.apache.tuscany.sca.core;version="2.0.0",
+ org.apache.tuscany.sca.monitor;version="2.0.0",
+ org.osgi.framework;version="1.4.0"
+Bundle-DocURL: http://www.apache.org/
+Export-Package: org.apache.tuscany.sca.contribution.osgi;version="2.0.0"
+Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6

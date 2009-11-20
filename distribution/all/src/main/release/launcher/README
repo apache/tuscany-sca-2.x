@@ -1,0 +1,42 @@
+The bin folder contains bat and shell scripts to help with using Tuscany. 
+You can use the "tuscany.bat" script to start a standalone runtime and 
+deploy your SCA contributions.
+
+For example, change to the implementation-java-calculator sample included 
+in the Tuscany distribution and enter the following command:
+
+..\..\bin\tuscany.bat target\implementation-java-calculator.jar
+
+The script also supports things such as using a Java remote debugger, 
+for help enter use the "/?" parameter, eg:
+
+..\..\bin\tuscany.bat /?
+
+To simplify the use of the script add the absolute file path of the bin 
+folder to your environment path:
+
+set PATH=%PATH%;\Tuscany\tuscany-sca-2.0-M4\bin
+
+and that enables running the script by just "tuscany", for example, in the 
+implementation-java-calculator sample again you can enter:
+
+tuscany target\implementation-java-calculator.jar
+
+Tuscany developers may find it useful to add the script from their SVN checkout 
+development build to their environment so as to start runtimes using their local
+trunk build, for example: 
+
+set PATH=%PATH%;\Tuscany\SVN\trunk\distribution\all\target\apache-tuscany-sca-all-2.0-SNAPSHOT-dir\tuscany-sca-2.0-SNAPSHOT\bin
+
+
+
+
+
+
+
+
+
+   
+
+
+

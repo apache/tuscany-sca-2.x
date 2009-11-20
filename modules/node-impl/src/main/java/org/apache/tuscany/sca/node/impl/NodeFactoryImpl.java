@@ -1,0 +1,398 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+package org.apache.tuscany.sca.node.impl;
+
+import static java.lang.System.currentTimeMillis;
+import static org.apache.tuscany.sca.common.java.io.IOHelper.createURI;
+import static org.apache.tuscany.sca.common.java.io.IOHelper.openStream;
+
+import java.io.File;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringReader;
+import java.net.URI;
+import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
+
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.common.java.io.IOHelper;
+import org.apache.tuscany.sca.contribution.Artifact;
+import org.apache.tuscany.sca.contribution.Contribution;
+import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
+import org.apache.tuscany.sca.contribution.processor.ValidationSchemaExtensionPoint;
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.core.ModuleActivatorExtensionPoint;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
+import org.apache.tuscany.sca.core.assembly.RuntimeAssemblyFactory;
+import org.apache.tuscany.sca.core.invocation.ExtensibleProxyFactory;
+import org.apache.tuscany.sca.core.invocation.ProxyFactory;
+import org.apache.tuscany.sca.core.invocation.ProxyFactoryExtensionPoint;
+import org.apache.tuscany.sca.deployment.Deployer;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.MonitorFactory;
+import org.apache.tuscany.sca.monitor.Problem;
+import org.apache.tuscany.sca.monitor.Problem.Severity;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
+import org.apache.tuscany.sca.node.configuration.BindingConfiguration;
+import org.apache.tuscany.sca.node.configuration.ContributionConfiguration;
+import org.apache.tuscany.sca.node.configuration.DeploymentComposite;
+import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
+import org.apache.tuscany.sca.work.WorkScheduler;
+import org.oasisopen.sca.ServiceRuntimeException;
+
+/**
+ * This class provides a node factory that can create multiple nodes that share the same 
+ * extension point registry
+ */
+public class NodeFactoryImpl extends NodeFactory {
+    protected static final Logger logger = Logger.getLogger(NodeImpl.class.getName());
+
+    protected boolean inited;
+    protected Map<Object, Node> nodes = new ConcurrentHashMap<Object, Node>();
+
+    protected Deployer deployer;
+    protected ExtensionPointRegistry registry;
+    protected ProxyFactory proxyFactory;
+    protected MonitorFactory monitorFactory;
+
+
+    /**
+     * Automatically destroy the factory when last node is stopped. Subclasses
+     * can set this flag.
+     */
+    protected boolean autoDestroy = true;
+
+    @Override
+    public Node createNode(NodeConfiguration configuration) {
+        return new NodeImpl(this, configuration);
+    }
+
+    protected Node removeNode(NodeConfiguration configuration) {
+        Node node = nodes.remove(getNodeKey(configuration));
+        if (autoDestroy && nodes.isEmpty()) {
+            destroy();
+        }
+        return node;
+    }
+
+    protected void addNode(NodeConfiguration configuration, Node node) {
+        nodes.put(getNodeKey(configuration), node);
+    }
+
+    @Override
+    public NodeConfiguration loadConfiguration(InputStream xml, URL base) {
+        try {
+            init();
+            InputStreamReader reader = new InputStreamReader(xml, "UTF-8");
+            ProcessorContext context = deployer.createProcessorContext();
+            NodeConfiguration config = deployer.loadXMLDocument(reader, context.getMonitor());
+            if (base != null && config != null) {
+                // Resolve the contribution location against the node.xml
+                for (ContributionConfiguration c : config.getContributions()) {
+                    String location = c.getLocation();
+                    if (location != null) {
+                        URL url = new URL(base, location);
+                        url = IOHelper.normalize(url);
+                        c.setLocation(url.toString());
+                    }
+                }
+            }
+            return config;
+        } catch (Throwable e) {
+            throw new ServiceRuntimeException(e);
+        }
+    }
+    
+    public Map<Object, Node> getNodes() {
+        return nodes;
+    }
+
+    protected Object getNodeKey(NodeConfiguration configuration) {
+        return new NodeKey(configuration);
+    }
+
+    public synchronized void destroy() {
+        if (inited) {
+            for (Node node : nodes.values()) {
+                node.stop();
+                node.destroy();
+            }
+            nodes.clear();
+            deployer.stop();
+            registry.stop();
+            super.destroy();
+            inited = false;
+        }
+    }
+
+    /**
+     * Analyze problems reported by the artifact processors and builders.
+     *
+     * @throws Exception
+     */
+    private void analyzeProblems(Monitor monitor) throws Throwable {
+        try {
+            for (Problem problem : monitor.getProblems()) {
+                if ((problem.getSeverity() == Severity.ERROR)) {
+                    if (problem.getCause() != null) {
+                        throw problem.getCause();
+                    } else {
+                        throw new ServiceRuntimeException(problem.toString());
+                    }
+                }
+            }
+        } finally {
+            // FIXME: Clear problems so that the monitor is clean again
+            monitor.reset();
+        }
+    }
+
+    private boolean attachDeploymentComposite(Contribution contribution, Reader xml, String location, boolean attached, ProcessorContext context)
+        throws XMLStreamException, ContributionReadException {
+
+        // Read the composite model
+        Composite composite = deployer.loadXMLDocument(xml, context.getMonitor());
+
+        // Replace the deployable composites with the deployment composites
+        // Clear the deployable composites if it's the first deployment composite
+        deployer.attachDeploymentComposite(contribution, composite, attached);
+        if (!attached) {
+            attached = true;
+        } 
+        return attached;
+    }
+
+    public ExtensionPointRegistry getExtensionPoints() {
+        return registry;
+    }
+
+    public synchronized void init() {
+        if (inited) {
+            return;
+        }
+        long start = currentTimeMillis();
+
+        if (registry == null) {
+            // Create extension point registry
+            registry = createExtensionPointRegistry();
+            registry.start();
+        }
+        
+        // Use the runtime-enabled assembly factory
+        FactoryExtensionPoint modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
+        AssemblyFactory assemblyFactory = new RuntimeAssemblyFactory(registry);
+        modelFactories.addFactory(assemblyFactory);
+
+        UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
+        monitorFactory = utilities.getUtility(MonitorFactory.class);
+        
+        // Load the Deployer
+        deployer = utilities.getUtility(Deployer.class);
+
+        // Enable schema validation only of the logger level is FINE or higher
+        deployer.setSchemaValidationEnabled(isSchemaValidationEnabled());
+
+        // Initialize the Tuscany module activators
+        // The module activators will be started
+        registry.getExtensionPoint(ModuleActivatorExtensionPoint.class);
+
+        // Initialize runtime
+
+        // Get proxy factory
+        ProxyFactoryExtensionPoint proxyFactories = registry.getExtensionPoint(ProxyFactoryExtensionPoint.class);
+        proxyFactory = new ExtensibleProxyFactory(proxyFactories);
+
+        utilities.getUtility(WorkScheduler.class);
+
+        inited = true;
+
+        if (logger.isLoggable(Level.FINE)) {
+            long end = currentTimeMillis();
+            logger.fine("The tuscany runtime started in " + (end - start) + " ms.");
+        }
+    }
+
+    protected ExtensionPointRegistry createExtensionPointRegistry() {
+        return new DefaultExtensionPointRegistry();
+    }
+    
+    protected boolean isSchemaValidationEnabled() {
+        String enabled = getSystemProperty(ValidationSchemaExtensionPoint.class.getName() + ".enabled");
+        if (enabled == null) {
+            enabled = "true";
+        }
+        boolean debug = logger.isLoggable(Level.FINE);
+        return "true".equals(enabled) || debug;
+    }    
+
+    protected Composite configureNode(NodeConfiguration configuration, List<Contribution> contributions, ProcessorContext context)
+        throws Throwable {
+        if (contributions == null) {
+            // Load contributions
+            contributions = loadContributions(configuration, context);
+        }
+        
+        Monitor monitor = context.getMonitor();
+        Map<QName, List<String>> bindingBaseURIs = new HashMap<QName, List<String>>();
+        for (BindingConfiguration config : configuration.getBindings()) {
+            bindingBaseURIs.put(config.getBindingType(), config.getBaseURIs());
+        }
+        Composite domainComposite = deployer.build(contributions, bindingBaseURIs, monitor);
+        analyzeProblems(monitor);
+
+        return domainComposite;
+    }
+
+    protected List<Contribution> loadContributions(NodeConfiguration configuration, ProcessorContext context) throws Throwable {
+        List<Contribution> contributions = new ArrayList<Contribution>();
+
+        // Load the specified contributions
+        for (ContributionConfiguration contrib : configuration.getContributions()) {
+            URI contributionURI = createURI(contrib.getURI());
+
+            URI uri = createURI(contrib.getLocation());
+            if (uri.getScheme() == null) {
+                uri = new File(contrib.getLocation()).toURI();
+            }
+            URL contributionURL = uri.toURL();
+
+            // Load the contribution
+            logger.log(Level.INFO, "Loading contribution: " + contributionURL);
+            Contribution contribution = deployer.loadContribution(contributionURI, contributionURL, context.getMonitor());
+            contributions.add(contribution);
+
+            boolean attached = false;
+            for (DeploymentComposite dc : contrib.getDeploymentComposites()) {
+                if (dc.getContent() != null) {
+                    Reader xml = new StringReader(dc.getContent());
+                    attached = attachDeploymentComposite(contribution, xml, null, attached, context);
+                } else if (dc.getLocation() != null) {
+                    URI dcURI = createURI(dc.getLocation());
+                    if (!dcURI.isAbsolute()) {
+                        Composite composite = null;
+                        // The location is pointing to an artifact within the contribution
+                        for (Artifact a : contribution.getArtifacts()) {
+                            if (dcURI.toString().equals(a.getURI())) {
+                                composite = (Composite)a.getModel();
+                                if (!attached) {
+                                    contribution.getDeployables().clear();
+                                    attached = true;
+                                }
+                                contribution.getDeployables().add(composite);
+                                break;
+                            }
+                        }
+                        if (composite == null) {
+                            // Not found
+                            throw new ServiceRuntimeException("Deployment composite " + dcURI
+                                + " cannot be found within contribution "
+                                + contribution.getLocation());
+                        }
+                    } else {
+                        URL url = dcURI.toURL();
+                        InputStream is = openStream(url);
+                        Reader xml = new InputStreamReader(is, "UTF-8");
+                        attached = attachDeploymentComposite(contribution, xml, url.toString(), attached, context);
+                    }
+                }
+            }
+            analyzeProblems(context.getMonitor());
+        }
+        return contributions;
+    }
+
+    protected static String getSystemProperty(final String name) {
+        return AccessController.doPrivileged(new PrivilegedAction<String>() {
+            public String run() {
+                return System.getProperty(name);
+            }
+        });
+    }
+
+    protected static class NodeKey {
+        private String domainURI;
+        private String nodeURI;
+
+        public NodeKey(NodeConfiguration configuration) {
+            this.domainURI = configuration.getDomainURI();
+            this.nodeURI = configuration.getURI();
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((domainURI == null) ? 0 : domainURI.hashCode());
+            result = prime * result + ((nodeURI == null) ? 0 : nodeURI.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            NodeKey other = (NodeKey)obj;
+            if (domainURI == null) {
+                if (other.domainURI != null)
+                    return false;
+            } else if (!domainURI.equals(other.domainURI))
+                return false;
+            if (nodeURI == null) {
+                if (other.nodeURI != null)
+                    return false;
+            } else if (!nodeURI.equals(other.nodeURI))
+                return false;
+            return true;
+        }
+
+        public String toString() {
+            StringBuffer buf = new StringBuffer();
+            if (domainURI != null) {
+                buf.append("{").append(domainURI).append("}");
+            }
+            if (nodeURI != null) {
+                buf.append(nodeURI);
+            }
+            return buf.toString();
+        }
+    }
+    
+}

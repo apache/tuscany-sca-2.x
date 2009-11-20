@@ -1,0 +1,37 @@
+Hello World REST Sample
+=======================
+
+Sample Overview
+---------------
+The service 'HelloWorldService' is exposed using the REST binding.
+
+helloworld-jsonrpc-webapp/
+  src/
+    main/
+      java/
+        helloworldjsonrpc/
+          HelloWorldService.java      - service interface
+          HelloWorldServiceImpl.java  - service implementation
+          ClientTestServiceWebapp.java - Test class; uses java.net.HttpURLConnection to make 'GET', 'PUT', 'POST requests
+      resources/
+        rest.composite             - the SCA assembly for this sample
+      webapp
+        META-INF/
+          sca-contribution.xml        - specifies the composite to be deployed
+        WEB-INF/
+          web.xml                     - defines the listener that starts up the 
+                                        Tuscany SCA runtime     
+  pom.xml                             - the Maven build file  
+
+Build the sample using Maven.
+A war 'helloworld-rest-webapp.war' will be created in the target directory. Deploy it in your web container.
+You can access the service from the browser by making a simple GET request using the following URL:
+http://<host>:<port>/helloworld-rest-webapp/HelloWorldService/helloworld/getname
+
+Use the test class 'ClientTestServiceWebapp' to test PUT, POST operations.
+
+
+
+
+
+

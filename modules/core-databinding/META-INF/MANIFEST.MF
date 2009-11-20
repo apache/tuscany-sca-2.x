@@ -1,0 +1,44 @@
+Manifest-Version: 1.0
+Private-Package: org.apache.tuscany.sca.core.databinding.module;versio
+ n="2.0.0",org.apache.tuscany.sca.core.databinding.processor;version="2.0.0",
+ org.apache.tuscany.sca.core.databinding.transformers;version="2.0.0"
+ ,org.apache.tuscany.sca.core.databinding.wire;version="2.0.0"
+SCA-Version: 1.1
+Bundle-Name: Apache Tuscany SCA Core/DataBinding Integration
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 2.0.0
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA Core/DataBinding Integration
+Import-Package: javax.xml.bind.annotation.adapters,
+ javax.xml.namespace,
+ javax.xml.stream,
+ javax.xml.transform,
+ javax.xml.transform.stream,
+ org.apache.tuscany.sca.assembly;version="2.0.0",
+ org.apache.tuscany.sca.contribution.resolver;version="2.0.0",
+ org.apache.tuscany.sca.core;version="2.0.0",
+ org.apache.tuscany.sca.core.context;version="2.0.0",
+ org.apache.tuscany.sca.databinding;version="2.0.0",
+ org.apache.tuscany.sca.databinding.annotation;version="2.0.0",
+ org.apache.tuscany.sca.databinding.impl;version="2.0.0",
+ org.apache.tuscany.sca.databinding.javabeans;version="2.0.0",
+ org.apache.tuscany.sca.databinding.xml;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef.impl;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef.java;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef.java.introspect;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef.java.jaxws;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef.util;version="2.0.0",
+ org.apache.tuscany.sca.invocation;version="2.0.0",
+ org.apache.tuscany.sca.policy;version="2.0.0",
+ org.apache.tuscany.sca.runtime;version="2.0.0",
+ org.apache.tuscany.sca.xsd;version="2.0.0",
+ org.oasisopen.sca;version="2.0.0",
+ org.oasisopen.sca.annotation;version="2.0.0",
+ org.w3c.dom;resolution:=optional
+Bundle-SymbolicName: org.apache.tuscany.sca.core.databinding
+Bundle-DocURL: http://www.apache.org/
+Export-Package: org.apache.tuscany.sca.core.databinding.processor;
+ version="2.0.0";uses:="org.w3c.dom"
+Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6
