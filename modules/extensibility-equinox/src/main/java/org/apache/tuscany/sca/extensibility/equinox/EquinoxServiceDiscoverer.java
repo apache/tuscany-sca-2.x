@@ -185,9 +185,15 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
         serviceName = "META-INF/services/" + serviceName;
 
         Set<URL> visited = new HashSet<URL>();
+        //System.out.println(">>>> getServiceDeclarations()");
         for (Bundle bundle : context.getBundles()) {
-            if (bundle.getBundleId() == 0 || bundle.getHeaders().get(Constants.FRAGMENT_HOST) != null) {
+            if (bundle.getBundleId() == 0 ||
+                bundle.getSymbolicName().startsWith("1.x-osgi-bundle") || 
+                bundle.getHeaders().get(Constants.FRAGMENT_HOST) != null) {
                 // Skip system bundle as it has access to the application classloader
+                // Skip the 1.x runtime bundle as this has 1.x services in it
+                //    For testing running 1.x and 2.x in same VM. 
+                //    Don't know what final form will be yet.
                 // Skip bundle fragments too
                 continue;
             }
