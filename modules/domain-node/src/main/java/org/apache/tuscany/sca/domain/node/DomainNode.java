@@ -27,6 +27,9 @@ import org.apache.tuscany.sca.management.ConfigAttributes;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
+import org.oasisopen.sca.NoSuchDomainException;
+import org.oasisopen.sca.NoSuchServiceException;
+import org.oasisopen.sca.client.SCAClient;
 
 public class DomainNode {
 
@@ -93,10 +96,11 @@ public class DomainNode {
         if (nodes.containsKey(uri)) {
             throw new IllegalArgumentException("contribution already added: " + uri);
         }
-        NodeConfiguration configuration =
-            nodeFactory.createNodeConfiguration().addContribution(uri, location)
-                .setDomainRegistryURI(domainRegistryURI).setDomainURI(configAttributes.getAttributes()
-                    .get(DOMAIN_NAME_ATTR)).setURI(uri);
+        NodeConfiguration configuration = nodeFactory.createNodeConfiguration();
+        configuration.addContribution(uri, location);
+        configuration.setDomainRegistryURI(domainRegistryURI);
+        configuration.setDomainURI(configAttributes.getAttributes().get(DOMAIN_NAME_ATTR));
+        configuration.setURI(uri);
         Node node = nodeFactory.createNode(configuration).start();
         nodes.put(uri, node);
     }
@@ -154,4 +158,13 @@ public class DomainNode {
         }
         return uri;
     }
+    
+    public <T> T getService(Class<T> interfaze, String uri) throws NoSuchServiceException {
+        try {
+            return SCAClient.getService(interfaze, configAttributes.getAttributes().get(DOMAIN_NAME_ATTR) + "/" + uri);
+        } catch (NoSuchDomainException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+    
 }
