@@ -34,17 +34,20 @@ import static org.apache.tuscany.sca.assembly.xml.Constants.IMPLEMENTATION_COMPO
 import static org.apache.tuscany.sca.assembly.xml.Constants.IMPLEMENTATION_COMPOSITE_QNAME;
 import static org.apache.tuscany.sca.assembly.xml.Constants.INCLUDE;
 import static org.apache.tuscany.sca.assembly.xml.Constants.INCLUDE_QNAME;
+import static org.apache.tuscany.sca.assembly.xml.Constants.INTENTS;
 import static org.apache.tuscany.sca.assembly.xml.Constants.LOCAL;
 import static org.apache.tuscany.sca.assembly.xml.Constants.MANY;
 import static org.apache.tuscany.sca.assembly.xml.Constants.MUST_SUPPLY;
 import static org.apache.tuscany.sca.assembly.xml.Constants.NAME;
 import static org.apache.tuscany.sca.assembly.xml.Constants.NONOVERRIDABLE;
+import static org.apache.tuscany.sca.assembly.xml.Constants.POLICY_SET_ATTACHMENT_QNAME;
 import static org.apache.tuscany.sca.assembly.xml.Constants.PROMOTE;
 import static org.apache.tuscany.sca.assembly.xml.Constants.PROPERTY;
 import static org.apache.tuscany.sca.assembly.xml.Constants.PROPERTY_QNAME;
 import static org.apache.tuscany.sca.assembly.xml.Constants.REFERENCE;
 import static org.apache.tuscany.sca.assembly.xml.Constants.REFERENCE_QNAME;
 import static org.apache.tuscany.sca.assembly.xml.Constants.REPLACE;
+import static org.apache.tuscany.sca.assembly.xml.Constants.REQUIRES_QNAME;
 import static org.apache.tuscany.sca.assembly.xml.Constants.SCA11_NS;
 import static org.apache.tuscany.sca.assembly.xml.Constants.SERVICE;
 import static org.apache.tuscany.sca.assembly.xml.Constants.SERVICE_QNAME;
@@ -99,7 +102,9 @@ import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.policy.ExtensionType;
+import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicyFactory;
+import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySubject;
 import org.w3c.dom.Document;
 
@@ -464,6 +469,37 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
 
                             component.setImplementation(implementation);
                             policyProcessor.readPolicies(implementation, reader);
+                        } else if (REQUIRES_QNAME.equals(name)) {
+                            List<QName> intents = getQNames(reader, INTENTS);
+                            for (QName i : intents) {
+                                Intent intent = policyFactory.createIntent();
+                                intent.setName(i);
+                                if (composite != null) {
+                                    composite.getRequiredIntents().add(intent);
+                                } else if (component != null) {
+                                    component.getRequiredIntents().add(intent);
+                                } else if (contract != null) {
+                                    contract.getRequiredIntents().add(intent);
+                                } else if (callback != null) {
+                                    callback.getRequiredIntents().add(intent);
+                                }
+                            }
+                        } else if (POLICY_SET_ATTACHMENT_QNAME.equals(name)) {
+                            QName ps = getQName(reader, NAME);
+                            if (ps != null) {
+                                PolicySet policySet = policyFactory.createPolicySet();
+                                policySet.setName(ps);
+                                if (composite != null) {
+                                    composite.getPolicySets().add(policySet);
+                                } else if (component != null) {
+                                    component.getPolicySets().add(policySet);
+                                } else if (contract != null) {
+                                    contract.getPolicySets().add(policySet);
+                                } else if (callback != null) {
+                                    callback.getPolicySets().add(policySet);
+                                }
+                            }
+
                         } else {
 
                             // Read an extension element

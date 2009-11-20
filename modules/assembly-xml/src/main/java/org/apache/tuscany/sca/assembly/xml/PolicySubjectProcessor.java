@@ -62,14 +62,14 @@ public class PolicySubjectProcessor extends BaseStAXArtifactProcessor {
 
     /**
      * Read policy intents associated with an operation.
-     * @param attachPoint
+     * @param subject
      * @param operation
      * @param reader
      */
-    private void readIntents(Object attachPoint, Operation operation, XMLStreamReader reader) {
-        if (!(attachPoint instanceof PolicySubject))
+    private void readIntents(Object subject, Operation operation, XMLStreamReader reader) {
+        if (!(subject instanceof PolicySubject))
             return;
-        PolicySubject intentAttachPoint = (PolicySubject)attachPoint;
+        PolicySubject intentAttachPoint = (PolicySubject)subject;
         String value = reader.getAttributeValue(null, REQUIRES);
         if (value != null) {
             List<Intent> requiredIntents = intentAttachPoint.getRequiredIntents();
@@ -89,35 +89,35 @@ public class PolicySubjectProcessor extends BaseStAXArtifactProcessor {
 
     /**
      * Reads policy intents and policy sets associated with an operation.
-     * @param attachPoint
+     * @param subject
      * @param operation
      * @param reader
      */
-    public void readPolicies(Object attachPoint, Operation operation, XMLStreamReader reader) {
-        readIntents(attachPoint, operation, reader);
-        readPolicySets(attachPoint, operation, reader);
+    public void readPolicies(Object subject, Operation operation, XMLStreamReader reader) {
+        readIntents(subject, operation, reader);
+        readPolicySets(subject, operation, reader);
     }
 
     /**
      * Reads policy intents and policy sets.
-     * @param attachPoint
+     * @param subject
      * @param reader
      */
-    public void readPolicies(Object attachPoint, XMLStreamReader reader) {
-        readPolicies(attachPoint, null, reader);
+    public void readPolicies(Object subject, XMLStreamReader reader) {
+        readPolicies(subject, null, reader);
     }
 
     /**
      * Reads policy sets associated with an operation.
-     * @param attachPoint
+     * @param subject
      * @param operation
      * @param reader
      */
-    private void readPolicySets(Object attachPoint, Operation operation, XMLStreamReader reader) {
-        if (!(attachPoint instanceof PolicySubject)) {
+    private void readPolicySets(Object subject, Operation operation, XMLStreamReader reader) {
+        if (!(subject instanceof PolicySubject)) {
             return;
         }
-        PolicySubject policySubject = (PolicySubject)attachPoint;
+        PolicySubject policySubject = (PolicySubject)subject;
         String value = reader.getAttributeValue(null, POLICY_SETS);
         if (value != null) {
             List<PolicySet> policySets = policySubject.getPolicySets();
@@ -137,55 +137,55 @@ public class PolicySubjectProcessor extends BaseStAXArtifactProcessor {
     
     /**
      * Write policies
-     * @param attachPoint
+     * @param subject
      * @return
      */
-    XAttr writePolicies(Object attachPoint) throws XMLStreamException {
-        return writePolicies(attachPoint, (Operation)null);
+    XAttr writePolicies(Object subject) throws XMLStreamException {
+        return writePolicies(subject, (Operation)null);
     }
 
     /**
      * Write policies
-     * @param attachPoint
+     * @param subject
      * @return
      */
-    public void writePolicyAttributes(Object attachPoint, XMLStreamWriter writer) throws XMLStreamException {
-        writePolicyAttributes(attachPoint, (Operation)null, writer);
+    public void writePolicyAttributes(Object subject, XMLStreamWriter writer) throws XMLStreamException {
+        writePolicyAttributes(subject, (Operation)null, writer);
     }
 
     /**
      * Write policies associated with an operation
-     * @param attachPoint
+     * @param subject
      * @param operation
      * @return
      */
-    XAttr writePolicies(Object attachPoint, Operation operation) {
+    XAttr writePolicies(Object subject, Operation operation) {
         List<XAttr> attrs =new ArrayList<XAttr>();
-        attrs.add(writeIntents(attachPoint, operation));
-        attrs.add(writePolicySets(attachPoint, operation));
+        attrs.add(writeIntents(subject, operation));
+        attrs.add(writePolicySets(subject, operation));
         return new XAttr(null, attrs);
     }
 
     /**
      * Write policies
-     * @param attachPoint
+     * @param subject
      * @return
      */
-    public void writePolicyAttributes(Object attachPoint, Operation operation, XMLStreamWriter writer) throws XMLStreamException {
-        XAttr attr = writePolicies(attachPoint, operation);
+    public void writePolicyAttributes(Object subject, Operation operation, XMLStreamWriter writer) throws XMLStreamException {
+        XAttr attr = writePolicies(subject, operation);
         attr.write(writer);
     }
 
     /**
      * Write policy intents associated with an operation.
-     * @param attachPoint
+     * @param subject
      * @param operation
      */
-    private XAttr writeIntents(Object attachPoint, Operation operation) {
-        if (!(attachPoint instanceof PolicySubject)) {
+    private XAttr writeIntents(Object subject, Operation operation) {
+        if (!(subject instanceof PolicySubject)) {
             return null;
         }
-        PolicySubject intentAttachPoint = (PolicySubject)attachPoint;
+        PolicySubject intentAttachPoint = (PolicySubject)subject;
         List<QName> qnames = new ArrayList<QName>();
         for (Intent intent: intentAttachPoint.getRequiredIntents()) {
             qnames.add(intent.getName());
@@ -195,14 +195,14 @@ public class PolicySubjectProcessor extends BaseStAXArtifactProcessor {
 
     /**
      * Write policy sets associated with an operation.
-     * @param attachPoint
+     * @param subject
      * @param operation
      */
-    private XAttr writePolicySets(Object attachPoint, Operation operation) {
-        if (!(attachPoint instanceof PolicySubject)) {
+    private XAttr writePolicySets(Object subject, Operation operation) {
+        if (!(subject instanceof PolicySubject)) {
             return null;
         }
-        PolicySubject policySetAttachPoint = (PolicySubject)attachPoint;
+        PolicySubject policySetAttachPoint = (PolicySubject)subject;
         List<QName> qnames = new ArrayList<QName>();
         for (PolicySet policySet: policySetAttachPoint.getPolicySets()) {
             qnames.add(policySet.getName());
@@ -210,9 +210,9 @@ public class PolicySubjectProcessor extends BaseStAXArtifactProcessor {
         return new XAttr(Constants.POLICY_SETS, qnames);
     }
     
-    public void resolvePolicies(Object attachPoint, ModelResolver resolver, ProcessorContext context) {
-        if ( attachPoint instanceof PolicySubject ) {
-            PolicySubject policySetAttachPoint = (PolicySubject)attachPoint;
+    public void resolvePolicies(Object subject, ModelResolver resolver, ProcessorContext context) {
+        if ( subject instanceof PolicySubject ) {
+            PolicySubject policySetAttachPoint = (PolicySubject)subject;
             
             List<Intent> requiredIntents = new ArrayList<Intent>();
             Intent resolvedIntent = null;

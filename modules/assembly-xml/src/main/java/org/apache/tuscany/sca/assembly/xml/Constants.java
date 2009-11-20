@@ -71,13 +71,20 @@ public interface Constants {
     
     String NAME = "name";
     String VALUE = "value";
-    QName VALUE_QNAME = new QName(SCA11_NS, VALUE);    
+    QName VALUE_QNAME = new QName(SCA11_NS, VALUE);
+    
+    String POLICY_SET_ATTACHMENT = "policySetAttachment";
+    QName POLICY_SET_ATTACHMENT_QNAME = new QName(SCA11_NS, POLICY_SET_ATTACHMENT);
+    
     String TARGET_NAMESPACE = "targetNamespace";
     String LOCAL = "local";
     String AUTOWIRE = "autowire";
     String NONOVERRIDABLE = "nonOverridable";
     String REPLACE = "replace";
     String REQUIRES = "requires";
+    QName REQUIRES_QNAME = new QName(SCA11_NS, REQUIRES);
+    String INTENTS = "intents";
+    
     String POLICY_SETS = "policySets"; 
     String PROMOTE = "promote";
     String TARGET = "target";
