@@ -106,7 +106,9 @@ public class EndpointBuilderImpl implements CompositeBuilder {
         
                         // We maintain all endpoints at the right level now
                         // but endpoints for promoting services must point down
-                        // to the services they promote. 
+                        // to the services they promote. This is not actually done
+                        // until the wire is created though in order that the 
+                        // uri is calculated correctly
                         for (Binding binding : service.getBindings()) {
                             Endpoint endpoint = assemblyFactory.createEndpoint();
                             endpoint.setComponent(component);
