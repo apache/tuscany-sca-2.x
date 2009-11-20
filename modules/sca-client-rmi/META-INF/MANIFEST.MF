@@ -15,6 +15,7 @@ Import-Package: org.apache.tuscany.sca.assembly;version="2.0.0",
  org.apache.tuscany.sca.node;version="2.0.0",
  org.apache.tuscany.sca.runtime;version="2.0.0",
  org.oasisopen.sca;version="2.0.0",
+ org.oasisopen.sca.annotation;version="2.0.0";resolution:=optional,
  org.oasisopen.sca.client;version="2.0.0"
 Bundle-SymbolicName: org.apache.tuscany.sca.client.rmi
 Bundle-DocURL: http://www.apache.org/

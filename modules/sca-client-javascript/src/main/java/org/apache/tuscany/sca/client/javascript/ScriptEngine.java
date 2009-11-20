@@ -309,7 +309,7 @@ public class ScriptEngine extends ScriptableObject implements Runnable{
             err.println("service not found " + serviceName);
             return null;
         }
-        JavaInterface ifac = ((JavaInterface)er.get(0).getInterfaceContract().getInterface());
+        JavaInterface ifac = (JavaInterface)er.get(0).getComponentServiceInterfaceContract().getInterface();
         return getService(serviceName, ifac.getName());
     }
 
