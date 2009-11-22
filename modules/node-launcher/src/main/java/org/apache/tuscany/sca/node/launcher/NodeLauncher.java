@@ -23,6 +23,8 @@ import static org.apache.tuscany.sca.node.launcher.NodeLauncherUtil.node;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
@@ -134,8 +136,9 @@ public class NodeLauncher {
         options.addOption(opt2);
         Option opt3 = new Option("t", "ttl", true, "Time to live");
         opt3.setArgName("timeToLiveInMilliseconds");
-        // opt4.setType(long.class);
         options.addOption(opt3);        
+        Option opt4 = new Option("s", "service", true, "Service to invoke (componentName/serviceName#operation(arg0,...,argN)");
+        options.addOption(opt4);
         return options;
     }
 
@@ -181,6 +184,7 @@ public class NodeLauncher {
                         formatter.setSyntaxPrefix("Usage: ");
                         formatter.printHelp("java " + NodeLauncher.class.getName()
                                             + " [-c <compositeURI>]"
+                                            + " [-s <service>]"
                                             + " [-t <ttl>]"
                                             + " contribution1 ... contributionN", options);                        return;
                     }
@@ -201,6 +205,26 @@ public class NodeLauncher {
                     throw e;
                 }
                 logger.info("SCA Node is now started.");
+                
+                String service = cli.getOptionValue("service");
+                String regex = "(#|\\(|,|\\))";
+                if (service != null) {
+                    // componentName/serviceName/bindingName#methodName(arg0, ..., agrN)
+                    String tokens[] = service.split(regex);
+                    String serviceName = tokens[0];
+                    String operationName = tokens[1];
+                    String params[] = new String[tokens.length - 2];
+                    System.arraycopy(tokens, 2, params, 0, params.length);
+                    logger.info("Invoking service: " + service);
+                    Method method = node.getClass().getMethod("getService", Class.class, String.class);
+                    Object proxy = method.invoke(node, null, serviceName);
+
+                    Object result = invoke(proxy, operationName, params);
+                    if (result != null) {
+                        logger.info("Result is: " + result);
+                    }
+                    break;
+                }
                 
                 // Install a shutdown hook
                 shutdown = new ShutdownThread(node);
@@ -265,6 +289,43 @@ public class NodeLauncher {
                 Runtime.getRuntime().removeShutdownHook(shutdown);
             }
         }
+    }
+    
+    static Object invoke(Object proxy, String operationName, String... params) throws IllegalAccessException,
+        InvocationTargetException {
+        for (Method m : proxy.getClass().getMethods()) {
+            if (m.getName().equals(operationName) && m.getParameterTypes().length == params.length) {
+                Object parameters[] = new Object[params.length];
+                int i = 0;
+                for (Class<?> type : m.getParameterTypes()) {
+                    if (type == byte.class || type == Byte.class) {
+                        parameters[i] = Byte.valueOf(params[i]);
+                    } else if (type == char.class || type == Character.class) {
+                        parameters[i] = params[i].charAt(0);
+                    } else if (type == boolean.class || type == Boolean.class) {
+                        parameters[i] = Boolean.valueOf(params[i]);
+                    } else if (type == short.class || type == Short.class) {
+                        parameters[i] = Short.valueOf(params[i]);
+                    } else if (type == int.class || type == Integer.class) {
+                        parameters[i] = Integer.valueOf(params[i]);
+                    } else if (type == long.class || type == Long.class) {
+                        parameters[i] = Long.valueOf(params[i]);
+                    } else if (type == float.class || type == Float.class) {
+                        parameters[i] = Float.valueOf(params[i]);
+                    } else if (type == double.class || type == Double.class) {
+                        parameters[i] = Double.valueOf(params[i]);
+                    } else if (type == String.class) {
+                        parameters[i] = params[i];
+                    } else {
+                        throw new IllegalArgumentException("Parameter type is not supported: " + type);
+                    }
+                    i++;
+                }
+                Object result = m.invoke(proxy, parameters);
+                return result;
+            }
+        }
+        throw new IllegalArgumentException("Invalid service operation: " + operationName);
     }
 
     /**
