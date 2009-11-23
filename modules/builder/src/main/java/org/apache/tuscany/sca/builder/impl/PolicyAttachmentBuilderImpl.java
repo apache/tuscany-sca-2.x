@@ -109,55 +109,90 @@ public class PolicyAttachmentBuilderImpl implements CompositeBuilder {
      * @throws Exception
      */
     private Composite applyXPath(Composite composite, Definitions definitions, Monitor monitor) throws Exception {
-        if (definitions == null || definitions.getPolicySets().isEmpty()) {
-            return composite;
-        }
-        // Recursively apply the xpath against the composites referenced by <implementation.composite>
-        for (Component component : composite.getComponents()) {
-            Implementation impl = component.getImplementation();
-            if (impl instanceof Composite) {
-                Composite patched = applyXPath((Composite)impl, definitions, monitor);
-                if (patched != impl) {
-                    component.setImplementation(patched);
-                }
-            }
-        }
-        Document document = null;
 
-        for (PolicySet ps : definitions.getPolicySets()) {
-            // First calculate the applicable nodes
-            Set<Node> applicableNodes = null;
-            /*
-            XPathExpression appliesTo = ps.getAppliesToXPathExpression();
-            if (appliesTo != null) {
-                applicableNodes = new HashSet<Node>();
-                NodeList nodes = (NodeList)appliesTo.evaluate(document, XPathConstants.NODESET);
-                for (int i = 0; i < nodes.getLength(); i++) {
-                    applicableNodes.add(nodes.item(i));
+        monitor.pushContext("Composite: " + composite.getName().toString());
+        
+        try {
+            if (definitions == null || definitions.getPolicySets().isEmpty()) {
+                return composite;
+            }
+            // Recursively apply the xpath against the composites referenced by <implementation.composite>
+            for (Component component : composite.getComponents()) {
+                Implementation impl = component.getImplementation();
+                if (impl instanceof Composite) {
+                    Composite patched = applyXPath((Composite)impl, definitions, monitor);
+                    if (patched != impl) {
+                        component.setImplementation(patched);
+                    }
                 }
             }
-            */
-            XPathExpression exp = ps.getAttachToXPathExpression();
-            if (exp != null) {
-                if (document == null) {
-                    document = saveAsDOM(composite);
+            Document document = null;
+    
+            for (PolicySet ps : definitions.getPolicySets()) {
+                // First calculate the applicable nodes
+                Set<Node> applicableNodes = null;
+                /*
+                XPathExpression appliesTo = ps.getAppliesToXPathExpression();
+                if (appliesTo != null) {
+                    applicableNodes = new HashSet<Node>();
+                    NodeList nodes = (NodeList)appliesTo.evaluate(document, XPathConstants.NODESET);
+                    for (int i = 0; i < nodes.getLength(); i++) {
+                        applicableNodes.add(nodes.item(i));
+                    }
                 }
-                NodeList nodes = (NodeList)exp.evaluate(document, XPathConstants.NODESET);
-                for (int i = 0; i < nodes.getLength(); i++) {
-                    Node node = nodes.item(i);
-                    if (applicableNodes == null || applicableNodes.contains(node)) {
-                        // The node can be a component, service, reference or binding
-                        String index = getStructuralURI(node);
-                        PolicySubject subject = lookup(composite, index);
-                        if (subject != null) {
-                            subject.getPolicySets().add(ps);
+                */
+                XPathExpression exp = ps.getAttachToXPathExpression();
+                if (exp != null) {
+                    if (document == null) {
+                        document = saveAsDOM(composite);
+                    }
+                    NodeList nodes = (NodeList)exp.evaluate(document, XPathConstants.NODESET);
+                    for (int i = 0; i < nodes.getLength(); i++) {
+                        Node node = nodes.item(i);
+                        
+                        // POL_40002 - you can't attach a policy to a property node
+                        //             or one of it's children
+                        // walk backwards up the node tree looking for an element called property
+                        // and raise an error if we find one
+                        Node testNode = node;
+                        while (testNode != null){
+                            if ((node.getNodeType() == Node.ELEMENT_NODE) &&
+                                (node.getLocalName().equals("property"))){
+                                Monitor.error(monitor, 
+                                              this, 
+                                              "org.apache.tuscany.sca.builder.builder-validation-messages", 
+                                              "PolicyAttachedToProperty", 
+                                              ps.getName().toString());
+                                break;
+                            }                    	
+                            testNode = testNode.getParentNode();
+                        }
+                        
+                        if (applicableNodes == null || applicableNodes.contains(node)) {
+                            // The node can be a component, service, reference or binding
+                            String index = getStructuralURI(node);
+                            PolicySubject subject = lookup(composite, index);
+                            if (subject != null) {
+                                subject.getPolicySets().add(ps);
+                            } else {
+                            	// raise a warning that the XPath node didn't match a node in the 
+                            	// models
+                                Monitor.warning(monitor, 
+                                        this, 
+                                        "org.apache.tuscany.sca.builder.builder-validation-messages", 
+                                        "PolicyDOMModelMissmatch", 
+                                        ps.getName().toString(),
+                                        index);
+                            }
                         }
                     }
                 }
             }
-        }
-
-        return composite;
+            
+            return composite;
+        } finally {
+            monitor.popContext();
+        }            
     }
 
     private Document saveAsDOM(Composite composite) throws XMLStreamException, ContributionWriteException, IOException,
@@ -170,6 +205,10 @@ public class PolicyAttachmentBuilderImpl implements CompositeBuilder {
         writer.close();
 
         Document document = domHelper.load(sw.toString());
+        
+        // Debugging
+        //System.out.println("<!-- DOM to which XPath will be applies is -->\n" + sw.toString());
+        
         return document;
     }
 
