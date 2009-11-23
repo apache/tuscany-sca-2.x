@@ -32,7 +32,6 @@ import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.Multiplicity;
-import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.context.CompositeContext;
@@ -301,12 +300,11 @@ public class ComponentContextImpl implements RuntimeComponentContext {
     public <B> ServiceReference<B> getServiceReference(Class<B> businessInterface,
                                                        RuntimeEndpointReference endpointReference) {
         try {
-            RuntimeComponentReference ref = (RuntimeComponentReference)endpointReference.getReference();
-            InterfaceContract interfaceContract = ref.getInterfaceContract();
-            Reference componentTypeReference = ref.getReference();
-            if (componentTypeReference != null && componentTypeReference.getInterfaceContract() != null) {
-                interfaceContract = componentTypeReference.getInterfaceContract();
+            InterfaceContract interfaceContract = endpointReference.getComponentTypeReferenceInterfaceContract();
+            if (businessInterface == null) {
+                businessInterface = (Class<B>)((JavaInterface)interfaceContract.getInterface()).getJavaClass();
             }
+            RuntimeComponentReference ref = (RuntimeComponentReference)endpointReference.getReference();
             InterfaceContract refInterfaceContract = getInterfaceContract(interfaceContract, businessInterface);
             if (refInterfaceContract != interfaceContract) {
                 ref = (RuntimeComponentReference)ref.clone();
@@ -405,6 +403,9 @@ public class ComponentContextImpl implements RuntimeComponentContext {
      */
     private InterfaceContract getInterfaceContract(InterfaceContract interfaceContract, Class<?> businessInterface)
         throws CloneNotSupportedException, InvalidInterfaceException {
+        if (businessInterface == null) {
+            return interfaceContract;
+        }
         boolean compatible = false;
         if (interfaceContract != null && interfaceContract.getInterface() != null) {
             Interface interfaze = interfaceContract.getInterface();
