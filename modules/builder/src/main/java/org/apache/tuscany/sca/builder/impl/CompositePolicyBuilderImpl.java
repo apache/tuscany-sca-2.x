@@ -141,6 +141,28 @@ public class CompositePolicyBuilderImpl implements CompositeBuilder {
     }
 
     /**
+     * Check if a single policy subject requires multually exclusive intents
+     * @param subject1 - the policy subject to check
+     * @param context - context containing useful things like the monitor instance
+     * @return true if the policy subject contains mutually exclusive intents
+     */
+    private boolean checkMutualExclusion(PolicySubject subject1, BuilderContext context) {
+        if (subject1 == null) {
+            return false;
+        }
+        for (Intent i1 : subject1.getRequiredIntents()) {
+            for (Intent i2 : subject1.getRequiredIntents()) {
+                if ((i1 != i2) &&
+                	(i1.getExcludedIntents().contains(i2) || i2.getExcludedIntents().contains(i1))) {
+                    error(context.getMonitor(), "MutuallyExclusiveIntents", new Object[] {subject1}, i1, i2);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
+    /**
      * Check if two policy subjects requires multually exclusive intents
      * @param subject1
      * @param subject2
@@ -160,7 +182,7 @@ public class CompositePolicyBuilderImpl implements CompositeBuilder {
             }
         }
         return false;
-    }
+    }    
 
     private boolean resolveAndCheck(PolicySubject subject, BuilderContext context) {
         if (subject == null) {
@@ -368,159 +390,189 @@ public class CompositePolicyBuilderImpl implements CompositeBuilder {
     }
 
     protected void computePolicies(Composite composite, BuilderContext context) {
-        resolveAndCheck(composite, context);
-
-        for (Service service : composite.getServices()) {
-            CompositeService compositeService = (CompositeService)service;
-            checkMutualExclusion(compositeService, compositeService.getPromotedService(), context);
+        Monitor monitor = context.getMonitor();
+        monitor.pushContext("Composite: " + composite.getName().toString());
+        
+        try {
+	        resolveAndCheck(composite, context);
+	
+	        for (Service service : composite.getServices()) {
+	            CompositeService compositeService = (CompositeService)service;
+	            checkMutualExclusion(compositeService, compositeService.getPromotedService(), context);
+	        }
+	
+	        for (Reference reference : composite.getReferences()) {
+	            CompositeReference compositeReference = (CompositeReference)reference;
+	            for (Reference promoted : compositeReference.getPromotedReferences()) {
+	                checkMutualExclusion(compositeReference, promoted, context);
+	            }
+	        }
+	
+	        // compute policies recursively
+	        for (Component component : composite.getComponents()) {
+	            monitor.pushContext("Component: " + component.getName().toString());
+	            
+	            try {	        	
+		            Implementation implementation = component.getImplementation();
+		            resolveAndCheck(component, context);
+		
+		            // Check component against implementation
+		            checkMutualExclusion(component, component.getImplementation(), context);
+		
+		            for (ComponentService componentService : component.getServices()) {
+			            monitor.pushContext("Service: " + componentService.getName().toString());
+			            
+			            try {
+			                resolveAndCheck(componentService, context);
+			                resolveAndCheck(componentService.getService(), context);
+			
+			                // Check component/service against componentType/service 
+			                checkMutualExclusion(componentService, componentService.getService(), context);
+			
+			                if (componentService.getInterfaceContract() != null && componentService.getService() != null) {
+			                    resolveAndCheck(componentService.getInterfaceContract().getInterface(), context);
+			                    resolveAndCheck(componentService.getService().getInterfaceContract().getInterface(), context);
+			
+			                    checkMutualExclusion(componentService.getInterfaceContract().getInterface(), componentService
+			                        .getService().getInterfaceContract().getInterface(), context);
+			
+			                    resolveAndCheck(componentService.getInterfaceContract().getCallbackInterface(), context);
+			                    resolveAndCheck(componentService.getService().getInterfaceContract().getCallbackInterface(),
+			                                    context);
+			
+			                    checkMutualExclusion(componentService.getInterfaceContract().getCallbackInterface(),
+			                                         componentService.getService().getInterfaceContract().getCallbackInterface(),
+			                                         context);
+			                }
+			
+			                for (Endpoint ep : componentService.getEndpoints()) {
+			                    // Inherit from the componentType.service.interface
+			                    if (componentService.getService() != null && componentService.getService().getInterfaceContract() != null) {
+			                        inherit(ep, componentService.getService().getInterfaceContract().getInterface());
+			                    }
+			                    if (componentService.getInterfaceContract() != null) {
+			                        // Inherit from the component.service.interface
+			                        inherit(ep, componentService.getInterfaceContract().getInterface());
+			                    }
+			                    // Inherit from the componentType/service
+			                    inheritFromService(ep, composite, component, componentService.getService());
+			                    // Find the corresponding binding in the componentType and inherit the intents/policySets
+			                    if (componentService.getService() != null) {
+			                        for (Binding binding : componentService.getService().getBindings()) {
+			                            resolveAndCheck((PolicySubject)binding, context);
+			                            if (isEqual(ep.getBinding().getName(), binding.getName()) && (binding instanceof PolicySubject)) {
+			                                checkMutualExclusion((PolicySubject)ep.getBinding(), (PolicySubject)binding, context);
+			                                // Inherit from componentType.service.binding
+			                                inherit(ep, binding);
+			                                break;
+			                            }
+			                        }
+			                    }
+			                    // Inherit from composite/component/service
+			                    inheritFromService(ep, composite, ep.getComponent(), ep.getService());
+			                    // Inherit from binding
+			                    inherit(ep, ep.getBinding());
+			
+			                    // Replace profile intents with their required intents
+			                    // Remove the intents whose @contraints do not include the current element
+			                    // Replace unqualified intents if there is a qualified intent in the list
+			                    // Replace qualifiable intents with the default qualied intent
+			                    resolveAndNormalize(ep, context);
+			                    
+			                    // check that the resulting endpoint has no mutually exclusive intents
+			                    checkMutualExclusion(ep, context);
+			                }
+			            } finally {
+			                monitor.popContext();
+			            } 			                
+		            }
+		
+		            for (ComponentReference componentReference : component.getReferences()) {
+			            monitor.pushContext("Reference: " + componentReference.getName().toString());
+			            
+			            try {			            
+			                resolveAndCheck(componentReference, context);
+			                resolveAndCheck(componentReference.getReference(), context);
+			
+			                // Check component/reference against componentType/reference
+			                checkMutualExclusion(componentReference, componentReference.getReference(), context);
+			
+			                if (componentReference.getInterfaceContract() != null && componentReference.getReference() != null) {
+			                    resolveAndCheck(componentReference.getInterfaceContract().getInterface(), context);
+			                    resolveAndCheck(componentReference.getReference().getInterfaceContract().getInterface(), context);
+			
+			                    checkMutualExclusion(componentReference.getInterfaceContract().getInterface(), componentReference
+			                        .getReference().getInterfaceContract().getInterface(), context);
+			
+			                    resolveAndCheck(componentReference.getInterfaceContract().getCallbackInterface(), context);
+			                    resolveAndCheck(componentReference.getReference().getInterfaceContract().getCallbackInterface(),
+			                                    context);
+			
+			                    checkMutualExclusion(componentReference.getInterfaceContract().getCallbackInterface(),
+			                                         componentReference.getReference().getInterfaceContract()
+			                                             .getCallbackInterface(),
+			                                         context);
+			                }
+			
+			                for (EndpointReference epr : componentReference.getEndpointReferences()) {
+			                    // Inherit from the componentType.reference.interface
+			                    if (componentReference.getReference() != null && componentReference.getReference()
+			                        .getInterfaceContract() != null) {
+			                        inherit(epr, componentReference.getReference().getInterfaceContract().getInterface());
+			                    }
+			                    // Inherit from the component.reference.interface
+			                    if (componentReference.getInterfaceContract() != null) {
+			                        inherit(epr, componentReference.getInterfaceContract().getInterface());
+			                    }
+			                    // Inherit from the componentType/reference
+			                    inheritFromReference(epr, composite, component, componentReference.getReference());
+			                    // Find the corresponding binding in the componentType and inherit the intents/policySets
+			                    if (componentReference.getReference() != null) {
+			                        for (Binding binding : componentReference.getReference().getBindings()) {
+			                            if (epr.getBinding() != null && isEqual(epr.getBinding().getName(), binding.getName())
+			                                && (binding instanceof PolicySubject)) {
+			                                resolveAndCheck((PolicySubject)binding, context);
+			                                checkMutualExclusion((PolicySubject)epr.getBinding(), (PolicySubject)binding, context);
+			                                // Inherit from componentType.reference.binding
+			                                inherit(epr, binding);
+			                                break;
+			                            }
+			                        }
+			                    }
+			                    // Inherit from composite/component/reference/binding
+			                    inheritFromReference(epr, composite, epr.getComponent(), epr.getReference());
+			                    inherit(epr, epr.getBinding());
+			
+			                    // Replace profile intents with their required intents
+			                    // Remove the intents whose @contraints do not include the current element
+			                    // Replace unqualified intents if there is a qualified intent in the list
+			                    // Replace qualifiable intents with the default qualied intent
+			                    resolveAndNormalize(epr, context);
+			                    
+			                    // check that the resulting endpoint reference has no mutually exclusive intents
+			                    checkMutualExclusion(epr, context);
+			                }
+			            } finally {
+			                monitor.popContext();
+			            } 			                
+		            }
+		            
+		            if (implementation instanceof Composite) {
+		                inherit(implementation, component, composite);
+		                computePolicies((Composite)implementation, context);
+		            } else {
+		                resolveAndCheck(implementation, context);
+		                if (implementation != null) {
+		                    inherit(implementation, component, composite);
+		                }
+		            }
+	            } finally {
+	                monitor.popContext();
+	            } 		            
+	        }
+        } finally {
+            monitor.popContext();
         }
-
-        for (Reference reference : composite.getReferences()) {
-            CompositeReference compositeReference = (CompositeReference)reference;
-            for (Reference promoted : compositeReference.getPromotedReferences()) {
-                checkMutualExclusion(compositeReference, promoted, context);
-            }
-        }
-
-        // compute policies recursively
-        for (Component component : composite.getComponents()) {
-            Implementation implementation = component.getImplementation();
-            resolveAndCheck(component, context);
-
-            // Check component against implementation
-            checkMutualExclusion(component, component.getImplementation(), context);
-
-            for (ComponentService componentService : component.getServices()) {
-                resolveAndCheck(componentService, context);
-                resolveAndCheck(componentService.getService(), context);
-
-                // Check component/service against componentType/service 
-                checkMutualExclusion(componentService, componentService.getService(), context);
-
-                if (componentService.getInterfaceContract() != null && componentService.getService() != null) {
-                    resolveAndCheck(componentService.getInterfaceContract().getInterface(), context);
-                    resolveAndCheck(componentService.getService().getInterfaceContract().getInterface(), context);
-
-                    checkMutualExclusion(componentService.getInterfaceContract().getInterface(), componentService
-                        .getService().getInterfaceContract().getInterface(), context);
-
-                    resolveAndCheck(componentService.getInterfaceContract().getCallbackInterface(), context);
-                    resolveAndCheck(componentService.getService().getInterfaceContract().getCallbackInterface(),
-                                    context);
-
-                    checkMutualExclusion(componentService.getInterfaceContract().getCallbackInterface(),
-                                         componentService.getService().getInterfaceContract().getCallbackInterface(),
-                                         context);
-                }
-
-                for (Endpoint ep : componentService.getEndpoints()) {
-                    // Inherit from the componentType.service.interface
-                    if (componentService.getService() != null && componentService.getService().getInterfaceContract() != null) {
-                        inherit(ep, componentService.getService().getInterfaceContract().getInterface());
-                    }
-                    if (componentService.getInterfaceContract() != null) {
-                        // Inherit from the component.service.interface
-                        inherit(ep, componentService.getInterfaceContract().getInterface());
-                    }
-                    // Inherit from the componentType/service
-                    inheritFromService(ep, composite, component, componentService.getService());
-                    // Find the corresponding binding in the componentType and inherit the intents/policySets
-                    if (componentService.getService() != null) {
-                        for (Binding binding : componentService.getService().getBindings()) {
-                            resolveAndCheck((PolicySubject)binding, context);
-                            if (isEqual(ep.getBinding().getName(), binding.getName()) && (binding instanceof PolicySubject)) {
-                                checkMutualExclusion((PolicySubject)ep.getBinding(), (PolicySubject)binding, context);
-                                // Inherit from componentType.service.binding
-                                inherit(ep, binding);
-                                break;
-                            }
-                        }
-                    }
-                    // Inherit from composite/component/service
-                    inheritFromService(ep, composite, ep.getComponent(), ep.getService());
-                    // Inherit from binding
-                    inherit(ep, ep.getBinding());
-
-                    // Replace profile intents with their required intents
-                    // Remove the intents whose @contraints do not include the current element
-                    // Replace unqualified intents if there is a qualified intent in the list
-                    // Replace qualifiable intents with the default qualied intent
-                    resolveAndNormalize(ep, context);
-                }
-            }
-
-            for (ComponentReference componentReference : component.getReferences()) {
-                resolveAndCheck(componentReference, context);
-                resolveAndCheck(componentReference.getReference(), context);
-
-                // Check component/reference against componentType/reference
-                checkMutualExclusion(componentReference, componentReference.getReference(), context);
-
-                if (componentReference.getInterfaceContract() != null && componentReference.getReference() != null) {
-                    resolveAndCheck(componentReference.getInterfaceContract().getInterface(), context);
-                    resolveAndCheck(componentReference.getReference().getInterfaceContract().getInterface(), context);
-
-                    checkMutualExclusion(componentReference.getInterfaceContract().getInterface(), componentReference
-                        .getReference().getInterfaceContract().getInterface(), context);
-
-                    resolveAndCheck(componentReference.getInterfaceContract().getCallbackInterface(), context);
-                    resolveAndCheck(componentReference.getReference().getInterfaceContract().getCallbackInterface(),
-                                    context);
-
-                    checkMutualExclusion(componentReference.getInterfaceContract().getCallbackInterface(),
-                                         componentReference.getReference().getInterfaceContract()
-                                             .getCallbackInterface(),
-                                         context);
-                }
-
-                for (EndpointReference epr : componentReference.getEndpointReferences()) {
-                    // Inherit from the componentType.reference.interface
-                    if (componentReference.getReference() != null && componentReference.getReference()
-                        .getInterfaceContract() != null) {
-                        inherit(epr, componentReference.getReference().getInterfaceContract().getInterface());
-                    }
-                    // Inherit from the component.reference.interface
-                    if (componentReference.getInterfaceContract() != null) {
-                        inherit(epr, componentReference.getInterfaceContract().getInterface());
-                    }
-                    // Inherit from the componentType/reference
-                    inheritFromReference(epr, composite, component, componentReference.getReference());
-                    // Find the corresponding binding in the componentType and inherit the intents/policySets
-                    if (componentReference.getReference() != null) {
-                        for (Binding binding : componentReference.getReference().getBindings()) {
-                            if (epr.getBinding() != null && isEqual(epr.getBinding().getName(), binding.getName())
-                                && (binding instanceof PolicySubject)) {
-                                resolveAndCheck((PolicySubject)binding, context);
-                                checkMutualExclusion((PolicySubject)epr.getBinding(), (PolicySubject)binding, context);
-                                // Inherit from componentType.reference.binding
-                                inherit(epr, binding);
-                                break;
-                            }
-                        }
-                    }
-                    // Inherit from composite/component/reference/binding
-                    inheritFromReference(epr, composite, epr.getComponent(), epr.getReference());
-                    inherit(epr, epr.getBinding());
-
-                    // Replace profile intents with their required intents
-                    // Remove the intents whose @contraints do not include the current element
-                    // Replace unqualified intents if there is a qualified intent in the list
-                    // Replace qualifiable intents with the default qualied intent
-                    resolveAndNormalize(epr, context);
-                }
-            }
-            
-            if (implementation instanceof Composite) {
-                inherit(implementation, component, composite);
-                computePolicies((Composite)implementation, context);
-            } else {
-                resolveAndCheck(implementation, context);
-                if (implementation != null) {
-                    inherit(implementation, component, composite);
-                }
-            }
-        }
-
     }
 
     private Set<QName> getPolicyNames(PolicySubject subject) {
