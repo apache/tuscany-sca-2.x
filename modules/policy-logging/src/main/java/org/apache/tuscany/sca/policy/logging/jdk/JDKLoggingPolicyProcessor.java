@@ -73,7 +73,7 @@ public class JDKLoggingPolicyProcessor implements StAXArtifactProcessor<JDKLoggi
                     } else if ( RESOURCE_BUNDLE.equals(name.getLocalPart()) ) {
                         policy.setResourceBundleName(reader.getElementText());
                     } else if ( USE_PARENT_HANDLERS.equals(name.getLocalPart()) ) {
-                        policy.setUseParentHandlers(Boolean.getBoolean(reader.getElementText()));
+                        policy.setUseParentHandlers(Boolean.parseBoolean(reader.getElementText()));
                     }
                     break;
                 }
