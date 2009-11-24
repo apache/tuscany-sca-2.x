@@ -27,7 +27,7 @@
     </parent>
 
     <artifactId>itest-jms-topics</artifactId>
-    <name>Apache Tuscany SCA JMS Tests for topics</name>
+    <name>Apache Tuscany SCA iTest JMS Tests for topics</name>
 
     <dependencies>
         
