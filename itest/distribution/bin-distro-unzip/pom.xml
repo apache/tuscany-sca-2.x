@@ -26,7 +26,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>itest-bin-distro-unzip</artifactId>
-    <name>Apache Tuscany SCA iTest Bin Distro Unzip</name>
+    <name>Apache Tuscany SCA iTest Distribution Bin Distro Unzip</name>
 
     <dependencies>
         <dependency>
