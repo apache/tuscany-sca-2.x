@@ -261,10 +261,6 @@
                 <module>shades</module>
                 <module>distribution</module>
                 <module>archetypes</module>
-<!--
-                <module>stest</module>
-                <module>vtest</module>
--->
             </modules>
         </profile>
 
@@ -275,13 +271,13 @@
                 <module>samples</module>
                 <module>itest</module>
                 <module>features</module>
+                <module>shades</module>
                 <module>distribution</module>
                 <module>archetypes</module>
-<!-- 
-                <module>vtest</module>
--->
             </modules>
         </profile>
+
+<!-- START - WHAT ARE THE FOLLOWING PROFILES FOR? -->
 
         <profile>
             <id>sources</id>
@@ -423,9 +419,7 @@
         <profile>
             <id>security</id>
             <modules>
-                <!-- <module>demos</module> -->
                 <module>itest</module>
-                <module>vtest</module>
             </modules>
             <activation>
                 <property>
@@ -570,6 +564,8 @@
                 <module>itest/jms</module>
             </modules>
         </profile>
+
+<!-- END - WHAT ARE THE FOLLOWING PROFILES FOR? -->
 
     </profiles>
  

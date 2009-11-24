@@ -130,7 +130,7 @@ public class JarsInLICENSETestCase {
         File distroTarget = new File("../../../distribution/all/target");
         File root = null;
         for (String f : distroTarget.list()) {
-            if (f.endsWith("-dir")) {
+            if (f.endsWith(".dir")) {
                 root =  new File(distroTarget, f);
                 break;
             }
