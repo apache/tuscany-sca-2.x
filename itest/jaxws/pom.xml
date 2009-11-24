@@ -27,7 +27,7 @@
     </parent>
     
     <artifactId>itest-jaxws</artifactId>
-    <name>Apache Tuscany JAX-WS Integration Tests</name>
+    <name>Apache Tuscany SCA iTest JAX-WS Integration Tests</name>
     
 	<dependencies>
         <dependency>
