@@ -23,8 +23,7 @@
 	</parent>
 	<artifactId>itest-bpel-helloworld-ws
 	</artifactId>
-	<name>Apache Tuscany SCA iTest HelloWorld BPEL Over Web Services
-	</name>
+	<name>Apache Tuscany SCA iTest BPEL HelloWorld Over Web Services</name>
 
 	<repositories>
 		<repository>

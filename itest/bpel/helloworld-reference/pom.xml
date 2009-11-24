@@ -26,7 +26,7 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <artifactId>itest-bpel-helloworld-reference</artifactId>
-    <name>Apache Tuscany SCA iTest HelloWorld Reference BPEL</name>
+    <name>Apache Tuscany SCA iTest BPEL HelloWorld Reference</name>
 
     <repositories>
        <repository>

@@ -27,7 +27,7 @@
     </parent>
     <artifactId>itest-bpel</artifactId>
     <packaging>pom</packaging>
-    <name>Apache Tuscany SCA BPEL Integration Tests</name>
+    <name>Apache Tuscany SCA iTest BPEL Integration Tests</name>
 
     <modules>
        <module>helloworld</module>
