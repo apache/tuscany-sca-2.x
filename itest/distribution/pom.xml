@@ -38,40 +38,31 @@
         </dependency>
     </dependencies>
 
+    <modules>
+        <module>binding-ws-calculator</module>
+        <module>calculator-rmi</module>
+        <module>implementation-java-calculator</module>
+        <module>legal-checks</module>
+        <module>webapp-helloworld</module>
+        <module>webapp-helloworld-bpel</module>
+        <module>webapp-helloworld-js-client</module>
+        <module>webapp-helloworld-jsp</module>
+        <module>webapp-helloworld-servlet</module>
+        <module>webapp-helloworld-stripes</module>
+    </modules>
+
     <profiles>
       <profile>
           <id>default</id>
           <activation>
               <activeByDefault>true</activeByDefault>
           </activation>
-          <modules>
-              <module>binding-ws-calculator</module>
-              <module>calculator-rmi</module>
-              <module>implementation-java-calculator</module>
-              <module>legal-checks</module>
-              <module>webapp-helloworld</module>
-              <module>webapp-helloworld-bpel</module>
-              <module>webapp-helloworld-js-client</module>
-              <module>webapp-helloworld-jsp</module>
-              <module>webapp-helloworld-servlet</module>
-              <module>webapp-helloworld-stripes</module>
-          </modules>
       </profile>
 
       <profile>
           <id>distribution</id>
           <modules>
               <module>bin-distro-unzip</module>
-              <module>binding-ws-calculator</module>
-              <module>calculator-rmi</module>
-              <module>implementation-java-calculator</module>
-              <module>legal-checks</module>
-              <module>webapp-helloworld</module>
-              <module>webapp-helloworld-bpel</module>
-              <module>webapp-helloworld-js-client</module>
-              <module>webapp-helloworld-jsp</module>
-              <module>webapp-helloworld-servlet</module>
-              <module>webapp-helloworld-stripes</module>
           </modules>
       </profile>
     </profiles>
