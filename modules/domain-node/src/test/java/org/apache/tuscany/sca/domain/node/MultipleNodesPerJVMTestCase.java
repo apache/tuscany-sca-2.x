@@ -40,33 +40,26 @@ public class MultipleNodesPerJVMTestCase{
     
     @Test
     public void testTwoNodesSameDomain() throws Exception {
-        serviceNode = new DomainNode("vm://fooDomain", "target/test-classes/itest-nodes-helloworld-service-2.0-SNAPSHOT.jar");
-        clientNode = new DomainNode("vm://fooDomain", "target/test-classes/itest-nodes-helloworld-client-2.0-SNAPSHOT.jar");
+        serviceNode = new DomainNode("target/test-classes/itest-nodes-helloworld-service-2.0-SNAPSHOT.jar");
+        clientNode = new DomainNode("target/test-classes/itest-nodes-helloworld-client-2.0-SNAPSHOT.jar");
 
-        Helloworld service = SCAClient.getService(Helloworld.class, "fooDomain/HelloworldService");
+        Helloworld service = SCAClient.getService(Helloworld.class, "defaultDomain/HelloworldService");
         assertNotNull(service);
         assertEquals("Hello Petra", service.sayHello("Petra"));
 
-        Helloworld client = SCAClient.getService(Helloworld.class, "fooDomain/HelloworldClient");
+        Helloworld client = SCAClient.getService(Helloworld.class, "defaultDomain/HelloworldClient");
         assertNotNull(client);
         assertEquals("Hi Hello Petra", client.sayHello("Petra"));
-
-        if (clientNode != null && clientNode.isStarted()) {
-            clientNode.stop();
-        }
-        if (serviceNode != null && serviceNode.isStarted()) {
-            serviceNode.stop();
-        }
     }
 
     @Test
     public void testTwoNodesDifferentDomains() throws Exception {
-        serviceNode = new DomainNode("vm://fooDomain", "target/test-classes/itest-nodes-helloworld-service-2.0-SNAPSHOT.jar");
+        serviceNode = new DomainNode("vm://fooDomain", new String[]{"target/test-classes/itest-nodes-helloworld-service-2.0-SNAPSHOT.jar"});
         Helloworld service = SCAClient.getService(Helloworld.class, "fooDomain/HelloworldService");
         assertNotNull(service);
         assertEquals("Hello Petra", service.sayHello("Petra"));
 
-        clientNode = new DomainNode("vm://barDomain", "target/test-classes/itest-nodes-helloworld-client-2.0-SNAPSHOT.jar");
+        clientNode = new DomainNode("vm://barDomain", new String[]{"target/test-classes/itest-nodes-helloworld-client-2.0-SNAPSHOT.jar"});
         Helloworld client = SCAClient.getService(Helloworld.class, "barDomain/HelloworldClient");
         assertNotNull(client);
 
@@ -81,10 +74,10 @@ public class MultipleNodesPerJVMTestCase{
 
     @After
     public void tearDownAfterClass() throws Exception {
-        if (clientNode != null && clientNode.isStarted()) {
+        if (clientNode != null) {
             clientNode.stop();
         }
-        if (serviceNode != null && serviceNode.isStarted()) {
+        if (serviceNode != null) {
             serviceNode.stop();
         }
     }

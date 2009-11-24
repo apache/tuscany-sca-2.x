@@ -38,8 +38,8 @@ public class StopStartNodesTestCase{
     
     @Test
     public void testTwoNodesSameDomain() throws Exception {
-        serviceNode = new DomainNode("vm://fooDomain", "target/test-classes/itest-nodes-helloworld-service-2.0-SNAPSHOT.jar");
-        clientNode = new DomainNode("vm://fooDomain", "target/test-classes/itest-nodes-helloworld-client-2.0-SNAPSHOT.jar");
+        serviceNode = new DomainNode("vm://fooDomain", new String[]{"target/test-classes/itest-nodes-helloworld-service-2.0-SNAPSHOT.jar"});
+        clientNode = new DomainNode("vm://fooDomain", new String[]{"target/test-classes/itest-nodes-helloworld-client-2.0-SNAPSHOT.jar"});
 
         Helloworld service = SCAClient.getService(Helloworld.class, "fooDomain/HelloworldService");
         assertNotNull(service);
@@ -60,7 +60,7 @@ public class StopStartNodesTestCase{
             // expected
         }
 
-        serviceNode = new DomainNode("vm://fooDomain", "target/test-classes/itest-nodes-helloworld-service-2.0-SNAPSHOT.jar");
+        serviceNode = new DomainNode("vm://fooDomain", new String[]{"target/test-classes/itest-nodes-helloworld-service-2.0-SNAPSHOT.jar"});
         client = SCAClient.getService(Helloworld.class, "fooDomain/HelloworldClient");
         assertNotNull(client);
         assertEquals("Hi Hello Petra", client.sayHello("Petra"));
@@ -68,10 +68,10 @@ public class StopStartNodesTestCase{
 
     @After
     public void tearDownAfterClass() throws Exception {
-        if (clientNode != null && clientNode.isStarted()) {
+        if (clientNode != null) {
             clientNode.stop();
         }
-        if (serviceNode != null && serviceNode.isStarted()) {
+        if (serviceNode != null) {
             serviceNode.stop();
         }
     }

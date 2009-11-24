@@ -95,7 +95,7 @@ public class OneNodeTestCase{
 
     @After
     public void tearDownAfterClass() throws Exception {
-        if (domain != null && domain.isStarted()) {
+        if (domain != null) {
             domain.stop();
         }
     }
