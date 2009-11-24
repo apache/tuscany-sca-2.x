@@ -17,11 +17,12 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.jms.policy.header;
+package org.apache.tuscany.sca.binding.jms.policy.header.provider;
 
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.EndpointReference;
+import org.apache.tuscany.sca.binding.jms.policy.header.JMSHeaderPolicy;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Phase;
 import org.apache.tuscany.sca.invocation.PhasedInterceptor;
