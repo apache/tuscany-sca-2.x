@@ -46,5 +46,11 @@
 
     <build>
         <finalName>${artifactId}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.tuscany.maven.plugins</groupId>
+                <artifactId>maven-tuscany-plugin</artifactId>
+            </plugin>
+        </plugins>
     </build>
 </project>
