@@ -38,19 +38,6 @@
         </dependency>
     </dependencies>
 
-    <modules>
-        <module>binding-ws-calculator</module>
-        <module>calculator-rmi</module>
-        <module>implementation-java-calculator</module>
-        <module>legal-checks</module>
-        <module>webapp-helloworld</module>
-        <module>webapp-helloworld-bpel</module>
-        <module>webapp-helloworld-js-client</module>
-        <module>webapp-helloworld-jsp</module>
-        <module>webapp-helloworld-servlet</module>
-        <module>webapp-helloworld-stripes</module>
-    </modules>
-
     <profiles>
       <profile>
           <id>default</id>
@@ -66,6 +53,19 @@
           </modules>
       </profile>
     </profiles>
+
+    <modules>
+        <module>binding-ws-calculator</module>
+        <module>calculator-rmi</module>
+        <module>implementation-java-calculator</module>
+        <module>legal-checks</module>
+        <module>webapp-helloworld</module>
+        <module>webapp-helloworld-bpel</module>
+        <module>webapp-helloworld-js-client</module>
+        <module>webapp-helloworld-jsp</module>
+        <module>webapp-helloworld-servlet</module>
+        <module>webapp-helloworld-stripes</module>
+    </modules>
 
     <build>
 	<defaultGoal>install</defaultGoal>

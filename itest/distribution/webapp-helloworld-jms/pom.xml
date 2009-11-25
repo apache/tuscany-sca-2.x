@@ -28,14 +28,21 @@
     <artifactId>itest-distribution-webapp-helloworld-jms</artifactId>
     <name>Apache Tuscany SCA iTest Distribution Webapp helloworld-jms</name>
 
-    <dependencies>
+    <profiles>
+        <profile>
+            <id>distribution</id>
+            <dependencies>
+                <dependency>
+                    <groupId>org.apache.tuscany.sca</groupId>
+                    <artifactId>itest-bin-distro-unzip</artifactId>
+                    <type>pom</type>
+                    <version>2.0-SNAPSHOT</version>
+                </dependency>        
+            </dependencies>
+        </profile>
+    </profiles>
 
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>itest-bin-distro-unzip</artifactId>
-            <type>pom</type>
-            <version>2.0-SNAPSHOT</version>
-        </dependency>
+    <dependencies>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>

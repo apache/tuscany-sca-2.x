@@ -28,15 +28,20 @@
     <artifactId>itest-distribution-legal-checks</artifactId>
     <name>Apache Tuscany SCA iTest Distribution Legal Checks</name>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>itest-bin-distro-unzip</artifactId>
-            <type>pom</type>
-            <version>2.0-SNAPSHOT</version>
-        </dependency>        
-    </dependencies>
-    
+    <profiles>
+        <profile>
+            <id>distribution</id>
+            <dependencies>
+                <dependency>
+                    <groupId>org.apache.tuscany.sca</groupId>
+                    <artifactId>itest-bin-distro-unzip</artifactId>
+                    <type>pom</type>
+                    <version>2.0-SNAPSHOT</version>
+                </dependency>        
+            </dependencies>
+        </profile>
+    </profiles>
+
     <build>
     </build>
 </project>
