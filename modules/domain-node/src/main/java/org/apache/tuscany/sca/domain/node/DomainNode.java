@@ -30,6 +30,7 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
+import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
 import org.apache.tuscany.sca.node.impl.NodeImpl;
 import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
@@ -60,7 +61,7 @@ public class DomainNode {
     public DomainNode(String configURI, String[] contributionLocations) {
         this.domainRegistryURI = configURI;
         initDomainName(configURI);
-        nodeFactory = NodeFactory.getInstance(domainRegistryURI);
+        nodeFactory = NodeFactory.getInstance(domainName);
         for (String loc : contributionLocations) {
             addContribution(loc);
         }
@@ -82,7 +83,12 @@ public class DomainNode {
         if (nodes.containsKey(uri)) {
             throw new IllegalArgumentException("contribution already added: " + uri);
         }
-        Node node = nodeFactory.createNode((String)null, new String[] {uri}, new String[] {location}).start();
+        NodeConfiguration configuration = nodeFactory.createNodeConfiguration();
+        configuration.addContribution(uri, location);
+        configuration.setDomainRegistryURI(domainRegistryURI);
+        configuration.setDomainURI(domainName);
+        configuration.setURI(uri); //???
+        Node node = nodeFactory.createNode(configuration).start();
         nodes.put(uri, node);
     }
 
@@ -127,19 +133,19 @@ public class DomainNode {
 
     public <T> T getService(Class<T> interfaze, String uri) throws NoSuchServiceException {
         try {
-            return SCAClientFactory.newInstance(URI.create(getDomainConfigURI())).getService(interfaze, uri);
+            return SCAClientFactory.newInstance(URI.create(getDomainName())).getService(interfaze, uri);
         } catch (NoSuchDomainException e) {
             throw new IllegalStateException(e);
         }
     }
 
     protected void initDomainName(String configURI) {
-        URI uri = URI.create(fixScheme(configURI));
-        String dn = uri.getHost();
-        if (dn == null || dn.length() < 1) {
-            dn = DEFAULT_DOMAIN_NAME;
-        }
-        domainName = dn;  
+//        URI uri = URI.create(fixScheme(configURI));
+//        String dn = uri.getHost();
+//        if (dn == null || dn.length() < 1) {
+//            dn = DEFAULT_DOMAIN_NAME;
+//        }
+        domainName = configURI;  
     }
     
     /**
