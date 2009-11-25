@@ -38,10 +38,13 @@ import org.apache.tuscany.sca.contribution.processor.ContributionResolveExceptio
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
 import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.definitions.DefinitionsFactory;
+import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.policy.BindingType;
 import org.apache.tuscany.sca.policy.ImplementationType;
 import org.apache.tuscany.sca.policy.Intent;
@@ -53,6 +56,8 @@ import org.apache.tuscany.sca.policy.PolicySet;
  * @version $Rev$ $Date$
  */
 public class DefinitionsProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<Definitions> {
+    private ExtensionPointRegistry registry;
+    private StAXArtifactProcessorExtensionPoint processors;
     private StAXArtifactProcessor<Object> extensionProcessor;
     private DefinitionsFactory definitionsFactory;
 
@@ -64,10 +69,14 @@ public class DefinitionsProcessor extends BaseStAXArtifactProcessor implements S
     public static final String TARGET_NAMESPACE = "targetNamespace";
     public static final String NAME = "name";
 
-    public DefinitionsProcessor(FactoryExtensionPoint factoryExtensionPoint,
+    public DefinitionsProcessor(ExtensionPointRegistry registry,
                                 StAXArtifactProcessor<Object> extensionProcessor) {
+        this.registry = registry;
         this.extensionProcessor = extensionProcessor;
+        this.processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        FactoryExtensionPoint factoryExtensionPoint = registry.getExtensionPoint(FactoryExtensionPoint.class);
         this.definitionsFactory = factoryExtensionPoint.getFactory(DefinitionsFactory.class);
+        
     }
 
     public Definitions read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException, XMLStreamException {
@@ -159,6 +168,7 @@ public class DefinitionsProcessor extends BaseStAXArtifactProcessor implements S
     }
 
     public void resolve(Definitions scaDefns, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
+        
         // start by adding all of the top level artifacts into the resolver as there
         // are many cross artifact references in a definitions file and we don't want
         // to be dependent on the order things appear
@@ -212,10 +222,24 @@ public class DefinitionsProcessor extends BaseStAXArtifactProcessor implements S
         
         for (BindingType bindingType : scaDefns.getBindingTypes()) {
             extensionProcessor.resolve(bindingType, resolver, context);
+            if (processors.getProcessor(bindingType.getType())  == null){
+                Monitor.error(context.getMonitor(), 
+                              this, 
+                              "org.apache.tuscany.sca.definitions.xml.definitions-xml-validation-messages", 
+                              "BindingTypeNotFound", 
+                              bindingType.getType().toString());
+            }
         }
 
         for (ImplementationType implementationType : scaDefns.getImplementationTypes()) {
             extensionProcessor.resolve(implementationType, resolver, context);
+            if (processors.getProcessor(implementationType.getType())  == null){
+                Monitor.error(context.getMonitor(), 
+                              this, 
+                              "org.apache.tuscany.sca.definitions.xml.definitions-xml-validation-messages", 
+                              "ImplementationTypeNotFound", 
+                              implementationType.getType().toString());
+            }
         }
     }
 
