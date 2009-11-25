@@ -24,13 +24,14 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 import itest.nodes.Helloworld;
 
-import org.apache.tuscany.sca.domain.node.DomainNode;
+import java.net.URI;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.oasisopen.sca.NoSuchDomainException;
 import org.oasisopen.sca.NoSuchServiceException;
-import org.oasisopen.sca.client.SCAClient;
+import org.oasisopen.sca.client.SCAClientFactory;
 
 /**
  * This shows how to test the Calculator service component.
@@ -49,14 +50,14 @@ public class OneNodeTestCase{
 
     @Test
     public void testService() throws Exception {
-        Helloworld service = SCAClient.getService(Helloworld.class, "defaultDomain/HelloworldService");
+        Helloworld service = SCAClientFactory.newInstance(URI.create("vm://defaultDomain")).getService(Helloworld.class, "HelloworldService");
         assertNotNull(service);
         assertEquals("Hello Petra", service.sayHello("Petra"));
     }
 
     @Test
     public void testClient() throws Exception {
-        Helloworld client = SCAClient.getService(Helloworld.class, "defaultDomain/HelloworldClient");
+        Helloworld client = SCAClientFactory.newInstance(URI.create("vm://defaultDomain")).getService(Helloworld.class, "HelloworldClient");
         assertNotNull(client);
         assertEquals("Hi Hello Petra", client.sayHello("Petra"));
     }
@@ -65,13 +66,13 @@ public class OneNodeTestCase{
     public void testRemovingServiceContribution() throws Exception {
         domain.removeContribution(serviceContributionUri);
         try {
-            SCAClient.getService(Helloworld.class, "defaultDomain/HelloworldService");
+            SCAClientFactory.newInstance(URI.create("vm://defaultDomain")).getService(Helloworld.class, "HelloworldService");
         // FIXME: should this be NoSuchServiceException or ServiceNotFoundException?
         } catch (NoSuchServiceException e) {
             // expected
         }
 
-        Helloworld client = SCAClient.getService(Helloworld.class, "defaultDomain/HelloworldClient");
+        Helloworld client = SCAClientFactory.newInstance(URI.create("vm://defaultDomain")).getService(Helloworld.class, "HelloworldClient");
         assertNotNull(client);
         try {
             assertEquals("Hi Hello Petra", client.sayHello("Petra"));
@@ -86,7 +87,7 @@ public class OneNodeTestCase{
     public void testStoppingDomainNode() throws Exception {
         domain.stop();
         try {
-            SCAClient.getService(Helloworld.class, "defaultDomain/HelloworldClient");
+            SCAClientFactory.newInstance(URI.create("vm://defaultDomain")).getService(Helloworld.class, "HelloworldClient");
             fail();
         } catch (NoSuchDomainException e) {
             // expected

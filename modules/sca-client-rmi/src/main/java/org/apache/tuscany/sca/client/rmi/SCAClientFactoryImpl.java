@@ -68,7 +68,11 @@ public class SCAClientFactoryImpl extends SCAClientFactory {
         if (i > -1 && uri.charAt(i+2) != '/') {
             uri = uri.replaceFirst(":/", "://");
         }
-        return URI.create(uri).getHost();
+        if (i < 0) {
+            return uri;
+        } else {
+            return URI.create(uri).getHost();
+        }
     }
     
     public void stop() {

@@ -24,9 +24,11 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 import itest.nodes.Helloworld;
 
+import java.net.URI;
+
 import org.junit.After;
 import org.junit.Test;
-import org.oasisopen.sca.client.SCAClient;
+import org.oasisopen.sca.client.SCAClientFactory;
 
 /**
  * This shows how to test the Calculator service component.
@@ -41,17 +43,17 @@ public class StopStartNodesTestCase{
         serviceNode = new DomainNode("vm://fooDomain", new String[]{"target/test-classes/itest-nodes-helloworld-service-2.0-SNAPSHOT.jar"});
         clientNode = new DomainNode("vm://fooDomain", new String[]{"target/test-classes/itest-nodes-helloworld-client-2.0-SNAPSHOT.jar"});
 
-        Helloworld service = SCAClient.getService(Helloworld.class, "fooDomain/HelloworldService");
+        Helloworld service = SCAClientFactory.newInstance(URI.create("vm://fooDomain")).getService(Helloworld.class, "HelloworldService");
         assertNotNull(service);
         assertEquals("Hello Petra", service.sayHello("Petra"));
 
-        Helloworld client = SCAClient.getService(Helloworld.class, "fooDomain/HelloworldClient");
+        Helloworld client = SCAClientFactory.newInstance(URI.create("vm://fooDomain")).getService(Helloworld.class, "HelloworldClient");
         assertNotNull(client);
         assertEquals("Hi Hello Petra", client.sayHello("Petra"));
 
         serviceNode.stop();
 
-        client = SCAClient.getService(Helloworld.class, "fooDomain/HelloworldClient");
+        client = SCAClientFactory.newInstance(URI.create("vm://fooDomain")).getService(Helloworld.class, "HelloworldClient");
         assertNotNull(client);
         try {
             assertEquals("Hi Hello Petra", client.sayHello("Petra"));
@@ -61,7 +63,7 @@ public class StopStartNodesTestCase{
         }
 
         serviceNode = new DomainNode("vm://fooDomain", new String[]{"target/test-classes/itest-nodes-helloworld-service-2.0-SNAPSHOT.jar"});
-        client = SCAClient.getService(Helloworld.class, "fooDomain/HelloworldClient");
+        client = SCAClientFactory.newInstance(URI.create("vm://fooDomain")).getService(Helloworld.class, "HelloworldClient");
         assertNotNull(client);
         assertEquals("Hi Hello Petra", client.sayHello("Petra"));
     }

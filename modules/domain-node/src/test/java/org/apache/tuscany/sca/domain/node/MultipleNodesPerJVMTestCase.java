@@ -21,14 +21,15 @@ package org.apache.tuscany.sca.domain.node;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import itest.nodes.Helloworld;
 import static org.junit.Assert.fail;
+import itest.nodes.Helloworld;
 
-import org.apache.tuscany.sca.domain.node.DomainNode;
+import java.net.URI;
+
 import org.junit.After;
 import org.junit.Test;
 import org.oasisopen.sca.SCARuntimeException;
-import org.oasisopen.sca.client.SCAClient;
+import org.oasisopen.sca.client.SCAClientFactory;
 
 /**
  * This shows how to test the Calculator service component.
@@ -43,11 +44,11 @@ public class MultipleNodesPerJVMTestCase{
         serviceNode = new DomainNode("target/test-classes/itest-nodes-helloworld-service-2.0-SNAPSHOT.jar");
         clientNode = new DomainNode("target/test-classes/itest-nodes-helloworld-client-2.0-SNAPSHOT.jar");
 
-        Helloworld service = SCAClient.getService(Helloworld.class, "defaultDomain/HelloworldService");
+        Helloworld service = SCAClientFactory.newInstance(URI.create("vm://defaultDomain")).getService(Helloworld.class, "HelloworldService");
         assertNotNull(service);
         assertEquals("Hello Petra", service.sayHello("Petra"));
 
-        Helloworld client = SCAClient.getService(Helloworld.class, "defaultDomain/HelloworldClient");
+        Helloworld client = SCAClientFactory.newInstance(URI.create("vm://defaultDomain")).getService(Helloworld.class, "HelloworldClient");
         assertNotNull(client);
         assertEquals("Hi Hello Petra", client.sayHello("Petra"));
     }
@@ -55,12 +56,12 @@ public class MultipleNodesPerJVMTestCase{
     @Test
     public void testTwoNodesDifferentDomains() throws Exception {
         serviceNode = new DomainNode("vm://fooDomain", new String[]{"target/test-classes/itest-nodes-helloworld-service-2.0-SNAPSHOT.jar"});
-        Helloworld service = SCAClient.getService(Helloworld.class, "fooDomain/HelloworldService");
+        Helloworld service = SCAClientFactory.newInstance(URI.create("vm://fooDomain")).getService(Helloworld.class, "HelloworldService");
         assertNotNull(service);
         assertEquals("Hello Petra", service.sayHello("Petra"));
 
         clientNode = new DomainNode("vm://barDomain", new String[]{"target/test-classes/itest-nodes-helloworld-client-2.0-SNAPSHOT.jar"});
-        Helloworld client = SCAClient.getService(Helloworld.class, "barDomain/HelloworldClient");
+        Helloworld client = SCAClientFactory.newInstance(URI.create("vm://barDomain")).getService(Helloworld.class, "HelloworldClient");
         assertNotNull(client);
 
         try {

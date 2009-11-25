@@ -24,6 +24,7 @@ import static org.junit.Assert.assertNotNull;
 import itest.nodes.Helloworld;
 
 import java.io.File;
+import java.net.URI;
 
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
@@ -31,7 +32,7 @@ import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.oasisopen.sca.client.SCAClient;
+import org.oasisopen.sca.client.SCAClientFactory;
 
 /**
  * This shows how to test the Calculator service component.
@@ -84,11 +85,11 @@ public class TwoNodesTestCase {
 
     @Test
     public void testCalculatorClientAPI() throws Exception {
-        Helloworld service = SCAClient.getService(Helloworld.class, "HelloworldService");
+        Helloworld service = SCAClientFactory.newInstance(URI.create("http://tuscany.apache.org/sca/1.1/domains/default")).getService(Helloworld.class, "HelloworldService");
         assertNotNull(service);
         assertEquals("Hello Petra", service.sayHello("Petra"));
 
-        Helloworld client = SCAClient.getService(Helloworld.class, "HelloworldClient");
+        Helloworld client = SCAClientFactory.newInstance(URI.create("http://tuscany.apache.org/sca/1.1/domains/default")).getService(Helloworld.class, "HelloworldClient");
         assertNotNull(client);
         assertEquals("Hi Hello Petra", client.sayHello("Petra"));
     }

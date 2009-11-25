@@ -35,7 +35,7 @@ import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
 import org.oasisopen.sca.NoSuchDomainException;
 import org.oasisopen.sca.NoSuchServiceException;
-import org.oasisopen.sca.client.SCAClient;
+import org.oasisopen.sca.client.SCAClientFactory;
 
 public class DomainNode {
 
@@ -60,7 +60,7 @@ public class DomainNode {
     public DomainNode(String configURI, String[] contributionLocations) {
         this.domainRegistryURI = configURI;
         initDomainName(configURI);
-        nodeFactory = NodeFactory.getInstance(domainName);
+        nodeFactory = NodeFactory.getInstance(domainRegistryURI);
         for (String loc : contributionLocations) {
             addContribution(loc);
         }
@@ -127,7 +127,7 @@ public class DomainNode {
 
     public <T> T getService(Class<T> interfaze, String uri) throws NoSuchServiceException {
         try {
-            return SCAClient.getService(interfaze, getDomainName() + "/" + uri);
+            return SCAClientFactory.newInstance(URI.create(getDomainConfigURI())).getService(interfaze, uri);
         } catch (NoSuchDomainException e) {
             throw new IllegalStateException(e);
         }
