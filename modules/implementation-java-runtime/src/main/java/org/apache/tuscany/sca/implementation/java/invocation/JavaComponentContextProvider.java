@@ -95,6 +95,9 @@ public class JavaComponentContextProvider {
     }
 
     InstanceWrapper<?> createInstanceWrapper() throws ObjectCreationException {
+        if (instanceFactory == null) {
+            start();
+        }
         return instanceFactory.newInstance();
     }
 
