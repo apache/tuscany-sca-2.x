@@ -33,6 +33,7 @@ import org.apache.tuscany.sca.contribution.DefaultExport;
 import org.apache.tuscany.sca.contribution.DefaultImport;
 import org.apache.tuscany.sca.contribution.Export;
 import org.apache.tuscany.sca.contribution.Import;
+import org.apache.tuscany.sca.contribution.java.JavaExport;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ExtendedURLArtifactProcessor;
@@ -227,7 +228,23 @@ public class ContributionContentProcessor implements ExtendedURLArtifactProcesso
 	    	if( !preResolved ) preResolve( contribution, resolver, context);
 	    	ModelResolver contributionResolver = contribution.getModelResolver();
 	
-	        // Resolve all artifact models
+	        // Validate Java Exports: [JCI100007] A Java package that is specified on an export 
+	    	// element MUST be contained within the contribution containing the export element.
+	    	for (Export export: contribution.getExports()) {
+	    		if (export instanceof JavaExport) {
+	    			boolean available = false;
+	    			String packageName = ((JavaExport)export).getPackage();
+		    		for (Artifact artifact : contribution.getArtifacts()) {
+		    			if (packageName.equals(artifact.getURI().replace("/", ".")))
+		    					available = true;
+			    	}
+		    		if (! available)
+		    			throw new ContributionResolveException("[JCI100007] A Java package "+ packageName +" that is specified on an export " +
+		    					"element MUST be contained within the contribution containing the export element.");
+	    		}
+	    	}	    	
+	    	
+	    	// Resolve all artifact models
 	        for (Artifact artifact : contribution.getArtifacts()) {
 	            Object model = artifact.getModel();
 	            if (model != null) {
