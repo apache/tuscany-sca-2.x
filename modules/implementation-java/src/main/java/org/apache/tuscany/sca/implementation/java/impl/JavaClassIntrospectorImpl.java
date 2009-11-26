@@ -70,72 +70,60 @@ public class JavaClassIntrospectorImpl {
      */
     public void introspectClass(JavaImplementation type, Class<?> clazz)
         throws IntrospectionException {
-        for (JavaClassVisitor extension : visitors) {
-            extension.visitClass(clazz, type);
-        }
-
-        for (Constructor<?> constructor : clazz.getConstructors()) {
-            for (JavaClassVisitor extension : visitors) {
-                extension.visitConstructor(constructor, type);
+        for (JavaClassVisitor visitor : visitors) {
+            visitor.visitClass(clazz, type);
+            for (Constructor<?> constructor : clazz.getConstructors()) {
+                visitor.visitConstructor(constructor, type);
                 // Assuming the visitClass or visitConstructor will populate the
                 // type.getConstructors
                 JavaConstructorImpl<?> definition = type.getConstructors().get(constructor);
                 if (definition != null) {
                     for (JavaParameterImpl p : definition.getParameters()) {
-                        extension.visitConstructorParameter(p, type);
+                        visitor.visitConstructorParameter(p, type);
                     }
                 }
             }
-        }
 
-        Set<Field> fields = JavaIntrospectionHelper.getAllPublicAndProtectedFields(clazz, true);
-        for (Field field : fields) {
-            for (JavaClassVisitor extension : visitors) {
-                extension.visitField(field, type);
+            Set<Field> fields = JavaIntrospectionHelper.getAllPublicAndProtectedFields(clazz, true);
+            for (Field field : fields) {
+                visitor.visitField(field, type);
             }
-        }
 
-        // Check if any private fields have illegal annotations that should be raised as errors
-        Set<Field> privateFields = JavaIntrospectionHelper.getPrivateFields(clazz);
-        for (Field field : privateFields) {
-            for (JavaClassVisitor processor : visitors) {
-                processor.visitField(field, type);
+            // Check if any private fields have illegal annotations that should be raised as errors
+            Set<Field> privateFields = JavaIntrospectionHelper.getPrivateFields(clazz);
+            for (Field field : privateFields) {
+                visitor.visitField(field, type);
             }
-        }
-        
-        Set<Method> methods = JavaIntrospectionHelper.getAllUniquePublicProtectedMethods(clazz, true);
-        for (Method method : methods) {
-            for (JavaClassVisitor processor : visitors) {
-                processor.visitMethod(method, type);
+
+            Set<Method> methods = JavaIntrospectionHelper.getAllUniquePublicProtectedMethods(clazz, true);
+            for (Method method : methods) {
+                visitor.visitMethod(method, type);
             }
-        }
 
-        // Check if any private methods have illegal annotations that should be raised as errors
-        Set<Method> privateMethods = JavaIntrospectionHelper.getPrivateMethods(clazz);
-        for (Method method : privateMethods) {
-            for (JavaClassVisitor processor : visitors) {
-                processor.visitMethod(method, type);
+            // Check if any private methods have illegal annotations that should be raised as errors
+            Set<Method> privateMethods = JavaIntrospectionHelper.getPrivateMethods(clazz);
+            for (Method method : privateMethods) {
+                visitor.visitMethod(method, type);
             }
+
+            Class<?> superClass = clazz.getSuperclass();
+            if (superClass != null) {
+                visitSuperClass(superClass, type, visitor);
+            }
+
+            visitor.visitEnd(clazz, type);
+
         }
 
-        Class<?> superClass = clazz.getSuperclass();
-        if (superClass != null) {
-            visitSuperClass(superClass, type);
-        }
-
-        for (JavaClassVisitor extension : visitors) {
-            extension.visitEnd(clazz, type);
-        }
     }
 
-    private void visitSuperClass(Class<?> clazz, JavaImplementation type) throws IntrospectionException {
+    private void visitSuperClass(Class<?> clazz, JavaImplementation type, JavaClassVisitor visitor)
+        throws IntrospectionException {
         if (!Object.class.equals(clazz)) {
-            for (JavaClassVisitor extension : visitors) {
-                extension.visitSuperClass(clazz, type);
-            }
+            visitor.visitSuperClass(clazz, type);
             clazz = clazz.getSuperclass();
             if (clazz != null) {
-                visitSuperClass(clazz, type);
+                visitSuperClass(clazz, type, visitor);
             }
         }
     }
