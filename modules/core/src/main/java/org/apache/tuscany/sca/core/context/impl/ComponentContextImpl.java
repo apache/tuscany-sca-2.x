@@ -118,7 +118,7 @@ public class ComponentContextImpl implements RuntimeComponentContext {
             if (referenceName.equals(ref.getName())) {
                 Multiplicity multiplicity = ref.getMultiplicity();
                 if (multiplicity == Multiplicity.ZERO_N || multiplicity == Multiplicity.ONE_N) {
-                    throw new ServiceRuntimeException("Reference " + referenceName
+                    throw new IllegalArgumentException("Reference " + referenceName
                         + " has multiplicity "
                         + multiplicity);
                 }
