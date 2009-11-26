@@ -123,6 +123,8 @@ public class JettyServer implements ServletHost, LifeCycleListener {
 
                 keyStoreType = System.getProperty("javax.net.ssl.keyStoreType", KeyStore.getDefaultType());
                 trustStoreType = System.getProperty("javax.net.ssl.trustStoreType", KeyStore.getDefaultType());
+
+                System.setProperty("JETTY_NO_SHUTDOWN_HOOK", "true");                
                 return null;
             }
         });
