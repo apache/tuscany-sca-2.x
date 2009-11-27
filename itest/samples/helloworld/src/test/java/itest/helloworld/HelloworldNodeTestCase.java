@@ -15,7 +15,7 @@ public class HelloworldNodeTestCase {
     
     @Before
     public void setUp() throws Exception {
-        node = NodeFactory.newInstance().createNode(null, new String[]{"../../../samples/helloworld/target/sample-helloworld.jar"}).start();
+        node = NodeFactory.newInstance().createNode(null, new String[]{"../../../samples/helloworld/target/sample-helloworld.zip"}).start();
     }
 
     @Test

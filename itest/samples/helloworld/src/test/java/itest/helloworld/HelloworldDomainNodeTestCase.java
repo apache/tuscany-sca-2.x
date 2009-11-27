@@ -15,7 +15,7 @@ public class HelloworldDomainNodeTestCase {
     
     @Before
     public void setUp() throws Exception {
-        node = new DomainNode("../../../samples/helloworld/target/sample-helloworld.jar");
+        node = new DomainNode("../../../samples/helloworld/target/sample-helloworld.zip");
     }
 
     @Test
