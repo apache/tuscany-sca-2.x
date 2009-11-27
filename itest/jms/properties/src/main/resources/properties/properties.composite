@@ -34,7 +34,7 @@
                <operationProperties name="op2" nativeOperation="nativeOp2">
                   <headers type="op2Type"
                      deliveryMode="nonpersistent"
-                     timeToLive="6"
+                     timeToLive="6000"
                      priority="8">
                      <property name="op2P2">foo</property>
                   </headers>
