@@ -34,6 +34,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 public class WebImplementationProviderFactory implements ImplementationProviderFactory<WebImplementation> {
 
     private ServletHost servletHost;
+    private ClientExtensionPoint jsClient;
 
     public WebImplementationProviderFactory(ExtensionPointRegistry extensionPoints) {
         ServletHostExtensionPoint servletHosts = extensionPoints.getExtensionPoint(ServletHostExtensionPoint.class);
@@ -41,25 +42,33 @@ public class WebImplementationProviderFactory implements ImplementationProviderF
         if (!hosts.isEmpty()) {
             this.servletHost = hosts.get(0);
         }
+        
+        jsClient = extensionPoints.getExtensionPoint(ClientExtensionPoint.class);
     }
 
     public ImplementationProvider createImplementationProvider(RuntimeComponent component, WebImplementation implementation) {
         servletHost.setAttribute("org.apache.tuscany.sca.implementation.web.RuntimeComponent", component);
         servletHost.setAttribute("org.oasisopen.sca.ComponentContext", new ComponentContextProxy(component));
 
-        return new ImplementationProvider() {
-            
-            public Invoker createInvoker(RuntimeComponentService arg0, Operation arg1) {
-                throw new UnsupportedOperationException("Components using implementation.web have no services");
-            }
-            public void start() {
-            }
-            public void stop() {
-            }
-            public boolean supportsOneWayInvocation() {
-                return false;
-            }
-        };
+        ImplementationProvider impl;
+        if (jsClient != null && implementation.getJSClient()) {
+            impl = jsClient.createImplementationProvider(component, implementation);
+        } else {
+            impl = new ImplementationProvider() {
+                
+                public Invoker createInvoker(RuntimeComponentService arg0, Operation arg1) {
+                    throw new UnsupportedOperationException("Components using implementation.web have no services");
+                }
+                public void start() {
+                }
+                public void stop() {
+                }
+                public boolean supportsOneWayInvocation() {
+                    return false;
+                }
+            };
+        }
+        return impl;
     }
     
     public Class<WebImplementation> getModelType() {

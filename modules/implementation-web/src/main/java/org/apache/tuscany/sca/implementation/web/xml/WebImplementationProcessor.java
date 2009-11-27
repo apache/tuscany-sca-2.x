@@ -81,6 +81,11 @@ public class WebImplementationProcessor extends BaseStAXArtifactProcessor implem
             implementation.setURI(webURI);
         }
 
+        String jsClient = reader.getAttributeValue(Constants.SCA11_TUSCANY_NS, "jsClient");
+        if (jsClient != null) {
+            implementation.setJSClient(Boolean.parseBoolean(jsClient));
+        }
+
         // Skip to end element
         while (reader.hasNext()) {
             if (reader.next() == END_ELEMENT && IMPLEMENTATION_WEB.equals(reader.getName())) {

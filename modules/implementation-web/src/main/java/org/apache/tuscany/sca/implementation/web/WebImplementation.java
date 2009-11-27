@@ -42,4 +42,6 @@ public interface WebImplementation extends Implementation {
      */
     void setWebURI(String webappURI);
 
+    boolean getJSClient();
+    void setJSClient(boolean jsCLient);
 }

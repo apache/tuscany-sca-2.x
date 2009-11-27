@@ -42,6 +42,7 @@ class WebImplementationImpl extends ImplementationImpl implements WebImplementat
     private boolean unresolved;
 
     private String webURI;
+    private boolean jsClient = true;
 
     /**
      * Constructs a new Web implementation.
@@ -130,6 +131,14 @@ class WebImplementationImpl extends ImplementationImpl implements WebImplementat
             throw new AssertionError(e); // should not ever happen
         }
         return newProperty;
+    }
+
+    public boolean getJSClient() {
+        return jsClient;
+    }
+
+    public void setJSClient(boolean jsClient) {
+        this.jsClient = jsClient;
     }
 
 }

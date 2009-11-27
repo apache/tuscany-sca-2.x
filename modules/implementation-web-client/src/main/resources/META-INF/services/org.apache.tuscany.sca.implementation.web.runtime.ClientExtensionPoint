@@ -16,7 +16,7 @@
 # under the License. 
 
 # Implementation class for the implementation extension
-org.apache.tuscany.sca.implementation.web.client.ClientProviderFactory;model=org.apache.tuscany.sca.implementation.web.WebImplementation;ranking=1234
+org.apache.tuscany.sca.implementation.web.client.JSClientExtensionPointImpl
 
 
 

@@ -17,27 +17,14 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.implementation.web.client;
+package org.apache.tuscany.sca.implementation.web.runtime;
 
-import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.implementation.web.WebImplementation;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
-import org.apache.tuscany.sca.runtime.RuntimeComponentService;
+import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
-public class ClientImplementationProvider implements ImplementationProvider {
+public interface ClientExtensionPoint {
 
-    public Invoker createInvoker(RuntimeComponentService arg0, Operation arg1) {
-        return null;
-    }
-
-    public void start() {
-    }
-
-    public void stop() {
-    }
-
-    public boolean supportsOneWayInvocation() {
-        return false;
-    }
+    public ImplementationProvider createImplementationProvider(RuntimeComponent component, WebImplementation implementation);
 
 }
