@@ -305,7 +305,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
         property.setXSDType(getQName(reader, TYPE));
         // MJE added 14/05/2009 - check for both @element and @type being present - disallowed by OASIS Assembly spec
         if( property.getXSDElement() != null && property.getXSDType() != null ) {
-        	ContributionReadException ce = new ContributionReadException("Error: property has both @type and @element attribute values - " + 
+        	ContributionReadException ce = new ContributionReadException("[ASM40010] Error: property has both @type and @element attribute values - " + 
         			                                                     property.getName());
         	error(context.getMonitor(), "ContributionReadException", property, ce);
         } // end if
