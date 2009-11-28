@@ -58,7 +58,7 @@ import org.w3c.dom.Element;
  * @version $Rev$ $Date$
  */
 public class BPELInvoker implements Invoker {
-	private final static long TIME_OUT = 2000L;
+	private final static long TIME_OUT = 10000L;
 	
     protected final Log __log = LogFactory.getLog(getClass());
 
