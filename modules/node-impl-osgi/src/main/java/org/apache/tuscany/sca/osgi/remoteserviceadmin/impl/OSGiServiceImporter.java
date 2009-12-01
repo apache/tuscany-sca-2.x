@@ -27,11 +27,11 @@ import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
 import org.apache.tuscany.sca.node.impl.NodeImpl;
-import org.apache.tuscany.sca.osgi.remoteserviceadmin.EndpointDescription;
-import org.apache.tuscany.sca.osgi.remoteserviceadmin.ImportRegistration;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
+import org.osgi.service.remoteserviceadmin.EndpointDescription;
+import org.osgi.service.remoteserviceadmin.ImportRegistration;
 
 /**
  * Watching and exporting OSGi services 
@@ -88,7 +88,7 @@ public class OSGiServiceImporter extends AbstractOSGiServiceHandler {
     }
 
     public void unimportService(ImportRegistration importRegistration) {
-        Node node = (Node)importRegistration.getImportedReference().getImportedService().getProperty("sca.node");
+        Node node = (Node)importRegistration.getImportReference().getImportedService().getProperty("sca.node");
         node.stop();
     }
 

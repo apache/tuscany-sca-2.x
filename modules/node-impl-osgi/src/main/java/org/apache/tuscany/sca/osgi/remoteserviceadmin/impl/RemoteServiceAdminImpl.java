@@ -27,12 +27,6 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.sca.osgi.remoteserviceadmin.EndpointDescription;
-import org.apache.tuscany.sca.osgi.remoteserviceadmin.ExportRegistration;
-import org.apache.tuscany.sca.osgi.remoteserviceadmin.ImportRegistration;
-import org.apache.tuscany.sca.osgi.remoteserviceadmin.RemoteServiceAdmin;
-import org.apache.tuscany.sca.osgi.remoteserviceadmin.RemoteServiceAdminEvent;
-import org.apache.tuscany.sca.osgi.remoteserviceadmin.RemoteServiceAdminListener;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
@@ -42,6 +36,14 @@ import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
+import org.osgi.service.remoteserviceadmin.EndpointDescription;
+import org.osgi.service.remoteserviceadmin.ExportReference;
+import org.osgi.service.remoteserviceadmin.ExportRegistration;
+import org.osgi.service.remoteserviceadmin.ImportReference;
+import org.osgi.service.remoteserviceadmin.ImportRegistration;
+import org.osgi.service.remoteserviceadmin.RemoteServiceAdmin;
+import org.osgi.service.remoteserviceadmin.RemoteServiceAdminEvent;
+import org.osgi.service.remoteserviceadmin.RemoteServiceAdminListener;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
@@ -56,8 +58,8 @@ public class RemoteServiceAdminImpl implements RemoteServiceAdmin, ManagedServic
     private OSGiServiceExporter exporter;
     private OSGiServiceImporter importer;
 
-    private Collection<ImportRegistration> importedEndpoints = new ArrayList<ImportRegistration>();
-    private Collection<ExportRegistration> exportedServices = new ArrayList<ExportRegistration>();
+    private Collection<ImportRegistration> importRegistrations = new ArrayList<ImportRegistration>();
+    private Collection<ExportRegistration> exportedRegistrations = new ArrayList<ExportRegistration>();
 
     public RemoteServiceAdminImpl(BundleContext context) {
         this.context = context;
@@ -97,14 +99,14 @@ public class RemoteServiceAdminImpl implements RemoteServiceAdmin, ManagedServic
             listeners.close();
             listeners = null;
         }
-        for (ExportRegistration exportRegistration : exportedServices) {
+        for (ExportRegistration exportRegistration : exportedRegistrations) {
             exportRegistration.close();
         }
-        exportedServices.clear();
-        for (ImportRegistration importRegistration : importedEndpoints) {
+        exportedRegistrations.clear();
+        for (ImportRegistration importRegistration : importRegistrations) {
             importRegistration.close();
         }
-        importedEndpoints.clear();
+        importRegistrations.clear();
         if (importer != null) {
             importer.stop();
             importer = null;
@@ -116,13 +118,13 @@ public class RemoteServiceAdminImpl implements RemoteServiceAdmin, ManagedServic
     }
 
     /**
-     * @see org.apache.tuscany.sca.osgi.remoteserviceadmin.RemoteServiceAdmin#exportService(org.osgi.framework.ServiceReference,
+     * @see org.osgi.remoteserviceadmin.RemoteServiceAdmin#exportService(org.osgi.framework.ServiceReference,
      *      java.util.Map)
      */
     public List<ExportRegistration> exportService(ServiceReference ref, Map properties) {
         List<ExportRegistration> exportRegistrations = exporter.exportService(ref, properties);
         if (exportRegistrations != null) {
-            exportedServices.addAll(exportRegistrations);
+            exportRegistrations.addAll(exportedRegistrations);
             fireExportEvents(ref.getBundle(), exportRegistrations);
         }
         return exportRegistrations;
@@ -131,8 +133,8 @@ public class RemoteServiceAdminImpl implements RemoteServiceAdmin, ManagedServic
     private void fireExportEvents(Bundle source, List<ExportRegistration> exportRegistrations) {
         for (ExportRegistration registration : exportRegistrations) {
             RemoteServiceAdminEvent rsaEvent =
-                new RemoteServiceAdminEvent(RemoteServiceAdminEvent.EXPORT_REGISTRATION, source, registration.getExportReference(),
-                                            registration.getException());
+                new RemoteServiceAdminEvent(RemoteServiceAdminEvent.EXPORT_REGISTRATION, source, registration
+                    .getExportReference(), registration.getException());
             EventAdmin eventAdmin = getEventAdmin();
             if (eventAdmin != null) {
                 eventAdmin.postEvent(wrap(rsaEvent));
@@ -215,9 +217,9 @@ public class RemoteServiceAdminImpl implements RemoteServiceAdmin, ManagedServic
         props.put("export.reference", rsaEvent.getExportReference());
         EndpointDescription ep = null;
         if (rsaEvent.getImportReference() != null) {
-            ep = rsaEvent.getImportReference().getImportedEndpointDescription();
+            ep = rsaEvent.getImportReference().getImportedEndpoint();
         } else {
-            ep = rsaEvent.getExportReference().getEndpointDescription();
+            ep = rsaEvent.getExportReference().getExportedEndpoint();
         }
         props.put("service.remote.id", ep.getRemoteServiceID());
         props.put("service.remote.uuid", ep.getRemoteFrameworkUUID());
@@ -231,8 +233,8 @@ public class RemoteServiceAdminImpl implements RemoteServiceAdmin, ManagedServic
 
     private void fireImportEvents(Bundle source, ImportRegistration registration) {
         RemoteServiceAdminEvent rsaEvent =
-            new RemoteServiceAdminEvent(RemoteServiceAdminEvent.IMPORT_REGISTRATION, source, registration.getImportedReference(), registration
-                .getException());
+            new RemoteServiceAdminEvent(RemoteServiceAdminEvent.IMPORT_REGISTRATION, source, registration
+                .getImportReference(), registration.getException());
         EventAdmin eventAdmin = getEventAdmin();
         if (eventAdmin != null) {
             eventAdmin.postEvent(wrap(rsaEvent));
@@ -244,28 +246,36 @@ public class RemoteServiceAdminImpl implements RemoteServiceAdmin, ManagedServic
     }
 
     /**
-     * @see org.apache.tuscany.sca.osgi.remoteserviceadmin.RemoteServiceAdmin#getExportedServices()
+     * @see org.osgi.remoteserviceadmin.RemoteServiceAdmin#getExportedServices()
      */
-    public Collection<ExportRegistration> getExportedServices() {
+    public Collection<ExportReference> getExportedServices() {
+        Collection<ExportReference> exportedServices = new ArrayList<ExportReference>();
+        for (ExportRegistration registration : exportedRegistrations) {
+            exportedServices.add(registration.getExportReference());
+        }
         return exportedServices;
     }
 
     /**
-     * @see org.apache.tuscany.sca.osgi.remoteserviceadmin.RemoteServiceAdmin#getImportedEndpoints()
+     * @see org.osgi.remoteserviceadmin.RemoteServiceAdmin#getImportedEndpoints()
      */
-    public Collection<ImportRegistration> getImportedEndpoints() {
+    public Collection<ImportReference> getImportedEndpoints() {
+        Collection<ImportReference> importedEndpoints = new ArrayList<ImportReference>();
+        for (ImportRegistration registration : importRegistrations) {
+            importedEndpoints.add(registration.getImportReference());
+        }
         return importedEndpoints;
     }
 
     /**
-     * @see org.apache.tuscany.sca.osgi.remoteserviceadmin.RemoteServiceAdmin#importService(org.apache.tuscany.sca.dosgi.discovery.EndpointDescription)
+     * @see org.osgi.remoteserviceadmin.RemoteServiceAdmin#importService(org.apache.tuscany.sca.dosgi.discovery.EndpointDescription)
      */
     public ImportRegistration importService(EndpointDescription endpoint) {
         Bundle bundle = (Bundle)endpoint.getProperties().get(Bundle.class.getName());
         ImportRegistration importReg = importer.importService(bundle, endpoint);
         if (importReg != null) {
             fireImportEvents(bundle, importReg);
-            importedEndpoints.add(importReg);
+            importRegistrations.add(importReg);
         }
         return importReg;
     }

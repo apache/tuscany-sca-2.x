@@ -19,9 +19,9 @@
 
 package org.apache.tuscany.sca.osgi.remoteserviceadmin.impl;
 
-import org.apache.tuscany.sca.osgi.remoteserviceadmin.EndpointDescription;
-import org.apache.tuscany.sca.osgi.remoteserviceadmin.ImportReference;
 import org.osgi.framework.ServiceReference;
+import org.osgi.service.remoteserviceadmin.EndpointDescription;
+import org.osgi.service.remoteserviceadmin.ImportReference;
 
 /**
  * 
@@ -45,7 +45,7 @@ public class ImportReferenceImpl implements ImportReference {
         return importedService;
     }
 
-    public EndpointDescription getImportedEndpointDescription() {
+    public EndpointDescription getImportedEndpoint() {
         return endpointDescription;
     }
 

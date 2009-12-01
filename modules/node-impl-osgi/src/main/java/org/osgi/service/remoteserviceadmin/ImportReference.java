@@ -1,5 +1,5 @@
 /*
- * Copyright (c) OSGi Alliance (2008, 2009). All Rights Reserved.
+ * Copyright (c) OSGi Alliance (2009). All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.tuscany.sca.osgi.remoteserviceadmin;
+
+package org.osgi.service.remoteserviceadmin;
 
 import org.osgi.framework.ServiceReference;
 
@@ -24,19 +25,20 @@ import org.osgi.framework.ServiceReference;
  * service is no longer imported, all methods must return <code>null</code>;
  * 
  * @ThreadSafe
+ * @version $Revision$
  */
 public interface ImportReference {
-    /**
-     * Answer the associated Service Reference for the proxy to the endpoint.
-     * 
-     * @return A Service Reference to the proxy for the endpoint.
-     */
-    ServiceReference getImportedService();
+	/**
+	 * Answer the associated Service Reference for the proxy to the endpoint.
+	 * 
+	 * @return A Service Reference to the proxy for the endpoint.
+	 */
+	ServiceReference getImportedService();
 
-    /**
-     * Answer the associated remote Endpoint Description.
-     * 
-     * @return A Endpoint Description for the remote endpoint.
-     */
-    EndpointDescription getImportedEndpointDescription();
+	/**
+	 * Answer the associated remote Endpoint Description.
+	 * 
+	 * @return A Endpoint Description for the remote endpoint.
+	 */
+	EndpointDescription getImportedEndpoint();
 }

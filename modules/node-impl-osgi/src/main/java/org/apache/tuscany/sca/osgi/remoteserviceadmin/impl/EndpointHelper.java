@@ -28,10 +28,10 @@ import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.implementation.osgi.OSGiProperty;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
-import org.apache.tuscany.sca.osgi.remoteserviceadmin.EndpointDescription;
-import org.apache.tuscany.sca.osgi.remoteserviceadmin.RemoteConstants;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
+import org.osgi.service.remoteserviceadmin.EndpointDescription;
+import org.osgi.service.remoteserviceadmin.RemoteConstants;
 
 /**
  * Implementation of {@link EndpointDescription}
@@ -55,7 +55,7 @@ public class EndpointHelper {
         
         if (!endpoint.isRemote()) {
             String uuid = OSGiHelper.getFrameworkUUID(bundleContext);
-            props.put(RemoteConstants.SERVICE_REMOTE_FRAMEWORK_UUID, uuid);
+            props.put(RemoteConstants.ENDPOINT_FRAMEWORK_UUID, uuid);
         }
         
         for (Object ext : endpoint.getService().getExtensions()) {
@@ -65,8 +65,8 @@ public class EndpointHelper {
             }
         }
         
-        props.put(RemoteConstants.SERVICE_REMOTE_ID, props.get(Constants.SERVICE_ID));
-        props.put(RemoteConstants.SERVICE_REMOTE_URI, endpoint.getURI());
+        props.put(RemoteConstants.ENDPOINT_ID, props.get(Constants.SERVICE_ID));
+        props.put(RemoteConstants.ENDPOINT_URI, endpoint.getURI());
         // FIXME: [rfeng] How to pass in the remote service id from the endpoint XML
         props.put(RemoteConstants.SERVICE_EXPORTED_CONFIGS, new String[] {"org.osgi.sca"});
         props.put(Endpoint.class.getName(), endpoint);

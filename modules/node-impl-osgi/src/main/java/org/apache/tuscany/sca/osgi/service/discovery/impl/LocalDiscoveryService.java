@@ -36,8 +36,6 @@ import org.apache.tuscany.sca.deployment.Deployer;
 import org.apache.tuscany.sca.implementation.osgi.SCAConfig;
 import org.apache.tuscany.sca.implementation.osgi.ServiceDescription;
 import org.apache.tuscany.sca.implementation.osgi.ServiceDescriptions;
-import org.apache.tuscany.sca.osgi.remoteserviceadmin.EndpointDescription;
-import org.apache.tuscany.sca.osgi.remoteserviceadmin.RemoteConstants;
 import org.apache.tuscany.sca.osgi.remoteserviceadmin.impl.OSGiHelper;
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.osgi.framework.Bundle;
@@ -46,6 +44,8 @@ import org.osgi.framework.BundleEvent;
 import org.osgi.framework.Constants;
 import org.osgi.framework.Filter;
 import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.service.remoteserviceadmin.EndpointDescription;
+import org.osgi.service.remoteserviceadmin.RemoteConstants;
 import org.osgi.util.tracker.BundleTracker;
 import org.osgi.util.tracker.BundleTrackerCustomizer;
 import org.osgi.util.tracker.ServiceTracker;
@@ -88,14 +88,14 @@ public class LocalDiscoveryService extends AbstractDiscoveryService implements B
     private EndpointDescription createEndpointDescription(ServiceDescription sd) {
         Map<String, Object> props = new HashMap<String, Object>(sd.getProperties());
         props.put(Constants.OBJECTCLASS, sd.getInterfaces().toArray(new String[sd.getInterfaces().size()]));
-        if (!props.containsKey(RemoteConstants.SERVICE_REMOTE_ID)) {
-            props.put(RemoteConstants.SERVICE_REMOTE_ID, String.valueOf(System.currentTimeMillis()));
+        if (!props.containsKey(RemoteConstants.ENDPOINT_ID)) {
+            props.put(RemoteConstants.ENDPOINT_ID, String.valueOf(System.currentTimeMillis()));
         }
-        if (!props.containsKey(RemoteConstants.SERVICE_REMOTE_FRAMEWORK_UUID)) {
-            props.put(RemoteConstants.SERVICE_REMOTE_FRAMEWORK_UUID, OSGiHelper.getFrameworkUUID(context));
+        if (!props.containsKey(RemoteConstants.ENDPOINT_FRAMEWORK_UUID)) {
+            props.put(RemoteConstants.ENDPOINT_FRAMEWORK_UUID, OSGiHelper.getFrameworkUUID(context));
         }
-        if (!props.containsKey(RemoteConstants.SERVICE_REMOTE_URI)) {
-            props.put(RemoteConstants.SERVICE_REMOTE_URI, UUID.randomUUID().toString());
+        if (!props.containsKey(RemoteConstants.ENDPOINT_URI)) {
+            props.put(RemoteConstants.ENDPOINT_URI, UUID.randomUUID().toString());
         }
 
         EndpointDescription sed = new EndpointDescription(props);

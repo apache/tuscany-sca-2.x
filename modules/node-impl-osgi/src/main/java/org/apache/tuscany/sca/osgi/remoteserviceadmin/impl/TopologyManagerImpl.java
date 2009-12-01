@@ -20,8 +20,8 @@
 package org.apache.tuscany.sca.osgi.remoteserviceadmin.impl;
 
 import static org.apache.tuscany.sca.implementation.osgi.OSGiProperty.SERVICE_EXPORTED_INTERFACES;
-import static org.apache.tuscany.sca.osgi.remoteserviceadmin.RemoteConstants.SERVICE_EXPORTED_CONFIGS;
-import static org.apache.tuscany.sca.osgi.remoteserviceadmin.RemoteConstants.SERVICE_IMPORTED;
+import static org.osgi.service.remoteserviceadmin.RemoteConstants.SERVICE_EXPORTED_CONFIGS;
+import static org.osgi.service.remoteserviceadmin.RemoteConstants.SERVICE_IMPORTED;
 
 import java.util.Collection;
 import java.util.Dictionary;
@@ -37,13 +37,6 @@ import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.common.java.collection.CollectionMap;
 import org.apache.tuscany.sca.core.LifeCycleListener;
-import org.apache.tuscany.sca.osgi.remoteserviceadmin.EndpointDescription;
-import org.apache.tuscany.sca.osgi.remoteserviceadmin.EndpointListener;
-import org.apache.tuscany.sca.osgi.remoteserviceadmin.ExportRegistration;
-import org.apache.tuscany.sca.osgi.remoteserviceadmin.ImportRegistration;
-import org.apache.tuscany.sca.osgi.remoteserviceadmin.RemoteServiceAdmin;
-import org.apache.tuscany.sca.osgi.remoteserviceadmin.RemoteServiceAdminEvent;
-import org.apache.tuscany.sca.osgi.remoteserviceadmin.RemoteServiceAdminListener;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
@@ -52,6 +45,13 @@ import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.framework.hooks.service.ListenerHook;
+import org.osgi.service.remoteserviceadmin.EndpointDescription;
+import org.osgi.service.remoteserviceadmin.EndpointListener;
+import org.osgi.service.remoteserviceadmin.ExportRegistration;
+import org.osgi.service.remoteserviceadmin.ImportRegistration;
+import org.osgi.service.remoteserviceadmin.RemoteServiceAdmin;
+import org.osgi.service.remoteserviceadmin.RemoteServiceAdminEvent;
+import org.osgi.service.remoteserviceadmin.RemoteServiceAdminListener;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
@@ -178,7 +178,7 @@ public class TopologyManagerImpl implements ListenerHook, RemoteServiceAdminList
         } else {
             for (Object ra : admins) {
                 RemoteServiceAdmin remoteAdmin = (RemoteServiceAdmin)ra;
-                List<ExportRegistration> exportRegistrations = remoteAdmin.exportService(reference, null);
+                Collection<ExportRegistration> exportRegistrations = remoteAdmin.exportService(reference, null);
                 if (exportRegistrations != null && !exportRegistrations.isEmpty()) {
                     exportedServices.putValues(reference, exportRegistrations);
                 }
@@ -329,7 +329,7 @@ public class TopologyManagerImpl implements ListenerHook, RemoteServiceAdminList
     }
 
     /**
-     * @see org.apache.tuscany.sca.osgi.remoteserviceadmin.EndpointListener#addEndpoint(org.apache.tuscany.sca.osgi.remoteserviceadmin.EndpointDescription,
+     * @see org.osgi.remoteserviceadmin.EndpointListener#addEndpoint(org.osgi.service.remoteserviceadmin.EndpointDescription,
      *      java.lang.String)
      */
     public void endpointAdded(EndpointDescription endpoint, String matchedFilter) {
@@ -337,7 +337,7 @@ public class TopologyManagerImpl implements ListenerHook, RemoteServiceAdminList
     }
 
     /**
-     * @see org.apache.tuscany.sca.osgi.remoteserviceadmin.EndpointListener#removeEndpoint(org.apache.tuscany.sca.osgi.remoteserviceadmin.EndpointDescription)
+     * @see org.osgi.remoteserviceadmin.EndpointListener#removeEndpoint(org.osgi.service.remoteserviceadmin.EndpointDescription)
      */
     public void endpointRemoved(EndpointDescription endpoint, String matchedFilter) {
         unimportService(endpoint);

@@ -20,10 +20,10 @@
 package org.apache.tuscany.sca.osgi.remoteserviceadmin.impl;
 
 import org.apache.tuscany.sca.node.Node;
-import org.apache.tuscany.sca.osgi.remoteserviceadmin.EndpointDescription;
-import org.apache.tuscany.sca.osgi.remoteserviceadmin.ImportReference;
-import org.apache.tuscany.sca.osgi.remoteserviceadmin.ImportRegistration;
 import org.osgi.framework.ServiceReference;
+import org.osgi.service.remoteserviceadmin.EndpointDescription;
+import org.osgi.service.remoteserviceadmin.ImportReference;
+import org.osgi.service.remoteserviceadmin.ImportRegistration;
 
 /**
  * 
@@ -59,7 +59,7 @@ public class ImportRegistrationImpl implements ImportRegistration {
     }
 
     /**
-     * @see org.apache.tuscany.sca.osgi.remoteserviceadmin.ImportRegistration#close()
+     * @see org.osgi.remoteserviceadmin.ImportRegistration#close()
      */
     public void close() {
         if (node != null) {
@@ -78,7 +78,7 @@ public class ImportRegistrationImpl implements ImportRegistration {
         return node;
     }
 
-    public ImportReference getImportedReference() {
+    public ImportReference getImportReference() {
         return importReference;
     }
 

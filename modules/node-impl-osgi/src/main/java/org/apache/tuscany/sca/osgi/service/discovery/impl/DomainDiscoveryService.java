@@ -27,11 +27,11 @@ import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.implementation.osgi.OSGiImplementation;
-import org.apache.tuscany.sca.osgi.remoteserviceadmin.EndpointDescription;
 import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.EndpointListener;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.service.remoteserviceadmin.EndpointDescription;
 
 /**
  * Discovery service based on the distributed SCA domain

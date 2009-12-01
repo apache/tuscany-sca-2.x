@@ -20,10 +20,10 @@
 package org.apache.tuscany.sca.osgi.remoteserviceadmin.impl;
 
 import org.apache.tuscany.sca.node.Node;
-import org.apache.tuscany.sca.osgi.remoteserviceadmin.EndpointDescription;
-import org.apache.tuscany.sca.osgi.remoteserviceadmin.ExportReference;
-import org.apache.tuscany.sca.osgi.remoteserviceadmin.ExportRegistration;
 import org.osgi.framework.ServiceReference;
+import org.osgi.service.remoteserviceadmin.EndpointDescription;
+import org.osgi.service.remoteserviceadmin.ExportReference;
+import org.osgi.service.remoteserviceadmin.ExportRegistration;
 
 /**
  * Implementation of {@link ExportRegistration}
@@ -60,7 +60,7 @@ public class ExportRegistrationImpl implements ExportRegistration {
     }
 
     /**
-     * @see org.apache.tuscany.sca.osgi.remoteserviceadmin.ExportRegistration#close()
+     * @see org.osgi.remoteserviceadmin.ExportRegistration#close()
      */
     public void close() {
         if (node != null) {

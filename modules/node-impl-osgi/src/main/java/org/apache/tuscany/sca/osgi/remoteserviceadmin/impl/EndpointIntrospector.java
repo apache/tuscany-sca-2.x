@@ -70,7 +70,6 @@ import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.sca.osgi.remoteserviceadmin.EndpointDescription;
 import org.apache.tuscany.sca.osgi.service.discovery.impl.LocalDiscoveryService;
 import org.apache.tuscany.sca.osgi.service.discovery.impl.LocalDiscoveryService.ExtenderConfiguration;
 import org.apache.tuscany.sca.policy.Intent;
@@ -80,6 +79,7 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
+import org.osgi.service.remoteserviceadmin.EndpointDescription;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
