@@ -25,7 +25,7 @@ import org.apache.tuscany.sca.assembly.Extension;
 public class ExtensionImpl implements Extension {
     private QName qName;
     private Object value;
-    boolean isAttribute = false;
+    private boolean isAttribute = false;
 
     public ExtensionImpl() {
     }

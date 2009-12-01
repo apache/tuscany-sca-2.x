@@ -128,6 +128,9 @@ public class ModelBuilderImpl implements CompositeBuilder {
             // relies on the endpoints and endpoint references having been calculated
             composite = compositePolicyBuilder.build(composite, context); 
             
+            // FIXME [rfeng] We'll have to add a wire builder which depends on the policies to match
+            // endpoint references to endpoints
+            
             // For debugging - in success cases
             //System.out.println(dumpBuiltComposite(composite));
             

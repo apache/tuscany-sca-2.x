@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.assembly.builder;
 
+import java.util.Collection;
+
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.Binding;
@@ -115,4 +117,10 @@ public interface BuilderExtensionPoint {
      * @param builder
      */
     <P> void removePolicyBuilder(PolicyBuilder<P> builder);
+    
+    /**
+     * Get a collection of policy builders
+     * @return
+     */
+    public Collection<PolicyBuilder> getPolicyBuilders();
 }

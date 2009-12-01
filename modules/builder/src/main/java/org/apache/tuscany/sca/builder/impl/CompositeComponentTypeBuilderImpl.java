@@ -137,10 +137,10 @@ public class CompositeComponentTypeBuilderImpl {
             indexComponentsServicesAndReferences(composite, components, componentServices, componentReferences);
     
             // services
-            calculateServices(composite, components, componentServices, monitor);
+            calculateServices(composite, components, componentServices, context);
     
             // references
-            calculateReferences(composite, components, componentReferences, monitor);
+            calculateReferences(composite, components, componentReferences, context);
     
             // properties
             // Properties on the composite component are unaffected by properties 
@@ -215,7 +215,9 @@ public class CompositeComponentTypeBuilderImpl {
     private void calculateServices(ComponentType componentType,
                                    Map<String, Component> components,
                                    Map<String, ComponentService> componentServices,
-                                   Monitor monitor) {
+                                   BuilderContext context) {
+        
+        Monitor monitor = context.getMonitor();
 
         // Connect this component type's services to the 
         // services from child components which it promotes
@@ -233,11 +235,7 @@ public class CompositeComponentTypeBuilderImpl {
             // promote bindings
             calculatePromotedBindings(compositeService, promotedComponentService);
 
-            // promote intents - done later in CompositePolicyBuilder - discuss with RF
-            // calculatePromotedIntents(compositeService, promotedComponentService);
-
-            // promote policy sets - done later in CompositePolicyBuilder - discuss with RF
-            // calculatePromotedPolicySets(compositeService, promotedComponentService);
+            componentBuilder.policyBuilder.configure(compositeService, context);
         }
     }
 
@@ -250,8 +248,9 @@ public class CompositeComponentTypeBuilderImpl {
      */
     private void calculateReferences(ComponentType componentType,
                                      Map<String, Component> components,
-                                     Map<String, ComponentReference> componentReferences, Monitor monitor) {
-
+                                     Map<String, ComponentReference> componentReferences, 
+                                     BuilderContext context) {
+        Monitor monitor = context.getMonitor();
         // Connect this component type's references to the 
         // references from child components which it promotes
         connectPromotedReferences(componentType, components, componentReferences, monitor);
@@ -271,13 +270,9 @@ public class CompositeComponentTypeBuilderImpl {
                 // Don't need to promote reference bindings as any lower level binding will
                 // already be targeting the correct service without need for promotion
                 //calculatePromotedBindings(compositeReference, promotedComponentReference);
-
-                // promote intents - done later in CompositePolicyBuilder - discuss with RF
-                // calculatePromotedIntents(compositeService, promotedComponentService);
-
-                // promote policy sets - done later in CompositePolicyBuilder - discuss with RF
-                // calculatePromotedPolicySets(compositeService, promotedComponentService);
             }
+            
+            componentBuilder.policyBuilder.configure(compositeReference, context);
         }
     }
 

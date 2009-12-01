@@ -79,6 +79,7 @@ public class ComponentBuilderImpl {
     protected static final QName BINDING_SCA_QNAME = new QName(SCA11_NS, BINDING_SCA);
 
     private CompositeComponentTypeBuilderImpl componentTypeBuilder;
+    protected ComponentPolicyBuilderImpl policyBuilder;
     private AssemblyFactory assemblyFactory;
     private SCABindingFactory scaBindingFactory;
     private DocumentBuilderFactory documentBuilderFactory;
@@ -96,7 +97,7 @@ public class ComponentBuilderImpl {
         transformerFactory = modelFactories.getFactory(TransformerFactory.class);
 
         interfaceContractMapper = utilities.getUtility(InterfaceContractMapper.class);
-
+        policyBuilder = new ComponentPolicyBuilderImpl(registry);
         builders = registry.getExtensionPoint(BuilderExtensionPoint.class);
     }
 
@@ -147,10 +148,20 @@ public class ComponentBuilderImpl {
             createComponentType(component, context);
     
             // configure services based on the calculated component type
-            configureServices(component, monitor);
+            configureServices(component, context);
     
             // configure services based on the calculated component type
-            configureReferences(component, monitor);
+            configureReferences(component, context);
+            
+            // Inherit the intents and policySets from the componentType
+            // NOTE: configureServices/configureReferences may add callback references and services
+            for(ComponentReference componentReference: component.getReferences()) {
+                policyBuilder.configure(componentReference, context);
+            }
+            for(ComponentService componentService: component.getServices()) {
+                policyBuilder.configure(componentService, context);
+            }
+            
         } finally {
             monitor.popContext();
         }         
@@ -207,7 +218,8 @@ public class ComponentBuilderImpl {
      * 
      * @param component
      */
-    private void configureServices(Component component, Monitor monitor) {
+    private void configureServices(Component component, BuilderContext context) {
+        Monitor monitor = context.getMonitor();
 
         // If the component type has services that are not described in this
         // component then create services for this component
@@ -237,15 +249,6 @@ public class ComponentBuilderImpl {
 
             // add callback reference model objects
             createCallbackReference(component, componentService);
-
-            // intents - done later in CompositePolicyBuilder - discuss with RF
-            //calculateIntents(componentService,
-            //                 componentTypeService);
-
-            // policy sets - done later in CompositePolicyBuilder - discuss with RF
-            // calculatePolicySets(componentService,
-            //                     componentTypeService);
-
         }
     }
 
@@ -255,8 +258,9 @@ public class ComponentBuilderImpl {
      * 
      * @param component
      */
-    private void configureReferences(Component component, Monitor monitor) {
-
+    private void configureReferences(Component component, BuilderContext context) {
+        Monitor monitor = context.getMonitor();
+        
         // If the component type has references that are not described in this
         // component then create references for this component
         addReferencesFromComponentType(component, monitor);
@@ -287,14 +291,6 @@ public class ComponentBuilderImpl {
 
             // add callback service model objects
             createCallbackService(component, componentReference);
-
-            // intents - done later in CompositePolicyBuilder - discuss with RF
-            // calculateIntents(componentService,
-            //                  componentTypeService);
-
-            // policy sets - done later in CompositePolicyBuilder - discuss with RF
-            // calculatePolicySets(componentService,
-            //                     componentTypeService);
 
             // Propagate autowire setting from the component down the structural 
             // hierarchy

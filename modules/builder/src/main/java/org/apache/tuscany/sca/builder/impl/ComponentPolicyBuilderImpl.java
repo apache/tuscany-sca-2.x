@@ -1,0 +1,349 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+package org.apache.tuscany.sca.builder.impl;
+
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.xml.namespace.QName;
+
+import org.apache.tuscany.sca.assembly.ComponentReference;
+import org.apache.tuscany.sca.assembly.ComponentService;
+import org.apache.tuscany.sca.assembly.CompositeReference;
+import org.apache.tuscany.sca.assembly.CompositeService;
+import org.apache.tuscany.sca.assembly.builder.BuilderContext;
+import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
+import org.apache.tuscany.sca.assembly.builder.Messages;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.definitions.Definitions;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.Problem;
+import org.apache.tuscany.sca.monitor.Problem.Severity;
+import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.IntentMap;
+import org.apache.tuscany.sca.policy.PolicyExpression;
+import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.policy.PolicySubject;
+import org.apache.tuscany.sca.policy.Qualifier;
+
+/**
+ * A composite builder that computes policy sets based on attached intents and policy sets.
+ * Useful if you want to build the model without making any runtime decisions such as
+ * reference/services matching
+ *
+ * @version $Rev$ $Date$
+ */
+public class ComponentPolicyBuilderImpl {
+
+    protected BuilderExtensionPoint builders;
+
+    public ComponentPolicyBuilderImpl(ExtensionPointRegistry registry) {
+        this.builders = registry.getExtensionPoint(BuilderExtensionPoint.class);
+    }
+
+    /**
+     * Report a warning.
+     *
+     * @param monitor
+     * @param problems
+     * @param message
+     * @param model
+     */
+    protected void warning(Monitor monitor, String message, Object model, Object... messageParameters) {
+        if (monitor != null) {
+            Problem problem =
+                monitor.createProblem(this.getClass().getName(),
+                                      Messages.ASSEMBLY_VALIDATION,
+                                      Severity.WARNING,
+                                      model,
+                                      message,
+                                      messageParameters);
+            monitor.problem(problem);
+        }
+    }
+
+    /**
+     * Report a error.
+     *
+     * @param monitor
+     * @param problems
+     * @param message
+     * @param model
+     */
+    protected void error(Monitor monitor, String message, Object model, Object... messageParameters) {
+        if (monitor != null) {
+            Problem problem =
+                monitor.createProblem(this.getClass().getName(),
+                                      Messages.ASSEMBLY_VALIDATION,
+                                      Severity.ERROR,
+                                      model,
+                                      message,
+                                      messageParameters);
+            monitor.problem(problem);
+        }
+    }
+
+    /**
+     * Inherit the intents and policySets from the list of models
+     * @param intents
+     * @param policySets
+     * @param models
+     */
+    protected void inherit(PolicySubject policySubject, Object... models) {
+        for (Object model : models) {
+            if (model instanceof PolicySubject) {
+                PolicySubject subject = (PolicySubject)model;
+                // FIXME: We should ignore the mutually exclusive intents from different levels
+                policySubject.getRequiredIntents().addAll(subject.getRequiredIntents());
+                policySubject.getPolicySets().addAll(subject.getPolicySets());
+            }
+        }
+    }
+
+    protected void configure(PolicySubject subject1, PolicySubject subject2, BuilderContext context) {
+        if (subject1 != null) {
+            resolveAndCheck(subject1, context);
+        }
+        if (subject2 != null) {
+            resolveAndCheck(subject2, context);
+        }
+        inherit(subject1, subject2);
+        checkMutualExclusion(subject1, context);
+    }
+
+    protected void configure(ComponentService componentService, BuilderContext context) {
+        configure(componentService, componentService.getService(), context);
+    }
+
+    protected void configure(ComponentReference componentReference, BuilderContext context) {
+        configure(componentReference, componentReference.getReference(), context);
+    }
+
+    protected void configure(CompositeService compositeService, BuilderContext context) {
+        configure(compositeService, compositeService.getPromotedService(), context);
+    }
+
+    protected void configure(CompositeReference compositeReference, BuilderContext context) {
+        for (ComponentReference reference : compositeReference.getPromotedReferences()) {
+            configure(compositeReference, reference, context);
+        }
+    }
+
+    /**
+     * Check if a single policy subject requires multually exclusive intents
+     * @param subject1 - the policy subject to check
+     * @param context - context containing useful things like the monitor instance
+     * @return true if the policy subject contains mutually exclusive intents
+     */
+    protected boolean checkMutualExclusion(PolicySubject subject1, BuilderContext context) {
+        if (subject1 == null) {
+            return false;
+        }
+        for (Intent i1 : subject1.getRequiredIntents()) {
+            for (Intent i2 : subject1.getRequiredIntents()) {
+                if ((i1 != i2) && (i1.getExcludedIntents().contains(i2) || i2.getExcludedIntents().contains(i1))) {
+                    error(context.getMonitor(), "MutuallyExclusiveIntents", new Object[] {subject1}, i1, i2);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Check if two policy subjects requires multually exclusive intents
+     * @param subject1
+     * @param subject2
+     * @param monitor 
+     * @return
+     */
+    protected boolean checkMutualExclusion(PolicySubject subject1, PolicySubject subject2, BuilderContext context) {
+        if (subject1 == subject2 || subject1 == null || subject2 == null) {
+            return false;
+        }
+        for (Intent i1 : subject1.getRequiredIntents()) {
+            for (Intent i2 : subject2.getRequiredIntents()) {
+                if (i1.getExcludedIntents().contains(i2) || i2.getExcludedIntents().contains(i1)) {
+                    error(context.getMonitor(), "MutuallyExclusiveIntents", new Object[] {subject1, subject2}, i1, i2);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    protected boolean resolveAndCheck(PolicySubject subject, BuilderContext context) {
+        if (subject == null) {
+            return false;
+        }
+        // FIXME: [rfeng] Should we resolve the intents during the "build" phase?
+        resolveAndNormalize(subject, context);
+        List<Intent> intents = subject.getRequiredIntents();
+        int size = intents.size();
+        for (int i = 0; i < size; i++) {
+            for (int j = i + 1; j < size; j++) {
+                Intent i1 = intents.get(i);
+                Intent i2 = intents.get(j);
+                if (i1 != i2 && i1.getExcludedIntents().contains(i2) || i2.getExcludedIntents().contains(i1)) {
+                    error(context.getMonitor(), "MutuallyExclusiveIntents", subject, i1, i2);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Check if two names are equal
+     * @param name1
+     * @param name2
+     * @return
+     */
+    protected boolean isEqual(String name1, String name2) {
+        if (name1 == name2) {
+            return true;
+        }
+        if (name1 != null) {
+            return name1.equals(name2);
+        } else {
+            return name2.equals(name1);
+        }
+    }
+
+    protected Intent resolve(Definitions definitions, Intent proxy) {
+        for (Intent i : definitions.getIntents()) {
+            if (i.equals(proxy)) {
+                return i;
+            }
+            for (Intent qi : i.getQualifiedIntents()) {
+                if (qi.equals(proxy)) {
+                    return qi;
+                }
+            }
+        }
+        return null;
+    }
+
+    protected void resolveAndNormalize(PolicySubject subject, BuilderContext context) {
+        Definitions definitions = context.getDefinitions();
+        Set<Intent> intents = new HashSet<Intent>();
+        if (definitions != null) {
+            for (Intent i : subject.getRequiredIntents()) {
+                Intent resolved = resolve(definitions, i);
+                if (resolved != null) {
+                    intents.add(resolved);
+                } else {
+                    warning(context.getMonitor(), "IntentNotFound", subject, i);
+                    // Intent cannot be resolved
+                }
+            }
+        }
+
+        // Replace profile intents with their required intents
+        while (!intents.isEmpty()) {
+            boolean profileIntentsFound = false;
+            Set<Intent> copy = new HashSet<Intent>(intents);
+            for (Intent i : copy) {
+                if (!i.getRequiredIntents().isEmpty()) {
+                    intents.remove(i);
+                    intents.addAll(i.getRequiredIntents());
+                    profileIntentsFound = true;
+                }
+            }
+            if (!profileIntentsFound) {
+                // No more profileIntents
+                break;
+            }
+        }
+
+        // Remove the intents whose @contraints do not include the current element
+        // Replace unqualified intents if there is a qualified intent in the list
+        Set<Intent> copy = new HashSet<Intent>(intents);
+        for (Intent i : copy) {
+            if (i.getQualifiableIntent() != null) {
+                intents.remove(i.getQualifiableIntent());
+            }
+        }
+
+        // Replace qualifiable intents with the default qualified intent
+        copy = new HashSet<Intent>(intents);
+        for (Intent i : copy) {
+            if (i.getDefaultQualifiedIntent() != null) {
+                intents.remove(i);
+                intents.add(i.getDefaultQualifiedIntent());
+            }
+        }
+
+        subject.getRequiredIntents().clear();
+        subject.getRequiredIntents().addAll(intents);
+
+        Set<PolicySet> policySets = new HashSet<PolicySet>();
+        if (definitions != null) {
+            for (PolicySet policySet : subject.getPolicySets()) {
+                int index = definitions.getPolicySets().indexOf(policySet);
+                if (index != -1) {
+                    policySets.add(definitions.getPolicySets().get(index));
+                } else {
+                    // PolicySet cannot be resolved
+                    warning(context.getMonitor(), "PolicySetNotFound", subject, policySet);
+                }
+            }
+        }
+
+        for (Intent intent : subject.getRequiredIntents()) {
+            loop: for (PolicySet ps : definitions.getPolicySets()) {
+                // FIXME: We will have to check the policy references and intentMap too
+                // as well as the appliesTo
+                if (ps.getProvidedIntents().contains(intent)) {
+                    policySets.add(ps);
+                    break;
+                }
+                for (IntentMap map : ps.getIntentMaps()) {
+                    for (Qualifier q : map.getQualifiers()) {
+                        if (intent.equals(q.getIntent())) {
+                            policySets.add(ps);
+                            break loop;
+                        }
+                    }
+                }
+            }
+        }
+
+        subject.getPolicySets().clear();
+        subject.getPolicySets().addAll(policySets);
+
+    }
+
+    protected Set<QName> getPolicyNames(PolicySubject subject) {
+        if (subject == null) {
+            return Collections.emptySet();
+        }
+        Set<QName> names = new HashSet<QName>();
+        for (PolicySet ps : subject.getPolicySets()) {
+            for (PolicyExpression exp : ps.getPolicies()) {
+                names.add(exp.getName());
+            }
+        }
+        return names;
+    }
+
+}

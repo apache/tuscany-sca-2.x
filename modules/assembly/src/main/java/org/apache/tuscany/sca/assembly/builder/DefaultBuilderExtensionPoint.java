@@ -186,6 +186,10 @@ public class DefaultBuilderExtensionPoint implements BuilderExtensionPoint, Life
         loadBuilders();
         return (PolicyBuilder<B>)policyBuilders.get(policyType);
     }
+    
+    public Collection<PolicyBuilder> getPolicyBuilders() {
+        return policyBuilders.values();
+    }
 
     public <B> void removePolicyBuilder(PolicyBuilder<B> builder) {
         policyBuilders.remove(builder.getPolicyType());

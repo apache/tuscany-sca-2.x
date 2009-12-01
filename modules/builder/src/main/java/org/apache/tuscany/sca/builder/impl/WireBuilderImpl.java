@@ -53,12 +53,12 @@ import org.apache.tuscany.sca.policy.Intent;
 /**
  * Creates endpoint reference models.
  */
-public class EndpointReferenceBuilderImpl {
+public class WireBuilderImpl {
 
     private AssemblyFactory assemblyFactory;
     private InterfaceContractMapper interfaceContractMapper;
 
-    public EndpointReferenceBuilderImpl(ExtensionPointRegistry registry) {
+    public WireBuilderImpl(ExtensionPointRegistry registry) {
         UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
         interfaceContractMapper = utilities.getUtility(InterfaceContractMapper.class);
 
