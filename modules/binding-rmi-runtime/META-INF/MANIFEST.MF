@@ -1,5 +1,4 @@
 Manifest-Version: 1.0
-Export-Package: org.apache.tuscany.sca.binding.rmi.provider;version="2.0.0"
 SCA-Version: 1.1
 Bundle-Name: Apache Tuscany SCA RMI Binding Extension
 Bundle-Vendor: The Apache Software Foundation
