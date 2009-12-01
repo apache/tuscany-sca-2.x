@@ -1,7 +1,5 @@
 Manifest-Version: 1.0
-Export-Package: org.apache.tuscany.sca.core.assembly;version="2.0.0";
- uses:="org.apache.tuscany.sca.assembly,org.apache.tuscany.sca.core",
- org.apache.tuscany.sca.core.assembly.impl;version="2.0.0";scope=internal;mandatory:=scope,
+Export-Package: org.apache.tuscany.sca.core.assembly;version="2.0.0";uses:="org.apache.tuscany.sca.assembly,org.apache.tuscany.sca.core",
  org.apache.tuscany.sca.core.context;version="2.0.0";
   uses:="javax.xml.stream,
    org.apache.tuscany.sca.runtime,
