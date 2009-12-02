@@ -45,11 +45,11 @@
                overwrite="false"
         	   encoding="native-encoding">
             <patternset>
-                <include name="dojo-release-${dojo.version}/dojo/**"/>
-                <exclude name="dojo-release-${dojo.version}/dojo/tests/**"/>
-                <exclude name="dojo-release-${dojo.version}/dijit/**"/>
-                <exclude name="dojo-release-${dojo.version}/dojox/**"/>
-                <exclude name="dojo-release-${dojo.version}/util/**"/>
+                <include name="dojo-${dojo.version}/dojo/**"/>
+                <exclude name="dojo-${dojo.version}/dojo/tests/**"/>
+                <exclude name="dojo-${dojo.version}/dijit/**"/>
+                <exclude name="dojo-${dojo.version}/dojox/**"/>
+                <exclude name="dojo-${dojo.version}/util/**"/>
             </patternset>
         </unzip>
         <move file="${basedir}/target/dojo-unpack-temp/dojo-${dojo.version}"
