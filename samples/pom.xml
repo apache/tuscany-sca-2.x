@@ -57,8 +57,13 @@
         distribution\all\src\main\components\bin-samples.xml
     OR THEY WONT GET IN RELEASES
      ********* -->
+<!-- *********
+    ALSO SAMPLES SHOULD HAVE A TEST IN itest/distribution TO 
+    ENSURE THAT THEY WORK PROPERLY OUT OF A DISTRIBUTION
+     ********* -->
 
                 <module>dosgi-dynamic-calculator-operations</module>
+                <!--module>helloworld</module-->
                 <module>helloworld-bpel</module>
                 <module>implementation-java-calculator</module>
                 <module>binding-ws-calculator</module>
