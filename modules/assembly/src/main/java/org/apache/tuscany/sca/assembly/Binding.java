@@ -58,9 +58,14 @@ public interface Binding extends Base, Cloneable {
     /**
      * Clone the binding
      *
-     * @return
+     * @return the clone
      */
     Object clone() throws CloneNotSupportedException;
 
+    /**
+     * Returns the QName type for the binding
+     * 
+     * @return the binding type QName
+     */
     QName getType();
 }
