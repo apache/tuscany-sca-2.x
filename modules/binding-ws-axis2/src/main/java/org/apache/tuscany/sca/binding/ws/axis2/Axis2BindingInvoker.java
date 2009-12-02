@@ -50,7 +50,6 @@ import org.apache.tuscany.sca.invocation.DataExchangeSemantics;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.policy.authentication.basic.BasicAuthenticationPolicy;
-import org.apache.tuscany.sca.runtime.ReferenceParameters;
 
 
 /**
