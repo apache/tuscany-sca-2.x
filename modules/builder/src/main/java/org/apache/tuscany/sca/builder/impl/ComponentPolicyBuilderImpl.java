@@ -20,24 +20,29 @@
 package org.apache.tuscany.sca.builder.impl;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.CompositeReference;
 import org.apache.tuscany.sca.assembly.CompositeService;
+import org.apache.tuscany.sca.assembly.Contract;
+import org.apache.tuscany.sca.assembly.Reference;
+import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.builder.BuilderContext;
 import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
 import org.apache.tuscany.sca.assembly.builder.Messages;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.monitor.Monitor;
-import org.apache.tuscany.sca.monitor.Problem;
-import org.apache.tuscany.sca.monitor.Problem.Severity;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentMap;
 import org.apache.tuscany.sca.policy.PolicyExpression;
@@ -69,16 +74,7 @@ public class ComponentPolicyBuilderImpl {
      * @param model
      */
     protected void warning(Monitor monitor, String message, Object model, Object... messageParameters) {
-        if (monitor != null) {
-            Problem problem =
-                monitor.createProblem(this.getClass().getName(),
-                                      Messages.ASSEMBLY_VALIDATION,
-                                      Severity.WARNING,
-                                      model,
-                                      message,
-                                      messageParameters);
-            monitor.problem(problem);
-        }
+        Monitor.warning(monitor, this, Messages.ASSEMBLY_VALIDATION, message, messageParameters);
     }
 
     /**
@@ -90,30 +86,39 @@ public class ComponentPolicyBuilderImpl {
      * @param model
      */
     protected void error(Monitor monitor, String message, Object model, Object... messageParameters) {
-        if (monitor != null) {
-            Problem problem =
-                monitor.createProblem(this.getClass().getName(),
-                                      Messages.ASSEMBLY_VALIDATION,
-                                      Severity.ERROR,
-                                      model,
-                                      message,
-                                      messageParameters);
-            monitor.problem(problem);
-        }
+        Monitor.error(monitor, this, Messages.ASSEMBLY_VALIDATION, message, messageParameters);
     }
 
     /**
      * Inherit the intents and policySets from the list of models
+     * @param ignoreExclusiveIntents TODO
+     * @param models
      * @param intents
      * @param policySets
-     * @param models
      */
-    protected void inherit(PolicySubject policySubject, Object... models) {
+    protected void inherit(PolicySubject policySubject, boolean ignoreExclusiveIntents, Object... models) {
         for (Object model : models) {
             if (model instanceof PolicySubject) {
                 PolicySubject subject = (PolicySubject)model;
-                // FIXME: We should ignore the mutually exclusive intents from different levels
-                policySubject.getRequiredIntents().addAll(subject.getRequiredIntents());
+
+                if (ignoreExclusiveIntents) {
+                    policySubject.getRequiredIntents().addAll(subject.getRequiredIntents());
+                } else {
+                    Set<Intent> intents = new HashSet<Intent>();
+                    for (Intent i1 : subject.getRequiredIntents()) {
+                        boolean exclusive = false;
+                        for (Intent i2 : policySubject.getRequiredIntents()) {
+                            if (i1.getExcludedIntents().contains(i2) || i2.getExcludedIntents().contains(i1)) {
+                                exclusive = true;
+                                break;
+                            }
+                        }
+                        if (!exclusive) {
+                            intents.add(i1);
+                        }
+                    }
+                    policySubject.getRequiredIntents().addAll(intents);
+                }
                 policySubject.getPolicySets().addAll(subject.getPolicySets());
             }
         }
@@ -126,16 +131,40 @@ public class ComponentPolicyBuilderImpl {
         if (subject2 != null) {
             resolveAndCheck(subject2, context);
         }
-        inherit(subject1, subject2);
+        inherit(subject1, false, subject2);
         checkMutualExclusion(subject1, context);
     }
 
     protected void configure(ComponentService componentService, BuilderContext context) {
-        configure(componentService, componentService.getService(), context);
+        Service service = componentService.getService();
+        if (service != null) {
+            configure(componentService, service, context);
+            configureBindings(componentService, service, context);
+        }
+    }
+
+    private void configureBindings(Contract componentContract, Contract componentTypeContract, BuilderContext context) {
+        if (componentTypeContract == null) {
+            return;
+        }
+        Map<String, Binding> componentTypeContractBindings = new HashMap<String, Binding>();
+        for (Binding binding : componentTypeContract.getBindings()) {
+            componentTypeContractBindings.put(binding.getName(), binding);
+        }
+        for (Binding binding : componentContract.getBindings()) {
+            Binding componentTypeBinding = componentTypeContractBindings.get(binding.getName());
+            if (binding instanceof PolicySubject) {
+                inherit((PolicySubject)binding, false, componentTypeBinding, context);
+            }
+        }
     }
 
     protected void configure(ComponentReference componentReference, BuilderContext context) {
-        configure(componentReference, componentReference.getReference(), context);
+        Reference reference = componentReference.getReference();
+        if (reference != null) {
+            configure(componentReference, reference, context);
+            configureBindings(componentReference, reference, context);
+        }
     }
 
     protected void configure(CompositeService compositeService, BuilderContext context) {
@@ -145,6 +174,18 @@ public class ComponentPolicyBuilderImpl {
     protected void configure(CompositeReference compositeReference, BuilderContext context) {
         for (ComponentReference reference : compositeReference.getPromotedReferences()) {
             configure(compositeReference, reference, context);
+        }
+    }
+
+    public void configure(Component component, BuilderContext context) {
+        // Inherit the intents and policySets from the componentType
+        configure(component, component.getImplementation(), context);
+        // Inherit the intents and policySets from the componentType
+        for (ComponentReference componentReference : component.getReferences()) {
+            configure(componentReference, context);
+        }
+        for (ComponentService componentService : component.getServices()) {
+            configure(componentService, context);
         }
     }
 
@@ -229,7 +270,7 @@ public class ComponentPolicyBuilderImpl {
         }
     }
 
-    protected Intent resolve(Definitions definitions, Intent proxy) {
+    protected static Intent resolve(Definitions definitions, Intent proxy) {
         for (Intent i : definitions.getIntents()) {
             if (i.equals(proxy)) {
                 return i;

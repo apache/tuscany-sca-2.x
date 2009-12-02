@@ -153,14 +153,8 @@ public class ComponentBuilderImpl {
             // configure services based on the calculated component type
             configureReferences(component, context);
             
-            // Inherit the intents and policySets from the componentType
             // NOTE: configureServices/configureReferences may add callback references and services
-            for(ComponentReference componentReference: component.getReferences()) {
-                policyBuilder.configure(componentReference, context);
-            }
-            for(ComponentService componentService: component.getServices()) {
-                policyBuilder.configure(componentService, context);
-            }
+            policyBuilder.configure(component, context);
             
         } finally {
             monitor.popContext();
