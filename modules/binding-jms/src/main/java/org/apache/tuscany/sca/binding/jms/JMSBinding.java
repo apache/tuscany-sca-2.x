@@ -28,7 +28,7 @@ import java.util.TreeSet;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.assembly.BindingRRB;
+import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.ConfiguredOperation;
 import org.apache.tuscany.sca.assembly.OperationSelector;
 import org.apache.tuscany.sca.assembly.OperationsConfigurator;
@@ -45,7 +45,7 @@ import org.apache.tuscany.sca.policy.PolicySubject;
  */
 
 //public class JMSBinding implements BindingRRB, PolicySubject, OperationsConfigurator, DefinitionElement {
-public class JMSBinding implements BindingRRB, PolicySubject, OperationsConfigurator {
+public class JMSBinding implements Binding, PolicySubject, OperationsConfigurator {
     QName TYPE = new QName(SCA11_NS, "binding.jms");
 
     @Override

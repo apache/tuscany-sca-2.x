@@ -45,5 +45,26 @@ public class TestBinding extends BindingImpl implements Binding {
     public boolean isUnresolved() {
         return false;
     }
+    
+    public WireFormat getRequestWireFormat() {
+        return null;
+    }
+    
+    public void setRequestWireFormat(WireFormat wireFormat) {  
+    }
+    
+    public WireFormat getResponseWireFormat() {
+        return null;
+    }
+    
+    public void setResponseWireFormat(WireFormat wireFormat) {
+    }
+    
+    public OperationSelector getOperationSelector() {
+        return null;
+    }
+    
+    public void setOperationSelector(OperationSelector operationSelector) {
+    }    
 
 }

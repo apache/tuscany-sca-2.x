@@ -68,4 +68,46 @@ public interface Binding extends Base, Cloneable {
      * @return the binding type QName
      */
     QName getType();
+    
+    /**
+     * Returns the request wire format
+     * 
+     * @return the request wire format or null is none is specified
+     */
+    WireFormat getRequestWireFormat();
+
+    /**
+     * Sets the request wire format 
+     * 
+     * @param wireFormat the request wire format
+     */
+    void setRequestWireFormat(WireFormat wireFormat);
+
+    /**
+     * Returns the response wire format 
+     * 
+     * @return the response wire format or null is none is specified
+     */
+    WireFormat getResponseWireFormat();
+
+    /**
+     * Sets the response wire format
+     * 
+     * @param wireFormat the response wire format
+     */
+    void setResponseWireFormat(WireFormat wireFormat);
+
+    /**
+     * Returns the operation selector
+     * 
+     * @return the operation selector or null is none is specified
+     */
+    OperationSelector getOperationSelector();
+
+    /**
+     * Sets the operation selector
+     * 
+     * @param operationSelector the operation selector
+     */
+    void setOperationSelector(OperationSelector operationSelector);    
 }

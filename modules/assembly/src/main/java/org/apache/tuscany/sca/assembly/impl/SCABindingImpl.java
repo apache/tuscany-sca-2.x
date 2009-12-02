@@ -28,8 +28,10 @@ import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Extensible;
 import org.apache.tuscany.sca.assembly.Extension;
+import org.apache.tuscany.sca.assembly.OperationSelector;
 import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.assembly.SCABinding;
+import org.apache.tuscany.sca.assembly.WireFormat;
 import org.apache.tuscany.sca.policy.ExtensionType;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySet;
@@ -165,4 +167,25 @@ public class SCABindingImpl implements SCABinding, Extensible, PolicySubject, Op
     public QName getType() {
         return TYPE;
     }
+    
+    public WireFormat getRequestWireFormat() {
+        return null;
+    }
+    
+    public void setRequestWireFormat(WireFormat wireFormat) {  
+    }
+    
+    public WireFormat getResponseWireFormat() {
+        return null;
+    }
+    
+    public void setResponseWireFormat(WireFormat wireFormat) {
+    }
+    
+    public OperationSelector getOperationSelector() {
+        return null;
+    }
+    
+    public void setOperationSelector(OperationSelector operationSelector) {
+    }    
 }

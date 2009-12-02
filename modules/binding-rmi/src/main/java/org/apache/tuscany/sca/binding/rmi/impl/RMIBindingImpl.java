@@ -20,6 +20,8 @@ package org.apache.tuscany.sca.binding.rmi.impl;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.assembly.OperationSelector;
+import org.apache.tuscany.sca.assembly.WireFormat;
 import org.apache.tuscany.sca.binding.rmi.RMIBinding;
 
 /**
@@ -65,5 +67,24 @@ public class RMIBindingImpl implements RMIBinding {
         return TYPE;
     }
 
-
+    public WireFormat getRequestWireFormat() {
+        return null;
+    }
+    
+    public void setRequestWireFormat(WireFormat wireFormat) {  
+    }
+    
+    public WireFormat getResponseWireFormat() {
+        return null;
+    }
+    
+    public void setResponseWireFormat(WireFormat wireFormat) {
+    }
+    
+    public OperationSelector getOperationSelector() {
+        return null;
+    }
+    
+    public void setOperationSelector(OperationSelector operationSelector) {
+    }
 }

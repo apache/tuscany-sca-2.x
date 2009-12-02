@@ -20,6 +20,8 @@ package org.apache.tuscany.sca.binding.ejb.impl;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.assembly.OperationSelector;
+import org.apache.tuscany.sca.assembly.WireFormat;
 import org.apache.tuscany.sca.binding.ejb.EJBBinding;
 
 /**
@@ -177,4 +179,25 @@ public class EJBBindingImpl implements EJBBinding {
     public String getRequires() {
         return requires;
     }
+    
+    public WireFormat getRequestWireFormat() {
+        return null;
+    }
+    
+    public void setRequestWireFormat(WireFormat wireFormat) {  
+    }
+    
+    public WireFormat getResponseWireFormat() {
+        return null;
+    }
+    
+    public void setResponseWireFormat(WireFormat wireFormat) {
+    }
+    
+    public OperationSelector getOperationSelector() {
+        return null;
+    }
+    
+    public void setOperationSelector(OperationSelector operationSelector) {
+    }    
 }
