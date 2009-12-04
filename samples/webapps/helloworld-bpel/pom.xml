@@ -28,7 +28,7 @@
           <relativePath>../../pom.xml</relativePath>
       </parent>
 
-      <artifactId>helloworld-bpel</artifactId>
+      <artifactId>sample-helloworld-bpel-webapp</artifactId>
       <packaging>war</packaging>
       <name>Apache Tuscany SCA Sample Helloworld BPEL</name>
 
@@ -89,7 +89,7 @@
 	</dependencies>
 
 	<build>
-         <finalName>${artifactId}</finalName>
+         <finalName>helloworld-bpel</finalName>
 
          <plugins>
             <plugin>

@@ -46,7 +46,7 @@
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>helloworld-jms</artifactId>
+            <artifactId>sample-helloworld-jms-webapp</artifactId>
             <type>war</type>
             <version>2.0-SNAPSHOT</version>
         </dependency>
@@ -207,7 +207,7 @@
                         <deployables>
                             <deployable>
                                 <groupId>org.apache.tuscany.sca</groupId>
-                                <artifactId>helloworld-jms</artifactId>
+                                <artifactId>sample-helloworld-jms-webapp</artifactId>
                                 <type>war</type>
                                 <properties>
                                     <context>helloworld-jms</context>

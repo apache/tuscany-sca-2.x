@@ -26,7 +26,7 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
-    <artifactId>helloworld-jsf</artifactId>
+    <artifactId>sample-helloworld-jsf-webapp</artifactId>
     <name>Apache Tuscany SCA Sample Helloworld JSF</name>
     <packaging>war</packaging>
 
@@ -56,7 +56,7 @@
     </dependencies>
 
     <build>
-       <finalName>${artifactId}</finalName>
+       <finalName>helloworld-jsf</finalName>
        <plugins>
           <plugin>
              <groupId>org.mortbay.jetty</groupId>

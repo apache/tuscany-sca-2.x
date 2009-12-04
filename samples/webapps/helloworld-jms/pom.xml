@@ -26,7 +26,7 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
-    <artifactId>helloworld-jms</artifactId>
+    <artifactId>sample-helloworld-jms-webapp</artifactId>
     <packaging>war</packaging>
     <name>Apache Tuscany SCA Sample JMS HelloWorld in a WebApp</name>
 
@@ -58,6 +58,7 @@
             <version>5.1.0</version>
             <scope>runtime</scope>
         </dependency>
+        
         <dependency>
             <groupId>backport-util-concurrent</groupId>
             <artifactId>backport-util-concurrent</artifactId>
@@ -67,7 +68,7 @@
     </dependencies>
 
     <build>
-       <finalName>${artifactId}</finalName>
+       <finalName>helloworld-jms</finalName>
        <plugins>
           <plugin>
              <groupId>org.mortbay.jetty</groupId>
