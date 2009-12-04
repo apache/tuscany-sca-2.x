@@ -101,6 +101,12 @@ public class ServletHostHelper {
             String domainURI = (String) servletContext.getAttribute("domain.uri");
             if (domainURI != null) {
                 configuration.setDomainURI(domainURI);
+            } else {
+                domainURI = servletContext.getInitParameter("org.apache.tuscany.sca.defaultDomainURI");
+                if (domainURI != null) {
+                    configuration.setDomainURI(domainURI);
+                    configuration.setDomainRegistryURI(domainURI);
+                }
             }
         }
         return configuration;
