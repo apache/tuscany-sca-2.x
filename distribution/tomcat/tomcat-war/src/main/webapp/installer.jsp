@@ -93,7 +93,7 @@
     An example of setting the domain as a context.xml parameter:
        <br>&lt;Context&gt;
           <br>. . .
-          <br>&lt;Parameter name="org.apache.tuscany.sca.defaultDomainURI" value="tribes:myDomain" override="false"/&gt;
+          <br>&lt;Parameter name="org.apache.tuscany.sca.defaultDomainURI" value="tribes:myDomain"/&gt;
           <br>. . .
        <br>&lt;/Context&gt;
     <p>
