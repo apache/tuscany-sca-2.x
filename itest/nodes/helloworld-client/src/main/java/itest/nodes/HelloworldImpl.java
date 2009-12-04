@@ -37,7 +37,12 @@ public class HelloworldImpl implements Helloworld {
     }
     
     public String sayHello(String name) {
+        try {
         return "Hi " + service.sayHello(name);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return e.getMessage();
+        }
     }
 
 }
