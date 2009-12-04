@@ -31,6 +31,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public class InstallerServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
+
     private transient ServletConfig servletConfig;
     private transient Installer installer;
 
@@ -56,8 +57,7 @@ public class InstallerServlet extends HttpServlet {
     protected void doIt(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 
         if ("Install".equalsIgnoreCase(req.getParameter("action"))) {
-            String singleton = req.getParameter("singleton");
-            installer.install(singleton!=null && singleton.equalsIgnoreCase("true"));
+            installer.install();
         } else if ("Uninstall".equalsIgnoreCase(req.getParameter("action"))) {
             installer.uninstall();
         }

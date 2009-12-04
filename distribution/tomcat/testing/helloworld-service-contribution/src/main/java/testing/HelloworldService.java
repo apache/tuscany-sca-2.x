@@ -18,6 +18,9 @@
  */
 package testing;
 
+import org.oasisopen.sca.annotation.Remotable;
+
+@Remotable
 public interface HelloworldService {
 
     String sayHello(String name);

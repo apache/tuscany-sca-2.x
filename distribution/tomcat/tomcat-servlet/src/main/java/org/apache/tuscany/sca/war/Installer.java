@@ -29,7 +29,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.util.Properties;
 
 import org.apache.tuscany.sca.tomcat.TuscanyLifecycleListener;
 import org.codehaus.swizzle.stream.DelimitedTokenReplacementInputStream;
@@ -72,10 +71,10 @@ public class Installer {
         return status;
     }
 
-    public boolean install(boolean singleton) {
+    public boolean install() {
         try {
 
-            doInstall(singleton);
+            doInstall();
             status = "Install successful, Tomcat restart required.";
             restartRequired = true;
             return true;
@@ -95,8 +94,7 @@ public class Installer {
         try {
 
             doUnintsall();
-            status =
-                "Tuscany removed from server.xml, please restart Tomcat and manually remove Tuscany jars from Tomcat lib";
+            status = "Tuscany removed from server.xml, please restart Tomcat and manually remove Tuscany jars from Tomcat lib";
             restartRequired = true;
             return true;
 
@@ -123,7 +121,7 @@ public class Installer {
 
     }
 
-    private boolean doInstall(boolean singleton) {
+    private boolean doInstall() {
         // First verify all the file locations are as expected
         if (!tuscanyWAR.exists()) {
             throw new IllegalStateException("Tuscany war missing: " + tuscanyWAR.getAbsolutePath());
@@ -154,20 +152,6 @@ public class Installer {
         // Copy tuscany-tomcat jar from the tuscany webapp web-inf/lib to Tomcat server/lib
         copyFile(tuscanyTomcatJar, new File(serverLib, tuscanyTomcatJar.getName()));
 
-        if (singleton) {
-            try {
-                // Write out a property file
-                File propFile = new File(tuscanyWAR, "tuscany.properties");
-                FileOutputStream os = new FileOutputStream(propFile);
-                Properties props = new Properties();
-                props.put("singleton", "true");
-                props.store(os, "Apache Tuscany properties for Tomcat");
-                os.close();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
         // Add Tuscany LifecycleListener to Tomcat server.xml
         updateServerXml(serverXml);
 
@@ -186,7 +170,7 @@ public class Installer {
 
     static final String tuscanyListener =
         "\r\n" + "  <!-- Tuscany plugin for Tomcat -->\r\n"
-            + "<Listener className=\"org.apache.tuscany.sca.tomcat.TuscanyLifecycleListener\" />";
+            + "  <Listener className=\"org.apache.tuscany.sca.tomcat.TuscanyLifecycleListener\" />";
 
     private void updateServerXml(File serverXmlFile) {
         String serverXML = readAll(serverXmlFile);
