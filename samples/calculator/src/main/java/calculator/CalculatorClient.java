@@ -31,8 +31,6 @@ public class CalculatorClient {
     public static void main(String[] args) throws Exception {
 
         Node node = NodeFactory.newInstance().createNode(null, new String[] {"target/classes"}).start();
-
-        node.start();
         
         CalculatorService calculatorService = ((Client)node).getService(CalculatorService.class, "CalculatorServiceComponent");
         
