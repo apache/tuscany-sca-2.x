@@ -45,7 +45,9 @@ public class Service {
 
     @Test
     public void testNothing() throws Exception {
-
+        synchronized (this) {
+            this.wait();
+        }
     }
 
     @AfterClass
