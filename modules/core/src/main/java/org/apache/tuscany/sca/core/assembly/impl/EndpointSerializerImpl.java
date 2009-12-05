@@ -59,6 +59,7 @@ public class EndpointSerializerImpl implements EndpointSerializer {
         try {
             XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(xml));
             Endpoint result = processor.read(reader, new ProcessorContext(registry));
+            result.setRemote(true);
             reader.close();
             return result;
         } catch (Exception e) {
@@ -83,6 +84,7 @@ public class EndpointSerializerImpl implements EndpointSerializer {
         try {
             XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(xml));
             EndpointReference result = refProcessor.read(reader, new ProcessorContext(registry));
+            result.setRemote(true);
             reader.close();
             return result;
         } catch (Exception e) {
