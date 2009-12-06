@@ -260,6 +260,15 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
         // TODO - EPR why is this looking at the component types. The endpoint should have the right interface contract by this time
         //InterfaceContract targetContract = getLeafInterfaceContract(endpoint);
 
+        if (sourceContract == null) {
+            // TODO: until the web component introspection is brought up
+            try {
+                sourceContract = (InterfaceContract)targetContract.clone();
+            } catch (CloneNotSupportedException e) {
+                throw new IllegalStateException(e);
+            }
+        }
+        
         RuntimeComponentReference reference = (RuntimeComponentReference)getReference();
         for (Operation operation : sourceContract.getInterface().getOperations()) {
             Operation targetOperation = interfaceContractMapper.map(targetContract.getInterface(), operation);
