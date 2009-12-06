@@ -114,11 +114,7 @@ public class Installer {
             throw new IllegalStateException("conf/server.xml not found: " + serverXml.getAbsolutePath());
         }
         removeServerXml(serverXml);
-        File propFile = new File(tuscanyWAR, "tuscany.properties");
-        if (propFile.isFile()) {
-            propFile.delete();
-        }
-
+        removeHostConfigXml(serverXml);
     }
 
     private boolean doInstall() {
@@ -155,7 +151,42 @@ public class Installer {
         // Add Tuscany LifecycleListener to Tomcat server.xml
         updateServerXml(serverXml);
 
+        // Add Tuscany HostConfig to Hosts definitions in server.xml
+        updateHostConfigXml(serverXml);
+
+        // Add Tuscany specific default web.xml
+        addTuscanyWebXml();
+
         return true;
+    }
+
+    private static final String tuscanyWebXML =
+        "\r\n\r\n" + "  <!-- Tuscany Listener and Filter definitions -->\r\n" + 
+        "  <listener>\r\n" + 
+        "     <listener-class>org.apache.tuscany.sca.host.webapp.TuscanyContextListener</listener-class>\r\n" +
+        "  </listener>\r\n" + 
+        "\r\n" +
+        "  <filter>\r\n" + 
+        "     <filter-name>tuscany</filter-name>\r\n" + 
+        "     <filter-class>org.apache.tuscany.sca.host.webapp.TuscanyServletFilter</filter-class>\r\n" +  
+        "  </filter>\r\n" + 
+        "\r\n" +
+        "  <filter-mapping>\r\n" + 
+        "     <filter-name>tuscany</filter-name>\r\n" +  
+        "     <url-pattern>/*</url-pattern>\r\n" + 
+        "  </filter-mapping>";
+
+    private void addTuscanyWebXml() {
+        File tuscanyWebXmlFile = new File(catalinaBase, "/conf/tuscany-web.xml");
+        if (!(tuscanyWebXmlFile.exists())) {
+            File webXmlFile = new File(catalinaBase, "/conf/web.xml");
+            if (!(webXmlFile.exists())) {
+                throw new IllegalStateException("conf/web.xml not found: " + webXmlFile.getAbsolutePath());
+            }
+            String webXML = readAll(webXmlFile);
+            String newWebXml = replace(webXML, "<web-app", "<web-app", ">", ">" + tuscanyWebXML);
+            writeAll(tuscanyWebXmlFile, newWebXml);
+        }
     }
 
     private File findTuscanyTomcatJar(File tuscanyWAR) {
@@ -168,6 +199,7 @@ public class Installer {
         return null;
     }
 
+    
     static final String tuscanyListener =
         "\r\n" + "  <!-- Tuscany plugin for Tomcat -->\r\n"
             + "  <Listener className=\"org.apache.tuscany.sca.tomcat.TuscanyLifecycleListener\" />";
@@ -179,7 +211,6 @@ public class Installer {
             backup(serverXmlFile);
             writeAll(serverXmlFile, newServerXml);
         }
-
     }
 
     private void removeServerXml(File serverXmlFile) {
@@ -188,7 +219,23 @@ public class Installer {
             String newServerXml = replace(serverXML, "<Server", "<Server", ">" + tuscanyListener, ">");
             writeAll(serverXmlFile, newServerXml);
         }
+    }
 
+    static final String tuscanyHostConfig = " hostConfigClass=\"org.apache.tuscany.sca.tomcat.TuscanyHostConfig\" >";
+
+    private void updateHostConfigXml(File serverXmlFile) {
+        String serverXML = readAll(serverXmlFile);
+        String newServerXml = replace(serverXML, "<Host", "<Host", ">", tuscanyHostConfig);
+        backup(serverXmlFile);
+        writeAll(serverXmlFile, newServerXml);
+    }
+
+    private void removeHostConfigXml(File serverXmlFile) {
+        String serverXML = readAll(serverXmlFile);
+        if (serverXML.contains(tuscanyHostConfig)) {
+            String newServerXml = replace(serverXML, "<Host", "<Host", tuscanyHostConfig, ">");
+            writeAll(serverXmlFile, newServerXml);
+        }
     }
 
     private String replace(String inputText, String begin, String newBegin, String end, String newEnd) {
