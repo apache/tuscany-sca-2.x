@@ -30,7 +30,6 @@ import javax.naming.NamingException;
 
 import org.apache.catalina.Loader;
 import org.apache.catalina.core.StandardContext;
-import org.apache.catalina.deploy.FilterDef;
 
 /**
  * A Tuscany StandardContext to initilize SCA applications.
@@ -42,14 +41,10 @@ public class TuscanyStandardContext extends StandardContext {
     private static final long serialVersionUID = 1L;
     private static final Logger log = Logger.getLogger(TuscanyStandardContext.class.getName());
 
-    protected static final String TUSCANY_FILTER_NAME = "TuscanyFilter";
-    protected static final String TUSCANY_SERVLET_FILTER = "org.apache.tuscany.sca.host.webapp.TuscanyServletFilter";
-    protected static final String TUSCANY_CONTEXT_LISTENER = "org.apache.tuscany.sca.host.webapp.TuscanyContextListener";
-    protected static final String TUSCANY_MANAGER_LISTENER = "org.apache.tuscany.sca.tomcat.foo.TuscanyTomcatNode";
-
     private boolean isSCAApp;
 
     // TODO: this gives an instance per webapp, work out how to have only one per server
+    // ?? is that comment still true?
     private static URLClassLoader tuscanyClassLoader;
 
     /**
@@ -66,15 +61,9 @@ public class TuscanyStandardContext extends StandardContext {
         }
 
         ClassLoader parent = getParentClassLoader();
-        if (isSCAApp = isSCAApplication() || isTuscanyManager()) {
-            String sharedProp = System.getProperty(TuscanyLifecycleListener.TUSCANY_SHARED_PROP, "false");
-            boolean shared = "true".equalsIgnoreCase(sharedProp);
-            if (!shared) {
-                setParentClassLoader(copy(getTuscanyClassloader(parent)));
-            } else {
-                // The default parent classloader is the one for the webapp
-                setParentClassLoader(getTuscanyClassloader(parent));
-            }
+        if (isSCAApp = isSCAApplication()) {
+            setParentClassLoader(getTuscanyClassloader(parent));
+            setDefaultWebXml("conf/tuscany-web.xml");
         }
 
         return super.getLoader();
@@ -82,38 +71,13 @@ public class TuscanyStandardContext extends StandardContext {
 
     @Override
     public boolean listenerStart() {
-        if (isTuscanyManager()) {
-            // this isn't great having the manager app config scattered about different modules
-            // but is temp until this is all tidied up in a refactor after the basics are working
-            addApplicationListener(TUSCANY_MANAGER_LISTENER);
-        } else if (isSCAApp) {
+        if (isSCAApp) {
             enableTuscany();
         }
         return super.listenerStart();
     }
 
     private void enableTuscany() {
-
-        for (String listener : findApplicationListeners()) {
-            if (TUSCANY_CONTEXT_LISTENER.equals(listener)) {
-                // The web application already has the context listener configured
-                return;
-            }
-        }
-
-        for (FilterDef filterDef : findFilterDefs()) {
-            if (TUSCANY_SERVLET_FILTER.equals(filterDef.getFilterClass())) {
-                // The web application already has the filter configured
-                return;
-            }
-        }
-
-        addApplicationListener(TUSCANY_CONTEXT_LISTENER);
-
-        FilterDef filterDef = new FilterDef();
-        filterDef.setFilterName(TUSCANY_FILTER_NAME);
-        filterDef.setFilterClass(TUSCANY_SERVLET_FILTER);
-        addFilterDef(filterDef);
 
         if (isUseNaming() && getNamingContextListener() != null) {
             setAnnotationProcessor(new TuscanyAnnotationsProcessor(this, getNamingContextListener().getEnvContext()));
@@ -157,14 +121,6 @@ public class TuscanyStandardContext extends StandardContext {
         return true;
     }
 
-    private boolean isTuscanyManager() {
-        return "/tuscany".equals(getName());
-    }
-
-    private static URLClassLoader copy(URLClassLoader classLoader) {
-        return new URLClassLoader(classLoader.getURLs(), classLoader.getParent());
-    }
-
     private synchronized URLClassLoader getTuscanyClassloader(ClassLoader parent) {
         if (tuscanyClassLoader == null) {
             File tuscanyWar = new File(System.getProperty(TuscanyLifecycleListener.TUSCANY_WAR_PROP));
@@ -182,4 +138,5 @@ public class TuscanyStandardContext extends StandardContext {
         }
         return tuscanyClassLoader;
     }
+    
 }
