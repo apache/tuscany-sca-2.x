@@ -20,6 +20,9 @@ package testing;
 
 // TODO: should the webapp need to include the service interface?
 
+import org.oasisopen.sca.annotation.Remotable;
+
+@Remotable
 public interface HelloworldService {
 
     String sayHello(String name);

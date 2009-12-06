@@ -20,8 +20,10 @@ package testing;
 
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Scope;
+import org.oasisopen.sca.annotation.Service;
 import org.oasisopen.sca.annotation.EagerInit;
 
+@Service(HelloworldService.class)
 @Scope("COMPOSITE") @EagerInit
 public class HelloworldImpl implements HelloworldService {
 
