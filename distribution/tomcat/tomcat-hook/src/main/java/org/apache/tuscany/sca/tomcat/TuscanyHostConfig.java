@@ -32,7 +32,7 @@ import org.apache.catalina.startup.HostConfig;
  * A Tuscany customized HostConfig that adds support for SCA contributions
  * to be deployed along with the usual .war files.
  */
-public class TuscanyHost extends HostConfig {
+public class TuscanyHostConfig extends HostConfig {
 
     protected File scaBase = null;
     
