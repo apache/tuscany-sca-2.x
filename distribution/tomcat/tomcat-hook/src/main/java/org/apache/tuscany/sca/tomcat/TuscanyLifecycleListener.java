@@ -20,9 +20,6 @@
 package org.apache.tuscany.sca.tomcat;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.Properties;
 import java.util.logging.Logger;
 
 import org.apache.catalina.Container;
@@ -70,19 +67,6 @@ public class TuscanyLifecycleListener implements LifecycleListener {
                 log.severe("Tuscany disabled as Tuscany webapp not found");
             } else {
                 System.setProperty(TUSCANY_WAR_PROP, webappDir.getAbsolutePath());
-                System.setProperty("org.apache.tuscany.sca.contribution.processor.ValidationSchemaExtensionPoint.enabled", "false");
-                File propFile = new File(webappDir, "tuscany.properties");
-                if (propFile.isFile()) {
-                    try {
-                        FileInputStream is = new FileInputStream(propFile);
-                        Properties props = new Properties();
-                        props.load(is);
-                        is.close();
-                        System.setProperty(TUSCANY_SHARED_PROP, props.getProperty("singleton", "false"));
-                    } catch (IOException e) {
-                        // Ignore
-                    }
-                }
                 log.info("Using Tuscany webapp: " + webappDir.getAbsolutePath());
                 StandardServer server = (StandardServer)event.getSource();
                 StandardService catalina = (StandardService)server.findService("Catalina");
@@ -91,11 +75,8 @@ public class TuscanyLifecycleListener implements LifecycleListener {
                         if (container instanceof StandardHost) {
                             for (LifecycleListener listener : ((StandardHost)container).findLifecycleListeners()) {
                                 if (listener instanceof HostConfig) {
-                                    ((HostConfig)listener)
-                                        .setContextClass("org.apache.tuscany.sca.tomcat.TuscanyStandardContext");
-                                    log.info("Tuscany enabled on connector: " + container.getName()
-                                        + ":"
-                                        + connector.getPort());
+                                    ((HostConfig)listener).setContextClass("org.apache.tuscany.sca.tomcat.TuscanyStandardContext");
+                                    log.info("Tuscany enabled on connector: " + container.getName() + ":" + connector.getPort());
                                 }
                             }
                         }
