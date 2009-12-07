@@ -190,7 +190,7 @@ public class DataBindingRuntimeWireProcessor implements RuntimeWireProcessor {
             targetContract = sourceContract;
         }
 
-        if (!sourceContract.getInterface().isRemotable()) {
+        if (sourceContract == null || !sourceContract.getInterface().isRemotable()) {
             return;
         }
         List<InvocationChain> chains = endpointReference.getInvocationChains();
