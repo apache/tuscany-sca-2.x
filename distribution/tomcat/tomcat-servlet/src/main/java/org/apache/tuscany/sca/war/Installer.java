@@ -115,6 +115,7 @@ public class Installer {
         }
         removeServerXml(serverXml);
         removeHostConfigXml(serverXml);
+        removeContextXml();
     }
 
     private boolean doInstall() {
@@ -154,9 +155,10 @@ public class Installer {
         // Add Tuscany HostConfig to Hosts definitions in server.xml
         updateHostConfigXml(serverXml);
 
-        // Add Tuscany specific default web.xml
+        // Add Tuscany specific default web.xml and context.xml definitions
         addTuscanyWebXml();
-
+        addTuscanyContextXml();
+        
         return true;
     }
 
@@ -188,6 +190,30 @@ public class Installer {
             writeAll(tuscanyWebXmlFile, newWebXml);
         }
     }
+    
+    private static final String tuscanyContextXML =
+        "\r\n\r\n    <!-- The Tuscany SCA default domain URI.\r\n" + 
+        "    Individual contributions may used different domains by having their \r\n" +
+        "    context.xml files overriding this parameter. -->\r\n" +
+        "    <Parameter name=\"org.apache.tuscany.sca.defaultDomainURI\" value=\"tribes:default\"/>";
+
+    private void addTuscanyContextXml() {
+        File contextXmlFile = new File(catalinaBase, "/conf/context.xml");
+        if ((contextXmlFile.exists())) {
+            String contextXML = readAll(contextXmlFile);
+            String newcontextXml = replace(contextXML, "<Context>", "<Context>" + tuscanyContextXML, "<", "<");
+            backup(contextXmlFile);
+            writeAll(contextXmlFile, newcontextXml);
+        }
+    }
+    private void removeContextXml() {
+        File contextXmlFile = new File(catalinaBase, "/conf/context.xml");
+        if ((contextXmlFile.exists())) {
+            String contextXML = readAll(contextXmlFile);
+            String oldContextXml = replace(contextXML, "<Context>" + tuscanyContextXML, "<Context>",  "<", "<");
+            writeAll(contextXmlFile, oldContextXml);
+        }
+    }
 
     private File findTuscanyTomcatJar(File tuscanyWAR) {
         File lib = new File(tuscanyWAR, "/tomcat-lib");
@@ -199,8 +225,7 @@ public class Installer {
         return null;
     }
 
-    
-    static final String tuscanyListener =
+    private static final String tuscanyListener =
         "\r\n" + "  <!-- Tuscany plugin for Tomcat -->\r\n"
             + "  <Listener className=\"org.apache.tuscany.sca.tomcat.TuscanyLifecycleListener\" />";
 
