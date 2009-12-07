@@ -108,18 +108,24 @@ public class EndpointRegistryImpl implements EndpointRegistry, LifeCycleListener
 
         if (endpointReference.getReference() != null) {
             Endpoint targetEndpoint = endpointReference.getTargetEndpoint();
-            for (Endpoint endpoint : endpoints) {
-                // TODO: implement more complete matching
-                if (matches(targetEndpoint.getURI(), endpoint.getURI())) {
-                    foundEndpoints.add(endpoint);
-                    logger.fine("Found endpoint with matching service  - " + endpoint);
-                }
-                // else the service name doesn't match
-            }
+            foundEndpoints.addAll(findEndpoint(targetEndpoint.getURI()));
         }
 
         return foundEndpoints;
     }
+    
+    protected List<Endpoint> findEndpoint(String uri) {
+        List<Endpoint> foundEndpoints = new ArrayList<Endpoint>();
+        for (Endpoint endpoint : endpoints) {
+            if (matches(uri, endpoint.getURI())) {
+                foundEndpoints.add(endpoint);
+                logger.fine("Found endpoint with matching service  - " + endpoint);
+            }
+            // else the service name doesn't match
+        }
+        return foundEndpoints;
+    }
+    
 
     public synchronized List<EndpointReference> findEndpointReference(Endpoint endpoint) {
         return null;
