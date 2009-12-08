@@ -65,7 +65,10 @@ public class EndpointHelper {
             }
         }
         
-        props.put(RemoteConstants.ENDPOINT_ID, props.get(Constants.SERVICE_ID));
+        String serviceID = (String)props.get(Constants.SERVICE_ID);
+        if (serviceID != null) {
+            props.put(RemoteConstants.ENDPOINT_ID, Long.parseLong(serviceID));
+        }
         props.put(RemoteConstants.ENDPOINT_URI, endpoint.getURI());
         // FIXME: [rfeng] How to pass in the remote service id from the endpoint XML
         props.put(RemoteConstants.SERVICE_EXPORTED_CONFIGS, new String[] {"org.osgi.sca"});
