@@ -34,7 +34,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 // Ignore so its not run in the build yet till its working
-//@Ignore
+@Ignore
 public class MultiRegTestCase {
 
 //    @Test
@@ -98,7 +98,7 @@ public class MultiRegTestCase {
 
         Map<String, String> attrs2 = new HashMap<String, String>();
         attrs2.put("nomcast", "true");
-        attrs2.put("routes", "9.167.197.91:4000");
+        attrs2.put("routes", "9.167.197.91:4000,9.167.197.91:4002");
         ReplicatedEndpointRegistry reg2 = new ReplicatedEndpointRegistry(extensionPoints, attrs2, "foo", "bar");
         reg2.start();
         
@@ -110,11 +110,27 @@ public class MultiRegTestCase {
         Assert.assertNotNull(ep1p2);
         Assert.assertEquals("ep1uri", ep1p2.getURI());
 
+        Map<String, String> attrs3 = new HashMap<String, String>();
+        attrs3.put("nomcast", "true");
+        attrs3.put("routes", "9.167.197.91:4001");
+        ReplicatedEndpointRegistry reg3 = new ReplicatedEndpointRegistry(extensionPoints, attrs3, "foo", "bar");
+        reg3.start();
+        
+        System.out.println("wait");
+        Thread.sleep(5000);
+        System.out.println("run");
+
+        Endpoint ep1p3 = reg3.getEndpoint("ep1uri");
+        Assert.assertNotNull(ep1p3);
+        Assert.assertEquals("ep1uri", ep1p3.getURI());
+
+        
         System.out.println("wait2");
         Thread.sleep(5000);
         System.out.println("end");
         reg1.stop();
         reg2.stop();
+        reg3.stop();
     }
 
 }
