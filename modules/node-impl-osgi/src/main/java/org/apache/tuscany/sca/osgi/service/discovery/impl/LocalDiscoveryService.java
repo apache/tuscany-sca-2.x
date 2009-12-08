@@ -128,6 +128,10 @@ public class LocalDiscoveryService extends AbstractDiscoveryService implements B
     }
 
     public Object addingBundle(Bundle bundle, BundleEvent event) {
+        if (bundle.getHeaders().get(Constants.FRAGMENT_HOST) != null) {
+            // Ignore fragments
+            return null;
+        }
         Collection<URL> scaConfigs = getConfiguration(bundle, "SCA-Configuration", "OSGI-INF/sca-config/*.xml");
         Collection<URL> descriptions = getConfiguration(bundle, "Remote-Service", null);
         if (scaConfigs.isEmpty() && descriptions.isEmpty()) {

@@ -90,7 +90,7 @@ public class OSGiNodeFactoryImpl extends NodeFactoryImpl {
             }
         }
         // Set the bundle
-        configuration.getExtensions().add(bundle);
+        // configuration.getExtensions().add(bundle);
         return configuration;
     }
 
@@ -125,8 +125,8 @@ public class OSGiNodeFactoryImpl extends NodeFactoryImpl {
 
     @Override
     protected Object getNodeKey(NodeConfiguration configuration) {
-        // Use the bundle as the key
-        return configuration.getExtensions().get(0);
+        // each bundle might have more than one nodes started
+        return super.getNodeKey(configuration);
     }
 
     @Override

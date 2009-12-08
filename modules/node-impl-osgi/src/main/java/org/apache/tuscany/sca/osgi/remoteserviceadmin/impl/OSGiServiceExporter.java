@@ -80,7 +80,7 @@ public class OSGiServiceExporter extends AbstractOSGiServiceHandler implements S
                     configuration.setDomainURI(domainURI);
                 }
                 configuration.setURI(contribution.getURI());
-                configuration.getExtensions().add(reference.getBundle());
+                // configuration.getExtensions().add(reference.getBundle());
                 Component component = contribution.getDeployables().get(0).getComponents().get(0);
                 ComponentService service = component.getServices().get(0);
                 service.getExtensions().addAll(getOSGiProperties(registry, reference));
