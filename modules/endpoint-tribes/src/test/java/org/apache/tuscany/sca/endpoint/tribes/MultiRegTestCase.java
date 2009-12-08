@@ -34,7 +34,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 // Ignore so its not run in the build yet till its working
-@Ignore
+//@Ignore
 public class MultiRegTestCase {
 
 //    @Test
@@ -101,12 +101,18 @@ public class MultiRegTestCase {
         attrs2.put("routes", "9.167.197.91:4000");
         ReplicatedEndpointRegistry reg2 = new ReplicatedEndpointRegistry(extensionPoints, attrs2, "foo", "bar");
         reg2.start();
-        Thread.sleep(15000);
+        
+        System.out.println("wait");
+        Thread.sleep(5000);
+        System.out.println("run");
 
         Endpoint ep1p2 = reg2.getEndpoint("ep1uri");
         Assert.assertNotNull(ep1p2);
         Assert.assertEquals("ep1uri", ep1p2.getURI());
 
+        System.out.println("wait2");
+        Thread.sleep(5000);
+        System.out.println("end");
         reg1.stop();
         reg2.stop();
     }
