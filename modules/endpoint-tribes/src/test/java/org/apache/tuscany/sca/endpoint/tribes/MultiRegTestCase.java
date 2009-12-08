@@ -26,7 +26,7 @@ import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Endpoint;
-import org.apache.tuscany.sca.assembly.impl.SCABindingFactoryImpl;
+import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.junit.Assert;
@@ -87,7 +87,7 @@ public class MultiRegTestCase {
         Component comp = assemblyFactory.createComponent();
         ep1.setComponent(comp);
         ep1.setService(assemblyFactory.createComponentService());
-        Binding b = new SCABindingFactoryImpl().createSCABinding();
+        Binding b = factories.getFactory(SCABindingFactory.class).createSCABinding();
         ep1.setBinding(b);
         ep1.setURI("ep1uri");
         reg1.addEndpoint(ep1);
