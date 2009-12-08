@@ -79,7 +79,7 @@ public class MultiRegTestCase {
 
         Map<String, String> attrs1 = new HashMap<String, String>();
         attrs1.put("nomcast", "true");
-        attrs1.put("routes", "9.167.197.91:4001");
+        attrs1.put("routes", "9.167.197.91:4001 9.167.197.91:4002");
         ReplicatedEndpointRegistry reg1 = new ReplicatedEndpointRegistry(extensionPoints, attrs1, "foo", "bar");
         reg1.start();
 
@@ -98,12 +98,12 @@ public class MultiRegTestCase {
 
         Map<String, String> attrs2 = new HashMap<String, String>();
         attrs2.put("nomcast", "true");
-        attrs2.put("routes", "9.167.197.91:4000 9.167.197.91:4002");
+        attrs2.put("routes", "9.167.197.91:4000");
         ReplicatedEndpointRegistry reg2 = new ReplicatedEndpointRegistry(extensionPoints, attrs2, "foo", "bar");
         reg2.start();
         
         System.out.println("wait");
-        Thread.sleep(5000);
+        Thread.sleep(10000);
         System.out.println("run");
 
         Endpoint ep1p2 = reg2.getEndpoint("ep1uri");
@@ -112,7 +112,7 @@ public class MultiRegTestCase {
 
         Map<String, String> attrs3 = new HashMap<String, String>();
         attrs3.put("nomcast", "true");
-        attrs3.put("routes", "9.167.197.91:4001");
+        attrs3.put("routes", "9.167.197.91:4000");
         ReplicatedEndpointRegistry reg3 = new ReplicatedEndpointRegistry(extensionPoints, attrs3, "foo", "bar");
         reg3.start();
         
