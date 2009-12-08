@@ -293,24 +293,45 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry, LifeCycleLi
 
         if (endpointReference.getReference() != null) {
             Endpoint targetEndpoint = endpointReference.getTargetEndpoint();
-            for (Object v : map.values()) {
-                Endpoint endpoint = (Endpoint)v;
-                // TODO: implement more complete matching
-                logger.fine("Matching against - " + endpoint);
-                if (matches(targetEndpoint.getURI(), endpoint.getURI())) {
-                    MapEntry entry = map.getInternal(endpoint.getURI());
-                    if (!isLocal(entry)) {
-                        endpoint.setRemote(true);
-                    }
-                    // if (!entry.isPrimary()) {
-                    ((RuntimeEndpoint) endpoint).bind(registry, this);
-                    // }
-                    foundEndpoints.add(endpoint);
-                    logger.fine("Found endpoint with matching service  - " + endpoint);
+            
+            // in the failure case we repeat the look up after a short
+            // delay to take account of tribes replication delays
+            int repeat = 2;
+            
+            while (repeat > 0){
+                for (Object v : map.values()) {
+                    Endpoint endpoint = (Endpoint)v;
+                    // TODO: implement more complete matching
+                    logger.fine("Matching against - " + endpoint);
+                    if (matches(targetEndpoint.getURI(), endpoint.getURI())) {
+                        MapEntry entry = map.getInternal(endpoint.getURI());
+                        if (!isLocal(entry)) {
+                            endpoint.setRemote(true);
+                        }
+                        // if (!entry.isPrimary()) {
+                        ((RuntimeEndpoint) endpoint).bind(registry, this);
+                        // }
+                        foundEndpoints.add(endpoint);
+                        logger.fine("Found endpoint with matching service  - " + endpoint);
+                        repeat = 0;
+                    } 
+                    // else the service name doesn't match
                 }
-                // else the service name doesn't match
+                
+                if (foundEndpoints.size() == 0) {
+                    // the service name doesn't match any endpoints so wait a little and try
+                    // again in case this is caused by tribes synch delays
+                    logger.info("Repeating endpoint reference match - " + endpointReference);
+                    repeat--;
+                    try {
+                        Thread.sleep(1000);
+                    } catch(Exception ex){
+                        // do nothing
+                    }
+                }
             }
         }
+        
         return foundEndpoints;
     }
 
