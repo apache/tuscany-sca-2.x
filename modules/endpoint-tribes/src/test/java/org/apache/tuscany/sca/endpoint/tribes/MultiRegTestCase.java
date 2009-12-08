@@ -98,7 +98,7 @@ public class MultiRegTestCase {
 
         Map<String, String> attrs2 = new HashMap<String, String>();
         attrs2.put("nomcast", "true");
-        attrs2.put("routes", "9.167.197.91:4000,9.167.197.91:4002");
+        attrs2.put("routes", "9.167.197.91:4000 9.167.197.91:4002");
         ReplicatedEndpointRegistry reg2 = new ReplicatedEndpointRegistry(extensionPoints, attrs2, "foo", "bar");
         reg2.start();
         
