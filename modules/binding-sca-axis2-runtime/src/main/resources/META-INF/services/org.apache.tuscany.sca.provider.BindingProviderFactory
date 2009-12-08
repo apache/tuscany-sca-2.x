@@ -16,5 +16,5 @@
 # under the License. 
 
 # Implementation class for the binding extension
-org.apache.tuscany.sca.binding.sca.axis2.impl.Axis2SCABindingProviderFactory;model=org.apache.tuscany.sca.assembly.DistributedSCABinding
+org.apache.tuscany.sca.binding.sca.axis2.impl.Axis2SCABindingProviderFactory;ranking=150;model=org.apache.tuscany.sca.assembly.DistributedSCABinding
 

@@ -16,5 +16,5 @@
 # under the License. 
 
 # Implementation class for the binding extension
-org.apache.tuscany.sca.binding.sca.rmi.RMISCABindingProviderFactory;model=org.apache.tuscany.sca.assembly.DistributedSCABinding
+org.apache.tuscany.sca.binding.sca.rmi.RMISCABindingProviderFactory;ranking=150;model=org.apache.tuscany.sca.assembly.DistributedSCABinding
 
