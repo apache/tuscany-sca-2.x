@@ -424,6 +424,7 @@ public class EndpointReferenceBuilderImpl {
                                                                              targetComponentService,
                                                                              targetBinding,
                                                                              true));
+                                endpointRef.setBinding(targetBinding);
                                 endpointRef.setStatus(EndpointReference.WIRED_TARGET_FOUND_AND_MATCHED);
                                 // relying on the registry here to resolve the real endpoint
                                 reference.getEndpointReferences().add(endpointRef);
@@ -550,7 +551,8 @@ public class EndpointReferenceBuilderImpl {
                                                                              targetComponentService,
                                                                              targetBinding,
                                                                              true));
-                                endpointRef.setStatus(EndpointReference.WIRED_TARGET_NOT_FOUND);
+                                endpointRef.setBinding(targetBinding);
+                                endpointRef.setStatus(EndpointReference.WIRED_TARGET_FOUND_AND_MATCHED);                                
                                 // relying on the registry here to resolve the real endpoint
                                 reference.getEndpointReferences().add(endpointRef);
 

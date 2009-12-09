@@ -101,7 +101,8 @@ public class ComponentPolicyBuilderImpl {
             if (model instanceof PolicySubject) {
                 PolicySubject subject = (PolicySubject)model;
 
-                if (ignoreExclusiveIntents) {
+                if (!ignoreExclusiveIntents) {
+                    // The intents are merged and the exclusion check will be done after
                     policySubject.getRequiredIntents().addAll(subject.getRequiredIntents());
                 } else {
                     Set<Intent> intents = new HashSet<Intent>();
