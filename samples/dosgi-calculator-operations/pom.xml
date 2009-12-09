@@ -27,7 +27,7 @@
     </parent>
 
     <artifactId>sample-dosgi-calculator-operations</artifactId>
-    <name>Apache Tuscany SCA Distributed OSGi (RFC 119) Caculator Operations Sample</name>
+    <name>Apache Tuscany SCA OSGi Remote Services Caculator Operations Sample</name>
 
     <dependencies>
        <dependency>
