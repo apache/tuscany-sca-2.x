@@ -19,11 +19,11 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <%@ page import="org.oasisopen.sca.client.SCAClientFactory"%>
-<%@ page import="java.net.URI" %>
 <%@ page import="testing.HelloworldService" %>
+<%@ page import="java.net.URI" %>
 
 <%
-   HelloworldService service = SCAClientFactory.newInstance().getService(URI.create("vm:default"), "HelloworldComponent");  
+   HelloworldService service = SCAClientFactory.newInstance(URI.create("vm:default")).getService(HelloworldService.class, "HelloworldComponent"); 
 %>
 
 <html>
