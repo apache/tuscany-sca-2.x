@@ -29,7 +29,7 @@
 <html>
   <body >
 
-    <h2>helloworld-scaclient-webapp</h2>
+    <h2>helloworld-scaclient-jsp</h2>
 
     Calling HelloworldService sayHello("world") returns:
 

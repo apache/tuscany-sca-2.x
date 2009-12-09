@@ -26,9 +26,9 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>helloworld-scaclient-webapp</artifactId>
+    <artifactId>helloworld-scaclient-jsp</artifactId>
     <packaging>war</packaging>
-    <name>Apache Tuscany SCA Tomcat Integration Testing Helloworld Webapp Using SCAClient API</name>
+    <name>Apache Tuscany SCA Tomcat Integration Testing Helloworld Webapp Using SCAClient in a JSP</name>
 
     <dependencies>
         <dependency>
@@ -44,4 +44,5 @@
    </build>
 
 </project>
+
 
