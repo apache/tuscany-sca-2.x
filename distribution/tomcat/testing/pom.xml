@@ -32,6 +32,7 @@
 
     <modules>
         <module>helloworld-service-contribution</module>
+        <module>helloworld-scaclient-webapp</module>
         <module>helloworld-client-webapp</module>
         <module>legal-checks</module>
     </modules>
