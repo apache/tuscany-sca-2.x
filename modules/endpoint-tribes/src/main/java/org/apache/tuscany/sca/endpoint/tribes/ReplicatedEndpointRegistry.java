@@ -78,7 +78,7 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry, LifeCycleLi
     private String id;
     private boolean noMultiCast;
 
-    private static final Channel createChannel(String address, int port, String bindAddress) {
+    private static final GroupChannel createChannel(String address, int port, String bindAddress) {
 
         //create a channel
         GroupChannel channel = new GroupChannel();
@@ -95,7 +95,7 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry, LifeCycleLi
         } else {
             mcastService.setBind(getBindAddress());
         }
-
+        
         return channel;
     }
 
@@ -179,26 +179,31 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry, LifeCycleLi
         if (map != null) {
             throw new IllegalStateException("The registry has already been started");
         }
+        GroupChannel channel = createChannel(address, port, bind);
         map =
-            new ReplicatedMap(null, createChannel(address, port, bind), timeout, this.domainURI,
+            new ReplicatedMap(null, channel, timeout, this.domainURI,
                               new ClassLoader[] {ReplicatedEndpointRegistry.class.getClassLoader()});
         map.addListener(this);
 
         if (noMultiCast) {
             map.getChannel().addInterceptor(new DisableMcastInterceptor());
         }
-
+        
+        // http://www.mail-archive.com/users@tomcat.apache.org/msg24873.html
+        int port = channel.getChannelReceiver().getPort();
+        
         if (staticRoutes != null) {
             StaticMembershipInterceptor smi = new StaticMembershipInterceptor();
             for (URI staticRoute : staticRoutes) {
                 Member member;
                 try {
-                    member = new StaticMember(staticRoute.getHost(), staticRoute.getPort(), 5000);
+                    // The port has to match the receiver port
+                    member = new StaticMember(staticRoute.getHost(), port, 5000);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
                 smi.addStaticMember(member);
-                logger.info("Added static route: " + staticRoute.getHost() + ":" + staticRoute.getPort());
+                logger.info("Added static route: " + staticRoute.getHost() + ":" + port);
             }
             smi.setLocalMember(map.getChannel().getLocalMember(false));
             map.getChannel().addInterceptor(smi);
