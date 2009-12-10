@@ -52,6 +52,10 @@ public class JSONRPCBindingJavascriptProxyFactoryImpl implements JavascriptProxy
         return null;
     }
     
+    public String createJavascriptHeader(ComponentReference componentReference) throws IOException {
+        return "dojo.require('dojo.rpc.JsonService');";
+    }
+    
     public String createJavascriptReference(ComponentReference componentReference) throws IOException {
         EndpointReference epr = componentReference.getEndpointReferences().get(0);
         Endpoint targetEndpoint = epr.getTargetEndpoint();

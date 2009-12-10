@@ -58,6 +58,15 @@ public interface JavascriptProxyFactory {
      */
     InputStream getJavascriptProxyFileAsStream() throws IOException;
 
+    /**
+     * Create any necessary JavaScript imports/headers necessary for the extension to work
+     * This is useful in case of Dojo that need to generate the requires statements to load the dependencies
+     * 
+     * @param componentReference
+     * @return
+     * @throws IOException
+     */
+    String createJavascriptHeader(ComponentReference componentReference) throws IOException;
     
     /**
      * Create a JavaScript Proxy for a given reference

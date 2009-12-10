@@ -52,6 +52,10 @@ public class AtomBindingJavascriptProxyFactoryImpl implements JavascriptProxyFac
         return null;
     }
 
+    public String createJavascriptHeader(ComponentReference componentReference) throws IOException {
+        return "dojo.require('tuscany.AtomService');";
+    }
+
     public String createJavascriptReference(ComponentReference componentReference) throws IOException {
         EndpointReference epr = componentReference.getEndpointReferences().get(0);
         Endpoint targetEndpoint = epr.getTargetEndpoint();

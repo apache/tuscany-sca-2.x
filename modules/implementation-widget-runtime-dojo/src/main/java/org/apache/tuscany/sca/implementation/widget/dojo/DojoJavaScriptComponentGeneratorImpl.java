@@ -61,7 +61,7 @@ public class DojoJavaScriptComponentGeneratorImpl implements ComponentJavaScript
         pw.println();
         pw.println("/* Apache Tuscany SCA Widget header */");
         pw.println();
-
+        
         Map<String, Boolean> bindingClientProcessed = new HashMap<String, Boolean>();
 
         for(ComponentReference reference : component.getReferences()) {
@@ -90,14 +90,14 @@ public class DojoJavaScriptComponentGeneratorImpl implements ComponentJavaScript
                 }
             }
         }
-        
-        //pw.println("dojo.require(\"/dojo.rpc.JsonService\");");
-        //pw.println("dojo.require(\"/tuscany.AtomService\");");
 
         pw.println();
         pw.println("/* Tuscany Reference/Property injection code */");
         pw.println();
 
+        generateJavaScriptHeader(component, javascriptProxyFactories,pw);
+        
+        pw.println();
         
         //define tuscany.sca namespace
         generateJavaScriptNamespace(pw);
@@ -137,6 +137,42 @@ public class DojoJavaScriptComponentGeneratorImpl implements ComponentJavaScript
         pw.println();
         pw.println();
     }
+    
+    /**
+     * 
+     * @param pw
+     * @throws IOException
+     */
+    private static void generateJavaScriptHeader(RuntimeComponent component, JavascriptProxyFactoryExtensionPoint javascriptProxyFactories, PrintWriter pw) throws IOException {
+        Map<String, Boolean> bindingHeaderProcessed = new HashMap<String, Boolean>();
+        
+        for(ComponentReference reference : component.getReferences()) {
+            for(EndpointReference epr : reference.getEndpointReferences()) {
+                Endpoint targetEndpoint = epr.getTargetEndpoint();
+                if (targetEndpoint.isUnresolved()) {
+                    //force resolution and targetEndpoint binding calculations
+                    //by calling the getInvocationChain
+                    ((RuntimeEndpointReference) epr).getInvocationChains();
+                    targetEndpoint = epr.getTargetEndpoint();
+                }
+                
+                Binding binding = targetEndpoint.getBinding();
+                if (binding != null) {
+                    JavascriptProxyFactory jsProxyFactory = javascriptProxyFactories.getProxyFactory(binding.getClass());
+                    
+                    String bindingKey = binding.getClass().getName();
+                    Boolean processedFlag = bindingHeaderProcessed.get(bindingKey);
+                    
+                    //check if binding client code was already processed and inject to the generated script
+                    if( processedFlag == null || processedFlag.booleanValue() == false) {
+                        pw.println(jsProxyFactory.createJavascriptHeader(reference));
+                        bindingHeaderProcessed.put(bindingKey, Boolean.TRUE);
+                    }
+                }
+            }
+        }
+    }
+       
 
     /**
      * Generate the tuscany.sca namespace if not yet available
