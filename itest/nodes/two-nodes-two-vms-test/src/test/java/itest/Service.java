@@ -19,7 +19,11 @@
 
 package itest;
 
+import java.io.File;
+
 import org.apache.tuscany.sca.domain.node.DomainNode;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -29,17 +33,17 @@ import org.junit.Test;
  */
 public class Service {
 
-//    private static Node serviceNode;
-    private static DomainNode serviceNode;
+    private static Node serviceNode;
+//    private static DomainNode serviceNode;
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-//        NodeFactory factory = NodeFactory.newInstance();
-//
-//        serviceNode = factory.createNode(new File("server-config.xml").toURI().toURL());
-//        serviceNode.start();
+        NodeFactory factory = NodeFactory.newInstance();
+
+        serviceNode = factory.createNode(new File("server-config.xml").toURI().toURL());
+        serviceNode.start();
         
-        serviceNode = new DomainNode("tribes:default", new String[]{"../helloworld-service/target/classes"});
+//        serviceNode = new DomainNode("tribes:default", new String[]{"../helloworld-service/target/classes"});
 
     }
 
@@ -56,4 +60,9 @@ public class Service {
             serviceNode.stop();
         }
     }
+    
+    public static void main(String[] args) throws Exception {
+        Service.setUpBeforeClass();
+        Service.tearDownAfterClass();
+    }    
 }

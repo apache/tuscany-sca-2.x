@@ -20,12 +20,12 @@
 	
     <target name="run"> 
     	
-       <parallel>
+       <parallel failonany="true">
 
             <daemons>
                <ant antfile="server.xml"/>
             </daemons>
-
+      	
             <sequential>
                 <sleep seconds="4"/>
                 <ant antfile="client.xml"/>

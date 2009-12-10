@@ -19,7 +19,11 @@
 
 package itest;
 
+import java.io.File;
+
 import org.apache.tuscany.sca.domain.node.DomainNode;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -29,16 +33,23 @@ import org.junit.Test;
  */
 public class Client {
 
-    private static DomainNode clientNode;
+    private static Node clientNode;
+//    private static DomainNode clientNode;
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-//        NodeFactory factory = NodeFactory.newInstance();
-//
-//        serviceNode = factory.createNode(new File("client-config.xml").toURI().toURL());
-//        serviceNode.start();
+        NodeFactory factory = NodeFactory.newInstance();
+
+        clientNode = factory.createNode(new File("client-config.xml").toURI().toURL());
         
-        clientNode = new DomainNode("tribes:default", new String []{"../helloworld-client/target/itest-nodes-helloworld-client-2.0-SNAPSHOT.jar"});
+        try {
+            clientNode.start();
+        } catch (Exception ex){
+            ex.printStackTrace();
+            throw ex;
+        }
+        
+//        clientNode = new DomainNode("tribes:default", new String []{"../helloworld-client/target/itest-nodes-helloworld-client-2.0-SNAPSHOT.jar"});
     }
 
     @Test
@@ -51,5 +62,10 @@ public class Client {
         if (clientNode != null) {
             clientNode.stop();
         }
+    }
+    
+    public static void main(String[] args) throws Exception {
+        Client.setUpBeforeClass();
+        Client.tearDownAfterClass();
     }
 }

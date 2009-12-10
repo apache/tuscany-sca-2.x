@@ -32,14 +32,18 @@ import org.junit.Test;
  */
 public class TwoNodesTestCase {
 
-    private static Node serviceNode;
+    private static Node clientNode;
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        NodeFactory factory = NodeFactory.newInstance();
+        
+        // Get the service running in a separate VM
+        //Runtime.getRuntime().exec("ant");
+        
+        //NodeFactory factory = NodeFactory.newInstance();
 
-        serviceNode = factory.createNode(new File("server-config.xml").toURI().toURL());
-        serviceNode.start();
+        //clientNode = factory.createNode(new File("client-config.xml").toURI().toURL());
+        //clientNode.start();
 
     }
 
@@ -50,8 +54,8 @@ public class TwoNodesTestCase {
 
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
-        if (serviceNode != null) {
-            serviceNode.stop();
-        }
+//        if (clientNode != null) {
+//            clientNode.stop();
+//        }
     }
 }
