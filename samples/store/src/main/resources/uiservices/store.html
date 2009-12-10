@@ -43,13 +43,13 @@
 		}
 		var catalog = "";
 		
-			for (var i=0; i<items.length; i++) {
-				var item = items[i].name + ' - ' + items[i].price;
-				catalog += '<input name="items" type="checkbox" value="' + 
-							item + '">' + item + ' <br>';
-			}
-			document.getElementById('catalog').innerHTML=catalog;
-			catalogItems = items;
+		for (var i=0; i<items.length; i++) {
+			var item = items[i].name + ' - ' + items[i].price;
+			catalog += '<input name="items" type="checkbox" value="' + 
+						item + '">' + item + ' <br>';
+		}
+		document.getElementById('catalog').innerHTML=catalog;
+		catalogItems = items;
 	}
 	
 	function shoppingCart_getResponse(feed) {
@@ -65,12 +65,12 @@
 			document.getElementById("shoppingCart").innerHTML = list;
 
 			if (entries.length != 0) {			
-					try	{
-						shoppingTotal.getTotal().addCallback(shoppingTotal_getTotalResponse);
-					}
-					catch(e){
-						alert(e);
-					}
+				try	{
+					shoppingTotal.getTotal().addCallback(shoppingTotal_getTotalResponse);
+				}
+				catch(e){
+					alert(e);
+				}
 			}
 		}
 	}
@@ -90,9 +90,8 @@
 	function addToCart() {
 		var items  = document.catalogForm.items;
 		var j = 0;
-		for (var i=0; i<items.length; i++)
+		for (var i=0; i<items.length; i++) {
 			if (items[i].checked) {
-					
 				var entry = '<entry xmlns="http://www.w3.org/2005/Atom"><title>item</title><content type="text/xml">' +
                 	'<Item xmlns="http://services/">' +
                 	'<name xmlns="">' + catalogItems[i].name + '</name>' + '<price xmlns="">' + catalogItems[i].price + '</price>' +
@@ -100,6 +99,7 @@
 				shoppingCart.post(entry).addCallback(shoppingCart_postResponse);
 				items[i].checked = false;
 			}
+		}
 	}
 	function checkoutCart() {
 		document.getElementById('store').innerHTML='<h2>' +
@@ -122,15 +122,14 @@
 	}	
 
 	function init() {
-			
-			try	{
-				catalog.get().addCallback(catalog_getResponse);
-				shoppingCart.get("").addCallback(shoppingCart_getResponse);
-			}
-			catch(e){
-				alert(e);
-			}
+		try	{
+			catalog.get().addCallback(catalog_getResponse);
+			shoppingCart.get("").addCallback(shoppingCart_getResponse);
 		}
+		catch(e){
+			alert(e);
+		}
+	}
 	
 </script>
 
