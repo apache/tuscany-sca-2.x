@@ -36,22 +36,6 @@
         </repository>
     </repositories>
 
-    <profiles>
-        <profile>
-            <id>default</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <modules>
-                <module>calculator</module>
-                <module>calculator-equinox</module>
-                <module>calculator-osgi</module>
-                <module>calculator-rmi-reference</module>
-                <module>calculator-rmi-service</module>
-                <module>dosgi-calculator</module>
-                <module>dosgi-calculator-operations</module>
-                <module>dosgi-dynamic-calculator</module>
-
 <!-- *********
     IF YOU ADD ANY SAMPLES THEN ALSO ADD THEM TO 
         distribution\all\src\main\components\bin-samples.xml
@@ -61,12 +45,29 @@
     ALSO SAMPLES SHOULD HAVE A TEST IN itest/distribution TO 
     ENSURE THAT THEY WORK PROPERLY OUT OF A DISTRIBUTION
      ********* -->
-
+     
+    <profiles>
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+                <module>binding-ws-calculator</module>
+                <module>calculator</module>
+                <module>calculator-equinox</module>
+                <module>calculator-osgi</module>
+                <module>calculator-rmi-reference</module>
+                <module>calculator-rmi-service</module>
+                <module>dosgi-calculator</module>
+                <module>dosgi-calculator-operations</module>
+                <module>dosgi-dynamic-calculator</module>
                 <module>dosgi-dynamic-calculator-operations</module>
                 <!--module>helloworld</module-->
                 <module>helloworld-bpel</module>
                 <module>implementation-java-calculator</module>
-                <module>binding-ws-calculator</module>
+                <module>store</module>
+                <module>store-webapp</module>                
                 <module>webapps/helloworld</module>
                 <module>webapps/helloworld-bpel</module>
                 <module>webapps/helloworld-jms</module>
