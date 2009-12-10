@@ -60,6 +60,8 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry, LifeCycleLi
     private final static Logger logger = Logger.getLogger(ReplicatedEndpointRegistry.class.getName());
     private static final String MULTICAST_ADDRESS = "228.0.0.100";
     private static final int MULTICAST_PORT = 50000;
+    
+    private static final int FIND_REPEAT_COUNT = 3;
 
     private int port = MULTICAST_PORT;
     private String address = MULTICAST_ADDRESS;
@@ -299,7 +301,7 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry, LifeCycleLi
             
             // in the failure case we repeat the look up after a short
             // delay to take account of tribes replication delays
-            int repeat = 2;
+            int repeat = FIND_REPEAT_COUNT;
             
             while (repeat > 0){
                 for (Object v : map.values()) {
