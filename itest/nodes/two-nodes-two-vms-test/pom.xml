@@ -90,7 +90,7 @@
                             <goal>run</goal>
                         </goals>
                         <configuration>
-                            <tasks> 
+                            <tasks unless="maven.test.skip"> 
                                 <property name="tuscany.version" value="${version}" />
                                 <property name="runtime_classpath" refid="maven.runtime.classpath"/>
                                 <ant antfile="./build.xml" target="run"/>
