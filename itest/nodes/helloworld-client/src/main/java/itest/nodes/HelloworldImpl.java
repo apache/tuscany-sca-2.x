@@ -32,17 +32,12 @@ public class HelloworldImpl implements Helloworld {
     public Helloworld service;
     
     @Init
-    public void initialize(){
+    public void initialize() throws Exception{
     	System.out.println(">>>>>> " + sayHello("init"));
     }
     
-    public String sayHello(String name) {
-        try {
+    public String sayHello(String name) throws Exception {
         return "Hi " + service.sayHello(name);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return e.getMessage();
-        }
     }
 
 }

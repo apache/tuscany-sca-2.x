@@ -61,7 +61,13 @@ public class StopStartNodesTestCase {
         client = clientNode.getService(Helloworld.class, "HelloworldClient");
         assertNotNull(client);
 
-        assertEquals(true, client.sayHello("Petra").startsWith("Unable to bind"));
+        try {
+            client.sayHello("Petra");
+            fail();
+        } catch (Exception e) {
+            // expected
+            // TODO: better exception than NPE
+        }
         
         serviceNode = factory.createNode(new Contribution("service", getJar("../helloworld-service/target")));
         serviceNode.start();
