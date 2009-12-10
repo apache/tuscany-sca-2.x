@@ -20,6 +20,7 @@
 <head>
 <title>Store</title>
 
+<script type="text/javascript" src="/dojo/dojo.js"></script>
 <script type="text/javascript" src="store.js"></script>
 
 <script language="JavaScript">
@@ -65,7 +66,7 @@
 
 			if (entries.length != 0) {			
 					try	{
-						shoppingTotal.getTotal(shoppingTotal_getTotalResponse);
+						shoppingTotal.getTotal().addCallback(shoppingTotal_getTotalResponse);
 					}
 					catch(e){
 						alert(e);
@@ -83,7 +84,7 @@
 	}
 	
 	function shoppingCart_postResponse(entry) {
-		shoppingCart.get("", shoppingCart_getResponse);
+		shoppingCart.get("").addCallback(shoppingCart_getResponse);
 	}				
 
 	function addToCart() {
@@ -96,7 +97,7 @@
                 	'<Item xmlns="http://services/">' +
                 	'<name xmlns="">' + catalogItems[i].name + '</name>' + '<price xmlns="">' + catalogItems[i].price + '</price>' +
                  	'</Item>' + '</content></entry>';
-				shoppingCart.post(entry, shoppingCart_postResponse);
+				shoppingCart.post(entry).addCallback(shoppingCart_postResponse);
 				items[i].checked = false;
 			}
 	}
@@ -112,10 +113,10 @@
 					'<br>'+
 					'<input type="submit" value="Continue Shopping">'+ 
 				'</form>';
-		shoppingCart.del("", null);
+		shoppingCart.del("");
 	}
 	function deleteCart() {
-		shoppingCart.del("", null);
+		shoppingCart.del("");
 		document.getElementById('shoppingCart').innerHTML = "";
 		document.getElementById('total').innerHTML = "";	
 	}	
@@ -123,8 +124,8 @@
 	function init() {
 			
 			try	{
-				catalog.get(catalog_getResponse);
-				shoppingCart.get("", shoppingCart_getResponse);
+				catalog.get().addCallback(catalog_getResponse);
+				shoppingCart.get("").addCallback(shoppingCart_getResponse);
 			}
 			catch(e){
 				alert(e);
