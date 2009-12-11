@@ -39,7 +39,7 @@ public interface EndpointRegistry {
     void addEndpointReference(EndpointReference endpointReference);
     void removeEndpointReference(EndpointReference endpointReference);
     List<EndpointReference> findEndpointReference(Endpoint endpoint);
-    List<EndpointReference> getEndpointRefereneces();
+    List<EndpointReference> getEndpointReferences();
 
     void addListener(EndpointListener listener);
     void removeListener(EndpointListener listener);

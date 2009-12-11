@@ -61,7 +61,7 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry, LifeCycleLi
     private static final String MULTICAST_ADDRESS = "228.0.0.100";
     private static final int MULTICAST_PORT = 50000;
     
-    private static final int FIND_REPEAT_COUNT = 3;
+    private static final int FIND_REPEAT_COUNT = 10;
 
     private int port = MULTICAST_PORT;
     private String address = MULTICAST_ADDRESS;
@@ -332,6 +332,7 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry, LifeCycleLi
                         Thread.sleep(1000);
                     } catch(Exception ex){
                         // do nothing
+                        repeat=0;
                     }
                 }
             }
@@ -352,7 +353,7 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry, LifeCycleLi
         return (Endpoint)map.get(uri);
     }
 
-    public List<EndpointReference> getEndpointRefereneces() {
+    public List<EndpointReference> getEndpointReferences() {
         return endpointreferences;
     }
 

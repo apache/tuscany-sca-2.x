@@ -148,7 +148,7 @@ public class EndpointRegistryImpl implements EndpointRegistry, LifeCycleListener
         logger.fine("Remove endpoint reference - " + endpointReference.toString());
     }
 
-    public synchronized List<EndpointReference> getEndpointRefereneces() {
+    public synchronized List<EndpointReference> getEndpointReferences() {
         return endpointreferences;
     }
 
