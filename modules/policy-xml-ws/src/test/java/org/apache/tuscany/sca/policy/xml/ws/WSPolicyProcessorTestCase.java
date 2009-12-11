@@ -29,7 +29,10 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
+import org.apache.neethi.Policy;
 import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.junit.Assert;
 
 /**
  * Test reading SCA XML assembly documents.
@@ -37,75 +40,77 @@ import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
  * @version $Rev$ $Date$
  */
 public class WSPolicyProcessorTestCase extends TestCase {
-	
-	private static final String VALID_WS_POLICY = 
-		"<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-		    + "<definitions xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\""
- 			+ " targetNamespace=\"http://test\""
- 			+ " xmlns:test=\"http://test\""
- 			+ " xmlns:sca=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\">"
+
+    private static final String VALID_WS_POLICY =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "<definitions xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\""
+            + " targetNamespace=\"http://test\""
+            + " xmlns:test=\"http://test\""
+            + " xmlns:sca=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\">"
             + " "
             + " <policySet name=\"SecureWSPolicy\""
             + " provides=\"test:confidentiality\""
- 	        + " appliesTo=\"sca:binding.ws\""
- 	        + " xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\""
- 	        + " xmlns:sp=\"http://schemas.xmlsoap.org/ws/2002/12/secext\""
- 	        + " xmlns:wsp=\"http://schemas.xmlsoap.org/ws/2004/09/policy\">"
-	        + " <wsp:Policy>"
-	        + "    <wsp:ExactlyOne>"
-	        + "       <wsp:All>"
-	        + "          <sp:SecurityToken>"
-	        + "             <sp:TokenType>sp:X509v3</sp:TokenType>"
-	        + "          </sp:SecurityToken>"
-	        + "          <sp:UsernameToken />" 
-	        + "           <sp:SignedParts />"
-	        + "          <sp:EncryptedParts>"
-	        + "             <sp:Body />"
-	        + "          </sp:EncryptedParts>"
-	        + "          <sp:TransportBinding>"
-	        + "             <sp:IncludeTimeStamp />"
-	        + "          </sp:TransportBinding>"
-	        + "        </wsp:All>"
-	        + "    </wsp:ExactlyOne>"
+            + " appliesTo=\"sca:binding.ws\""
+            + " xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\""
+            + " xmlns:sp=\"http://schemas.xmlsoap.org/ws/2002/12/secext\""
+            + " xmlns:wsp=\"http://schemas.xmlsoap.org/ws/2004/09/policy\">"
+            + " <wsp:Policy>"
+            + "    <wsp:ExactlyOne>"
+            + "       <wsp:All>"
+            + "          <sp:SecurityToken>"
+            + "             <sp:TokenType>sp:X509v3</sp:TokenType>"
+            + "          </sp:SecurityToken>"
+            + "          <sp:UsernameToken />"
+            + "           <sp:SignedParts />"
+            + "          <sp:EncryptedParts>"
+            + "             <sp:Body />"
+            + "          </sp:EncryptedParts>"
+            + "          <sp:TransportBinding>"
+            + "             <sp:IncludeTimeStamp />"
+            + "          </sp:TransportBinding>"
+            + "        </wsp:All>"
+            + "    </wsp:ExactlyOne>"
             + " </wsp:Policy>"
             + " </policySet>"
             + " </definitions>";
-	
-	private XMLInputFactory inputFactory;
-        
+
+    private XMLInputFactory inputFactory;
+
     @Override
     public void setUp() throws Exception {
         inputFactory = XMLInputFactory.newInstance();
-        
+
     }
 
     public void testReadWsPolicy() throws Exception {
-    	XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(VALID_WS_POLICY));
-    	WSPolicyProcessor processor = new WSPolicyProcessor();
-    	Object artifact = null;
-    	
+        XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(VALID_WS_POLICY));
+        WSPolicyProcessor processor = new WSPolicyProcessor(new DefaultExtensionPointRegistry());
+        Object artifact = null;
+
         QName name = null;
         reader.next();
-        while ( true ) {
+        while (true) {
             int event = reader.getEventType();
             switch (event) {
                 case START_ELEMENT: {
-                	name = reader.getName();
-                	
-                	if(WSPolicyProcessor.WS_POLICY_QNAME.equals(name)) {
-                		 artifact = processor.read(reader, new ProcessorContext());
-                	}
-                	
+                    name = reader.getName();
+
+                    if (WSPolicyProcessor.WS_POLICY_QNAME.equals(name)) {
+                        artifact = processor.read(reader, new ProcessorContext());
+                    }
+
                     break;
                 }
             }
-            
-            if ( reader.hasNext() ) {
+
+            if (reader.hasNext()) {
                 reader.next();
             } else {
                 break;
             }
         }
         assertNotNull(artifact);
+        Assert.assertTrue(artifact instanceof Policy);
+        Policy policy = (Policy) artifact;
+        Assert.assertTrue(policy.getAlternatives().hasNext());
     }
 }

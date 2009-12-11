@@ -19,8 +19,6 @@
 
 package org.apache.tuscany.sca.policy.xml.ws;
 
-import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
-
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -31,7 +29,10 @@ import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.OMNamespace;
+import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.neethi.PolicyEngine;
+import org.apache.tuscany.sca.common.xml.stax.StAXHelper;
+import org.apache.tuscany.sca.common.xml.stax.reader.XMLDocumentStreamReader;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
@@ -39,68 +40,66 @@ import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
 import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
-import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 
 /**
  * Processor for handling xml models of PolicySet definitions
  *
  * @version $Rev$ $Date$
  */
-public class WSPolicyProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<org.apache.neethi.Policy> {
+public class WSPolicyProcessor extends BaseStAXArtifactProcessor implements
+    StAXArtifactProcessor<org.apache.neethi.Policy> {
     public final static String WS_POLICY_NS = "http://schemas.xmlsoap.org/ws/2004/09/policy";
     public final static String WS_POLICY = "Policy";
-	
-    public final static QName WS_POLICY_QNAME =new QName(WS_POLICY_NS, WS_POLICY);
 
-    public WSPolicyProcessor() {
+    public final static QName WS_POLICY_QNAME = new QName(WS_POLICY_NS, WS_POLICY);
+    private StAXHelper stAXHelper;
+
+    public WSPolicyProcessor(ExtensionPointRegistry registry) {
+        this.stAXHelper = StAXHelper.getInstance(registry);
     }
-    
-    public WSPolicyProcessor(FactoryExtensionPoint modelFactories) {
-    }
-    
+
     public QName getArtifactType() {
         return WS_POLICY_QNAME;
     }
-    
+
     public Class<org.apache.neethi.Policy> getModelType() {
         return org.apache.neethi.Policy.class;
     }
 
-    public org.apache.neethi.Policy read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException, XMLStreamException {
-		org.apache.neethi.Policy wsPolicy = null;
-
-		int event = reader.getEventType();
-		if (event == START_ELEMENT) {
-			QName name = reader.getName();
-			if (WS_POLICY_QNAME.equals(name)) {
-				OMElement policyElement = loadElement(reader);
-				wsPolicy = PolicyEngine.getPolicy(policyElement);
-			}
-		}
-		return wsPolicy;
+    public org.apache.neethi.Policy read(XMLStreamReader reader, ProcessorContext context)
+        throws ContributionReadException, XMLStreamException {
+        org.apache.neethi.Policy wsPolicy = null;
+        XMLDocumentStreamReader doc = new XMLDocumentStreamReader(reader);
+        StAXOMBuilder builder = new StAXOMBuilder(doc);
+        OMElement element = builder.getDocumentElement();
+        wsPolicy = PolicyEngine.getPolicy(element);
+        return wsPolicy;
     }
-        
-    public void write(org.apache.neethi.Policy wsPolicy, XMLStreamWriter writer, ProcessorContext context) throws ContributionWriteException, XMLStreamException {
+
+    public void write(org.apache.neethi.Policy wsPolicy, XMLStreamWriter writer, ProcessorContext context)
+        throws ContributionWriteException, XMLStreamException {
 
         // Write an <sca:policySet>
         writer.writeStartElement(WS_POLICY_NS, WS_POLICY);
-       
-        //FIXME write proper ws-policy stuff here
-       
+
+        if (wsPolicy != null) {
+            wsPolicy.serialize(writer);
+        }
+
         writer.writeEndElement();
     }
 
-    public void resolve(org.apache.neethi.Policy wsPolicy, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
+    public void resolve(org.apache.neethi.Policy wsPolicy, ModelResolver resolver, ProcessorContext context)
+        throws ContributionResolveException {
 
-    }   
+    }
 
-       
     private OMElement loadElement(XMLStreamReader reader) throws XMLStreamException {
         OMFactory fac = OMAbstractFactory.getOMFactory();
         OMElement head = fac.createOMElement(reader.getName());
         OMElement current = head;
-        
+
         while (true) {
             switch (reader.next()) {
                 case XMLStreamConstants.START_ELEMENT:
@@ -114,7 +113,7 @@ public class WSPolicyProcessor extends BaseStAXArtifactProcessor implements StAX
                         child.declareNamespace(ns, prefix);
                     }
 
-                    if(!"".equals(name.getNamespaceURI())) {
+                    if (!"".equals(name.getNamespaceURI())) {
                         child.declareNamespace(name.getNamespaceURI(), name.getPrefix());
                     }
 
@@ -126,11 +125,11 @@ public class WSPolicyProcessor extends BaseStAXArtifactProcessor implements StAX
                         String prefix = reader.getAttributePrefix(i);
                         String qname = reader.getAttributeLocalName(i);
                         String value = reader.getAttributeValue(i);
-                        
-                        if ( ns != null ) {
+
+                        if (ns != null) {
                             omNs = fac.createOMNamespace(ns, prefix);
                         }
-                            
+
                         child.addAttribute(qname, value, omNs);
                         if (ns != null) {
                             child.declareNamespace(ns, prefix);
@@ -145,7 +144,7 @@ public class WSPolicyProcessor extends BaseStAXArtifactProcessor implements StAX
                     fac.createOMText(current, reader.getText());
                     break;
                 case XMLStreamConstants.END_ELEMENT:
-                    if ( current == head ) {
+                    if (current == head) {
                         return head;
                     } else {
                         current = (OMElement)current.getParent();
@@ -153,6 +152,5 @@ public class WSPolicyProcessor extends BaseStAXArtifactProcessor implements StAX
             }
         }
     }
-    
 
- }
+}
