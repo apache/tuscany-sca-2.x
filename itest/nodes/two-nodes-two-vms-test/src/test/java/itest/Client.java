@@ -28,9 +28,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-/**
- * This shows how to test the Calculator service component.
- */
 public class Client {
 
     private static Node clientNode;

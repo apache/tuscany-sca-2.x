@@ -28,9 +28,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-/**
- * This shows how to test the Calculator service component.
- */
 public class Service {
 
     private static Node serviceNode;
@@ -59,10 +56,5 @@ public class Service {
         if (serviceNode != null) {
             serviceNode.stop();
         }
-    }
-    
-    public static void main(String[] args) throws Exception {
-        Service.setUpBeforeClass();
-        Service.tearDownAfterClass();
     }    
 }

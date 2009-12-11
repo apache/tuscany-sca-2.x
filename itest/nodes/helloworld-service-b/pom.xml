@@ -25,25 +25,25 @@
         <version>2.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <packaging>pom</packaging>
-    <artifactId>itest-nodes</artifactId>
-    <name>Apache Tuscany SCA iTest Nodes</name>
-    
-  <build>
-	<defaultGoal>install</defaultGoal>
-  </build>
+    <artifactId>itest-nodes-helloworld-service-b</artifactId>
+    <name>Apache Tuscany SCA iTest Nodes Helloworld Service B</name>
 
-  <modules>
-    <module>helloworld-iface</module>
-    <module>helloworld-service</module>
-    <module>helloworld-client</module>
-    <module>helloworld-service-a</module>
-    <module>helloworld-service-b</module>
-    <module>helloworld-service-c</module>
-    <module>one-node-test</module>
-    <module>two-nodes-test</module>
-    <module>two-nodes-two-vms-test</module>
-    <module>three-nodes-three-vms-test</module>
-  </modules>
-
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>itest-nodes-helloworld-iface</artifactId>
+            <version>2.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-sca-api</artifactId>
+            <version>2.0-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-sca-api</artifactId>
+            <version>2.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 </project>
