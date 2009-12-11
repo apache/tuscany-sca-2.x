@@ -22,8 +22,15 @@ package org.apache.tuscany.sca.core.runtime.impl;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.assembly.Component;
+import org.apache.tuscany.sca.assembly.ComponentReference;
+import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
+import org.apache.tuscany.sca.assembly.Multiplicity;
+import org.apache.tuscany.sca.assembly.SCABinding;
+import org.apache.tuscany.sca.assembly.builder.Messages;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
@@ -35,11 +42,12 @@ import org.apache.tuscany.sca.runtime.EndpointReferenceBinder;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
 
 /**
- * An builder that takes endpoint references and resolves them. It either finds local
+ * A builder that takes endpoint references and resolves them. It either finds local
  * service endpoints if they are available or asks the domain. The main function here
  * is to perform binding and policy matching.
- * This is a separate builder in case it is required by undresolved endpoints
- * once the runtime has started.
+ * 
+ * This is a separate builder so that the mechanism for reference/service matching 
+ * can be replaced independently
  *
  * @version $Rev$ $Date$
  */
@@ -63,7 +71,138 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
         monitor = monitorFactory.createMonitor();
     }
     
+    /**
+     * Match a reference with a service endpoint
+     * 
+     * Taking a look a consolidating the match logic that used to be in the
+     * EndpointReferenceBuilder with the match logic that is in the bind() 
+     * method below
+     */
+    public boolean match(EndpointRegistry endpointRegistry,  
+                         EndpointReference endpointReference){
+        
+        Problem problem = null;
+        
+        if (endpointReference.getStatus() == EndpointReference.AUTOWIRE_PLACEHOLDER){
+            // do autowire matching
+            Multiplicity multiplicity = endpointReference.getReference().getMultiplicity();
+            for (Endpoint endpoint : endpointRegistry.getEndpoints()){
+//              if (endpoint is in the same composite as endpoint reference){
+                    if ((multiplicity == Multiplicity.ZERO_ONE || 
+                         multiplicity == Multiplicity.ONE_ONE) && 
+                        (endpointReference.getReference().getEndpointReferences().size() > 1)) {
+                        break;
+                    }
 
+                    // Prevent autowire connecting to self
+                    if (endpointReference.getComponent() == 
+                        endpoint.getComponent()) {
+                        continue;
+                    }
+                    
+                    if (haveMatchingPolicy(endpointReference, endpoint) &&
+                        haveMatchingInterfaceContracts(endpointReference, endpoint)){
+                        // matching service so find if this reference already has 
+                        // an endpoint reference for this endpoint
+                        Endpoint autowireEndpoint = null;
+                        
+                        for (EndpointReference epr : endpointReference.getReference().getEndpointReferences()){
+                            if (epr.getTargetEndpoint() == endpoint){
+                                autowireEndpoint = endpoint;
+                                break;
+                            }
+                        }
+                        
+                        if (autowireEndpoint == null){
+                            // create new EPR for autowire
+                            EndpointReference autowireEndpointRefrence = null;
+                            try {
+                                autowireEndpointRefrence = (EndpointReference)endpointReference.clone();
+                            } catch (Exception ex){
+                                // won't happen as clone is supported
+                            }
+                            
+                            autowireEndpointRefrence.setTargetEndpoint(autowireEndpoint);
+                            autowireEndpointRefrence.setStatus(EndpointReference.WIRED_TARGET_FOUND_AND_MATCHED);
+                            endpointReference.getReference().getEndpointReferences().add(autowireEndpointRefrence);  
+                        }
+                    }
+                    
+//              }
+            }
+            
+            if (multiplicity == Multiplicity.ONE_N || multiplicity == Multiplicity.ONE_ONE) {
+                if (endpointReference.getReference().getEndpointReferences().size() == 1) {
+                    Monitor.error(monitor,
+                                  this,
+                                  Messages.ASSEMBLY_VALIDATION,
+                                  "NoComponentReferenceTarget",
+                                  endpointReference.getReference().getName());
+                }
+            }
+        } else if ( endpointReference.getStatus() == EndpointReference.WIRED_TARGET_FOUND_AND_MATCHED||
+                    endpointReference.getStatus() == EndpointReference.RESOLVED_BINDING ) {
+            // The endpoint reference is already resolved to either
+            // a service endpoint local to this composite or it has
+            // a remote binding
+            
+            // still need to check that the callback endpoint is set correctly
+            if (hasCallback(endpointReference) &&
+                endpointReference.getCallbackEndpoint() != null &&
+                endpointReference.getCallbackEndpoint().isUnresolved() == true ){
+                problem = selectCallbackEndpoint(endpointReference,
+                                                 endpointReference.getReference().getCallbackService().getEndpoints());
+            } 
+        } else if (endpointReference.getStatus() == EndpointReference.WIRED_TARGET_NOT_FOUND ||
+                   endpointReference.getStatus() == EndpointReference.NOT_CONFIGURED){
+            // The reference is not yet matched to a service
+
+            // find the service in the endpoint registry
+            List<Endpoint> endpoints = endpointRegistry.findEndpoint(endpointReference);
+
+            problem = selectForwardEndpoint(endpointReference,
+                                            endpoints);
+
+            if (problem == null && hasCallback(endpointReference)){
+                problem = selectCallbackEndpoint(endpointReference,
+                                                 endpointReference.getReference().getCallbackService().getEndpoints());
+            }             
+        } 
+        
+        if (problem != null){
+            monitor.problem(problem);
+            return false;
+        }
+
+        if (endpointReference.getStatus() != EndpointReference.WIRED_TARGET_FOUND_AND_MATCHED &&
+            endpointReference.getStatus() != EndpointReference.RESOLVED_BINDING){
+            
+            // how to tell between runtime and build time
+            boolean runtime = false;
+            
+            if (runtime){
+                problem = monitor.createProblem(this.getClass().getName(), 
+                                                "endpoint-validation-messages", 
+                                                Problem.Severity.ERROR, 
+                                                this, 
+                                                "EndpointReferenceCantBeMatched", 
+                                                endpointReference.toString());
+            } else {
+                problem = monitor.createProblem(this.getClass().getName(), 
+                                                Messages.ASSEMBLY_VALIDATION, 
+                                                Problem.Severity.WARNING, 
+                                                this, 
+                                                "ComponentReferenceTargetNotFound",
+                                                "NEED COMPOSITE NAME",
+                                                endpointReference.toString());
+            }
+            
+            monitor.problem(problem);
+            return false;
+        }
+       
+        return true;
+    }
 
     /**
      * Build a single endpoint reference
@@ -71,7 +210,8 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
      * @param invocable
      * @param monitor
      */
-    public boolean bind(EndpointRegistry endpointRegistry, EndpointReference endpointReference) {
+    public boolean bind(EndpointRegistry endpointRegistry, 
+                        EndpointReference endpointReference) {
         Problem problem = null;
         if ( endpointReference.getStatus() == EndpointReference.WIRED_TARGET_FOUND_AND_MATCHED ||
              endpointReference.getStatus() == EndpointReference.RESOLVED_BINDING ) {
@@ -155,7 +295,8 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
         } else {
             // find the first endpoint that matches this endpoint reference
             for (Endpoint endpoint : endpoints){
-                if (haveMatchingPolicy(endpointReference, endpoint)){
+                if (haveMatchingPolicy(endpointReference, endpoint) &&
+                    haveMatchingInterfaceContracts(endpointReference, endpoint)){
                     matchedEndpoint = endpoint;
                     break;
                 }
@@ -194,7 +335,8 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
         match:
         for ( EndpointReference callbackEndpointReference : endpointReference.getTargetEndpoint().getCallbackEndpointReferences()){
             for (Endpoint endpoint : endpoints){
-                if (haveMatchingPolicy(callbackEndpointReference, endpoint)){
+                if (haveMatchingPolicy(callbackEndpointReference, endpoint) &&
+                    haveMatchingInterfaceContracts(endpointReference, endpoint)){
                     matchedEndpoint = endpoint;
                     break match;
                 }
@@ -210,11 +352,9 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
         return problem;
     }
 
-    // FIXME: [rfeng] This implementation is wrong. It is the responsibility of the policy language
-    // to compare the reference and service side setting to determine if they are compatible. Some of
-    // policies apply to the reference side only, some of the policies apply to the service side only, 
-    // while others apply to both sides. Even for those policies that apply to both side, they can be 
-    // independent or related. 
+    /**
+     * Determine in endpoint reference and endpoint policies match 
+     */
     private boolean haveMatchingPolicy(EndpointReference endpointReference, Endpoint endpoint){
         
         /*
@@ -286,6 +426,22 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
         
         return true;
     }
+    
+    /**
+     * Determine in endpoint reference and endpoint interface contracts match 
+     */
+    private boolean haveMatchingInterfaceContracts(EndpointReference endpointReference, Endpoint endpoint){
+        return true;
+/* this breaks the existing matching code
+        if (endpointReference.getReference().getInterfaceContract() == null){
+            return true;
+        }
+             
+        return interfaceContractMapper.isCompatible(endpointReference.getReference().getInterfaceContract(), 
+                                                    endpoint.getComponentServiceInterfaceContract());
+*/
+    }
+    
 
     public boolean isOutOfDate(EndpointRegistry endpointRegistry, EndpointReference endpointReference) {
         Endpoint te = endpointReference.getTargetEndpoint();

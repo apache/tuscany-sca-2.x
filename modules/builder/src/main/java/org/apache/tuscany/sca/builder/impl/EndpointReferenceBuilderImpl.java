@@ -49,6 +49,9 @@ import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
+import org.apache.tuscany.sca.runtime.EndpointReferenceBinder;
+import org.apache.tuscany.sca.runtime.EndpointRegistry;
 
 /**
  * Creates endpoint reference models.
@@ -57,20 +60,25 @@ public class EndpointReferenceBuilderImpl {
 
     private AssemblyFactory assemblyFactory;
     private InterfaceContractMapper interfaceContractMapper;
-
+    private DomainRegistryFactory domainRegistryFactory;
+    private EndpointReferenceBinder endpointReferenceBinder;
+    
     public EndpointReferenceBuilderImpl(ExtensionPointRegistry registry) {
         UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
         interfaceContractMapper = utilities.getUtility(InterfaceContractMapper.class);
 
         FactoryExtensionPoint modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
         assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
+        
+        domainRegistryFactory = registry.getExtensionPoint(DomainRegistryFactory.class);
+        endpointReferenceBinder = registry.getExtensionPoint(EndpointReferenceBinder.class);
     }
 
     /**
      * Create endpoint references for all component references.
      *
      * @param composite
-     */
+     */    
     public Composite build(Composite composite, BuilderContext context)
         throws CompositeBuilderException {
         Monitor monitor = context.getMonitor();
@@ -82,7 +90,36 @@ public class EndpointReferenceBuilderImpl {
         validateComponentReferences(composite, monitor);
         
         return composite;
-    }
+    }     
+/*    
+    // Moving toward a consistent matching model between build and runtime
+    // endpoint reference matching
+    public Composite build(Composite composite, BuilderContext context)
+            throws CompositeBuilderException {
+        // create temporary local registry for all available local endpoints
+        // TODO - need a better way of getting a local registry
+        EndpointRegistry registry = domainRegistryFactory.getEndpointRegistry("vm://tmp", "local");
+        
+        // populate the registry with all the endpoints that are present in the model
+        populateLocalRegistry(composite, registry, context);
+        
+        // create endpoint references for each reference
+        createEndpointReferences(composite, registry, context);
+        
+        // match all local services against the endpoint references 
+        // we've just created
+        matchEndpointReferences(composite, registry, context);
+        
+        // remove the local registry
+        domainRegistryFactory.getEndpointRegistries().remove(registry);
+        
+        // validate component references
+        // TODO - do we really need to leave this until this point?
+        validateComponentReferences(composite, monitor);
+
+        return composite;
+    }  
+*/
 
     private void processComponentReferences(Composite composite, Monitor monitor) {
 
@@ -792,6 +829,7 @@ public class EndpointReferenceBuilderImpl {
      * @param reference - the reference
      * @return true if the bindings identify a target, false otherwise
      */
+    // TODO - don't think we need this
     private boolean bindingsIdentifyTargets(ComponentReference reference) {
         for (Binding binding : reference.getBindings()) {
             // <binding.sca without a URI does not identify a target
@@ -1029,5 +1067,162 @@ public class EndpointReferenceBuilderImpl {
             }
         }
     }
+    
+    // ========================================================================
+    // methods below in support of reference matching consolidation
+    
+    
+    private void populateLocalRegistry(Composite composite, EndpointRegistry registry, BuilderContext context){
+        for (Component component : composite.getComponents()) {
+            // recurse for composite implementations
+            Implementation implementation = component.getImplementation();
+            if (implementation instanceof Composite) {
+                populateLocalRegistry((Composite)implementation, registry, context);
+            }
+            
+            for (ComponentService service : component.getServices()) {
+                for (Endpoint endpoint : service.getEndpoints()){
+                    registry.addEndpoint(endpoint);
+                }
+            }
+        }
+    }
+    
+    private void createEndpointReferences(Composite composite, EndpointRegistry registry, BuilderContext context){
+        for (Component component : composite.getComponents()) {
+            // recurse for composite implementations
+            Implementation implementation = component.getImplementation();
+            if (implementation instanceof Composite) {
+                createEndpointReferences((Composite)implementation, registry, context);
+            }
+            
+            for (ComponentReference reference : component.getReferences()) {
+                processComponentReference(composite,
+                                         component,
+                                         reference,
+                                         registry,
+                                         context);
+                
+                // add all the endpoint references to the local registry so that they're
+                // easily accessible during the matching stage
+                for (EndpointReference epr : reference.getEndpointReferences()){
+                    registry.addEndpointReference(epr);
+                }
+            }
+        }        
+    }
+      
+    private void processComponentReference(Composite composite,
+                                           Component component,
+                                           ComponentReference reference,
+                                           EndpointRegistry registry,
+                                           BuilderContext context){
+        
+        // Get reference targets
+        List<ComponentService> refTargets = getReferenceTargets(reference);
+        
+        if (reference.getAutowire() == Boolean.TRUE && reference.getTargets().isEmpty()) {
+            // for autowire references we create a place holder
+            // endpoint reference. This is not used itself but
+            // marks out the reference for special attention 
+            // later in the matching process
+            EndpointReference endpointRef = createEndpointRef(component, reference, false);
+            endpointRef.setStatus(EndpointReference.AUTOWIRE_PLACEHOLDER);
+            reference.getEndpointReferences().add(endpointRef);
 
-} // end class
+        } else if (!refTargets.isEmpty()) {
+            // Check that the component reference does not mix the use of endpoint references
+            // specified via the target attribute with the presence of binding elements
+            if (bindingsIdentifyTargets(reference)) {
+                Monitor.error(context.getMonitor(),
+                              this,
+                              Messages.ASSEMBLY_VALIDATION,
+                              "ReferenceEndPointMixWithTarget",
+                              composite.getName().toString(),
+                              component.getName(),
+                              reference.getName());
+            }            
+
+            // create endpoint references for targets
+            for (ComponentService target : refTargets) {
+                
+                EndpointReference endpointRef = createEndpointRef(component, reference, true);
+                endpointRef.setTargetEndpoint(createEndpoint(component, target.getName()));
+                endpointRef.setRemote(true);
+                endpointRef.setStatus(EndpointReference.WIRED_TARGET_NOT_FOUND);
+                reference.getEndpointReferences().add(endpointRef);
+            }
+        } 
+
+        // if no endpoints have been found so far the bindings hold the targets.
+        if (reference.getEndpointReferences().isEmpty()) {
+            for (Binding binding : reference.getBindings()) {
+
+                String uri = binding.getURI();
+
+                // user hasn't put a uri on the binding so it's not a target name and the assumption is that
+                // the target is established via configuration of the binding element itself
+                if (uri == null) {
+                    // Regular forward references are UNWIRED with no endpoint if they have an SCABinding with NO targets
+                    // and NO URI set - but Callbacks with an SCABinding are wired and need an endpoint
+                    if (!reference.isForCallback() && (binding instanceof SCABinding))
+                        continue;
+
+                    // create endpoint reference for manually configured bindings with a resolved endpoint to
+                    // signify that this reference is pointing at some unwired endpoint
+                    EndpointReference endpointRef = createEndpointRef(component, reference, binding, null, false);
+                    if (binding instanceof SCABinding) {
+                        // Assume that the system needs to resolve this binding later as
+                        // it's the SCA binding
+                        endpointRef.setTargetEndpoint(createEndpoint(true));
+                        endpointRef.setStatus(EndpointReference.NOT_CONFIGURED);
+                    } else {
+                        // The user has configured a binding so assume they know what 
+                        // they are doing and mark in as already resolved. 
+                        endpointRef.setTargetEndpoint(createEndpoint(false));
+                        endpointRef.setStatus(EndpointReference.RESOLVED_BINDING);
+                    }
+                    endpointRef.setRemote(true);
+                    reference.getEndpointReferences().add(endpointRef);
+                    continue;
+                } // end if
+
+                // user might have put a local target name in the uri - see if it refers to a target we know about
+                // - if it does the reference binding will be matched later on
+                // - if it doesn't it is assumed to be an external reference
+                if (uri.startsWith("/")) {
+                    uri = uri.substring(1);
+                }
+
+                EndpointReference endpointRef = createEndpointRef(component, reference, binding, null, false);
+                
+                if (registry.findEndpoint(endpointRef).size() > 0){
+                    // it do refer to an endpoint so we'll match it for real later on
+                    endpointRef.setStatus(EndpointReference.WIRED_TARGET_NOT_FOUND);
+                } else {
+                    // it's a manually configured binding 
+                    Endpoint endpoint = createEndpoint(false);
+                    endpoint.setBinding(binding);
+                    endpointRef.setTargetEndpoint(endpoint);
+                    endpointRef.setRemote(true);
+                    endpointRef.setStatus(EndpointReference.RESOLVED_BINDING);
+                }
+                
+                // TODO - there is a hole in this logic if the uri of the binding represents
+                //        a target to a service elsewhere in the domain we won't know about it
+                //        with this local registry. Should test the real regsitry here also.
+                
+                reference.getEndpointReferences().add(endpointRef);
+            }
+        }
+    }
+ 
+    private void matchEndpointReferences(Composite composite, EndpointRegistry registry, BuilderContext context){
+        
+        // look at all the endpoint references and try to match them to 
+        // endpoints
+        for (EndpointReference endpointReference : registry.getEndpointReferences()){
+            endpointReferenceBinder.match(registry, endpointReference);
+        }
+    }
+}

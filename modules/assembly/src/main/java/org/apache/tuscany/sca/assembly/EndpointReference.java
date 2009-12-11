@@ -34,9 +34,12 @@ public interface EndpointReference extends Base, PolicySubject, Cloneable, Seria
 
     public static final int NOT_CONFIGURED = 0;
     public static final int RESOLVED_BINDING = 1;
-    public static final int WIRED_TARGET_NOT_FOUND = 2;
-    public static final int WIRED_TARGET_FOUND_READY_FOR_MATCHING = 3;
-    public static final int WIRED_TARGET_FOUND_AND_MATCHED = 4;
+    public static final int AUTOWIRE_PLACEHOLDER = 2;
+    public static final int WIRED_TARGET_NOT_FOUND = 3;
+    public static final int WIRED_TARGET_FOUND_READY_FOR_MATCHING = 4;
+    public static final int WIRED_TARGET_FOUND_AND_MATCHED = 5;
+    public static final int WIRED_TARGET_FOUND = 4; // to replace previous two?
+    
 
     /**
      * Get the structural URI of the reference binding

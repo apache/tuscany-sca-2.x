@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.runtime;
 
+import org.apache.tuscany.sca.assembly.ComponentReference;
+import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 
 /**
@@ -26,12 +28,22 @@ import org.apache.tuscany.sca.assembly.EndpointReference;
  * to the EndpointRegistry
  */
 public interface EndpointReferenceBinder {
+    
+    /**
+     * @param endpointRegistry
+     * @param endpointReference
+     * @return
+     */
+    boolean match(EndpointRegistry endpointRegistry, EndpointReference endpointReference);
+
+    
     /**
      * @param endpointRegistry
      * @param endpointReference
      * @return
      */
     boolean bind(EndpointRegistry endpointRegistry, EndpointReference endpointReference);
+    
     /**
      * 
      * @param endpointRegistry
