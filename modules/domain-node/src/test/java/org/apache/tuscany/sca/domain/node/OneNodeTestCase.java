@@ -28,6 +28,7 @@ import java.net.URI;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.oasisopen.sca.NoSuchDomainException;
 import org.oasisopen.sca.NoSuchServiceException;
@@ -36,6 +37,7 @@ import org.oasisopen.sca.client.SCAClientFactory;
 /**
  * This shows how to test the Calculator service component.
  */
+@Ignore("TUSCANY-3391")
 public class OneNodeTestCase{
 
     private static DomainNode domain;
