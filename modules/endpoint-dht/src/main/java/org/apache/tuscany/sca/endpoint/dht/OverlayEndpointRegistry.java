@@ -19,31 +19,32 @@
 
 package org.apache.tuscany.sca.endpoint.dht;
 
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import ow.id.ID;
-import ow.routing.RoutingException;
-import ow.dht.DHT;
-import ow.dht.DHTConfiguration;
-import ow.dht.DHTFactory;
-import ow.dht.ValueInfo;
-import java.io.IOException;
+
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.LifeCycleListener;
 import org.apache.tuscany.sca.runtime.EndpointListener;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
+
+import ow.dht.DHT;
+import ow.dht.DHTConfiguration;
+import ow.dht.DHTFactory;
+import ow.dht.ValueInfo;
+import ow.id.ID;
 
 /**
  * A EndpointRegistry based on Overlay Weaver DHT
@@ -200,7 +201,9 @@ public class OverlayEndpointRegistry implements EndpointRegistry, LifeCycleListe
 				endpoint.setRemote(true);
 			    }
                    
-			    endpoint.setExtensionPointRegistry(registry);
+			    if(endpoint instanceof RuntimeEndpoint) {
+			        ((RuntimeEndpoint) endpoint).bind(registry, this);
+			    }
                   
 			    foundEndpoints.add(endpoint);
 			    logger.info("Found endpoint with matching service  - " + endpoint);
