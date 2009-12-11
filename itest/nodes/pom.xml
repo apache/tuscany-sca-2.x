@@ -37,13 +37,17 @@
     <module>helloworld-iface</module>
     <module>helloworld-service</module>
     <module>helloworld-client</module>
+<!--
     <module>helloworld-service-a</module>
     <module>helloworld-service-b</module>
     <module>helloworld-service-c</module>
+-->
     <module>one-node-test</module>
     <module>two-nodes-test</module>
     <module>two-nodes-two-vms-test</module>
+<!--
     <module>three-nodes-three-vms-test</module>
+-->
   </modules>
 
 </project>
