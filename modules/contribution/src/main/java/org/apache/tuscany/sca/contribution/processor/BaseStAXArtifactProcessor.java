@@ -340,7 +340,7 @@ public abstract class BaseStAXArtifactProcessor {
      */
     public static class XAttr {
 
-        private static final String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200903";
+        private static final String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200912";
 
         private String uri = SCA11_NS;
         private String name;

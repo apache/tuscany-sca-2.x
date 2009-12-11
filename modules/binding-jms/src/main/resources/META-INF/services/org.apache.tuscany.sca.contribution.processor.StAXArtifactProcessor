@@ -16,7 +16,7 @@
 # under the License. 
 
 # Implementation class for the artifact processor extension
-org.apache.tuscany.sca.binding.jms.JMSBindingProcessor;qname=http://docs.oasis-open.org/ns/opencsa/sca/200903#binding.jms,model=org.apache.tuscany.sca.binding.jms.JMSBinding
+org.apache.tuscany.sca.binding.jms.JMSBindingProcessor;qname=http://docs.oasis-open.org/ns/opencsa/sca/200912#binding.jms,model=org.apache.tuscany.sca.binding.jms.JMSBinding
 org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSDefaultProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.1#wireFormat.jmsdefault,model=org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSDefault
 org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSTextXMLProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.1#wireFormat.jmsTextXML,model=org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSTextXML
 org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSBytesProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.1#wireFormat.jmsBytes,model=org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSBytes

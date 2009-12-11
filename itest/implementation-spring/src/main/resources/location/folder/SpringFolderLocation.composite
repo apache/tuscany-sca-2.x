@@ -23,7 +23,7 @@
  * is set in this composite and is used to compute the response to a service invocation from
  * the ClientComponent.
  -->
-<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
            targetNamespace="http://SpringFolderLocation"
            name="SpringFolderLocation">
     

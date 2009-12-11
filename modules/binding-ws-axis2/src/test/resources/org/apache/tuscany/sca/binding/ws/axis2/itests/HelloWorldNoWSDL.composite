@@ -17,8 +17,8 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
-		   xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
+		   xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
 		   targetNamespace="http://www.tuscany.apache.org/tests/binding/ws/axis2"
            name="HelloWorldNoWSDL">
 

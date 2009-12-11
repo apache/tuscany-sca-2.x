@@ -17,7 +17,7 @@
  * specific language governing permissions and limitations
  * under the License.
 -->
-<componentType xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+<componentType xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
                xmlns:xsd="http://www.w3.org/2001/XMLSchema"
                xmlns:t="http://tuscany.apache.org/xmlns/sca/1.1">
     <!-- The service elment defines an SCA view of the OSGi service -->

@@ -17,7 +17,7 @@
     * specific language governing permissions and limitations
     * under the License.    
 -->
-<contribution xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+<contribution xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
               xmlns:sample="http://sample">
    <deployable composite="sample:Calculator"/>
 </contribution>

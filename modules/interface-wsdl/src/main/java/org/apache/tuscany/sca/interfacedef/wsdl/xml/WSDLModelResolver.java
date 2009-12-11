@@ -100,10 +100,10 @@ public class WSDLModelResolver implements ModelResolver {
         Arrays.asList(new QName[] {Q_ELEM_XSD_1999, Q_ELEM_XSD_2000, Q_ELEM_XSD_2001});
     
     // ---- SCA Policy WSDL Attachments    
-    public static final QName Q_POLICY_ATTRIBUTE_EXTENSION = new QName("http://docs.oasis-open.org/ns/opencsa/sca/200903", "requires");
-    public static final QName Q_POLICY_END_CONVERSATION_ATTRIBUTE_EXTENSION = new QName("http://docs.oasis-open.org/ns/opencsa/sca/200903", "endsConversation");
+    public static final QName Q_POLICY_ATTRIBUTE_EXTENSION = new QName("http://docs.oasis-open.org/ns/opencsa/sca/200912", "requires");
+    public static final QName Q_POLICY_END_CONVERSATION_ATTRIBUTE_EXTENSION = new QName("http://docs.oasis-open.org/ns/opencsa/sca/200912", "endsConversation");
     // ---- SCA Callback WSDL Extension
-    public static final QName Q_CALLBACK_ATTRIBUTE_EXTENSION = new QName("http://docs.oasis-open.org/ns/opencsa/sca/200903", "callback" );
+    public static final QName Q_CALLBACK_ATTRIBUTE_EXTENSION = new QName("http://docs.oasis-open.org/ns/opencsa/sca/200912", "callback" );
     
     // ---- BPEL extension elements ---  Mike Edwards 01/05/2008
     public static final String ELEM_PLINKTYPE = "partnerLinkType";

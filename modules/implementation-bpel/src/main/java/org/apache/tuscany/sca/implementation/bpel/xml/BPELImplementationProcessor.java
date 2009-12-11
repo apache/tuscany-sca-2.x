@@ -67,7 +67,7 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
  *  @version $Rev$ $Date$
  */
 public class BPELImplementationProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<BPELImplementation> {
-    private static final String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200903";
+    private static final String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200912";
     private static final String PROCESS = "process";
     private static final String IMPLEMENTATION_BPEL = "implementation.bpel";
     private static final QName IMPLEMENTATION_BPEL_QNAME = new QName(SCA11_NS, IMPLEMENTATION_BPEL);

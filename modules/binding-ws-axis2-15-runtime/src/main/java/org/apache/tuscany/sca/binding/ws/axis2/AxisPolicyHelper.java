@@ -34,7 +34,7 @@ import org.apache.tuscany.sca.policy.PolicySubject;
  */
 public class AxisPolicyHelper {
 
-    public static final String XMLNS_SCA_11 = "http://docs.oasis-open.org/ns/opencsa/sca/200903";
+    public static final String XMLNS_SCA_11 = "http://docs.oasis-open.org/ns/opencsa/sca/200912";
     public static final QName AUTHENTICATION_INTENT = new QName(XMLNS_SCA_11, "authentication");
     public static final QName CONFIDENTIALITY_INTENT = new QName(XMLNS_SCA_11, "confidentiality");
     public static final QName INTEGRITY_INTENT = new QName(XMLNS_SCA_11, "integrity");

@@ -27,7 +27,7 @@ import javax.xml.namespace.QName;
  * @version $Rev$ $Date$
  */
 public interface Constants {
-    String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200903";
+    String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200912";
     String SCA11_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.1";
     
     String COMPONENT_TYPE = "componentType";

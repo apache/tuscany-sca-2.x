@@ -62,7 +62,7 @@ import org.apache.tuscany.sca.policy.PolicySubject;
 public class CompositeComponentTypeBuilderImpl {
     private static final Logger logger = Logger.getLogger(CompositeComponentTypeBuilderImpl.class.getName());
 
-    protected static final String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200903";
+    protected static final String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200912";
     protected static final String BINDING_SCA = "binding.sca";
     protected static final QName BINDING_SCA_QNAME = new QName(SCA11_NS, BINDING_SCA);
 

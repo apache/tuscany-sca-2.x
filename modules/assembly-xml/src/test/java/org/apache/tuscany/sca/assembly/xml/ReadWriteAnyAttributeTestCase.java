@@ -47,7 +47,7 @@ import org.junit.Test;
 public class ReadWriteAnyAttributeTestCase {
 
     private static final String XML = "<?xml version='1.0' encoding='UTF-8'?>"+
-		 	 "<composite xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\" " +
+		 	 "<composite xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200912\" " +
 		 	            "targetNamespace=\"http://calc\" " +
 		 	            "name=\"Calculator\">"+
  	 	 	    "<component name=\"AddServiceComponent\" xmlns:test=\"http://test\" test:customAttribute=\"customValue\">"+

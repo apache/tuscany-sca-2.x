@@ -17,7 +17,7 @@
     * specific language governing permissions and limitations
     * under the License.
 -->
-<node xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+<node xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
     xmlns="http://tuscany.apache.org/xmlns/sca/1.1"
     xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1"
     uri="http://sample/nodes/TestNode1"

@@ -44,7 +44,7 @@ import org.junit.Test;
  * @version $Rev$ $Date$
  */
 public class PolicyProcessorTestCase {
-    private final static String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200903";
+    private final static String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200912";
     private final static List<String> SEQ =
         Arrays.asList("permitAll",
                       "allow [r1, r2]",

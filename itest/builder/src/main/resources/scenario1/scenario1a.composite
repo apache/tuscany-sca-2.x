@@ -17,7 +17,7 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
         targetNamespace="http://scenario1"
         xmlns:tns="http://scenario1"
         name="CompositeC">

@@ -17,7 +17,7 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<definitions xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+<definitions xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
             targetNamespace="http://tuscany.apache.org/xmlns/sca/1.1">
 
 	<!-- Policy Intents Defined by the SCA Runtime -->

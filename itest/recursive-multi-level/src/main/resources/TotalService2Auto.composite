@@ -18,10 +18,10 @@
  * under the License.    
  -->
 <composite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-           xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+           xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
            xmlns:foo="http://foo" 
            xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
-           xsi:schemaLocation="http://docs.oasis-open.org/ns/opencsa/sca/200903 http://docs.oasis-open.org/ns/opencsa/sca/200903" 
+           xsi:schemaLocation="http://docs.oasis-open.org/ns/opencsa/sca/200912 http://docs.oasis-open.org/ns/opencsa/sca/200912" 
            name="TotalComposite2Auto"
            targetNamespace="http://foo" 
            local="true" 

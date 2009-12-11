@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Copyright(C) OASIS(R) 2005,2009. All Rights Reserved. 
      OASIS trademark, IPR and other policies apply.  -->
-<sca:definitions xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+<sca:definitions xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    targetNamespace="http://docs.oasis-open.org/ns/opencsa/sca/200903">
+    targetNamespace="http://docs.oasis-open.org/ns/opencsa/sca/200912">
                  
 	<!-- Security related intents -->                 
         <sca:intent name="serverAuthentication" constrains="sca:binding"

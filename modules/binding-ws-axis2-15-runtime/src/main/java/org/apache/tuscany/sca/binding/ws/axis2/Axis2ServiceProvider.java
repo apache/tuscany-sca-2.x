@@ -140,7 +140,7 @@ public class Axis2ServiceProvider {
         new QName(AddressingConstants.Final.WSA_NAMESPACE, AddressingConstants.EPR_REFERENCE_PARAMETERS);
 
     private static final QName TRANSPORT_JMS_QUALIFIED_INTENT =
-        new QName("http://docs.oasis-open.org/ns/opencsa/sca/200903", "transport.jms");
+        new QName("http://docs.oasis-open.org/ns/opencsa/sca/200912", "transport.jms");
     private static final String DEFAULT_QUEUE_CONNECTION_FACTORY = "TuscanyQueueConnectionFactory";
 
     //Schema element names

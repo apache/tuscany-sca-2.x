@@ -17,7 +17,7 @@
  * specific language governing permissions and limitations
  * under the License.
 -->
-<componentType xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+<componentType xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
 	xmlns:wsdli="http://www.w3.org/2004/08/wsdl-instance">
 
   <service name="CalculatorService">

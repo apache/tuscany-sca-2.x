@@ -26,7 +26,7 @@ import javax.xml.namespace.QName;
  * @version $Rev$ $Date$
  */
 public interface WebServiceConstants {
-	String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200903";
+	String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200912";
 	
     String BINDING_WS = "binding.ws";
     QName BINDING_WS_QNAME = new QName(SCA11_NS, BINDING_WS);

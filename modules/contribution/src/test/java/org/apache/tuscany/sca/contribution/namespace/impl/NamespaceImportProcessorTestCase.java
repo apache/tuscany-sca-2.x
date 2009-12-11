@@ -50,13 +50,13 @@ public class NamespaceImportProcessorTestCase {
 
     private static final String VALID_XML =
         "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 
-            + "<import  xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\" xmlns:ns=\"http://ns\""
+            + "<import  xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200912\" xmlns:ns=\"http://ns\""
             + " namespace=\"http://foo\" location=\"sca://contributions/001\" ns:ext=\"extended\">"
             + "<ns:foo/></import>";
 
     private static final String INVALID_XML =
         "<?xml version=\"1.0\" encoding=\"ASCII\"?>"
-            + "<import  xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\" xmlns:ns=\"http://ns\" location=\"sca://contributions/001\"/>";
+            + "<import  xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200912\" xmlns:ns=\"http://ns\" location=\"sca://contributions/001\"/>";
 
     private static XMLInputFactory inputFactory;
     private static StAXArtifactProcessor<Object> staxProcessor;

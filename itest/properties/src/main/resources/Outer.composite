@@ -16,9 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
 -->
-<composite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+<composite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
     xmlns:foo="http://foo" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-    xsi:schemaLocation="http://docs.oasis-open.org/ns/opencsa/sca/200903 http://docs.oasis-open.org/ns/opencsa/sca/200903" name="Iteration3Composite"
+    xsi:schemaLocation="http://docs.oasis-open.org/ns/opencsa/sca/200912 http://docs.oasis-open.org/ns/opencsa/sca/200912" name="Iteration3Composite"
     targetNamespace="http://foo" local="true" autowire="false">
 
     <property name="newLocation" type="xsd:anyURI">Raleigh</property>

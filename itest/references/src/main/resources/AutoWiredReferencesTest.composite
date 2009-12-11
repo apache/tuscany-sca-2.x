@@ -16,7 +16,7 @@
     * specific language governing permissions and limitations
     * under the License.
 -->
-<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903" xmlns:foo="http://foo" targetNamespace="http://foo"
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912" xmlns:foo="http://foo" targetNamespace="http://foo"
     name="AutowireReferencesTest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" autowire="true">
 
     <component name="AComponent" autowire="false">

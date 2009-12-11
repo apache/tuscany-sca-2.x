@@ -20,9 +20,9 @@
 
 <!-- $Rev$ $Date$ -->
 
-<sca:definitions xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
-            targetNamespace="http://docs.oasis-open.org/ns/opencsa/sca/200903"
-            xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+<sca:definitions xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
+            targetNamespace="http://docs.oasis-open.org/ns/opencsa/sca/200912"
+            xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
             xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1">
             
     <sca:bindingType type="sca:binding.ws"  mayProvide="SOAP SOAP.V1_1 SOAP.V1_2 MTOM" alwaysProvides=""/>

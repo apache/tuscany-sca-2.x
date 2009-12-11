@@ -50,7 +50,7 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
  */
 public class NamespaceExportProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<NamespaceExport> {
 
-    private static final String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200903";
+    private static final String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200912";
     private static final QName EXPORT = new QName(SCA11_NS, "export");
     private static final String NAMESPACE = "namespace";
 

@@ -18,7 +18,7 @@
 * under the License.
 -->
 <!-- A consumer-side service description file for RFC 119 -->
-<service-descriptions xmlns="http://www.osgi.org/xmlns/sd/v1.0.0" xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200903">
+<service-descriptions xmlns="http://www.osgi.org/xmlns/sd/v1.0.0" xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912">
     <!-- Describe a remote OSGi service  -->
     <service-description>
         <provide interface="calculator.dosgi.operations.AddService" />

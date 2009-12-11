@@ -70,7 +70,7 @@ public class WSDLServiceGenerator {
     
     private static final Logger logger = Logger.getLogger(WSDLServiceGenerator.class.getName());
     private static final QName TRANSPORT_JMS_QUALIFIED_INTENT =
-        new QName("http://docs.oasis-open.org/ns/opencsa/sca/200903", "transport.jms");
+        new QName("http://docs.oasis-open.org/ns/opencsa/sca/200912", "transport.jms");
     private static final String DEFAULT_QUEUE_CONNECTION_FACTORY = "TuscanyQueueConnectionFactory";
     private static final String ADDRESS = "Address";
 

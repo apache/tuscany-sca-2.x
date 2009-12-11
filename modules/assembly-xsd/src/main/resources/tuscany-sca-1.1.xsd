@@ -23,7 +23,7 @@
 <!--
     <import namespace="http://www.w3.org/ns/wsdl-instance" schemaLocation="wsdli.xsd"/>
 -->
-    <import namespace="http://docs.oasis-open.org/ns/opencsa/sca/200903" schemaLocation="sca-1.1-cd04.xsd"/>
+    <import namespace="http://docs.oasis-open.org/ns/opencsa/sca/200912" schemaLocation="sca-1.1-cd04.xsd"/>
 
     <include schemaLocation="tuscany-sca-1.1-binding-dwr.xsd"/>
     <include schemaLocation="tuscany-sca-1.1-binding-http.xsd"/>

@@ -28,7 +28,7 @@ import javax.xml.namespace.QName;
 public interface PolicyConstants {
     String WHITE_SPACE = " ";
     String COLON = ":";
-    String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200903";
+    String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200912";
     String TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.1";
     String INTENT = "intent";
     String POLICY_SET = "policySet";

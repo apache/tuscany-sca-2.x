@@ -16,12 +16,12 @@
 # under the License. 
 
 # Implementation class for the artifact processor extension
-org.apache.tuscany.sca.policy.authorization.AuthorizationPolicyProcessor;qname=http://docs.oasis-open.org/ns/opencsa/sca/200903#authorization,model=org.apache.tuscany.sca.policy.authorization.AuthorizationPolicy
-org.apache.tuscany.sca.policy.authorization.AuthorizationPolicyProcessor;qname=http://docs.oasis-open.org/ns/opencsa/sca/200903#allow,model=org.apache.tuscany.sca.policy.authorization.AuthorizationPolicy
-org.apache.tuscany.sca.policy.authorization.AuthorizationPolicyProcessor;qname=http://docs.oasis-open.org/ns/opencsa/sca/200903#permitAll,model=org.apache.tuscany.sca.policy.authorization.AuthorizationPolicy
-org.apache.tuscany.sca.policy.authorization.AuthorizationPolicyProcessor;qname=http://docs.oasis-open.org/ns/opencsa/sca/200903#denyAll,model=org.apache.tuscany.sca.policy.authorization.AuthorizationPolicy
-org.apache.tuscany.sca.policy.identity.SecurityIdentityPolicyProcessor;qname=http://docs.oasis-open.org/ns/opencsa/sca/200903#runAs,model=org.apache.tuscany.sca.policy.identity.SecurityIdentityPolicy
-org.apache.tuscany.sca.policy.identity.SecurityIdentityPolicyProcessor;qname=http://docs.oasis-open.org/ns/opencsa/sca/200903#securityIdentity,model=org.apache.tuscany.sca.policy.identity.SecurityIdentityPolicy
+org.apache.tuscany.sca.policy.authorization.AuthorizationPolicyProcessor;qname=http://docs.oasis-open.org/ns/opencsa/sca/200912#authorization,model=org.apache.tuscany.sca.policy.authorization.AuthorizationPolicy
+org.apache.tuscany.sca.policy.authorization.AuthorizationPolicyProcessor;qname=http://docs.oasis-open.org/ns/opencsa/sca/200912#allow,model=org.apache.tuscany.sca.policy.authorization.AuthorizationPolicy
+org.apache.tuscany.sca.policy.authorization.AuthorizationPolicyProcessor;qname=http://docs.oasis-open.org/ns/opencsa/sca/200912#permitAll,model=org.apache.tuscany.sca.policy.authorization.AuthorizationPolicy
+org.apache.tuscany.sca.policy.authorization.AuthorizationPolicyProcessor;qname=http://docs.oasis-open.org/ns/opencsa/sca/200912#denyAll,model=org.apache.tuscany.sca.policy.authorization.AuthorizationPolicy
+org.apache.tuscany.sca.policy.identity.SecurityIdentityPolicyProcessor;qname=http://docs.oasis-open.org/ns/opencsa/sca/200912#runAs,model=org.apache.tuscany.sca.policy.identity.SecurityIdentityPolicy
+org.apache.tuscany.sca.policy.identity.SecurityIdentityPolicyProcessor;qname=http://docs.oasis-open.org/ns/opencsa/sca/200912#securityIdentity,model=org.apache.tuscany.sca.policy.identity.SecurityIdentityPolicy
 org.apache.tuscany.sca.policy.identity.SecurityIdentityPolicyProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.1#securityIdentity,model=org.apache.tuscany.sca.policy.identity.SecurityIdentityPolicy
 org.apache.tuscany.sca.policy.security.jaas.JaasAuthenticationPolicyProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.1#jaasAuthentication,model=org.apache.tuscany.sca.policy.security.jaas.JaasAuthenticationPolicy
 org.apache.tuscany.sca.policy.authentication.basic.BasicAuthenticationPolicyProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.1#basicAuthentication,model=org.apache.tuscany.sca.policy.authentication.basic.BasicAuthenticationPolicy

@@ -17,7 +17,7 @@
     * specific language governing permissions and limitations
     * under the License.    
 -->
-<sca:definitions xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200903" 
+<sca:definitions xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912" 
     targetNamespace="http://www.osgi.org/xmlns/sca/intents/v1.0.0">
                  
     <intent name="passByReference" constrains="sca:implementation" 

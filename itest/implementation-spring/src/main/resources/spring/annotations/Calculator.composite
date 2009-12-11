@@ -18,7 +18,7 @@
  * under the License.    
 -->
 <composite targetNamespace="http://sample"
-           xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"           
+           xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"           
            xmlns:sample="http://sample"
            name="Calculator"
            xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1">

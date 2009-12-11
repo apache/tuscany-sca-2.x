@@ -26,7 +26,7 @@ import javax.xml.namespace.QName;
  * @version $Rev$ $Date$
  */
 public interface JavaConstants {
-    String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200903";
+    String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200912";
     String INTERFACE_JAVA = "interface.java";
     QName INTERFACE_JAVA_QNAME = new QName(SCA11_NS, "interface.java");
     String INTERFACE = "interface";

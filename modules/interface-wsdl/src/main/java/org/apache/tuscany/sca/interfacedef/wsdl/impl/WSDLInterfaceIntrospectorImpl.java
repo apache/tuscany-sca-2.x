@@ -46,11 +46,11 @@ import org.apache.tuscany.sca.xsd.XSDFactory;
  * @version $Rev$ $Date$
  */
 public class WSDLInterfaceIntrospectorImpl {
-    private static final QName POLICY_REQUIRES 			= new QName("http://docs.oasis-open.org/ns/opencsa/sca/200903", "requires");
-    private static final QName POLICY_CONVERSATIONAL 	= new QName("http://docs.oasis-open.org/ns/opencsa/sca/200903", "conversational");
-    public  static final QName POLICY_END_CONVERSATION 	= new QName("http://docs.oasis-open.org/ns/opencsa/sca/200903", "endsConversation");
+    private static final QName POLICY_REQUIRES 			= new QName("http://docs.oasis-open.org/ns/opencsa/sca/200912", "requires");
+    private static final QName POLICY_CONVERSATIONAL 	= new QName("http://docs.oasis-open.org/ns/opencsa/sca/200912", "conversational");
+    public  static final QName POLICY_END_CONVERSATION 	= new QName("http://docs.oasis-open.org/ns/opencsa/sca/200912", "endsConversation");
     
-    private static final QName CALLBACK_ATTRIBUTE 		= new QName("http://docs.oasis-open.org/ns/opencsa/sca/200903", "callback" );
+    private static final QName CALLBACK_ATTRIBUTE 		= new QName("http://docs.oasis-open.org/ns/opencsa/sca/200912", "callback" );
     
     private WSDLFactory wsdlFactory;
     private XSDFactory xsdFactory;

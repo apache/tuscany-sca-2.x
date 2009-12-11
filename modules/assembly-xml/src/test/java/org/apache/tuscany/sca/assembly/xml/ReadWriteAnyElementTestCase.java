@@ -43,7 +43,7 @@ import org.junit.Test;
 public class ReadWriteAnyElementTestCase {
     private static final String XML_RECURSIVE_EXTENDED_ELEMENT =
         "<?xml version='1.0' encoding='UTF-8'?>" +
-        "<composite xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\" targetNamespace=\"http://temp\" name=\"RecursiveExtendedElement\">" +
+        "<composite xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200912\" targetNamespace=\"http://temp\" name=\"RecursiveExtendedElement\">" +
          "<unknownElement>" +
            "<subUnknownElement1 attribute=\"anyAttribute\" />" +
            "<subUnknownElement2 />" +
@@ -52,7 +52,7 @@ public class ReadWriteAnyElementTestCase {
 
     private static final String XML_UNKNOWN_IMPL =
         "<?xml version='1.0' encoding='UTF-8'?>" + 
-        "<composite xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\" targetNamespace=\"http://temp\" name=\"aaaa\" autowire=\"false\">" +
+        "<composite xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200912\" targetNamespace=\"http://temp\" name=\"aaaa\" autowire=\"false\">" +
          "<component name=\"unknownImpl\">" +
            "<implementation.unknown class=\"raymond\" />" +
            "<service name=\"service\">" +
@@ -63,7 +63,7 @@ public class ReadWriteAnyElementTestCase {
 
     private static final String XML_UNKNOWN_IMPL_WITH_INVALID_ATTRIBUTE =
         "<?xml version='1.0' encoding='UTF-8'?>" + 
-        "<composite xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\" targetNamespace=\"http://temp\" name=\"aaaa\" autowire=\"false\">" +
+        "<composite xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200912\" targetNamespace=\"http://temp\" name=\"aaaa\" autowire=\"false\">" +
          "<component name=\"unknownImpl\">" +
            "<implementation.unknown class=\"raymond\" />" +
            "<service name=\"service\" requires=\"\">" +

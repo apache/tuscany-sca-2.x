@@ -52,7 +52,7 @@ import org.junit.Test;
 public class ContributionMetadataProcessorTestCase {
 
     private static final String VALID_XML =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "<contribution xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\""
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "<contribution xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200912\""
             + " xmlns:ns=\"http://ns\" ns:foo=\"extended\">"
             + "<deployable composite=\"ns:Composite1\"/>"
             + "<deployable xmlns:ns2=\"http://ns2\" composite=\"ns2:Composite2\"/>"
@@ -60,7 +60,7 @@ public class ContributionMetadataProcessorTestCase {
             + "</contribution>";
 
     private static final String INVALID_XML =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "<contribution xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\" xmlns:ns=\"http://ns\">"
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "<contribution xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200912\" xmlns:ns=\"http://ns\">"
             + "<deployable composite=\"ns:Composite1\"/>"
             + "<deployable/>"
             + "</contribution>";

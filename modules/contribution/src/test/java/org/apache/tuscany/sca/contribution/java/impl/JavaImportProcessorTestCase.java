@@ -48,11 +48,11 @@ public class JavaImportProcessorTestCase {
 
     private static final String VALID_XML =
         "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 
-            + "<import.java  xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\" xmlns:ns=\"http://ns\" package=\"org.apache.tuscany.sca.contribution.java\" location=\"sca://contributions/001\"/>";
+            + "<import.java  xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200912\" xmlns:ns=\"http://ns\" package=\"org.apache.tuscany.sca.contribution.java\" location=\"sca://contributions/001\"/>";
 
     private static final String INVALID_XML =
         "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 
-            + "<import.java  xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\" xmlns:ns=\"http://ns\" location=\"sca://contributions/001\"/>";
+            + "<import.java  xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200912\" xmlns:ns=\"http://ns\" location=\"sca://contributions/001\"/>";
 
     private static XMLInputFactory inputFactory;
     private static StAXArtifactProcessor<Object> staxProcessor;

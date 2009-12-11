@@ -19,7 +19,7 @@
 -->
 <scact:sca-config targetNamespace="http://sample"
     xmlns:scact="http://www.osgi.org/xmlns/scact/v1.0.0" 
-    xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+    xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
     xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1">
     <tuscany:binding.rmi name="Add" uri="rmi://localhost:8085/AddService"/>
     <tuscany:binding.rmi name="Divide" uri="rmi://localhost:8085/DivideService"/>

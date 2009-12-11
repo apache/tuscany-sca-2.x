@@ -27,8 +27,8 @@ import javax.xml.namespace.QName;
  * Definition of extension type: binding or implementation
  */
 public interface ExtensionType {
-    QName BINDING_BASE = new QName("http://docs.oasis-open.org/ns/opencsa/sca/200903", "binding");
-    QName IMPLEMENTATION_BASE = new QName("http://docs.oasis-open.org/ns/opencsa/sca/200903", "implementation");
+    QName BINDING_BASE = new QName("http://docs.oasis-open.org/ns/opencsa/sca/200912", "binding");
+    QName IMPLEMENTATION_BASE = new QName("http://docs.oasis-open.org/ns/opencsa/sca/200912", "implementation");
 
     /**
      * The name of the extension type (binding or implementation). The extension type name 

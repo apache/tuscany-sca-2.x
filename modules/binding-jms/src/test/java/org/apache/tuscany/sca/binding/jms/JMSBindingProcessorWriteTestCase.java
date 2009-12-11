@@ -49,7 +49,7 @@ public class JMSBindingProcessorWriteTestCase extends TestCase {
     
     public static final String DEFAULT =
         "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 
-        + "<composite xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\" targetNamespace=\"http://binding-jms\" name=\"binding-jms\">"
+        + "<composite xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200912\" targetNamespace=\"http://binding-jms\" name=\"binding-jms\">"
             + " <component name=\"HelloWorldComponent\">"
             + "      <service name=\"HelloWorldService\">"
             + "          <binding.jms>"
@@ -400,7 +400,7 @@ public class JMSBindingProcessorWriteTestCase extends TestCase {
         System.out.println(bos.toString());
         assertEquals(bos.toString(),
                      "<?xml version=\'1.0\' encoding=\'UTF-8\'?>" +
-                     "<composite xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\" targetNamespace=\"http://binding-jms\" name=\"binding-jms\">" +
+                     "<composite xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200912\" targetNamespace=\"http://binding-jms\" name=\"binding-jms\">" +
                        "<component name=\"HelloWorldComponent\">" + 
                            "<service name=\"HelloWorldService\">" +
                              "<binding.jms><operationProperties name=\"JKL\" /> " +

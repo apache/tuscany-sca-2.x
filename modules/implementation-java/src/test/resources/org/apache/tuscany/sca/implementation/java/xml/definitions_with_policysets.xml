@@ -17,7 +17,7 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<sca:definitions xmlns="http://test" targetNamespace="http://test" xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200903">
+<sca:definitions xmlns="http://test" targetNamespace="http://test" xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912">
 
     <!-- simple intent -->
     <sca:intent name="tuscanyIntent_1" constrains="sca:binding sca:implementation.java">

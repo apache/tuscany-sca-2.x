@@ -41,7 +41,7 @@ import org.oasisopen.sca.client.SCAClientFactory;
  * This shows how to test the Calculator service component.
  */
 public class ClientNode {
-    private final static String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200903";
+    private final static String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200912";
     private static Node clientNode;
     private static TestCaseRunner runner;
 

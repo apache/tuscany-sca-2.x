@@ -66,13 +66,13 @@ public class ReadDocumentTestCase {
     private ProcessorContext context;
     
     private static final QName elementToProcess =
-        new QName("http://docs.oasis-open.org/ns/opencsa/sca/200903", "implementationType");
+        new QName("http://docs.oasis-open.org/ns/opencsa/sca/200912", "implementationType");
 
     private Map<QName, Intent> intentTable = new Hashtable<QName, Intent>();
     private Map<QName, PolicySet> policySetTable = new Hashtable<QName, PolicySet>();
     private Map<QName, BindingType> bindingTypesTable = new Hashtable<QName, BindingType>();
     private Map<QName, ImplementationType> implTypesTable = new Hashtable<QName, ImplementationType>();
-    private static final String scaNamespace = "http://docs.oasis-open.org/ns/opencsa/sca/200903";
+    private static final String scaNamespace = "http://docs.oasis-open.org/ns/opencsa/sca/200912";
     private static final String namespace = "http://test";
 
     private static final QName confidentiality = new QName(namespace, "confidentiality");

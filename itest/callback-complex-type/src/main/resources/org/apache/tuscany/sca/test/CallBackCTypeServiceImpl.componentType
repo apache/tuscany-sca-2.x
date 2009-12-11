@@ -17,7 +17,7 @@
  * specific language governing permissions and limitations
  * under the License.
 -->
-<componentType xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903" >
+<componentType xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912" >
 
   <service name="CallBackCTypeService">
      <interface.java interface="org.apache.tuscany.sca.test.CallBackCTypeService" 

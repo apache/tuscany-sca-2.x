@@ -17,8 +17,8 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<definitions xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903" targetNamespace="http://test"
-    xmlns:test="http://test" xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200903">
+<definitions xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912" targetNamespace="http://test"
+    xmlns:test="http://test" xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912">
 
     <!-- Extension Types Metadata -->
     <implementationType type="sca:implementation.java" alwaysProvides="test:logging" mayProvide="test:tracing" />
@@ -39,7 +39,7 @@
 
     <policySet name="TestPolicySetOne" provides="test:TestIntentOne" appliesTo="sca:binding.ws"
         attachTo = "//sca:component[@name='CalculatorServiceComponent']/sca:reference[@name='addService']"
-        xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+        xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
         <wsp:PolicyAttachment>
             <!-- policy expression and policy subject for
                  "basic authentication" -->
@@ -52,7 +52,7 @@
 
     <!-- POLICY SETS -->
     <policySet name="SecureReliablePolicy" provides="test:confidentiality.transport test:integrity" appliesTo="sca:binding.ws"
-        xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+        xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
         <wsp:PolicyAttachment>
             <!-- policy expression and policy subject for
                  "basic authentication" -->
@@ -64,7 +64,7 @@
     </policySet>
 
     <policySet name="SecureMessagingPolicies" provides="test:confidentiality" appliesTo="binding.ws"
-        xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+        xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
         <intentMap provides="test:confidentiality">
             <qualifier name="transport">
                 <wsp:PolicyAttachment>
@@ -81,7 +81,7 @@
     </policySet>
 
     <policySet name="SecurityPolicy" provides="test:confidentiality" appliesTo="binding.ws"
-        xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+        xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
         <intentMap provides="test:confidentiality">
             <qualifier name="message">
                 <wsp:PolicyAttachment>
@@ -97,13 +97,13 @@
     </policySet>
 
     <policySet name="BasicAuthMsgProtSecurity" provides="test:authentication test:confidentiality" appliesTo="binding.ws"
-        xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903">
+        xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912">
         <policySetReference name="test:AuthenticationPolicies" />
         <policySetReference name="test:ConfidentialityPolicies" />
     </policySet>
 
     <policySet name="AuthenticationPolicies" provides="test:authentication" appliesTo="binding.ws"
-        xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+        xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
         <wsp:PolicyAttachment>
             <!-- policy expression and policy subject for "basic
         authentication" -->
@@ -111,7 +111,7 @@
     </policySet>
 
     <policySet name="ConfidentialityPolicies" provides="test:confidentiality" appliesTo="binding.ws"
-        xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+        xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
         <intentMap provides="test:confidentiality">
             <qualifier name="transport">
                 <wsp:PolicyAttachment>
@@ -131,7 +131,7 @@
     </policySet>
 
     <policySet name="SecureWSPolicy" provides="test:confidentiality" appliesTo="sca:binding.ws"
-        xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903" xmlns:sp="http://schemas.xmlsoap.org/ws/2002/12/secext"
+        xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912" xmlns:sp="http://schemas.xmlsoap.org/ws/2002/12/secext"
         xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
         <wsp:Policy>
             <wsp:ExactlyOne>

@@ -49,7 +49,7 @@ public class SCABindingProcessor implements StAXArtifactProcessor<SCABinding> {
     private static final String NAME = "name";
     private static final String URI = "uri";
 
-    private static final String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200903";
+    private static final String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200912";
     private static final String BINDING_SCA = "binding.sca";
     private static final QName BINDING_SCA_QNAME = new QName(SCA11_NS, BINDING_SCA);
 

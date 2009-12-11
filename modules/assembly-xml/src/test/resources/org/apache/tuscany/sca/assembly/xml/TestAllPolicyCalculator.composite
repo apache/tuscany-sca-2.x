@@ -20,9 +20,9 @@
 
 <composite autowire="false" local="true" name="TestAllCalculator" 
     requires="cns:tuscanyIntent_1" targetNamespace="http://calc" xmlns:tns="http://calc"
-    xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://docs.oasis-open.org/ns/opencsa/sca/200903 http://docs.oasis-open.org/ns/opencsa/sca/200903 "
+    xsi:schemaLocation="http://docs.oasis-open.org/ns/opencsa/sca/200912 http://docs.oasis-open.org/ns/opencsa/sca/200912 "
     xmlns:ext="http://extension"
     xmlns:cns="http://test" xmlns:sns="http://test">
 

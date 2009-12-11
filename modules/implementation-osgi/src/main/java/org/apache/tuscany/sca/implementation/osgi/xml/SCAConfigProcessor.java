@@ -47,7 +47,7 @@ import org.apache.tuscany.sca.policy.PolicySet;
 <?xml version="1.0" encoding="UTF-8"?>
 <scact:sca-config targetNamespace="http://www.foocorp.com/definitions"
   xmlns:scact="http://www.osgi.org/xmlns/scact/v1.0.0" 
-  xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+  xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
   xmlns:foocorp="http://www.foocorp.com/definitions"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.osgi.org/xmlns/scact/v1.0.0 http://www.osgi.org/xmlns/scact/v1.0.0/sca-config.xsd">

@@ -24,7 +24,7 @@
  * The reference is satisified by a wire to a ReferenceComponent which is implemented
  * by a plain Java POJO.
 -->
-<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
            targetNamespace="http://SpringImplicitReference"
            name="SpringImplicitReference">
 

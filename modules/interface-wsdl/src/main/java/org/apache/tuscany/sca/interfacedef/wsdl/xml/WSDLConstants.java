@@ -26,7 +26,7 @@ import javax.xml.namespace.QName;
  * @version $Rev$ $Date$
  */
 public interface WSDLConstants {
-    String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200903";
+    String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200912";
     String INTERFACE_WSDL = "interface.wsdl";
     QName INTERFACE_WSDL_QNAME = new QName(SCA11_NS, "interface.wsdl");
     String INTERFACE = "interface";

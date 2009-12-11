@@ -25,7 +25,7 @@ public interface Constants {
     /**
      * Namespace for intents.
      */
-    String SCA_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200903";
+    String SCA_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200912";
 
     /**
      * Prefix form of the namespace that can be prepended to intent declarations.

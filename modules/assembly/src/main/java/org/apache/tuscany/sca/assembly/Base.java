@@ -24,7 +24,7 @@ package org.apache.tuscany.sca.assembly;
  * @version $Rev$ $Date$
  */
 public interface Base {
-    String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200903";
+    String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200912";
     String SCA11_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.1";
 
     /**

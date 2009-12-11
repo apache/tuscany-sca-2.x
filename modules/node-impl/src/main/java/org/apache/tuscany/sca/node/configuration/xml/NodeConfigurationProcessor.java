@@ -60,7 +60,7 @@ public class NodeConfigurationProcessor extends BaseStAXArtifactProcessor implem
     private static final QName BASE_URI = new QName(SCA11_TUSCANY_NS, "baseURI");
     private static final QName DEPLOYMENT_COMPOSITE = new QName(SCA11_TUSCANY_NS, "deploymentComposite");
 
-    private static final String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200903";
+    private static final String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200912";
     private static final QName COMPOSITE = new QName(SCA11_NS, "composite");
 
     private StAXArtifactProcessor processor;

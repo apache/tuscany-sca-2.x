@@ -48,12 +48,12 @@ public class NamespaceExportProcessorTestCase {
 
     private static final String VALID_XML =
         "<?xml version=\"1.0\" encoding=\"ASCII\"?>"
-            + "<export xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\" xmlns:ns=\"http://ns\""
+            + "<export xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200912\" xmlns:ns=\"http://ns\""
             + " ns:ext=\"extended\" namespace=\"http://foo\">"
             + "<ns:foo/></export>";
 
     private static final String INVALID_XML =
-        "<?xml version=\"1.0\" encoding=\"ASCII\"?>" + "<export xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\" xmlns:ns=\"http://ns\"/>";
+        "<?xml version=\"1.0\" encoding=\"ASCII\"?>" + "<export xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200912\" xmlns:ns=\"http://ns\"/>";
 
     private static XMLInputFactory inputFactory;
     private static StAXArtifactProcessor<Object> staxProcessor;

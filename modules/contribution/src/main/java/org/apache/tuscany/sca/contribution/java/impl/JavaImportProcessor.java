@@ -46,7 +46,7 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
  * @version $Rev$ $Date$
  */
 public class JavaImportProcessor  implements StAXArtifactProcessor<JavaImport> {
-    private static final String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200903";
+    private static final String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200912";
     
     private static final QName IMPORT_JAVA = new QName(SCA11_NS, "import.java");
 

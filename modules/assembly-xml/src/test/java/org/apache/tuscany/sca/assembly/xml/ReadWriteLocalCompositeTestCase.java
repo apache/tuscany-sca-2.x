@@ -54,7 +54,7 @@ public class ReadWriteLocalCompositeTestCase {
     private ProcessorContext context;
     
     private static final String LOCAL_COMPOSITE_XML = "<?xml version='1.0' encoding='UTF-8'?>"+
-    "<composite xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\" targetNamespace=\"http://localcalc\" name=\"LocalCalculator\" local=\"true\">"+
+    "<composite xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200912\" targetNamespace=\"http://localcalc\" name=\"LocalCalculator\" local=\"true\">"+
     "</composite>";
     
     @Before

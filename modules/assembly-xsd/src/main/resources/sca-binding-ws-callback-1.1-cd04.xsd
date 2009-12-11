@@ -3,7 +3,7 @@
      OASIS trademark, IPR and other policies apply -->
 
 <schema xmlns="http://www.w3.org/2001/XMLSchema" 
-    targetNamespace="http://docs.oasis-open.org/ns/opencsa/sca/200903" 
+    targetNamespace="http://docs.oasis-open.org/ns/opencsa/sca/200912" 
     elementFormDefault="qualified">
 
     <element name="WSCallback">

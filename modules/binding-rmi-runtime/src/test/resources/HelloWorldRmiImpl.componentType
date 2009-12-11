@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<componentType xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<componentType xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 
     <service name="HelloWorldRmiService">
         <interface.java interface="helloworld.HelloWorldRmiService"/>

@@ -62,7 +62,7 @@ public class ReadDocumentTestCase {
     private static Map<QName, PolicySet> policySetTable = new Hashtable<QName, PolicySet>();
     private static Map<QName, BindingType> bindingTypesTable = new Hashtable<QName, BindingType>();
     private static Map<QName, ImplementationType> implTypesTable = new Hashtable<QName, ImplementationType>();
-    public static final String scaNamespace = "http://docs.oasis-open.org/ns/opencsa/sca/200903";
+    public static final String scaNamespace = "http://docs.oasis-open.org/ns/opencsa/sca/200912";
     public static final String namespace = "http://test";
 
     private static final QName secureWsPolicy = new QName(namespace, "SecureWSPolicy");

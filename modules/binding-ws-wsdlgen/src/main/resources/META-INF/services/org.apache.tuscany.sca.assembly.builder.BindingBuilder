@@ -14,5 +14,5 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License. 
-org.apache.tuscany.sca.binding.ws.wsdlgen.WebServiceBindingBuilder;qname=http://docs.oasis-open.org/ns/opencsa/sca/200903#binding.ws
+org.apache.tuscany.sca.binding.ws.wsdlgen.WebServiceBindingBuilder;qname=http://docs.oasis-open.org/ns/opencsa/sca/200912#binding.ws
 

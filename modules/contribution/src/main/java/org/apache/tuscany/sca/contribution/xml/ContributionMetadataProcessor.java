@@ -56,7 +56,7 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
  */
 public class ContributionMetadataProcessor extends BaseStAXArtifactProcessor implements
     StAXArtifactProcessor<ContributionMetadata> {
-    private static final String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200903";
+    private static final String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200912";
 
     private static final QName CONTRIBUTION_QNAME = new QName(SCA11_NS, "contribution");
     private static final QName DEPLOYABLE_QNAME = new QName(SCA11_NS, "deployable");

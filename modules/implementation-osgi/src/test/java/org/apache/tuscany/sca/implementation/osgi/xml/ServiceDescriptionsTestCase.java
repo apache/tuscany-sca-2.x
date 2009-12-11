@@ -43,7 +43,7 @@ public class ServiceDescriptionsTestCase {
     private static final String xml =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" 
             + "<service-descriptions xmlns=\"http://www.osgi.org/xmlns/sd/v1.0.0\" "
-            + "xmlns:sca=\"http://docs.oasis-open.org/ns/opencsa/sca/200903\">"
+            + "xmlns:sca=\"http://docs.oasis-open.org/ns/opencsa/sca/200912\">"
             + "<service-description>"
             + "<provide interface=\"calculator.operations.AddService\"/>"
             + "<property name=\"service.intents\">sca:SOAP sca:HTTP</property>"

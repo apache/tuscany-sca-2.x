@@ -17,7 +17,7 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
     xmlns:calc="http://sample.calculator"
     targetNamespace="http://calc"
     xmlns:wsdli="http://www.w3.org/2004/08/wsdl-instance"

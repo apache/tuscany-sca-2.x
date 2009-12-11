@@ -107,7 +107,7 @@ public class PolicyXPathFunctionResolverTestCase {
 
     private static class NamespaceContextImpl implements NamespaceContext {
 
-        private static final String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200903";
+        private static final String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200912";
 
         public String getNamespaceURI(String prefix) {
             if ("sca".equals(prefix)) {

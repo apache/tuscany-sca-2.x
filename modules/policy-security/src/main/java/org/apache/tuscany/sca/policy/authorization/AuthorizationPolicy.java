@@ -30,7 +30,7 @@ import javax.xml.namespace.QName;
  * @version $Rev$ $Date$
  */
 public class AuthorizationPolicy {
-    private final static String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200903";
+    private final static String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200912";
     // private final static String SCA10_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.1";
     public static final QName NAME = new QName(SCA11_NS, "authorization");
 

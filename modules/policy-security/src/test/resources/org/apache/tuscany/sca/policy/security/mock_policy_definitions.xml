@@ -17,8 +17,8 @@
     * specific language governing permissions and limitations
     * under the License.    
 -->
-<definitions xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200903" targetNamespace="http://tuscany.apache.org/xmlns/sca/1.1"
-    xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200903">
+<definitions xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912" targetNamespace="http://tuscany.apache.org/xmlns/sca/1.1"
+    xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912">
 
     <!-- POLICY SETS -->
     <policySet name="ps1" provides="authorization" appliesTo="sca:implementation">
