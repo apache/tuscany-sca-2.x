@@ -49,9 +49,6 @@ import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
-import org.apache.tuscany.sca.runtime.EndpointReferenceBinder;
-import org.apache.tuscany.sca.runtime.EndpointRegistry;
 
 /**
  * Creates endpoint reference models.
@@ -60,8 +57,10 @@ public class EndpointReferenceBuilderImpl {
 
     private AssemblyFactory assemblyFactory;
     private InterfaceContractMapper interfaceContractMapper;
+    /*
     private DomainRegistryFactory domainRegistryFactory;
     private EndpointReferenceBinder endpointReferenceBinder;
+    */
     
     public EndpointReferenceBuilderImpl(ExtensionPointRegistry registry) {
         UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
@@ -69,9 +68,11 @@ public class EndpointReferenceBuilderImpl {
 
         FactoryExtensionPoint modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
         assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
-        
+    
+        /*
         domainRegistryFactory = registry.getExtensionPoint(DomainRegistryFactory.class);
         endpointReferenceBinder = registry.getExtensionPoint(EndpointReferenceBinder.class);
+        */
     }
 
     /**
@@ -1071,7 +1072,7 @@ public class EndpointReferenceBuilderImpl {
     // ========================================================================
     // methods below in support of reference matching consolidation
     
-    
+    /*
     private void populateLocalRegistry(Composite composite, EndpointRegistry registry, BuilderContext context){
         for (Component component : composite.getComponents()) {
             // recurse for composite implementations
@@ -1225,4 +1226,5 @@ public class EndpointReferenceBuilderImpl {
             endpointReferenceBinder.match(registry, endpointReference);
         }
     }
+    */
 }
