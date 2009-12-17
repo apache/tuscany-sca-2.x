@@ -21,15 +21,17 @@ package org.apache.tuscany.sca.contribution.scanner;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
-import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
+import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
 
 /**
@@ -79,7 +81,7 @@ public class DefaultContributionScannerExtensionPoint implements ContributionSca
             String contributionType = attributes.get("type");
 
             // Create a scanner wrapper and register it
-            ContributionScanner scanner = new LazyContributionScanner(contributionType, scannerDeclaration);
+            ContributionScanner scanner = new LazyContributionScanner(registry, contributionType, scannerDeclaration);
             addContributionScanner(scanner);
         }
 
@@ -90,21 +92,22 @@ public class DefaultContributionScannerExtensionPoint implements ContributionSca
      * A facade for contribution scanners.
      */
     private static class LazyContributionScanner implements ContributionScanner {
-
+        private ExtensionPointRegistry registry;
         private ServiceDeclaration scannerDeclaration;
         private String contributionType;
         private ContributionScanner scanner;
+        private ContributionFactory contributionFactory;
 
-        private LazyContributionScanner(String contributionType, ServiceDeclaration scannerDeclaration) {
+        private LazyContributionScanner(ExtensionPointRegistry registry, String contributionType, ServiceDeclaration scannerDeclaration) {
+            this.registry = registry;
             this.scannerDeclaration = scannerDeclaration;
             this.contributionType = contributionType;
+            
+            FactoryExtensionPoint factories = registry.getExtensionPoint(FactoryExtensionPoint.class);
+            this.contributionFactory = factories.getFactory(ContributionFactory.class);
         }
 
-        public URL getArtifactURL(Contribution contributionSourceURL, String artifact) throws ContributionReadException {
-            return getScanner().getArtifactURL(contributionSourceURL, artifact);
-        }
-
-        public List<String> scan(Contribution contributionSourceURL) throws ContributionReadException {
+        public List<Artifact> scan(Contribution contributionSourceURL) throws ContributionReadException {
             return getScanner().scan(contributionSourceURL);
         }
 
@@ -116,8 +119,8 @@ public class DefaultContributionScannerExtensionPoint implements ContributionSca
             if (scanner == null) {
                 try {
                     Class<ContributionScanner> scannerClass = (Class<ContributionScanner>)scannerDeclaration.loadClass();
-                    Constructor<ContributionScanner> constructor = scannerClass.getConstructor();
-                    scanner = constructor.newInstance();
+                    Constructor<ContributionScanner> constructor = scannerClass.getConstructor(ContributionFactory.class);
+                    scanner = constructor.newInstance(contributionFactory);
                 } catch (Exception e) {
                     throw new IllegalStateException(e);
                 }

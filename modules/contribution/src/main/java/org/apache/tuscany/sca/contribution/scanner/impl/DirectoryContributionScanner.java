@@ -24,11 +24,12 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
+import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.PackageType;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.scanner.ContributionScanner;
@@ -39,25 +40,47 @@ import org.apache.tuscany.sca.contribution.scanner.ContributionScanner;
  * @version $Rev$ $Date$
  */
 public class DirectoryContributionScanner implements ContributionScanner {
-
-    public DirectoryContributionScanner() {
+    private ContributionFactory contributionFactory; 
+        
+    public DirectoryContributionScanner(ContributionFactory contributionFactory) {
+        this.contributionFactory = contributionFactory;
     }
 
     public String getContributionType() {
         return PackageType.FOLDER;
     }
 
-    public URL getArtifactURL(Contribution contribution, String artifact) throws ContributionReadException {
+    public List<Artifact> scan(Contribution contribution) throws ContributionReadException {
         File directory = directory(contribution);
-        File file = new File(directory, artifact);
-        try {
-            return file.toURI().toURL();
-        } catch (MalformedURLException e) {
-            throw new ContributionReadException(e);
+        List<Artifact> artifacts = new ArrayList<Artifact>();
+        List<String> artifactURIs = scanContributionArtifacts(contribution);
+        for(String uri : artifactURIs) {
+            try {
+                File file = new File(directory, uri);
+
+                Artifact artifact = contributionFactory.createArtifact();
+                artifact.setURI(uri);
+                artifact.setLocation(file.toURI().toURL().toString());
+                
+                artifacts.add(artifact);
+            } catch (MalformedURLException e) {
+                throw new ContributionReadException(e);
+            }
         }
+
+        contribution.getTypes().add(getContributionType());
+        return artifacts;
     }
 
-    public List<String> scan(Contribution contribution) throws ContributionReadException {
+    
+    /**
+     * Scan the contribution to retrieve all artifact uris
+     * 
+     * @param contribution
+     * @return
+     * @throws ContributionReadException
+     */
+    private List<String> scanContributionArtifacts(Contribution contribution) throws ContributionReadException {
         File directory = directory(contribution);
         List<String> artifacts = new ArrayList<String>();
         try {
@@ -65,10 +88,10 @@ public class DirectoryContributionScanner implements ContributionScanner {
         } catch (IOException e) {
             throw new ContributionReadException(e);
         }
-        contribution.getTypes().add(getContributionType());
+        
         return artifacts;
     }
-
+    
     /**
      * Recursively traverse a root directory
      *
@@ -95,8 +118,15 @@ public class DirectoryContributionScanner implements ContributionScanner {
             }
         }
     }
-
-    private static File directory(Contribution contribution) throws ContributionReadException {
+        
+    /**
+     * Get the contribution location as a file
+     * 
+     * @param contribution
+     * @return
+     * @throws ContributionReadException
+     */
+    private File directory(Contribution contribution) throws ContributionReadException {
         File file;
         URI uri = null;
         try {
@@ -113,5 +143,6 @@ public class DirectoryContributionScanner implements ContributionScanner {
         }
         return file;
     }
+    
 
 }

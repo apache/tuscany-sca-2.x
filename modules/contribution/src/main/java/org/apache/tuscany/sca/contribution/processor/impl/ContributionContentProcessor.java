@@ -19,6 +19,7 @@
 package org.apache.tuscany.sca.contribution.processor.impl;
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -123,32 +124,32 @@ public class ContributionContentProcessor implements ExtendedURLArtifactProcesso
             if (scanner == null) {
                 File file = toFile(contributionURL);
                 if (file != null && file.isDirectory()) {
-                    scanner = new DirectoryContributionScanner();
+                    scanner = new DirectoryContributionScanner(contributionFactory);
                 } else {
-                    scanner = new JarContributionScanner();
+                    scanner = new JarContributionScanner(contributionFactory);
                 }
             }
     
             // Scan the contribution and list the artifacts contained in it
-            List<Artifact> artifacts = contribution.getArtifacts();
             boolean contributionMetadata = false;
-            List<String> artifactURIs = scanner.scan(contribution);
-            for (String artifactURI: artifactURIs) {
-                URL artifactURL = scanner.getArtifactURL(contribution, artifactURI);
-    
+            List<Artifact> artifacts = scanner.scan(contribution);
+            for (Artifact artifact : artifacts) {
                 // Add the deployed artifact model to the contribution
-                Artifact artifact = this.contributionFactory.createArtifact();
-                artifact.setURI(artifactURI);
-                artifact.setLocation(artifactURL.toString());
-                artifacts.add(artifact);
                 modelResolver.addModel(artifact, context);
                 
-                monitor.pushContext("Artifact: " + artifactURI);
+                monitor.pushContext("Artifact: " + artifact.getURI());
     
                 old = context.setContribution(contribution);
                 try {
                     // Read each artifact
-                    Object model = artifactProcessor.read(contributionURL, URI.create(artifactURI), artifactURL, context);
+                    URL artifactLocationURL = null;
+                    try {
+                        artifactLocationURL = new URL(artifact.getLocation());
+                    } catch(MalformedURLException e) {
+                        //ignore
+                    }
+                    
+                    Object model = artifactProcessor.read(contributionURL, URI.create(artifact.getURI()), artifactLocationURL, context);
                     if (model != null) {
                         artifact.setModel(model);
         
@@ -171,6 +172,9 @@ public class ContributionContentProcessor implements ExtendedURLArtifactProcesso
                     context.setContribution(old);
                 }                    
             }
+            
+            List<Artifact> contributionArtifacts = contribution.getArtifacts();
+            contributionArtifacts.addAll(artifacts);
     
             // If no sca-contribution.xml file was provided then just consider
             // all composites in the contribution as deployables

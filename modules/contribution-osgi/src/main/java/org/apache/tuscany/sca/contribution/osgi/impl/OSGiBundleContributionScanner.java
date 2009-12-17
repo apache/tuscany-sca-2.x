@@ -31,7 +31,9 @@ import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
+import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
+import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.PackageType;
 import org.apache.tuscany.sca.contribution.processor.ContributionException;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
@@ -45,29 +47,94 @@ import org.osgi.framework.Constants;
  * @version $Rev$ $Date$
  */
 public class OSGiBundleContributionScanner implements ContributionScanner {
+    private ContributionFactory contributionFactory;
 
-    public OSGiBundleContributionScanner() {
+    public OSGiBundleContributionScanner(ContributionFactory contributionFactory) {
+        this.contributionFactory = contributionFactory;
     }
 
     public String getContributionType() {
         return PackageType.BUNDLE;
     }
 
-    public URL getArtifactURL(Contribution contribution, String artifact) throws ContributionReadException {
-        Bundle bundle = null;
+
+
+    public List<Artifact> scan(Contribution contribution) throws ContributionReadException {
+        Bundle bundle = OSGiBundleActivator.findBundle(contribution.getLocation());
+
+        if (bundle == null) {
+            throw new IllegalArgumentException("Could not find OSGi bundle " + contribution.getLocation());
+        }
+
+        List<Artifact> artifacts = new ArrayList<Artifact>();
+        Set<String> bundleClassPath = new HashSet<String>();
+        String cp = (String)bundle.getHeaders().get(Constants.BUNDLE_CLASSPATH);
+        if (cp != null) {
+            String[] paths = cp.split(",");
+            for (String path : paths) {
+                bundleClassPath.add(path.trim());
+            }
+        }
+
         try {
-            bundle = OSGiBundleActivator.findBundle(contribution.getLocation());
-            if (bundle != null) {
-                URL url = bundle.getResource(artifact);
-                return url;
+            // Test if the bundle is an Eclipse project
+            boolean devMode = (bundle.getEntry("/.project") != null);
+            // FIXME: The entries can come from fragments. Do we need to have a way to differentiate the entries?
+            Enumeration<?> entries = bundle.findEntries("/", "*", true);
+            while (entries.hasMoreElements()) {
+                URL entry = (URL)entries.nextElement();
+                String entryName = entry.getPath();
+                if (devMode && entryName.contains("/.svn/")
+                    || entryName.startsWith("/.")
+                    || entryName.startsWith("/target/")
+                    || entryName.startsWith("/src/")) {
+                    // Ignore .svn files
+                    // Ignore .classpath, .project, src, and target
+                    continue;
+                }
+                if (entryName.startsWith("/")) {
+                    entryName = entryName.substring(1);
+                }
+                
+                //Add artifact to list
+                Artifact artifact = contributionFactory.createArtifact();
+                artifact.setURI(entryName);
+                artifact.setLocation(getArtifactURL(contribution, entryName).toString());
+                
+                artifacts.add(artifact);
+
+                //if Artifact is a JAR, add jar artifacts as well
+                if (entryName.endsWith(".jar") && bundleClassPath.contains(entryName)) {
+                    List<String> jarArtifactURIs = getJarArtifacts(entry, entry.openStream());
+                    for( String uri : jarArtifactURIs) {
+                        Artifact jarArtifact = contributionFactory.createArtifact();
+                        jarArtifact.setURI(uri);
+                        jarArtifact.setLocation(getArtifactURL(contribution, uri).toString());
+                        
+                        artifacts.add(jarArtifact);
+                        
+                    }
+                }
+
             }
         } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        return null;
+        contribution.getExtensions().add(bundle);
+        contribution.getTypes().add(getContributionType());
+        contribution.setClassLoader(new BundleClassLoader(bundle));
+        return artifacts;
     }
 
-    public List<String> getJarArtifacts(URL packageSourceURL, InputStream inputStream) throws ContributionException,
-        IOException {
+    /**
+     * Retrieve a list of Artifact URIs for a given JAR
+     * @param packageSourceURL
+     * @param inputStream
+     * @return
+     * @throws ContributionException
+     * @throws IOException
+     */
+    private List<String> getJarArtifacts(URL packageSourceURL, InputStream inputStream) throws ContributionException, IOException {
         if (packageSourceURL == null) {
             throw new IllegalArgumentException("Invalid null package source URL.");
         }
@@ -103,7 +170,7 @@ public class OSGiBundleContributionScanner implements ContributionScanner {
                     }
                 }
             }
-
+            
             // Return list of URIs
             List<String> artifacts = new ArrayList<String>();
             for (String name : names) {
@@ -115,58 +182,29 @@ public class OSGiBundleContributionScanner implements ContributionScanner {
             jar.close();
         }
     }
+    
 
-    public List<String> scan(Contribution contribution) throws ContributionReadException {
-        Bundle bundle = OSGiBundleActivator.findBundle(contribution.getLocation());
-
-        if (bundle == null) {
-            throw new IllegalArgumentException("Could not find OSGi bundle " + contribution.getLocation());
-        }
-
-        List<String> artifacts = new ArrayList<String>();
-        Set<String> bundleClassPath = new HashSet<String>();
-        String cp = (String)bundle.getHeaders().get(Constants.BUNDLE_CLASSPATH);
-        if (cp != null) {
-            String[] paths = cp.split(",");
-            for (String path : paths) {
-                bundleClassPath.add(path.trim());
-            }
-        }
-
+    /**
+     * Given an artifact URI, return it's location URL
+     * 
+     * @param contribution
+     * @param artifact
+     * @return
+     * @throws ContributionReadException
+     */
+    private URL getArtifactURL(Contribution contribution, String artifact) throws ContributionReadException {
+        Bundle bundle = null;
         try {
-            // Test if the bundle is an Eclipse project
-            boolean devMode = (bundle.getEntry("/.project") != null);
-            // FIXME: The entries can come from fragments. Do we need to have a way to differentiate the entries?
-            Enumeration<?> entries = bundle.findEntries("/", "*", true);
-            while (entries.hasMoreElements()) {
-                URL entry = (URL)entries.nextElement();
-                String entryName = entry.getPath();
-                if (devMode && entryName.contains("/.svn/")
-                    || entryName.startsWith("/.")
-                    || entryName.startsWith("/target/")
-                    || entryName.startsWith("/src/")) {
-                    // Ignore .svn files
-                    // Ignore .classpath, .project, src, and target
-                    continue;
-                }
-                if (entryName.startsWith("/")) {
-                    entryName = entryName.substring(1);
-                }
-                artifacts.add(entryName);
-
-                if (entryName.endsWith(".jar") && bundleClassPath.contains(entryName)) {
-                    artifacts.addAll(getJarArtifacts(entry, entry.openStream()));
-                }
-
+            bundle = OSGiBundleActivator.findBundle(contribution.getLocation());
+            if (bundle != null) {
+                URL url = bundle.getResource(artifact);
+                return url;
             }
         } catch (Exception e) {
-            throw new RuntimeException(e);
         }
-        contribution.getExtensions().add(bundle);
-        contribution.getTypes().add(getContributionType());
-        contribution.setClassLoader(new BundleClassLoader(bundle));
-        return artifacts;
+        return null;
     }
+
 
     private static class BundleClassLoader extends ClassLoader {
         private Bundle bundle;
@@ -185,6 +223,7 @@ public class OSGiBundleContributionScanner implements ContributionScanner {
             return bundle.getResource(name);
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         protected Enumeration<URL> findResources(String name) throws IOException {
             Enumeration<URL> urls = bundle.getResources(name);

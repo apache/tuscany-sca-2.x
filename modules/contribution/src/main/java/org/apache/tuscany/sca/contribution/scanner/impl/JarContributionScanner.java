@@ -30,7 +30,9 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
 import org.apache.tuscany.sca.common.java.io.IOHelper;
+import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
+import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.PackageType;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.scanner.ContributionScanner;
@@ -41,29 +43,17 @@ import org.apache.tuscany.sca.contribution.scanner.ContributionScanner;
  * @version $Rev$ $Date$
  */
 public class JarContributionScanner implements ContributionScanner {
+    private ContributionFactory contributionFactory;
 
-    public JarContributionScanner() {
+    public JarContributionScanner(ContributionFactory contributionFactory) {
+        this.contributionFactory = contributionFactory;
     }
 
     public String getContributionType() {
         return PackageType.JAR;
     }
 
-    public URL getArtifactURL(Contribution contribution, String artifact) throws ContributionReadException {
-        try {
-            URL url;
-            if (contribution.toString().startsWith("jar:")) {
-                url = new URL(new URL(contribution.getLocation()), artifact.toString());
-            } else {
-                url = new URL("jar:" + contribution.getLocation() + "!/" + artifact);
-            }
-            return url;
-        } catch (MalformedURLException e) {
-            throw new ContributionReadException(e);
-        }
-    }
-
-    public List<String> scan(Contribution contribution) throws ContributionReadException {
+    public List<Artifact> scan(Contribution contribution) throws ContributionReadException {
 
         // Assume the URL references a JAR file
         try {
@@ -108,8 +98,16 @@ public class JarContributionScanner implements ContributionScanner {
                     }
                 }
 
-                // Return list of URIs
-                List<String> artifacts = new ArrayList<String>(names);
+                // Return list of artifacts
+                List<Artifact> artifacts = new ArrayList<Artifact>();
+                for(String uri : names) {
+                    Artifact artifact = contributionFactory.createArtifact();
+                    artifact.setURI(uri);
+                    artifact.setLocation(getArtifactURL(contribution, uri).toString());
+                    
+                    artifacts.add(artifact);
+                }
+                
                 contribution.getTypes().add(getContributionType());
                 return artifacts;
 
@@ -120,7 +118,26 @@ public class JarContributionScanner implements ContributionScanner {
             throw new ContributionReadException(e);
         }
     }
-
-    public void postProcess(Contribution contribution) {
+    
+    /**
+     * Produces a location URL for a given artifact in the contribution
+     * 
+     * @param contribution
+     * @param artifact
+     * @return
+     * @throws ContributionReadException
+     */
+    private static URL getArtifactURL(Contribution contribution, String artifact) throws ContributionReadException {
+        try {
+            URL url;
+            if (contribution.toString().startsWith("jar:")) {
+                url = new URL(new URL(contribution.getLocation()), artifact.toString());
+            } else {
+                url = new URL("jar:" + contribution.getLocation() + "!/" + artifact);
+            }
+            return url;
+        } catch (MalformedURLException e) {
+            throw new ContributionReadException(e);
+        }
     }
 }

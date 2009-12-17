@@ -19,9 +19,9 @@
 package org.apache.tuscany.sca.contribution.scanner;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.List;
 
+import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 
@@ -46,22 +46,9 @@ public interface ContributionScanner {
      * Returns a list of artifacts in the contribution.
      *
      * @param contribution Contribution URL
-     * @return List of artifact URIs
+     * @return List of artifact populated with URIs and location URL
      * @throws ContributionReadException
      * @throws IOException
      */
-    List<String> scan(Contribution contribution) throws ContributionReadException;
-
-    /**
-     * Return the URL for an artifact in the contribution.
-     *
-     * This is needed for archives such as jar files that have specific URL schemes
-     * for the artifacts they contain.
-     *
-     * @param contribution Contribution URL
-     * @param artifact The relative URI for the artifact
-     * @throws ContributionReadException
-     * @return The artifact URL
-     */
-    URL getArtifactURL(Contribution contribution, String artifact) throws ContributionReadException;
+    List<Artifact> scan(Contribution contribution) throws ContributionReadException;
 }
