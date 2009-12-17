@@ -96,11 +96,11 @@ public final class JavaIntrospectionHelper {
                     }
                 });
                 fields.add(field);
-            } else {
+            } /*else {
                 if (validating) {
                     checkInvalidAnnotations(field);
                 }
-            }
+            }*/
         }
         return fields;
     }
