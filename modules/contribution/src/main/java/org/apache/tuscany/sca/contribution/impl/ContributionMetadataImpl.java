@@ -34,20 +34,22 @@ import org.apache.tuscany.sca.contribution.Import;
  * @version $Rev$ $Date$
  */
 class ContributionMetadataImpl extends ExtensibleImpl implements ContributionMetadata {
-    private boolean unresolved;
+
+    private String specVersion = "undefined";
     private List<Export> exports = new ArrayList<Export>();
     private List<Import> imports = new ArrayList<Import>();
     private List<Composite> deployables = new ArrayList<Composite>();
-
+    private boolean unresolved;
+    
     ContributionMetadataImpl() {
     }
 
-    public boolean isUnresolved() {
-        return unresolved;
+    public String getSpecVersion() {
+        return specVersion;
     }
 
-    public void setUnresolved(boolean unresolved) {
-        this.unresolved = unresolved;
+    public void setSpecVersion(String specVersion) {
+        this.specVersion = specVersion;
     }
 
     public List<Export> getExports() {
@@ -62,4 +64,11 @@ class ContributionMetadataImpl extends ExtensibleImpl implements ContributionMet
         return deployables;
     }
 
+    public boolean isUnresolved() {
+        return unresolved;
+    }
+
+    public void setUnresolved(boolean unresolved) {
+        this.unresolved = unresolved;
+    }
 }

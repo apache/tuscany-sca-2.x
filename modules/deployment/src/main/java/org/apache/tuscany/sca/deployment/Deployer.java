@@ -49,6 +49,18 @@ import org.apache.tuscany.sca.monitor.Monitor;
  */
 public interface Deployer extends LifeCycleListener {
     /**
+     * Check if Schema Validation for XML Documents is enabled
+     * @return
+     */
+    boolean isSchemaValidationEnabled();
+    
+    /**
+     * Sets Schema Validation for XML Documents flag
+     * @param schemaValidationEnabled
+     */
+    void setSchemaValidationEnabled(boolean schemaValidationEnabled);
+    
+    /**
      * Attach a deployment composite to the given contribution 
      * @param contribution The target contribution
      * @param composite The deployment composite
@@ -149,15 +161,6 @@ public interface Deployer extends LifeCycleListener {
      */
     void saveXMLElement(Object model, XMLStreamWriter writer, Monitor monitor) throws XMLStreamException,
         ContributionWriteException;
-
-    /**
-     * @return
-     */
-    boolean isSchemaValidationEnabled();
-    /**
-     * @param schemaValidationEnabled
-     */
-    void setSchemaValidationEnabled(boolean schemaValidationEnabled);
     
     /**
      * 

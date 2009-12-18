@@ -31,6 +31,20 @@ import org.apache.tuscany.sca.assembly.Extensible;
  * @version $Rev$ $Date$
  */
 public interface ContributionMetadata extends Base, Extensible {
+    
+    /**
+     * Returns the spec version of the contribution metadata used to build this model
+     *
+     * @return the spec version used to build this model
+     */
+    String getSpecVersion();
+
+    /**
+     * Sets the spec version of the contribution metadata used to build this model
+     *
+     * @param specVersion the spec version used to build this model
+     */
+    void setSpecVersion(String specVersion);
 
     /**
      * Returns a list of exports based on the contribution metadata.

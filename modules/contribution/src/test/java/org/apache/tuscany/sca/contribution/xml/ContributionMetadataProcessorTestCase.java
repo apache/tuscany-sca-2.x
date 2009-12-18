@@ -50,6 +50,7 @@ import org.junit.Test;
  */
 
 public class ContributionMetadataProcessorTestCase {
+    private static final String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200912";
 
     private static final String VALID_XML =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "<contribution xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200912\""
@@ -64,7 +65,7 @@ public class ContributionMetadataProcessorTestCase {
             + "<deployable composite=\"ns:Composite1\"/>"
             + "<deployable/>"
             + "</contribution>";
-
+    
     private static XMLInputFactory inputFactory;
     private static XMLOutputFactory outputFactory;
     private static StAXArtifactProcessor<Object> staxProcessor;
@@ -108,6 +109,14 @@ public class ContributionMetadataProcessorTestCase {
         assertNotNull(problem);
         assertEquals("AttributeCompositeMissing", problem.getMessageId());
     }
+
+    @Test
+    public void testReadSpecVersion() throws Exception {
+        XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(VALID_XML));
+        ContributionMetadata contribution = (ContributionMetadata)staxProcessor.read(reader, context);
+        assertNotNull(contribution);
+        assertEquals(SCA11_NS, contribution.getSpecVersion());
+    }    
 
     @Test
     public void testWrite() throws Exception {

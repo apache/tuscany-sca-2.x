@@ -135,6 +135,7 @@ public class ContributionMetadataProcessor extends BaseStAXArtifactProcessor imp
 
                             // Read <contribution>
                             contribution = this.contributionFactory.createContributionMetadata();
+                            contribution.setSpecVersion(SCA11_NS);
                             contribution.setUnresolved(true);
                             readExtendedAttributes(reader, contribution, attributeProcessor, assemblyFactory, context);
 
