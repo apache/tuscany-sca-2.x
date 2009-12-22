@@ -42,8 +42,8 @@ import java.lang.annotation.Target;
 @Intent(Authentication.AUTHENTICATION)
 public @interface Authentication {
     String AUTHENTICATION = SCA_PREFIX + "authentication";
-    String AUTHENTICATION_MESSAGE = AUTHENTICATION + "message";
-    String AUTHENTICATION_TRANSPORT = AUTHENTICATION + "transport";
+    String AUTHENTICATION_MESSAGE = AUTHENTICATION + ".message";
+    String AUTHENTICATION_TRANSPORT = AUTHENTICATION + ".transport";
 
     /**
      * List of authentication qualifiers (such as "message" or "transport").

@@ -42,8 +42,8 @@ import java.lang.annotation.Target;
 @Intent(Integrity.INTEGRITY)
 public @interface Integrity {
     String INTEGRITY = SCA_PREFIX + "integrity";
-    String INTEGRITY_MESSAGE = INTEGRITY + "message";
-    String INTEGRITY_TRANSPORT = INTEGRITY + "transport";
+    String INTEGRITY_MESSAGE = INTEGRITY + ".message";
+    String INTEGRITY_TRANSPORT = INTEGRITY + ".transport";
 
     /**
      * List of integrity qualifiers (such as "message" or "transport").
