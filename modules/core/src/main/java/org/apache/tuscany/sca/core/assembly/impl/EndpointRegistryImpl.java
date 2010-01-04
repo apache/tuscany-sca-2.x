@@ -106,7 +106,8 @@ public class EndpointRegistryImpl implements EndpointRegistry, LifeCycleListener
 
         logger.fine("Find endpoint for reference - " + endpointReference.toString());
 
-        if (endpointReference.getReference() != null) {
+        if (endpointReference.getReference() != null && 
+            endpointReference.getTargetEndpoint() != null) {
             Endpoint targetEndpoint = endpointReference.getTargetEndpoint();
             foundEndpoints.addAll(findEndpoint(targetEndpoint.getURI()));
         }
