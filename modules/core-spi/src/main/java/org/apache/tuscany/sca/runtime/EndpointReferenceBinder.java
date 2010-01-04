@@ -19,8 +19,6 @@
 
 package org.apache.tuscany.sca.runtime;
 
-import org.apache.tuscany.sca.assembly.ComponentReference;
-import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 
 /**
