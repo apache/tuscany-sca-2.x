@@ -1,0 +1,28 @@
+Manifest-Version: 1.0
+Private-Package: org.apache.tuscany.sca.xsd.impl;version="2.0.0"
+SCA-Version: 1.1
+Bundle-Name: Apache Tuscany SCA Tomcat Tribes Based EndPoint Registry
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 2.0.0
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA XSD Model
+Bundle-SymbolicName: org.apache.tuscany.sca.endpoint.tribes
+Bundle-DocURL: http://www.apache.org/
+Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6
+Import-Package: org.apache.catalina.tribes,
+ org.apache.catalina.tribes.group,
+ org.apache.catalina.tribes.group.interceptors,
+ org.apache.catalina.tribes.io,
+ org.apache.catalina.tribes.membership,
+ org.apache.catalina.tribes.tipis,
+ org.apache.catalina.tribes.transport,
+ org.apache.catalina.tribes.util,
+ org.apache.juli.logging;resolution:=optional,
+ org.apache.tuscany.sca.assembly;version="2.0.0",
+ org.apache.tuscany.sca.core;version="2.0.0",
+ org.apache.tuscany.sca.core.assembly.impl;scope=internal;version="2.0.0";resolution:=optional,
+ org.apache.tuscany.sca.management;version="2.0.0",
+ org.apache.tuscany.sca.policy;version="2.0.0",
+ org.apache.tuscany.sca.runtime;version="2.0.0"
+Export-Package: org.apache.tuscany.sca.endpoint.tribes;version="2.0.0"
