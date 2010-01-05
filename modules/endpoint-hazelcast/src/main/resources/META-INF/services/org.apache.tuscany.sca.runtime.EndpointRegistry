@@ -14,5 +14,5 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-org.apache.tuscany.sca.endpoint.hazelcast.HazelcastRegistry;ranking=150,address=228.0.0.100,port=50000,timeout=50,scheme=tuscany
+org.apache.tuscany.sca.endpoint.hazelcast.HazelcastEndpointRegistry;ranking=150,scheme=tuscany
 

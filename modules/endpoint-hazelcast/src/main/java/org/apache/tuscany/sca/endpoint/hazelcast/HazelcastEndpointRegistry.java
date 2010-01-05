@@ -1,0 +1,293 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+package org.apache.tuscany.sca.endpoint.hazelcast;
+
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Logger;
+
+import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.LifeCycleListener;
+import org.apache.tuscany.sca.runtime.EndpointListener;
+import org.apache.tuscany.sca.runtime.EndpointRegistry;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
+
+import com.hazelcast.config.Config;
+import com.hazelcast.config.TcpIpConfig;
+import com.hazelcast.config.XmlConfigBuilder;
+import com.hazelcast.core.Hazelcast;
+import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.core.IMap;
+import com.hazelcast.nio.Address;
+
+/**
+ * An EndpointRegistry using a Hazelcast
+ */
+public class HazelcastEndpointRegistry implements EndpointRegistry, LifeCycleListener {
+    private final static Logger logger = Logger.getLogger(HazelcastEndpointRegistry.class.getName());
+
+    private List<EndpointReference> endpointreferences = new CopyOnWriteArrayList<EndpointReference>();
+    private List<EndpointListener> listeners = new CopyOnWriteArrayList<EndpointListener>();
+
+    private ExtensionPointRegistry registry;
+    private ConfigURI configURI;
+
+    private HazelcastInstance hazelcastInstance;
+    private IMap<Object, Object> map;
+    private List<String> localEndpoints = new ArrayList<String>();;
+
+    public HazelcastEndpointRegistry(ExtensionPointRegistry registry,
+                                      Map<String, String> attributes,
+                                      String domainRegistryURI,
+                                      String domainURI) {
+        this.registry = registry;
+        this.configURI = new ConfigURI(domainRegistryURI);
+    }
+
+    public void start() {
+        if (map != null) {
+            throw new IllegalStateException("The registry has already been started");
+        }
+        initHazelcastInstance();
+        map = hazelcastInstance.getMap(configURI.getDomainName() + "Endpoints");
+    }
+
+    public void stop() {
+        if (map != null) {
+            hazelcastInstance.shutdown();
+        }
+    }
+
+    private void initHazelcastInstance()  {
+        Config config = new XmlConfigBuilder().build();
+
+        config.setPort(configURI.getListenPort());
+        //config.setPortAutoIncrement(false);
+        
+        if (configURI.getBindAddress() != null) {
+            config.getNetworkConfig().getInterfaces().setEnabled(true);
+            config.getNetworkConfig().getInterfaces().clear();
+            config.getNetworkConfig().getInterfaces().addInterface(configURI.getBindAddress());
+        }
+
+        config.getGroupConfig().setName(configURI.getDomainName());
+        config.getGroupConfig().setPassword(configURI.getPassword());
+
+        if (configURI.isMulticastDisabled()) {
+            config.getNetworkConfig().getJoin().getMulticastConfig().setEnabled(false);
+        } else {
+            config.getNetworkConfig().getJoin().getMulticastConfig().setEnabled(true);
+            config.getNetworkConfig().getJoin().getMulticastConfig().setMulticastPort(configURI.getMulticastPort());
+            config.getNetworkConfig().getJoin().getMulticastConfig().setMulticastGroup(configURI.getMulticastAddress());
+        }
+        
+        if (configURI.getRemotes().size() > 0) {
+            TcpIpConfig tcpconfig = config.getNetworkConfig().getJoin().getJoinMembers();
+            tcpconfig.setEnabled(true);
+            List<Address> lsMembers = tcpconfig.getAddresses();
+            lsMembers.clear();
+            for (String addr : configURI.getRemotes()) {
+                String[] ipNPort = addr.split(":");
+                try {
+                    lsMembers.add(new Address(ipNPort[0], Integer.parseInt(ipNPort[1])));
+                } catch (UnknownHostException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+
+        this.hazelcastInstance = Hazelcast.newHazelcastInstance(config);
+    }
+
+    public void addEndpoint(Endpoint endpoint) {
+        map.put(endpoint.getURI(), endpoint);
+        localEndpoints.add(endpoint.getURI());
+        logger.info("Add endpoint - " + endpoint);
+    }
+
+    public void addEndpointReference(EndpointReference endpointReference) {
+        endpointreferences.add(endpointReference);
+        logger.fine("Add endpoint reference - " + endpointReference);
+    }
+
+    public void addListener(EndpointListener listener) {
+        listeners.add(listener);
+    }
+
+    /**
+     * Parse the component/service/binding URI into an array of parts (componentURI, serviceName, bindingName)
+     * @param uri
+     * @return
+     */
+    private String[] parse(String uri) {
+        String[] names = new String[3];
+        int index = uri.lastIndexOf('#');
+        if (index == -1) {
+            names[0] = uri;
+        } else {
+            names[0] = uri.substring(0, index);
+            String str = uri.substring(index + 1);
+            if (str.startsWith("service-binding(") && str.endsWith(")")) {
+                str = str.substring("service-binding(".length(), str.length() - 1);
+                String[] parts = str.split("/");
+                if (parts.length != 2) {
+                    throw new IllegalArgumentException("Invalid service-binding URI: " + uri);
+                }
+                names[1] = parts[0];
+                names[2] = parts[1];
+            } else if (str.startsWith("service(") && str.endsWith(")")) {
+                str = str.substring("service(".length(), str.length() - 1);
+                names[1] = str;
+            } else {
+                throw new IllegalArgumentException("Invalid component/service/binding URI: " + uri);
+            }
+        }
+        return names;
+    }
+
+    private boolean matches(String target, String uri) {
+        String[] parts1 = parse(target);
+        String[] parts2 = parse(uri);
+        for (int i = 0; i < parts1.length; i++) {
+            if (parts1[i] == null || parts1[i].equals(parts2[i])) {
+                continue;
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public List<Endpoint> findEndpoint(EndpointReference endpointReference) {
+        List<Endpoint> foundEndpoints = new ArrayList<Endpoint>();
+
+        logger.fine("Find endpoint for reference - " + endpointReference);
+
+        if (endpointReference.getReference() != null) {
+            Endpoint targetEndpoint = endpointReference.getTargetEndpoint();
+            
+            for (Object v : map.values()) {
+                Endpoint endpoint = (Endpoint)v;
+                logger.fine("Matching against - " + endpoint);
+                if (matches(targetEndpoint.getURI(), endpoint.getURI())) {
+                    if (!isLocal(endpoint)) {
+                        endpoint.setRemote(true);
+                    }
+                    // if (!entry.isPrimary()) {
+                    ((RuntimeEndpoint) endpoint).bind(registry, this);
+                    // }
+                    foundEndpoints.add(endpoint);
+                    logger.fine("Found endpoint with matching service  - " + endpoint);
+                } 
+                // else the service name doesn't match
+            }
+        }
+        
+        return foundEndpoints;
+    }
+
+    private boolean isLocal(Endpoint endpoint) {
+        return localEndpoints.contains(endpoint.getURI());
+    }
+
+    public List<EndpointReference> findEndpointReference(Endpoint endpoint) {
+        return endpointreferences;
+    }
+
+    public Endpoint getEndpoint(String uri) {
+        return (Endpoint)map.get(uri);
+    }
+
+    public List<EndpointReference> getEndpointReferences() {
+        return endpointreferences;
+    }
+
+    public List<Endpoint> getEndpoints() {
+        return new ArrayList(map.values());
+    }
+
+    public List<EndpointListener> getListeners() {
+        return listeners;
+    }
+
+    public void removeEndpoint(Endpoint endpoint) {
+        map.remove(endpoint.getURI());
+        localEndpoints.remove(endpoint.getURI());
+        logger.info("Removed endpoint - " + endpoint);
+    }
+
+    public void removeEndpointReference(EndpointReference endpointReference) {
+        endpointreferences.remove(endpointReference);
+        logger.fine("Remove endpoint reference - " + endpointReference);
+    }
+
+    public void removeListener(EndpointListener listener) {
+        listeners.remove(listener);
+    }
+
+    public void updateEndpoint(String uri, Endpoint endpoint) {
+//      // TODO: is updateEndpoint needed?
+//      throw new UnsupportedOperationException();
+    }
+
+//    public void entryAdded(Object key, Object value) {
+//        MapEntry entry = (MapEntry)value;
+//        Endpoint newEp = (Endpoint)entry.getValue();
+//        if (!isLocal(entry)) {
+//            logger.info(id + " Remote endpoint added: " + entry.getValue());
+//            newEp.setRemote(true);
+//        }
+//        ((RuntimeEndpoint) newEp).bind(registry, this);
+//        for (EndpointListener listener : listeners) {
+//            listener.endpointAdded(newEp);
+//        }
+//    }
+//
+//    public void entryRemoved(Object key, Object value) {
+//        MapEntry entry = (MapEntry)value;
+//        if (!isLocal(entry)) {
+//            logger.info(id + " Remote endpoint removed: " + entry.getValue());
+//        }
+//        Endpoint oldEp = (Endpoint)entry.getValue();
+//        for (EndpointListener listener : listeners) {
+//            listener.endpointRemoved(oldEp);
+//        }
+//    }
+//
+//    public void entryUpdated(Object key, Object oldValue, Object newValue) {
+//        MapEntry oldEntry = (MapEntry)oldValue;
+//        MapEntry newEntry = (MapEntry)newValue;
+//        if (!isLocal(newEntry)) {
+//            logger.info(id + " Remote endpoint updated: " + newEntry.getValue());
+//        }
+//        Endpoint oldEp = (Endpoint)oldEntry.getValue();
+//        Endpoint newEp = (Endpoint)newEntry.getValue();
+//        ((RuntimeEndpoint) newEp).bind(registry, this);
+//        for (EndpointListener listener : listeners) {
+//            listener.endpointUpdated(oldEp, newEp);
+//        }
+//    }
+
+}
