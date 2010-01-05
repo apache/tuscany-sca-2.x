@@ -327,4 +327,8 @@ public class OverlayEndpointRegistry implements EndpointRegistry, LifeCycleListe
 	}
     }
 
+    public List<EndpointReference> getEndpointReferences() {
+        return endpointreferences;
+    }
+
 }

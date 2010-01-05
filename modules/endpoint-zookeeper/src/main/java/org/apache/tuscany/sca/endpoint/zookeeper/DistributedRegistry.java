@@ -53,6 +53,8 @@ public class DistributedRegistry extends AbstractDistributedMap<Endpoint> implem
     private ExtensionPointRegistry registry;
     private String domainURI;
     private String registryURI;
+    private String hosts = null;
+    private int sessionTimeout = 100;
 
     /**
      * 
@@ -64,12 +66,17 @@ public class DistributedRegistry extends AbstractDistributedMap<Endpoint> implem
         super(null, null, null);
         this.domainURI = domainURI;
         this.registryURI = domainRegistryURI;
-        Map<String, String> config = parseURI(attributes, domainRegistryURI);
+        Map<String, String> config = parseURI(attributes, registryURI);
+        hosts = config.get("hosts");
+        String timeout = config.get("sessionTimeout");
+        if (timeout != null) {
+            sessionTimeout = Integer.parseInt(timeout.trim());
+        }
     }
 
     public void start() {
         try {
-            zooKeeper = new ZooKeeper(registryURI, 100, null);
+            zooKeeper = new ZooKeeper(registryURI, sessionTimeout, null);
         } catch (IOException e) {
             throw new ServiceRuntimeException(e);
         }
@@ -188,7 +195,7 @@ public class DistributedRegistry extends AbstractDistributedMap<Endpoint> implem
                 logger.fine("Matching against - " + endpoint);
                 if (matches(targetEndpoint.getURI(), endpoint.getURI())) {
                     // if (!entry.isPrimary()) {
-                    ((RuntimeEndpoint) endpoint).bind(registry, this);
+                    ((RuntimeEndpoint)endpoint).bind(registry, this);
                     // }
                     foundEndpoints.add(endpoint);
                     logger.fine("Found endpoint with matching service  - " + endpoint);
@@ -242,7 +249,7 @@ public class DistributedRegistry extends AbstractDistributedMap<Endpoint> implem
     }
 
     public void entryAdded(Endpoint value) {
-        ((RuntimeEndpoint) value).bind(registry, this);
+        ((RuntimeEndpoint)value).bind(registry, this);
         for (EndpointListener listener : listeners) {
             listener.endpointAdded(value);
         }
@@ -255,7 +262,7 @@ public class DistributedRegistry extends AbstractDistributedMap<Endpoint> implem
     }
 
     public void entryUpdated(Endpoint oldEp, Endpoint newEp) {
-        ((RuntimeEndpoint) newEp).bind(registry, this);
+        ((RuntimeEndpoint)newEp).bind(registry, this);
         for (EndpointListener listener : listeners) {
             listener.endpointUpdated(oldEp, newEp);
         }
@@ -280,6 +287,10 @@ public class DistributedRegistry extends AbstractDistributedMap<Endpoint> implem
                 entryRemoved(null);
                 break;
         }
+    }
+
+    public List<EndpointReference> getEndpointReferences() {
+        return endpointreferences;
     }
 
 }
