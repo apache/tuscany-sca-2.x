@@ -493,7 +493,7 @@ public class ScriptEngine extends ScriptableObject implements Runnable{
         oldClassLoader = Thread.currentThread().getContextClassLoader();
 //        Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
 
-        tuscany = new SCAClientFactoryImpl(URI.create("tribes:foo"));        
+        tuscany = new SCAClientFactoryImpl(URI.create("tuscany:foo"));        
         
 //        // Obtain and start the Tuscany runtime
 //        try {
