@@ -262,6 +262,7 @@ The following components come under Apache Software License 2.0
  geronimo-kernel-2.0.1.jar
  geronimo-stax-api_1.0_spec-1.0.1.jar
  geronimo-transaction-2.0.1.jar
+ hazelcast-1.8.jar
  httpclient-4.0.jar
  httpcore-4.0.1.jar
  httpcore-nio-4.0.1.jar
