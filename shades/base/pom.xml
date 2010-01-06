@@ -73,25 +73,6 @@
         </dependency>
         <dependency>
             <groupId>${pom.groupId}</groupId>
-            <artifactId>tuscany-binding-jms-runtime</artifactId>
-            <version>${pom.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.tuscany.sca</groupId>
-                    <artifactId>tuscany-databinding-axiom</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.tuscany.sca</groupId>
-                    <artifactId>tuscany-binding-ws-wsdlgen</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.tuscany.sca</groupId>
-                    <artifactId>tuscany-interface-wsdl</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>${pom.groupId}</groupId>
             <artifactId>tuscany-host-jetty</artifactId>
             <version>${pom.version}</version>
             <exclusions>
@@ -207,7 +188,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>1.2.1</version>
+                <version>1.3</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -215,24 +196,12 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                           <relocations>
-                              <!-- relocation>
-                                 <pattern>org.objectweb.asm</pattern>
-                                 <shadedPattern>org.apache.tuscany.asm</shadedPattern>
-                              </relocation>
-                              <relocation>
-                                 <pattern>net.sf.cglib</pattern>
-                                 <shadedPattern>org.apache.tuscany.cglib</shadedPattern>
-                              </relocation>
-                              <relocation>
-                                 <pattern>org.apache.catalina.tribes</pattern>
-                                 <shadedPattern>org.apache.tuscany.tribes</shadedPattern>
-                              </relocation>
-                              <relocation>
-                                 <pattern>org.apache.juli</pattern>
-                                 <shadedPattern>org.apache.tuscany.juli</shadedPattern>
-                              </relocation -->
-                           </relocations>
+                           <promoteTransitiveDependencies>true</promoteTransitiveDependencies>
+                           <artifactSet>
+                              <includes>
+                                 <include>org.apache.tuscany.sca:*</include>
+                              </includes>
+                           </artifactSet>
                            <transformers>
                               <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
                               <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
