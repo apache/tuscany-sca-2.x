@@ -33,8 +33,10 @@
     <modules>
         <module>tomcat-hook</module>
         <module>tomcat-servlet</module>
+<!-- 
         <module>tomcat-war</module>
         <module>testing</module>
+-->
     </modules>
 
 </project>
