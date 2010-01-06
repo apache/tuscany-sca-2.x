@@ -242,6 +242,7 @@ The following components come under Apache Software License 2.0
  geronimo-j2ee-management_1.0_spec-1.0.jar
  geronimo-jms_1.1_spec-1.1.1.jar
  geronimo-stax-api_1.0_spec-1.0.1.jar
+ hazelcast-1.8.jar
  httpclient-4.0.jar, 
  httpcore-4.0.1.jar
  httpcore-nio-4.0.1.jar
@@ -255,7 +256,6 @@ The following components come under Apache Software License 2.0
  rampart-policy-1.4.jar
  rampart-trust-1.4.jar
  swizzle-stream-1.0.2.jar
- tribes-6.0.18.jar
  woden-api-1.0M8.jar
  woden-impl-dom-1.0M8.jar
  wss4j-1.5.4.jar
