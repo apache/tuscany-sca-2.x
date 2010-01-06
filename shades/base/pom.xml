@@ -53,7 +53,7 @@
         </dependency>
         <dependency>
             <groupId>${pom.groupId}</groupId>
-            <artifactId>tuscany-endpoint-tribes</artifactId>
+            <artifactId>tuscany-endpoint-hazelcast</artifactId>
             <version>${pom.version}</version>
         </dependency>
         <dependency>
