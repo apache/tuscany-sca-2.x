@@ -73,6 +73,7 @@
         <module>deployment</module>
         <module>domain-node</module>
         <module>endpoint-tribes</module>
+        <module>endpoint-hazelcast</module>
         <module>extensibility</module>
         <module>extensibility-equinox</module>
         <module>host-http</module>
