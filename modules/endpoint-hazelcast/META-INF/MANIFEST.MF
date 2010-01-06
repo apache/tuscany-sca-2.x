@@ -14,6 +14,6 @@ Import-Package: com.hazelcast.config,
  com.hazelcast.nio,
  org.apache.tuscany.sca.assembly;version="2.0.0",
  org.apache.tuscany.sca.core;version="2.0.0",
- org.apache.tuscany.sca.core.assembly.impl;scope=internal;version="2.0.0";resolution:=optional,
  org.apache.tuscany.sca.runtime;version="2.0.0"
-Export-Package: org.apache.tuscany.sca.endpoint.hazelcast;version="2.0.0"
+Export-Package: org.apache.tuscany.sca.endpoint.hazelcast;version="2.0.0";
+ uses:="org.apache.tuscany.sca.runtime,org.apache.tuscany.sca.assembly,org.apache.tuscany.sca.core"
