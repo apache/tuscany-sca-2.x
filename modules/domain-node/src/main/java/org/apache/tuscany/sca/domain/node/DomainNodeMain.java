@@ -35,7 +35,7 @@ public class DomainNodeMain {
 
         List<String> contributions = new ArrayList<String>();
         for (int i = 0; i < args.length; i++) {
-            if (args[i].startsWith("vm:") || args[i].startsWith("tribes:")) {
+            if (args[i].startsWith("vm:") || args[i].startsWith("tribes:") || args[i].startsWith("tuscany:")) {
                 configURI = args[i];
             } else{
                 File f = new File(args[i]);
