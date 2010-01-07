@@ -37,7 +37,7 @@
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>itest-domain-interfaces</artifactId>
+            <artifactId>itest-domains-interfaces</artifactId>
             <version>2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
