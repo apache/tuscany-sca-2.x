@@ -26,62 +26,63 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
+    <groupId>org.apache.tuscany.sca.shades</groupId>
     <artifactId>tuscany-webservices</artifactId>
     <name>Apache Tuscany SCA Web Services Jar</name>
 
     <dependencies>
 
         <dependency>
-            <groupId>${pom.groupId}</groupId>
+            <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-ws-axis2</artifactId>
             <version>${pom.version}</version>
             <exclusions>
                 <exclusion>
-                    <groupId>${pom.groupId}</groupId>
+                    <groupId>org.apache.tuscany.sca</groupId>
                     <artifactId>tuscany-core</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>${pom.groupId}</groupId>
+                    <groupId>org.apache.tuscany.sca</groupId>
                     <artifactId>tuscany-contribution</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>${pom.groupId}</groupId>
+                    <groupId>org.apache.tuscany.sca</groupId>
                     <artifactId>tuscany-assembly-xml</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>${pom.groupId}</groupId>
+                    <groupId>org.apache.tuscany.sca</groupId>
                     <artifactId>tuscany-interface-java</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>${pom.groupId}</groupId>
+                    <groupId>org.apache.tuscany.sca</groupId>
                     <artifactId>tuscany-interface-java-jaxws</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>${pom.groupId}</groupId>
+                    <groupId>org.apache.tuscany.sca</groupId>
                     <artifactId>tuscany-databinding</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>${pom.groupId}</groupId>
+                    <groupId>org.apache.tuscany.sca</groupId>
                     <artifactId>tuscany-core-databinding</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>${pom.groupId}</groupId>
+                    <groupId>org.apache.tuscany.sca</groupId>
                     <artifactId>tuscany-databinding-jaxb</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>${pom.groupId}</groupId>
+                    <groupId>org.apache.tuscany.sca</groupId>
                     <artifactId>tuscany-host-http</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>${pom.groupId}</groupId>
+                    <groupId>org.apache.tuscany.sca</groupId>
                     <artifactId>tuscany-core-spi</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>${pom.groupId}</groupId>
+                    <groupId>org.apache.tuscany.sca</groupId>
                     <artifactId>tuscany-assembly</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>${pom.groupId}</groupId>
+                    <groupId>org.apache.tuscany.sca</groupId>
                     <artifactId>tuscany-xsd</artifactId>
                 </exclusion>
                 <exclusion>
@@ -152,7 +153,7 @@
         </dependency>
 
         <dependency>
-            <groupId>${pom.groupId}</groupId>
+            <groupId>org.apache.tuscany.sca.shades</groupId>
             <artifactId>tuscany-base</artifactId>
             <version>${pom.version}</version>
             <scope>provided</scope>

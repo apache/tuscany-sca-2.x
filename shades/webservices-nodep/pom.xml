@@ -26,14 +26,21 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
+    <groupId>org.apache.tuscany.sca.shades</groupId>
     <artifactId>tuscany-webservices-nodep</artifactId>
     <name>Apache Tuscany SCA Web Services Jar</name>
 
     <dependencies>
         <dependency>
-            <groupId>${pom.groupId}</groupId>
+            <groupId>org.apache.tuscany.sca.shades</groupId>
             <artifactId>tuscany-webservices</artifactId>
             <version>${pom.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca.shades</groupId>
+            <artifactId>tuscany-base</artifactId>
+            <version>${pom.version}</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 

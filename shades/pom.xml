@@ -25,14 +25,18 @@
         <relativePath>../pom.xml</relativePath>
         <version>2.0-SNAPSHOT</version>
     </parent>
-    <groupId>org.apache.tuscany.sca</groupId>
+
     <artifactId>tuscany-shades</artifactId>
     <packaging>pom</packaging>
     <name>Apache Tuscany SCA Shaded Jars</name>
 
     <modules>
         <module>base</module>
+        <module>base-nodep</module>
+        <module>spring</module>
+        <module>spring-nodep</module>
         <module>webservices</module>
+        <module>webservices-nodep</module>
     </modules>
 
 </project>

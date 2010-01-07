@@ -26,13 +26,13 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
+    <groupId>org.apache.tuscany.sca.shades</groupId>
     <artifactId>tuscany-base-nodep</artifactId>
     <name>Apache Tuscany SCA Base Jar</name>
 
     <dependencies>
-
         <dependency>
-            <groupId>${pom.groupId}</groupId>
+            <groupId>org.apache.tuscany.sca.shades</groupId>
             <artifactId>tuscany-base</artifactId>
             <version>${pom.version}</version>
         </dependency>

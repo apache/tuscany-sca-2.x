@@ -26,52 +26,53 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
+    <groupId>org.apache.tuscany.sca.shades</groupId>
     <artifactId>tuscany-spring</artifactId>
     <name>Apache Tuscany SCA Spring Support Jar</name>
 
     <dependencies>
 
         <dependency>
-            <groupId>${pom.groupId}</groupId>
+            <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-spring</artifactId>
             <version>${pom.version}</version>
             <exclusions>
                 <exclusion>
-                    <groupId>${pom.groupId}</groupId>
+                    <groupId>org.apache.tuscany.sca</groupId>
                     <artifactId>tuscany-assembly</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>${pom.groupId}</groupId>
+                    <groupId>org.apache.tuscany.sca</groupId>
                     <artifactId>tuscany-assembly-xml</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>${pom.groupId}</groupId>
+                    <groupId>org.apache.tuscany.sca</groupId>
                     <artifactId>tuscany-contribution</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>${pom.groupId}</groupId>
+                    <groupId>org.apache.tuscany.sca</groupId>
                     <artifactId>tuscany-sca-api</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>${pom.groupId}</groupId>
+                    <groupId>org.apache.tuscany.sca</groupId>
                     <artifactId>tuscany-implementation-java-runtime</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>${pom.groupId}</groupId>
+            <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-spring-sca</artifactId>
             <version>${pom.version}</version>
             <exclusions>
                 <exclusion>
-                    <groupId>${pom.groupId}</groupId>
+                    <groupId>org.apache.tuscany.sca</groupId>
                     <artifactId>tuscany-sca-api</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
 
         <dependency>
-            <groupId>${pom.groupId}</groupId>
+            <groupId>org.apache.tuscany.sca.shades</groupId>
             <artifactId>tuscany-base</artifactId>
             <version>${pom.version}</version>
             <scope>provided</scope>
