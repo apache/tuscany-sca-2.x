@@ -51,8 +51,10 @@ public class ConfigURI {
     private String multicastAddress = "224.5.12.10";
     private int multicastPort = 51482;
     private List<String> remotes = new ArrayList<String>();
+    private String uri;
 
     public ConfigURI(String uri) {
+        this.uri = uri;
         parseURI(uri);
     }
 
@@ -153,6 +155,10 @@ public class ConfigURI {
 
     public List<String> getRemotes() {
         return remotes;
+    }
+    
+    public String toString() {
+        return uri;
     }
 
 }

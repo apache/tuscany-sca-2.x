@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.endpoint.hazelcast;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -39,7 +40,6 @@ import com.hazelcast.config.TcpIpConfig;
 import com.hazelcast.config.XmlConfigBuilder;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.core.IMap;
 import com.hazelcast.nio.Address;
 
 /**
@@ -55,7 +55,7 @@ public class HazelcastEndpointRegistry implements EndpointRegistry, LifeCycleLis
     private ConfigURI configURI;
 
     private HazelcastInstance hazelcastInstance;
-    private IMap<Object, Object> map;
+    private Map<Object, Object> map;
     private List<String> localEndpoints = new ArrayList<String>();;
 
     public HazelcastEndpointRegistry(ExtensionPointRegistry registry,
@@ -70,12 +70,16 @@ public class HazelcastEndpointRegistry implements EndpointRegistry, LifeCycleLis
         if (map != null) {
             throw new IllegalStateException("The registry has already been started");
         }
-        initHazelcastInstance();
-        map = hazelcastInstance.getMap(configURI.getDomainName() + "Endpoints");
+        if (configURI.toString().startsWith("tuscany:vm:")) {
+            map = new HashMap<Object, Object>();
+        } else {
+            initHazelcastInstance();
+            map = hazelcastInstance.getMap(configURI.getDomainName() + "Endpoints");
+        }
     }
 
     public void stop() {
-        if (map != null) {
+        if (hazelcastInstance != null) {
             hazelcastInstance.shutdown();
         }
     }
@@ -187,7 +191,7 @@ public class HazelcastEndpointRegistry implements EndpointRegistry, LifeCycleLis
 
         if (endpointReference.getReference() != null) {
             Endpoint targetEndpoint = endpointReference.getTargetEndpoint();
-            
+
             for (Object v : map.values()) {
                 Endpoint endpoint = (Endpoint)v;
                 logger.fine("Matching against - " + endpoint);
