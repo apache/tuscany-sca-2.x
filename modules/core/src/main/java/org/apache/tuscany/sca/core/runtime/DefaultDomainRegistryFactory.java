@@ -75,7 +75,12 @@ public class DefaultDomainRegistryFactory implements DomainRegistryFactory, Life
             endpointRegistryURI = "vm://localhost";
         }
         
-        String key = endpointRegistryURI + "," + domainURI;
+        String key;
+        if (endpointRegistryURI.startsWith("tuscany:")){ 
+            key = "tuscany:," + domainURI;
+        } else {
+            key = endpointRegistryURI + "," + domainURI;
+        }
 
         EndpointRegistry endpointRegistry = endpointRegistries.get(key);
         if (endpointRegistry != null) {
