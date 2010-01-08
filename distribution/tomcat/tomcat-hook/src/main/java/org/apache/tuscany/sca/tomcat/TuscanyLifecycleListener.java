@@ -55,6 +55,8 @@ public class TuscanyLifecycleListener implements LifecycleListener {
 
     static final String TUSCANY_SHARED_PROP = "org.apache.tuscany.sca.tomcat.shared";
 
+    private static String domainURI = "tuscany:default";
+
     public TuscanyLifecycleListener() {
         running = true;
         log.info("Apache Tuscany initilizing");
@@ -147,5 +149,13 @@ public class TuscanyLifecycleListener implements LifecycleListener {
             }
         }
         return null;
+    }
+    
+    public void setDomainURI(String domainURI) {
+        TuscanyLifecycleListener.domainURI = domainURI;
+    }
+    
+    public static String getDomainURI() {
+        return domainURI;
     }
 }
