@@ -62,8 +62,12 @@ public class DomainNode {
         this.domainRegistryURI = configURI;
         initDomainName(configURI);
         nodeFactory = NodeFactory.getInstance(domainName);
-        for (String loc : contributionLocations) {
-            addContribution(loc);
+        if (contributionLocations == null || contributionLocations.length == 0) {
+            addContribution(null, "_null");
+        } else {
+            for (String loc : contributionLocations) {
+                addContribution(loc);
+            }
         }
     }
 
@@ -84,7 +88,9 @@ public class DomainNode {
             throw new IllegalArgumentException("contribution already added: " + uri);
         }
         NodeConfiguration configuration = nodeFactory.createNodeConfiguration();
-        configuration.addContribution(uri, location);
+        if (location != null) {
+            configuration.addContribution(uri, location);
+        }
         configuration.setDomainRegistryURI(domainRegistryURI);
         configuration.setDomainURI(domainName);
         configuration.setURI(uri); //???
@@ -145,7 +151,18 @@ public class DomainNode {
 //        if (dn == null || dn.length() < 1) {
 //            dn = DEFAULT_DOMAIN_NAME;
 //        }
-        domainName = configURI;  
+        if (configURI.startsWith("tuscany:vm:")) {
+            domainName = configURI.substring("tuscany:vm:".length());  
+        } else if (configURI.startsWith("tuscany:")) {
+            int i = configURI.indexOf('?');
+            if (i == -1) {
+                domainName = configURI.substring("tuscany:".length());  
+            } else{
+                domainName = configURI.substring("tuscany:".length(), i);  
+            }
+        } else {
+            domainName = configURI;  
+        }
     }
     
     /**
