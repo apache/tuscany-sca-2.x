@@ -28,7 +28,7 @@
 
     <groupId>org.apache.tuscany.sca.shades</groupId>
     <artifactId>tuscany-webservices-nodep</artifactId>
-    <name>Apache Tuscany SCA Web Services Jar</name>
+    <name>Apache Tuscany SCA Web Services Jar including dependencies</name>
 
     <dependencies>
         <dependency>

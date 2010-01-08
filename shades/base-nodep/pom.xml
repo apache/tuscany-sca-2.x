@@ -28,7 +28,7 @@
 
     <groupId>org.apache.tuscany.sca.shades</groupId>
     <artifactId>tuscany-base-nodep</artifactId>
-    <name>Apache Tuscany SCA Base Jar</name>
+    <name>Apache Tuscany SCA Base Jar including dependencies</name>
 
     <dependencies>
         <dependency>
