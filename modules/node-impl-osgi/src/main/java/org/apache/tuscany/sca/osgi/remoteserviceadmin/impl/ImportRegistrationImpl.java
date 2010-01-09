@@ -67,7 +67,7 @@ public class ImportRegistrationImpl implements ImportRegistration {
             node = null;
         }
         exception = null;
-        importReference = null;
+        importReference = new ImportReferenceImpl(null, null);
     }
 
     public Throwable getException() {

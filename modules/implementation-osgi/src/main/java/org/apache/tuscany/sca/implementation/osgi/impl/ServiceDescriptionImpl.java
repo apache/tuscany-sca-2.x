@@ -19,18 +19,18 @@
 
 package org.apache.tuscany.sca.implementation.osgi.impl;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.sca.implementation.osgi.ServiceDescription;
+import org.osgi.framework.Constants;
 
 /**
  * The OSGi RFC 119 description of a remote OSGi service
  */
 public class ServiceDescriptionImpl implements ServiceDescription {
-    private List<String> interfaces = new ArrayList<String>();
     private Map<String, Object> properties = new HashMap<String, Object>();
 
     protected ServiceDescriptionImpl() {
@@ -38,7 +38,7 @@ public class ServiceDescriptionImpl implements ServiceDescription {
     }
 
     public List<String> getInterfaces() {
-        return interfaces;
+        return Arrays.asList((String[])properties.get(Constants.OBJECTCLASS));
     }
 
     public Map<String, Object> getProperties() {
@@ -46,6 +46,6 @@ public class ServiceDescriptionImpl implements ServiceDescription {
     }
 
     public String toString() {
-        return "service-description: interfaces=" + interfaces + " properties=" + properties;
+        return "service-description: " + properties;
     }
 }

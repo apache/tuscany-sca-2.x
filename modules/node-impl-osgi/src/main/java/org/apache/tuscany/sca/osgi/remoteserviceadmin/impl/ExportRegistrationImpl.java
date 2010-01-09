@@ -30,10 +30,8 @@ import org.osgi.service.remoteserviceadmin.ExportRegistration;
  */
 public class ExportRegistrationImpl implements ExportRegistration {
     private Node node;
-    private ServiceReference exportedService;
-    private EndpointDescription endpointDescription;
-    private Throwable exception;
     private ExportReference exportReference;
+    private Throwable exception;
 
     /**
      * @param exportedService
@@ -46,8 +44,7 @@ public class ExportRegistrationImpl implements ExportRegistration {
                                   Throwable exception) {
         super();
         this.node = node;
-        this.exportedService = exportedService;
-        this.endpointDescription = endpointDescription;
+        this.exportReference = new ExportReferenceImpl(exportedService, endpointDescription);
         this.exception = exception;
     }
 
@@ -68,16 +65,15 @@ public class ExportRegistrationImpl implements ExportRegistration {
             node = null;
         }
         exception = null;
-        endpointDescription = null;
-        exportedService = null;
+        exportReference = new ExportReferenceImpl(null, null);
     }
 
     public ServiceReference getExportedService() {
-        return exportedService;
+        return exportReference.getExportedService();
     }
 
     public EndpointDescription getEndpointDescription() {
-        return endpointDescription;
+        return exportReference.getExportedEndpoint();
     }
 
     public Throwable getException() {
@@ -89,8 +85,7 @@ public class ExportRegistrationImpl implements ExportRegistration {
     }
 
     public ExportReference getExportReference() throws IllegalStateException {
-        // TODO Auto-generated method stub
-        return null;
+        return exportReference;
     }
 
 }

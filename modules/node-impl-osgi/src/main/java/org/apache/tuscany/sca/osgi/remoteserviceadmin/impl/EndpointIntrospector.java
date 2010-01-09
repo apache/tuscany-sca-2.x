@@ -425,10 +425,13 @@ public class EndpointIntrospector {
         JavaInterfaceContract interfaceContract = javaInterfaceFactory.createJavaInterfaceContract();
         Class<?> interfaceClass = bundle.loadClass(intf);
         JavaInterface javaInterface = javaInterfaceFactory.createJavaInterface(interfaceClass);
+        // [rfeng] For OSGi, the interfaces should be marked as remote
+        javaInterface.setRemotable(true);
         interfaceContract.setInterface(javaInterface);
         if (javaInterface.getCallbackClass() != null) {
-            interfaceContract.setCallbackInterface(javaInterfaceFactory.createJavaInterface(javaInterface
-                .getCallbackClass()));
+            JavaInterface callbackInterface = javaInterfaceFactory.createJavaInterface(javaInterface.getCallbackClass());
+            callbackInterface.setRemotable(true);
+            interfaceContract.setCallbackInterface(callbackInterface);
         }
         return interfaceContract;
     }

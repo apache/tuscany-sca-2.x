@@ -19,6 +19,9 @@
 
 package org.apache.tuscany.sca.implementation.osgi.xml;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.StringTokenizer;
 
 import javax.xml.namespace.QName;
@@ -39,98 +42,118 @@ import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.implementation.osgi.ServiceDescription;
 import org.apache.tuscany.sca.implementation.osgi.ServiceDescriptions;
 import org.apache.tuscany.sca.implementation.osgi.ServiceDescriptionsFactory;
+import org.osgi.framework.Constants;
 
 /*
 <?xml version="1.0" encoding="UTF-8"?>
-<service-descriptions xmlns="http://www.osgi.org/xmlns/sd/v1.0.0">
-    <service-description>
-        <provide interface="com.iona.soa.pojo.hello.HelloService"/>
-        <property name="service.intents">SOAP HTTP</property>
-        <property name="osgi.remote.configuration.type">pojo</property>
-        <property name="osgi.remote.configuration.pojo.address">
-            http://localhost:9000/hello
+<endpoint-descriptions xmlns="http://www.osgi.org/xmlns/rsa/v1.0.0">
+    <endpoint-description>
+        <property name="service.intents">
+            <list>
+                <value>SOAP</value>
+                <value>HTTP</value>
+            </list>
         </property>
-    </service-description>
-    <service-description>
-        <provide interface="com.iona.soa.pojo.hello.GreeterService"/>
-        <property name="service.intents">SOAP HTTP</property>
-        <property name="osgi.remote.configuration.type">pojo</property>
-        <property name="osgi.remote.configuration.pojo.address">
-            http://localhost:9005/greeter
+        <property name="endpoint.id" value="http://ws.acme.com:9000/hello"/>
+        <property name="objectClass" value="com.acme.Foo"/>
+        <property name="endpoint.package.version.com.acme" value="4.2"/>
+        <property name="service.imported.configs" value="com.acme"/>
+        <property name="com.acme.ws.xml">
+            <xml>
+                <config xmlns="http://acme.com/defs">
+                    <port>1029</port>
+                    <host>www.acme.com</host>
+                </config>
+            </xml>
         </property>
-    </service-description>
-</service-descriptions>
+    </endpoint-description>
+</endpoint-descriptions>
 */
 public class ServiceDescriptionsProcessor extends BaseStAXArtifactProcessor implements
     StAXArtifactProcessor<ServiceDescriptions> {
     private ServiceDescriptionsFactory factory;
     private StAXArtifactProcessor processor;
-    
 
-    public ServiceDescriptionsProcessor(ExtensionPointRegistry registry,
-                                        StAXArtifactProcessor processor) {
+    public ServiceDescriptionsProcessor(ExtensionPointRegistry registry, StAXArtifactProcessor processor) {
         this.processor = processor;
         FactoryExtensionPoint modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
         this.factory = modelFactories.getFactory(ServiceDescriptionsFactory.class);
     }
 
-    public ServiceDescriptions read(XMLStreamReader reader, ProcessorContext context) throws XMLStreamException, ContributionReadException {
+    public ServiceDescriptions read(XMLStreamReader reader, ProcessorContext context) throws XMLStreamException,
+        ContributionReadException {
         int event = reader.getEventType();
-        ServiceDescriptions sds = factory.createServiceDescriptions();
+        ServiceDescriptions sds = null;
         ServiceDescription sd = null;
+        String propertyName = null;
+        String propertyType = "String";
+        Object propertyValue = null;
+        String propertyLiteral = null;
+        boolean xml = false;
+        boolean multiValued = false;
         while (true) {
             switch (event) {
                 case XMLStreamConstants.START_ELEMENT:
                     QName name = reader.getName();
-                    if (ServiceDescriptions.SERVICE_DESCRIPTION_QNAME.equals(name)) {
+                    if (ServiceDescriptions.SERVICE_DESCRIPTIONS_QNAME.equals(name)) {
+                        sds = factory.createServiceDescriptions();
+                    } else if (ServiceDescriptions.SERVICE_DESCRIPTION_QNAME.equals(name)) {
                         sd = factory.createServiceDescription();
                         sds.add(sd);
-                    } else if ("provide".equals(name.getLocalPart())) {
-                        String interfaceName = reader.getAttributeValue(null, "interface");
-                        if (interfaceName != null) {
-                            sd.getInterfaces().add(interfaceName);
-                        }
                     } else if ("property".equals(name.getLocalPart())) {
-                        String propName = reader.getAttributeValue(null, "name");
-                        String propValue = reader.getAttributeValue(null, "value");
-                        String propType = reader.getAttributeValue(null, "type");
-                        if (propType == null) {
-                            propType = "String";
+                        multiValued = false;
+                        propertyName = reader.getAttributeValue(null, "name");
+                        propertyType = reader.getAttributeValue(null, "value-type");
+                        if (propertyType == null) {
+                            propertyType = "String";
                         }
-                        if (propValue == null) {
-                            propValue = reader.getElementText();
+                        propertyLiteral = reader.getAttributeValue(null, "value");
+                        //                        if (propertyLiteral == null) {
+                        //                            propertyLiteral = reader.getElementText();
+                        //                        }
+                        if (propertyLiteral != null) {
+                            propertyLiteral = propertyLiteral.trim();
+                            propertyValue = getPropertyValue(reader, propertyName, propertyLiteral, propertyType);
                         }
-                        if (propValue != null) {
-                            propValue = propValue.trim();
+                    } else if ("list".equals(name.getLocalPart())) {
+                        if (propertyValue != null) {
+                            throw new IllegalArgumentException("@value and <list> are both present");
                         }
-                        Object prop = propValue;
-                        if ("Integer".equals(propType)) {
-                            prop = Integer.valueOf(propValue);
-                        } else if ("Long".equals(propType)) {
-                            prop = Long.valueOf(propValue);
-                        } else if ("Float".equals(propType)) {
-                            prop = Float.valueOf(propValue);
-                        } else if ("Double".equals(propType)) {
-                            prop = Double.valueOf(propValue);
-                        } else if ("Short".equals(propType)) {
-                            prop = Short.valueOf(propValue);
-                        } else if ("Character".equals(propType)) {
-                            prop = propValue.charAt(0);
-                        } else if ("Byte".equals(propType)) {
-                            prop = Byte.valueOf(propValue);
-                        } else if ("Boolean".equals(propType)) {
-                            prop = Boolean.valueOf(propValue);
+                        propertyValue = new ArrayList<Object>();
+                        multiValued = true;
+                    } else if ("array".equals(name.getLocalPart())) {
+                        if (propertyValue != null) {
+                            throw new IllegalArgumentException("@value and <array> are both present");
                         }
-                        if (propName.endsWith(".intents")) {
-                            prop = toQNames(reader, propValue);
+                        propertyValue = new ArrayList<Object>();
+                        multiValued = true;
+                    } else if ("set".equals(name.getLocalPart())) {
+                        if (propertyValue != null) {
+                            throw new IllegalArgumentException("@value and <set> are both present");
                         }
-                        sd.getProperties().put(propName, prop);
+                        propertyValue = new HashSet<Object>();
+                        multiValued = true;
+                    } else if ("xml".equals(name.getLocalPart())) {
+                        xml = true;
+                    } else if ("value".equals(name.getLocalPart())) {
+                        propertyLiteral = reader.getElementText();
+                        if (propertyLiteral != null) {
+                            propertyLiteral = propertyLiteral.trim();
+                            Object value = getPropertyValue(reader, propertyName, propertyLiteral, propertyType);
+                            if (multiValued && (propertyValue instanceof Collection)) {
+                                ((Collection)propertyValue).add(value);
+                            } else if (propertyValue == null) {
+                                propertyValue = value;
+                            }
+                        }
                     } else {
-                        name = reader.getName();
-                        if (!ServiceDescriptions.SERVICE_DESCRIPTIONS_QNAME.equals(name)) {
-                            Object ext = processor.read(reader, context);
-                            if (sd != null) {
-                                sd.getProperties().put(name.toString(), ext);
+                        // FIXME: [rfeng] The rsa spec says the XML should be saved as String
+                        Object value = processor.read(reader, context);
+                        if (xml) {
+                            if (multiValued && (propertyValue instanceof Collection)) {
+                                ((Collection)propertyValue).add(value);
+                            } else if (propertyValue == null) {
+                                propertyValue = value;
                             }
                         }
                     }
@@ -140,8 +163,20 @@ public class ServiceDescriptionsProcessor extends BaseStAXArtifactProcessor impl
                     if (ServiceDescriptions.SERVICE_DESCRIPTION_QNAME.equals(name)) {
                         // Reset the sd
                         sd = null;
-                    }
-                    if (ServiceDescriptions.SERVICE_DESCRIPTIONS_QNAME.equals(name)) {
+                    } else if (ServiceDescriptions.PROPERTY_QNAME.equals(name)) {
+                        if (sd != null && propertyName != null) {
+                            if (propertyValue == null) {
+                                throw new IllegalArgumentException("No value is defined for " + propertyName);
+                            }
+                            sd.getProperties().put(propertyName, propertyValue);
+                        }
+                        propertyName = null;
+                        propertyType = "String";
+                        propertyValue = null;
+                        multiValued = false;
+                    } else if (ServiceDescriptions.XML_QNAME.equals(name)) {
+                        xml = false;
+                    } else if (ServiceDescriptions.SERVICE_DESCRIPTIONS_QNAME.equals(name)) {
                         return sds;
                     }
                     break;
@@ -152,6 +187,35 @@ public class ServiceDescriptionsProcessor extends BaseStAXArtifactProcessor impl
                 return sds;
             }
         }
+    }
+
+    private Object getPropertyValue(XMLStreamReader reader, String propertyName, String propertyLiteral, String propType) {
+        Object propertyValue = null;
+        propertyValue = propertyLiteral;
+        if ("Integer".equals(propType) || "int".equals(propType)) {
+            propertyValue = Integer.valueOf(propertyLiteral);
+        } else if ("Long".equals(propType) || "long".equals(propType)) {
+            propertyValue = Long.valueOf(propertyLiteral);
+        } else if ("Float".equals(propType) || "float".equals(propType)) {
+            propertyValue = Float.valueOf(propertyLiteral);
+        } else if ("Double".equals(propType) || "double".equals(propType)) {
+            propertyValue = Double.valueOf(propertyLiteral);
+        } else if ("Short".equals(propType) || "short".equals(propType)) {
+            propertyValue = Short.valueOf(propertyLiteral);
+        } else if ("Character".equals(propType) || "char".equals(propType)) {
+            propertyValue = propertyLiteral.charAt(0);
+        } else if ("Byte".equals(propType) || "byte".equals(propType)) {
+            propertyValue = Byte.valueOf(propertyLiteral);
+        } else if ("Boolean".equals(propType) || "boolean".equals(propType)) {
+            propertyValue = Boolean.valueOf(propertyLiteral);
+        }
+        if (propertyName.endsWith(".intents")) {
+            propertyValue = toQNames(reader, propertyLiteral);
+        }
+        if (Constants.OBJECTCLASS.equals(propertyName)) {
+            return propertyLiteral.split("( |\t|\n|\r|\f)+");
+        }
+        return propertyValue;
     }
 
     /**
@@ -176,8 +240,8 @@ public class ServiceDescriptionsProcessor extends BaseStAXArtifactProcessor impl
         return ServiceDescriptions.SERVICE_DESCRIPTIONS_QNAME;
     }
 
-    public void write(ServiceDescriptions model, XMLStreamWriter writer, ProcessorContext context) throws ContributionWriteException,
-        XMLStreamException {
+    public void write(ServiceDescriptions model, XMLStreamWriter writer, ProcessorContext context)
+        throws ContributionWriteException, XMLStreamException {
         // TODO: To be implemented
     }
 
@@ -185,7 +249,7 @@ public class ServiceDescriptionsProcessor extends BaseStAXArtifactProcessor impl
         return ServiceDescriptions.class;
     }
 
-    public void resolve(ServiceDescriptions model, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
-        // TODO: To be implemented
+    public void resolve(ServiceDescriptions model, ModelResolver resolver, ProcessorContext context)
+        throws ContributionResolveException {
     }
 }

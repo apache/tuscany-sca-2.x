@@ -19,6 +19,9 @@
 package org.apache.tuscany.sca.osgi.service.discovery.impl;
 
 import static org.apache.tuscany.sca.osgi.remoteserviceadmin.impl.OSGiHelper.getConfiguration;
+import static org.osgi.service.remoteserviceadmin.RemoteConstants.ENDPOINT_FRAMEWORK_UUID;
+import static org.osgi.service.remoteserviceadmin.RemoteConstants.ENDPOINT_ID;
+import static org.osgi.service.remoteserviceadmin.RemoteConstants.ENDPOINT_SERVICE_ID;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -45,7 +48,6 @@ import org.osgi.framework.Constants;
 import org.osgi.framework.Filter;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.service.remoteserviceadmin.EndpointDescription;
-import org.osgi.service.remoteserviceadmin.RemoteConstants;
 import org.osgi.util.tracker.BundleTracker;
 import org.osgi.util.tracker.BundleTrackerCustomizer;
 import org.osgi.util.tracker.ServiceTracker;
@@ -88,14 +90,14 @@ public class LocalDiscoveryService extends AbstractDiscoveryService implements B
     private EndpointDescription createEndpointDescription(ServiceDescription sd) {
         Map<String, Object> props = new HashMap<String, Object>(sd.getProperties());
         props.put(Constants.OBJECTCLASS, sd.getInterfaces().toArray(new String[sd.getInterfaces().size()]));
-        if (!props.containsKey(RemoteConstants.ENDPOINT_ID)) {
-            props.put(RemoteConstants.ENDPOINT_ID, new Long(System.currentTimeMillis()));
+        if (!props.containsKey(ENDPOINT_SERVICE_ID)) {
+            props.put(ENDPOINT_SERVICE_ID, new Long(System.currentTimeMillis()));
         }
-        if (!props.containsKey(RemoteConstants.ENDPOINT_FRAMEWORK_UUID)) {
-            props.put(RemoteConstants.ENDPOINT_FRAMEWORK_UUID, OSGiHelper.getFrameworkUUID(context));
+        if (!props.containsKey(ENDPOINT_FRAMEWORK_UUID)) {
+            props.put(ENDPOINT_FRAMEWORK_UUID, OSGiHelper.getFrameworkUUID(context));
         }
-        if (!props.containsKey(RemoteConstants.ENDPOINT_URI)) {
-            props.put(RemoteConstants.ENDPOINT_URI, UUID.randomUUID().toString());
+        if (!props.containsKey(ENDPOINT_ID)) {
+            props.put(ENDPOINT_ID, UUID.randomUUID().toString());
         }
 
         EndpointDescription sed = new EndpointDescription(props);

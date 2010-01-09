@@ -25,10 +25,13 @@ import java.util.Dictionary;
 
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.Implementation;
+import org.apache.tuscany.sca.core.LifeCycleListener;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.implementation.osgi.OSGiImplementation;
+import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
 import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.EndpointListener;
+import org.apache.tuscany.sca.runtime.EndpointRegistry;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.remoteserviceadmin.EndpointDescription;
@@ -38,6 +41,7 @@ import org.osgi.service.remoteserviceadmin.EndpointDescription;
  */
 public class DomainDiscoveryService extends AbstractDiscoveryService implements EndpointListener {
     private DomainRegistryFactory domainRegistryFactory;
+    private EndpointRegistry endpointRegistry;
 
     public DomainDiscoveryService(BundleContext context) {
         super(context);
@@ -49,6 +53,18 @@ public class DomainDiscoveryService extends AbstractDiscoveryService implements 
         this.domainRegistryFactory =
             registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(DomainRegistryFactory.class);
         domainRegistryFactory.addListener(this);
+        // The following code forced the start() of the domain registry in absense of services
+        String domainRegistry = context.getProperty("org.osgi.sca.domain.registry");
+        if (domainRegistry == null) {
+            domainRegistry = NodeConfiguration.DEFAULT_DOMAIN_REGISTRY_URI;
+        }
+        String domainURI = context.getProperty("org.osgi.sca.domain.uri");
+        if (domainURI == null) {
+            domainURI = NodeConfiguration.DEFAULT_DOMAIN_URI;
+        }
+        if (domainRegistry != null) {
+            endpointRegistry = domainRegistryFactory.getEndpointRegistry(domainRegistry, domainURI);
+        }
     }
 
     public void endpointAdded(Endpoint endpoint) {
@@ -111,6 +127,9 @@ public class DomainDiscoveryService extends AbstractDiscoveryService implements 
 
     public void stop() {
         domainRegistryFactory.removeListener(this);
+        if (endpointRegistry instanceof LifeCycleListener) {
+            ((LifeCycleListener)endpointRegistry).stop();
+        }
         super.stop();
     }
     

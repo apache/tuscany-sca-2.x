@@ -17,51 +17,39 @@
 * specific language governing permissions and limitations
 * under the License.
 -->
-<!-- A consumer-side service description file for RFC 119 -->
-<service-descriptions xmlns="http://www.osgi.org/xmlns/sd/v1.0.0" xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912">
+<!-- A consumer-side service description file for OSGi Remote Service Admin -->
+<endpoint-descriptions xmlns="http://www.osgi.org/xmlns/rsa/v1.0.0" xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912">
     <!-- Describe a remote OSGi service  -->
-    <service-description>
-        <provide interface="calculator.dosgi.operations.AddService" />
-        <property name="service.intents">sca:SOAP sca:HTTP</property>
-        <property name="osgi.remote.configuration.type">org.osgi.sca</property>
-        <property name="osgi.remote.configuration.sca.componentType">
-            OSGI-INF/sca/bundle.componentType
-             </property>
-        <property name="osgi.remote.configuration.sca.reference">
-            addService
-             </property>
-    </service-description>
-    <service-description>
-        <provide interface="calculator.dosgi.operations.SubtractService" />
-        <property name="service.intents">sca:SOAP sca:HTTP</property>
-        <property name="osgi.remote.configuration.type">org.osgi.sca</property>
-        <property name="osgi.remote.configuration.sca.componentType">
-            OSGI-INF/sca/bundle.componentType
-             </property>
-        <property name="osgi.remote.configuration.sca.reference">
-            subtractService
-             </property>
-    </service-description>
-    <service-description>
-        <provide interface="calculator.dosgi.operations.MultiplyService" />
-        <property name="service.intents">sca:SOAP sca:HTTP</property>
-        <property name="osgi.remote.configuration.type">org.osgi.sca</property>
-        <property name="osgi.remote.configuration.sca.componentType">
-            OSGI-INF/sca/bundle.componentType
-             </property>
-        <property name="osgi.remote.configuration.sca.reference">
-            multiplyService
-             </property>
-    </service-description>
-    <service-description>
-        <provide interface="calculator.dosgi.operations.DivideService" />
-        <property name="service.intents">sca:SOAP sca:HTTP</property>
-        <property name="osgi.remote.configuration.type">org.osgi.sca</property>
-        <property name="osgi.remote.configuration.sca.componentType">
-            OSGI-INF/sca/bundle.componentType
-             </property>
-        <property name="osgi.remote.configuration.sca.reference">
-            divideService
-             </property>
-    </service-description>
-</service-descriptions>
+    <endpoint-description>
+        <property name="objectClass" value="calculator.dosgi.operations.AddService" />
+        <property name="service.intents" value="sca:SOAP sca:HTTP" />
+        <property name="service.imported.configs" value="org.osgi.sca"/>
+        <property name="osgi.remote.configuration.type" value="org.osgi.sca" />
+        <property name="osgi.remote.configuration.sca.componentType" value="OSGI-INF/sca/bundle.componentType" />
+        <property name="osgi.remote.configuration.sca.reference" value="addService" />
+    </endpoint-description>
+    <endpoint-description>
+        <property name="objectClass" value="calculator.dosgi.operations.SubtractService" />
+        <property name="service.imported.configs" value="org.osgi.sca"/>
+        <property name="service.intents" value="sca:SOAP sca:HTTP" />
+        <property name="osgi.remote.configuration.type" value="org.osgi.sca" />
+        <property name="osgi.remote.configuration.sca.componentType" value="OSGI-INF/sca/bundle.componentType" />
+        <property name="osgi.remote.configuration.sca.reference" value="subtractService" />
+    </endpoint-description>
+    <endpoint-description>
+        <property name="objectClass" value="calculator.dosgi.operations.MultiplyService" />
+        <property name="service.intents" value="sca:SOAP sca:HTTP" />
+        <property name="service.imported.configs" value="org.osgi.sca"/>
+        <property name="osgi.remote.configuration.type" value="org.osgi.sca" />
+        <property name="osgi.remote.configuration.sca.componentType" value="OSGI-INF/sca/bundle.componentType" />
+        <property name="osgi.remote.configuration.sca.reference" value="multiplyService" />
+    </endpoint-description>
+    <endpoint-description>
+        <property name="objectClass" value="calculator.dosgi.operations.DivideService" />
+        <property name="service.imported.configs" value="org.osgi.sca"/>
+        <property name="service.intents" value="sca:SOAP sca:HTTP" />
+        <property name="osgi.remote.configuration.type" value="org.osgi.sca" />
+        <property name="osgi.remote.configuration.sca.componentType" value="OSGI-INF/sca/bundle.componentType" />
+        <property name="osgi.remote.configuration.sca.reference" value="divideService" />
+    </endpoint-description>
+</endpoint-descriptions>

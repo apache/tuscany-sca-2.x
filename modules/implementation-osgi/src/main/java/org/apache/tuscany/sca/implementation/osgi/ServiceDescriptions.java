@@ -29,8 +29,10 @@ import javax.xml.namespace.QName;
 public interface ServiceDescriptions extends List<ServiceDescription> {
 
     String REMOTE_SERVICE_FOLDER = "OSGI-INF/remote-service";
-    String OSGI_SD_NS = "http://www.osgi.org/xmlns/sd/v1.0.0";
-    QName SERVICE_DESCRIPTIONS_QNAME = new QName(OSGI_SD_NS, "service-descriptions");
-    QName SERVICE_DESCRIPTION_QNAME = new QName(OSGI_SD_NS, "service-description");
+    String OSGI_SD_NS = "http://www.osgi.org/xmlns/rsa/v1.0.0";
+    QName SERVICE_DESCRIPTIONS_QNAME = new QName(OSGI_SD_NS, "endpoint-descriptions");
+    QName SERVICE_DESCRIPTION_QNAME = new QName(OSGI_SD_NS, "endpoint-description");
+    QName PROPERTY_QNAME = new QName(OSGI_SD_NS, "property");
+    QName XML_QNAME = new QName(OSGI_SD_NS, "xml");
     String REMOTE_SERVICE_HEADER = "Remote-Service";
 }

@@ -41,6 +41,7 @@ import org.osgi.service.remoteserviceadmin.ExportReference;
 import org.osgi.service.remoteserviceadmin.ExportRegistration;
 import org.osgi.service.remoteserviceadmin.ImportReference;
 import org.osgi.service.remoteserviceadmin.ImportRegistration;
+import org.osgi.service.remoteserviceadmin.RemoteConstants;
 import org.osgi.service.remoteserviceadmin.RemoteServiceAdmin;
 import org.osgi.service.remoteserviceadmin.RemoteServiceAdminEvent;
 import org.osgi.service.remoteserviceadmin.RemoteServiceAdminListener;
@@ -70,8 +71,15 @@ public class RemoteServiceAdminImpl implements RemoteServiceAdmin, ManagedServic
         this.importer = new OSGiServiceImporter(context);
         exporter.start();
         importer.start();
-        registration = context.registerService(RemoteServiceAdmin.class.getName(), this, null);
         Hashtable<String, Object> props = new Hashtable<String, Object>();
+        props.put(RemoteConstants.REMOTE_CONFIGS_SUPPORTED, new String[] {"org.osgi.sca"});
+        // FIXME: We should ask SCA domain for the supported intents
+        props.put(RemoteConstants.REMOTE_INTENTS_SUPPORTED, new String[] {});
+        // FIXME: We should ask SCA domain for the supported binding types
+        props.put("org.osgi.sca.binding.types", new String[] {});
+        registration = context.registerService(RemoteServiceAdmin.class.getName(), this, props);
+        
+        props = new Hashtable<String, Object>();
         props.put(Constants.SERVICE_PID, RemoteServiceAdminImpl.class.getName());
         managedService = context.registerService(ManagedService.class.getName(), this, props);
         listeners = new ServiceTracker(this.context, RemoteServiceAdminListener.class.getName(), null);
@@ -213,17 +221,17 @@ public class RemoteServiceAdminImpl implements RemoteServiceAdmin, ManagedServic
         props.put("bundle-symbolicname", rsaBundle.getSymbolicName());
         props.put("bundle-version", rsaBundle.getHeaders().get(Constants.BUNDLE_VERSION));
         props.put("cause", rsaEvent.getException());
-        props.put("import.reference", rsaEvent.getImportReference());
-        props.put("export.reference", rsaEvent.getExportReference());
+        props.put("import.registration", rsaEvent.getImportReference());
+        props.put("export.registration", rsaEvent.getExportReference());
         EndpointDescription ep = null;
         if (rsaEvent.getImportReference() != null) {
             ep = rsaEvent.getImportReference().getImportedEndpoint();
         } else {
             ep = rsaEvent.getExportReference().getExportedEndpoint();
         }
-        props.put("service.remote.id", ep.getRemoteServiceID());
-        props.put("service.remote.uuid", ep.getRemoteFrameworkUUID());
-        props.put("service.remote.uri", ep.getRemoteURI());
+        props.put("endpoint.service.id", ep.getRemoteServiceID());
+        props.put("endpoint.framework.uuid", ep.getRemoteFrameworkUUID());
+        props.put("endpoint.id", ep.getRemoteID());
         props.put("objectClass", ep.getInterfaces());
         props.put("service.imported.configs", ep.getConfigurationTypes());
         props.put("timestamp", new Long(System.currentTimeMillis()));

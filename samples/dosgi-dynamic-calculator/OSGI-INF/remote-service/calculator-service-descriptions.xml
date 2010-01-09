@@ -18,44 +18,44 @@
 * under the License.
 -->
 <!-- A consumer-side service description file for RFC 119 -->
-<service-descriptions xmlns="http://www.osgi.org/xmlns/sd/v1.0.0" 
+<endpoint-descriptions xmlns="http://www.osgi.org/xmlns/rsa/v1.0.0" 
     xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
     xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1">
     <!-- Describe a remote OSGi service  -->
-    <service-description>
-        <provide interface="calculator.dosgi.operations.AddService" />
-        <property name="remote.exported.intents"></property>
-        <property name="remote.configs.supported">org.osgi.sca</property>
-        <property name="sca.reference">
-            addService
-             </property>
-        <property name="org.osgi.sca.bindings">{http://sample}Add</property>
-    </service-description>
-    <service-description>
-        <provide interface="calculator.dosgi.operations.SubtractService" />
-        <property name="remote.exported.intents"></property>
-        <property name="remote.configs.supported">org.osgi.sca</property>
-        <property name="sca.reference">
-            subtractService
-             </property>
-        <property name="org.osgi.sca.bindings">{http://sample}Subtract</property>
-    </service-description>
-    <service-description>
-        <provide interface="calculator.dosgi.operations.MultiplyService" />
-        <property name="remote.exported.intents"></property>
-        <property name="remote.configs.supported">org.osgi.sca</property>
-        <property name="sca.reference">
-            multiplyService
-             </property>
-        <property name="org.osgi.sca.bindings">{http://sample}Multiply</property>
-    </service-description>
-    <service-description>
-        <provide interface="calculator.dosgi.operations.DivideService" />
-        <property name="remote.exported.intents"></property>
-        <property name="remote.configs.supported">org.osgi.sca</property>
-        <property name="sca.reference">
-            divideService
-             </property>
-        <property name="org.osgi.sca.bindings">{http://sample}Divide</property>
-    </service-description>
-</service-descriptions>
+    <endpoint-description>
+        <property name="objectClass" value="calculator.dosgi.operations.AddService" />
+        <property name="remote.configs.supported" value="org.osgi.sca"/>
+        <property name="service.imported.configs" value="org.osgi.sca"/>
+        <property name="sca.reference" value="addService"/>
+        <property name="org.osgi.sca.bindings">
+            <list>
+                <value>{http://sample}Add</value>
+            </list>
+        </property>
+    </endpoint-description>
+    <endpoint-description>
+        <property name="objectClass" value="calculator.dosgi.operations.SubtractService" />
+        <property name="service.imported.configs" value="org.osgi.sca"/>
+        <property name="remote.configs.supported" value="org.osgi.sca"/>
+        <property name="sca.reference" value="subtractService"/>
+        <property name="org.osgi.sca.bindings">
+            <list>
+                <value>{http://sample}Subtract</value>
+            </list>
+        </property>
+    </endpoint-description>
+    <endpoint-description>
+        <property name="objectClass" value="calculator.dosgi.operations.MultiplyService" />
+        <property name="service.imported.configs" value="org.osgi.sca"/>
+        <property name="remote.configs.supported" value="org.osgi.sca"/>
+        <property name="sca.reference" value="multiplyService"/>
+        <property name="org.osgi.sca.bindings" value="{http://sample}Multiply"/>
+    </endpoint-description>
+    <endpoint-description>
+        <property name="objectClass" value="calculator.dosgi.operations.DivideService" />
+        <property name="service.imported.configs" value="org.osgi.sca"/>
+        <property name="remote.configs.supported" value="org.osgi.sca"/>
+        <property name="sca.reference" value="divideService"/>
+        <property name="org.osgi.sca.bindings" value="{http://sample}Divide"/>
+    </endpoint-description>
+</endpoint-descriptions>

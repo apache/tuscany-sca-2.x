@@ -25,7 +25,7 @@ import static org.apache.tuscany.sca.osgi.remoteserviceadmin.impl.OSGiHelper.get
 import static org.apache.tuscany.sca.osgi.remoteserviceadmin.impl.OSGiHelper.getOSGiProperties;
 import static org.osgi.framework.Constants.SERVICE_ID;
 import static org.osgi.service.remoteserviceadmin.RemoteConstants.ENDPOINT_FRAMEWORK_UUID;
-import static org.osgi.service.remoteserviceadmin.RemoteConstants.ENDPOINT_ID;
+import static org.osgi.service.remoteserviceadmin.RemoteConstants.ENDPOINT_SERVICE_ID;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -88,7 +88,7 @@ public class OSGiServiceExporter extends AbstractOSGiServiceHandler implements S
                                                                ENDPOINT_FRAMEWORK_UUID,
                                                                getFrameworkUUID(reference.getBundle()
                                                                    .getBundleContext())));
-                service.getExtensions().add(createOSGiProperty(registry, ENDPOINT_ID, reference
+                service.getExtensions().add(createOSGiProperty(registry, ENDPOINT_SERVICE_ID, reference
                     .getProperty(SERVICE_ID)));
 
                 // FIXME: Configure the domain and node URI

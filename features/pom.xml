@@ -35,6 +35,7 @@
         <module>api</module>
         <module>core</module>
         <module>ejava</module>
+        <module>osgi</module>
         <module>process</module>
         <module>webservice</module>
         <module>web20</module>
