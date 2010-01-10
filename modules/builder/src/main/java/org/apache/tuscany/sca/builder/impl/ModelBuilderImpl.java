@@ -46,6 +46,7 @@ public class ModelBuilderImpl implements CompositeBuilder {
     private BindingURIBuilderImpl bindingURIBuilder;
     private ComponentServiceBindingBuilderImpl componentServiceBindingBuilder;
     private ComponentReferenceBindingBuilderImpl componentReferenceBindingBuilder;
+    private CompositeBuilder compositeWireApplier;
     private EndpointBuilderImpl endpointBuilder;
     private EndpointReferenceBuilderImpl endpointReferenceBuilder;
     
@@ -73,6 +74,7 @@ public class ModelBuilderImpl implements CompositeBuilder {
         bindingURIBuilder = new BindingURIBuilderImpl(registry);
         componentServiceBindingBuilder = new ComponentServiceBindingBuilderImpl(registry);
         componentReferenceBindingBuilder = new ComponentReferenceBindingBuilderImpl(registry);
+        compositeWireApplier = new CompositeWireApplierImpl(registry);
         endpointBuilder = new EndpointBuilderImpl(registry);
         endpointReferenceBuilder = new EndpointReferenceBuilderImpl(registry);
 
@@ -117,6 +119,10 @@ public class ModelBuilderImpl implements CompositeBuilder {
             // perform any binding specific build processing
             composite = componentServiceBindingBuilder.build(composite, context); // binding specific build
             composite = componentReferenceBindingBuilder.build(composite, context); // binding specific build
+            
+            // calculate which reference targets are implied by the wire elements
+            // that can appear at the composite level
+            composite = compositeWireApplier.build(composite, context);
 
             // compute all the service endpoints
             endpointBuilder.build(composite, context);

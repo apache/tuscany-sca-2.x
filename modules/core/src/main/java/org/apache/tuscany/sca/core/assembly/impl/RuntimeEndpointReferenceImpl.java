@@ -298,7 +298,7 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
     private void resolveEndpointReference() {
         resolve();
 
-        boolean ok = eprBinder.bind(endpointRegistry, this);
+        boolean ok = eprBinder.bindRunTime(endpointRegistry, this);
         if (!ok) {
             throw new SCARuntimeException("Unable to bind " + this);
         }
@@ -349,7 +349,9 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
         //        source interface contract for local wires
         this.chains = null;
 
-        setStatus(EndpointReference.NOT_CONFIGURED);
+        if (getStatus() == EndpointReference.WIRED_TARGET_FOUND_AND_MATCHED){
+            setStatus(EndpointReference.NOT_CONFIGURED);
+        }
 
         // TODO - cheating here as I fixed the RuntimeComponentService code
         //        to call this when it resets the interface contract

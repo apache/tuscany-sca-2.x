@@ -32,7 +32,7 @@ public interface EndpointReferenceBinder {
      * @param endpointReference
      * @return
      */
-    boolean match(EndpointRegistry endpointRegistry, EndpointReference endpointReference);
+    boolean bindBuildTime(EndpointRegistry endpointRegistry, EndpointReference endpointReference);
 
     
     /**
@@ -40,7 +40,7 @@ public interface EndpointReferenceBinder {
      * @param endpointReference
      * @return
      */
-    boolean bind(EndpointRegistry endpointRegistry, EndpointReference endpointReference);
+    boolean bindRunTime(EndpointRegistry endpointRegistry, EndpointReference endpointReference);
     
     /**
      * 

@@ -193,7 +193,10 @@ public class EndpointReferenceImpl implements EndpointReference {
                 break;
             case 5:
                 output += " WIRED_TARGET_FOUND_AND_MATCHED ";
-                break;
+                break;   
+            case 6:
+                output += " WIRED_TARGET_IN_BINDING_URI ";
+                break;                 
         }
 
         if (targetEndpoint != null) {
