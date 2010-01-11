@@ -19,12 +19,10 @@
 
 package org.apache.tuscany.sca.binding.jsonp.runtime;
 
-import java.util.List;
-
 import org.apache.tuscany.sca.binding.jsonp.JSONPBinding;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.host.http.ServletHost;
-import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
+import org.apache.tuscany.sca.host.http.ServletHostHelper;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
@@ -36,11 +34,7 @@ public class JSONPBindingProviderFactory implements BindingProviderFactory<JSONP
     private ServletHost servletHost;
 
     public JSONPBindingProviderFactory(ExtensionPointRegistry extensionPoints) {
-        ServletHostExtensionPoint servletHosts = extensionPoints.getExtensionPoint(ServletHostExtensionPoint.class);
-        List<ServletHost> hosts = servletHosts.getServletHosts();
-        if (!hosts.isEmpty()) {
-            this.servletHost = hosts.get(0);
-        }
+        this.servletHost = ServletHostHelper.getServletHost(extensionPoints);
     }
 
     public Class<JSONPBinding> getModelType() {
