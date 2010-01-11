@@ -23,7 +23,7 @@ import org.apache.tuscany.sca.binding.http.HTTPBinding;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.host.http.ServletHost;
-import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
+import org.apache.tuscany.sca.host.http.ServletHostHelper;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
@@ -44,8 +44,7 @@ public class HTTPBindingProviderFactory implements BindingProviderFactory<HTTPBi
     
     public HTTPBindingProviderFactory(ExtensionPointRegistry extensionPoints) {
         this.extensionPoints = extensionPoints;
-        ServletHostExtensionPoint servletHosts = extensionPoints.getExtensionPoint(ServletHostExtensionPoint.class);
-        this.servletHost = servletHosts.getServletHosts().get(0);
+        this.servletHost = ServletHostHelper.getServletHost(extensionPoints);
         FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         messageFactory = modelFactories.getFactory(MessageFactory.class);
     }
