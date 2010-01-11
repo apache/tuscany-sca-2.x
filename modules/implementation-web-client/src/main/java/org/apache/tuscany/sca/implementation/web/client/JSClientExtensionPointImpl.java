@@ -19,12 +19,10 @@
 
 package org.apache.tuscany.sca.implementation.web.client;
 
-import java.util.List;
-
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.host.http.ServletHost;
-import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
+import org.apache.tuscany.sca.host.http.ServletHostHelper;
 import org.apache.tuscany.sca.implementation.web.WebImplementation;
 import org.apache.tuscany.sca.implementation.web.runtime.ClientExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -38,11 +36,7 @@ public class JSClientExtensionPointImpl implements ClientExtensionPoint {
     private ServletHost servletHost;
 
     public JSClientExtensionPointImpl(ExtensionPointRegistry extensionPoints) {
-        ServletHostExtensionPoint servletHosts = extensionPoints.getExtensionPoint(ServletHostExtensionPoint.class);
-        List<ServletHost> hosts = servletHosts.getServletHosts();
-        if (!hosts.isEmpty()) {
-            this.servletHost = hosts.get(0);
-        }
+        this.servletHost = ServletHostHelper.getServletHost(extensionPoints);
     }
     
     public ImplementationProvider createImplementationProvider(RuntimeComponent component, WebImplementation implementation) {
