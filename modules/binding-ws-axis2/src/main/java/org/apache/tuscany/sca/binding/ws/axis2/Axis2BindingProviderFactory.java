@@ -18,14 +18,12 @@
  */
 package org.apache.tuscany.sca.binding.ws.axis2;
 
-import java.util.List;
-
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.host.http.ServletHost;
-import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
+import org.apache.tuscany.sca.host.http.ServletHostHelper;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
@@ -45,11 +43,7 @@ public class Axis2BindingProviderFactory implements BindingProviderFactory<WebSe
     private DataBindingExtensionPoint dataBindings;
 
     public Axis2BindingProviderFactory(ExtensionPointRegistry extensionPoints) {
-        ServletHostExtensionPoint servletHosts = extensionPoints.getExtensionPoint(ServletHostExtensionPoint.class);
-        List<ServletHost> hosts = servletHosts.getServletHosts();
-        if (!hosts.isEmpty()) {
-            this.servletHost = hosts.get(0);
-        }
+        this.servletHost = ServletHostHelper.getServletHost(extensionPoints);
         modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         dataBindings = extensionPoints.getExtensionPoint(DataBindingExtensionPoint.class);
     }
