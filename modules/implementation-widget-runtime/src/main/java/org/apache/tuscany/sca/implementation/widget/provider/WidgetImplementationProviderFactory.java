@@ -20,7 +20,7 @@ package org.apache.tuscany.sca.implementation.widget.provider;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.host.http.ServletHost;
-import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
+import org.apache.tuscany.sca.host.http.ServletHostHelper;
 import org.apache.tuscany.sca.implementation.widget.WidgetImplementation;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.provider.ImplementationProviderFactory;
@@ -41,8 +41,7 @@ public class WidgetImplementationProviderFactory implements ImplementationProvid
      * Constructs a resource implementation.
      */
     public WidgetImplementationProviderFactory(ExtensionPointRegistry extensionPoints) {
-        ServletHostExtensionPoint servletHosts = extensionPoints.getExtensionPoint(ServletHostExtensionPoint.class);
-        this.servletHost = servletHosts.getServletHosts().get(0);
+        this.servletHost = ServletHostHelper.getServletHost(extensionPoints);
         
         ComponentJavaScriptGeneratorExtensionPoint javascriptGeneratorExtensionPoint = extensionPoints.getExtensionPoint(ComponentJavaScriptGeneratorExtensionPoint.class);
         javaScriptGenerator = javascriptGeneratorExtensionPoint.getComponentJavaScriptGenerators().get(0);
