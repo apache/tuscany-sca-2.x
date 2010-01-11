@@ -24,16 +24,12 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.util.Enumeration;
-import java.util.List;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
-import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.host.http.DefaultServletHostExtensionPoint;
 import org.apache.tuscany.sca.host.http.ServletHost;
-import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
@@ -115,6 +111,7 @@ public class ServletHostHelper {
     public static ServletHost init(final ServletContext servletContext) {
         Node node = (Node)servletContext.getAttribute(SCA_NODE_ATTRIBUTE);
         if (node == null) {
+            org.apache.tuscany.sca.host.http.ServletHostHelper.setWebappHost(true);
             try {
                 String domainName = (String)servletContext.getAttribute(DOMAIN_NAME_ATTR);
                 if (domainName != null) {
@@ -155,22 +152,7 @@ public class ServletHostHelper {
 
     private static WebAppServletHost getServletHost(Node node) {
         NodeImpl nodeImpl = (NodeImpl)node;
-        ExtensionPointRegistry eps = nodeImpl.getExtensionPoints();
-        ServletHostExtensionPoint servletHosts = eps.getExtensionPoint(ServletHostExtensionPoint.class);
-        List<ServletHost> hosts = servletHosts.getServletHosts();
-        if (hosts == null || hosts.size() < 1) {
-            throw new IllegalStateException("No ServletHost found");
-        }
-        for (ServletHost servletHost : hosts) {
-            if ("webapp".equals(servletHost.getName())) {
-                if(servletHost instanceof DefaultServletHostExtensionPoint.LazyServletHost) {
-                    return (WebAppServletHost) ((DefaultServletHostExtensionPoint.LazyServletHost) servletHost).getServletHost();
-                } else if(servletHost instanceof WebAppServletHost) {
-                    return (WebAppServletHost) servletHost;
-                }
-            }
-        }
-        throw new IllegalStateException("No WebApp Servlet host is configured");
+        return (WebAppServletHost) org.apache.tuscany.sca.host.http.ServletHostHelper.getServletHost(nodeImpl.getExtensionPoints());
     }
 
     private static Node createNode(final ServletContext servletContext) throws ServletException {
