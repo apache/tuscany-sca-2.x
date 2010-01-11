@@ -24,6 +24,7 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.host.http.DefaultServletHostExtensionPoint;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
+import org.apache.tuscany.sca.host.http.ServletHostHelper;
 import org.apache.tuscany.sca.host.webapp.WebAppServletHost;
 import org.apache.tuscany.sca.implementation.web.WebImplementation;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -39,18 +40,7 @@ public class WebImplementationProviderFactory implements ImplementationProviderF
     private ClientExtensionPoint jsClient;
 
     public WebImplementationProviderFactory(ExtensionPointRegistry extensionPoints) {
-        ServletHostExtensionPoint servletHosts = extensionPoints.getExtensionPoint(ServletHostExtensionPoint.class);
-        List<ServletHost> hosts = servletHosts.getServletHosts();
-        for (ServletHost servletHost : hosts) {
-            if ("webapp".equals(servletHost.getName())) {
-                if(servletHost instanceof DefaultServletHostExtensionPoint.LazyServletHost) {
-                    this.servletHost = ((DefaultServletHostExtensionPoint.LazyServletHost) servletHost).getServletHost();
-                } else if(servletHost instanceof WebAppServletHost) {
-                    this.servletHost = (WebAppServletHost) servletHost;
-                }
-            }
-        }
-        
+        this.servletHost = ServletHostHelper.getServletHost(extensionPoints);
         jsClient = extensionPoints.getExtensionPoint(ClientExtensionPoint.class);
     }
 
