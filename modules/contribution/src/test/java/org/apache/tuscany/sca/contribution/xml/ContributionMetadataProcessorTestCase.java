@@ -93,6 +93,7 @@ public class ContributionMetadataProcessorTestCase {
         assertEquals(2, contribution.getDeployables().size());
         assertEquals(1, contribution.getAttributeExtensions().size());
         assertEquals(1, contribution.getExtensions().size());
+        reader.close();
     }
 
     @Test
@@ -108,6 +109,7 @@ public class ContributionMetadataProcessorTestCase {
         Problem problem = monitor.getLastProblem();
         assertNotNull(problem);
         assertEquals("AttributeCompositeMissing", problem.getMessageId());
+        reader.close();
     }
 
     @Test
@@ -116,6 +118,7 @@ public class ContributionMetadataProcessorTestCase {
         ContributionMetadata contribution = (ContributionMetadata)staxProcessor.read(reader, context);
         assertNotNull(contribution);
         assertEquals(SCA11_NS, contribution.getSpecVersion());
+        reader.close();
     }    
 
     @Test
@@ -135,6 +138,8 @@ public class ContributionMetadataProcessorTestCase {
         contribution = (ContributionMetadata)staxProcessor.read(reader, context);
 
         validateContribution(contribution);
+        
+        reader.close();
     }
 
     private void validateContribution(ContributionMetadata contribution) {
