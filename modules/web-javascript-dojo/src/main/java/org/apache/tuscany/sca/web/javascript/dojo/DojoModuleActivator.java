@@ -26,7 +26,7 @@ import javax.servlet.Servlet;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.host.http.ServletHost;
-import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
+import org.apache.tuscany.sca.host.http.ServletHostHelper;
 
 public class DojoModuleActivator implements ModuleActivator {
     private static final String dojoBaseUri = URI.create("/dojo").toString();
@@ -38,9 +38,7 @@ public class DojoModuleActivator implements ModuleActivator {
     private ServletHost servletHost;
 
     public DojoModuleActivator(ExtensionPointRegistry registry) {
-        ServletHostExtensionPoint servletHosts = registry.getExtensionPoint(ServletHostExtensionPoint.class);
-        
-        this.servletHost = servletHosts.getServletHosts().get(0);        
+        this.servletHost = ServletHostHelper.getServletHost(registry);
     }
     
     public void start() {
