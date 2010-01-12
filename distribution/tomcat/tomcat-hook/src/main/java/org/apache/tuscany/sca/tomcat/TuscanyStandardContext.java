@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.tomcat;
 
 import java.io.File;
+import java.lang.reflect.Constructor;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.logging.Logger;
@@ -47,6 +48,9 @@ public class TuscanyStandardContext extends StandardContext {
     // ?? is that comment still true?
     private static URLClassLoader tuscanyClassLoader;
 
+    public TuscanyStandardContext() {
+    }
+    
     /**
      * Overrides the getLoader method in the Tomcat StandardContext as its a convenient
      * point to insert the Tuscany initilization. This gets called the first time during
@@ -62,6 +66,9 @@ public class TuscanyStandardContext extends StandardContext {
 
         ClassLoader parent = getParentClassLoader();
         if (isSCAApp = isSCAApplication()) {
+            if (tuscanyClassLoader == null) {
+                initTuscany();
+            }
             setParentClassLoader(getTuscanyClassloader(parent));
             setDefaultWebXml("conf/tuscany-web.xml");
         }
@@ -121,7 +128,16 @@ public class TuscanyStandardContext extends StandardContext {
         return true;
     }
 
-    private synchronized URLClassLoader getTuscanyClassloader(ClassLoader parent) {
+    private URLClassLoader getTuscanyClassloader(ClassLoader parent) {
+        return tuscanyClassLoader;
+    }
+
+    private void initTuscany() {
+        initTuscanyClassloader(getParentClassLoader());
+        initDomain();
+    }
+    
+    private void initTuscanyClassloader(ClassLoader parent) {
         if (tuscanyClassLoader == null) {
             File tuscanyWar = new File(System.getProperty(TuscanyLifecycleListener.TUSCANY_WAR_PROP));
             File[] runtimeJars = new File(tuscanyWar, "tuscany-lib").listFiles();
@@ -131,12 +147,25 @@ public class TuscanyStandardContext extends StandardContext {
                     jarURLs[i] = runtimeJars[i].toURI().toURL();
                 }
                 tuscanyClassLoader = new URLClassLoader(jarURLs, parent);
-                return tuscanyClassLoader;
+                
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
-        return tuscanyClassLoader;
+    }
+
+    private void initDomain() {
+        ClassLoader oldCL = Thread.currentThread().getContextClassLoader();
+        try {
+            Thread.currentThread().setContextClassLoader(tuscanyClassLoader);
+            Class<?> domainNodeClass = Class.forName("org.apache.tuscany.sca.domain.node.DomainNode", true, tuscanyClassLoader);
+            Constructor<?> domainNodeConstructor = domainNodeClass.getConstructor(new Class[] {String.class, new String[0].getClass()});
+            domainNodeConstructor.newInstance(TuscanyLifecycleListener.getDomainURI(), new String[0]);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            Thread.currentThread().setContextClassLoader(oldCL);
+        }
     }
     
 }
