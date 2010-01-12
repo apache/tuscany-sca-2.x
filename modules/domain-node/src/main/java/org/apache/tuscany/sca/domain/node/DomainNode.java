@@ -47,7 +47,6 @@ public class DomainNode {
     private String domainName;
     private String domainRegistryURI;
     
-    private NodeFactory nodeFactory;
     private Map<String, Node> nodes = new HashMap<String, Node>();
     
     public DomainNode() {
@@ -61,7 +60,6 @@ public class DomainNode {
     public DomainNode(String configURI, String[] contributionLocations) {
         this.domainRegistryURI = configURI;
         initDomainName(configURI);
-        nodeFactory = NodeFactory.getInstance(domainName);
         if (contributionLocations == null || contributionLocations.length == 0) {
             addContribution(null, "_null");
         } else {
@@ -87,14 +85,14 @@ public class DomainNode {
         if (nodes.containsKey(uri)) {
             throw new IllegalArgumentException("contribution already added: " + uri);
         }
-        NodeConfiguration configuration = nodeFactory.createNodeConfiguration();
+        NodeConfiguration configuration = NodeFactory.newInstance().createNodeConfiguration();
         if (location != null) {
             configuration.addContribution(uri, location);
         }
         configuration.setDomainRegistryURI(domainRegistryURI);
         configuration.setDomainURI(domainName);
         configuration.setURI(uri); //???
-        Node node = nodeFactory.createNode(configuration).start();
+        Node node = NodeFactory.newInstance().createNode(configuration).start();
         nodes.put(uri, node);
     }
 
