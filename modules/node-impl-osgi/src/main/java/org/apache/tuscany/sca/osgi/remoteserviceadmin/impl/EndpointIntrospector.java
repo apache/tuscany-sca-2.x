@@ -424,9 +424,11 @@ public class EndpointIntrospector {
         throws ClassNotFoundException, InvalidInterfaceException {
         JavaInterfaceContract interfaceContract = javaInterfaceFactory.createJavaInterfaceContract();
         Class<?> interfaceClass = bundle.loadClass(intf);
-        JavaInterface javaInterface = javaInterfaceFactory.createJavaInterface(interfaceClass);
-        // [rfeng] For OSGi, the interfaces should be marked as remote
+        JavaInterface javaInterface = javaInterfaceFactory.createJavaInterface();
+        // [rfeng] For OSGi, the interfaces should be marked as remotable
         javaInterface.setRemotable(true);
+        // [rfeng] We need to mark the interface to be remotable before the createJavaInterface() is called 
+        javaInterfaceFactory.createJavaInterface(javaInterface, interfaceClass);
         interfaceContract.setInterface(javaInterface);
         if (javaInterface.getCallbackClass() != null) {
             JavaInterface callbackInterface = javaInterfaceFactory.createJavaInterface(javaInterface.getCallbackClass());
