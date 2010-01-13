@@ -26,6 +26,7 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
+    <packaging>zip</packaging>
     <artifactId>sample-helloworld</artifactId>
     <name>Apache Tuscany SCA Sample Helloworld</name>
 
@@ -45,39 +46,34 @@
     </dependencies>
 
     <build>
-        <finalName>${artifactId}</finalName>
-        <plugins>
-           <plugin>
-               <artifactId>maven-assembly-plugin</artifactId>
-               <version>2.2-beta-3</version>
-               <dependencies>
-                   <dependency>
-                       <groupId>org.apache.tuscany.sca</groupId>
-                       <artifactId>tuscany-zip-contribution-descriptor</artifactId>
-                       <version>2.0-M4</version>
-                   </dependency>
-               </dependencies>
-               <executions>
-                   <execution>
-                       <id>make-assembly</id>
-                       <phase>package</phase>
-                       <goals>
-                           <goal>single</goal>
-                       </goals>
-                       <configuration>
-                           <appendAssemblyId>false</appendAssemblyId>
-                           <!-- This is where we use our shared assembly descriptor -->
-                           <descriptors>
-                               <descriptor>tuscany-zip-contribution.xml</descriptor>
-                           </descriptors>
-                       </configuration>
-                   </execution>
-               </executions>
-           </plugin>
-           <plugin>
-               <groupId>org.apache.tuscany.maven.plugins</groupId>
-               <artifactId>maven-tuscany-plugin</artifactId>
-           </plugin>
-        </plugins>
+       <finalName>${artifactId}</finalName>
+       <plugins>
+         <plugin>
+            <groupId>org.apache.tuscany.maven.plugins</groupId>
+            <artifactId>maven-zip-plugin</artifactId>
+            <version>alpha1</version>
+            <extensions>true</extensions>
+         </plugin>
+         <!-- plugin>
+             <groupId>org.apache.tuscany.maven.plugins</groupId>
+             <artifactId>maven-tuscany-plugin</artifactId>
+              <executions>
+                  <execution>
+                      <id>start-container</id>
+                      <phase>pre-integration-test</phase>
+                      <goals>
+                          <goal>start</goal>
+                      </goals>
+                  </execution>
+                  <execution>
+                      <id>stop-container</id>
+                      <phase>post-integration-test</phase>
+                      <goals>
+                          <goal>stop</goal>
+                      </goals>
+                  </execution>
+              </executions>
+         </plugin -->
+       </plugins>
     </build>
 </project>
