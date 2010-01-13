@@ -24,11 +24,12 @@ import java.lang.reflect.Proxy;
 import java.net.URI;
 import java.util.List;
 
-import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.apache.tuscany.sca.node.NodeFinder;
+import org.apache.tuscany.sca.node.impl.NodeImpl;
 import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
 import org.oasisopen.sca.NoSuchDomainException;
@@ -43,19 +44,11 @@ public class SCAClientFactoryImpl extends SCAClientFactory {
 
     public SCAClientFactoryImpl(URI domainURI) {
         super(domainURI);
-
-        if (!"vm".equals(domainURI.getScheme())) {
-            this.extensionsRegistry = new DefaultExtensionPointRegistry();
-            UtilityExtensionPoint utilities = extensionsRegistry.getExtensionPoint(UtilityExtensionPoint.class);
-            DomainRegistryFactory domainRegistryFactory = utilities.getUtility(DomainRegistryFactory.class);
-            this.endpointRegistry = domainRegistryFactory.getEndpointRegistry(getDomainURI().toString(), getDomainName());
-
-            try {
-                // TODO: wait a mo for the endpoint registry to replicate
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-            }
-        }
+        NodeImpl node = (NodeImpl)NodeFactory.newInstance().createNode(domainURI);
+        this.extensionsRegistry = node.getExtensionPoints();
+        UtilityExtensionPoint utilities = extensionsRegistry.getExtensionPoint(UtilityExtensionPoint.class);
+        DomainRegistryFactory domainRegistryFactory = utilities.getUtility(DomainRegistryFactory.class);
+        this.endpointRegistry = domainRegistryFactory.getEndpointRegistry(getDomainURI().toString(), node.getConfiguration().getDomainName());
     }
 
     @Override
