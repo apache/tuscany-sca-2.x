@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.node.impl;
 
+import java.net.URI;
+
 import org.apache.tuscany.sca.common.java.io.IOHelper;
 import org.junit.Assert;
 import org.junit.Test;
@@ -35,5 +37,13 @@ public class NodeUtilTestCase {
         Assert.assertEquals("file:/a/b", IOHelper.createURI("file:/a/b").toString());
         Assert.assertEquals("file:/a%20b", IOHelper.createURI("file:/a b").toString());
         Assert.assertEquals("file:/a%20b", IOHelper.createURI("file:/a%20b").toString());
+    }
+
+    @Test
+    public void testDomainURI() {
+        Assert.assertEquals("foo", NodeFactoryImpl.getDomainName(URI.create("tuscany:foo")));
+        Assert.assertEquals("foo", NodeFactoryImpl.getDomainName(URI.create("tuscany:vm:foo")));
+        Assert.assertEquals("foo", NodeFactoryImpl.getDomainName(URI.create("vm:foo")));
+        Assert.assertEquals("foo", NodeFactoryImpl.getDomainName(URI.create("bla://foo")));
     }
 }

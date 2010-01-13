@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.node;
 
+import java.util.List;
+
 import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
 
 
@@ -49,4 +51,5 @@ public interface Node extends Client {
      */
     void destroy();
 
+    public List<String> getServiceNames();
 }

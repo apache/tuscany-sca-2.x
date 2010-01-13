@@ -150,6 +150,15 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
             }
         }
 
+        public List<String> getServiceNames() {
+            try {
+                return (List<String>)node.getClass().getMethod("getServiceNames").invoke(node);
+            } catch (Throwable e) {
+                handleException(e);
+                return null;
+            }
+        }
+
     }
 
     /**
@@ -295,6 +304,28 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
             configuration.getContributions().get(0).addDeploymentComposite(createURI(deploymentCompositeURI));
         }
         return createNode(configuration);
+    }
+
+    public final Node createNode(URI configURI, String... locations) {
+        Contribution[] contributions = getContributions(Arrays.asList(locations));
+        NodeConfiguration configuration = createConfiguration(contributions);
+        configuration.setDomainRegistryURI(configURI.toString());
+        configuration.setDomainURI(getDomainName(configURI));
+        return createNode(configuration);
+    }
+
+    public static String getDomainName(URI configURI) {
+        // no idea if this is needed, do it anyway for now till the Node refactor is done
+        String s = configURI.getHost();
+        if (s == null) {
+            s = configURI.getSchemeSpecificPart();
+            if (s != null) {
+                if (s.indexOf(':') > -1) {
+                    s = s.substring(s.indexOf(':')+1);
+                }
+            }
+        }
+        return s;
     }
 
     /**
