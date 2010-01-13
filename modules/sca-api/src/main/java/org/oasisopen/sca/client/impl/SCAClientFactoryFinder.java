@@ -32,8 +32,8 @@ public class SCAClientFactoryFinder {
     private static final String SCA_CLIENT_FACTORY_PROVIDER_KEY = SCAClientFactory.class.getName();
 
     /**
-     * The name of the file loaded from the ClassPath to determine 2488 the SPI
-     * implementation to use for the SCAClientFactory. 2489
+     * The name of the file loaded from the ClassPath to determine the SPI
+     * implementation to use for the SCAClientFactory.
      */
     private static final String SCA_CLIENT_FACTORY_PROVIDER_META_INF_SERVICE = "META-INF/services/" + SCA_CLIENT_FACTORY_PROVIDER_KEY;
 
