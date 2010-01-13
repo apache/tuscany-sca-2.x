@@ -25,8 +25,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
 
@@ -39,7 +39,7 @@ import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
  */
 public class DefaultFactoryExtensionPoint implements FactoryExtensionPoint {
     private ExtensionPointRegistry registry;
-    private Map<Class<?>, Object> factories = new HashMap<Class<?>, Object>();
+    private Map<Class<?>, Object> factories = new ConcurrentHashMap<Class<?>, Object>();
     
     /**
      * Constructs a new DefaultModelFactoryExtensionPoint.
@@ -53,7 +53,7 @@ public class DefaultFactoryExtensionPoint implements FactoryExtensionPoint {
      * 
      * @param factory The factory to add
      */
-    public synchronized void addFactory(Object factory) {
+    public void addFactory(Object factory) {
         Class<?>[] interfaces = factory.getClass().getInterfaces();
         if (interfaces.length == 0) {
             Class<?> sc = factory.getClass().getSuperclass();
@@ -72,7 +72,7 @@ public class DefaultFactoryExtensionPoint implements FactoryExtensionPoint {
      *  
      * @param factory The factory to remove
      */
-    public synchronized void removeFactory(Object factory) {
+    public void removeFactory(Object factory) {
         Class<?>[] interfaces = factory.getClass().getInterfaces();
         if (interfaces.length == 0) {
             Class<?> sc = factory.getClass().getSuperclass();
@@ -103,7 +103,7 @@ public class DefaultFactoryExtensionPoint implements FactoryExtensionPoint {
      * @param factoryInterface The lookup key (factory interface)
      * @return The factory
      */    
-    public synchronized <T> T getFactory(Class<T> factoryInterface) {
+    public <T> T getFactory(Class<T> factoryInterface) {
         Object factory = factories.get(factoryInterface);
         if (factory == null) {
 

@@ -55,11 +55,11 @@ public class DefaultUtilityExtensionPoint implements UtilityExtensionPoint {
      *
      * @throws IllegalArgumentException if utility is null
      */
-    public synchronized void addUtility(Object utility) {
+    public void addUtility(Object utility) {
         addUtility(null, utility);
     }
     
-    public synchronized void addUtility(Object key, Object utility) {
+    public void addUtility(Object key, Object utility) {
         if (utility == null) {
             throw new IllegalArgumentException("Cannot register null as a Service");
         }
@@ -90,7 +90,7 @@ public class DefaultUtilityExtensionPoint implements UtilityExtensionPoint {
      *
      * @throws IllegalArgumentException if utilityType is null
      */
-    public synchronized <T> T getUtility(Class<T> utilityType) {
+    public <T> T getUtility(Class<T> utilityType) {
         return getUtility(utilityType, null);
     }
 
@@ -101,7 +101,7 @@ public class DefaultUtilityExtensionPoint implements UtilityExtensionPoint {
      *
      * @throws IllegalArgumentException if utility is null
      */
-    public synchronized void removeUtility(Object utility) {
+    public void removeUtility(Object utility) {
         if (utility == null) {
             throw new IllegalArgumentException("Cannot remove null as a Service");
         }
@@ -143,7 +143,7 @@ public class DefaultUtilityExtensionPoint implements UtilityExtensionPoint {
         }
     }
 
-    public synchronized <T> T getUtility(Class<T> utilityType, Object key) {
+    public <T> T getUtility(Class<T> utilityType, Object key) {
         if (utilityType == null) {
             throw new IllegalArgumentException("Cannot lookup Service of type null");
         }
@@ -197,7 +197,7 @@ public class DefaultUtilityExtensionPoint implements UtilityExtensionPoint {
         return !utilityType.isInterface() && Modifier.isPublic(modifiers) && !Modifier.isAbstract(modifiers);
     }
 
-    public synchronized void start() {
+    public void start() {
         // NOOP
     }
 
