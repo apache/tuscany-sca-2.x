@@ -30,7 +30,7 @@ import org.apache.tuscany.sca.node.NodeFactory;
 public class CalculatorClient {
     public static void main(String[] args) throws Exception {
 
-        Node node = NodeFactory.newInstance().createNode(null, new String[] {"target/classes"}).start();
+        Node node = NodeFactory.newInstance().createNode((String)null, new String[] {"target/classes"}).start();
         
         CalculatorService calculatorService = ((Client)node).getService(CalculatorService.class, "CalculatorServiceComponent");
         

@@ -37,7 +37,7 @@ public class CalculatorTestCase{
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
         // ideally it would be: node = NodeFactory.newInstance().createNode("target/classes").start();
-        node = NodeFactory.newInstance().createNode(null, new String[] {"target/classes"}).start();
+        node = NodeFactory.newInstance().createNode((String)null, new String[] {"target/classes"}).start();
         calculatorService = node.getService(CalculatorService.class, "CalculatorServiceComponent");
     }
 
