@@ -21,18 +21,31 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
-        <artifactId>tuscany-itest</artifactId>
+        <artifactId>tuscany-sca</artifactId>
         <version>2.0-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
-    <artifactId>itest-domains</artifactId>
-    <packaging>pom</packaging>
-    <name>Apache Tuscany SCA Domians Integration Tests</name>
+    <artifactId>itest-domains-distributed</artifactId>
+    <name>Apache Tuscany SCA itest domain distributed</name>
 
-    <modules>
-       <module>interfaces</module>
-       <module>helloworld</module>
-       <module>standalone</module>
-       <module>distributed</module>
-    </modules>
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.tuscany.sca.shades</groupId>
+            <artifactId>tuscany-base-nodep</artifactId>
+            <version>2.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.5</version>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+       <finalName>${artifactId}</finalName>
+   </build>
+
 </project>
