@@ -57,10 +57,15 @@ public class SCAClientFactoryFinder {
      *                 implementation.
      */
     public static SCAClientFactory find(Properties properties, ClassLoader classLoader, URI domainURI) {
+        // TODO - TUSCANY-3424 - swap the order here temporarily to help with the 
+        //                       fixes to the client factory lookup processing
+        //                       will revert when TUSCANY-3424 is done
         if (classLoader == null) {
-            classLoader = getThreadContextClassLoader();
+            // classLoader = getThreadContextClassLoader();
+            classLoader = SCAClientFactoryFinder.class.getClassLoader();
             if (classLoader == null) {
-                classLoader = SCAClientFactoryFinder.class.getClassLoader();
+                //classLoader = SCAClientFactoryFinder.class.getClassLoader();
+                classLoader = getThreadContextClassLoader();
             }
         }
         final String factoryImplClassName = discoverProviderFactoryImplClass(properties, classLoader);
