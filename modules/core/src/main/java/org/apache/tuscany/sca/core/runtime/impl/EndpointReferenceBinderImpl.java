@@ -204,10 +204,10 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
             if ((endpoints.size() == 0) && 
                 (runtime == true)     ) {
                 
-                // tweak to test if this could be a resolve binding. If the uri 
-                // has come from the binding (as opposed to a reference target) 
-                // the assume that it is. 
-                String bindingURI = endpointReference.getBinding().getURI();
+                // tweak to test if this could be a resolve binding. This is the back end of the test
+                // in the builder that pulls the URI out of the binding if there are no targets
+                // on the reference. have to wait until here to see if the binding uri matches any
+                // available services. If not we assume here that it's a resolved binding
                 if (endpointReference.getStatus() == EndpointReference.WIRED_TARGET_IN_BINDING_URI){
                     endpointReference.getTargetEndpoint().setBinding(endpointReference.getBinding());
                     endpointReference.setRemote(true);
