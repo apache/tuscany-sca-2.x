@@ -33,6 +33,7 @@
     <modules>
         <module>helloworld-service-contribution</module>
         <module>helloworld-reference-contribution</module>
+        <module>helloworld-scaclient-javase</module>
         <module>helloworld-scaclient-jsp</module>
         <module>helloworld-scaclient-servlet</module>
         <module>helloworld-client-webapp</module>
