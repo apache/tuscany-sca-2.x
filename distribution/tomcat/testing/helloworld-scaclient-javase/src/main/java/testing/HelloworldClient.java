@@ -33,7 +33,7 @@ public class HelloworldClient {
 		if (args.length > 0) {
 			domainURI = URI.create(args[0]);
 		} else {
-			domainURI = URI.create("tribes:default");
+			domainURI = URI.create("tuscany:default");
 		}
 		
 		SCAClientFactory factory = SCAClientFactory.newInstance(domainURI);
