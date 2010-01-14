@@ -100,7 +100,7 @@ public class ServletHostHelper {
             } else {
                 domainURI = servletContext.getInitParameter("org.apache.tuscany.sca.defaultDomainURI");
                 if (domainURI != null) {
-                    configuration.setDomainURI(domainURI);
+                    configuration.setDomainURI(getDomainName(domainURI));
                     configuration.setDomainRegistryURI(domainURI);
                 }
             }
@@ -108,6 +108,24 @@ public class ServletHostHelper {
         return configuration;
     }
 
+    // TODO: Temp for now to get the old samples working till i clean up all the domain uri/name after the ML discussion.
+    private static String getDomainName(String configURI) {
+        String domainName;
+        if (configURI.startsWith("tuscany:vm:")) {
+            domainName = configURI.substring("tuscany:vm:".length());  
+        } else if (configURI.startsWith("tuscany:")) {
+            int i = configURI.indexOf('?');
+            if (i == -1) {
+                domainName = configURI.substring("tuscany:".length());  
+            } else{
+                domainName = configURI.substring("tuscany:".length(), i);  
+            }
+        } else {
+            domainName = configURI;  
+        }
+        return domainName;
+    }
+    
     public static ServletHost init(final ServletContext servletContext) {
         Node node = (Node)servletContext.getAttribute(SCA_NODE_ATTRIBUTE);
         if (node == null) {
