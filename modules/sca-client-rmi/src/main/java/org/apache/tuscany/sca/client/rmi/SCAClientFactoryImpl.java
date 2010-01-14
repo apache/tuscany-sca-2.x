@@ -45,6 +45,11 @@ public class SCAClientFactoryImpl extends SCAClientFactory {
     public SCAClientFactoryImpl(URI domainURI) {
         super(domainURI);
         NodeImpl node = (NodeImpl)NodeFactory.newInstance().createNode(domainURI);
+        if (node.getExtensionPoints() == null) {
+            // No local nodes have been started (for this domain?)
+            // ideally we'll use the Hazelcast client but for now just start a node
+            node.start();            
+        }
         this.extensionsRegistry = node.getExtensionPoints();
         UtilityExtensionPoint utilities = extensionsRegistry.getExtensionPoint(UtilityExtensionPoint.class);
         DomainRegistryFactory domainRegistryFactory = utilities.getUtility(DomainRegistryFactory.class);
