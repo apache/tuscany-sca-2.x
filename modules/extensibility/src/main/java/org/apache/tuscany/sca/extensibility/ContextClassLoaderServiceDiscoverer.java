@@ -124,7 +124,8 @@ public class ContextClassLoaderServiceDiscoverer implements ServiceDiscoverer {
     }
     
     public ClassLoader getContextClassLoader() {
-        return classLoaderReference.get();
+        //return classLoaderReference.get();
+        return Thread.currentThread().getContextClassLoader();
     }
 
     private List<URL> getResources(final String name) throws IOException {
