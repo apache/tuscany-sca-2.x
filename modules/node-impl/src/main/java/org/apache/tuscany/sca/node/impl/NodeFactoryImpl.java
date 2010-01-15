@@ -44,7 +44,13 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.Component;
+import org.apache.tuscany.sca.assembly.ComponentReference;
+import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
+import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.common.java.io.IOHelper;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
@@ -71,6 +77,9 @@ import org.apache.tuscany.sca.node.configuration.BindingConfiguration;
 import org.apache.tuscany.sca.node.configuration.ContributionConfiguration;
 import org.apache.tuscany.sca.node.configuration.DeploymentComposite;
 import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
+import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
+import org.apache.tuscany.sca.runtime.EndpointReferenceBinder;
+import org.apache.tuscany.sca.runtime.EndpointRegistry;
 import org.apache.tuscany.sca.work.WorkScheduler;
 import org.oasisopen.sca.ServiceRuntimeException;
 
@@ -273,9 +282,63 @@ public class NodeFactoryImpl extends NodeFactory {
         }
         Composite domainComposite = deployer.build(contributions, bindingBaseURIs, monitor);
         analyzeProblems(monitor);
-
+        
+        // postBuildEndpointReferenceMatching(domainComposite);
+        
         return domainComposite;
     }
+    
+    // =============================================
+    // TODO - TUSCANY-3425
+    // post build endpoint reference matching. Give the matching algorithm
+    // a chance to run and report any errors for local references prior to 
+    // runtime start. Not in use at the moment as we are getting away with
+    // runtime matching. Leaving here for when we come to sorting out 
+    // autowire which still relies on matching in the builder
+    private void postBuildEndpointReferenceMatching(Composite composite){
+        EndpointReferenceBinder endpointReferenceBinder = registry.getExtensionPoint(EndpointReferenceBinder.class);
+        DomainRegistryFactory domainRegistryFactory = registry.getExtensionPoint(DomainRegistryFactory.class);
+        
+        // create temporary local registry for all available local endpoints
+        // TODO - need a better way of getting a local registry
+        EndpointRegistry registry = domainRegistryFactory.getEndpointRegistry("vm://tmp", "local");
+        
+        // populate the registry with all the endpoints that are currently present in the model
+        populateLocalRegistry(composite, registry);
+        
+        // look at all the endpoint references and try to match them to 
+        // any local endpoints
+        for (EndpointReference endpointReference : registry.getEndpointReferences()){
+            endpointReferenceBinder.bindBuildTime(registry, endpointReference);
+        }
+        
+        // remove the local registry
+        domainRegistryFactory.getEndpointRegistries().remove(registry);
+    }
+    
+    private void populateLocalRegistry(Composite composite, EndpointRegistry registry){
+        for (Component component : composite.getComponents()) {
+            // recurse for composite implementations
+            Implementation implementation = component.getImplementation();
+            if (implementation instanceof Composite) {
+                populateLocalRegistry((Composite)implementation, registry);
+            }
+            
+            for (ComponentService service : component.getServices()) {
+                for (Endpoint endpoint : service.getEndpoints()){
+                    registry.addEndpoint(endpoint);
+                }
+            }
+            
+            for (ComponentReference reference : component.getReferences()) {
+                for (EndpointReference endpointReference : reference.getEndpointReferences()){
+                    registry.addEndpointReference(endpointReference);
+                }
+            }            
+        }
+    }    
+    
+    // =============================================
 
     protected List<Contribution> loadContributions(NodeConfiguration configuration, ProcessorContext context) throws Throwable {
         List<Contribution> contributions = new ArrayList<Contribution>();
