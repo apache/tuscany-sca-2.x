@@ -299,6 +299,12 @@ public class CompositeActivatorImpl implements CompositeActivator {
         for (Component component : composite.getComponents()) {
             start(compositeContext, component);
         }
+        
+        for (Component component : composite.getComponents()) {
+            if (component instanceof ScopedRuntimeComponent) {
+                start(compositeContext, (ScopedRuntimeComponent)component);
+            }
+        }
     }
 
     public void stop(CompositeContext compositeContext, Composite composite) {
@@ -336,13 +342,8 @@ public class CompositeActivatorImpl implements CompositeActivator {
             }
         }
 
-        if (component instanceof ScopedRuntimeComponent) {
-            ScopedRuntimeComponent scopedRuntimeComponent = (ScopedRuntimeComponent)component;
-            if (scopedRuntimeComponent.getScopeContainer() != null) {
-                scopedRuntimeComponent.getScopeContainer().start();
-            }
-        }
-        // Reference bindings aren't started until the wire is first used
+        // Reference bindings aren't started until the wire is first used although this may
+        // happen when the scope container is started in the case of @EagerInit
 
         for (ComponentService service : component.getServices()) {
             if (logger.isLoggable(Level.FINE)) {
@@ -369,6 +370,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
                 }
             }
         }
+               
 
         runtimeComponent.setStarted(true);
     }
@@ -456,6 +458,15 @@ public class CompositeActivatorImpl implements CompositeActivator {
         ((RuntimeComponent)component).setStarted(false);
     }
 
+    // Scope container start/stop
+    // separate off from component start that all endpoints are 
+    // registered before any @EagerInit takes place
+    public void start(CompositeContext compositeContext, ScopedRuntimeComponent scopedRuntimeComponent) {
+        if (scopedRuntimeComponent.getScopeContainer() != null) {
+            scopedRuntimeComponent.getScopeContainer().start();
+        }
+    }
+    
     // Service start/stop
 
     // done as part of the component start above
