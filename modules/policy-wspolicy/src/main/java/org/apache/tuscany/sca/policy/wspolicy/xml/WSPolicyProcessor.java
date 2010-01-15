@@ -19,7 +19,14 @@
 
 package org.apache.tuscany.sca.policy.wspolicy.xml;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -30,7 +37,12 @@ import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.OMNamespace;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
+import org.apache.neethi.All;
+import org.apache.neethi.Constants;
+import org.apache.neethi.ExactlyOne;
+import org.apache.neethi.PolicyComponent;
 import org.apache.neethi.PolicyEngine;
+import org.apache.neethi.PolicyOperator;
 import org.apache.tuscany.sca.common.xml.stax.StAXHelper;
 import org.apache.tuscany.sca.common.xml.stax.reader.XMLDocumentStreamReader;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
@@ -42,6 +54,7 @@ import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXAttributeProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.policy.wspolicy.WSPolicy;
 
 /**
@@ -52,9 +65,22 @@ import org.apache.tuscany.sca.policy.wspolicy.WSPolicy;
 public class WSPolicyProcessor extends BaseStAXArtifactProcessor implements
     StAXArtifactProcessor<WSPolicy> {
     
+    protected ExtensionPointRegistry registry;
     protected StAXArtifactProcessor<Object> extensionProcessor;
+    protected StAXAttributeProcessor<Object> extensionAttributeProcessor;
+    protected XMLInputFactory inputFactory;
+    protected XMLOutputFactory outputFactory;
 
-    public WSPolicyProcessor(ExtensionPointRegistry registry) {
+    public WSPolicyProcessor(ExtensionPointRegistry registry,
+                             StAXArtifactProcessor extensionProcessor,
+                             StAXAttributeProcessor extensionAttributeProcessor) {
+        this.registry = registry;
+        this.extensionProcessor = extensionProcessor;
+        this.extensionAttributeProcessor = extensionAttributeProcessor;
+        
+        FactoryExtensionPoint modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
+        this.inputFactory = modelFactories.getFactory(XMLInputFactory.class);
+        this.outputFactory = modelFactories.getFactory(XMLOutputFactory.class);
     }
 
     public QName getArtifactType() {
@@ -76,9 +102,45 @@ public class WSPolicyProcessor extends BaseStAXArtifactProcessor implements
         WSPolicy wsPolicy = new WSPolicy();
         wsPolicy.setNeethiPolicy(neethiPolicy);
         
-        // read policy assertions        
+        // read policy assertions   
+        readPolicyAssertions(wsPolicy,neethiPolicy, context);
         
         return wsPolicy;
+    }
+    
+    private void readPolicyAssertions(WSPolicy wsPolicy, PolicyComponent policyComponent, ProcessorContext context){
+        
+        // recurse into the policy alternatives
+        if (policyComponent.getType() != Constants.TYPE_ASSERTION){
+            PolicyOperator policyOperator = (PolicyOperator)policyComponent;
+            for(Object childComponent : policyOperator.getPolicyComponents()){
+                // TODO - create assertion hierarchy in wsPolicy model
+                //        how we do this depends on if we continue to use neethi
+                readPolicyAssertions(wsPolicy, (PolicyComponent)childComponent, context);
+            }
+        } else {
+            try {
+                // TODO - not sure we should keep the neethi model but hack for the
+                //        time being to get Tuscany processors to process the OMElements
+                //        help within the neethi model
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                XMLStreamWriter writer = outputFactory.createXMLStreamWriter(outputStream);
+                
+                policyComponent.serialize(writer);
+                
+                ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
+                XMLStreamReader reader = inputFactory.createXMLStreamReader(inputStream);
+
+                Object tuscanyAssertion = extensionProcessor.read(reader, context);
+                
+                if (tuscanyAssertion != null) {
+                    wsPolicy.getPolicyAssertions().add(tuscanyAssertion);
+                }
+            } catch (Exception ex) {
+                // TODO - report the error properly
+                ex.printStackTrace();
+            }
+        }
     }
 
     public void write(WSPolicy wsPolicy, XMLStreamWriter writer, ProcessorContext context)

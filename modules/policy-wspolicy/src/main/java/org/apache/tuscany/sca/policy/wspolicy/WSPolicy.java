@@ -39,7 +39,7 @@ import org.apache.tuscany.sca.policy.PolicySubject;
 import org.apache.tuscany.sca.policy.wspolicy.xml.WSPolicyProcessor;
 
 /**
- * The WS-Policy model. Defers to the Neethi policy model under the covers. 
+ * The WS-Policy model. Currently defers to the Neethi policy model under the covers. 
  */
 public class WSPolicy  {
 
@@ -49,6 +49,7 @@ public class WSPolicy  {
     public final static QName WS_POLICY_QNAME = new QName(WS_POLICY_NS, WS_POLICY);
 
     private Policy neethiPolicy;
+    private List<Object> policyAssertions = new ArrayList<Object>();
 
     public QName getSchemaName() {
         return WS_POLICY_QNAME;
@@ -60,6 +61,10 @@ public class WSPolicy  {
     
     public void setNeethiPolicy(Policy neethiPolicy) {
         this.neethiPolicy = neethiPolicy;
+    }
+    
+    public List<Object> getPolicyAssertions(){
+        return policyAssertions;
     }
 
     @Override

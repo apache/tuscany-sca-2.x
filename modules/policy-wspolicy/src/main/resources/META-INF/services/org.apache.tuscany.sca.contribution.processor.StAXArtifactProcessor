@@ -16,5 +16,5 @@
 # under the License. 
 
 # Implementation class for the artifact processor extension
-org.apache.tuscany.sca.policy.xml.ws.WSPolicyProcessor;qname=http://schemas.xmlsoap.org/ws/2004/09/policy#Policy,model=org.apache.neethi.Policy
+org.apache.tuscany.sca.policy.wspolicy.xml.WSPolicyProcessor;qname=http://schemas.xmlsoap.org/ws/2004/09/policy#Policy,model=org.apache.neethi.Policy
 

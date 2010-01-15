@@ -25,13 +25,28 @@ import java.io.StringReader;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
+import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXAttributeProcessor;
 import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
+import org.apache.tuscany.sca.contribution.processor.StAXAttributeProcessor;
+import org.apache.tuscany.sca.contribution.processor.StAXAttributeProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.definitions.Definitions;
+import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.wspolicy.xml.WSPolicyProcessor;
+import org.apache.tuscany.sca.policy.xml.PolicySetProcessor;
 import org.junit.Assert;
 
 /**
@@ -42,7 +57,8 @@ import org.junit.Assert;
 public class WSPolicyTestCase extends TestCase {
 
     private static final String WS_POLICY1 =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "<definitions xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200912\""
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" 
+      + "<definitions xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200912\""
             + " targetNamespace=\"http://test\""
             + " xmlns:test=\"http://test\""
             + " xmlns:sca=\"http://docs.oasis-open.org/ns/opencsa/sca/200912\">"
@@ -73,10 +89,11 @@ public class WSPolicyTestCase extends TestCase {
             + "    </wsp:ExactlyOne>"
             + " </wsp:Policy>"
             + " </policySet>"
-            + " </definitions>";
+      + " </definitions>";
     
     private static final String WS_POLICY2 =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "<definitions xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200912\""
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" 
+      + "<definitions xmlns=\"http://docs.oasis-open.org/ns/opencsa/sca/200912\""
             + " targetNamespace=\"http://test\""
             + " xmlns:test=\"http://test\""
             + " xmlns:sca=\"http://docs.oasis-open.org/ns/opencsa/sca/200912\">"
@@ -107,7 +124,7 @@ public class WSPolicyTestCase extends TestCase {
             + "    </wsp:ExactlyOne>"
             + " </wsp:Policy>"
             + " </policySet>"
-            + " </definitions>";    
+      + " </definitions>";    
 
     private XMLInputFactory inputFactory;
 
@@ -117,64 +134,53 @@ public class WSPolicyTestCase extends TestCase {
     }
 
     public void testReadWsPolicy() throws Exception {
-        XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(WS_POLICY1));
-        WSPolicyProcessor processor = new WSPolicyProcessor(new DefaultExtensionPointRegistry());
+        // Set up the runtime
+        ExtensionPointRegistry registry = new DefaultExtensionPointRegistry();
+        
+        FactoryExtensionPoint modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
+        
+        XMLInputFactory inputFactory = modelFactories.getFactory(XMLInputFactory.class);
+        XMLOutputFactory outputFactory = modelFactories.getFactory(XMLOutputFactory.class);
+        
+        StAXArtifactProcessorExtensionPoint artifactExtensionPoint = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        StAXArtifactProcessor<Object> extensibleStAXProcessor = new ExtensibleStAXArtifactProcessor(artifactExtensionPoint, inputFactory, outputFactory);
+        artifactExtensionPoint.addArtifactProcessor(new TuscanyWSPolicyAssertionProcessor());
+        
+        StAXAttributeProcessorExtensionPoint attributeExtensionPoint = registry.getExtensionPoint(StAXAttributeProcessorExtensionPoint.class);
+        StAXAttributeProcessor<Object> extensibleStAXAttributeProcessor = new ExtensibleStAXAttributeProcessor(attributeExtensionPoint, inputFactory, outputFactory);
+        
+        
+        
+        StAXArtifactProcessor processor = artifactExtensionPoint.getProcessor(Definitions.class);
+        
         Object artifact = null;
-
-        QName name = null;
-        reader.next();
-        while (true) {
-            int event = reader.getEventType();
-            switch (event) {
-                case START_ELEMENT: {
-                    name = reader.getName();
-
-                    if (WSPolicy.WS_POLICY_QNAME.equals(name)) {
-                        artifact = processor.read(reader, new ProcessorContext());
-                    }
-
-                    break;
-                }
-            }
-
-            if (reader.hasNext()) {
-                reader.next();
-            } else {
-                break;
-            }
-        }
+        
+        // Read the first definitions string
+        
+        XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(WS_POLICY1));
+        
+        artifact = processor.read(reader, new ProcessorContext());
         assertNotNull(artifact);
-        Assert.assertTrue(artifact instanceof WSPolicy);
-        WSPolicy policy1 = (WSPolicy) artifact;
+        Assert.assertTrue(artifact instanceof Definitions);
+        Definitions definitions1 = (Definitions) artifact;
 
+        // Read the second definitions string
+        
         reader = inputFactory.createXMLStreamReader(new StringReader(WS_POLICY2));
 
-        reader.next();
-        while (true) {
-            int event = reader.getEventType();
-            switch (event) {
-                case START_ELEMENT: {
-                    name = reader.getName();
-
-                    if (WSPolicy.WS_POLICY_QNAME.equals(name)) {
-                        artifact = processor.read(reader, new ProcessorContext());
-                    }
-
-                    break;
-                }
-            }
-
-            if (reader.hasNext()) {
-                reader.next();
-            } else {
-                break;
-            }
-        } 
-        
+        artifact = processor.read(reader, new ProcessorContext());
         assertNotNull(artifact);
-        Assert.assertTrue(artifact instanceof WSPolicy);
-        WSPolicy policy2 = (WSPolicy) artifact;   
+        Assert.assertTrue(artifact instanceof Definitions);
+        Definitions definitions2 = (Definitions) artifact;  
         
+        // compare the policies using the policy builder
+        
+        // create dummy endpoints and endpoint references
+        AssemblyFactory assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
+        EndpointReference epr = assemblyFactory.createEndpointReference();
+        Endpoint ep = assemblyFactory.createEndpoint();
+        
+        // ...
         
     }
 }
