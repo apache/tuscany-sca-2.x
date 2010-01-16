@@ -77,6 +77,11 @@ public class JavaImplementationInvoker implements Invoker, DataExchangeSemantics
 
         EndpointReference from = msg.getFrom();
 
+        // store the current thread context classloader
+        // as we need to replace it with the class loader
+        // used to load the java class as per SCA Spec
+        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+        
         try {
             // The following call might create a new conversation, as a result, the msg.getConversationID() might 
             // return a new value
@@ -97,6 +102,12 @@ public class JavaImplementationInvoker implements Invoker, DataExchangeSemantics
                 }
             }
             
+            // Set the thread context classloader of the thread used to invoke an operation 
+            // of a Java POJO component implementation is the class loader of the contribution 
+            // that contains the POJO implementation class.
+            
+            Thread.currentThread().setContextClassLoader(instance.getClass().getClassLoader());
+            
             Object ret;
             if (payload != null && !payload.getClass().isArray()) {
                 ret = imethod.invoke(instance, payload);
@@ -116,8 +127,7 @@ public class JavaImplementationInvoker implements Invoker, DataExchangeSemantics
                     msg.setFaultBody(cause);
                     break;
                 }
-            }
-
+            } 
             
             if (sequence != ConversationSequence.CONVERSATION_NONE ){
                 try {
@@ -153,6 +163,9 @@ public class JavaImplementationInvoker implements Invoker, DataExchangeSemantics
                 
         } catch (Exception e) {
             msg.setFaultBody(e);           
+        } finally {
+            // set the tccl 
+            Thread.currentThread().setContextClassLoader(tccl);
         }
         return msg;
     }
