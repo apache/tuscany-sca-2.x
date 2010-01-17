@@ -56,7 +56,7 @@ public class CustomerProfileData {
         return lastName;
     }
 
-    public void setLastName(String firstName) {
+    public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
