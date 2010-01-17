@@ -263,7 +263,7 @@ public abstract class AbstractReplicatedMap extends MapStore implements RpcCallb
             Response[] resp =
                 rpcChannel.send(channel.getMembers(),
                                 msg,
-                                rpcChannel.ALL_REPLY,
+                                RpcChannel.ALL_REPLY,
                                 (channelSendOptions),
                                 (int)accessTimeout);
             for (int i = 0; i < resp.length; i++) {
@@ -310,7 +310,7 @@ public abstract class AbstractReplicatedMap extends MapStore implements RpcCallb
             new MapMessage(this.mapContextName, msgtype, false, null, null, null, channel.getLocalMember(false), null);
         if (rpc) {
             Response[] resp =
-                rpcChannel.send(channel.getMembers(), msg, rpcChannel.FIRST_REPLY, (channelSendOptions), rpcTimeout);
+                rpcChannel.send(channel.getMembers(), msg, RpcChannel.FIRST_REPLY, (channelSendOptions), rpcTimeout);
             for (int i = 0; i < resp.length; i++) {
                 mapMemberAdded(resp[i].getSource());
                 messageReceived(resp[i].getMessage(), resp[i].getSource());
