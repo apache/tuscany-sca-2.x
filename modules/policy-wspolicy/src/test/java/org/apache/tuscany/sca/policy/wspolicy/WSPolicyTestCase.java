@@ -33,6 +33,9 @@ import junit.framework.TestCase;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
+import org.apache.tuscany.sca.assembly.builder.BuilderContext;
+import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
+import org.apache.tuscany.sca.assembly.builder.PolicyBuilder;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXAttributeProcessor;
 import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
@@ -44,6 +47,7 @@ import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.definitions.Definitions;
+import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.wspolicy.xml.WSPolicyProcessor;
 import org.apache.tuscany.sca.policy.xml.PolicySetProcessor;
@@ -149,7 +153,7 @@ public class WSPolicyTestCase extends TestCase {
         StAXAttributeProcessorExtensionPoint attributeExtensionPoint = registry.getExtensionPoint(StAXAttributeProcessorExtensionPoint.class);
         StAXAttributeProcessor<Object> extensibleStAXAttributeProcessor = new ExtensibleStAXAttributeProcessor(attributeExtensionPoint, inputFactory, outputFactory);
         
-        
+        BuilderExtensionPoint builderExtensionPoint = registry.getExtensionPoint(BuilderExtensionPoint.class);
         
         StAXArtifactProcessor processor = artifactExtensionPoint.getProcessor(Definitions.class);
         
@@ -180,7 +184,16 @@ public class WSPolicyTestCase extends TestCase {
         EndpointReference epr = assemblyFactory.createEndpointReference();
         Endpoint ep = assemblyFactory.createEndpoint();
         
-        // ...
+        // add the ws polices we've just read to the epr/ep
+        epr.getPolicySets().add(definitions1.getPolicySets().get(0));
+        ep.getPolicySets().add(definitions1.getPolicySets().get(0));
+        
+        BuilderContext builderContext = new BuilderContext((Monitor)null);
+        
+        for (PolicyBuilder policyBuilder : builderExtensionPoint.getPolicyBuilders()) {
+            System.out.println("PolicyBuilder: " + policyBuilder.toString());
+            assertTrue(policyBuilder.build(epr, ep, builderContext));
+        }
         
     }
 }
