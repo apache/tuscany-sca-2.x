@@ -73,6 +73,10 @@
                 <module>recursive-multi-level</module>
                 <module>references</module>
                 <module>scaclient-api</module>
+<!-- TUSCANY-3424 - SCAClient in JSE with OSGi runtime not yet supported
+                <module>scaclient-api-jse-osgi</module>
+-->
+                <module>scaclient-api-osgi</module>
                 <module>scopes</module>
                 <module>scdl</module>
                 <module>services</module>
