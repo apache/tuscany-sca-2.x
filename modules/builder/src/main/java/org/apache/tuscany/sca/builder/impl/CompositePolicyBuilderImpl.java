@@ -166,7 +166,7 @@ public class CompositePolicyBuilderImpl extends ComponentPolicyBuilderImpl imple
 
     protected void buildPolicies(Composite composite, BuilderContext context) {
 
-        // compute policies recursively
+        // build policies recursively
         for (Component component : composite.getComponents()) {
             Implementation implementation = component.getImplementation();
             if (implementation instanceof Composite) {
