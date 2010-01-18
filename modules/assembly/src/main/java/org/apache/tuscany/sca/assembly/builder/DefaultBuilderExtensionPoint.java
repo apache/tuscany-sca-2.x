@@ -41,6 +41,7 @@ import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
 import org.apache.tuscany.sca.extensibility.ServiceDeclarationParser;
 import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
+import org.apache.tuscany.sca.policy.PolicyExpression;
 
 /**
  * Default implementation of a provider factory extension point.
@@ -188,6 +189,7 @@ public class DefaultBuilderExtensionPoint implements BuilderExtensionPoint, Life
     }
     
     public Collection<PolicyBuilder> getPolicyBuilders() {
+        loadBuilders();
         return policyBuilders.values();
     }
 
@@ -397,8 +399,6 @@ public class DefaultBuilderExtensionPoint implements BuilderExtensionPoint, Life
 
         public boolean build(EndpointReference endpointReference, Endpoint endpoint, BuilderContext context) {
             return getBuilder().build(endpointReference, endpoint, context);
-        }
-
+        }      
     }
-
 }
