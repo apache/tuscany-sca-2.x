@@ -102,7 +102,7 @@ public abstract class AbstractDiscoveryService implements Discovery, LifeCycleLi
     }
 
     protected ExtensionPointRegistry getExtensionPointRegistry() {
-        NodeFactoryImpl factory = (NodeFactoryImpl)NodeFactory.newInstance();
+        NodeFactoryImpl factory = (NodeFactoryImpl)NodeFactory.getInstance();
         factory.init();
         ServiceTracker tracker = new ServiceTracker(context, ExtensionPointRegistry.class.getName(), null);
         tracker.open();

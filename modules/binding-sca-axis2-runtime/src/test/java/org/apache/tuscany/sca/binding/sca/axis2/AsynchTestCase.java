@@ -44,11 +44,11 @@ public class AsynchTestCase {
         try {
             // create and start nodes
             Contribution contrib = new Contribution("asynch", "./target/test-classes/asynchReference");
-            nodeA = NodeFactory.newInstance().createNode("HelloWorld.composite", contrib);
+            nodeA = NodeFactory.getInstance().createNode("HelloWorld.composite", contrib);
             nodeA.start();
             
             contrib = new Contribution("asynch", "./target/test-classes/asynchService");
-            nodeB = NodeFactory.newInstance().createNode("HelloWorld.composite", contrib);
+            nodeB = NodeFactory.getInstance().createNode("HelloWorld.composite", contrib);
             nodeB.start();
 
         } catch (Exception ex) {

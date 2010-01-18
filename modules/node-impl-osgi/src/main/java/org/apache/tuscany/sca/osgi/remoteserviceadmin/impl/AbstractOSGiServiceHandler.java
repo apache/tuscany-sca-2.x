@@ -63,7 +63,7 @@ public class AbstractOSGiServiceHandler implements LifeCycleListener {
 
     protected synchronized void init() {
         if (nodeFactory == null) {
-            this.nodeFactory = (NodeFactoryImpl)NodeFactory.newInstance();
+            this.nodeFactory = (NodeFactoryImpl)NodeFactory.getInstance();
             this.nodeFactory.init();
             this.discoveryTracker = LocalDiscoveryService.getTracker(context);
             discoveryTracker.open();

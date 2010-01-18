@@ -41,11 +41,11 @@ public class SimpleTestCase {
         try {
             // create and start nodes
             Contribution contrib = new Contribution("reference", "./target/test-classes/simpleReference");
-            nodeA = NodeFactory.newInstance().createNode("HelloWorld.composite", contrib);
+            nodeA = NodeFactory.getInstance().createNode("HelloWorld.composite", contrib);
             nodeA.start();
             
             contrib = new Contribution("service", "./target/test-classes/simpleService");
-            nodeB = NodeFactory.newInstance().createNode("HelloWorld.composite", contrib);
+            nodeB = NodeFactory.getInstance().createNode("HelloWorld.composite", contrib);
             nodeB.start();
 
         } catch (Exception ex) {

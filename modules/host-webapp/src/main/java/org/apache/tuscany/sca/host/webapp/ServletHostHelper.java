@@ -70,7 +70,6 @@ public class ServletHostHelper {
             configuration = factory.loadConfiguration(url.openStream(), url);
         } else {
             configuration = factory.createNodeConfiguration();
-            configuration.setDomainURI(factory.getDomainURI());
             Enumeration<String> names = servletContext.getAttributeNames();
             while (names.hasMoreElements()) {
                 String name = names.nextElement();
@@ -132,11 +131,7 @@ public class ServletHostHelper {
             org.apache.tuscany.sca.host.http.ServletHostHelper.setWebappHost(true);
             try {
                 String domainName = (String)servletContext.getAttribute(DOMAIN_NAME_ATTR);
-                if (domainName != null) {
-                    factory = NodeFactory.getInstance(domainName);
-                } else {
-                    factory = NodeFactory.newInstance();
-                }
+                factory = NodeFactory.getInstance();
                 for (Enumeration<String> e = servletContext.getInitParameterNames(); e.hasMoreElements();) {
                     String name = e.nextElement();
                     String value = servletContext.getInitParameter(name);
