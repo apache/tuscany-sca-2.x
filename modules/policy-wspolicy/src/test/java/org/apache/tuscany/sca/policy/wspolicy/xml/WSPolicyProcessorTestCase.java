@@ -25,12 +25,22 @@ import java.io.StringReader;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXAttributeProcessor;
 import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
+import org.apache.tuscany.sca.contribution.processor.StAXAttributeProcessor;
+import org.apache.tuscany.sca.contribution.processor.StAXAttributeProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.policy.wspolicy.TuscanyWSPolicyAssertionProcessor;
 import org.apache.tuscany.sca.policy.wspolicy.WSPolicy;
 import org.apache.tuscany.sca.policy.wspolicy.xml.WSPolicyProcessor;
 import org.junit.Assert;
@@ -84,7 +94,20 @@ public class WSPolicyProcessorTestCase extends TestCase {
 
     public void testReadWsPolicy() throws Exception {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(VALID_WS_POLICY));
-        WSPolicyProcessor processor = new WSPolicyProcessor(new DefaultExtensionPointRegistry());
+        
+        ExtensionPointRegistry registry = new DefaultExtensionPointRegistry();
+        FactoryExtensionPoint modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
+        XMLInputFactory inputFactory = modelFactories.getFactory(XMLInputFactory.class);
+        XMLOutputFactory outputFactory = modelFactories.getFactory(XMLOutputFactory.class);
+        StAXArtifactProcessorExtensionPoint artifactExtensionPoint = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        StAXArtifactProcessor<Object> extensibleStAXProcessor = new ExtensibleStAXArtifactProcessor(artifactExtensionPoint, inputFactory, outputFactory);
+        StAXAttributeProcessorExtensionPoint attributeExtensionPoint = registry.getExtensionPoint(StAXAttributeProcessorExtensionPoint.class);
+        StAXAttributeProcessor<Object> extensibleStAXAttributeProcessor = new ExtensibleStAXAttributeProcessor(attributeExtensionPoint, inputFactory, outputFactory);
+
+        WSPolicyProcessor processor = new WSPolicyProcessor(new DefaultExtensionPointRegistry(),
+                                                            extensibleStAXProcessor,
+                                                            extensibleStAXAttributeProcessor);
+        
         Object artifact = null;
 
         QName name = null;
