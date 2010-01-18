@@ -19,13 +19,21 @@
 
 package org.apache.tuscany.sca.core.runtime.impl;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
+import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.ComponentReference;
+import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.Multiplicity;
+import org.apache.tuscany.sca.assembly.builder.BuilderContext;
+import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
+import org.apache.tuscany.sca.assembly.builder.PolicyBuilder;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
@@ -33,6 +41,8 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.monitor.Problem;
+import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.runtime.EndpointReferenceBinder;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
 
@@ -51,6 +61,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
     protected ExtensionPointRegistry extensionPoints;
     protected AssemblyFactory assemblyFactory;
     protected InterfaceContractMapper interfaceContractMapper;
+    protected BuilderExtensionPoint builders;
     private Monitor monitor;
 
 
@@ -62,8 +73,11 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
 
         UtilityExtensionPoint utils = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
         this.interfaceContractMapper = utils.getUtility(InterfaceContractMapper.class);
+        
         MonitorFactory monitorFactory = utils.getUtility(MonitorFactory.class);
         monitor = monitorFactory.createMonitor();
+        
+        this.builders = extensionPoints.getExtensionPoint(BuilderExtensionPoint.class);
     }
     
     /**
@@ -346,11 +360,17 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
     }
 
     /**
-     * Determine if endpoint reference and endpoint policies match 
+     * Determine if endpoint reference and endpoint policies match. We know by this stage
+     * that 
+     *   - a given policy set will only contain expression from a single language
+     *   - a given endpoint or endpoint reference's policy sets will only contain
+     *     expresions from a single language
      */
     private boolean haveMatchingPolicy(EndpointReference endpointReference, Endpoint endpoint){
         
-        /*
+        ComponentReference reference = endpointReference.getReference();
+        ComponentService service = endpoint.getService();
+
         // if no policy sets or intents are present then they match
         if ((endpointReference.getRequiredIntents().size() == 0) &&
             (endpoint.getRequiredIntents().size() == 0) &&
@@ -359,95 +379,55 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
             return true;
         }
         
-        // if there are different numbers of intents 
-        // then they don't match
-        if (endpointReference.getRequiredIntents().size() !=
-            endpoint.getRequiredIntents().size()) {
-            return false;
-        }
-        
-        // if there are different numbers of policy sets 
-        // then they don't match
-        if (endpointReference.getPolicySets().size() !=
-            endpoint.getPolicySets().size()) {
+        // if one of the policy set collections is empty while the 
+        // other isn't then then don't match
+        if (((endpointReference.getPolicySets().size() == 0) &&
+             (endpoint.getPolicySets().size() != 0)) ||
+            ((endpointReference.getPolicySets().size() != 0) &&
+             (endpoint.getPolicySets().size() == 0))) {
             return false;
         }        
+                
+        // if the intent names don't match then the policies won't match
+        // TODO - is this a valid check? We used to rely on this in the 
+        //        builder. Not sure who added it. Need to review.
+/* TUSCANY-3426 - The build phase doesn't seen to promote the intents properly        
+        Set<Intent> referenceIntentSet = new HashSet<Intent>(reference.getRequiredIntents());
+        Set<Intent> serviceIntentSet = new HashSet<Intent>(service.getRequiredIntents());
+        if (!referenceIntentSet.equals(serviceIntentSet)){
+            return false;
+        }
+*/
         
-        // check intents for compatibility
-        for(Intent intentEPR : endpointReference.getRequiredIntents()){
-            boolean matched = false;
-            for (Intent intentEP : endpoint.getRequiredIntents()){ 
-                if (intentEPR.getName().equals(intentEP.getName())){
-                    matched = true;
-                    break;
-                }
-            }
-            if (matched == false){
-                return false;
-            }
+        // If policy set QNames from epr and er match exactly then the reference and 
+        // service policies are compatible
+        Set<PolicySet> referencePolicySet = new HashSet<PolicySet>(endpointReference.getPolicySets());
+        Set<PolicySet> servicePolicySet = new HashSet<PolicySet>(endpoint.getPolicySets());
+        if(referencePolicySet.equals(servicePolicySet)){
+            return true;
         }
         
-        // check policy sets for compatibility. The list of policy sets
-        // may be a subset of the list of intents as some of the intents 
-        // may be directly provided. We can't just rely on intent compatibility
-        // as different policy sets might have been attached at each end to 
-        // satisfy the listed intents
         
-        // if all of the policy sets on the endpoint reference match a 
-        // policy set on the endpoint then they match
-        for(PolicySet policySetEPR : endpointReference.getPolicySets()){
-            boolean matched = false;
-            for (PolicySet policySetEP : endpoint.getPolicySets()){ 
-                // find if there is a policy set with the same name
-                if (policySetEPR.getName().equals(policySetEP.getName())){
-                    matched = true;
-                    break;
-                }
-                // find if the policies inside the policy set match the 
-                // policies inside a policy set on the endpoint
-                
-                // TODO - need a policy specific matcher to do this
-                //        so need a new extension point
-                
-            }
-            
-            if (matched == false){
-                return false;
-            }
+        // if policy set language at ep and epr are not then there is no
+        // match. We get the policy language by looking at the first expression
+        // of the first policy set. By this stage we know that all the policy sets
+        // in an endpoint or endpoint reference will use a single language
+        QName eprLanguage = endpointReference.getPolicySets().get(0).getPolicies().get(0).getName();
+        QName epLanguage = endpoint.getPolicySets().get(0).getPolicies().get(0).getName();
+          
+        if(!eprLanguage.equals(epLanguage)){
+            return false;
         }
-        */
         
-        return true;
-        
-        /* 
-        Some new psuedo code based on the spec
-        // if we have intents without policy sets we need to match those at the intent level 
-        // before doing policy set matching
-
-        If policy set QNames from epr and er match exactly
-           return true
-
-        if policy set languages at ep are not all the same 
-           raise error (probably would have done this earlier)
-           should go in policy processor
-           how to tell which language is expected by a binding
-
-        if policy set languages at epr are not all the same
-           raise error (probably would have done this earlier)
-           should go in policy processor
-           how to tell which language is expected by a binding
-
-         if policy set language at ep and epr are not the same
-           raise error 
-           should be the same binding at both ends so should have same
-           languages
-
-         find the language specific policy matcher
-
-         return languageSpecificMatcher.match(policy sets from epr, policy sets from ep)
-         // not sure how a matcher aggregates multiple policy sets to find the intersection. 
-         // expect that is language specific 
-         */
+        // now do a policy specific language match 
+        PolicyBuilder builder = builders.getPolicyBuilder(eprLanguage);
+        if (builder != null) {
+            // TODO - where to get builder context from?
+            BuilderContext builderContext = new BuilderContext(monitor);
+            return builder.build(endpointReference, endpoint, builderContext);
+        } else {
+            return false;
+        }
     }
     
     /**
