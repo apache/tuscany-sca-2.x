@@ -27,7 +27,7 @@ import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.Implementation;
 
 /**
- * A builder that is contributed by a specific policy languange to validate the configurations
+ * A builder that is contributed by a specific policy language to validate the configurations
  * for SCA endpoints, endpoint references and component implementations
  */
 public interface PolicyBuilder<T> {
@@ -70,4 +70,5 @@ public interface PolicyBuilder<T> {
      * @return if the policy setting is compatible
      */
     boolean build(EndpointReference endpointReference, Endpoint endpoint, BuilderContext context);
+ 
 }
