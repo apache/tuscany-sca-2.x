@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.builder.impl;
 
+import java.util.Set;
+
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.Component;
@@ -178,10 +180,22 @@ public class CompositePolicyBuilderImpl extends ComponentPolicyBuilderImpl imple
 
             for (ComponentService componentService : component.getServices()) {
                 for (Endpoint ep : componentService.getEndpoints()) {
-                    for (QName policyType : getPolicyNames(ep)) {
-                        PolicyBuilder builder = builders.getPolicyBuilder(policyType);
-                        if (builder != null) {
-                            builder.build(ep, context);
+                    Set<QName> policyNames = getPolicyNames(ep);
+                    
+                    // check that only one policy language is present in the endpoint's policy sets
+                    if (policyNames.size() > 1){
+                        Monitor.error(context.getMonitor(), 
+                                      this, 
+                                      "builder-validation-messages", 
+                                      "MultiplePolicyLanguagesInEP", 
+                                      ep.toString(), 
+                                      policyNames.toString());
+                    } else {
+                        for (QName policyType : policyNames) {
+                            PolicyBuilder builder = builders.getPolicyBuilder(policyType);
+                            if (builder != null) {
+                                builder.build(ep, context);
+                            }
                         }
                     }
                 }
@@ -189,10 +203,22 @@ public class CompositePolicyBuilderImpl extends ComponentPolicyBuilderImpl imple
 
             for (ComponentReference componentReference : component.getReferences()) {
                 for (EndpointReference epr : componentReference.getEndpointReferences()) {
-                    for (QName policyType : getPolicyNames(epr)) {
-                        PolicyBuilder builder = builders.getPolicyBuilder(policyType);
-                        if (builder != null) {
-                            builder.build(epr, context);
+                    Set<QName> policyNames = getPolicyNames(epr);
+                    
+                    // check that only one policy language is present in the endpoint references's policy sets
+                    if (policyNames.size() > 1){
+                        Monitor.error(context.getMonitor(), 
+                                      this, 
+                                      "builder-validation-messages", 
+                                      "MultiplePolicyLanguagesInEPR", 
+                                      epr.toString(), 
+                                      policyNames.toString());
+                    } else {                    
+                        for (QName policyType : policyNames) {
+                            PolicyBuilder builder = builders.getPolicyBuilder(policyType);
+                            if (builder != null) {
+                                builder.build(epr, context);
+                            }
                         }
                     }
                 }
@@ -200,10 +226,22 @@ public class CompositePolicyBuilderImpl extends ComponentPolicyBuilderImpl imple
 
             Implementation implementation = component.getImplementation();
             if (implementation != null) {
-                for (QName policyType : getPolicyNames(implementation)) {
-                    PolicyBuilder builder = builders.getPolicyBuilder(policyType);
-                    if (builder != null) {
-                        builder.build(component, implementation, context);
+                Set<QName> policyNames = getPolicyNames(implementation);
+                
+                // check that only one policy language is present in the implementations's policy sets
+                if (policyNames.size() > 1){
+                    Monitor.error(context.getMonitor(), 
+                                  this, 
+                                  "builder-validation-messages", 
+                                  "MultiplePolicyLanguagesInImplementation", 
+                                  component.toString(), 
+                                  policyNames.toString());
+                } else {
+                    for (QName policyType : policyNames) {
+                        PolicyBuilder builder = builders.getPolicyBuilder(policyType);
+                        if (builder != null) {
+                            builder.build(component, implementation, context);
+                        }
                     }
                 }
             }
