@@ -17,6 +17,8 @@
 package org.apache.tuscany.sca.endpoint.tribes;
 
 import java.io.Serializable;
+import java.util.Iterator;
+import java.util.Map;
 
 import org.apache.catalina.tribes.Channel;
 import org.apache.catalina.tribes.ChannelException;
@@ -97,29 +99,65 @@ public class ReplicatedMap extends AbstractReplicatedMap implements RpcCallback,
      * @return Member - the backup node
      * @throws ChannelException
      */
-    protected Member[] publishEntryInfo(Object key, Object value, Member[] backupNodes) throws ChannelException {
+    protected Member[] publishEntryInfo(Object key, Object value) throws ChannelException {
         if (!(key instanceof Serializable && value instanceof Serializable))
             return new Member[0];
         //select a backup node
-        Member[] backup = getMapMembers();
+        Member[] members = getMapMembers();
 
-        if (backup == null || backup.length == 0)
-            return null;
-
-        // Set the receivers to these members that are not in the backup nodes yet 
-        Member[] members = backup;
-        if (backupNodes != null) {
-            members = getMapMembersExcl(backupNodes);
+        if (members == null || members.length == 0) {
+            return new Member[0];
         }
 
         //publish the data out to all nodes
         MapMessage msg =
             new MapMessage(getMapContextName(), MapMessage.MSG_COPY, false, (Serializable)key, (Serializable)value,
-                           null, channel.getLocalMember(false), backup);
+                           null, channel.getLocalMember(false), members);
 
         getChannel().send(members, msg, getChannelSendOptions());
 
-        return backup;
+        return members;
+    }
+    
+    /**
+     * Override the base method to look up existing entries only
+     */
+    public Object get(Object key) {
+        MapEntry entry = super.getInternal(key);
+        if (log.isTraceEnabled())
+            log.trace("Requesting id:" + key + " entry:" + entry);
+        if (entry == null) {
+            return null;
+        }
+        return entry.getValue();
     }
 
+    /**
+     * Override the base method to remove all entries owned by the member that disappeared
+     */
+    public void memberDisappeared(Member member) {
+        boolean removed = false;
+        synchronized (mapMembers) {
+            removed = (mapMembers.remove(member) != null);
+            if (!removed) {
+                if (log.isDebugEnabled())
+                    log.debug("Member[" + member + "] disappeared, but was not present in the map.");
+                return; //the member was not part of our map.
+            }
+        }
+
+        Iterator<Map.Entry<Object, Object>> i = super.entrySetFull().iterator();
+        while (i.hasNext()) {
+            Map.Entry<Object, Object> e = i.next();
+            MapEntry entry = (MapEntry)super.getInternal(e.getKey());
+            if (entry == null) {
+                continue;
+            }
+            if (member.equals(entry.getPrimary())) {
+                if (log.isDebugEnabled())
+                    log.debug("[2] Primary disappeared");
+                i.remove();
+            } //end if
+        } //while
+    }    
 }

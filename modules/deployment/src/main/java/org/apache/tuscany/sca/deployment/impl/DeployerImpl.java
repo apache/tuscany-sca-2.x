@@ -50,8 +50,8 @@ import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.DefaultImport;
 import org.apache.tuscany.sca.contribution.Export;
 import org.apache.tuscany.sca.contribution.Import;
-import org.apache.tuscany.sca.contribution.namespace.NamespaceImport;
 import org.apache.tuscany.sca.contribution.java.JavaImport;
+import org.apache.tuscany.sca.contribution.namespace.NamespaceImport;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
@@ -566,6 +566,11 @@ public class DeployerImpl implements Deployer {
 
     public void setSchemaValidationEnabled(boolean schemaValidationEnabled) {
         this.schemaValidationEnabled = schemaValidationEnabled;
+    }
+
+    public Definitions getSystemDefinitions() {
+        init();
+        return systemDefinitions;
     }
 
 }

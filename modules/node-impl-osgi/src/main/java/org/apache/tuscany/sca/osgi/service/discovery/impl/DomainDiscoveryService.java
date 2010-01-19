@@ -53,6 +53,19 @@ public class DomainDiscoveryService extends AbstractDiscoveryService implements 
         this.domainRegistryFactory =
             registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(DomainRegistryFactory.class);
         domainRegistryFactory.addListener(this);
+
+        // [rfeng] Starting of the endpoint registry takes a long time and it leaves the bundle
+        // state to be starting. When the registry is started, remote endpoints come in and that
+        // triggers the classloading from this bundle.
+        Thread thread = new Thread() {
+            public void run() {
+                startEndpointRegistry();
+            }
+        };
+        thread.start();
+    }
+
+    private void startEndpointRegistry() {
         // The following code forced the start() of the domain registry in absense of services
         String domainRegistry = context.getProperty("org.osgi.sca.domain.registry");
         if (domainRegistry == null) {
@@ -103,6 +116,8 @@ public class DomainDiscoveryService extends AbstractDiscoveryService implements 
         {
             // Notify the endpoint listeners
             EndpointDescription description = createEndpointDescription(bundleContext, endpoint);
+            // Set the owning bundle to runtime bundle to avoid NPE
+            servicesInfo.put(description, context.getBundle());
             endpointChanged(description, ADDED);
         }
     }
@@ -115,6 +130,7 @@ public class DomainDiscoveryService extends AbstractDiscoveryService implements 
         */ 
         {
             EndpointDescription description = createEndpointDescription(context, endpoint);
+            servicesInfo.remove(description);
             endpointChanged(description, REMOVED);
         }
     }

@@ -38,11 +38,13 @@ import java.util.logging.Logger;
 
 import org.apache.catalina.tribes.Channel;
 import org.apache.catalina.tribes.ChannelException;
+import org.apache.catalina.tribes.ChannelReceiver;
 import org.apache.catalina.tribes.Member;
 import org.apache.catalina.tribes.group.GroupChannel;
 import org.apache.catalina.tribes.group.interceptors.StaticMembershipInterceptor;
 import org.apache.catalina.tribes.membership.McastService;
 import org.apache.catalina.tribes.membership.StaticMember;
+import org.apache.catalina.tribes.transport.ReceiverBase;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
@@ -67,6 +69,9 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry, LifeCycleLi
     private String address = MULTICAST_ADDRESS;
     private String bind = null;
     private int timeout = 50;
+    private int receiverPort = 4000;
+    private int receiverAutoBind = 100;
+    private List<URI> staticRoutes;
 
     private final static String DEFAULT_DOMAIN_URI = "http://tuscany.apache.org/sca/1.1/domains/default";
     private String domainURI = DEFAULT_DOMAIN_URI;
@@ -75,7 +80,6 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry, LifeCycleLi
 
     private ExtensionPointRegistry registry;
     private ReplicatedMap map;
-    private static List<URI> staticRoutes;
 
     private String id;
     private boolean noMultiCast;
@@ -175,6 +179,14 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry, LifeCycleLi
         if (mcast != null) {
             noMultiCast = Boolean.valueOf(mcast);
         }
+        String recvPort = attributes.get("receiverPort");
+        if (recvPort != null) {
+            receiverPort = Integer.parseInt(recvPort);
+        }
+        String recvAutoBind = attributes.get("receiverAutoBind");
+        if (recvAutoBind != null) {
+            receiverAutoBind = Integer.parseInt(recvAutoBind);
+        }
     }
 
     public void start() {
@@ -190,9 +202,24 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry, LifeCycleLi
         if (noMultiCast) {
             map.getChannel().addInterceptor(new DisableMcastInterceptor());
         }
-        
-        // http://www.mail-archive.com/users@tomcat.apache.org/msg24873.html
-        int port = channel.getChannelReceiver().getPort();
+
+        // Configure the receiver ports
+        ChannelReceiver receiver = channel.getChannelReceiver();
+        if (receiver instanceof ReceiverBase) {
+            ((ReceiverBase)receiver).setAutoBind(receiverAutoBind);
+            ((ReceiverBase)receiver).setPort(receiverPort);
+        }
+
+        /*
+        Object sender = channel.getChannelSender();
+        if (sender instanceof ReplicationTransmitter) {
+            sender = ((ReplicationTransmitter)sender).getTransport();
+        }
+        if (sender instanceof AbstractSender) {
+            ((AbstractSender)sender).setKeepAliveCount(0);
+            ((AbstractSender)sender).setMaxRetryAttempts(5);
+        }
+        */
         
         if (staticRoutes != null) {
             StaticMembershipInterceptor smi = new StaticMembershipInterceptor();
@@ -200,12 +227,12 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry, LifeCycleLi
                 Member member;
                 try {
                     // The port has to match the receiver port
-                    member = new StaticMember(staticRoute.getHost(), port, 5000);
+                    member = new StaticMember(staticRoute.getHost(), staticRoute.getPort(), 5000);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
                 smi.addStaticMember(member);
-                logger.info("Added static route: " + staticRoute.getHost() + ":" + port);
+                logger.info("Added static route: " + staticRoute.getHost() + ":" + staticRoute.getPort());
             }
             smi.setLocalMember(map.getChannel().getLocalMember(false));
             map.getChannel().addInterceptor(smi);
@@ -410,6 +437,7 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry, LifeCycleLi
             logger.info(id + " Remote endpoint removed: " + entry.getValue());
         }
         Endpoint oldEp = (Endpoint)entry.getValue();
+        ((RuntimeEndpoint) oldEp).bind(registry, this);
         for (EndpointListener listener : listeners) {
             listener.endpointRemoved(oldEp);
         }

@@ -38,14 +38,19 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import com.hazelcast.config.Config;
 import com.hazelcast.config.TcpIpConfig;
 import com.hazelcast.config.XmlConfigBuilder;
+import com.hazelcast.core.EntryEvent;
+import com.hazelcast.core.EntryListener;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.core.IMap;
+import com.hazelcast.core.MembershipEvent;
+import com.hazelcast.core.MembershipListener;
 import com.hazelcast.nio.Address;
 
 /**
  * An EndpointRegistry using a Hazelcast
  */
-public class HazelcastEndpointRegistry implements EndpointRegistry, LifeCycleListener {
+public class HazelcastEndpointRegistry implements EndpointRegistry, LifeCycleListener, EntryListener<String, Endpoint>, MembershipListener {
     private final static Logger logger = Logger.getLogger(HazelcastEndpointRegistry.class.getName());
 
     private List<EndpointReference> endpointreferences = new CopyOnWriteArrayList<EndpointReference>();
@@ -54,14 +59,14 @@ public class HazelcastEndpointRegistry implements EndpointRegistry, LifeCycleLis
     private ExtensionPointRegistry registry;
     private ConfigURI configURI;
 
-    private HazelcastInstance hazelcastInstance;
-    private Map<Object, Object> map;
+    HazelcastInstance hazelcastInstance;
+    Map<Object, Object> map;
     private List<String> localEndpoints = new ArrayList<String>();;
 
     public HazelcastEndpointRegistry(ExtensionPointRegistry registry,
-                                      Map<String, String> attributes,
-                                      String domainRegistryURI,
-                                      String domainURI) {
+                                     Map<String, String> attributes,
+                                     String domainRegistryURI,
+                                     String domainURI) {
         this.registry = registry;
         this.configURI = new ConfigURI(domainRegistryURI);
     }
@@ -74,22 +79,27 @@ public class HazelcastEndpointRegistry implements EndpointRegistry, LifeCycleLis
             map = new HashMap<Object, Object>();
         } else {
             initHazelcastInstance();
-            map = hazelcastInstance.getMap(configURI.getDomainName() + "Endpoints");
+            IMap imap = hazelcastInstance.getMap(configURI.getDomainName() + "/Endpoints");
+            imap.addEntryListener(this, true);
+            map = imap;
+            hazelcastInstance.getCluster().addMembershipListener(this);
         }
     }
 
     public void stop() {
         if (hazelcastInstance != null) {
             hazelcastInstance.shutdown();
+            hazelcastInstance = null;
+            map = null;
         }
     }
 
-    private void initHazelcastInstance()  {
+    private void initHazelcastInstance() {
         Config config = new XmlConfigBuilder().build();
 
         config.setPort(configURI.getListenPort());
         //config.setPortAutoIncrement(false);
-        
+
         if (configURI.getBindAddress() != null) {
             config.getNetworkConfig().getInterfaces().setEnabled(true);
             config.getNetworkConfig().getInterfaces().clear();
@@ -107,6 +117,8 @@ public class HazelcastEndpointRegistry implements EndpointRegistry, LifeCycleLis
             config.getNetworkConfig().getJoin().getMulticastConfig().setMulticastGroup(configURI.getMulticastAddress());
         }
         
+        // config.getMapConfig(configURI.getDomainName() + "/Endpoints").setBackupCount(0);
+
         if (configURI.getRemotes().size() > 0) {
             TcpIpConfig tcpconfig = config.getNetworkConfig().getJoin().getJoinMembers();
             tcpconfig.setEnabled(true);
@@ -200,15 +212,15 @@ public class HazelcastEndpointRegistry implements EndpointRegistry, LifeCycleLis
                         endpoint.setRemote(true);
                     }
                     // if (!entry.isPrimary()) {
-                    ((RuntimeEndpoint) endpoint).bind(registry, this);
+                    ((RuntimeEndpoint)endpoint).bind(registry, this);
                     // }
                     foundEndpoints.add(endpoint);
                     logger.fine("Found endpoint with matching service  - " + endpoint);
-                } 
+                }
                 // else the service name doesn't match
             }
         }
-        
+
         return foundEndpoints;
     }
 
@@ -252,46 +264,65 @@ public class HazelcastEndpointRegistry implements EndpointRegistry, LifeCycleLis
     }
 
     public void updateEndpoint(String uri, Endpoint endpoint) {
-//      // TODO: is updateEndpoint needed?
-//      throw new UnsupportedOperationException();
+        //      // TODO: is updateEndpoint needed?
+        //      throw new UnsupportedOperationException();
     }
 
-//    public void entryAdded(Object key, Object value) {
-//        MapEntry entry = (MapEntry)value;
-//        Endpoint newEp = (Endpoint)entry.getValue();
-//        if (!isLocal(entry)) {
-//            logger.info(id + " Remote endpoint added: " + entry.getValue());
-//            newEp.setRemote(true);
-//        }
-//        ((RuntimeEndpoint) newEp).bind(registry, this);
-//        for (EndpointListener listener : listeners) {
-//            listener.endpointAdded(newEp);
-//        }
-//    }
-//
-//    public void entryRemoved(Object key, Object value) {
-//        MapEntry entry = (MapEntry)value;
-//        if (!isLocal(entry)) {
-//            logger.info(id + " Remote endpoint removed: " + entry.getValue());
-//        }
-//        Endpoint oldEp = (Endpoint)entry.getValue();
-//        for (EndpointListener listener : listeners) {
-//            listener.endpointRemoved(oldEp);
-//        }
-//    }
-//
-//    public void entryUpdated(Object key, Object oldValue, Object newValue) {
-//        MapEntry oldEntry = (MapEntry)oldValue;
-//        MapEntry newEntry = (MapEntry)newValue;
-//        if (!isLocal(newEntry)) {
-//            logger.info(id + " Remote endpoint updated: " + newEntry.getValue());
-//        }
-//        Endpoint oldEp = (Endpoint)oldEntry.getValue();
-//        Endpoint newEp = (Endpoint)newEntry.getValue();
-//        ((RuntimeEndpoint) newEp).bind(registry, this);
-//        for (EndpointListener listener : listeners) {
-//            listener.endpointUpdated(oldEp, newEp);
-//        }
-//    }
+    public void entryAdded(EntryEvent<String, Endpoint> event) {
+        entryAdded(event.getKey(), event.getValue());
+    }
+
+    public void entryEvicted(EntryEvent<String, Endpoint> event) {
+        // Should not happen
+    }
+
+    public void entryRemoved(EntryEvent<String, Endpoint> event) {
+        entryRemoved(event.getKey(), event.getValue());
+    }
+
+    public void entryUpdated(EntryEvent<String, Endpoint> event) {
+        entryUpdated(event.getKey(), null, event.getValue());
+    }
+
+    public void entryAdded(Object key, Object value) {
+        Endpoint newEp = (Endpoint)value;
+        if (!isLocal(newEp)) {
+            logger.info(" Remote endpoint added: " + newEp);
+            newEp.setRemote(true);
+        }
+        ((RuntimeEndpoint)newEp).bind(registry, this);
+        for (EndpointListener listener : listeners) {
+            listener.endpointAdded(newEp);
+        }
+    }
+
+    public void entryRemoved(Object key, Object value) {
+        Endpoint oldEp = (Endpoint)value;
+        if (!isLocal(oldEp)) {
+            logger.info(" Remote endpoint removed: " + value);
+        }
+        ((RuntimeEndpoint) oldEp).bind(registry, this);
+        for (EndpointListener listener : listeners) {
+            listener.endpointRemoved(oldEp);
+        }
+    }
+
+    public void entryUpdated(Object key, Object oldValue, Object newValue) {
+        Endpoint oldEp = (Endpoint)oldValue;
+        Endpoint newEp = (Endpoint)newValue;
+        if (!isLocal(newEp)) {
+            logger.info(" Remote endpoint updated: " + newEp);
+        }
+        ((RuntimeEndpoint)newEp).bind(registry, this);
+        for (EndpointListener listener : listeners) {
+            listener.endpointUpdated(oldEp, newEp);
+        }
+    }
+
+    public void memberAdded(MembershipEvent event) {
+    }
+
+    public void memberRemoved(MembershipEvent event) {
+    }
 
 }

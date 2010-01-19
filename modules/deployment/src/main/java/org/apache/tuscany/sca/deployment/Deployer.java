@@ -42,6 +42,7 @@ import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
 import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.LifeCycleListener;
+import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
@@ -186,14 +187,8 @@ public interface Deployer extends LifeCycleListener {
      */
     ExtensionPointRegistry getExtensionPointRegistry();
     
-    /* 
-     * @see org.apache.tuscany.sca.core.LifeCycleListener#start()
+    /**
+     * Get the system definitions   
      */
-    void start();
-
-    /* 
-     * @see org.apache.tuscany.sca.core.LifeCycleListener#stop()
-     */
-    void stop();
-    
+    Definitions getSystemDefinitions();  
 }

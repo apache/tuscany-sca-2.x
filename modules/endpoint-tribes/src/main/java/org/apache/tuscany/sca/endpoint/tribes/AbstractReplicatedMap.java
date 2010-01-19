@@ -708,7 +708,7 @@ public abstract class AbstractReplicatedMap extends MapStore implements RpcCallb
                     // [rfeng] Change the behavior to replicate to all nodes
                     if (entry.isPrimary() && self.equals(entry.getPrimary())) {
                         try {
-                            Member[] backup = publishEntryInfo(entry.getKey(), entry.getValue(), entry.getBackupNodes());
+                            Member[] backup = publishEntryInfo(entry.getKey(), entry.getValue());
                             entry.setBackupNodes(backup);
                             entry.setPrimary(self);
                         } catch (ChannelException x) {
@@ -768,7 +768,7 @@ public abstract class AbstractReplicatedMap extends MapStore implements RpcCallb
                 if (log.isDebugEnabled())
                     log.debug("[1] Primary choosing a new backup");
                 try {
-                    Member[] backup = publishEntryInfo(entry.getKey(), entry.getValue(), entry.getBackupNodes());
+                    Member[] backup = publishEntryInfo(entry.getKey(), entry.getValue());
                     entry.setBackupNodes(backup);
                     entry.setPrimary(channel.getLocalMember(false));
                 } catch (ChannelException x) {
@@ -798,7 +798,7 @@ public abstract class AbstractReplicatedMap extends MapStore implements RpcCallb
                     entry.setPrimary(channel.getLocalMember(false));
                     entry.setBackup(false);
                     entry.setProxy(false);
-                    Member[] backup = publishEntryInfo(entry.getKey(), entry.getValue(), entry.getBackupNodes());
+                    Member[] backup = publishEntryInfo(entry.getKey(), entry.getValue());
                     entry.setBackupNodes(backup);
                     if (mapOwner != null)
                         mapOwner.objectMadePrimay(entry.getKey(), entry.getValue());
@@ -833,7 +833,7 @@ public abstract class AbstractReplicatedMap extends MapStore implements RpcCallb
         return members[node];
     }
 
-    protected abstract Member[] publishEntryInfo(Object key, Object value, Member[] backupNodes) throws ChannelException;
+    protected abstract Member[] publishEntryInfo(Object key, Object value) throws ChannelException;
 
     public void heartbeat() {
         try {
@@ -916,7 +916,7 @@ public abstract class AbstractReplicatedMap extends MapStore implements RpcCallb
                 }
                 if (entry.isBackup()) {
                     //select a new backup node
-                    backup = publishEntryInfo(key, entry.getValue(), entry.getBackupNodes());
+                    backup = publishEntryInfo(key, entry.getValue());
                 } else if (entry.isProxy()) {
                     //invalidate the previous primary
                     msg =
@@ -997,7 +997,7 @@ public abstract class AbstractReplicatedMap extends MapStore implements RpcCallb
             old = remove(key);
         try {
             if (notify) {
-                Member[] backup = publishEntryInfo(key, value, entry.getBackupNodes());
+                Member[] backup = publishEntryInfo(key, value);
                 entry.setBackupNodes(backup);
             }
         } catch (ChannelException x) {

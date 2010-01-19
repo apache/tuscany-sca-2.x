@@ -27,6 +27,12 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
+import org.apache.tuscany.sca.definitions.Definitions;
+import org.apache.tuscany.sca.deployment.Deployer;
+import org.apache.tuscany.sca.policy.BindingType;
+import org.apache.tuscany.sca.policy.Intent;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
@@ -73,10 +79,28 @@ public class RemoteServiceAdminImpl implements RemoteServiceAdmin, ManagedServic
         importer.start();
         Hashtable<String, Object> props = new Hashtable<String, Object>();
         props.put(RemoteConstants.REMOTE_CONFIGS_SUPPORTED, new String[] {"org.osgi.sca"});
+        
+        ExtensionPointRegistry registry = exporter.getExtensionPointRegistry();
+        UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
+        Deployer deployer = utilities.getUtility(Deployer.class);
+        Definitions definitions = deployer.getSystemDefinitions();
+
+        String[] intents = new String[definitions.getIntents().size()];
+        int i = 0;
+        for (Intent intent : definitions.getIntents()) {
+            intents[i++] = intent.toString();
+        }
+
+        String[] bindingTypes = new String[definitions.getBindingTypes().size()];
+        i = 0;
+        for (BindingType bindingType : definitions.getBindingTypes()) {
+            bindingTypes[i++] = bindingType.getType().toString();
+        }
+        
         // FIXME: We should ask SCA domain for the supported intents
-        props.put(RemoteConstants.REMOTE_INTENTS_SUPPORTED, new String[] {});
+        props.put(RemoteConstants.REMOTE_INTENTS_SUPPORTED, intents);
         // FIXME: We should ask SCA domain for the supported binding types
-        props.put("org.osgi.sca.binding.types", new String[] {});
+        props.put("org.osgi.sca.binding.types", bindingTypes);
         registration = context.registerService(RemoteServiceAdmin.class.getName(), this, props);
         
         props = new Hashtable<String, Object>();

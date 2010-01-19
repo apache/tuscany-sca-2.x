@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.endpoint.tribes;
 
+import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,109 +29,141 @@ import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.runtime.EndpointListener;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.junit.Assert;
-import org.junit.Ignore;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 // Ignore so its not run in the build yet till its working
-@Ignore
-public class MultiRegTestCase {
+public class MultiRegTestCase implements EndpointListener {
+    private static ExtensionPointRegistry extensionPoints;
+    private static AssemblyFactory assemblyFactory;
+    private static SCABindingFactory scaBindingFactory;
 
-//    @Test
-//    public void testTwoNodesMultiCast() throws InterruptedException {
-//        DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
-//        FactoryExtensionPoint factories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
-//        AssemblyFactory assemblyFactory = factories.getFactory(AssemblyFactory.class);
-//
-//        ReplicatedEndpointRegistry reg1 = new ReplicatedEndpointRegistry(extensionPoints, null, "foo", "bar");
-//        reg1.start();
-//
-//        Endpoint ep1 = assemblyFactory.createEndpoint();
-//        Component comp = assemblyFactory.createComponent();
-//        ep1.setComponent(comp);
-//        ep1.setService(assemblyFactory.createComponentService());
-//        Binding b = new SCABindingFactoryImpl().createSCABinding();
-//        ep1.setBinding(b);
-//        ep1.setURI("ep1uri");
-//        reg1.addEndpoint(ep1);
-//
-//        Endpoint ep1p = reg1.getEndpoint("ep1uri");
-//        Assert.assertNotNull(ep1p);
-//        Assert.assertEquals("ep1uri", ep1p.getURI());
-//
-//        ReplicatedEndpointRegistry reg2 = new ReplicatedEndpointRegistry(extensionPoints, null, "foo", "bar");
-//        reg2.start();
-//        Thread.sleep(5000);
-//
-//        Endpoint ep1p2 = reg2.getEndpoint("ep1uri");
-//        Assert.assertNotNull(ep1p2);
-//        Assert.assertEquals("ep1uri", ep1p2.getURI());
-//
-//        reg1.stop();
-//        reg2.stop();
-//    }
+    @BeforeClass
+    public static void init() {
+        extensionPoints = new DefaultExtensionPointRegistry();
+        FactoryExtensionPoint factories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
+        assemblyFactory = factories.getFactory(AssemblyFactory.class);
+        scaBindingFactory = factories.getFactory(SCABindingFactory.class);
+    }
 
     @Test
-    public void testTwoNodesStaticNoMultiCast() throws InterruptedException {
-        DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
-        FactoryExtensionPoint factories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
-        AssemblyFactory assemblyFactory = factories.getFactory(AssemblyFactory.class);
+    public void testReplication() throws Exception {
+        RuntimeEndpoint ep1 = createEndpoint("ep1uri");
+
+        String host = InetAddress.getLocalHost().getHostAddress();
+        String bind = null; // "9.65.158.31";
+        String port1 = "8085";
+        String port2 = "8086";
+        String port3 = "8087";
+        String range = "1";
 
         Map<String, String> attrs1 = new HashMap<String, String>();
-        attrs1.put("nomcast", "true");
-        attrs1.put("routes", "9.167.197.91:4001 9.167.197.91:4002");
+        // attrs1.put("nomcast", "true");
+        attrs1.put("bind", bind);
+        attrs1.put("receiverPort", port1);
+        attrs1.put("receiverAutoBind", range);
+        // attrs1.put("routes", host + ":" + port2 + " " + host + ":" + port3);
         ReplicatedEndpointRegistry reg1 = new ReplicatedEndpointRegistry(extensionPoints, attrs1, "foo", "bar");
+        reg1.addListener(this);
         reg1.start();
 
-        Endpoint ep1 = assemblyFactory.createEndpoint();
-        Component comp = assemblyFactory.createComponent();
-        ep1.setComponent(comp);
-        ep1.setService(assemblyFactory.createComponentService());
-        Binding b = factories.getFactory(SCABindingFactory.class).createSCABinding();
-        ep1.setBinding(b);
-        ep1.setURI("ep1uri");
-        reg1.addEndpoint(ep1);
-
-        Endpoint ep1p = reg1.getEndpoint("ep1uri");
-        Assert.assertNotNull(ep1p);
-        Assert.assertEquals("ep1uri", ep1p.getURI());
-
         Map<String, String> attrs2 = new HashMap<String, String>();
-        attrs2.put("nomcast", "true");
-        attrs2.put("routes", "9.167.197.91:4000");
+        // attrs2.put("nomcast", "true");
+        attrs1.put("bind", bind);
+        attrs2.put("receiverPort", port2);
+        attrs2.put("receiverAutoBind", range);
+        // attrs2.put("routes", host + ":"+port1);
         ReplicatedEndpointRegistry reg2 = new ReplicatedEndpointRegistry(extensionPoints, attrs2, "foo", "bar");
+        reg2.addListener(this);
         reg2.start();
-        
-        System.out.println("wait");
-        Thread.sleep(10000);
-        System.out.println("run");
-
-        Endpoint ep1p2 = reg2.getEndpoint("ep1uri");
-        Assert.assertNotNull(ep1p2);
-        Assert.assertEquals("ep1uri", ep1p2.getURI());
 
         Map<String, String> attrs3 = new HashMap<String, String>();
-        attrs3.put("nomcast", "true");
-        attrs3.put("routes", "9.167.197.91:4000");
+        // attrs3.put("nomcast", "true");
+        attrs1.put("bind", bind);
+        attrs3.put("receiverPort", port3);
+        attrs3.put("receiverAutoBind", range);
+        // attrs3.put("routes", host + ":"+port1);
         ReplicatedEndpointRegistry reg3 = new ReplicatedEndpointRegistry(extensionPoints, attrs3, "foo", "bar");
+        reg3.addListener(this);
         reg3.start();
-        
-        System.out.println("wait");
-        Thread.sleep(5000);
-        System.out.println("run");
 
-        Endpoint ep1p3 = reg3.getEndpoint("ep1uri");
-        Assert.assertNotNull(ep1p3);
-        Assert.assertEquals("ep1uri", ep1p3.getURI());
+        ep1.bind(extensionPoints, reg1);
+        reg1.addEndpoint(ep1);
+        assertExists(reg1, "ep1uri");
+        assertExists(reg2, "ep1uri");
+        assertExists(reg3, "ep1uri");
 
+        RuntimeEndpoint ep2 = createEndpoint("ep2uri");
+        ep2.bind(extensionPoints, reg2);
+        reg2.addEndpoint(ep2);
+        assertExists(reg2, "ep2uri");
+        assertExists(reg1, "ep2uri");
+        assertExists(reg3, "ep2uri");
+
+        reg1.stop();
+        Thread.sleep(6000);
+        Assert.assertNull(reg2.getEndpoint("ep1uri"));
+        Assert.assertNull(reg3.getEndpoint("ep1uri"));
+        assertExists(reg2, "ep2uri");
+        assertExists(reg3, "ep2uri");
         
-        System.out.println("wait2");
-        Thread.sleep(5000);
-        System.out.println("end");
+        reg1.start();
+        ep1.bind(extensionPoints, reg1);
+        reg1.addEndpoint(ep1);
+        assertExists(reg1, "ep1uri");
+        assertExists(reg2, "ep1uri");
+        assertExists(reg3, "ep1uri");
+        
         reg1.stop();
         reg2.stop();
         reg3.stop();
+        System.out.println(); // closed
+    }
+
+    private Endpoint assertExists(ReplicatedEndpointRegistry reg, String uri) throws InterruptedException {
+        Endpoint ep = null;
+        int count = 0;
+        while (ep == null && count < 15) {
+            ep = reg.getEndpoint(uri);
+            Thread.sleep(1000);
+            count++;
+            System.out.println(reg + ": tries=" + count);
+        }
+        Assert.assertNotNull(ep);
+        Assert.assertEquals(uri, ep.getURI());
+        return ep;
+    }
+
+    private RuntimeEndpoint createEndpoint(String uri) {
+        RuntimeEndpoint ep = (RuntimeEndpoint) assemblyFactory.createEndpoint();
+        Component comp = assemblyFactory.createComponent();
+        ep.setComponent(comp);
+        ep.setService(assemblyFactory.createComponentService());
+        Binding b = scaBindingFactory.createSCABinding();
+        ep.setBinding(b);
+        ep.setURI(uri);
+        return ep;
+    }
+    
+    private void print(String prefix, Endpoint ep) {
+        System.out.println(prefix + ": "+ep);
+    }
+
+    public void endpointAdded(Endpoint endpoint) {
+        print("Added", endpoint);
+    }
+
+    public void endpointRemoved(Endpoint endpoint) {
+        print("Removed", endpoint);
+    }
+
+    public void endpointUpdated(Endpoint oldEndpoint, Endpoint newEndpoint) {
+        print("Updated", newEndpoint);
     }
 
 }

@@ -69,6 +69,30 @@ public class EndpointHelper {
         if (serviceID != null) {
             props.put(RemoteConstants.ENDPOINT_SERVICE_ID, Long.parseLong(serviceID));
         }
+
+        // FIXME: [rfeng] We need to calculate the intents supported by this endpoint
+        /*
+        QName bindingTypeName = endpoint.getBinding().getType();
+        Definitions definitions = null;
+        if(definitions!=null) {
+        for(BindingType bindingType: definitions.getBindingTypes()) {
+            if(bindingType.getType().equals(bindingTypeName)) {
+                bindingType.getAlwaysProvidedIntents();
+            }
+        }
+        */
+        
+        String intents = (String)props.get(RemoteConstants.SERVICE_EXPORTED_INTENTS);
+        String extraIntents = (String)props.get(RemoteConstants.SERVICE_EXPORTED_INTENTS_EXTRA);
+        if (intents == null) {
+            intents = "";
+        }
+        if (extraIntents != null) {
+            intents = intents + " " + extraIntents;
+        }
+
+        props.put(RemoteConstants.SERVICE_INTENTS, intents.trim());
+        
         props.put(RemoteConstants.ENDPOINT_ID, endpoint.getURI());
         // FIXME: [rfeng] How to pass in the remote service id from the endpoint XML
         props.put(RemoteConstants.SERVICE_IMPORTED_CONFIGS, new String[] {"org.osgi.sca"});

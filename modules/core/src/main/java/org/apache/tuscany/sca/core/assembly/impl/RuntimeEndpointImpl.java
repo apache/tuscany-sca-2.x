@@ -508,8 +508,12 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
                     bind(compositeContext);
                 }
             }
-            RuntimeEndpointImpl ep = (RuntimeEndpointImpl)serializer.readEndpoint(xml);
-            copyFrom(ep);
+            if (serializer != null) {
+                RuntimeEndpointImpl ep = (RuntimeEndpointImpl)serializer.readEndpoint(xml);
+                copyFrom(ep);
+            } else {
+                // FIXME: [rfeng] What should we do here?
+            }
         }
         super.resolve();
     }
