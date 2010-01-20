@@ -570,6 +570,15 @@
 
         <profile>
            <id>fast</id>
+            <modules>
+                <module>modules</module>
+                <module>samples</module>
+                <module>itest</module>
+                <module>features</module>
+                <module>shades</module>
+                <module>distribution</module>
+                <module>archetypes</module>
+            </modules>
            <build>
               <plugins>
                 <plugin>
