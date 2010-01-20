@@ -22,7 +22,6 @@ package org.apache.tuscany.sca.client.rmi;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
@@ -43,11 +42,11 @@ public class SCAClientFactoryImpl extends SCAClientFactory {
     private EndpointRegistry endpointRegistry;
     private ExtensionPointRegistry extensionsRegistry;
     
-    public SCAClientFactoryImpl() throws URISyntaxException {
-        super(new URI(Node.DEFAULT_DOMAIN_URI));
+    public SCAClientFactoryImpl() throws NoSuchDomainException {
+        super(URI.create(Node.DEFAULT_DOMAIN_URI));
     }    
 
-    public SCAClientFactoryImpl(URI domainURI) {
+    public SCAClientFactoryImpl(URI domainURI) throws NoSuchDomainException {
         super(domainURI);
         NodeImpl node = (NodeImpl)NodeFactory.newInstance().createNode(domainURI);
         if (node.getExtensionPoints() == null) {
