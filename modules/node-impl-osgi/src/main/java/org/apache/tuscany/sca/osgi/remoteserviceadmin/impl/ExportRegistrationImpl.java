@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.osgi.remoteserviceadmin.impl;
 
-import org.apache.tuscany.sca.node.Node;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.remoteserviceadmin.EndpointDescription;
 import org.osgi.service.remoteserviceadmin.ExportReference;
@@ -29,8 +28,7 @@ import org.osgi.service.remoteserviceadmin.ExportRegistration;
  * Implementation of {@link ExportRegistration}
  */
 public class ExportRegistrationImpl implements ExportRegistration {
-    private Node node;
-    private ExportReference exportReference;
+    private ExportReferenceImpl exportReference;
     private Throwable exception;
 
     /**
@@ -38,13 +36,9 @@ public class ExportRegistrationImpl implements ExportRegistration {
      * @param endpointDescription
      * @param exception
      */
-    public ExportRegistrationImpl(Node node,
-                                  ServiceReference exportedService,
-                                  EndpointDescription endpointDescription,
-                                  Throwable exception) {
+    public ExportRegistrationImpl(ExportReferenceImpl exportReference, Throwable exception) {
         super();
-        this.node = node;
-        this.exportReference = new ExportReferenceImpl(exportedService, endpointDescription);
+        this.exportReference = exportReference;
         this.exception = exception;
     }
 
@@ -52,20 +46,19 @@ public class ExportRegistrationImpl implements ExportRegistration {
      * @param exportedService
      * @param endpointDescription
      */
-    public ExportRegistrationImpl(Node node, ServiceReference exportedService, EndpointDescription endpointDescription) {
-        this(node, exportedService, endpointDescription, null);
+    public ExportRegistrationImpl(ExportReferenceImpl exportReference) {
+        this(exportReference, null);
     }
 
     /**
      * @see org.osgi.remoteserviceadmin.ExportRegistration#close()
      */
     public void close() {
-        if (node != null) {
-            node.stop();
-            node = null;
+        if (exportReference != null) {
+            exportReference.unregister();
         }
         exception = null;
-        exportReference = new ExportReferenceImpl(null, null);
+        exportReference = null;
     }
 
     public ServiceReference getExportedService() {
@@ -78,10 +71,6 @@ public class ExportRegistrationImpl implements ExportRegistration {
 
     public Throwable getException() {
         return exception;
-    }
-
-    public Node getNode() {
-        return node;
     }
 
     public ExportReference getExportReference() throws IllegalStateException {

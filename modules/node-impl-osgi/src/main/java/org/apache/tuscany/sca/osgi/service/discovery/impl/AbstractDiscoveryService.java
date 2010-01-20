@@ -64,7 +64,7 @@ public abstract class AbstractDiscoveryService implements Discovery, LifeCycleLi
     private Map<String, List<EndpointListener>> filtersToListeners = new HashMap<String, List<EndpointListener>>();
     // this is effectively a set which allows for multiple service descriptions with the
     // same interface name but different properties and takes care of itself with respect to concurrency
-    protected Map<EndpointDescription, Bundle> servicesInfo = new ConcurrentHashMap<EndpointDescription, Bundle>();
+    protected Map<EndpointDescription, Bundle> endpointDescriptions = new ConcurrentHashMap<EndpointDescription, Bundle>();
     private Map<EndpointListener, Collection<String>> listenersToFilters =
         new HashMap<EndpointListener, Collection<String>>();
     private ServiceTracker trackerTracker;
@@ -176,7 +176,7 @@ public abstract class AbstractDiscoveryService implements Discovery, LifeCycleLi
         }
 
         if (logger.isLoggable(Level.FINE)) {
-            if (servicesInfo.size() > 0) {
+            if (endpointDescriptions.size() > 0) {
                 logger.fine("search for matches to trigger callbacks with delta: " + deltaInterest);
             } else {
                 logger.fine("nothing to search for matches to trigger callbacks with delta: " + deltaInterest);
@@ -185,7 +185,7 @@ public abstract class AbstractDiscoveryService implements Discovery, LifeCycleLi
         Iterator<String> i = deltaInterest.iterator();
         while (i.hasNext()) {
             String next = i.next();
-            for (EndpointDescription sd : servicesInfo.keySet()) {
+            for (EndpointDescription sd : endpointDescriptions.keySet()) {
                 triggerCallbacks(listener, next, sd, ADDED);
             }
         }
@@ -267,7 +267,7 @@ public abstract class AbstractDiscoveryService implements Discovery, LifeCycleLi
         return collection;
     }
 
-    protected void endpointChanged(EndpointDescription sd, int type) {
+    protected synchronized void endpointChanged(EndpointDescription sd, int type) {
         for (Map.Entry<EndpointListener, Collection<String>> entry : listenersToFilters.entrySet()) {
             for (String filter : entry.getValue()) {
                 if (filterMatches(filter, sd)) {

@@ -21,9 +21,6 @@ package org.apache.tuscany.sca.osgi.remoteserviceadmin.impl;
 
 import static org.apache.tuscany.sca.assembly.Base.SCA11_TUSCANY_NS;
 import static org.apache.tuscany.sca.implementation.osgi.OSGiProperty.SCA_BINDINGS;
-import static org.apache.tuscany.sca.implementation.osgi.OSGiProperty.SERVICE_EXPORTED_INTENTS;
-import static org.apache.tuscany.sca.implementation.osgi.OSGiProperty.SERVICE_EXPORTED_INTENTS_EXTRA;
-import static org.apache.tuscany.sca.implementation.osgi.OSGiProperty.SERVICE_EXPORTED_INTERFACES;
 import static org.apache.tuscany.sca.osgi.remoteserviceadmin.impl.OSGiHelper.getStringArray;
 import static org.osgi.framework.Constants.OBJECTCLASS;
 import static org.osgi.framework.Constants.SERVICE_ID;
@@ -77,9 +74,9 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.remoteserviceadmin.EndpointDescription;
+import org.osgi.service.remoteserviceadmin.RemoteConstants;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
@@ -128,7 +125,6 @@ public class EndpointIntrospector {
         super();
         // this.context = context;
         this.discoveryTracker = discoveryTracker;
-        // this.registry = registry;
         this.factories = registry.getExtensionPoint(FactoryExtensionPoint.class);
         this.modelResolvers = registry.getExtensionPoint(ModelResolverExtensionPoint.class);
 //        this.compositeProcessor =
@@ -192,10 +188,10 @@ public class EndpointIntrospector {
                 }
             }
             for (Map.Entry<String, Object> p : props.entrySet()) {
-                if (Constants.OBJECTCLASS.equalsIgnoreCase(p.getKey())) {
-                    throw new IllegalArgumentException(Constants.OBJECTCLASS + " property cannot be overridden.");
-                } else if (Constants.SERVICE_ID.equalsIgnoreCase(p.getKey())) {
-                    throw new IllegalArgumentException(Constants.SERVICE_ID + " property cannot be overridden.");
+                if (OBJECTCLASS.equalsIgnoreCase(p.getKey())) {
+                    throw new IllegalArgumentException(OBJECTCLASS + " property cannot be overridden.");
+                } else if (SERVICE_ID.equalsIgnoreCase(p.getKey())) {
+                    throw new IllegalArgumentException(SERVICE_ID + " property cannot be overridden.");
                 }
                 String key = nameMap.get(p.getKey().toLowerCase());
                 if (key != null) {
@@ -238,11 +234,12 @@ public class EndpointIntrospector {
     public Contribution introspect(ServiceReference reference, Map<String, Object> props) throws Exception {
         Bundle bundle = reference.getBundle();
         Map<String, Object> properties = getProperties(reference, props);
+        Collection<OSGiProperty> osgiProps = implementationFactory.createOSGiProperties(reference);
         Long sid = (Long)reference.getProperty(SERVICE_ID);
 
-        String[] requiredIntents = getStringArray(properties.get(SERVICE_EXPORTED_INTENTS));
+        String[] requiredIntents = getStringArray(properties.get(RemoteConstants.SERVICE_EXPORTED_INTENTS));
         List<Intent> intents = getIntents(requiredIntents);
-        String[] requiredIntentsExtra = getStringArray(properties.get(SERVICE_EXPORTED_INTENTS_EXTRA));
+        String[] requiredIntentsExtra = getStringArray(properties.get(RemoteConstants.SERVICE_EXPORTED_INTENTS_EXTRA));
         List<Intent> extraIntents = getIntents(requiredIntentsExtra);
         Set<Intent> allIntents = new HashSet<Intent>(intents);
         allIntents.addAll(extraIntents);
@@ -250,7 +247,7 @@ public class EndpointIntrospector {
         String[] bindingNames = getStringArray(properties.get(SCA_BINDINGS));
         Collection<Binding> bindings = loadBindings(bindingNames);
 
-        String[] remoteInterfaces = getStringArray(reference.getProperty(SERVICE_EXPORTED_INTERFACES));
+        String[] remoteInterfaces = getStringArray(reference.getProperty(RemoteConstants.SERVICE_EXPORTED_INTERFACES));
         if (remoteInterfaces == null || remoteInterfaces.length > 0 && "*".equals(remoteInterfaces[0])) {
             remoteInterfaces = getStringArray(reference.getProperty(OBJECTCLASS));
         } else {
@@ -263,7 +260,7 @@ public class EndpointIntrospector {
             }
         }
 
-        Contribution contribution = generateContribution(bundle, sid, remoteInterfaces, bindings, allIntents);
+        Contribution contribution = generateContribution(bundle, sid, remoteInterfaces, bindings, allIntents, osgiProps);
         return contribution;
     }
 
@@ -282,7 +279,8 @@ public class EndpointIntrospector {
                                               Long sid,
                                               String[] remoteInterfaces,
                                               Collection<Binding> bindings,
-                                              Set<Intent> allIntents) throws ClassNotFoundException,
+                                              Set<Intent> allIntents,
+                                              Collection<OSGiProperty> osgiProps) throws ClassNotFoundException,
         InvalidInterfaceException {
         String id = "osgi.service." + UUID.randomUUID();
         Composite composite = assemblyFactory.createComposite();
@@ -311,12 +309,13 @@ public class EndpointIntrospector {
             service.setName(name);
             service.setInterfaceContract(interfaceContract);
 
-            service.getExtensions().add(serviceID);
-
             implementation.getServices().add(service);
 
             ComponentService componentService = assemblyFactory.createComponentService();
             componentService.setName(service.getName());
+            componentService.getExtensions().add(serviceID);
+            componentService.getExtensions().addAll(osgiProps);
+
             component.getServices().add(componentService);
             componentService.setService(service);
         }
@@ -355,28 +354,31 @@ public class EndpointIntrospector {
         Collection<String> interfaces = Collections.emptyList();
         Collection<Intent> intents = Collections.emptyList();
         Endpoint ep = (Endpoint)endpoint.getProperties().get(Endpoint.class.getName());
+        Collection<OSGiProperty> osgiProps = implementationFactory.createOSGiProperties(endpoint.getProperties());
         if (ep != null) {
             bindings = Collections.singletonList(ep.getBinding());
             interfaces = Collections.singletonList(((JavaInterface)ep.getComponentServiceInterfaceContract().getInterface()).getName());
-            intents = ep.getRequiredIntents();
+            // FIXME: [rfeng] We need to build the in-memory composite so that intents are calculated at the ep level
+            intents = ep.getService().getRequiredIntents();
         } else {
             Map<String, Object> properties = endpoint.getProperties();
             interfaces = endpoint.getInterfaces();
-            String[] requiredIntents = getStringArray(properties.get(SERVICE_EXPORTED_INTENTS));
+            String[] requiredIntents = getStringArray(properties.get(RemoteConstants.SERVICE_INTENTS));
             intents = getIntents(requiredIntents);
 
             String[] bindingNames = getStringArray(properties.get(SCA_BINDINGS));
             bindings = loadBindings(bindingNames);
         }
 
-        Contribution contribution = generateContribution(bundle, interfaces, bindings, intents);
+        Contribution contribution = generateContribution(bundle, interfaces, bindings, intents, osgiProps);
         return contribution;
     }
 
     private Contribution generateContribution(Bundle bundle,
                                               Collection<String> remoteInterfaces,
                                               Collection<Binding> bindings,
-                                              Collection<Intent> intents) throws ClassNotFoundException,
+                                              Collection<Intent> intents,
+                                              Collection<OSGiProperty> osgiProps) throws ClassNotFoundException,
         InvalidInterfaceException, ContributionResolveException {
         String id = "osgi.reference." + UUID.randomUUID();
         Composite composite = assemblyFactory.createComposite();
@@ -406,6 +408,7 @@ public class EndpointIntrospector {
 
             ComponentReference componentReference = assemblyFactory.createComponentReference();
             componentReference.setName(reference.getName());
+            componentReference.getExtensions().addAll(osgiProps);
             component.getReferences().add(componentReference);
             componentReference.setReference(reference);
             componentReference.setWiredByImpl(true);

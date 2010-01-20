@@ -294,7 +294,7 @@ public class ComponentPolicyBuilderImpl {
                 if (resolved != null) {
                     intents.add(resolved);
                 } else {
-                    warning(context.getMonitor(), "IntentNotFound", subject, i);
+                    error(context.getMonitor(), "IntentNotFound", subject, i);
                     // Intent cannot be resolved
                 }
             }

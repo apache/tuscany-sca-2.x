@@ -19,23 +19,28 @@
 
 package org.apache.tuscany.sca.osgi.remoteserviceadmin.impl;
 
+import org.apache.tuscany.sca.node.Node;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.remoteserviceadmin.EndpointDescription;
 import org.osgi.service.remoteserviceadmin.ExportReference;
+import org.osgi.service.remoteserviceadmin.ExportRegistration;
 
 /**
  * 
  */
 public class ExportReferenceImpl implements ExportReference {
+    private Node node;
     private final ServiceReference exportedService;
     private final EndpointDescription endpointDescription;
+    private int count;
 
     /**
      * @param exportedService
      * @param endpointDescription
      */
-    public ExportReferenceImpl(ServiceReference exportedService, EndpointDescription endpointDescription) {
+    public ExportReferenceImpl(Node node, ServiceReference exportedService, EndpointDescription endpointDescription) {
         super();
+        this.node = node;
         this.exportedService = exportedService;
         this.endpointDescription = endpointDescription;
     }
@@ -47,6 +52,22 @@ public class ExportReferenceImpl implements ExportReference {
     public EndpointDescription getExportedEndpoint() {
         return endpointDescription;
     }
+    
+    public synchronized ExportRegistration register() {
+        count++;
+        return new ExportRegistrationImpl(this);
+    }
 
+    public synchronized void unregister() {
+        if (count > 0) {
+            count--;
+        }
+        if (count == 0) {
+            if (node != null) {
+                node.stop();
+                node = null;
+            }
+        }
+    }
 
 }

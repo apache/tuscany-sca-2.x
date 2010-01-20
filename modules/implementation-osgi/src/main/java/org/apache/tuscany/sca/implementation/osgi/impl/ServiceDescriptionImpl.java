@@ -46,6 +46,6 @@ public class ServiceDescriptionImpl implements ServiceDescription {
     }
 
     public String toString() {
-        return "service-description: " + properties;
+        return "endpoint-description: " + properties;
     }
 }

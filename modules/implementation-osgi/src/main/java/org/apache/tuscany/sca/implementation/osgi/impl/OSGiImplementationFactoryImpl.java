@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.implementation.osgi.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.implementation.osgi.OSGiImplementation;
@@ -112,5 +113,13 @@ public class OSGiImplementationFactoryImpl implements OSGiImplementationFactory 
         }
         return props;
     }        
-    
+
+    public Collection<OSGiProperty> createOSGiProperties(Map<String, Object> properties) {
+        List<OSGiProperty> props = new ArrayList<OSGiProperty>();
+        for (Map.Entry<String, Object> e : properties.entrySet()) {
+            OSGiProperty prop = createOSGiProperty(e.getKey(), e.getValue());
+            props.add(prop);
+        }
+        return props;
+    }
 }

@@ -20,11 +20,14 @@
 package org.apache.tuscany.sca.osgi.remoteserviceadmin.impl;
 
 import java.util.Collections;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.contribution.Contribution;
-import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
 import org.apache.tuscany.sca.node.impl.NodeImpl;
 import org.osgi.framework.Bundle;
@@ -37,6 +40,9 @@ import org.osgi.service.remoteserviceadmin.ImportRegistration;
  * Watching and exporting OSGi services 
  */
 public class OSGiServiceImporter extends AbstractOSGiServiceHandler {
+    private final static Logger logger = Logger.getLogger(OSGiServiceImporter.class.getName());
+    private Map<EndpointDescription, ImportReferenceImpl> importReferences =
+        new ConcurrentHashMap<EndpointDescription, ImportReferenceImpl>();
 
     /**
      * @param context
@@ -49,6 +55,11 @@ public class OSGiServiceImporter extends AbstractOSGiServiceHandler {
 
     public void start() {
         // Defer init() to importService()
+    }
+
+    public void stop() {
+        importReferences.clear();
+        super.stop();
     }
 
     public ImportRegistration importService(Bundle bundle, EndpointDescription endpointDescription) {
@@ -77,19 +88,27 @@ public class OSGiServiceImporter extends AbstractOSGiServiceHandler {
                         + "#reference("
                         + componentReference.getName()
                         + ")");
-                return new ImportRegistrationImpl(node, serviceReference, endpointDescription);
+                synchronized (this) {
+                    ImportReferenceImpl importReference = importReferences.get(endpointDescription);
+                    if (importReference == null) {
+                        importReference = new ImportReferenceImpl(node, serviceReference, endpointDescription);
+                        importReferences.put(endpointDescription, importReference);
+                    }
+                    return importReference.register();
+                }
             } else {
                 return null;
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+            logger.log(Level.SEVERE, e.getMessage(), e);
+            return new ImportRegistrationImpl(null, e);
         }
     }
 
     public void unimportService(ImportRegistration importRegistration) {
-        Node node = (Node)importRegistration.getImportReference().getImportedService().getProperty("sca.node");
-        node.stop();
+        if (importRegistration != null) {
+            importRegistration.close();
+        }
     }
 
 }

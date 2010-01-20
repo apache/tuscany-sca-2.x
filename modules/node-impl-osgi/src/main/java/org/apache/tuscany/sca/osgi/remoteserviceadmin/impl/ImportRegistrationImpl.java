@@ -19,9 +19,6 @@
 
 package org.apache.tuscany.sca.osgi.remoteserviceadmin.impl;
 
-import org.apache.tuscany.sca.node.Node;
-import org.osgi.framework.ServiceReference;
-import org.osgi.service.remoteserviceadmin.EndpointDescription;
 import org.osgi.service.remoteserviceadmin.ImportReference;
 import org.osgi.service.remoteserviceadmin.ImportRegistration;
 
@@ -29,53 +26,41 @@ import org.osgi.service.remoteserviceadmin.ImportRegistration;
  * 
  */
 public class ImportRegistrationImpl implements ImportRegistration {
-    private Node node;
-    private ImportReference importReference;
+    private ImportReferenceImpl importReference;
     private Throwable exception;
+
+    /**
+     * @param importReference
+     */
+    public ImportRegistrationImpl(ImportReferenceImpl importReference) {
+        super();
+        this.importReference = importReference;
+    }
 
     /**
      * @param exportedService
      * @param endpointDescription
      * @param exception
      */
-    public ImportRegistrationImpl(Node node,
-                                  ServiceReference importedService,
-                                  EndpointDescription endpointDescription,
-                                  Throwable exception) {
+    public ImportRegistrationImpl(ImportReferenceImpl importReference, Throwable exception) {
         super();
-        this.node = node;
-        this.importReference = new ImportReferenceImpl(importedService, endpointDescription);
+        this.importReference = importReference;
         this.exception = exception;
-    }
-
-    /**
-     * @param exportedService
-     * @param endpointDescription
-     */
-    public ImportRegistrationImpl(Node node, ServiceReference importedService, EndpointDescription endpointDescription) {
-        super();
-        this.node = node;
-        this.importReference = new ImportReferenceImpl(importedService, endpointDescription);
     }
 
     /**
      * @see org.osgi.remoteserviceadmin.ImportRegistration#close()
      */
     public void close() {
-        if (node != null) {
-            node.stop();
-            node = null;
+        if (importReference != null) {
+            importReference.unregister();
         }
         exception = null;
-        importReference = new ImportReferenceImpl(null, null);
+        importReference = null;
     }
 
     public Throwable getException() {
         return exception;
-    }
-
-    public Node getNode() {
-        return node;
     }
 
     public ImportReference getImportReference() {

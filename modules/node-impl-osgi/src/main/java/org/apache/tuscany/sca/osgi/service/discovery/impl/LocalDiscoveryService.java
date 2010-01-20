@@ -105,7 +105,7 @@ public class LocalDiscoveryService extends AbstractDiscoveryService implements B
     }
 
     private void removeServicesDeclaredInBundle(Bundle bundle) {
-        for (Iterator<Map.Entry<EndpointDescription, Bundle>> i = servicesInfo.entrySet().iterator(); i.hasNext();) {
+        for (Iterator<Map.Entry<EndpointDescription, Bundle>> i = endpointDescriptions.entrySet().iterator(); i.hasNext();) {
             Entry<EndpointDescription, Bundle> entry = i.next();
             if (entry.getValue().equals(bundle)) {
                 serviceDescriptionRemoved(entry.getKey());
@@ -163,7 +163,7 @@ public class LocalDiscoveryService extends AbstractDiscoveryService implements B
         for (ServiceDescriptions sds : extender.getRemoteServiceDescriptions()) {
             for (ServiceDescription sd : sds) {
                 EndpointDescription sed = createEndpointDescription(sd);
-                servicesInfo.put(sed, bundle);
+                endpointDescriptions.put(sed, bundle);
                 serviceDescriptionAdded(sed);
             }
         }

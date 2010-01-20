@@ -65,7 +65,7 @@ public class DomainDiscoveryService extends AbstractDiscoveryService implements 
         thread.start();
     }
 
-    private void startEndpointRegistry() {
+    private synchronized void startEndpointRegistry() {
         // The following code forced the start() of the domain registry in absense of services
         String domainRegistry = context.getProperty("org.osgi.sca.domain.registry");
         if (domainRegistry == null) {
@@ -80,7 +80,7 @@ public class DomainDiscoveryService extends AbstractDiscoveryService implements 
         }
     }
 
-    public void endpointAdded(Endpoint endpoint) {
+    public synchronized void endpointAdded(Endpoint endpoint) {
         Implementation impl = endpoint.getComponent().getImplementation();
         if (!(impl instanceof OSGiImplementation)) {
             return;
@@ -94,59 +94,35 @@ public class DomainDiscoveryService extends AbstractDiscoveryService implements 
             bundleContext = bundle != null ? bundle.getBundleContext() : null;
         }
 
-        /*
-        if (!endpoint.isRemote()) {
-            Interface intf = endpoint.getService().getInterfaceContract().getInterface();
-            JavaInterface javaInterface = (JavaInterface)intf;
-            // String filter = getOSGiFilter(provider.getOSGiProperties(service));
-            // FIXME: What is the filter?
-            String filter = "(!(sca.reference=*))";
-            // "(sca.service=" + component.getURI() + "#service-name\\(" + service.getName() + "\\))";
-            ServiceReference ref = null;
-            try {
-                ref = bundleContext.getServiceReferences(javaInterface.getName(), filter)[0];
-            } catch (InvalidSyntaxException e) {
-                // Ignore
-            }
-            if (ref != null) {
-
-            }
-        } else
-        */ 
-        {
             // Notify the endpoint listeners
             EndpointDescription description = createEndpointDescription(bundleContext, endpoint);
             // Set the owning bundle to runtime bundle to avoid NPE
-            servicesInfo.put(description, context.getBundle());
+            endpointDescriptions.put(description, context.getBundle());
             endpointChanged(description, ADDED);
-        }
     }
 
-    public void endpointRemoved(Endpoint endpoint) {
-        /*
-        if (!endpoint.isRemote()) {
-            // export services
-        } else
-        */ 
-        {
+    public synchronized void endpointRemoved(Endpoint endpoint) {
             EndpointDescription description = createEndpointDescription(context, endpoint);
-            servicesInfo.remove(description);
+            endpointDescriptions.remove(description);
             endpointChanged(description, REMOVED);
-        }
     }
 
-    public void endpointUpdated(Endpoint oldEndpoint, Endpoint newEndpoint) {
+    public synchronized void endpointUpdated(Endpoint oldEndpoint, Endpoint newEndpoint) {
         // FIXME: This is a quick and dirty way for the update
         endpointRemoved(oldEndpoint);
         endpointAdded(newEndpoint);
     }
 
     public void stop() {
-        domainRegistryFactory.removeListener(this);
-        if (endpointRegistry instanceof LifeCycleListener) {
-            ((LifeCycleListener)endpointRegistry).stop();
+        if (domainRegistryFactory != null) {
+            domainRegistryFactory.removeListener(this);
+            if (endpointRegistry instanceof LifeCycleListener) {
+                ((LifeCycleListener)endpointRegistry).stop();
+            }
+            domainRegistryFactory = null;
+            endpointRegistry = null;
+            super.stop();
         }
-        super.stop();
     }
     
     @Override

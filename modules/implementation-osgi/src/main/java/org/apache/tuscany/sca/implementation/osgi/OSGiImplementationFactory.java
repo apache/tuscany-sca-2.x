@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.implementation.osgi;
 
 import java.util.Collection;
+import java.util.Map;
 
 import org.osgi.framework.ServiceReference;
 
@@ -41,4 +42,6 @@ public interface OSGiImplementationFactory {
     OSGiProperty createOSGiProperty(String name, String stringValue, String type);
     OSGiProperty createOSGiProperty(String name, Object value);
     Collection<OSGiProperty> createOSGiProperties(ServiceReference reference); 
+    Collection<OSGiProperty> createOSGiProperties(Map<String, Object> properties);
+
 }

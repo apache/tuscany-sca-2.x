@@ -94,11 +94,15 @@ public class OSGiPropertyProcessor implements StAXArtifactProcessor<OSGiProperty
     }
 
     public void write(OSGiProperty model, XMLStreamWriter writer, ProcessorContext context) throws ContributionWriteException, XMLStreamException {
-        writer.writeStartElement(PROPERTY_QNAME.getNamespaceURI(), PROPERTY_QNAME.getLocalPart());
-        writer.writeAttribute(NAME, model.getName());
-        writer.writeAttribute(TYPE, model.getType());
-        writer.writeCharacters(model.getStringValue());
-        writer.writeEndElement();
+        if (model.getStringValue() != null) {
+            writer.writeStartElement(PROPERTY_QNAME.getNamespaceURI(), PROPERTY_QNAME.getLocalPart());
+            writer.writeAttribute(NAME, model.getName());
+            if (model.getType() != null) {
+                writer.writeAttribute(TYPE, model.getType());
+            }
+            writer.writeAttribute(VALUE, model.getStringValue());
+            writer.writeEndElement();
+        }
     }
 
     public Class<OSGiProperty> getModelType() {

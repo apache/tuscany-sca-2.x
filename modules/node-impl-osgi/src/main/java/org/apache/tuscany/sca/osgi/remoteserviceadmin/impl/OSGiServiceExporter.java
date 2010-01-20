@@ -31,6 +31,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentService;
@@ -48,6 +51,10 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
  * Watching and exporting OSGi services 
  */
 public class OSGiServiceExporter extends AbstractOSGiServiceHandler implements ServiceTrackerCustomizer {
+    private final static Logger logger = Logger.getLogger(OSGiServiceExporter.class.getName());
+
+    private Map<EndpointDescription, ExportReferenceImpl> exportReferences =
+        new ConcurrentHashMap<EndpointDescription, ExportReferenceImpl>();
 
     /**
      * @param context
@@ -60,6 +67,11 @@ public class OSGiServiceExporter extends AbstractOSGiServiceHandler implements S
 
     public void start() {
         init();
+    }
+
+    public void stop() {
+        exportReferences.clear();
+        super.stop();
     }
 
     public Object addingService(ServiceReference reference) {
@@ -97,17 +109,23 @@ public class OSGiServiceExporter extends AbstractOSGiServiceHandler implements S
                 List<ExportRegistration> exportedServices = new ArrayList<ExportRegistration>();
                 for (Endpoint endpoint : service.getEndpoints()) {
                     EndpointDescription endpointDescription = createEndpointDescription(context, endpoint);
-                    ExportRegistration exportRegistration =
-                        new ExportRegistrationImpl(node, reference, endpointDescription);
-                    exportedServices.add(exportRegistration);
+                    synchronized (this) {
+                        ExportReferenceImpl exportReference = exportReferences.get(endpointDescription);
+                        if (exportReference == null) {
+                            exportReference = new ExportReferenceImpl(node, reference, endpointDescription);
+                        }
+                        ExportRegistration exportRegistration = exportReference.register();
+                        exportedServices.add(exportRegistration);
+                    }
                 }
                 return exportedServices;
             } else {
                 return null;
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+            logger.log(Level.SEVERE, e.getMessage(), e);
+            ExportRegistration exportRegistration = new ExportRegistrationImpl(null, e);
+            return Collections.singletonList(exportRegistration);
         }
     }
 
@@ -118,7 +136,7 @@ public class OSGiServiceExporter extends AbstractOSGiServiceHandler implements S
 
     public void removedService(ServiceReference reference, Object service) {
         List<ExportRegistration> exportedServices = (List<ExportRegistration>)service;
-        for(ExportRegistration exportRegistration: exportedServices) {
+        for (ExportRegistration exportRegistration : exportedServices) {
             exportRegistration.close();
         }
     }

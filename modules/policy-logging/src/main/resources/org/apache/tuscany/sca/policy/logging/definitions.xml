@@ -18,13 +18,21 @@
  * under the License.    
 -->
 <definitions xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-            targetNamespace="http://tuscany.apache.org/xmlns/sca/1.1">
+            targetNamespace="http://tuscany.apache.org/xmlns/sca/1.1"
+            xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1">
 
-	<!-- Policy Intents Defined by the SCA Runtime -->
+	<!-- Policy Intents Defined by the Tuscany Runtime -->
 	<intent name="logging" constrains="implementation binding">
 		<description>
 			All messages to and from this implementation must be logged
 		</description>
 	</intent>
+    
+    <!-- Policy Intents Defined by the Tuscany Runtime -->
+    <intent name="noLogging" constrains="implementation binding" excludes="tuscany:logging">
+        <description>
+            All messages to and from this implementation must be logged
+        </description>
+    </intent>
     
 </definitions>

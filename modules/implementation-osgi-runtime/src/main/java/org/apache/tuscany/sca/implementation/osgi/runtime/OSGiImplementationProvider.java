@@ -25,6 +25,10 @@ import static org.apache.tuscany.sca.implementation.osgi.OSGiProperty.SERVICE_IM
 import static org.apache.tuscany.sca.implementation.osgi.OSGiProperty.SERVICE_IMPORTED_CONFIGS;
 import static org.osgi.framework.Constants.SERVICE_RANKING;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
@@ -54,6 +58,7 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceException;
 import org.osgi.framework.ServiceFactory;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
@@ -130,7 +135,7 @@ public class OSGiImplementationProvider implements ImplementationProvider {
                 registrations.add(registration);
             }
         }
-        
+
         // Set the OSGi service reference properties into the SCA service
         for (ComponentService service : component.getServices()) {
             // The properties might have been set by the export service
@@ -229,6 +234,66 @@ public class OSGiImplementationProvider implements ImplementationProvider {
         return implementation;
     }
 
+    /**
+     * A proxy invocation handler that wrap exceptions into OSGi ServiceException
+     */
+    private static class InvocationHandlerDelegate implements InvocationHandler {
+        private final Object instance;
+
+        public InvocationHandlerDelegate(Object instance) {
+            super();
+            this.instance = instance;
+        }
+
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+            if (!Proxy.isProxyClass(instance.getClass())) {
+                Method m = instance.getClass().getMethod(method.getName(), method.getParameterTypes());
+                try {
+                    return m.invoke(instance, args);
+                } catch (InvocationTargetException e) {
+                    wrapException(method, e.getCause());
+                    return null;
+                }
+            } else {
+                InvocationHandler handler = Proxy.getInvocationHandler(instance);
+                try {
+                    return handler.invoke(instance, method, args);
+                } catch (Throwable e) {
+                    wrapException(method, e);
+                    return null;
+                }
+            }
+        }
+
+        private void wrapException(Method method, Throwable e) throws Throwable {
+            for (Class<?> exType : method.getExceptionTypes()) {
+                if (exType.isInstance(e)) {
+                    throw e;
+                }
+            }
+            throw new ServiceException(e.getMessage(), ServiceException.REMOTE, e);
+        }
+
+        /**
+         * A utility to cast the object to the given interface. If the class for the object
+         * is loaded by a different classloader, a proxy will be created.
+         *
+         * @param <T>
+         * @param obj
+         * @param cls
+         * @return
+         */
+        static <T> T cast(Object obj, Class<T> cls) {
+            if (obj == null) {
+                return null;
+            } else {
+                return cls.cast(Proxy.newProxyInstance(cls.getClassLoader(),
+                                                       new Class<?>[] {cls},
+                                                       new InvocationHandlerDelegate(obj)));
+            }
+        }
+    }
+
     public class OSGiServiceFactory implements ServiceFactory {
         private RuntimeEndpointReference epr;
         private String interfaceName;
@@ -240,22 +305,26 @@ public class OSGiImplementationProvider implements ImplementationProvider {
         public OSGiServiceFactory(String interfaceName, EndpointReference epr) {
             super();
             this.interfaceName = interfaceName;
-            this.epr = (RuntimeEndpointReference) epr;
+            this.epr = (RuntimeEndpointReference)epr;
         }
 
         public Object getService(Bundle bundle, ServiceRegistration registration) {
-            Class<?> interfaceClass = null;
             try {
-                interfaceClass = bundle.loadClass(interfaceName);
-            } catch (ClassNotFoundException e) {
-                return null;
+                Class<?> interfaceClass = null;
+                try {
+                    interfaceClass = bundle.loadClass(interfaceName);
+                } catch (ClassNotFoundException e) {
+                    return null;
+                }
+                ProxyFactory proxyService = proxyFactoryExtensionPoint.getInterfaceProxyFactory();
+                if (!interfaceClass.isInterface()) {
+                    proxyService = proxyFactoryExtensionPoint.getClassProxyFactory();
+                }
+                Object proxy = proxyService.createProxy(interfaceClass, epr);
+                return InvocationHandlerDelegate.cast(proxy, interfaceClass);
+            } catch (Throwable e) {
+                throw new ServiceException(e.getMessage(), ServiceException.FACTORY_EXCEPTION, e);
             }
-            ProxyFactory proxyService = proxyFactoryExtensionPoint.getInterfaceProxyFactory();
-            if (!interfaceClass.isInterface()) {
-                proxyService = proxyFactoryExtensionPoint.getClassProxyFactory();
-            }
-            Object proxy = proxyService.createProxy(interfaceClass, epr);
-            return proxy;
         }
 
         public void ungetService(Bundle bundle, ServiceRegistration registration, Object service) {

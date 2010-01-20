@@ -459,7 +459,9 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
      */
     public boolean isOutOfDate(EndpointRegistry endpointRegistry, EndpointReference endpointReference) {
         Endpoint te = endpointReference.getTargetEndpoint();
-        if (te!= null && !te.isUnresolved() && te.getURI()!= null) {
+        if (te != null && !te.isUnresolved()
+            && te.getURI() != null
+            && endpointReference.getStatus() != EndpointReference.RESOLVED_BINDING) {
             List<Endpoint> endpoints = endpointRegistry.findEndpoint(endpointReference);
             return ! endpoints.contains(endpointReference.getTargetEndpoint());
         }

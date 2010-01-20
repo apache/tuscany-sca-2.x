@@ -19,24 +19,28 @@
 
 package org.apache.tuscany.sca.osgi.remoteserviceadmin.impl;
 
+import org.apache.tuscany.sca.node.Node;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.remoteserviceadmin.EndpointDescription;
 import org.osgi.service.remoteserviceadmin.ImportReference;
+import org.osgi.service.remoteserviceadmin.ImportRegistration;
 
 /**
- * 
+ * Implementation of ImportReference. It keeps a reference count of ImportRegistrations
  */
 public class ImportReferenceImpl implements ImportReference {
-
+    private Node node;
     private final ServiceReference importedService;
     private final EndpointDescription endpointDescription;
+    private int count = 0;
 
     /**
      * @param exportedService
      * @param endpointDescription
      */
-    public ImportReferenceImpl(ServiceReference importedService, EndpointDescription endpointDescription) {
+    public ImportReferenceImpl(Node node, ServiceReference importedService, EndpointDescription endpointDescription) {
         super();
+        this.node = node;
         this.importedService = importedService;
         this.endpointDescription = endpointDescription;
     }
@@ -48,5 +52,21 @@ public class ImportReferenceImpl implements ImportReference {
     public EndpointDescription getImportedEndpoint() {
         return endpointDescription;
     }
+    
+    public synchronized ImportRegistration register() {
+        count++;
+        return new ImportRegistrationImpl(this);
+    }
 
+    public synchronized void unregister() {
+        if (count > 0) {
+            count--;
+        }
+        if (count == 0) {
+            if (node != null) {
+                node.stop();
+                node = null;
+            }
+        }
+    }
 }
