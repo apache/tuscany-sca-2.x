@@ -40,6 +40,7 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
+import org.oasisopen.sca.NoSuchDomainException;
 
 import sun.org.mozilla.javascript.internal.Context;
 import sun.org.mozilla.javascript.internal.Function;
@@ -493,7 +494,11 @@ public class ScriptEngine extends ScriptableObject implements Runnable{
         oldClassLoader = Thread.currentThread().getContextClassLoader();
 //        Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
 
-        tuscany = new SCAClientFactoryImpl(URI.create("tuscany:foo"));        
+        try {
+            tuscany = new SCAClientFactoryImpl(URI.create("tuscany:foo"));
+        } catch (NoSuchDomainException e) {
+            throw new RuntimeException(e);
+        }        
         
 //        // Obtain and start the Tuscany runtime
 //        try {
