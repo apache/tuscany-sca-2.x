@@ -33,6 +33,7 @@ public interface EndpointRegistry {
 
     Endpoint getEndpoint(String uri);
     void updateEndpoint(String uri, Endpoint endpoint);
+    List<Endpoint> findEndpoint(String uri);
     List<Endpoint> findEndpoint(EndpointReference endpointReference);
     List<Endpoint> getEndpoints();
 

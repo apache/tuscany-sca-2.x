@@ -19,14 +19,22 @@
 
 package org.apache.tuscany.sca.client.impl;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
 import java.net.URI;
 import java.util.List;
 
+import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.node.Node;
-import org.apache.tuscany.sca.node.NodeFinder;
+import org.apache.tuscany.sca.node.NodeFactory;
+import org.apache.tuscany.sca.node.impl.NodeFactoryImpl;
+import org.apache.tuscany.sca.node.impl.NodeImpl;
+import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
+import org.apache.tuscany.sca.runtime.EndpointRegistry;
 import org.oasisopen.sca.NoSuchDomainException;
 import org.oasisopen.sca.NoSuchServiceException;
-import org.oasisopen.sca.ServiceUnavailableException;
 import org.oasisopen.sca.client.SCAClientFactory;
 import org.oasisopen.sca.client.SCAClientFactoryFinder;
 
@@ -35,30 +43,59 @@ public class SCAClientFactoryImpl extends SCAClientFactory {
     public static void setSCAClientFactoryFinder(SCAClientFactoryFinder factoryFinder) {
         SCAClientFactory.factoryFinder = factoryFinder;
     }
+
+    private ExtensionPointRegistry extensionsRegistry;
+    private EndpointRegistry endpointRegistry;
+    private NodeFactoryImpl nodeFactory;
     
     public SCAClientFactoryImpl(URI domainURI) throws NoSuchDomainException {
         super(domainURI);
+        
+        this.nodeFactory = (NodeFactoryImpl)NodeFactory.getInstance();
+        this.extensionsRegistry = nodeFactory.getExtensionPoints();
+        UtilityExtensionPoint utilities = extensionsRegistry.getExtensionPoint(UtilityExtensionPoint.class);
+        DomainRegistryFactory domainRegistryFactory = utilities.getUtility(DomainRegistryFactory.class);
+        this.endpointRegistry = domainRegistryFactory.getEndpointRegistry(null, getDomainURI().toString()); // TODO: shouldnt use null for reg uri
+        // TODO: if there is not an existing endpoint registry for the domain URI the
+        //       this should create an endpoint registry client for the remote domain (eg hazelcast native client)
+        //       for now just throw an exception 
+        if (endpointRegistry == null) {
+            throw new NoSuchDomainException(domainURI.toString());
+        }
     }   
     
     @Override
     public <T> T getService(Class<T> serviceInterface, String serviceName) throws NoSuchServiceException, NoSuchDomainException {
-        URI domainURI = getDomainURI();
-        if (domainURI == null) {
-            domainURI = URI.create(Node.DEFAULT_DOMAIN_URI);
+        
+        List<Endpoint> eps = endpointRegistry.findEndpoint(serviceName);
+        if (eps == null || eps.size() < 1) {
+            throw new NoSuchServiceException(serviceName);
         }
-        List<Node> nodes = NodeFinder.getNodes(domainURI);
-        if (nodes == null || nodes.size() < 1) {
-            throw new NoSuchDomainException(domainURI.toString());
+        Endpoint endpoint = eps.get(0); // TODO: what should be done with multiple endpoints?
+
+        Node localNode = findLocalNode(endpoint);
+        if (localNode != null) {
+            return localNode.getService(serviceInterface, serviceName);
         }
 
-        for (Node n : nodes) {
-            try {
-                return n.getService(serviceInterface, serviceName);
-            } catch(ServiceUnavailableException e) {
-                // Ingore and continue
+        InvocationHandler handler = new SCAClientProxyHandler(serviceName, extensionsRegistry, endpointRegistry);
+        return (T)Proxy.newProxyInstance(serviceInterface.getClassLoader(), new Class[] {serviceInterface}, handler);
+    }
+
+    private Node findLocalNode(Endpoint endpoint) {
+        for (Node node : nodeFactory.getNodes().values()) {
+            if (((NodeImpl)node).getServiceEndpoints().contains(endpoint)) {
+                return node;
             }
         }
+        return null;
+    }
 
-        throw new NoSuchServiceException(serviceName);
+    private String getDomainName() {
+        // TODO: parse to extract just the domain name from the uri
+        if (getDomainURI().getHost() != null) {
+            return getDomainURI().getHost();
+        }
+        return getDomainURI().toString(); 
     }
 }

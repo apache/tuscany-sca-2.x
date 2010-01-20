@@ -19,6 +19,8 @@
 
 package test.scaclient;
 
+import java.net.URI;
+
 import itest.HelloworldService;
 import junit.framework.TestCase;
 
@@ -26,6 +28,8 @@ import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
+import org.oasisopen.sca.NoSuchDomainException;
+import org.oasisopen.sca.NoSuchServiceException;
 import org.oasisopen.sca.client.SCAClientFactory;
 
 /**
@@ -40,16 +44,14 @@ public class SCAClientTestCase extends TestCase {
     @Override
     protected void setUp() throws Exception {
         String location = ContributionLocationHelper.getContributionLocation(HelloworldService.class);
-        node = NodeFactory.newInstance().createNode("Helloworld.composite", new Contribution("test", "./target/classes"));      
+        node = NodeFactory.getInstance().createNode("Helloworld.composite", new Contribution("test", "./target/classes"));      
         System.out.println("SCA Node API ClassLoader: " + node.getClass().getClassLoader());
         node.start();
     }
 
-    public void testInvoke() throws Exception {
-        // At the moment the SCAClientFactory assumes that only one domain is active
-        // in a JVM. So we pass in null for the domain name and get what we're given
+    public void testInvoke() throws NoSuchServiceException, NoSuchDomainException {
         HelloworldService service =
-            SCAClientFactory.newInstance(null).getService(HelloworldService.class, "HelloworldComponent");
+            SCAClientFactory.newInstance(URI.create("http://tuscany.apache.org/sca/1.1/domains/default")).getService(HelloworldService.class, "HelloworldComponent");
         String result = service.sayHello("petra");
         assertEquals("Hello petra", result);
         System.out.println("Result from SCAClient call = " + result);

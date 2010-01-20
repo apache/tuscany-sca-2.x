@@ -197,32 +197,31 @@ public class HazelcastEndpointRegistry implements EndpointRegistry, LifeCycleLis
     }
 
     public List<Endpoint> findEndpoint(EndpointReference endpointReference) {
-        List<Endpoint> foundEndpoints = new ArrayList<Endpoint>();
-
         logger.fine("Find endpoint for reference - " + endpointReference);
-
         if (endpointReference.getReference() != null) {
             Endpoint targetEndpoint = endpointReference.getTargetEndpoint();
-
-            for (Object v : map.values()) {
-                Endpoint endpoint = (Endpoint)v;
-                logger.fine("Matching against - " + endpoint);
-                if (matches(targetEndpoint.getURI(), endpoint.getURI())) {
-                    if (!isLocal(endpoint)) {
-                        endpoint.setRemote(true);
-                    }
-                    // if (!entry.isPrimary()) {
-                    ((RuntimeEndpoint)endpoint).bind(registry, this);
-                    // }
-                    foundEndpoints.add(endpoint);
-                    logger.fine("Found endpoint with matching service  - " + endpoint);
+            return findEndpoint(targetEndpoint.getURI());
+        }
+        return new ArrayList<Endpoint>();
+    }
+    
+    public List<Endpoint> findEndpoint(String uri) {
+        List<Endpoint> foundEndpoints = new ArrayList<Endpoint>();
+        for (Object v : map.values()) {
+            Endpoint endpoint = (Endpoint)v;
+            logger.fine("Matching against - " + endpoint);
+            if (matches(uri, endpoint.getURI())) {
+                if (!isLocal(endpoint)) {
+                    endpoint.setRemote(true);
                 }
-                // else the service name doesn't match
+                ((RuntimeEndpoint)endpoint).bind(registry, this);
+                foundEndpoints.add(endpoint);
+                logger.fine("Found endpoint with matching service  - " + endpoint);
             }
         }
-
         return foundEndpoints;
     }
+    
 
     private boolean isLocal(Endpoint endpoint) {
         return localEndpoints.contains(endpoint.getURI());

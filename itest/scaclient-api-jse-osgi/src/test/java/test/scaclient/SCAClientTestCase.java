@@ -19,6 +19,8 @@
 
 package test.scaclient;
 
+import java.net.URI;
+
 import itest.HelloworldService;
 import junit.framework.TestCase;
 
@@ -49,7 +51,7 @@ public class SCAClientTestCase extends TestCase {
         // At the moment the SCAClientFactory assumes that only one domain is active
         // in a JVM. So we pass in null for the domain name and get what we're given
         HelloworldService service =
-            SCAClientFactory.newInstance(null).getService(HelloworldService.class, "HelloworldComponent");
+            SCAClientFactory.newInstance(URI.create("http://tuscany.apache.org/sca/1.1/domains/default")).getService(HelloworldService.class, "HelloworldComponent");
         assertEquals("Hello petra", service.sayHello("petra"));
     }
 

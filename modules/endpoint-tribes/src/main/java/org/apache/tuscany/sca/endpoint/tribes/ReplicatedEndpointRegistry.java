@@ -319,54 +319,60 @@ public class ReplicatedEndpointRegistry implements EndpointRegistry, LifeCycleLi
     }
 
     public List<Endpoint> findEndpoint(EndpointReference endpointReference) {
-        List<Endpoint> foundEndpoints = new ArrayList<Endpoint>();
-
         logger.fine("Find endpoint for reference - " + endpointReference);
 
         if (endpointReference.getReference() != null) {
             Endpoint targetEndpoint = endpointReference.getTargetEndpoint();
-            
-            // in the failure case we repeat the look up after a short
-            // delay to take account of tribes replication delays
-            int repeat = FIND_REPEAT_COUNT;
-            
-            while (repeat > 0){
-                for (Object v : map.values()) {
-                    Endpoint endpoint = (Endpoint)v;
-                    // TODO: implement more complete matching
-                    logger.fine("Matching against - " + endpoint);
-                    if (matches(targetEndpoint.getURI(), endpoint.getURI())) {
-                        MapEntry entry = map.getInternal(endpoint.getURI());
-                        if (!isLocal(entry)) {
-                            endpoint.setRemote(true);
-                        }
-                        // if (!entry.isPrimary()) {
-                        ((RuntimeEndpoint) endpoint).bind(registry, this);
-                        // }
-                        foundEndpoints.add(endpoint);
-                        logger.fine("Found endpoint with matching service  - " + endpoint);
-                        repeat = 0;
-                    } 
-                    // else the service name doesn't match
-                }
-                
-                if (foundEndpoints.size() == 0) {
-                    // the service name doesn't match any endpoints so wait a little and try
-                    // again in case this is caused by tribes synch delays
-                    logger.info("Repeating endpoint reference match - " + endpointReference);
-                    repeat--;
-                    try {
-                        Thread.sleep(1000);
-                    } catch(Exception ex){
-                        // do nothing
-                        repeat=0;
+            return findEndpoint(targetEndpoint.getURI());
+        }
+
+        return new ArrayList<Endpoint>();
+    }
+
+    public List<Endpoint> findEndpoint(String uri) {
+        List<Endpoint> foundEndpoints = new ArrayList<Endpoint>();
+
+        // in the failure case we repeat the look up after a short
+        // delay to take account of tribes replication delays
+        int repeat = FIND_REPEAT_COUNT;
+        
+        while (repeat > 0){
+            for (Object v : map.values()) {
+                Endpoint endpoint = (Endpoint)v;
+                // TODO: implement more complete matching
+                logger.fine("Matching against - " + endpoint);
+                if (matches(uri, endpoint.getURI())) {
+                    MapEntry entry = map.getInternal(endpoint.getURI());
+                    if (!isLocal(entry)) {
+                        endpoint.setRemote(true);
                     }
+                    // if (!entry.isPrimary()) {
+                    ((RuntimeEndpoint) endpoint).bind(registry, this);
+                    // }
+                    foundEndpoints.add(endpoint);
+                    logger.fine("Found endpoint with matching service  - " + endpoint);
+                    repeat = 0;
+                } 
+                // else the service name doesn't match
+            }
+            
+            if (foundEndpoints.size() == 0) {
+                // the service name doesn't match any endpoints so wait a little and try
+                // again in case this is caused by tribes synch delays
+                logger.info("Repeating endpoint reference match - " + uri);
+                repeat--;
+                try {
+                    Thread.sleep(1000);
+                } catch(Exception ex){
+                    // do nothing
+                    repeat=0;
                 }
             }
         }
-        
+
         return foundEndpoints;
     }
+
 
     private boolean isLocal(MapEntry entry) {
         return entry.getPrimary().equals(map.getChannel().getLocalMember(false));

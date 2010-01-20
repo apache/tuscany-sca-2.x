@@ -38,7 +38,7 @@ public class SCAClientTestCase extends TestCase {
 
     @Override
     protected void setUp() throws Exception {
-        node = NodeFactory.newInstance().createNode();
+        node = NodeFactory.getInstance().createNode();
         node.start();
     }
 

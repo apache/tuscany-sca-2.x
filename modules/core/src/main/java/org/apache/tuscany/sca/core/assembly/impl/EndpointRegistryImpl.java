@@ -115,7 +115,7 @@ public class EndpointRegistryImpl implements EndpointRegistry, LifeCycleListener
         return foundEndpoints;
     }
     
-    protected List<Endpoint> findEndpoint(String uri) {
+    public List<Endpoint> findEndpoint(String uri) {
         List<Endpoint> foundEndpoints = new ArrayList<Endpoint>();
         for (Endpoint endpoint : endpoints) {
             if (matches(uri, endpoint.getURI())) {
