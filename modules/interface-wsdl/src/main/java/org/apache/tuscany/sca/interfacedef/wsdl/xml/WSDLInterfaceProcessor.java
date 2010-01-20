@@ -27,6 +27,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.sca.assembly.xml.PolicySubjectProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
@@ -38,6 +39,7 @@ import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
@@ -46,6 +48,7 @@ import org.apache.tuscany.sca.interfacedef.wsdl.WSDLObject;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
+import org.apache.tuscany.sca.policy.PolicyFactory;
 
 /**
  * Handles a <interface.wsdl ... /> element in a SCDL file
@@ -54,8 +57,9 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
 public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfaceContract>, WSDLConstants {
 
     private WSDLFactory wsdlFactory;
-    
     private InterfaceContractMapper interfaceContractMapper;
+    private PolicyFactory policyFactory;
+    private PolicySubjectProcessor policyProcessor;
 
     public WSDLInterfaceProcessor(ExtensionPointRegistry registry) {
         FactoryExtensionPoint modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
@@ -63,6 +67,9 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
             registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(InterfaceContractMapper.class);
         
         this.wsdlFactory = modelFactories.getFactory(WSDLFactory.class);
+        
+        this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
+        this.policyProcessor = new PolicySubjectProcessor(policyFactory);      
     }
     /**
      * Report a warning.
@@ -195,6 +202,9 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
                           ((WSDLInterface)wsdlInterfaceContract.getInterface()).getName().toString(),
                           remotable);
         }
+        
+        // Read intents and policy sets
+        policyProcessor.readPolicies(wsdlInterfaceContract.getInterface(), reader);
             
         // Skip to end element
         while (reader.hasNext()) {
@@ -229,6 +239,8 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
             writer.writeAttribute(WSDLI_NS, WSDL_LOCATION, wsdlInterfaceContract.getLocation());
         }
         
+        policyProcessor.writePolicyAttributes(wsdlInterface, writer);
+        
         writer.writeEndElement();
     }
     
@@ -259,9 +271,12 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
                         // WSDLInterface to the resolver
                         try {
                             wsdlDefinition.setDefinition(portType.getDefinition());
-                            wsdlInterface = wsdlFactory.createWSDLInterface(portType.getElement(), wsdlDefinition, resolver, monitor);
-                            wsdlInterface.setWsdlDefinition(wsdlDefinition);
-                            resolver.addModel(wsdlInterface, context);
+                            WSDLInterface newWSDLInterface = wsdlFactory.createWSDLInterface(portType.getElement(), wsdlDefinition, resolver, monitor);
+                            newWSDLInterface.setWsdlDefinition(wsdlDefinition);
+                            newWSDLInterface.getRequiredIntents().addAll(wsdlInterface.getRequiredIntents());
+                            newWSDLInterface.getPolicySets().addAll(wsdlInterface.getPolicySets());
+                            resolver.addModel(newWSDLInterface, context);
+                            wsdlInterface = newWSDLInterface;
                         } catch (InvalidInterfaceException e) {
                         	ContributionResolveException ce = new ContributionResolveException("Invalid interface when resolving " + 
                         			                                                            portType.toString(), e);

@@ -23,7 +23,7 @@
 	name="Calculator">
 
     <service name="CalculatorService" promote="CalculatorServiceComponent">
-        <interface.java interface="calculator.CalculatorService"/>
+        <interface.java interface="calculator.CalculatorService" requires="calc:intent1" policySets="calc:policySet1" />
     </service>
 
     <component name="CalculatorServiceComponent">

@@ -32,6 +32,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.sca.assembly.xml.PolicySubjectProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
@@ -39,6 +40,7 @@ import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ClassReference;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
@@ -47,6 +49,7 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
+import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.oasisopen.sca.annotation.AllowsPassByReference;
 import org.oasisopen.sca.annotation.Callback;
 import org.oasisopen.sca.annotation.ComponentName;
@@ -68,10 +71,17 @@ import org.oasisopen.sca.annotation.Service;
  */
 public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfaceContract>, JavaConstants {
     private static final String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200912";
-    private JavaInterfaceFactory javaFactory;
     
+    private JavaInterfaceFactory javaFactory;
+    private ExtensionPointRegistry extensionPoints;
+    private PolicyFactory policyFactory;
+    private PolicySubjectProcessor policyProcessor;
 
-    public JavaInterfaceProcessor(FactoryExtensionPoint modelFactories) {
+    public JavaInterfaceProcessor(ExtensionPointRegistry extensionPoints) {
+        this.extensionPoints = extensionPoints;
+        FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
+        this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
+        this.policyProcessor = new PolicySubjectProcessor(policyFactory);
         this.javaFactory = modelFactories.getFactory(JavaInterfaceFactory.class);
     }
     
@@ -142,8 +152,10 @@ public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfa
         if (remotable != null) {
             javaInterfaceContract.getInterface().setRemotable(Boolean.parseBoolean(remotable));
         }
-
         
+        // Read intents and policy sets
+        policyProcessor.readPolicies(javaInterfaceContract.getInterface(), reader);
+
         // Skip to end element
         while (reader.hasNext()) {
             if (reader.next() == END_ELEMENT && INTERFACE_JAVA_QNAME.equals(reader.getName())) {
@@ -167,6 +179,8 @@ public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfa
         if (javaCallbackInterface != null && javaCallbackInterface.getName() != null) {
             writer.writeAttribute(CALLBACK_INTERFACE, javaCallbackInterface.getName());
         }
+        
+        policyProcessor.writePolicyAttributes(javaInterface, writer);
         
         writer.writeEndElement();
     }

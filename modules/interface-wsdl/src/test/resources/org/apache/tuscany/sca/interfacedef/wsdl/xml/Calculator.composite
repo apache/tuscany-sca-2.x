@@ -25,7 +25,7 @@
 
     <service name="CalculatorService" promote="CalculatorServiceComponent">
         <interface.wsdl interface="http://sample/calculator#wsdl.interface(Calculator)"
-        	wsdli:wsdlLocation="http://tempuri.org"/>
+        	wsdli:wsdlLocation="http://tempuri.org" requires="calc:intent1" policySets="calc:policySet1"/>
     </service>
 
     <component name="CalculatorServiceComponent">
