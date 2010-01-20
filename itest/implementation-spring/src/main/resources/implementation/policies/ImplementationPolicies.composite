@@ -39,8 +39,8 @@
         <implementation.java class="calculator.SubtractServiceImpl"/>
     </component>
 
-    <component name="MultiplyServiceComponent">
-        <implementation.java class="calculator.MultiplyServiceImpl" requires="tuscany:jaasAuthentication"/>
+    <component name="MultiplyServiceComponent" requires="tuscany:jaasAuthentication">
+        <implementation.java class="calculator.MultiplyServiceImpl" />
     </component>
 
     <component name="DivideServiceComponent">
