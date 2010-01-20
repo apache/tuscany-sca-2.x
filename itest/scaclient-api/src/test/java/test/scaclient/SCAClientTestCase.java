@@ -21,6 +21,7 @@ package test.scaclient;
 
 import itest.HelloworldService;
 import junit.framework.TestCase;
+import java.net.URI;
 
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
@@ -43,7 +44,7 @@ public class SCAClientTestCase extends TestCase {
 
     public void testInvoke() throws Exception {
         HelloworldService service =
-            SCAClientFactory.newInstance(null).getService(HelloworldService.class, "HelloworldComponent");
+            SCAClientFactory.newInstance(URI.create("http://tuscany.apache.org/sca/1.1/domains/default")).getService(HelloworldService.class, "HelloworldComponent");
         assertEquals("Hello petra", service.sayHello("petra"));
     }
 
