@@ -17,15 +17,15 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<definitions xmlns="http://www.osoa.org/xmlns/sca/1.0"
- 			 targetNamespace="http://www.osoa.org/xmlns/sca/1.0"
-             xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
- 			 xmlns:sca="http://www.osoa.org/xmlns/sca/1.0">
+<definitions xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
+ 			 targetNamespace="http://docs.oasis-open.org/ns/opencsa/sca/200912"
+             xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1"
+ 			 xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912">
 
     <policySet name="JMSPolicySet1"
                provides="priority"
                appliesTo="sca:binding.jms">
-        <intentMap provides="priority" default="medium">
+        <intentMap provides="priority">
             <qualifier name="high">
                 <tuscany:jmsHeader JMSPriority="9"/>
             </qualifier>
@@ -41,7 +41,7 @@
     <policySet name="JMSPolicySet2"
                provides="deliveryMode"
                appliesTo="sca:binding.jms">
-        <intentMap provides="deliveryMode" default="nonPersistent">
+        <intentMap provides="deliveryMode">
             <qualifier name="persistent">
                 <tuscany:jmsHeader JMSDeliveryMode="PERSISTENT"/>
             </qualifier>
@@ -49,6 +49,17 @@
                 <tuscany:jmsHeader JMSDeliveryMode="NON_PERSISTENT"/>
             </qualifier>
         </intentMap>
-    </policySet>    
+    </policySet>   
+    
+    <intent name="priority" constrains="sca:binding" intentType="interaction">
+        <qualifier name="high" default="true"/>
+        <qualifier name="medium"/>
+        <qualifier name="low"/>
+    </intent> 
+    
+    <intent name="deliveryMode" constrains="sca:binding" intentType="interaction">
+        <qualifier name="nonPersistent" default="true"/>
+        <qualifier name="persistent"/>
+    </intent> 
 
 </definitions>

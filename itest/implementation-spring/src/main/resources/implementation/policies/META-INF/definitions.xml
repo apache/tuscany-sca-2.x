@@ -22,19 +22,23 @@
     xmlns:calc="http://calculator">
 
     <!-- PolicySets -->
-    <policySet name="JaasPolicy" provides="tuscany:jaasAuthentication" appliesTo="sca:implementation.java"
-        xmlns="http://www.osoa.org/xmlns/sca/1.0">
+    <!-- 
+    <policySet name="JaasPolicy" provides="tuscany:jaasAuthentication" appliesTo="sca:implementation.java">
         <tuscany:jaasAuthentication>
             <tuscany:configurationName>Calculator</tuscany:configurationName>
             <tuscany:callbackHandler>calculator.security.CalculatorCallbackHandler</tuscany:callbackHandler>
         </tuscany:jaasAuthentication>
     </policySet>
+     -->
 
     <!-- PolicySets -->
-    <policySet name="JDKLoggingPolicy" provides="tuscany:logging" appliesTo="sca:implementation.spring"
-        xmlns="http://www.osoa.org/xmlns/sca/1.0">
+    <!-- 
+    <policySet name="JDKLoggingPolicy" provides="tuscany:logging" appliesTo="sca:implementation.spring">
         <tuscany:jdkLogger name="calculator">
             <logLevel>FINER</logLevel>
         </tuscany:jdkLogger>
     </policySet>
+     -->
+    
+    <intent name="logging" constrains="sca:implementation" intentType="interaction"/>
 </definitions>
