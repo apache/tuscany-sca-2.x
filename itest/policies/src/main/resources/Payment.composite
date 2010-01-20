@@ -37,6 +37,7 @@
 
     <component name="CreditCardPayment">
         <implementation.java class="org.apache.tuscany.sca.itest.policies.impl.CreditCardPaymentImpl" />
+        <service name="CreditCardPayment" requires="tuscany:logging sca:confidentiality.message sca:confidentiality.transport"/>
     </component>
 
     <component name="Customer">
