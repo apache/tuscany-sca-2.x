@@ -33,9 +33,9 @@
     <version>2.0-SNAPSHOT</version>
 
     <scm>
-        <connection>scm:svn:http://svn.apache.org/repos/asf/tuscany/java/sca</connection>
-        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/tuscany/java/sca</developerConnection>
-        <url>http://svn.apache.org/repos/asf/tuscany/java/sca</url>
+        <connection>scm:svn:http://svn.apache.org/repos/asf/tuscany/sca-java-2.x/trunk</connection>
+        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/tuscany/sca-java-2.x/trunk</developerConnection>
+        <url>http://svn.apache.org/repos/asf/tuscany/sca-java-2.x/trunk</url>
     </scm>
 
     <prerequisites>
@@ -836,7 +836,7 @@
                     <artifactId>maven-release-plugin</artifactId>
                     <version>2.0-beta-8</version>
                     <configuration>
-                        <tagBase>https://svn.apache.org/repos/asf/tuscany/tags/java/sca</tagBase>
+                        <tagBase>https://svn.apache.org/repos/asf/tuscany/sca-java-2.x/tags</tagBase>
                         <useReleaseProfile>false</useReleaseProfile>
                         <preparationGoals>clean install</preparationGoals>
                         <goals>deploy</goals>
