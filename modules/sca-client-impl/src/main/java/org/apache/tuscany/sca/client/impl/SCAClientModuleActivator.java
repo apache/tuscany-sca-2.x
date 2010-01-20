@@ -21,26 +21,14 @@ package org.apache.tuscany.sca.client.impl;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
-import org.oasisopen.sca.client.SCAClientFactory;
 
 public class SCAClientModuleActivator implements ModuleActivator {
     
-    private ExtensionPointRegistry registry;
-
     public SCAClientModuleActivator(ExtensionPointRegistry registry) {
-        this.registry = registry;
     }
     
     public void start() { 
-        // look up the SCAClientFactory. We could instantiate one directly here but 
-        // looking it up brings the META-INF/services mechanism into play
-        SCAClientFactory clientFactory = registry.getExtensionPoint(SCAClientFactory.class);  
-        
-        // inject this client factory as the default client factory
-        // so that the SCAClientFactory interface doesn't have to use the
-        // finder to look for it.
-        // TODO - handle multiple domains
-        SCAClientFactoryImpl.setDefaultClientFactory(clientFactory);
+        SCAClientFactoryImpl.setSCAClientFactoryFinder(new SCAClientFactoryFinderImpl());
     }
 
     public void stop() {

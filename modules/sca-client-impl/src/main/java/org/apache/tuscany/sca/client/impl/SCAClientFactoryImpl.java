@@ -20,7 +20,6 @@
 package org.apache.tuscany.sca.client.impl;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 
 import org.apache.tuscany.sca.node.Node;
@@ -29,23 +28,18 @@ import org.oasisopen.sca.NoSuchDomainException;
 import org.oasisopen.sca.NoSuchServiceException;
 import org.oasisopen.sca.ServiceUnavailableException;
 import org.oasisopen.sca.client.SCAClientFactory;
+import org.oasisopen.sca.client.SCAClientFactoryFinder;
 
 public class SCAClientFactoryImpl extends SCAClientFactory {
-    
-    // required when a registry is used to create the factory
-    // need to extend to have domain uri configuration
-    public SCAClientFactoryImpl() throws URISyntaxException {
-        super(new URI(Node.DEFAULT_DOMAIN_URI));
-    }
 
-    public SCAClientFactoryImpl(URI domainURI) {
+    public static void setSCAClientFactoryFinder(SCAClientFactoryFinder factoryFinder) {
+        SCAClientFactory.factoryFinder = factoryFinder;
+    }
+    
+    public SCAClientFactoryImpl(URI domainURI) throws NoSuchDomainException {
         super(domainURI);
     }   
     
-    public static void setDefaultClientFactory(SCAClientFactory clientFactory){
-        defaultFactory = clientFactory;
-    }    
-
     @Override
     public <T> T getService(Class<T> serviceInterface, String serviceName) throws NoSuchServiceException, NoSuchDomainException {
         URI domainURI = getDomainURI();
