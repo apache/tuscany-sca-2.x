@@ -111,6 +111,11 @@ public class WSPolicyProcessor extends BaseStAXArtifactProcessor implements
     private void readPolicyAssertions(WSPolicy wsPolicy, PolicyComponent policyComponent, ProcessorContext context){
         
         // recurse into the policy alternatives
+        // TODO - lots of todos here as this just walks down the neethi hierarchy
+        //        looking for assertions to drive Tuscany processors without
+        //        regard to the policy alternatives. Undecided about whether to 
+        //        commit to prepresenting this hierarchy in Tuscany or whether
+        //        to rely on neethi
         if (policyComponent.getType() != Constants.TYPE_ASSERTION){
             PolicyOperator policyOperator = (PolicyOperator)policyComponent;
             for(Object childComponent : policyOperator.getPolicyComponents()){
@@ -122,7 +127,7 @@ public class WSPolicyProcessor extends BaseStAXArtifactProcessor implements
             try {
                 // TODO - not sure we should keep the neethi model but hack for the
                 //        time being to get Tuscany processors to process the OMElements
-                //        help within the neethi model
+                //        within the neethi model
                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
                 XMLStreamWriter writer = outputFactory.createXMLStreamWriter(outputStream);
                 

@@ -77,13 +77,94 @@ public class WSPolicyBuilder implements PolicyBuilder<Policy> {
     }
 
     public boolean build(EndpointReference endpointReference, Endpoint endpoint, BuilderContext context) {
+        
+        // TODO - neethi doesn't include code for matching ws policy 
+        //        cxf have the class Intersector http://svn.apache.org/repos/asf/cxf/trunk/api/src/main/java/org/apache/cxf/ws/policy/Intersector.java
+        //        but this does its work based on the cxf AssertionBuilders and extension
+        //        registry mechanism. I don't want to commit to that at the moment. 
+        //       
+        //        At the moment we do the simplest top level QName based matching
+               
+        // match EPR policy sets 
+        for (PolicySet eprPolicySet : endpointReference.getPolicySets()){
+            for (PolicySet epPolicySet : endpoint.getPolicySets()){
+                if (!build(eprPolicySet, epPolicySet)){
+                    return false;
+                }
+            }
+        }
+        
+        // match EP policy sets 
+        for (PolicySet epPolicySet : endpoint.getPolicySets()){
+            for (PolicySet eprPolicySet : endpointReference.getPolicySets()){
+                if (!build(epPolicySet, eprPolicySet)){
+                    return false;
+                }
+            }
+        }        
+        
+        return true;
+    }   
+    
+    private boolean build(PolicySet policySet1, PolicySet policySet2){
+        
+        // extract the ws policy expressions out of the policy sets
+        List<PolicyExpression> policyExpressions1 = new ArrayList<PolicyExpression>();
+        List<PolicyExpression> policyExpressions2 = new ArrayList<PolicyExpression>();
+        
+        for (PolicyExpression policyExpression : policySet1.getPolicies()){
+            if (policyExpression.getName().equals(getPolicyType())){
+                policyExpressions1.add(policyExpression);
+            }
+        }
+        
+        for (PolicyExpression policyExpression : policySet2.getPolicies()){
+            if (policyExpression.getName().equals(getPolicyType())){
+                policyExpressions2.add(policyExpression);
+            }
+        }
+        
+        // Match the first set of expressions against the second set
+        for (PolicyExpression policyExpression1 : policyExpressions1){
+            for (PolicyExpression policyExpression2 : policyExpressions2){
+                if (!build((WSPolicy)policyExpression1.getPolicy(), 
+                           (WSPolicy)policyExpression2.getPolicy())){
+                    return false;
+                }
+            }
+        }
+        
+        // TODO set the reference policy set to include an interception of the
+        //      ws policy sets discovered here
+        //      Do we really need to do this?
+        //      The method is called in both directions (reference to service and
+        //      service to reference) so would need to fix that
+        
         return true;
     }
     
-    public PolicyExpression match(EndpointReference endpointReference, Endpoint endpoint, BuilderContext context) {
-        // Get the ws-policy elements from the endpoint reference and endpoint and work out the intersection
+    private boolean build(WSPolicy wsPolicy1, WSPolicy wsPolicy2){
+        // TODO - cheating here as we assume a flat policy structure
+        //        we've read all the policy assertions into Tuscany models
+        //        in the reader (without taking account of alternatives)
+        //        so we just compare those here
+        //        The real implementation of this comparison depends on how
+        //        we decide to represent the ws policy hierarchy
         
-        return null;
-    }    
+        for (Object policyAssertion1 : wsPolicy1.getPolicyAssertions()){
+            boolean matched = false;
+            for (Object policyAssertion2 : wsPolicy2.getPolicyAssertions()){
+                if (policyAssertion1.getClass() == policyAssertion2.getClass()){
+                    matched = true;
+                    break;
+                }
+            }
+            if(!matched){
+                return false;
+            }
+        }
+        
+        return true;
+    }
 
 }
