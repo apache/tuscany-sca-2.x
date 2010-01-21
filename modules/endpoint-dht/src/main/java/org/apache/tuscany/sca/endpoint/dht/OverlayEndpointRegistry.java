@@ -331,4 +331,9 @@ public class OverlayEndpointRegistry implements EndpointRegistry, LifeCycleListe
         return endpointreferences;
     }
 
+    public List<Endpoint> findEndpoint(String uri) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

@@ -189,21 +189,26 @@ public class DistributedRegistry extends AbstractDistributedMap<Endpoint> implem
 
         if (endpointReference.getReference() != null) {
             Endpoint targetEndpoint = endpointReference.getTargetEndpoint();
-            for (Object v : values()) {
-                Endpoint endpoint = (Endpoint)v;
-                // TODO: implement more complete matching
-                logger.fine("Matching against - " + endpoint);
-                if (matches(targetEndpoint.getURI(), endpoint.getURI())) {
-                    // if (!entry.isPrimary()) {
-                    ((RuntimeEndpoint)endpoint).bind(registry, this);
-                    // }
-                    foundEndpoints.add(endpoint);
-                    logger.fine("Found endpoint with matching service  - " + endpoint);
-                }
-                // else the service name doesn't match
-            }
+            String uri = targetEndpoint.getURI();
+            lookup(foundEndpoints, uri);
         }
         return foundEndpoints;
+    }
+
+    private void lookup(List<Endpoint> foundEndpoints, String uri) {
+        for (Object v : values()) {
+            Endpoint endpoint = (Endpoint)v;
+            // TODO: implement more complete matching
+            logger.fine("Matching against - " + endpoint);
+            if (matches(uri, endpoint.getURI())) {
+                // if (!entry.isPrimary()) {
+                ((RuntimeEndpoint)endpoint).bind(registry, this);
+                // }
+                foundEndpoints.add(endpoint);
+                logger.fine("Found endpoint with matching service  - " + endpoint);
+            }
+            // else the service name doesn't match
+        }
     }
 
     public List<EndpointReference> findEndpointReference(Endpoint endpoint) {
@@ -291,6 +296,12 @@ public class DistributedRegistry extends AbstractDistributedMap<Endpoint> implem
 
     public List<EndpointReference> getEndpointReferences() {
         return endpointreferences;
+    }
+
+    public List<Endpoint> findEndpoint(String uri) {
+        List<Endpoint> endpoints = new ArrayList<Endpoint>();
+        lookup(endpoints, uri);
+        return endpoints;
     }
 
 }
