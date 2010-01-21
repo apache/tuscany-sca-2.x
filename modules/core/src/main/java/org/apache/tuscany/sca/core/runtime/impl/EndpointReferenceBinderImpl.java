@@ -367,7 +367,38 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
      *     expresions from a single language
      */
     private boolean haveMatchingPolicy(EndpointReference endpointReference, Endpoint endpoint){
+        /* 
+        423             Some new psuedo code based on the spec
+        424             // if we have intents without policy sets we need to match those at the intent level 
+        425             // before doing policy set matching
+        426     
+        427             If policy set QNames from epr and er match exactly
+        428                return true
+        429     
+        430             if policy set languages at ep are not all the same 
+        431                raise error (probably would have done this earlier)
+        432                should go in policy processor
+        433                how to tell which language is expected by a binding
+        434     
+        435             if policy set languages at epr are not all the same
+        436                raise error (probably would have done this earlier)
+        437                should go in policy processor
+        438                how to tell which language is expected by a binding
+        439     
+        440              if policy set language at ep and epr are not the same
+        441                raise error 
+        442                should be the same binding at both ends so should have same
+        443                languages
+        444     
+        445              find the language specific policy matcher
+        446     
+        447              return languageSpecificMatcher.match(policy sets from epr, policy sets from ep)
+        448              // not sure how a matcher aggregates multiple policy sets to find the intersection. 
+        449              // expect that is language specific 
+        450              */
         
+        return true;
+        /*
         ComponentReference reference = endpointReference.getReference();
         ComponentService service = endpoint.getService();
 
@@ -391,13 +422,12 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
         // if the intent names don't match then the policies won't match
         // TODO - is this a valid check? We used to rely on this in the 
         //        builder. Not sure who added it. Need to review.
-/* TUSCANY-3426 - The build phase doesn't seen to promote the intents properly        
-        Set<Intent> referenceIntentSet = new HashSet<Intent>(reference.getRequiredIntents());
-        Set<Intent> serviceIntentSet = new HashSet<Intent>(service.getRequiredIntents());
-        if (!referenceIntentSet.equals(serviceIntentSet)){
-            return false;
-        }
-*/
+        // TUSCANY-3426 - The build phase doesn't seen to promote the intents properly        
+        // Set<Intent> referenceIntentSet = new HashSet<Intent>(reference.getRequiredIntents());
+        // Set<Intent> serviceIntentSet = new HashSet<Intent>(service.getRequiredIntents());
+        // if (!referenceIntentSet.equals(serviceIntentSet)){
+        //    return false;
+        //}
         
         // If policy set QNames from epr and er match exactly then the reference and 
         // service policies are compatible
@@ -428,6 +458,8 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
         } else {
             return false;
         }
+        
+        */
     }
     
     /**
