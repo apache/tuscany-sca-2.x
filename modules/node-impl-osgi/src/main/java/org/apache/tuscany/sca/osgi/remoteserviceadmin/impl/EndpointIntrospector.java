@@ -26,6 +26,7 @@ import static org.osgi.framework.Constants.OBJECTCLASS;
 import static org.osgi.framework.Constants.SERVICE_ID;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -59,6 +60,8 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
+import org.apache.tuscany.sca.deployment.Deployer;
 import org.apache.tuscany.sca.implementation.osgi.OSGiImplementation;
 import org.apache.tuscany.sca.implementation.osgi.OSGiImplementationFactory;
 import org.apache.tuscany.sca.implementation.osgi.OSGiProperty;
@@ -94,7 +97,7 @@ public class EndpointIntrospector {
     private ModelResolverExtensionPoint modelResolvers;
     // private StAXArtifactProcessor<Composite> compositeProcessor;
     private JavaInterfaceFactory javaInterfaceFactory;
-    // private Deployer deployer;
+    private Deployer deployer;
     private ServiceTracker discoveryTracker;
 
     /**
@@ -134,7 +137,7 @@ public class EndpointIntrospector {
         this.policyFactory = factories.getFactory(PolicyFactory.class);
         this.implementationFactory = factories.getFactory(OSGiImplementationFactory.class);
         this.javaInterfaceFactory = factories.getFactory(JavaInterfaceFactory.class);
-        // this.deployer = registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(Deployer.class);
+        this.deployer = registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(Deployer.class);
     }
 
     private Intent getIntent(String intent) {
@@ -263,6 +266,17 @@ public class EndpointIntrospector {
         Contribution contribution = generateContribution(bundle, sid, remoteInterfaces, bindings, allIntents, osgiProps);
         return contribution;
     }
+    
+    public Contribution loadContribution(Bundle bundle, Composite composite) {
+        try {
+            URL root = bundle.getEntry("/");
+            Contribution contribution = deployer.loadContribution(root.toURI(), root, deployer.createMonitor());
+            deployer.attachDeploymentComposite(contribution, composite, false);
+            return contribution;
+        } catch (Exception e) {
+            throw new ServiceRuntimeException(e);
+        }
+    }
 
     /**
      * Generate a contribution that contains the composite for the exported service
@@ -326,7 +340,7 @@ public class EndpointIntrospector {
         }
 
         // FIXME: Should we scan the owning bundle to create the SCA contribution?
-        Contribution contribution = createContribution(bundle, id, composite);
+        Contribution contribution = loadContribution(bundle, composite);
         return contribution;
     }
 
@@ -419,7 +433,7 @@ public class EndpointIntrospector {
             componentReference.getBindings().addAll(bindings);
         }
 
-        Contribution contribution = createContribution(bundle, id, composite);
+        Contribution contribution = loadContribution(bundle, composite);
         return contribution;
     }
 

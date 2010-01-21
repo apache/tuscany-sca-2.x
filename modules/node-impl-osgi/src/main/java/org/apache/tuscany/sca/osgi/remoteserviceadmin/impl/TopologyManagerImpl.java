@@ -195,7 +195,11 @@ public class TopologyManagerImpl implements ListenerHook, RemoteServiceAdminList
                 Collection<ListenerInfo> listenerInfos = (Collection<ListenerInfo>)listeners;
                 boolean changed = false;
                 for (ListenerInfo l : listenerInfos) {
-                    if (!l.isRemoved() && l.getBundleContext() != context) {
+                    if (l.getBundleContext().getBundle().getBundleId() == 0L || l.getBundleContext() == context) {
+                        // Ignore system and tuscany bundle
+                        continue;
+                    }
+                    if (!l.isRemoved()) {
                         String key = l.getFilter();
                         if (key == null) {
                             // key = "";
@@ -357,6 +361,19 @@ public class TopologyManagerImpl implements ListenerHook, RemoteServiceAdminList
             // Get a listener
             ListenerInfo listener = listeners.iterator().next();
             Bundle bundle = listener.getBundleContext().getBundle();
+            if (bundle.getBundleId() == 0L) {
+                // Skip system bundles
+                continue;
+            }
+            try {
+                Filter filter = listener.getBundleContext().createFilter(matchedFilter);
+                if (!filter.match(new Hashtable<String, Object>(endpoint.getProperties()))) {
+                    continue;
+                }
+            } catch (InvalidSyntaxException ex) {
+                logger.log(Level.SEVERE, ex.getMessage(), ex);
+                continue;
+            }
 
             Map<String, Object> props = new HashMap<String, Object>(endpoint.getProperties());
             props.put(Bundle.class.getName(), bundle);
