@@ -30,6 +30,5 @@ public enum TransactionIntent {
     propagatesTransacton, 
     suspendsTransaction, 
     transactedOneWay, 
-    immediateOneWay,
-    managedSharedTransaction
+    immediateOneWay
 }

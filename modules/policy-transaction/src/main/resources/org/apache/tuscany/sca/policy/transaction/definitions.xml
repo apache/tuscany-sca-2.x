@@ -38,24 +38,20 @@
         <tuscany:transactionPolicy action="REQUIRE_NONE" />
     </policySet>
     
-    <policySet name="TransactedOneWayPolicySet" provides="transactedOneWay" appliesTo="implementation">
+    <policySet name="TransactedOneWayPolicySet" provides="transactedOneWay" appliesTo="binding">
         <tuscany:transactionPolicy action="PROPAGATE" />
     </policySet>    
     
-    <policySet name="ImmediateOneWayPolicySet" provides="immediateOneWay" appliesTo="implementation">
+    <policySet name="ImmediateOneWayPolicySet" provides="immediateOneWay" appliesTo="binding">
         <tuscany:transactionPolicy action="SUSPEND" />
     </policySet>    
 
-    <policySet name="PropagatesTransactionPolicySet" provides="propagatesTransaction" appliesTo="implementation">
+    <policySet name="PropagatesTransactionPolicySet" provides="propagatesTransaction" appliesTo="binding">
         <tuscany:transactionPolicy action="PROPAGATE" />
     </policySet>
 
-    <policySet name="SuspendsTransactionPolicySet" provides="suspendsTransaction" appliesTo="implementation">
+    <policySet name="SuspendsTransactionPolicySet" provides="suspendsTransaction" appliesTo="binding">
         <tuscany:transactionPolicy action="SUSPEND" />
-    </policySet>
-    
-    <policySet name="ManagedSharedPolicySet" provides="managedSharedTransaction" appliesTo="implementation">
-        <tuscany:transactionPolicy action="SUSPEND" />
-    </policySet>    
+    </policySet>  
 
 </definitions>
