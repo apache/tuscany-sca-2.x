@@ -28,8 +28,7 @@
         <!-- the TimingAspect. Which ever calls you define in this pointcut  -->
         <!-- will be timed and displayed in the logs.                        -->
         <concrete-aspect name="org.apache.tuscany.sca.aspectj.UserTimingAspect"
-           extends="org.apache.tuscany.sca.aspectj.TimingAspect"
-           precedence="org.apache.tuscany.sca.aspectj.UserTimingAspect, *">
+           extends="org.apache.tuscany.sca.aspectj.TimingAspect">
            <pointcut name="timedCall" 
               expression="call(* java.util.logging.Logger.info(..))"/>
         </concrete-aspect>

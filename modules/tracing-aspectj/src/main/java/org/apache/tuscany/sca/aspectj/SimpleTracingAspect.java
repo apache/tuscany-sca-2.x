@@ -19,8 +19,6 @@
 
 package org.apache.tuscany.sca.aspectj;
 
-import java.util.Arrays;
-
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
