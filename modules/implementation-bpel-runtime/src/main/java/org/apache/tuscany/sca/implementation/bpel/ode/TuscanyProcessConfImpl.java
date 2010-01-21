@@ -549,7 +549,7 @@ public class TuscanyProcessConfImpl implements ProcessConf {
     			Element fromElement = bpelDOM.createElementNS(NS_URI, "from");
     			fromElement.appendChild(literalElement);
     			Element toElement = bpelDOM.createElementNS(NS_URI, "to");
-    			Attr variableAttribute = bpelDOM.createAttributeNS(NS_URI, "variable");
+    			Attr variableAttribute = bpelDOM.createAttribute("variable");
     			variableAttribute.setValue( property.getName() );
     			toElement.setAttributeNode( variableAttribute );
     			Element copyElement = bpelDOM.createElementNS(NS_URI, "copy");
