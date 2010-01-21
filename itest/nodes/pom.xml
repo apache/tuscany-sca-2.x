@@ -43,7 +43,7 @@
     <module>helloworld-service-c</module>
 -->
     <module>one-node-test</module>
-    <module>two-nodes-test</module>
+    <!-- module>two-nodes-test</module -->
     <module>two-nodes-two-vms-test</module>
 <!--
     <module>three-nodes-three-vms-test</module>
