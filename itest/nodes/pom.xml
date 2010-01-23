@@ -42,9 +42,12 @@
     <module>helloworld-service-b</module>
     <module>helloworld-service-c</module>
 -->
+    <module>one-jvm</module>
+    <module>one-jvm-hazelcast</module>
     <module>one-node-test</module>
-    <!-- module>two-nodes-test</module -->
-    <!-- module>two-nodes-two-vms-test</module -->
+    <module>two-nodes-test</module>
+    <module>two-nodes-two-vms-test</module>
+
 <!--
     <module>three-nodes-three-vms-test</module>
 -->

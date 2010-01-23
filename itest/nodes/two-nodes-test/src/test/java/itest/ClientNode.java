@@ -72,11 +72,11 @@ public class ClientNode {
     @Test
     @Ignore("SCAClient needs to leverage the EndpointRegistry to invoke services that are not hosted on the local node")
     public void testCalculatorClientAPI() throws Exception {
-        Helloworld service = SCAClientFactory.newInstance(URI.create("http://tuscany.apache.org/sca/1.1/domains/default")).getService(Helloworld.class, "HelloworldService");
+        Helloworld service = SCAClientFactory.newInstance(URI.create("default")).getService(Helloworld.class, "HelloworldService");
         assertNotNull(service);
         assertEquals("Hello Petra", service.sayHello("Petra"));
 
-        Helloworld client = SCAClientFactory.newInstance(URI.create("http://tuscany.apache.org/sca/1.1/domains/default")).getService(Helloworld.class, "HelloworldClient");
+        Helloworld client = SCAClientFactory.newInstance(URI.create("default")).getService(Helloworld.class, "HelloworldClient");
         assertNotNull(client);
         assertEquals("Hi Hello Petra", client.sayHello("Petra"));
     }

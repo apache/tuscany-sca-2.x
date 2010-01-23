@@ -51,7 +51,7 @@ public class SCAClientTestCase extends TestCase {
 
     public void testInvoke() throws NoSuchServiceException, NoSuchDomainException {
         HelloworldService service =
-            SCAClientFactory.newInstance(URI.create("http://tuscany.apache.org/sca/1.1/domains/default")).getService(HelloworldService.class, "HelloworldComponent");
+            SCAClientFactory.newInstance(URI.create("default")).getService(HelloworldService.class, "HelloworldComponent");
         String result = service.sayHello("petra");
         assertEquals("Hello petra", result);
         System.out.println("Result from SCAClient call = " + result);

@@ -72,7 +72,7 @@ public class DefaultDomainRegistryFactory implements DomainRegistryFactory, Life
 
     public synchronized EndpointRegistry getEndpointRegistry(String endpointRegistryURI, String domainURI) {
         if (endpointRegistryURI == null) {
-            endpointRegistryURI = "vm://localhost";
+            endpointRegistryURI = domainURI;
         }
         
         String key;
@@ -91,6 +91,8 @@ public class DefaultDomainRegistryFactory implements DomainRegistryFactory, Life
         String scheme = uri.getScheme();
         if (scheme != null) {
             scheme = scheme.toLowerCase();
+        } else {
+        	scheme = "vm";
         }
 
         ServiceDeclaration sd = declarations.get(scheme);

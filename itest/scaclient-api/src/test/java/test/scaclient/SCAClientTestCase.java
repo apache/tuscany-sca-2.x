@@ -44,7 +44,7 @@ public class SCAClientTestCase extends TestCase {
 
     public void testInvoke() throws Exception {
         HelloworldService service =
-            SCAClientFactory.newInstance(URI.create("http://tuscany.apache.org/sca/1.1/domains/default")).getService(HelloworldService.class, "HelloworldComponent");
+            SCAClientFactory.newInstance(URI.create("default")).getService(HelloworldService.class, "HelloworldComponent");
         assertEquals("Hello petra", service.sayHello("petra"));
     }
 
