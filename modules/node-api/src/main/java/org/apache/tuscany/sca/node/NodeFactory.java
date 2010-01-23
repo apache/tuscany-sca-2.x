@@ -301,8 +301,15 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
     }
 
     public final Node createNode(URI configURI, String... locations) {
+        return createNode(configURI, null, locations);
+    }
+
+    public final Node createNode(URI configURI, String deploymentCompositeURI, String[] locations) {
         Contribution[] contributions = getContributions(Arrays.asList(locations));
         NodeConfiguration configuration = createConfiguration(contributions);
+        if (deploymentCompositeURI != null && configuration.getContributions().size() > 0) {
+            configuration.getContributions().get(0).addDeploymentComposite(createURI(deploymentCompositeURI));
+        }
         configuration.setDomainRegistryURI(configURI.toString());
         configuration.setDomainURI(getDomainName(configURI));
         return createNode(configuration);
