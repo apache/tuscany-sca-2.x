@@ -24,6 +24,7 @@ import hello.HelloWorld;
 import java.io.File;
 import java.io.StringReader;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Endpoint;
@@ -77,6 +78,16 @@ public class NodeImplTestCase {
     @Test
     public void testDefaultNode() {
         testNode(new NodeFactoryImpl().createNode());
+    }
+
+    @Test
+    public void testNodeWithURI() {
+        testNode(new NodeFactoryImpl().createNode(URI.create("foo"),"target/test-classes"));
+    }
+    @Test
+    public void testNodeWithURIandComposite() throws MalformedURLException {
+        String compositeURI = new File("target/test-classes/HelloWorld.composite").toURI().toString();
+        testNode(new NodeFactoryImpl().createNode(URI.create("foo"), compositeURI, new String[]{"target/test-classes"}));
     }
 
     @Test
