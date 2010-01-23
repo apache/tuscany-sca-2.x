@@ -37,7 +37,7 @@ import org.oasisopen.sca.client.SCAClientFactory;
  */
 public class OneNodeTestCase{
 
-	private static URI domainURI = URI.create("default");
+	private static URI domainURI = URI.create("OneNodeTestCase");
     private static Node node;
 
     @BeforeClass
