@@ -72,16 +72,16 @@ public class TwoNodesTestCase {
         throw new IllegalStateException("Can't find jar in: " + targetDirectory);
     }
 
-//    @Test
-//    public void testCalculator() throws Exception {
-//        Helloworld service = serviceNode.getService(Helloworld.class, "HelloworldService");
-//        assertNotNull(service);
-//        assertEquals("Hello Petra", service.sayHello("Petra"));
-//
-//        Helloworld client = clientNode.getService(Helloworld.class, "HelloworldClient");
-//        assertNotNull(client);
-//        assertEquals("Hi Hello Petra", client.sayHello("Petra"));
-//    }
+    @Test
+    public void testCalculator() throws Exception {
+        Helloworld service = serviceNode.getService(Helloworld.class, "HelloworldService");
+        assertNotNull(service);
+        assertEquals("Hello Petra", service.sayHello("Petra"));
+
+        Helloworld client = clientNode.getService(Helloworld.class, "HelloworldClient");
+        assertNotNull(client);
+        assertEquals("Hi Hello Petra", client.sayHello("Petra"));
+    }
 
     @Test
     public void testCalculatorClientAPI() throws Exception {
