@@ -84,9 +84,11 @@ public class SCAClientFactoryImpl extends SCAClientFactory {
 
     private Node findLocalNode(Endpoint endpoint) {
         for (Node node : nodeFactory.getNodes().values()) {
-            if (((NodeImpl)node).getServiceEndpoints().contains(endpoint)) {
-                return node;
-            }
+        	for (Endpoint ep : ((NodeImpl)node).getServiceEndpoints()) {
+                if (endpoint.getURI().equals(ep.getURI())) {
+                    return node;
+                }
+        	}
         }
         return null;
     }
