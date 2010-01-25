@@ -86,6 +86,12 @@ public class DefaultDomainRegistryFactory implements DomainRegistryFactory, Life
         if (endpointRegistry != null) {
             return endpointRegistry;
         }
+        
+        // see if its a tuscany: one (TODO: need to clean all this up)
+        endpointRegistry = endpointRegistries.get("tuscany:," + domainURI);
+        if (endpointRegistry != null) {
+            return endpointRegistry;
+        }
 
         URI uri = URI.create(endpointRegistryURI);
         String scheme = uri.getScheme();
