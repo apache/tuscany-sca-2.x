@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.assembly.builder;
 import java.lang.reflect.Constructor;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.namespace.QName;
@@ -368,6 +369,10 @@ public class DefaultBuilderExtensionPoint implements BuilderExtensionPoint, Life
 
         public QName getPolicyType() {
             return qname;
+        }
+        
+        public List<QName> getSupportedBindings() {
+            return getBuilder().getSupportedBindings();
         }
         
         private synchronized PolicyBuilder getBuilder() {

@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.assembly.builder;
 
+import java.util.List;
+
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.Component;
@@ -36,6 +38,13 @@ public interface PolicyBuilder<T> {
      * @return
      */
     QName getPolicyType();
+    
+    /** 
+     * Return the list of binding type QNames at which this policy implementation
+     * is targeted. Or null if the policy is not binding specific
+     * @return list of binding type QNames at which this policy implementation or null if it's not binding specific
+     */
+    List<QName> getSupportedBindings();
 
     /**
      * Build (and validate) the policy settings on the endpoint

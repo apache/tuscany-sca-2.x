@@ -63,6 +63,10 @@ public class WSPolicyBuilder implements PolicyBuilder<Policy> {
     public QName getPolicyType() {
         return WSPolicy.WS_POLICY_QNAME;
     }
+    
+    public List<QName> getSupportedBindings() {
+        return null;
+    }    
 
     private List<Policy> getPolicies(PolicySubject subject) {
         List<Policy> polices = new ArrayList<Policy>();

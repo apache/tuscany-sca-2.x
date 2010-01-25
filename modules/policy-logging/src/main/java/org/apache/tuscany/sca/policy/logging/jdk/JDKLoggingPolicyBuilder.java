@@ -60,6 +60,10 @@ public class JDKLoggingPolicyBuilder implements PolicyBuilder<JDKLoggingPolicy> 
     public QName getPolicyType() {
         return JDKLoggingPolicy.JDK_LOGGING_POLICY_QNAME;
     }
+    
+    public List<QName> getSupportedBindings() {
+        return null;
+    }
 
     private List<JDKLoggingPolicy> getPolicies(PolicySubject subject) {
         List<JDKLoggingPolicy> polices = new ArrayList<JDKLoggingPolicy>();

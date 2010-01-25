@@ -87,6 +87,11 @@ public class IntentValidator implements PolicyBuilder {
         // TODO Auto-generated method stub
         return null;
     }
+    
+    public List<QName> getSupportedBindings() {
+        // TODO Auto-generated method stub
+        return null;
+    }    
 
     /**
      * Check if two policy subjects requires multually exclusive intents
