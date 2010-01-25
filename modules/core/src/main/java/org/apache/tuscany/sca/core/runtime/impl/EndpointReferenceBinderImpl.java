@@ -19,15 +19,17 @@
 
 package org.apache.tuscany.sca.core.runtime.impl;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.ComponentReference;
-import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.Multiplicity;
@@ -57,6 +59,7 @@ import org.apache.tuscany.sca.runtime.EndpointRegistry;
  * @version $Rev$ $Date$
  */
 public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
+    private static final Logger logger = Logger.getLogger(EndpointReferenceBinderImpl.class.getName());
 
     protected ExtensionPointRegistry extensionPoints;
     protected AssemblyFactory assemblyFactory;
@@ -112,8 +115,10 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
      * @param runtime set true if called from the runtime 
      */
     public boolean bind(EndpointRegistry endpointRegistry,  
-                         EndpointReference endpointReference,
-                         boolean runtime){
+                        EndpointReference endpointReference,
+                        boolean runtime){
+        
+        logger.fine("Binding " + endpointReference.toString());
         
         Problem problem = null;
              
@@ -362,111 +367,224 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
     /**
      * Determine if endpoint reference and endpoint policies match. We know by this stage
      * that 
-     *   - a given policy set will only contain expression from a single language
+     *   - a given policy set will only contain expressions from a single language
      *   - a given endpoint or endpoint reference's policy sets will only contain
-     *     expresions from a single language
+     *     expressions from a single language
+     *     
+     * TODO - narative of matching algorithm
      */
     private boolean haveMatchingPolicy(EndpointReference endpointReference, Endpoint endpoint){
-        /* 
-        423             Some new psuedo code based on the spec
-        424             // if we have intents without policy sets we need to match those at the intent level 
-        425             // before doing policy set matching
-        426     
-        427             If policy set QNames from epr and er match exactly
-        428                return true
-        429     
-        430             if policy set languages at ep are not all the same 
-        431                raise error (probably would have done this earlier)
-        432                should go in policy processor
-        433                how to tell which language is expected by a binding
-        434     
-        435             if policy set languages at epr are not all the same
-        436                raise error (probably would have done this earlier)
-        437                should go in policy processor
-        438                how to tell which language is expected by a binding
-        439     
-        440              if policy set language at ep and epr are not the same
-        441                raise error 
-        442                should be the same binding at both ends so should have same
-        443                languages
-        444     
-        445              find the language specific policy matcher
-        446     
-        447              return languageSpecificMatcher.match(policy sets from epr, policy sets from ep)
-        448              // not sure how a matcher aggregates multiple policy sets to find the intersection. 
-        449              // expect that is language specific 
-        450              */
+        logger.fine("Match policy of " + endpointReference.toString() + " to " + endpoint.toString());
         
-        return true;
-        /*
-        ComponentReference reference = endpointReference.getReference();
-        ComponentService service = endpoint.getService();
-
+        List<PolicySet> referencePolicySets = new ArrayList<PolicySet>();
+        Binding binding = null;
+        
+        if (endpointReference.getBinding() == null){
+            binding = endpoint.getBinding();
+        } else {
+            binding = endpointReference.getBinding();
+        }
+        
+        // if there are any intents that are mutually exclusive between 
+        // service and reference then they don't match
+        for (Intent eprIntent : endpointReference.getRequiredIntents()){
+            for (Intent epIntent : endpoint.getRequiredIntents()){ 
+                if (eprIntent.getExcludedIntents().contains(epIntent) ||
+                    epIntent.getExcludedIntents().contains(eprIntent)){
+                    logger.fine("No match because the following intents are mutually exclusive " + 
+                                eprIntent.toString() +
+                                " " +
+                                epIntent.toString());
+                    return false;
+                }
+            }
+        }
+        
+        // Find the set of policy sets from this reference. This includes 
+        // the policy sets that are specific to the service binding and 
+        // any policy sets that are not binding specific    
+        for (PolicySet policySet : endpointReference.getPolicySets()){
+                PolicyBuilder policyBuilder = null;
+                
+                if (policySet.getPolicies().size() > 0){
+                    QName policyType = policySet.getPolicies().get(0).getName();
+                    policyBuilder = builders.getPolicyBuilder(policyType);
+                }
+                
+                if ((policyBuilder == null) ||
+                    (policyBuilder != null && policyBuilder.getSupportedBindings() == null) ||
+                    (policyBuilder != null && policyBuilder.getSupportedBindings().contains(binding.getType()))){
+                    referencePolicySets.add(policySet);
+                }
+        }
+        
+        // run the "appliesTo" algorithm to remove any policy sets that 
+        // don't apply to the service binding
+        // TODO - is this done somewhere else already?
+        
+        // Determine of there are any reference policies
+        boolean noEndpointReferencePolicies = true;
+        
+        for (PolicySet policySet : referencePolicySets){
+            if (policySet.getPolicies().size() > 0){
+                noEndpointReferencePolicies = false;
+                break;
+            }
+        }
+        
+        // Determine of there are any reference policies
+        boolean noEndpointPolicies = true;
+        
+        for (PolicySet policySet : endpoint.getPolicySets()){
+            if (policySet.getPolicies().size() > 0){
+                noEndpointPolicies = false;
+                break;
+            }
+        }        
+        
         // if no policy sets or intents are present then they match
         if ((endpointReference.getRequiredIntents().size() == 0) &&
             (endpoint.getRequiredIntents().size() == 0) &&
-            (endpointReference.getPolicySets().size() == 0) &&
-            (endpoint.getPolicySets().size() == 0)) {
+            (noEndpointReferencePolicies) &&
+            (noEndpointPolicies)) {
+            logger.fine("Match because there are no intents or policy sets");
+            return true;
+        }        
+        
+        // check that the intents on the reference side are resolved 
+        // can't do this until this point as the service binding
+        // may come into play. Intents may be satisfied by the default
+        // or optional intents that the binding type provides. Failing
+        // this they must be satisfied by reference policy sets
+        // Failing this the intent is unresolved and the reference and 
+        // service don't match
+        List<Intent> eprIntents = new ArrayList<Intent>();
+        eprIntents.addAll(endpointReference.getRequiredIntents());
+        
+        // first check the binding type
+        for (Intent intent : endpointReference.getRequiredIntents()){
+/* TODO 
+            BindingType bindingType = null; //TODO - where to get this?
+            
+            if (bindingType.getAlwaysProvidedIntents().contains(intent)){
+                eprIntents.remove(intent);
+            } else if (bindingType.getMayProvidedIntents().contains(intent)){
+                eprIntents.remove(intent);
+            } else {
+            
+*/  
+                for (PolicySet policySet : referencePolicySets){
+                    if (policySet.getProvidedIntents().contains(intent)){
+                        eprIntents.remove(intent);
+                        break;
+                    }
+                }
+/*          
+            }                
+ */
+        }
+        
+        // if there are unresolved intents the service and reference don't match
+        if (eprIntents.size() > 0){
+            logger.fine("No match because there are unresolved intents " + eprIntents.toString());
+            return false;
+        }   
+        
+        // if there are no policy sets on epr or ep side then 
+        // they match
+        if (noEndpointPolicies && noEndpointReferencePolicies){
+            logger.fine("Match because the intents are resolved and there are no policy sets");
             return true;
         }
         
-        // if one of the policy set collections is empty while the 
-        // other isn't then then don't match
-        if (((endpointReference.getPolicySets().size() == 0) &&
-             (endpoint.getPolicySets().size() != 0)) ||
-            ((endpointReference.getPolicySets().size() != 0) &&
-             (endpoint.getPolicySets().size() == 0))) {
+        // if there are some policies on one side and not the other then 
+        // the don't match
+        if (noEndpointPolicies && !noEndpointReferencePolicies) {
+            logger.fine("No match because there are policy sets at the endpoint reference but not at the endpoint");
             return false;
-        }        
-                
-        // if the intent names don't match then the policies won't match
-        // TODO - is this a valid check? We used to rely on this in the 
-        //        builder. Not sure who added it. Need to review.
-        // TUSCANY-3426 - The build phase doesn't seen to promote the intents properly        
-        // Set<Intent> referenceIntentSet = new HashSet<Intent>(reference.getRequiredIntents());
-        // Set<Intent> serviceIntentSet = new HashSet<Intent>(service.getRequiredIntents());
-        // if (!referenceIntentSet.equals(serviceIntentSet)){
-        //    return false;
-        //}
+        }
+        
+        if (!noEndpointPolicies && noEndpointReferencePolicies){
+            logger.fine("No match because there are policy sets at the endpoint but not at the endpoint reference");
+            return false;
+        }
         
         // If policy set QNames from epr and er match exactly then the reference and 
         // service policies are compatible
-        Set<PolicySet> referencePolicySet = new HashSet<PolicySet>(endpointReference.getPolicySets());
+        Set<PolicySet> referencePolicySet = new HashSet<PolicySet>(referencePolicySets);
         Set<PolicySet> servicePolicySet = new HashSet<PolicySet>(endpoint.getPolicySets());
         if(referencePolicySet.equals(servicePolicySet)){
+            logger.fine("Match because the policy sets on both sides are eactly the same");
             return true;
         }
         
-        
-        // if policy set language at ep and epr are not then there is no
+        // if policy set language at ep and epr are not the same then there is no
         // match. We get the policy language by looking at the first expression
         // of the first policy set. By this stage we know that all the policy sets
-        // in an endpoint or endpoint reference will use a single language
-        QName eprLanguage = endpointReference.getPolicySets().get(0).getPolicies().get(0).getName();
-        QName epLanguage = endpoint.getPolicySets().get(0).getPolicies().get(0).getName();
+        // in an endpoint or endpoint reference will use a single language and we know 
+        // that there is at least one policy set with at least one policy
+        QName eprLanguage = null;
+        
+        for (PolicySet policySet : referencePolicySets){
+            if (policySet.getPolicies().size() > 0){
+                eprLanguage = policySet.getPolicies().get(0).getName();
+                break;
+            }
+        }
+        
+        QName epLanguage = null;
           
+        for (PolicySet policySet : endpoint.getPolicySets()){
+            if (policySet.getPolicies().size() > 0){
+                epLanguage = policySet.getPolicies().get(0).getName();
+                break;
+            }
+        }
+        
         if(!eprLanguage.equals(epLanguage)){
+            logger.fine("No match because the policy sets on either side have policies in differnt languages " + 
+                        eprLanguage + 
+                        " and " +
+                        epLanguage );
             return false;
         }
         
         // now do a policy specific language match 
         PolicyBuilder builder = builders.getPolicyBuilder(eprLanguage);
+        boolean match = false;
+        
+        // switch the derived list of policy sets into the reference
+        // it will be left there if there is a match
+        List<PolicySet> originalPolicySets = endpointReference.getPolicySets();
+        endpointReference.getPolicySets().clear();
+        endpointReference.getPolicySets().addAll(referencePolicySets);
+        
         if (builder != null) {
             // TODO - where to get builder context from?
             BuilderContext builderContext = new BuilderContext(monitor);
-            return builder.build(endpointReference, endpoint, builderContext);
+            
+            match = builder.build(endpointReference, endpoint, builderContext);
+        } 
+                
+        if (!match){
+            logger.fine("No match because the language specific matching failed");
+            endpointReference.getPolicySets().clear();
+            endpointReference.getPolicySets().addAll(originalPolicySets);
         } else {
-            return false;
+            logger.fine("Match because the language specific matching succeeded");
         }
         
-        */
+        return match;
     }
     
     /**
      * Determine if endpoint reference and endpoint interface contracts match 
      */
     private boolean haveMatchingInterfaceContracts(EndpointReference endpointReference, Endpoint endpoint){
+        logger.fine("Match interface of " + endpointReference.toString() + " to " + endpoint.toString());
+        
         if (endpointReference.getReference().getInterfaceContract() == null){
+            logger.fine("Match because there is no interface contract on the reference");
             return true;
         }
         
@@ -476,12 +594,22 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
             // the interface contract is likely remote but unresolved
             // we discussed this on the ML and decided that we could
             // live with this for the case where there is no central matching of references
-            // to services. Any errors will be detected when the message flows. 
+            // to services. Any errors will be detected when the message flows.
+            logger.fine("Match because the endpoint is remote and we don't have a copy of it's interface contract");
             return true;
         }
              
-        return interfaceContractMapper.isCompatible(endpointReference.getReference().getInterfaceContract(), 
-                                                    endpoint.getComponentServiceInterfaceContract());
+        boolean match = false;
+        match = interfaceContractMapper.isCompatible(endpointReference.getReference().getInterfaceContract(), 
+                                                     endpoint.getComponentServiceInterfaceContract());
+        
+        if (!match){
+            logger.fine("Match because the linterface contract mapper failed");
+        } else {
+            logger.fine("Match because the interface contract mapper succeeded");
+        }
+        
+        return match;
     }
     
     /**
