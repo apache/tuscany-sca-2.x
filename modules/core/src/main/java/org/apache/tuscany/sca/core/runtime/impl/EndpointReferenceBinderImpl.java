@@ -120,7 +120,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
         
         logger.fine("Binding " + endpointReference.toString());
         
-        Problem problem = null;
+        StringBuffer matchAudit = new StringBuffer();
              
         // This logic does post build autowire matching but isn't actually used at the moment
         // as problems with dependencies mean we still do this during build
@@ -143,8 +143,8 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
                         continue;
                     }
                     
-                    if (haveMatchingPolicy(endpointReference, endpoint) &&
-                        haveMatchingInterfaceContracts(endpointReference, endpoint)){
+                    if (haveMatchingPolicy(endpointReference, endpoint, matchAudit) &&
+                        haveMatchingInterfaceContracts(endpointReference, endpoint, matchAudit)){
                         // matching service so find if this reference already has 
                         // an endpoint reference for this endpoint
                         Endpoint autowireEndpoint = null;
@@ -181,6 +181,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
                                   "endpoint-validation-messages",
                                   "NoComponentReferenceTarget",
                                   endpointReference.getReference().getName());
+                    return false;
                 }
             }
             
@@ -196,8 +197,9 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
             if (hasCallback(endpointReference) &&
                 endpointReference.getCallbackEndpoint() != null &&
                 endpointReference.getCallbackEndpoint().isUnresolved() == true ){
-                problem = selectCallbackEndpoint(endpointReference,
-                                                 endpointReference.getReference().getCallbackService().getEndpoints());
+                selectCallbackEndpoint(endpointReference,
+                                       endpointReference.getReference().getCallbackService().getEndpoints(),
+                                       matchAudit);
             } 
         } else if (endpointReference.getStatus() == EndpointReference.WIRED_TARGET_FOUND_READY_FOR_MATCHING ){
             // The endpoint reference is already resolved to either
@@ -205,12 +207,14 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
             // target URL and/or the policies have yet to be matched.
             // TODO - is this really required now
             
-            problem = selectForwardEndpoint(endpointReference,
-                                            endpointReference.getTargetEndpoint().getService().getEndpoints());
+            selectForwardEndpoint(endpointReference,
+                                  endpointReference.getTargetEndpoint().getService().getEndpoints(),
+                                  matchAudit);
 
-            if (problem == null && hasCallback(endpointReference)){
-                problem = selectCallbackEndpoint(endpointReference,
-                                                 endpointReference.getReference().getCallbackService().getEndpoints());
+            if (hasCallback(endpointReference)){
+                selectCallbackEndpoint(endpointReference,
+                                       endpointReference.getReference().getCallbackService().getEndpoints(),
+                                       matchAudit);
             }             
         } else if (endpointReference.getStatus() == EndpointReference.WIRED_TARGET_IN_BINDING_URI ||
                    endpointReference.getStatus() == EndpointReference.WIRED_TARGET_NOT_FOUND ||
@@ -232,50 +236,46 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
                     endpointReference.setRemote(true);
                     endpointReference.setStatus(EndpointReference.RESOLVED_BINDING);
                 } else {
-                    problem = monitor.createProblem(this.getClass().getName(), 
-                                                    "endpoint-validation-messages", 
-                                                    Problem.Severity.ERROR, 
-                                                    this, 
-                                                    "NoEndpointsFound", 
-                                                    endpointReference.toString());
+                    Monitor.error(monitor, 
+                                  this, 
+                                  "endpoint-validation-messages", 
+                                  "NoEndpointsFound", 
+                                  endpointReference.toString()); 
+                    return false;
                 }
             }            
 
-            problem = selectForwardEndpoint(endpointReference,
-                                            endpoints);
+            selectForwardEndpoint(endpointReference,
+                                  endpoints,
+                                  matchAudit);
 
-            if (problem == null && hasCallback(endpointReference)){
-                problem = selectCallbackEndpoint(endpointReference,
-                                                 endpointReference.getReference().getCallbackService().getEndpoints());
+            if (hasCallback(endpointReference)){
+                selectCallbackEndpoint(endpointReference,
+                                       endpointReference.getReference().getCallbackService().getEndpoints(),
+                                       matchAudit);
             }             
         } 
         
-        if (problem != null){
-            monitor.problem(problem);
-            return false;
-        }
+        logger.fine(matchAudit.toString());
 
         if (endpointReference.getStatus() != EndpointReference.WIRED_TARGET_FOUND_AND_MATCHED &&
             endpointReference.getStatus() != EndpointReference.RESOLVED_BINDING){
             
             if (runtime){
-                problem = monitor.createProblem(this.getClass().getName(), 
-                                                "endpoint-validation-messages", 
-                                                Problem.Severity.ERROR, 
-                                                this, 
-                                                "EndpointReferenceCantBeMatched", 
-                                                endpointReference.toString());
+                Monitor.error(monitor, 
+                              this, 
+                              "endpoint-validation-messages", 
+                              "EndpointReferenceCantBeMatched", 
+                              endpointReference.toString(),
+                              matchAudit);
             } else {
-                problem = monitor.createProblem(this.getClass().getName(), 
-                                                "endpoint-validation-messages", 
-                                                Problem.Severity.WARNING, 
-                                                this, 
-                                                "ComponentReferenceTargetNotFound",
-                                                "NEED COMPOSITE NAME",
-                                                endpointReference.toString());
+                Monitor.warning(monitor, 
+                                this, 
+                                "endpoint-validation-messages", 
+                                "ComponentReferenceTargetNotFound", 
+                                endpointReference.toString());
             }
-            
-            monitor.problem(problem);
+               
             return false;
         }
        
@@ -301,7 +301,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
      * @param endpointReference
      * @param endpoints
      */
-    private Problem selectForwardEndpoint(EndpointReference endpointReference, List<Endpoint> endpoints) {    
+    private void selectForwardEndpoint(EndpointReference endpointReference, List<Endpoint> endpoints, StringBuffer matchAudit) {    
              
         Endpoint matchedEndpoint = null;
         
@@ -311,8 +311,8 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
         } else {
             // find the first endpoint that matches this endpoint reference
             for (Endpoint endpoint : endpoints){
-                if (haveMatchingPolicy(endpointReference, endpoint) &&
-                    haveMatchingInterfaceContracts(endpointReference, endpoint)){
+                if (haveMatchingPolicy(endpointReference, endpoint, matchAudit) &&
+                    haveMatchingInterfaceContracts(endpointReference, endpoint, matchAudit)){
                     matchedEndpoint = endpoint;
                     break;
                 }
@@ -320,15 +320,13 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
         }
         
         if (matchedEndpoint == null){
-            return null;
+            return;
+        } else {
+            endpointReference.setTargetEndpoint(matchedEndpoint);
+            endpointReference.setBinding(endpointReference.getTargetEndpoint().getBinding());
+            endpointReference.setStatus(EndpointReference.WIRED_TARGET_FOUND_AND_MATCHED);
+            endpointReference.setUnresolved(false);
         }
-        
-        endpointReference.setTargetEndpoint(matchedEndpoint);
-        endpointReference.setBinding(endpointReference.getTargetEndpoint().getBinding());
-        endpointReference.setStatus(EndpointReference.WIRED_TARGET_FOUND_AND_MATCHED);
-        endpointReference.setUnresolved(false);
-        
-        return null;
     }
 
     /**
@@ -337,18 +335,16 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
      * @param endpointReference
      * @param endpoints
      */
-    private Problem selectCallbackEndpoint(EndpointReference endpointReference, List<Endpoint> endpoints) {
-
-        Problem problem = null;
-        
+    private void selectCallbackEndpoint(EndpointReference endpointReference, List<Endpoint> endpoints, StringBuffer matchAudit) {
+      
         // find the first callback endpoint that matches a callback endpoint reference
         // at the service
         Endpoint matchedEndpoint = null;
         match:
         for ( EndpointReference callbackEndpointReference : endpointReference.getTargetEndpoint().getCallbackEndpointReferences()){
             for (Endpoint endpoint : endpoints){
-                if (haveMatchingPolicy(callbackEndpointReference, endpoint) &&
-                    haveMatchingInterfaceContracts(callbackEndpointReference, endpoint)){
+                if (haveMatchingPolicy(callbackEndpointReference, endpoint, matchAudit) &&
+                    haveMatchingInterfaceContracts(callbackEndpointReference, endpoint, matchAudit)){
                     matchedEndpoint = endpoint;
                     break match;
                 }
@@ -356,12 +352,10 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
         }
         
         if (matchedEndpoint == null){
-            return null;
+            return;
+        } else {
+            endpointReference.setCallbackEndpoint(matchedEndpoint);
         }
-        
-        endpointReference.setCallbackEndpoint(matchedEndpoint);
-        
-        return problem;
     }
 
     /**
@@ -373,8 +367,8 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
      *     
      * TODO - narative of matching algorithm
      */
-    private boolean haveMatchingPolicy(EndpointReference endpointReference, Endpoint endpoint){
-        logger.fine("Match policy of " + endpointReference.toString() + " to " + endpoint.toString());
+    private boolean haveMatchingPolicy(EndpointReference endpointReference, Endpoint endpoint, StringBuffer matchAudit){
+        matchAudit.append("Match policy of " + endpointReference.toString() + " to " + endpoint.toString() + " ");
         
         List<PolicySet> referencePolicySets = new ArrayList<PolicySet>();
         Binding binding = null;
@@ -391,10 +385,11 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
             for (Intent epIntent : endpoint.getRequiredIntents()){ 
                 if (eprIntent.getExcludedIntents().contains(epIntent) ||
                     epIntent.getExcludedIntents().contains(eprIntent)){
-                    logger.fine("No match because the following intents are mutually exclusive " + 
-                                eprIntent.toString() +
-                                " " +
-                                epIntent.toString());
+                    matchAudit.append("No match because the following intents are mutually exclusive " + 
+                                      eprIntent.toString() +
+                                      " " +
+                                      epIntent.toString() +
+                                      " ");
                     return false;
                 }
             }
@@ -447,7 +442,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
             (endpoint.getRequiredIntents().size() == 0) &&
             (noEndpointReferencePolicies) &&
             (noEndpointPolicies)) {
-            logger.fine("Match because there are no intents or policy sets");
+            matchAudit.append("Match because there are no intents or policy sets ");
             return true;
         }        
         
@@ -486,26 +481,26 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
         
         // if there are unresolved intents the service and reference don't match
         if (eprIntents.size() > 0){
-            logger.fine("No match because there are unresolved intents " + eprIntents.toString());
+            matchAudit.append("No match because there are unresolved intents " + eprIntents.toString() + " ");
             return false;
         }   
         
         // if there are no policy sets on epr or ep side then 
         // they match
         if (noEndpointPolicies && noEndpointReferencePolicies){
-            logger.fine("Match because the intents are resolved and there are no policy sets");
+            matchAudit.append("Match because the intents are resolved and there are no policy sets ");
             return true;
         }
         
         // if there are some policies on one side and not the other then 
         // the don't match
         if (noEndpointPolicies && !noEndpointReferencePolicies) {
-            logger.fine("No match because there are policy sets at the endpoint reference but not at the endpoint");
+            matchAudit.append("No match because there are policy sets at the endpoint reference but not at the endpoint ");
             return false;
         }
         
         if (!noEndpointPolicies && noEndpointReferencePolicies){
-            logger.fine("No match because there are policy sets at the endpoint but not at the endpoint reference");
+            matchAudit.append("No match because there are policy sets at the endpoint but not at the endpoint reference ");
             return false;
         }
         
@@ -514,7 +509,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
         Set<PolicySet> referencePolicySet = new HashSet<PolicySet>(referencePolicySets);
         Set<PolicySet> servicePolicySet = new HashSet<PolicySet>(endpoint.getPolicySets());
         if(referencePolicySet.equals(servicePolicySet)){
-            logger.fine("Match because the policy sets on both sides are eactly the same");
+            matchAudit.append("Match because the policy sets on both sides are eactly the same ");
             return true;
         }
         
@@ -542,10 +537,11 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
         }
         
         if(!eprLanguage.equals(epLanguage)){
-            logger.fine("No match because the policy sets on either side have policies in differnt languages " + 
-                        eprLanguage + 
-                        " and " +
-                        epLanguage );
+            matchAudit.append("No match because the policy sets on either side have policies in differnt languages " + 
+                              eprLanguage + 
+                              " and " +
+                              epLanguage +
+                              " ");
             return false;
         }
         
@@ -567,11 +563,11 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
         } 
                 
         if (!match){
-            logger.fine("No match because the language specific matching failed");
+            matchAudit.append("No match because the language specific matching failed ");
             endpointReference.getPolicySets().clear();
             endpointReference.getPolicySets().addAll(originalPolicySets);
         } else {
-            logger.fine("Match because the language specific matching succeeded");
+            matchAudit.append("Match because the language specific matching succeeded ");
         }
         
         return match;
@@ -580,11 +576,11 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
     /**
      * Determine if endpoint reference and endpoint interface contracts match 
      */
-    private boolean haveMatchingInterfaceContracts(EndpointReference endpointReference, Endpoint endpoint){
-        logger.fine("Match interface of " + endpointReference.toString() + " to " + endpoint.toString());
+    private boolean haveMatchingInterfaceContracts(EndpointReference endpointReference, Endpoint endpoint, StringBuffer matchAudit){
+        matchAudit.append("Match interface of " + endpointReference.toString() + " to " + endpoint.toString() + " ");
         
         if (endpointReference.getReference().getInterfaceContract() == null){
-            logger.fine("Match because there is no interface contract on the reference");
+            matchAudit.append("Match because there is no interface contract on the reference ");
             return true;
         }
         
@@ -595,7 +591,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
             // we discussed this on the ML and decided that we could
             // live with this for the case where there is no central matching of references
             // to services. Any errors will be detected when the message flows.
-            logger.fine("Match because the endpoint is remote and we don't have a copy of it's interface contract");
+            matchAudit.append("Match because the endpoint is remote and we don't have a copy of it's interface contract ");
             return true;
         }
              
@@ -604,9 +600,9 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
                                                      endpoint.getComponentServiceInterfaceContract());
         
         if (!match){
-            logger.fine("Match because the linterface contract mapper failed");
+            matchAudit.append("Match because the linterface contract mapper failed ");
         } else {
-            logger.fine("Match because the interface contract mapper succeeded");
+            matchAudit.append("Match because the interface contract mapper succeeded ");
         }
         
         return match;
