@@ -23,7 +23,7 @@
 <%@ page import="java.net.URI" %>
 
 <%
-   HelloworldService service = SCAClientFactory.newInstance(URI.create("tuscany:default")).getService(HelloworldService.class, "HelloworldComponent"); 
+   HelloworldService service = SCAClientFactory.newInstance(URI.create("default")).getService(HelloworldService.class, "HelloworldComponent"); 
 %>
 
 <html>

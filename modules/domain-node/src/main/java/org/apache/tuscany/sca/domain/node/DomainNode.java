@@ -85,14 +85,14 @@ public class DomainNode {
         if (nodes.containsKey(uri)) {
             throw new IllegalArgumentException("contribution already added: " + uri);
         }
-        NodeConfiguration configuration = NodeFactory.newInstance().createNodeConfiguration();
+        NodeConfiguration configuration = NodeFactory.getInstance().createNodeConfiguration();
         if (location != null) {
             configuration.addContribution(uri, location);
         }
         configuration.setDomainRegistryURI(domainRegistryURI);
         configuration.setDomainURI(domainName);
         configuration.setURI(uri); //???
-        Node node = NodeFactory.newInstance().createNode(configuration).start();
+        Node node = NodeFactory.getInstance().createNode(configuration).start();
         nodes.put(uri, node);
     }
 

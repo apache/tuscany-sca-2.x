@@ -195,7 +195,7 @@ public class Installer {
         "\r\n\r\n    <!-- The Tuscany SCA default domain URI.\r\n" + 
         "    Individual contributions may used different domains by having their \r\n" +
         "    context.xml files overriding this parameter. -->\r\n" +
-        "    <Parameter name=\"org.apache.tuscany.sca.defaultDomainURI\" value=\"vm:default\"/>";
+        "    <Parameter name=\"org.apache.tuscany.sca.defaultDomainURI\" value=\"default\"/>";
 
     private void addTuscanyContextXml() {
         File contextXmlFile = new File(catalinaBase, "/conf/context.xml");

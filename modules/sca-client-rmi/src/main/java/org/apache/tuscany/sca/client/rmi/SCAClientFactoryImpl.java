@@ -48,7 +48,7 @@ public class SCAClientFactoryImpl extends SCAClientFactory {
 
     public SCAClientFactoryImpl(URI domainURI) throws NoSuchDomainException {
         super(domainURI);
-        NodeImpl node = (NodeImpl)NodeFactory.newInstance().createNode(domainURI);
+        NodeImpl node = (NodeImpl)NodeFactory.getInstance().createNode(domainURI);
         if (node.getExtensionPoints() == null) {
             // No local nodes have been started (for this domain?)
             // ideally we'll use the Hazelcast client but for now just start a node

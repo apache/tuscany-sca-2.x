@@ -21,6 +21,8 @@ package org.apache.tuscany.sca.tomcat;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.logging.Logger;
@@ -158,9 +160,15 @@ public class TuscanyStandardContext extends StandardContext {
         ClassLoader oldCL = Thread.currentThread().getContextClassLoader();
         try {
             Thread.currentThread().setContextClassLoader(tuscanyClassLoader);
-            Class<?> domainNodeClass = Class.forName("org.apache.tuscany.sca.domain.node.DomainNode", true, tuscanyClassLoader);
-            Constructor<?> domainNodeConstructor = domainNodeClass.getConstructor(new Class[] {String.class, new String[0].getClass()});
-            domainNodeConstructor.newInstance(TuscanyLifecycleListener.getDomainURI(), new String[0]);
+            Class<?> nodeFactoryClass = Class.forName("org.apache.tuscany.sca.node.NodeFactory", true, tuscanyClassLoader);
+            Method getInstanceMethod = nodeFactoryClass.getMethod("getInstance", new Class[0]);
+            Object instance = getInstanceMethod.invoke(null);
+            Method createNodeMethod = nodeFactoryClass.getMethod("createNode", new Class[]{URI.class, new String[0].getClass()});
+            URI domainURI = URI.create(TuscanyLifecycleListener.getDomainURI());
+            Object node = createNodeMethod.invoke(instance, new Object[]{domainURI, new String[0]});
+            Class<?> nodeClass = Class.forName("org.apache.tuscany.sca.node.Node", true, tuscanyClassLoader);
+            Method nodeStartMethod = nodeClass.getMethod("start", new Class[0]);
+            nodeStartMethod.invoke(node);
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {

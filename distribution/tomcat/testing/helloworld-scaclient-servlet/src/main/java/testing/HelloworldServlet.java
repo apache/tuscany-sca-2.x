@@ -42,7 +42,7 @@ public class HelloworldServlet extends HttpServlet {
        try {
 
         String component = request.getParameter("component");
-        HelloworldService service = SCAClientFactory.newInstance(URI.create("tuscany:default")).getService(HelloworldService.class, component); 
+        HelloworldService service = SCAClientFactory.newInstance(URI.create("default")).getService(HelloworldService.class, component); 
 
         String name = request.getParameter("name");
         String greeting = service.sayHello(name);
