@@ -40,7 +40,7 @@
         <service name="CreditCardPayment" requires="tuscany:logging sca:confidentiality.message sca:confidentiality.transport"/>
     </component>
 
-    <component name="Customer">
+    <component name="Customer" requires="tuscany:logging">
         <implementation.composite name="c:Customer" requires="sca:managedTransaction.global"/>
         <service name="Registry" requires="sca:suspendsTransaction">
             <binding.sca/>
