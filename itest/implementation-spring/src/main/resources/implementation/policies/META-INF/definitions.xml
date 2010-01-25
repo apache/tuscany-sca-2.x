@@ -21,24 +21,29 @@
     xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912" xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1"
     xmlns:calc="http://calculator">
 
+    <intent name="logging" constrains="sca:implementation" intentType="interaction"/>
+    
     <!-- PolicySets -->
-    <!-- 
-    <policySet name="JaasPolicy" provides="tuscany:jaasAuthentication" appliesTo="sca:implementation.java">
+    <policySet name="JaasPolicy" provides="tuscany:jaasAuthentication" appliesTo="sca:binding">
+<!-- empty policy set so that intents are resolved and match works but without including 
+     any actual policy runtime artifacts
         <tuscany:jaasAuthentication>
             <tuscany:configurationName>Calculator</tuscany:configurationName>
             <tuscany:callbackHandler>calculator.security.CalculatorCallbackHandler</tuscany:callbackHandler>
         </tuscany:jaasAuthentication>
+-->        
     </policySet>
-     -->
+
 
     <!-- PolicySets -->
-    <!-- 
+
     <policySet name="JDKLoggingPolicy" provides="tuscany:logging" appliesTo="sca:implementation.spring">
+<!-- empty policy set so that intents are resolved and match works but without including 
+     any actual policy runtime artifacts
         <tuscany:jdkLogger name="calculator">
             <logLevel>FINER</logLevel>
         </tuscany:jdkLogger>
+-->
     </policySet>
-     -->
-    
-    <intent name="logging" constrains="sca:implementation" intentType="interaction"/>
+
 </definitions>
