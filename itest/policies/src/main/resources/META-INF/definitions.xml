@@ -43,4 +43,25 @@
 
     </policySet>
     
+    <!-- A set of policy sets introduced just to ensure that intents are resolved -->
+    
+    <policySet name="SuspendsTransactionPolicy" 
+               provides="sca:suspendsTransaction" 
+               appliesTo="//binding | //implementation"/>    
+               
+    <policySet name="AuthorizationFineGrainPolicy" 
+               provides="sca:authorization.fineGrain" 
+               appliesTo="//binding | //implementation"/>   
+               
+    <policySet name="ConfidentialityTransportPolicy" 
+               provides="sca:confidentiality.transport" 
+               appliesTo="//binding | //implementation"/>               
+
+    <policySet name="ConfidentialityMessagePolicy" 
+               provides="sca:confidentiality.message" 
+               appliesTo="//binding | //implementation"/>   
+               
+    <policySet name="ClientAuthenticationTransportPolicy" 
+               provides="sca:clientAuthentication.transport" 
+               appliesTo="//binding | //implementation"/>  
 </definitions>
