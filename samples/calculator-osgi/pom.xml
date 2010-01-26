@@ -107,7 +107,14 @@
                         <goals>
                             <goal>test</goal>
                         </goals>
-                        <configuration></configuration>
+                        <configuration>
+                            <systemProperties>
+                                <property>
+                                    <name>osgi.configuration.area</name>
+                                    <value>${project.build.directory}/equinox</value>
+                                </property>
+                            </systemProperties>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
