@@ -68,4 +68,48 @@
 
     </dependencies>
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>buildnumber-maven-plugin</artifactId>
+        <version>1.0-beta-4</version>
+        <executions>
+          <execution>
+            <phase>validate</phase>
+            <goals>
+              <goal>create</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+            <buildNumberPropertyName>sources.version</buildNumberPropertyName>               
+            <timestampPropertyName>build.timestamp</timestampPropertyName>
+            <doCheck>true</doCheck>
+            <doUpdate>true</doUpdate>
+        </configuration>
+      </plugin>
+      <plugin>
+         <groupId>org.apache.maven.plugins</groupId>
+         <artifactId>maven-antrun-plugin</artifactId>
+         <executions>
+             <execution>
+                <id>process-resources</id>
+                <phase>process-resources</phase>
+                <configuration>
+                    <tasks>
+                        <filter token="svnRevision" value="${sources.version}"/>
+                        <copy toDir="${basedir}/target/classes/org/apache/tuscany/sca/runtime" overwrite="true"
+                              filtering="on" file="${basedir}/src/main/resources/org/apache/tuscany/sca/runtime/core-spi-messages.properties"/>
+                    </tasks>
+                </configuration>
+                <goals>
+                    <goal>run</goal>
+                </goals>
+             </execution>
+          </executions>
+       </plugin>
+    </plugins>
+  </build>
+
 </project>
