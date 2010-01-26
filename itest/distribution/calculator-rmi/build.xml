@@ -39,7 +39,7 @@
             </daemons>
 
             <sequential>
-                <sleep seconds="15"/>
+                <sleep seconds="25"/>
                 <ant antfile="build.xml"
                      dir="${distro.root}/samples/calculator-rmi-reference"/>
             </sequential>
