@@ -98,9 +98,11 @@
                 <phase>process-resources</phase>
                 <configuration>
                     <tasks>
+                        <filter token="version" value="${pom.version}"/>
                         <filter token="svnRevision" value="${sources.version}"/>
+                        <filter token="buildtime" value="${build.timestamp}"/>
                         <copy toDir="${basedir}/target/classes/org/apache/tuscany/sca/runtime" overwrite="true"
-                              filtering="on" file="${basedir}/src/main/resources/org/apache/tuscany/sca/runtime/core-spi-messages.properties"/>
+                              filtering="on" file="${basedir}/src/main/resources/org/apache/tuscany/sca/runtime/revision.properties"/>
                     </tasks>
                 </configuration>
                 <goals>

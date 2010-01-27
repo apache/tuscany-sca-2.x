@@ -27,7 +27,10 @@ public class VersionTestCase {
     @Test
     public void testRevision() {
         // Doesn't test much, just that it has been initilized to a number
+        System.out.println(Version.getVersion() + " " + Version.getRevsion() + " " + Version.getBuildTime());
+        Integer.parseInt(Version.getVersion());
         Integer.parseInt(Version.getRevsion());
+        Integer.parseInt(Version.getBuildTime());
     }
 
 }

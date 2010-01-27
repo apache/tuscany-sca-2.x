@@ -23,13 +23,25 @@ import java.util.ResourceBundle;
 
 public class Version {
     
+    public static final String VERSION;
     public static final String REVISION;
+    public static final String BUILDTIME;
     static {
-        ResourceBundle rb = ResourceBundle.getBundle("org/apache/tuscany/sca/runtime/core-spi-messages");
+        ResourceBundle rb = ResourceBundle.getBundle("org/apache/tuscany/sca/runtime/revision");
+        VERSION = rb.getString("version");
         REVISION = rb.getString("revision");
+        BUILDTIME = rb.getString("buildtime");
     }
 
+    public static String getVersion() {
+        return VERSION;
+    }
+    
     public static String getRevsion() {
         return REVISION;
+    }
+    
+    public static String getBuildTime() {
+        return BUILDTIME;
     }
 }
