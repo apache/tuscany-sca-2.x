@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    * Licensed to the Apache Software Foundation (ASF) under one
+    * or more contributor license agreements.  See the NOTICE file
+    * distributed with this work for additional information
+    * regarding copyright ownership.  The ASF licenses this file
+    * to you under the Apache License, Version 2.0 (the
+    * "License"); you may not use this file except in compliance
+    * with the License.  You may obtain a copy of the License at
+    *
+    *   http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing,
+    * software distributed under the License is distributed on an
+    * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    * KIND, either express or implied.  See the License for the
+    * specific language governing permissions and limitations
+    * under the License.
+-->
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912" 
+           xmlns:wsdli="http://www.w3.org/2006/01/wsdl-instance"
+           targetNamespace="http://jaxb.databindings.itest.sca.tuscany.apache.org/"
+           name="PrimitivesService">
+           
+    <!-- Clients to test the service -->
+    <!-- A PrimitivesServiceClient component that uses WS binding to invoke PrimitivesService -->
+    <component name="PrimitivesServiceClientWSComponent">
+        <implementation.java class="org.apache.tuscany.sca.itest.databindings.jaxb.impl.PrimitivesServiceClientImpl" />
+        <reference name="primitivesService">
+            <interface.java interface="org.apache.tuscany.sca.itest.databindings.jaxb.PrimitivesService"/>
+            <binding.ws uri="http://localhost:8085/ps-ep" requires="MTOM"/>
+        </reference>
+    </component>
+
+    <!-- A PrimitivesServiceClient component that uses SCA binding to invoke PrimitivesService service -->
+    <component name="PrimitivesServiceClientSCAComponent">
+        <implementation.java class="org.apache.tuscany.sca.itest.databindings.jaxb.impl.PrimitivesServiceClientImpl" />
+        <reference name="primitivesService" target="PrimitivesServiceComponent/PrimitivesService">
+            <interface.java interface="org.apache.tuscany.sca.itest.databindings.jaxb.PrimitivesService"/>
+            <binding.sca/>
+        </reference>
+    </component>
+    
+    <!-- A PrimitivesLocalServiceClient component that uses SCA binding to invoke PrimitivesLocalService service -->
+    <component name="PrimitivesLocalServiceClientSCAComponent">
+        <implementation.java class="org.apache.tuscany.sca.itest.databindings.jaxb.impl.PrimitivesLocalServiceClientImpl" />
+        <reference name="primitivesLocalService" target="PrimitivesServiceComponent/PrimitivesLocalService">
+            <interface.java interface="org.apache.tuscany.sca.itest.databindings.jaxb.PrimitivesLocalService"/>
+            <binding.sca/>
+        </reference>
+    </component>
+
+    <!-- Components used to implement the services -->
+    <!-- A PrimitivesService component. -->
+    <component name="PrimitivesServiceComponent">
+        <implementation.java class="org.apache.tuscany.sca.itest.databindings.jaxb.impl.PrimitivesServiceImpl"/>
+        <service name="PrimitivesService">
+            <interface.java interface="org.apache.tuscany.sca.itest.databindings.jaxb.PrimitivesService"/>
+            <binding.ws uri="http://localhost:8085/ps-ep" requires="MTOM"/>
+        </service>
+        <service name="PrimitivesLocalService">
+            <interface.java interface="org.apache.tuscany.sca.itest.databindings.jaxb.PrimitivesLocalService"/>
+            <binding.sca/>
+        </service>
+    </component>
+</composite>

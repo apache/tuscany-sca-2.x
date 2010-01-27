@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    * Licensed to the Apache Software Foundation (ASF) under one
+    * or more contributor license agreements.  See the NOTICE file
+    * distributed with this work for additional information
+    * regarding copyright ownership.  The ASF licenses this file
+    * to you under the Apache License, Version 2.0 (the
+    * "License"); you may not use this file except in compliance
+    * with the License.  You may obtain a copy of the License at
+    *
+    *   http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing,
+    * software distributed under the License is distributed on an
+    * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    * KIND, either express or implied.  See the License for the
+    * specific language governing permissions and limitations
+    * under the License.
+-->
+
+<!-- $Rev: 741544 $ $Date: 2009-02-06 17:16:22 +0530 (Fri, 06 Feb 2009) $ -->
+
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912" 
+           xmlns:wsdli="http://www.w3.org/2006/01/wsdl-instance"
+           targetNamespace="http://jaxb.databindings.itest.sca.tuscany.apache.org/"
+           name="HelloService">
+           
+    <!-- Clients to test the service -->
+    <!-- A HelloServiceClient component that uses WS binding to invoke HelloService service.
+         The service component uses interface.wsdl on the service element.
+         This client component uses interface.wsdl on the reference element. -->
+    <component name="HelloServiceClientW2WComponent">
+        <implementation.java class="org.apache.tuscany.sca.itest.databindings.jaxb.impl.HelloServiceClientImpl" />
+        <reference name="helloService">
+            <interface.wsdl interface="http://jaxb.databindings.itest.sca.tuscany.apache.org/#wsdl.interface(HelloService)"/>
+            <binding.ws uri="http://localhost:8085/hs-ep-w" requires="MTOM"/>
+        </reference>
+    </component>
+        
+    <!-- A HelloServiceClient component that uses WS binding to invoke HelloService service.
+         The service component uses interface.wsdl on the service element.
+         This client component uses interface.java on the reference element. -->
+    <component name="HelloServiceClientJ2WComponent">
+        <implementation.java class="org.apache.tuscany.sca.itest.databindings.jaxb.impl.HelloServiceClientImpl" />
+        <reference name="helloService">
+            <interface.java interface="org.apache.tuscany.sca.itest.databindings.jaxb.HelloService"/>
+            <binding.ws uri="http://localhost:8085/hs-ep-w" requires="MTOM"/>
+        </reference>
+    </component>
+        
+    <!-- A HelloServiceClient component that uses WS binding to invoke HelloService service.
+         The service component uses interface.wsdl on the service element.
+         This client component uses interface.java on the reference element. -->
+    <component name="HelloServiceClientW2JComponent">
+        <implementation.java class="org.apache.tuscany.sca.itest.databindings.jaxb.impl.HelloServiceClientImpl" />
+        <reference name="helloService">
+            <interface.wsdl interface="http://jaxb.databindings.itest.sca.tuscany.apache.org/#wsdl.interface(HelloService)"/>
+            <binding.ws uri="http://localhost:8085/hs-ep-j" requires="MTOM"/>
+        </reference>
+    </component>
+        
+    <!-- Components used to implement the services -->
+    <!-- A HelloService component that uses interface.wsdl -->
+    <component name="HelloServiceWSDLComponent">
+        <implementation.java class="org.apache.tuscany.sca.itest.databindings.jaxb.impl.HelloServiceImpl"/>
+        <service name="HelloService">
+            <interface.wsdl interface="http://jaxb.databindings.itest.sca.tuscany.apache.org/#wsdl.interface(HelloService)"/>
+            <binding.ws uri="http://localhost:8085/hs-ep-w" requires="MTOM"/>
+        </service>
+    </component>
+
+    <!-- A HelloService component that uses interface.java -->
+    <component name="HelloServiceJavaComponent">
+        <implementation.java class="org.apache.tuscany.sca.itest.databindings.jaxb.impl.HelloServiceImpl"/>
+        <service name="HelloService">
+            <interface.java interface="org.apache.tuscany.sca.itest.databindings.jaxb.HelloService"/>
+            <binding.ws uri="http://localhost:8085/hs-ep-j" requires="MTOM"/>
+        </service>
+    </component>
+</composite>

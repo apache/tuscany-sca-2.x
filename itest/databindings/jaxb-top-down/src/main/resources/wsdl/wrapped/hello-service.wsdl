@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    * Licensed to the Apache Software Foundation (ASF) under one
+    * or more contributor license agreements.  See the NOTICE file
+    * distributed with this work for additional information
+    * regarding copyright ownership.  The ASF licenses this file
+    * to you under the Apache License, Version 2.0 (the
+    * "License"); you may not use this file except in compliance
+    * with the License.  You may obtain a copy of the License at
+    *
+    *   http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing,
+    * software distributed under the License is distributed on an
+    * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    * KIND, either express or implied.  See the License for the
+    * specific language governing permissions and limitations
+    * under the License.
+-->
+
+<!-- $Rev: 678733 $ $Date: 2008-07-22 17:48:58 +0530 (Tue, 22 Jul 2008) $ -->
+
+<wsdl:definitions name="HelloService"
+    targetNamespace="http://jaxb.databindings.itest.sca.tuscany.apache.org/"
+    xmlns:tns="http://jaxb.databindings.itest.sca.tuscany.apache.org/"
+    xmlns:soap11="http://schemas.xmlsoap.org/wsdl/soap/"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+    <wsdl:types>
+        <xs:schema targetNamespace="http://util.java/"
+            version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <xs:complexType name="arrayList">
+                <xs:complexContent>
+                    <xs:extension base="abstractList">
+                        <xs:sequence />
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+            <xs:complexType abstract="true" name="abstractList">
+                <xs:complexContent>
+                    <xs:extension base="abstractCollection">
+                        <xs:sequence />
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+            <xs:complexType abstract="true" name="abstractCollection">
+                <xs:sequence />
+            </xs:complexType>
+            <xs:complexType name="hashMap">
+                <xs:complexContent>
+                    <xs:extension base="abstractMap">
+                        <xs:sequence />
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+            <xs:complexType abstract="true" name="abstractMap">
+                <xs:sequence />
+            </xs:complexType>
+        </xs:schema>
+        <xs:schema targetNamespace="http://jaxb.dev.java.net/array"
+            version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <xs:complexType final="#all" name="stringArray">
+                <xs:sequence>
+                    <xs:element maxOccurs="unbounded" minOccurs="0"
+                        name="item" nillable="true" type="xs:string" />
+                </xs:sequence>
+            </xs:complexType>
+        </xs:schema>
+        <xs:schema attributeFormDefault="qualified"
+            elementFormDefault="unqualified"
+            targetNamespace="http://jaxb.databindings.itest.sca.tuscany.apache.org/"
+            xmlns:ns0="http://util.java/"
+            xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <xs:element name="getGreetings">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="arg0"
+                            nillable="true" type="xs:string" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getGreetingsResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="return"
+                            nillable="true" type="xs:string" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getGreetingsArray">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0"
+                            name="arg0" nillable="true" type="xs:string" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getGreetingsArrayResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0"
+                            name="return" nillable="true" type="xs:string" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getGreetingsList">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="arg0"
+                            nillable="true" type="xs:anyType" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getGreetingsListResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="return"
+                            nillable="true" type="xs:anyType" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getGreetingsArrayList">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="arg0"
+                            nillable="true" type="ns0:arrayList" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getGreetingsArrayListResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="return"
+                            nillable="true" type="ns0:arrayList" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getGreetingsMap">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="arg0"
+                            nillable="true" type="xs:anyType" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getGreetingsMapResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="return"
+                            nillable="true" type="xs:anyType" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getGreetingsHashMap">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="arg0"
+                            nillable="true" type="ns0:hashMap" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getGreetingsHashMapResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="return"
+                            nillable="true" type="ns0:hashMap" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getGreetingsVarArgs">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0"
+                            name="arg0" nillable="true" type="xs:string" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getGreetingsVarArgsResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="return"
+                            nillable="true" type="xs:string" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:schema>
+    </wsdl:types>
+    <wsdl:message name="getGreetings">
+        <wsdl:part name="getGreetings" element="tns:getGreetings">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getGreetingsResponse">
+        <wsdl:part name="getGreetingsResponse"
+            element="tns:getGreetingsResponse">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getGreetingsArray">
+        <wsdl:part name="getGreetingsArray"
+            element="tns:getGreetingsArray">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getGreetingsArrayResponse">
+        <wsdl:part name="getGreetingsArrayResponse"
+            element="tns:getGreetingsArrayResponse">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getGreetingsList">
+        <wsdl:part name="getGreetingsList"
+            element="tns:getGreetingsList">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getGreetingsListResponse">
+        <wsdl:part name="getGreetingsListResponse"
+            element="tns:getGreetingsListResponse">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getGreetingsArrayList">
+        <wsdl:part name="getGreetingsArrayList"
+            element="tns:getGreetingsArrayList">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getGreetingsArrayListResponse">
+        <wsdl:part name="getGreetingsArrayListResponse"
+            element="tns:getGreetingsArrayListResponse">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getGreetingsMap">
+        <wsdl:part name="getGreetingsMap"
+            element="tns:getGreetingsMap">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getGreetingsMapResponse">
+        <wsdl:part name="getGreetingsMapResponse"
+            element="tns:getGreetingsMapResponse">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getGreetingsHashMap">
+        <wsdl:part name="getGreetingsHashMap"
+            element="tns:getGreetingsHashMap">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getGreetingsHashMapResponse">
+        <wsdl:part name="getGreetingsHashMapResponse"
+            element="tns:getGreetingsHashMapResponse">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getGreetingsVarArgs">
+        <wsdl:part name="getGreetingsVarArgs"
+            element="tns:getGreetingsVarArgs">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getGreetingsVarArgsResponse">
+        <wsdl:part name="getGreetingsVarArgsResponse"
+            element="tns:getGreetingsVarArgsResponse">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:portType name="HelloService">
+        <wsdl:operation name="getGreetings">
+            <wsdl:input message="tns:getGreetings"></wsdl:input>
+            <wsdl:output message="tns:getGreetingsResponse">
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getGreetingsArray">
+            <wsdl:input message="tns:getGreetingsArray"></wsdl:input>
+            <wsdl:output message="tns:getGreetingsArrayResponse">
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getGreetingsList">
+            <wsdl:input message="tns:getGreetingsList"></wsdl:input>
+            <wsdl:output message="tns:getGreetingsListResponse">
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getGreetingsArrayList">
+            <wsdl:input message="tns:getGreetingsArrayList">
+            </wsdl:input>
+            <wsdl:output message="tns:getGreetingsArrayListResponse">
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getGreetingsMap">
+            <wsdl:input message="tns:getGreetingsMap">
+            </wsdl:input>
+            <wsdl:output message="tns:getGreetingsMapResponse">
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getGreetingsHashMap">
+            <wsdl:input message="tns:getGreetingsHashMap"></wsdl:input>
+            <wsdl:output message="tns:getGreetingsHashMapResponse">
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getGreetingsVarArgs">
+            <wsdl:input message="tns:getGreetingsVarArgs">
+            </wsdl:input>
+            <wsdl:output message="tns:getGreetingsVarArgsResponse">
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="HelloServiceBinding" type="tns:HelloService">
+        <soap11:binding style="document"
+            transport="http://schemas.xmlsoap.org/soap/http" />
+        <wsdl:operation name="getGreetings">
+            <soap11:operation />
+            <wsdl:input>
+                <soap11:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap11:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getGreetingsArray">
+            <soap11:operation />
+            <wsdl:input>
+                <soap11:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap11:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getGreetingsList">
+            <soap11:operation />
+            <wsdl:input>
+                <soap11:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap11:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getGreetingsArrayList">
+            <soap11:operation />
+            <wsdl:input>
+                <soap11:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap11:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getGreetingsMap">
+            <soap11:operation />
+            <wsdl:input>
+                <soap11:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap11:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getGreetingsHashMap">
+            <soap11:operation />
+            <wsdl:input>
+                <soap11:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap11:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getGreetingsVarArgs">
+            <soap11:operation />
+            <wsdl:input>
+                <soap11:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap11:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="HelloServiceService">
+        <wsdl:port name="HelloServicePort"
+            binding="tns:HelloServiceBinding">
+            <soap11:address location="http://localhost:8085/hs-ep" />
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

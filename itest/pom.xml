@@ -58,6 +58,7 @@
 <!-- why commented out?              
                 <module>definitions-multiple</module>
 -->
+                <module>databindings</module>
                 <module>distribution</module>
                 <module>exceptions</module>
                 <module>implementation-spring</module>
