@@ -87,7 +87,7 @@
 
     <parameter name="disableREST" locked="true">false</parameter>
 
-    <!--POJO deployer , this will alow users to drop .class file and make that into a service-->
+    <!--POJO deployer , this will allow users to drop .class file and make that into a service-->
     <deployer extension=".class" directory="pojo" class="org.apache.axis2.deployment.POJODeployer"/>
 
     <!-- Following parameter will set the host name for the epr-->
