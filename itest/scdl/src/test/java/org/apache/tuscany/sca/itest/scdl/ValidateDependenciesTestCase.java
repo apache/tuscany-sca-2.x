@@ -44,16 +44,13 @@ import org.junit.Test;
  * tuscany-common-java-2.0-SNAPSHOT.jar
  * tuscany-common-xml-2.0-SNAPSHOT.jar
  * tuscany-contribution-2.0-SNAPSHOT.jar
- * tuscany-databinding-2.0-SNAPSHOT.jar
  * tuscany-deployment-2.0-SNAPSHOT.jar
  * tuscany-extensibility-2.0-SNAPSHOT.jar
  * tuscany-implementation-java-2.0-SNAPSHOT.jar
  * tuscany-interface-java-2.0-SNAPSHOT.jar
  * tuscany-monitor-2.0-SNAPSHOT.jar
  * tuscany-sca-api-2.0-SNAPSHOT.jar
- * tuscany-xsd-2.0-SNAPSHOT.jar
  * wstx-asl-3.2.4.jar
- * XmlSchema-1.4.2.jar
  * 
  * TODO: WS binding drags in all runtime
  */
@@ -66,6 +63,6 @@ public class ValidateDependenciesTestCase {
         Assert.assertTrue(dependenciesDir.exists());
         
         File[] dependencyFiles = dependenciesDir.listFiles();
-        Assert.assertEquals(23, dependencyFiles.length);
+        Assert.assertEquals(20, dependencyFiles.length);
     }
 }

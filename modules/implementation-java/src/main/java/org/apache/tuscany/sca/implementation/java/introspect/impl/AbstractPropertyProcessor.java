@@ -29,18 +29,12 @@ import java.util.Map;
 
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.core.UtilityExtensionPoint;
-import org.apache.tuscany.sca.databinding.Mediator;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.JavaElementImpl;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaParameterImpl;
 import org.apache.tuscany.sca.implementation.java.introspect.BaseJavaClassVisitor;
 import org.apache.tuscany.sca.implementation.java.introspect.JavaIntrospectionHelper;
-import org.apache.tuscany.sca.interfacedef.DataType;
-import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
-import org.apache.tuscany.sca.interfacedef.util.JavaXMLMapper;
-import org.apache.tuscany.sca.interfacedef.util.XMLType;
 
 /**
  * Base class for ImplementationProcessors that handle annotations that add
@@ -50,26 +44,10 @@ import org.apache.tuscany.sca.interfacedef.util.XMLType;
  */
 public abstract class AbstractPropertyProcessor<A extends Annotation> extends BaseJavaClassVisitor {
     private final Class<A> annotationClass;
-    private Mediator mediator;
 
     protected AbstractPropertyProcessor(ExtensionPointRegistry registry, Class<A> annotationClass) {
         super(registry);
         this.annotationClass = annotationClass;
-        UtilityExtensionPoint utilityExtensionPoint = registry.getExtensionPoint(UtilityExtensionPoint.class);
-        this.mediator = utilityExtensionPoint.getUtility(Mediator.class);
-    }
-    
-    /**
-     * Introspect the property 
-     * @param javaElement
-     * @return
-     */
-    private DataType<?> introspect(Property property, JavaElementImpl javaElement) {
-        XMLType xmlType = new XMLType(property.getXSDElement(), property.getXSDType());
-        DataType<XMLType> dt =
-            new DataTypeImpl<XMLType>(null, javaElement.getType(), javaElement.getGenericType(), xmlType);
-        mediator.getDataBindings().introspectType(dt, null);
-        return dt;
     }
     
     private static boolean removeProperty(JavaElementImpl prop, JavaImplementation type) {
@@ -219,28 +197,12 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Ba
             properties.put(name, parameter);
         }
     }
-
-    protected abstract String getName(A annotation);
-    protected abstract boolean getRequired(A annotation);
-
-    protected abstract void initProperty(Property property, A annotation) throws IntrospectionException;
-
+    
     protected Property createProperty(String name, JavaElementImpl element) throws IntrospectionException {
 
         Property property = assemblyFactory.createProperty();
         property.setName(name);
         
-        DataType dt = introspect(property, element);
-        property.setDataType(dt);
-        if(dt.getLogical() instanceof XMLType) {
-            XMLType xmlType = (XMLType) dt.getLogical();
-            property.setXSDType(xmlType.getTypeName());
-            property.setXSDElement(xmlType.getElementName());
-        } else {
-            Class<?> baseType = JavaIntrospectionHelper.getBaseType(element.getType(), element.getGenericType());
-            property.setXSDType(JavaXMLMapper.getXMLType(baseType));
-        }
-
         Class<?> javaType = element.getType();
         if (javaType.isArray() || Collection.class.isAssignableFrom(javaType)) {
             property.setMany(true);
@@ -248,5 +210,11 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Ba
         return property;
 
     }
+
+    protected abstract String getName(A annotation);
+    protected abstract boolean getRequired(A annotation);
+
+    protected abstract void initProperty(Property property, A annotation) throws IntrospectionException;
+
 
 }

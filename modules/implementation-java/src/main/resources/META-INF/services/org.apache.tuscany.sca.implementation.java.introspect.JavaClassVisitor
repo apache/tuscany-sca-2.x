@@ -17,17 +17,17 @@
 # 
 # NOTE: The ranking attribute is important for the JavaClassVistors 
 # Some visitors need to be called after the others 
-org.apache.tuscany.sca.implementation.java.introspect.impl.ConstructorProcessor;ranking=200
-org.apache.tuscany.sca.implementation.java.introspect.impl.AllowsPassByReferenceProcessor;ranking=190
-org.apache.tuscany.sca.implementation.java.introspect.impl.ComponentNameProcessor;ranking=180
-org.apache.tuscany.sca.implementation.java.introspect.impl.ContextProcessor;ranking=170
-org.apache.tuscany.sca.implementation.java.introspect.impl.DestroyProcessor;ranking=160
-org.apache.tuscany.sca.implementation.java.introspect.impl.EagerInitProcessor;ranking=150
-org.apache.tuscany.sca.implementation.java.introspect.impl.InitProcessor;ranking=140
-org.apache.tuscany.sca.implementation.java.introspect.impl.PropertyProcessor;ranking=130
-org.apache.tuscany.sca.implementation.java.introspect.impl.ReferenceProcessor;ranking=120
-org.apache.tuscany.sca.implementation.java.introspect.impl.ResourceProcessor;ranking=110
-org.apache.tuscany.sca.implementation.java.introspect.impl.ScopeProcessor;ranking=100
-org.apache.tuscany.sca.implementation.java.introspect.impl.ServiceProcessor;ranking=90
-org.apache.tuscany.sca.implementation.java.introspect.impl.HeuristicPojoProcessor;ranking=80
-org.apache.tuscany.sca.implementation.java.introspect.impl.PolicyProcessor;ranking=70
+org.apache.tuscany.sca.implementation.java.introspect.impl.ConstructorProcessor;ranking=2000
+org.apache.tuscany.sca.implementation.java.introspect.impl.AllowsPassByReferenceProcessor;ranking=1900
+org.apache.tuscany.sca.implementation.java.introspect.impl.ComponentNameProcessor;ranking=1800
+org.apache.tuscany.sca.implementation.java.introspect.impl.ContextProcessor;ranking=1700
+org.apache.tuscany.sca.implementation.java.introspect.impl.DestroyProcessor;ranking=1600
+org.apache.tuscany.sca.implementation.java.introspect.impl.EagerInitProcessor;ranking=1500
+org.apache.tuscany.sca.implementation.java.introspect.impl.InitProcessor;ranking=1400
+org.apache.tuscany.sca.implementation.java.introspect.impl.PropertyProcessor;ranking=1300
+org.apache.tuscany.sca.implementation.java.introspect.impl.ReferenceProcessor;ranking=1200
+org.apache.tuscany.sca.implementation.java.introspect.impl.ResourceProcessor;ranking=1100
+org.apache.tuscany.sca.implementation.java.introspect.impl.ScopeProcessor;ranking=1000
+org.apache.tuscany.sca.implementation.java.introspect.impl.ServiceProcessor;ranking=900
+org.apache.tuscany.sca.implementation.java.introspect.impl.HeuristicPojoProcessor;ranking=800
+org.apache.tuscany.sca.implementation.java.introspect.impl.PolicyProcessor;ranking=700
