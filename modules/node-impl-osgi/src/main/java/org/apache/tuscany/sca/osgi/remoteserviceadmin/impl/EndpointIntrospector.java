@@ -26,7 +26,6 @@ import static org.osgi.framework.Constants.OBJECTCLASS;
 import static org.osgi.framework.Constants.SERVICE_ID;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -267,6 +266,7 @@ public class EndpointIntrospector {
         return contribution;
     }
     
+    /*
     public Contribution loadContribution(Bundle bundle, Composite composite) {
         try {
             URL root = bundle.getEntry("/");
@@ -277,6 +277,7 @@ public class EndpointIntrospector {
             throw new ServiceRuntimeException(e);
         }
     }
+    */
 
     /**
      * Generate a contribution that contains the composite for the exported service
@@ -340,16 +341,16 @@ public class EndpointIntrospector {
         }
 
         // FIXME: Should we scan the owning bundle to create the SCA contribution?
-        Contribution contribution = loadContribution(bundle, composite);
+        Contribution contribution = loadContribution(bundle, id, composite);
         return contribution;
     }
 
-    private Contribution createContribution(Bundle bundle, String id, Composite composite) {
+    private Contribution loadContribution(Bundle bundle, String id, Composite composite) {
         Contribution contribution = contributionFactory.createContribution();
         contribution.setClassLoader(OSGiHelper.createBundleClassLoader(bundle));
-        contribution.setURI("urn:" + id);
+        contribution.setURI(id);
         contribution.setLocation(bundle.getEntry("/").toString());
-        contribution.getDeployables().add(composite);
+        deployer.attachDeploymentComposite(contribution, composite, false);
         ModelResolver modelResolver = new ExtensibleModelResolver(contribution, modelResolvers, factories);
         contribution.setModelResolver(modelResolver);
         // compositeProcessor.resolve(composite, modelResolver, new ProcessorContext(registry));
@@ -433,7 +434,7 @@ public class EndpointIntrospector {
             componentReference.getBindings().addAll(bindings);
         }
 
-        Contribution contribution = loadContribution(bundle, composite);
+        Contribution contribution = loadContribution(bundle, id, composite);
         return contribution;
     }
 

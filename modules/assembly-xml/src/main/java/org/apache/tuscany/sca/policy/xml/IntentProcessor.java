@@ -327,12 +327,13 @@ public class IntentProcessor extends BaseStAXArtifactProcessor implements StAXAr
     }
 
     public void resolve(Intent intent, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
-        Monitor monitor = context.getMonitor();
-        resolveProfileIntent(intent, resolver, context);
-        resolveExcludedIntents(intent, resolver, context);
-        resolveQualifiedIntent(intent, resolver, context);
-        resolveContrainedTypes(intent, resolver, context);
-        intent.setUnresolved(false);
+        if (intent != null && intent.isUnresolved()) {
+            resolveProfileIntent(intent, resolver, context);
+            resolveExcludedIntents(intent, resolver, context);
+            resolveQualifiedIntent(intent, resolver, context);
+            resolveContrainedTypes(intent, resolver, context);
+            intent.setUnresolved(false);
+        }
     }
 
     public QName getArtifactType() {

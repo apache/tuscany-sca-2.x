@@ -49,7 +49,6 @@ public class DomainDiscoveryService extends AbstractDiscoveryService implements 
 
     public void start() {
         super.start();
-        getExtensionPointRegistry();
         this.domainRegistryFactory =
             registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(DomainRegistryFactory.class);
         domainRegistryFactory.addListener(this);
@@ -80,7 +79,7 @@ public class DomainDiscoveryService extends AbstractDiscoveryService implements 
         }
     }
 
-    public synchronized void endpointAdded(Endpoint endpoint) {
+    public void endpointAdded(Endpoint endpoint) {
         Implementation impl = endpoint.getComponent().getImplementation();
         if (!(impl instanceof OSGiImplementation)) {
             return;
@@ -94,20 +93,24 @@ public class DomainDiscoveryService extends AbstractDiscoveryService implements 
             bundleContext = bundle != null ? bundle.getBundleContext() : null;
         }
 
-            // Notify the endpoint listeners
-            EndpointDescription description = createEndpointDescription(bundleContext, endpoint);
-            // Set the owning bundle to runtime bundle to avoid NPE
+        // Notify the endpoint listeners
+        EndpointDescription description = createEndpointDescription(bundleContext, endpoint);
+        // Set the owning bundle to runtime bundle to avoid NPE
+        synchronized (this) {
             endpointDescriptions.put(description, context.getBundle());
             endpointChanged(description, ADDED);
+        }
     }
 
-    public synchronized void endpointRemoved(Endpoint endpoint) {
-            EndpointDescription description = createEndpointDescription(context, endpoint);
+    public void endpointRemoved(Endpoint endpoint) {
+        EndpointDescription description = createEndpointDescription(context, endpoint);
+        synchronized (this) {
             endpointDescriptions.remove(description);
             endpointChanged(description, REMOVED);
+        }
     }
 
-    public synchronized void endpointUpdated(Endpoint oldEndpoint, Endpoint newEndpoint) {
+    public void endpointUpdated(Endpoint oldEndpoint, Endpoint newEndpoint) {
         // FIXME: This is a quick and dirty way for the update
         endpointRemoved(oldEndpoint);
         endpointAdded(newEndpoint);
@@ -124,7 +127,7 @@ public class DomainDiscoveryService extends AbstractDiscoveryService implements 
             super.stop();
         }
     }
-    
+
     @Override
     protected Dictionary<String, Object> getProperties() {
         Dictionary<String, Object> props = super.getProperties();

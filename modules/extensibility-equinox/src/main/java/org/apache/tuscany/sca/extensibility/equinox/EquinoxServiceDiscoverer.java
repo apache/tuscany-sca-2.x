@@ -79,6 +79,26 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
         }
         return scaVersion;
     }
+    
+    /*
+    private Map<Bundle, Object> bundles = new ConcurrentHashMap<Bundle, Object>();
+
+    public Object addingBundle(Bundle bundle, BundleEvent event) {
+        if (isProviderBundle(bundle)) {
+            bundles.put(bundle, bundle);
+            System.out.println("Bundle added: " + toString(bundle));
+            return bundle;
+        }
+        return null;
+    }
+
+    public void modifiedBundle(Bundle bundle, BundleEvent event, Object object) {
+    }
+
+    public void removedBundle(Bundle bundle, BundleEvent event, Object object) {
+        bundles.remove(object);
+    }
+    */
 
     public static class ServiceDeclarationImpl implements ServiceDeclaration {
         private Bundle bundle;
@@ -211,6 +231,17 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
         }
         return true;
     }
+    
+    protected Collection<Bundle> getBundles() {
+        // return bundles.keySet();
+        Set<Bundle> set = new HashSet<Bundle>();
+        for (Bundle b : context.getBundles()) {
+            if (isProviderBundle(b)) {
+                set.add(b);
+            }
+        }
+        return set;
+    }
 
     public Collection<ServiceDeclaration> getServiceDeclarations(String serviceName) throws IOException {
         boolean debug = logger.isLoggable(Level.FINE);
@@ -222,10 +253,10 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
 
         Set<URL> visited = new HashSet<URL>();
         //System.out.println(">>>> getServiceDeclarations()");
-        for (Bundle bundle : context.getBundles()) {
-            if (!isProviderBundle(bundle)) {
-                continue;
-            }
+        for (Bundle bundle : getBundles()) {
+//            if (!isProviderBundle(bundle)) {
+//                continue;
+//            }
             Enumeration<URL> urls = null;
             try {
                 // Use getResources to find resources on the classpath of the bundle

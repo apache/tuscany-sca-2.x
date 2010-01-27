@@ -57,8 +57,6 @@ public class OSGiBundleContributionScanner implements ContributionScanner {
         return PackageType.BUNDLE;
     }
 
-
-
     public List<Artifact> scan(Contribution contribution) throws ContributionReadException {
         Bundle bundle = OSGiBundleActivator.findBundle(contribution.getLocation());
 
@@ -99,22 +97,28 @@ public class OSGiBundleContributionScanner implements ContributionScanner {
                 //Add artifact to list
                 Artifact artifact = contributionFactory.createArtifact();
                 artifact.setURI(entryName);
-                artifact.setLocation(getArtifactURL(contribution, entryName).toString());
+                artifact.setLocation(entry.toString());
                 
                 artifacts.add(artifact);
 
                 //if Artifact is a JAR, add jar artifacts as well
+                /*
                 if (entryName.endsWith(".jar") && bundleClassPath.contains(entryName)) {
                     List<String> jarArtifactURIs = getJarArtifacts(entry, entry.openStream());
                     for( String uri : jarArtifactURIs) {
                         Artifact jarArtifact = contributionFactory.createArtifact();
                         jarArtifact.setURI(uri);
-                        jarArtifact.setLocation(getArtifactURL(contribution, uri).toString());
-                        
+                        URL url = bundle.getResource(uri);
+                        String location = null;
+                        if(url!=null) {
+                            location = url.toString();
+                        }
+                        jarArtifact.setLocation(location);
                         artifacts.add(jarArtifact);
                         
                     }
                 }
+                */
 
             }
         } catch (Exception e) {
@@ -125,7 +129,7 @@ public class OSGiBundleContributionScanner implements ContributionScanner {
         contribution.setClassLoader(new BundleClassLoader(bundle));
         return artifacts;
     }
-
+    
     /**
      * Retrieve a list of Artifact URIs for a given JAR
      * @param packageSourceURL
@@ -183,27 +187,6 @@ public class OSGiBundleContributionScanner implements ContributionScanner {
         }
     }
     
-
-    /**
-     * Given an artifact URI, return it's location URL
-     * 
-     * @param contribution
-     * @param artifact
-     * @return
-     * @throws ContributionReadException
-     */
-    private URL getArtifactURL(Contribution contribution, String artifact) throws ContributionReadException {
-        Bundle bundle = null;
-        try {
-            bundle = OSGiBundleActivator.findBundle(contribution.getLocation());
-            if (bundle != null) {
-                URL url = bundle.getResource(artifact);
-                return url;
-            }
-        } catch (Exception e) {
-        }
-        return null;
-    }
 
 
     private static class BundleClassLoader extends ClassLoader {

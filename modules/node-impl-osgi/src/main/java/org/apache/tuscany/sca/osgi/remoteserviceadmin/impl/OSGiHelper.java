@@ -109,8 +109,9 @@ public class OSGiHelper {
         if (value == null) {
             return Collections.emptyList();
         }
-        String paths[] = value.trim().split("( |\t|\n|\r|\f|,)+");
-        if (paths.length == 0) {
+        value = value.trim();
+        String paths[] = value.split("( |\t|\n|\r|\f|,)+");
+        if ("".equals(value) || paths.length == 0) {
             if (defaultValue != null) {
                 paths = new String[] {defaultValue};
             } else {
@@ -119,6 +120,10 @@ public class OSGiHelper {
         }
         Collection<URL> files = new HashSet<URL>();
         for (String path : paths) {
+            if ("".equals(path)) {
+                // Skip empty ones
+                continue;
+            }
             if (path.endsWith("/")) {
                 path = path + "*.xml";
             }

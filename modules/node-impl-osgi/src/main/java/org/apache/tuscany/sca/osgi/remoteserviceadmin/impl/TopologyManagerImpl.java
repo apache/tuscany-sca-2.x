@@ -23,6 +23,7 @@ import static org.apache.tuscany.sca.implementation.osgi.OSGiProperty.SERVICE_EX
 import static org.osgi.service.remoteserviceadmin.RemoteConstants.SERVICE_EXPORTED_CONFIGS;
 import static org.osgi.service.remoteserviceadmin.RemoteConstants.SERVICE_IMPORTED;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Dictionary;
 import java.util.HashMap;
@@ -190,10 +191,11 @@ public class TopologyManagerImpl implements ListenerHook, RemoteServiceAdminList
      * @see org.osgi.framework.hooks.service.ListenerHook#added(java.util.Collection)
      */
     public void added(Collection listeners) {
-        synchronized (serviceListeners) {
-            try {
+        boolean changed = false;
+        String[] filters = null;
+        try {
+            synchronized (serviceListeners) {
                 Collection<ListenerInfo> listenerInfos = (Collection<ListenerInfo>)listeners;
-                boolean changed = false;
                 for (ListenerInfo l : listenerInfos) {
                     if (l.getBundleContext().getBundle().getBundleId() == 0L || l.getBundleContext() == context) {
                         // Ignore system and tuscany bundle
@@ -217,75 +219,86 @@ public class TopologyManagerImpl implements ListenerHook, RemoteServiceAdminList
                     }
                 }
                 if (changed) {
-                    updateEndpointListenerScope();
+                    filters = getFilters();
                 }
-            } catch (Throwable e) {
-                logger.log(Level.SEVERE, e.getMessage(), e);
-                if (e instanceof Error) {
-                    throw (Error)e;
-                } else if (e instanceof RuntimeException) {
-                    throw (RuntimeException)e;
-                } else {
-                    // Should not happen
-                    throw new RuntimeException(e);
-                }
+            }
+            if (changed) {
+                updateEndpointListenerScope(filters);
+            }
+        } catch (Throwable e) {
+            logger.log(Level.SEVERE, e.getMessage(), e);
+            if (e instanceof Error) {
+                throw (Error)e;
+            } else if (e instanceof RuntimeException) {
+                throw (RuntimeException)e;
+            } else {
+                // Should not happen
+                throw new RuntimeException(e);
             }
         }
     }
 
-    private void updateEndpointListenerScope() {
-        Set<String> filterSet = serviceListeners.keySet();
-
+    private void updateEndpointListenerScope(String[] filters) {
         Dictionary<String, Object> props = new Hashtable<String, Object>();
-        props.put(ENDPOINT_LISTENER_SCOPE, filterSet.toArray(new String[filterSet.size()]));
+        props.put(ENDPOINT_LISTENER_SCOPE, filters);
         endpointListener.setProperties(props);
+    }
+
+    private String[] getFilters() {
+        Set<String> filterSet = serviceListeners.keySet();
+        String[] filters = filterSet.toArray(new String[filterSet.size()]);
+        return filters;
     }
 
     private CollectionMap<Class<?>, ListenerInfo> findServiceListeners(EndpointDescription endpointDescription,
                                                                        String matchedFilter) {
+        Collection<ListenerInfo> listeners = null;
         synchronized (serviceListeners) {
 
             // First find all the listeners that have the matching filter
-            Collection<ListenerInfo> listeners = serviceListeners.get(matchedFilter);
+            listeners = serviceListeners.get(matchedFilter);
             if (listeners == null) {
                 return null;
             }
+            listeners = new ArrayList<ListenerInfo>(listeners);
+        }
 
-            // Try to partition the listeners by the interface classes 
-            List<String> interfaceNames = endpointDescription.getInterfaces();
-            CollectionMap<Class<?>, ListenerInfo> interfaceToListeners = new CollectionMap<Class<?>, ListenerInfo>();
-            for (String i : interfaceNames) {
-                for (Iterator<ListenerInfo> it = listeners.iterator(); it.hasNext();) {
-                    try {
-                        ListenerInfo listener = it.next();
-                        if (listener.isRemoved()) {
-                            it.remove();
-                            continue;
-                        }
-                        try {
-                            Class<?> interfaceClass = listener.getBundleContext().getBundle().loadClass(i);
-                            interfaceToListeners.putValue(interfaceClass, listener);
-                        } catch (IllegalStateException e) {
-                            logger.log(Level.WARNING, e.getMessage(), e);
-                            // Ignore the exception
-                        }
-                    } catch (ClassNotFoundException e) {
-                        // Ignore the listener as it cannot load the interface class
+        // Try to partition the listeners by the interface classes 
+        List<String> interfaceNames = endpointDescription.getInterfaces();
+        CollectionMap<Class<?>, ListenerInfo> interfaceToListeners = new CollectionMap<Class<?>, ListenerInfo>();
+        for (String i : interfaceNames) {
+            for (Iterator<ListenerInfo> it = listeners.iterator(); it.hasNext();) {
+                try {
+                    ListenerInfo listener = it.next();
+                    if (listener.isRemoved()) {
+                        it.remove();
+                        continue;
                     }
+                    try {
+                        // The classloading can be synchronzed against the serviceListeners
+                        Class<?> interfaceClass = listener.getBundleContext().getBundle().loadClass(i);
+                        interfaceToListeners.putValue(interfaceClass, listener);
+                    } catch (IllegalStateException e) {
+                        logger.log(Level.WARNING, e.getMessage(), e);
+                        // Ignore the exception
+                    }
+                } catch (ClassNotFoundException e) {
+                    // Ignore the listener as it cannot load the interface class
                 }
             }
-            return interfaceToListeners;
         }
+        return interfaceToListeners;
     }
 
     /**
      * @see org.osgi.framework.hooks.service.ListenerHook#removed(java.util.Collection)
      */
     public void removed(Collection listeners) {
-        synchronized (serviceListeners) {
-            try {
+        boolean changed = false;
+        String[] filters = null;
+        try {
+            synchronized (serviceListeners) {
                 Collection<ListenerInfo> listenerInfos = (Collection<ListenerInfo>)listeners;
-                boolean changed = false;
                 for (ListenerInfo l : listenerInfos) {
                     if (registration != null && l.getBundleContext() != context) {
                         String key = l.getFilter();
@@ -298,18 +311,21 @@ public class TopologyManagerImpl implements ListenerHook, RemoteServiceAdminList
                     }
                 }
                 if (changed) {
-                    updateEndpointListenerScope();
+                    filters = getFilters();
                 }
-            } catch (Throwable e) {
-                logger.log(Level.SEVERE, e.getMessage(), e);
-                if (e instanceof Error) {
-                    throw (Error)e;
-                } else if (e instanceof RuntimeException) {
-                    throw (RuntimeException)e;
-                } else {
-                    // Should not happen
-                    throw new RuntimeException(e);
-                }
+            }
+            if (changed) {
+                updateEndpointListenerScope(filters);
+            }
+        } catch (Throwable e) {
+            logger.log(Level.SEVERE, e.getMessage(), e);
+            if (e instanceof Error) {
+                throw (Error)e;
+            } else if (e instanceof RuntimeException) {
+                throw (RuntimeException)e;
+            } else {
+                // Should not happen
+                throw new RuntimeException(e);
             }
         }
     }

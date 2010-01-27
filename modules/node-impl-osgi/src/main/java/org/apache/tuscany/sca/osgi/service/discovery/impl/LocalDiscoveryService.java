@@ -63,7 +63,6 @@ public class LocalDiscoveryService extends AbstractDiscoveryService implements B
 
     public void start() {
         super.start();
-        getExtensionPointRegistry();
 
         UtilityExtensionPoint utilities = this.registry.getExtensionPoint(UtilityExtensionPoint.class);
         this.deployer = utilities.getUtility(Deployer.class);

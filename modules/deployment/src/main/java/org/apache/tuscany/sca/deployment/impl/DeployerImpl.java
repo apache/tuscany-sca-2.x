@@ -301,18 +301,20 @@ public class DeployerImpl implements Deployer {
         compositeBuilder =
             compositeBuilders.getCompositeBuilder("org.apache.tuscany.sca.assembly.builder.CompositeBuilder");
 
-        loadSystemContribution(monitorFactory.createMonitor());
+        loadSystemContribution(new ProcessorContext(monitorFactory.createMonitor()));
 
         inited = true;
 
     }
 
-    protected void loadSystemContribution(Monitor monitor) {
+    protected void loadSystemContribution(ProcessorContext context) {
         DefinitionsFactory definitionsFactory = modelFactories.getFactory(DefinitionsFactory.class);
         systemDefinitions = definitionsFactory.createDefinitions();
 
         DefinitionsExtensionPoint definitionsExtensionPoint =
             registry.getExtensionPoint(DefinitionsExtensionPoint.class);
+        
+        Monitor monitor = context.getMonitor();
         monitor.pushContext("Extension points definitions");
         try {
             for (Definitions defs : definitionsExtensionPoint.getDefinitions()) {
@@ -339,6 +341,13 @@ public class DeployerImpl implements Deployer {
         artifact.setLocation("Derived");
         artifact.setModel(systemDefinitions);
         artifacts.add(artifact);
+        
+        // now resolve and add the system contribution
+        try {
+            contributionProcessor.resolve(systemContribution, modelResolver, context);
+        } catch (ContributionResolveException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     protected Contribution cloneSystemContribution(Monitor monitor) {

@@ -20,6 +20,9 @@ package calculator.dosgi.impl;
 
 import static org.osgi.framework.Constants.OBJECTCLASS;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
 import org.osgi.framework.InvalidSyntaxException;
@@ -35,8 +38,7 @@ import calculator.dosgi.operations.SubtractService;
  * An implementation of the Calculator service.
  */
 public class CalculatorServiceImpl implements CalculatorService {
-    private ServiceTracker remoteServices;
-    private ServiceTracker localServices;
+    private Map<Class<?>, ServiceTracker> remoteServices = new HashMap<Class<?>, ServiceTracker>();
 
     public CalculatorServiceImpl() {
         super();
@@ -44,42 +46,34 @@ public class CalculatorServiceImpl implements CalculatorService {
 
     public CalculatorServiceImpl(BundleContext context) {
         super();
-        Filter remoteFilter = null, localFilter = null;
-        try {
-            remoteFilter =
-                context.createFilter("(&(" + OBJECTCLASS + "=calculator.dosgi.operations.*) (service.imported=*))");
-            localFilter =
-                context.createFilter("(&(" + OBJECTCLASS + "=calculator.dosgi.operations.*) (!(service.imported=*)))");
-        } catch (InvalidSyntaxException e) {
-            e.printStackTrace();
+        for (Class<?> cls : new Class<?>[] {AddService.class, SubtractService.class, MultiplyService.class,
+                                            DivideService.class}) {
+            Filter remoteFilter = null;
+            try {
+                remoteFilter =
+                    context.createFilter("(&(" + OBJECTCLASS + "=" + cls.getName() + ") (service.imported=*))");
+            } catch (InvalidSyntaxException e) {
+                e.printStackTrace();
+            }
+            ServiceTracker tracker = new ServiceTracker(context, remoteFilter, null);
+            this.remoteServices.put(cls, tracker);
+            tracker.open();
         }
-        this.remoteServices = new ServiceTracker(context, remoteFilter, null);
-        remoteServices.open();
-        this.localServices = new ServiceTracker(context, localFilter, null);
-        localServices.open();
     }
 
     private <T> T getService(Class<T> cls) {
+        ServiceTracker tracker = remoteServices.get(cls);
         try {
             // Wait for 10 seconds until the remote services are imported
-            remoteServices.waitForService(10000);
+            tracker.waitForService(10000);
         } catch (InterruptedException e) {
             throw new IllegalStateException(cls.getSimpleName() + " is not available");
         }
-        Object[] remoteObjects = remoteServices.getServices();
+        Object[] remoteObjects = tracker.getServices();
         if (remoteObjects != null) {
             for (Object s : remoteObjects) {
                 if (cls.isInstance(s)) {
                     System.out.println("Remote service: " + s);
-                    return cls.cast(s);
-                }
-            }
-        }
-        Object[] localObjects = localServices.getServices();
-        if (localObjects != null) {
-            for (Object s : localObjects) {
-                if (cls.isInstance(s)) {
-                    System.out.println("Local service: " + s);
                     return cls.cast(s);
                 }
             }
