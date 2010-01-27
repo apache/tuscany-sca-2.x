@@ -54,7 +54,7 @@
         <module>binding-sca-axis2-runtime</module>
         <module>binding-ws</module>
         <module>binding-ws-axis2</module>
-        <module>binding-ws-axis2-15-runtime</module>
+        <!--module>binding-ws-axis2-15-runtime</module-->
         <module>binding-ws-axis2-policy</module>
         <module>binding-ws-wsdlgen</module>
         <module>builder</module>
@@ -103,8 +103,10 @@
         <module>node-launcher</module>
         <module>node-launcher-equinox</module>
         <module>policy-security</module>
+        <!--module>policy-wspolicy</module-->
         <module>policy-xml-ws</module>
         <module>policy-logging</module>
+        <!--module>policy-transaction</module-->
         <module>sca-api</module>
         <module>sca-client-impl</module>
         <module>sca-client-javascript</module>
