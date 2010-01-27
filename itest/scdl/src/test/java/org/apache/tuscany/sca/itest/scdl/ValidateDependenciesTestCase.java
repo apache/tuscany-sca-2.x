@@ -33,27 +33,25 @@ import org.junit.Test;
  * Current required jars are:
  * geronimo-stax-api_1.0_spec-1.0.1.jar
  * jsr181-api-1.0-MR1.jar
- * junit-4.5.jar
+ * junit-4.8.1.jar
  * tuscany-assembly-2.0-SNAPSHOT.jar
  * tuscany-assembly-xml-2.0-SNAPSHOT.jar
  * tuscany-assembly-xsd-2.0-SNAPSHOT.jar
  * tuscany-binding-jms-2.0-SNAPSHOT.jar
  * tuscany-binding-jsonp-2.0-SNAPSHOT.jar
  * tuscany-binding-rmi-2.0-SNAPSHOT.jar
- * tuscany-binding-ws-2.0-SNAPSHOT.jar
+ * tuscany-builder-2.0-SNAPSHOT.jar
  * tuscany-common-java-2.0-SNAPSHOT.jar
  * tuscany-common-xml-2.0-SNAPSHOT.jar
  * tuscany-contribution-2.0-SNAPSHOT.jar
+ * tuscany-databinding-2.0-SNAPSHOT.jar
+ * tuscany-deployment-2.0-SNAPSHOT.jar
  * tuscany-extensibility-2.0-SNAPSHOT.jar
- * tuscany-implementation-bpel-2.0-SNAPSHOT.jar
  * tuscany-implementation-java-2.0-SNAPSHOT.jar
  * tuscany-interface-java-2.0-SNAPSHOT.jar
- * tuscany-interface-wsdl-2.0-SNAPSHOT.jar
  * tuscany-monitor-2.0-SNAPSHOT.jar
  * tuscany-sca-api-2.0-SNAPSHOT.jar
- * tuscany-scdl-2.0-SNAPSHOT.jar
  * tuscany-xsd-2.0-SNAPSHOT.jar
- * wsdl4j-1.6.2.jar
  * wstx-asl-3.2.4.jar
  * XmlSchema-1.4.2.jar
  * 
@@ -68,6 +66,6 @@ public class ValidateDependenciesTestCase {
         Assert.assertTrue(dependenciesDir.exists());
         
         File[] dependencyFiles = dependenciesDir.listFiles();
-        Assert.assertEquals(20, dependencyFiles.length);
+        Assert.assertEquals(23, dependencyFiles.length);
     }
 }

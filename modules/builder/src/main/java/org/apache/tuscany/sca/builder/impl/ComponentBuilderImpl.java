@@ -630,8 +630,8 @@ public class ComponentBuilderImpl {
                               "PropertXSDElementsDontMatch", 
                               component.getName(), 
                               componentProperty.getName(),
-                              componentProperty.getXSDElement().toString(),
-                              componentTypeProperty.getXSDElement().toString());                
+                              componentProperty.getXSDElement(),
+                              componentTypeProperty.getXSDElement());                
             }
             
             if ( componentProperty.getXSDType() != null &&
@@ -642,8 +642,8 @@ public class ComponentBuilderImpl {
                               "PropertXSDTypesDontMatch", 
                               component.getName(), 
                               componentProperty.getName(),
-                              componentProperty.getXSDType().toString(),
-                              componentTypeProperty.getXSDType().toString());                
+                              componentProperty.getXSDType(),
+                              componentTypeProperty.getXSDType());                
             }            
         }
     }

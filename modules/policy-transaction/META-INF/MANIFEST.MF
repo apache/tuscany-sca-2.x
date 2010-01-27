@@ -8,6 +8,8 @@ Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany Security Policy Model
 Import-Package: javax.security.auth.callback,
  javax.security.auth.login,
+ javax.transaction;version="1.1.0",
+ javax.transaction.xa;version="1.1.0",
  javax.xml.namespace,
  javax.xml.stream,
  org.apache.tuscany.sca.assembly;version="2.0.0",

@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.assembly.impl;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.AbstractProperty;
+import org.apache.tuscany.sca.interfacedef.DataType;
 
 /**
  * Represents an abstract property.
@@ -29,12 +30,13 @@ import org.apache.tuscany.sca.assembly.AbstractProperty;
  * @version $Rev$ $Date$
  */
 public class AbstractPropertyImpl extends ExtensibleImpl implements AbstractProperty {
-    private Object value;
-    private String name;
-    private QName xsdType;
-    private QName xsdElement;
-    private boolean many;
-    private boolean mustSupply;
+    protected Object value;
+    protected String name;
+    protected QName xsdType;
+    protected QName xsdElement;
+    protected boolean many;
+    protected boolean mustSupply;
+    protected DataType dataType;
 
     /**
      * Constructs a new abstract property.
@@ -88,6 +90,14 @@ public class AbstractPropertyImpl extends ExtensibleImpl implements AbstractProp
 
     public void setXSDType(QName type) {
         this.xsdType = type;
+    }
+
+    public DataType getDataType() {
+        return dataType;
+    }
+
+    public void setDataType(DataType dataType) {
+        this.dataType = dataType;
     }
 
 }

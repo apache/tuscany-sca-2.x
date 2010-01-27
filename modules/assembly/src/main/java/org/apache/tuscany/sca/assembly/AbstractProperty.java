@@ -20,6 +20,8 @@ package org.apache.tuscany.sca.assembly;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.interfacedef.DataType;
+
 /**
  * A property allows for the configuration of an implementation with externally
  * set data values. An implementation can have zero or more properties. Each
@@ -118,5 +120,16 @@ public interface AbstractProperty extends Base, Extensible {
      * @param element the element defining the type of this property
      */
     void setXSDElement(QName element);
-
+    
+    /**
+     * Get the data type for this property
+     * @return The data type
+     */
+    DataType getDataType();
+    
+    /**
+     * Set the data type
+     * @param dataType The data type
+     */
+    void setDataType(DataType dataType);
 }

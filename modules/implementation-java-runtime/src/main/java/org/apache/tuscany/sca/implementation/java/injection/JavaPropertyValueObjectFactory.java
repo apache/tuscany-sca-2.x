@@ -65,18 +65,6 @@ public class JavaPropertyValueObjectFactory implements PropertyValueFactory {
         this.mediator = mediator;
     }
 
-    /**
-     * Introspect the property 
-     * @param javaElement
-     * @return
-     */
-    private DataType<?> introspect(JavaElementImpl javaElement) {
-        DataType<XMLType> dt =
-            new DataTypeImpl<XMLType>(null, javaElement.getType(), javaElement.getGenericType(), XMLType.UNKNOWN);
-        mediator.getDataBindings().introspectType(dt, null);
-        return dt;
-    }
-
     public ObjectFactory createValueFactory(Property property, Object propertyValue, JavaElementImpl javaElement) {
         Document doc = (Document)propertyValue;
         List<Node> nodes = getValues(doc);
@@ -131,24 +119,28 @@ public class JavaPropertyValueObjectFactory implements PropertyValueFactory {
             sourceDataType =
                 new DataTypeImpl<XMLType>(DOMDataBinding.NAME, Node.class,
                                           new XMLType(null, this.property.getXSDType()));
-            TypeInfo typeInfo = null;
-            if (this.property.getXSDType() != null) {
-                if (simpleTypeMapper.isSimpleXSDType(this.property.getXSDType())) {
-                    typeInfo = new TypeInfo(property.getXSDType(), true, null);
+            
+            targetDataType = property.getDataType();
+            if (targetDataType == null) {
+                TypeInfo typeInfo = null;
+                if (this.property.getXSDType() != null) {
+                    if (simpleTypeMapper.isSimpleXSDType(this.property.getXSDType())) {
+                        typeInfo = new TypeInfo(property.getXSDType(), true, null);
+                    } else {
+                        typeInfo = new TypeInfo(property.getXSDType(), false, null);
+                    }
                 } else {
                     typeInfo = new TypeInfo(property.getXSDType(), false, null);
                 }
-            } else {
-                typeInfo = new TypeInfo(property.getXSDType(), false, null);
-            }
 
-            XMLType xmlType = new XMLType(typeInfo);
-            String dataBinding = null; // (String)property.getExtensions().get(DataBinding.class.getName());
-            if (dataBinding != null) {
-                targetDataType = new DataTypeImpl<XMLType>(dataBinding, javaType, xmlType);
-            } else {
-                targetDataType = new DataTypeImpl<XMLType>(dataBinding, javaType, xmlType);
-                mediator.getDataBindings().introspectType(targetDataType, null);
+                XMLType xmlType = new XMLType(typeInfo);
+                String dataBinding = null; // (String)property.getExtensions().get(DataBinding.class.getName());
+                if (dataBinding != null) {
+                    targetDataType = new DataTypeImpl<XMLType>(dataBinding, javaType, xmlType);
+                } else {
+                    targetDataType = new DataTypeImpl<XMLType>(dataBinding, javaType, xmlType);
+                    mediator.getDataBindings().introspectType(targetDataType, null);
+                }
             }
         }
     }
