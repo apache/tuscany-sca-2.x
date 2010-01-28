@@ -34,7 +34,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.hazelcast.client.HazelcastClient;
-import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
 
 /**
@@ -43,7 +42,7 @@ public class ClientTestCase{
 
     private static URI domainURI = URI.create("tuscany:OneNodeTestCase?listen=127.0.0.1:14829");
     private static Node node;
-    private static HazelcastInstance client;
+    private static HazelcastClient client;
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
