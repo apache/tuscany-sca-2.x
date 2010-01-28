@@ -23,18 +23,27 @@ import static org.junit.Assert.assertEquals;
 
 import java.net.URI;
 
-import org.junit.Test;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
+import org.junit.Ignore;
 import org.oasisopen.sca.NoSuchDomainException;
 import org.oasisopen.sca.NoSuchServiceException;
 
 import calculator.CalculatorService;
 
-public class HJJTestcase {
+@Ignore
+public class ClientTestCase {
 
-    @Test
+    //@Test
     public void foo() throws NoSuchServiceException, NoSuchDomainException {
-        SCAClientFactoryImpl cf = new SCAClientFactoryImpl(URI.create("tribes:foo"));
+        
+        Node node = NodeFactory.newInstance().createNode(URI.create("tuscany:foo?listen=127.0.0.1:14828"), new String[]{"../../samples/calculator/target/sample-calculator.jar"});
+        node.start();
+        
+        SCAClientFactoryImpl cf = new SCAClientFactoryImpl(URI.create("tuscanyClient:foo?remotes=127.0.0.1:14828"));
         CalculatorService service = cf.getService(CalculatorService.class, "CalculatorServiceComponent");
         assertEquals(3, service.add(1, 2), 0);
+        
+        node.stop();
     }
 }

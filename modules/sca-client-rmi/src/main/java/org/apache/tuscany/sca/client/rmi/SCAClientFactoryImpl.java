@@ -24,100 +24,76 @@ import java.lang.reflect.Proxy;
 import java.net.URI;
 import java.util.List;
 
+import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
-import org.apache.tuscany.sca.node.NodeFinder;
+import org.apache.tuscany.sca.node.impl.NodeFactoryImpl;
 import org.apache.tuscany.sca.node.impl.NodeImpl;
 import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
 import org.oasisopen.sca.NoSuchDomainException;
 import org.oasisopen.sca.NoSuchServiceException;
-import org.oasisopen.sca.ServiceUnavailableException;
 import org.oasisopen.sca.client.SCAClientFactory;
+import org.oasisopen.sca.client.SCAClientFactoryFinder;
 
 public class SCAClientFactoryImpl extends SCAClientFactory {
 
-    private EndpointRegistry endpointRegistry;
-    private ExtensionPointRegistry extensionsRegistry;
-    
-    public SCAClientFactoryImpl() throws NoSuchDomainException {
-        super(URI.create(Node.DEFAULT_DOMAIN_URI));
-    }    
+    public static void setSCAClientFactoryFinder(SCAClientFactoryFinder factoryFinder) {
+        SCAClientFactory.factoryFinder = factoryFinder;
+    }
 
+    private ExtensionPointRegistry extensionsRegistry;
+    private EndpointRegistry endpointRegistry;
+    private NodeFactoryImpl nodeFactory;
+    
     public SCAClientFactoryImpl(URI domainURI) throws NoSuchDomainException {
         super(domainURI);
-        NodeImpl node = (NodeImpl)NodeFactory.getInstance().createNode(domainURI);
-        if (node.getExtensionPoints() == null) {
-            // No local nodes have been started (for this domain?)
-            // ideally we'll use the Hazelcast client but for now just start a node
-            node.start();            
+        
+        this.nodeFactory = (NodeFactoryImpl)NodeFactory.getInstance();
+        this.extensionsRegistry = nodeFactory.getExtensionPoints();
+        if (extensionsRegistry != null) {
+            UtilityExtensionPoint utilities = extensionsRegistry.getExtensionPoint(UtilityExtensionPoint.class);
+            DomainRegistryFactory domainRegistryFactory = utilities.getUtility(DomainRegistryFactory.class);
+            this.endpointRegistry = domainRegistryFactory.getEndpointRegistry("tuscanyClient:", getDomainURI().toString()); // TODO: shouldnt use null for reg uri
         }
-        this.extensionsRegistry = node.getExtensionPoints();
-        UtilityExtensionPoint utilities = extensionsRegistry.getExtensionPoint(UtilityExtensionPoint.class);
-        DomainRegistryFactory domainRegistryFactory = utilities.getUtility(DomainRegistryFactory.class);
-        this.endpointRegistry = domainRegistryFactory.getEndpointRegistry(getDomainURI().toString(), node.getConfiguration().getDomainName());
-    }
-
+    }   
+    
     @Override
-    @SuppressWarnings("unchecked")
     public <T> T getService(Class<T> serviceInterface, String serviceName) throws NoSuchServiceException, NoSuchDomainException {
-        if ("vm".equals(getDomainURI().getScheme())) {
-            return getLocalService(serviceInterface, serviceName);
-        } else {
-            InvocationHandler handler = new SCAClientProxyHandler(serviceName, extensionsRegistry, endpointRegistry);
-            return (T)Proxy.newProxyInstance(serviceInterface.getClassLoader(), new Class[] {serviceInterface}, handler);
-        }
-    }
-    
-    private String getDomainName() {
-//        String uri = getDomainURI().toString();
-//        int i = uri.indexOf(":");
-//        if (i > -1 && uri.charAt(i+1) != '/') {
-//            uri = uri.replaceFirst(":", ":/");
-//        }
-//        if (i > -1 && uri.charAt(i+2) != '/') {
-//            uri = uri.replaceFirst(":/", "://");
-//        }
-//        if (i < 0) {
-//            return uri;
-//        } else {
-//            return URI.create(uri).getHost();
-//        }
-        return getDomainURI().toString();
-    }
-    
-    public void stop() {
-        extensionsRegistry.stop();
-    }
+        
+        if (endpointRegistry != null) {
+            List<Endpoint> eps = endpointRegistry.findEndpoint(serviceName);
+            if (eps == null || eps.size() < 1) {
+                throw new NoSuchServiceException(serviceName);
+            }
+            Endpoint endpoint = eps.get(0); // TODO: what should be done with multiple endpoints?
 
-    public EndpointRegistry getEndpointRegistry() {
-        return endpointRegistry;
-    }
-
-    public ExtensionPointRegistry getExtensionsRegistry() {
-        return extensionsRegistry;
-    }
-
-    public <T> T getLocalService(Class<T> serviceInterface, String serviceName) throws NoSuchServiceException, NoSuchDomainException {
-        URI domainURI = getDomainURI();
-        if (domainURI == null) {
-            domainURI = URI.create(Node.DEFAULT_DOMAIN_URI);
-        }
-        List<Node> nodes = NodeFinder.getNodes(domainURI);
-        if (nodes == null || nodes.size() < 1) {
-            throw new NoSuchDomainException(domainURI.toString());
-        }
-
-        for (Node n : nodes) {
-            try {
-                return n.getService(serviceInterface, serviceName);
-            } catch(ServiceUnavailableException e) {
-                // Ingore and continue
+            Node localNode = findLocalNode(endpoint);
+            if (localNode != null) {
+                return localNode.getService(serviceInterface, serviceName);
             }
         }
 
-        throw new NoSuchServiceException(serviceName);
+        String uri = getDomainURI().toString();
+        if (uri.startsWith("tuscany:")) {
+            uri = uri.replace("tuscany:", "tuscanyClient:");
+        }
+        InvocationHandler handler = new SCAClientProxyHandler(nodeFactory, uri, serviceName);
+        return (T)Proxy.newProxyInstance(serviceInterface.getClassLoader(), new Class[] {serviceInterface}, handler);
+
     }
+
+    private Node findLocalNode(Endpoint endpoint) {
+        for (Node node : nodeFactory.getNodes().values()) {
+        	for (Endpoint ep : ((NodeImpl)node).getServiceEndpoints()) {
+                if (endpoint.getURI().equals(ep.getURI())) {
+                    return node;
+                }
+        	}
+        }
+        return null;
+    }
+
 }

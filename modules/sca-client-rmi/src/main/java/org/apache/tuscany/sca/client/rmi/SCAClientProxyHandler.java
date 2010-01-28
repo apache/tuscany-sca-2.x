@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.client.rmi;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.net.URI;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
@@ -29,23 +30,32 @@ import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.binding.rmi.provider.RMIBindingInvoker;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.host.rmi.ExtensibleRMIHost;
 import org.apache.tuscany.sca.host.rmi.RMIHost;
 import org.apache.tuscany.sca.host.rmi.RMIHostExtensionPoint;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
+import org.apache.tuscany.sca.node.impl.NodeFactoryImpl;
+import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
 import org.oasisopen.sca.NoSuchServiceException;
 
 public class SCAClientProxyHandler implements InvocationHandler {
 
+    protected NodeFactoryImpl nodeFactory;
+    protected ExtensionPointRegistry extensionsRegistry;
     protected EndpointRegistry endpointRegistry;
     protected EndpointReference endpointReference;
     protected String serviceName;
     protected RMIHost rmiHost;
+    private String domainURI;
     
-    public SCAClientProxyHandler(String serviceName, ExtensionPointRegistry extensionsRegistry, EndpointRegistry endpointRegistry) {
-        this.endpointRegistry = endpointRegistry;
+    public SCAClientProxyHandler(NodeFactoryImpl nodeFactory, String domainURI, String serviceName) {
+        this.nodeFactory = nodeFactory;
+        this.domainURI = domainURI;
         this.serviceName = serviceName;
-
+        this.extensionsRegistry = nodeFactory.getExtensionPoints();
         RMIHostExtensionPoint rmiHosts = extensionsRegistry.getExtensionPoint(RMIHostExtensionPoint.class);
         this.rmiHost = new ExtensibleRMIHost(rmiHosts);
 
@@ -60,16 +70,28 @@ public class SCAClientProxyHandler implements InvocationHandler {
     }
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        Node node = null;
+        try {
 
-        List<Endpoint> endpoints = endpointRegistry.findEndpoint(endpointReference);
-        if (endpoints.size() <1 ) {
-            throw new NoSuchServiceException(serviceName);
+            node = NodeFactory.newInstance().createNode(URI.create(domainURI)).start();
+            UtilityExtensionPoint utilities = extensionsRegistry.getExtensionPoint(UtilityExtensionPoint.class);
+            DomainRegistryFactory domainRegistryFactory = utilities.getUtility(DomainRegistryFactory.class);
+            this.endpointRegistry = domainRegistryFactory.getEndpointRegistry(null, domainURI);
+
+            List<Endpoint> endpoints = endpointRegistry.findEndpoint(endpointReference);
+            if (endpoints.size() <1 ) {
+                throw new NoSuchServiceException(serviceName);
+            }
+
+            String uri = endpoints.get(0).getBinding().getURI();
+            RMIBindingInvoker invoker = new RMIBindingInvoker(rmiHost, uri, method);
+
+            return invoker.invokeTarget(args);
+
+        } finally {
+            if (node != null) {
+                node.stop();
+            }
         }
-
-        String uri = endpoints.get(0).getBinding().getURI();
-        RMIBindingInvoker invoker = new RMIBindingInvoker(rmiHost, uri, method);
-
-        return invoker.invokeTarget(args);
     }
-
 }
