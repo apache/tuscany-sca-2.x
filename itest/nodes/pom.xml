@@ -44,6 +44,7 @@
 -->
     <module>one-jvm</module>
     <module>one-jvm-hazelcast</module>
+    <module>one-jvm-hazelcast-client</module>
     <module>one-node-test</module>
     <module>two-nodes-test</module>
     <module>two-nodes-two-vms-test</module>
