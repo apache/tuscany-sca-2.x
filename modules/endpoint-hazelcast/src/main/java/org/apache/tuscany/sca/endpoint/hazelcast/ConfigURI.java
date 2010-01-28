@@ -59,6 +59,10 @@ public class ConfigURI {
     }
 
     private void parseURI(String uri) {
+        if (uri.startsWith("tuscanyClient:")) {
+            uri = uri.replace("tuscanyClient:", "tuscany:");    
+        }
+        
         if (!uri.startsWith("tuscany:")) {
             throw new IllegalArgumentException("Config URI must start with 'tuscany:'");
         }

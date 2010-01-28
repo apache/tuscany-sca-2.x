@@ -57,10 +57,10 @@ public class HazelcastEndpointRegistry implements EndpointRegistry, LifeCycleLis
     private List<EndpointListener> listeners = new CopyOnWriteArrayList<EndpointListener>();
 
     private ExtensionPointRegistry registry;
-    private ConfigURI configURI;
+    protected ConfigURI configURI;
 
-    HazelcastInstance hazelcastInstance;
-    Map<Object, Object> map;
+    private HazelcastInstance hazelcastInstance;
+    protected Map<Object, Object> map;
     private List<String> localEndpoints = new ArrayList<String>();;
 
     public HazelcastEndpointRegistry(ExtensionPointRegistry registry,
