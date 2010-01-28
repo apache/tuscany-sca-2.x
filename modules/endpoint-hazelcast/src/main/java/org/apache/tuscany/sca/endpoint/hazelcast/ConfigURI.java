@@ -59,8 +59,8 @@ public class ConfigURI {
     }
 
     private void parseURI(String uri) {
-        if (uri.startsWith("tuscanyClient:")) {
-            uri = uri.replace("tuscanyClient:", "tuscany:");    
+        if (uri.startsWith("tuscanyclient:")) {
+            uri = uri.replace("tuscanyclient:", "tuscany:");    
         }
         
         if (!uri.startsWith("tuscany:")) {
@@ -69,10 +69,10 @@ public class ConfigURI {
         
         // make it a URI so java.net.URI can be used to parse it
         int i = uri.indexOf(":");
-        if (uri.charAt("tuscany:".length()+1) != '/') {
+        if (uri.charAt("tuscany:".length()) != '/') {
             uri = uri.replaceFirst(":", ":/");
         }
-        if (uri.charAt("tuscany:".length()+2) != '/') {
+        if (uri.charAt("tuscany:".length()+1) != '/') {
             uri = uri.replaceFirst(":/", "://");
         }
         URI configURI = URI.create(uri);

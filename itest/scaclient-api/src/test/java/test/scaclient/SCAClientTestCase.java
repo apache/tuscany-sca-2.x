@@ -27,6 +27,7 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.oasisopen.sca.client.SCAClientFactory;
 
@@ -57,6 +58,15 @@ public class SCAClientTestCase extends TestCase {
         HelloworldService service = SCAClientFactory.newInstance(URI.create("myFooDomain")).getService(HelloworldService.class, "HelloworldComponent");
         assertEquals("Hello petra", service.sayHello("petra"));
     }
+
+//    @Test @Ignore
+//    public void testHTTPURI() throws Exception {
+//        node = NodeFactory.getInstance().createNode(URI.create("http://defaultDomain"), new String[] {"target/classes"});
+//        node.start();
+//
+//        HelloworldService service = SCAClientFactory.newInstance(URI.create("http://defaultDomain")).getService(HelloworldService.class, "HelloworldComponent");
+//        assertEquals("Hello petra", service.sayHello("petra"));
+//    }
 
     @Override
     protected void tearDown() throws Exception {

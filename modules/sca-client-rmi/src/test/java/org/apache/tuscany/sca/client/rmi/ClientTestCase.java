@@ -40,7 +40,7 @@ public class ClientTestCase {
         Node node = NodeFactory.newInstance().createNode(URI.create("tuscany:foo?listen=127.0.0.1:14828"), new String[]{"../../samples/calculator/target/sample-calculator.jar"});
         node.start();
         
-        SCAClientFactoryImpl cf = new SCAClientFactoryImpl(URI.create("tuscanyClient:foo?remotes=127.0.0.1:14828"));
+        SCAClientFactoryImpl cf = new SCAClientFactoryImpl(URI.create("tuscanyclient:foo?remotes=127.0.0.1:14828"));
         CalculatorService service = cf.getService(CalculatorService.class, "CalculatorServiceComponent");
         assertEquals(3, service.add(1, 2), 0);
         

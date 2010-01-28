@@ -55,25 +55,26 @@ public class SCAClientProxyHandler implements InvocationHandler {
         this.nodeFactory = nodeFactory;
         this.domainURI = domainURI;
         this.serviceName = serviceName;
-        this.extensionsRegistry = nodeFactory.getExtensionPoints();
-        RMIHostExtensionPoint rmiHosts = extensionsRegistry.getExtensionPoint(RMIHostExtensionPoint.class);
-        this.rmiHost = new ExtensibleRMIHost(rmiHosts);
-
-        FactoryExtensionPoint factories = extensionsRegistry.getExtensionPoint(FactoryExtensionPoint.class);
-        AssemblyFactory assemblyFactory = factories.getFactory(AssemblyFactory.class);
-
-        this.endpointReference = assemblyFactory.createEndpointReference();
-        endpointReference.setReference(assemblyFactory.createComponentReference());
-        Endpoint targetEndpoint = assemblyFactory.createEndpoint();
-        targetEndpoint.setURI(serviceName);
-        endpointReference.setTargetEndpoint(targetEndpoint);
     }
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         Node node = null;
         try {
 
-            node = NodeFactory.newInstance().createNode(URI.create(domainURI)).start();
+            nodeFactory = (NodeFactoryImpl)NodeFactory.newInstance();
+            node = nodeFactory.createNode(URI.create(domainURI)).start();
+            this.extensionsRegistry = nodeFactory.getExtensionPoints();
+            RMIHostExtensionPoint rmiHosts = extensionsRegistry.getExtensionPoint(RMIHostExtensionPoint.class);
+            this.rmiHost = new ExtensibleRMIHost(rmiHosts);
+
+            FactoryExtensionPoint factories = extensionsRegistry.getExtensionPoint(FactoryExtensionPoint.class);
+            AssemblyFactory assemblyFactory = factories.getFactory(AssemblyFactory.class);
+
+            this.endpointReference = assemblyFactory.createEndpointReference();
+            endpointReference.setReference(assemblyFactory.createComponentReference());
+            Endpoint targetEndpoint = assemblyFactory.createEndpoint();
+            targetEndpoint.setURI(serviceName);
+            endpointReference.setTargetEndpoint(targetEndpoint);
             UtilityExtensionPoint utilities = extensionsRegistry.getExtensionPoint(UtilityExtensionPoint.class);
             DomainRegistryFactory domainRegistryFactory = utilities.getUtility(DomainRegistryFactory.class);
             this.endpointRegistry = domainRegistryFactory.getEndpointRegistry(null, domainURI);

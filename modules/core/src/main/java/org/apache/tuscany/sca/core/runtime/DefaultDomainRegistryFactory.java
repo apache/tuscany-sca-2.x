@@ -76,7 +76,7 @@ public class DefaultDomainRegistryFactory implements DomainRegistryFactory, Life
         }
         
         String key;
-        if (endpointRegistryURI.startsWith("tuscany:") || endpointRegistryURI.startsWith("tuscanyClient:")){ 
+        if (endpointRegistryURI.startsWith("tuscany:") || endpointRegistryURI.startsWith("tuscanyclient:")){ 
             key = "tuscany:," + domainURI;
         } else {
             key = endpointRegistryURI + "," + domainURI;
@@ -98,7 +98,7 @@ public class DefaultDomainRegistryFactory implements DomainRegistryFactory, Life
             return endpointRegistry;
         }
 
-        String scheme = "tuscanyClient:".equals(endpointRegistryURI) ? "tuscanyClient" : URI.create(endpointRegistryURI).getScheme();
+        String scheme = "tuscanyclient:".equals(endpointRegistryURI) ? "tuscanyClient" : URI.create(endpointRegistryURI).getScheme();
         if (scheme != null) {
             scheme = scheme.toLowerCase();
         } else {
@@ -134,7 +134,7 @@ public class DefaultDomainRegistryFactory implements DomainRegistryFactory, Life
         for (EndpointListener listener : listeners) {
             endpointRegistry.addListener(listener);
         }
-        if (!"tuscanyClient:".equals(endpointRegistryURI)) {
+        if (!"tuscanyclient:".equals(endpointRegistryURI)) {
             endpointRegistries.put(key, endpointRegistry);
         }
         return endpointRegistry;

@@ -56,10 +56,32 @@ public class SCAClientFactoryImpl extends SCAClientFactory {
         if (extensionsRegistry != null) {
             UtilityExtensionPoint utilities = extensionsRegistry.getExtensionPoint(UtilityExtensionPoint.class);
             DomainRegistryFactory domainRegistryFactory = utilities.getUtility(DomainRegistryFactory.class);
-            this.endpointRegistry = domainRegistryFactory.getEndpointRegistry("tuscanyClient:", getDomainURI().toString()); // TODO: shouldnt use null for reg uri
+            this.endpointRegistry = domainRegistryFactory.getEndpointRegistry(getRegistryURI(), getDomainName()); 
         }
     }   
     
+    private String getRegistryURI() {
+        String uri = getDomainURI().toString();
+        if (uri.startsWith("tuscany:")) {
+            uri = uri.replace("tuscany:", "tuscanyclient:");
+        }
+        return uri;
+    }
+
+    private String getDomainName() {
+        if (getDomainURI().getHost() != null) {
+            return getDomainURI().getHost();
+        }
+        String uri = getDomainURI().toString();
+        if (!uri.startsWith("tuscany://")) {
+            if (uri.startsWith("tuscany:")) {
+                uri = uri.replace("tuscany:", "tuscany://");
+                return URI.create(uri).getHost();
+            }
+        }
+        return uri;
+    }
+
     @Override
     public <T> T getService(Class<T> serviceInterface, String serviceName) throws NoSuchServiceException, NoSuchDomainException {
         
@@ -78,7 +100,7 @@ public class SCAClientFactoryImpl extends SCAClientFactory {
 
         String uri = getDomainURI().toString();
         if (uri.startsWith("tuscany:")) {
-            uri = uri.replace("tuscany:", "tuscanyClient:");
+            uri = uri.replace("tuscany:", "tuscanyclient://");
         }
         InvocationHandler handler = new SCAClientProxyHandler(nodeFactory, uri, serviceName);
         return (T)Proxy.newProxyInstance(serviceInterface.getClassLoader(), new Class[] {serviceInterface}, handler);

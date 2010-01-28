@@ -61,6 +61,15 @@ public class SCAClientTestCase extends TestCase {
 
     @Test
     public void testExplicitRemote() throws Exception {
+        node = NodeFactory.newInstance().createNode(URI.create("tuscany:myFooDomain?listen=127.0.0.1:14821"), new String[] {"target/classes"});
+        node.start();
+
+        HelloworldService service = SCAClientFactory.newInstance(URI.create("tuscany:myFooDomain?remotes=127.0.0.1:14821")).getService(HelloworldService.class, "HelloworldComponent");
+        assertEquals("Hello petra", service.sayHello("petra"));
+    }
+
+    @Test
+    public void testExplicitRemote2() throws Exception {
         node = NodeFactory.getInstance().createNode(URI.create("tuscany:myFooDomain?listen=127.0.0.1:14821"), new String[] {"target/classes"});
         node.start();
 

@@ -37,7 +37,7 @@ public class HazelcastClientEndpointRegistry extends HazelcastEndpointRegistry {
                                      Map<String, String> attributes,
                                      String domainRegistryURI,
                                      String domainURI) {
-        super(registry, attributes, domainURI, domainRegistryURI);
+        super(registry, attributes, domainRegistryURI, domainURI);
     }
 
     @Override
