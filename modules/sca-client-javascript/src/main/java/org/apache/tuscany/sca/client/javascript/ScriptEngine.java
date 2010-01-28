@@ -177,7 +177,7 @@ public class ScriptEngine extends ScriptableObject implements Runnable{
             this.startScriptEngine();
         } 
         finally {
-            tuscany.stop();
+//            tuscany.stop();
             Thread.currentThread().setContextClassLoader(oldClassLoader);
             Context.exit();
         }
@@ -288,30 +288,33 @@ public class ScriptEngine extends ScriptableObject implements Runnable{
      * This method is defined as a script function. 
      */
     public void listServices() {
-        EndpointRegistry epr = tuscany.getEndpointRegistry();
-        for (Endpoint e : epr.getEndpoints()) {
-            out.println(e.getURI());
-        }
+        // FIXME
+//        EndpointRegistry epr = tuscany.getEndpointRegistry();
+//        for (Endpoint e : epr.getEndpoints()) {
+//            out.println(e.getURI());
+//        }
     }
     
     public Object getService(String serviceName) {
-        ExtensionPointRegistry extensionsRegistry = tuscany.getExtensionsRegistry();
-        FactoryExtensionPoint factories = extensionsRegistry.getExtensionPoint(FactoryExtensionPoint.class);
-        AssemblyFactory assemblyFactory = factories.getFactory(AssemblyFactory.class);
-
-        EndpointReference endpointReference = assemblyFactory.createEndpointReference();
-        endpointReference.setReference(assemblyFactory.createComponentReference());
-        Endpoint targetEndpoint = assemblyFactory.createEndpoint();
-        targetEndpoint.setURI(serviceName);
-        endpointReference.setTargetEndpoint(targetEndpoint);
-        EndpointRegistry epr = tuscany.getEndpointRegistry();
-        List<Endpoint> er = epr.findEndpoint(endpointReference);
-        if (er.size() < 1) {
-            err.println("service not found " + serviceName);
-            return null;
-        }
-        JavaInterface ifac = (JavaInterface)er.get(0).getComponentServiceInterfaceContract().getInterface();
-        return getService(serviceName, ifac.getName());
+        // FIXME
+//        ExtensionPointRegistry extensionsRegistry = tuscany.getExtensionsRegistry();
+//        FactoryExtensionPoint factories = extensionsRegistry.getExtensionPoint(FactoryExtensionPoint.class);
+//        AssemblyFactory assemblyFactory = factories.getFactory(AssemblyFactory.class);
+//
+//        EndpointReference endpointReference = assemblyFactory.createEndpointReference();
+//        endpointReference.setReference(assemblyFactory.createComponentReference());
+//        Endpoint targetEndpoint = assemblyFactory.createEndpoint();
+//        targetEndpoint.setURI(serviceName);
+//        endpointReference.setTargetEndpoint(targetEndpoint);
+//        EndpointRegistry epr = tuscany.getEndpointRegistry();
+//        List<Endpoint> er = epr.findEndpoint(endpointReference);
+//        if (er.size() < 1) {
+//            err.println("service not found " + serviceName);
+//            return null;
+//        }
+//        JavaInterface ifac = (JavaInterface)er.get(0).getComponentServiceInterfaceContract().getInterface();
+//        return getService(serviceName, ifac.getName());
+        return null;
     }
 
     /**
