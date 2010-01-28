@@ -19,10 +19,10 @@
 
 package itest;
 
-import static org.junit.Assert.fail;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.net.URI;
 
@@ -41,7 +41,7 @@ import com.hazelcast.core.IMap;
  */
 public class ClientTestCase{
 
-    private static URI domainURI = URI.create("tuscany:OneNodeTestCase?listen=127.0.0.1:14820");
+    private static URI domainURI = URI.create("tuscany:OneNodeTestCase?listen=127.0.0.1:14829");
     private static Node node;
     private static HazelcastInstance client;
 
@@ -54,23 +54,35 @@ public class ClientTestCase{
     @Test
     public void testNode() throws Exception {
 
-        client = HazelcastClient.newHazelcastClient("OneNodeTestCase", "tuscany", "127.0.0.1:14820"); 
+        client = HazelcastClient.newHazelcastClient("OneNodeTestCase", "tuscany", "127.0.0.1:14829"); 
         IMap<Object, Object> map = client.getMap("OneNodeTestCase/Endpoints");        
 
         assertNotNull(map);
         assertEquals(2, map.size());
         Object ep1 = map.get("HelloworldService#service-binding(Helloworld/Helloworld)");
-        System.out.println((RuntimeEndpointImpl)ep1);
+//        System.out.println((RuntimeEndpointImpl)ep1);
         assertNotNull(ep1);
         assertTrue(ep1 instanceof RuntimeEndpointImpl);
         Object ep2 = map.get("HelloworldClient#service-binding(Helloworld/Helloworld)");
         assertNotNull(ep2);
     }
 
+    //@Test
+    public void testTime() throws Exception {
+        long start = System.currentTimeMillis();
+        long count = 100;
+        for (int i=0; i<count; i++) {
+            testNode();
+            client.shutdown();
+        }
+        long avg = (System.currentTimeMillis() - start) / count;
+        System.out.println("Average for " + count + " client connects " + avg);
+    }
+
     @Test
     public void testBadPassword() throws Exception {
         try {
-            client = HazelcastClient.newHazelcastClient("OneNodeTestCase", "IncorrectPassword", "127.0.0.1:14820"); 
+            client = HazelcastClient.newHazelcastClient("OneNodeTestCase", "IncorrectPassword", "127.0.0.1:14829"); 
             fail();
         } catch (Exception e) {
             //expected
