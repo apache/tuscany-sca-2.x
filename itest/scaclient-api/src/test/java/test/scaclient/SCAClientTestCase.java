@@ -20,11 +20,14 @@
 package test.scaclient;
 
 import itest.HelloworldService;
-import junit.framework.TestCase;
+
 import java.net.URI;
+
+import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
+import org.junit.Test;
 import org.oasisopen.sca.client.SCAClientFactory;
 
 /**
@@ -36,15 +39,22 @@ public class SCAClientTestCase extends TestCase {
 
     private Node node;
 
-    @Override
-    protected void setUp() throws Exception {
-        node = NodeFactory.getInstance().createNode();
+    @Test
+    public void testDefault() throws Exception {
+
+        node = NodeFactory.getInstance().createNode((String)null, new String[] {"target/classes"});
         node.start();
+
+        HelloworldService service = SCAClientFactory.newInstance(URI.create("default")).getService(HelloworldService.class, "HelloworldComponent");
+        assertEquals("Hello petra", service.sayHello("petra"));
     }
 
-    public void testInvoke() throws Exception {
-        HelloworldService service =
-            SCAClientFactory.newInstance(URI.create("default")).getService(HelloworldService.class, "HelloworldComponent");
+    @Test
+    public void testExplicit() throws Exception {
+        node = NodeFactory.getInstance().createNode(URI.create("myFooDomain"), new String[] {"target/classes"});
+        node.start();
+
+        HelloworldService service = SCAClientFactory.newInstance(URI.create("myFooDomain")).getService(HelloworldService.class, "HelloworldComponent");
         assertEquals("Hello petra", service.sayHello("petra"));
     }
 
