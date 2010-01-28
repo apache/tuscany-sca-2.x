@@ -19,6 +19,7 @@
 
 package itest;
 
+import static org.junit.Assert.fail;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -40,7 +41,7 @@ import com.hazelcast.core.IMap;
  */
 public class ClientTestCase{
 
-    private static URI domainURI = URI.create("tuscany:OneNodeTestCase");
+    private static URI domainURI = URI.create("tuscany:OneNodeTestCase?listen=127.0.0.1:14820");
     private static Node node;
     private static HazelcastInstance client;
 
@@ -52,8 +53,8 @@ public class ClientTestCase{
 
     @Test
     public void testNode() throws Exception {
-        
-        client = HazelcastClient.newHazelcastClient("OneNodeTestCase", "tuscany", "192.168.1.73:14820"); 
+
+        client = HazelcastClient.newHazelcastClient("OneNodeTestCase", "tuscany", "127.0.0.1:14820"); 
         IMap<Object, Object> map = client.getMap("OneNodeTestCase/Endpoints");        
 
         assertNotNull(map);
@@ -64,6 +65,26 @@ public class ClientTestCase{
         assertTrue(ep1 instanceof RuntimeEndpointImpl);
         Object ep2 = map.get("HelloworldClient#service-binding(Helloworld/Helloworld)");
         assertNotNull(ep2);
+    }
+
+    @Test
+    public void testBadPassword() throws Exception {
+        try {
+            client = HazelcastClient.newHazelcastClient("OneNodeTestCase", "IncorrectPassword", "127.0.0.1:14820"); 
+            fail();
+        } catch (Exception e) {
+            //expected
+        }
+    }
+
+    @Test
+    public void testBadIP() throws Exception {
+        try {
+            client = HazelcastClient.newHazelcastClient("OneNodeTestCase", "IncorrectPassword", "127.0.0.99:9999"); 
+            fail();
+        } catch (Exception e) {
+            //expected
+        }
     }
 
     @AfterClass
