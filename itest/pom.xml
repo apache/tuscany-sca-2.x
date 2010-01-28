@@ -78,6 +78,7 @@
                 <module>scaclient-api-jse-osgi</module>
 -->
                 <module>scaclient-api-osgi</module>
+                <module>scaclient-api-rmi</module>
                 <module>scopes</module>
                 <module>scdl</module>
                 <module>services</module>
