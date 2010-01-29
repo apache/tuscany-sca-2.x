@@ -42,7 +42,6 @@ public class NodeUtilTestCase {
     @Test
     public void testDomainURI() {
         Assert.assertEquals("foo", NodeFactoryImpl.getDomainName(URI.create("tuscany:foo")));
-        Assert.assertEquals("foo", NodeFactoryImpl.getDomainName(URI.create("tuscany:vm:foo")));
         Assert.assertEquals("foo", NodeFactoryImpl.getDomainName(URI.create("vm:foo")));
         Assert.assertEquals("foo", NodeFactoryImpl.getDomainName(URI.create("bla://foo")));
     }
