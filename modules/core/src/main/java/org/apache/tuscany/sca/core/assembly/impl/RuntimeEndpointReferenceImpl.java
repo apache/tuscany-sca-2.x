@@ -248,7 +248,6 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
      * Initialize the invocation chains
      */
     private void initInvocationChains() {
-        chains = new ArrayList<InvocationChain>();
         InterfaceContract sourceContract = getComponentTypeReferenceInterfaceContract();
         // TODO - EPR why is this looking at the component types. The endpoint reference should have the right interface contract by this time
         //InterfaceContract sourceContract = getLeafInterfaceContract(endpointReference);
@@ -268,7 +267,8 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
                 throw new IllegalStateException(e);
             }
         }
-        
+
+        List<InvocationChain> chainList = new ArrayList<InvocationChain>();
         RuntimeComponentReference reference = (RuntimeComponentReference)getReference();
         for (Operation operation : sourceContract.getInterface().getOperations()) {
             Operation targetOperation = interfaceContractMapper.map(targetContract.getInterface(), operation);
@@ -283,10 +283,13 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
             if (operation.isNonBlocking()) {
                 addNonBlockingInterceptor(chain);
             }
-            chains.add(chain);
+            chainList.add(chain);
             addReferenceBindingInterceptor(chain, operation);
         }
 
+        // Set the chains until it's fully populated. If we initialize too early, any exeception could
+        // leave this endpoint reference in a wrong state with an empty chain.
+        chains = chainList;
         wireProcessor.process(this);
     }
 
