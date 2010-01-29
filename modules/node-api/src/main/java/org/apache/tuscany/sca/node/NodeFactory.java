@@ -315,14 +315,17 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
         return createNode(configuration);
     }
 
+    /**
+     * TODO: cleanup node use of registry uri, domain uri, and domain name
+     *       so that its consistent across the code base
+     */
     public static String getDomainName(URI configURI) {
-        // no idea if this is needed, do it anyway for now till the Node refactor is done
         String s = configURI.getHost();
         if (s == null) {
             s = configURI.getSchemeSpecificPart();
             if (s != null) {
-                if (s.indexOf(':') > -1) {
-                    s = s.substring(s.indexOf(':')+1);
+                if (s.indexOf('?') > -1) {
+                    s = s.substring(0, s.indexOf('?'));
                 }
             }
         }
