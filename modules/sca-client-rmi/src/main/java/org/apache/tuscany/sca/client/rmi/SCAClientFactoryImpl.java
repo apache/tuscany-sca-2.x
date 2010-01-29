@@ -102,7 +102,7 @@ public class SCAClientFactoryImpl extends SCAClientFactory {
         if (uri.startsWith("tuscany:")) {
             uri = uri.replace("tuscany:", "tuscanyclient://");
         }
-        InvocationHandler handler = new SCAClientProxyHandler(nodeFactory, uri, serviceName);
+        InvocationHandler handler = new SCAClientProxyHandler(nodeFactory, uri, getDomainName(), serviceName);
         return (T)Proxy.newProxyInstance(serviceInterface.getClassLoader(), new Class[] {serviceInterface}, handler);
 
     }

@@ -37,8 +37,8 @@ import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 import org.apache.tuscany.sca.node.impl.NodeFactoryImpl;
 import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
+import org.apache.tuscany.sca.runtime.DomainRegistryFactoryExtensionPoint;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
-import org.apache.tuscany.sca.runtime.ExtensibleDomainRegistry;
 import org.oasisopen.sca.NoSuchServiceException;
 
 public class SCAClientProxyHandler implements InvocationHandler {
@@ -47,12 +47,14 @@ public class SCAClientProxyHandler implements InvocationHandler {
     protected ExtensionPointRegistry extensionsRegistry;
     protected EndpointRegistry endpointRegistry;
     protected EndpointReference endpointReference;
+    protected String registryURI;
+    protected String domainURI;
     protected String serviceName;
     protected RMIHost rmiHost;
-    private String domainURI;
     
-    public SCAClientProxyHandler(NodeFactoryImpl nodeFactory, String domainURI, String serviceName) {
+    public SCAClientProxyHandler(NodeFactoryImpl nodeFactory, String registryURI, String domainURI, String serviceName) {
         this.nodeFactory = nodeFactory;
+        this.registryURI = registryURI;
         this.domainURI = domainURI;
         this.serviceName = serviceName;
     }
@@ -62,7 +64,7 @@ public class SCAClientProxyHandler implements InvocationHandler {
         try {
 
             nodeFactory = (NodeFactoryImpl)NodeFactory.newInstance();
-            node = nodeFactory.createNode(URI.create(domainURI)).start();
+            node = nodeFactory.createNode(URI.create(registryURI)).start();
             this.extensionsRegistry = nodeFactory.getExtensionPoints();
             RMIHostExtensionPoint rmiHosts = extensionsRegistry.getExtensionPoint(RMIHostExtensionPoint.class);
             this.rmiHost = new ExtensibleRMIHost(rmiHosts);
@@ -75,8 +77,14 @@ public class SCAClientProxyHandler implements InvocationHandler {
             Endpoint targetEndpoint = assemblyFactory.createEndpoint();
             targetEndpoint.setURI(serviceName);
             endpointReference.setTargetEndpoint(targetEndpoint);
-            DomainRegistryFactory domainRegistryFactory = new ExtensibleDomainRegistry(extensionsRegistry);
-            this.endpointRegistry = domainRegistryFactory.getEndpointRegistry(null, domainURI);
+            DomainRegistryFactoryExtensionPoint factoriesx = extensionsRegistry.getExtensionPoint(DomainRegistryFactoryExtensionPoint.class);
+            for (DomainRegistryFactory factory : factoriesx.getDomainRegistryFactories()) {
+                for (EndpointRegistry endpointRegistry : factory.getEndpointRegistries()) {
+                    if (endpointRegistry.getDomainName().equals(domainURI)) {
+                        this.endpointRegistry = endpointRegistry;
+                    }
+                }
+            }
 
             List<Endpoint> endpoints = endpointRegistry.findEndpoint(endpointReference);
             if (endpoints.size() <1 ) {
