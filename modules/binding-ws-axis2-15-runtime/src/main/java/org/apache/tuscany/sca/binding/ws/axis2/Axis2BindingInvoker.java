@@ -45,7 +45,6 @@ import org.apache.tuscany.sca.interfacedef.util.FaultException;
 import org.apache.tuscany.sca.invocation.DataExchangeSemantics;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
-import org.apache.tuscany.sca.policy.authentication.basic.BasicAuthenticationPolicy;
 import org.apache.tuscany.sca.runtime.ReferenceParameters;
 
 
@@ -72,7 +71,7 @@ public class Axis2BindingInvoker implements Invoker, DataExchangeSemantics {
     private SOAPFactory soapFactory;    
     private WebServiceBinding wsBinding;
     
-    private BasicAuthenticationPolicy basicAuthenticationPolicy = null;
+//    private BasicAuthenticationPolicy basicAuthenticationPolicy = null;
 //    private Axis2TokenAuthenticationPolicy axis2TokenAuthenticationPolicy = null;
 //    private List<Axis2HeaderPolicy> axis2HeaderPolicies = new ArrayList<Axis2HeaderPolicy>();
 
