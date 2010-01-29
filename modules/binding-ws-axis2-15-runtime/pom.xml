@@ -26,7 +26,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>tuscany-binding-ws-axis2-15</artifactId>
+    <artifactId>tuscany-binding-ws-runtime-axis2-15</artifactId>
     <name>Apache Tuscany SCA Axis2-1.5-based WS Binding Runtime</name>
 
     <repositories>
@@ -39,6 +39,8 @@
     </repositories>
 
     <dependencies>
+        <!--  Compile dependencies -->
+    
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-core</artifactId>
@@ -102,17 +104,6 @@
             <version>2.0-SNAPSHOT</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-binding-ws-axis2-policy</artifactId>
-            <version>2.0-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-policy-xml-ws</artifactId>
-            <version>2.0-SNAPSHOT</version>
-        </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
@@ -123,7 +114,7 @@
         <dependency>
             <groupId>org.apache.axis2</groupId>
             <artifactId>axis2-kernel</artifactId>
-            <version>1.4.1</version>
+            <version>1.5.1</version>
             <exclusions>
                 <exclusion>
                     <groupId>xerces</groupId>
@@ -147,7 +138,7 @@
         <dependency>
             <groupId>org.apache.axis2</groupId>
             <artifactId>axis2-java2wsdl</artifactId>
-            <version>1.4.1</version>
+            <version>1.5.1</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.ant</groupId>
@@ -167,7 +158,7 @@
        <dependency>
             <groupId>org.apache.axis2</groupId>
             <artifactId>axis2-codegen</artifactId>
-            <version>1.4.1</version>
+            <version>1.5.1</version>
             <scope>runtime</scope>
             <exclusions>
                 <exclusion>
@@ -180,7 +171,50 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        
+        <dependency>
+            <groupId>org.apache.axis2</groupId>
+            <artifactId>axis2-mtompolicy</artifactId>
+            <version>1.5.1</version>
+        </dependency> 
+        
+        <dependency>
+            <groupId>org.apache.axis2</groupId>
+            <artifactId>mex</artifactId>
+            <version>1.5.1</version>
+            <classifier>impl</classifier>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.axis2</groupId>
+            <artifactId>axis2-transport-http</artifactId>
+            <version>1.5.1</version>
+        </dependency>  
+        
+        <dependency>
+            <groupId>org.apache.axis2</groupId>
+            <artifactId>axis2-transport-jms</artifactId>
+            <version>1.0.0</version>
+        </dependency> 
 
+        <dependency>
+            <groupId>org.apache.ws.commons.axiom</groupId>
+            <artifactId>axiom-api</artifactId>
+            <version>1.2.8</version>
+        </dependency> 
+        
+        <dependency>
+            <groupId>org.apache.ws.commons.axiom</groupId>
+            <artifactId>axiom-impl</artifactId>
+            <version>1.2.8</version>
+        </dependency>   
+        
+        <dependency>
+            <groupId>org.apache.ws.commons.axiom</groupId>
+            <artifactId>axiom-dom</artifactId>
+            <version>1.2.8</version>
+        </dependency>               
+        
         <dependency>
             <groupId>org.apache.neethi</groupId>
             <artifactId>neethi</artifactId>
@@ -230,15 +264,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.axis2</groupId>
-            <artifactId>axis2-mtompolicy</artifactId>
-            <version>1.4.1</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.apache.santuario</groupId>
             <artifactId>xmlsec</artifactId>
-            <version>1.4.2</version>
+            <version>1.4.3</version>
         </dependency>
 
         <dependency>
@@ -263,13 +291,6 @@
                     <artifactId>xml-apis</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.axis2</groupId>
-            <artifactId>mex</artifactId>
-            <version>1.41</version>
-            <classifier>impl</classifier>
         </dependency>
 
         <dependency>
@@ -369,13 +390,8 @@
             </exclusions>
         </dependency>
 
-<!--
-        <dependency>
-            <groupId>xml-apis</groupId>
-            <artifactId>xml-apis</artifactId>
-            <version>1.3.03</version>
-        </dependency>
--->
+        <!--  Test dependencies -->
+        
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-host-jetty</artifactId>
