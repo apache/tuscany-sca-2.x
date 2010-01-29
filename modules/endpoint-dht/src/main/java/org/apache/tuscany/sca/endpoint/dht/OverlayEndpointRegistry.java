@@ -336,5 +336,7 @@ public class OverlayEndpointRegistry implements EndpointRegistry, LifeCycleListe
         // TODO Auto-generated method stub
         return null;
     }
-
+    public String getDomainName() {
+        return domainURI;
+    }
 }
