@@ -41,10 +41,6 @@ import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
-import org.apache.tuscany.sca.binding.ws.axis2.policy.authentication.token.Axis2TokenAuthenticationPolicy;
-import org.apache.tuscany.sca.binding.ws.axis2.policy.configurator.Axis2BindingBasicAuthenticationConfigurator;
-import org.apache.tuscany.sca.binding.ws.axis2.policy.configurator.Axis2BindingHeaderConfigurator;
-import org.apache.tuscany.sca.binding.ws.axis2.policy.header.Axis2HeaderPolicy;
 import org.apache.tuscany.sca.interfacedef.util.FaultException;
 import org.apache.tuscany.sca.invocation.DataExchangeSemantics;
 import org.apache.tuscany.sca.invocation.Invoker;
@@ -77,8 +73,8 @@ public class Axis2BindingInvoker implements Invoker, DataExchangeSemantics {
     private WebServiceBinding wsBinding;
     
     private BasicAuthenticationPolicy basicAuthenticationPolicy = null;
-    private Axis2TokenAuthenticationPolicy axis2TokenAuthenticationPolicy = null;
-    private List<Axis2HeaderPolicy> axis2HeaderPolicies = new ArrayList<Axis2HeaderPolicy>();
+//    private Axis2TokenAuthenticationPolicy axis2TokenAuthenticationPolicy = null;
+//    private List<Axis2HeaderPolicy> axis2HeaderPolicies = new ArrayList<Axis2HeaderPolicy>();
 
     public Axis2BindingInvoker(Axis2ServiceClient serviceClient,
                                QName wsdlOperationName,
@@ -149,6 +145,7 @@ public class Axis2BindingInvoker implements Invoker, DataExchangeSemantics {
         */
         
         // set policy specified headers
+/*        
         for (Axis2HeaderPolicy policy : axis2HeaderPolicies){
             Axis2BindingHeaderConfigurator.setHeader(requestMC, msg, policy.getHeaderName());
         }
@@ -160,6 +157,7 @@ public class Axis2BindingInvoker implements Invoker, DataExchangeSemantics {
         if (axis2TokenAuthenticationPolicy != null) {
             Axis2BindingHeaderConfigurator.setHeader(requestMC, msg, axis2TokenAuthenticationPolicy.getTokenName());
         }
+*/        
         
         // Allow privileged access to read properties. Requires PropertiesPermission read in
         // security policy.

@@ -37,7 +37,7 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider {
     private RuntimeComponentService service;
     private WebServiceBinding wsBinding;
     
-    private Axis2ServiceProvider axisProvider;
+    private Axis2EngineIntegration axisProvider;
 
     public Axis2ServiceBindingProvider(RuntimeEndpoint endpoint,
                                        ServletHost servletHost,
@@ -62,7 +62,7 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider {
         InterfaceContract contract = wsBinding.getBindingInterfaceContract();
         contract.getInterface().resetDataBinding(OMElement.class.getName());
 
-        axisProvider = new Axis2ServiceProvider(endpoint, component, service, wsBinding, servletHost, messageFactory, modelFactories);
+        axisProvider = new Axis2EngineIntegration(endpoint, component, service, wsBinding, servletHost, messageFactory, modelFactories);
     }
 
     public void start() {

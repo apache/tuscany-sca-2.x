@@ -94,54 +94,7 @@ public class Axis2ServiceServlet extends AxisServlet {
         ServletContext servletContext = config.getServletContext();
         servletContext.setAttribute(CONFIGURATION_CONTEXT, tmpconfigContext);
        
-        //super.init(config);
-        
-        // A copy of the init method from the base class because we need to replace the 
-        // version of the ListenerManager that is used so that we can get it's 
-        // shutdown hook removed properly. 
-        
-        // prevent this method from being called more than once per instance
-        if (initCalled == false) {
-	        initCalled = true;
-	        // We can't call super.init() as it will just call the AxisServlet version
-	        // which we are replacing here. So reflect on the base class and
-	        // set the private config field in the base class. 
-	        //super.init(config);
-	        try {
-	        	Field field = GenericServlet.class.getDeclaredField("config");
-	        	field.setAccessible(true);
-	        	field.set(this, config);
-	        } catch (Exception ex){
-	        	ex.printStackTrace();
-	        }
-	        
-	        try {
-	            this.servletConfig = config;
-	            //ServletContext servletContext = servletConfig.getServletContext();
-	            this.configContext =
-	                    (ConfigurationContext) servletContext.getAttribute(CONFIGURATION_CONTEXT);
-	            if(configContext == null){
-	                configContext = initConfigContext(config);
-	                config.getServletContext().setAttribute(CONFIGURATION_CONTEXT, configContext);
-	            }
-	            axisConfiguration = configContext.getAxisConfiguration();
-	
-	            ListenerManager listenerManager = new TuscanyListenerManager();
-	            listenerManager.init(configContext);
-	            TransportInDescription transportInDescription = new TransportInDescription(
-	                    Constants.TRANSPORT_HTTP);
-	            transportInDescription.setReceiver(this);
-	            listenerManager.addListener(transportInDescription, true);
-	            listenerManager.start();
-	            ListenerManager.defaultConfigurationContext = configContext;
-	            super.agent = new ListingAgent(configContext);
-	
-	            initParams();
-	
-	        } catch (Exception e) {
-	            throw new ServletException(e);
-	        }
-        }
+        super.init(config);
     }
 
     /**
@@ -328,6 +281,7 @@ public class Axis2ServiceServlet extends AxisServlet {
      * Override the AxisServlet method so as to not add "/services" into the URL
      * and to work with Tuscany service names. can go once moved to Axis2 1.3
      */
+/*    
     @Override
     public EndpointReference[] getEPRsForService(String serviceName, String ip) throws AxisFault {
         //RUNNING_PORT
@@ -352,5 +306,6 @@ public class Axis2ServiceServlet extends AxisServlet {
 
         return new EndpointReference[]{new EndpointReference(epURI.toString())};
     }
+  */
     
 }

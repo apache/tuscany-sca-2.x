@@ -94,10 +94,10 @@ public class TuscanyListingAgent extends ListingAgent {
                 Definition definition = (Definition)wsld4jdefinition.getValue();
                 for (Object s : definition.getServices().values()) {
                     for (Object p : ((Service)s).getPorts().values()) {
-                        String endpointURL = Axis2ServiceProvider.getPortAddress((Port)p);
+                        String endpointURL = Axis2EngineIntegration.getPortAddress((Port)p);
                         String modifiedURL = setIPAddress(endpointURL, url);
                         modifiedURL = addContextRoot(modifiedURL, serviceName);
-                        Axis2ServiceProvider.setPortAddress((Port)p, modifiedURL);
+                        Axis2EngineIntegration.setPortAddress((Port)p, modifiedURL);
                     }
                 }
             }
@@ -218,10 +218,12 @@ public class TuscanyListingAgent extends ListingAgent {
             int wsdlPort = wsdlURIObj.getPort();
             String wsdlAddr = wsdlHost + (wsdlPort != -1 ? ":" + Integer.toString(wsdlPort) : "");
             URI requestURIObj = new URI(requestURI);
-            String ipAddr = HttpUtils.getIpAddress();
-            int requestPort = requestURIObj.getPort();
-            String newAddr = ipAddr + (requestPort != -1 ? ":" + Integer.toString(requestPort) : "");
-            return wsdlURI.replace(wsdlAddr, newAddr);
+// not in Axis2 1.5.1
+//            String ipAddr = HttpUtils.getIpAddress();
+//            int requestPort = requestURIObj.getPort();
+//            String newAddr = ipAddr + (requestPort != -1 ? ":" + Integer.toString(requestPort) : "");
+//            return wsdlURI.replace(wsdlAddr, newAddr);
+            return wsdlURI;
         } catch (Exception e) {
             // URI string not in expected format, so return the WSDL URI unmodified
             return wsdlURI;

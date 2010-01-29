@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.sca.binding.ws.axis2;
 
-import static org.apache.tuscany.sca.binding.ws.axis2.Axis2ConfiguratorHelper.getAxis2ConfigurationContext;
 import static org.apache.tuscany.sca.binding.ws.axis2.AxisPolicyHelper.SOAP12_INTENT;
 import static org.apache.tuscany.sca.binding.ws.axis2.AxisPolicyHelper.isIntentRequired;
 
@@ -57,6 +56,7 @@ import org.apache.axis2.addressing.EndpointReferenceHelper;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
 import org.apache.axis2.context.ConfigurationContext;
+import org.apache.axis2.context.ConfigurationContextFactory;
 import org.apache.axis2.description.AxisEndpoint;
 import org.apache.axis2.description.AxisService;
 import org.apache.axis2.description.Parameter;
@@ -69,7 +69,6 @@ import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
 import org.apache.tuscany.sca.assembly.AbstractContract;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
-import org.apache.tuscany.sca.binding.ws.axis2.policy.configuration.Axis2ConfigParamPolicy;
 import org.apache.tuscany.sca.common.xml.XMLDocumentHelper;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
@@ -110,6 +109,7 @@ public class Axis2ServiceClient {
         if (ps == null) {
             return;
         }
+/*        
         for (Object policy : ps.getPolicies()) {
             if (policy instanceof Axis2ConfigParamPolicy) {
                 Axis2ConfigParamPolicy axis2ConfigParamPolicy = (Axis2ConfigParamPolicy)policy;
@@ -120,6 +120,7 @@ public class Axis2ServiceClient {
                 }
             }
         }
+*/        
     }
 
     /**
@@ -128,8 +129,26 @@ public class Axis2ServiceClient {
     protected ServiceClient createServiceClient() {
         try {
             final boolean isRampartRequired = AxisPolicyHelper.isRampartRequired(wsBinding);
-            ConfigurationContext configContext =
-                getAxis2ConfigurationContext(isRampartRequired);
+            ConfigurationContext configContext = null;
+            
+            // get the axis configuration context from the Tuscany axis2.xml file
+            // TODO - java security
+            ClassLoader wsBindingCL = getClass().getClassLoader();
+            
+            // TODO - taken the Tuscany configurator out for a while 
+            //        but may need to re-introduce a simplified version if we feel 
+            //        that it's important to not deploy rampart when it's not required
+            try {
+                URL axis2xmlURL = wsBindingCL.getResource("org/apache/tuscany/sca/binding/ws/axis2/engine/conf/tuscany-axis2.xml");
+                if (axis2xmlURL != null){
+                    URL repositoryURL = new URL(axis2xmlURL.toExternalForm().replaceFirst("conf/tuscany-axis2.xml", "repository"));
+                    configContext = ConfigurationContextFactory.createConfigurationContextFromURIs(axis2xmlURL, repositoryURL);
+                } else {
+                    // throw an exception
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }            
 
             createPolicyHandlers();
 

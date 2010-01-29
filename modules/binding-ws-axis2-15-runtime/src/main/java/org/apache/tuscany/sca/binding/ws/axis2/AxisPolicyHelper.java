@@ -72,8 +72,9 @@ public class AxisPolicyHelper {
     }
 
     public static boolean isRampartRequired(Binding wsBinding) {
-        return isIntentRequired(wsBinding, AUTHENTICATION_INTENT) || isIntentRequired(wsBinding, INTEGRITY_INTENT)
-            || isIntentRequired(wsBinding, CONFIDENTIALITY_INTENT);
+        return isIntentRequired(wsBinding, AUTHENTICATION_INTENT) || 
+               isIntentRequired(wsBinding, INTEGRITY_INTENT) || 
+               isIntentRequired(wsBinding, CONFIDENTIALITY_INTENT);
     }
 
 }
