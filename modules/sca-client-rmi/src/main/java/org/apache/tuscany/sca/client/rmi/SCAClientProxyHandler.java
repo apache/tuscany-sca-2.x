@@ -30,7 +30,6 @@ import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.binding.rmi.provider.RMIBindingInvoker;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.host.rmi.ExtensibleRMIHost;
 import org.apache.tuscany.sca.host.rmi.RMIHost;
 import org.apache.tuscany.sca.host.rmi.RMIHostExtensionPoint;
@@ -39,6 +38,7 @@ import org.apache.tuscany.sca.node.NodeFactory;
 import org.apache.tuscany.sca.node.impl.NodeFactoryImpl;
 import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
+import org.apache.tuscany.sca.runtime.ExtensibleDomainRegistry;
 import org.oasisopen.sca.NoSuchServiceException;
 
 public class SCAClientProxyHandler implements InvocationHandler {
@@ -75,8 +75,7 @@ public class SCAClientProxyHandler implements InvocationHandler {
             Endpoint targetEndpoint = assemblyFactory.createEndpoint();
             targetEndpoint.setURI(serviceName);
             endpointReference.setTargetEndpoint(targetEndpoint);
-            UtilityExtensionPoint utilities = extensionsRegistry.getExtensionPoint(UtilityExtensionPoint.class);
-            DomainRegistryFactory domainRegistryFactory = utilities.getUtility(DomainRegistryFactory.class);
+            DomainRegistryFactory domainRegistryFactory = new ExtensibleDomainRegistry(extensionsRegistry);
             this.endpointRegistry = domainRegistryFactory.getEndpointRegistry(null, domainURI);
 
             List<Endpoint> endpoints = endpointRegistry.findEndpoint(endpointReference);

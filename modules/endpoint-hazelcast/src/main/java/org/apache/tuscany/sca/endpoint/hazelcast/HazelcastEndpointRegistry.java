@@ -24,14 +24,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.assembly.Endpoint;
-import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.LifeCycleListener;
-import org.apache.tuscany.sca.runtime.EndpointListener;
+import org.apache.tuscany.sca.runtime.BaseEndpointRegistry;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 
@@ -50,24 +48,20 @@ import com.hazelcast.nio.Address;
 /**
  * An EndpointRegistry using a Hazelcast
  */
-public class HazelcastEndpointRegistry implements EndpointRegistry, LifeCycleListener, EntryListener<String, Endpoint>, MembershipListener {
+public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements EndpointRegistry, LifeCycleListener, EntryListener<String, Endpoint>, MembershipListener {
     private final static Logger logger = Logger.getLogger(HazelcastEndpointRegistry.class.getName());
 
-    private List<EndpointReference> endpointreferences = new CopyOnWriteArrayList<EndpointReference>();
-    private List<EndpointListener> listeners = new CopyOnWriteArrayList<EndpointListener>();
-
-    private ExtensionPointRegistry registry;
     protected ConfigURI configURI;
 
     private HazelcastInstance hazelcastInstance;
     protected Map<Object, Object> map;
-    private List<String> localEndpoints = new ArrayList<String>();;
+    private List<String> localEndpoints = new ArrayList<String>();
 
     public HazelcastEndpointRegistry(ExtensionPointRegistry registry,
                                      Map<String, String> attributes,
                                      String domainRegistryURI,
                                      String domainURI) {
-        this.registry = registry;
+        super(registry, attributes, domainRegistryURI, domainURI);
         this.configURI = new ConfigURI(domainRegistryURI);
     }
 
@@ -143,68 +137,6 @@ public class HazelcastEndpointRegistry implements EndpointRegistry, LifeCycleLis
         logger.info("Add endpoint - " + endpoint);
     }
 
-    public void addEndpointReference(EndpointReference endpointReference) {
-        endpointreferences.add(endpointReference);
-        logger.fine("Add endpoint reference - " + endpointReference);
-    }
-
-    public void addListener(EndpointListener listener) {
-        listeners.add(listener);
-    }
-
-    /**
-     * Parse the component/service/binding URI into an array of parts (componentURI, serviceName, bindingName)
-     * @param uri
-     * @return
-     */
-    private String[] parse(String uri) {
-        String[] names = new String[3];
-        int index = uri.lastIndexOf('#');
-        if (index == -1) {
-            names[0] = uri;
-        } else {
-            names[0] = uri.substring(0, index);
-            String str = uri.substring(index + 1);
-            if (str.startsWith("service-binding(") && str.endsWith(")")) {
-                str = str.substring("service-binding(".length(), str.length() - 1);
-                String[] parts = str.split("/");
-                if (parts.length != 2) {
-                    throw new IllegalArgumentException("Invalid service-binding URI: " + uri);
-                }
-                names[1] = parts[0];
-                names[2] = parts[1];
-            } else if (str.startsWith("service(") && str.endsWith(")")) {
-                str = str.substring("service(".length(), str.length() - 1);
-                names[1] = str;
-            } else {
-                throw new IllegalArgumentException("Invalid component/service/binding URI: " + uri);
-            }
-        }
-        return names;
-    }
-
-    private boolean matches(String target, String uri) {
-        String[] parts1 = parse(target);
-        String[] parts2 = parse(uri);
-        for (int i = 0; i < parts1.length; i++) {
-            if (parts1[i] == null || parts1[i].equals(parts2[i])) {
-                continue;
-            } else {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public List<Endpoint> findEndpoint(EndpointReference endpointReference) {
-        logger.fine("Find endpoint for reference - " + endpointReference);
-        if (endpointReference.getReference() != null) {
-            Endpoint targetEndpoint = endpointReference.getTargetEndpoint();
-            return findEndpoint(targetEndpoint.getURI());
-        }
-        return new ArrayList<Endpoint>();
-    }
-    
     public List<Endpoint> findEndpoint(String uri) {
         List<Endpoint> foundEndpoints = new ArrayList<Endpoint>();
         for (Object v : map.values()) {
@@ -227,24 +159,12 @@ public class HazelcastEndpointRegistry implements EndpointRegistry, LifeCycleLis
         return localEndpoints.contains(endpoint.getURI());
     }
 
-    public List<EndpointReference> findEndpointReference(Endpoint endpoint) {
-        return endpointreferences;
-    }
-
     public Endpoint getEndpoint(String uri) {
         return (Endpoint)map.get(uri);
     }
 
-    public List<EndpointReference> getEndpointReferences() {
-        return endpointreferences;
-    }
-
     public List<Endpoint> getEndpoints() {
         return new ArrayList(map.values());
-    }
-
-    public List<EndpointListener> getListeners() {
-        return listeners;
     }
 
     public void removeEndpoint(Endpoint endpoint) {
@@ -253,19 +173,6 @@ public class HazelcastEndpointRegistry implements EndpointRegistry, LifeCycleLis
         logger.info("Removed endpoint - " + endpoint);
     }
 
-    public void removeEndpointReference(EndpointReference endpointReference) {
-        endpointreferences.remove(endpointReference);
-        logger.fine("Remove endpoint reference - " + endpointReference);
-    }
-
-    public void removeListener(EndpointListener listener) {
-        listeners.remove(listener);
-    }
-
-    public void updateEndpoint(String uri, Endpoint endpoint) {
-        //      // TODO: is updateEndpoint needed?
-        //      throw new UnsupportedOperationException();
-    }
 
     public void entryAdded(EntryEvent<String, Endpoint> event) {
         entryAdded(event.getKey(), event.getValue());
@@ -289,10 +196,7 @@ public class HazelcastEndpointRegistry implements EndpointRegistry, LifeCycleLis
             logger.info(" Remote endpoint added: " + newEp);
             newEp.setRemote(true);
         }
-        ((RuntimeEndpoint)newEp).bind(registry, this);
-        for (EndpointListener listener : listeners) {
-            listener.endpointAdded(newEp);
-        }
+        endpointAdded(newEp);
     }
 
     public void entryRemoved(Object key, Object value) {
@@ -300,10 +204,7 @@ public class HazelcastEndpointRegistry implements EndpointRegistry, LifeCycleLis
         if (!isLocal(oldEp)) {
             logger.info(" Remote endpoint removed: " + value);
         }
-        ((RuntimeEndpoint) oldEp).bind(registry, this);
-        for (EndpointListener listener : listeners) {
-            listener.endpointRemoved(oldEp);
-        }
+        endpointRemoved(oldEp);
     }
 
     public void entryUpdated(Object key, Object oldValue, Object newValue) {
@@ -312,10 +213,7 @@ public class HazelcastEndpointRegistry implements EndpointRegistry, LifeCycleLis
         if (!isLocal(newEp)) {
             logger.info(" Remote endpoint updated: " + newEp);
         }
-        ((RuntimeEndpoint)newEp).bind(registry, this);
-        for (EndpointListener listener : listeners) {
-            listener.endpointUpdated(oldEp, newEp);
-        }
+        endpointUpdated(oldEp, newEp);
     }
 
     public void memberAdded(MembershipEvent event) {

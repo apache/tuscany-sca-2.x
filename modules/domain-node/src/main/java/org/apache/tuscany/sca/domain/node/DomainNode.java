@@ -27,13 +27,13 @@ import java.util.Map;
 
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
 import org.apache.tuscany.sca.node.impl.NodeImpl;
 import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
+import org.apache.tuscany.sca.runtime.ExtensibleDomainRegistry;
 import org.oasisopen.sca.NoSuchDomainException;
 import org.oasisopen.sca.NoSuchServiceException;
 import org.oasisopen.sca.client.SCAClientFactory;
@@ -116,8 +116,7 @@ public class DomainNode {
         List<String> serviceNames = new ArrayList<String>();
         if (nodes.size() > 0) {
             ExtensionPointRegistry extensionsRegistry = ((NodeImpl)nodes.values().iterator().next()).getExtensionPoints();
-            UtilityExtensionPoint utilities = extensionsRegistry.getExtensionPoint(UtilityExtensionPoint.class);
-            DomainRegistryFactory domainRegistryFactory = utilities.getUtility(DomainRegistryFactory.class);
+            DomainRegistryFactory domainRegistryFactory = new ExtensibleDomainRegistry(extensionsRegistry);
             EndpointRegistry endpointRegistry = domainRegistryFactory.getEndpointRegistry(getDomainConfigURI(), getDomainName());
             for (Endpoint endpoint : endpointRegistry.getEndpoints()) {
                 // Would be nice if Endpoint.getURI() returned this:

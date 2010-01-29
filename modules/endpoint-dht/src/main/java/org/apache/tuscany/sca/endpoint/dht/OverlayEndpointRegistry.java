@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
@@ -258,7 +259,7 @@ public class OverlayEndpointRegistry implements EndpointRegistry, LifeCycleListe
 	return endpointreferences;
     }
 
-    public List<Endpoint> getEndpoints() {
+    public Collection<Endpoint> getEndpoints() {
 	/*TODO*/
 	return null;
     }

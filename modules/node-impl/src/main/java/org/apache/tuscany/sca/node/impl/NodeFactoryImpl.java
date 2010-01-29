@@ -80,6 +80,7 @@ import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
 import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.EndpointReferenceBinder;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
+import org.apache.tuscany.sca.runtime.ExtensibleDomainRegistry;
 import org.apache.tuscany.sca.work.WorkScheduler;
 import org.oasisopen.sca.ServiceRuntimeException;
 
@@ -297,7 +298,7 @@ public class NodeFactoryImpl extends NodeFactory {
     // autowire which still relies on matching in the builder
     private void postBuildEndpointReferenceMatching(Composite composite){
         EndpointReferenceBinder endpointReferenceBinder = registry.getExtensionPoint(EndpointReferenceBinder.class);
-        DomainRegistryFactory domainRegistryFactory = registry.getExtensionPoint(DomainRegistryFactory.class);
+        DomainRegistryFactory domainRegistryFactory = new ExtensibleDomainRegistry(registry);
         
         // create temporary local registry for all available local endpoints
         // TODO - need a better way of getting a local registry

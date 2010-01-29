@@ -54,6 +54,7 @@ import org.apache.tuscany.sca.runtime.ActivationException;
 import org.apache.tuscany.sca.runtime.CompositeActivator;
 import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
+import org.apache.tuscany.sca.runtime.ExtensibleDomainRegistry;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentContext;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
@@ -112,13 +113,13 @@ public class NodeImpl implements Node, Client {
         manager.init();
         manager.addNode(configuration, this);
         this.proxyFactory = manager.proxyFactory;
-        UtilityExtensionPoint utilities = manager.registry.getExtensionPoint(UtilityExtensionPoint.class);
         
-        DomainRegistryFactory domainRegistryFactory = utilities.getUtility(DomainRegistryFactory.class);
+        DomainRegistryFactory domainRegistryFactory = new ExtensibleDomainRegistry(manager.registry);
         EndpointRegistry endpointRegistry =
             domainRegistryFactory.getEndpointRegistry(configuration.getDomainRegistryURI(), configuration
                 .getDomainURI());
-
+        
+        UtilityExtensionPoint utilities = manager.registry.getExtensionPoint(UtilityExtensionPoint.class);
         this.compositeActivator = utilities.getUtility(CompositeActivator.class);
         try {
             Monitor monitor = manager.monitorFactory.createMonitor();
@@ -370,8 +371,7 @@ public class NodeImpl implements Node, Client {
     public List<String> getServiceNames() {
         List<String> serviceNames = new ArrayList<String>();
         ExtensionPointRegistry extensionsRegistry = getExtensionPoints();
-        UtilityExtensionPoint utilities = extensionsRegistry.getExtensionPoint(UtilityExtensionPoint.class);
-        DomainRegistryFactory domainRegistryFactory = utilities.getUtility(DomainRegistryFactory.class);
+        DomainRegistryFactory domainRegistryFactory = new ExtensibleDomainRegistry(extensionsRegistry);
         EndpointRegistry endpointRegistry = domainRegistryFactory.getEndpointRegistry(configuration.getDomainRegistryURI(), configuration.getDomainName());
         for (Endpoint endpoint : endpointRegistry.getEndpoints()) {
             // Would be nice if Endpoint.getURI() returned this:

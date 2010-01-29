@@ -26,12 +26,12 @@ import java.util.Dictionary;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.core.LifeCycleListener;
-import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.implementation.osgi.OSGiImplementation;
 import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
 import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.EndpointListener;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
+import org.apache.tuscany.sca.runtime.ExtensibleDomainRegistry;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.remoteserviceadmin.EndpointDescription;
@@ -49,8 +49,7 @@ public class DomainDiscoveryService extends AbstractDiscoveryService implements 
 
     public void start() {
         super.start();
-        this.domainRegistryFactory =
-            registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(DomainRegistryFactory.class);
+        this.domainRegistryFactory = new ExtensibleDomainRegistry(registry);
         domainRegistryFactory.addListener(this);
 
         // [rfeng] Starting of the endpoint registry takes a long time and it leaves the bundle

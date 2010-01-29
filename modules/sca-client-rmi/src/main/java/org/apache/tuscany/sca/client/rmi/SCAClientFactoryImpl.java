@@ -26,13 +26,13 @@ import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 import org.apache.tuscany.sca.node.impl.NodeFactoryImpl;
 import org.apache.tuscany.sca.node.impl.NodeImpl;
 import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
+import org.apache.tuscany.sca.runtime.ExtensibleDomainRegistry;
 import org.oasisopen.sca.NoSuchDomainException;
 import org.oasisopen.sca.NoSuchServiceException;
 import org.oasisopen.sca.client.SCAClientFactory;
@@ -54,9 +54,9 @@ public class SCAClientFactoryImpl extends SCAClientFactory {
         this.nodeFactory = (NodeFactoryImpl)NodeFactory.getInstance();
         this.extensionsRegistry = nodeFactory.getExtensionPoints();
         if (extensionsRegistry != null) {
-            UtilityExtensionPoint utilities = extensionsRegistry.getExtensionPoint(UtilityExtensionPoint.class);
-            DomainRegistryFactory domainRegistryFactory = utilities.getUtility(DomainRegistryFactory.class);
-            this.endpointRegistry = domainRegistryFactory.getEndpointRegistry(getRegistryURI(), getDomainName()); 
+            this.extensionsRegistry = nodeFactory.getExtensionPoints();
+            DomainRegistryFactory domainRegistryFactory = new ExtensibleDomainRegistry(extensionsRegistry);
+            this.endpointRegistry = domainRegistryFactory.getEndpointRegistry(getRegistryURI(), getDomainName());
         }
     }   
     

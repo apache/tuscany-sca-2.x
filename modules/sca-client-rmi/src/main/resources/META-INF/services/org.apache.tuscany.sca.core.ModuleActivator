@@ -15,4 +15,4 @@
 # specific language governing permissions and limitations
 # under the License.
 # Implementation class for the ModuleActivator
-org.apache.tuscany.sca.client.rmi.SCAClientModuleActivator;priority=200
+org.apache.tuscany.sca.client.rmi.SCAClientModuleActivator;ranking=200

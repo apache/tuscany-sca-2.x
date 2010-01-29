@@ -1,4 +1,4 @@
-<!--
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,24 +15,19 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.    
--->
-<project name="itest-samples" default="run">
-	
-    <target name="run"> 
-    	
-       <parallel failonany="true">
+ */
 
-            <daemons>
-               <ant antfile="server.xml"/>
-            </daemons>
-      	
-            <sequential>
-                <sleep seconds="5"/>
-                <ant antfile="client.xml"/>
-            </sequential>
+package org.apache.tuscany.sca.runtime;
 
-       </parallel>    	
+import java.util.List;
 
-    </target>
+/**
+ * 
+ */
+public interface DomainRegistryFactoryExtensionPoint {
+    void addDomainRegistryFactory(DomainRegistryFactory factory);
 
-</project>
+    void removeDomainRegistryFactory(DomainRegistryFactory factory);
+
+    List<DomainRegistryFactory> getDomainRegistryFactories();
+}

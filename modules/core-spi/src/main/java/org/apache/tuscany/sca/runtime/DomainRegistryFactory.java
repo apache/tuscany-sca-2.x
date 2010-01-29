@@ -20,7 +20,6 @@
 package org.apache.tuscany.sca.runtime;
 
 import java.util.Collection;
-import java.util.List;
 
 /**
  * 
@@ -42,5 +41,5 @@ public interface DomainRegistryFactory {
     Collection<EndpointRegistry> getEndpointRegistries();
     void addListener(EndpointListener listener);
     void removeListener(EndpointListener listener);
-    List<EndpointListener> getListeners();
+    String[] getSupportedSchemes();
 }

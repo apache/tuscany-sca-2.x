@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -223,7 +224,7 @@ public class DistributedRegistry extends AbstractDistributedMap<Endpoint> implem
         return endpointreferences;
     }
 
-    public List<Endpoint> getEndpoints() {
+    public Collection<Endpoint> getEndpoints() {
         return new ArrayList<Endpoint>(values());
     }
 

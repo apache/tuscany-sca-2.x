@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.runtime;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Endpoint;
@@ -28,22 +29,41 @@ import org.apache.tuscany.sca.assembly.EndpointReference;
  * The EndpointRegistry holds the active service endpoints for the SCA domain
  */
 public interface EndpointRegistry {
+    /**
+     * Add an enpoint to the registry. If the endpoint URI is the same as an existing endpoint in the registry,
+     * the existing one will be updated
+     * @param endpoint
+     */
     void addEndpoint(Endpoint endpoint);
+    
+    /**
+     * Remove an enpoint from the registry
+     * @param endpoint
+     */
     void removeEndpoint(Endpoint endpoint);
 
+    /**
+     * Look up an enpoint from the registry
+     * @param uri The endpoint URI
+     * @return
+     */
     Endpoint getEndpoint(String uri);
-    void updateEndpoint(String uri, Endpoint endpoint);
+    
+    /**
+     * Get all endpoints in the registry
+     * @return
+     */
+    Collection<Endpoint> getEndpoints();
+    
     List<Endpoint> findEndpoint(String uri);
     List<Endpoint> findEndpoint(EndpointReference endpointReference);
-    List<Endpoint> getEndpoints();
 
     void addEndpointReference(EndpointReference endpointReference);
     void removeEndpointReference(EndpointReference endpointReference);
-    List<EndpointReference> findEndpointReference(Endpoint endpoint);
+    // List<EndpointReference> findEndpointReference(Endpoint endpoint);
     List<EndpointReference> getEndpointReferences();
 
     void addListener(EndpointListener listener);
     void removeListener(EndpointListener listener);
-    List<EndpointListener> getListeners();
 
 }

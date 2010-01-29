@@ -64,7 +64,7 @@ public class TwoRemoteNodesTestCase{
 //        assertNotNull(scaClientService);
 //        assertEquals("Hello Petra", scaClientService.sayHello("Petra"));
 
-        Helloworld scaClientClient = SCAClientFactory.newInstance(URI.create("TwoRemoteNodesTestCase")).getService(Helloworld.class, "HelloworldClient");
+        Helloworld scaClientClient = SCAClientFactory.newInstance(URI.create("tuscany:TwoRemoteNodesTestCase")).getService(Helloworld.class, "HelloworldClient");
         assertNotNull(scaClientClient);
         assertEquals("Hi Hello Petra", scaClientClient.sayHello("Petra"));
     

@@ -28,13 +28,13 @@ import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
+import org.apache.tuscany.sca.runtime.ExtensibleDomainRegistry;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 
@@ -103,8 +103,7 @@ public class RuntimeSCAServiceBindingProvider implements ServiceBindingProvider 
         // find if the node config is for distributed endpoints
         // TODO: temp, need a much better way to do this
         if (distributedProviderFactory != null) {
-            UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
-            DomainRegistryFactory domainRegistryFactory = utilities.getUtility(DomainRegistryFactory.class);
+            DomainRegistryFactory domainRegistryFactory = new ExtensibleDomainRegistry(extensionPoints);
             Collection<EndpointRegistry> eprs = domainRegistryFactory.getEndpointRegistries();
             if (eprs.size() > 0) {
                 String eprName = eprs.iterator().next().getClass().getName();
