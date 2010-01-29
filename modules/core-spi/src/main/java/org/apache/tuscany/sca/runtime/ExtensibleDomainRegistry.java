@@ -64,6 +64,16 @@ public class ExtensibleDomainRegistry implements DomainRegistryFactory {
         URI uri = URI.create(endpointRegistryURI);
         String scheme = uri.getScheme();
         if (scheme == null) {
+            
+            // See if there is a previously created registry for that domain
+            for (DomainRegistryFactory factory : factories.getDomainRegistryFactories()) {
+                for (EndpointRegistry endpointRegistry : factory.getEndpointRegistries()) {
+                    if (endpointRegistry.getDomainName().equals(domainURI)) {
+                        return endpointRegistry;
+                    }
+                }
+            }
+
             scheme = "vm";
             endpointRegistryURI = "vm:" + endpointRegistryURI;
         } else {
