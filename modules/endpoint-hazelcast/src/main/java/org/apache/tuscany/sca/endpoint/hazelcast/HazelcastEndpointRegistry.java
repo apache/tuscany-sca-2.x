@@ -32,6 +32,7 @@ import org.apache.tuscany.sca.core.LifeCycleListener;
 import org.apache.tuscany.sca.runtime.BaseEndpointRegistry;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
+import org.apache.tuscany.sca.runtime.TuscanyURI;
 
 import com.hazelcast.config.Config;
 import com.hazelcast.config.TcpIpConfig;
@@ -51,7 +52,7 @@ import com.hazelcast.nio.Address;
 public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements EndpointRegistry, LifeCycleListener, EntryListener<String, Endpoint>, MembershipListener {
     private final static Logger logger = Logger.getLogger(HazelcastEndpointRegistry.class.getName());
 
-    protected ConfigURI configURI;
+    protected TuscanyURI configURI;
 
     private HazelcastInstance hazelcastInstance;
     protected Map<Object, Object> map;
@@ -62,7 +63,7 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
                                      String domainRegistryURI,
                                      String domainURI) {
         super(registry, attributes, domainRegistryURI, domainURI);
-        this.configURI = new ConfigURI(domainRegistryURI);
+        this.configURI = new TuscanyURI(domainRegistryURI);
     }
 
     public void start() {

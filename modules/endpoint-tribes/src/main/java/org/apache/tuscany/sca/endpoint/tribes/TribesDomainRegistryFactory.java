@@ -28,7 +28,7 @@ import org.apache.tuscany.sca.runtime.EndpointRegistry;
  * given domain
  */
 public class TribesDomainRegistryFactory extends BaseDomainRegistryFactory {
-    private final static String[] schemes = new String[] {"multicast", "tribes"};
+    private final static String[] schemes = new String[] {"multicast", "tribes", "tuscany"};
 
     /**
      * @param extensionRegistry

@@ -51,6 +51,7 @@ import org.apache.tuscany.sca.endpoint.tribes.MapStore.MapListener;
 import org.apache.tuscany.sca.runtime.BaseEndpointRegistry;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
+import org.apache.tuscany.sca.runtime.TuscanyURI;
 
 /**
  * A replicated EndpointRegistry based on Apache Tomcat Tribes
@@ -117,6 +118,13 @@ public class ReplicatedEndpointRegistry extends BaseEndpointRegistry implements 
         if (uri.getPort() != -1) {
             map.put("port", String.valueOf(uri.getPort()));
         }
+        
+        if (domainRegistryURI.startsWith("tuscany")) {
+            setTuscanyConfig(map, domainRegistryURI);
+            setConfig(map);
+            return map;
+        }
+        
         int index = domainRegistryURI.indexOf('?');
         if (index == -1) {
             setConfig(map);
@@ -137,6 +145,27 @@ public class ReplicatedEndpointRegistry extends BaseEndpointRegistry implements 
         }
         setConfig(map);
         return map;
+    }
+
+    private void setTuscanyConfig(Map<String, String> map, String domainRegistryURI) {
+        TuscanyURI tuscanyURI = new TuscanyURI(domainRegistryURI);
+        map.put("address", tuscanyURI.getMulticastAddress());
+        map.put("port", Integer.toString(tuscanyURI.getMulticastPort()));
+        map.put("bind", tuscanyURI.getBindAddress());
+        map.put("receiverPort", Integer.toString(tuscanyURI.getListenPort()));
+        if (tuscanyURI.isMulticastDisabled()) {
+            map.put("nomcast", "true");
+        }
+        if (tuscanyURI.getRemotes().size() > 0) {
+            String routes = "";
+            for (int i=0; i<tuscanyURI.getRemotes().size(); i++) {
+                routes += tuscanyURI.getRemotes().get(i);
+                if (i < tuscanyURI.getRemotes().size()) {
+                    routes += ",";
+                }
+            }
+            map.put("routes", routes);
+        }
     }
 
     private void setConfig(Map<String, String> attributes) {

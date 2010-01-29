@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.endpoint.hazelcast;
+package org.apache.tuscany.sca.runtime;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -38,10 +38,8 @@ import java.util.Map;
  *             otherwise if remotes= is not specified then multicast defaults to 224.5.12.10:51482
  * remotes - a list of ipAddress:port for remote nodes
  *             
- * TODO: move this to a base module as it will also be used by the SCAClient
- *       add JCA encryption config
  */
-public class ConfigURI {
+public class TuscanyURI {
     
     private String domainName = "default";
     private String bindAddress = null; // null means all network adapters
@@ -53,7 +51,7 @@ public class ConfigURI {
     private List<String> remotes = new ArrayList<String>();
     private String uri;
 
-    public ConfigURI(String uri) {
+    public TuscanyURI(String uri) {
         this.uri = uri;
         parseURI(uri);
     }
