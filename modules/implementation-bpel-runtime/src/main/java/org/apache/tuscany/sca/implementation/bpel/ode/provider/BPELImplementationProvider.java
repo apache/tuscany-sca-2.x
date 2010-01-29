@@ -21,12 +21,12 @@ package org.apache.tuscany.sca.implementation.bpel.ode.provider;
 import java.io.File;
 import java.net.URI;
 
-import javax.persistence.spi.PersistenceProvider;
 import javax.transaction.TransactionManager;
+import org.apache.openjpa.persistence.PersistenceProviderImpl;
+import org.apache.ode.dao.jpa.ProcessDAOImpl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.ode.dao.jpa.ProcessDAOImpl;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.Reference;
@@ -121,10 +121,11 @@ public class BPELImplementationProvider implements ImplementationProvider {
             __log.info("Starting " + component.getName());
         } // end if
         
-		// Switch TCCL - under OSGi this causes the TCCL to be set to the Bundle
-		// classloader - this is then used by 3rd party code from ODE and its dependencies
+		// Switch TCCL - use a classloader that can find classes related to the non-OSGi services
+        // referenced from the implementation-bpel module which include the Persistence provider (OpenJPA) and
+        // the JPA DAO implementation contained in the ODE project
     	ClassLoader tccl = ClassLoaderContext.setContextClassLoader(EmbeddedODEServer.class.getClassLoader(),
-    			              PersistenceProvider.class.getClassLoader(),
+    			              PersistenceProviderImpl.class.getClassLoader(),
            					  ProcessDAOImpl.class.getClassLoader() );
 
         try {
@@ -142,7 +143,7 @@ public class BPELImplementationProvider implements ImplementationProvider {
                 __log.info(">>> Deploying : " + deploymentDir.toString());
             }
 
-            // deploy the process
+            // Deploy the BPEL process
             if (odeServer.isInitialized()) {
             	deployment = new ODEDeployment( deploymentDir );
                 try {
@@ -181,6 +182,6 @@ public class BPELImplementationProvider implements ImplementationProvider {
         if(__log.isInfoEnabled()) {
             __log.info("Stopped !!!");
         }
-    }
+    } // end method stop()
 
 }
