@@ -87,6 +87,7 @@
             <timestampPropertyName>build.timestamp</timestampPropertyName>
             <doCheck>true</doCheck>
             <doUpdate>true</doUpdate>
+            <revisionOnScmFailure>unknown</revisionOnScmFailure>
         </configuration>
       </plugin>
       <plugin>
