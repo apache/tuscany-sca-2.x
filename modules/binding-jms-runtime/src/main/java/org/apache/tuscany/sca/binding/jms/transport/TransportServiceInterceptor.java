@@ -27,6 +27,10 @@ import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.naming.NamingException;
 
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointReference;
+import org.apache.tuscany.sca.assembly.impl.EndpointReferenceImpl;
 import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.JMSBindingException;
@@ -35,6 +39,7 @@ import org.apache.tuscany.sca.binding.jms.provider.JMSMessageProcessor;
 import org.apache.tuscany.sca.binding.jms.provider.JMSMessageProcessorUtil;
 import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
@@ -57,6 +62,7 @@ public class TransportServiceInterceptor implements Interceptor {
     private JMSMessageProcessor responseMessageProcessor;
     private RuntimeComponentService service;
     private String correlationScheme;
+    private AssemblyFactory assemblyFactory;
     
 
     public TransportServiceInterceptor(ExtensionPointRegistry registry, JMSBinding jmsBinding, JMSResourceFactory jmsResourceFactory, RuntimeEndpoint endpoint) {
@@ -68,6 +74,8 @@ public class TransportServiceInterceptor implements Interceptor {
         this.responseMessageProcessor = JMSMessageProcessorUtil.getResponseMessageProcessor(registry, jmsBinding);
         this.service = (RuntimeComponentService)endpoint.getService();
         this.correlationScheme = jmsBinding.getCorrelationScheme();
+        FactoryExtensionPoint factories = registry.getExtensionPoint(FactoryExtensionPoint.class);
+        this.assemblyFactory = factories.getFactory(AssemblyFactory.class);
     }
     
     public Message invoke(Message msg) {
@@ -95,17 +103,17 @@ public class TransportServiceInterceptor implements Interceptor {
 //        try {
             JMSBindingContext context = msg.getBindingContext();
             javax.jms.Message requestJMSMsg = context.getJmsMsg();
-            
-//            EndpointReference from = new EndpointReferenceImpl(null);
-//            msg.setFrom(from);
-//            from.setCallbackEndpoint(new EndpointReferenceImpl("/")); // TODO: whats this for?
-//            ReferenceParameters parameters = from.getReferenceParameters();
-    
-//            String conversationID = requestJMSMsg.getStringProperty(JMSBindingConstants.CONVERSATION_ID_PROPERTY);
-//            if (conversationID != null) {
-//                parameters.setConversationID(conversationID);
-//            }
-            
+
+            EndpointReference from = assemblyFactory.createEndpointReference();
+            Endpoint fromEndpoint = assemblyFactory.createEndpoint();
+            from.setTargetEndpoint(fromEndpoint);
+            from.setStatus(EndpointReference.WIRED_TARGET_FOUND_AND_MATCHED);
+            msg.setFrom(from);
+            Endpoint callbackEndpoint = assemblyFactory.createEndpoint();
+//            callbackEndpoint.setURI(callbackAddress); // TODO: is this needed? Seems to work without it
+            callbackEndpoint.setUnresolved(true);
+            from.setCallbackEndpoint(callbackEndpoint);
+
             return msg;
 //        } catch (JMSException e) {
 //            throw new JMSBindingException(e);
