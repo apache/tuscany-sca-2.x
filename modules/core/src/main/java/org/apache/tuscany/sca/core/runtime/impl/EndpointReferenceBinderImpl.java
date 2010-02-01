@@ -417,7 +417,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
         // don't apply to the service binding
         // TODO - is this done somewhere else already?
         
-        // Determine of there are any reference policies
+        // Determine if there are any reference policies
         boolean noEndpointReferencePolicies = true;
         
         for (PolicySet policySet : referencePolicySets){
@@ -427,7 +427,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
             }
         }
         
-        // Determine of there are any reference policies
+        // Determine of there are any service policies
         boolean noEndpointPolicies = true;
         
         for (PolicySet policySet : endpoint.getPolicySets()){
