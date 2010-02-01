@@ -24,6 +24,7 @@ import java.util.List;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySubject;
 import org.apache.tuscany.sca.policy.PolicySet;
@@ -35,10 +36,11 @@ import org.apache.tuscany.sca.policy.PolicySubject;
 public class AxisPolicyHelper {
 
     public static final String XMLNS_SCA_11 = "http://docs.oasis-open.org/ns/opencsa/sca/200912";
+    
     public static final QName AUTHENTICATION_INTENT = new QName(XMLNS_SCA_11, "authentication");
     public static final QName CONFIDENTIALITY_INTENT = new QName(XMLNS_SCA_11, "confidentiality");
     public static final QName INTEGRITY_INTENT = new QName(XMLNS_SCA_11, "integrity");
-    public static final QName MTOM_INTENT = new QName(XMLNS_SCA_11, "MTOM");
+    public static final QName MTOM_INTENT = new QName(Constants.SCA11_TUSCANY_NS, "MTOM");
     public static final QName SOAP12_INTENT = new QName(XMLNS_SCA_11, "SOAP12");
 
     public static PolicySet getPolicySet(Binding wsBinding, QName intentName) {
