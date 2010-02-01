@@ -168,7 +168,6 @@ public class Axis2EngineIntegration {
         this.modelFactories = modelFactories;
         this.assemblyFactory = (RuntimeAssemblyFactory)modelFactories.getFactory(AssemblyFactory.class);
         
-        final boolean isRampartRequired = AxisPolicyHelper.isRampartRequired(wsBinding);
         
         // get the axis configuration context from the Tuscany axis2.xml file
         // TODO - java security
@@ -197,7 +196,18 @@ public class Axis2EngineIntegration {
         //             MTOM
         //             JMS
         //             Security (turn rampart on)
-        // Enable MTOM if the policy intent is specified.
+        final boolean isRampartRequired = true; //AxisPolicyHelper.isRampartRequired(wsBinding);
+        
+        if (isRampartRequired){
+            // TODO - do we need to go back to configurator?
+        }
+        
+        final boolean isJMSRequired = false;
+        
+        if (isJMSRequired){
+            // TODO - do we need to o go back to configurator?
+        }
+        
         if (AxisPolicyHelper.isIntentRequired(wsBinding, AxisPolicyHelper.MTOM_INTENT)) {
             configContext.getAxisConfiguration().getParameter(Configuration.ENABLE_MTOM).setLocked(false);
             configContext.getAxisConfiguration().getParameter(Configuration.ENABLE_MTOM).setValue("true");
