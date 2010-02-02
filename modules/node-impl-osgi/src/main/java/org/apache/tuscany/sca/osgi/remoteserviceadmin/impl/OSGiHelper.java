@@ -145,19 +145,20 @@ public class OSGiHelper {
         }
         return files;
     }
-    
+
     public static Collection<OSGiProperty> getOSGiProperties(ExtensionPointRegistry registry, ServiceReference reference) {
         FactoryExtensionPoint factoryExtensionPoint = registry.getExtensionPoint(FactoryExtensionPoint.class);
-        OSGiImplementationFactory implementationFactory= factoryExtensionPoint.getFactory(OSGiImplementationFactory.class);
+        OSGiImplementationFactory implementationFactory =
+            factoryExtensionPoint.getFactory(OSGiImplementationFactory.class);
         return implementationFactory.createOSGiProperties(reference);
     }
-    
+
     public static OSGiProperty createOSGiProperty(ExtensionPointRegistry registry, String name, Object value) {
         FactoryExtensionPoint factoryExtensionPoint = registry.getExtensionPoint(FactoryExtensionPoint.class);
-        OSGiImplementationFactory implementationFactory= factoryExtensionPoint.getFactory(OSGiImplementationFactory.class);
+        OSGiImplementationFactory implementationFactory =
+            factoryExtensionPoint.getFactory(OSGiImplementationFactory.class);
         return implementationFactory.createOSGiProperty(name, value);
     }
-
 
     public synchronized static String getFrameworkUUID(BundleContext bundleContext) {
         String uuid = null;
@@ -171,14 +172,15 @@ public class OSGiHelper {
         }
         System.setProperty(FRAMEWORK_UUID, uuid);
         return uuid;
-    }  
-    
+    }
+
     public static ClassLoader createBundleClassLoader(Bundle bundle) {
         return new BundleClassLoader(bundle);
     }
-    
+
     private static class BundleClassLoader extends ClassLoader {
         private Bundle bundle;
+
         public BundleClassLoader(Bundle bundle) {
             super(null);
             this.bundle = bundle;
@@ -204,6 +206,29 @@ public class OSGiHelper {
                 return urls;
             }
         }
-    }    
+    }
+
+    /**
+     * Find out what elements are added between the oldValues and newValues
+     * @param oldValues
+     * @param newValues
+     * @return
+     */
+    public static Collection<String> getAddedItems(Collection<String> oldValues, Collection<String> newValues) {
+        if (newValues == null) {
+            newValues = Collections.emptySet();
+        }
+
+        Collection<String> deltaInterest = new HashSet<String>(newValues);
+        if (oldValues == null) {
+            oldValues = Collections.emptySet();
+        }
+        deltaInterest.removeAll(oldValues);
+        return deltaInterest;
+    }
+
+    public static Collection<String> getRemovedItems(Collection<String> oldValues, Collection<String> newValues) {
+        return getAddedItems(newValues, oldValues);
+    }
 
 }

@@ -48,13 +48,28 @@ public class CollectionMap<K, V> extends ConcurrentHashMap<K, Collection<V>> {
     }
 
     public boolean removeValue(K key, V value) {
+        return removeValue(key, value, false);
+    }
+
+    /**
+     * Remove an entry from the collection for a key
+     * @param key The key
+     * @param value The value in the collection
+     * @param removeEmptyEntry Indicate if the entry should be removed if the collection is empty
+     * @return
+     */
+    public boolean removeValue(K key, V value, boolean removeEmptyEntry) {
         Collection<V> collection = get(key);
         if (collection == null) {
             return false;
         }
-        return collection.remove(value);
+        boolean result = collection.remove(value);
+        if(removeEmptyEntry && collection.isEmpty()) {
+            remove(key);
+        }
+        return result;
     }
-
+    
     protected Collection<V> createCollection() {
         return new ArrayList<V>();
     }

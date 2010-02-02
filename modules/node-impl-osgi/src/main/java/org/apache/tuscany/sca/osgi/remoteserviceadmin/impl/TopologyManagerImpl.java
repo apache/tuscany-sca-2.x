@@ -23,21 +23,20 @@ import static org.apache.tuscany.sca.implementation.osgi.OSGiProperty.SERVICE_EX
 import static org.osgi.service.remoteserviceadmin.RemoteConstants.SERVICE_EXPORTED_CONFIGS;
 import static org.osgi.service.remoteserviceadmin.RemoteConstants.SERVICE_IMPORTED;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Dictionary;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.common.java.collection.CollectionMap;
 import org.apache.tuscany.sca.core.LifeCycleListener;
+import org.apache.tuscany.sca.osgi.remoteserviceadmin.impl.EndpointMatcher.ImportAction;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
@@ -67,23 +66,23 @@ public class TopologyManagerImpl implements ListenerHook, RemoteServiceAdminList
     private BundleContext context;
     private ServiceTracker remoteAdmins;
 
-    private ServiceRegistration registration;
+    private volatile ServiceRegistration registration;
     private ServiceRegistration endpointListener;
 
     private ServiceTracker remotableServices;
 
-    // Service listeners keyed by the filter
-    private CollectionMap<String, ListenerInfo> serviceListeners = new CollectionMap<String, ListenerInfo>();
+    private EndpointMatcher endpointMatcher;
 
     private CollectionMap<ServiceReference, ExportRegistration> exportedServices =
         new CollectionMap<ServiceReference, ExportRegistration>();
-    private CollectionMap<EndpointDescription, ImportRegistration> importedServices =
-        new CollectionMap<EndpointDescription, ImportRegistration>();
+    private CollectionMap<ImportKey, ImportRegistration> importedServices =
+        new CollectionMap<ImportKey, ImportRegistration>();
 
     private Filter remotableServiceFilter;
 
     public TopologyManagerImpl(BundleContext context) {
         this.context = context;
+        this.endpointMatcher = new EndpointMatcher(context);
     }
 
     public void start() {
@@ -113,36 +112,9 @@ public class TopologyManagerImpl implements ListenerHook, RemoteServiceAdminList
         remotableServices = new ServiceTracker(context, remotableServiceFilter, this);
         remotableServices.open(true);
 
+        Thread thread = new Thread(new ImportTask());
+        thread.start();
     }
-
-    /**
-     * @see org.osgi.framework.hooks.service.EventHook#event(org.osgi.framework.ServiceEvent,
-     *      java.util.Collection)
-     */
-    /*
-    public void event(ServiceEvent event, Collection contexts) {
-        ServiceReference reference = event.getServiceReference();
-        if (!remotableServiceFilter.match(reference)) {
-            // Only export remotable services that are for SCA
-            return;
-        }
-        switch (event.getType()) {
-            case ServiceEvent.REGISTERED:
-                exportService(reference);
-                break;
-            case ServiceEvent.UNREGISTERING:
-                unexportService(reference);
-                break;
-            case ServiceEvent.MODIFIED:
-            case ServiceEvent.MODIFIED_ENDMATCH:
-                // First check if the property changes will impact
-                // Call remote admin to update the service
-                unexportService(reference);
-                exportService(reference);
-                break;
-        }
-    }
-    */
 
     public Object addingService(ServiceReference reference) {
         exportService(reference);
@@ -191,39 +163,13 @@ public class TopologyManagerImpl implements ListenerHook, RemoteServiceAdminList
      * @see org.osgi.framework.hooks.service.ListenerHook#added(java.util.Collection)
      */
     public void added(Collection listeners) {
-        boolean changed = false;
-        String[] filters = null;
         try {
-            synchronized (serviceListeners) {
-                Collection<ListenerInfo> listenerInfos = (Collection<ListenerInfo>)listeners;
-                for (ListenerInfo l : listenerInfos) {
-                    if (l.getBundleContext().getBundle().getBundleId() == 0L || l.getBundleContext() == context) {
-                        // Ignore system and tuscany bundle
-                        continue;
-                    }
-                    if (!l.isRemoved()) {
-                        String key = l.getFilter();
-                        if (key == null) {
-                            // key = "";
-                            // FIXME: It should always match, let's ignore it for now
-                            logger.warning("Service listner without a filter is skipped: " + l);
-                            continue;
-                        }
-                        Collection<ListenerInfo> infos = serviceListeners.get(key);
-                        if (infos == null) {
-                            infos = new HashSet<ListenerInfo>();
-                            serviceListeners.put(key, infos);
-                        }
-                        infos.add(l);
-                        changed = true;
-                    }
+            synchronized (endpointMatcher) {
+                Collection<String> oldFilters = endpointMatcher.getFilters();
+                Collection<String> newFilters = endpointMatcher.added(listeners);
+                if (!OSGiHelper.getAddedItems(oldFilters, newFilters).isEmpty()) {
+                    updateEndpointListenerScope(newFilters);
                 }
-                if (changed) {
-                    filters = getFilters();
-                }
-            }
-            if (changed) {
-                updateEndpointListenerScope(filters);
             }
         } catch (Throwable e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
@@ -238,84 +184,23 @@ public class TopologyManagerImpl implements ListenerHook, RemoteServiceAdminList
         }
     }
 
-    private void updateEndpointListenerScope(String[] filters) {
+    private void updateEndpointListenerScope(Collection<String> filters) {
         Dictionary<String, Object> props = new Hashtable<String, Object>();
         props.put(ENDPOINT_LISTENER_SCOPE, filters);
         endpointListener.setProperties(props);
-    }
-
-    private String[] getFilters() {
-        Set<String> filterSet = serviceListeners.keySet();
-        String[] filters = filterSet.toArray(new String[filterSet.size()]);
-        return filters;
-    }
-
-    private CollectionMap<Class<?>, ListenerInfo> findServiceListeners(EndpointDescription endpointDescription,
-                                                                       String matchedFilter) {
-        Collection<ListenerInfo> listeners = null;
-        synchronized (serviceListeners) {
-
-            // First find all the listeners that have the matching filter
-            listeners = serviceListeners.get(matchedFilter);
-            if (listeners == null) {
-                return null;
-            }
-            listeners = new ArrayList<ListenerInfo>(listeners);
-        }
-
-        // Try to partition the listeners by the interface classes 
-        List<String> interfaceNames = endpointDescription.getInterfaces();
-        CollectionMap<Class<?>, ListenerInfo> interfaceToListeners = new CollectionMap<Class<?>, ListenerInfo>();
-        for (String i : interfaceNames) {
-            for (Iterator<ListenerInfo> it = listeners.iterator(); it.hasNext();) {
-                try {
-                    ListenerInfo listener = it.next();
-                    if (listener.isRemoved()) {
-                        it.remove();
-                        continue;
-                    }
-                    try {
-                        // The classloading can be synchronzed against the serviceListeners
-                        Class<?> interfaceClass = listener.getBundleContext().getBundle().loadClass(i);
-                        interfaceToListeners.putValue(interfaceClass, listener);
-                    } catch (IllegalStateException e) {
-                        logger.log(Level.WARNING, e.getMessage(), e);
-                        // Ignore the exception
-                    }
-                } catch (ClassNotFoundException e) {
-                    // Ignore the listener as it cannot load the interface class
-                }
-            }
-        }
-        return interfaceToListeners;
     }
 
     /**
      * @see org.osgi.framework.hooks.service.ListenerHook#removed(java.util.Collection)
      */
     public void removed(Collection listeners) {
-        boolean changed = false;
-        String[] filters = null;
         try {
-            synchronized (serviceListeners) {
-                Collection<ListenerInfo> listenerInfos = (Collection<ListenerInfo>)listeners;
-                for (ListenerInfo l : listenerInfos) {
-                    if (registration != null && l.getBundleContext() != context) {
-                        String key = l.getFilter();
-                        if (key == null) {
-                            continue;
-                        }
-                        if (serviceListeners.removeValue(key, l)) {
-                            changed = true;
-                        }
-                    }
+            synchronized (endpointMatcher) {
+                Collection<String> oldFilters = endpointMatcher.getFilters();
+                Collection<String> newFilters = endpointMatcher.removed(listeners);
+                if (!OSGiHelper.getRemovedItems(oldFilters, newFilters).isEmpty()) {
+                    updateEndpointListenerScope(newFilters);
                 }
-                if (changed) {
-                    filters = getFilters();
-                }
-            }
-            if (changed) {
-                updateEndpointListenerScope(filters);
             }
         } catch (Throwable e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
@@ -353,24 +238,27 @@ public class TopologyManagerImpl implements ListenerHook, RemoteServiceAdminList
      *      java.lang.String)
      */
     public void endpointAdded(EndpointDescription endpoint, String matchedFilter) {
-        importService(endpoint, matchedFilter);
+        endpointMatcher.added(endpoint, matchedFilter);
+        //        importService(endpoint, matchedFilter);
     }
 
     /**
      * @see org.osgi.remoteserviceadmin.EndpointListener#removeEndpoint(org.osgi.service.remoteserviceadmin.EndpointDescription)
      */
     public void endpointRemoved(EndpointDescription endpoint, String matchedFilter) {
-        unimportService(endpoint);
+        endpointMatcher.removed(endpoint, matchedFilter);
+        //        unimportService(endpoint);
     }
 
     private void importService(EndpointDescription endpoint, String matchedFilter) {
         Object[] admins = remoteAdmins.getServices();
         if (admins == null) {
-            logger.warning("No RemoteAdmin services are available.");
+            logger.warning("No Remote Service Admin services are available.");
             return;
         }
 
-        CollectionMap<Class<?>, ListenerInfo> interfaceToListeners = findServiceListeners(endpoint, matchedFilter);
+        CollectionMap<Class<?>, ListenerInfo> interfaceToListeners =
+            endpointMatcher.groupListeners(endpoint, matchedFilter);
         for (Map.Entry<Class<?>, Collection<ListenerInfo>> e : interfaceToListeners.entrySet()) {
             Class<?> interfaceClass = e.getKey();
             Collection<ListenerInfo> listeners = e.getValue();
@@ -401,16 +289,17 @@ public class TopologyManagerImpl implements ListenerHook, RemoteServiceAdminList
                     RemoteServiceAdmin remoteAdmin = (RemoteServiceAdmin)ra;
                     ImportRegistration importRegistration = remoteAdmin.importService(description);
                     if (importRegistration != null) {
-                        importedServices.putValue(endpoint, importRegistration);
+                        importedServices.putValue(new ImportKey(description, listener), importRegistration);
                     }
                 }
             }
         }
     }
 
-    private void unimportService(EndpointDescription endpoint) {
+    private void unimportService(EndpointDescription endpoint, ListenerInfo listenerInfo) {
         // Call remote admin to unimport the service
-        Collection<ImportRegistration> importRegistrations = importedServices.get(endpoint);
+        Collection<ImportRegistration> importRegistrations =
+            importedServices.get(new ImportKey(endpoint, listenerInfo));
         if (importRegistrations != null) {
             for (Iterator<ImportRegistration> i = importRegistrations.iterator(); i.hasNext();) {
                 ImportRegistration imported = i.next();
@@ -435,8 +324,76 @@ public class TopologyManagerImpl implements ListenerHook, RemoteServiceAdminList
             remoteAdmins.close();
             remoteAdmins = null;
         }
-        synchronized (serviceListeners) {
-            serviceListeners.clear();
+        if (endpointMatcher != null) {
+            endpointMatcher.clear();
+        }
+    }
+
+    private class ImportTask implements Runnable {
+        public void run() {
+            while (registration != null) {
+                BlockingQueue<EndpointMatcher.ImportAction> queue = endpointMatcher.getImportQueue();
+                ImportAction action = null;
+                try {
+                    action = queue.poll(1, TimeUnit.SECONDS);
+                } catch (InterruptedException e) {
+                    // Ignore
+                }
+                if (action != null) {
+                    if (action.type == ImportAction.Type.Add) {
+                        importService(action.endpointDescription, action.listenerInfo.getFilter());
+                    } else if (action.type == ImportAction.Type.Remove) {
+                        unimportService(action.endpointDescription, action.listenerInfo);
+                    }
+                }
+            }
+        }
+    }
+
+    private static class ImportKey {
+        private EndpointDescription endpointDescription;
+
+        /**
+         * @param endpointDescription
+         * @param listenerInfo
+         */
+        private ImportKey(EndpointDescription endpointDescription, ListenerInfo listenerInfo) {
+            super();
+            this.endpointDescription = endpointDescription;
+            this.listenerInfo = listenerInfo;
+        }
+
+        private ListenerInfo listenerInfo;
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((endpointDescription == null) ? 0 : endpointDescription.hashCode());
+            result = prime * result + ((listenerInfo == null) ? 0 : listenerInfo.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            ImportKey other = (ImportKey)obj;
+            if (endpointDescription == null) {
+                if (other.endpointDescription != null)
+                    return false;
+            } else if (!endpointDescription.equals(other.endpointDescription))
+                return false;
+            if (listenerInfo == null) {
+                if (other.listenerInfo != null)
+                    return false;
+            } else if (!listenerInfo.equals(other.listenerInfo))
+                return false;
+            return true;
         }
     }
 

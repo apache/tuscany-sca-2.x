@@ -100,21 +100,21 @@ public class EndpointIntrospector {
     private ServiceTracker discoveryTracker;
 
     /**
-     * @param intentName
+     * @param name
      * @return
      */
-    private static QName getQName(String intentName) {
+    private static QName getQName(String name) {
         QName qname;
-        if (intentName.startsWith("{")) {
-            int i = intentName.indexOf('}');
+        if (name.startsWith("{")) {
+            int i = name.indexOf('}');
             if (i != -1) {
-                qname = new QName(intentName.substring(1, i), intentName.substring(i + 1));
+                qname = new QName(name.substring(1, i), name.substring(i + 1));
             } else {
-                throw new IllegalArgumentException("Invalid intent: " + intentName);
+                throw new IllegalArgumentException("Invalid qname: " + name);
             }
         } else {
             // Default to SCA namespace
-            qname = new QName(Base.SCA11_NS, intentName);
+            qname = new QName("", name);
         }
         return qname;
     }
@@ -474,7 +474,8 @@ public class EndpointIntrospector {
             for (ExtenderConfiguration config : discoveryService.getConfigurations()) {
                 for (SCAConfig sc : config.getSCAConfigs()) {
                     for (QName bindingName : bindingNames) {
-                        if (sc.getTargetNamespace().equals(bindingName.getNamespaceURI())) {
+                        if ("".equals(bindingName.getNamespaceURI()) || sc.getTargetNamespace().equals(bindingName
+                            .getNamespaceURI())) {
                             for (Binding binding : sc.getBindings()) {
                                 if (bindingName.getLocalPart().equals(binding.getName())) {
                                     bindingMap.put(bindingName, binding);

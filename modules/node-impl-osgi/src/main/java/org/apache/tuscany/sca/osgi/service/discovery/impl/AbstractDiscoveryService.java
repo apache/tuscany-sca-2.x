@@ -151,7 +151,6 @@ public abstract class AbstractDiscoveryService implements Discovery, LifeCycleLi
             EndpointListener listener = (EndpointListener)service;
             Collection<String> oldFilters = null;
             Collection<String> newFilters = null;
-            Collection<EndpointDescription> endpoints = null;
             synchronized (this) {
                 if (logger.isLoggable(Level.FINE)) {
                     logger.fine("updating listener: " + listener);
@@ -176,6 +175,16 @@ public abstract class AbstractDiscoveryService implements Discovery, LifeCycleLi
             String next = i.next();
             for (EndpointDescription sd : endpointDescriptions.keySet()) {
                 triggerCallbacks(listener, next, sd, ADDED);
+            }
+        }
+        // Find removed filters
+        deltaInterest = getDelta(newInterest, oldInterest);
+
+        i = deltaInterest.iterator();
+        while (i.hasNext()) {
+            String next = i.next();
+            for (EndpointDescription sd : endpointDescriptions.keySet()) {
+                triggerCallbacks(listener, next, sd, REMOVED);
             }
         }
     }
