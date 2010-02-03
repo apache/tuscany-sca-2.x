@@ -22,6 +22,7 @@ import static org.apache.tuscany.sca.binding.ws.axis2.AxisPolicyHelper.SOAP12_IN
 import static org.apache.tuscany.sca.binding.ws.axis2.AxisPolicyHelper.isIntentRequired;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -29,7 +30,6 @@ import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import javax.wsdl.Binding;
 import javax.wsdl.BindingOperation;
@@ -57,12 +57,13 @@ import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
 import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.context.ConfigurationContextFactory;
+import org.apache.axis2.deployment.URLBasedAxisConfigurator;
 import org.apache.axis2.description.AxisEndpoint;
 import org.apache.axis2.description.AxisService;
-import org.apache.axis2.description.Parameter;
 import org.apache.axis2.description.WSDL11ToAxisServiceBuilder;
 import org.apache.axis2.description.WSDL2Constants;
 import org.apache.axis2.transport.http.HTTPConstants;
+import org.apache.axis2.transport.local.LocalResponder;
 import org.apache.axis2.util.threadpool.ThreadPool;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
@@ -70,6 +71,7 @@ import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
 import org.apache.tuscany.sca.assembly.AbstractContract;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.common.xml.XMLDocumentHelper;
+import org.apache.tuscany.sca.extensibility.ClassLoaderContext;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.MessageFactory;
@@ -77,6 +79,10 @@ import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySubject;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.ws.commons.schema.resolver.URIResolver;
+import org.apache.xerces.jaxp.DocumentBuilderFactoryImpl;
+import org.oasisopen.sca.ServiceRuntimeException;
+
+import com.ctc.wstx.stax.WstxInputFactory;
 
 public class Axis2ServiceClient {
 
@@ -132,23 +138,39 @@ public class Axis2ServiceClient {
             ConfigurationContext configContext = null;
             
             // get the axis configuration context from the Tuscany axis2.xml file
-            // TODO - java security
-            ClassLoader wsBindingCL = getClass().getClassLoader();
-            
-            // TODO - taken the Tuscany configurator out for a while 
-            //        but may need to re-introduce a simplified version if we feel 
-            //        that it's important to not deploy rampart when it's not required
+            // Allow privileged access to read properties. Requires PropertyPermission read in
+            // security policy.
             try {
-                URL axis2xmlURL = wsBindingCL.getResource("org/apache/tuscany/sca/binding/ws/axis2/engine/conf/tuscany-axis2.xml");
-                if (axis2xmlURL != null){
-                    URL repositoryURL = new URL(axis2xmlURL.toExternalForm().replaceFirst("conf/tuscany-axis2.xml", "repository"));
-                    configContext = ConfigurationContextFactory.createConfigurationContextFromURIs(axis2xmlURL, repositoryURL);
-                } else {
-                    // throw an exception
-                }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }            
+                configContext = AccessController.doPrivileged(new PrivilegedExceptionAction<ConfigurationContext>() {
+                    public ConfigurationContext run() throws AxisFault, MalformedURLException {
+                        // collect together the classloaders that Axis2 requireds in order to load
+                        // pluggable items such as the Tuscany MessageReceivers and the xerces 
+                        // document builder. 
+                        ClassLoader wsBindingCL = getClass().getClassLoader();
+                        ClassLoader axis2CL = URLBasedAxisConfigurator.class.getClassLoader();
+                        ClassLoader xercesCL = DocumentBuilderFactoryImpl.class.getClassLoader();
+                        ClassLoader wstxCL = WstxInputFactory.class.getClassLoader();
+                        ClassLoader localtransportCL = LocalResponder.class.getClassLoader();
+                        ClassLoader oldTCCL = ClassLoaderContext.setContextClassLoader(wsBindingCL, axis2CL, xercesCL, wstxCL, localtransportCL);
+                        
+                        try {
+                            URL axis2xmlURL = wsBindingCL.getResource("org/apache/tuscany/sca/binding/ws/axis2/engine/conf/tuscany-axis2.xml");
+                            if (axis2xmlURL != null){
+                                URL repositoryURL = new URL(axis2xmlURL.toExternalForm().replaceFirst("conf/tuscany-axis2.xml", "repository/"));
+                                return ConfigurationContextFactory.createConfigurationContextFromURIs(axis2xmlURL, repositoryURL);
+                            } else {
+                                return null;
+                            }
+                        } finally {
+                            if (oldTCCL != null) {
+                                Thread.currentThread().setContextClassLoader(oldTCCL);
+                            }
+                        }
+                    }
+                });
+            } catch (PrivilegedActionException e) {
+                throw new ServiceRuntimeException(e.getException());
+            }           
 
             createPolicyHandlers();
 

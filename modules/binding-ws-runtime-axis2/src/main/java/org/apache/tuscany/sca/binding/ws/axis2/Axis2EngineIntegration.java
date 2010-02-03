@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.binding.ws.axis2;
 
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -48,10 +49,10 @@ import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.Constants;
-import org.apache.axis2.Constants.Configuration;
 import org.apache.axis2.addressing.AddressingConstants;
 import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.context.ConfigurationContextFactory;
+import org.apache.axis2.deployment.URLBasedAxisConfigurator;
 import org.apache.axis2.deployment.util.Utils;
 import org.apache.axis2.description.AxisEndpoint;
 import org.apache.axis2.description.AxisOperation;
@@ -66,40 +67,42 @@ import org.apache.axis2.engine.ListenerManager;
 import org.apache.axis2.engine.MessageReceiver;
 import org.apache.axis2.transport.jms.JMSListener;
 import org.apache.axis2.transport.jms.JMSSender;
+import org.apache.axis2.transport.local.LocalResponder;
 import org.apache.tuscany.sca.assembly.AbstractContract;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.axis2.Axis2ServiceClient.URIResolverImpl;
+import org.apache.tuscany.sca.binding.ws.axis2.policy.mtom.Axis2MTOMPolicyProvider;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.RuntimeAssemblyFactory;
+import org.apache.tuscany.sca.extensibility.ClassLoaderContext;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.invocation.MessageFactory;
-import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.policy.util.PolicyHelper;
+import org.apache.tuscany.sca.provider.PolicyProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.apache.tuscany.sca.xsd.XSDefinition;
 import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaExternal;
+import org.apache.xerces.jaxp.DocumentBuilderFactoryImpl;
+import org.oasisopen.sca.ServiceRuntimeException;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.ctc.wstx.stax.WstxInputFactory;
+
+
 public class Axis2EngineIntegration {
     private static final Logger logger = Logger.getLogger(Axis2EngineIntegration.class.getName());
     
-    private ConfigurationContext configContext;
-    
-    //============================
-    
-    public static final String IMPORT_TAG = "import";
-    public static final String INCLUDE_TAG = "include";
-
     private RuntimeEndpoint endpoint;
     private RuntimeComponent component;
     private AbstractContract contract;
@@ -109,9 +112,40 @@ public class Axis2EngineIntegration {
     private FactoryExtensionPoint modelFactories;
     private RuntimeAssemblyFactory assemblyFactory;
     
+    private ConfigurationContext configContext;   
+    
+    // a map of all endpoint URIs to WSDL ports for which service will be started 
+    // 
+    private Map<String, Port> urlMap = new HashMap<String, Port>();
+    
+    // default provided intents
+    public static final String SCA_11_NS = org.apache.tuscany.sca.assembly.xml.Constants.SCA11_NS;
+    public static final String SCA_11_TUSCANY_NS = org.apache.tuscany.sca.assembly.xml.Constants.SCA11_TUSCANY_NS;
+    
+    // TODO - move these constants to assembly
+    public static final QName AUTHENTICATION_INTENT = new QName(SCA_11_NS, "authentication");
+    public static final QName CONFIDENTIALITY_INTENT = new QName(SCA_11_NS, "confidentiality");
+    public static final QName INTEGRITY_INTENT = new QName(SCA_11_NS, "integrity");
+    public static final QName MTOM_INTENT = new QName(SCA_11_TUSCANY_NS, "MTOM");
+    public static final QName SOAP_INTENT = new QName(SCA_11_NS, "SOAP");
+    public static final QName SOAP11_INTENT = new QName(SCA_11_NS, "SOAP.1_1");
+    public static final QName SOAP12_INTENT = new QName(SCA_11_NS, "SOAP.1_2");
+    
+    private boolean isSOAP12Required = false;
+    private boolean isRampartRequired = false;
+    private boolean isMTOMRequired = false;
+    private boolean isJMSRequired = false;
+    
+    // JMS transport support
     private JMSSender jmsSender;
     private JMSListener jmsListener;
-    private Map<String, Port> urlMap = new HashMap<String, Port>();
+    
+    //=========================================================
+    // most of the following is related to rewriting WSDL imports 
+    // I'd like to move this but don't know where to yet. 
+    
+    public static final String IMPORT_TAG = "import";
+    public static final String INCLUDE_TAG = "include";
 
 
     public static final QName QNAME_WSA_ADDRESS =
@@ -121,8 +155,6 @@ public class Axis2EngineIntegration {
     public static final QName QNAME_WSA_REFERENCE_PARAMETERS =
         new QName(AddressingConstants.Final.WSA_NAMESPACE, AddressingConstants.EPR_REFERENCE_PARAMETERS);
 
-    private static final QName TRANSPORT_JMS_QUALIFIED_INTENT =
-        new QName("http://docs.oasis-open.org/ns/opencsa/sca/200912", "transport.jms");
     private static final String DEFAULT_QUEUE_CONNECTION_FACTORY = "TuscanyQueueConnectionFactory";
 
     //Schema element names
@@ -139,10 +171,13 @@ public class Axis2EngineIntegration {
     public static final QName Q_ELEM_XSD_2001 = new QName(NS_URI_XSD_2001, ELEM_SCHEMA);
     public static final List<QName> XSD_QNAME_LIST =
         Arrays.asList(new QName[] {Q_ELEM_XSD_1999, Q_ELEM_XSD_2000, Q_ELEM_XSD_2001});
+    
+    //=========================================================    
 
     /**
      * Construct the service provider. This creates the base configuration for
-     * Axis2 but with no services deployed yet. 
+     * Axis2 but with no services deployed yet. Services will be deployed when 
+     * this service binding provider is started 
      * 
      * @param endpoint
      * @param component
@@ -168,136 +203,108 @@ public class Axis2EngineIntegration {
         this.modelFactories = modelFactories;
         this.assemblyFactory = (RuntimeAssemblyFactory)modelFactories.getFactory(AssemblyFactory.class);
         
-        final boolean isRampartRequired = AxisPolicyHelper.isRampartRequired(wsBinding);
-        
-        // get the axis configuration context from the Tuscany axis2.xml file
-        // TODO - java security
-        ClassLoader wsBindingCL = getClass().getClassLoader();
-        
         // TODO - taken the Tuscany configurator out for a while 
         //        but may need to re-introduce a simplified version if we feel 
         //        that it's important to not deploy rampart when it's not required
+        
+        // get the axis configuration context from the Tuscany axis2.xml file
+        // Allow privileged access to read properties. Requires PropertyPermission read in
+        // security policy.
         try {
-            URL axis2xmlURL = wsBindingCL.getResource("org/apache/tuscany/sca/binding/ws/axis2/engine/conf/tuscany-axis2.xml");
-            if (axis2xmlURL != null){
-                URL repositoryURL = new URL(axis2xmlURL.toExternalForm().replaceFirst("conf/tuscany-axis2.xml", "repository"));
-                configContext = ConfigurationContextFactory.createConfigurationContextFromURIs(axis2xmlURL, repositoryURL);
-            } else {
-                // throw an exception
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+            configContext = AccessController.doPrivileged(new PrivilegedExceptionAction<ConfigurationContext>() {
+                public ConfigurationContext run() throws AxisFault, MalformedURLException {
+                    // collect together the classloaders that Axis2 requireds in order to load
+                    // pluggable items such as the Tuscany MessageReceivers and the xerces 
+                    // document builder. 
+                    ClassLoader wsBindingCL = getClass().getClassLoader();
+                    ClassLoader axis2CL = URLBasedAxisConfigurator.class.getClassLoader();
+                    ClassLoader xercesCL = DocumentBuilderFactoryImpl.class.getClassLoader();
+                    ClassLoader wstxCL = WstxInputFactory.class.getClassLoader();
+                    ClassLoader localtransportCL = LocalResponder.class.getClassLoader();
+                    ClassLoader oldTCCL = ClassLoaderContext.setContextClassLoader(wsBindingCL, axis2CL, xercesCL, wstxCL, localtransportCL);
+                    
+                    try {
+                        URL axis2xmlURL = wsBindingCL.getResource("org/apache/tuscany/sca/binding/ws/axis2/engine/conf/tuscany-axis2.xml");
+                        if (axis2xmlURL != null){
+                            URL repositoryURL = new URL(axis2xmlURL.toExternalForm().replaceFirst("conf/tuscany-axis2.xml", "repository/"));
+                            return ConfigurationContextFactory.createConfigurationContextFromURIs(axis2xmlURL, repositoryURL);
+                        } else {
+                            return null;
+                        }
+                    } finally {
+                        if (oldTCCL != null) {
+                            Thread.currentThread().setContextClassLoader(oldTCCL);
+                        }
+                    }
+                }
+            });
+        } catch (PrivilegedActionException e) {
+            throw new ServiceRuntimeException(e.getException());
+        }        
         
         // set the root context for this instance of Axis
         configContext.setContextRoot(servletHost.getContextPath());
         
-        // TODO - Cycle through all policy providers asking if there is configuration 
-        //        todo. Should this be in the 
-        //             MTOM
-        //             JMS
-        //             Security (turn rampart on)
-        // Enable MTOM if the policy intent is specified.
-        if (AxisPolicyHelper.isIntentRequired(wsBinding, AxisPolicyHelper.MTOM_INTENT)) {
-            configContext.getAxisConfiguration().getParameter(Configuration.ENABLE_MTOM).setLocked(false);
-            configContext.getAxisConfiguration().getParameter(Configuration.ENABLE_MTOM).setValue("true");
-        }        
+        // Determine the configuration from the mayProvides intents
+           
+        isSOAP12Required = PolicyHelper.isIntentRequired(wsBinding, SOAP12_INTENT);
         
+        // this is not correct as there may be other, custom, policies that 
+        // require rampart. For example this is not going to pick up the case
+        // of external policy attachment
+        isRampartRequired = PolicyHelper.isIntentRequired(wsBinding, AUTHENTICATION_INTENT) ||
+                            PolicyHelper.isIntentRequired(wsBinding, CONFIDENTIALITY_INTENT) ||
+                            PolicyHelper.isIntentRequired(wsBinding, INTEGRITY_INTENT);          
+            
         // Update port addresses with runtime information, and create a
         // map from endpoint URIs to WSDL ports that eliminates duplicate
         // ports for the same endpoint.
+        // TODO - when do we think we are dealing with more than one port on the service side?
+        //        is this an OSOA thing?
         for (Object port : wsBinding.getService().getPorts().values()) {
-            String portAddress = getPortAddress((Port)port);
-            String endpointURI = computeEndpointURI(portAddress, servletHost);
+            String endpointURI = getPortAddress((Port)port);
+            if (!endpointURI.startsWith("jms:")) {
+                endpointURI = servletHost.getURLMapping(endpointURI).toString();
+            } else {
+                isJMSRequired = true;
+            }
             setPortAddress((Port)port, endpointURI);
             urlMap.put(endpointURI, (Port)port);
+        }            
+        
+        isMTOMRequired = PolicyHelper.isIntentRequired(wsBinding, MTOM_INTENT);
+        
+     
+        // Apply the configuration from any other policies
+        
+        for (PolicyProvider pp : endpoint.getPolicyProviders()) {
+            // we probably want to pass the whole provider in here
+            // so that the policy providers can get at the rampart configuration
+            pp.configureBinding(configContext);
         }
         
+        // Apply the configuration from the mayProvides intents        
+        
+        if (isRampartRequired){
+            // TODO - do we need to go back to configurator?
+        }
+        
+        if (isJMSRequired){
+            // TODO - do we need to o go back to configurator?
+        }  
+        
+        if (isMTOMRequired) {
+            new Axis2MTOMPolicyProvider(endpoint).configureBinding(configContext);
+        }         
+       
     }
       
-
-    static String getPortAddress(Port port) {
-        Object ext = port.getExtensibilityElements().get(0);
-        if (ext instanceof SOAPAddress) {
-            return ((SOAPAddress)ext).getLocationURI();
-        }
-        if (ext instanceof SOAP12Address) {
-            return ((SOAP12Address)ext).getLocationURI();
-        }
-        return null;
-    }
-
-    static void setPortAddress(Port port, String locationURI) {
-        Object ext = port.getExtensibilityElements().get(0);
-        if (ext instanceof SOAPAddress) {
-            ((SOAPAddress)ext).setLocationURI(locationURI);
-        }
-        if (ext instanceof SOAP12Address) {
-            ((SOAP12Address)ext).setLocationURI(locationURI);
-        }
-    }
-
-    private String computeEndpointURI(String uri, ServletHost servletHost) {
-
-        if (uri == null) {
-            return null;
-        }
-
-        // pull out the binding intents to see what sort of transport is required
-        PolicySet transportJmsPolicySet = AxisPolicyHelper.getPolicySet(wsBinding, TRANSPORT_JMS_QUALIFIED_INTENT);
-        if (transportJmsPolicySet != null) {
-            if (!uri.startsWith("jms:/")) {
-                uri = "jms:" + uri;
-            }
-
-            // construct the rest of the URI based on the policy. All the details are put
-            // into the URI here rather than being place directly into the Axis configuration
-            // as the Axis JMS sender relies on parsing the target URI
-/*            
-            Axis2ConfigParamPolicy axis2ConfigParamPolicy = null;
-            for (Object policy : transportJmsPolicySet.getPolicies()) {
-                if (policy instanceof Axis2ConfigParamPolicy) {
-                    axis2ConfigParamPolicy = (Axis2ConfigParamPolicy)policy;
-                    Iterator paramIterator =
-                        axis2ConfigParamPolicy.getParamElements().get(DEFAULT_QUEUE_CONNECTION_FACTORY)
-                            .getChildElements();
-
-                    if (paramIterator.hasNext()) {
-                        StringBuffer uriParams = new StringBuffer("?");
-
-                        while (paramIterator.hasNext()) {
-                            OMElement parameter = (OMElement)paramIterator.next();
-                            uriParams.append(parameter.getAttributeValue(new QName("", "name")));
-                            uriParams.append("=");
-                            uriParams.append(parameter.getText());
-
-                            if (paramIterator.hasNext()) {
-                                uriParams.append("&");
-                            }
-                        }
-
-                        uri = uri + uriParams;
-                    }
-                }
-            }
-*/            
-        } else {
-            if (!uri.startsWith("jms:")) {
-                uri = servletHost.getURLMapping(uri).toString();
-            }
-        }
-
-        return uri;
-    }
-
     /**
-     * Add the Tuscany services that this binding instance represents to the 
+     * Add the Tuscany services, that this binding instance represents, to the 
      * Axis runtime. 
      */
     public void start() {
-
         try {
-            //createPolicyHandlers();
             for (Map.Entry<String, Port> entry : urlMap.entrySet()) {
                 AxisService axisService = createAxisService(entry.getKey(), entry.getValue());
                 configContext.getAxisConfiguration().addService(axisService);
@@ -305,13 +312,13 @@ public class Axis2EngineIntegration {
 
             Axis2ServiceServlet servlet = null;
             for (String endpointURL : urlMap.keySet()) {
-                if (endpointURL.startsWith("http://") || endpointURL.startsWith("https://")
-                    || endpointURL.startsWith("/")) {
+                if (endpointURL.startsWith("http://") || 
+                    endpointURL.startsWith("https://") || 
+                    endpointURL.startsWith("/")) {
                     if (servlet == null) {
                         servlet = new Axis2ServiceServlet();
                         servlet.init(configContext);
                     }
-                    //[nash] configContext.setContextRoot(endpointURL);
                     servletHost.addServletMapping(endpointURL, servlet);
                 } else if (endpointURL.startsWith("jms")) {
                     logger.log(Level.INFO, "Axis2 JMS URL=" + endpointURL);
@@ -422,7 +429,7 @@ public class Axis2EngineIntegration {
     }
 
     /**
-     * Create an AxisService from the interface class from the SCA service interface
+     * Create an AxisService from the Java interface class of the SCA service interface
      */
     protected AxisService createJavaAxisService(String endpointURL) throws AxisFault {
         
@@ -456,6 +463,7 @@ public class Axis2EngineIntegration {
         final WSDLToAxisServiceBuilder builder = new WSDL11ToAxisServiceBuilder(def, serviceQName, port.getName());
         builder.setServerSide(true);
         // [rfeng] Add a custom resolver to work around WSCOMMONS-228
+        // TODO - 228 is resolved, is this still required
         builder.setCustomResolver(new URIResolverImpl(def));
         builder.setBaseUri(def.getDocumentBaseURI());
         // [rfeng]
@@ -481,6 +489,9 @@ public class Axis2EngineIntegration {
         axisService.setName(name);
         axisService.setEndpointURL(endpointURL);
         axisService.setDocumentation("Tuscany configured AxisService for service: " + endpointURL);
+        
+        // TODO - again, do we ever have more than one endpoint
+        //        on the service side?
         for (Iterator i = axisService.getEndpoints().values().iterator(); i.hasNext();) {
             AxisEndpoint ae = (AxisEndpoint)i.next();
             if (endpointURL.startsWith("jms")) {
@@ -653,4 +664,28 @@ public class Axis2EngineIntegration {
         }
         return null;
     }
+    
+    
+    // Utility operations. Should these be available to the client also?
+    
+    static String getPortAddress(Port port) {
+        Object ext = port.getExtensibilityElements().get(0);
+        if (ext instanceof SOAPAddress) {
+            return ((SOAPAddress)ext).getLocationURI();
+        }
+        if (ext instanceof SOAP12Address) {
+            return ((SOAP12Address)ext).getLocationURI();
+        }
+        return null;
+    }
+
+    static void setPortAddress(Port port, String locationURI) {
+        Object ext = port.getExtensibilityElements().get(0);
+        if (ext instanceof SOAPAddress) {
+            ((SOAPAddress)ext).setLocationURI(locationURI);
+        }
+        if (ext instanceof SOAP12Address) {
+            ((SOAP12Address)ext).setLocationURI(locationURI);
+        }
+    }    
 }
