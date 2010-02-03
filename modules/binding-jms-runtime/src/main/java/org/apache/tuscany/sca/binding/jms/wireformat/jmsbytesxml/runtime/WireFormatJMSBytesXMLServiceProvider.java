@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.binding.jms.wireformat.jmsbytesxml.runtime;
 
-import org.apache.axiom.om.OMElement;
 import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory;
@@ -28,6 +27,7 @@ import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.WebServiceBindingFactory;
 import org.apache.tuscany.sca.binding.ws.wsdlgen.BindingWSDLGenerator;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.databinding.xml.DOMDataBinding;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Phase;
@@ -71,7 +71,7 @@ public class WireFormatJMSBytesXMLServiceProvider implements WireFormatProvider 
         WebServiceBinding wsBinding = wsFactory.createWebServiceBinding();
         BindingWSDLGenerator.generateWSDL(endpoint.getComponent(), endpoint.getService(), wsBinding, registry, null);
         interfaceContract = wsBinding.getBindingInterfaceContract();
-        interfaceContract.getInterface().resetDataBinding(OMElement.class.getName()); 
+        interfaceContract.getInterface().resetDataBinding(DOMDataBinding.NAME); 
     }
        
     public InterfaceContract configureWireFormatInterfaceContract(InterfaceContract interfaceContract){

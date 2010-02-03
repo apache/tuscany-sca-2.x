@@ -97,7 +97,7 @@ public class XMLTextMessageProcessor extends AbstractMessageProcessor {
             } else if ((o instanceof Object[]) && ((Object[])o)[0] instanceof Node) {
                 message.setText(domHelper.saveAsString((Node)((Object[])o)[0]));
             } else if (o != null) {
-                throw new IllegalStateException("expecting OMElement payload: " + o);
+                throw new IllegalStateException("expecting Node payload: " + o);
             }
 
             return message;

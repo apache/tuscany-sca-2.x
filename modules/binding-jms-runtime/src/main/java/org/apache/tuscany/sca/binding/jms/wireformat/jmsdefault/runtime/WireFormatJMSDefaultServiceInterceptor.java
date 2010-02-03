@@ -24,7 +24,6 @@ import java.util.List;
 import javax.jms.BytesMessage;
 import javax.jms.Session;
 
-import org.apache.axiom.om.OMElement;
 import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.context.JMSBindingContext;
 import org.apache.tuscany.sca.binding.jms.provider.DefaultMessageProcessor;
@@ -37,6 +36,7 @@ import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
+import org.w3c.dom.Node;
 
 /**
  * Policy handler to handle PolicySet related to Logging with the QName {http://tuscany.apache.org/xmlns/sca/1.1/impl/java}LoggingPolicy
@@ -50,10 +50,10 @@ public class WireFormatJMSDefaultServiceInterceptor implements Interceptor {
     private JMSBinding jmsBinding;
     private DefaultMessageProcessor requestMessageProcessor;
     private DefaultMessageProcessor responseMessageProcessor;
-    private HashMap<String,OMElement> inputWrapperMap;
+    private HashMap<String, Node> inputWrapperMap;
     private HashMap<String, Boolean> outputWrapperMap;
 
-    public WireFormatJMSDefaultServiceInterceptor(ExtensionPointRegistry registry, JMSResourceFactory jmsResourceFactory, RuntimeEndpoint endpoint, HashMap<String, OMElement> inputWrapperMap,
+    public WireFormatJMSDefaultServiceInterceptor(ExtensionPointRegistry registry, JMSResourceFactory jmsResourceFactory, RuntimeEndpoint endpoint, HashMap<String, Node> inputWrapperMap,
             HashMap<String, Boolean> outputWrapperMap) {
         super();
         this.jmsBinding = (JMSBinding) endpoint.getBinding();
@@ -112,7 +112,7 @@ public class WireFormatJMSDefaultServiceInterceptor implements Interceptor {
         } else {
 
             // If there is only one arg we must add a wrapper if the operation is wrapper style
-            OMElement wrapper = this.inputWrapperMap.get(msg.getOperation().getName());
+            Node wrapper = this.inputWrapperMap.get(msg.getOperation().getName());
 
             Object requestPayload;
             if (jmsMsg instanceof BytesMessage) {

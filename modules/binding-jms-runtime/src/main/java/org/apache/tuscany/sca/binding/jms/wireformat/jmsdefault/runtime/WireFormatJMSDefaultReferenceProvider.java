@@ -22,10 +22,8 @@ package org.apache.tuscany.sca.binding.jms.wireformat.jmsdefault.runtime;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.axiom.om.OMAbstractFactory;
-import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.OMFactory;
-import org.apache.axiom.om.OMNamespace;
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.JMSBindingConstants;
@@ -33,7 +31,9 @@ import org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSDefault;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.WebServiceBindingFactory;
 import org.apache.tuscany.sca.binding.ws.wsdlgen.BindingWSDLGenerator;
+import org.apache.tuscany.sca.common.xml.dom.DOMHelper;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.databinding.xml.DOMDataBinding;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -42,6 +42,9 @@ import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Phase;
 import org.apache.tuscany.sca.provider.WireFormatProvider;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 /**
  * @version $Rev$ $Date$
@@ -52,8 +55,9 @@ public class WireFormatJMSDefaultReferenceProvider implements WireFormatProvider
     private ComponentReference reference;
     private JMSBinding binding;
     private InterfaceContract interfaceContract;
+    private DOMHelper domHelper;
     private HashMap<String, Boolean> inputWrapperMap;
-    private HashMap<String, OMElement> outputWrapperMap;
+    private HashMap<String, Node> outputWrapperMap;
 
     public WireFormatJMSDefaultReferenceProvider(ExtensionPointRegistry registry, RuntimeEndpointReference endpointReference) {
         super();
@@ -61,8 +65,9 @@ public class WireFormatJMSDefaultReferenceProvider implements WireFormatProvider
         this.endpointReference = endpointReference;
         this.binding = (JMSBinding) endpointReference.getBinding();
 
+        this.domHelper = DOMHelper.getInstance(registry);
         this.inputWrapperMap = new HashMap<String, Boolean>();
-        this.outputWrapperMap = new HashMap<String, OMElement>();
+        this.outputWrapperMap = new HashMap<String, Node>();
 
         // configure the reference based on this wire format
 
@@ -87,7 +92,6 @@ public class WireFormatJMSDefaultReferenceProvider implements WireFormatProvider
         List<Operation> opList = reference.getReference().getInterfaceContract().getInterface().getOperations();
 
         // Go through each operation and add wrapper info
-        OMFactory factory = OMAbstractFactory.getOMFactory();
 
         // set the binding interface contract to represent the WSDL for the
         // xml messages that will be sent
@@ -97,7 +101,7 @@ public class WireFormatJMSDefaultReferenceProvider implements WireFormatProvider
             WebServiceBinding wsBinding = wsFactory.createWebServiceBinding();
             BindingWSDLGenerator.generateWSDL(endpointReference.getComponent(), reference, wsBinding, registry, null);
             interfaceContract = wsBinding.getBindingInterfaceContract();
-            interfaceContract.getInterface().resetDataBinding(OMElement.class.getName());
+            interfaceContract.getInterface().resetDataBinding(DOMDataBinding.NAME);
 
             List<Operation> wsdlOpList = interfaceContract.getInterface().getOperations();
 
@@ -138,9 +142,8 @@ public class WireFormatJMSDefaultReferenceProvider implements WireFormatProvider
                     ElementInfo ei = op.getWrapper().getOutputWrapperElement();
                     String namespace = ei.getQName().getNamespaceURI();
                     String opName = ei.getQName().getLocalPart();
-                    OMNamespace ns = factory.createOMNamespace(namespace, "ns2");
-                    OMElement wrapper = factory.createOMElement(opName, ns);
-
+                    Document document = domHelper.newDocument();
+                    Element wrapper = DOMHelper.createElement(document, new QName(namespace, opName));
                     this.outputWrapperMap.put(name, wrapper);
                 } 
             }

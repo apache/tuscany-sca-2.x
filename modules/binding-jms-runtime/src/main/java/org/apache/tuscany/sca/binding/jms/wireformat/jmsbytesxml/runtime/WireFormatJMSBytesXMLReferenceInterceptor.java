@@ -22,7 +22,6 @@ import javax.jms.JMSException;
 import javax.jms.Session;
 import javax.xml.namespace.QName;
 
-import org.apache.axiom.om.OMElement;
 import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.JMSBindingException;
@@ -37,6 +36,7 @@ import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
+import org.w3c.dom.Node;
 
 
 public class WireFormatJMSBytesXMLReferenceInterceptor implements Interceptor {
@@ -98,8 +98,8 @@ public class WireFormatJMSBytesXMLReferenceInterceptor implements Interceptor {
                 try {
                     if (jmsMsg.getBooleanProperty(JMSBindingConstants.FAULT_PROPERTY)) {
                         FaultException e = new FaultException("remote exception", response);
-                        OMElement om = (OMElement) response;
-                        e.setFaultName(new QName(om.getNamespace().getNamespaceURI(), om.getLocalName()));
+                        Node om = ((Node)response).getFirstChild();
+                        e.setFaultName(new QName(om.getNamespaceURI(), om.getLocalName()));
                         msg.setFaultBody(e);
                     }
                 } catch (JMSException e) {

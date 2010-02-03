@@ -18,19 +18,13 @@
  */
 package org.apache.tuscany.sca.binding.jms.operationselector.jmsdefault.runtime;
 
-import java.io.ByteArrayInputStream;
-import java.io.StringReader;
+import java.io.IOException;
 import java.util.List;
 
 import javax.jms.BytesMessage;
 import javax.jms.JMSException;
 import javax.jms.TextMessage;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 
-import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.JMSBindingException;
 import org.apache.tuscany.sca.binding.jms.context.JMSBindingContext;
@@ -39,6 +33,7 @@ import org.apache.tuscany.sca.binding.jms.provider.JMSMessageProcessorUtil;
 import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory;
 import org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSDefault;
 import org.apache.tuscany.sca.binding.jms.wireformat.WireFormatJMSTextXML;
+import org.apache.tuscany.sca.common.xml.dom.DOMHelper;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
@@ -46,6 +41,8 @@ import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
+import org.w3c.dom.Node;
+import org.xml.sax.SAXException;
 
 /**
  * Policy handler to handle PolicySet related to Logging with the QName
@@ -65,7 +62,7 @@ public class OperationSelectorJMSDefaultServiceInterceptor implements Intercepto
     private JMSMessageProcessor responseMessageProcessor;
     private RuntimeComponentService service;
     private List<Operation> serviceOperations;
-    
+    private DOMHelper domHelper;
 
     public OperationSelectorJMSDefaultServiceInterceptor(ExtensionPointRegistry registry, JMSResourceFactory jmsResourceFactory, RuntimeEndpoint endpoint) {
         super();
@@ -76,6 +73,7 @@ public class OperationSelectorJMSDefaultServiceInterceptor implements Intercepto
         this.responseMessageProcessor = JMSMessageProcessorUtil.getResponseMessageProcessor(registry, jmsBinding);
         this.service = (RuntimeComponentService)endpoint.getService();
         this.serviceOperations = service.getInterfaceContract().getInterface().getOperations();
+        this.domHelper = DOMHelper.getInstance(registry);
     }
     
     public Message invoke(Message msg) {
@@ -114,7 +112,7 @@ public class OperationSelectorJMSDefaultServiceInterceptor implements Intercepto
         } else if (jmsBinding.getRequestWireFormat() instanceof WireFormatJMSDefault
                 || jmsBinding.getRequestWireFormat() instanceof WireFormatJMSTextXML) {
 
-            OMElement rootElement;
+            Node rootElement;
             String operationFromPayload;
 
             try {
@@ -122,9 +120,7 @@ public class OperationSelectorJMSDefaultServiceInterceptor implements Intercepto
                     String xmlPayload = ((TextMessage) jmsMsg).getText();
 
                     if (xmlPayload != null) {
-                        XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(new StringReader(xmlPayload));
-                        StAXOMBuilder builder = new StAXOMBuilder(reader);
-                        rootElement = builder.getDocumentElement();
+                        rootElement = domHelper.load(xmlPayload);
                         operationFromPayload = rootElement.getLocalName();
                         for (Operation op : serviceOperations) {
                             if (op.getName().equals(operationFromPayload)) {
@@ -140,9 +136,7 @@ public class OperationSelectorJMSDefaultServiceInterceptor implements Intercepto
                     ((BytesMessage) jmsMsg).reset();
 
                     if (bytes != null) {
-                        XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(new ByteArrayInputStream(bytes));
-                        StAXOMBuilder builder = new StAXOMBuilder(reader);
-                        rootElement = builder.getDocumentElement();
+                        rootElement = domHelper.load(new String(bytes));
                         operationFromPayload = rootElement.getLocalName();
                         for (Operation op : serviceOperations) {
                             if (op.getName().equals(operationFromPayload)) {
@@ -153,7 +147,9 @@ public class OperationSelectorJMSDefaultServiceInterceptor implements Intercepto
                     }
                 }
 
-            } catch (XMLStreamException e) {
+            } catch (IOException e) {
+                //let's ignore this in case the client doesn't want to use a wrapped xml message
+            } catch (SAXException e) {
                 //let's ignore this in case the client doesn't want to use a wrapped xml message
             } catch (JMSException e) {
                 throw new JMSBindingException(e);

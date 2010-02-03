@@ -18,24 +18,22 @@
  */
 package org.apache.tuscany.sca.binding.jms.provider;
 
-import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.logging.Logger;
 
 import javax.jms.BytesMessage;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.Session;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 
-import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.JMSBindingException;
+import org.apache.tuscany.sca.common.xml.dom.DOMHelper;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.util.FaultException;
+import org.w3c.dom.Node;
+import org.xml.sax.SAXException;
 
 /**
  * MessageProcessor for sending/receiving XML javax.jms.BytesMessage with the JMSBinding.
@@ -43,8 +41,11 @@ import org.apache.tuscany.sca.interfacedef.util.FaultException;
 public class XMLBytesMessageProcessor extends AbstractMessageProcessor {
     private static final Logger logger = Logger.getLogger(XMLBytesMessageProcessor.class.getName());
 
+    private DOMHelper domHelper;
+
     public XMLBytesMessageProcessor(JMSBinding jmsBinding, ExtensionPointRegistry registry) {
         super(jmsBinding);
+        this.domHelper = DOMHelper.getInstance(registry);
     }
 
     @Override
@@ -62,16 +63,16 @@ public class XMLBytesMessageProcessor extends AbstractMessageProcessor {
             
             Object os;
             if (noOfBytes > 0) {
-                XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(new ByteArrayInputStream(bytes));
-                StAXOMBuilder builder = new StAXOMBuilder(reader);
-                os = builder.getDocumentElement();
+                os = domHelper.load(new String(bytes));
             } else {
                 os = null;
             }
             return os;
-        } catch (XMLStreamException e) {
-            throw new JMSBindingException(e);
         } catch (JMSException e) {
+            throw new JMSBindingException(e);
+        } catch (IOException e) {
+            throw new JMSBindingException(e);
+        } catch (SAXException e) {
             throw new JMSBindingException(e);
         }
     }
@@ -94,12 +95,12 @@ public class XMLBytesMessageProcessor extends AbstractMessageProcessor {
         try {
             BytesMessage message = session.createBytesMessage();
             
-            if (o instanceof OMElement) {
-                message.writeBytes(o.toString().getBytes());
-            } else if ((o instanceof Object[]) && ((Object[])o)[0] instanceof OMElement) {
-                message.writeBytes(((Object[])o)[0].toString().getBytes());
+            if (o instanceof Node) {
+                message.writeBytes(domHelper.saveAsString((Node)o).getBytes());
+            } else if ((o instanceof Object[]) && ((Object[])o)[0] instanceof Node) {
+                message.writeBytes(domHelper.saveAsString((Node)((Object[])o)[0]).getBytes());
             } else if (o != null) {
-                throw new IllegalStateException("expecting OMElement payload: " + o);
+                throw new IllegalStateException("expecting Node payload: " + o);
             }            
             
             return message;
@@ -120,7 +121,7 @@ public class XMLBytesMessageProcessor extends AbstractMessageProcessor {
             try {
 
                 BytesMessage message = session.createBytesMessage();
-                message.writeBytes(String.valueOf(((FaultException) o).getFaultInfo()).getBytes());
+                message.writeBytes(domHelper.saveAsString((Node)((FaultException)o).getFaultInfo()).getBytes());
                 message.setBooleanProperty(JMSBindingConstants.FAULT_PROPERTY, true);
                 return message;
 
