@@ -201,7 +201,7 @@
     </transportReceiver>
     
      <!-- Added by Tuscany -->
-     <transportReceiver name="jms" class="org.apache.axis2.transport.jms.JMSListener">
+     <!-- transportReceiver name="jms" class="org.apache.axis2.transport.jms.JMSListener" -->
         <!--  These configuation parameters now come from the binding.ws uri
               or from a policy set
         <parameter name="myTopicConnectionFactory">
@@ -222,8 +222,8 @@
             <parameter name="transport.jms.ConnectionFactoryJNDIName">QueueConnectionFactory</parameter>
         </parameter>
         -->
-     </transportReceiver>
-
+     <!-- /transportReceiver-->
+     
     <!-- ================================================= -->
     <!-- Non-blocking http/s Transport Listener  -->
 
@@ -292,6 +292,7 @@
     -->
     <transportSender name="local"
                      class="org.apache.axis2.transport.local.LocalTransportSender"/>
+                     
     <transportSender name="http"
                      class="org.apache.axis2.transport.http.CommonsHTTPTransportSender">
         <parameter name="PROTOCOL">HTTP/1.1</parameter>
@@ -306,8 +307,9 @@
         <parameter name="PROTOCOL">HTTP/1.1</parameter>
         <parameter name="Transfer-Encoding">chunked</parameter>
     </transportSender>
-    <transportSender name="jms"
-                     class="org.apache.axis2.transport.jms.JMSSender"/>
+    
+    <!-- transportSender name="jms"
+                     class="org.apache.axis2.transport.jms.JMSSender"/-->
      
     <!-- ================================================= -->
     <!-- Non-blocking http/s Transport Sender  -->
