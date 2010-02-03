@@ -31,6 +31,7 @@
     
   <modules>
     <module>args</module>
+    <module>callbacks</module>
     <module>defaults</module>
     <module>DynamicReplyQ</module>
     <module>exceptions</module>
@@ -59,7 +60,6 @@
     <module>uri-rpc</module>
 
 <!-- still to bring up in 2.x
-    <module>callbacks</module>
     <module>definitions</module>
 -->
 
