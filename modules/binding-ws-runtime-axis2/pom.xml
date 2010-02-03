@@ -26,7 +26,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>tuscany-binding-ws-runtime-axis2-15</artifactId>
+    <artifactId>tuscany-binding-ws-runtime-axis2</artifactId>
     <name>Apache Tuscany SCA Axis2-1.5-based WS Binding Runtime</name>
 
     <repositories>
@@ -190,6 +190,12 @@
             <artifactId>axis2-transport-http</artifactId>
             <version>1.5.1</version>
         </dependency>  
+        
+        <dependency>
+            <groupId>org.apache.axis2</groupId>
+            <artifactId>axis2-transport-local</artifactId>
+            <version>1.5.1</version>
+        </dependency>         
         
         <dependency>
             <groupId>org.apache.axis2</groupId>
