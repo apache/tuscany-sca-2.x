@@ -51,7 +51,7 @@ public class TempCallbackQTestCase {
             JMSClientImpl.lock.wait(5000);
         }
 
-        assertEquals(" -> someMethod  -> receiveResult ", JMSClientImpl.result);
+        assertEquals("-> someMethod-> receiveResult", JMSClientImpl.result);
     }
 
     @After

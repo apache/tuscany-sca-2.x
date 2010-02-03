@@ -38,7 +38,7 @@ public class JMSServiceImpl implements JMSService {
     public void someMethod(String arg) {
         System.out.println("someMethod '" + arg + "' on thread " + Thread.currentThread());
         try {
-            myServiceCallback.receiveResult(arg + " -> receiveResult ");
+            myServiceCallback.receiveResult(arg + "-> receiveResult");
         } catch(Exception e) {
             System.out.println("RuntimeException invoking receiveResult: " + e.toString());
             e.printStackTrace();

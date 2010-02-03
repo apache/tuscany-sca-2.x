@@ -34,7 +34,7 @@ public class JMSClientImpl implements JMSClient, JMSServiceCallback {
 	
     public void aClientMethod() {
         System.out.println("aClientMethod " + this + " on thread " + Thread.currentThread());
-        myService.someMethod(" -> someMethod ");  // calls the server
+        myService.someMethod("-> someMethod");  // calls the server
         System.out.println("aClientMethod return from someMethod on thread " + Thread.currentThread());
     }
 
