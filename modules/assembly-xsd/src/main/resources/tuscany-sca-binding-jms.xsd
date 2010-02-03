@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+-->
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+        targetNamespace="http://tuscany.apache.org/xmlns/sca/1.0" 
+        xmlns:sca="http://www.osoa.org/xmlns/sca/1.0"
+        xmlns:t="http://tuscany.apache.org/xmlns/sca/1.0" 
+        elementFormDefault="qualified">
+
+   <import namespace="http://www.osoa.org/xmlns/sca/1.0" schemaLocation="sca-binding-jms.xsd"/>
+   
+   <include schemaLocation="tuscany-core.xsd"/>
+        
+   <!-- these schema types are not actually used at the moment as we rely on 
+        any elements in the underlying JMS binding schema to pull in wireFormat 
+        and operationSelection elements. However it's useful to keep track of
+        what we expect the shape of these elements to be -->
+        
+        
+   <!--  wire formats -->
+    
+   <complexType name="WireFormatJMSDefaultType">
+      <complexContent>
+         <extension base="t:WireFormat">
+             <attribute name="sendFormat" default="bytes">
+                  <simpleType>
+                      <restriction base="string">
+                         <enumeration value="text"/>
+                         <enumeration value="bytes"/>
+                      </restriction>
+                  </simpleType>             
+             </attribute>
+         </extension>
+      </complexContent>
+   </complexType>    
+   <element name="wireFormat.jmsdefault" 
+            type="t:WireFormatJMSDefaultType"
+            substitutionGroup="t:wireFormat"/>            
+
+  <complexType name="WireFormatJMSTextType">
+      <complexContent>
+         <extension base="t:WireFormat"/>
+      </complexContent>
+   </complexType>
+   <element name="wireFormat.jmsText" 
+            type="t:WireFormatJMSTextType"
+            substitutionGroup="t:wireFormat"/>
+                  
+   <complexType name="WireFormatJMSTextXMLType">
+      <complexContent>
+         <extension base="t:WireFormat"/>
+      </complexContent>
+   </complexType>
+   <element name="wireFormat.jmsTextXML" 
+            type="t:WireFormatJMSTextXMLType"
+            substitutionGroup="t:wireFormat"/>
+      
+   <complexType name="WireFormatJMSBytesType">
+      <complexContent>
+         <extension base="t:WireFormat"/>
+      </complexContent>
+   </complexType>
+   <element name="wireFormat.jmsBytes" 
+            type="t:WireFormatJMSBytesType"
+            substitutionGroup="t:wireFormat"/>
+   
+   <complexType name="WireFormatJMSBytesXMLType">
+      <complexContent>
+         <extension base="t:WireFormat"/>
+      </complexContent>
+   </complexType>
+   <element name="wireFormat.jmsBytesXML" 
+            type="t:WireFormatJMSBytesXMLType"
+            substitutionGroup="t:wireFormat"/>
+   
+   <complexType name="WireFormatJMSObjectType">
+      <complexContent>
+         <extension base="t:WireFormat">
+             <attribute name="wrapSingle" default="false">
+                  <simpleType>
+                      <restriction base="string">
+                         <enumeration value="true"/>
+                         <enumeration value="false"/>
+                      </restriction>
+                  </simpleType>             
+             </attribute>
+         </extension>
+      </complexContent>
+   </complexType>       
+   <element name="wireFormat.jmsObject" 
+            type="t:WireFormatJMSObjectType"
+            substitutionGroup="t:wireFormat"/>   
+                   
+                   
+    <!--  operation selectors -->      
+   <complexType name="OperationSelectorJMSDefaultType">
+      <complexContent>
+         <extension base="t:OperationSelector"/>
+      </complexContent>
+   </complexType>    
+   <element name="operationSelector.jmsdefault" 
+            type="t:OperationSelectorJMSDefaultType"
+            substitutionGroup="t:operationSelector"/>            
+
+   <complexType name="OperationSelectorJMSUserPropType">
+      <complexContent>
+         <extension base="t:OperationSelector">
+             <attribute name="propertyName" type="string"/>           
+         </extension>         
+      </complexContent>
+   </complexType>    
+   <element name="operationSelector.jmsUserProp" 
+            type="t:OperationSelectorJMSUserPropType"
+            substitutionGroup="t:operationSelector"/>
+                           
+</schema>
