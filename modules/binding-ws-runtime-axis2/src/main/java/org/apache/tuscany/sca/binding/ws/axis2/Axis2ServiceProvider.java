@@ -86,6 +86,7 @@ public class Axis2ServiceProvider  implements Provider<OMElement> {
         Message msg = messageFactory.createMessage();
         msg.setBody(args);
         msg.setOperation(op);
+        msg.setBindingContext(inMC);
 
         //FIXME: can we use the Axis2 addressing support for this?
         SOAPHeader header = inMC.getEnvelope().getHeader();
@@ -132,7 +133,7 @@ public class Axis2ServiceProvider  implements Provider<OMElement> {
             from.setCallbackEndpoint(callbackEndpoint);
         }
 
-        Message response = endpoint.invoke(op, msg);
+        Message response = endpoint.invoke(msg);
         
         if(response.isFault()) {
             throw new InvocationTargetException((Throwable) response.getBody());
