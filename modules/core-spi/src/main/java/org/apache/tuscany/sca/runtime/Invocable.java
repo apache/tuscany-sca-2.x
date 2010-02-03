@@ -55,6 +55,18 @@ public interface Invocable {
      * @return
      */
     CompositeContext getCompositeContext();
+    
+
+    /**
+     * Get the node URI
+     * @return The node URI
+     */
+    String getNodeURI();
+    /**
+     * Get the domain URI
+     * @return The domain URI
+     */
+    String getDomainURI();
 
     /**
      * Unbind the invocable from the composite context

@@ -134,7 +134,8 @@ public class NodeImpl implements Node, Client {
                 domainComposite = manager.configureNode(configuration, contributions, context);
 
                 this.compositeContext =
-                    new CompositeContext(manager.registry, endpointRegistry, domainComposite);
+                    new CompositeContext(manager.registry, endpointRegistry, domainComposite, configuration
+                        .getDomainURI(), configuration.getURI());
                 CompositeContext.setThreadCompositeContext(compositeContext);
             } finally {
                 // Reset the thread context monitor
@@ -211,7 +212,6 @@ public class NodeImpl implements Node, Client {
             } // end if
 
             manager.removeNode(configuration);
-            manager.registry.getExtensionPoint(UtilityExtensionPoint.class).removeUtility(compositeActivator);
             this.compositeActivator = null;
             this.proxyFactory = null;
             this.domainComposite = null;

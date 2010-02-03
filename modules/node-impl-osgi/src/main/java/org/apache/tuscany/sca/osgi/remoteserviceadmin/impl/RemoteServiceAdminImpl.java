@@ -250,7 +250,8 @@ public class RemoteServiceAdminImpl implements RemoteServiceAdmin, ManagedServic
         EndpointDescription ep = null;
         if (rsaEvent.getImportReference() != null) {
             ep = rsaEvent.getImportReference().getImportedEndpoint();
-        } else {
+        } 
+        if (rsaEvent.getExportReference() != null) {
             ep = rsaEvent.getExportReference().getExportedEndpoint();
         }
         props.put("endpoint.service.id", ep.getServiceId());

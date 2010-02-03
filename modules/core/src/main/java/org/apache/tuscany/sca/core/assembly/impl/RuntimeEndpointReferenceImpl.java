@@ -100,6 +100,8 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
 
     protected InterfaceContract bindingInterfaceContract;
     protected InterfaceContract referenceInterfaceContract;
+    private String domainURI;
+    private String nodeURI;
 
     private String xml;
 
@@ -132,6 +134,8 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
         this.policySets = copy.policySets;
 
         this.uri = copy.uri;
+        this.domainURI = copy.domainURI;
+        this.nodeURI = copy.nodeURI;
         this.remote = copy.remote;
         this.unresolved = copy.unresolved;
         this.status = copy.status;
@@ -148,6 +152,12 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
 
     public void bind(CompositeContext compositeContext) {
         this.compositeContext = compositeContext;
+        if (nodeURI != null) {
+            this.nodeURI = compositeContext.getNodeURI();
+        }
+        if (domainURI != null) {
+            this.domainURI = compositeContext.getDomainURI();
+        }
         bind(compositeContext.getExtensionPointRegistry(), compositeContext.getEndpointRegistry());
     }
 
@@ -533,6 +543,14 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
                 throw new IllegalStateException("No serializer is configured");
             }
         }
+    }
+    
+    public String getDomainURI() {
+        return domainURI;
+    }
+
+    public String getNodeURI() {
+        return nodeURI;
     }
 
 }

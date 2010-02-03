@@ -39,17 +39,21 @@ public class CompositeContext {
     protected EndpointRegistry endpointRegistry;
     protected ComponentContextFactory componentContextFactory;
     protected Composite domainComposite;
+    protected String nodeURI;
+    protected String domainURI;
     
-    public CompositeContext(ExtensionPointRegistry registry, EndpointRegistry endpointRegistry, Composite domainComposite) {
+    public CompositeContext(ExtensionPointRegistry registry, EndpointRegistry endpointRegistry, Composite domainComposite, String domainURI, String nodeURI) {
         this.extensionPointRegistry = registry;
         this.endpointRegistry = endpointRegistry;
         ContextFactoryExtensionPoint contextFactories = registry.getExtensionPoint(ContextFactoryExtensionPoint.class);
         this.componentContextFactory = contextFactories.getFactory(ComponentContextFactory.class);
         this.domainComposite = domainComposite;
+        this.domainURI = domainURI;
+        this.nodeURI = nodeURI;
     }    
     
     public CompositeContext(ExtensionPointRegistry registry, EndpointRegistry endpointRegistry) {
-        this(registry, endpointRegistry, null);
+        this(registry, endpointRegistry, null, "default", "default");
     }
     
     /**
@@ -123,5 +127,13 @@ public class CompositeContext {
     
     public static void removeCompositeContext() {
         context.remove();
+    }
+
+    public String getNodeURI() {
+        return nodeURI;
+    }
+
+    public String getDomainURI() {
+        return domainURI;
     }
 }

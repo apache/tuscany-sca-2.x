@@ -78,7 +78,6 @@ import org.oasisopen.sca.ServiceRuntimeException;
  */
 public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint, Externalizable {
     private transient CompositeContext compositeContext;
-    private transient EndpointRegistry endpointRegistry;
     private transient RuntimeWireProcessor wireProcessor;
     private transient ProviderFactoryExtensionPoint providerFactories;
     private transient InterfaceContractMapper interfaceContractMapper;
@@ -99,6 +98,9 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
 
     protected InterfaceContract bindingInterfaceContract;
     protected InterfaceContract serviceInterfaceContract;
+    
+    private String domainURI;
+    private String nodeURI;
 
     /**
      * No-arg constructor for Java serilization
@@ -129,6 +131,8 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
         this.policySets = copy.policySets;
 
         this.uri = copy.uri;
+        this.nodeURI = copy.nodeURI;
+        this.domainURI = copy.domainURI;
         this.remote = copy.remote;
         this.unresolved = copy.unresolved;
 
@@ -144,6 +148,12 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
 
     public void bind(CompositeContext compositeContext) {
         this.compositeContext = compositeContext;
+        if (nodeURI != null) {
+            this.nodeURI = compositeContext.getNodeURI();
+        }
+        if (domainURI != null) {
+            this.domainURI = compositeContext.getDomainURI();
+        }
         bind(compositeContext.getExtensionPointRegistry(), compositeContext.getEndpointRegistry());
     }
 
@@ -152,7 +162,6 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
             compositeContext = new CompositeContext(registry, endpointRegistry);
         }
         this.registry = registry;
-        this.endpointRegistry = endpointRegistry;
         UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
         this.interfaceContractMapper = utilities.getUtility(InterfaceContractMapper.class);
         this.workScheduler = utilities.getUtility(WorkScheduler.class);
@@ -564,6 +573,14 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
                 throw new IllegalStateException("No serializer is configured");
             }
         }
+    }
+
+    public String getDomainURI() {
+        return domainURI;
+    }
+
+    public String getNodeURI() {
+        return nodeURI;
     }
 
 }
