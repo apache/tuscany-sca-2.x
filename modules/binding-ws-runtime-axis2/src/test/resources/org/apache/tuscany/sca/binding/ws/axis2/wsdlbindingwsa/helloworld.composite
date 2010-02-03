@@ -20,7 +20,7 @@
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
 		   xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
 		   targetNamespace="http://www.tuscany.apache.org/tests/binding/ws/axis2"
-           name="HelloWorld">
+           name="wsdlbindingwsa">
 
     <component name="HelloWorldClient">
         <implementation.java class="org.apache.tuscany.sca.binding.ws.axis2.helloworld.HelloWorldClient"/>

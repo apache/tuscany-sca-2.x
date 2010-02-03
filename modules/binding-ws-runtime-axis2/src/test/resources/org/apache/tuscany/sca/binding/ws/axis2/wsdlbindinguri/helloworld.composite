@@ -20,7 +20,7 @@
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
 		   xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
 		   targetNamespace="http://www.tuscany.apache.org/tests/binding/ws/axis2"
-           name="HelloWorld">
+           name="wsdlbindinguri">
 
     <component name="HelloWorldClient">
         <implementation.java class="org.apache.tuscany.sca.binding.ws.axis2.helloworld.HelloWorldClient"/>
@@ -34,11 +34,8 @@
 		<implementation.java class="org.apache.tuscany.sca.binding.ws.axis2.helloworld.HelloWorldService"/>
 	    <service name="HelloWorld">
 	        <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)" />
-	        <binding.ws wsdlElement="http://helloworld#wsdl.binding(HelloWorldSoapBinding)">
-	           <wsa:EndpointReference xmlns:wsa="http://www.w3.org/2005/08/addressing">
-	              <wsa:Address>http://localhost:8085/services/HelloWorldWebService1</wsa:Address>
-	           </wsa:EndpointReference>
-	        </binding.ws>
+	        <binding.ws uri="http://localhost:8085/services/HelloWorldWebService1" 
+                        wsdlElement="http://helloworld#wsdl.binding(HelloWorldSoapBinding)"/>
 	    </service>		
     </component>
     

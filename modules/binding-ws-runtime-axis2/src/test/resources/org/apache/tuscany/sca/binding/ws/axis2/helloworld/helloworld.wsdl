@@ -72,8 +72,8 @@
     </wsdl:binding>
 
     <wsdl:service name="HelloWorldService">
-        <wsdl:port binding="tns:HelloWorldSoapBinding" name="HelloWorldSoapPort">
-            <wsdlsoap:address location="http://localhost:8085/services/HelloWorldWebService"/>
+        <wsdl:port binding="tns:HelloWorldSoapBinding" name="HelloWorldSoapPort1">
+            <wsdlsoap:address location="http://localhost:8085/services/HelloWorldWebService1"/>
         </wsdl:port>
         <wsdl:port binding="tns:HelloWorldSoapBinding" name="HelloWorldSoapPort2">
             <wsdlsoap:address location="http://localhost:8085/services/HelloWorldWebService2"/>
