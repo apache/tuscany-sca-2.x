@@ -414,14 +414,15 @@ public class WSDLServiceGenerator {
     }
 
     /**
-     * Compute the endpoint URI based on section 2.1.1 of the WS binding Specification 1.
-     * The URIs in the endpoint(s) of the referenced WSDL, which may be relative
+     * Compute the endpoint URI based on section 2.1.1 of the WS binding Specification 
+     * 1. The URIs in the endpoint(s) of the referenced WSDL, which may be relative
      * 2. The URI specified by the wsa:Address element of the
-     * wsa:EndpointReference, which may be relative 3. The explicitly stated URI
-     * in the "uri" attribute of the binding.ws element, which may be relative,
+     *    wsa:EndpointReference, which may be relative 
+     * 3. The explicitly stated URI in the "uri" attribute of the binding.ws element, 
+     *    which may be relative,
      * 4. The implicit URI as defined by in section 1.7 in the SCA Assembly Specification
-     * If the <binding.ws> has no wsdlElement but does have a uri attribute then
-     * the uri takes precedence over any implicitly used WSDL.
+     *    If the <binding.ws> has no wsdlElement but does have a uri attribute then
+     *    the uri takes precedence over any implicitly used WSDL.
      * 
      */
     private static String computeActualURI(WebServiceBinding wsBinding, Port port) {
