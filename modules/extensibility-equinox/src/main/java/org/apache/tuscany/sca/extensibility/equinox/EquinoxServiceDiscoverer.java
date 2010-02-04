@@ -215,7 +215,7 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
         }
     }
     
-    private boolean isProviderBundle(Bundle bundle) {
+    private boolean isProviderBundle(Bundle bundle, boolean isTuscanyService) {
         if (bundle.getBundleId() == 0 || bundle.getSymbolicName().startsWith("1.x-osgi-bundle")
             || bundle.getHeaders().get(Constants.FRAGMENT_HOST) != null) {
             // Skip system bundle as it has access to the application classloader
@@ -225,19 +225,27 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
             // Skip bundle fragments too
             return false;
         }
-        if (bundle.getSymbolicName().startsWith("org.apache.tuscany.sca.")) {
+        // FIXME: [rfeng] What bundles should be searched? ACTIVE and STARTING?
+        if ((bundle.getState() & Bundle.UNINSTALLED) != 0) {
+            return false;
+        }
+        if (isTuscanyService) {
             Version scaVersion = getSCAVersion(bundle);
             return scaVersion.compareTo(version) >= 0;
         }
         return true;
     }
     
-    protected Collection<Bundle> getBundles() {
+    protected Collection<Bundle> getBundles(boolean isTuscanyService) {
         // return bundles.keySet();
         Set<Bundle> set = new HashSet<Bundle>();
         for (Bundle b : context.getBundles()) {
-            if (isProviderBundle(b)) {
+            if (isProviderBundle(b, isTuscanyService)) {
                 set.add(b);
+            } else {
+                if (b.getBundleId() != 0) {
+                    logger.warning("Bundle is skipped for service discovery: " + toString(b));
+                }
             }
         }
         return set;
@@ -249,11 +257,12 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
 
         // http://java.sun.com/j2se/1.5.0/docs/api/javax/xml/xpath/XPathFactory.html
         boolean isPropertyFile = "javax.xml.xpath.XPathFactory".equals(serviceName);
+        boolean isTuscanyService = serviceName.startsWith("org.apache.tuscany.sca.");
         serviceName = "META-INF/services/" + serviceName;
 
         Set<URL> visited = new HashSet<URL>();
         //System.out.println(">>>> getServiceDeclarations()");
-        for (Bundle bundle : getBundles()) {
+        for (Bundle bundle : getBundles(isTuscanyService)) {
 //            if (!isProviderBundle(bundle)) {
 //                continue;
 //            }
