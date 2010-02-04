@@ -32,11 +32,9 @@ import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.LifeCycleListener;
-import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.node.NodeFactory;
 import org.apache.tuscany.sca.node.impl.NodeFactoryImpl;
 import org.apache.tuscany.sca.osgi.remoteserviceadmin.impl.OSGiHelper;
-import org.apache.tuscany.sca.work.WorkScheduler;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
@@ -59,7 +57,7 @@ public abstract class AbstractDiscoveryService implements Discovery, LifeCycleLi
 
     protected BundleContext context;
     protected ExtensionPointRegistry registry;
-    private WorkScheduler workScheduler;
+    // private WorkScheduler workScheduler;
 
     private Map<EndpointListener, Collection<String>> listenersToFilters =
         new ConcurrentHashMap<EndpointListener, Collection<String>>();
@@ -75,8 +73,8 @@ public abstract class AbstractDiscoveryService implements Discovery, LifeCycleLi
 
     public void start() {
         getExtensionPointRegistry();
-        UtilityExtensionPoint utilityExtensionPoint = registry.getExtensionPoint(UtilityExtensionPoint.class);
-        this.workScheduler = utilityExtensionPoint.getUtility(WorkScheduler.class);
+        // UtilityExtensionPoint utilityExtensionPoint = registry.getExtensionPoint(UtilityExtensionPoint.class);
+        // this.workScheduler = utilityExtensionPoint.getUtility(WorkScheduler.class);
 
         // track the registration of EndpointListener
         trackerTracker = new ServiceTracker(this.context, EndpointListener.class.getName(), null) {
@@ -129,7 +127,6 @@ public abstract class AbstractDiscoveryService implements Discovery, LifeCycleLi
         if (service instanceof EndpointListener) {
             EndpointListener listener = (EndpointListener)service;
             Collection<String> filters = null;
-            Collection<EndpointDescription> endpoints = null;
             synchronized (this) {
                 filters = addTracker(reference, listener, EndpointListener.ENDPOINT_LISTENER_SCOPE);
                 // Take a snapshot of the endpoints
@@ -224,37 +221,12 @@ public abstract class AbstractDiscoveryService implements Discovery, LifeCycleLi
         }
     }
 
-    private static class Notifier implements Runnable {
-        private EndpointListener listener;
-        private String matchedFilter;
-        private EndpointDescription endpoint;
-        private int type;
-
-        /**
-         * @param listener
-         * @param matchedFilter
-         * @param endpoint
-         * @param type
-         */
-        public Notifier(EndpointListener listener, String matchedFilter, EndpointDescription endpoint, int type) {
-            super();
-            this.listener = listener;
-            this.matchedFilter = matchedFilter;
-            this.endpoint = endpoint;
-            this.type = type;
-        }
-
-        public void run() {
-            AbstractDiscoveryService.notify(listener, matchedFilter, endpoint, type);
-        }
-    }
-
     private void triggerCallbacks(EndpointListener listener,
                                   String matchedFilter,
                                   EndpointDescription endpoint,
                                   int type) {
-        workScheduler.scheduleWork(new Notifier(listener, matchedFilter, endpoint, type));
-
+        // workScheduler.scheduleWork(new Notifier(listener, matchedFilter, endpoint, type));
+        notify(listener, matchedFilter, endpoint, type);
     }
 
     private boolean filterMatches(String filterValue, EndpointDescription sd) {
