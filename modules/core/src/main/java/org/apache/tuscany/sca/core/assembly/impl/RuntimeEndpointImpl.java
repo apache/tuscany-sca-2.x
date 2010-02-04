@@ -55,7 +55,6 @@ import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.invocation.Phase;
-import org.apache.tuscany.sca.provider.BindingPolicyProvider;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.EndpointProvider;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
@@ -306,12 +305,15 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
         List<PolicyProvider> pps = getPolicyProviders();
         if (pps != null) {
             for (PolicyProvider p : pps) {
+                // TODO - SL - Need to get the binding policy providers
+/*                
                 if (p instanceof BindingPolicyProvider) {
                     Interceptor interceptor = ((BindingPolicyProvider)p).createBindingInterceptor();
                     if (interceptor != null) {
                         bindingInvocationChain.addInterceptor(interceptor);
                     }
                 }
+*/                
             }
         }
 

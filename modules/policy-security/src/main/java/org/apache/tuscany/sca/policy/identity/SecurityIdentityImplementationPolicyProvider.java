@@ -25,18 +25,19 @@ import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.PhasedInterceptor;
 import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.provider.BasePolicyProvider;
 import org.apache.tuscany.sca.provider.PolicyProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
 /**
  * @version $Rev$ $Date$
  */
-public class SecurityIdentityImplementationPolicyProvider implements PolicyProvider {
+public class SecurityIdentityImplementationPolicyProvider extends BasePolicyProvider<SecurityIdentityPolicy> {
     private RuntimeComponent component;
     private Implementation implementation;
 
     public SecurityIdentityImplementationPolicyProvider(RuntimeComponent component) {
-        super();
+        super(SecurityIdentityPolicy.class, component);
         this.component = component;
         this.implementation = component.getImplementation();
     }

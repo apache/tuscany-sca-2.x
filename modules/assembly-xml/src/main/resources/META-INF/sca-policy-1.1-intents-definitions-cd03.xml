@@ -216,8 +216,8 @@
 		Specifies that the SOAP messaging model is used for delivering 
 		messages.
                 </sca:description>
-                <sca:qualifier name="V1_1" default="true"/>
-                <sca:qualifier name="V1_2"/>
+                <sca:qualifier name="v1_1" default="true"/>
+                <sca:qualifier name="v1_2"/>
         </sca:intent>
 
         <sca:intent name="JMS" constrains="sca:binding" intentType="interaction">

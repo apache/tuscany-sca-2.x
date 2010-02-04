@@ -19,46 +19,24 @@
 
 package org.apache.tuscany.sca.binding.jms.policy.authentication.token.provider;
 
-import java.util.List;
-
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.binding.jms.policy.authentication.token.JMSTokenAuthenticationPolicy;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Phase;
 import org.apache.tuscany.sca.invocation.PhasedInterceptor;
 import org.apache.tuscany.sca.policy.PolicySet;
-import org.apache.tuscany.sca.provider.PolicyProvider;
+import org.apache.tuscany.sca.provider.BasePolicyProvider;
 
 /**
  * @version $Rev$ $Date$
  */
-public class JMSTokenAuthenticationServicePolicyProvider implements PolicyProvider {
+public class JMSTokenAuthenticationServicePolicyProvider extends BasePolicyProvider<JMSTokenAuthenticationPolicy> {
 
     private Endpoint endpoint;
 
     public JMSTokenAuthenticationServicePolicyProvider(Endpoint endpoint) {
+        super(JMSTokenAuthenticationPolicy.class, endpoint);
         this.endpoint = endpoint;
-    }
-
-    private PolicySet findPolicySet() {
-        List<PolicySet> policySets = endpoint.getPolicySets();
-        for (PolicySet ps : policySets) {
-            for (Object p : ps.getPolicies()) {
-                if (JMSTokenAuthenticationPolicy.class.isInstance(p)) {
-                    return ps;
-                }
-            }
-        }
-        return null;
-    }
-
-    private String getContext() {
-        return "component.service: " + endpoint.getComponent().getURI()
-            + "#"
-            + endpoint.getService().getName()
-            + "("
-            + endpoint.getBinding().getClass().getName()
-            + ")";
     }
 
     /**
@@ -74,12 +52,6 @@ public class JMSTokenAuthenticationServicePolicyProvider implements PolicyProvid
      */
     public String getPhase() {
         return Phase.SERVICE_BINDING_POLICY;
-    }
-
-    public void start() {
-    }
-
-    public void stop() {
     }
 
 }

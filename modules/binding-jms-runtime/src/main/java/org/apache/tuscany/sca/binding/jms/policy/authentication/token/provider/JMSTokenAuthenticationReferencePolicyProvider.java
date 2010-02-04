@@ -23,43 +23,25 @@ import java.util.List;
 
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.binding.jms.policy.authentication.token.JMSTokenAuthenticationPolicy;
+import org.apache.tuscany.sca.binding.jms.policy.header.JMSHeaderPolicy;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Phase;
 import org.apache.tuscany.sca.invocation.PhasedInterceptor;
 import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.provider.BasePolicyProvider;
 import org.apache.tuscany.sca.provider.PolicyProvider;
 
 /**
  * @version $Rev$ $Date$
  */
-public class JMSTokenAuthenticationReferencePolicyProvider implements PolicyProvider {
+public class JMSTokenAuthenticationReferencePolicyProvider extends BasePolicyProvider<JMSTokenAuthenticationPolicy> {
     private EndpointReference endpointReference;
 
     public JMSTokenAuthenticationReferencePolicyProvider(EndpointReference endpointReference) {
+        super(JMSTokenAuthenticationPolicy.class, endpointReference);
         this.endpointReference = endpointReference;
     }
-
-    private PolicySet findPolicySet() {
-        List<PolicySet> policySets = endpointReference.getPolicySets();
-        for (PolicySet ps : policySets) {
-            for (Object p : ps.getPolicies()) {
-                if (JMSTokenAuthenticationPolicy.class.isInstance(p)) {
-                    return ps;
-                }
-            }
-        }
-        return null;
-    }
-
-    private String getContext() {
-        return "component.reference: " + endpointReference.getComponent().getURI()
-            + "#"
-            + endpointReference.getReference().getName()
-            + "("
-            + endpointReference.getBinding().getClass().getName()
-            + ")";
-    }
-    
+   
     /**
      * @see org.apache.tuscany.sca.provider.PolicyProvider#createInterceptor(org.apache.tuscany.sca.interfacedef.Operation)
      */
@@ -74,12 +56,6 @@ public class JMSTokenAuthenticationReferencePolicyProvider implements PolicyProv
      */
     public String getPhase() {
         return Phase.REFERENCE_BINDING_POLICY;
-    }
-
-    public void start() {
-    }
-
-    public void stop() {
     }
 
 }

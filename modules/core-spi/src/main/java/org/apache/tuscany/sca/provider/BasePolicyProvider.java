@@ -129,6 +129,13 @@ public abstract class BasePolicyProvider<T> implements PolicyProvider {
     public PhasedInterceptor createInterceptor(Operation operation) {
         return null;
     }
+    
+    public PhasedInterceptor createBindingInterceptor() {
+        return null;
+    }
+    
+    public void configureBinding(Object configuration){
+    }
 
     protected InvocationChain getInvocationChain() {
         if (subject instanceof RuntimeEndpoint) {

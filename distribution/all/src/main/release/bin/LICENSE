@@ -226,13 +226,17 @@ The following components come under Apache Software License 2.0
  addressing-1.3.mar
  aopalliance-1.0.jar
  annogen-0.1.0.jar
- axiom-api-1.2.7.jar
- axiom-dom-1.2.7.jar
- axiom-impl-1.2.7.jar
- axis2-codegen-1.4.1.jar
- axis2-kernel-1.4.1.jar
- axis2-java2wsdl-1.4.1.jar
- axis2-mtompolicy-1.4.1.jar
+ axiom-api-1.2.8.jar
+ axiom-dom-1.2.8.jar
+ axiom-impl-1.2.8.jar
+ axis2-codegen-1.5.1.jar
+ axis2-kernel-1.5.1.jar
+ axis2-java2wsdl-1.5.1.jar
+ axis2-mtompolicy-1.5.1.jar
+ axis2-transport-base-1.0.0.jar
+ axis2-transport-jms-1.0.0.jar
+ axis2-transport-local-1.5.1.jar
+ axis2-transport-http-1.5.1.jar
  axis-ant-1.4.jar
  cglib-2.2.jar
  commons-beanutils-1.7.0.jar
@@ -253,15 +257,17 @@ The following components come under Apache Software License 2.0
  geronimo-connector-2.0.1.jar
  geronimo-ejb_3.0_spec-1.0.1.jar
  geronimo-el_1.0_spec-1.0.1.jar
- geronimo-javamail_1.4_spec-1.2.jar
+ geronimo-javamail_1.4_spec-1.6.jar
  geronimo-jms_1.1_spec-1.1.1.jar
  geronimo-jpa_3.0_spec-1.1.1.jar
  geronimo-jsp_2.1_spec-1.0.1.jar
+ geronimo-jta_1.0.1B_spec-1.0.jar
  geronimo-jta_1.1_spec-1.1.1.jar
  geronimo-j2ee-connector_1.5_spec-2.0.0.jar
  geronimo-kernel-2.0.1.jar
  geronimo-stax-api_1.0_spec-1.0.1.jar
  geronimo-transaction-2.0.1.jar
+ geronimo-ws-metadata_2.0_spec-1.1.2.jar
  hazelcast-1.8.jar
  hazelcast-client-1.8.jar
  httpclient-4.0.jar
@@ -275,7 +281,7 @@ The following components come under Apache Software License 2.0
  jetty-util-6.1.19.jar
  juli-6.0.18.jar
  log4j-1.2.15.jar
- mex-1.41-impl.jar
+ mex-1.5.1-impl.jar
  myfaces-api-1.2.2.jar
  myfaces-impl-1.2.2.jar
  neethi-2.0.4.jar
@@ -311,9 +317,11 @@ The following components come under Apache Software License 2.0
  wstx-asl-3.2.4.jar
  xalan-2.7.0.jar
  xercesImpl-2.8.1.jar
+ xml-apis-1.3.04.jar
  xmlbeans-2.3.0.jar
- xmlsec-1.4.2.jar
+ xmlsec-1.4.3.jar
  XmlSchema-1.4.2.jar
+ XmlSchema-1.4.3.jar
 
 ===============================================================================
 The serp-1.13.1.jar is distributed under the BSD license with the following copyright:

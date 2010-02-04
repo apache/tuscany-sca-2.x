@@ -56,7 +56,6 @@ import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.invocation.Phase;
-import org.apache.tuscany.sca.provider.BindingPolicyProvider;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.EndpointReferenceProvider;
 import org.apache.tuscany.sca.provider.PolicyProvider;
@@ -347,12 +346,15 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
         // add the policy interceptors to the service binding wire
         // find out which policies are active
         for (PolicyProvider p : getPolicyProviders()) {
+            // TODO - SL - Need to get the binding policy providers
+/*             
             if (p instanceof BindingPolicyProvider) {
                 Interceptor interceptor = ((BindingPolicyProvider)p).createBindingInterceptor();
                 if (interceptor != null) {
                     bindingInvocationChain.addInterceptor(interceptor);
                 }
             }
+*/            
         }
     }
 

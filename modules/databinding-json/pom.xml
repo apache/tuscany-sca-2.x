@@ -69,7 +69,7 @@
         <dependency>
             <groupId>org.apache.ws.commons.axiom</groupId>
             <artifactId>axiom-api</artifactId>
-            <version>1.2.7</version>
+            <version>1.2.8</version>
             <exclusions>
                 <exclusion>
                     <groupId>xerces</groupId>
@@ -93,7 +93,7 @@
         <dependency>
             <groupId>org.apache.ws.commons.axiom</groupId>
             <artifactId>axiom-impl</artifactId>
-            <version>1.2.7</version>
+            <version>1.2.8</version>
             <scope>runtime</scope>
         </dependency>
 

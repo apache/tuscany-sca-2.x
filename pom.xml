@@ -540,7 +540,6 @@
                 <module>modules/assembly-xsd</module>
                 <module>modules/binding-sca-runtime</module>
                 <module>modules/binding-ws</module>
-                <module>modules/binding-ws-axis2-policy</module>
                 <module>modules/binding-ws-wsdlgen</module>
                 <module>modules/builder</module>
                 <module>modules/common-java</module>
@@ -686,7 +685,9 @@
                    <message>Best Practice is to always define released plugin versions!</message>
                    <banLatest>true</banLatest>
                    <banRelease>true</banRelease>
-                   <banSnapshots>true</banSnapshots>
+                   <!-- turn off while I get our bundle plugin working -->
+                   <!--banSnapshots>true</banSnapshots-->
+                   <banSnapshots>false</banSnapshots>
                    <phases>clean,deploy,site</phases>
                    <additionalPlugins>
                    </additionalPlugins>

@@ -25,7 +25,7 @@ import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.PhasedInterceptor;
 import org.apache.tuscany.sca.policy.PolicySet;
-import org.apache.tuscany.sca.provider.PolicyProvider;
+import org.apache.tuscany.sca.provider.BasePolicyProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
 /**
@@ -33,12 +33,12 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
  *
  * @version $Rev$ $Date$
  */
-public class JaasAuthenticationImplementationPolicyProvider implements PolicyProvider {
+public class JaasAuthenticationImplementationPolicyProvider extends BasePolicyProvider<JaasAuthenticationPolicy> {
     private RuntimeComponent component;
     private Implementation implementation;
 
     public JaasAuthenticationImplementationPolicyProvider(RuntimeComponent component) {
-        super();
+        super(JaasAuthenticationPolicy.class, component);
         this.component = component;
         this.implementation = component.getImplementation();
     }

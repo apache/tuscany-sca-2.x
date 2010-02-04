@@ -28,10 +28,29 @@ import org.apache.tuscany.sca.invocation.PhasedInterceptor;
 public interface PolicyProvider {
     /**
      * Create an interceptor for a given operation
+     * 
      * @param operation
-     * @return An interceptor that realize the policySet
+     * @return An interceptor that realizes the policySet
      */
     PhasedInterceptor createInterceptor(Operation operation);
+    
+    /**
+     * Create a binding interceptor. The binding wire is 
+     * not operation specific so an operation parameter 
+     * isn't required
+     * 
+     * @return An interceptor that realizes the policySet
+     */
+    PhasedInterceptor createBindingInterceptor();
+    
+    /**
+     * Give the provider an opportunity to affect the 
+     * binding configuration if required
+     * 
+     * @param configurationContext the configuration context of the 
+     *        binding that will be modified
+     */
+    void configureBinding(Object configuration);
     
     /**
      * Start the provider

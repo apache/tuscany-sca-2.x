@@ -34,7 +34,7 @@
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-binding-ws-axis2</artifactId>
+            <artifactId>tuscany-binding-ws-runtime-axis2</artifactId>
             <version>${pom.version}</version>
             <exclusions>
                 <exclusion>

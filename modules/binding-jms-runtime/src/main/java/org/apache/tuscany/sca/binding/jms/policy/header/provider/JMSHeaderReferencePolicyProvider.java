@@ -27,6 +27,7 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Phase;
 import org.apache.tuscany.sca.invocation.PhasedInterceptor;
 import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.provider.BasePolicyProvider;
 import org.apache.tuscany.sca.provider.PolicyProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
@@ -34,33 +35,13 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 /**
  * @version $Rev$ $Date$
  */
-public class JMSHeaderReferencePolicyProvider implements PolicyProvider {
+public class JMSHeaderReferencePolicyProvider extends BasePolicyProvider<JMSHeaderPolicy> {
 
     private EndpointReference endpointReference;
 
     public JMSHeaderReferencePolicyProvider(EndpointReference endpointReference) {
+        super(JMSHeaderPolicy.class, endpointReference);
         this.endpointReference = endpointReference;
-    }
-
-    private PolicySet findPolicySet() {
-        List<PolicySet> policySets = endpointReference.getPolicySets();
-        for (PolicySet ps : policySets) {
-            for (Object p : ps.getPolicies()) {
-                if (JMSHeaderPolicy.class.isInstance(p)) {
-                    return ps;
-                }
-            }
-        }
-        return null;
-    }
-
-    private String getContext() {
-        return "component.reference: " + endpointReference.getComponent().getURI()
-            + "#"
-            + endpointReference.getReference().getName()
-            + "("
-            + endpointReference.getBinding().getClass().getName()
-            + ")";
     }
     
     /**
@@ -78,10 +59,5 @@ public class JMSHeaderReferencePolicyProvider implements PolicyProvider {
         return Phase.REFERENCE_BINDING_POLICY;
     }
 
-    public void start() {
-    }
-
-    public void stop() {
-    }
 
 }

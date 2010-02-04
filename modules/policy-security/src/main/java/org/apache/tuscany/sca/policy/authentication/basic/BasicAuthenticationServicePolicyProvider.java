@@ -25,33 +25,18 @@ import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.PhasedInterceptor;
 import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.provider.BasePolicyProvider;
 import org.apache.tuscany.sca.provider.PolicyProvider;
 
 /**
  * @version $Rev$ $Date$
  */
-public class BasicAuthenticationServicePolicyProvider implements PolicyProvider {
+public class BasicAuthenticationServicePolicyProvider extends BasePolicyProvider<BasicAuthenticationPolicy> {
     private Endpoint endpoint;
 
     public BasicAuthenticationServicePolicyProvider(Endpoint endpoint) {
-        super();
+        super(BasicAuthenticationPolicy.class, endpoint);
         this.endpoint = endpoint;
-    }
-
-    private PolicySet findPolicySet() {
-        List<PolicySet> policySets = endpoint.getPolicySets();
-        for (PolicySet ps : policySets) {
-            for (Object p : ps.getPolicies()) {
-                if (BasicAuthenticationPolicy.class.isInstance(p)) {
-                    return ps;
-                }
-            }
-        }
-        return null;
-    }
-
-    private String getContext() {
-        return endpoint.getURI();
     }
 
     /**

@@ -21,9 +21,11 @@ package org.apache.tuscany.sca.policy.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicyExpression;
@@ -93,5 +95,35 @@ public class PolicyHelper {
         }
         return policies;
     }
+    
+    public static PolicySet getPolicySet(Binding wsBinding, QName intentName) {
+        PolicySet returnPolicySet = null;
+
+        if (wsBinding instanceof PolicySubject) {
+            PolicySubject policiedBinding = (PolicySubject)wsBinding;
+            for (PolicySet policySet : policiedBinding.getPolicySets()) {
+                for (Intent intent : policySet.getProvidedIntents()) {
+                    if (intent.getName().equals(intentName)) {
+                        returnPolicySet = policySet;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return returnPolicySet;
+    }
+
+    public static boolean isIntentRequired(Binding wsBinding, QName intent) {
+        if (wsBinding instanceof PolicySubject) {
+            List<Intent> intents = ((PolicySubject)wsBinding).getRequiredIntents();
+            for (Intent i : intents) {
+                if (intent.equals(i.getName())) {
+                    return true;
+                }
+            }
+        }
+        return getPolicySet(wsBinding, intent) != null;
+    }    
 
 }
