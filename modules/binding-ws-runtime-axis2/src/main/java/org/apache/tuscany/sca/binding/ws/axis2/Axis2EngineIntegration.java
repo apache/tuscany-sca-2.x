@@ -280,7 +280,7 @@ public class Axis2EngineIntegration {
         for (PolicyProvider pp : endpoint.getPolicyProviders()) {
             // we probably want to pass the whole provider in here
             // so that the policy providers can get at the rampart configuration
-            pp.configureBinding(configContext);
+            //pp.configureBinding(configContext);
         }
         
         // Apply the configuration from the mayProvides intents        
