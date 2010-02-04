@@ -56,12 +56,18 @@ public class CalculatorOSGiNodeTestCase {
         try {
             rmiServer = new OperationsRMIServer();
             rmiServer.start();
-
+            
             host = new EquinoxHost();
             context = host.start();
 
             for (Bundle b : context.getBundles()) {
                 System.out.println(b);
+                // debug to print out exported packages
+                // handy if you want to find aplit packages
+                //Object exports = b.getHeaders().get(Constants.EXPORT_PACKAGE);
+                //if (exports != null){
+                //    System.out.println(exports.toString());
+                //}
                 if (b.getSymbolicName().equals("org.eclipse.equinox.ds") || b.getSymbolicName()
                     .startsWith("org.apache.tuscany.sca.")) {
                     try {
@@ -72,6 +78,8 @@ public class CalculatorOSGiNodeTestCase {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                    System.out.println(bundleStatus(b, false));
+                } else {
                     System.out.println(bundleStatus(b, false));
                 }
                 if ("calculator.dosgi".equals(b.getSymbolicName())) {
