@@ -35,6 +35,8 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.apache.tuscany.sca.runtime.TuscanyURI;
 
 import com.hazelcast.config.Config;
+import com.hazelcast.config.MapConfig;
+import com.hazelcast.config.NearCacheConfig;
 import com.hazelcast.config.TcpIpConfig;
 import com.hazelcast.config.XmlConfigBuilder;
 import com.hazelcast.core.EntryEvent;
@@ -128,7 +130,9 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
                 }
             }
         }
-
+        
+        config.getMapConfig("default").setNearCacheConfig(new NearCacheConfig(0, 0, "NONE", 0, true));
+        
         this.hazelcastInstance = Hazelcast.newHazelcastInstance(config);
     }
 
