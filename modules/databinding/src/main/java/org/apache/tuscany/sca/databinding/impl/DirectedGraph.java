@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Logger;
 
 /**
  * Directed, weighted graph
@@ -37,6 +38,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @version $Rev$ $Date$
  */
 public class DirectedGraph<V, E> implements Cloneable {
+    private final static Logger logger = Logger.getLogger(DirectedGraph.class.getName());
     private final Map<V, Vertex> vertices = new HashMap<V, Vertex>();
 
     /**
@@ -199,6 +201,21 @@ public class DirectedGraph<V, E> implements Cloneable {
     }
 
     public void addEdge(V source, V target, E edgeValue, int weight, boolean publicEdge) {
+        // Fix for TUSCANY-3456 
+        // First check if we already has an edge
+        Edge edge = getEdge(source, target);
+        if (edge != null) {
+            // An existing edge has higher weight, let's replace it
+            if (edge.weight > weight) {
+                logger.warning("An edge exists with higher weight: " + edge);
+                removeEdge(edge);
+            } else {
+                // Don't add this edge
+                logger.warning("An edge exists with lower weight: " + edge);
+                return;
+            }
+        }
+
         Vertex s = getVertex(source);
         if (s == null) {
             s = new Vertex(source);
@@ -209,7 +226,7 @@ public class DirectedGraph<V, E> implements Cloneable {
             t = new Vertex(target);
             vertices.put(target, t);
         }
-        Edge edge = new Edge(s, t, edgeValue, weight, publicEdge);
+        edge = new Edge(s, t, edgeValue, weight, publicEdge);
         s.outEdges.put(t, edge);
         t.inEdges.put(s, edge);
     }

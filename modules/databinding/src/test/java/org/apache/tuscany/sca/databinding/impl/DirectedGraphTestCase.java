@@ -44,7 +44,11 @@ public class DirectedGraphTestCase {
 
     @Test
     public void testGraph() {
+        graph.addEdge("a", "b", null, 4, true);
+        graph.addEdge("a", "b", null, 5, true);
+        Assert.assertEquals(4, graph.getEdge("a", "b").getWeight());
         graph.addEdge("a", "b", null, 3, true);
+        Assert.assertEquals(3, graph.getEdge("a", "b").getWeight());
         graph.addEdge("b", "c", null, 1, true);
         // graph.addEdge("a", "c", null, 8, true);
         graph.addEdge("a", "d", null, 3, true);
