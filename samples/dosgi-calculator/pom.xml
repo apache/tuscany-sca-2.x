@@ -27,7 +27,7 @@
     </parent>
 
     <artifactId>sample-dosgi-calculator</artifactId>
-    <name>Apache Tuscany SCA OSGi Remote Services Caculator Sample</name>
+    <name>Apache Tuscany SCA OSGi Remote Services Calculator Sample</name>
 
     <dependencies>
        <dependency>
