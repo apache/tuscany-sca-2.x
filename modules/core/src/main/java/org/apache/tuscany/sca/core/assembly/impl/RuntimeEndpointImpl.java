@@ -76,6 +76,7 @@ import org.oasisopen.sca.ServiceRuntimeException;
  * Runtime model for Endpoint that supports java serialization
  */
 public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint, Externalizable {
+    private static final long serialVersionUID = 1L;
     private transient CompositeContext compositeContext;
     private transient RuntimeWireProcessor wireProcessor;
     private transient ProviderFactoryExtensionPoint providerFactories;
