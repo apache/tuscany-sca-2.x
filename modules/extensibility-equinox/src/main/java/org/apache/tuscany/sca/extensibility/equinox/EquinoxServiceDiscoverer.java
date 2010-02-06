@@ -63,21 +63,14 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
         this.context = context;
         Bundle bundle = context.getBundle();
         this.version = getSCAVersion(bundle);
+        if (this.version.equals(Version.emptyVersion)) {
+            this.version = Version.parseVersion("1.1");
+        }
     }
 
     private Version getSCAVersion(Bundle bundle) {
-        Version scaVersion = Version.emptyVersion;
         String header = (String)bundle.getHeaders().get("SCA-Version");
-        if (header == null) {
-            scaVersion = Version.parseVersion("1.1");
-        } else {
-            header = header.trim();
-            if (header.equals("")) {
-                header = "1.1";
-            }
-            scaVersion = Version.parseVersion(header);
-        }
-        return scaVersion;
+        return Version.parseVersion(header);
     }
     
     /*
@@ -231,7 +224,7 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
         }
         if (isTuscanyService) {
             Version scaVersion = getSCAVersion(bundle);
-            return scaVersion.compareTo(version) >= 0;
+            return scaVersion.compareTo(version) == 0;
         }
         return true;
     }
@@ -242,11 +235,14 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
         for (Bundle b : context.getBundles()) {
             if (isProviderBundle(b, isTuscanyService)) {
                 set.add(b);
-            } else {
-                if (b.getBundleId() != 0) {
+            }
+            /*
+            else {
+                if (b.getBundleId() != 0 && isTuscanyService) {
                     logger.warning("Bundle is skipped for service discovery: " + toString(b));
                 }
             }
+            */
         }
         return set;
     }

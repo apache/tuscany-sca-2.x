@@ -19,17 +19,9 @@
 
 package org.apache.tuscany.sca.extensibility.equinox;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-import java.util.jar.JarInputStream;
-import java.util.jar.Manifest;
 
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
 import org.junit.AfterClass;
@@ -46,7 +38,8 @@ import org.osgi.framework.BundleContext;
  */
 public class EquinoxServiceDiscovererTestCase {
     private static EquinoxServiceDiscoverer discoverer;
-    private static Bundle testBundle;
+    private static Bundle testBundle1;
+    private static Bundle testBundle2;
     private static TestEquinoxHost host;
 
     private static String getState(Bundle b) {
@@ -82,44 +75,15 @@ public class EquinoxServiceDiscovererTestCase {
         host = new TestEquinoxHost();
         BundleContext context = host.start();
 
-        InputStream is = EquinoxServiceDiscovererTestCase.class.getResourceAsStream("/test-bundle.jar");
-        testBundle = context.installBundle("test-bundle", is);
+        InputStream is = EquinoxServiceDiscovererTestCase.class.getResourceAsStream("/test-bundle-v1.jar");
+        testBundle1 = context.installBundle("test-bundle-v1", is);
         is.close();
+        
+        is = EquinoxServiceDiscovererTestCase.class.getResourceAsStream("/test-bundle-v2.jar");
+        testBundle2 = context.installBundle("test-bundle-v2", is);
+        is.close();
+
         discoverer = new EquinoxServiceDiscoverer(context);
-        File dep = new File("target/bundles");
-        List<Bundle> bundles = new ArrayList<Bundle>();
-        if(dep.isDirectory()) {
-        for (File f : dep.listFiles()) {
-                BufferedInputStream bis = new BufferedInputStream(new FileInputStream(f));
-                JarInputStream jis = new JarInputStream(bis);
-                Manifest manifest = jis.getManifest();
-                if (manifest == null || manifest.getMainAttributes().getValue("Bundle-Name") == null) {
-                    bis.close();
-                    continue;
-                }
-                bis.close();
-                bis = new BufferedInputStream(new FileInputStream(f));
-                Bundle b = context.installBundle(f.getName(), bis);
-                System.out.println("Installed " + b.getSymbolicName() + " [" + getState(b) + "]");
-                bundles.add(b);
-                bis.close();
-            }
-        }
-        for (Bundle b : bundles) {
-            b.start();
-            System.out.println("Started "+b.getSymbolicName() + " [" + getState(b) + "]");
-            /*
-            // Get the Platform.getExtensionRegistry()
-            if ("org.eclipse.core.runtime".equals(b.getSymbolicName())) {
-                // The Platform class loaded by the bundle is different that the one
-                // on the classpath
-                Class<?> cls = b.loadClass("org.eclipse.core.runtime.Platform");
-                Method m = cls.getMethod("getExtensionRegistry");
-                Object reg = m.invoke(cls);
-                System.out.println(reg);
-            }
-            */
-        }
     }
 
     /**
@@ -127,9 +91,13 @@ public class EquinoxServiceDiscovererTestCase {
      */
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
-        if (testBundle != null) {
+        if (testBundle1 != null) {
             // Uninstall the bundle to clean up the cache
-            testBundle.uninstall();
+            testBundle1.uninstall();
+        }
+        if (testBundle2 != null) {
+            // Uninstall the bundle to clean up the cache
+            testBundle2.uninstall();
         }
         host.stop();
         System.out.println("Done");
@@ -137,8 +105,9 @@ public class EquinoxServiceDiscovererTestCase {
 
     @Test
     public void testDiscovery() throws IOException {
+        // Both version 1 and 2 should be found because test.TestService is not a Tuscany service
         Collection<ServiceDeclaration> descriptors = discoverer.getServiceDeclarations("test.TestService");
-        Assert.assertEquals(1, descriptors.size());
+        Assert.assertEquals(2, descriptors.size());
         descriptors = discoverer.getServiceDeclarations("notthere");
         Assert.assertEquals(0, descriptors.size());
     }
@@ -151,5 +120,13 @@ public class EquinoxServiceDiscovererTestCase {
         Assert.assertNull(descriptor);
     }
 
+    @Test
+    public void testTuscanyDiscovery() throws IOException {
+        Collection<ServiceDeclaration> descriptors = discoverer.getServiceDeclarations("org.apache.tuscany.sca.test.TestService");
+        // Only the version 2 should be found
+        Assert.assertEquals(1, descriptors.size());
+        ServiceDeclaration sd = descriptors.iterator().next();
+        Assert.assertEquals("2", sd.getAttributes().get("version"));
+    }
 
 }
