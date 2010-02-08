@@ -200,6 +200,11 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
         return bindingInvocationChain;
     }
 
+    /**
+     * A dummy invocation chain representing null as ConcurrentHashMap doesn't allow null values
+     */
+    private static final InvocationChain NULL_CHAIN = new InvocationChainImpl(null, null, false, null);
+
     public InvocationChain getInvocationChain(Operation operation) {
         InvocationChain cached = invocationChainMap.get(operation);
         if (cached == null) {
@@ -211,9 +216,13 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
                     return chain;
                 }
             }
-            invocationChainMap.put(operation, null);
+            // Cache it with the NULL_CHAIN to avoid NPE
+            invocationChainMap.put(operation, NULL_CHAIN);
             return null;
         } else {
+            if (cached == NULL_CHAIN) {
+                cached = null;
+            }
             return cached;
         }
     }
