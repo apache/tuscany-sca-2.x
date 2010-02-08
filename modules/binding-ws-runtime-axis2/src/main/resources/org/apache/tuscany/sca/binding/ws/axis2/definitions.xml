@@ -27,10 +27,10 @@
             
     <sca:bindingType type="sca:binding.ws"  mayProvide="sca:SOAP sca:SOAP.v1_1 sca:SOAP.v1_2 tuscany:MTOM" alwaysProvides=""/>
 
-    <!-- PolicyIntents defined by the SCA Runtime Extension for WS Binding Axis 2 -->
-
     <!-- see the file sca-policy-1.1-intents-definitions.xml in the -->
     <!-- assembly-xsd module for spec defined intents               -->
+    
+    <!-- PolicyIntents defined by the SCA Runtime Extension for WS Binding Axis 2 -->
     
     <sca:intent name="MTOM" constrains="sca:binding.ws">
         <sca:description>
