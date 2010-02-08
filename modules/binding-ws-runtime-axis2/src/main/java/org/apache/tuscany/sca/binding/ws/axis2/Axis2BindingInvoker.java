@@ -65,7 +65,7 @@ public class Axis2BindingInvoker implements Invoker, DataExchangeSemantics {
     public static final QName CONVERSATION_ID_REFPARM_QN =
         new QName(SCA11_TUSCANY_NS, "ConversationID", TUSCANY_PREFIX);
     
-    private Axis2ServiceClient serviceClient;
+    private Axis2ReferenceBindingProvider bindingProvider;
     private QName wsdlOperationName;
     private Options options;
     private SOAPFactory soapFactory;    
@@ -75,12 +75,12 @@ public class Axis2BindingInvoker implements Invoker, DataExchangeSemantics {
 //    private Axis2TokenAuthenticationPolicy axis2TokenAuthenticationPolicy = null;
 //    private List<Axis2HeaderPolicy> axis2HeaderPolicies = new ArrayList<Axis2HeaderPolicy>();
 
-    public Axis2BindingInvoker(Axis2ServiceClient serviceClient,
+    public Axis2BindingInvoker(Axis2ReferenceBindingProvider bindingProvider,
                                QName wsdlOperationName,
                                Options options,
                                SOAPFactory soapFactory,
                                WebServiceBinding wsBinding) {
-        this.serviceClient = serviceClient;
+        this.bindingProvider = bindingProvider;
         this.wsdlOperationName = wsdlOperationName;
         this.options = options;
         this.soapFactory = soapFactory;
@@ -213,7 +213,7 @@ public class Axis2BindingInvoker implements Invoker, DataExchangeSemantics {
         requestMC.setEnvelope(env);
 
         // Axis2 operationClients can not be shared so create a new one for each request
-        final OperationClient operationClient = serviceClient.getServiceClient().createClient(wsdlOperationName);
+        final OperationClient operationClient = bindingProvider.getServiceClient().createClient(wsdlOperationName);
         operationClient.setOptions(options);
 
         Endpoint callbackEndpoint = msg.getFrom().getCallbackEndpoint();

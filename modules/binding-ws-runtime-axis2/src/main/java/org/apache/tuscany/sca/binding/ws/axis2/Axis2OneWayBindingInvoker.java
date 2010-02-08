@@ -36,13 +36,13 @@ import org.apache.tuscany.sca.invocation.Message;
  */
 public class Axis2OneWayBindingInvoker extends Axis2BindingInvoker {
 
-    public Axis2OneWayBindingInvoker(Axis2ServiceClient serviceClient,
+    public Axis2OneWayBindingInvoker(Axis2ReferenceBindingProvider bindingProvider,
                                      QName wsdlOperationName,
                                      Options options,
                                      SOAPFactory soapFactory,
                                      WebServiceBinding wsBinding) {
 
-        super(serviceClient, wsdlOperationName, options, soapFactory, wsBinding);
+        super(bindingProvider, wsdlOperationName, options, soapFactory, wsBinding);
     }
 
     @Override

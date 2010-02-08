@@ -18,6 +18,9 @@
  */
 package org.apache.tuscany.sca.binding.ws.axis2;
 
+import javax.xml.namespace.QName;
+
+import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
@@ -38,22 +41,22 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 
 public class Axis2BindingProviderFactory implements BindingProviderFactory<WebServiceBinding> {
 
-    private FactoryExtensionPoint modelFactories;
+    public static final QName MTOM_INTENT = new QName(Constants.SCA11_TUSCANY_NS, "MTOM");
+    
+    private ExtensionPointRegistry extensionPoints;
     private ServletHost servletHost;
-    private DataBindingExtensionPoint dataBindings;
 
     public Axis2BindingProviderFactory(ExtensionPointRegistry extensionPoints) {
+        this.extensionPoints = extensionPoints;
         this.servletHost = ServletHostHelper.getServletHost(extensionPoints);
-        modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
-        dataBindings = extensionPoints.getExtensionPoint(DataBindingExtensionPoint.class);
     }
 
     public ReferenceBindingProvider createReferenceBindingProvider(RuntimeEndpointReference endpointReference) {
-        return new Axis2ReferenceBindingProvider(endpointReference, modelFactories, dataBindings);
+        return new Axis2ReferenceBindingProvider(extensionPoints, endpointReference);
     }
 
     public ServiceBindingProvider createServiceBindingProvider(RuntimeEndpoint endpoint) {
-        return new Axis2ServiceBindingProvider(endpoint, servletHost, modelFactories, dataBindings);
+        return new Axis2ServiceBindingProvider(extensionPoints, endpoint, servletHost);
     }
     
     public Class<WebServiceBinding> getModelType() {

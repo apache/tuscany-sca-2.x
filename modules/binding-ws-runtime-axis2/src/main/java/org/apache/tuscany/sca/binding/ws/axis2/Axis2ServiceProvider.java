@@ -35,6 +35,7 @@ import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.RuntimeAssemblyFactory;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -64,12 +65,11 @@ public class Axis2ServiceProvider  implements Provider<OMElement> {
     
     public Axis2ServiceProvider(RuntimeEndpoint endpoint,
                                 WebServiceBinding wsBinding,
-                                MessageFactory messageFactory,
-                                FactoryExtensionPoint modelFactories) {
+                                ExtensionPointRegistry extensionPoints) {
         this.endpoint = endpoint;
         this.wsBinding = wsBinding;
-        this.messageFactory = messageFactory;
-        this.modelFactories = modelFactories;
+        this.modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
+        this.messageFactory = modelFactories.getFactory(MessageFactory.class);
         this.assemblyFactory = (RuntimeAssemblyFactory)modelFactories.getFactory(AssemblyFactory.class);        
     }
     
