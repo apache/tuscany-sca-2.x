@@ -108,6 +108,10 @@ public class NodeFactoryImpl extends NodeFactory {
 
     @Override
     public Node createNode(NodeConfiguration configuration) {
+        if (configuration.getURI() == null) {
+            // Make sure a unique node URI is created for the same node factory
+            configuration.setURI(generateNodeURI());
+        }
         return new NodeImpl(this, configuration);
     }
 

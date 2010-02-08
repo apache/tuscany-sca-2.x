@@ -415,18 +415,23 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
         return createNode(contributions);
     }
 
-    private volatile static int count =0;
     private NodeConfiguration createConfiguration(Contribution... contributions) {
         NodeConfigurationFactory factory = this;
         NodeConfiguration configuration = factory.createNodeConfiguration();
         // Make sure a unique node URI is created for the same node factory
-        configuration.setURI(Node.DEFAULT_NODE_URI+(count++));
+        configuration.setURI(generateNodeURI());
         if (contributions != null) {
             for (Contribution c : contributions) {
                 configuration.addContribution(c.getURI(), c.getLocation());
             }
         }
         return configuration;
+    }
+
+    private static int count = 0;
+
+    protected synchronized String generateNodeURI() {
+        return Node.DEFAULT_NODE_URI + (count++);
     }
 
     private Contribution[] getContributions(List<String> locations) {
