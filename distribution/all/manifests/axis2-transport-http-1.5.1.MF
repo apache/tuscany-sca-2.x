@@ -9,4 +9,4 @@ Bundle-ClassPath: axis2-transport-http-1.5.1.jar
 Export-Package: org.apache.axis2.transport.http.server;version=1.5.1,o
  rg.apache.axis2.transport.http;version=1.5.1,org.apache.axis2.transpo
  rt.http.util;version=1.5.1
-Fragment-Host: org.apache.axis2.kernel;version=1.5.1
+Fragment-Host: org.apache.axis2.kernel;bundle-version=1.5.1
