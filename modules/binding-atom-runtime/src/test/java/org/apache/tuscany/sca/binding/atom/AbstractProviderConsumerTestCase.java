@@ -45,11 +45,9 @@ public abstract class AbstractProviderConsumerTestCase {
     protected static void destroyTestEnvironment() throws Exception {
         if (scaConsumerNode != null) {
             scaConsumerNode.stop();
-            scaConsumerNode.destroy();
         }
         if (scaProviderNode != null) {
             scaProviderNode.stop();
-            scaProviderNode.destroy();
         }
     }
 }

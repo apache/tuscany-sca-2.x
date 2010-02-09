@@ -305,7 +305,7 @@ public class DistributedRegistry extends AbstractDistributedMap<Endpoint> implem
         return endpoints;
     }
 
-    public String getDomainName() {
+    public String getDomainURI() {
         return domainURI;
     }
 

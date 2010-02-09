@@ -46,10 +46,5 @@ public interface Node extends Client {
      */
     void stop();
 
-    /**
-     * Destroy the node.
-     */
-    void destroy();
-
-    public List<String> getServiceNames();
+    List<String> getServiceNames();
 }

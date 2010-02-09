@@ -23,7 +23,7 @@ import java.net.UnknownHostException;
 
 import junit.framework.Assert;
 
-import org.apache.tuscany.sca.runtime.TuscanyURI;
+import org.apache.tuscany.sca.runtime.DomainRegistryURI;
 import org.junit.Test;
 
 public class ConfigURITestCase {
@@ -31,7 +31,7 @@ public class ConfigURITestCase {
     @Test
     public void testInvalidPrefix() throws UnknownHostException {
         try {
-            new TuscanyURI("foo");
+            new DomainRegistryURI("foo");
             Assert.fail();
         } catch (IllegalArgumentException e) {
             // expected
@@ -40,14 +40,14 @@ public class ConfigURITestCase {
 
     @Test
     public void testDomainName() throws UnknownHostException {
-        TuscanyURI configURI = new TuscanyURI("tuscany:myDomain");
+        DomainRegistryURI configURI = new DomainRegistryURI("tuscany:myDomain");
         Assert.assertEquals("myDomain", configURI.getDomainName());
         Assert.assertFalse(configURI.isMulticastDisabled());
     }
 
     @Test
     public void testListenAddr() throws UnknownHostException {
-        TuscanyURI configURI = new TuscanyURI("tuscany:myDomain?listen=4321");
+        DomainRegistryURI configURI = new DomainRegistryURI("tuscany:myDomain?listen=4321");
         Assert.assertEquals("myDomain", configURI.getDomainName());
         Assert.assertFalse(configURI.isMulticastDisabled());
         Assert.assertEquals(4321, configURI.getListenPort());
@@ -55,7 +55,7 @@ public class ConfigURITestCase {
     }
     @Test
     public void testListenAddr2() throws UnknownHostException {
-        TuscanyURI configURI = new TuscanyURI("tuscany:myDomain?listen=1.1.1.1:4321");
+        DomainRegistryURI configURI = new DomainRegistryURI("tuscany:myDomain?listen=1.1.1.1:4321");
         Assert.assertEquals("myDomain", configURI.getDomainName());
         Assert.assertFalse(configURI.isMulticastDisabled());
         Assert.assertEquals(4321, configURI.getListenPort());
@@ -64,14 +64,14 @@ public class ConfigURITestCase {
 
     @Test
     public void testMulticase1() throws UnknownHostException {
-        TuscanyURI configURI = new TuscanyURI("tuscany:myDomain?multicast=off");
+        DomainRegistryURI configURI = new DomainRegistryURI("tuscany:myDomain?multicast=off");
         Assert.assertEquals("myDomain", configURI.getDomainName());
         Assert.assertTrue(configURI.isMulticastDisabled());
     }
 
     @Test
     public void testMulticase2() throws UnknownHostException {
-        TuscanyURI configURI = new TuscanyURI("tuscany:myDomain?multicast=1.2.3.4:67");
+        DomainRegistryURI configURI = new DomainRegistryURI("tuscany:myDomain?multicast=1.2.3.4:67");
         Assert.assertEquals("myDomain", configURI.getDomainName());
         Assert.assertFalse(configURI.isMulticastDisabled());
         Assert.assertEquals("1.2.3.4", configURI.getMulticastAddress());
@@ -80,7 +80,7 @@ public class ConfigURITestCase {
 
     @Test
     public void testMulticase3() throws UnknownHostException {
-        TuscanyURI configURI = new TuscanyURI("tuscany:myDomain?multicast=1.2.3.4");
+        DomainRegistryURI configURI = new DomainRegistryURI("tuscany:myDomain?multicast=1.2.3.4");
         Assert.assertEquals("myDomain", configURI.getDomainName());
         Assert.assertFalse(configURI.isMulticastDisabled());
         Assert.assertEquals("1.2.3.4", configURI.getMulticastAddress());
@@ -89,14 +89,14 @@ public class ConfigURITestCase {
 
     @Test
     public void testPassword() {
-        TuscanyURI configURI = new TuscanyURI("tuscany:myDomain?password=bla");
+        DomainRegistryURI configURI = new DomainRegistryURI("tuscany:myDomain?password=bla");
         Assert.assertEquals("myDomain", configURI.getDomainName());
         Assert.assertEquals("bla", configURI.getPassword());
     }
 
     @Test
     public void testRemotes() throws UnknownHostException {
-        TuscanyURI configURI = new TuscanyURI("tuscany:myDomain?remotes=1.1.1.1:23,2.2.2.2");
+        DomainRegistryURI configURI = new DomainRegistryURI("tuscany:myDomain?remotes=1.1.1.1:23,2.2.2.2");
         Assert.assertEquals("myDomain", configURI.getDomainName());
         Assert.assertTrue(configURI.isMulticastDisabled());
         Assert.assertEquals(2, configURI.getRemotes().size());

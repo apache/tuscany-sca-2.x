@@ -66,5 +66,5 @@ public interface EndpointRegistry {
     void addListener(EndpointListener listener);
     void removeListener(EndpointListener listener);
 
-    String getDomainName();
+    String getDomainURI();
 }

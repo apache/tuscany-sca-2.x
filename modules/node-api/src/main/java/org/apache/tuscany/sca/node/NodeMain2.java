@@ -51,6 +51,5 @@ public class NodeMain2 {
         }
 
         node.stop();
-        node.destroy();
     }
 }

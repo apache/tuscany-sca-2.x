@@ -85,7 +85,6 @@ public class ContentNegotiationTest {
         //System.out.println(">>>ContentNegotiationTest.destroy");
         if (scaProviderNode != null) {
             scaProviderNode.stop();
-            scaProviderNode.destroy();
         }
     }
 

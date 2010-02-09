@@ -20,6 +20,7 @@
 package test.scaclient;
 
 import itest.HelloworldService;
+import itest.RemoteHelloworldService;
 
 import java.net.URI;
 
@@ -27,7 +28,6 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.oasisopen.sca.client.SCAClientFactory;
 
@@ -46,8 +46,13 @@ public class SCAClientTestCase extends TestCase {
         node = NodeFactory.getInstance().createNode((String)null, new String[] {"target/classes"});
         node.start();
 
-        HelloworldService service = SCAClientFactory.newInstance(URI.create("default")).getService(HelloworldService.class, "HelloworldComponent");
+        SCAClientFactory clientFactory = SCAClientFactory.newInstance(URI.create("default"));
+        HelloworldService service = clientFactory.getService(HelloworldService.class, "HelloworldComponent/HelloworldService");
         assertEquals("Hello petra", service.sayHello("petra"));
+        
+        RemoteHelloworldService remoteService = clientFactory.getService(RemoteHelloworldService.class, "HelloworldComponent/RemoteHelloworldService");
+        assertEquals("Hello petra", remoteService.sayHelloRemote("petra"));
+
     }
 
     @Test
@@ -55,7 +60,12 @@ public class SCAClientTestCase extends TestCase {
         node = NodeFactory.getInstance().createNode(URI.create("myFooDomain"), new String[] {"target/classes"});
         node.start();
 
-        HelloworldService service = SCAClientFactory.newInstance(URI.create("myFooDomain")).getService(HelloworldService.class, "HelloworldComponent");
+        SCAClientFactory clientFactory = SCAClientFactory.newInstance(URI.create("myFooDomain"));
+        HelloworldService service = clientFactory.getService(HelloworldService.class, "HelloworldComponent/HelloworldService");
+        assertEquals("Hello petra", service.sayHello("petra"));
+        
+        RemoteHelloworldService remoteService = clientFactory.getService(RemoteHelloworldService.class, "HelloworldComponent/RemoteHelloworldService");
+        assertEquals("Hello petra", remoteService.sayHelloRemote("petra"));
         assertEquals("Hello petra", service.sayHello("petra"));
     }
 

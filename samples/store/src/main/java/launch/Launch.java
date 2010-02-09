@@ -34,7 +34,6 @@ public class Launch {
         System.in.read();
         System.out.println("Stopping ...");
         node.stop();
-        node.destroy();
         System.out.println();
     }
 }

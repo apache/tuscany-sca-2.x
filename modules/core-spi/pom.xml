@@ -85,7 +85,7 @@
         <configuration>
             <buildNumberPropertyName>sources.version</buildNumberPropertyName>               
             <timestampPropertyName>build.timestamp</timestampPropertyName>
-            <doCheck>true</doCheck>
+            <doCheck>false</doCheck>
             <doUpdate>true</doUpdate>
             <revisionOnScmFailure>00000</revisionOnScmFailure>
         </configuration>

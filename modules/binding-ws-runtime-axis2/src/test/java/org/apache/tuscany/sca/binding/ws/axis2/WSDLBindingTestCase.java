@@ -46,7 +46,6 @@ public class WSDLBindingTestCase extends TestCase {
     @Override
     protected void tearDown() throws Exception {
         node.stop();
-        node.destroy();
     }
 
 }

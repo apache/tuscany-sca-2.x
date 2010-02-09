@@ -60,7 +60,6 @@ public class JSONRPCDataTypeTestCase {
     @AfterClass
     public static void tearDown() throws Exception {
         node.stop();
-        node.destroy();
     }
 
     @Test

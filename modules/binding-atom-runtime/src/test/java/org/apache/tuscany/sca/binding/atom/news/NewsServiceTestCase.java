@@ -54,7 +54,6 @@ public class NewsServiceTestCase {
     public static void destroy() throws Exception {
         if(node != null) {
             node.stop();
-            node.destroy();
         }
     }
     

@@ -59,7 +59,6 @@ public class EJBReferenceTestCase extends TestCase {
     @Override
     protected void tearDown() throws Exception {
         node.stop();
-        node.destroy();
     }
 
     public void testCalculator() throws Exception {

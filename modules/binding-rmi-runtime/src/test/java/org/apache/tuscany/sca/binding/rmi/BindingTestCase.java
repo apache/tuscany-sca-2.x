@@ -75,7 +75,6 @@ public class BindingTestCase {
     @AfterClass
     public static void destroy() throws Exception {
         node.stop();
-        node.destroy();
     }
 
 }

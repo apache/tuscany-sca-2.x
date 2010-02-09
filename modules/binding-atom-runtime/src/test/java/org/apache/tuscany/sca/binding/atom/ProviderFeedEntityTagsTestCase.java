@@ -87,7 +87,6 @@ public class ProviderFeedEntityTagsTestCase {
         //System.out.println(">>>ProviderFeedEntityTagsTestCase.destroy");
         if (scaProviderNode != null) {
             scaProviderNode.stop();
-            scaProviderNode.destroy();
         }
     }
 

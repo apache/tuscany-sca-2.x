@@ -39,6 +39,5 @@ public class Consumer {
         testService.testCustomerCollection();
 
         node.stop();
-        node.destroy();
     }
 }

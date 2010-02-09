@@ -90,7 +90,6 @@ public class MediaCollectionTestCase {
         System.out.println(">>>MediaCollectionTestCase.destroy");
         if (scaProviderNode != null) {
             scaProviderNode.stop();
-            scaProviderNode.destroy();
         }
     }
 

@@ -42,14 +42,6 @@ public interface CompositeActivator {
      * @param component
      * @param ref
      */
-    void start(CompositeContext compositeContext, RuntimeComponent component, RuntimeComponentReference ref);
-    
-    /**
-     * Activate a component reference
-     * @param compositeContext The context of the Node
-     * @param component
-     * @param ref
-     */
     void activate(CompositeContext compositeContext, RuntimeComponent component, RuntimeComponentReference ref);
 
     /**
@@ -59,7 +51,7 @@ public interface CompositeActivator {
      * @param ref
      */
     void activate(CompositeContext compositeContext, RuntimeComponent component, RuntimeComponentService service);
-
+    
     /**
      * De-activate a component reference
      * @param component
@@ -79,6 +71,15 @@ public interface CompositeActivator {
      * @param composite
      */
     void deactivate(Composite composite) throws ActivationException;
+
+    /**
+     * Start a component reference
+     * @param compositeContext The context of the Node
+     * @param component
+     * @param ref
+     */
+    void start(CompositeContext compositeContext, RuntimeComponent component, RuntimeComponentReference ref);
+   
 
     /**
      * Start a component
@@ -104,4 +105,55 @@ public interface CompositeActivator {
      */
     void stop(CompositeContext compositeContext, Composite composite) throws ActivationException;
 
+    /**
+     * Activate an endpoint
+     * @param compositeContext
+     * @param endpoint
+     */
+    void activate(CompositeContext compositeContext, RuntimeEndpoint endpoint);
+    
+    /**
+     * Activate an endpoint reference
+     * @param compositeContext
+     * @param endpointReference
+     */
+    void activate(CompositeContext compositeContext, RuntimeEndpointReference endpointReference);
+    
+    /**
+     * Deactivate an endpoint
+     * @param endpoint
+     */
+    void deactivate(RuntimeEndpoint endpoint);
+    
+    /**
+     * Deactivate an endpoint reference
+     * @param endpointReference
+     */
+    void deactivate(RuntimeEndpointReference endpointReference);
+    
+    /**
+     * Start an endpoint
+     * @param compositeContext
+     * @param endpoint
+     */
+    void start(CompositeContext compositeContext, RuntimeEndpoint endpoint);
+    
+    /**
+     * Start an endpoint reference
+     * @param compositeContext
+     * @param endpointReference
+     */
+    void start(CompositeContext compositeContext, RuntimeEndpointReference endpointReference);
+    
+    /**
+     * Stop an endpoint
+     * @param endpoint
+     */
+    void stop(RuntimeEndpoint endpoint);
+    
+    /**
+     * Stop an endpoint reference
+     * @param endpointReference
+     */
+    void stop(RuntimeEndpointReference endpointReference);    
 }

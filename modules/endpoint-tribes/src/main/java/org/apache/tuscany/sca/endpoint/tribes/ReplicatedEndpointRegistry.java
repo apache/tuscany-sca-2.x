@@ -51,7 +51,7 @@ import org.apache.tuscany.sca.endpoint.tribes.MapStore.MapListener;
 import org.apache.tuscany.sca.runtime.BaseEndpointRegistry;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
-import org.apache.tuscany.sca.runtime.TuscanyURI;
+import org.apache.tuscany.sca.runtime.DomainRegistryURI;
 
 /**
  * A replicated EndpointRegistry based on Apache Tomcat Tribes
@@ -148,7 +148,7 @@ public class ReplicatedEndpointRegistry extends BaseEndpointRegistry implements 
     }
 
     private void setTuscanyConfig(Map<String, String> map, String domainRegistryURI) {
-        TuscanyURI tuscanyURI = new TuscanyURI(domainRegistryURI);
+        DomainRegistryURI tuscanyURI = new DomainRegistryURI(domainRegistryURI);
         map.put("address", tuscanyURI.getMulticastAddress());
         map.put("port", Integer.toString(tuscanyURI.getMulticastPort()));
         map.put("bind", tuscanyURI.getBindAddress());

@@ -45,7 +45,6 @@ public class CalculatorTestCase {
     public static void tearDownAfterClass() throws Exception {
         if (node != null) {
             node.stop();
-            node.destroy();
         }
     }
 

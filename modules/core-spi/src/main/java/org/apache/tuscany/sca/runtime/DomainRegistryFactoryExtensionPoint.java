@@ -22,12 +22,23 @@ package org.apache.tuscany.sca.runtime;
 import java.util.List;
 
 /**
- * 
+ * Extension point for DomainRegistryFactory
  */
 public interface DomainRegistryFactoryExtensionPoint {
+    /**
+     * Add a DomainRegistryFactory
+     * @param factory
+     */
     void addDomainRegistryFactory(DomainRegistryFactory factory);
 
+    /**
+     * Remove a DomainRegistryFactory
+     * @param factory
+     */
     void removeDomainRegistryFactory(DomainRegistryFactory factory);
 
+    /**
+     * @return A list of DomainRegistryFactory
+     */
     List<DomainRegistryFactory> getDomainRegistryFactories();
 }

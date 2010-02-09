@@ -199,7 +199,7 @@ public abstract class BaseEndpointRegistry implements EndpointRegistry, LifeCycl
         listeners.remove(listener);
     }
 
-    public String getDomainName() {
+    public String getDomainURI() {
         return domainURI;
     }
 

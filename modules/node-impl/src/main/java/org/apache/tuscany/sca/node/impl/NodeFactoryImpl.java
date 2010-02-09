@@ -163,7 +163,6 @@ public class NodeFactoryImpl extends NodeFactory {
         if (inited) {
             for (Node node : nodes.values()) {
                 node.stop();
-                node.destroy();
             }
             nodes.clear();
             deployer.stop();

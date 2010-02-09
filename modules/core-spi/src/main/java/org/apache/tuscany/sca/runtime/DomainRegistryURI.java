@@ -39,7 +39,7 @@ import java.util.Map;
  * remotes - a list of ipAddress:port for remote nodes
  *             
  */
-public class TuscanyURI {
+public class DomainRegistryURI {
     
     private String domainName = "default";
     private String bindAddress = null; // null means all network adapters
@@ -51,7 +51,7 @@ public class TuscanyURI {
     private List<String> remotes = new ArrayList<String>();
     private String uri;
 
-    public TuscanyURI(String uri) {
+    public DomainRegistryURI(String uri) {
         this.uri = uri;
         parseURI(uri);
     }

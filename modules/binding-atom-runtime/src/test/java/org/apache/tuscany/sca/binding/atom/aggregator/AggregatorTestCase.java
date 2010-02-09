@@ -60,7 +60,6 @@ public class AggregatorTestCase {
     public static void destroy() throws Exception {
         if(node != null) {
             node.stop();
-            node.destroy();
         }
     }
 

@@ -68,7 +68,7 @@ public class ExtensibleDomainRegistry implements DomainRegistryFactory {
             // See if there is a previously created registry for that domain
             for (DomainRegistryFactory factory : factories.getDomainRegistryFactories()) {
                 for (EndpointRegistry endpointRegistry : factory.getEndpointRegistries()) {
-                    if (endpointRegistry.getDomainName().equals(domainURI)) {
+                    if (endpointRegistry.getDomainURI().equals(domainURI)) {
                         return endpointRegistry;
                     }
                 }

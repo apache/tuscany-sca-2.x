@@ -45,6 +45,5 @@ public class Provider {
         }
 
         node.stop();
-        node.destroy();
     }
 }

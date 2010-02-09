@@ -46,7 +46,6 @@ public class HelloWorldTestCase extends TestCase {
     @Override
     protected void tearDown() throws Exception {
         node.stop();
-        node.destroy();
     }
 
 }

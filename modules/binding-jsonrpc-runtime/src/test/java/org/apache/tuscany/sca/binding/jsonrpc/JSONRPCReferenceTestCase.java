@@ -50,7 +50,6 @@ public class JSONRPCReferenceTestCase {
     @AfterClass
     public static void tearDown() throws Exception {
         nodeServer.stop();
-        nodeServer.destroy();
     }
     
     @Test
@@ -66,7 +65,6 @@ public class JSONRPCReferenceTestCase {
         Assert.assertEquals("echo: ABC", result);
         if (node != null) {
             node.stop();
-            node.destroy();
         }
     }
 }

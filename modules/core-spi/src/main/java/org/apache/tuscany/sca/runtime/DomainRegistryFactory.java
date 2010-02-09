@@ -22,7 +22,8 @@ package org.apache.tuscany.sca.runtime;
 import java.util.Collection;
 
 /**
- * 
+ * A DomainRegistryFactory is responsible for creating an instance of the DomainRegistry for a given
+ * registry URI and domain URI
  */
 public interface DomainRegistryFactory {
     /**
@@ -33,13 +34,28 @@ public interface DomainRegistryFactory {
      * @return
      */
     EndpointRegistry getEndpointRegistry(String endpointRegistryURI, String domainURI);
-    
+
     /**
      * Return all active endpoint registries
      * @return
      */
     Collection<EndpointRegistry> getEndpointRegistries();
+
+    /**
+     * Add an EndpointListener
+     * @param listener
+     */
     void addListener(EndpointListener listener);
+
+    /**
+     * Remove an EndpointListener
+     * @param listener
+     */
     void removeListener(EndpointListener listener);
+
+    /**
+     * Return an array of schemes that this factory supports
+     * @return
+     */
     String[] getSupportedSchemes();
 }

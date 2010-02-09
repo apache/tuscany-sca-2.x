@@ -88,7 +88,6 @@ public class HTTPBindingTestCase {
     @AfterClass
     public static void tearDown() throws Exception {
     	node.stop();
-    	node.destroy();
     }
 
     /**

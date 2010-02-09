@@ -99,11 +99,9 @@ public class AtomFeedNonCollectionTest {
     public static void destroy() throws Exception {
         if (scaConsumerNode != null) {
             scaConsumerNode.stop();
-            scaConsumerNode.destroy();
         }
         if (scaProviderNode != null) {
             scaProviderNode.stop();
-            scaProviderNode.destroy();
         }
     }
 

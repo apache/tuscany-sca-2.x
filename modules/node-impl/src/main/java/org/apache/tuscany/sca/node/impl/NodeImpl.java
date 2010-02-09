@@ -102,9 +102,6 @@ public class NodeImpl implements Node, Client {
         return getConfiguration().getURI();
     }
 
-    public void destroy() {
-    }
-
     public Node start() {
         logger.log(Level.INFO, "Starting node: " + configuration.getURI() + " domain: " + configuration.getDomainName());
 

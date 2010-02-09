@@ -81,7 +81,6 @@ public class ProviderEntryEntityTagsTestCase {
         //System.out.println(">>>ProviderEntryEntityTagsTestCase.destroy");
         if (scaProviderNode != null) {
             scaProviderNode.stop();
-            scaProviderNode.destroy();
         }
     }
 
