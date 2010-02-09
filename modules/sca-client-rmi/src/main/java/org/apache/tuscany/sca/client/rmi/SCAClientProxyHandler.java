@@ -80,7 +80,7 @@ public class SCAClientProxyHandler implements InvocationHandler {
             DomainRegistryFactoryExtensionPoint factoriesx = extensionsRegistry.getExtensionPoint(DomainRegistryFactoryExtensionPoint.class);
             for (DomainRegistryFactory factory : factoriesx.getDomainRegistryFactories()) {
                 for (EndpointRegistry endpointRegistry : factory.getEndpointRegistries()) {
-                    if (endpointRegistry.getDomainName().equals(domainURI)) {
+                    if (endpointRegistry.getDomainURI().equals(domainURI)) {
                         this.endpointRegistry = endpointRegistry;
                     }
                 }

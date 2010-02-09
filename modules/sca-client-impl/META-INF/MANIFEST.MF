@@ -8,6 +8,7 @@ Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Client Impl
 Import-Package: org.apache.tuscany.sca.assembly;version="2.0.0",
  org.apache.tuscany.sca.core;version="2.0.0",
+ org.apache.tuscany.sca.context;version="2.0.0",
  org.apache.tuscany.sca.node;version="2.0.0",
  org.apache.tuscany.sca.node.impl;version="2.0.0",
  org.apache.tuscany.sca.runtime;version="2.0.0",

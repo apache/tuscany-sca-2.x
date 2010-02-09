@@ -51,7 +51,7 @@ import org.apache.tuscany.sca.runtime.ActivationException;
 import org.apache.tuscany.sca.runtime.CompositeActivator;
 import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
-import org.apache.tuscany.sca.runtime.ExtensibleDomainRegistry;
+import org.apache.tuscany.sca.runtime.ExtensibleDomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentContext;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
@@ -108,7 +108,7 @@ public class NodeImpl implements Node {
         manager.addNode(configuration, this);
         this.proxyFactory = manager.proxyFactory;
         
-        DomainRegistryFactory domainRegistryFactory = new ExtensibleDomainRegistry(manager.registry);
+        DomainRegistryFactory domainRegistryFactory = ExtensibleDomainRegistryFactory.getInstance(manager.registry);
         EndpointRegistry endpointRegistry =
             domainRegistryFactory.getEndpointRegistry(configuration.getDomainRegistryURI(), configuration
                 .getDomainURI());

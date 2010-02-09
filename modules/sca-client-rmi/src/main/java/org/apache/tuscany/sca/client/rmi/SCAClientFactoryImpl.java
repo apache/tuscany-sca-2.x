@@ -32,7 +32,7 @@ import org.apache.tuscany.sca.node.impl.NodeFactoryImpl;
 import org.apache.tuscany.sca.node.impl.NodeImpl;
 import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
-import org.apache.tuscany.sca.runtime.ExtensibleDomainRegistry;
+import org.apache.tuscany.sca.runtime.ExtensibleDomainRegistryFactory;
 import org.oasisopen.sca.NoSuchDomainException;
 import org.oasisopen.sca.NoSuchServiceException;
 import org.oasisopen.sca.client.SCAClientFactory;
@@ -55,7 +55,7 @@ public class SCAClientFactoryImpl extends SCAClientFactory {
         this.extensionsRegistry = nodeFactory.getExtensionPoints();
         if (extensionsRegistry != null) {
             this.extensionsRegistry = nodeFactory.getExtensionPoints();
-            DomainRegistryFactory domainRegistryFactory = new ExtensibleDomainRegistry(extensionsRegistry);
+            DomainRegistryFactory domainRegistryFactory = ExtensibleDomainRegistryFactory.getInstance(extensionsRegistry);
             this.endpointRegistry = domainRegistryFactory.getEndpointRegistry(getRegistryURI(), getDomainName());
         }
     }   

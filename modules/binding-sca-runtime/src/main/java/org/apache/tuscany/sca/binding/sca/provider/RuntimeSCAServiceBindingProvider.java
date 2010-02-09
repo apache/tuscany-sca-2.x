@@ -34,7 +34,7 @@ import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
-import org.apache.tuscany.sca.runtime.ExtensibleDomainRegistry;
+import org.apache.tuscany.sca.runtime.ExtensibleDomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 
@@ -103,7 +103,7 @@ public class RuntimeSCAServiceBindingProvider implements ServiceBindingProvider 
         // find if the node config is for distributed endpoints
         // TODO: temp, need a much better way to do this
         if (distributedProviderFactory != null) {
-            DomainRegistryFactory domainRegistryFactory = new ExtensibleDomainRegistry(extensionPoints);
+            DomainRegistryFactory domainRegistryFactory = ExtensibleDomainRegistryFactory.getInstance(extensionPoints);
             Collection<EndpointRegistry> eprs = domainRegistryFactory.getEndpointRegistries();
             if (eprs.size() > 0) {
                 String eprName = eprs.iterator().next().getClass().getName();

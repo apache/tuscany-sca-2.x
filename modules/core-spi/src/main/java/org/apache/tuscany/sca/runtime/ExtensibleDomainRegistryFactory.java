@@ -26,20 +26,26 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
- * 
+ * A delegating DomainRegistryFactory
  */
-public class ExtensibleDomainRegistry implements DomainRegistryFactory {
+public class ExtensibleDomainRegistryFactory implements DomainRegistryFactory {
     private final DomainRegistryFactoryExtensionPoint factories;
 
-    public ExtensibleDomainRegistry(ExtensionPointRegistry registry) {
+    public ExtensibleDomainRegistryFactory(ExtensionPointRegistry registry) {
         this.factories = registry.getExtensionPoint(DomainRegistryFactoryExtensionPoint.class);
     }
     
-    public ExtensibleDomainRegistry(DomainRegistryFactoryExtensionPoint factories) {
+    public ExtensibleDomainRegistryFactory(DomainRegistryFactoryExtensionPoint factories) {
         this.factories = factories;
+    }
+    
+    public static ExtensibleDomainRegistryFactory getInstance(ExtensionPointRegistry registry) {
+        UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
+        return utilities.getUtility(ExtensibleDomainRegistryFactory.class);
     }
 
     public void addListener(EndpointListener listener) {
