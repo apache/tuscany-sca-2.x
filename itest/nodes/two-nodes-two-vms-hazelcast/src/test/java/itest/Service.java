@@ -49,5 +49,18 @@ public class Service {
         if (serviceNode != null) {
             serviceNode.stop();
         }
+    } 
+    
+    public static void main(String[] args) throws Exception {
+        Service.setUpBeforeClass();
+        
+        try {
+            System.out.println("Press a key to stop");
+            System.in.read();
+        } catch (Exception ex) {
+            // do nothing
+        }
+        
+        Service.tearDownAfterClass();
     }    
 }

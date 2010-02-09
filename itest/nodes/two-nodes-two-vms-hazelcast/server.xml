@@ -26,5 +26,13 @@
 			<arg value="./server-config.xml"/>
 		</java>
 	</target>
+	
+	<target name="run-cmdline">
+		<java classpath="../../../distribution/all/target/apache-tuscany-sca-all-2.0-SNAPSHOT.dir/tuscany-sca-2.0-SNAPSHOT/features/tuscany-sca-manifest.jar:./target/test-classes:../helloworld-iface/target/classes" 
+			  classname="itest.Service" 
+			  fork="true"
+			  failonerror="true">	
+		</java>		
+	</target>	
 
 </project>

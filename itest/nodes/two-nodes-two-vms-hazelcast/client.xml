@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
 -->
-<project name="server" default="run">
+<project name="client" default="run">
 
 	<!--echo>${runtime_classpath}</echo-->
 
@@ -28,4 +28,28 @@
 		</java>		
 	</target>
 
+	
+	<target name="run-cmdline">
+		<java classpath="../../../distribution/all/target/apache-tuscany-sca-all-2.0-SNAPSHOT.dir/tuscany-sca-2.0-SNAPSHOT/features/tuscany-sca-manifest.jar:./target/test-classes:../helloworld-iface/target/classes" 
+			  classname="itest.Client"
+			  fork="true"
+			  failonerror="true">
+		</java>	
+	</target>
+		
+	<target name="run-cmdline-seq">
+		<sequential>
+            <antcall target="run-cmdline"/>
+			<antcall target="run-cmdline"/>
+            <antcall target="run-cmdline"/>
+		</sequential>
+	</target>	
+	
+	<target name="run-cmdline-par">
+		<parallel>
+            <antcall target="run-cmdline"/>
+			<antcall target="run-cmdline"/>
+            <antcall target="run-cmdline"/>
+		</parallel>
+	</target>	
 </project>
