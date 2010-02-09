@@ -33,7 +33,6 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.Service;
-import org.apache.tuscany.sca.common.java.io.IOHelper;
 import org.apache.tuscany.sca.context.CompositeContext;
 import org.apache.tuscany.sca.context.ThreadMessageContext;
 import org.apache.tuscany.sca.contribution.Contribution;
@@ -47,7 +46,6 @@ import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.node.Client;
 import org.apache.tuscany.sca.node.Node;
-import org.apache.tuscany.sca.node.NodeFinder;
 import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
 import org.apache.tuscany.sca.node.management.NodeManager;
 import org.apache.tuscany.sca.runtime.ActivationException;
@@ -148,8 +146,6 @@ public class NodeImpl implements Node, Client {
             // Start the composite
             compositeActivator.start(compositeContext, domainComposite);
 
-            NodeFinder.addNode(IOHelper.createURI(configuration.getDomainURI()), this);
-
             // FIXME: [rfeng] We should turn the management capability into a system utility.
             // In certain environment such as Google App Engine, the JMX API is not allowed
             try {
@@ -200,7 +196,6 @@ public class NodeImpl implements Node, Client {
             }
             */
 
-            NodeFinder.removeNode(this);
             if( domainComposite != null ) {
 
                 // Stop the composite
