@@ -102,7 +102,7 @@ public class NodeImpl implements Node {
     }
 
     public Node start() {
-        logger.log(Level.INFO, "Starting node: " + configuration.getURI() + " domain: " + configuration.getDomainName());
+        logger.log(Level.INFO, "Starting node: " + configuration.getURI() + " domain: " + configuration.getDomainURI());
 
         manager.init();
         manager.addNode(configuration, this);
@@ -359,23 +359,4 @@ public class NodeImpl implements Node {
         return result;
     }
 
-    public List<String> getServiceNames() {
-        List<String> serviceNames = new ArrayList<String>();
-        ExtensionPointRegistry extensionsRegistry = getExtensionPoints();
-        DomainRegistryFactory domainRegistryFactory = new ExtensibleDomainRegistry(extensionsRegistry);
-        EndpointRegistry endpointRegistry = domainRegistryFactory.getEndpointRegistry(configuration.getDomainRegistryURI(), configuration.getDomainName());
-        for (Endpoint endpoint : endpointRegistry.getEndpoints()) {
-            // Would be nice if Endpoint.getURI() returned this:
-            String name = endpoint.getComponent().getName() + "/" + endpoint.getService().getName();
-            if (endpoint.getBinding() != null) {
-                // TODO: shouldn't the binding name be null if its not explicitly specified? 
-                //       For now don't include it if the same as the default
-                if (!endpoint.getService().getName().equals(endpoint.getBinding().getName())) {
-                    name += "/" + endpoint.getBinding().getName();
-                }
-            }
-            serviceNames.add(name);
-        }
-        return serviceNames;
-    }
 }

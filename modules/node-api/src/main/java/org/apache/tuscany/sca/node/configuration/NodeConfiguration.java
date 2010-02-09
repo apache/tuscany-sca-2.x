@@ -42,12 +42,6 @@ public interface NodeConfiguration {
     String getDomainURI();
 
     /**
-     * Get the name of the SCA domain
-     * @return The name of the SCA domain
-     */
-    String getDomainName();
-
-    /**
      * Set the URI of the SCA domain
      * @param domainURI The URI of the SCA domain
      */
