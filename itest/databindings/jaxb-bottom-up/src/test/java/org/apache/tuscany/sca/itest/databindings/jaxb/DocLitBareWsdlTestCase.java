@@ -19,17 +19,16 @@
 
 package org.apache.tuscany.sca.itest.databindings.jaxb;
 
-import junit.framework.Assert;
 import java.io.File;
 
+import junit.framework.Assert;
+
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import org.apache.tuscany.sca.node.Client;
-import org.apache.tuscany.sca.node.Node;
-import org.apache.tuscany.sca.node.NodeFactory;
-import org.apache.tuscany.sca.node.Contribution;
 
 
 /**
@@ -68,7 +67,7 @@ public class DocLitBareWsdlTestCase {
     // @Ignore("TUSCANY-2398")
     @Test
     public void testDocLitBareWsdl() throws Exception {
-        AClientService client = ((Client)node).getService(AClientService.class, "AClientComponent");
+        AClientService client = node.getService(AClientService.class, "AClientComponent");
         String name = "Pandu";
         String resp = client.getGreetingsForward(name);
         Assert.assertEquals("Hello " + name, resp);

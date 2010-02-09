@@ -62,7 +62,7 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
         NodeFactory.instance = factory;
     }
 
-    public static class NodeProxy implements Node, Client {
+    public static class NodeProxy implements Node {
         private Object node;
 
         private NodeProxy(Object node) {

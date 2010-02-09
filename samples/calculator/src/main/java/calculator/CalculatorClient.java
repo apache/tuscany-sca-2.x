@@ -19,7 +19,6 @@
 
 package calculator;
 
-import org.apache.tuscany.sca.node.Client;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 
@@ -32,7 +31,7 @@ public class CalculatorClient {
 
         Node node = NodeFactory.newInstance().createNode((String)null, new String[] {"target/classes"}).start();
         
-        CalculatorService calculatorService = ((Client)node).getService(CalculatorService.class, "CalculatorServiceComponent");
+        CalculatorService calculatorService = node.getService(CalculatorService.class, "CalculatorServiceComponent");
         
         // Calculate
         System.out.println("3 + 2=" + calculatorService.add(3, 2));

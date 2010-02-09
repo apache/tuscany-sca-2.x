@@ -19,22 +19,21 @@
 
 package org.apache.tuscany.sca.itest.oneway;
 
+import java.io.File;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
-import java.io.File;
 
 import junit.framework.Assert;
 
 import org.apache.tuscany.sca.core.invocation.NonBlockingInterceptor;
 import org.apache.tuscany.sca.itest.oneway.impl.OneWayClientImpl;
 import org.apache.tuscany.sca.itest.oneway.impl.OneWayServiceImpl;
-import org.apache.tuscany.sca.node.Client;
+import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
-import org.apache.tuscany.sca.node.Contribution;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -87,7 +86,7 @@ public class OneWayTestCase {
     @Test
     public void testOneWay() throws Exception {
         OneWayClient client =
-            ((Client)node).getService(OneWayClient.class, "OneWayClientComponent");
+            node.getService(OneWayClient.class, "OneWayClientComponent");
 
         int count = 100;
 
@@ -123,7 +122,7 @@ public class OneWayTestCase {
     @Test
     public void testOneWayUsingNonBlockingInterceptorThrowsAnException() {
         OneWayClient client =
-            ((Client)node).getService(OneWayClient.class, "OneWayClientComponentSCABinding");
+            node.getService(OneWayClient.class, "OneWayClientComponentSCABinding");
             
         // We need to modify the JDK Logger for the NonBlockingInterceptor so we
         // can check that it logs a message for the @OneWay invocation that throws

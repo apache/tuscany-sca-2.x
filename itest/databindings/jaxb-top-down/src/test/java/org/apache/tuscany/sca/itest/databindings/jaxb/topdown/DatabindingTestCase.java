@@ -19,30 +19,27 @@
 
 package org.apache.tuscany.sca.itest.databindings.jaxb.topdown;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.io.File;
 
 import junit.framework.Assert;
 
 import org.apache.tuscany.sca.itest.databindings.jaxb.HelloServiceClient;
-import org.apache.tuscany.sca.node.Client;
+import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
-import org.apache.tuscany.sca.node.Contribution;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.Ignore;
 
 /**
  * @version $Rev$ $Date$
  */
 public class DatabindingTestCase {
 
-    private static Client client;
     private static Node node;
 
     /**
@@ -55,7 +52,6 @@ public class DatabindingTestCase {
         node = factory.createNode(new File("src/main/resources/wsdl/wrapped/helloservice.composite").toURI().toURL().toString(),
                 new Contribution("TestContribution", new File("src/main/resources/wsdl/wrapped/").toURI().toURL().toString()));
         node.start();
-        client = (Client)node;
         }catch(Throwable e) {
             e.printStackTrace();
         }
@@ -75,7 +71,7 @@ public class DatabindingTestCase {
      */
     @Test
     public void testW2W() throws Exception {
-        HelloServiceClient helloServiceClient = client.getService(HelloServiceClient.class, "HelloServiceClientW2WComponent");
+        HelloServiceClient helloServiceClient = node.getService(HelloServiceClient.class, "HelloServiceClientW2WComponent");
         performTest(helloServiceClient);
     }
 
@@ -85,7 +81,7 @@ public class DatabindingTestCase {
      */
     @Test
     public void testW2WArray() throws Exception {
-        HelloServiceClient helloServiceClient = client.getService(HelloServiceClient.class, "HelloServiceClientW2WComponent");
+        HelloServiceClient helloServiceClient = node.getService(HelloServiceClient.class, "HelloServiceClientW2WComponent");
         performTestArray(helloServiceClient);
     }
 
@@ -95,7 +91,7 @@ public class DatabindingTestCase {
      */
     @Test
     public void testW2WList() throws Exception {
-        HelloServiceClient helloServiceClient = client.getService(HelloServiceClient.class, "HelloServiceClientW2WComponent");
+        HelloServiceClient helloServiceClient = node.getService(HelloServiceClient.class, "HelloServiceClientW2WComponent");
         performTestList(helloServiceClient);
     }
 
@@ -105,7 +101,7 @@ public class DatabindingTestCase {
      */
     @Test
     public void testW2WArrayList() throws Exception {
-        HelloServiceClient helloServiceClient = client.getService(HelloServiceClient.class, "HelloServiceClientW2WComponent");
+        HelloServiceClient helloServiceClient = node.getService(HelloServiceClient.class, "HelloServiceClientW2WComponent");
         performTestArrayList(helloServiceClient);
     }
 
@@ -115,7 +111,7 @@ public class DatabindingTestCase {
      */
     @Test
     public void testW2WMap() throws Exception {
-        HelloServiceClient helloServiceClient = client.getService(HelloServiceClient.class, "HelloServiceClientW2WComponent");
+        HelloServiceClient helloServiceClient = node.getService(HelloServiceClient.class, "HelloServiceClientW2WComponent");
         performTestMap(helloServiceClient);
     }
 
@@ -125,7 +121,7 @@ public class DatabindingTestCase {
      */
     @Test
     public void testW2WHashMap() throws Exception {
-        HelloServiceClient helloServiceClient = client.getService(HelloServiceClient.class, "HelloServiceClientW2WComponent");
+        HelloServiceClient helloServiceClient = node.getService(HelloServiceClient.class, "HelloServiceClientW2WComponent");
         performTestHashMap(helloServiceClient);
     }
 
@@ -135,7 +131,7 @@ public class DatabindingTestCase {
      */
     @Test
     public void testW2WVarArgs() throws Exception {
-        HelloServiceClient helloServiceClient = client.getService(HelloServiceClient.class, "HelloServiceClientW2WComponent");
+        HelloServiceClient helloServiceClient = node.getService(HelloServiceClient.class, "HelloServiceClientW2WComponent");
         performTestVarArgs(helloServiceClient);
     }
 
@@ -145,7 +141,7 @@ public class DatabindingTestCase {
      */
     @Test
     public void testJ2W() throws Exception {
-        HelloServiceClient helloServiceClient = client.getService(HelloServiceClient.class, "HelloServiceClientJ2WComponent");
+        HelloServiceClient helloServiceClient = node.getService(HelloServiceClient.class, "HelloServiceClientJ2WComponent");
         performTest(helloServiceClient);
     }
 
@@ -155,7 +151,7 @@ public class DatabindingTestCase {
      */
     @Test
     public void testJ2WArray() throws Exception {
-        HelloServiceClient helloServiceClient = client.getService(HelloServiceClient.class, "HelloServiceClientJ2WComponent");
+        HelloServiceClient helloServiceClient = node.getService(HelloServiceClient.class, "HelloServiceClientJ2WComponent");
         performTestArray(helloServiceClient);
     }
 
@@ -165,7 +161,7 @@ public class DatabindingTestCase {
      */
     @Test
     public void testJ2WList() throws Exception {
-        HelloServiceClient helloServiceClient = client.getService(HelloServiceClient.class, "HelloServiceClientJ2WComponent");
+        HelloServiceClient helloServiceClient = node.getService(HelloServiceClient.class, "HelloServiceClientJ2WComponent");
         performTestList(helloServiceClient);
     }
 
@@ -175,7 +171,7 @@ public class DatabindingTestCase {
      */
     @Test
     public void testJ2WArrayList() throws Exception {
-        HelloServiceClient helloServiceClient = client.getService(HelloServiceClient.class, "HelloServiceClientJ2WComponent");
+        HelloServiceClient helloServiceClient = node.getService(HelloServiceClient.class, "HelloServiceClientJ2WComponent");
         performTestArrayList(helloServiceClient);
     }
 
@@ -185,7 +181,7 @@ public class DatabindingTestCase {
      */
     @Test
     public void testJ2WMap() throws Exception {
-        HelloServiceClient helloServiceClient = client.getService(HelloServiceClient.class, "HelloServiceClientJ2WComponent");
+        HelloServiceClient helloServiceClient = node.getService(HelloServiceClient.class, "HelloServiceClientJ2WComponent");
         performTestMap(helloServiceClient);
     }
 
@@ -195,7 +191,7 @@ public class DatabindingTestCase {
      */
     @Test
     public void testJ2WHashMap() throws Exception {
-        HelloServiceClient helloServiceClient = client.getService(HelloServiceClient.class, "HelloServiceClientJ2WComponent");
+        HelloServiceClient helloServiceClient = node.getService(HelloServiceClient.class, "HelloServiceClientJ2WComponent");
         performTestHashMap(helloServiceClient);
     }
 
@@ -205,7 +201,7 @@ public class DatabindingTestCase {
      */
     @Test
     public void testJ2WVarArgs() throws Exception {
-        HelloServiceClient helloServiceClient = client.getService(HelloServiceClient.class, "HelloServiceClientJ2WComponent");
+        HelloServiceClient helloServiceClient = node.getService(HelloServiceClient.class, "HelloServiceClientJ2WComponent");
         performTestVarArgs(helloServiceClient);
     }
 
@@ -215,7 +211,7 @@ public class DatabindingTestCase {
      */
     @Test
     public void testW2J() throws Exception {
-        HelloServiceClient helloServiceClient = client.getService(HelloServiceClient.class, "HelloServiceClientW2JComponent");
+        HelloServiceClient helloServiceClient = node.getService(HelloServiceClient.class, "HelloServiceClientW2JComponent");
         performTest(helloServiceClient);
     }
 
@@ -225,7 +221,7 @@ public class DatabindingTestCase {
      */
     @Test
     public void testW2JArray() throws Exception {
-        HelloServiceClient helloServiceClient = client.getService(HelloServiceClient.class, "HelloServiceClientW2JComponent");
+        HelloServiceClient helloServiceClient = node.getService(HelloServiceClient.class, "HelloServiceClientW2JComponent");
         performTestArray(helloServiceClient);
     }
 
@@ -235,7 +231,7 @@ public class DatabindingTestCase {
      */
     @Test
     public void testW2JList() throws Exception {
-        HelloServiceClient helloServiceClient = client.getService(HelloServiceClient.class, "HelloServiceClientW2JComponent");
+        HelloServiceClient helloServiceClient = node.getService(HelloServiceClient.class, "HelloServiceClientW2JComponent");
         performTestList(helloServiceClient);
     }
 
@@ -245,7 +241,7 @@ public class DatabindingTestCase {
      */
     @Test
     public void testW2JArrayList() throws Exception {
-        HelloServiceClient helloServiceClient = client.getService(HelloServiceClient.class, "HelloServiceClientW2JComponent");
+        HelloServiceClient helloServiceClient = node.getService(HelloServiceClient.class, "HelloServiceClientW2JComponent");
         performTestArrayList(helloServiceClient);
     }
 
@@ -255,7 +251,7 @@ public class DatabindingTestCase {
      */
     @Test
     public void testW2JMap() throws Exception {
-        HelloServiceClient helloServiceClient = client.getService(HelloServiceClient.class, "HelloServiceClientW2JComponent");
+        HelloServiceClient helloServiceClient = node.getService(HelloServiceClient.class, "HelloServiceClientW2JComponent");
         performTestMap(helloServiceClient);
     }
 
@@ -265,7 +261,7 @@ public class DatabindingTestCase {
      */
     @Test
     public void testW2JHashMap() throws Exception {
-        HelloServiceClient helloServiceClient = client.getService(HelloServiceClient.class, "HelloServiceClientW2JComponent");
+        HelloServiceClient helloServiceClient = node.getService(HelloServiceClient.class, "HelloServiceClientW2JComponent");
         performTestHashMap(helloServiceClient);
     }
 
@@ -275,7 +271,7 @@ public class DatabindingTestCase {
      */
     @Test
     public void testW2JVarArgs() throws Exception {
-        HelloServiceClient helloServiceClient = client.getService(HelloServiceClient.class, "HelloServiceClientW2JComponent");
+        HelloServiceClient helloServiceClient = node.getService(HelloServiceClient.class, "HelloServiceClientW2JComponent");
         performTestVarArgs(helloServiceClient);
     }
 

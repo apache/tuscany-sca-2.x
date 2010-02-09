@@ -25,7 +25,6 @@ import java.awt.image.PixelGrabber;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -46,34 +45,25 @@ import javax.xml.namespace.QName;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 
 import junit.framework.Assert;
 
 import org.apache.axiom.attachments.ByteArrayDataSource;
-import org.apache.tuscany.sca.databinding.xml.String2Node;
 import org.apache.tuscany.sca.itest.databindings.jaxb.StandardTypesServiceClient;
 import org.apache.tuscany.sca.itest.databindings.jaxb.impl.StandardTypesTransformer;
-import org.apache.tuscany.sca.node.Client;
+import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
-import org.apache.tuscany.sca.node.Contribution;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.xml.sax.InputSource;
-import org.junit.Ignore;
 
 /**
  * @version $Rev$ $Date$
  */
 public class StandardTypesDatabindingTestCase {
 
-    private static Client domain;
     private static Node node;
 
     /**
@@ -85,7 +75,6 @@ public class StandardTypesDatabindingTestCase {
         node = factory.createNode(new File("src/main/resources/wsdl/wrapped/standard-types-service.composite").toURI().toURL().toString(),
                 new Contribution("TestContribution", new File("src/main/resources/wsdl/wrapped/").toURI().toURL().toString()));
         node.start();
-        domain = (Client)node;
     }
 
     /**
@@ -103,7 +92,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testW2WNewBigInteger() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2WComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2WComponent");
         performTestNewBigInteger(serviceClient);
     }
 
@@ -114,7 +103,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testW2WNewBigIntegerArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2WComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2WComponent");
         performTestNewBigIntegerArray(serviceClient);
     }
 
@@ -125,7 +114,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testW2WNewBigDecimal() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2WComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2WComponent");
         performTestNewBigDecimal(serviceClient);
     }
 
@@ -136,7 +125,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testW2WNewBigDecimalArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2WComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2WComponent");
         performTestNewBigDecimalArray(serviceClient);
     }
 
@@ -147,7 +136,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testW2WNewCalendar() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2WComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2WComponent");
         performTestNewCalendar(serviceClient);
     }
 
@@ -158,7 +147,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testW2WNewCalendarArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2WComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2WComponent");
         performTestNewCalendarArray(serviceClient);
     }
 
@@ -169,7 +158,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testW2WNewDate() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2WComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2WComponent");
         performTestNewDate(serviceClient);
     }
 
@@ -180,7 +169,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testW2WNewDateArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2WComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2WComponent");
         performTestNewDateArray(serviceClient);
     }
 
@@ -191,7 +180,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testW2WNewQName() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2WComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2WComponent");
         performTestNewQName(serviceClient);
     }
 
@@ -202,7 +191,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testW2WNewQNameArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2WComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2WComponent");
         performTestNewQNameArray(serviceClient);
     }
 
@@ -213,7 +202,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testW2WNewURI() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2WComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2WComponent");
         performTestNewURI(serviceClient);
     }
 
@@ -224,7 +213,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testW2WNewURIArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2WComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2WComponent");
         performTestNewURIArray(serviceClient);
     }
 
@@ -235,7 +224,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testW2WNewXMLGregorianCalendar() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2WComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2WComponent");
         performTestNewXMLGregorianCalendar(serviceClient);
     }
 
@@ -246,7 +235,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testW2WNewXMLGregorianCalendarArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2WComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2WComponent");
         performTestNewXMLGregorianCalendarArray(serviceClient);
     }
 
@@ -257,7 +246,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testW2WNewDuration() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2WComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2WComponent");
         performTestNewDuration(serviceClient);
     }
 
@@ -268,7 +257,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testW2WNewDurationArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2WComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2WComponent");
         performTestNewDurationArray(serviceClient);
     }
 
@@ -279,7 +268,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testW2WNewObject() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2WComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2WComponent");
         performTestNewObject(serviceClient);
     }
 
@@ -290,7 +279,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testW2WNewObjectArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2WComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2WComponent");
         performTestNewObjectArray(serviceClient);
     }
 
@@ -301,7 +290,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testW2WNewImage() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2WComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2WComponent");
         performTestNewImage(serviceClient);
     }
 
@@ -312,7 +301,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testW2WNewImageArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2WComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2WComponent");
         performTestNewImageArray(serviceClient);
     }
 
@@ -323,7 +312,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testW2WNewDataHandler() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2WComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2WComponent");
         performTestNewDataHandler(serviceClient);
     }
 
@@ -334,7 +323,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testW2WNewDataHandlerArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2WComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2WComponent");
         performTestNewDataHandlerArray(serviceClient);
     }
 
@@ -346,7 +335,7 @@ public class StandardTypesDatabindingTestCase {
     //@Ignore("junit.framework.ComparisonFailure: null expected:<... encoding=\"UTF-8\"?><[a>A</a]>> but was:<... encoding=\"UTF-8\"?><[return xmlns=\"http://jaxb.databindings.itest.sca.tuscany.apache.org/\">A</return]>>")
     public void testW2WNewSource() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2WComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2WComponent");
         performTestNewSource(serviceClient);
     }*/
 
@@ -358,7 +347,7 @@ public class StandardTypesDatabindingTestCase {
     @Ignore("TUSCANY-2452")
     public void testW2WNewSourceArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2WComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2WComponent");
         performTestNewSourceArray(serviceClient);
     }*/
 
@@ -369,7 +358,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testW2WNewUUID() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2WComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2WComponent");
         performTestNewUUID(serviceClient);
     }
 
@@ -380,7 +369,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testW2WNewUUIDArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2WComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2WComponent");
         performTestNewUUIDArray(serviceClient);
     }
 
@@ -391,7 +380,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testJ2WNewBigInteger() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientJ2WComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientJ2WComponent");
         performTestNewBigInteger(serviceClient);
     }
 
@@ -402,7 +391,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testJ2WNewBigIntegerArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientJ2WComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientJ2WComponent");
         performTestNewBigIntegerArray(serviceClient);
     }
 
@@ -413,7 +402,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testJ2WNewBigDecimal() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientJ2WComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientJ2WComponent");
         performTestNewBigDecimal(serviceClient);
     }
 
@@ -424,7 +413,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testJ2WNewBigDecimalArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientJ2WComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientJ2WComponent");
         performTestNewBigDecimalArray(serviceClient);
     }
 
@@ -435,7 +424,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testJ2WNewCalendar() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientJ2WComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientJ2WComponent");
         performTestNewCalendar(serviceClient);
     }
 
@@ -446,7 +435,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testJ2WNewCalendarArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientJ2WComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientJ2WComponent");
         performTestNewCalendarArray(serviceClient);
     }
 
@@ -457,7 +446,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testJ2WNewDate() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientJ2WComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientJ2WComponent");
         performTestNewDate(serviceClient);
     }
 
@@ -468,7 +457,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testJ2WNewDateArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientJ2WComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientJ2WComponent");
         performTestNewDateArray(serviceClient);
     }
 
@@ -479,7 +468,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testJ2WNewQName() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientJ2WComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientJ2WComponent");
         performTestNewQName(serviceClient);
     }
 
@@ -490,7 +479,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testJ2WNewQNameArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientJ2WComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientJ2WComponent");
         performTestNewQNameArray(serviceClient);
     }
 
@@ -501,7 +490,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testJ2WNewURI() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientJ2WComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientJ2WComponent");
         performTestNewURI(serviceClient);
     }
 
@@ -512,7 +501,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testJ2WNewURIArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientJ2WComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientJ2WComponent");
         performTestNewURIArray(serviceClient);
     }
 
@@ -523,7 +512,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testJ2WNewXMLGregorianCalendar() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientJ2WComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientJ2WComponent");
         performTestNewXMLGregorianCalendar(serviceClient);
     }
 
@@ -534,7 +523,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testJ2WNewXMLGregorianCalendarArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientJ2WComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientJ2WComponent");
         performTestNewXMLGregorianCalendarArray(serviceClient);
     }
 
@@ -545,7 +534,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testJ2WNewDuration() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientJ2WComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientJ2WComponent");
         performTestNewDuration(serviceClient);
     }
 
@@ -556,7 +545,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testJ2WNewDurationArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientJ2WComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientJ2WComponent");
         performTestNewDurationArray(serviceClient);
     }
 
@@ -567,7 +556,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testJ2WNewObject() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientJ2WComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientJ2WComponent");
         performTestNewObject(serviceClient);
     }
 
@@ -578,7 +567,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testJ2WNewObjectArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientJ2WComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientJ2WComponent");
         performTestNewObjectArray(serviceClient);
     }
 
@@ -589,7 +578,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testJ2WNewImage() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientJ2WComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientJ2WComponent");
         performTestNewImage(serviceClient);
     }
 
@@ -600,7 +589,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testJ2WNewImageArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientJ2WComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientJ2WComponent");
         performTestNewImageArray(serviceClient);
     }
 
@@ -611,7 +600,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testJ2WNewDataHandler() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientJ2WComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientJ2WComponent");
         performTestNewDataHandler(serviceClient);
     }
 
@@ -622,7 +611,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testJ2WNewDataHandlerArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientJ2WComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientJ2WComponent");
         performTestNewDataHandlerArray(serviceClient);
     }
 
@@ -634,7 +623,7 @@ public class StandardTypesDatabindingTestCase {
     //@Ignore("junit.framework.ComparisonFailure: null expected:<... encoding=\"UTF-8\"?><[a>A</a]>> but was:<... encoding=\"UTF-8\"?><[return xmlns=\"http://jaxb.databindings.itest.sca.tuscany.apache.org/\">A</return]>>")
     public void testJ2WNewSource() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientJ2WComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientJ2WComponent");
         performTestNewSource(serviceClient);
     }*/
 
@@ -646,7 +635,7 @@ public class StandardTypesDatabindingTestCase {
     @Ignore("TUSCANY-2452")
     public void testJ2WNewSourceArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientJ2WComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientJ2WComponent");
         performTestNewSourceArray(serviceClient);
     }*/
 
@@ -657,7 +646,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testJ2WNewUUID() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientJ2WComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientJ2WComponent");
         performTestNewUUID(serviceClient);
     }
 
@@ -668,7 +657,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testJ2WNewUUIDArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientJ2WComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientJ2WComponent");
         performTestNewUUIDArray(serviceClient);
     }
 
@@ -679,7 +668,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testW2JNewBigInteger() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2JComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2JComponent");
         performTestNewBigInteger(serviceClient);
     }
 
@@ -690,7 +679,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testW2JNewBigIntegerArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2JComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2JComponent");
         performTestNewBigIntegerArray(serviceClient);
     }
 
@@ -701,7 +690,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testW2JNewBigDecimal() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2JComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2JComponent");
         performTestNewBigDecimal(serviceClient);
     }
 
@@ -712,7 +701,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testW2JNewBigDecimalArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2JComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2JComponent");
         performTestNewBigDecimalArray(serviceClient);
     }
 
@@ -723,7 +712,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testW2JNewCalendar() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2JComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2JComponent");
         performTestNewCalendar(serviceClient);
     }
 
@@ -734,7 +723,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testW2JNewCalendarArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2JComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2JComponent");
         performTestNewCalendarArray(serviceClient);
     }
 
@@ -745,7 +734,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testW2JNewDate() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2JComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2JComponent");
         performTestNewDate(serviceClient);
     }
 
@@ -756,7 +745,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testW2JNewDateArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2JComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2JComponent");
         performTestNewDateArray(serviceClient);
     }
 
@@ -767,7 +756,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testW2JNewQName() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2JComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2JComponent");
         performTestNewQName(serviceClient);
     }
 
@@ -778,7 +767,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testW2JNewQNameArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2JComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2JComponent");
         performTestNewQNameArray(serviceClient);
     }
 
@@ -789,7 +778,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testW2JNewURI() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2JComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2JComponent");
         performTestNewURI(serviceClient);
     }
 
@@ -800,7 +789,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testW2JNewURIArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2JComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2JComponent");
         performTestNewURIArray(serviceClient);
     }
 
@@ -811,7 +800,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testW2JNewXMLGregorianCalendar() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2JComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2JComponent");
         performTestNewXMLGregorianCalendar(serviceClient);
     }
 
@@ -822,7 +811,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testW2JNewXMLGregorianCalendarArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2JComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2JComponent");
         performTestNewXMLGregorianCalendarArray(serviceClient);
     }
 
@@ -833,7 +822,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testW2JNewDuration() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2JComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2JComponent");
         performTestNewDuration(serviceClient);
     }
 
@@ -844,7 +833,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testW2JNewDurationArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2JComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2JComponent");
         performTestNewDurationArray(serviceClient);
     }
 
@@ -855,7 +844,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testW2JNewObject() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2JComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2JComponent");
         performTestNewObject(serviceClient);
     }
 
@@ -866,7 +855,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testW2JNewObjectArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2JComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2JComponent");
         performTestNewObjectArray(serviceClient);
     }
 
@@ -877,7 +866,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testW2JNewImage() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2JComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2JComponent");
         performTestNewImage(serviceClient);
     }
 
@@ -888,7 +877,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testW2JNewImageArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2JComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2JComponent");
         performTestNewImageArray(serviceClient);
     }
 
@@ -899,7 +888,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testW2JNewDataHandler() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2JComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2JComponent");
         performTestNewDataHandler(serviceClient);
     }
 
@@ -910,7 +899,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testW2JNewDataHandlerArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2JComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2JComponent");
         performTestNewDataHandlerArray(serviceClient);
     }
 
@@ -922,7 +911,7 @@ public class StandardTypesDatabindingTestCase {
     //@Ignore("junit.framework.ComparisonFailure: null expected:<... encoding=\"UTF-8\"?><[a>A</a]>> but was:<... encoding=\"UTF-8\"?><[return xmlns=\"http://jaxb.databindings.itest.sca.tuscany.apache.org/\">A</return]>>")
     public void testW2JNewSource() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2JComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2JComponent");
         performTestNewSource(serviceClient);
     }*/
 
@@ -934,7 +923,7 @@ public class StandardTypesDatabindingTestCase {
     @Ignore("TUSCANY-2452")
     public void testW2JNewSourceArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2JComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2JComponent");
         performTestNewSourceArray(serviceClient);
     }*/
 
@@ -945,7 +934,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testW2JNewUUID() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2JComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2JComponent");
         performTestNewUUID(serviceClient);
     }
 
@@ -956,7 +945,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testW2JNewUUIDArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            domain.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2JComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientW2JComponent");
         performTestNewUUIDArray(serviceClient);
     }
 

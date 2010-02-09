@@ -25,7 +25,6 @@ import java.awt.image.PixelGrabber;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -46,26 +45,18 @@ import javax.xml.namespace.QName;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 
 import junit.framework.Assert;
 
 import org.apache.axiom.attachments.ByteArrayDataSource;
-import org.apache.tuscany.sca.databinding.xml.String2Node;
 import org.apache.tuscany.sca.itest.databindings.jaxb.impl.StandardTypesTransformer;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.xml.sax.InputSource;
-
-import org.apache.tuscany.sca.node.Client;
+import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
-import org.apache.tuscany.sca.node.Contribution;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 
 /**
@@ -105,7 +96,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testSCANewBigInteger() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
         performTestNewBigInteger(serviceClient);
     }
 
@@ -116,7 +107,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testSCANewBigIntegerArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
         performTestNewBigIntegerArray(serviceClient);
     }
 
@@ -127,7 +118,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testSCANewBigDecimal() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
         performTestNewBigDecimal(serviceClient);
     }
 
@@ -138,7 +129,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testSCANewBigDecimalArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
         performTestNewBigDecimalArray(serviceClient);
     }
 
@@ -149,7 +140,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testSCANewCalendar() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
         performTestNewCalendar(serviceClient);
     }
 
@@ -160,7 +151,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testSCANewCalendarArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
         performTestNewCalendarArray(serviceClient);
     }
 
@@ -171,7 +162,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testSCANewDate() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
         performTestNewDate(serviceClient);
     }
 
@@ -182,7 +173,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testSCANewDateArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
         performTestNewDateArray(serviceClient);
     }
 
@@ -193,7 +184,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testSCANewQName() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
         performTestNewQName(serviceClient);
     }
 
@@ -204,7 +195,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testSCANewQNameArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
         performTestNewQNameArray(serviceClient);
     }
 
@@ -215,7 +206,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testSCANewURI() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
         performTestNewURI(serviceClient);
     }
 
@@ -226,7 +217,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testSCANewURIArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
         performTestNewURIArray(serviceClient);
     }
 
@@ -237,7 +228,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testSCANewXMLGregorianCalendar() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
         performTestNewXMLGregorianCalendar(serviceClient);
     }
 
@@ -248,7 +239,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testSCANewXMLGregorianCalendarArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
         performTestNewXMLGregorianCalendarArray(serviceClient);
     }
 
@@ -259,7 +250,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testSCANewDuration() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
         performTestNewDuration(serviceClient);
     }
 
@@ -270,7 +261,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testSCANewDurationArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
         performTestNewDurationArray(serviceClient);
     }
 
@@ -281,7 +272,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testSCANewObject() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
         performTestNewObject(serviceClient);
     }
 
@@ -292,7 +283,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testSCANewObjectArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
         performTestNewObjectArray(serviceClient);
     }
 
@@ -303,7 +294,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testSCANewImage() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
         performTestNewImage(serviceClient);
     }
 
@@ -314,7 +305,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testSCANewImageArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
         performTestNewImageArray(serviceClient);
     }
 
@@ -325,7 +316,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testSCANewDataHandler() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
         performTestNewDataHandler(serviceClient);
     }
 
@@ -336,7 +327,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testSCANewDataHandlerArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
         performTestNewDataHandlerArray(serviceClient);
     }
 
@@ -347,7 +338,7 @@ public class StandardTypesDatabindingTestCase {
     /*@Test
     public void testSCANewSource() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
         performTestNewSource(serviceClient);
     }*/
 
@@ -359,7 +350,7 @@ public class StandardTypesDatabindingTestCase {
     @Ignore("TUSCANY-2387")
     public void testSCANewSourceArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
         performTestNewSourceArray(serviceClient);
     }*/
 
@@ -370,7 +361,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testSCANewUUID() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
         performTestNewUUID(serviceClient);
     }
 
@@ -381,7 +372,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testSCANewUUIDArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientSCAComponent");
         performTestNewUUIDArray(serviceClient);
     }
 
@@ -392,7 +383,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testWSNewBigInteger() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
         performTestNewBigInteger(serviceClient);
     }
 
@@ -403,7 +394,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testWSNewBigIntegerArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
         performTestNewBigIntegerArray(serviceClient);
     }
 
@@ -414,7 +405,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testWSNewBigDecimal() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
         performTestNewBigDecimal(serviceClient);
     }
 
@@ -425,7 +416,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testWSNewBigDecimalArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
         performTestNewBigDecimalArray(serviceClient);
     }
 
@@ -436,7 +427,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testWSNewCalendar() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
         performTestNewCalendar(serviceClient);
     }
 
@@ -447,7 +438,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testWSNewCalendarArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
         performTestNewCalendarArray(serviceClient);
     }
 
@@ -458,7 +449,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testWSNewDate() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
         performTestNewDate(serviceClient);
     }
 
@@ -469,7 +460,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testWSNewDateArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
         performTestNewDateArray(serviceClient);
     }
 
@@ -480,7 +471,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testWSNewQName() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
         performTestNewQName(serviceClient);
     }
 
@@ -491,7 +482,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testWSNewQNameArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
         performTestNewQNameArray(serviceClient);
     }
 
@@ -502,7 +493,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testWSNewURI() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
         performTestNewURI(serviceClient);
     }
 
@@ -513,7 +504,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testWSNewURIArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
         performTestNewURIArray(serviceClient);
     }
 
@@ -524,7 +515,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testWSNewXMLGregorianCalendar() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
         performTestNewXMLGregorianCalendar(serviceClient);
     }
 
@@ -535,7 +526,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testWSNewXMLGregorianCalendarArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
         performTestNewXMLGregorianCalendarArray(serviceClient);
     }
 
@@ -546,7 +537,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testWSNewDuration() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
         performTestNewDuration(serviceClient);
     }
 
@@ -557,7 +548,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testWSNewDurationArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
         performTestNewDurationArray(serviceClient);
     }
 
@@ -568,7 +559,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testWSNewObject() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
         performTestNewObject(serviceClient);
     }
 
@@ -579,7 +570,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testWSNewObjectArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
         performTestNewObjectArray(serviceClient);
     }
 
@@ -590,7 +581,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testWSNewImage() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
         performTestNewImage(serviceClient);
     }
 
@@ -601,7 +592,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testWSNewImageArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
         performTestNewImageArray(serviceClient);
     }
 
@@ -612,7 +603,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testWSNewDataHandler() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
         performTestNewDataHandler(serviceClient);
     }
 
@@ -623,7 +614,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testWSNewDataHandlerArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
         performTestNewDataHandlerArray(serviceClient);
     }
 
@@ -635,7 +626,7 @@ public class StandardTypesDatabindingTestCase {
     // @Ignore("junit.framework.ComparisonFailure: null expected:<... encoding=\"UTF-8\"?><[a>A</a]>> but was:<... encoding=\"UTF-8\"?><[return xmlns=\"http://jaxb.databindings.itest.sca.tuscany.apache.org/\">A</return]>>")
     public void testWSNewSource() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
         performTestNewSource(serviceClient);
     }*/
 
@@ -647,7 +638,7 @@ public class StandardTypesDatabindingTestCase {
     @Ignore("TUSCANY-2386")
     public void testWSNewSourceArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
         performTestNewSourceArray(serviceClient);
     }*/
 
@@ -658,7 +649,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testWSNewUUID() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
         performTestNewUUID(serviceClient);
     }
 
@@ -669,7 +660,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testWSNewUUIDArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesServiceClientWSComponent");
         performTestNewUUIDArray(serviceClient);
     }
 
@@ -680,7 +671,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testSCALocalNewBigInteger() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesLocalServiceClientSCAComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesLocalServiceClientSCAComponent");
         performTestNewBigInteger(serviceClient);
     }
 
@@ -691,7 +682,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testSCALocalNewBigIntegerArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesLocalServiceClientSCAComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesLocalServiceClientSCAComponent");
         performTestNewBigIntegerArray(serviceClient);
     }
 
@@ -702,7 +693,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testSCALocalNewBigDecimal() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesLocalServiceClientSCAComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesLocalServiceClientSCAComponent");
         performTestNewBigDecimal(serviceClient);
     }
 
@@ -713,7 +704,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testSCALocalNewBigDecimalArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesLocalServiceClientSCAComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesLocalServiceClientSCAComponent");
         performTestNewBigDecimalArray(serviceClient);
     }
 
@@ -724,7 +715,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testSCALocalNewCalendar() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesLocalServiceClientSCAComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesLocalServiceClientSCAComponent");
         performTestNewCalendar(serviceClient);
     }
 
@@ -735,7 +726,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testSCALocalNewCalendarArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesLocalServiceClientSCAComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesLocalServiceClientSCAComponent");
         performTestNewCalendarArray(serviceClient);
     }
 
@@ -746,7 +737,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testSCALocalNewDate() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesLocalServiceClientSCAComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesLocalServiceClientSCAComponent");
         performTestNewDate(serviceClient);
     }
 
@@ -757,7 +748,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testSCALocalNewDateArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesLocalServiceClientSCAComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesLocalServiceClientSCAComponent");
         performTestNewDateArray(serviceClient);
     }
 
@@ -768,7 +759,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testSCALocalNewQName() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesLocalServiceClientSCAComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesLocalServiceClientSCAComponent");
         performTestNewQName(serviceClient);
     }
 
@@ -779,7 +770,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testSCALocalNewQNameArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesLocalServiceClientSCAComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesLocalServiceClientSCAComponent");
         performTestNewQNameArray(serviceClient);
     }
 
@@ -790,7 +781,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testSCALocalNewURI() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesLocalServiceClientSCAComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesLocalServiceClientSCAComponent");
         performTestNewURI(serviceClient);
     }
 
@@ -801,7 +792,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testSCALocalNewURIArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesLocalServiceClientSCAComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesLocalServiceClientSCAComponent");
         performTestNewURIArray(serviceClient);
     }
 
@@ -812,7 +803,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testSCALocalNewXMLGregorianCalendar() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesLocalServiceClientSCAComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesLocalServiceClientSCAComponent");
         performTestNewXMLGregorianCalendar(serviceClient);
     }
 
@@ -823,7 +814,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testSCALocalNewXMLGregorianCalendarArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesLocalServiceClientSCAComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesLocalServiceClientSCAComponent");
         performTestNewXMLGregorianCalendarArray(serviceClient);
     }
 
@@ -834,7 +825,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testSCALocalNewDuration() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesLocalServiceClientSCAComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesLocalServiceClientSCAComponent");
         performTestNewDuration(serviceClient);
     }
 
@@ -845,7 +836,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testSCALocalNewDurationArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesLocalServiceClientSCAComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesLocalServiceClientSCAComponent");
         performTestNewDurationArray(serviceClient);
     }
 
@@ -856,7 +847,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testSCALocalNewObject() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesLocalServiceClientSCAComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesLocalServiceClientSCAComponent");
         performTestNewObject(serviceClient);
     }
 
@@ -867,7 +858,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testSCALocalNewObjectArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesLocalServiceClientSCAComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesLocalServiceClientSCAComponent");
         performTestNewObjectArray(serviceClient);
     }
 
@@ -878,7 +869,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testSCALocalNewImage() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesLocalServiceClientSCAComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesLocalServiceClientSCAComponent");
         performTestNewImage(serviceClient);
     }
 
@@ -889,7 +880,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testSCALocalNewImageArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesLocalServiceClientSCAComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesLocalServiceClientSCAComponent");
         performTestNewImageArray(serviceClient);
     }
 
@@ -900,7 +891,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testSCALocalNewDataHandler() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesLocalServiceClientSCAComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesLocalServiceClientSCAComponent");
         performTestNewDataHandler(serviceClient);
     }
 
@@ -911,7 +902,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testSCALocalNewDataHandlerArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesLocalServiceClientSCAComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesLocalServiceClientSCAComponent");
         performTestNewDataHandlerArray(serviceClient);
     }
 
@@ -922,7 +913,7 @@ public class StandardTypesDatabindingTestCase {
     /*@Test
     public void testSCALocalNewSource() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesLocalServiceClientSCAComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesLocalServiceClientSCAComponent");
         performTestNewSource(serviceClient);
     }*/
 
@@ -933,7 +924,7 @@ public class StandardTypesDatabindingTestCase {
     /*@Test
     public void testSCALocalNewSourceArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesLocalServiceClientSCAComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesLocalServiceClientSCAComponent");
         performTestNewSourceArray(serviceClient);
     }*/
 
@@ -944,7 +935,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testSCALocalNewUUID() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesLocalServiceClientSCAComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesLocalServiceClientSCAComponent");
         performTestNewUUID(serviceClient);
     }
 
@@ -955,7 +946,7 @@ public class StandardTypesDatabindingTestCase {
     @Test
     public void testSCALocalNewUUIDArray() throws Exception {
         StandardTypesServiceClient serviceClient =
-            ((Client)node).getService(StandardTypesServiceClient.class, "StandardTypesLocalServiceClientSCAComponent");
+            node.getService(StandardTypesServiceClient.class, "StandardTypesLocalServiceClientSCAComponent");
         performTestNewUUIDArray(serviceClient);
     }
 

@@ -19,22 +19,20 @@
 
 package org.apache.tuscany.sca.itest.databindings.jaxb;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.io.File;
 
 import junit.framework.Assert;
 
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import org.apache.tuscany.sca.node.Client;
-import org.apache.tuscany.sca.node.Node;
-import org.apache.tuscany.sca.node.NodeFactory;
-import org.apache.tuscany.sca.node.Contribution;
 
 /**
  * @version $Rev$ $Date$
@@ -72,7 +70,7 @@ public class DatabindingTestCase {
      */
     @Test
     public void testSCA() throws Exception {
-        HelloServiceSimpleClient helloServiceSimpleClient = ((Client)node).getService(HelloServiceSimpleClient.class, "HelloServiceSimpleClientSCAComponent");
+        HelloServiceSimpleClient helloServiceSimpleClient = node.getService(HelloServiceSimpleClient.class, "HelloServiceSimpleClientSCAComponent");
         performTest(helloServiceSimpleClient);
     }
 
@@ -82,7 +80,7 @@ public class DatabindingTestCase {
      */
     @Test
     public void testSCAArray() throws Exception {
-        HelloServiceSimpleClient helloServiceSimpleClient = ((Client)node).getService(HelloServiceSimpleClient.class, "HelloServiceSimpleClientSCAComponent");
+        HelloServiceSimpleClient helloServiceSimpleClient = node.getService(HelloServiceSimpleClient.class, "HelloServiceSimpleClientSCAComponent");
         performTestArray(helloServiceSimpleClient);
     }
 
@@ -92,7 +90,7 @@ public class DatabindingTestCase {
      */
     @Test
     public void testSCAList() throws Exception {
-        HelloServiceSimpleClient helloServiceSimpleClient = ((Client)node).getService(HelloServiceSimpleClient.class, "HelloServiceSimpleClientSCAComponent");
+        HelloServiceSimpleClient helloServiceSimpleClient = node.getService(HelloServiceSimpleClient.class, "HelloServiceSimpleClientSCAComponent");
         performTestList(helloServiceSimpleClient);
     }
 
@@ -102,7 +100,7 @@ public class DatabindingTestCase {
      */
     @Test
     public void testSCAArrayList() throws Exception {
-        HelloServiceSimpleClient helloServiceSimpleClient = ((Client)node).getService(HelloServiceSimpleClient.class, "HelloServiceSimpleClientSCAComponent");
+        HelloServiceSimpleClient helloServiceSimpleClient = node.getService(HelloServiceSimpleClient.class, "HelloServiceSimpleClientSCAComponent");
         performTestArrayList(helloServiceSimpleClient);
     }
 
@@ -112,7 +110,7 @@ public class DatabindingTestCase {
      */
     @Test
     public void testSCAMap() throws Exception {
-        HelloServiceSimpleClient helloServiceSimpleClient = ((Client)node).getService(HelloServiceSimpleClient.class, "HelloServiceSimpleClientSCAComponent");
+        HelloServiceSimpleClient helloServiceSimpleClient = node.getService(HelloServiceSimpleClient.class, "HelloServiceSimpleClientSCAComponent");
         performTestMap(helloServiceSimpleClient);
     }
 
@@ -122,7 +120,7 @@ public class DatabindingTestCase {
      */
     @Test
     public void testSCAHashMap() throws Exception {
-        HelloServiceSimpleClient helloServiceSimpleClient = ((Client)node).getService(HelloServiceSimpleClient.class, "HelloServiceSimpleClientSCAComponent");
+        HelloServiceSimpleClient helloServiceSimpleClient = node.getService(HelloServiceSimpleClient.class, "HelloServiceSimpleClientSCAComponent");
         performTestHashMap(helloServiceSimpleClient);
     }
 
@@ -132,7 +130,7 @@ public class DatabindingTestCase {
      */
     @Test
     public void testSCAVarArgs() throws Exception {
-        HelloServiceSimpleClient helloServiceSimpleClient = ((Client)node).getService(HelloServiceSimpleClient.class, "HelloServiceSimpleClientSCAComponent");
+        HelloServiceSimpleClient helloServiceSimpleClient = node.getService(HelloServiceSimpleClient.class, "HelloServiceSimpleClientSCAComponent");
         performTestVarArgs(helloServiceSimpleClient);
     }
 
@@ -142,7 +140,7 @@ public class DatabindingTestCase {
      */
     @Test
     public void testWS() throws Exception {
-        HelloServiceSimpleClient helloServiceSimpleClient = ((Client)node).getService(HelloServiceSimpleClient.class, "HelloServiceSimpleClientWSComponent");
+        HelloServiceSimpleClient helloServiceSimpleClient = node.getService(HelloServiceSimpleClient.class, "HelloServiceSimpleClientWSComponent");
         performTest(helloServiceSimpleClient);
     }
 
@@ -152,7 +150,7 @@ public class DatabindingTestCase {
      */
     @Test
     public void testWSArray() throws Exception {
-        HelloServiceSimpleClient helloServiceSimpleClient = ((Client)node).getService(HelloServiceSimpleClient.class, "HelloServiceSimpleClientWSComponent");
+        HelloServiceSimpleClient helloServiceSimpleClient = node.getService(HelloServiceSimpleClient.class, "HelloServiceSimpleClientWSComponent");
         performTestArray(helloServiceSimpleClient);
     }
 
@@ -162,7 +160,7 @@ public class DatabindingTestCase {
      */
     @Test
     public void testWSList() throws Exception {
-        HelloServiceSimpleClient helloServiceSimpleClient = ((Client)node).getService(HelloServiceSimpleClient.class, "HelloServiceSimpleClientWSComponent");
+        HelloServiceSimpleClient helloServiceSimpleClient = node.getService(HelloServiceSimpleClient.class, "HelloServiceSimpleClientWSComponent");
         performTestList(helloServiceSimpleClient);
     }
 
@@ -172,7 +170,7 @@ public class DatabindingTestCase {
      */
     @Test
     public void testWSArrayList() throws Exception {
-        HelloServiceSimpleClient helloServiceSimpleClient = ((Client)node).getService(HelloServiceSimpleClient.class, "HelloServiceSimpleClientWSComponent");
+        HelloServiceSimpleClient helloServiceSimpleClient = node.getService(HelloServiceSimpleClient.class, "HelloServiceSimpleClientWSComponent");
         performTestArrayList(helloServiceSimpleClient);
     }
 
@@ -182,7 +180,7 @@ public class DatabindingTestCase {
      */
     @Test
     public void testWSMap() throws Exception {
-        HelloServiceSimpleClient helloServiceSimpleClient = ((Client)node).getService(HelloServiceSimpleClient.class, "HelloServiceSimpleClientWSComponent");
+        HelloServiceSimpleClient helloServiceSimpleClient = node.getService(HelloServiceSimpleClient.class, "HelloServiceSimpleClientWSComponent");
         performTestMap(helloServiceSimpleClient);
     }
 
@@ -192,7 +190,7 @@ public class DatabindingTestCase {
      */
     @Test
     public void testWSHashMap() throws Exception {
-        HelloServiceSimpleClient helloServiceSimpleClient = ((Client)node).getService(HelloServiceSimpleClient.class, "HelloServiceSimpleClientWSComponent");
+        HelloServiceSimpleClient helloServiceSimpleClient = node.getService(HelloServiceSimpleClient.class, "HelloServiceSimpleClientWSComponent");
         performTestHashMap(helloServiceSimpleClient);
     }
 
@@ -202,7 +200,7 @@ public class DatabindingTestCase {
      */
     @Test
     public void testWSVarArgs() throws Exception {
-        HelloServiceSimpleClient helloServiceSimpleClient = ((Client)node).getService(HelloServiceSimpleClient.class, "HelloServiceSimpleClientWSComponent");
+        HelloServiceSimpleClient helloServiceSimpleClient = node.getService(HelloServiceSimpleClient.class, "HelloServiceSimpleClientWSComponent");
         performTestVarArgs(helloServiceSimpleClient);
     }
 
@@ -212,7 +210,7 @@ public class DatabindingTestCase {
      */
     @Test
     public void testSCALocal() throws Exception {
-        HelloServiceSimpleClient helloServiceSimpleClient = ((Client)node).getService(HelloServiceSimpleClient.class, "HelloLocalServiceSimpleClientSCAComponent");
+        HelloServiceSimpleClient helloServiceSimpleClient = node.getService(HelloServiceSimpleClient.class, "HelloLocalServiceSimpleClientSCAComponent");
         performTest(helloServiceSimpleClient);
     }
 
@@ -222,7 +220,7 @@ public class DatabindingTestCase {
      */
     @Test
     public void testSCALocalArray() throws Exception {
-        HelloServiceSimpleClient helloServiceSimpleClient = ((Client)node).getService(HelloServiceSimpleClient.class, "HelloLocalServiceSimpleClientSCAComponent");
+        HelloServiceSimpleClient helloServiceSimpleClient = node.getService(HelloServiceSimpleClient.class, "HelloLocalServiceSimpleClientSCAComponent");
         performTestArray(helloServiceSimpleClient);
     }
 
@@ -232,7 +230,7 @@ public class DatabindingTestCase {
      */
     @Test
     public void testSCALocalList() throws Exception {
-        HelloServiceSimpleClient helloServiceSimpleClient = ((Client)node).getService(HelloServiceSimpleClient.class, "HelloLocalServiceSimpleClientSCAComponent");
+        HelloServiceSimpleClient helloServiceSimpleClient = node.getService(HelloServiceSimpleClient.class, "HelloLocalServiceSimpleClientSCAComponent");
         performTestList(helloServiceSimpleClient);
     }
 
@@ -242,7 +240,7 @@ public class DatabindingTestCase {
      */
     @Test
     public void testSCALocalArrayList() throws Exception {
-        HelloServiceSimpleClient helloServiceSimpleClient = ((Client)node).getService(HelloServiceSimpleClient.class, "HelloLocalServiceSimpleClientSCAComponent");
+        HelloServiceSimpleClient helloServiceSimpleClient = node.getService(HelloServiceSimpleClient.class, "HelloLocalServiceSimpleClientSCAComponent");
         performTestArrayList(helloServiceSimpleClient);
     }
 
@@ -252,7 +250,7 @@ public class DatabindingTestCase {
      */
     @Test
     public void testSCALocalMap() throws Exception {
-        HelloServiceSimpleClient helloServiceSimpleClient = ((Client)node).getService(HelloServiceSimpleClient.class, "HelloLocalServiceSimpleClientSCAComponent");
+        HelloServiceSimpleClient helloServiceSimpleClient = node.getService(HelloServiceSimpleClient.class, "HelloLocalServiceSimpleClientSCAComponent");
         performTestMap(helloServiceSimpleClient);
     }
 
@@ -262,7 +260,7 @@ public class DatabindingTestCase {
      */
     @Test
     public void testSCALocalHashMap() throws Exception {
-        HelloServiceSimpleClient helloServiceSimpleClient = ((Client)node).getService(HelloServiceSimpleClient.class, "HelloLocalServiceSimpleClientSCAComponent");
+        HelloServiceSimpleClient helloServiceSimpleClient = node.getService(HelloServiceSimpleClient.class, "HelloLocalServiceSimpleClientSCAComponent");
         performTestHashMap(helloServiceSimpleClient);
     }
 
@@ -272,7 +270,7 @@ public class DatabindingTestCase {
      */
     @Test
     public void testSCALocalVarArgs() throws Exception {
-        HelloServiceSimpleClient helloServiceSimpleClient = ((Client)node).getService(HelloServiceSimpleClient.class, "HelloLocalServiceSimpleClientSCAComponent");
+        HelloServiceSimpleClient helloServiceSimpleClient = node.getService(HelloServiceSimpleClient.class, "HelloLocalServiceSimpleClientSCAComponent");
         performTestVarArgs(helloServiceSimpleClient);
     }
 

@@ -19,25 +19,23 @@
 
 package org.apache.tuscany.sca.itest.databindings.jaxb.topdown;
 
-import junit.framework.Assert;
 import java.io.File;
 
+import junit.framework.Assert;
+
 import org.apache.tuscany.sca.itest.databindings.jaxb.PrimitivesServiceClient;
-import org.apache.tuscany.sca.node.Client;
+import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
-import org.apache.tuscany.sca.node.Contribution;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.Ignore;
 
 /**
  * @version $Rev$ $Date$
  */
 public class PrimitivesDatabindingTestCase {
 
-    private static Client domain;
     private static Node node;
 
     /**
@@ -49,7 +47,6 @@ public class PrimitivesDatabindingTestCase {
         node = factory.createNode(new File("src/main/resources/wsdl/wrapped/primitivesservice.composite").toURI().toURL().toString(),
                 new Contribution("TestContribution", new File("src/main/resources/wsdl/wrapped/").toURI().toURL().toString()));
         node.start();
-        domain = (Client)node;
     }
 
     /**
@@ -66,7 +63,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testW2WNegateBoolean() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2WComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2WComponent");
         performTestNegateBoolean(primitivesServiceClient);
     }
 
@@ -76,7 +73,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testW2WNegateBooleanArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2WComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2WComponent");
         performTestNegateBooleanArray(primitivesServiceClient);
     }
 
@@ -86,7 +83,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testW2WPassByValueBooleanArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2WComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2WComponent");
         Assert.assertTrue(primitivesServiceClient.passByValueBooleanArray());
     }
 
@@ -96,7 +93,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testW2WNegateByte() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2WComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2WComponent");
         performTestNegateByte(primitivesServiceClient);
     }
 
@@ -106,7 +103,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testW2WNegateByteArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2WComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2WComponent");
         performTestNegateByteArray(primitivesServiceClient);
     }
 
@@ -116,7 +113,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testW2WPassByValueByteArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2WComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2WComponent");
         Assert.assertTrue(primitivesServiceClient.passByValueByteArray());
     }
 
@@ -126,7 +123,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testW2WNegateShort() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2WComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2WComponent");
         performTestNegateShort(primitivesServiceClient);
     }
 
@@ -136,7 +133,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testW2WNegateShortArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2WComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2WComponent");
         performTestNegateShortArray(primitivesServiceClient);
     }
 
@@ -146,7 +143,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testW2WPassByValueShortArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2WComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2WComponent");
         Assert.assertTrue(primitivesServiceClient.passByValueShortArray());
     }
 
@@ -156,7 +153,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testW2WNegateInt() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2WComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2WComponent");
         performTestNegateInt(primitivesServiceClient);
     }
 
@@ -166,7 +163,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testW2WNegateIntArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2WComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2WComponent");
         performTestNegateIntArray(primitivesServiceClient);
     }
 
@@ -176,7 +173,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testW2WPassByValueIntArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2WComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2WComponent");
         Assert.assertTrue(primitivesServiceClient.passByValueIntArray());
     }
 
@@ -186,7 +183,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testW2WNegateLong() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2WComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2WComponent");
         performTestNegateLong(primitivesServiceClient);
     }
 
@@ -196,7 +193,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testW2WNegateLongArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2WComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2WComponent");
         performTestNegateLongArray(primitivesServiceClient);
     }
 
@@ -206,7 +203,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testW2WPassByValueLongArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2WComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2WComponent");
         Assert.assertTrue(primitivesServiceClient.passByValueLongArray());
     }
 
@@ -216,7 +213,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testW2WNegateFloat() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2WComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2WComponent");
         performTestNegateFloat(primitivesServiceClient);
     }
 
@@ -226,7 +223,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testW2WNegateFloatArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2WComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2WComponent");
         performTestNegateFloatArray(primitivesServiceClient);
     }
 
@@ -236,7 +233,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testW2WPassByValueFloatArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2WComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2WComponent");
         Assert.assertTrue(primitivesServiceClient.passByValueFloatArray());
     }
 
@@ -246,7 +243,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testW2WNegateDouble() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2WComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2WComponent");
         performTestNegateDouble(primitivesServiceClient);
     }
 
@@ -256,7 +253,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testW2WNegateDoubleArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2WComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2WComponent");
         performTestNegateDoubleArray(primitivesServiceClient);
     }
 
@@ -266,7 +263,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testW2WPassByValueDoubleArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2WComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2WComponent");
         Assert.assertTrue(primitivesServiceClient.passByValueDoubleArray());
     }
 
@@ -276,7 +273,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testJ2WNegateBoolean() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientJ2WComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientJ2WComponent");
         performTestNegateBoolean(primitivesServiceClient);
     }
 
@@ -286,7 +283,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testJ2WNegateBooleanArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientJ2WComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientJ2WComponent");
         performTestNegateBooleanArray(primitivesServiceClient);
     }
 
@@ -296,7 +293,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testJ2WPassByValueBooleanArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientJ2WComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientJ2WComponent");
         Assert.assertTrue(primitivesServiceClient.passByValueBooleanArray());
     }
 
@@ -306,7 +303,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testJ2WNegateByte() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientJ2WComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientJ2WComponent");
         performTestNegateByte(primitivesServiceClient);
     }
 
@@ -316,7 +313,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testJ2WNegateByteArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientJ2WComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientJ2WComponent");
         performTestNegateByteArray(primitivesServiceClient);
     }
 
@@ -326,7 +323,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testJ2WPassByValueByteArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientJ2WComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientJ2WComponent");
         Assert.assertTrue(primitivesServiceClient.passByValueByteArray());
     }
 
@@ -336,7 +333,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testJ2WNegateShort() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientJ2WComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientJ2WComponent");
         performTestNegateShort(primitivesServiceClient);
     }
 
@@ -346,7 +343,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testJ2WNegateShortArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientJ2WComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientJ2WComponent");
         performTestNegateShortArray(primitivesServiceClient);
     }
 
@@ -356,7 +353,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testJ2WPassByValueShortArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientJ2WComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientJ2WComponent");
         Assert.assertTrue(primitivesServiceClient.passByValueShortArray());
     }
 
@@ -366,7 +363,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testJ2WNegateInt() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientJ2WComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientJ2WComponent");
         performTestNegateInt(primitivesServiceClient);
     }
 
@@ -376,7 +373,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testJ2WNegateIntArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientJ2WComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientJ2WComponent");
         performTestNegateIntArray(primitivesServiceClient);
     }
 
@@ -386,7 +383,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testJ2WPassByValueIntArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientJ2WComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientJ2WComponent");
         Assert.assertTrue(primitivesServiceClient.passByValueIntArray());
     }
 
@@ -396,7 +393,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testJ2WNegateLong() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientJ2WComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientJ2WComponent");
         performTestNegateLong(primitivesServiceClient);
     }
 
@@ -406,7 +403,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testJ2WNegateLongArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientJ2WComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientJ2WComponent");
         performTestNegateLongArray(primitivesServiceClient);
     }
 
@@ -416,7 +413,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testJ2WPassByValueLongArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientJ2WComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientJ2WComponent");
         Assert.assertTrue(primitivesServiceClient.passByValueLongArray());
     }
 
@@ -426,7 +423,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testJ2WNegateFloat() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientJ2WComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientJ2WComponent");
         performTestNegateFloat(primitivesServiceClient);
     }
 
@@ -436,7 +433,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testJ2WNegateFloatArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientJ2WComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientJ2WComponent");
         performTestNegateFloatArray(primitivesServiceClient);
     }
 
@@ -446,7 +443,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testJ2WPassByValueFloatArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientJ2WComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientJ2WComponent");
         Assert.assertTrue(primitivesServiceClient.passByValueFloatArray());
     }
 
@@ -456,7 +453,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testJ2WNegateDouble() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientJ2WComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientJ2WComponent");
         performTestNegateDouble(primitivesServiceClient);
     }
 
@@ -466,7 +463,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testJ2WNegateDoubleArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientJ2WComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientJ2WComponent");
         performTestNegateDoubleArray(primitivesServiceClient);
     }
 
@@ -476,7 +473,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testJ2WPassByValueDoubleArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientJ2WComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientJ2WComponent");
         Assert.assertTrue(primitivesServiceClient.passByValueDoubleArray());
     }
 
@@ -486,7 +483,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testW2JNegateBoolean() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2JComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2JComponent");
         performTestNegateBoolean(primitivesServiceClient);
     }
 
@@ -496,7 +493,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testW2JNegateBooleanArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2JComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2JComponent");
         performTestNegateBooleanArray(primitivesServiceClient);
     }
 
@@ -506,7 +503,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testW2JPassByValueBooleanArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2JComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2JComponent");
         Assert.assertTrue(primitivesServiceClient.passByValueBooleanArray());
     }
 
@@ -516,7 +513,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testW2JNegateByte() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2JComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2JComponent");
         performTestNegateByte(primitivesServiceClient);
     }
 
@@ -526,7 +523,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testW2JNegateByteArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2JComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2JComponent");
         performTestNegateByteArray(primitivesServiceClient);
     }
 
@@ -536,7 +533,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testW2JPassByValueByteArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2JComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2JComponent");
         Assert.assertTrue(primitivesServiceClient.passByValueByteArray());
     }
 
@@ -546,7 +543,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testW2JNegateShort() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2JComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2JComponent");
         performTestNegateShort(primitivesServiceClient);
     }
 
@@ -556,7 +553,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testW2JNegateShortArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2JComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2JComponent");
         performTestNegateShortArray(primitivesServiceClient);
     }
 
@@ -566,7 +563,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testW2JPassByValueShortArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2JComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2JComponent");
         Assert.assertTrue(primitivesServiceClient.passByValueShortArray());
     }
 
@@ -576,7 +573,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testW2JNegateInt() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2JComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2JComponent");
         performTestNegateInt(primitivesServiceClient);
     }
 
@@ -586,7 +583,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testW2JNegateIntArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2JComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2JComponent");
         performTestNegateIntArray(primitivesServiceClient);
     }
 
@@ -596,7 +593,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testW2JPassByValueIntArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2JComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2JComponent");
         Assert.assertTrue(primitivesServiceClient.passByValueIntArray());
     }
 
@@ -606,7 +603,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testW2JNegateLong() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2JComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2JComponent");
         performTestNegateLong(primitivesServiceClient);
     }
 
@@ -616,7 +613,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testW2JNegateLongArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2JComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2JComponent");
         performTestNegateLongArray(primitivesServiceClient);
     }
 
@@ -626,7 +623,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testW2JPassByValueLongArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2JComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2JComponent");
         Assert.assertTrue(primitivesServiceClient.passByValueLongArray());
     }
 
@@ -636,7 +633,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testW2JNegateFloat() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2JComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2JComponent");
         performTestNegateFloat(primitivesServiceClient);
     }
 
@@ -646,7 +643,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testW2JNegateFloatArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2JComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2JComponent");
         performTestNegateFloatArray(primitivesServiceClient);
     }
 
@@ -656,7 +653,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testW2JPassByValueFloatArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2JComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2JComponent");
         Assert.assertTrue(primitivesServiceClient.passByValueFloatArray());
     }
 
@@ -666,7 +663,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testW2JNegateDouble() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2JComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2JComponent");
         performTestNegateDouble(primitivesServiceClient);
     }
 
@@ -676,7 +673,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testW2JNegateDoubleArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2JComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2JComponent");
         performTestNegateDoubleArray(primitivesServiceClient);
     }
 
@@ -686,7 +683,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testW2JPassByValueDoubleArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2JComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientW2JComponent");
         Assert.assertTrue(primitivesServiceClient.passByValueDoubleArray());
     }
 

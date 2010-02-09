@@ -21,10 +21,10 @@ package context.multiple;
 import java.io.File;
 
 import org.apache.tuscany.sca.node.Contribution;
-import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 import org.springframework.context.ApplicationContext;
+
 import context.access.SCAApplicationContextProvider;
 
 /**

@@ -19,17 +19,16 @@
 
 package org.apache.tuscany.sca.itest.databindings.jaxb;
 
-import junit.framework.Assert;
 import java.io.File;
 
+import junit.framework.Assert;
+
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import org.apache.tuscany.sca.node.Client;
-import org.apache.tuscany.sca.node.Node;
-import org.apache.tuscany.sca.node.NodeFactory;
-import org.apache.tuscany.sca.node.Contribution;
 
 
 /**
@@ -69,7 +68,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testSCANegateBoolean() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = ((Client)node).getService(PrimitivesServiceClient.class, "PrimitivesServiceClientSCAComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientSCAComponent");
         performTestNegateBoolean(primitivesServiceClient);
     }
 
@@ -79,7 +78,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testSCANegateBooleanArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = ((Client)node).getService(PrimitivesServiceClient.class, "PrimitivesServiceClientSCAComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientSCAComponent");
         performTestNegateBooleanArray(primitivesServiceClient);
     }
 
@@ -89,7 +88,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testSCAPassByValueBooleanArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = ((Client)node).getService(PrimitivesServiceClient.class, "PrimitivesServiceClientSCAComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientSCAComponent");
         Assert.assertTrue(primitivesServiceClient.passByValueBooleanArray());
     }
 
@@ -99,7 +98,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testSCANegateByte() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = ((Client)node).getService(PrimitivesServiceClient.class, "PrimitivesServiceClientSCAComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientSCAComponent");
         performTestNegateByte(primitivesServiceClient);
     }
 
@@ -109,7 +108,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testSCANegateByteArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = ((Client)node).getService(PrimitivesServiceClient.class, "PrimitivesServiceClientSCAComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientSCAComponent");
         performTestNegateByteArray(primitivesServiceClient);
     }
 
@@ -119,7 +118,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testSCAPassByValueByteArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = ((Client)node).getService(PrimitivesServiceClient.class, "PrimitivesServiceClientSCAComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientSCAComponent");
         Assert.assertTrue(primitivesServiceClient.passByValueByteArray());
     }
 
@@ -129,7 +128,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testSCANegateShort() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = ((Client)node).getService(PrimitivesServiceClient.class, "PrimitivesServiceClientSCAComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientSCAComponent");
         performTestNegateShort(primitivesServiceClient);
     }
 
@@ -139,7 +138,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testSCANegateShortArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = ((Client)node).getService(PrimitivesServiceClient.class, "PrimitivesServiceClientSCAComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientSCAComponent");
         performTestNegateShortArray(primitivesServiceClient);
     }
 
@@ -149,7 +148,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testSCAPassByValueShortArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = ((Client)node).getService(PrimitivesServiceClient.class, "PrimitivesServiceClientSCAComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientSCAComponent");
         Assert.assertTrue(primitivesServiceClient.passByValueShortArray());
     }
 
@@ -159,7 +158,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testSCANegateInt() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = ((Client)node).getService(PrimitivesServiceClient.class, "PrimitivesServiceClientSCAComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientSCAComponent");
         performTestNegateInt(primitivesServiceClient);
     }
 
@@ -169,7 +168,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testSCANegateIntArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = ((Client)node).getService(PrimitivesServiceClient.class, "PrimitivesServiceClientSCAComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientSCAComponent");
         performTestNegateIntArray(primitivesServiceClient);
     }
 
@@ -179,7 +178,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testSCAPassByValueIntArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = ((Client)node).getService(PrimitivesServiceClient.class, "PrimitivesServiceClientSCAComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientSCAComponent");
         Assert.assertTrue(primitivesServiceClient.passByValueIntArray());
     }
 
@@ -189,7 +188,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testSCANegateLong() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = ((Client)node).getService(PrimitivesServiceClient.class, "PrimitivesServiceClientSCAComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientSCAComponent");
         performTestNegateLong(primitivesServiceClient);
     }
 
@@ -199,7 +198,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testSCANegateLongArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = ((Client)node).getService(PrimitivesServiceClient.class, "PrimitivesServiceClientSCAComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientSCAComponent");
         performTestNegateLongArray(primitivesServiceClient);
     }
 
@@ -209,7 +208,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testSCAPassByValueLongArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = ((Client)node).getService(PrimitivesServiceClient.class, "PrimitivesServiceClientSCAComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientSCAComponent");
         Assert.assertTrue(primitivesServiceClient.passByValueLongArray());
     }
 
@@ -219,7 +218,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testSCANegateFloat() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = ((Client)node).getService(PrimitivesServiceClient.class, "PrimitivesServiceClientSCAComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientSCAComponent");
         performTestNegateFloat(primitivesServiceClient);
     }
 
@@ -229,7 +228,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testSCANegateFloatArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = ((Client)node).getService(PrimitivesServiceClient.class, "PrimitivesServiceClientSCAComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientSCAComponent");
         performTestNegateFloatArray(primitivesServiceClient);
     }
 
@@ -239,7 +238,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testSCAPassByValueFloatArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = ((Client)node).getService(PrimitivesServiceClient.class, "PrimitivesServiceClientSCAComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientSCAComponent");
         Assert.assertTrue(primitivesServiceClient.passByValueFloatArray());
     }
 
@@ -249,7 +248,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testSCANegateDouble() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = ((Client)node).getService(PrimitivesServiceClient.class, "PrimitivesServiceClientSCAComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientSCAComponent");
         performTestNegateDouble(primitivesServiceClient);
     }
 
@@ -259,7 +258,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testSCANegateDoubleArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = ((Client)node).getService(PrimitivesServiceClient.class, "PrimitivesServiceClientSCAComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientSCAComponent");
         performTestNegateDoubleArray(primitivesServiceClient);
     }
 
@@ -269,7 +268,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testSCAPassByValueDoubleArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = ((Client)node).getService(PrimitivesServiceClient.class, "PrimitivesServiceClientSCAComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientSCAComponent");
         Assert.assertTrue(primitivesServiceClient.passByValueDoubleArray());
     }
 
@@ -279,7 +278,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testWSNegateBoolean() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = ((Client)node).getService(PrimitivesServiceClient.class, "PrimitivesServiceClientWSComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientWSComponent");
         performTestNegateBoolean(primitivesServiceClient);
     }
 
@@ -289,7 +288,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testWSNegateBooleanArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = ((Client)node).getService(PrimitivesServiceClient.class, "PrimitivesServiceClientWSComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientWSComponent");
         performTestNegateBooleanArray(primitivesServiceClient);
     }
 
@@ -299,7 +298,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testWSPassByValueBooleanArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = ((Client)node).getService(PrimitivesServiceClient.class, "PrimitivesServiceClientWSComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientWSComponent");
         Assert.assertTrue(primitivesServiceClient.passByValueBooleanArray());
     }
 
@@ -309,7 +308,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testWSNegateByte() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = ((Client)node).getService(PrimitivesServiceClient.class, "PrimitivesServiceClientWSComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientWSComponent");
         performTestNegateByte(primitivesServiceClient);
     }
 
@@ -319,7 +318,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testWSNegateByteArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = ((Client)node).getService(PrimitivesServiceClient.class, "PrimitivesServiceClientWSComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientWSComponent");
         performTestNegateByteArray(primitivesServiceClient);
     }
 
@@ -329,7 +328,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testWSPassByValueByteArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = ((Client)node).getService(PrimitivesServiceClient.class, "PrimitivesServiceClientWSComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientWSComponent");
         Assert.assertTrue(primitivesServiceClient.passByValueByteArray());
     }
 
@@ -339,7 +338,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testWSNegateShort() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = ((Client)node).getService(PrimitivesServiceClient.class, "PrimitivesServiceClientWSComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientWSComponent");
         performTestNegateShort(primitivesServiceClient);
     }
 
@@ -349,7 +348,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testWSNegateShortArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = ((Client)node).getService(PrimitivesServiceClient.class, "PrimitivesServiceClientWSComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientWSComponent");
         performTestNegateShortArray(primitivesServiceClient);
     }
 
@@ -359,7 +358,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testWSPassByValueShortArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = ((Client)node).getService(PrimitivesServiceClient.class, "PrimitivesServiceClientWSComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientWSComponent");
         Assert.assertTrue(primitivesServiceClient.passByValueShortArray());
     }
 
@@ -369,7 +368,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testWSNegateInt() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = ((Client)node).getService(PrimitivesServiceClient.class, "PrimitivesServiceClientWSComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientWSComponent");
         performTestNegateInt(primitivesServiceClient);
     }
 
@@ -379,7 +378,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testWSNegateIntArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = ((Client)node).getService(PrimitivesServiceClient.class, "PrimitivesServiceClientWSComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientWSComponent");
         performTestNegateIntArray(primitivesServiceClient);
     }
 
@@ -389,7 +388,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testWSPassByValueIntArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = ((Client)node).getService(PrimitivesServiceClient.class, "PrimitivesServiceClientWSComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientWSComponent");
         Assert.assertTrue(primitivesServiceClient.passByValueIntArray());
     }
 
@@ -399,7 +398,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testWSNegateLong() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = ((Client)node).getService(PrimitivesServiceClient.class, "PrimitivesServiceClientWSComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientWSComponent");
         performTestNegateLong(primitivesServiceClient);
     }
 
@@ -409,7 +408,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testWSNegateLongArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = ((Client)node).getService(PrimitivesServiceClient.class, "PrimitivesServiceClientWSComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientWSComponent");
         performTestNegateLongArray(primitivesServiceClient);
     }
 
@@ -419,7 +418,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testWSPassByValueLongArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = ((Client)node).getService(PrimitivesServiceClient.class, "PrimitivesServiceClientWSComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientWSComponent");
         Assert.assertTrue(primitivesServiceClient.passByValueLongArray());
     }
 
@@ -429,7 +428,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testWSNegateFloat() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = ((Client)node).getService(PrimitivesServiceClient.class, "PrimitivesServiceClientWSComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientWSComponent");
         performTestNegateFloat(primitivesServiceClient);
     }
 
@@ -439,7 +438,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testWSNegateFloatArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = ((Client)node).getService(PrimitivesServiceClient.class, "PrimitivesServiceClientWSComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientWSComponent");
         performTestNegateFloatArray(primitivesServiceClient);
     }
 
@@ -449,7 +448,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testWSPassByValueFloatArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = ((Client)node).getService(PrimitivesServiceClient.class, "PrimitivesServiceClientWSComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientWSComponent");
         Assert.assertTrue(primitivesServiceClient.passByValueFloatArray());
     }
 
@@ -459,7 +458,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testWSNegateDouble() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = ((Client)node).getService(PrimitivesServiceClient.class, "PrimitivesServiceClientWSComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientWSComponent");
         performTestNegateDouble(primitivesServiceClient);
     }
 
@@ -469,7 +468,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testWSNegateDoubleArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = ((Client)node).getService(PrimitivesServiceClient.class, "PrimitivesServiceClientWSComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientWSComponent");
         performTestNegateDoubleArray(primitivesServiceClient);
     }
 
@@ -479,7 +478,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testWSPassByValueDoubleArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = ((Client)node).getService(PrimitivesServiceClient.class, "PrimitivesServiceClientWSComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientWSComponent");
         Assert.assertTrue(primitivesServiceClient.passByValueDoubleArray());
     }
 
@@ -489,7 +488,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testSCALocalNegateBoolean() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = ((Client)node).getService(PrimitivesServiceClient.class, "PrimitivesLocalServiceClientSCAComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesLocalServiceClientSCAComponent");
         performTestNegateBoolean(primitivesServiceClient);
     }
 
@@ -499,7 +498,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testSCALocalNegateBooleanArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = ((Client)node).getService(PrimitivesServiceClient.class, "PrimitivesLocalServiceClientSCAComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesLocalServiceClientSCAComponent");
         performTestNegateBooleanArray(primitivesServiceClient);
     }
 
@@ -509,7 +508,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testSCALocalNegateByte() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = ((Client)node).getService(PrimitivesServiceClient.class, "PrimitivesLocalServiceClientSCAComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesLocalServiceClientSCAComponent");
         performTestNegateByte(primitivesServiceClient);
     }
 
@@ -519,7 +518,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testSCALocalNegateByteArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = ((Client)node).getService(PrimitivesServiceClient.class, "PrimitivesLocalServiceClientSCAComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesLocalServiceClientSCAComponent");
         performTestNegateByteArray(primitivesServiceClient);
     }
 
@@ -529,7 +528,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testSCALocalNegateShort() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = ((Client)node).getService(PrimitivesServiceClient.class, "PrimitivesLocalServiceClientSCAComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesLocalServiceClientSCAComponent");
         performTestNegateShort(primitivesServiceClient);
     }
 
@@ -539,7 +538,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testSCALocalNegateShortArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = ((Client)node).getService(PrimitivesServiceClient.class, "PrimitivesLocalServiceClientSCAComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesLocalServiceClientSCAComponent");
         performTestNegateShortArray(primitivesServiceClient);
     }
 
@@ -549,7 +548,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testSCALocalNegateInt() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = ((Client)node).getService(PrimitivesServiceClient.class, "PrimitivesLocalServiceClientSCAComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesLocalServiceClientSCAComponent");
         performTestNegateInt(primitivesServiceClient);
     }
 
@@ -559,7 +558,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testSCALocalNegateIntArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = ((Client)node).getService(PrimitivesServiceClient.class, "PrimitivesLocalServiceClientSCAComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesLocalServiceClientSCAComponent");
         performTestNegateIntArray(primitivesServiceClient);
     }
 
@@ -569,7 +568,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testSCALocalNegateLong() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = ((Client)node).getService(PrimitivesServiceClient.class, "PrimitivesLocalServiceClientSCAComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesLocalServiceClientSCAComponent");
         performTestNegateLong(primitivesServiceClient);
     }
 
@@ -579,7 +578,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testSCALocalNegateLongArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = ((Client)node).getService(PrimitivesServiceClient.class, "PrimitivesLocalServiceClientSCAComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesLocalServiceClientSCAComponent");
         performTestNegateLongArray(primitivesServiceClient);
     }
 
@@ -589,7 +588,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testSCALocalNegateFloat() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = ((Client)node).getService(PrimitivesServiceClient.class, "PrimitivesLocalServiceClientSCAComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesLocalServiceClientSCAComponent");
         performTestNegateFloat(primitivesServiceClient);
     }
 
@@ -599,7 +598,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testSCALocalNegateFloatArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = ((Client)node).getService(PrimitivesServiceClient.class, "PrimitivesLocalServiceClientSCAComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesLocalServiceClientSCAComponent");
         performTestNegateFloatArray(primitivesServiceClient);
     }
 
@@ -609,7 +608,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testSCALocalNegateDouble() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = ((Client)node).getService(PrimitivesServiceClient.class, "PrimitivesLocalServiceClientSCAComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesLocalServiceClientSCAComponent");
         performTestNegateDouble(primitivesServiceClient);
     }
 
@@ -619,7 +618,7 @@ public class PrimitivesDatabindingTestCase {
      */
     @Test
     public void testSCALocalNegateDoubleArray() throws Exception {
-        PrimitivesServiceClient primitivesServiceClient = ((Client)node).getService(PrimitivesServiceClient.class, "PrimitivesLocalServiceClientSCAComponent");
+        PrimitivesServiceClient primitivesServiceClient = node.getService(PrimitivesServiceClient.class, "PrimitivesLocalServiceClientSCAComponent");
         performTestNegateDoubleArray(primitivesServiceClient);
     }
     

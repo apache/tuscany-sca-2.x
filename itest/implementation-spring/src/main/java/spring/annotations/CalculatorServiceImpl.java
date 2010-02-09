@@ -18,12 +18,12 @@
  */
 package spring.annotations;
 
+import org.oasisopen.sca.annotation.ComponentName;
 import org.oasisopen.sca.annotation.Destroy;
 import org.oasisopen.sca.annotation.Init;
-import org.oasisopen.sca.annotation.Service;
-import org.oasisopen.sca.annotation.Reference;
 import org.oasisopen.sca.annotation.Property;
-import org.oasisopen.sca.annotation.ComponentName;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 
 import calculator.AddService;
 import calculator.CalculatorService;

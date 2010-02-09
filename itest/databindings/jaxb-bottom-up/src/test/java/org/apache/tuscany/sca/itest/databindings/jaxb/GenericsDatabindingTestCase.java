@@ -19,18 +19,17 @@
 
 package org.apache.tuscany.sca.itest.databindings.jaxb;
 
-import junit.framework.Assert;
 import java.io.File;
 
+import junit.framework.Assert;
+
 import org.apache.tuscany.sca.itest.databindings.jaxb.impl.GenericsTransformer;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import org.apache.tuscany.sca.node.Client;
-import org.apache.tuscany.sca.node.Node;
-import org.apache.tuscany.sca.node.NodeFactory;
-import org.apache.tuscany.sca.node.Contribution;
 
 
 /**
@@ -71,7 +70,7 @@ public class GenericsDatabindingTestCase {
      */
     @Test
     public void testSCATypeExplicit() throws Exception {
-        GenericsServiceClient serviceClient = ((Client)node).getService(GenericsServiceClient.class, "GenericsServiceClientSCAComponent");
+        GenericsServiceClient serviceClient = node.getService(GenericsServiceClient.class, "GenericsServiceClientSCAComponent");
         performTestTypeExplicit(serviceClient);
     }
 
@@ -81,7 +80,7 @@ public class GenericsDatabindingTestCase {
      */
     @Test
     public void testSCATypeUnbound() throws Exception {
-        GenericsServiceClient serviceClient = ((Client)node).getService(GenericsServiceClient.class, "GenericsServiceClientSCAComponent");
+        GenericsServiceClient serviceClient = node.getService(GenericsServiceClient.class, "GenericsServiceClientSCAComponent");
         performTestTypeUnbound(serviceClient);
     }
 
@@ -91,7 +90,7 @@ public class GenericsDatabindingTestCase {
      */
     @Test
     public void testSCATypeExtends() throws Exception {
-        GenericsServiceClient serviceClient = ((Client)node).getService(GenericsServiceClient.class, "GenericsServiceClientSCAComponent");
+        GenericsServiceClient serviceClient = node.getService(GenericsServiceClient.class, "GenericsServiceClientSCAComponent");
         performTestTypeExtends(serviceClient);
     }
 
@@ -101,7 +100,7 @@ public class GenericsDatabindingTestCase {
      */
     @Test
     public void testSCARecursiveTypeBound() throws Exception {
-        GenericsServiceClient serviceClient = ((Client)node).getService(GenericsServiceClient.class, "GenericsServiceClientSCAComponent");
+        GenericsServiceClient serviceClient = node.getService(GenericsServiceClient.class, "GenericsServiceClientSCAComponent");
         performTestRecursiveTypeBound(serviceClient);
     }
 
@@ -111,7 +110,7 @@ public class GenericsDatabindingTestCase {
      */
     @Test
     public void testSCAWildcardUnbound() throws Exception {
-        GenericsServiceClient serviceClient = ((Client)node).getService(GenericsServiceClient.class, "GenericsServiceClientSCAComponent");
+        GenericsServiceClient serviceClient = node.getService(GenericsServiceClient.class, "GenericsServiceClientSCAComponent");
         performTestWildcardUnbound(serviceClient);
     }
 
@@ -121,7 +120,7 @@ public class GenericsDatabindingTestCase {
      */
     @Test
     public void testSCAWildcardSuper() throws Exception {
-        GenericsServiceClient serviceClient = ((Client)node).getService(GenericsServiceClient.class, "GenericsServiceClientSCAComponent");
+        GenericsServiceClient serviceClient = node.getService(GenericsServiceClient.class, "GenericsServiceClientSCAComponent");
         performTestWildcardSuper(serviceClient);
     }
 
@@ -131,7 +130,7 @@ public class GenericsDatabindingTestCase {
      */
     @Test
     public void testSCAWildcardExtends() throws Exception {
-        GenericsServiceClient serviceClient = ((Client)node).getService(GenericsServiceClient.class, "GenericsServiceClientSCAComponent");
+        GenericsServiceClient serviceClient = node.getService(GenericsServiceClient.class, "GenericsServiceClientSCAComponent");
         performTestWildcardExtends(serviceClient);
     }
 
@@ -141,7 +140,7 @@ public class GenericsDatabindingTestCase {
      */
     @Test
     public void testSCAPolymorphic() throws Exception {
-        GenericsServiceClient serviceClient = ((Client)node).getService(GenericsServiceClient.class, "GenericsServiceClientSCAComponent");
+        GenericsServiceClient serviceClient = node.getService(GenericsServiceClient.class, "GenericsServiceClientSCAComponent");
         performTestPolymorphic(serviceClient);
     }
 
@@ -151,7 +150,7 @@ public class GenericsDatabindingTestCase {
      */
     @Test
     public void testWSTypeExplicit() throws Exception {
-        GenericsServiceClient serviceClient = ((Client)node).getService(GenericsServiceClient.class, "GenericsServiceClientWSComponent");
+        GenericsServiceClient serviceClient = node.getService(GenericsServiceClient.class, "GenericsServiceClientWSComponent");
         performTestTypeExplicit(serviceClient);
     }
 
@@ -161,7 +160,7 @@ public class GenericsDatabindingTestCase {
      */
     @Test
     public void testWSTypeUnbound() throws Exception {
-        GenericsServiceClient serviceClient = ((Client)node).getService(GenericsServiceClient.class, "GenericsServiceClientWSComponent");
+        GenericsServiceClient serviceClient = node.getService(GenericsServiceClient.class, "GenericsServiceClientWSComponent");
         performTestTypeUnbound(serviceClient);
     }
 
@@ -171,7 +170,7 @@ public class GenericsDatabindingTestCase {
      */
     @Test
     public void testWSTypeExtends() throws Exception {
-        GenericsServiceClient serviceClient = ((Client)node).getService(GenericsServiceClient.class, "GenericsServiceClientWSComponent");
+        GenericsServiceClient serviceClient = node.getService(GenericsServiceClient.class, "GenericsServiceClientWSComponent");
         performTestTypeExtends(serviceClient);
     }
 
@@ -181,7 +180,7 @@ public class GenericsDatabindingTestCase {
      */
     @Test
     public void testWSRecursiveTypeBound() throws Exception {
-        GenericsServiceClient serviceClient = ((Client)node).getService(GenericsServiceClient.class, "GenericsServiceClientWSComponent");
+        GenericsServiceClient serviceClient = node.getService(GenericsServiceClient.class, "GenericsServiceClientWSComponent");
         performTestRecursiveTypeBound(serviceClient);
     }
 
@@ -191,7 +190,7 @@ public class GenericsDatabindingTestCase {
      */
     @Test
     public void testWSWildcardUnbound() throws Exception {
-        GenericsServiceClient serviceClient = ((Client)node).getService(GenericsServiceClient.class, "GenericsServiceClientWSComponent");
+        GenericsServiceClient serviceClient = node.getService(GenericsServiceClient.class, "GenericsServiceClientWSComponent");
         performTestWildcardUnbound(serviceClient);
     }
 
@@ -201,7 +200,7 @@ public class GenericsDatabindingTestCase {
      */
     @Test
     public void testWSWildcardSuper() throws Exception {
-        GenericsServiceClient serviceClient = ((Client)node).getService(GenericsServiceClient.class, "GenericsServiceClientWSComponent");
+        GenericsServiceClient serviceClient = node.getService(GenericsServiceClient.class, "GenericsServiceClientWSComponent");
         performTestWildcardSuper(serviceClient);
     }
 
@@ -211,7 +210,7 @@ public class GenericsDatabindingTestCase {
      */
     @Test
     public void testWSWildcardExtends() throws Exception {
-        GenericsServiceClient serviceClient = ((Client)node).getService(GenericsServiceClient.class, "GenericsServiceClientWSComponent");
+        GenericsServiceClient serviceClient = node.getService(GenericsServiceClient.class, "GenericsServiceClientWSComponent");
         performTestWildcardExtends(serviceClient);
     }
 
@@ -221,7 +220,7 @@ public class GenericsDatabindingTestCase {
      */
     @Test
     public void testWSPolymorphic() throws Exception {
-        GenericsServiceClient serviceClient = ((Client)node).getService(GenericsServiceClient.class, "GenericsServiceClientWSComponent");
+        GenericsServiceClient serviceClient = node.getService(GenericsServiceClient.class, "GenericsServiceClientWSComponent");
         performTestPolymorphic(serviceClient);
     }
 
@@ -231,7 +230,7 @@ public class GenericsDatabindingTestCase {
      */
     @Test
     public void testSCALocalTypeExplicit() throws Exception {
-        GenericsServiceClient serviceClient = ((Client)node).getService(GenericsServiceClient.class, "GenericsLocalServiceClientSCAComponent");
+        GenericsServiceClient serviceClient = node.getService(GenericsServiceClient.class, "GenericsLocalServiceClientSCAComponent");
         performTestTypeExplicit(serviceClient);
     }
 
@@ -241,7 +240,7 @@ public class GenericsDatabindingTestCase {
      */
     @Test
     public void testSCALocalTypeUnbound() throws Exception {
-        GenericsServiceClient serviceClient = ((Client)node).getService(GenericsServiceClient.class, "GenericsLocalServiceClientSCAComponent");
+        GenericsServiceClient serviceClient = node.getService(GenericsServiceClient.class, "GenericsLocalServiceClientSCAComponent");
         performTestTypeUnbound(serviceClient);
     }
 
@@ -251,7 +250,7 @@ public class GenericsDatabindingTestCase {
      */
     @Test
     public void testSCALocalTypeExtends() throws Exception {
-        GenericsServiceClient serviceClient = ((Client)node).getService(GenericsServiceClient.class, "GenericsLocalServiceClientSCAComponent");
+        GenericsServiceClient serviceClient = node.getService(GenericsServiceClient.class, "GenericsLocalServiceClientSCAComponent");
         performTestTypeExtends(serviceClient);
     }
 
@@ -261,7 +260,7 @@ public class GenericsDatabindingTestCase {
      */
     @Test
     public void testSCALocalRecursiveTypeBound() throws Exception {
-        GenericsServiceClient serviceClient = ((Client)node).getService(GenericsServiceClient.class, "GenericsLocalServiceClientSCAComponent");
+        GenericsServiceClient serviceClient = node.getService(GenericsServiceClient.class, "GenericsLocalServiceClientSCAComponent");
         performTestRecursiveTypeBound(serviceClient);
     }
 
@@ -271,7 +270,7 @@ public class GenericsDatabindingTestCase {
      */
     @Test
     public void testSCALocalWildcardUnbound() throws Exception {
-        GenericsServiceClient serviceClient = ((Client)node).getService(GenericsServiceClient.class, "GenericsLocalServiceClientSCAComponent");
+        GenericsServiceClient serviceClient = node.getService(GenericsServiceClient.class, "GenericsLocalServiceClientSCAComponent");
         performTestWildcardUnbound(serviceClient);
     }
 
@@ -281,7 +280,7 @@ public class GenericsDatabindingTestCase {
      */
     @Test
     public void testSCALocalWildcardSuper() throws Exception {
-        GenericsServiceClient serviceClient = ((Client)node).getService(GenericsServiceClient.class, "GenericsLocalServiceClientSCAComponent");
+        GenericsServiceClient serviceClient = node.getService(GenericsServiceClient.class, "GenericsLocalServiceClientSCAComponent");
         performTestWildcardSuper(serviceClient);
     }
 
@@ -291,7 +290,7 @@ public class GenericsDatabindingTestCase {
      */
     @Test
     public void testSCALocalWildcardExtends() throws Exception {
-        GenericsServiceClient serviceClient = ((Client)node).getService(GenericsServiceClient.class, "GenericsLocalServiceClientSCAComponent");
+        GenericsServiceClient serviceClient = node.getService(GenericsServiceClient.class, "GenericsLocalServiceClientSCAComponent");
         performTestWildcardExtends(serviceClient);
     }
 
@@ -301,7 +300,7 @@ public class GenericsDatabindingTestCase {
      */
     @Test
     public void testSCALocalPolymorphic() throws Exception {
-        GenericsServiceClient serviceClient = ((Client)node).getService(GenericsServiceClient.class, "GenericsLocalServiceClientSCAComponent");
+        GenericsServiceClient serviceClient = node.getService(GenericsServiceClient.class, "GenericsLocalServiceClientSCAComponent");
         performTestPolymorphic(serviceClient);
     }
 

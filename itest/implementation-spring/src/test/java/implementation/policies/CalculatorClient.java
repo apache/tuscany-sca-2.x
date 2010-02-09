@@ -22,10 +22,11 @@ package implementation.policies;
 import java.io.File;
 
 import javax.security.auth.login.Configuration;
-import org.apache.tuscany.sca.node.Client;
+
 import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
+
 import calculator.CalculatorService;
 
 
@@ -48,7 +49,7 @@ public class CalculatorClient {
         node.start();
               
         CalculatorService calculatorService = 
-            ((Client)node).getService(CalculatorService.class, "CalculatorServiceComponent");
+            node.getService(CalculatorService.class, "CalculatorServiceComponent");
 
         // Calculate
         System.out.println("Calling CalculatorServiceComponent configured with 'logging' " +
@@ -59,7 +60,7 @@ public class CalculatorClient {
         System.out.println("3 / 2=" + calculatorService.divide(3, 2));
         
         calculatorService = 
-            ((Client)node).getService(CalculatorService.class, "AnotherCalculatorServiceComponent");
+            node.getService(CalculatorService.class, "AnotherCalculatorServiceComponent");
 
         // Calculate
         System.out.println("Calling CalculatorServiceComponent configured with 'logging' " +

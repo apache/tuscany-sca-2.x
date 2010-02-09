@@ -21,10 +21,10 @@ package spring.annotations;
 
 import java.io.File;
 
-import org.apache.tuscany.sca.node.Client;
 import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
+
 import calculator.CalculatorService;
 
 
@@ -41,7 +41,7 @@ public class CalculatorClient {
         node.start(); 
               
         CalculatorService calculatorService = 
-            ((Client)node).getService(CalculatorService.class, "CalculatorServiceComponent");
+            node.getService(CalculatorService.class, "CalculatorServiceComponent");
         
         System.out.println("3 + 2=" + calculatorService.add(3, 2));
         System.out.println("3 - 2=" + calculatorService.subtract(3, 2));

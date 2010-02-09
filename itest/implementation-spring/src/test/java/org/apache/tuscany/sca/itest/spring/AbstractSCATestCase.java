@@ -20,12 +20,10 @@
 package org.apache.tuscany.sca.itest.spring;
 
 import java.io.File;
-import junit.framework.TestCase;
-import java.net.MalformedURLException;
 
-import org.apache.tuscany.sca.node.Client;
+import junit.framework.TestCase;
+
 import org.apache.tuscany.sca.node.Contribution;
-import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 
@@ -48,7 +46,7 @@ public abstract class AbstractSCATestCase<T> extends TestCase {
     	node = factory.createNode(new File("src/main/resources/" + contributionLocation + compositeName).toURI().toURL().toString(),
                 new Contribution("TestContribution", new File("src/main/resources/" + contributionLocation).toURI().toURL().toString()));      
     	node.start();
-        service = ((Client)node).getService(getServiceClass(), "ClientComponent");
+        service = node.getService(getServiceClass(), "ClientComponent");
     }
 
     abstract protected Class<T> getServiceClass();

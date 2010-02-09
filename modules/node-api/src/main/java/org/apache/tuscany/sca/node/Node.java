@@ -19,9 +19,8 @@
 
 package org.apache.tuscany.sca.node;
 
-import java.util.List;
-
 import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
+import org.oasisopen.sca.ServiceReference;
 
 
 
@@ -32,7 +31,7 @@ import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
  *
  * @version $Rev$ $Date$
  */
-public interface Node extends Client {
+public interface Node {
     String DEFAULT_DOMAIN_URI = NodeConfiguration.DEFAULT_DOMAIN_URI;
     String DEFAULT_NODE_URI = NodeConfiguration.DEFAULT_NODE_URI;
     /**
@@ -46,5 +45,41 @@ public interface Node extends Client {
      */
     void stop();
 
-    List<String> getServiceNames();
+    /**
+     * Cast a type-safe reference to a CallableReference. Converts a type-safe
+     * reference to an equivalent CallableReference; if the target refers to a
+     * service then a ServiceReference will be returned, if the target refers to
+     * a callback then a CallableReference will be returned.
+     *
+     * @param target a reference proxy provided by the SCA runtime
+     * @param <B> the Java type of the business interface for the reference
+     * @param <R> the type of reference to be returned
+     * @return a CallableReference equivalent for the proxy
+     * @throws IllegalArgumentException if the supplied instance is not a
+     *             reference supplied by the SCA runtime
+     */
+    <B, R extends ServiceReference<B>> R cast(B target) throws IllegalArgumentException;
+
+    /**
+     * Returns a proxy for a service provided by a component in the SCA domain.
+     *
+     * @param businessInterface the interface that will be used to invoke the
+     *            service
+     * @param serviceName the name of the service
+     * @param <B> the Java type of the business interface for the service
+     * @return an object that implements the business interface
+     */
+    <B> B getService(Class<B> businessInterface, String serviceName);
+
+    /**
+     * Returns a ServiceReference for a service provided by a component in the
+     * SCA domain.
+     *
+     * @param businessInterface the interface that will be used to invoke the
+     *            service
+     * @param serviceName the name of the service
+     * @param <B> the Java type of the business interface for the service
+     * @return a ServiceReference for the designated service
+     */
+    <B> ServiceReference<B> getServiceReference(Class<B> businessInterface, String serviceName);    
 }

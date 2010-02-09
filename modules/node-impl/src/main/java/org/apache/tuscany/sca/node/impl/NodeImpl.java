@@ -44,7 +44,6 @@ import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
-import org.apache.tuscany.sca.node.Client;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
 import org.apache.tuscany.sca.node.management.NodeManager;
@@ -63,7 +62,7 @@ import org.oasisopen.sca.ServiceUnavailableException;
 /**
  * An SCA Node that is managed by the NodeManager
  */
-public class NodeImpl implements Node, Client {
+public class NodeImpl implements Node {
     private static final Logger logger = Logger.getLogger(NodeImpl.class.getName());
     private ProxyFactory proxyFactory;
     private CompositeActivator compositeActivator;
