@@ -79,7 +79,11 @@ public class SCAClientFactoryImpl extends SCAClientFactory {
         this.nodeFactory.init();
         this.extensionsRegistry = nodeFactory.getExtensionPoints();
         DomainRegistryFactory domainRegistryFactory = ExtensibleDomainRegistryFactory.getInstance(extensionsRegistry);
-        this.endpointRegistry = domainRegistryFactory.getEndpointRegistry(null, getDomainURI().toString()); // TODO: shouldnt use null for reg uri
+        
+        String registryURI = getDomainURI().toString();
+        
+        this.endpointRegistry = domainRegistryFactory.getEndpointRegistry(registryURI, getDomainURI().toString()); // TODO: shouldnt use null for reg uri
+        
         // TODO: if there is not an existing endpoint registry for the domain URI the
         //       this should create an endpoint registry client for the remote domain (eg hazelcast native client)
         //       for now just throw an exception 
@@ -193,6 +197,6 @@ public class SCAClientFactoryImpl extends SCAClientFactory {
         }
     
         return interfaceContract;
-    }
+    }    
 
 }
