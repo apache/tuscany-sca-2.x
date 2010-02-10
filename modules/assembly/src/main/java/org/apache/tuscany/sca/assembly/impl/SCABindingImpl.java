@@ -23,13 +23,9 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.assembly.Component;
-import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Extensible;
 import org.apache.tuscany.sca.assembly.Extension;
 import org.apache.tuscany.sca.assembly.OperationSelector;
-import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.WireFormat;
 import org.apache.tuscany.sca.policy.ExtensionType;
@@ -42,7 +38,7 @@ import org.apache.tuscany.sca.policy.PolicySubject;
  *
  * @version $Rev$ $Date$
  */
-public class SCABindingImpl implements SCABinding, Extensible, PolicySubject, OptimizableBinding {
+public class SCABindingImpl implements SCABinding, Extensible, PolicySubject {
     private String name;
     private String uri;
     private List<Object> extensions = new ArrayList<Object>();
@@ -50,15 +46,6 @@ public class SCABindingImpl implements SCABinding, Extensible, PolicySubject, Op
     private List<Intent> requiredIntents = new ArrayList<Intent>();
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
     private ExtensionType extensionType;
-
-    private Component targetComponent;
-    private ComponentService targetComponentService;
-    private Binding targetBinding;
-    private List<PolicySet> applicablePolicySets = new ArrayList<PolicySet>();
-
-    public List<PolicySet> getApplicablePolicySets() {
-        return applicablePolicySets;
-    }
 
     /**
      * Constructs a new SCA binding.
@@ -99,11 +86,7 @@ public class SCABindingImpl implements SCABinding, Extensible, PolicySubject, Op
     }
 
     public boolean isUnresolved() {
-        if (targetComponentService == null) {
-            return true;
-        } else {
-            return targetComponentService.isUnresolved();
-        }
+        return false;
     }
 
     public void setUnresolved(boolean unresolved) {
@@ -123,32 +106,6 @@ public class SCABindingImpl implements SCABinding, Extensible, PolicySubject, Op
 
     public void setExtensionType(ExtensionType intentAttachPointType) {
         this.extensionType = intentAttachPointType;
-    }
-
-    // Wireable binding operations
-
-    public Component getTargetComponent() {
-        return targetComponent;
-    }
-
-    public void setTargetComponent(Component targetComponent) {
-        this.targetComponent = targetComponent;
-    }
-
-    public ComponentService getTargetComponentService() {
-        return targetComponentService;
-    }
-
-    public void setTargetComponentService(ComponentService targetComponentService) {
-        this.targetComponentService = targetComponentService;
-    }
-
-    public Binding getTargetBinding() {
-        return targetBinding;
-    }
-
-    public void setTargetBinding(Binding targetBinding) {
-        this.targetBinding = targetBinding;
     }
 
     public void setPolicySets(List<PolicySet> policySets) {
