@@ -219,11 +219,12 @@ public class NodeConfigurationProcessor extends BaseStAXArtifactProcessor implem
             } else {
                 uris = null;
             }
+            String baseURIs = (uris == null) ? null : uris.toString();
             writeStart(writer,
                        BINDING.getNamespaceURI(),
                        BINDING.getLocalPart(),
                        new XAttr("name", b.getBindingType()),
-                       new XAttr("baseURIs", uris.toString()));
+                       new XAttr("baseURIs", baseURIs));
             writeEnd(writer);
         }
         
