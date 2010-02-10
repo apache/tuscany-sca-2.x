@@ -29,6 +29,7 @@
             <sequential>
                 <sleep seconds="4"/>
                 <ant antfile="client.xml"/>
+            	<ant antfile="scaclient.xml"/>
             </sequential>
 
        </parallel>    	

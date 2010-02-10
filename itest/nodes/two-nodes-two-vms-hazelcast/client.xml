@@ -21,11 +21,11 @@
 	<!--echo>${runtime_classpath}</echo-->
 
 	<target name="run">
-		<java classpath="${runtime_classpath};./target/test-classes" 
+	    <java classpath="${runtime_classpath};./target/test-classes" 
 			  classname="itest.Client" 
 			  fork="true"
 			  failonerror="true">
-		</java>		
+		</java>	
 	</target>
 
 	

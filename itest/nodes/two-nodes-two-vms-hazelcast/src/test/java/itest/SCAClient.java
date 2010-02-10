@@ -23,39 +23,38 @@ import itest.nodes.Helloworld;
 
 import java.net.URI;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.oasisopen.sca.client.SCAClientFactory;
 
 public class SCAClient {
 
-    @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
-        // do nothing
-    }
-
-    @Test
     public void testSCAClient() throws Exception {
         // The configuration required when running with sca-client-rmi and endpoint-hazelcast-rmi
-        // Helloworld service = SCAClientFactory.newInstance(URI.create("tuscany:default?remotes=192.168.247.1:14820")).getService(Helloworld.class, "HelloworldService");
+        //SCAClientFactory factory = SCAClientFactory.newInstance(URI.create("tuscanyclient:default?remotes=192.168.247.1:14820"));
         
         // The configuration required when running with sca-client-impl and endpoint-hazelcast
-        Helloworld service = SCAClientFactory.newInstance(URI.create("tuscany:default")).getService(Helloworld.class, "HelloworldService");
+        SCAClientFactory factory = SCAClientFactory.newInstance(URI.create("tuscany:default"));
+        
+        Helloworld service = factory.getService(Helloworld.class, "HelloworldService");
         
         String response = service.sayHello("test");
         if (response == null || !response.equals("Hello test")){
             throw new Exception("Test failed - expecting 'Hello test' got " + response);
         } else {
-            System.out.println(response);
+            System.out.println("Test success - " + response);
         }
+        
+        //TODO - When using the hazelcast registry (or client) it causes the 
+        //       JVM to hang on shutdown as it created non-daemon threads
+        //       So destroy the node factory here which should bring down 
+        //       the runtime and hence hazelcast. 
+        //       There's currently no interface on the client factory
+        //       for doing this so we may need to talk to OASIS about adding one
+        //       or just rely on the runtime hosting the classes using the SCAClient
+        //       when it's on its way down
+        NodeFactory.getInstance().destroy();
     }
-
-    @AfterClass
-    public static void tearDownAfterClass() throws Exception {
-         // do nothing
-    }
-    
+   
     public static void main(String[] args) throws Exception {
         SCAClient client = new SCAClient();
         client.testSCAClient();
