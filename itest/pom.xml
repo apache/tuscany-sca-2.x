@@ -52,6 +52,8 @@
                 <module>callback-complex-type</module>
                 <module>callback-multiple-wires</module>
                 <module>callback-separatethread</module>
+                <module>callback-two-composites</module>
+                <module>callback-two-nodes</module>
                 <module>component-type</module>
                 <module>contribution-folder</module>
                 <module>contribution-zip</module>
