@@ -52,6 +52,7 @@ public class SCAClientFactoryImpl extends SCAClientFactory {
         super(domainURI);
         
         this.nodeFactory = (NodeFactoryImpl)NodeFactory.getInstance();
+        this.nodeFactory.init();
         this.extensionsRegistry = nodeFactory.getExtensionPoints();
         if (extensionsRegistry != null) {
             this.extensionsRegistry = nodeFactory.getExtensionPoints();

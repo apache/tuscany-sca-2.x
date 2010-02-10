@@ -76,6 +76,7 @@ public class SCAClientFactoryImpl extends SCAClientFactory {
         super(domainURI);
         
         this.nodeFactory = (NodeFactoryImpl)NodeFactory.getInstance();
+        this.nodeFactory.init();
         this.extensionsRegistry = nodeFactory.getExtensionPoints();
         DomainRegistryFactory domainRegistryFactory = ExtensibleDomainRegistryFactory.getInstance(extensionsRegistry);
         this.endpointRegistry = domainRegistryFactory.getEndpointRegistry(null, getDomainURI().toString()); // TODO: shouldnt use null for reg uri
@@ -103,12 +104,7 @@ public class SCAClientFactoryImpl extends SCAClientFactory {
             throw new NoSuchServiceException(serviceName);
         }
         Endpoint endpoint = eps.get(0); // TODO: what should be done with multiple endpoints?
-
-//        Node localNode = findLocalNode(endpoint);
-//        if (localNode != null) {
-//            return localNode.getService(serviceInterface, serviceName);
-//        }
-        
+       
         RuntimeEndpointReference epr;
         try {
             epr = createEndpointReference(endpoint, serviceInterface);
@@ -118,18 +114,7 @@ public class SCAClientFactoryImpl extends SCAClientFactory {
         return proxyFactory.createProxy(serviceInterface, epr);
         
     }
-
-    private Node findLocalNode(Endpoint endpoint) {
-        for (Node node : nodeFactory.getNodes().values()) {
-            for (Endpoint ep : ((NodeImpl)node).getServiceEndpoints()) {
-                if (endpoint.getURI().equals(ep.getURI())) {
-                    return node;
-                }
-            }
-        }
-        return null;
-    }
-
+    
     private RuntimeEndpointReference createEndpointReference(Endpoint endpoint, Class<?> businessInterface)
         throws CloneNotSupportedException, InvalidInterfaceException {
         Component component = endpoint.getComponent();
