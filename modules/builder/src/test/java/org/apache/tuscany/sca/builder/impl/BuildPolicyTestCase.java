@@ -45,7 +45,6 @@ import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensi
 import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
-import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.monitor.Monitor;
@@ -73,7 +72,6 @@ public class BuildPolicyTestCase {
     public static void setUp() throws Exception {
         DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
         context = new ProcessorContext(extensionPoints);
-        FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
 
         compositeBuilder =
             extensionPoints.getExtensionPoint(BuilderExtensionPoint.class)

@@ -34,7 +34,6 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
  * 
  */
 public class WireMatcherImpl implements WireBuilder {
-    private ExtensionPointRegistry registry;
     private InterfaceContractMapper interfaceContractMapper;
     private BuilderExtensionPoint builderExtensionPoint;
 
@@ -43,7 +42,6 @@ public class WireMatcherImpl implements WireBuilder {
      */
     public WireMatcherImpl(ExtensionPointRegistry registry) {
         super();
-        this.registry = registry;
         this.builderExtensionPoint = registry.getExtensionPoint(BuilderExtensionPoint.class);
         UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
         this.interfaceContractMapper = utilities.getUtility(InterfaceContractMapper.class);

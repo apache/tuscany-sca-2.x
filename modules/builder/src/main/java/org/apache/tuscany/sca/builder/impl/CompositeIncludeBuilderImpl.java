@@ -84,7 +84,7 @@ public class CompositeIncludeBuilderImpl implements CompositeBuilder {
                     for (Component component : merged.getComponents()) {
                         // apply the autowire flag on this composite to any inline 
                         // components - Assembly 5.6 point 4
-                        if (component.getAutowire() == null && merged.getAutowire() == Boolean.TRUE) {
+                        if (component.getAutowire() == null && Boolean.TRUE.equals(merged.getAutowire())) {
                             component.setAutowire(Boolean.TRUE);
                         }
                         // Merge the intents and policySets from the included composite into 

@@ -47,6 +47,7 @@ import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.policy.Intent;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
  * Creates endpoint reference models.
@@ -195,7 +196,7 @@ public class EndpointReferenceBuilderImpl {
             
             // This autowire processing really needs to move to the matching 
             // algorithm but dependency problems means it has to stay here for now
-            if (reference.getAutowire() == Boolean.TRUE && reference.getTargets().isEmpty()) {
+            if (Boolean.TRUE.equals(reference.getAutowire()) && reference.getTargets().isEmpty()) {
                 // Find suitable targets in the current composite for an
                 // autowired reference
                 Multiplicity multiplicity = reference.getMultiplicity();
@@ -475,7 +476,7 @@ public class EndpointReferenceBuilderImpl {
         try {
             epRefClone = (EndpointReference)epRef.clone();
         } catch (Exception e) {
-            // Ignore (we know that EndpointReference2 can be cloned)
+            throw new ServiceRuntimeException(e);
         } // end try
         // Copy across details of the inner reference
         //ComponentReference ref = epRefClone.getReference();
@@ -517,7 +518,7 @@ public class EndpointReferenceBuilderImpl {
                 } else {
                     // no error if reference is autowire and more targets
                     // than multiplicity have been found 
-                    if (componentReference.getAutowire() == Boolean.TRUE) {
+                    if (Boolean.TRUE.equals(componentReference.getAutowire())) {
                         break;
                     }
 

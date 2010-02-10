@@ -32,7 +32,6 @@ import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.monitor.Monitor;
 
 public class ModelBuilderImpl implements CompositeBuilder {
     private ExtensionPointRegistry registry;
@@ -88,7 +87,6 @@ public class ModelBuilderImpl implements CompositeBuilder {
 
     public Composite build(Composite composite, BuilderContext context)
         throws CompositeBuilderException {
-        Monitor monitor = context.getMonitor();
         try {
             // Clone the composites that are included or referenced in implementation.composite
             composite = compositeCloneBuilder.build(composite, context);
