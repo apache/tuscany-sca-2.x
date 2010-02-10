@@ -22,7 +22,9 @@ package itest.nodes;
 public class HelloworldImpl implements Helloworld {
 
     public String sayHello(String name) {
-        return "Hello " + name;
+        String response = "Hello " + name;
+        System.out.println("At service - " + response);
+        return response;
     }
 
 }
