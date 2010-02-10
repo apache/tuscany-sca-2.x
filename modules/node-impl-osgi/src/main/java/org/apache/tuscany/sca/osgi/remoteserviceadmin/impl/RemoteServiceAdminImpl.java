@@ -259,7 +259,7 @@ public class RemoteServiceAdminImpl implements RemoteServiceAdmin, ManagedServic
         props.put("endpoint.id", ep.getId());
         props.put("objectClass", ep.getInterfaces());
         props.put("service.imported.configs", ep.getConfigurationTypes());
-        props.put("timestamp", new Long(System.currentTimeMillis()));
+        props.put("timestamp", Long.valueOf(System.currentTimeMillis()));
         Object bindings = ep.getProperties().get("org.osgi.sca.bindings");
         if (bindings != null) {
             props.put("org.osgi.sca.bindings", bindings);

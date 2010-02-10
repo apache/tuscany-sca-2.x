@@ -90,7 +90,7 @@ public class LocalDiscoveryService extends AbstractDiscoveryService implements B
         Map<String, Object> props = new HashMap<String, Object>(sd.getProperties());
         props.put(Constants.OBJECTCLASS, sd.getInterfaces().toArray(new String[sd.getInterfaces().size()]));
         if (!props.containsKey(ENDPOINT_SERVICE_ID)) {
-            props.put(ENDPOINT_SERVICE_ID, new Long(System.currentTimeMillis()));
+            props.put(ENDPOINT_SERVICE_ID, Long.valueOf(System.currentTimeMillis()));
         }
         if (!props.containsKey(ENDPOINT_FRAMEWORK_UUID)) {
             props.put(ENDPOINT_FRAMEWORK_UUID, OSGiHelper.getFrameworkUUID(context));

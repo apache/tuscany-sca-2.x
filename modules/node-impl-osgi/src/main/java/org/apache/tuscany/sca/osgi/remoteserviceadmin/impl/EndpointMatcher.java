@@ -145,8 +145,10 @@ public class EndpointMatcher {
     public synchronized void added(EndpointDescription endpointDescription, String matchedFilter) {
         if (endpointDescriptions.putValue(matchedFilter, endpointDescription)) {
             Collection<ListenerInfo> listenerInfos = listeners.get(matchedFilter);
-            for (ListenerInfo listener : listenerInfos) {
-                importEndpoint(listener, endpointDescription);
+            if (listenerInfos != null) {
+                for (ListenerInfo listener : listenerInfos) {
+                    importEndpoint(listener, endpointDescription);
+                }
             }
         }
     }

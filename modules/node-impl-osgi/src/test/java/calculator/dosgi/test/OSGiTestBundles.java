@@ -216,6 +216,7 @@ public class OSGiTestBundles {
         file.read(fileContents);
         jarOut.write(fileContents);
         jarOut.closeEntry();
+        file.close();
     }
 
     static URL generateCalculatorBundle() throws IOException {
