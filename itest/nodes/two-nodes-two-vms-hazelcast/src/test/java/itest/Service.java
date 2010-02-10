@@ -39,9 +39,8 @@ public class Service {
 
     @Test
     public void testNothing() throws Exception {
-        synchronized (this) {
-            this.wait();
-        }
+        // Stay for 1 min
+        Thread.sleep(60000);
     }
 
     @AfterClass
@@ -53,14 +52,7 @@ public class Service {
     
     public static void main(String[] args) throws Exception {
         Service.setUpBeforeClass();
-        
-        try {
-            System.out.println("Press a key to stop");
-            System.in.read();
-        } catch (Exception ex) {
-            // do nothing
-        }
-        
+        new Service().testNothing();
         Service.tearDownAfterClass();
     }    
 }

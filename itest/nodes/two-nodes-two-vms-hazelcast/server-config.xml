@@ -20,7 +20,7 @@
 <node xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
     xmlns="http://tuscany.apache.org/xmlns/sca/1.1"
     xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1"
-    uri="http://sample/nodes/TestNode1"
+    uri="http://sample/nodes/TestNode2"
     domain="default"
     domainRegistry="tuscany:default">
 

@@ -24,6 +24,9 @@
 		<java classpath="${runtime_classpath}" classname="org.apache.tuscany.sca.node.launcher.NodeMain" fork="true">
 			<arg value="-node"/>
 			<arg value="./server-config.xml"/>
+			<!-- Give the server 60 seconds to stay -->
+	        <arg value="-ttl"/>
+	        <arg value="60000"/>
 		</java>
 	</target>
 	

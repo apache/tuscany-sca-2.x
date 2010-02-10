@@ -35,6 +35,9 @@ public class SCAClient {
         // The configuration required when running with sca-client-impl and endpoint-hazelcast
         SCAClientFactory factory = SCAClientFactory.newInstance(URI.create("tuscany:default"));
         
+        // Sleep 3 seconds so that the endpoint is populated into the EndpointRegistry
+        Thread.sleep(3000);
+        
         Helloworld service = factory.getService(Helloworld.class, "HelloworldService");
         
         String response = service.sayHello("test");
