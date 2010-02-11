@@ -21,7 +21,9 @@ package org.apache.tuscany.sca.runtime;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.LifeCycleListener;
@@ -30,13 +32,14 @@ import org.apache.tuscany.sca.extensibility.ServiceHelper;
 import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
- * 
+ * Default implementation of DomainRegistryFactoryExtensionPoint
  */
 public class DefaultDomainRegistryFactoryExtensionPoint implements DomainRegistryFactoryExtensionPoint,
     LifeCycleListener {
     private ExtensionPointRegistry registry;
     private boolean loaded;
     private List<DomainRegistryFactory> factories = new ArrayList<DomainRegistryFactory>();
+    private Map<String, String> domainRegistryMapping = new HashMap<String, String>();
 
     /**
      * @param registry
@@ -82,10 +85,15 @@ public class DefaultDomainRegistryFactoryExtensionPoint implements DomainRegistr
     }
 
     public void start() {
+        // Empty
     }
 
     public void stop() {
         ServiceHelper.stop(factories);
+    }
+
+    public Map<String, String> getDomainRegistryMapping() {
+        return domainRegistryMapping;
     }
 
 }

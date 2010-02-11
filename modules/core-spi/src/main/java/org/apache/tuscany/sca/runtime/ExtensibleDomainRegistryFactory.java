@@ -23,7 +23,9 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
@@ -34,6 +36,7 @@ import org.oasisopen.sca.ServiceRuntimeException;
  */
 public class ExtensibleDomainRegistryFactory implements DomainRegistryFactory {
     private final DomainRegistryFactoryExtensionPoint factories;
+    private String[] allSchemes;
 
     public ExtensibleDomainRegistryFactory(ExtensionPointRegistry registry) {
         this.factories = registry.getExtensionPoint(DomainRegistryFactoryExtensionPoint.class);
@@ -64,7 +67,10 @@ public class ExtensibleDomainRegistryFactory implements DomainRegistryFactory {
 
     public EndpointRegistry getEndpointRegistry(String endpointRegistryURI, String domainURI) {
         if (endpointRegistryURI == null) {
-            endpointRegistryURI = domainURI;
+            endpointRegistryURI = factories.getDomainRegistryMapping().get(domainURI);
+            if (endpointRegistryURI == null) {
+                endpointRegistryURI = domainURI;
+            }
         }
 
         URI uri = URI.create(endpointRegistryURI);
@@ -105,8 +111,18 @@ public class ExtensibleDomainRegistryFactory implements DomainRegistryFactory {
         }
     }
 
-    public String[] getSupportedSchemes() {
-        return null;
+    public synchronized String[] getSupportedSchemes() {
+        if (allSchemes == null) {
+            Set<String> supportedSchemes = new HashSet<String>();
+            for (DomainRegistryFactory factory : factories.getDomainRegistryFactories()) {
+                String[] schemes = factory.getSupportedSchemes();
+                if (schemes != null) {
+                    supportedSchemes.addAll(Arrays.asList(schemes));
+                }
+            }
+            allSchemes = supportedSchemes.toArray(new String[supportedSchemes.size()]);
+        }
+        return allSchemes;
     }
 
 }

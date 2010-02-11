@@ -20,11 +20,18 @@
 package org.apache.tuscany.sca.runtime;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Extension point for DomainRegistryFactory
  */
 public interface DomainRegistryFactoryExtensionPoint {
+    /**
+     * Return a mapping between domain URI and domain registry URI
+     * @return A mutable map
+     */
+    Map<String, String> getDomainRegistryMapping();
+    
     /**
      * Add a DomainRegistryFactory
      * @param factory
