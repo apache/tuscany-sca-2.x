@@ -29,8 +29,8 @@ import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
+import org.apache.tuscany.sca.common.java.collection.LRUCache;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
-import org.apache.tuscany.sca.databinding.util.LRUCache;
 import org.junit.Assert;
 import org.junit.Test;
 

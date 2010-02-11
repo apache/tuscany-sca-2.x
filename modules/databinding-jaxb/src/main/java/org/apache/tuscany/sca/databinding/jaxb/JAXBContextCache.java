@@ -55,8 +55,8 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.transform.Source;
 
+import org.apache.tuscany.sca.common.java.collection.LRUCache;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.databinding.util.LRUCache;
 import org.apache.tuscany.sca.extensibility.ClassLoaderContext;
 
 /**
