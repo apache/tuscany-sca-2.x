@@ -144,15 +144,6 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
             }
         }
 
-        public List<String> getServiceNames() {
-            try {
-                return (List<String>)node.getClass().getMethod("getServiceNames").invoke(node);
-            } catch (Throwable e) {
-                handleException(e);
-                return null;
-            }
-        }
-
     }
 
     /**
@@ -300,18 +291,18 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
         return createNode(configuration);
     }
 
-    public final Node createNode(URI configURI, String... locations) {
-        return createNode(configURI, null, locations);
+    public final Node createNode(URI domainRegistryURI, String... locations) {
+        return createNode(domainRegistryURI, null, locations);
     }
 
-    public final Node createNode(URI configURI, String deploymentCompositeURI, String[] locations) {
+    public final Node createNode(URI domainRegistryURI, String deploymentCompositeURI, String[] locations) {
         Contribution[] contributions = getContributions(Arrays.asList(locations));
         NodeConfiguration configuration = createConfiguration(contributions);
         if (deploymentCompositeURI != null && configuration.getContributions().size() > 0) {
             configuration.getContributions().get(0).addDeploymentComposite(createURI(deploymentCompositeURI));
         }
-        configuration.setDomainRegistryURI(configURI.toString());
-        configuration.setDomainURI(getDomainName(configURI));
+        configuration.setDomainRegistryURI(domainRegistryURI.toString());
+        configuration.setDomainURI(getDomainURI(domainRegistryURI));
         return createNode(configuration);
     }
 
@@ -319,7 +310,7 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
      * TODO: cleanup node use of registry uri, domain uri, and domain name
      *       so that its consistent across the code base
      */
-    public static String getDomainName(URI configURI) {
+    public static String getDomainURI(URI configURI) {
         String s = configURI.getHost();
         if (s == null) {
             s = configURI.getSchemeSpecificPart();
