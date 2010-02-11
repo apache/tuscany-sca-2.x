@@ -27,6 +27,8 @@ import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
+import org.apache.tuscany.sca.databinding.Mediator;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.InvocationChain;
@@ -63,6 +65,7 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
     private BindingProviderFactory<DistributedSCABinding> distributedProviderFactory = null;
     private ReferenceBindingProvider distributedProvider = null;
     private SCABindingFactory scaBindingFactory;
+    private Mediator mediator;
 
     public RuntimeSCAReferenceBindingProvider(ExtensionPointRegistry extensionPoints,
                                               RuntimeEndpointReference endpointReference) {
@@ -82,6 +85,7 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
             (BindingProviderFactory<DistributedSCABinding>)factoryExtensionPoint
                 .getProviderFactory(DistributedSCABinding.class);
 
+        this.mediator = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class).getUtility(Mediator.class);
     }
 
     public boolean isTargetRemote() {
@@ -185,7 +189,11 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
             RuntimeComponentService service = (RuntimeComponentService)target.getService();
             if (service != null) { // not a callback wire
                 InvocationChain chain = ((RuntimeEndpoint) target).getInvocationChain(operation);
-                return chain == null ? null : new SCABindingInvoker(chain);
+                
+                // it turns out that the chain source and target operations are the same, and are the operation 
+                // from the target, not sure if thats by design or a bug. The SCA binding invoker needs to know 
+                // the source and target class loaders so pass in the real source operation in the constructor 
+                return chain == null ? null : new SCABindingInvoker(chain, operation, mediator);
             }
         }
         return null;

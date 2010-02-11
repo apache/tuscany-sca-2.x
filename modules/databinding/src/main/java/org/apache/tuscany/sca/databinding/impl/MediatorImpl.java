@@ -443,7 +443,11 @@ public class MediatorImpl implements Mediator {
     }
 
     public Object copy(Object data, DataType dataType) {
-        return copy(data, dataType, null);
+        return copy(data, dataType, null, null);
+    }
+
+    public Object copy(Object data, DataType dataType, DataType targetDataType) {
+        return copy(data, dataType, null, targetDataType);
     }
 
     /**
@@ -452,7 +456,7 @@ public class MediatorImpl implements Mediator {
      * @param dataType
      * @return a copy of the data
      */
-    private Object copy(Object data, DataType dataType, Operation operation) {
+    private Object copy(Object data, DataType dataType, Operation operation, DataType targetDataType) {
         if (data == null) {
             return null;
         }
@@ -515,11 +519,11 @@ public class MediatorImpl implements Mediator {
             }
         }
 
-        if (dataBinding != null) {
-            return dataBinding.copy(data, dataType, operation);
-        } else {
+        if (dataBinding == null) {
             return data;
         }
+
+        return dataBinding.copy(data, dataType, operation, targetDataType);
     }
 
     /**
@@ -528,11 +532,15 @@ public class MediatorImpl implements Mediator {
      * @return the copy
      */
     public Object copyInput(Object input, Operation operation) {
+        return copyInput(input, operation, null);
+    }
+    public Object copyInput(Object input, Operation operation, Operation targetOperation) {
         if (input == null) {
             return null;
         }
         Object[] data = (input instanceof Object[]) ? (Object[])input : new Object[] {input};
         List<DataType> inputTypes = operation.getInputType().getLogical();
+        List<DataType> inputTypesTarget = targetOperation == null ? null : targetOperation.getInputType().getLogical();
         Object[] copy = new Object[data.length];
         Map<Object, Object> map = new IdentityHashMap<Object, Object>();
         for (int i = 0, size = inputTypes.size(); i < size; i++) {
@@ -544,7 +552,7 @@ public class MediatorImpl implements Mediator {
                 if (copiedArg != null) {
                     copy[i] = copiedArg;
                 } else {
-                    copiedArg = copy(arg, inputTypes.get(i));
+                    copiedArg = copy(arg, inputTypes.get(i), inputTypesTarget == null ? null : inputTypesTarget.get(i));
                     map.put(arg, copiedArg);
                     copy[i] = copiedArg;
                 }
@@ -554,14 +562,22 @@ public class MediatorImpl implements Mediator {
     }
 
     public Object copyOutput(Object data, Operation operation) {
-        return copy(data, operation.getOutputType(), operation);
+        return copyOutput(data, operation, null);
+    }
+    public Object copyOutput(Object data, Operation operation, Operation targetOperation) {
+        return copy(data, operation.getOutputType(), operation, targetOperation.getOutputType());
     }
 
     public Object copyFault(Object fault, Operation operation) {
+        return copyFault(fault, operation, null);
+    }
+    public Object copyFault(Object fault, Operation operation, Operation targetOperation) {
         if (faultExceptionMapper == null) {
             return fault;
         }
-        for (DataType et : operation.getFaultTypes()) {
+        List<DataType> fts = operation.getFaultTypes();
+        for (int i=0; i<fts.size(); i++) {
+            DataType et = fts.get(i); 
             if (et.getPhysical().isInstance(fault)) {
                 Throwable ex = (Throwable)fault;
                 DataType<DataType> exType =
@@ -569,9 +585,15 @@ public class MediatorImpl implements Mediator {
                 faultExceptionMapper.introspectFaultDataType(exType, operation, false);
                 DataType faultType = exType.getLogical();
                 Object faultInfo = faultExceptionMapper.getFaultInfo(ex, faultType.getPhysical(), operation);
-                faultInfo = copy(faultInfo, faultType);
-                fault =
-                    faultExceptionMapper.wrapFaultInfo(exType, ex.getMessage(), faultInfo, ex.getCause(), operation);
+                DataType targetFaultType;
+                try {
+                    targetFaultType = (DataType)faultType.clone();
+                } catch (CloneNotSupportedException e) {
+                    throw new IllegalStateException(e);
+                }
+                targetFaultType.setPhysical(targetOperation.getFaultTypes().get(i).getPhysical());
+                faultInfo = copy(faultInfo, faultType, targetFaultType);
+                fault = faultExceptionMapper.wrapFaultInfo(exType, ex.getMessage(), faultInfo, ex.getCause(), operation);
                 return fault;
             }
         }

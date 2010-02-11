@@ -95,9 +95,14 @@ public class JAXBDataBinding extends BaseDataBinding {
         return true;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Object copy(Object arg, DataType dataType, Operation operation) {
+        return copy(arg, dataType, operation, dataType);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public Object copy(Object arg, DataType dataType, Operation operation, DataType targetDataType) {
         try {
             boolean isElement = false;
             if (dataType == null) {
@@ -112,7 +117,15 @@ public class JAXBDataBinding extends BaseDataBinding {
             arg = JAXBContextHelper.createJAXBElement(context, dataType, arg);
             Document doc = domHelper.newDocument();
             context.createMarshaller().marshal(arg, doc);
-            Object value = context.createUnmarshaller().unmarshal(doc, dataType.getPhysical());
+            
+            Object value;
+            if (targetDataType != null && targetDataType.getPhysical() != dataType.getPhysical()) {
+                JAXBContext targetContext = contextHelper.createJAXBContext(targetDataType);
+                value = targetContext.createUnmarshaller().unmarshal(doc, targetDataType.getPhysical());
+            } else {
+                value = context.createUnmarshaller().unmarshal(doc, dataType.getPhysical());
+            }
+            
             if (isElement && value instanceof JAXBElement) {
                 return value;
             }

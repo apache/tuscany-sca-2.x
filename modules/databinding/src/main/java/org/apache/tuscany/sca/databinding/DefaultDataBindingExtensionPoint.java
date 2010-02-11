@@ -169,6 +169,10 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
             return getDataBinding().copy(object, dataType, operation);
         }
 
+        public Object copy(Object object, DataType dataType, Operation operation, DataType targetdataType) {
+            return getDataBinding().copy(object, dataType, operation, targetdataType);
+        }
+
         public String getName() {
             return name;
         }

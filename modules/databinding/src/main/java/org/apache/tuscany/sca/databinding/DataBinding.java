@@ -83,6 +83,16 @@ public interface DataBinding {
     Object copy(Object object, DataType dataType, Operation operation);
     
     /**
+     * Make a copy of the object for "pass-by-value" semantics and cross classloader invocations.
+     *
+     * @param object source object to copy 
+     * @param dataType The data type
+     * @param operation The operation
+     * @return copy of the object passed in as argument
+     */
+    Object copy(Object object, DataType dataType, Operation operation, DataType targetdataType);
+
+    /**
      * Get the XML type helper for Java types
      * @return The databinding-specific XML type helper class
      */

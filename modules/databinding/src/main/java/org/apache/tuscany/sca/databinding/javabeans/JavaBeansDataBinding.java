@@ -59,7 +59,7 @@ public class JavaBeansDataBinding extends BaseDataBinding {
     }
 
     @Override
-    public Object copy(Object arg, DataType dataType, Operation operation) {
+    public Object copy(Object arg, DataType dataType, Operation operation, DataType targetDataType) {
         if (arg == null) {
             return null;
         }
@@ -82,12 +82,16 @@ public class JavaBeansDataBinding extends BaseDataBinding {
 
                 // Work out which ClassLoader to use for deserializing arg
                 // We want to use:
+                //   * The ClassLoader of the targetDataType if it is not the System ClassLoader
                 //   * The ClassLoader of arg if it is not the System ClassLoader
                 //   * The ThreadContext ClassLoader if the ClassLoader of arg is the System ClassLoader
                 //     because Collection classes are loaded by the System ClassLoader but their contents
                 //     may be loaded from another ClassLoader
                 //
-                ClassLoader classLoaderToUse = clazz.getClassLoader();
+                ClassLoader classLoaderToUse = targetDataType.getPhysical().getClassLoader();
+                if (classLoaderToUse == null) {
+                    classLoaderToUse = clazz.getClassLoader();
+                }
                 if (classLoaderToUse == null)
                 {
                     // ClassLoader of arg is the System ClassLoader so we will use the ThreadContext ClassLoader

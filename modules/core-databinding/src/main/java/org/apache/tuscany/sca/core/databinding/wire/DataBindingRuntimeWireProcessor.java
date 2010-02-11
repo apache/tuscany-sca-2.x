@@ -123,29 +123,6 @@ public class DataBindingRuntimeWireProcessor implements RuntimeWireProcessor {
         return isTransformationRequired(sourceOperation, targetOperation);
     }
 
-    /**
-     * FIXME: TUSCANY-2586, temporary work around till the JIRA is fixed to prevent
-     *  the PassByValueInterceptor being used for services when the binding protocol
-     *  doesn't need the copies done.
-     */
-    protected boolean isOnMessage(Operation op) {
-        return "onMessage".equals(op.getName());
-    }
-
-    /**
-     * Pass-by-value copies are required if the interfaces are remotable unless the
-     * implementation uses the @AllowsPassByReference annotation.
-     */
-    protected boolean isRemotable(InvocationChain chain, Operation sourceOperation, Operation targetOperation) {
-        if (!sourceOperation.getInterface().isRemotable()) {
-            return false;
-        }
-        if (!targetOperation.getInterface().isRemotable()) {
-            return false;
-        }
-        return true;
-    }
-
     public void process(RuntimeEndpoint endpoint) {
         InterfaceContract sourceContract = endpoint.getBindingInterfaceContract();
         InterfaceContract targetContract = endpoint.getComponentTypeServiceInterfaceContract();
@@ -165,15 +142,7 @@ public class DataBindingRuntimeWireProcessor implements RuntimeWireProcessor {
             if (isTransformationRequired(sourceContract, sourceOperation, targetContract, targetOperation)) {
                 // Add the interceptor to the source side because multiple
                 // references can be wired to the same service
-                interceptor =
-                    new DataTransformationInterceptor(endpoint, sourceOperation, targetOperation, mediator);
-            } else {
-                // assume pass-by-values copies are required if interfaces are remotable and there is no data binding
-                // transformation, i.e. a transformation will result in a copy so another pass-by-value copy is unnecessary
-                if (!isOnMessage(targetOperation) && isRemotable(chain, sourceOperation, targetOperation)) {
-                    interceptor =
-                        new PassByValueInterceptor(mediator, chain, targetOperation);
-                }
+                interceptor = new DataTransformationInterceptor(endpoint, sourceOperation, targetOperation, mediator);
             }
             if (interceptor != null) {
                 String phase = Phase.SERVICE_INTERFACE;
@@ -202,15 +171,7 @@ public class DataBindingRuntimeWireProcessor implements RuntimeWireProcessor {
             if (isTransformationRequired(sourceContract, sourceOperation, targetContract, targetOperation)) {
                 // Add the interceptor to the source side because multiple
                 // references can be wired to the same service
-                interceptor =
-                    new DataTransformationInterceptor(endpointReference, sourceOperation, targetOperation, mediator);
-            } else {
-                // assume pass-by-values copies are required if interfaces are remotable and there is no data binding
-                // transformation, i.e. a transformation will result in a copy so another pass-by-value copy is unnecessary
-                if (!isOnMessage(targetOperation) && isRemotable(chain, sourceOperation, targetOperation)) {
-                    interceptor =
-                        new PassByValueInterceptor(mediator, chain, targetOperation);
-                }
+                interceptor = new DataTransformationInterceptor(endpointReference, sourceOperation, targetOperation, mediator);
             }
             if (interceptor != null) {
                 String phase = Phase.REFERENCE_INTERFACE;

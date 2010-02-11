@@ -100,6 +100,10 @@ public abstract class BaseDataBinding implements DataBinding {
     }
 
     public Object copy(Object object, DataType dataType, Operation operation) {
+        return copy(object, dataType, operation, dataType);
+    }
+
+    public Object copy(Object object, DataType dataType, Operation operation, DataType targetDataType) {
         return object;
     }
 
