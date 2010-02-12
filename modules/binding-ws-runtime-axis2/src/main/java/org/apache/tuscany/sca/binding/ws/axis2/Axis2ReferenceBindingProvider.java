@@ -57,7 +57,7 @@ import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.binding.ws.axis2.transport.TransportReferenceInterceptor;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
-import org.apache.tuscany.sca.binding.ws.axis2.provider.Axis2BindingInvoker;
+import org.apache.tuscany.sca.binding.ws.axis2.provider.Axis2ReferenceBindingInvoker;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
@@ -248,7 +248,7 @@ public class Axis2ReferenceBindingProvider implements EndpointReferenceProvider 
             options.setProperty(org.apache.axis2.Constants.Configuration.ENABLE_MTOM, org.apache.axis2.Constants.VALUE_TRUE);
         }
         
-        return new Axis2BindingInvoker(endpointReference, serviceClient, wsdlOperationQName, options, soapFactory, wsBinding);
+        return new Axis2ReferenceBindingInvoker(endpointReference, serviceClient, wsdlOperationQName, options, soapFactory, wsBinding);
         
 /*        
         if (operation.isNonBlocking()) {

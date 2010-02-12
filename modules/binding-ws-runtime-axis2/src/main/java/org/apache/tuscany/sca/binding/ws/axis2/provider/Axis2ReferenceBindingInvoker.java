@@ -52,7 +52,7 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
  *
  * @version $Rev$ $Date$
  */
-public class Axis2BindingInvoker implements Invoker, DataExchangeSemantics {
+public class Axis2ReferenceBindingInvoker implements Invoker, DataExchangeSemantics {
     public static final QName QNAME_WSA_FROM =
         new QName(AddressingConstants.Final.WSA_NAMESPACE, 
                   AddressingConstants.WSA_FROM,
@@ -65,7 +65,7 @@ public class Axis2BindingInvoker implements Invoker, DataExchangeSemantics {
     private SOAPFactory soapFactory;    
     private WebServiceBinding wsBinding;
     
-    public Axis2BindingInvoker(RuntimeEndpointReference endpointReference, 
+    public Axis2ReferenceBindingInvoker(RuntimeEndpointReference endpointReference, 
                                ServiceClient serviceClient,
                                QName wsdlOperationName,
                                Options options,
