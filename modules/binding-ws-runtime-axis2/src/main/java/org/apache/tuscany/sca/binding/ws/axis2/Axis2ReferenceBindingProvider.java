@@ -55,21 +55,26 @@ import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.xml.Constants;
+import org.apache.tuscany.sca.binding.ws.axis2.transport.TransportReferenceInterceptor;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
+import org.apache.tuscany.sca.binding.ws.axis2.provider.Axis2BindingInvoker;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.MessageFactory;
+import org.apache.tuscany.sca.invocation.Phase;
 import org.apache.tuscany.sca.policy.util.PolicyHelper;
+import org.apache.tuscany.sca.provider.EndpointReferenceProvider;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
+import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 import org.oasisopen.sca.ServiceRuntimeException;
 
-public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider {
+public class Axis2ReferenceBindingProvider implements EndpointReferenceProvider {
 
     // Tuscany extensions
     private ExtensionPointRegistry extensionPoints;
@@ -78,7 +83,7 @@ public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider {
     
     // the endpoint reference configuration that's driving this binding provider
     // and some convenience data retrieved from the endpoint reference
-    private EndpointReference endpointReference;
+    private RuntimeEndpointReference endpointReference;
     private RuntimeComponent component;
     private RuntimeComponentReference reference;
     private WebServiceBinding wsBinding;
@@ -99,7 +104,7 @@ public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider {
                                          EndpointReference endpointReference) {
 
         this.extensionPoints = extensionPoints;
-        this.endpointReference = endpointReference;
+        this.endpointReference = (RuntimeEndpointReference)endpointReference;
         
         this.modelFactories =  extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         this.messageFactory = modelFactories.getFactory(MessageFactory.class); 
@@ -202,6 +207,7 @@ public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider {
 
     public InterfaceContract getBindingInterfaceContract() {
         return wsBinding.getBindingInterfaceContract();
+        
     }
 
     public boolean supportsOneWayInvocation() {
@@ -241,14 +247,31 @@ public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider {
         {
             options.setProperty(org.apache.axis2.Constants.Configuration.ENABLE_MTOM, org.apache.axis2.Constants.VALUE_TRUE);
         }
-        Axis2BindingInvoker invoker;
+        
+        return new Axis2BindingInvoker(endpointReference, serviceClient, wsdlOperationQName, options, soapFactory, wsBinding);
+        
+/*        
         if (operation.isNonBlocking()) {
             invoker = new Axis2OneWayBindingInvoker(this, wsdlOperationQName, options, soapFactory, wsBinding);
         } else {
-            invoker = new Axis2BindingInvoker(this, wsdlOperationQName, options, soapFactory, wsBinding);
+            invoker = new Axis2BindingInvoker(endpointReference, serviceClient, wsdlOperationQName, options, soapFactory, wsBinding);
         }
         
         return invoker;
+*/        
+    }
+    
+    /*
+     * set up the reference binding wire with the right set of ws reference
+     * interceptors
+     */
+    public void configure() {
+        InvocationChain bindingChain = endpointReference.getBindingInvocationChain();
+         
+        // add transport interceptor
+        bindingChain.addInterceptor(Phase.REFERENCE_BINDING_TRANSPORT, 
+                                    new TransportReferenceInterceptor());
+        
     }
     
     // Reference specific utility operations
@@ -326,9 +349,4 @@ public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider {
         }
         return null;
     }  
-    
-    public ServiceClient getServiceClient() {
-        return serviceClient;
-    }    
-
 }

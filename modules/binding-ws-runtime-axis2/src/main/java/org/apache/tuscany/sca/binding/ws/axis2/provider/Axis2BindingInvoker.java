@@ -16,13 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.binding.ws.axis2;
+package org.apache.tuscany.sca.binding.ws.axis2.provider;
 
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.xml.namespace.QName;
 
@@ -37,83 +35,56 @@ import org.apache.axis2.addressing.EndpointReference;
 import org.apache.axis2.addressing.EndpointReferenceHelper;
 import org.apache.axis2.client.OperationClient;
 import org.apache.axis2.client.Options;
+import org.apache.axis2.client.ServiceClient;
 import org.apache.axis2.context.MessageContext;
-import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.interfacedef.util.FaultException;
 import org.apache.tuscany.sca.invocation.DataExchangeSemantics;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
-import org.apache.tuscany.sca.runtime.ReferenceParameters;
+import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 
 
 /**
- * Axis2BindingInvoker uses an Axis2 OperationClient to invoke a remote web service
+ * Axis2BindingInvoker creates an Axis2 OperationClient to pass down the 
+ * binding chain
  *
  * @version $Rev$ $Date$
  */
 public class Axis2BindingInvoker implements Invoker, DataExchangeSemantics {
-    private final static String SCA11_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.1";
-
     public static final QName QNAME_WSA_FROM =
-        new QName(AddressingConstants.Final.WSA_NAMESPACE, AddressingConstants.WSA_FROM,
+        new QName(AddressingConstants.Final.WSA_NAMESPACE, 
+                  AddressingConstants.WSA_FROM,
                   AddressingConstants.WSA_DEFAULT_PREFIX);
-    public static final String TUSCANY_PREFIX = "tuscany";
-    public static final QName CALLBACK_ID_REFPARM_QN =
-        new QName(SCA11_TUSCANY_NS, "CallbackID", TUSCANY_PREFIX);
-    public static final QName CONVERSATION_ID_REFPARM_QN =
-        new QName(SCA11_TUSCANY_NS, "ConversationID", TUSCANY_PREFIX);
     
-    private Axis2ReferenceBindingProvider bindingProvider;
+    private RuntimeEndpointReference endpointReference;
+    private ServiceClient serviceClient;
     private QName wsdlOperationName;
     private Options options;
     private SOAPFactory soapFactory;    
     private WebServiceBinding wsBinding;
     
-//    private BasicAuthenticationPolicy basicAuthenticationPolicy = null;
-//    private Axis2TokenAuthenticationPolicy axis2TokenAuthenticationPolicy = null;
-//    private List<Axis2HeaderPolicy> axis2HeaderPolicies = new ArrayList<Axis2HeaderPolicy>();
-
-    public Axis2BindingInvoker(Axis2ReferenceBindingProvider bindingProvider,
+    public Axis2BindingInvoker(RuntimeEndpointReference endpointReference, 
+                               ServiceClient serviceClient,
                                QName wsdlOperationName,
                                Options options,
                                SOAPFactory soapFactory,
                                WebServiceBinding wsBinding) {
-        this.bindingProvider = bindingProvider;
+        this.endpointReference = endpointReference;
+        this.serviceClient = serviceClient;
         this.wsdlOperationName = wsdlOperationName;
         this.options = options;
         this.soapFactory = soapFactory;
         this.wsBinding = wsBinding;
-        
-        // find out which policies are active
-        /*
-        if (wsBinding instanceof PolicySubject) {
-            List<PolicySet> policySets = ((PolicySubject)wsBinding).getPolicySets();
-            for (PolicySet ps : policySets) {
-                for (Object p : ps.getPolicies()) {
-                    if (BasicAuthenticationPolicy.class.isInstance(p)) {
-                        basicAuthenticationPolicy = (BasicAuthenticationPolicy)p;
-                    } else if (Axis2TokenAuthenticationPolicy.class.isInstance(p)) {
-                        axis2TokenAuthenticationPolicy = (Axis2TokenAuthenticationPolicy)p;
-                    } else if (Axis2HeaderPolicy.class.isInstance(p)) {
-                        axis2HeaderPolicies.add((Axis2HeaderPolicy)p);
-                    }else {
-                        // etc. check for other types of policy being present
-                    }
-                }
-            }
-        }
-        */
     }
-
-    private static final QName EXCEPTION = new QName("", "Exception");
-    
+   
     public Message invoke(Message msg) {
         try {
-            Object resp = invokeTarget(msg);
-           
-            msg.setBody(resp);
+            final OperationClient operationClient = createOperationClient(msg);
+            msg.setBindingContext(operationClient);
+            msg = endpointReference.getBindingInvocationChain().getHeadInvoker().invoke(msg);
+             
         } catch (AxisFault e) {
             if (e.getDetail() != null ) {
                 FaultException f = new FaultException(e.getMessage(), e.getDetail(), e);
@@ -124,74 +95,9 @@ public class Axis2BindingInvoker implements Invoker, DataExchangeSemantics {
             }
         } catch (Throwable e) {
             msg.setFaultBody(e);
-        }
+        }       
 
         return msg;
-    }
-
-    protected Object invokeTarget(Message msg) throws AxisFault {
-        final OperationClient operationClient = createOperationClient(msg);
-
-        // ensure connections are tracked so that they can be closed by the reference binding
-        MessageContext requestMC = operationClient.getMessageContext("Out");
-        requestMC.getOptions().setProperty(HTTPConstants.REUSE_HTTP_CLIENT, Boolean.TRUE);
-        requestMC.getOptions().setTimeOutInMilliSeconds(240000L);
-
-        /*
-        for ( PolicyHandler policyHandler : policyHandlerList ) {
-            policyHandler.beforeInvoke(msg, requestMC, operationClient);
-        }
-        */
-        
-        // set policy specified headers
-/*        
-        for (Axis2HeaderPolicy policy : axis2HeaderPolicies){
-            Axis2BindingHeaderConfigurator.setHeader(requestMC, msg, policy.getHeaderName());
-        }
-        
-        if (basicAuthenticationPolicy != null) {
-            Axis2BindingBasicAuthenticationConfigurator.setOperationOptions(operationClient, msg, basicAuthenticationPolicy);
-        }
-        
-        if (axis2TokenAuthenticationPolicy != null) {
-            Axis2BindingHeaderConfigurator.setHeader(requestMC, msg, axis2TokenAuthenticationPolicy.getTokenName());
-        }
-*/        
-        
-        // Allow privileged access to read properties. Requires PropertiesPermission read in
-        // security policy.
-        try {
-            AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
-                public Object run() throws AxisFault {
-                    operationClient.execute(true);
-                    return null;
-                }
-            });
-        } catch (PrivilegedActionException e) {
-            operationClient.complete(requestMC);
-            throw (AxisFault)e.getException();
-        }
-
-        MessageContext responseMC = operationClient.getMessageContext("In");
-        
-        /*
-        for ( PolicyHandler policyHandler : policyHandlerList ) {
-            policyHandler.afterInvoke(msg, responseMC, operationClient);
-        }
-        */
-        
-        OMElement response = responseMC.getEnvelope().getBody().getFirstElement();
-
-        // FIXME: [rfeng] We have to pay performance penalty to build the complete OM as the operationClient.complete() will
-        // release the underlying HTTP connection. 
-        // Force the response to be populated, see https://issues.apache.org/jira/browse/TUSCANY-1541
-        if (response != null) {
-            response.build();
-        }
-
-        operationClient.complete(requestMC);
-
-        return response;
     }
 
     @SuppressWarnings("deprecation")
@@ -204,8 +110,7 @@ public class Axis2BindingInvoker implements Invoker, DataExchangeSemantics {
                 if (bc instanceof OMElement) {
                     body.addChild((OMElement)bc);
                 } else {
-                    throw new IllegalArgumentException(
-                                                       "Can't handle mixed payloads between OMElements and other types.");
+                    throw new IllegalArgumentException( "Can't handle mixed payloads between OMElements and other types.");
                 }
             }
         }
@@ -213,7 +118,7 @@ public class Axis2BindingInvoker implements Invoker, DataExchangeSemantics {
         requestMC.setEnvelope(env);
 
         // Axis2 operationClients can not be shared so create a new one for each request
-        final OperationClient operationClient = bindingProvider.getServiceClient().createClient(wsdlOperationName);
+        final OperationClient operationClient = serviceClient.createClient(wsdlOperationName);
         operationClient.setOptions(options);
 
         Endpoint callbackEndpoint = msg.getFrom().getCallbackEndpoint();
@@ -232,11 +137,6 @@ public class Axis2BindingInvoker implements Invoker, DataExchangeSemantics {
             sh.addChild(epr);
             requestMC.setFrom(fromEPR);
         }
-        
-        // Set any message headers required by policy
-        // Get the header from the tuscany message
-        // If its not already an OM convert it to OM
-        // add it to the envelope header
 
         // if target endpoint was not specified when this invoker was created, 
         // use dynamically specified target endpoint passed in on this call
