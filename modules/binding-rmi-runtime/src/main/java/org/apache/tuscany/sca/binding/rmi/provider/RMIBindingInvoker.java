@@ -63,7 +63,7 @@ public class RMIBindingInvoker implements Invoker, DataExchangeSemantics {
         return msg;
     }
 
-    private Object invokeTarget(final Object payload) throws InvocationTargetException, SecurityException,
+    public Object invokeTarget(final Object payload) throws InvocationTargetException, SecurityException,
         NoSuchMethodException, IllegalArgumentException, IllegalAccessException {
         Remote proxy = null;
         final Class<?> remote = remoteMethod.getDeclaringClass();
