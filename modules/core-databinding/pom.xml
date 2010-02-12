@@ -40,13 +40,6 @@
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-databinding-jaxb</artifactId>
-            <version>${project.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-core</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
@@ -70,9 +63,16 @@
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-interface-java-jaxws</artifactId>
             <version>${project.version}</version>
-            <scope>compile</scope>
+            <scope>runtime</scope>
         </dependency>
-                
+        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-databinding-jaxb</artifactId>
+            <version>${project.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+                        
         <dependency>
             <groupId>org.codehaus.woodstox</groupId>
             <artifactId>wstx-asl</artifactId>
@@ -85,6 +85,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        
     </dependencies>
 
 </project>
