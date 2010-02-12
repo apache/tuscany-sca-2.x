@@ -25,15 +25,14 @@ import javax.security.auth.Subject;
 import javax.xml.namespace.QName;
 
 import org.apache.axis2.client.OperationClient;
-import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.axis2.transport.http.HttpTransportProperties;
 import org.apache.axis2.transport.http.HttpTransportProperties.Authenticator;
-import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.Phase;
 import org.apache.tuscany.sca.invocation.PhasedInterceptor;
+import org.apache.tuscany.sca.policy.PolicyExpression;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.authentication.basic.BasicAuthenticationPolicy;
 import org.apache.tuscany.sca.policy.authentication.basic.BasicAuthenticationPrincipal;
@@ -49,24 +48,24 @@ public class BasicAuthenticationReferencePolicyInterceptor implements PhasedInte
     public static final QName policySetQName = new QName(SCA10_TUSCANY_NS, "wsBasicAuthentication");
 
     private Invoker next;
-    private Operation operation;
     private PolicySet policySet = null;
     private String context;
     private BasicAuthenticationPolicy policy;
 
-    public BasicAuthenticationReferencePolicyInterceptor(String context, Operation operation, PolicySet policySet) {
+    public BasicAuthenticationReferencePolicyInterceptor(String context, PolicySet policySet) {
         super();
-        this.operation = operation;
         this.policySet = policySet;
         this.context = context;
         init();
     }
 
     private void init() {
+        // TODO - how to get the appropriate expression out of the
+        //        policy set. Need WS Policy help here
         if (policySet != null) {
-            for (Object policyObject : policySet.getPolicies()){
-                if (policyObject instanceof BasicAuthenticationPolicy){
-                    policy = (BasicAuthenticationPolicy)policyObject;
+            for (PolicyExpression policyExpression : policySet.getPolicies()){
+                if (policyExpression.getPolicy() instanceof BasicAuthenticationPolicy){
+                    policy = (BasicAuthenticationPolicy)policyExpression.getPolicy();
                     break;
                 }
             }
@@ -89,10 +88,17 @@ public class BasicAuthenticationReferencePolicyInterceptor implements PhasedInte
         if (  principal != null ) {
             username = ((BasicAuthenticationPrincipal)principal).getName();
             password = ((BasicAuthenticationPrincipal)principal).getPassword();
-        }
+        } else if (policy != null ){
+            username = policy.getUserName();
+            password = policy.getPassword();
+            
+            principal = new BasicAuthenticationPrincipal(username,
+                                                         password);
+            subject.getPrincipals().add(principal);
+        }        
         
         if (username == null || password == null ){
-            throw new ServiceRuntimeException("Basic authentication username or password is null");
+            throw new ServiceRuntimeException("Basic authentication username and/or password is null");
         }
         
         HttpTransportProperties.Authenticator authenticator = new HttpTransportProperties.Authenticator();
@@ -118,6 +124,6 @@ public class BasicAuthenticationReferencePolicyInterceptor implements PhasedInte
     }
     
     public String getPhase() {
-        return Phase.REFERENCE_POLICY;
+        return Phase.REFERENCE_BINDING_POLICY;
     }    
 }

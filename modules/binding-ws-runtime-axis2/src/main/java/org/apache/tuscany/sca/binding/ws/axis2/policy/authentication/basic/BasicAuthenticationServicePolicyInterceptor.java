@@ -30,6 +30,7 @@ import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.Phase;
 import org.apache.tuscany.sca.invocation.PhasedInterceptor;
+import org.apache.tuscany.sca.policy.PolicyExpression;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.authentication.basic.BasicAuthenticationPolicy;
 import org.apache.tuscany.sca.policy.authentication.basic.BasicAuthenticationPrincipal;
@@ -59,10 +60,12 @@ public class BasicAuthenticationServicePolicyInterceptor implements PhasedInterc
     }
 
     private void init() {
+        // TODO - how to get the appropriate expression out of the
+        //        policy set. Need WS Policy help here
         if (policySet != null) {
-            for (Object policyObject : policySet.getPolicies()){
-                if (policyObject instanceof BasicAuthenticationPolicy){
-                    policy = (BasicAuthenticationPolicy)policyObject;
+            for (PolicyExpression policyExpression : policySet.getPolicies()){
+                if (policyExpression.getPolicy() instanceof BasicAuthenticationPolicy){
+                    policy = (BasicAuthenticationPolicy)policyExpression.getPolicy();
                     break;
                 }
             }
@@ -114,7 +117,7 @@ public class BasicAuthenticationServicePolicyInterceptor implements PhasedInterc
     }
 
     public String getPhase() {
-        return Phase.SERVICE_POLICY;
+        return Phase.SERVICE_BINDING_POLICY;
     }
     
 }

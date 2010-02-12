@@ -35,9 +35,9 @@ public class BasicAuthenticationReferencePolicyProvider extends BasePolicyProvid
         super(BasicAuthenticationPolicy.class, endpointReference);
     }
 
-    public PhasedInterceptor createInterceptor(Operation operation) {
+    public PhasedInterceptor createBindingInterceptor() {
         PolicySet ps = findPolicySet();
-        return ps == null ? null : new BasicAuthenticationReferencePolicyInterceptor(getContext(), operation, ps);
+        return ps == null ? null : new BasicAuthenticationReferencePolicyInterceptor(getContext(), ps);
     }
 
     public void start() {
