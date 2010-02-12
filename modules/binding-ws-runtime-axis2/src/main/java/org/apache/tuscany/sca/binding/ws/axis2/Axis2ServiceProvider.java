@@ -43,7 +43,7 @@ import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 
-public class Axis2ServiceProvider  implements Provider<OMElement> {
+public class Axis2ServiceProvider implements Provider<OMElement> {
     private static final Logger logger = Logger.getLogger(Axis2ServiceProvider.class.getName());
     
     public static final QName QNAME_WSA_ADDRESS =
@@ -74,9 +74,10 @@ public class Axis2ServiceProvider  implements Provider<OMElement> {
     }
     
     public OMElement invoke(OMElement arg0) {
+        // TODO - the interface for a JAX-WS provider. 
+        //        May make Axis2 integration cleaner
         return null;
     }
-    
 
     public Object invokeTarget(Operation op, Object[] args, MessageContext inMC) throws InvocationTargetException {
         String callbackAddress = null;
@@ -99,24 +100,7 @@ public class Axis2ServiceProvider  implements Provider<OMElement> {
                         callbackAddress = callbackAddrElement.getText();
                     }
                 }
-            }
-
-            // get policy specified headers
-/*            
-            for (Axis2HeaderPolicy policy : axis2HeaderPolicies) {
-                //Axis2BindingHeaderConfigurator.getHeader(inMC, msg, policy.getHeaderName());
-            }
-*/            
-/* 
-            if (axis2TokenAuthenticationPolicy != null) {
-                Axis2SOAPHeaderString tokenHeader = new Axis2SOAPHeaderString();
-               
-                Axis2BindingHeaderConfigurator.getHeader(inMC,
-                                                         msg,
-                                                         axis2TokenAuthenticationPolicy.getTokenName(),
-                                                         tokenHeader);                                           
-            }
-*/            
+            }            
         }
 
         // Create a from EPR to hold the details of the callback endpoint
