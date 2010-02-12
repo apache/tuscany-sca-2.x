@@ -97,8 +97,8 @@ public class EndpointBuilderImpl implements CompositeBuilder {
                                 //FIXME create a java validation message resource bundle
                                 Monitor.error(monitor, 
                                               this, 
-                                              null,
-                                              "[JCA100006] JAX-WS client-side asynchronous pooling and callback methods are not allowed in service interfaces", 
+                                              "org.apache.tuscany.sca.builder.builder-validation-messages",
+                                              "JaxWSClientAsyncMethodsNotAllowed", 
                                               service, 
                                               service.getName());                  
                             }
