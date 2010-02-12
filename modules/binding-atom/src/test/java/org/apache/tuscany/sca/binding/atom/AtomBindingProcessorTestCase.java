@@ -24,8 +24,6 @@ import java.io.StringReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 
-import junit.framework.TestCase;
-
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
@@ -33,11 +31,14 @@ import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  * @version $Rev$ $Date$
  */
-public class AtomBindingProcessorTestCase extends TestCase {
+public class AtomBindingProcessorTestCase {
     
     private static final String COMPOSITE =
         "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 
@@ -50,12 +51,12 @@ public class AtomBindingProcessorTestCase extends TestCase {
             + " </component>"
             + "</composite>";
 
-    private XMLInputFactory inputFactory;
-    private StAXArtifactProcessor<Object> staxProcessor;
-    private ProcessorContext context;
+    private static XMLInputFactory inputFactory;
+    private static StAXArtifactProcessor<Object> staxProcessor;
+    private static ProcessorContext context;
 
-    @Override
-    protected void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
         context = new ProcessorContext(extensionPoints);
         inputFactory = XMLInputFactory.newInstance();
@@ -68,14 +69,15 @@ public class AtomBindingProcessorTestCase extends TestCase {
      * Test parsing valid composite definition. Valid composite populated with correct values expected.
      * @throws Exception
      */
+    @Test
     public void testLoadValidComposite() throws Exception {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(COMPOSITE));
         
         Composite composite = (Composite)staxProcessor.read(reader, context);
         AtomBinding binding = (AtomBinding)   composite.getComponents().get(0).getServices().get(0).getBindings().get(0);
         
-        assertNotNull(binding);
-        assertEquals("Feed Title", binding.getTitle());
-        assertEquals("http://localhost:8080/feed", binding.getURI());
+        Assert.assertNotNull(binding);
+        Assert.assertEquals("Feed Title", binding.getTitle());
+        Assert.assertEquals("http://localhost:8080/feed", binding.getURI());
     }
 }
