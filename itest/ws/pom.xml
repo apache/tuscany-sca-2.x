@@ -31,6 +31,15 @@
     
   <modules>
     <module>defaults</module>
+    <module>authentication-basic</module>
+<!--
+    <module>https</module>
+    <module>jms</module>
+    <module>mtom</module>
+    <module>authentication-wssecurity</module>
+    <module>autherization-wssecurity</module>
+    <module>confidentiality-wssecurity</module>
+-->
   </modules>
 
 </project>
