@@ -175,6 +175,10 @@ public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfa
             writer.writeAttribute(INTERFACE, javaInterface.getName());
         }
         
+        if(javaInterface != null && javaInterface.isRemotableSet()) {
+            writer.writeAttribute(REMOTABLE, String.valueOf(javaInterface.isRemotable()));
+        }
+        
         JavaInterface javaCallbackInterface = (JavaInterface)javaInterfaceContract.getCallbackInterface();
         if (javaCallbackInterface != null && javaCallbackInterface.getName() != null) {
             writer.writeAttribute(CALLBACK_INTERFACE, javaCallbackInterface.getName());
