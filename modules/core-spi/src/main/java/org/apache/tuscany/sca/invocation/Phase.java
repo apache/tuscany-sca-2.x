@@ -20,50 +20,40 @@
 package org.apache.tuscany.sca.invocation;
 
 /**
- * Tuscany built-in phases for the invocation chain
+ * Tuscany built-in phases for the invocation chain. The phases are organized
+ * here such that a message passing from reference component implementation to
+ * service component implementation passes through the phases from top to bottom
  * 
  * @version $Rev$ $Date$
  */
 public interface Phase {
-    // The first phase for outgoing invocations via a reference
-    String REFERENCE = "component.reference";
-
-    // data transformation and validation
-    String REFERENCE_INTERFACE = "reference.interface";
-
-    // reference policy handling
-    String REFERENCE_POLICY = "reference.policy";
-
-    // reference binding invoker
-    String REFERENCE_BINDING = "reference.binding";
+    
+    // Reference operation chains
+    
+    String REFERENCE = "component.reference"; // The first phase for outgoing invocations via a reference
+    String REFERENCE_INTERFACE = "reference.interface"; // data transformation and validation
+    String REFERENCE_POLICY = "reference.policy"; // reference policy handling    
+    String REFERENCE_BINDING = "reference.binding"; // reference binding invoker
+    
+    // Reference binding chain
 
     String REFERENCE_BINDING_WIREFORMAT = "reference.binding.wireformat";
     String REFERENCE_BINDING_POLICY = "reference.binding.policy";
     String REFERENCE_BINDING_TRANSPORT = "reference.binding.transport";
 
+    // Service binding chain
+    
     String SERVICE_BINDING_TRANSPORT = "service.binding.transport";
     String SERVICE_BINDING_OPERATION_SELECTOR = "service.binding.operationselector";
     String SERVICE_BINDING_WIREFORMAT = "service.binding.wireformat";
     String SERVICE_BINDING_POLICY = "service.binding.policy";
     
+    // Service operation chains
     
-    // The first phase for incoming invocations via a service
-    String SERVICE_BINDING = "service.binding";
-
-    // service policy handling
-    String SERVICE_POLICY = "service.policy";
-
-    // data validation and transformation
-    String SERVICE_INTERFACE = "service.interface";
-
-    // TODO: not sure if we need to have this face
-    String SERVICE = "component.service";
-
-    // implementation policy handling
-    String IMPLEMENTATION_POLICY = "implementation.policy";
-
-    // implementation invoker
-    String IMPLEMENTATION = "component.implementation";
-
-    // String getName();
+    String SERVICE_BINDING = "service.binding"; // The first phase for incoming invocations via a service
+    String SERVICE_POLICY = "service.policy"; // service policy handling
+    String SERVICE_INTERFACE = "service.interface"; // data validation and transformation
+    String SERVICE = "component.service"; // TODO: not sure if we need to have this phase
+    String IMPLEMENTATION_POLICY = "implementation.policy"; // implementation policy handling
+    String IMPLEMENTATION = "component.implementation"; // implementation invoker
 }
