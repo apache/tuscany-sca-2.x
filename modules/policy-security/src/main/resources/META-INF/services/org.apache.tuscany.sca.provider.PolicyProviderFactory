@@ -15,8 +15,7 @@
 # specific language governing permissions and limitations
 # under the License. 
 
-# Implementation class for the policy extension
+# Implementation classs for policy extensions that are neither binding nor implementation specific
 org.apache.tuscany.sca.policy.security.jaas.JaasAuthenticationPolicyProviderFactory;model=org.apache.tuscany.sca.policy.security.jaas.JaasAuthenticationPolicy
-org.apache.tuscany.sca.policy.authentication.basic.BasicAuthenticationPolicyProviderFactory;model=org.apache.tuscany.sca.policy.authentication.basic.BasicAuthenticationPolicy
 org.apache.tuscany.sca.policy.identity.SecurityIdentityPolicyProviderFactory;model=org.apache.tuscany.sca.policy.identity.SecurityIdentityPolicy
 
