@@ -38,9 +38,9 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
  */
 public class JSONRPCBindingProviderFactory implements BindingProviderFactory<JSONRPCBinding> {
 
-	private MessageFactory messageFactory;
+    private MessageFactory messageFactory;
     private ServletHost servletHost;
-    
+
     public JSONRPCBindingProviderFactory(ExtensionPointRegistry extensionPoints) {
         this.servletHost = ServletHostHelper.getServletHost(extensionPoints);
         FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);

@@ -290,7 +290,8 @@ public class JSONRPCServiceServlet extends JSONRPCServlet {
             method = method.substring(method.lastIndexOf(".") + 1);
         }
     
-        List<Operation> operations = endpoint.getComponentTypeServiceInterfaceContract().getInterface().getOperations();
+        List<Operation> operations = endpoint.getComponentServiceInterfaceContract().getInterface().getOperations(); 
+            //endpoint.getComponentTypeServiceInterfaceContract().getInterface().getOperations();
             //componentService.getBindingProvider(binding).getBindingInterfaceContract().getInterface().getOperations();
 
         
