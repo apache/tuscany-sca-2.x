@@ -21,14 +21,15 @@ package org.apache.tuscany.sca.policy.identity;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.assembly.xml.Constants;
+
 /**
  * Models the SCA Implementation Security Policy Assertion for Security Identity.
  * 
  * @version $Rev$ $Date$
  */
-public class SecurityIdentityPolicy {
-    private final static String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200912";    
-    public static final QName NAME = new QName(SCA11_NS, "securityIdentity");
+public class SecurityIdentityPolicy { 
+    public static final QName NAME = new QName(Constants.SCA11_TUSCANY_NS, "securityIdentity");
 
     private boolean useCallerIdentity;
 

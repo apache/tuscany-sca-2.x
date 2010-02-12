@@ -17,8 +17,10 @@
     * specific language governing permissions and limitations
     * under the License.    
 -->
-<definitions xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912" targetNamespace="http://tuscany.apache.org/xmlns/sca/1.1"
-    xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912">
+<definitions xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912" 
+             targetNamespace="http://tuscany.apache.org/xmlns/sca/1.1"
+             xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1"
+             xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912">
 
     <!-- POLICY SETS -->
     <policySet name="ps1" provides="authorization" appliesTo="sca:implementation">
@@ -43,16 +45,16 @@
 
     <!-- POLICY SETS -->
     <policySet name="ps4" provides="securityIdentity" appliesTo="sca:implementation">
-        <securityIdentity>
-            <runAs role="admin" />
-        </securityIdentity>
+        <tuscany:securityIdentity>
+            <tuscany:runAs role="admin" />
+        </tuscany:securityIdentity>
     </policySet>
 
     <!-- POLICY SETS -->
     <policySet name="ps5" provides="securityIdentity" appliesTo="sca:implementation">
-        <securityIdentity>
-            <useCallerIdentity />
-        </securityIdentity>
+        <tuscany:securityIdentity>
+            <tuscany:useCallerIdentity />
+        </tuscany:securityIdentity>
     </policySet>
 
     <!-- POLICY SETS -->
