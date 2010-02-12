@@ -21,9 +21,8 @@ package org.apache.tuscany.sca.provider;
 
 
 /**
- * TODO RRB experiment
- * This is an experiment extension to try out the request response
- * binding function
+ * Defines the extra operation that reference binding providers implement 
+ * to configure the binding chain. 
  * 
  * @version $Rev$ $Date$
  */
