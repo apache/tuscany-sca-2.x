@@ -315,16 +315,12 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
         List<PolicyProvider> pps = getPolicyProviders();
         if (pps != null) {
             for (PolicyProvider p : pps) {
-                // TODO - SL - Need to get the binding policy providers
-/*                
-                if (p instanceof BindingPolicyProvider) {
-                    Interceptor interceptor = ((BindingPolicyProvider)p).createBindingInterceptor();
-                    if (interceptor != null) {
-                        bindingInvocationChain.addInterceptor(interceptor);
-                    }
+                Interceptor interceptor = p.createBindingInterceptor();
+                if (interceptor != null) {
+                    bindingInvocationChain.addInterceptor(interceptor);
                 }
-*/                
             }
+
         }
 
         // TODO - add something on the end of the wire to invoke the

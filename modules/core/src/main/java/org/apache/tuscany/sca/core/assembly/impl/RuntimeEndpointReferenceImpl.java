@@ -346,15 +346,10 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
         // add the policy interceptors to the service binding wire
         // find out which policies are active
         for (PolicyProvider p : getPolicyProviders()) {
-            // TODO - SL - Need to get the binding policy providers
-/*             
-            if (p instanceof BindingPolicyProvider) {
-                Interceptor interceptor = ((BindingPolicyProvider)p).createBindingInterceptor();
-                if (interceptor != null) {
-                    bindingInvocationChain.addInterceptor(interceptor);
-                }
+           Interceptor interceptor = p.createBindingInterceptor();
+            if (interceptor != null) {
+                bindingInvocationChain.addInterceptor(interceptor);
             }
-*/            
         }
     }
 
@@ -392,9 +387,9 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
         List<PolicyProvider> pps = getPolicyProviders();
         if (pps != null) {
             for (PolicyProvider p : pps) {
-                Interceptor interceptor = p.createInterceptor(operation);
+                Interceptor interceptor = p.createBindingInterceptor();
                 if (interceptor != null) {
-                    chain.addInterceptor(p.createInterceptor(operation));
+                    chain.addInterceptor(interceptor);
                 }
             }
         }
