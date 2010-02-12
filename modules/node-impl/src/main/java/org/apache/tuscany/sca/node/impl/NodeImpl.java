@@ -252,6 +252,7 @@ public class NodeImpl implements Node {
         for (Component compositeComponent : domainComposite.getComponents()) {
             if (compositeComponent.getName().equals(componentName)) {
                 component = compositeComponent;
+                break;
             }
         }
 
