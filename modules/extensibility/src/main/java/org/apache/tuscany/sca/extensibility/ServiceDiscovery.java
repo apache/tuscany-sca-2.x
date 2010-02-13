@@ -24,12 +24,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.tuscany.sca.extensibility.impl.ClassLoaderDelegate;
 import org.apache.tuscany.sca.extensibility.impl.LDAPFilter;
 
 /**
@@ -44,6 +45,7 @@ public final class ServiceDiscovery implements ServiceDiscoverer {
     private final static Logger logger = Logger.getLogger(ServiceDiscovery.class.getName());
     private final static ServiceDiscovery INSTANCE = new ServiceDiscovery();
 
+    private final Map<String, Map<String, String>> serviceAttributes = new HashMap<String, Map<String, String>>();
     private ServiceDiscoverer discoverer;
 
     private ServiceDiscovery() {
@@ -98,6 +100,15 @@ public final class ServiceDiscovery implements ServiceDiscoverer {
 
     public Collection<ServiceDeclaration> getServiceDeclarations(String name, boolean byRanking) throws IOException {
         Collection<ServiceDeclaration> declarations = getServiceDiscoverer().getServiceDeclarations(name);
+        // Check if any of the service declarations has attributes that are overrided
+        if (!serviceAttributes.isEmpty()) {
+            for (ServiceDeclaration declaration : declarations) {
+                Map<String, String> attrs = getAttributes(name);
+                if (attrs != null) {
+                    declaration.getAttributes().putAll(attrs);
+                }
+            }
+        }
         if (!byRanking) {
             return declarations;
         }
@@ -237,5 +248,37 @@ public final class ServiceDiscovery implements ServiceDiscoverer {
     public ClassLoader getContextClassLoader() {
         return discoverer.getContextClassLoader();
     }
+    
+    /**
+     * Set the attributes for a given service type
+     * @param serviceType
+     * @param attributes
+     */
+    public void setAttribute(String serviceType, Map<String, String> attributes) {
+        serviceAttributes.put(serviceType, attributes);
+    }
 
+    /**
+     * Set an attribute to the given value for a service type
+     * @param serviceType The service type
+     * @param attribute The attribute name
+     * @param value The attribute value
+     */
+    public void setAttribute(String serviceType, String attribute, String value) {
+        Map<String, String> attributes = serviceAttributes.get(serviceType);
+        if (attributes == null) {
+            attributes = new HashMap<String, String>();
+            serviceAttributes.put(serviceType, attributes);
+        }
+        attributes.put(attribute, value);
+    }
+
+    /**
+     * Return a map of attributes for a given service type
+     * @param serviceType
+     * @return
+     */
+    public Map<String, String> getAttributes(String serviceType) {
+        return serviceAttributes.get(serviceType);
+    }
 }

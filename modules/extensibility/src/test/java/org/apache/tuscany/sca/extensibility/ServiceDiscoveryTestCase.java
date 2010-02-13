@@ -65,6 +65,20 @@ public class ServiceDiscoveryTestCase {
         Assert.assertEquals("org.apache.tuscany.sca.extensibility.test.Test2Impl", sd1.getClassName());
         Assert.assertEquals("org.apache.tuscany.sca.extensibility.test.TestImpl", sd2.getClassName());
     }
+    
+    @Test
+    /**
+     * Test if the external attributes override the one in the META-INF/services/<SPI>
+     */
+    public void testAttributes() throws Exception {
+        ServiceDiscovery serviceDiscovery = ServiceDiscovery.getInstance(new ContextClassLoaderServiceDiscoverer());
+        serviceDiscovery.setAttribute(TestInterface.class.getName(), "attr", "value");
+        serviceDiscovery.setAttribute(TestInterface.class.getName(), "attr1", "value1");
+        for (ServiceDeclaration sd : serviceDiscovery.getServiceDeclarations(TestInterface.class)) {
+            Assert.assertEquals("value1", sd.getAttributes().get("attr1"));
+            Assert.assertEquals("value", sd.getAttributes().get("attr"));
+        }
+    }
 
     @Test
     public void testFilter() throws Exception {

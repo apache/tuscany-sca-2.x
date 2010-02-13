@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
@@ -41,9 +42,15 @@ public class DefaultValidationSchemaExtensionPoint implements ValidationSchemaEx
     private boolean loaded;
     private ExtensionPointRegistry registry;
     
-    public DefaultValidationSchemaExtensionPoint(ExtensionPointRegistry registry) {
+    public DefaultValidationSchemaExtensionPoint(ExtensionPointRegistry registry, Map<String, String> attributes) {
         super();
         this.registry = registry;
+        if (attributes != null) {
+            String attr = attributes.get("enabled");
+            if (attr != null) {
+                enabled = Boolean.parseBoolean(attr);
+            }
+        }
     }
     
     public void addSchema(String uri) {

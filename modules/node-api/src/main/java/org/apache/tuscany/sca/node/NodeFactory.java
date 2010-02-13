@@ -32,6 +32,7 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.tuscany.sca.node.configuration.DefaultNodeConfigurationFactory;
 import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
@@ -57,9 +58,10 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
     private static final String SCA_CONTRIBUTION_GENERATED_META = "META-INF/sca-contribution-generated.xml";
 
     protected static NodeFactory instance;
+    protected static Class<?> factoryImplClass;
 
     protected static void setNodeFactory(NodeFactory factory) {
-        NodeFactory.instance = factory;
+        instance = factory;
     }
 
     public static class NodeProxy implements Node {
@@ -151,11 +153,11 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
      *
      * @return the SCA node factory
      */
-    public static NodeFactory getInstance() {
-        if (NodeFactory.instance == null) {
-            NodeFactory.instance = newInstance();
+    public synchronized static NodeFactory getInstance() {
+        if (instance == null) {
+            instance = newInstance();
         }
-        return NodeFactory.instance;
+        return instance;
     }
 
     /**
@@ -166,34 +168,58 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
     public static NodeFactory newInstance() {
         NodeFactory nodeFactory = null;
         try {
-            // Use reflection APIs to call ServiceDiscovery to avoid hard dependency to tuscany-extensibility
-            try {
-                Class<?> discoveryClass = Class.forName("org.apache.tuscany.sca.extensibility.ServiceDiscovery");
-                Object instance = discoveryClass.getMethod("getInstance").invoke(null);
-                Object factoryDeclaration =
-                    discoveryClass.getMethod("getServiceDeclaration", Class.class).invoke(instance,
-                                                                                          NodeFactory.class);
-                if (factoryDeclaration != null) {
-                    Class<?> factoryImplClass =
-                        (Class<?>)factoryDeclaration.getClass().getMethod("loadClass").invoke(factoryDeclaration);
-                    nodeFactory = (NodeFactory)factoryImplClass.newInstance();
-                }
-            } catch (ClassNotFoundException e) {
-                // Ignore
-            }
-
-            if (nodeFactory == null) {
-                // Fail back to default impl
-                String className = "org.apache.tuscany.sca.node.impl.NodeFactoryImpl";
-
-                Class<?> cls = Class.forName(className);
-                nodeFactory = (NodeFactory)cls.newInstance();
-            }
+            Class<?> factoryClass = getFactoryImplClass();
+            nodeFactory = (NodeFactory)factoryClass.newInstance();
 
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);
         }
         return nodeFactory;
+    }
+
+    public static NodeFactory newInstance(Map<String, Map<String, String>> attributes) {
+        NodeFactory nodeFactory = null;
+        try {
+            Class<?> factoryClass = getFactoryImplClass();
+            nodeFactory = (NodeFactory)factoryClass.newInstance();
+            nodeFactory.configure(attributes);
+        } catch (Exception e) {
+            throw new ServiceRuntimeException(e);
+        }
+        return nodeFactory;
+    }
+
+    /**
+     * Configure the NodeFactory instance
+     * @param attributes
+     */
+    protected void configure(Map<String, Map<String, String>> attributes) {
+    }
+    
+    private synchronized static Class<?> getFactoryImplClass() throws Exception {
+        if (factoryImplClass == null) {
+            // Use reflection APIs to call ServiceDiscovery to avoid hard dependency to tuscany-extensibility
+            try {
+                Class<?> discoveryClass = Class.forName("org.apache.tuscany.sca.extensibility.ServiceDiscovery");
+                Object instance = discoveryClass.getMethod("getInstance").invoke(null);
+                Object factoryDeclaration =
+                    discoveryClass.getMethod("getServiceDeclaration", Class.class).invoke(instance, NodeFactory.class);
+                if (factoryDeclaration != null) {
+                    factoryImplClass =
+                        (Class<?>)factoryDeclaration.getClass().getMethod("loadClass").invoke(factoryDeclaration);
+                }
+            } catch (ClassNotFoundException e) {
+                // Ignore
+            }
+
+            if (factoryImplClass == null) {
+                // Fail back to default impl
+                String className = "org.apache.tuscany.sca.node.impl.NodeFactoryImpl";
+
+                factoryImplClass = Class.forName(className);
+            }
+        }
+        return factoryImplClass;
     }
 
     /**

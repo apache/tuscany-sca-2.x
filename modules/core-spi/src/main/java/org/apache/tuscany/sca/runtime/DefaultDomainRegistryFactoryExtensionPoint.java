@@ -44,9 +44,13 @@ public class DefaultDomainRegistryFactoryExtensionPoint implements DomainRegistr
     /**
      * @param registry
      */
-    public DefaultDomainRegistryFactoryExtensionPoint(ExtensionPointRegistry registry) {
+    public DefaultDomainRegistryFactoryExtensionPoint(ExtensionPointRegistry registry, Map<String, String> attributes) {
         super();
         this.registry = registry;
+        // Populate the domainRegistryMapping
+        domainRegistryMapping.putAll(attributes);
+        domainRegistryMapping.remove("class");
+        domainRegistryMapping.remove("ranking");
     }
 
     public void addDomainRegistryFactory(DomainRegistryFactory factory) {

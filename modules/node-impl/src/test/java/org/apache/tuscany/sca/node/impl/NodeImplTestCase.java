@@ -25,12 +25,16 @@ import java.io.File;
 import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.contribution.processor.ValidationSchemaExtensionPoint;
 import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
+import org.apache.tuscany.sca.runtime.DomainRegistryFactoryExtensionPoint;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -114,5 +118,27 @@ public class NodeImplTestCase {
         HelloWorld hw = node.getService(HelloWorld.class, "HelloWorld2");
         Assert.assertEquals("Hello, Node", hw.hello("Node"));
         node.stop();
+    }
+    
+    @Test
+    public void testNodeFactoryAttributes() {
+        Map<String, Map<String, String>> attrs = new HashMap<String, Map<String, String>>();
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("enabled", "false");
+        attrs.put(ValidationSchemaExtensionPoint.class.getName(), map);
+
+        Map<String, String> map2 = new HashMap<String, String>();
+        map2.put("urn:MyDomain", "multicast://200.0.0.100:50000/MyDomain");
+        attrs.put(DomainRegistryFactoryExtensionPoint.class.getName(), map2);
+
+        NodeFactoryImpl factory = (NodeFactoryImpl)NodeFactory.newInstance(attrs);
+        Assert.assertFalse(factory.getExtensionPoints().getExtensionPoint(ValidationSchemaExtensionPoint.class)
+            .isEnabled());
+
+        DomainRegistryFactoryExtensionPoint domainRegistryFactoryExtensionPoint =
+            factory.getExtensionPoints().getExtensionPoint(DomainRegistryFactoryExtensionPoint.class);
+        Map<String, String> mapping = domainRegistryFactoryExtensionPoint.getDomainRegistryMapping();
+        Assert.assertEquals(1, mapping.size());
+        Assert.assertEquals("multicast://200.0.0.100:50000/MyDomain", mapping.get("urn:MyDomain"));
     }
 }

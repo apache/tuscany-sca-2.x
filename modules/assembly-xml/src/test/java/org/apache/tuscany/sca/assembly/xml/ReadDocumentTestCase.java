@@ -24,6 +24,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.net.URI;
 import java.net.URL;
+import java.util.HashMap;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.SAXParserFactory;
@@ -128,7 +129,7 @@ public class ReadDocumentTestCase {
     @Test
     public void testReadImplementation() throws Exception {
         ExtensionPointRegistry registry = new DefaultExtensionPointRegistry();
-        ValidationSchemaExtensionPoint schemas = new DefaultValidationSchemaExtensionPoint(registry);
+        ValidationSchemaExtensionPoint schemas = new DefaultValidationSchemaExtensionPoint(registry, new HashMap<String, String>());
         schemas.addSchema(getClass().getClassLoader().getResource(TUSCANY_11_XSD).toString());
         XMLInputFactory validatingInputFactory = new DefaultValidatingXMLInputFactory(inputFactory, schemas);
         DefaultFactoryExtensionPoint factories = new DefaultFactoryExtensionPoint(registry);
@@ -157,7 +158,7 @@ public class ReadDocumentTestCase {
     public void testReadBinding() throws Exception {
 
         ExtensionPointRegistry registry = new DefaultExtensionPointRegistry();
-        ValidationSchemaExtensionPoint schemas = new DefaultValidationSchemaExtensionPoint(registry);
+        ValidationSchemaExtensionPoint schemas = new DefaultValidationSchemaExtensionPoint(registry, new HashMap<String, String>());
         schemas.addSchema(getClass().getClassLoader().getResource(TUSCANY_11_XSD).toString());
         XMLInputFactory validatingInputFactory = new DefaultValidatingXMLInputFactory(inputFactory, schemas);
         DefaultFactoryExtensionPoint factories = new DefaultFactoryExtensionPoint(registry);

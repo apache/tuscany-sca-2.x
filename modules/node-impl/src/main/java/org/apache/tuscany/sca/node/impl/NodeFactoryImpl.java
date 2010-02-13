@@ -67,6 +67,7 @@ import org.apache.tuscany.sca.core.invocation.ExtensibleProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactoryExtensionPoint;
 import org.apache.tuscany.sca.deployment.Deployer;
+import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.monitor.Problem;
@@ -210,6 +211,11 @@ public class NodeFactoryImpl extends NodeFactory {
     }
 
     public ExtensionPointRegistry getExtensionPoints() {
+        if (registry == null) {
+            // Create extension point registry
+            registry = createExtensionPointRegistry();
+            registry.start();
+        }        
         return registry;
     }
 
@@ -219,11 +225,7 @@ public class NodeFactoryImpl extends NodeFactory {
         }
         long start = currentTimeMillis();
 
-        if (registry == null) {
-            // Create extension point registry
-            registry = createExtensionPointRegistry();
-            registry.start();
-        }
+        getExtensionPoints();
         
         // Use the runtime-enabled assembly factory
         FactoryExtensionPoint modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
@@ -460,6 +462,15 @@ public class NodeFactoryImpl extends NodeFactory {
             }
             return buf.toString();
         }
+    }
+
+    @Override
+    protected void configure(Map<String, Map<String, String>> attributes) {
+        ServiceDiscovery discovery = getExtensionPoints().getServiceDiscovery();
+        for (Map.Entry<String, Map<String, String>> e : attributes.entrySet()) {
+            discovery.setAttribute(e.getKey(), e.getValue());
+        }
+        super.configure(attributes);
     }
     
 }
