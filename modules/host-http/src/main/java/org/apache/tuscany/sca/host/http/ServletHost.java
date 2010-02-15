@@ -116,5 +116,9 @@ public interface ServletHost {
      */
     void setAttribute(String name, Object value);
     
+    /**
+     * Returns the name that identify the server type (e.g jetty)
+     * @return
+     */
     String getName();
 }
