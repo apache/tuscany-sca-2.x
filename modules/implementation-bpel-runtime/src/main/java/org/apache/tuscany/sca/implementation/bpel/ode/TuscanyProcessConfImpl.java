@@ -61,7 +61,6 @@ import org.apache.tuscany.sca.assembly.ComponentProperty;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Reference;
-import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.databinding.SimpleTypeMapper;
 import org.apache.tuscany.sca.databinding.impl.SimpleTypeMapperImpl;
 import org.apache.tuscany.sca.implementation.bpel.BPELImplementation;

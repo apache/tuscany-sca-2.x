@@ -22,11 +22,11 @@ import java.io.File;
 import java.net.URI;
 
 import javax.transaction.TransactionManager;
-import org.apache.openjpa.persistence.PersistenceProviderImpl;
-import org.apache.ode.dao.jpa.ProcessDAOImpl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.ode.dao.jpa.ProcessDAOImpl;
+import org.apache.openjpa.persistence.PersistenceProviderImpl;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.Reference;

@@ -32,7 +32,6 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import javax.persistence.spi.PersistenceProvider;
 import javax.transaction.TransactionManager;
 import javax.xml.namespace.QName;
 
@@ -48,15 +47,12 @@ import org.apache.ode.bpel.evt.ProcessMessageExchangeEvent;
 import org.apache.ode.bpel.iapi.BpelEventListener;
 import org.apache.ode.bpel.iapi.Scheduler;
 import org.apache.ode.bpel.memdao.BpelDAOConnectionFactoryImpl;
-import org.apache.ode.dao.jpa.ProcessDAOImpl;
 import org.apache.ode.il.config.OdeConfigProperties;
 import org.apache.ode.il.dbutil.Database;
 import org.apache.ode.scheduler.simple.JdbcDelegate;
 import org.apache.ode.scheduler.simple.SimpleScheduler;
 import org.apache.ode.utils.GUID;
-import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
-import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 import org.apache.tuscany.sca.implementation.bpel.BPELImplementation;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.eclipse.core.runtime.FileLocator;
