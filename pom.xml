@@ -253,6 +253,30 @@
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
+            <properties>
+                <tools.jar>${java.home}/../lib/tools.jar</tools.jar>
+            </properties>            
+            <modules>
+                <module>modules</module>
+                <module>samples</module>
+                <module>itest</module>
+                <module>features</module>
+                <module>shades</module>
+                <module>distribution</module>
+                <module>archetypes</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>default-mac</id>
+            <activation>
+                <os>
+                    <family>mac</family>
+                </os>
+            </activation>
+            <properties>
+                <tools.jar>${java.home}/../Classes/classes.jar</tools.jar>
+            </properties>
             <modules>
                 <module>modules</module>
                 <module>samples</module>
@@ -617,7 +641,6 @@
               </plugins>
            </build>
         </profile>
-
     </profiles>
  
 
@@ -826,7 +849,8 @@
                             <artifactId>tools</artifactId>
                             <version>1.6</version>
                             <scope>system</scope>
-                            <systemPath>${java.home}/../lib/tools.jar</systemPath>
+                            <systemPath>${tools.jar}</systemPath>
+                            <!--systemPath>${java.home}/../lib/tools.jar</systemPath-->
                             <optional>true</optional>
                         </dependency>
                     </dependencies>
