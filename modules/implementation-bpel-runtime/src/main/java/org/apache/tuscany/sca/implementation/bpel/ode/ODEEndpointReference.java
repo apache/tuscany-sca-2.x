@@ -31,10 +31,10 @@ import org.w3c.dom.Element;
  */
 public class ODEEndpointReference implements EndpointReference {
 
-	
-	private     Document doc = DOMUtils.newDocument();
+
+    private     Document doc = DOMUtils.newDocument();
     private 	Element serviceref;
-    
+
     /**
      * Private constructor for the EndpointReference
      */

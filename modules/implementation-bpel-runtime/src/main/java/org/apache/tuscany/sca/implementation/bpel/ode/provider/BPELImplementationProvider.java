@@ -159,9 +159,9 @@ public class BPELImplementationProvider implements ImplementationProvider {
             throw new RuntimeException("BPEL Component Type Implementation : Error initializing embedded ODE server " + inite.getMessage(), inite);
         } catch(Exception e) {
             throw new RuntimeException("BPEL Component Type Implementation initialization failure : " + e.getMessage(), e);
-    	} finally {
-    		// Restore the TCCL if we changed it
-    		if( tccl != null ) Thread.currentThread().setContextClassLoader(tccl);
+        } finally {
+            // Restore the TCCL if we changed it
+            if( tccl != null ) Thread.currentThread().setContextClassLoader(tccl);
         } // end try
     } // end method start()
 

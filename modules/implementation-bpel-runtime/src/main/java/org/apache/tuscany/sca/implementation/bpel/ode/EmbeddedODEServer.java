@@ -147,38 +147,37 @@ public class EmbeddedODEServer {
      * @throws ODEInitializationException
      * @throws URISyntaxException
      */
-    private File getDatabaseLocationAsFile() throws ODEInitializationException,
-                                                    URISyntaxException {
-    	File locationFile 	= null;
-    	URL dbLocation		= null;
-    	
-    	// An environment variable to set the path to the DB
-    	String dbFile 		= System.getenv("TUSCANY_IMPL_BPEL_DBLOCATION");
-    	if( dbFile != null ) {
-    		try {
-    			locationFile = new File(dbFile).getParentFile();
-    		} catch (Exception e ) {
-    			System.out.println("Environment variable TUSCANY_IMPL_BPEL_LOCATION has the wrong format: " + dbFile);
-    			System.out.println("Exception is: " + e.getClass().toString() + " " + e.getMessage());
-    		} // end try
-    	} else {
-	        dbLocation = getClass().getClassLoader().getResource("jpadb");
-	        if (dbLocation == null) {
-	            throw new ODEInitializationException("Couldn't find database in the classpath:" + 
-	            		    " try setting the TUSCANY_IMPL_BPEL_LOCATION environment variable");
-	        }
-	        // Handle OSGI bundle case
-	        if( dbLocation.getProtocol() == "bundleresource" ) {
-	        	try {
-		        	dbLocation = FileLocator.toFileURL( dbLocation );
-	        	} catch (Exception ce ) {
-	        		throw new ODEInitializationException("Couldn't find database in the OSGi bundle");
-	        	} // end try
-	        } // end if 
-	        locationFile = new File(dbLocation.toURI()).getParentFile();
-    	} // end if
-        
-    	return locationFile;
+    private File getDatabaseLocationAsFile() throws ODEInitializationException, URISyntaxException {
+        File locationFile 	= null;
+        URL dbLocation		= null;
+
+        // An environment variable to set the path to the DB
+        String dbFile = System.getenv("TUSCANY_IMPL_BPEL_DBLOCATION");
+        if( dbFile != null ) {
+            try {
+                locationFile = new File(dbFile).getParentFile();
+            } catch (Exception e ) {
+                System.out.println("Environment variable TUSCANY_IMPL_BPEL_LOCATION has the wrong format: " + dbFile);
+                System.out.println("Exception is: " + e.getClass().toString() + " " + e.getMessage());
+            } // end try
+        } else {
+            dbLocation = getClass().getClassLoader().getResource("jpadb");
+            if (dbLocation == null) {
+                throw new ODEInitializationException("Couldn't find database in the classpath:" + 
+                " try setting the TUSCANY_IMPL_BPEL_LOCATION environment variable");
+            }
+            // Handle OSGI bundle case
+            if( dbLocation.getProtocol() == "bundleresource" ) {
+                try {
+                    dbLocation = FileLocator.toFileURL( dbLocation );
+                } catch (Exception ce ) {
+                    throw new ODEInitializationException("Couldn't find database in the OSGi bundle");
+                } // end try
+            } // end if 
+            locationFile = new File(dbLocation.toURI()).getParentFile();
+        } // end if
+
+        return locationFile;
     } // end method getDatabaseLocationAsFile
 
     private void initTxMgr() {

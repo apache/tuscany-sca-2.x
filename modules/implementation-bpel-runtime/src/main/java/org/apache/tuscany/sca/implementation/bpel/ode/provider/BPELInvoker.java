@@ -58,7 +58,7 @@ import org.w3c.dom.Element;
  * @version $Rev$ $Date$
  */
 public class BPELInvoker implements Invoker {
-	private final static long TIME_OUT = 10000L;
+    private final static long TIME_OUT = 10000L;
 	
     protected final Log __log = LogFactory.getLog(getClass());
 
@@ -114,10 +114,10 @@ public class BPELInvoker implements Invoker {
 
     public Message invoke(Message msg) {
         try {
-        	if( isCallback ) {
-        		// Extract the callback endpoint metadata
-        		callbackEPR = msg.getFrom();
-        	} // end if
+            if( isCallback ) {
+                // Extract the callback endpoint metadata
+                callbackEPR = msg.getFrom();
+            } // end if
             Object[] args = msg.getBody();
             Object resp = doTheWork(args);
             msg.setBody(resp);
