@@ -19,8 +19,10 @@
 package org.apache.tuscany.sca.contribution.resolver;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
@@ -100,13 +102,17 @@ public class DefaultModelResolverExtensionPoint implements ModelResolverExtensio
         // Get the model resolver service declarations
         Collection<ServiceDeclaration> modelResolverDeclarations; 
         try {
-            modelResolverDeclarations = registry.getServiceDiscovery().getServiceDeclarations(ModelResolver.class.getName());
+            modelResolverDeclarations = registry.getServiceDiscovery().getServiceDeclarations(ModelResolver.class, true);
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
         
-        // Load model resolvers
-        for (ServiceDeclaration modelResolverDeclaration : modelResolverDeclarations) {
+        List<ServiceDeclaration> list = new ArrayList<ServiceDeclaration>(modelResolverDeclarations);
+        
+        // Load model resolvers, add entries from lower ranking to higher ranking so that higher ranking ones override
+        // the map
+        for (int i = list.size() - 1; i >= 0; i--) {
+            ServiceDeclaration modelResolverDeclaration = list.get(i);
             Map<String, String> attributes = modelResolverDeclaration.getAttributes();
             String model = attributes.get("model");
             // The model can be a list of interfaces so that one model resolver can be used
