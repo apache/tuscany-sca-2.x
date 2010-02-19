@@ -19,26 +19,18 @@
 
 package org.apache.tuscany.sca.extensibility;
 
-import static org.apache.tuscany.sca.extensibility.ServiceDeclarationParser.parseDeclaration;
-
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.lang.ref.WeakReference;
 import java.net.URL;
-import java.net.URLConnection;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -163,83 +155,10 @@ public class ContextClassLoaderServiceDiscoverer implements ServiceDiscoverer {
                     logger.fine("Reading service provider file: " + url.toExternalForm());
                 }
 
-                // Allow privileged access to open URL stream. Add FilePermission to added to security
-                // policy file.
-                InputStream is;
-                try {
-                    is = AccessController.doPrivileged(new PrivilegedExceptionAction<InputStream>() {
-                        public InputStream run() throws IOException {
-                            URLConnection connection = url.openConnection();
-                            // TUSCANY-2539
-                            // Don't cache connections by default to stop Tuscany locking contribution jar files
-                            // done here as this is one of the first places we open a stream and the only way to
-                            // set the default is to set it on an instance of URLConnection
-                            connection.setDefaultUseCaches(false);
-                            connection.setUseCaches(false);
-                            return url.openStream();
-                        }
-                    });
-                } catch (PrivilegedActionException e) {
-                    throw (IOException)e.getException();
-                }
-                if (isPropertyFile) {
-                    // Load as a property file
-                    Properties props = new Properties();
-                    props.load(is);
-                    is.close();
-                    for (Map.Entry<Object, Object> e : props.entrySet()) {
-                        Map<String, String> attributes = new HashMap<String, String>();
-                        String key = (String)e.getKey();
-                        String value = (String)e.getValue();
-                        // Unfortunately, the xalan file only has the classname
-                        if (value == null || "".equals(value)) {
-                            value = key;
-                            key = "";
-                        }
-                        if (!"".equals(key)) {
-                            attributes.put(key, value);
-                            attributes.put("uri", key);
-                        }
-                        attributes.putAll(parseDeclaration(value));
-                        ServiceDeclarationImpl descriptor = new ServiceDeclarationImpl(url, value, attributes);
-                        descriptors.add(descriptor);
-                    }
-                    continue;
-                }
-                BufferedReader reader = null;
-                try {
-                    reader = new BufferedReader(new InputStreamReader(is));
-                    int count = 0;
-                    while (true) {
-                        String line = reader.readLine();
-                        if (line == null)
-                            break;
-                        line = line.trim();
-                        if (!line.startsWith("#") && !"".equals(line)) {
-                            String reg = line.trim();
-                            if (debug) {
-                                logger.fine("Registering service provider: " + reg);
-                            }
-
-                            Map<String, String> attributes = parseDeclaration(reg);
-                            String className = attributes.get("class");
-                            if (className == null) {
-                                // Add a unique class name to prevent equals() from returning true
-                                className = "_class_" + count;
-                                count++;
-                            }
-                            ServiceDeclarationImpl descriptor = new ServiceDeclarationImpl(url, className, attributes);
-                            descriptors.add(descriptor);
-                        }
-                    }
-                } finally {
-                    if (reader != null) {
-                        try {
-                            reader.close();
-                        } catch (IOException e) {
-                            // Ignore
-                        }
-                    }
+                for (Map<String, String> attributes : ServiceDeclarationParser.load(url, isPropertyFile)) {
+                    String className = attributes.get("class");
+                    ServiceDeclarationImpl descriptor = new ServiceDeclarationImpl(url, className, attributes);
+                    descriptors.add(descriptor);
                 }
             }
         } catch (IOException e) {

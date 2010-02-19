@@ -24,6 +24,8 @@
 		<java classpath="${runtime_classpath}" classname="org.apache.tuscany.sca.node.launcher.NodeMain" fork="true">
 			<arg value="-node"/>
 			<arg value="./server-config.xml"/>
+            <arg value="-ttl"/>
+            <arg value="15000"/>			
 		</java>
 	</target>
 

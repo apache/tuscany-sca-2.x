@@ -25,12 +25,15 @@ import java.io.File;
 import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.contribution.processor.ValidationSchemaExtensionPoint;
+import org.apache.tuscany.sca.extensibility.ServiceDeclarationParser;
 import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
@@ -140,5 +143,14 @@ public class NodeImplTestCase {
         Map<String, String> mapping = domainRegistryFactoryExtensionPoint.getDomainRegistryMapping();
         Assert.assertEquals(1, mapping.size());
         Assert.assertEquals("multicast://200.0.0.100:50000/MyDomain", mapping.get("urn:MyDomain"));
+    }
+    
+    @Test
+    public void testLoadNodeFactoryProperties() throws Exception {
+        URL url = getClass().getResource("/org/apache/tuscany/sca/node/configuration/test-node-factory.config");
+        Collection<Map<String, String>> items = ServiceDeclarationParser.load(url, false);
+        for (Map<String, String> attrs : items) {
+            System.out.println(attrs);
+        }
     }
 }

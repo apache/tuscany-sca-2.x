@@ -205,4 +205,8 @@ public class ClassLoaderContext {
         return loaders;
     }
 
+    public ClassLoader getClassLoader() {
+        return classLoader;
+    }
+
 }
