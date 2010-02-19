@@ -216,7 +216,7 @@ public class EndpointReferenceBuilderImpl {
     
                     for (ComponentService targetComponentService : targetComponent.getServices()) {
                         if (reference.getInterfaceContract() == null || 
-                            interfaceContractMapper.isCompatible(reference.getInterfaceContract(), 
+                            interfaceContractMapper.isCompatibleSubset(reference.getInterfaceContract(), 
                                                                  targetComponentService.getInterfaceContract())) {
                             
                             if (intentsMatch(reference.getRequiredIntents(), targetComponentService.getRequiredIntents())) {                            

@@ -16,14 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-
 package org.apache.tuscany.sca.interfacedef;
 
 /**
- * Enum of the Conversation Sequence values.
- *
- * @version $Rev$ $Date$
+ * Types of compatibility
  */
-public enum ConversationSequence {
-    CONVERSATION_NONE, CONVERSATION_START, CONVERSATION_CONTINUE, CONVERSATION_END 
+public enum Compatibility {
+    SUPERSET,       // The source is a superset of the target    
+    SUBSET,         // The source is a subset of the target
+    MUTUAL,          // The source is the same set as the target
+    INCOMPATIBLE     // The source is not compatible with the target   
 }

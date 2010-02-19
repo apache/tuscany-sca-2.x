@@ -57,19 +57,6 @@ public interface Interface extends Cloneable, PolicySubject {
      */
     boolean isRemotableSet();
 
-    // FIXME: [rfeng] We need to re-consider the conversational as an intent
-    /**
-     * Test if the interface is conversational
-     * @return
-     */
-    boolean isConversational();
-
-    /**
-     * Set whether the interface is conversational
-     * @param conversational
-     */
-    void setConversational(boolean conversational);
-
     /**
      * Returns the operations defined on this interface.
      *

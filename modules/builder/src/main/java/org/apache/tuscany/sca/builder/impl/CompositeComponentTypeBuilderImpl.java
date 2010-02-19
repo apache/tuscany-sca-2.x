@@ -46,6 +46,7 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.definitions.Definitions;
+import org.apache.tuscany.sca.interfacedef.Compatibility;
 import org.apache.tuscany.sca.interfacedef.IncompatibleInterfaceContractException;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
@@ -426,7 +427,7 @@ public class CompositeComponentTypeBuilderImpl {
             boolean isCompatible = true;
             String incompatibilityReason = "";
             try{
-                isCompatible = interfaceContractMapper.checkCompatibility(topInterfaceContract, bottomInterfaceContract, false, false);
+                isCompatible = interfaceContractMapper.checkCompatibility(topInterfaceContract, bottomInterfaceContract, Compatibility.SUBSET, false, false);
             } catch (IncompatibleInterfaceContractException ex){
                 isCompatible = false;
                 incompatibilityReason = ex.getMessage();
@@ -464,7 +465,7 @@ public class CompositeComponentTypeBuilderImpl {
             boolean isCompatible = true;
             String incompatibilityReason = "";
             try{
-                isCompatible = interfaceContractMapper.checkCompatibility(bottomInterfaceContract, topInterfaceContract, false, false);
+                isCompatible = interfaceContractMapper.checkCompatibility(bottomInterfaceContract, topInterfaceContract, Compatibility.SUBSET, false, false);
             } catch (IncompatibleInterfaceContractException ex){
                 isCompatible = false;
                 incompatibilityReason = ex.getMessage();

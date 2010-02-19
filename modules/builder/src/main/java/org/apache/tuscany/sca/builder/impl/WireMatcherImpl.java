@@ -50,7 +50,7 @@ public class WireMatcherImpl implements WireBuilder {
     public boolean build(EndpointReference endpointReference, Endpoint endpoint, BuilderContext context) {
         InterfaceContract sourceIC = endpointReference.getComponentReferenceInterfaceContract();
         InterfaceContract targetIC = endpoint.getComponentServiceInterfaceContract();
-        if (!interfaceContractMapper.isCompatible(sourceIC, targetIC)) {
+        if (!interfaceContractMapper.isCompatibleSubset(sourceIC, targetIC)) {
             return false;
         }
         for (PolicyBuilder policyBuilder : builderExtensionPoint.getPolicyBuilders()) {

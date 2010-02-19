@@ -82,8 +82,7 @@ public class JavaCallbackRuntimeWireProcessor implements RuntimeWireProcessor {
             Interface implType = javaInterfaceFactory.createJavaInterface(impl.getJavaClass());
             // Ignore the remotable/conversational testing
             implType.setRemotable(iface.isRemotable());
-            implType.setConversational(iface.isConversational());
-            return interfaceContractMapper.isCompatible(iface, implType);
+            return interfaceContractMapper.isCompatibleSubset(iface, implType);
         } catch (InvalidInterfaceException e) {
             logger.log(Level.WARNING, e.getMessage(), e);
             return false;

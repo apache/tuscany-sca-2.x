@@ -26,7 +26,6 @@ import org.apache.tuscany.sca.core.factory.InstanceWrapper;
 import org.apache.tuscany.sca.core.scope.ScopeContainer;
 import org.apache.tuscany.sca.core.scope.ScopedRuntimeComponent;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
-import org.apache.tuscany.sca.interfacedef.ConversationSequence;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil;
@@ -70,7 +69,6 @@ public class JavaImplementationInvoker implements Invoker, DataExchangeSemantics
         if (op == null) {
             op = this.operation;
         }
-        ConversationSequence sequence = op.getConversationSequence();
         Object payload = msg.getBody();
 
         Object contextId = null;
@@ -129,27 +127,6 @@ public class JavaImplementationInvoker implements Invoker, DataExchangeSemantics
                 }
             } 
             
-            if (sequence != ConversationSequence.CONVERSATION_NONE ){
-                try {
-//                    // If the exception is not a business exception then end the conversation
-//                    boolean businessException = false;
-//                    
-//                    for (DataType dataType : operation.getFaultTypes()){
-//                        if ((dataType.getPhysical() == e.getCause().getClass()) &&
-//                            (contextId != null) ){
-//                            businessException = true;
-//                            break;
-//                        }
-//                    }
-                    
-                    if (!isChecked && contextId != null) {
-                        scopeContainer.remove(contextId);
-                    }
-                } catch (Exception ex){
-                    // TODO - sure what the best course of action is here. We have
-                    //        a system exception in the middle of a business exception 
-                }
-            }
             if (!isChecked) {
                 if (cause instanceof RuntimeException) {
                     throw (RuntimeException)cause;

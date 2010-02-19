@@ -59,6 +59,7 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.definitions.Definitions;
+import org.apache.tuscany.sca.interfacedef.Compatibility;
 import org.apache.tuscany.sca.interfacedef.IncompatibleInterfaceContractException;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
@@ -1119,7 +1120,7 @@ public class ComponentBuilderImpl {
             boolean isCompatible = true;
             String incompatibilityReason = "";
             try{
-                isCompatible = interfaceContractMapper.checkCompatibility(topInterfaceContract, bottomInterfaceContract, false, false);
+                isCompatible = interfaceContractMapper.checkCompatibility(topInterfaceContract, bottomInterfaceContract, Compatibility.SUBSET, false, false);
             } catch (IncompatibleInterfaceContractException ex){
                 isCompatible = false;
                 incompatibilityReason = ex.getMessage();
@@ -1139,7 +1140,7 @@ public class ComponentBuilderImpl {
     /**
      * Interface contract from higher in the implementation hierarchy takes precedence
      * When it comes to checking compatibility the top level reference interface is a 
-     * superset of the promoted reference interface so treat the treat the promoted
+     * superset of the promoted reference interface so treat the promoted
      * (bottom) interface as the source    
      * 
      * @param topContract the top contract 
@@ -1159,7 +1160,7 @@ public class ComponentBuilderImpl {
             boolean isCompatible = true;
             String incompatibilityReason = "";
             try{
-                isCompatible = interfaceContractMapper.checkCompatibility(bottomInterfaceContract, topInterfaceContract, false, false);
+                isCompatible = interfaceContractMapper.checkCompatibility(bottomInterfaceContract, topInterfaceContract, Compatibility.SUBSET, false, false);
             } catch (IncompatibleInterfaceContractException ex){
                 isCompatible = false;
                 incompatibilityReason = ex.getMessage();

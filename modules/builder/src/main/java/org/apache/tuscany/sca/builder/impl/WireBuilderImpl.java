@@ -302,7 +302,7 @@ public class WireBuilderImpl {
                 // a superset of
                 // the component reference interface
                 if (resolvedReference.getInterfaceContract() == null || interfaceContractMapper
-                    .isCompatible(resolvedReference.getInterfaceContract(), resolvedService.getInterfaceContract())) {
+                    .isCompatibleSubset(resolvedReference.getInterfaceContract(), resolvedService.getInterfaceContract())) {
 
                     //resolvedReference.getTargets().add(resolvedService);
                     if (wire.isReplace()) {
@@ -350,7 +350,7 @@ public class WireBuilderImpl {
                     continue;
 
                 for (ComponentService targetComponentService : targetComponent.getServices()) {
-                    if (reference.getInterfaceContract() == null || interfaceContractMapper.isCompatible(reference
+                    if (reference.getInterfaceContract() == null || interfaceContractMapper.isCompatibleSubset(reference
                         .getInterfaceContract(), targetComponentService.getInterfaceContract())) {
                         
                         if (intentsMatch(reference.getRequiredIntents(), targetComponentService.getRequiredIntents())) {
@@ -405,7 +405,7 @@ public class WireBuilderImpl {
 
                 if (targetComponentService != null) {
                     // Check that target component service provides a superset of the component reference interface
-                    if (reference.getInterfaceContract() == null || interfaceContractMapper.isCompatible(reference
+                    if (reference.getInterfaceContract() == null || interfaceContractMapper.isCompatibleSubset(reference
                         .getInterfaceContract(), targetComponentService.getInterfaceContract())) {
 
                         if (bindingName != null) {
@@ -532,7 +532,7 @@ public class WireBuilderImpl {
 
                     // Check that the target component service provides
                     // a superset of the component reference interface
-                    if (reference.getInterfaceContract() == null || interfaceContractMapper.isCompatible(reference
+                    if (reference.getInterfaceContract() == null || interfaceContractMapper.isCompatibleSubset(reference
                         .getInterfaceContract(), targetComponentService.getInterfaceContract())) {
                         if (bindingName != null) {
                             // the user has selected a binding as part of the target name

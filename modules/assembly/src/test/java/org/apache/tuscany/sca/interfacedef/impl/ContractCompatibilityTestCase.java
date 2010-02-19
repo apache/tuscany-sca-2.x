@@ -29,6 +29,7 @@ import java.util.Map;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
+import org.apache.tuscany.sca.interfacedef.Compatibility;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.IncompatibleInterfaceContractException;
 import org.apache.tuscany.sca.interfacedef.Interface;
@@ -58,7 +59,7 @@ public class ContractCompatibilityTestCase {
     public void testNoOperation() throws Exception {
         InterfaceContract source = new MockContract("FooContract");
         InterfaceContract target = new MockContract("FooContract");
-        mapper.checkCompatibility(source, target, false, false);
+        mapper.checkCompatibility(source, target, Compatibility.SUBSET, false, false);
     }
 
     @Test
@@ -73,7 +74,7 @@ public class ContractCompatibilityTestCase {
         Map<String, Operation> targetOperations = new HashMap<String, Operation>();
         targetOperations.put("op1", opSource2);
         target.getInterface().getOperations().addAll(targetOperations.values());
-        mapper.checkCompatibility(source, target, false, false);
+        mapper.checkCompatibility(source, target, Compatibility.SUBSET, false, false);
     }
 
     @Test
@@ -89,7 +90,7 @@ public class ContractCompatibilityTestCase {
         targetOperations.put("op2", opSource2);
         target.getInterface().getOperations().addAll(targetOperations.values());
         try {
-            mapper.checkCompatibility(source, target, false, false);
+            mapper.checkCompatibility(source, target, Compatibility.SUBSET, false, false);
             fail();
         } catch (IncompatibleInterfaceContractException e) {
             // expected
@@ -118,7 +119,7 @@ public class ContractCompatibilityTestCase {
         Map<String, Operation> targetOperations = new HashMap<String, Operation>();
         targetOperations.put("op1", opTarget);
         target.getInterface().getOperations().addAll(targetOperations.values());
-        mapper.checkCompatibility(source, target, false, false);
+        mapper.checkCompatibility(source, target, Compatibility.SUBSET, false, false);
     }
 
     @Test
@@ -144,7 +145,7 @@ public class ContractCompatibilityTestCase {
         targetOperations.put("op1", opTarget);
         target.getInterface().getOperations().addAll(targetOperations.values());
         try {
-            mapper.checkCompatibility(source, target, false, false);
+            mapper.checkCompatibility(source, target, Compatibility.SUBSET, false, false);
             fail();
         } catch (IncompatibleInterfaceContractException e) {
             // expected
@@ -202,7 +203,7 @@ public class ContractCompatibilityTestCase {
         Map<String, Operation> targetOperations = new HashMap<String, Operation>();
         targetOperations.put("op1", opTarget);
         target.getInterface().getOperations().addAll(targetOperations.values());
-        mapper.checkCompatibility(source, target, false, false);
+        mapper.checkCompatibility(source, target, Compatibility.SUBSET, false, false);
     }
 
     /**
@@ -250,7 +251,7 @@ public class ContractCompatibilityTestCase {
         targetOperations.put("op1", opTarget);
         target.getInterface().getOperations().addAll(targetOperations.values());
         try {
-            mapper.checkCompatibility(source, target, false, false);
+            mapper.checkCompatibility(source, target, Compatibility.SUBSET, false, false);
             fail();
         } catch (IncompatibleInterfaceContractException e) {
             // expected
@@ -279,7 +280,7 @@ public class ContractCompatibilityTestCase {
         Map<String, Operation> targetOperations = new HashMap<String, Operation>();
         targetOperations.put("op1", opTarget);
         target.getInterface().getOperations().addAll(targetOperations.values());
-        mapper.checkCompatibility(source, target, false, false);
+        mapper.checkCompatibility(source, target, Compatibility.SUBSET, false, false);
     }
 
     @Test
@@ -299,7 +300,7 @@ public class ContractCompatibilityTestCase {
         Map<String, Operation> targetOperations = new HashMap<String, Operation>();
         targetOperations.put("op1", opTarget);
         target.getInterface().getOperations().addAll(targetOperations.values());
-        mapper.checkCompatibility(source, target, false, false);
+        mapper.checkCompatibility(source, target, Compatibility.SUBSET, false, false);
     }
 
     /**

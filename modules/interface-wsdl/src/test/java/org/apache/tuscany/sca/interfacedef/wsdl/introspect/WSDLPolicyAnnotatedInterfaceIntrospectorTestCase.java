@@ -26,9 +26,7 @@ import javax.wsdl.PortType;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
-import org.apache.tuscany.sca.interfacedef.ConversationSequence;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
-import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.sca.interfacedef.wsdl.xml.AbstractWSDLTestCase;
@@ -67,7 +65,6 @@ public class WSDLPolicyAnnotatedInterfaceIntrospectorTestCase extends AbstractWS
     public final void testIntrospectPortType() throws InvalidInterfaceException {
         WSDLInterface contract = wsdlFactory.createWSDLInterface(portType, definition, resolver, context.getMonitor());
         Assert.assertEquals(contract.getName().getLocalPart(), "StockQuotePortType");
-        Assert.assertTrue(contract.isConversational());
         
         boolean foundIntent = false;
         
@@ -78,12 +75,6 @@ public class WSDLPolicyAnnotatedInterfaceIntrospectorTestCase extends AbstractWS
         }
         
         Assert.assertTrue(foundIntent);
-        
-        for(Operation operation : contract.getOperations()) {
-            if(operation.getName().equals("cancel")) {
-                Assert.assertEquals(operation.getConversationSequence(), ConversationSequence.CONVERSATION_END);
-            }
-        }
         
     }
 }

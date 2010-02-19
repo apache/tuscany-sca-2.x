@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.interfacedef.impl;
 
 import java.util.List;
 
+import org.apache.tuscany.sca.interfacedef.Compatibility;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.IncompatibleInterfaceContractException;
 import org.apache.tuscany.sca.interfacedef.Interface;
@@ -33,24 +34,24 @@ import org.apache.tuscany.sca.interfacedef.Operation;
  */
 public class InterfaceContractMapperImpl implements InterfaceContractMapper {
 
-    public boolean isCompatible(DataType source, DataType target, boolean remotable) {
+    public boolean isCompatible(DataType source, DataType target, boolean passByValue) {
         if (source == target) {
             return true;
         }
-        if (!remotable) {
+        if (!passByValue) {
             if (source == null || target == null) {
                 return false;
             }
             // For local case
             return target.getPhysical().isAssignableFrom(source.getPhysical());
         } else {
-            // FIXME: How to test if two remotable data type is compatible?
-            // return target.getLogical().equals(source.getLogical());
+            // FIXME: [rfeng] How to test if two remotable data type is compatible?
+            // We will need to understand the different typing system used by the databindings
+            // We should probably delegate to some extensions here
             return true;
         }
 
     }
-    
 
     /**
      * Check that two interface contracts are equal. The contracts are equal if the two contracts have the 
@@ -60,21 +61,21 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
      * @param target
      * @return
      */
-    public boolean isEqual(InterfaceContract source, InterfaceContract target) {
-    	// Are the forward interfaces equal?
-    	if( isEqual( source.getInterface(), target.getInterface()) ) {
-    		// Is there a Callback interface?
-    		if( source.getCallbackInterface() == null && target.getCallbackInterface() == null ) {
-    			return true;
-    		} else {
-    			if( isEqual( source.getCallbackInterface(), target.getCallbackInterface()) ) {
-    				return true;
-    			} // end if
-    		} // end if
-    	} // end if
-    	return false;
+    public boolean isMutuallyCompatible(InterfaceContract source, InterfaceContract target) {
+        // Are the forward interfaces equal?
+        if (isMutuallyCompatible(source.getInterface(), target.getInterface())) {
+            // Is there a Callback interface?
+            if (source.getCallbackInterface() == null && target.getCallbackInterface() == null) {
+                return true;
+            } else {
+                if (isMutuallyCompatible(source.getCallbackInterface(), target.getCallbackInterface())) {
+                    return true;
+                } // end if
+            } // end if
+        } // end if
+        return false;
     } // end method isEqual
-    
+
     /**
      * Check that two interfaces are equal. The interfaces are equal if the two interfaces have the 
      * same set of operations, with each operation having the same signature. 
@@ -82,13 +83,13 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
      * @param target
      * @return
      */
-    public boolean isEqual(Interface source, Interface target) {
+    public boolean isMutuallyCompatible(Interface source, Interface target) {
         if (source == target) {
             // Shortcut for performance
             return true;
         } // end if
         if (source == null || target == null) {
-       		return false;
+            return false;
         } // end if
 
         if (source.isDynamic() || target.isDynamic()) {
@@ -98,11 +99,8 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
         if (source.isRemotable() != target.isRemotable()) {
             return false;
         }
-        if (source.isConversational() != target.isConversational()) {
+        if (source.getOperations().size() != target.getOperations().size()) {
             return false;
-        }
-        if( source.getOperations().size() != target.getOperations().size() ) {
-        	return false;
         }
 
         for (Operation operation : source.getOperations()) {
@@ -110,14 +108,14 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
             if (targetOperation == null) {
                 return false;
             }
-            if (!isCompatible(operation, targetOperation, source.isRemotable())) {
+            if (!isCompatible(operation, targetOperation, Compatibility.SUBSET)) {
                 return false;
             }
         }
         return true;
     } // end method isEqual
 
-    public boolean isCompatible(Operation source, Operation target, boolean remotable) {
+    public boolean isCompatible(Operation source, Operation target, Compatibility compatibilityType) {
         if (source == target) {
             return true;
         }
@@ -134,6 +132,8 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
         if (source.getInterface().isRemotable() != target.getInterface().isRemotable()) {
             return false;
         }
+
+        boolean remotable = source.getInterface().isRemotable();
 
         //        if (source.getInterface().isRemotable()) {
         //            return true;
@@ -212,22 +212,23 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
 
     public boolean checkCompatibility(InterfaceContract source,
                                       InterfaceContract target,
+                                      Compatibility compatibility,
                                       boolean ignoreCallback,
                                       boolean silent) throws IncompatibleInterfaceContractException {
         if (source == target) {
             // Shortcut for performance
             return true;
         }
-        
-        if (source == null || target == null){
+
+        if (source == null || target == null) {
             return false;
         }
-        
-        if (source.getInterface() == target.getInterface()){
+
+        if (source.getInterface() == target.getInterface()) {
             return ignoreCallback || isCallbackCompatible(source, target, silent);
         }
-        
-        if (source.getInterface() == null || target.getInterface() == null){
+
+        if (source.getInterface() == null || target.getInterface() == null) {
             return false;
         }
 
@@ -238,13 +239,6 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
         if (source.getInterface().isRemotable() != target.getInterface().isRemotable()) {
             if (!silent) {
                 throw new IncompatibleInterfaceContractException("Remotable settings do not match", source, target);
-            } else {
-                return false;
-            }
-        }
-        if (source.getInterface().isConversational() != target.getInterface().isConversational()) {
-            if (!silent) {
-                throw new IncompatibleInterfaceContractException("Interaction scopes do not match", source, target);
             } else {
                 return false;
             }
@@ -261,7 +255,7 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
             }
             if (!source.getInterface().isRemotable()) {
                 // FIXME: for remotable operation, only compare name for now
-                if (!isCompatible(operation, targetOperation, false)) {
+                if (!isCompatible(operation, targetOperation, Compatibility.SUBSET)) {
                     if (!silent) {
                         throw new IncompatibleInterfaceContractException("Target operations are not compatible",
                                                                          source, target);
@@ -275,22 +269,14 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
         return ignoreCallback || isCallbackCompatible(source, target, silent);
     }
 
-
-    protected boolean isCallbackCompatible(InterfaceContract source, InterfaceContract target, boolean silent) throws IncompatibleInterfaceContractException {
+    protected boolean isCallbackCompatible(InterfaceContract source, InterfaceContract target, boolean silent)
+        throws IncompatibleInterfaceContractException {
         if (source.getCallbackInterface() == null && target.getCallbackInterface() == null) {
             return true;
         }
         if (source.getCallbackInterface() == null || target.getCallbackInterface() == null) {
             if (!silent) {
                 throw new IncompatibleInterfaceContractException("Callback interface doesn't match", source, target);
-            } else {
-                return false;
-            }
-        }
-
-        if (source.getCallbackInterface().isConversational() != target.getCallbackInterface().isConversational()) {
-            if (!silent) {
-                throw new IncompatibleInterfaceContractException("Interaction scopes do not match", source, target);
             } else {
                 return false;
             }
@@ -322,7 +308,7 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
         return true;
     }
 
-    public boolean isCompatible(Interface source, Interface target) {
+    public boolean isCompatibleSubset(Interface source, Interface target) {
         if (source == target) {
             // Shortcut for performance
             return true;
@@ -338,25 +324,22 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
         if (source.isRemotable() != target.isRemotable()) {
             return false;
         }
-        if (source.isConversational() != target.isConversational()) {
-            return false;
-        }
 
         for (Operation operation : source.getOperations()) {
             Operation targetOperation = getOperation(target.getOperations(), operation.getName());
             if (targetOperation == null) {
                 return false;
             }
-            if (!isCompatible(operation, targetOperation, source.isRemotable())) {
+            if (!isCompatible(operation, targetOperation, Compatibility.SUBSET)) {
                 return false;
             }
         }
         return true;
     }
 
-    public boolean isCompatible(InterfaceContract source, InterfaceContract target) {
+    public boolean isCompatibleSubset(InterfaceContract source, InterfaceContract target) {
         try {
-            return checkCompatibility(source, target, false, false);
+            return checkCompatibility(source, target, Compatibility.SUBSET, false, false);
         } catch (IncompatibleInterfaceContractException e) {
             return false;
         }
@@ -379,7 +362,7 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
             return null;
         } else {
             for (Operation op : target.getOperations()) {
-                if (isCompatible(source, op, target.isRemotable())) {
+                if (isCompatible(source, op, Compatibility.SUBSET)) {
                     return op;
                 }
             }

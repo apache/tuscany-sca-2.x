@@ -111,18 +111,6 @@ public interface Operation extends Cloneable, PolicySubject {
     void setInterface(Interface interfaze);
 
     /**
-     * Get the sequence of the conversation
-     * @return
-     */
-    ConversationSequence getConversationSequence();
-
-    /**
-     * Set the sequence of conversation for the operation
-     * @param sequence
-     */
-    void setConversationSequence(ConversationSequence sequence);
-
-    /**
      * Indicate if the operation is non-blocking
      * @return
      */

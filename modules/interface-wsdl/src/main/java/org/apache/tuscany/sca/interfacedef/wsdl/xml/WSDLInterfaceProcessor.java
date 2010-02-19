@@ -373,7 +373,7 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
         	if( wsdlCallbackInterface != null ) {
         		// If there is both a callback interface declared on the forward interface and also one declared on the
         		// interface.wsdl element, then the two interfaces must match [ASM80011]
-        		if( !interfaceContractMapper.isEqual(intrinsicWSDLCallbackInterface, wsdlCallbackInterface) ) {
+        		if( !interfaceContractMapper.isMutuallyCompatible(intrinsicWSDLCallbackInterface, wsdlCallbackInterface) ) {
                     Monitor.error(context.getMonitor(), WSDLInterfaceProcessor.class.getName(), 
                 			"interface-wsdlxml-validation-messages", "IncompatibleCallbacks", 
                 			intrinsicWSDLCallbackInterface.getName().toString(), 

@@ -46,6 +46,7 @@ import org.apache.tuscany.sca.core.invocation.NonBlockingInterceptor;
 import org.apache.tuscany.sca.core.invocation.RuntimeInvoker;
 import org.apache.tuscany.sca.core.invocation.impl.InvocationChainImpl;
 import org.apache.tuscany.sca.core.invocation.impl.PhaseManager;
+import org.apache.tuscany.sca.interfacedef.Compatibility;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -99,9 +100,6 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
     protected InterfaceContract bindingInterfaceContract;
     protected InterfaceContract serviceInterfaceContract;
     
-    private String domainURI;
-    private String nodeURI;
-
     /**
      * No-arg constructor for Java serilization
      */
@@ -131,8 +129,6 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
         this.policySets = copy.policySets;
 
         this.uri = copy.uri;
-        this.nodeURI = copy.nodeURI;
-        this.domainURI = copy.domainURI;
         this.remote = copy.remote;
         this.unresolved = copy.unresolved;
 
@@ -148,12 +144,6 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
 
     public void bind(CompositeContext compositeContext) {
         this.compositeContext = compositeContext;
-        if (nodeURI != null) {
-            this.nodeURI = compositeContext.getNodeURI();
-        }
-        if (domainURI != null) {
-            this.domainURI = compositeContext.getDomainURI();
-        }
         bind(compositeContext.getExtensionPointRegistry(), compositeContext.getEndpointRegistry());
     }
 
@@ -211,7 +201,7 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
             for (InvocationChain chain : getInvocationChains()) {
                 Operation op = chain.getTargetOperation();
 
-                if (interfaceContractMapper.isCompatible(operation, op, op.getInterface().isRemotable())) {
+                if (interfaceContractMapper.isCompatible(operation, op, Compatibility.SUBSET)) {
                     invocationChainMap.put(operation, chain);
                     return chain;
                 }
@@ -581,14 +571,6 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
                 throw new IllegalStateException("No serializer is configured");
             }
         }
-    }
-
-    public String getDomainURI() {
-        return domainURI;
-    }
-
-    public String getNodeURI() {
-        return nodeURI;
     }
 
 }

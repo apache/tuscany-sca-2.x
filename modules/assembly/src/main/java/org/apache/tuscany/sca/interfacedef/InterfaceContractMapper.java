@@ -26,64 +26,9 @@ package org.apache.tuscany.sca.interfacedef;
  */
 public interface InterfaceContractMapper {
     /**
-     * Check the compatibility of the source and the target interface contracts.
-     * <p>
-     * A wire may only connect a source to a target if the target implements an
-     * interface that is compatible with the interface required by the source.
-     * The source and the target are compatible if: <p/>
-     * <ol>
-     * <li>the source interface and the target interface MUST either both be
-     * remotable or they are both local
-     * <li>the methods on the target interface MUST be the same as or be a
-     * superset of the methods in the interface specified on the source
-     * <li>compatibility for the individual method is defined as compatibility
-     * of the signature, that is method name, input types, and output types MUST
-     * BE the same.
-     * <li>the order of the input and output types also MUST BE the same.
-     * <li>the set of Faults and Exceptions expected by the source MUST BE the
-     * same or be a superset of those specified by the service.
-     * <li>other specified attributes of the two interfaces MUST match,
-     * including Scope and Callback interface
-     * </ol>
-     * <p/>
-     * <p>
-     * This relationship implies that the source contract is a subset of the target
-     * contract - ie all the operations of the source must be present in the target, but
-     * the target can in principle contain additional operations not present in the 
-     * source
-     * </p>
-     * <p>
-     * Please note this test is not symmetric: the success of isCompatible(A, B)
-     * does NOT imply isCompatible(B, A)
-     * 
      * @param source The source interface contract
      * @param target The target interface contract
-     * @return true if the source contract can be supported by the target
-     *         contract
-     */
-    boolean isCompatible(InterfaceContract source, InterfaceContract target);
-    
-    /**
-     * Check that two interface contracts are equal. The contracts are equal if the two contracts have the 
-     * same set of operations, with each operation having the same signature. 
-     * @param source - the source contract
-     * @param target - the target contract
-     * @return
-     */
-    boolean isEqual(InterfaceContract source, InterfaceContract target);
-
-    /**
-     * Check that two interfaces are equal. The interfaces are equal if the two interfaces have the 
-     * same set of operations, with each operation having the same signature. 
-     * @param source an interface
-     * @param target a second interface
-     * @return true if the two interfaces are equal, otherwise return false
-     */
-    public boolean isEqual(Interface source, Interface target);
-    
-    /**
-     * @param source
-     * @param target
+     * @param compatibility The compatibility style 
      * @param ignoreCallback
      * @param silent
      * @return
@@ -91,6 +36,7 @@ public interface InterfaceContractMapper {
      */
     boolean checkCompatibility(InterfaceContract source,
                                InterfaceContract target,
+                               Compatibility compatibility,
                                boolean ignoreCallback,
                                boolean silent) throws IncompatibleInterfaceContractException;
 
@@ -106,34 +52,149 @@ public interface InterfaceContractMapper {
      * 
      * @param source The source data type
      * @param target The target data type
-     * @return
+     * @param passByValue A flag to indicate how the compatibility is checked
+     * <ul>
+     * <li>true: Check the two types as compatible "by-value" (can be copied)
+     * <li>false: Check the two types as compatible "by-reference" (can be assigned)
+     * </ul> 
+     * @return true if the source data type is the same or subtype of the target data type 
      */
-    boolean isCompatible(DataType<?> source, DataType<?> target, boolean remotable);
+    boolean isCompatible(DataType<?> source, DataType<?> target, boolean passByValue);
 
     /**
-     * Check if source operation is compatible with the target operation
+     * Check if source operation is compatible with the target operation. A source operation is 
+     * compatible with the target operation means the following:
+     * 
+     * <ol>
+     * <li>compatibility for the two operations is defined as compatibility 
+     * of the signature, i.e., the operation name, the input types, and the output types are the same
+     * 
+     * <li>the order of the input and output types of the source operation is the same as the order of 
+     * the input and output types for the corresponding target operation
+     * <li>the set of Faults and Exceptions expected by the source operation is the same as or is 
+     * a SUPERSET of the set of Faults and Exceptions specified by the corresponding target operation
+     * </ol>
+     * 
+     * Simply speaking, any request from the source operation can be processed by the target operation and
+     * the normal response or fault/exception from the target operation can be handled by the source operation.
+     * 
+     * Please note this compatibility check is NOT symmetric.  
      * 
      * @param source The source operation
      * @param target The target operation
+     * @param compatibilityType TODO
      * @return true if the source operation is compatible with the target
      *         operation
      */
-    boolean isCompatible(Operation source, Operation target, boolean remotable);
+    boolean isCompatible(Operation source, Operation target, Compatibility compatibilityType);
 
     /**
-     * @param source
-     * @param target
-     * @return
+     * An interface A is a Compatible Subset of a second interface B if and only if all of points 1 through 6 
+     * in the following list apply:
+     * <ol>
+     * <li>interfaces A and B are either both remotable or else both local
+     * <li>the set of operations in interface A is the same as or is a subset of the set of operations in 
+     * interface B
+     * <li>compatibility for individual operations of the interfaces A and B is defined as compatibility 
+     * of the signature, i.e., the operation name, the input types, and the output types are the same
+     * <li>the order of the input and output types for each operation in interface A is the same as the 
+     * order of the input and output types for the corresponding operation in interface B
+     * <li>the set of Faults and Exceptions expected by each operation in interface A is the same as or is 
+     * a superset of the set of Faults and Exceptions specified by the corresponding operation in interface B
+     * <li>for checking the compatibility of 2 remotable interfaces which are in different interface 
+     * languages, both are mapped to WSDL 1.1 (if not already WSDL 1.1) and compatibility checking is done 
+     * between the WSDL 1.1 mapped interfaces.<br>
+     * For checking the compatibility of 2 local interfaces which are in different interface languages, the 
+     * method of checking compatibility is defined by the specifications which define those interface types, 
+     * which must define mapping rules for the 2 interface types concerned.
+     * 
+     * </ol>
+     * 
+     * <b>The callback interfaces are not considered her.</b>
+     * 
+     * @param source The source interface 
+     * @param target The target interface 
+     * @return true if the source interface is a compatible subset of the target interface 
      */
-    boolean isCompatible(Interface source, Interface target);
+    boolean isCompatibleSubset(Interface source, Interface target);
 
     /**
-     * Map the source operation to a compatible operation in the target
-     * interface
+     * An interface A is a Compatible Subset of a second interface B if and only if all of points 1 through 7 
+     * in the following list apply:
+     * <ol>
+     * <li>interfaces A and B are either both remotable or else both local
+     * <li>the set of operations in interface A is the same as or is a subset of the set of operations in 
+     * interface B
+     * <li>compatibility for individual operations of the interfaces A and B is defined as compatibility 
+     * of the signature, i.e., the operation name, the input types, and the output types are the same
+     * <li>the order of the input and output types for each operation in interface A is the same as the 
+     * order of the input and output types for the corresponding operation in interface B
+     * <li>the set of Faults and Exceptions expected by each operation in interface A is the same as or is 
+     * a superset of the set of Faults and Exceptions specified by the corresponding operation in interface B
+     * <li>for checking the compatibility of 2 remotable interfaces which are in different interface 
+     * languages, both are mapped to WSDL 1.1 (if not already WSDL 1.1) and compatibility checking is done 
+     * between the WSDL 1.1 mapped interfaces.<br>
+     * For checking the compatibility of 2 local interfaces which are in different interface languages, the 
+     * method of checking compatibility is defined by the specifications which define those interface types, 
+     * which must define mapping rules for the 2 interface types concerned.
+     * <li>if either interface A or interface B declares a callback interface then both interface
+     * A and interface B declare callback interfaces and the callback interface declared on interface B is a 
+     * compatible subset of the callback interface declared on interface A, according to points 1 through 6 
+     * above
+     * </ol>
+     * 
+     * @param source The source interface contract
+     * @param target The target interface contract
+     * @return true if the source interface contract is a compatible subset of the target interface contract
+     */
+    boolean isCompatibleSubset(InterfaceContract source, InterfaceContract target);
+
+    /**
+     * Check that two interfaces are mutually compatible. The interfaces are mutually compatible if the two 
+     * interfaces have the same set of operations, with each operation having the same signature (name, input 
+     * types, output types and fault/exception types).
+     * 
+     * @param source an interface
+     * @param target a second interface
+     * @return true if the two interfaces are mutually compatible, otherwise return false
+     */
+    public boolean isMutuallyCompatible(Interface source, Interface target);
+
+    /**
+     * An interface A is Compatible with a second interface B if and only if all of points 1 through 7 in the
+     * following list apply:<p>
+     * <ol>
+     * <li>interfaces A and B are either both remotable or else both local
+     * <li>the set of operations in interface A is the same as the set of operations in interface B
+     * <li>compatibility for individual operations of the interfaces A and B is defined as compatibility 
+     * of the signature, i.e., the operation name, the input types, and the output types are the same
+     * <li>the order of the input and output types for each operation in interface A is the same as the 
+     * order of the input and output types for the corresponding operation in interface B
+     * <li>the set of Faults and Exceptions expected by each operation in interface A is the
+     * same as the set of Faults and Exceptions specified by the corresponding operation in interface B
+     * <li>for checking the compatibility of 2 remotable interfaces which are in different interface 
+     * languages, both are mapped to WSDL 1.1 (if not already WSDL 1.1) and compatibility checking is done 
+     * between the WSDL 1.1 mapped interfaces.
+     * <br>For checking the compatibility of 2 local interfaces which are in different interface languages, 
+     * the method of checking compatibility is defined by the specifications which define those interface types, 
+     * which must define mapping rules for the 2 interface types concerned.
+     * <li>if either interface A or interface B declares a callback interface then both interface
+     * A and interface B declare callback interfaces and the callback interface declared on interface A is 
+     * compatible with the callback interface declared on interface B, according to points 1 through 6 above
+     *  
+     * @param source - the source interface contract
+     * @param target - the target interface contract
+     * @return true if the source and target interface contracts are mutually compatible
+     */
+    boolean isMutuallyCompatible(InterfaceContract source, InterfaceContract target);
+
+    /**
+     * Map the source operation to a compatible operation in the target interface
      * 
      * @param target The target interface
      * @param source The source operation
-     * @return A compatible operation
+     * @return A compatible operation if the target interface is compatible superset of the source interface
      */
     Operation map(Interface target, Operation source);
+
 }

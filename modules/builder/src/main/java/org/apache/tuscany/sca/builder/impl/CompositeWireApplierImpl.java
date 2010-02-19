@@ -192,7 +192,7 @@ public class CompositeWireApplierImpl implements CompositeBuilder {
                 // a superset of
                 // the component reference interface
                 if (resolvedReference.getInterfaceContract() == null || interfaceContractMapper
-                    .isCompatible(resolvedReference.getInterfaceContract(), resolvedService.getInterfaceContract())) {
+                    .isCompatibleSubset(resolvedReference.getInterfaceContract(), resolvedService.getInterfaceContract())) {
 
                     //resolvedReference.getTargets().add(resolvedService);
                     if (wire.isReplace()) {

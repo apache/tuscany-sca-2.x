@@ -596,7 +596,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
         }
              
         boolean match = false;
-        match = interfaceContractMapper.isCompatible(endpointReference.getReference().getInterfaceContract(), 
+        match = interfaceContractMapper.isCompatibleSubset(endpointReference.getReference().getInterfaceContract(), 
                                                      endpoint.getComponentServiceInterfaceContract());
         
         if (!match){

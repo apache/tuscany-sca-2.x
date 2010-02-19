@@ -41,7 +41,6 @@ import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
-import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
@@ -225,28 +224,6 @@ public class BindingWSDLGenerator {
             wsBinding.setBindingInterfaceContract(icontract);
         }
         
-        // TODO - fix up the conversational flag and operation sequences in case the contract has come from WSDL
-        // as we don't yet support requires="conversational" or sca:endConversation annotations
-        // in WSDL interface descriptions (see section 1.5.4 of the Assembly Specification V1.0)
-        if (contract.getInterfaceContract().getInterface() != null ) {
-            icontract.getInterface().setConversational(contract.getInterfaceContract().getInterface().isConversational());
-            
-            for (Operation operation : icontract.getInterface().getOperations()){
-                Operation serviceOperation = null;
-                
-                for (Operation tmpOp : contract.getInterfaceContract().getInterface().getOperations()){
-                    if (operation.getName().equals(tmpOp.getName())) {
-                        serviceOperation = tmpOp;
-                        break;
-                    }
-                }
-                
-                if (serviceOperation != null ){
-                    operation.setConversationSequence(serviceOperation.getConversationSequence());
-                }
-            }
-        }
-
         /*
         // Look at all the Web Service bindings of the SCA service to see if any
         // of them have an existing generated WSDL definitions document.  If found,
@@ -328,7 +305,6 @@ public class BindingWSDLGenerator {
         wsdlDefinition.setDefinition(def);
         wsdlInterface.setWsdlDefinition(wsdlDefinition);
         wsdlInterface.setRemotable(true);
-        wsdlInterface.setConversational(contract.getInterface().isConversational());
         wsdlInterface.setUnresolved(false);
         wsdlInterface.setRemotable(true);
         PortType portType = (PortType)def.getAllPortTypes().values().iterator().next();
