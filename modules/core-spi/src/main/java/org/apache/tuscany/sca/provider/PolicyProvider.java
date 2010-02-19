@@ -25,7 +25,7 @@ import org.apache.tuscany.sca.invocation.PhasedInterceptor;
 /**
  * @version $Rev$ $Date$
  */
-public interface PolicyProvider {
+public interface PolicyProvider extends RuntimeProvider {
     /**
      * Create an interceptor for a given operation
      * 
@@ -51,14 +51,4 @@ public interface PolicyProvider {
      *        binding that will be modified
      */
     void configureBinding(Object configuration);
-    
-    /**
-     * Start the provider
-     */
-    void start();
-    
-    /**
-     * Stop the provider
-     */
-    void stop();
 }

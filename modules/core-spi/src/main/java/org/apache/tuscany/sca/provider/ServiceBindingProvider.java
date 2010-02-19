@@ -27,18 +27,7 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContract;
  * 
  * @version $Rev$ $Date$
  */
-public interface ServiceBindingProvider {
-    /**
-     * This method will be invoked when the component service binding is
-     * activated.
-     */
-    void start();
-
-    /**
-     * This method will be invoked when the component service binding is
-     * deactivated.
-     */
-    void stop();
+public interface ServiceBindingProvider extends RuntimeProvider {
 
     /**
      * Get the effective interface contract imposed by the binding. For example,

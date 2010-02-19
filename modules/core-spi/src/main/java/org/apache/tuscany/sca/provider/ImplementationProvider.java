@@ -29,19 +29,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
  * 
  * @version $Rev$ $Date$
  */
-public interface ImplementationProvider {
-
-    /**
-     * This method will be invoked when the component implementation
-     * is activated.
-     */
-    void start();
-
-    /**
-     * This method will be invoked when the component implementation
-     * is deactivated.
-     */
-    void stop();
+public interface ImplementationProvider extends RuntimeProvider {
 
     /**
      * Create an invoker for the component implementation in the invocation

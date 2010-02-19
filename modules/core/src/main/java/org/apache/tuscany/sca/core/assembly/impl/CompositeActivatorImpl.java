@@ -21,6 +21,8 @@ package org.apache.tuscany.sca.core.assembly.impl;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -45,6 +47,7 @@ import org.apache.tuscany.sca.provider.PolicyProvider;
 import org.apache.tuscany.sca.provider.PolicyProviderFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
+import org.apache.tuscany.sca.provider.RuntimeProvider;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.ActivationException;
 import org.apache.tuscany.sca.runtime.CompositeActivator;
@@ -336,39 +339,79 @@ public class CompositeActivatorImpl implements CompositeActivator {
         compositeContext.bindComponent(runtimeComponent);
         Implementation implementation = component.getImplementation();
         
-        if (implementation instanceof Composite) {
-            start(compositeContext, (Composite)implementation);
-        } else {
-            for (PolicyProvider policyProvider : runtimeComponent.getPolicyProviders()) {
-                policyProvider.start();
-            }
-            ImplementationProvider implementationProvider = runtimeComponent.getImplementationProvider();
-            if (implementationProvider != null) {
-                implementationProvider.start();
-            }
-        }
+        List<RuntimeProvider> providers = new ArrayList<RuntimeProvider>();
+        try {
 
-        // Reference bindings aren't started until the wire is first used although this may
-        // happen when the scope container is started in the case of @EagerInit
+            if (implementation instanceof Composite) {
+                try {
+                    start(compositeContext, (Composite)implementation);
+                } catch (Throwable e) {
+                    try {
+                        stop(compositeContext, (Composite) implementation);
+                    } catch (Throwable e1) {
+                        logger.log(Level.SEVERE, e1.getMessage(), e1);
+                    }
+                    rethrow(e);
+                }
+            } else {
+                for (PolicyProvider policyProvider : runtimeComponent.getPolicyProviders()) {
+                    policyProvider.start();
+                    providers.add(policyProvider);
+                }
+                ImplementationProvider implementationProvider = runtimeComponent.getImplementationProvider();
+                if (implementationProvider != null) {
+                    implementationProvider.start();
+                    providers.add(implementationProvider);
+                }
+            }
 
-        for (ComponentService service : component.getServices()) {
-            if (logger.isLoggable(Level.FINE)) {
-                logger.fine("Starting component service: " + component.getURI() + "#" + service.getName());
+            // Reference bindings aren't started until the wire is first used although this may
+            // happen when the scope container is started in the case of @EagerInit
+
+            for (ComponentService service : component.getServices()) {
+                if (logger.isLoggable(Level.FINE)) {
+                    logger.fine("Starting component service: " + component.getURI() + "#" + service.getName());
+                }
+                for (Endpoint endpoint : service.getEndpoints()) {
+                    RuntimeEndpoint ep = (RuntimeEndpoint)endpoint;
+                    startEndpoint(compositeContext, ep, providers);
+                }
             }
-            for (Endpoint endpoint : service.getEndpoints()) {
-                RuntimeEndpoint ep = (RuntimeEndpoint) endpoint;
-                start(compositeContext, ep);
+        } catch (Throwable e) {
+            for (int i = providers.size() - 1; i >= 0; i--) {
+                try {
+                    providers.get(i).stop();
+                } catch (Throwable e1) {
+                    logger.log(Level.SEVERE, e1.getMessage(), e1);
+                }
             }
+            rethrow(e);
+        } finally {
+            providers.clear();
         }
-               
 
         runtimeComponent.setStarted(true);
     }
 
+    private void rethrow(Throwable e) throws Error {
+        if(e instanceof RuntimeException) {
+            throw (RuntimeException) e;
+        } else if(e instanceof Error) {
+            throw (Error) e;
+        }
+    }
+
     public void start(CompositeContext compositeContext, RuntimeEndpoint ep) {
+        startEndpoint(compositeContext, ep, null);
+    }
+
+    private void startEndpoint(CompositeContext compositeContext, RuntimeEndpoint ep, final List<RuntimeProvider> providers) {
         // FIXME: Should the policy providers be started before the endpoint is started?
         for (PolicyProvider policyProvider : ep.getPolicyProviders()) {
             policyProvider.start();
+            if (providers != null) {
+                providers.add(policyProvider);
+            }
         }
 
         final ServiceBindingProvider bindingProvider = ep.getBindingProvider();
@@ -378,6 +421,9 @@ public class CompositeActivatorImpl implements CompositeActivator {
             AccessController.doPrivileged(new PrivilegedAction<Object>() {
                 public Object run() {
                     bindingProvider.start();
+                    if (providers != null) {
+                        providers.add(bindingProvider);
+                    }
                     return null;
                   }
             });

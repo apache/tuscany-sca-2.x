@@ -29,20 +29,7 @@ import org.apache.tuscany.sca.invocation.Invoker;
  * 
  * @version $Rev$ $Date$
  */
-public interface ReferenceBindingProvider {
-
-    /**
-     * This method will be invoked when the component reference binding is
-     * activated.
-     */
-    void start();
-
-    /**
-     * This method will be invoked when the component reference binding is
-     * deactivated.
-     */
-    void stop();
-
+public interface ReferenceBindingProvider extends RuntimeProvider {
     /**
      * Create an invoker for the reference binding in the invocation chain. The
      * invoker is responsible for making the outbound invocation over the
