@@ -45,7 +45,7 @@ public class Jsr237WorkSchedulerTestCase {
      */
     @BeforeClass
     public static void setup() {
-        workSchedular = new DefaultWorkScheduler();
+        workSchedular = new DefaultWorkScheduler(null, null);
     }
 
     /**

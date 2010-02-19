@@ -66,7 +66,7 @@ public class ThreadPoolWorkManager {
             // creates daemon threads.
             executor = Executors.newCachedThreadPool(factory);
         } else {
-            executor = Executors.newFixedThreadPool(threadPoolSize);
+            executor = Executors.newFixedThreadPool(threadPoolSize, factory);
         }
     }
 

@@ -20,7 +20,9 @@ package org.apache.tuscany.sca.core.work.impl;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.Map;
 
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.LifeCycleListener;
 import org.apache.tuscany.sca.work.NotificationListener;
 import org.apache.tuscany.sca.work.WorkScheduler;
@@ -43,13 +45,20 @@ public class DefaultWorkScheduler implements WorkScheduler, LifeCycleListener {
      * Underlying JSR-237 work manager
      */
     private ThreadPoolWorkManager jsr237WorkManager;
+    private int maxThreads = 0;
 
     /**
      * Initializes the JSR 237 work manager.
      *
      * @param jsr237WorkManager JSR 237 work manager.
      */
-    public DefaultWorkScheduler() {
+    public DefaultWorkScheduler(ExtensionPointRegistry registry, Map<String, String> attributes) {
+        if (attributes != null) {
+            String value = attributes.get("maxThreads");
+            if (value != null) {
+                maxThreads = Integer.parseInt(value.trim());
+            }
+        }
     }
 
     private synchronized ThreadPoolWorkManager getWorkManager() {
@@ -63,7 +72,7 @@ public class DefaultWorkScheduler implements WorkScheduler, LifeCycleListener {
 //            // ignore
 //        }
         if (jsr237WorkManager == null) {
-            jsr237WorkManager = new ThreadPoolWorkManager(0);
+            jsr237WorkManager = new ThreadPoolWorkManager(maxThreads);
         }
         return jsr237WorkManager;
     }
