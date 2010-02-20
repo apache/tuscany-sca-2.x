@@ -258,7 +258,7 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
         // TODO - EPR why is this looking at the component types. The endpoint should have the right interface contract by this time
         //InterfaceContract targetContract = getLeafInterfaceContract(endpoint);
 
-        if (sourceContract == null) {
+        if (sourceContract == null && targetContract != null) {
             // TODO: until the web component introspection is brought up
             try {
                 sourceContract = (InterfaceContract)targetContract.clone();
@@ -268,22 +268,24 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
         }
 
         List<InvocationChain> chainList = new ArrayList<InvocationChain>();
-        RuntimeComponentReference reference = (RuntimeComponentReference)getReference();
-        for (Operation operation : sourceContract.getInterface().getOperations()) {
-            Operation targetOperation = interfaceContractMapper.map(targetContract.getInterface(), operation);
-            if (targetOperation == null) {
-                throw new ServiceRuntimeException("No matching operation for " + operation.getName()
-                    + " is found in reference "
-                    + getComponent().getURI()
-                    + "#"
-                    + reference.getName());
-            }
-            InvocationChain chain = new InvocationChainImpl(operation, targetOperation, true, phaseManager);
-            if (operation.isNonBlocking()) {
-                addNonBlockingInterceptor(chain);
-            }
-            chainList.add(chain);
-            addReferenceBindingInterceptor(chain, operation);
+        if(sourceContract != null && targetContract != null) {
+            RuntimeComponentReference reference = (RuntimeComponentReference)getReference();
+            for (Operation operation : sourceContract.getInterface().getOperations()) {
+                Operation targetOperation = interfaceContractMapper.map(targetContract.getInterface(), operation);
+                if (targetOperation == null) {
+                    throw new ServiceRuntimeException("No matching operation for " + operation.getName()
+                        + " is found in reference "
+                        + getComponent().getURI()
+                        + "#"
+                        + reference.getName());
+                }
+                InvocationChain chain = new InvocationChainImpl(operation, targetOperation, true, phaseManager);
+                if (operation.isNonBlocking()) {
+                    addNonBlockingInterceptor(chain);
+                }
+                chainList.add(chain);
+                addReferenceBindingInterceptor(chain, operation);
+            }            
         }
 
         // Set the chains until it's fully populated. If we initialize too early, any exeception could
