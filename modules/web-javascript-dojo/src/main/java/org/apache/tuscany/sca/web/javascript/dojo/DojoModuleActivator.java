@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.web.javascript.dojo;
 
 import java.net.URI;
+import java.util.logging.Logger;
 
 import javax.servlet.Servlet;
 
@@ -27,8 +28,11 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.host.http.ServletHostHelper;
+import org.apache.tuscany.sca.host.http.ServletMappingException;
 
 public class DojoModuleActivator implements ModuleActivator {
+    private final static Logger logger = Logger.getLogger(DojoModuleActivator.class.getName());
+    
     private static final String dojoBaseUri = URI.create("/dojo").toString();
     private static final String dojoUri = URI.create("/dojo/*").toString();
 
@@ -51,20 +55,28 @@ public class DojoModuleActivator implements ModuleActivator {
         
         servlet = servletHost.getServletMapping(dojoBaseUri);
         if(servlet == null) {
-            DojoResourceServlet baseResourceServlet = new DojoResourceServlet(); 
-            servletHost.addServletMapping(dojoBaseUri, baseResourceServlet);
+            try {
+                DojoResourceServlet baseResourceServlet = new DojoResourceServlet(); 
+                servletHost.addServletMapping(dojoBaseUri, baseResourceServlet);
 
-            DojoResourceServlet resourceServlet = new DojoResourceServlet(); 
-            servletHost.addServletMapping(dojoUri, resourceServlet);
+                DojoResourceServlet resourceServlet = new DojoResourceServlet(); 
+                servletHost.addServletMapping(dojoUri, resourceServlet);
+            } catch (ServletMappingException me ) {
+                logger.warning("Dojo already registered at :" + dojoBaseUri);
+            }
         }
 
         servlet = servletHost.getServletMapping(tuscanyBaseUri);
         if(servlet == null) {
-            DojoResourceServlet baseResourceServlet = new DojoResourceServlet(); 
-            servletHost.addServletMapping(tuscanyBaseUri, baseResourceServlet);
+            try {
+                DojoResourceServlet baseResourceServlet = new DojoResourceServlet(); 
+                servletHost.addServletMapping(tuscanyBaseUri, baseResourceServlet);
 
-            DojoResourceServlet resourceServlet = new DojoResourceServlet(); 
-            servletHost.addServletMapping(tuscanyUri, resourceServlet);
+                DojoResourceServlet resourceServlet = new DojoResourceServlet(); 
+                servletHost.addServletMapping(tuscanyUri, resourceServlet);
+            } catch (ServletMappingException me ) {
+                logger.warning("Tuscany dojo extensions already registered at :" + tuscanyBaseUri);
+            }
         }
         
     }
