@@ -88,6 +88,7 @@ public class StoreTestCase {
     }
 
     @Test
+    @Ignore
     public void testStoreWidget() throws FailingHttpStatusCodeException, MalformedURLException, IOException {
         WebClient browser = new WebClient(BrowserVersion.FIREFOX_2);
         browser.setRedirectEnabled(true);
@@ -97,7 +98,7 @@ public class StoreTestCase {
 
         //delay to allow all javascript to be retrieved and loaded
         try {
-            Thread.sleep(4000);
+            Thread.sleep(8000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
