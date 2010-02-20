@@ -58,6 +58,7 @@
         <!--module>binding-ws-axis2-policy</module-->
         <module>binding-ws-wsdlgen</module>
         <module>builder</module>
+        <module>common-http</module>        
         <module>common-java</module>
         <module>common-xml</module>
         <module>contribution</module>
