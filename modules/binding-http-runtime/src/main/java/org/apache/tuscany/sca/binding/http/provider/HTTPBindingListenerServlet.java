@@ -26,13 +26,13 @@ import java.net.URLDecoder;
 import java.text.ParseException;
 
 import javax.servlet.ServletException;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.binding.http.HTTPCacheContext;
+import org.apache.tuscany.sca.common.http.HTTPContentTypeMapper;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
@@ -122,6 +122,14 @@ public class HTTPBindingListenerServlet extends HttpServlet {
             }
         		        	
             throw new ServletException((Throwable)responseMessage.getBody());
+        }
+        
+        if(response.getContentType() == null || response.getContentType().length() == 0){
+            // Calculate content-type based on extension
+            String contentType = HTTPContentTypeMapper.getContentType(id);
+            if(contentType != null && contentType.length() >0) {
+                response.setContentType(contentType);
+            }
         }
         
         // Write the response from the service implementation to the response

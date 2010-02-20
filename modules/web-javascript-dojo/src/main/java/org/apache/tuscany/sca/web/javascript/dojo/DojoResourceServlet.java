@@ -28,6 +28,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.tuscany.sca.common.http.HTTPConstants;
+import org.apache.tuscany.sca.common.http.HTTPContentTypeMapper;
+
 
 /**
  * A Resource servlet used to serve dojo files
@@ -41,22 +44,36 @@ public class DojoResourceServlet extends HttpServlet {
 
     }
 
-
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String path = URLDecoder.decode(request.getRequestURI(), "UTF-8");
-        
-        if( path.startsWith("/dojo")) {
-        	//this is a workaround where we need to have dojo files in its own folder
-        	//to avoid clean target to clean other non dojo resources
-        	path = "dojo" + path;
+        String path = URLDecoder.decode(request.getRequestURI(), HTTPConstants.CHARACTER_ENCODING_UTF8);
+
+        if( path.startsWith("/dojo") ) {
+            if( ! path.contains("tuscany/AtomService.js")) {
+                //this is a workaround where we need to have dojo files in its own folder
+                //to avoid clean target to clean other non dojo resources
+                path = "/dojo" + path;
+            }
         } else if( path.startsWith("/")) {
             path = path.substring(1);
         }
         
+        if(response.getContentType() == null || response.getContentType().length() == 0){
+            // Calculate content-type based on extension
+            String contentType = HTTPContentTypeMapper.getContentType(path);
+            if(contentType != null && contentType.length() >0) {
+                response.setContentType(contentType);
+            }
+        }
+        
+        response.setCharacterEncoding(HTTPConstants.CHARACTER_ENCODING_UTF8);
+        
         // Write the response from the service implementation to the response
         // output stream
         InputStream is = this.getClass().getClassLoader().getResourceAsStream(path);
+        if (is == null) {
+            is = this.getClass().getResourceAsStream(path);
+        }
         if(is != null) {
             OutputStream os = response.getOutputStream(); 
             byte[] buffer = new byte[2048];
