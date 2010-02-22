@@ -37,6 +37,7 @@ import client.Shopper;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
+import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlCheckBoxInput;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
@@ -90,27 +91,24 @@ public class StoreTestCase {
     @Test
     @Ignore
     public void testStoreWidget() throws FailingHttpStatusCodeException, MalformedURLException, IOException {
-        WebClient browser = new WebClient(BrowserVersion.FIREFOX_2);
-        browser.setRedirectEnabled(true);
-        browser.setThrowExceptionOnScriptError(false);
+        WebClient webClient = new WebClient(BrowserVersion.FIREFOX_3);
+        webClient.setRedirectEnabled(true);
+        webClient.setThrowExceptionOnScriptError(false);
+        webClient.waitForBackgroundJavaScript(50000);
+        webClient.waitForBackgroundJavaScriptStartingBefore(50000);
+        webClient.setAjaxController(new NicelyResynchronizingAjaxController());
 
-        HtmlPage page = (HtmlPage) browser.getPage("http://localhost:8080/store/store.html");
-
-        //delay to allow all javascript to be retrieved and loaded
-        try {
-            Thread.sleep(8000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        HtmlPage page = (HtmlPage) webClient.getPage("http://localhost:8080/store/store.html");
 
         HtmlForm form = (HtmlForm) page.getFormByName("catalogForm");
 
 
         HtmlCheckBoxInput catalogItems = (HtmlCheckBoxInput) form.getInputByName("items");
 
-        System.out.println(">>>" + catalogItems.getAttributeValue("value"));
-        Assert.assertEquals("Apple - $2.99", catalogItems.getAttributeValue("value"));
+        System.out.println(">>>" + catalogItems.getAttribute("value"));
+        Assert.assertEquals("Apple - $2.99", catalogItems.getAttribute("value"));
 
+        webClient.closeAllWindows();
     }
 
 }

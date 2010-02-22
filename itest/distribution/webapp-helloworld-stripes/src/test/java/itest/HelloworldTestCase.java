@@ -29,6 +29,7 @@ import org.junit.Test;
 
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlParagraph;
 
@@ -39,15 +40,14 @@ public class HelloworldTestCase {
     @Test
     public void testA() throws FailingHttpStatusCodeException, MalformedURLException, IOException {
         HtmlPage page = (HtmlPage)new WebClient().getPage("http://localhost:8085/helloworld-stripes");
-        Iterator<?> ss = page.getAllHtmlChildElements();
-        Object o1= ss.next();
-        Object o2= ss.next();
-        Object o3= ss.next();
-        Object o4= ss.next();
-        Object o5= ss.next();
-        Object o6= ss.next();
-        HtmlParagraph p = (HtmlParagraph)ss.next();
-        assertEquals("sayHello returns: Hello world", p.asText());
+        Iterator<?> ss = page.getAllHtmlChildElements().iterator();
+        while(ss.hasNext()) {
+            HtmlElement htmlElement = (HtmlElement) ss.next();
+            if( htmlElement instanceof HtmlParagraph) {
+                assertEquals("sayHello returns: Hello world", htmlElement.asText());
+                break;
+            }
+        }
     }
 
 }

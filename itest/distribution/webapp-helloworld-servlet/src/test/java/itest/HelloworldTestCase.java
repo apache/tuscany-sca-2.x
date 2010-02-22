@@ -26,7 +26,6 @@ import java.net.MalformedURLException;
 import org.junit.Test;
 
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
-import com.gargoylesoftware.htmlunit.UnexpectedPage;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlButton;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
@@ -48,13 +47,9 @@ public class HelloworldTestCase {
 
         HtmlButton button = (HtmlButton) form.getButtonsByName("submit").get(0);
 
-        Object foo = button.click();
+        HtmlPage pageResponse = (HtmlPage) button.click();
         
-        // TODO: something up with getting the response but this works:
-        UnexpectedPage p = (UnexpectedPage) foo;
-        String s = new String(p.getWebResponse().getResponseBody());
-
-        assertTrue(s.endsWith("</strong>Hello petra</body></html>"));
+        assertTrue(pageResponse.getWebResponse().getContentAsString().endsWith("</strong>Hello petra</body></html>"));
     }
 
 }
