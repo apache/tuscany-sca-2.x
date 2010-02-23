@@ -23,7 +23,7 @@
              xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1">
 
     <policySet name="ManagedTransactionPolicySet" provides="managedTransaction" appliesTo="implementation">
-        <intentMap provides="managedTransaction" default="global">
+        <intentMap provides="managedTransaction"> <!-- default="global" -->
             <qualifier name="global">
                 <tuscany:transactionPolicy transactionTimeout="1200" action="REQUIRE_GLOBAL" />
             </qualifier>
