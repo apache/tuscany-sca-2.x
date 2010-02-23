@@ -45,6 +45,7 @@ import org.apache.tuscany.sca.monitor.Monitor;
  * @version $Rev$ $Date$
  */
 public class CompositePolicyBuilderImpl extends ComponentPolicyBuilderImpl implements CompositeBuilder {
+    private static final String BUILDER_VALIDATION_BUNDLE = "org.apache.tuscany.sca.builder.builder-validation-messages";
 
     public CompositePolicyBuilderImpl(ExtensionPointRegistry registry) {
         super(registry);
@@ -186,7 +187,7 @@ public class CompositePolicyBuilderImpl extends ComponentPolicyBuilderImpl imple
                     if (policyNames.size() > 1){
                         Monitor.error(context.getMonitor(), 
                                       this, 
-                                      "builder-validation-messages", 
+                                      BUILDER_VALIDATION_BUNDLE, 
                                       "MultiplePolicyLanguagesInEP", 
                                       ep.toString(), 
                                       policyNames.toString());
@@ -209,7 +210,7 @@ public class CompositePolicyBuilderImpl extends ComponentPolicyBuilderImpl imple
                     if (policyNames.size() > 1){
                         Monitor.error(context.getMonitor(), 
                                       this, 
-                                      "builder-validation-messages", 
+                                      BUILDER_VALIDATION_BUNDLE, 
                                       "MultiplePolicyLanguagesInEPR", 
                                       epr.toString(), 
                                       policyNames.toString());
@@ -232,7 +233,7 @@ public class CompositePolicyBuilderImpl extends ComponentPolicyBuilderImpl imple
                 if (policyNames.size() > 1){
                     Monitor.error(context.getMonitor(), 
                                   this, 
-                                  "builder-validation-messages", 
+                                  BUILDER_VALIDATION_BUNDLE, 
                                   "MultiplePolicyLanguagesInImplementation", 
                                   component.toString(), 
                                   policyNames.toString());

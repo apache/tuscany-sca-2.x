@@ -40,6 +40,8 @@ import org.apache.tuscany.sca.monitor.Monitor;
  * creates endpoint models for component services.
  */
 public class EndpointBuilderImpl implements CompositeBuilder {
+    private static final String BUILDER_VALIDATION_BUNDLE = "org.apache.tuscany.sca.builder.builder-validation-messages";
+    
     private AssemblyFactory assemblyFactory;
 
     public EndpointBuilderImpl(ExtensionPointRegistry registry) {
@@ -97,7 +99,7 @@ public class EndpointBuilderImpl implements CompositeBuilder {
                                 //FIXME create a java validation message resource bundle
                                 Monitor.error(monitor, 
                                               this, 
-                                              "org.apache.tuscany.sca.builder.builder-validation-messages",
+                                              BUILDER_VALIDATION_BUNDLE,
                                               "JaxWSClientAsyncMethodsNotAllowed", 
                                               service, 
                                               service.getName());                  

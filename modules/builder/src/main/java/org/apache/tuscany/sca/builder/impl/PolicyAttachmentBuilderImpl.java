@@ -72,6 +72,8 @@ import org.xml.sax.SAXException;
  * @version $Rev$ $Date$
  */
 public class PolicyAttachmentBuilderImpl implements CompositeBuilder {
+    private static final String BUILDER_VALIDATION_BUNDLE = "org.apache.tuscany.sca.builder.builder-validation-messages";
+    
     private StAXHelper staxHelper;
     private DOMHelper domHelper;
     private ExtensionPointRegistry registry;
@@ -160,7 +162,7 @@ public class PolicyAttachmentBuilderImpl implements CompositeBuilder {
                                 (node.getLocalName().equals("property"))){
                                 Monitor.error(monitor, 
                                               this, 
-                                              "org.apache.tuscany.sca.builder.builder-validation-messages", 
+                                              BUILDER_VALIDATION_BUNDLE, 
                                               "PolicyAttachedToProperty", 
                                               ps.getName().toString());
                                 break;
@@ -179,7 +181,7 @@ public class PolicyAttachmentBuilderImpl implements CompositeBuilder {
                             	// models
                                 Monitor.warning(monitor, 
                                         this, 
-                                        "org.apache.tuscany.sca.builder.builder-validation-messages", 
+                                        BUILDER_VALIDATION_BUNDLE, 
                                         "PolicyDOMModelMissmatch", 
                                         ps.getName().toString(),
                                         index);
