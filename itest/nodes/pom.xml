@@ -37,6 +37,7 @@
     <module>helloworld-iface</module>
     <module>helloworld-service</module>
     <module>helloworld-client</module>
+    <module>helloworld-service-and-client</module>
 <!--
     <module>helloworld-service-a</module>
     <module>helloworld-service-b</module>

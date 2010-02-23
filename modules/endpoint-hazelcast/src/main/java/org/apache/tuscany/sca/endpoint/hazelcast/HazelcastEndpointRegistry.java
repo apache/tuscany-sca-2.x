@@ -58,7 +58,7 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
 
     private HazelcastInstance hazelcastInstance;
     protected Map<Object, Object> map;
-    private List<String> localEndpoints = new ArrayList<String>();
+    private Map<String, Endpoint> localEndpoints = new HashMap<String, Endpoint>();
 
     public HazelcastEndpointRegistry(ExtensionPointRegistry registry,
                                      Map<String, String> attributes,
@@ -138,7 +138,7 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
 
     public void addEndpoint(Endpoint endpoint) {
         map.put(endpoint.getURI(), endpoint);
-        localEndpoints.add(endpoint.getURI());
+        localEndpoints.put(endpoint.getURI(), endpoint);
         logger.info("Add endpoint - " + endpoint);
     }
 
@@ -150,8 +150,15 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
             if (matches(uri, endpoint.getURI())) {
                 if (!isLocal(endpoint)) {
                     endpoint.setRemote(true);
+                    ((RuntimeEndpoint)endpoint).bind(registry, this);
+                } else {
+                    // get the local version of the endpoint
+                    // this local version won't have been serialized
+                    // won't be marked as remote and will have the 
+                    // full interface contract information
+                    endpoint = localEndpoints.get(endpoint.getURI());
                 }
-                ((RuntimeEndpoint)endpoint).bind(registry, this);
+                
                 foundEndpoints.add(endpoint);
                 logger.fine("Found endpoint with matching service  - " + endpoint);
             }
@@ -161,7 +168,7 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
     
 
     private boolean isLocal(Endpoint endpoint) {
-        return localEndpoints.contains(endpoint.getURI());
+        return localEndpoints.containsKey(endpoint.getURI());
     }
 
     public Endpoint getEndpoint(String uri) {
@@ -200,7 +207,7 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
         if (!isLocal(newEp)) {
             logger.info(" Remote endpoint added: " + newEp);
             newEp.setRemote(true);
-        }
+        } 
         endpointAdded(newEp);
     }
 
