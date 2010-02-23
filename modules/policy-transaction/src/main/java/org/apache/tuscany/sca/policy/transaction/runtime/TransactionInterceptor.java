@@ -19,7 +19,8 @@
 
 package org.apache.tuscany.sca.policy.transaction.runtime;
 
-import org.apache.tuscany.sca.invocation.Interceptor;
+import java.util.logging.Logger;
+
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.PhasedInterceptor;
@@ -29,16 +30,20 @@ import org.apache.tuscany.sca.policy.transaction.TransactionPolicy;
  * @version $Rev$ $Date$
  */
 public class TransactionInterceptor implements PhasedInterceptor {
+    private static final Logger logger = Logger.getLogger(TransactionInterceptor.class.getName());
+    
     private Invoker next;
     private TransactionManagerHelper helper;
     private boolean outbound;
     private TransactionPolicy interactionPolicy;
     private TransactionPolicy implementationPolicy;
+    private String phase;
 
     public TransactionInterceptor(TransactionManagerHelper helper,
                                   boolean outbound,
                                   TransactionPolicy interactionPolicy,
-                                  TransactionPolicy implementationPolicy) {
+                                  TransactionPolicy implementationPolicy,
+                                  String phase) {
         super();
         this.helper = helper;
         this.outbound = outbound;
@@ -64,6 +69,7 @@ public class TransactionInterceptor implements PhasedInterceptor {
      * @see org.apache.tuscany.sca.invocation.Invoker#invoke(org.apache.tuscany.sca.invocation.Message)
      */
     public Message invoke(Message msg) {
+        //logger.info("Executing TransactionInterceptor.invoke");
         TransactionalInvocation invocation = new TransactionalInvocation(next, msg);
 
         Message result = null;
@@ -122,8 +128,7 @@ public class TransactionInterceptor implements PhasedInterceptor {
     }
     
     public String getPhase() {
-        // TODO Auto-generated method stub
-        return null;
+        return phase;
     }
 
 }

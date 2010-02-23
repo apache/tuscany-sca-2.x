@@ -48,7 +48,7 @@ public class TransactionReferencePolicyProvider extends BasePolicyProvider<Trans
             for (Object p : policySet.getPolicies()) {
                 if (p instanceof TransactionPolicy) {
                     TransactionInterceptor interceptor =
-                        new TransactionInterceptor(helper, true, (TransactionPolicy)p, null);
+                        new TransactionInterceptor(helper, true, (TransactionPolicy)p, null,getPhase());
                     return interceptor;
                 }
             }
