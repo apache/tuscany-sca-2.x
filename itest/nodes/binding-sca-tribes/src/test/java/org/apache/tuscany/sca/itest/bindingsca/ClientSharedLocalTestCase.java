@@ -19,18 +19,16 @@
 
 package org.apache.tuscany.sca.itest.bindingsca;
 
-import org.apache.tuscany.sca.node.Node;
-import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Running the client node and service node with two different classloaders that share the Local class 
+ * Running the client api and service node with two different classloaders that share the Local class 
  * (but not Customer)
  */
-public class ClientNodeSharedLocalTestCase {
-    private static Node clientNode;
+public class ClientSharedLocalTestCase {
+    private static Client client;
     private static TestCaseRunner runner;
 
     @BeforeClass
@@ -39,21 +37,17 @@ public class ClientNodeSharedLocalTestCase {
             new TestCaseRunner(ServiceNode.class, Remote.class.getName(), RemoteServiceImpl.class.getName(),
                                Customer.class.getName());
         runner.beforeClass();
-        NodeFactory factory = NodeFactory.getInstance();
-        clientNode = BindingSCATestCase.createClientNode(factory).start();
+        client = new SCAClientImpl(BindingSCATestCase.DOMAIN_URI);
         Thread.sleep(1000);
     }
 
     @Test
     public void testClient() throws Exception {
-        BindingSCATestCase.runClient(clientNode);
+        BindingSCATestCase.runClient(client);
     }
 
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
-        if (clientNode != null) {
-            clientNode.stop();
-        }
         if (runner != null) {
             runner.afterClass();
         }

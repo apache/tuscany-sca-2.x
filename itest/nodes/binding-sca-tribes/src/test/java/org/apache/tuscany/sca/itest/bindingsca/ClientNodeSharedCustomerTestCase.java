@@ -26,7 +26,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * This shows how to test the Calculator service component.
+ * Running the client node and service node with two different classloaders that share the Customer class
  */
 public class ClientNodeSharedCustomerTestCase {
     private static Node clientNode;

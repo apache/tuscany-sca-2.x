@@ -32,7 +32,7 @@ import org.oasisopen.sca.SCARuntimeException;
  * Test binding.sca in the same classloader
  */
 public class BindingSCATestCase {
-    private static final String DOMAIN_URI = "my-domain";
+    static final String DOMAIN_URI = "my-domain";
     private static final String REGISTRY_URI = "tribes://228.0.0.100:50000";
     private static final String PKG = "org/apache/tuscany/sca/itest/bindingsca/";
     private static final String CLIENT = "Client.composite";
@@ -110,10 +110,14 @@ public class BindingSCATestCase {
      */
     static void runClient(Node node) {
         Client client = node.getService(Client.class, "ClientComponent/Client");
+        runClient(client);
+    }
+
+    static void runClient(Client client) {
         String id = client.create("Ray");
         Assert.assertEquals("Ray", client.getName(id));
     }
-
+    
     /**
      * One node factory and one node for both composites
      */
