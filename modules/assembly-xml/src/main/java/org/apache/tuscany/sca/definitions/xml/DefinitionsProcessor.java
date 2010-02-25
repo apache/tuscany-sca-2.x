@@ -40,15 +40,18 @@ import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
-import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.definitions.DefinitionsFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.policy.BindingType;
 import org.apache.tuscany.sca.policy.ImplementationType;
 import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.IntentMap;
+import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.policy.Qualifier;
 
 /**
  * Processor for SCA Definitions
@@ -60,6 +63,7 @@ public class DefinitionsProcessor extends BaseStAXArtifactProcessor implements S
     private StAXArtifactProcessorExtensionPoint processors;
     private StAXArtifactProcessor<Object> extensionProcessor;
     private DefinitionsFactory definitionsFactory;
+    private PolicyFactory policyFactory;
 
     public static final String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200912";
     public static final String BINDING = "binding";
@@ -76,7 +80,7 @@ public class DefinitionsProcessor extends BaseStAXArtifactProcessor implements S
         this.processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         FactoryExtensionPoint factoryExtensionPoint = registry.getExtensionPoint(FactoryExtensionPoint.class);
         this.definitionsFactory = factoryExtensionPoint.getFactory(DefinitionsFactory.class);
-        
+        this.policyFactory = factoryExtensionPoint.getFactory(PolicyFactory.class);        
     }
 
     public Definitions read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException, XMLStreamException {
@@ -239,6 +243,33 @@ public class DefinitionsProcessor extends BaseStAXArtifactProcessor implements S
                               "org.apache.tuscany.sca.definitions.xml.definitions-xml-validation-messages", 
                               "ImplementationTypeNotFound", 
                               implementationType.getType().toString());
+            }
+        }
+        
+
+        // Flat intentMap structure by creating a policySet for each one
+        List<PolicySet> copy = new ArrayList<PolicySet>(scaDefns.getPolicySets());
+        for (PolicySet policySet : copy) {
+            //[LRESENDE] Do we need to remove the current policySet and just include the flat one based on qualifiers ?
+            //Maybe not, as this would resolve to explicitly attached policySet 
+            
+            //process intent maps
+            for(IntentMap intentMap : policySet.getIntentMaps()) {
+                for(Qualifier qualifier : intentMap.getQualifiers()) {
+                    PolicySet qualifiedPolicySet = policyFactory.createPolicySet();
+                    qualifiedPolicySet.setAppliesTo(policySet.getAppliesTo());
+                    qualifiedPolicySet.setAppliesToXPathExpression(policySet.getAttachToXPathExpression());
+                    qualifiedPolicySet.setAttachTo(policySet.getAttachTo());
+                    qualifiedPolicySet.setAttachToXPathExpression(policySet.getAttachToXPathExpression());
+
+                    qualifiedPolicySet.setName(qualifier.getIntent().getName());
+                    qualifiedPolicySet.getProvidedIntents().clear();
+                    qualifiedPolicySet.getProvidedIntents().add(qualifier.getIntent());
+                    qualifiedPolicySet.getPolicies().clear();
+                    qualifiedPolicySet.getPolicies().addAll(qualifier.getPolicies());
+
+                    scaDefns.getPolicySets().add(qualifiedPolicySet);
+                }
             }
         }
     }
