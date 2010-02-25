@@ -36,27 +36,22 @@ import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySubject;
 
 /**
- * 
+ * Intent Validator
  */
 public class IntentValidator implements PolicyBuilder {
 
     /**
-     * @param registry
+     * Defaut constructor
+     * @param registry Extension Registry
      */
     public IntentValidator(ExtensionPointRegistry registry) {
         super();
     }
 
-    /* (non-Javadoc)
-     * @see org.apache.tuscany.sca.assembly.builder.PolicyBuilder#build(org.apache.tuscany.sca.assembly.Endpoint, org.apache.tuscany.sca.assembly.builder.BuilderContext)
-     */
     public boolean build(Endpoint endpoint, BuilderContext context) {
         return checkMutualExclusion(endpoint, context);
     }
 
-    /* (non-Javadoc)
-     * @see org.apache.tuscany.sca.assembly.builder.PolicyBuilder#build(org.apache.tuscany.sca.assembly.EndpointReference, org.apache.tuscany.sca.assembly.builder.BuilderContext)
-     */
     public boolean build(EndpointReference endpointReference, BuilderContext context) {
         boolean ok = checkMutualExclusion(endpointReference, context);
         if(!ok) {
@@ -73,23 +68,19 @@ public class IntentValidator implements PolicyBuilder {
         return ok;
     }
 
-    /* (non-Javadoc)
-     * @see org.apache.tuscany.sca.assembly.builder.PolicyBuilder#build(org.apache.tuscany.sca.assembly.Component, org.apache.tuscany.sca.assembly.Implementation, org.apache.tuscany.sca.assembly.builder.BuilderContext)
-     */
     public boolean build(Component component, Implementation implementation, BuilderContext context) {
         return true;
     }
+    
+    public boolean build(EndpointReference endpointReference, Endpoint endpoint, BuilderContext context) {
+        return true;
+    }    
 
-    /* (non-Javadoc)
-     * @see org.apache.tuscany.sca.assembly.builder.PolicyBuilder#getPolicyType()
-     */
     public QName getPolicyType() {
-        // TODO Auto-generated method stub
         return null;
     }
     
     public List<QName> getSupportedBindings() {
-        // TODO Auto-generated method stub
         return null;
     }    
 
@@ -145,9 +136,4 @@ public class IntentValidator implements PolicyBuilder {
         }
         return false;
     }
-
-    public boolean build(EndpointReference endpointReference, Endpoint endpoint, BuilderContext context) {
-        return true;
-    }
-
 }
