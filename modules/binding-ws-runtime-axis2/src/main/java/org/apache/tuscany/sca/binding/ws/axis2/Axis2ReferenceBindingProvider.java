@@ -46,7 +46,6 @@ import org.apache.axis2.AxisFault;
 import org.apache.axis2.addressing.EndpointReferenceHelper;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
-import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.description.AxisService;
 import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.axis2.util.threadpool.ThreadPool;
@@ -59,28 +58,21 @@ import org.apache.tuscany.sca.binding.ws.axis2.transport.TransportReferenceInter
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.axis2.provider.Axis2ReferenceBindingInvoker;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
-import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.invocation.Phase;
 import org.apache.tuscany.sca.policy.util.PolicyHelper;
 import org.apache.tuscany.sca.provider.EndpointReferenceProvider;
-import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
+import org.apache.tuscany.sca.provider.PolicyProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 import org.oasisopen.sca.ServiceRuntimeException;
 
-public class Axis2ReferenceBindingProvider implements EndpointReferenceProvider {
+public class Axis2ReferenceBindingProvider extends Axis2BaseBindingProvider implements EndpointReferenceProvider {
 
-    // Tuscany extensions
-    private ExtensionPointRegistry extensionPoints;
-    private FactoryExtensionPoint modelFactories;
-    private MessageFactory messageFactory;
-    
     // the endpoint reference configuration that's driving this binding provider
     // and some convenience data retrieved from the endpoint reference
     private RuntimeEndpointReference endpointReference;
@@ -88,26 +80,18 @@ public class Axis2ReferenceBindingProvider implements EndpointReferenceProvider 
     private RuntimeComponentReference reference;
     private WebServiceBinding wsBinding;
     
-    // derived policy configuration
-    private boolean isSOAP12Required = false;
-    private boolean isRampartRequired = false;
-    private boolean isMTOMRequired = false;
-    private boolean isJMSRequired = false;    
-    
     // The Axis2 configuration that the binding creates
-    private ConfigurationContext configContext;
     private ServiceClient serviceClient;
     private AxisService axisClientSideService;
     
 
     public Axis2ReferenceBindingProvider(ExtensionPointRegistry extensionPoints,
                                          EndpointReference endpointReference) {
+        
+        super(extensionPoints);
 
-        this.extensionPoints = extensionPoints;
         this.endpointReference = (RuntimeEndpointReference)endpointReference;
         
-        this.modelFactories =  extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
-        this.messageFactory = modelFactories.getFactory(MessageFactory.class); 
         this.wsBinding = (WebServiceBinding)endpointReference.getBinding();
         this.component = (RuntimeComponent)endpointReference.getComponent();
         this.reference = (RuntimeComponentReference)endpointReference.getReference();
@@ -127,13 +111,18 @@ public class Axis2ReferenceBindingProvider implements EndpointReferenceProvider 
         
         isMTOMRequired = PolicyHelper.isIntentRequired(wsBinding, Axis2BindingProviderFactory.MTOM_INTENT);
         
-        // this is not correct as there may be other, custom, policies that 
+        // TODO - this is not correct as there may be other, custom, policies that 
         // require rampart. For example this is not going to pick up the case
         // of external policy attachment
         isRampartRequired = PolicyHelper.isIntentRequired(wsBinding, Constants.AUTHENTICATION_INTENT) ||
                             PolicyHelper.isIntentRequired(wsBinding, Constants.CONFIDENTIALITY_INTENT) ||
                             PolicyHelper.isIntentRequired(wsBinding, Constants.INTEGRITY_INTENT);          
 
+        // Apply the configuration from any other policies
+        
+        for (PolicyProvider pp : this.endpointReference.getPolicyProviders()) {
+            pp.configureBinding(this);
+        }
     }
     
     public void start() {

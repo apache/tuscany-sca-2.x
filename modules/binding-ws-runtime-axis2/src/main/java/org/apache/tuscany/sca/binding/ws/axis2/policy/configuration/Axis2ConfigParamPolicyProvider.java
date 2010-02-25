@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.binding.ws.axis2.policy.configuration;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.description.Parameter;
+import org.apache.tuscany.sca.binding.ws.axis2.Axis2BaseBindingProvider;
 import org.apache.tuscany.sca.policy.PolicySubject;
 import org.apache.tuscany.sca.provider.BasePolicyProvider;
 import org.oasisopen.sca.ServiceRuntimeException;
@@ -35,7 +36,8 @@ public class Axis2ConfigParamPolicyProvider extends BasePolicyProvider<Axis2Conf
         super(Axis2ConfigParamPolicy.class, subject);
     }
 
-    public void configureBinding(ConfigurationContext configurationContext) {
+    public void configureBinding(Object context) {
+        ConfigurationContext configurationContext = ((Axis2BaseBindingProvider)context).getAxisConfigurationContext();
         Axis2ConfigParamPolicy axis2ConfigParamPolicy = null;
         Parameter configParam = null;
         for (Object policy : findPolicies()) {

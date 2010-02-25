@@ -58,17 +58,14 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.oasisopen.sca.ServiceRuntimeException;
 
-public class Axis2ServiceBindingProvider implements ServiceBindingProvider {
+public class Axis2ServiceBindingProvider extends Axis2BaseBindingProvider implements ServiceBindingProvider {
     private static final Logger logger = Logger.getLogger(Axis2ServiceBindingProvider.class.getName());
 
     // Tuscany extensions
-    private ExtensionPointRegistry extensionPoints;
+    private AssemblyFactory assemblyFactory;
     private ServletHost servletHost;
     private RuntimeComponent component;
     private RuntimeComponentService service;
-    private MessageFactory messageFactory;
-    private FactoryExtensionPoint modelFactories;
-    private RuntimeAssemblyFactory assemblyFactory;
     
     // the endpoint configuration that's driving this binding provider
     // and some convenience data retrieved from the endpoint
@@ -77,27 +74,20 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider {
     private Port wsdlPort;
     private String endpointURI;
     private InterfaceContract contract;
-    
-    // derived policy configuration
-    private boolean isSOAP12Required = false;
-    private boolean isRampartRequired = false;
-    private boolean isMTOMRequired = false;
-    private boolean isJMSRequired = false;
-    
+       
     // The Axis2 configuration that the binding creates
-    private ConfigurationContext configContext;
     private JMSSender jmsSender;
     private JMSListener jmsListener;    
        
     public Axis2ServiceBindingProvider(ExtensionPointRegistry extensionPoints,
                                        RuntimeEndpoint endpoint,
                                        ServletHost servletHost ) {
+        super(extensionPoints);
+        
         this.extensionPoints = extensionPoints;
         this.endpoint = endpoint;
         this.servletHost = servletHost;
         
-        this.modelFactories =  extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
-        this.messageFactory = modelFactories.getFactory(MessageFactory.class);
         this.assemblyFactory = (RuntimeAssemblyFactory)modelFactories.getFactory(AssemblyFactory.class);
         this.wsBinding = (WebServiceBinding)endpoint.getBinding();
         this.component = (RuntimeComponent)endpoint.getComponent();
@@ -162,9 +152,7 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider {
         // Apply the configuration from any other policies
         
         for (PolicyProvider pp : endpoint.getPolicyProviders()) {
-            // we probably want to pass the whole provider in here
-            // so that the policy providers can get at the rampart configuration
-            pp.configureBinding(configContext);
+            pp.configureBinding(this);
         }
         
         // Apply the configuration from the mayProvides intents        
@@ -193,7 +181,12 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider {
                 endpointURI.startsWith("/")) {
                 Axis2ServiceServlet servlet = new Axis2ServiceServlet();
                 servlet.init(configContext);
-                servletHost.addServletMapping(endpointURI, servlet);
+                
+                if (httpSecurityContext.isSSLEnabled()){
+                    servletHost.addServletMapping(endpointURI, servlet, httpSecurityContext);
+                } else {
+                    servletHost.addServletMapping(endpointURI, servlet);
+                }
             } else if (endpointURI.startsWith("jms")) {
                 logger.log(Level.INFO, "Axis2 JMS URL=" + endpointURI);
 
