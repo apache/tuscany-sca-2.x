@@ -108,7 +108,7 @@
         <module>policy-wspolicy</module>
         <!--module>policy-xml-ws</module-->
         <module>policy-logging</module>
-        <!--module>policy-transaction</module-->
+        <module>policy-transaction</module>
         <module>sca-api</module>
         <module>sca-client-impl</module>
         <module>sca-client-javascript</module>
