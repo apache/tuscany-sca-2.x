@@ -17,4 +17,4 @@
 
 # Implementation class for binding-ws-runtime-axis2 specific policy extensions
 org.apache.tuscany.sca.binding.ws.axis2.policy.authentication.basic.BasicAuthenticationPolicyProviderFactory;model=org.apache.tuscany.sca.policy.authentication.basic.BasicAuthenticationPolicy
-
+org.apache.tuscany.sca.binding.ws.axis2.policy.security.http.ssl.HTTPSPolicyProviderFactory;model=org.apache.tuscany.sca.policy.security.http.ssl.HTTPSPolicy
