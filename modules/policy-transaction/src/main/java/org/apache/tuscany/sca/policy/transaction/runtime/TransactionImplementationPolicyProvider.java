@@ -24,6 +24,7 @@ import java.util.List;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Phase;
 import org.apache.tuscany.sca.invocation.PhasedInterceptor;
+import org.apache.tuscany.sca.policy.PolicyExpression;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.transaction.TransactionPolicy;
 import org.apache.tuscany.sca.provider.BasePolicyProvider;
@@ -44,12 +45,11 @@ public class TransactionImplementationPolicyProvider extends BasePolicyProvider<
     }
 
     public PhasedInterceptor createInterceptor(Operation operation) {
-/* TODO - 2.x better way of doing this in 2.x */
+        /* TODO - 2.x better way of doing this in 2.x */
         for (PolicySet policySet : policySets) {
-            for (Object p : policySet.getPolicies()) {
-                if (p instanceof TransactionPolicy) {
-                    TransactionInterceptor interceptor =
-                        new TransactionInterceptor(helper, false, (TransactionPolicy)p, null, getPhase());
+            for (PolicyExpression p : policySet.getPolicies()) {
+                if (p.getPolicy() instanceof TransactionPolicy) {
+                    TransactionInterceptor interceptor = new TransactionInterceptor(helper, false, (TransactionPolicy)p, null, getPhase());
                     return interceptor;
                 }
             }
