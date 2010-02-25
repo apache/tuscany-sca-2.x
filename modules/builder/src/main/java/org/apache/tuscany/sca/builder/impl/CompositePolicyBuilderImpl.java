@@ -72,6 +72,9 @@ public class CompositePolicyBuilderImpl extends ComponentPolicyBuilderImpl imple
             for (Component component : composite.getComponents()) {
                 monitor.pushContext("Component: " + component.getName());
 
+                //resolve component level
+                resolveAndCheck(component, context);
+                
                 try {
                     Implementation implementation = component.getImplementation();
 
