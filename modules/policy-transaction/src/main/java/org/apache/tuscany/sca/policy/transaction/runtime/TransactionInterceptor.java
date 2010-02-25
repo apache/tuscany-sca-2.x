@@ -69,7 +69,7 @@ public class TransactionInterceptor implements PhasedInterceptor {
      * @see org.apache.tuscany.sca.invocation.Invoker#invoke(org.apache.tuscany.sca.invocation.Message)
      */
     public Message invoke(Message msg) {
-        logger.info("Executing TransactionInterceptor.invoke");
+        //logger.info("Executing TransactionInterceptor.invoke");
         TransactionalInvocation invocation = new TransactionalInvocation(next, msg);
 
         Message result = null;
