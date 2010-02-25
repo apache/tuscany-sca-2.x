@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.itest.bindingsca;
 
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -48,5 +49,6 @@ public class ClientSharedCustomerTestCase {
         if (runner != null) {
             runner.afterClass();
         }
+        NodeFactory.getInstance().destroy();
     }
 }

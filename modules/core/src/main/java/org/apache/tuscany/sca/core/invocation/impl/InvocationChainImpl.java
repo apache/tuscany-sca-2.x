@@ -86,6 +86,19 @@ public class InvocationChainImpl implements InvocationChain {
     public Invoker getHeadInvoker() {
         return nodes.isEmpty() ? null : nodes.get(0).getInvoker();
     }
+    
+    public Invoker getHeadInvoker(String phase) {
+        int index = phaseManager.getAllPhases().indexOf(phase);
+        if (index == -1) {
+            throw new IllegalArgumentException("Invalid phase name: " + phase);
+        }
+        for (Node node : nodes) {
+            if (index <= node.getPhaseIndex()) {
+                return node.getInvoker();
+            }
+        }
+        return null;
+    }
 
     /**
      * @return the sourceOperation

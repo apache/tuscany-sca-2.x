@@ -29,11 +29,14 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.databinding.Mediator;
+import org.apache.tuscany.sca.interfacedef.Compatibility;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
+import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
+import org.apache.tuscany.sca.provider.EndpointReferenceProvider;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -41,6 +44,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
+import org.oasisopen.sca.ServiceRuntimeException;
 import org.oasisopen.sca.ServiceUnavailableException;
 
 /**
@@ -52,7 +56,7 @@ import org.oasisopen.sca.ServiceUnavailableException;
  *
  * @version $Rev$ $Date$
  */
-public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvider {
+public class RuntimeSCAReferenceBindingProvider implements EndpointReferenceProvider {
 
     private static final Logger logger = Logger.getLogger(RuntimeSCAReferenceBindingProvider.class.getName());
 
@@ -66,6 +70,7 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
     private ReferenceBindingProvider distributedProvider = null;
     private SCABindingFactory scaBindingFactory;
     private Mediator mediator;
+    private InterfaceContractMapper interfaceContractMapper;
 
     public RuntimeSCAReferenceBindingProvider(ExtensionPointRegistry extensionPoints,
                                               RuntimeEndpointReference endpointReference) {
@@ -85,10 +90,14 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
             (BindingProviderFactory<DistributedSCABinding>)factoryExtensionPoint
                 .getProviderFactory(DistributedSCABinding.class);
 
-        this.mediator = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class).getUtility(Mediator.class);
+        UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
+        this.mediator = utilities.getUtility(Mediator.class);
+        this.interfaceContractMapper = utilities.getUtility(InterfaceContractMapper.class);
     }
 
     public boolean isTargetRemote() {
+        return endpointReference.getTargetEndpoint().isRemote();
+        /*
         boolean targetIsRemote = false;
 
         // The decision is based on the results of the wiring process in the assembly model
@@ -119,6 +128,7 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
         	targetIsRemote = false;
         }
         return targetIsRemote;
+        */
     }
 
     private ReferenceBindingProvider getDistributedProvider() {
@@ -127,14 +137,14 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
             // initialize the remote provider if it hasn't been done already
             if (distributedProvider == null) {
                 if (reference.getInterfaceContract() != null && !reference.getInterfaceContract().getInterface().isRemotable()) {
-                    throw new IllegalStateException("Reference interface not remotable for component: " + component
+                    throw new ServiceRuntimeException("Reference interface not remotable for component: " + component
                         .getName()
                         + " and reference: "
                         + reference.getName());
                 }
 
                 if (distributedProviderFactory == null) {
-                    throw new IllegalStateException("No distributed SCA binding available for component: " + component
+                    throw new ServiceRuntimeException("No distributed SCA binding available for component: " + component
                         .getName()
                         + " and reference: "
                         + reference.getName());
@@ -182,6 +192,7 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
             return false;
         }
     }
+   
 
     private Invoker getInvoker(RuntimeEndpointReference epr, Operation operation) {
         Endpoint target = epr.getTargetEndpoint();
@@ -190,10 +201,24 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
             if (service != null) { // not a callback wire
                 InvocationChain chain = ((RuntimeEndpoint) target).getInvocationChain(operation);
                 
+                boolean passByValue = false;
+                Operation targetOp = chain.getTargetOperation();
+                if (!operation.getInterface().isRemotable()) {
+                    if (interfaceContractMapper.isCompatibleByReference(operation, targetOp, Compatibility.SUBSET)) {
+                       passByValue = false;
+                    }
+                } else {
+                    boolean allowsPBR = chain.allowsPassByReference();
+                    if (allowsPBR && interfaceContractMapper.isCompatibleByReference(operation, targetOp, Compatibility.SUBSET)) {
+                        passByValue = false;
+                    } else if (interfaceContractMapper.isCompatibleByValue(operation, targetOp, Compatibility.SUBSET)) {
+                        passByValue = true;
+                    }
+                }
                 // it turns out that the chain source and target operations are the same, and are the operation 
                 // from the target, not sure if thats by design or a bug. The SCA binding invoker needs to know 
                 // the source and target class loaders so pass in the real source operation in the constructor 
-                return chain == null ? null : new SCABindingInvoker(chain, operation, mediator);
+                return chain == null ? null : new SCABindingInvoker(chain, operation, mediator, passByValue);
             }
         }
         return null;
@@ -221,25 +246,32 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
     public void start() {
         if (started) {
             return;
-        } else {
-            started = true;
-        }
-
+        } 
         if (getDistributedProvider() != null) {
             distributedProvider.start();
         }
+        started = true;
     }
 
     public void stop() {
         if (!started) {
             return;
-        } else {
+        } 
+
+        try {
+            if (getDistributedProvider() != null) {
+                distributedProvider.stop();
+            }
+        } finally {
             started = false;
         }
+    }
 
-        if (getDistributedProvider() != null) {
-            distributedProvider.stop();
+    public void configure() {
+        if (distributedProvider instanceof EndpointReferenceProvider) {
+            ((EndpointReferenceProvider)distributedProvider).configure();
         }
+
     }
 
 }

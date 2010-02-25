@@ -26,7 +26,7 @@ import org.apache.tuscany.sca.node.NodeFactory;
 import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
 import org.junit.Assert;
 import org.junit.Test;
-import org.oasisopen.sca.SCARuntimeException;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
  * Test binding.sca in the same classloader
@@ -49,10 +49,13 @@ public class BindingSCATestCase {
         Node node2 = createServiceNode(factory1);
         node1.start();
         node2.start();
-        runClient(node1);
-        node2.stop();
-        node1.stop();
-        factory1.destroy();
+        try {
+            runClient(node1);
+        } finally {
+            node2.stop();
+            node1.stop();
+            factory1.destroy();
+        }
     }
 
     /**
@@ -94,14 +97,15 @@ public class BindingSCATestCase {
         node2.start();
         try {
             runClient(node1);
-            Assert.fail("SCARuntimeException should have been thrown.");
-        } catch (SCARuntimeException e) {
+            Assert.fail("ServiceRuntimeException should have been thrown.");
+        } catch (ServiceRuntimeException e) {
             // ignore
+        } finally {
+            node2.stop();
+            node1.stop();
+            factory2.destroy();
+            factory1.destroy();
         }
-        node2.stop();
-        node1.stop();
-        factory2.destroy();
-        factory1.destroy();
     }
 
     /**
@@ -117,7 +121,7 @@ public class BindingSCATestCase {
         String id = client.create("Ray");
         Assert.assertEquals("Ray", client.getName(id));
     }
-    
+
     /**
      * One node factory and one node for both composites
      */
@@ -130,9 +134,12 @@ public class BindingSCATestCase {
 
         Node node1 = factory.createNode(config1);
         node1.start();
-        runClient(node1);
-        node1.stop();
-        factory.destroy();
+        try {
+            runClient(node1);
+        } finally {
+            node1.stop();
+            factory.destroy();
+        }
     }
 
 }

@@ -79,6 +79,13 @@ public interface InvocationChain {
      * @return The first invoker in the chain
      */
     Invoker getHeadInvoker();
+    
+    /**
+     * Get the first invoker that is on the same or later phase 
+     * @param phase
+     * @return The first invoker that is on the same or later phase
+     */
+    Invoker getHeadInvoker(String phase);
 
     /**
      * Add an interceptor to the given phase

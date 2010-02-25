@@ -31,12 +31,13 @@ import org.junit.Test;
 public class ClientNodeSharedCustomerTestCase {
     private static Node clientNode;
     private static TestCaseRunner runner;
+    private static NodeFactory factory;
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
         runner = new TestCaseRunner(ServiceNode.class, Remote.class.getName(), RemoteServiceImpl.class.getName());
         runner.beforeClass();
-        NodeFactory factory = NodeFactory.getInstance();
+        factory = NodeFactory.getInstance();
         clientNode = BindingSCATestCase.createClientNode(factory).start();
         Thread.sleep(1000);
     }
@@ -53,6 +54,9 @@ public class ClientNodeSharedCustomerTestCase {
         }
         if (runner != null) {
             runner.afterClass();
+        }
+        if (factory != null) {
+            factory.destroy();
         }
     }
 }

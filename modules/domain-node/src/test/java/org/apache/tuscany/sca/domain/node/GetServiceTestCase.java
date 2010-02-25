@@ -27,7 +27,7 @@ import itest.nodes.Helloworld;
 import org.junit.After;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.oasisopen.sca.SCARuntimeException;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
  * This shows how to test the Calculator service component.
@@ -66,7 +66,7 @@ public class GetServiceTestCase{
         try {
             assertEquals("Hi Hello Petra", client.sayHello("Petra"));
             fail();
-        } catch (SCARuntimeException e) {
+        } catch (ServiceRuntimeException e) {
             // FIXME: this gives an SCARuntimeException, would be better to be something like ServiceNotFoundException?
             // expected
         }

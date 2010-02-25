@@ -26,6 +26,7 @@ import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
+import org.apache.tuscany.sca.invocation.Phase;
 
 /**
  * @version $Rev$ $Date$
@@ -35,25 +36,25 @@ public class SCABindingInvoker implements Interceptor, DataExchangeSemantics {
     private Mediator mediator;
     private Operation sourceOperation;
     private Operation targetOperation;
-    private boolean copyArgs;
-    
+    private boolean passByValue;
+
     /**
      * Construct a SCABindingInvoker that delegates to the service invocaiton chain
      */
-    public SCABindingInvoker(InvocationChain chain, Operation sourceOperation, Mediator mediator) {
+    public SCABindingInvoker(InvocationChain chain, Operation sourceOperation, Mediator mediator, boolean passByValue) {
         super();
         this.chain = chain;
         this.mediator = mediator;
         this.sourceOperation = sourceOperation;
         this.targetOperation = chain.getTargetOperation();
-        initCopyArgs();
+        this.passByValue = passByValue;
     }
 
     /**
      * @see org.apache.tuscany.sca.invocation.Interceptor#getNext()
      */
     public Invoker getNext() {
-        return chain.getHeadInvoker();
+        return chain.getHeadInvoker(Phase.SERVICE_POLICY);
     }
 
     /**
@@ -68,13 +69,13 @@ public class SCABindingInvoker implements Interceptor, DataExchangeSemantics {
      */
     public Message invoke(Message msg) {
 
-        if (copyArgs) {
+        if (passByValue) {
             msg.setBody(mediator.copyInput(msg.getBody(), sourceOperation, targetOperation));
         }
-        
+
         Message resultMsg = getNext().invoke(msg);
-        
-        if (copyArgs) {
+
+        if (passByValue) {
             // Note source and target operation swapped so result is in source class loader
             if (resultMsg.isFault()) {
                 resultMsg.setFaultBody(mediator.copyFault(resultMsg.getBody(), targetOperation, sourceOperation));
@@ -88,39 +89,6 @@ public class SCABindingInvoker implements Interceptor, DataExchangeSemantics {
         return resultMsg;
     }
 
-    /**
-     * Work out if pass-by-value copies or cross classloader copies need to be done
-     * - if source and target are in different classloaders
-     * - if the interfaces are remotable unless @AllowsPassByReference or 
-     *   a data transformation has been done in the chain
-     * - what else?
-     *    - have a flag to optionally disable copies for individual composite/service/operation
-     *      to improve the performance of specific local invocations?
-     */
-    private void initCopyArgs() {
-        this.copyArgs = crossClassLoaders() || isRemotable();
-    }
-
-    private boolean crossClassLoaders() {
-        // TODO: for now if the operation is remotable the cross classloader copying will 
-        // happen automatically but this needs also to check the non-remotable operation classloaders 
-        return false;
-    }
-
-    /**
-     * Pass-by-value copies are required if the interfaces are remotable unless the
-     * implementation uses the @AllowsPassByReference annotation.
-     */
-    protected boolean isRemotable() {
-        if (!sourceOperation.getInterface().isRemotable()) {
-            return false;
-        }
-        if (!chain.getTargetOperation().getInterface().isRemotable()) {
-            return false;
-        }
-        return true;
-    }
-    
     /**
      * @see org.apache.tuscany.sca.invocation.DataExchangeSemantics#allowsPassByReference()
      */

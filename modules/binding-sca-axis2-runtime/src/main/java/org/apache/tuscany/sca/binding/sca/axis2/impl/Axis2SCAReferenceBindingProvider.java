@@ -34,6 +34,7 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
+import org.apache.tuscany.sca.provider.EndpointReferenceProvider;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -45,7 +46,7 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
  * binding-ws-axis implementation for sending messages to remote services so this provider
  * uses the ws-axis provider under the covers. 
  */
-public class Axis2SCAReferenceBindingProvider implements ReferenceBindingProvider {
+public class Axis2SCAReferenceBindingProvider implements EndpointReferenceProvider {
 
     private static final Logger logger = Logger.getLogger(Axis2SCAReferenceBindingProvider.class.getName());
     
@@ -115,5 +116,11 @@ public class Axis2SCAReferenceBindingProvider implements ReferenceBindingProvide
 
     public void stop() {
         axisReferenceBindingProvider.stop();
+    }
+
+    public void configure() {
+        if (axisReferenceBindingProvider instanceof EndpointReferenceProvider) {
+            ((EndpointReferenceProvider)axisReferenceBindingProvider).configure();
+        }
     }
 }

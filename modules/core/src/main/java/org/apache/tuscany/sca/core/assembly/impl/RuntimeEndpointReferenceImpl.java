@@ -71,7 +71,6 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeWireProcessor;
 import org.apache.tuscany.sca.runtime.RuntimeWireProcessorExtensionPoint;
 import org.apache.tuscany.sca.work.WorkScheduler;
-import org.oasisopen.sca.SCARuntimeException;
 import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
@@ -304,7 +303,7 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
 
         boolean ok = eprBinder.bindRunTime(endpointRegistry, this);
         if (!ok) {
-            throw new SCARuntimeException("Unable to bind " + this);
+            throw new ServiceRuntimeException("Unable to bind " + this);
         }
 
         // start the binding provider

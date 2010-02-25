@@ -78,15 +78,21 @@ public interface InterfaceContractMapper {
      * Simply speaking, any request from the source operation can be processed by the target operation and
      * the normal response or fault/exception from the target operation can be handled by the source operation.
      * 
-     * Please note this compatibility check is NOT symmetric.  
+     * Please note this compatibility check is NOT symmetric. But the following should be guaranteed:
+     * <ul>
+     * <li>(source, target, SUB) == (target, source, SUPER)
+     * <li>(source, target, MUTUAL) == (source, target, SUB) && (target, source, SUB) == (source, target, SUPER) && (source, target, SUPER)
      * 
      * @param source The source operation
      * @param target The target operation
-     * @param compatibilityType TODO
+     * @param compatibilityType The type of compatibility
      * @return true if the source operation is compatible with the target
      *         operation
      */
     boolean isCompatible(Operation source, Operation target, Compatibility compatibilityType);
+    
+    boolean isCompatibleByReference(Operation source, Operation target, Compatibility compatibilityType);
+    boolean isCompatibleByValue(Operation source, Operation target, Compatibility compatibilityType);
 
     /**
      * An interface A is a Compatible Subset of a second interface B if and only if all of points 1 through 6 

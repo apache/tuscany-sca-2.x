@@ -57,5 +57,6 @@ public class ClientNodeSharedLocalTestCase {
         if (runner != null) {
             runner.afterClass();
         }
+        NodeFactory.getInstance().destroy();
     }
 }

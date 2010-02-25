@@ -116,6 +116,10 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
     } // end method isEqual
 
     public boolean isCompatible(Operation source, Operation target, Compatibility compatibilityType) {
+        return isCompatible(source, target, compatibilityType, true);
+    }
+
+    public boolean isCompatible(Operation source, Operation target, Compatibility compatibilityType, boolean byValue) {
         if (source == target) {
             return true;
         }
@@ -133,7 +137,7 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
             return false;
         }
 
-        boolean remotable = source.getInterface().isRemotable();
+        boolean passByValue = (source.getInterface().isRemotable()) && byValue;
 
         //        if (source.getInterface().isRemotable()) {
         //            return true;
@@ -164,7 +168,7 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
             return true;
         }
 
-        if (!isCompatible(targetOutputType, sourceOutputType, remotable)) {
+        if (!isCompatible(targetOutputType, sourceOutputType, passByValue)) {
             return false;
         }
 
@@ -174,7 +178,7 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
 
         int size = sourceInputType.size();
         for (int i = 0; i < size; i++) {
-            if (!isCompatible(sourceInputType.get(i), targetInputType.get(i), remotable)) {
+            if (!isCompatible(sourceInputType.get(i), targetInputType.get(i), passByValue)) {
                 return false;
             }
         }
@@ -186,7 +190,7 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
             boolean found = true;
             for (DataType sourceFaultType : source.getFaultTypes()) {
                 found = false;
-                if (isCompatible(targetFaultType, sourceFaultType, remotable)) {
+                if (isCompatible(targetFaultType, sourceFaultType, passByValue)) {
                     // Target fault type can be covered by the source fault type
                     found = true;
                     break;
@@ -198,6 +202,13 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
         }
 
         return true;
+    }    
+    public boolean isCompatibleByReference(Operation source, Operation target, Compatibility compatibilityType) {
+        return isCompatible(source, target, compatibilityType, false);
+    }
+
+    public boolean isCompatibleByValue(Operation source, Operation target, Compatibility compatibilityType) {
+        return isCompatible(source, target, compatibilityType, true);
     }
 
     // FIXME: How to improve the performance for the lookup
