@@ -88,6 +88,7 @@
                 <module>service-reference</module>
                 <module>wires</module>
                 <module>policies</module>
+                <module>policy-transaction</module>                
                 <module>ws</module>
            </modules>
         </profile>
