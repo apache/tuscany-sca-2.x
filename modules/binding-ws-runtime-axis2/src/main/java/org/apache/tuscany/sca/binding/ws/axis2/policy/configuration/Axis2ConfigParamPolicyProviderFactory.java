@@ -19,17 +19,13 @@
 
 package org.apache.tuscany.sca.binding.ws.axis2.policy.configuration;
 
-import org.apache.axis2.AxisFault;
-import org.apache.axis2.context.ConfigurationContext;
-import org.apache.axis2.description.Parameter;
+
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.provider.PolicyProvider;
 import org.apache.tuscany.sca.provider.PolicyProviderFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
  * @version $Rev$ $Date$
@@ -45,11 +41,11 @@ public class Axis2ConfigParamPolicyProviderFactory implements PolicyProviderFact
     }
 
     public PolicyProvider createReferencePolicyProvider(EndpointReference endpointReference) {
-        return null;
+        return new Axis2ConfigParamPolicyProvider(endpointReference);
     }
 
     public PolicyProvider createServicePolicyProvider(Endpoint endpoint) {
-        return null;
+        return new Axis2ConfigParamPolicyProvider(endpoint);
     }
 
     public Class<Axis2ConfigParamPolicy> getModelType() {
