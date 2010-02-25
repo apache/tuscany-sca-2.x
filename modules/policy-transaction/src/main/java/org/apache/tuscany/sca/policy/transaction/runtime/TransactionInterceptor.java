@@ -104,9 +104,17 @@ public class TransactionInterceptor implements PhasedInterceptor {
             } else {
                 result = helper.handlesInbound(interactionIntent, implementationIntent, invocation);
             }
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            
+        } catch (Throwable e) {
+        	  if (e instanceof Error) {
+                  throw (Error)e;
+              } else if (e instanceof RuntimeException) {
+                  throw (RuntimeException)e;
+              } else {
+                  result = msg;
+                  msg.setFaultBody(e);
+              }
+           
         }
         return result;
     }
