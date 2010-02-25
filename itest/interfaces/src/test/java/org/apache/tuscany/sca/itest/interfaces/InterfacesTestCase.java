@@ -22,22 +22,25 @@ package org.apache.tuscany.sca.itest.interfaces;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.io.File;
+
 import org.apache.tuscany.sca.node.Contribution;
-import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
-@Ignore("TUSCANY-3138")
+// @Ignore("TUSCANY-3138")
 public class InterfacesTestCase {
+    private static final String PKG = "org/apache/tuscany/sca/itest/interfaces/valid";
+    private static String ROOT = new File("target/classes/" + PKG).toURI().toString();
+
     private static Node node;
 
     @BeforeClass
     public static void init() throws Exception {
-        String location = ContributionLocationHelper.getContributionLocation("InterfacesTest.composite");
+        String location = ROOT;
         node = NodeFactory.newInstance().createNode("InterfacesTest.composite", new Contribution("c1", location));
         node.start();
     }

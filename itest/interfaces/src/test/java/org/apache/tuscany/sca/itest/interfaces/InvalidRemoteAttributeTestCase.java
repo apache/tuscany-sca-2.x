@@ -19,21 +19,24 @@
 
 package org.apache.tuscany.sca.itest.interfaces;
 
+import java.io.File;
+
 import org.apache.tuscany.sca.interfacedef.InvalidAnnotationException;
 import org.apache.tuscany.sca.node.Contribution;
-import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.Test;
 
 public class InvalidRemoteAttributeTestCase {
+    private static final String PKG = "org/apache/tuscany/sca/itest/interfaces/invalid";
+    private static String ROOT = new File("target/classes/" + PKG).toURI().toString();
 
     @Test
     public void testInvalidRemoteAttribute() throws Exception {
         Node node = null;
 
         try {
-            String location = ContributionLocationHelper.getContributionLocation("InvalidRemoteAttribute.composite");
+            String location = ROOT;
             node = NodeFactory.newInstance().createNode("InvalidRemoteAttribute.composite", new Contribution("c1", location));
             node.start();
         } catch (Exception e) {
