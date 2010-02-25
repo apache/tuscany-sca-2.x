@@ -38,6 +38,7 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
+import org.apache.tuscany.sca.host.http.SecurityContext;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.host.http.ServletMappingException;
 import org.apache.tuscany.sca.node.Node;
@@ -75,8 +76,12 @@ public class WebAppServletHost implements ServletHost {
     public String getName() {
         return "webapp";
     }
-
+    
     public void addServletMapping(String suri, Servlet servlet) throws ServletMappingException {
+        addServletMapping(suri, servlet, null);
+    }    
+
+    public void addServletMapping(String suri, Servlet servlet, SecurityContext securityContext) throws ServletMappingException {
         URI pathURI = URI.create(suri);
 
         // Make sure that the path starts with a /

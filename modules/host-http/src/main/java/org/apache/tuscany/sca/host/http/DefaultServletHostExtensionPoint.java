@@ -132,6 +132,10 @@ public class DefaultServletHostExtensionPoint implements ServletHostExtensionPoi
         public void addServletMapping(String uri, Servlet servlet) throws ServletMappingException {
             getServletHost().addServletMapping(uri, servlet);
         }
+        
+        public void addServletMapping(String uri, Servlet servlet, SecurityContext securityContext) throws ServletMappingException {
+            getServletHost().addServletMapping(uri, servlet, securityContext);
+        }        
 
         public String getContextPath() {
             return getServletHost().getContextPath();

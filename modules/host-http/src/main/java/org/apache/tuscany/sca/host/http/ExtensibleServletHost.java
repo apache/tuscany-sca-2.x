@@ -68,6 +68,16 @@ public class ExtensibleServletHost implements ServletHost {
         // For now just select the first one
         getDefaultServletHost().addServletMapping(uri, servlet);
     }
+    
+    public void addServletMapping(String uri, Servlet servlet, SecurityContext securityContext) throws ServletMappingException {
+        if (servletHosts.getServletHosts().isEmpty()) {
+            throw new ServletMappingException("No servlet host available");
+        }
+
+        // TODO implement selection of the correct Servlet host based on the mapping
+        // For now just select the first one
+        getDefaultServletHost().addServletMapping(uri, servlet, securityContext);
+    }    
 
     public Servlet getServletMapping(String uri) throws ServletMappingException {
         if (servletHosts.getServletHosts().isEmpty()) {
