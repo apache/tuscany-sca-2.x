@@ -24,15 +24,9 @@
 		
     <component name="Store">
         <tuscany:implementation.widget location="store.html"/>
-		<reference name="catalog" target="Catalog">
-		 	<tuscany:binding.jsonrpc uri="http://localhost:8080/sample-store-webapp/Catalog"/>
-		 </reference>
-		 <reference name="shoppingCart" target="ShoppingCart/Cart">
-		 	<tuscany:binding.atom uri="http://localhost:8080/sample-store-webapp/ShoppingCart/Cart"/>
-		 </reference>
-		 <reference name="shoppingTotal" target="ShoppingCart/Total">
-		 	<tuscany:binding.jsonrpc uri="http://localhost:8080/sample-store-webapp/Total"/>
-		 </reference>
+		<reference name="catalog" target="Catalog"></reference>
+		<reference name="shoppingCart" target="ShoppingCart/Cart"></reference>
+		<reference name="shoppingTotal" target="ShoppingCart/Total"></reference>
     </component>
     
 	<component name="Catalog">
