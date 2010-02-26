@@ -52,6 +52,7 @@ import org.apache.abdera.parser.Parser;
 import org.apache.abdera.writer.WriterFactory;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.tuscany.sca.binding.http.HTTPCacheContext;
+import org.apache.tuscany.sca.common.http.HTTPUtil;
 import org.apache.tuscany.sca.data.collection.Entry;
 import org.apache.tuscany.sca.databinding.Mediator;
 import org.apache.tuscany.sca.interfacedef.DataType;
@@ -171,7 +172,7 @@ class AtomBindingListenerServlet extends HttpServlet {
         //int servletPathLength = request.getContextPath().length() + request.getServletPath().length();
         //String path = URLDecoder.decode(request.getRequestURI().substring(servletPathLength), "UTF-8");
 
-        String path = URLDecoder.decode(getRequestPath(request), "UTF-8");
+        String path = URLDecoder.decode(HTTPUtil.getRequestPath(request), "UTF-8");
         
         logger.fine("get " + request.getRequestURI());
 
@@ -553,7 +554,7 @@ class AtomBindingListenerServlet extends HttpServlet {
         }
 
         // Get the request path
-        String path = URLDecoder.decode(getRequestPath(request), "UTF-8");
+        String path = URLDecoder.decode(HTTPUtil.getRequestPath(request), "UTF-8");
 
         if (path == null || path.length() == 0 || path.equals("/")) {
             org.apache.abdera.model.Entry createdFeedEntry = null;
@@ -678,7 +679,7 @@ class AtomBindingListenerServlet extends HttpServlet {
         }
 
         // Get the request path
-        String path = URLDecoder.decode(getRequestPath(request), "UTF-8");
+        String path = URLDecoder.decode(HTTPUtil.getRequestPath(request), "UTF-8");
 
         if (path != null && path.startsWith("/")) {
             String id = path.substring(1);
@@ -765,7 +766,7 @@ class AtomBindingListenerServlet extends HttpServlet {
         }
 
         // Get the request path
-        String path = URLDecoder.decode(getRequestPath(request), "UTF-8");
+        String path = URLDecoder.decode(HTTPUtil.getRequestPath(request), "UTF-8");
 
         String id;
         if (path != null && path.startsWith("/")) {
@@ -786,26 +787,6 @@ class AtomBindingListenerServlet extends HttpServlet {
                 throw new ServletException((Throwable)responseMessage.getBody());
             }
         }
-    }
-
-    
-    /**
-     * 
-     * @param request
-     * @return
-     */
-    private static String getRequestPath(HttpServletRequest request) {
-        // Get the request path
-        String contextPath = request.getContextPath();
-        String servletPath = request.getServletPath();
-        String requestURI = request.getRequestURI();
-        
-        int contextPathLength = request.getContextPath().length();
-        int servletPathLenght = servletPath.contains(contextPath) ? servletPath.length() - contextPath.length() : servletPath.length();
-        
-        String requestPath = requestURI.substring(contextPathLength + servletPathLenght);
-        
-        return requestPath;
     }
     
     /**

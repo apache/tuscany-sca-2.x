@@ -28,4 +28,20 @@
     <artifactId>tuscany-common-http</artifactId>
     <name>Apache Tuscany SCA Common HTTP</name>
 
+    <dependencies>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.5</version> <!-- to keep compatible with older servlet containers -->
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.8.1</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
 </project>
