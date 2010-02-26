@@ -250,12 +250,15 @@ public class DefinitionsProcessor extends BaseStAXArtifactProcessor implements S
         // Flat intentMap structure by creating a policySet for each one
         List<PolicySet> copy = new ArrayList<PolicySet>(scaDefns.getPolicySets());
         for (PolicySet policySet : copy) {
-            //[LRESENDE] Do we need to remove the current policySet and just include the flat one based on qualifiers ?
-            //Maybe not, as this would resolve to explicitly attached policySet 
+            //[lresende] Do we need to remove the current policySet and just include the flat one based on qualifiers ?
+            //If we don't, the policy is being resolved to the one that has intentMap and no direct concrete policies 
+            boolean remove = false;
             
             //process intent maps
             for(IntentMap intentMap : policySet.getIntentMaps()) {
                 for(Qualifier qualifier : intentMap.getQualifiers()) {
+                    remove = true;
+                    
                     PolicySet qualifiedPolicySet = policyFactory.createPolicySet();
                     qualifiedPolicySet.setAppliesTo(policySet.getAppliesTo());
                     qualifiedPolicySet.setAppliesToXPathExpression(policySet.getAttachToXPathExpression());
@@ -270,6 +273,10 @@ public class DefinitionsProcessor extends BaseStAXArtifactProcessor implements S
 
                     scaDefns.getPolicySets().add(qualifiedPolicySet);
                 }
+            }
+            
+            if(remove) {
+                scaDefns.getPolicySets().remove(policySet);
             }
         }
     }
