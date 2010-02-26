@@ -24,15 +24,10 @@
 		
     <component name="Store">
         <tuscany:implementation.widget location="store.html"/>
-        <service name="Widget">
-        	<tuscany:binding.http uri="/store"/>
-        </service>
 		<reference name="catalog" target="Catalog"/>
 		 <reference name="shoppingCart" target="ShoppingCart/Cart"/>
 		 <reference name="shoppingTotal" target="ShoppingCart/Total"/>
     </component>
-		
-  
     
 	<component name="Catalog">
 		<implementation.java class="services.FruitsCatalogImpl"/> 
@@ -49,7 +44,7 @@
 			<tuscany:binding.atom uri="/ShoppingCart/Cart"/>
 		</service>    	
 		<service name="Total">
-			<tuscany:binding.jsonrpc uri="ShoppingCart/Total"/>
+			<tuscany:binding.jsonrpc uri="/ShoppingCart/Total"/>
 		</service>    	
 	</component>
     
