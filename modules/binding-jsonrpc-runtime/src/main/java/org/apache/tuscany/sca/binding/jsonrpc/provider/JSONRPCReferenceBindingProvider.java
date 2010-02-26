@@ -93,11 +93,11 @@ public class JSONRPCReferenceBindingProvider implements ReferenceBindingProvider
     }
 
     public void start() {
-        // TODO Provide support for JSONRPC References
+
     }
 
     public void stop() {
-        // TODO Provide support for JSONRPC References
+
     }
 
     public boolean supportsOneWayInvocation() {
