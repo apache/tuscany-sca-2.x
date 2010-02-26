@@ -30,17 +30,20 @@ public class HTTPSTestCase extends TestCase {
 
     private Node node;
     private HelloWorld helloWorld;
-
-    public void testCalculator() throws Exception {
-        assertEquals("Hello petra", helloWorld.getGreetings("petra"));
-    }
-
+    private HelloWorld helloWorld2;
+    
     @Override
     protected void setUp() throws Exception {
         node = NodeFactory.newInstance().createNode(new Contribution("test", "target/classes"));
         node.start();
         helloWorld = node.getService(HelloWorld.class, "HelloWorldClient");
+        helloWorld2 = node.getService(HelloWorld.class, "HelloWorldClient2");
     }
+    
+    public void testCalculator() throws Exception {
+        assertEquals("Hello petra", helloWorld.getGreetings("petra"));
+        assertEquals("Hello petra", helloWorld2.getGreetings("petra"));
+    }    
     
     @Override
     protected void tearDown() throws Exception {
