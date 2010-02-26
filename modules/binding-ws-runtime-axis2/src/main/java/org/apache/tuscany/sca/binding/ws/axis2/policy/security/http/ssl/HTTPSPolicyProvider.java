@@ -19,6 +19,9 @@
 
 package org.apache.tuscany.sca.binding.ws.axis2.policy.security.http.ssl;
 
+import java.security.KeyStore;
+import java.util.logging.Logger;
+
 import org.apache.tuscany.sca.binding.ws.axis2.Axis2BaseBindingProvider;
 import org.apache.tuscany.sca.host.http.SecurityContext;
 import org.apache.tuscany.sca.policy.PolicySubject;
@@ -29,6 +32,7 @@ import org.apache.tuscany.sca.provider.BasePolicyProvider;
  * @version $Rev$ $Date$
  */
 public class HTTPSPolicyProvider extends BasePolicyProvider<HTTPSPolicy> {
+    private final Logger logger = Logger.getLogger(HTTPSPolicyProvider.class.getName());
 
     public HTTPSPolicyProvider(PolicySubject subject) {
         super(HTTPSPolicy.class, subject);
@@ -39,8 +43,24 @@ public class HTTPSPolicyProvider extends BasePolicyProvider<HTTPSPolicy> {
         
         for (Object policy : findPolicies()) {
             if (policy instanceof HTTPSPolicy) {
+                HTTPSPolicy httpsPolicy = (HTTPSPolicy)policy;
+                
                 securityContext.setSSLEnabled(true);
-                securityContext.setSSLProperties(((HTTPSPolicy)policy).toProperties());
+                securityContext.setSSLProperties(httpsPolicy.toProperties());
+                
+                // TODO - what is the right way to set trust/key store on client side?
+                
+                logger.info("HTTPSPolicyProvider: Setting JVM trust store to " + httpsPolicy.getTrustStore());
+                System.setProperty("javax.net.ssl.trustStore", httpsPolicy.getTrustStore());
+                System.setProperty("javax.net.ssl.trustStorePassword", httpsPolicy.getTrustStorePassword());
+                System.setProperty("javax.net.ssl.trustStoreType", httpsPolicy.getTrustStoreType());
+                
+                logger.info("HTTPSPolicyProvider: Setting JVM key store to " + httpsPolicy.getKeyStore());
+                System.setProperty("javax.net.ssl.keyStore", httpsPolicy.getKeyStore());
+                System.setProperty("javax.net.ssl.keyStorePassword", httpsPolicy.getKeyStorePassword());
+                System.setProperty("javax.net.ssl.keyStoreType", httpsPolicy.getKeyStoreType());                
+
+                return;
             }
         }        
     }
