@@ -104,6 +104,20 @@
     
     <build>
        <finalName>${artifactId}</finalName>
+       <plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>tomcat-maven-plugin</artifactId>
+				<version>1.0-beta-1</version>
+				<configuration>
+					<!-- Key used for configuring access to server in settings.xml-->
+
+					<server>tomcat</server>
+					<!-- context for the webapp, as finalName is not being honored -->
+					<path>/${artifactId}</path>
+				</configuration>
+			</plugin>       
+       </plugins>
     </build>
 
 </project>
