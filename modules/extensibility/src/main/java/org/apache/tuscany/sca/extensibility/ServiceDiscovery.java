@@ -83,7 +83,7 @@ public final class ServiceDiscovery implements ServiceDiscoverer {
             }
         } catch (Throwable e) {
         }
-        discoverer = new ContextClassLoaderServiceDiscoverer();
+        discoverer = new ContextClassLoaderServiceDiscoverer(getClass().getClassLoader());
         return discoverer;
     }
 

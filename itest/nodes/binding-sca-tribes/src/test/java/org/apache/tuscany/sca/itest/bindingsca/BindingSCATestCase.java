@@ -88,18 +88,24 @@ public class BindingSCATestCase {
      * Two node factories and two nodes
      */
     @Test
-    public void testTwoFactoriesTwoNodes() {
+    public void testTwoFactoriesTwoNodes() throws Exception {
         NodeFactory factory1 = NodeFactory.newInstance();
         Node node1 = createClientNode(factory1);
         NodeFactory factory2 = NodeFactory.newInstance();
         Node node2 = createServiceNode(factory2);
         node1.start();
         node2.start();
+        Thread.sleep(1000);
         try {
-            runClient(node1);
-            Assert.fail("ServiceRuntimeException should have been thrown.");
-        } catch (ServiceRuntimeException e) {
-            // ignore
+            // This call doesn't require the Local service, it should be successful
+            createCustomer(node1);
+            try {
+                runClient(node1);
+                // We cannot make local call to remote endpoints
+                Assert.fail("ServiceRuntimeException should have been thrown.");
+            } catch (ServiceRuntimeException e) {
+                // ignore
+            }
         } finally {
             node2.stop();
             node1.stop();
@@ -120,6 +126,13 @@ public class BindingSCATestCase {
     static void runClient(Client client) {
         String id = client.create("Ray");
         Assert.assertEquals("Ray", client.getName(id));
+    }
+
+    static String createCustomer(Node node) {
+        Client client = node.getService(Client.class, "ClientComponent/Client");
+        String id = client.create("John");
+        Assert.assertNotNull(id);
+        return id;
     }
 
     /**

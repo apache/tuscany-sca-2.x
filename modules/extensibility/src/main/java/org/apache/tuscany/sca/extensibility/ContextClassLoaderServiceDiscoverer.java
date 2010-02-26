@@ -115,17 +115,25 @@ public class ContextClassLoaderServiceDiscoverer implements ServiceDiscoverer {
         this.classLoaderReference = new WeakReference<ClassLoader>(classLoader);
     }
     
+    public ContextClassLoaderServiceDiscoverer(ClassLoader classLoader) {
+        if (classLoader == null) {
+            classLoader = Thread.currentThread().getContextClassLoader();
+        }
+        this.classLoaderReference = new WeakReference<ClassLoader>(classLoader);
+    }
+    
     public ClassLoader getContextClassLoader() {
         //return classLoaderReference.get();
         return Thread.currentThread().getContextClassLoader();
     }
 
-    private List<URL> getResources(final String name) throws IOException {
+    private Collection<URL> getResources(final String name) throws IOException {
         try {
-            return AccessController.doPrivileged(new PrivilegedExceptionAction<List<URL>>() {
-                public List<URL> run() throws IOException {
+            return AccessController.doPrivileged(new PrivilegedExceptionAction<Collection<URL>>() {
+                public Collection<URL> run() throws IOException {
                     List<URL> urls = Collections.list(classLoaderReference.get().getResources(name));
-                    return urls;
+                    // Eliminate the duplicate URLs (which can be found from child/parent classloaders)
+                    return new HashSet<URL>(urls);
                 }
             });
         } catch (PrivilegedActionException e) {

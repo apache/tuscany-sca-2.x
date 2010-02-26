@@ -32,7 +32,6 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
-import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 
@@ -127,7 +126,7 @@ public class DefaultComponentJavaScriptGeneratorExtensionPoint implements Compon
         // Get the proxy factories declarations
         Collection<ServiceDeclaration> factoryDeclarations = null;
         try {
-            factoryDeclarations = ServiceDiscovery.getInstance().getServiceDeclarations(ComponentJavaScriptGenerator.class);
+            factoryDeclarations = extensionPoints.getServiceDiscovery().getServiceDeclarations(ComponentJavaScriptGenerator.class);
         } catch (IOException e) {
             IllegalStateException ie = new IllegalStateException(e);
             error("IllegalStateException", factoryDeclarations, ie);

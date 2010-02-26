@@ -45,10 +45,11 @@ public class DefaultJavascriptProxyFactoryExtensionPoint implements JavascriptPr
     private final Map<Class<?>, JavascriptProxyFactory> factoriesByType = new HashMap<Class<?>, JavascriptProxyFactory>();
     
     private Monitor monitor = null;
-    
+    private ExtensionPointRegistry registry;
     private boolean loaded = false;
     
     public DefaultJavascriptProxyFactoryExtensionPoint(ExtensionPointRegistry extensionPoints) {
+        this.registry = extensionPoints;
         UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
         MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
         if (monitorFactory != null) {
@@ -116,7 +117,7 @@ public class DefaultJavascriptProxyFactoryExtensionPoint implements JavascriptPr
         if (bindingType.isInterface()) {
             // Dynamically load a factory class declared under META-INF/services 
             try {
-                Class<?> factoryClass = ServiceDiscovery.getInstance().getServiceDeclaration(bindingType).getClass();
+                Class<?> factoryClass = registry.getServiceDiscovery().getServiceDeclaration(bindingType).getClass();
                 if (factoryClass != null) {
 
                     try {

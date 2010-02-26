@@ -50,7 +50,7 @@ public class DefaultExtensionPointRegistry implements ExtensionPointRegistry {
         this.discovery = ServiceDiscovery.getInstance();
     }
     
-    protected DefaultExtensionPointRegistry(ServiceDiscovery discovery) {
+    public DefaultExtensionPointRegistry(ServiceDiscovery discovery) {
         this.discovery = discovery;
     }
 

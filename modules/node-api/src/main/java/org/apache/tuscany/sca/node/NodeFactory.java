@@ -472,6 +472,8 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
     }
 
     public void destroy() {
+        count = 0;
+        instance = null;
     }
 
     /**
