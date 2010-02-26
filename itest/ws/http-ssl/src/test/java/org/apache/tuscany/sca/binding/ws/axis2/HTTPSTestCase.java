@@ -31,6 +31,7 @@ public class HTTPSTestCase extends TestCase {
     private Node node;
     private HelloWorld helloWorld;
     private HelloWorld helloWorld2;
+    private HelloWorld helloWorld3;
     
     @Override
     protected void setUp() throws Exception {
@@ -38,11 +39,13 @@ public class HTTPSTestCase extends TestCase {
         node.start();
         helloWorld = node.getService(HelloWorld.class, "HelloWorldClient");
         helloWorld2 = node.getService(HelloWorld.class, "HelloWorldClient2");
+        helloWorld3 = node.getService(HelloWorld.class, "HelloWorldClient3");
     }
     
     public void testCalculator() throws Exception {
         assertEquals("Hello petra", helloWorld.getGreetings("petra"));
         assertEquals("Hello petra", helloWorld2.getGreetings("petra"));
+        assertEquals("Hello petra", helloWorld3.getGreetings("petra"));
     }    
     
     @Override

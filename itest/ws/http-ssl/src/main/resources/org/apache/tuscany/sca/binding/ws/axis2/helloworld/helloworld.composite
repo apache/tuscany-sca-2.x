@@ -48,6 +48,10 @@
         <service name="HelloWorld" requires="confidentiality">
             <binding.ws/>
         </service>      
-    </component>    
+    </component>  
     
+    <component name="HelloWorldClient3">
+        <implementation.java class="org.apache.tuscany.sca.binding.ws.axis2.helloworld.HelloWorldClient"/>
+        <reference name="helloWorldWS" requires="confidentiality" target="HelloWorldService2"/>
+    </component>  
 </composite>
