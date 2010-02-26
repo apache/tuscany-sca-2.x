@@ -30,6 +30,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.tuscany.sca.common.http.HTTPConstants;
 import org.apache.tuscany.sca.common.http.HTTPContentTypeMapper;
+import org.apache.tuscany.sca.common.http.HTTPUtil;
 
 
 /**
@@ -46,14 +47,18 @@ public class DojoResourceServlet extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String contextRoot = URLDecoder.decode(HTTPUtil.getContextRoot(request), HTTPConstants.CHARACTER_ENCODING_UTF8);
         String path = URLDecoder.decode(request.getRequestURI(), HTTPConstants.CHARACTER_ENCODING_UTF8);
 
-        if( path.startsWith("/dojo") ) {
+        if( path.startsWith(contextRoot + "/dojo") ) {
             if( ! path.contains("tuscany/AtomService.js")) {
                 //this is a workaround where we need to have dojo files in its own folder
                 //to avoid clean target to clean other non dojo resources
+                path = path.substring(contextRoot.length());
                 path = "/dojo" + path;
             }
+        } else if (path.startsWith(contextRoot)) {
+            path = path.substring(contextRoot.length() + 1);
         } else if( path.startsWith("/")) {
             path = path.substring(1);
         }
