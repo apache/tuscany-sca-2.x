@@ -358,11 +358,9 @@
 
         <profile>
             <id>eclipse</id>
-<!--
             <properties>
-                <notice.dir>src/main/resources</notice.dir>
-            </properties>
--->
+                <tools.jar>${java.home}/../lib/tools.jar</tools.jar>
+            </properties>            
             <modules>
                 <module>modules</module>
                 <module>samples</module>
