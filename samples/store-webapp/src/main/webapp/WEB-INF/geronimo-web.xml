@@ -32,7 +32,7 @@
 	<dep:environment>
 		<dep:moduleId>
 			<dep:groupId>org.apache.tuscany</dep:groupId>
-			<dep:artifactId>sample-store-secure-webapp</dep:artifactId>
+			<dep:artifactId>sample-store-webapp</dep:artifactId>
 			<dep:version>1.0</dep:version>
 			<dep:type>car</dep:type>
 		</dep:moduleId>
