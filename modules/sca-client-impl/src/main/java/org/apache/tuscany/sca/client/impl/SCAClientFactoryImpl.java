@@ -42,10 +42,8 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 import org.apache.tuscany.sca.node.impl.NodeFactoryImpl;
-import org.apache.tuscany.sca.node.impl.NodeImpl;
 import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
 import org.apache.tuscany.sca.runtime.ExtensibleDomainRegistryFactory;
@@ -148,12 +146,9 @@ public class SCAClientFactoryImpl extends SCAClientFactory {
         endpointReference.setReference(componentReference);
         endpointReference.setBinding(endpoint.getBinding());
         endpointReference.setUnresolved(false);
-        endpointReference.setStatus(EndpointReference.WIRED_TARGET_FOUND_AND_MATCHED);
+        endpointReference.setStatus(EndpointReference.Status.WIRED_TARGET_FOUND_AND_MATCHED);
     
         endpointReference.setTargetEndpoint(endpoint);
-        if (endpoint.isRemote()) {
-            endpointReference.setRemote(true);
-        }
     
         componentReference.getEndpointReferences().add(endpointReference);
         ((RuntimeComponentReference)componentReference).setComponent((RuntimeComponent)component);

@@ -198,10 +198,6 @@ public class OverlayEndpointRegistry implements EndpointRegistry, LifeCycleListe
 			Endpoint endpoint = v.getValue();
 			if (matches(targetEndpoint.getURI(), endpoint.getURI())) {
                     
-			    if (!isLocal(endpoint)) {
-				endpoint.setRemote(true);
-			    }
-                   
 			    if(endpoint instanceof RuntimeEndpoint) {
 			        ((RuntimeEndpoint) endpoint).bind(registry, this);
 			    }

@@ -106,7 +106,7 @@ public class TransportServiceInterceptor implements Interceptor {
             EndpointReference from = assemblyFactory.createEndpointReference();
             Endpoint fromEndpoint = assemblyFactory.createEndpoint();
             from.setTargetEndpoint(fromEndpoint);
-            from.setStatus(EndpointReference.WIRED_TARGET_FOUND_AND_MATCHED);
+            from.setStatus(EndpointReference.Status.WIRED_TARGET_FOUND_AND_MATCHED);
             msg.setFrom(from);
             Endpoint callbackEndpoint = assemblyFactory.createEndpoint();
 //            callbackEndpoint.setURI(callbackAddress); // TODO: is this needed? Seems to work without it

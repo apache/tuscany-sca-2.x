@@ -99,12 +99,12 @@ public class EndpointReferenceProcessor extends BaseAssemblyProcessor implements
                 // the endpoint registry will be consulted
                 endpoint.setUnresolved(true);
                 endpoint.setURI(reference.getTargets().get(0).getName());
-                endpointReference.setStatus(EndpointReference.WIRED_TARGET_NOT_FOUND);
+                endpointReference.setStatus(EndpointReference.Status.WIRED_TARGET_NOT_FOUND);
                 endpointReference.setUnresolved(true);
             } else {
                 endpoint.setUnresolved(false);
                 endpoint.setBinding(reference.getBindings().get(0));
-                endpointReference.setStatus(EndpointReference.RESOLVED_BINDING);
+                endpointReference.setStatus(EndpointReference.Status.RESOLVED_BINDING);
                 endpointReference.setUnresolved(false);
             }            
         }
@@ -130,7 +130,7 @@ public class EndpointReferenceProcessor extends BaseAssemblyProcessor implements
             Binding binding = (Binding)endpointReference.getBinding().clone();
             reference.getBindings().add(binding);
             //reference.setInterfaceContract(endpointReference.getInterfaceContract());
-            if (endpointReference.getStatus() != EndpointReference.RESOLVED_BINDING){
+            if (endpointReference.getStatus() != EndpointReference.Status.RESOLVED_BINDING){
                 ComponentService service = assemblyFactory.createComponentService();
                 service.setName(endpointReference.getTargetEndpoint().getURI());
                 reference.getTargets().clear();

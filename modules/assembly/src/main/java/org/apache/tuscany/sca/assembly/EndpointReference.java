@@ -32,13 +32,18 @@ import org.apache.tuscany.sca.policy.PolicySubject;
  */
 public interface EndpointReference extends Base, PolicySubject, Cloneable, Serializable {
 
-    public static final int NOT_CONFIGURED = 0;
-    public static final int RESOLVED_BINDING = 1;
-    public static final int AUTOWIRE_PLACEHOLDER = 2;
-    public static final int WIRED_TARGET_NOT_FOUND = 3;
-    public static final int WIRED_TARGET_FOUND_READY_FOR_MATCHING = 4;
-    public static final int WIRED_TARGET_FOUND_AND_MATCHED = 5;
-    public static final int WIRED_TARGET_IN_BINDING_URI = 6;
+    /**
+     * Status of the endpoint reference resolution
+     */
+    enum Status {
+        NOT_CONFIGURED, // Not configured
+        RESOLVED_BINDING, // The endpoint reference is configured with a binding
+        AUTOWIRE_PLACEHOLDER, // Autowire to be performed
+        WIRED_TARGET_NOT_FOUND, // Wire target not found
+        WIRED_TARGET_FOUND_READY_FOR_MATCHING, // Wire target found and to be resolved to an endpoint
+        WIRED_TARGET_FOUND_AND_MATCHED, // Wire target found and resolved to an endpoint
+        WIRED_TARGET_IN_BINDING_URI // Target specified by the binding uri
+    };
 
     /**
      * Get the structural URI of the reference binding
@@ -142,28 +147,12 @@ public interface EndpointReference extends Base, PolicySubject, Cloneable, Seria
     void setCallbackEndpoint(Endpoint callbackEndpoint);
 
     /**
-     * Returns true if this endpoint reference refers to an endpoint that 
-     * is not running in this endpoint reference
-     * 
-     * @return true if the endpoint is remote
-     */
-    boolean isRemote();
-
-    /**
-     * Set true if this endpoint reference refers to an endpoint that 
-     * is not running in this endpoint reference
-     * 
-     * @param remote set to true if the endpoint is remote
-     */
-    void setRemote(boolean remote);
-
-    /**
      * Rather than relying on combinations of unresolved flags and 
      * other data we maintain a status enumeration
      * 
      * @return status
      */
-    int getStatus();
+    Status getStatus();
 
     /**
      * Rather than relying on combinations of unresolved flags and 
@@ -171,5 +160,5 @@ public interface EndpointReference extends Base, PolicySubject, Cloneable, Seria
      * 
      * @param status the new status
      */
-    void setStatus(int status);
+    void setStatus(Status status);
 }

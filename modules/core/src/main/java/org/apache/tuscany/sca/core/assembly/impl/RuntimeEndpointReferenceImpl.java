@@ -130,7 +130,6 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
         this.policySets = copy.policySets;
 
         this.uri = copy.uri;
-        this.remote = copy.remote;
         this.unresolved = copy.unresolved;
         this.status = copy.status;
 
@@ -350,8 +349,8 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
         //        source interface contract for local wires
         this.chains = null;
 
-        if (getStatus() == EndpointReference.WIRED_TARGET_FOUND_AND_MATCHED){
-            setStatus(EndpointReference.NOT_CONFIGURED);
+        if (getStatus() == EndpointReference.Status.WIRED_TARGET_FOUND_AND_MATCHED){
+            setStatus(EndpointReference.Status.NOT_CONFIGURED);
         }
 
         // TODO - cheating here as I fixed the RuntimeComponentService code

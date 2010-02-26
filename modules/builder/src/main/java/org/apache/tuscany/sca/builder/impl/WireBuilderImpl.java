@@ -356,7 +356,7 @@ public class WireBuilderImpl {
                         if (intentsMatch(reference.getRequiredIntents(), targetComponentService.getRequiredIntents())) {
                             EndpointReference endpointRef = createEndpointRef(component, reference, false);
                             endpointRef.setTargetEndpoint(createEndpoint(targetComponent, targetComponentService, true));
-                            endpointRef.setStatus(EndpointReference.WIRED_TARGET_FOUND_READY_FOR_MATCHING);
+                            endpointRef.setStatus(EndpointReference.Status.WIRED_TARGET_FOUND_READY_FOR_MATCHING);
                             reference.getEndpointReferences().add(endpointRef);
 
                             // Stop with the first match for 0..1 and 1..1 references
@@ -425,15 +425,14 @@ public class WireBuilderImpl {
                                                                              targetComponentService,
                                                                              targetBinding,
                                                                              true));
-                                endpointRef.setStatus(EndpointReference.WIRED_TARGET_FOUND_AND_MATCHED);
+                                endpointRef.setStatus(EndpointReference.Status.WIRED_TARGET_FOUND_AND_MATCHED);
                                 // relying on the registry here to resolve the real endpoint
                                 reference.getEndpointReferences().add(endpointRef);
 
                             } else {
                                 EndpointReference endpointRef = createEndpointRef(component, reference, true);
                                 endpointRef.setTargetEndpoint(createEndpoint(component, targetName));
-                                endpointRef.setRemote(true);
-                                endpointRef.setStatus(EndpointReference.WIRED_TARGET_NOT_FOUND);
+                                endpointRef.setStatus(EndpointReference.Status.WIRED_TARGET_NOT_FOUND);
                                 reference.getEndpointReferences().add(endpointRef);
                                 Monitor.warning(monitor,
                                                 this,
@@ -449,7 +448,7 @@ public class WireBuilderImpl {
                             EndpointReference endpointRef = createEndpointRef(component, reference, false);
                             endpointRef
                                 .setTargetEndpoint(createEndpoint(targetComponent, targetComponentService, true));
-                            endpointRef.setStatus(EndpointReference.WIRED_TARGET_FOUND_READY_FOR_MATCHING);
+                            endpointRef.setStatus(EndpointReference.Status.WIRED_TARGET_FOUND_READY_FOR_MATCHING);
                             reference.getEndpointReferences().add(endpointRef);
                         }
                     } else {
@@ -465,8 +464,7 @@ public class WireBuilderImpl {
                     // add an unresolved endpoint reference with an unresolved endpoint to go with it
                     EndpointReference endpointRef = createEndpointRef(component, reference, true);
                     endpointRef.setTargetEndpoint(createEndpoint(component, targetName));
-                    endpointRef.setRemote(true);
-                    endpointRef.setStatus(EndpointReference.WIRED_TARGET_NOT_FOUND);
+                    endpointRef.setStatus(EndpointReference.Status.WIRED_TARGET_NOT_FOUND);
                     reference.getEndpointReferences().add(endpointRef);
                     Monitor.warning(monitor,
                                     this,
@@ -499,14 +497,13 @@ public class WireBuilderImpl {
                         // Assume that the system needs to resolve this binding later as
                         // it's the SCA binding
                         endpointRef.setTargetEndpoint(createEndpoint(true));
-                        endpointRef.setStatus(EndpointReference.NOT_CONFIGURED);
+                        endpointRef.setStatus(EndpointReference.Status.NOT_CONFIGURED);
                     } else {
                         // The user has configured a binding so assume they know what 
                         // they are doing and mark in as already resolved. 
                         endpointRef.setTargetEndpoint(createEndpoint(false));
-                        endpointRef.setStatus(EndpointReference.RESOLVED_BINDING);
+                        endpointRef.setStatus(EndpointReference.Status.RESOLVED_BINDING);
                     }
-                    endpointRef.setRemote(true);
                     reference.getEndpointReferences().add(endpointRef);
                     continue;
                 } // end if
@@ -551,15 +548,14 @@ public class WireBuilderImpl {
                                                                              targetComponentService,
                                                                              targetBinding,
                                                                              true));
-                                endpointRef.setStatus(EndpointReference.WIRED_TARGET_NOT_FOUND);
+                                endpointRef.setStatus(EndpointReference.Status.WIRED_TARGET_NOT_FOUND);
                                 // relying on the registry here to resolve the real endpoint
                                 reference.getEndpointReferences().add(endpointRef);
 
                             } else {
                                 EndpointReference endpointRef = createEndpointRef(component, reference, true);
                                 endpointRef.setTargetEndpoint(createEndpoint(component, targetName));
-                                endpointRef.setRemote(true);
-                                endpointRef.setStatus(EndpointReference.WIRED_TARGET_NOT_FOUND);
+                                endpointRef.setStatus(EndpointReference.Status.WIRED_TARGET_NOT_FOUND);
                                 reference.getEndpointReferences().add(endpointRef);
                                 Monitor.warning(monitor,
                                                 this,
@@ -576,7 +572,7 @@ public class WireBuilderImpl {
                                 createEndpointRef(component, reference, binding, null, false);
                             endpointRef
                                 .setTargetEndpoint(createEndpoint(targetComponent, targetComponentService, true));
-                            endpointRef.setStatus(EndpointReference.WIRED_TARGET_FOUND_READY_FOR_MATCHING);
+                            endpointRef.setStatus(EndpointReference.Status.WIRED_TARGET_FOUND_READY_FOR_MATCHING);
                             reference.getEndpointReferences().add(endpointRef);
                         }
                     } else {
@@ -596,8 +592,7 @@ public class WireBuilderImpl {
                     Endpoint endpoint = createEndpoint(false);
                     endpoint.setBinding(binding);
                     endpointRef.setTargetEndpoint(endpoint);
-                    endpointRef.setRemote(true);
-                    endpointRef.setStatus(EndpointReference.RESOLVED_BINDING);
+                    endpointRef.setStatus(EndpointReference.Status.RESOLVED_BINDING);
                     reference.getEndpointReferences().add(endpointRef);
                 } // end if
             }

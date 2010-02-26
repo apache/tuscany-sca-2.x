@@ -50,8 +50,7 @@ public class EndpointReferenceImpl implements EndpointReference {
     protected List<PolicySet> policySets = new ArrayList<PolicySet>();
     protected List<Intent> requiredIntents = new ArrayList<Intent>();
     protected InterfaceContract interfaceContract;
-    protected boolean remote = false;
-    protected int status;
+    protected Status status = Status.NOT_CONFIGURED;
 
     // the target of the endpoint reference
     protected Endpoint targetEndpoint;
@@ -169,41 +168,19 @@ public class EndpointReferenceImpl implements EndpointReference {
     }
     
     public String toStringWithoutHash() {
-        String output = "EndpointReference: ";
+        StringBuffer output = new StringBuffer("EndpointReference: ");
 
         if (getURI() != null) {
-            output += " URI = " + getURI();
+            output.append(" URI = ").append(getURI());
         }
 
-        switch (status) {
-            case 0:
-                output += " NOT_CONFIGURED ";
-                break;
-            case 1:
-                output += " RESOLVED_BINDING ";
-                break;
-            case 2:
-                output += " AUTOWIRE_PLACEHOLDER ";
-                break;                
-            case 3:
-                output += " WIRED_TARGET_NOT_FOUND ";
-                break;
-            case 4:
-                output += " WIRED_TARGET_FOUND_READY_FOR_MATCHING ";
-                break;
-            case 5:
-                output += " WIRED_TARGET_FOUND_AND_MATCHED ";
-                break;   
-            case 6:
-                output += " WIRED_TARGET_IN_BINDING_URI ";
-                break;                 
-        }
+        output.append(" ").append(status);
 
         if (targetEndpoint != null) {
-            output += " Target = " + targetEndpoint.toString();
+            output.append(" Target = ").append(targetEndpoint);
         }
 
-        return output;
+        return output.toString();
     }
 
     public String toString() {
@@ -231,14 +208,6 @@ public class EndpointReferenceImpl implements EndpointReference {
         this.uri = uri;
     }
 
-    public boolean isRemote() {
-        return remote;
-    }
-
-    public void setRemote(boolean remote) {
-        this.remote = remote;
-    }
-
     protected void resolve() {
     }
 
@@ -250,11 +219,11 @@ public class EndpointReferenceImpl implements EndpointReference {
         this.registry = registry;
     }
 
-    public int getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 }

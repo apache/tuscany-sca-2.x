@@ -49,9 +49,9 @@ import org.apache.tuscany.sca.core.LifeCycleListener;
 import org.apache.tuscany.sca.endpoint.tribes.AbstractReplicatedMap.MapEntry;
 import org.apache.tuscany.sca.endpoint.tribes.MapStore.MapListener;
 import org.apache.tuscany.sca.runtime.BaseEndpointRegistry;
+import org.apache.tuscany.sca.runtime.DomainRegistryURI;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
-import org.apache.tuscany.sca.runtime.DomainRegistryURI;
 
 /**
  * A replicated EndpointRegistry based on Apache Tomcat Tribes
@@ -298,9 +298,6 @@ public class ReplicatedEndpointRegistry extends BaseEndpointRegistry implements 
                 logger.fine("Matching against - " + endpoint);
                 if (matches(uri, endpoint.getURI())) {
                     MapEntry entry = map.getInternal(endpoint.getURI());
-                    if (!isLocal(entry)) {
-                        endpoint.setRemote(true);
-                    }
                     // if (!entry.isPrimary()) {
                     ((RuntimeEndpoint)endpoint).bind(registry, this);
                     // }
@@ -362,7 +359,6 @@ public class ReplicatedEndpointRegistry extends BaseEndpointRegistry implements 
         Endpoint newEp = (Endpoint)entry.getValue();
         if (!isLocal(entry)) {
             logger.info(id + " Remote endpoint added: " + entry.getValue());
-            newEp.setRemote(true);
         }
         endpointAdded(newEp);
     }

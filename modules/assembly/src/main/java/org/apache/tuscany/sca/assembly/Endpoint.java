@@ -127,11 +127,5 @@ public interface Endpoint extends Base, PolicySubject, Cloneable, Serializable {
      * @throws CloneNotSupportedException
      */
     Object clone() throws CloneNotSupportedException;
-    
-    /*
-    String getDomainURI();
-    String getNodeURI();
-    void setDomainURI(String domainURI);
-    void setNodeURI(String nodeURI);
-    */
+
 }

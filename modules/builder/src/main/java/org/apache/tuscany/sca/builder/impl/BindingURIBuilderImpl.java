@@ -194,17 +194,11 @@ public class BindingURIBuilderImpl implements CompositeBuilder {
             boolean includeBindingName = !service.getName().equals(binding.getName());
 
             // calculate the service binding URI
-            URI bindingURI;
-            if (binding.getURI() != null) {
-                bindingURI = new URI(binding.getURI());
-
-                // if the user has provided an absolute binding URI then use it
-                if (bindingURI.isAbsolute()) {
-                    binding.setURI(bindingURI.toString());
-                    return;
-                }
-            } else {
-                bindingURI = null;
+            URI bindingURI = binding.getURI() == null ? null : new URI(binding.getURI());
+            
+            // if the user has provided an absolute binding URI then use it
+            if (bindingURI != null && bindingURI.isAbsolute()) {
+                return;
             }
 
             String serviceName = service.getName();
@@ -217,22 +211,9 @@ public class BindingURIBuilderImpl implements CompositeBuilder {
             }
 
             // calculate the component URI
-            URI componentURI;
+            URI componentURI = null;
             if (componentURIString != null) {
                 componentURI = new URI(addSlashToPath(componentURIString));
-            } else {
-                componentURI = null;
-            }
-
-            // if the user has provided an absolute component URI then use it
-            if (componentURI != null && componentURI.isAbsolute()) {
-                binding.setURI(constructBindingURI(null,
-                                                   componentURI,
-                                                   bindingURI,
-                                                   serviceName,
-                                                   includeBindingName,
-                                                   bindingName));
-                return;
             }
 
             // calculate the base URI

@@ -42,7 +42,6 @@ import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
-import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.runtime.EndpointReferenceBinder;
@@ -124,7 +123,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
              
         // This logic does post build autowire matching but isn't actually used at the moment
         // as problems with dependencies mean we still do this during build
-        if (endpointReference.getStatus() == EndpointReference.AUTOWIRE_PLACEHOLDER){ 
+        if (endpointReference.getStatus() == EndpointReference.Status.AUTOWIRE_PLACEHOLDER){ 
            
             // do autowire matching
             // will only be called at build time at the moment
@@ -167,7 +166,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
                             
                             autowireEndpointRefrence.setTargetEndpoint(endpoint);
                             autowireEndpointRefrence.setBinding(endpoint.getBinding());
-                            autowireEndpointRefrence.setStatus(EndpointReference.WIRED_TARGET_FOUND_AND_MATCHED);
+                            autowireEndpointRefrence.setStatus(EndpointReference.Status.WIRED_TARGET_FOUND_AND_MATCHED);
                             endpointReference.getReference().getEndpointReferences().add(autowireEndpointRefrence);  
                         }
                     }
@@ -187,8 +186,8 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
             
             setSingleAutoWireTarget(endpointReference.getReference());
             
-        } else if ( endpointReference.getStatus() == EndpointReference.WIRED_TARGET_FOUND_AND_MATCHED||
-                    endpointReference.getStatus() == EndpointReference.RESOLVED_BINDING ) {
+        } else if ( endpointReference.getStatus() == EndpointReference.Status.WIRED_TARGET_FOUND_AND_MATCHED||
+                    endpointReference.getStatus() == EndpointReference.Status.RESOLVED_BINDING ) {
             // The endpoint reference is already resolved to either
             // a service endpoint local to this composite or it has
             // a remote binding
@@ -201,7 +200,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
                                        endpointReference.getReference().getCallbackService().getEndpoints(),
                                        matchAudit);
             } 
-        } else if (endpointReference.getStatus() == EndpointReference.WIRED_TARGET_FOUND_READY_FOR_MATCHING ){
+        } else if (endpointReference.getStatus() == EndpointReference.Status.WIRED_TARGET_FOUND_READY_FOR_MATCHING ){
             // The endpoint reference is already resolved to either
             // a service endpoint but no binding was specified in the 
             // target URL and/or the policies have yet to be matched.
@@ -216,9 +215,9 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
                                        endpointReference.getReference().getCallbackService().getEndpoints(),
                                        matchAudit);
             }             
-        } else if (endpointReference.getStatus() == EndpointReference.WIRED_TARGET_IN_BINDING_URI ||
-                   endpointReference.getStatus() == EndpointReference.WIRED_TARGET_NOT_FOUND ||
-                   endpointReference.getStatus() == EndpointReference.NOT_CONFIGURED){
+        } else if (endpointReference.getStatus() == EndpointReference.Status.WIRED_TARGET_IN_BINDING_URI ||
+                   endpointReference.getStatus() == EndpointReference.Status.WIRED_TARGET_NOT_FOUND ||
+                   endpointReference.getStatus() == EndpointReference.Status.NOT_CONFIGURED){
             // The reference is not yet matched to a service
           
             // find the service in the endpoint registry
@@ -231,10 +230,9 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
                 // in the builder that pulls the URI out of the binding if there are no targets
                 // on the reference. have to wait until here to see if the binding uri matches any
                 // available services. If not we assume here that it's a resolved binding
-                if (endpointReference.getStatus() == EndpointReference.WIRED_TARGET_IN_BINDING_URI){
+                if (endpointReference.getStatus() == EndpointReference.Status.WIRED_TARGET_IN_BINDING_URI){
                     endpointReference.getTargetEndpoint().setBinding(endpointReference.getBinding());
-                    endpointReference.setRemote(true);
-                    endpointReference.setStatus(EndpointReference.RESOLVED_BINDING);
+                    endpointReference.setStatus(EndpointReference.Status.RESOLVED_BINDING);
                 } else {
                     Monitor.error(monitor, 
                                   this, 
@@ -258,8 +256,8 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
         
         logger.fine(matchAudit.toString());
 
-        if (endpointReference.getStatus() != EndpointReference.WIRED_TARGET_FOUND_AND_MATCHED &&
-            endpointReference.getStatus() != EndpointReference.RESOLVED_BINDING){
+        if (endpointReference.getStatus() != EndpointReference.Status.WIRED_TARGET_FOUND_AND_MATCHED &&
+            endpointReference.getStatus() != EndpointReference.Status.RESOLVED_BINDING){
             
             if (runtime){
                 Monitor.error(monitor, 
@@ -324,7 +322,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
         } else {
             endpointReference.setTargetEndpoint(matchedEndpoint);
             endpointReference.setBinding(endpointReference.getTargetEndpoint().getBinding());
-            endpointReference.setStatus(EndpointReference.WIRED_TARGET_FOUND_AND_MATCHED);
+            endpointReference.setStatus(EndpointReference.Status.WIRED_TARGET_FOUND_AND_MATCHED);
             endpointReference.setUnresolved(false);
         }
     }
@@ -617,7 +615,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
         Endpoint te = endpointReference.getTargetEndpoint();
         if (te != null && !te.isUnresolved()
             && te.getURI() != null
-            && endpointReference.getStatus() != EndpointReference.RESOLVED_BINDING) {
+            && endpointReference.getStatus() != EndpointReference.Status.RESOLVED_BINDING) {
             List<Endpoint> endpoints = endpointRegistry.findEndpoint(endpointReference);
             return ! endpoints.contains(endpointReference.getTargetEndpoint());
         }

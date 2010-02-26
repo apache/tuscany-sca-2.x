@@ -30,12 +30,11 @@ import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.LifeCycleListener;
 import org.apache.tuscany.sca.runtime.BaseEndpointRegistry;
+import org.apache.tuscany.sca.runtime.DomainRegistryURI;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
-import org.apache.tuscany.sca.runtime.DomainRegistryURI;
 
 import com.hazelcast.config.Config;
-import com.hazelcast.config.MapConfig;
 import com.hazelcast.config.NearCacheConfig;
 import com.hazelcast.config.TcpIpConfig;
 import com.hazelcast.config.XmlConfigBuilder;
@@ -149,7 +148,6 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
             logger.fine("Matching against - " + endpoint);
             if (matches(uri, endpoint.getURI())) {
                 if (!isLocal(endpoint)) {
-                    endpoint.setRemote(true);
                     ((RuntimeEndpoint)endpoint).bind(registry, this);
                 } else {
                     // get the local version of the endpoint
@@ -206,7 +204,6 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
         Endpoint newEp = (Endpoint)value;
         if (!isLocal(newEp)) {
             logger.info(" Remote endpoint added: " + newEp);
-            newEp.setRemote(true);
         } 
         endpointAdded(newEp);
     }

@@ -383,7 +383,7 @@ public class ComponentContextImpl implements RuntimeComponentContext {
         endpointReference.setReference(componentReference);
         endpointReference.setBinding(endpoint.getBinding());
         endpointReference.setUnresolved(false);
-        endpointReference.setStatus(EndpointReference.WIRED_TARGET_FOUND_READY_FOR_MATCHING);
+        endpointReference.setStatus(EndpointReference.Status.WIRED_TARGET_FOUND_READY_FOR_MATCHING);
 
         endpointReference.setTargetEndpoint(endpoint);
 

@@ -222,7 +222,7 @@ public class EndpointReferenceBuilderImpl {
                             if (intentsMatch(reference.getRequiredIntents(), targetComponentService.getRequiredIntents())) {                            
                                 EndpointReference endpointRef = createEndpointRef(component, reference, false);
                                 endpointRef.setTargetEndpoint(createEndpoint(targetComponent, targetComponentService, true));
-                                endpointRef.setStatus(EndpointReference.WIRED_TARGET_NOT_FOUND);
+                                endpointRef.setStatus(EndpointReference.Status.WIRED_TARGET_NOT_FOUND);
                                 reference.getEndpointReferences().add(endpointRef);
         
                                 // Stop with the first match for 0..1 and 1..1 references
@@ -269,8 +269,7 @@ public class EndpointReferenceBuilderImpl {
                     
                     EndpointReference endpointRef = createEndpointRef(component, reference, true);
                     endpointRef.setTargetEndpoint(createEndpoint(component, target.getName()));
-                    endpointRef.setRemote(true);
-                    endpointRef.setStatus(EndpointReference.WIRED_TARGET_NOT_FOUND);
+                    endpointRef.setStatus(EndpointReference.Status.WIRED_TARGET_NOT_FOUND);
                     reference.getEndpointReferences().add(endpointRef);
                 }
             } 
@@ -296,14 +295,13 @@ public class EndpointReferenceBuilderImpl {
                             // Assume that the system needs to resolve this binding later as
                             // it's the SCA binding
                             endpointRef.setTargetEndpoint(createEndpoint(true));
-                            endpointRef.setStatus(EndpointReference.NOT_CONFIGURED);
+                            endpointRef.setStatus(EndpointReference.Status.NOT_CONFIGURED);
                         } else {
                             // The user has configured a binding so assume they know what 
                             // they are doing and mark in as already resolved. 
                             endpointRef.setTargetEndpoint(createEndpoint(false));
-                            endpointRef.setStatus(EndpointReference.RESOLVED_BINDING);
+                            endpointRef.setStatus(EndpointReference.Status.RESOLVED_BINDING);
                         }
-                        endpointRef.setRemote(true);
                         reference.getEndpointReferences().add(endpointRef);
                         continue;
                     } // end if
@@ -323,7 +321,7 @@ public class EndpointReferenceBuilderImpl {
                         // so that the binder can test it against the fully populated
                         // registry
                         endpoint = createEndpoint(component, uri);
-                        endpointRef.setStatus(EndpointReference.WIRED_TARGET_IN_BINDING_URI); 
+                        endpointRef.setStatus(EndpointReference.Status.WIRED_TARGET_IN_BINDING_URI); 
                     } catch (Exception ex) {
                         // the target string definitely isn't an SCA target string
                         // so we can assume here that the user has configured a
@@ -331,7 +329,7 @@ public class EndpointReferenceBuilderImpl {
                         endpoint = createEndpoint(false);
                         endpoint.setURI(uri);
                         endpoint.setBinding(binding);
-                        endpointRef.setStatus(EndpointReference.RESOLVED_BINDING);
+                        endpointRef.setStatus(EndpointReference.Status.RESOLVED_BINDING);
                     }
                     
                     endpointRef.setTargetEndpoint(endpoint);   
@@ -784,7 +782,7 @@ public class EndpointReferenceBuilderImpl {
             // have to pass in reference as we don't have access to the registry in
             // the builders
             for (EndpointReference epr : registry.getEndpointReferences()){
-                if (epr.getStatus() == EndpointReference.AUTOWIRE_PLACEHOLDER){
+                if (epr.getStatus() == EndpointReference.Status.AUTOWIRE_PLACEHOLDER){
                     epr.getReference().getEndpointReferences().remove(epr);
                 }  
             }
