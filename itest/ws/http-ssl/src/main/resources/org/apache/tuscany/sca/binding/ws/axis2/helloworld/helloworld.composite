@@ -25,14 +25,14 @@
     <component name="HelloWorldClient">
         <implementation.java class="org.apache.tuscany.sca.binding.ws.axis2.helloworld.HelloWorldClient"/>
         <reference name="helloWorldWS" requires="confidentiality">
-            <binding.ws uri="https://localhost:443/HelloWorld" />
+            <binding.ws uri="https://localhost:8443/HelloWorld" />
         </reference>
     </component>
     
     <component name="HelloWorldService">
 		<implementation.java class="org.apache.tuscany.sca.binding.ws.axis2.helloworld.HelloWorldService"/>
 	    <service name="HelloWorld" requires="confidentiality">
-	        <binding.ws uri="https://localhost:443/HelloWorld" />
+	        <binding.ws uri="https://localhost:8443/HelloWorld" />
 	    </service>		
     </component>
     

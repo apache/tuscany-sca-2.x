@@ -27,8 +27,8 @@
                    provides="confidentiality.transport"
                    appliesTo="sca:binding.ws">
         <tuscany:https>
-          <tuscany:keyStore type="JKS" file="target/classes/org/apache/tuscany/sca/binding/ws/axis2/helloworld/tuscany.keyStore" password="apache"/>
-          <tuscany:trustStore type="JKS" file="target/classes/org/apache/tuscany/sca/binding/ws/axis2/helloworld/tuscany.keyStore" password="apache"/>
+          <tuscany:keyStore type="JKS" file="target/classes/org/apache/tuscany/sca/binding/ws/axis2/helloworld/tuscany.jks" password="tuscany"/>
+          <tuscany:trustStore type="JKS" file="target/classes/org/apache/tuscany/sca/binding/ws/axis2/helloworld/tuscany.jks" password="tuscany"/>
         </tuscany:https>
     </sca:policySet>
       

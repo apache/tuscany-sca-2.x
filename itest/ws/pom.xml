@@ -32,8 +32,8 @@
   <modules>
     <module>defaults</module>
     <module>authentication-basic</module>
+    <module>http-ssl</module>
 <!--
-    <module>https</module>
     <module>jms</module>
     <module>mtom</module>
     <module>authentication-wssecurity</module>
