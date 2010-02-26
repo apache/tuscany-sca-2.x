@@ -119,12 +119,12 @@ public class ExtensibleServletHost implements ServletHost {
         return getDefaultServletHost().getContextPath();
     }
     
-    public URL getURLMapping(String uri) {
+    public URL getURLMapping(String uri, SecurityContext securityContext) {
         if (servletHosts.getServletHosts().isEmpty()) {
             throw new ServletMappingException("No servlet host available");
         }
 
-        return getDefaultServletHost().getURLMapping(uri);
+        return getDefaultServletHost().getURLMapping(uri, securityContext);
     }
 
     public void setContextPath(String path) {

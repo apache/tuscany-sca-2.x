@@ -118,8 +118,15 @@ public class Axis2ServiceBindingProvider extends Axis2BaseBindingProvider implem
         // of external policy attachment
         isRampartRequired = PolicyHelper.isIntentRequired(wsBinding, Constants.AUTHENTICATION_INTENT) ||
                             PolicyHelper.isIntentRequired(wsBinding, Constants.CONFIDENTIALITY_INTENT) ||
-                            PolicyHelper.isIntentRequired(wsBinding, Constants.INTEGRITY_INTENT);          
-            
+                            PolicyHelper.isIntentRequired(wsBinding, Constants.INTEGRITY_INTENT);                  
+        
+        
+        // Apply the configuration from any other policies
+        
+        for (PolicyProvider pp : endpoint.getPolicyProviders()) {
+            pp.configureBinding(this);
+        }  
+
         // Update port addresses with runtime information
         // We can safely assume there is only one port here because you configure
         // a binding in the following ways: 
@@ -138,22 +145,16 @@ public class Axis2ServiceBindingProvider extends Axis2BaseBindingProvider implem
         
         endpointURI = Axis2EngineIntegration.getPortAddress(wsdlPort);
         
-        if (!endpointURI.startsWith("jms:")) {
+        if (endpointURI.startsWith("jms:")) {
+            isJMSRequired = true;
+        } else {
             if (servletHost == null) {
                 throw new ServiceRuntimeException("No Servlet host is avaible for HTTP web services");
             }
-            endpointURI = servletHost.getURLMapping(endpointURI).toString();
-        } else {
-            isJMSRequired = true;
-        }
-        Axis2EngineIntegration.setPortAddress(wsdlPort, endpointURI);          
+            endpointURI = servletHost.getURLMapping(endpointURI, httpSecurityContext).toString();
+        } 
         
-        
-        // Apply the configuration from any other policies
-        
-        for (PolicyProvider pp : endpoint.getPolicyProviders()) {
-            pp.configureBinding(this);
-        }
+        Axis2EngineIntegration.setPortAddress(wsdlPort, endpointURI);  
         
         // Apply the configuration from the mayProvides intents        
         
@@ -161,13 +162,13 @@ public class Axis2ServiceBindingProvider extends Axis2BaseBindingProvider implem
             // TODO - do we need to go back to configurator?
         }
         
+        if (isMTOMRequired) {
+            new Axis2MTOMPolicyProvider(endpoint).configureBinding(configContext);
+        }
+        
         if (isJMSRequired){
             // TODO - do we need to go back to configurator?
         }  
-        
-        if (isMTOMRequired) {
-            new Axis2MTOMPolicyProvider(endpoint).configureBinding(configContext);
-        }     
     }
     
     private static final String DEFAULT_QUEUE_CONNECTION_FACTORY = "TuscanyQueueConnectionFactory";

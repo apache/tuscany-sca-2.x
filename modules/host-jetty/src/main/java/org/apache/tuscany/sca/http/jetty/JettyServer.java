@@ -81,9 +81,11 @@ public class JettyServer implements ServletHost, LifeCycleListener {
     private boolean sendServerVersion;
     private WorkScheduler workScheduler;
     
+    // TODO - this static seems to be set by the JSORPC binding unit test
+    //        doesn't look to be a great way of doing things
     public static int portDefault = 8080;
     private int defaultPort = portDefault;
-    private int defaultSSLPort = 443;
+    private int defaultSSLPort = 8443;
 
     /**
      * Represents a port and the server that serves it.
@@ -331,18 +333,28 @@ public class JettyServer implements ServletHost, LifeCycleListener {
         logger.info("Added Servlet mapping: " + addedURL);
     }
 
-    public URL getURLMapping(String suri) throws ServletMappingException {
+    public URL getURLMapping(String suri, SecurityContext securityContext) throws ServletMappingException {
         URI uri = URI.create(suri);
-
+        
         // Get the URI scheme and port
-        String scheme = uri.getScheme();
-        if (scheme == null) {
-            scheme = "http";
+        String scheme = null;
+        if(securityContext != null && securityContext.isSSLEnabled()) {
+            scheme = "https";
+        } else {
+            scheme = uri.getScheme();
+            if (scheme == null) {
+                scheme = "http";
+            }            
         }
+        
         int portNumber = uri.getPort();
         if (portNumber == -1) {
-            portNumber = defaultPort;
-        }
+            if ("http".equals(scheme)) {
+                portNumber = defaultPort;
+            } else {
+                portNumber = defaultSSLPort;
+            }
+        }        
 
         // Get the host
         String host;

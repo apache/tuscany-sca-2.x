@@ -120,7 +120,7 @@ public interface ServletHost {
      * Returns the complete URL mapped to the specified URI. 
      * @return the URL mapped to the specified URI
      */
-    URL getURLMapping(String uri);
+    URL getURLMapping(String uri, SecurityContext securityContext);
 
     /**
      * Set an attribute in the application ServletContext 

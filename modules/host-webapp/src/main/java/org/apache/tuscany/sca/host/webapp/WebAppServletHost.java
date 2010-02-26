@@ -133,7 +133,7 @@ public class WebAppServletHost implements ServletHost {
         return servlet;
     }
 
-    public URL getURLMapping(String suri) throws ServletMappingException {
+    public URL getURLMapping(String suri, SecurityContext securityContext) throws ServletMappingException {
         URI uri = URI.create(suri);
 
         // Get the URI scheme and port

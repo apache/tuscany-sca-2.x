@@ -153,8 +153,8 @@ public class DefaultServletHostExtensionPoint implements ServletHostExtensionPoi
             return getServletHost().getServletMapping(uri);
         }
 
-        public URL getURLMapping(String uri) {
-            return getServletHost().getURLMapping(uri);
+        public URL getURLMapping(String uri, SecurityContext securityContext) {
+            return getServletHost().getURLMapping(uri, securityContext);
         }
 
         public Servlet removeServletMapping(String uri) throws ServletMappingException {
