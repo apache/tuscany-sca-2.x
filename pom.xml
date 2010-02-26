@@ -25,6 +25,9 @@
         <version>4</version>
     </parent>
 
+    <!-- ====================================================================== -->
+    <!-- Project description and basic configuration                            -->
+    <!-- ====================================================================== -->
     <groupId>org.apache.tuscany.sca</groupId>
     <artifactId>tuscany-sca</artifactId>
     <packaging>pom</packaging>
@@ -51,6 +54,9 @@
         <url>http://issues.apache.org/jira/browse/TUSCANY</url>
     </issueManagement>
 
+    <!-- ====================================================================== -->
+    <!-- Maven Repositories                                                     -->
+    <!-- ====================================================================== -->
     <repositories>
        <repository>
           <id>maven.central</id>
@@ -159,9 +165,11 @@
               <enabled>false</enabled>
             </snapshots>
         </repository>
-
     </repositories>
 
+    <!-- ====================================================================== -->
+    <!-- Maven Plugin-Repositories                                              -->
+    <!-- ====================================================================== -->
     <pluginRepositories>
         <!-- Apache repository for artifacts released by Apache TLP projects -->
         <pluginRepository>
@@ -230,9 +238,11 @@
               <enabled>false</enabled>
             </snapshots>
         </pluginRepository>
-
     </pluginRepositories>
-
+    
+    <!-- ====================================================================== -->
+    <!-- Distribution Management configuration                                  -->
+    <!-- ====================================================================== -->
     <distributionManagement>
         <repository>
             <id>apache.releases</id>
@@ -248,6 +258,9 @@
     </distributionManagement>
 
     <profiles>
+        <!-- ====================================================================== -->
+        <!-- Default profile                                                        -->
+        <!-- ====================================================================== -->
         <profile>
             <id>default</id>
             <activation>
@@ -267,6 +280,10 @@
             </modules>
         </profile>
 
+        <!-- ====================================================================== -->
+        <!-- Default profile to be used in Mac OS environment                       -->
+        <!--   Note that this set tools.jar property based on the JDK used in Mac   -->
+        <!-- ====================================================================== -->
         <profile>
             <id>default-mac</id>
             <activation>
@@ -288,6 +305,84 @@
             </modules>
         </profile>
 
+        <!-- ====================================================================== -->
+        <!-- Profile used to generate OSGi based Eclipse IDE project artifacts      -->
+        <!-- ====================================================================== -->
+        <profile>
+            <id>eclipse</id>
+            <properties>
+                <tools.jar>${java.home}/../lib/tools.jar</tools.jar>
+            </properties>            
+            <modules>
+                <module>modules</module>
+                <module>samples</module>
+                <module>itest</module>
+                <module>features</module>
+                <module>distribution</module>
+            </modules>
+           <build>
+                <defaultGoal>org.apache.tuscany.maven.plugins:maven-bundle-plugin:eclipse</defaultGoal>
+                <pluginManagement>
+                <plugins>
+                   <plugin> 
+                       <groupId>org.apache.tuscany.maven.plugins</groupId> 
+                       <artifactId>maven-bundle-plugin</artifactId> 
+                       <version>1.0.5</version> 
+                       <extensions>true</extensions> 
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-eclipse-plugin</artifactId>
+                        <configuration>
+                            <skip>true</skip>
+                        </configuration>
+                     </plugin>
+                 </plugins>
+                 </pluginManagement>
+            </build>
+        </profile>
+
+        <!-- ====================================================================== -->
+        <!-- Profile used to generate OSGi based Eclipse IDE project artifacts      -->
+        <!--   Note that this set tools.jar property based on the JDK used in Mac   -->
+        <!-- ====================================================================== -->
+        <profile>
+            <id>eclipse-mac</id>
+            <properties>
+                <tools.jar>${java.home}/../Classes/classes.jar</tools.jar>
+            </properties>
+            <modules>
+                <module>modules</module>
+                <module>samples</module>
+                <module>itest</module>
+                <module>features</module>
+                <module>distribution</module>
+            </modules>
+           <build>
+                <defaultGoal>org.apache.tuscany.maven.plugins:maven-bundle-plugin:eclipse</defaultGoal>
+                <pluginManagement>
+                <plugins>
+                   <plugin> 
+                       <groupId>org.apache.tuscany.maven.plugins</groupId> 
+                       <artifactId>maven-bundle-plugin</artifactId> 
+                       <version>1.0.5</version> 
+                       <extensions>true</extensions> 
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-eclipse-plugin</artifactId>
+                        <configuration>
+                            <skip>true</skip>
+                        </configuration>
+                     </plugin>
+                 </plugins>
+                 </pluginManagement>
+            </build>
+        </profile>
+
+        <!-- ====================================================================== -->
+        <!-- Profile to build release distribution                                  -->
+        <!-- ====================================================================== -->
         <profile>
             <id>distribution</id>
             <modules>
@@ -356,42 +451,6 @@
             </build>
         </profile>
 
-        <profile>
-            <id>eclipse</id>
-            <properties>
-                <tools.jar>${java.home}/../lib/tools.jar</tools.jar>
-            </properties>            
-            <modules>
-                <module>modules</module>
-                <module>samples</module>
-                <module>itest</module>
-                <!--module>vtest</module-->
-                <!--module>tutorials</module-->
-                <!--module>demos</module-->
-                <module>features</module>
-                <module>distribution</module>
-            </modules>
-           <build>
-                <defaultGoal>org.apache.tuscany.maven.plugins:maven-bundle-plugin:eclipse</defaultGoal>
-                <pluginManagement>
-                <plugins>
-                   <plugin> 
-                       <groupId>org.apache.tuscany.maven.plugins</groupId> 
-                       <artifactId>maven-bundle-plugin</artifactId> 
-                       <version>1.0.5</version> 
-                       <extensions>true</extensions> 
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-eclipse-plugin</artifactId>
-                        <configuration>
-                            <skip>true</skip>
-                        </configuration>
-                     </plugin>
-                 </plugins>
-                 </pluginManagement>
-            </build>
-        </profile>
         <profile>
             <id>osgi</id>
             <activation>
