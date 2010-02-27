@@ -16,9 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.databinding.impl;
+package org.apache.tuscany.sca.databinding;
 
-import org.apache.tuscany.sca.databinding.Transformer;
 
 /**
  * Base Implementation of Transformer which provides the registration to the

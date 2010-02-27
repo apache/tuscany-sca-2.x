@@ -25,10 +25,10 @@ import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.apache.tuscany.sca.databinding.BaseTransformer;
 import org.apache.tuscany.sca.databinding.PushTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
-import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
 import org.w3c.dom.Node;
 
 /**

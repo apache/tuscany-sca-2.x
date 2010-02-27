@@ -24,10 +24,10 @@ import javax.xml.transform.Source;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 
+import org.apache.tuscany.sca.databinding.BaseTransformer;
 import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
-import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
 
 /**
  * Transform TrAX Source to String

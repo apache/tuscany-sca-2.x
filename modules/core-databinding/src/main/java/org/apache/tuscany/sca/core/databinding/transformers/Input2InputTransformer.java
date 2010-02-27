@@ -29,7 +29,7 @@ import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
 import org.apache.tuscany.sca.databinding.WrapperHandler;
-import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
+import org.apache.tuscany.sca.databinding.BaseTransformer;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.util.ElementInfo;
@@ -62,7 +62,7 @@ public class Input2InputTransformer extends BaseTransformer<Object[], Object[]> 
     }
 
     /**
-     * @see org.apache.tuscany.sca.databinding.impl.BaseTransformer#getSourceType()
+     * @see org.apache.tuscany.sca.databinding.BaseTransformer#getSourceType()
      */
     @Override
     protected Class<Object[]> getSourceType() {
@@ -70,7 +70,7 @@ public class Input2InputTransformer extends BaseTransformer<Object[], Object[]> 
     }
 
     /**
-     * @see org.apache.tuscany.sca.databinding.impl.BaseTransformer#getTargetType()
+     * @see org.apache.tuscany.sca.databinding.BaseTransformer#getTargetType()
      */
     @Override
     protected Class<Object[]> getTargetType() {

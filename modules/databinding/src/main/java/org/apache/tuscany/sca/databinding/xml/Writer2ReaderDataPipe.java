@@ -23,9 +23,9 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 
+import org.apache.tuscany.sca.databinding.BaseTransformer;
 import org.apache.tuscany.sca.databinding.DataPipe;
 import org.apache.tuscany.sca.databinding.DataPipeTransformer;
-import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
 
 public class Writer2ReaderDataPipe extends BaseTransformer<Writer, Reader> implements DataPipeTransformer<Writer, Reader> {
 

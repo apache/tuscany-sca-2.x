@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.databinding.impl;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
+import org.apache.tuscany.sca.databinding.BaseTransformer;
 import org.apache.tuscany.sca.databinding.Mediator;
 import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
@@ -56,7 +57,7 @@ public class Group2GroupTransformer extends BaseTransformer<Object, Object> impl
     }
 
     /**
-     * @see org.apache.tuscany.sca.databinding.impl.BaseTransformer#getSourceType()
+     * @see org.apache.tuscany.sca.databinding.BaseTransformer#getSourceType()
      */
     @Override
     protected Class<Object> getSourceType() {
@@ -64,7 +65,7 @@ public class Group2GroupTransformer extends BaseTransformer<Object, Object> impl
     }
 
     /**
-     * @see org.apache.tuscany.sca.databinding.impl.BaseTransformer#getTargetType()
+     * @see org.apache.tuscany.sca.databinding.BaseTransformer#getTargetType()
      */
     @Override
     protected Class<Object> getTargetType() {

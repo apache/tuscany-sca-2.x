@@ -20,7 +20,7 @@
 package org.apache.tuscany.sca.databinding.xml;
 
 
-import org.apache.tuscany.sca.databinding.impl.BaseDataBinding;
+import org.apache.tuscany.sca.databinding.BaseDataBinding;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;

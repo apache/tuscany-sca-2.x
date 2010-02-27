@@ -20,10 +20,10 @@ package org.apache.tuscany.sca.databinding.xml;
 
 import org.apache.tuscany.sca.common.xml.dom.DOMHelper;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.databinding.BaseTransformer;
 import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
-import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
 import org.w3c.dom.Node;
 
 public class String2Node extends BaseTransformer<String, Node> implements PullTransformer<String, Node> {

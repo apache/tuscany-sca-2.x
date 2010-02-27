@@ -16,12 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.databinding.impl;
+package org.apache.tuscany.sca.databinding;
 
 
-import org.apache.tuscany.sca.databinding.DataBinding;
-import org.apache.tuscany.sca.databinding.WrapperHandler;
-import org.apache.tuscany.sca.databinding.XMLTypeHelper;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
@@ -99,11 +96,7 @@ public abstract class BaseDataBinding implements DataBinding {
         return null;
     }
 
-    public Object copy(Object object, DataType dataType, Operation operation) {
-        return copy(object, dataType, operation, dataType);
-    }
-
-    public Object copy(Object object, DataType dataType, Operation operation, DataType targetDataType) {
+    public Object copy(Object object, DataType sourceDataType, DataType targetDataType, Operation sourceOperation, Operation targetOperation) {
         return object;
     }
 

@@ -25,7 +25,7 @@ import org.apache.tuscany.sca.databinding.DataBinding;
 import org.apache.tuscany.sca.databinding.Mediator;
 import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
-import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
+import org.apache.tuscany.sca.databinding.BaseTransformer;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.FaultExceptionMapper;
 
@@ -65,7 +65,7 @@ public class Exception2ExceptionTransformer extends BaseTransformer<Throwable, T
     }
 
     /**
-     * @see org.apache.tuscany.sca.databinding.impl.BaseTransformer#getSourceType()
+     * @see org.apache.tuscany.sca.databinding.BaseTransformer#getSourceType()
      */
     @Override
     protected Class<Throwable> getSourceType() {
@@ -73,7 +73,7 @@ public class Exception2ExceptionTransformer extends BaseTransformer<Throwable, T
     }
 
     /**
-     * @see org.apache.tuscany.sca.databinding.impl.BaseTransformer#getTargetType()
+     * @see org.apache.tuscany.sca.databinding.BaseTransformer#getTargetType()
      */
     @Override
     protected Class<Throwable> getTargetType() {

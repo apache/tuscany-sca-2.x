@@ -22,7 +22,7 @@ package org.apache.tuscany.sca.databinding.json;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.databinding.impl.BaseDataBinding;
+import org.apache.tuscany.sca.databinding.BaseDataBinding;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
@@ -59,7 +59,11 @@ public class JSONDataBinding extends BaseDataBinding {
 
     @SuppressWarnings("unchecked")
     @Override
-    public Object copy(Object arg, DataType dataType, Operation operation) {
+    public Object copy(Object arg,
+                       DataType sourceDataType,
+                       DataType targetDataType,
+                       Operation sourceOperation,
+                       Operation targetOperation) {
         if (arg == null) {
             return null;
         }

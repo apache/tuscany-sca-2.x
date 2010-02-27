@@ -32,7 +32,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.logging.Logger;
 
-import org.apache.tuscany.sca.databinding.impl.BaseDataBinding;
+import org.apache.tuscany.sca.databinding.BaseDataBinding;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
 
@@ -59,7 +59,7 @@ public class JavaBeansDataBinding extends BaseDataBinding {
     }
 
     @Override
-    public Object copy(Object arg, DataType dataType, Operation operation, DataType targetDataType) {
+    public Object copy(Object arg, DataType sourceDataType, DataType targetDataType, Operation sourceOperation, Operation targetOperation) {
         if (arg == null) {
             return null;
         }

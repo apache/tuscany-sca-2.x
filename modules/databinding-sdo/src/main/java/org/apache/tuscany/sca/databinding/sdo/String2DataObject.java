@@ -18,10 +18,10 @@
  */
 package org.apache.tuscany.sca.databinding.sdo;
 
+import org.apache.tuscany.sca.databinding.BaseTransformer;
 import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
-import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
 
 import commonj.sdo.DataObject;
 import commonj.sdo.helper.HelperContext;

@@ -104,7 +104,7 @@ public class JAXBDataBindingTestCase {
         ObjectFactory factory = new ObjectFactory();
         PurchaseOrderType poType = factory.createPurchaseOrderType();
         JAXBElement<PurchaseOrderType> po = factory.createPurchaseOrder(poType);
-        JAXBElement<PurchaseOrderType> copy = (JAXBElement<PurchaseOrderType>)binding.copy(po, null, null);
+        JAXBElement<PurchaseOrderType> copy = (JAXBElement<PurchaseOrderType>)binding.copy(po, null, null, null, null);
         assertEquals(new QName("http://www.example.com/IPO", "purchaseOrder"), copy.getName());
     }
 
@@ -113,7 +113,7 @@ public class JAXBDataBindingTestCase {
         ObjectFactory factory = new ObjectFactory();
         PurchaseOrderType poType = factory.createPurchaseOrderType();
         poType.setComment("Comment");
-        PurchaseOrderType copy = (PurchaseOrderType)binding.copy(poType, null, null);
+        PurchaseOrderType copy = (PurchaseOrderType)binding.copy(poType, null, null, null, null);
         assertTrue(copy instanceof PurchaseOrderType);
         assertEquals("Comment", (copy).getComment());
     }
@@ -123,7 +123,7 @@ public class JAXBDataBindingTestCase {
         ObjectFactory factory = new ObjectFactory();
         USAddress address = factory.createUSAddress();
         address.setCity("San Jose");
-        USAddress copy = (USAddress)binding.copy(address, null, null);
+        USAddress copy = (USAddress)binding.copy(address, null, null, null, null);
         assertTrue(copy instanceof USAddress);
         assertEquals("San Jose", (copy).getCity());
 

@@ -106,7 +106,7 @@ public class OMElementTestCase extends TestCase {
     public final void testCopy() {
         String2OMElement t1 = new String2OMElement();
         OMElement element = t1.transform(IPO_XML, null);
-        OMElement copy = (OMElement)new AxiomDataBinding().copy(element, null, null);
+        OMElement copy = (OMElement)new AxiomDataBinding().copy(element, null, null, null, null);
         assertNotSame(element, copy);
         assertEquals(new QName("http://www.example.com/IPO", "purchaseOrder"), copy.getQName());
     }

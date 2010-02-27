@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.sca.databinding.impl;
 
-import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,25 +36,8 @@ public class TransformationContextImpl implements TransformationContext {
 
     private final Map<String, Object> metadata = new HashMap<String, Object>();
 
-    private WeakReference<ClassLoader> classLoaderRef;
-
     public TransformationContextImpl() {
         super();
-        // This is used only for testing
-        setClassLoader(Thread.currentThread().getContextClassLoader());
-    }
-
-    public TransformationContextImpl(DataType sourceDataType,
-                                     DataType targetDataType,
-                                     ClassLoader classLoader,
-                                     Map<String, Object> metadata) {
-        super();
-        this.sourceDataType = sourceDataType;
-        this.targetDataType = targetDataType;
-        setClassLoader(classLoader);
-        if (metadata != null) {
-            this.metadata.putAll(metadata);
-        }
     }
 
     public TransformationContextImpl(DataType sourceDataType,
@@ -64,7 +46,6 @@ public class TransformationContextImpl implements TransformationContext {
         super();
         this.sourceDataType = sourceDataType;
         this.targetDataType = targetDataType;
-        setClassLoader(Thread.currentThread().getContextClassLoader());
         if (metadata != null) {
             this.metadata.putAll(metadata);
         }
@@ -84,14 +65,6 @@ public class TransformationContextImpl implements TransformationContext {
 
     public void setTargetDataType(DataType targetDataType) {
         this.targetDataType = targetDataType;
-    }
-
-    public final void setClassLoader(ClassLoader classLoader) {
-        this.classLoaderRef = new WeakReference<ClassLoader>(classLoader);
-    }
-
-    public ClassLoader getClassLoader() {
-        return classLoaderRef.get();
     }
 
     public Map<String, Object> getMetadata() {

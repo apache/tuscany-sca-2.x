@@ -25,8 +25,6 @@ import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
@@ -137,22 +135,13 @@ public class MediatorImpl implements Mediator {
             (index == size - 1) ? targetDataType : new DataTypeImpl<Object>(transformer.getTargetDataBinding(),
                                                                             Object.class, targetDataType.getLogical());
 
-        //FIXME The ClassLoader should be passed in
-        // Allow privileged access to get ClassLoader. Requires RuntimePermission in security
-        // policy.
-        ClassLoader classLoader = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
-            public ClassLoader run() {
-                return Thread.currentThread().getContextClassLoader();
-            }
-        });
-
-        Map<String, Object> copy = new HashMap<String, Object>();
+         Map<String, Object> copy = new HashMap<String, Object>();
         if (metadata != null) {
             copy.putAll(metadata);
         }
         copy.put(ExtensionPointRegistry.class.getName(), registry);
 
-        TransformationContext context = new TransformationContextImpl(sourceType, targetType, classLoader, copy);
+        TransformationContext context = new TransformationContextImpl(sourceType, targetType, copy);
         return context;
     }
 
@@ -443,20 +432,24 @@ public class MediatorImpl implements Mediator {
     }
 
     public Object copy(Object data, DataType dataType) {
-        return copy(data, dataType, null, null);
+        return copy(data, dataType, dataType, null, null);
     }
 
-    public Object copy(Object data, DataType dataType, DataType targetDataType) {
-        return copy(data, dataType, null, targetDataType);
+    public Object copy(Object data, DataType sourceDataType, DataType targetDataType) {
+        return copy(data, sourceDataType, targetDataType, null, null);
     }
 
     /**
      * Copy data using the specified databinding.
      * @param data input data
-     * @param dataType
+     * @param sourceDataType
      * @return a copy of the data
      */
-    private Object copy(Object data, DataType dataType, Operation operation, DataType targetDataType) {
+    public Object copy(Object data,
+                       DataType sourceDataType,
+                       DataType targetDataType,
+                       Operation sourceOperation,
+                       Operation targetOperation) {
         if (data == null) {
             return null;
         }
@@ -476,14 +469,14 @@ public class MediatorImpl implements Mediator {
         DataBinding javaBeansDataBinding = dataBindings.getDataBinding(JavaBeansDataBinding.NAME);
         // FIXME: The JAXB databinding is hard-coded here
         DataBinding jaxbDataBinding = dataBindings.getDataBinding("javax.xml.bind.JAXBElement");
-        DataBinding dataBinding = dataBindings.getDataBinding(dataType.getDataBinding());
+        DataBinding dataBinding = dataBindings.getDataBinding(sourceDataType.getDataBinding());
         // If no databinding was specified, introspect the given arg to
         // determine its databinding
         if (dataBinding == null) {
-            if (!"java:array".equals(dataType.getDataBinding())) {
-                dataType = dataBindings.introspectType(data, operation);
-                if (dataType != null) {
-                    String db = dataType.getDataBinding();
+            if (!"java:array".equals(sourceDataType.getDataBinding())) {
+                sourceDataType = dataBindings.introspectType(data, sourceOperation);
+                if (sourceDataType != null) {
+                    String db = sourceDataType.getDataBinding();
                     dataBinding = dataBindings.getDataBinding(db);
                     if (dataBinding == null && db != null) {
                         return data;
@@ -523,7 +516,7 @@ public class MediatorImpl implements Mediator {
             return data;
         }
 
-        return dataBinding.copy(data, dataType, operation, targetDataType);
+        return dataBinding.copy(data, sourceDataType, targetDataType, sourceOperation, targetOperation);
     }
 
     /**
@@ -565,7 +558,7 @@ public class MediatorImpl implements Mediator {
         return copyOutput(data, operation, null);
     }
     public Object copyOutput(Object data, Operation operation, Operation targetOperation) {
-        return copy(data, operation.getOutputType(), operation, targetOperation.getOutputType());
+        return copy(data, operation.getOutputType(), targetOperation.getOutputType(), operation, targetOperation);
     }
 
     public Object copyFault(Object fault, Operation operation) {

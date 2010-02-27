@@ -23,8 +23,8 @@ package org.apache.tuscany.sca.databinding.javabeans;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.databinding.BaseDataBinding;
 import org.apache.tuscany.sca.databinding.SimpleTypeMapper;
-import org.apache.tuscany.sca.databinding.impl.BaseDataBinding;
 import org.apache.tuscany.sca.databinding.impl.SimpleTypeMapperImpl;
 import org.apache.tuscany.sca.databinding.xml.XMLStringDataBinding;
 import org.apache.tuscany.sca.interfacedef.DataType;
@@ -48,7 +48,11 @@ public class SimpleJavaDataBinding extends BaseDataBinding {
     }
 
     @Override
-    public Object copy(Object arg, DataType dataType, Operation operation) {
+    public Object copy(Object arg,
+                       DataType sourceDataType,
+                       DataType targetDataType,
+                       Operation sourceOperation,
+                       Operation targetOperation) {
         if (arg instanceof byte[]) {
             return ((byte[])arg).clone();
         }

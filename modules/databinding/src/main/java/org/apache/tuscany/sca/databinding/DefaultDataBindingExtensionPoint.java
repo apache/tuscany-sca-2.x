@@ -34,7 +34,6 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.databinding.javabeans.JavaBeansDataBinding;
 import org.apache.tuscany.sca.databinding.javabeans.JavaExceptionDataBinding;
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
-import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
@@ -165,12 +164,8 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
             return dataBinding;
         }
 
-        public Object copy(Object object, DataType dataType, Operation operation) {
-            return getDataBinding().copy(object, dataType, operation);
-        }
-
-        public Object copy(Object object, DataType dataType, Operation operation, DataType targetdataType) {
-            return getDataBinding().copy(object, dataType, operation, targetdataType);
+        public Object copy(Object object, DataType sourceDataType, DataType targetDataType, Operation sourceOperation, Operation targetOperation) {
+            return getDataBinding().copy(object, sourceDataType, targetDataType, sourceOperation, targetOperation);
         }
 
         public String getName() {

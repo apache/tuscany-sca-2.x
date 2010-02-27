@@ -102,12 +102,27 @@ public interface Mediator {
     /**
      * Copy the data
      * @param data The orginal data
-     * @param dataType The data type
+     * @param dataType The source data type
      * @param targetDataType The target data type
      * @return The copy
      */
-    Object copy(Object data, DataType dataType, DataType targetDataType);
+    Object copy(Object data, DataType sourceDataType, DataType targetDataType);
 
+    /**
+     * Copy the data
+     * @param data The orginal data
+     * @param sourceDataType The source data type
+     * @param targetDataType The target data type
+     * @param sourceOperation The source operation
+     * @param targetOperation The target operation
+     * @return The copy
+     */
+    Object copy(Object data,
+                DataType sourceDataType,
+                DataType targetDataType,
+                Operation sourceOperation,
+                Operation targetOperation);
+    
     /**
      * Copy an array of data objects passed to an operation
      * @param data array of objects to copy

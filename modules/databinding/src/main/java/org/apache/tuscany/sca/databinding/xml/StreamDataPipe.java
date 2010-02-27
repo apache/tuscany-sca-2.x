@@ -23,9 +23,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.apache.tuscany.sca.databinding.BaseTransformer;
 import org.apache.tuscany.sca.databinding.DataPipe;
 import org.apache.tuscany.sca.databinding.DataPipeTransformer;
-import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
 
 public class StreamDataPipe extends BaseTransformer<OutputStream, InputStream> implements
     DataPipeTransformer<OutputStream, InputStream> {

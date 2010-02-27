@@ -23,9 +23,9 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.common.xml.dom.DOMHelper;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.databinding.BaseDataBinding;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.WrapperHandler;
-import org.apache.tuscany.sca.databinding.impl.BaseDataBinding;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
@@ -59,12 +59,16 @@ public class DOMDataBinding extends BaseDataBinding {
     }
 
     @Override
-    public Object copy(Object source, DataType dataType, Operation operation) {
+    public Object copy(Object source,
+                       DataType dataType,
+                       DataType targetDataType,
+                       Operation operation,
+                       Operation targetOperation) {
         if (Node.class.isAssignableFrom(source.getClass())) {
             Node nodeSource = (Node)source;
             return nodeSource.cloneNode(true);
         }
-        return super.copy(source, dataType, operation);
+        return super.copy(source, dataType, targetDataType, operation, targetOperation);
     }
 
     @Override

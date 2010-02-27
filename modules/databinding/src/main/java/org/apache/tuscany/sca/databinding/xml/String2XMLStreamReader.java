@@ -23,10 +23,10 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.common.xml.stax.StAXHelper;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.databinding.BaseTransformer;
 import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
-import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
 
 public class String2XMLStreamReader extends BaseTransformer<String, XMLStreamReader> implements
     PullTransformer<String, XMLStreamReader> {

@@ -73,24 +73,16 @@ public interface DataBinding {
     WrapperHandler getWrapperHandler();
 
     /**
-     * Make a copy of the object for "pass-by-value" semantics.
-     *
-     * @param object source object to copy 
-     * @param dataType The data type
-     * @param operation The operation
-     * @return copy of the object passed in as argument
-     */
-    Object copy(Object object, DataType dataType, Operation operation);
-    
-    /**
      * Make a copy of the object for "pass-by-value" semantics and cross classloader invocations.
      *
      * @param object source object to copy 
-     * @param dataType The data type
-     * @param operation The operation
+     * @param sourceDataType The source data type
+     * @param targetDataType the target data type
+     * @param sourceOperation The source operation
+     * @param targetOperation The target operation
      * @return copy of the object passed in as argument
      */
-    Object copy(Object object, DataType dataType, Operation operation, DataType targetdataType);
+    Object copy(Object object, DataType sourceDataType, DataType targetDataType, Operation sourceOperation, Operation targetOperation);
 
     /**
      * Get the XML type helper for Java types

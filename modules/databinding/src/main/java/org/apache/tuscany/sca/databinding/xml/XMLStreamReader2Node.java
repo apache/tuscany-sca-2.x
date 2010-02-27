@@ -21,11 +21,11 @@ package org.apache.tuscany.sca.databinding.xml;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.databinding.BaseTransformer;
 import org.apache.tuscany.sca.databinding.DataPipe;
 import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
-import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.ContentHandler;

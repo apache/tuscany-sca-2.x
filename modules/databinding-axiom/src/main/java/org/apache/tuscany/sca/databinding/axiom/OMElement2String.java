@@ -26,7 +26,7 @@ import org.apache.axiom.om.OMElement;
 import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
-import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
+import org.apache.tuscany.sca.databinding.BaseTransformer;
 
 /**
  * Transformer to convert data from an OMElement to XML String

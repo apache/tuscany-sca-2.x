@@ -21,10 +21,10 @@ package org.apache.tuscany.sca.databinding.sdo;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.sca.databinding.BaseTransformer;
 import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
-import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
 import org.apache.tuscany.sdo.api.SDOUtil;
 import org.apache.tuscany.sdo.api.XMLStreamHelper;
 

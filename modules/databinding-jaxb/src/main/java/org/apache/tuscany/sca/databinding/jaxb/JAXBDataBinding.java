@@ -28,9 +28,9 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.common.xml.dom.DOMHelper;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.databinding.BaseDataBinding;
 import org.apache.tuscany.sca.databinding.WrapperHandler;
 import org.apache.tuscany.sca.databinding.XMLTypeHelper;
-import org.apache.tuscany.sca.databinding.impl.BaseDataBinding;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
@@ -95,41 +95,40 @@ public class JAXBDataBinding extends BaseDataBinding {
         return true;
     }
 
-    @Override
-    public Object copy(Object arg, DataType dataType, Operation operation) {
-        return copy(arg, dataType, operation, dataType);
-    }
-
     @SuppressWarnings("unchecked")
     @Override
-    public Object copy(Object arg, DataType dataType, Operation operation, DataType targetDataType) {
+    public Object copy(Object arg,
+                       DataType sourceDataType,
+                       DataType targetDataType,
+                       Operation sourceOperation,
+                       Operation targetOperation) {
         try {
             boolean isElement = false;
-            if (dataType == null) {
+            if (sourceDataType == null) {
                 Class cls = arg.getClass();
                 if (arg instanceof JAXBElement) {
                     isElement = true;
                     cls = ((JAXBElement)arg).getDeclaredType();
                 }
-                dataType = new DataTypeImpl<XMLType>(NAME, cls, XMLType.UNKNOWN);
+                sourceDataType = new DataTypeImpl<XMLType>(NAME, cls, XMLType.UNKNOWN);
             }
-            JAXBContext context = contextHelper.createJAXBContext(dataType);
-            arg = JAXBContextHelper.createJAXBElement(context, dataType, arg);
+            JAXBContext context = contextHelper.createJAXBContext(sourceDataType);
+            arg = JAXBContextHelper.createJAXBElement(context, sourceDataType, arg);
             Document doc = domHelper.newDocument();
             context.createMarshaller().marshal(arg, doc);
             
             Object value;
-            if (targetDataType != null && targetDataType.getPhysical() != dataType.getPhysical()) {
+            if (targetDataType != null && targetDataType.getPhysical() != sourceDataType.getPhysical()) {
                 JAXBContext targetContext = contextHelper.createJAXBContext(targetDataType);
                 value = targetContext.createUnmarshaller().unmarshal(doc, targetDataType.getPhysical());
             } else {
-                value = context.createUnmarshaller().unmarshal(doc, dataType.getPhysical());
+                value = context.createUnmarshaller().unmarshal(doc, sourceDataType.getPhysical());
             }
             
             if (isElement && value instanceof JAXBElement) {
                 return value;
             }
-            return JAXBContextHelper.createReturnValue(context, dataType, value);
+            return JAXBContextHelper.createReturnValue(context, sourceDataType, value);
         } catch (Exception e) {
             throw new IllegalArgumentException(e);
         }

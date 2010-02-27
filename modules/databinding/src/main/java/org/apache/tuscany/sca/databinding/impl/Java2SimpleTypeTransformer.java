@@ -20,6 +20,7 @@ package org.apache.tuscany.sca.databinding.impl;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.databinding.BaseTransformer;
 import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.SimpleTypeMapper;
 import org.apache.tuscany.sca.databinding.TransformationContext;

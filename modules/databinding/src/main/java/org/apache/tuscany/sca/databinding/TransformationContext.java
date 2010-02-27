@@ -79,13 +79,6 @@ public interface TransformationContext {
     void setTargetDataType(DataType targetDataType);
 
     /**
-     * Get the ClassLoader
-     * 
-     * @return Returns the ClassLoader
-     */
-    ClassLoader getClassLoader();
-
-    /**
      * Get a map of metadata
      * 
      * @return Returns a map of the metadata

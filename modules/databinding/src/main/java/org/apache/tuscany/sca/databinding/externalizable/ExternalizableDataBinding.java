@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.databinding.externalizable;
 
-import org.apache.tuscany.sca.databinding.impl.BaseDataBinding;
+import org.apache.tuscany.sca.databinding.BaseDataBinding;
 
 /**
  * DataNinding for Externalizable objects.
