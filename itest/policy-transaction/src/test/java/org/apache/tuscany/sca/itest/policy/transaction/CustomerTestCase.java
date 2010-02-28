@@ -27,10 +27,12 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.Ignore;
 
 import customer.Customer;
 import customer.CustomerRegistry;
 
+@Ignore
 public class CustomerTestCase {
     private static Node node;
 
