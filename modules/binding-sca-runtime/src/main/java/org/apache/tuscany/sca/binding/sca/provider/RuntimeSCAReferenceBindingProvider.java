@@ -208,7 +208,8 @@ public class RuntimeSCAReferenceBindingProvider implements EndpointReferenceProv
                        passByValue = false;
                     }
                 } else {
-                    boolean allowsPBR = chain.allowsPassByReference();
+//                    boolean allowsPBR = chain.allowsPassByReference(); TODO: TUSCANY-3479 this breaks the conformance tests as it needs to consider _both_ ends
+                    boolean allowsPBR = false;
                     if (allowsPBR && interfaceContractMapper.isCompatibleByReference(operation, targetOp, Compatibility.SUBSET)) {
                         passByValue = false;
                     } else if (interfaceContractMapper.isCompatibleByValue(operation, targetOp, Compatibility.SUBSET)) {
