@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.binding.ws.axis2;
+package org.apache.tuscany.sca.binding.ws.axis2.provider;
 
 import org.apache.axis2.context.ConfigurationContext;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;

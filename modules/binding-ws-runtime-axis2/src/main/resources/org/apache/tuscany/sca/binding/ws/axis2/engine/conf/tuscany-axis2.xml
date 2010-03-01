@@ -114,7 +114,7 @@
 
        <!-- Added by Tuscany -->
         <messageReceiver mep="http://www.w3.org/2004/08/wsdl/in-only"
-                         class="org.apache.tuscany.sca.binding.ws.axis2.Axis2ServiceInMessageReceiver"/>
+                         class="org.apache.tuscany.sca.binding.ws.axis2.provider.Axis2ServiceInMessageReceiver"/>
 
         <messageReceiver mep="http://www.w3.org/2004/08/wsdl/in-only"
                          class="org.apache.axis2.receivers.RawXMLINOnlyMessageReceiver"/>
@@ -123,11 +123,11 @@
 
        <!-- Added by Tuscany -->
         <messageReceiver mep="http://www.w3.org/2004/08/wsdl/in-out"
-                         class="org.apache.tuscany.sca.binding.ws.axis2.Axis2ServiceInOutSyncMessageReceiver"/>
+                         class="org.apache.tuscany.sca.binding.ws.axis2.provider.Axis2ServiceInOutSyncMessageReceiver"/>
 
        <!-- Added by Tuscany -->
         <messageReceiver mep="http://www.w3.org/2006/01/wsdl/in-only"
-                         class="org.apache.tuscany.sca.binding.ws.axis2.Axis2ServiceInMessageReceiver"/>
+                         class="org.apache.tuscany.sca.binding.ws.axis2.provider.Axis2ServiceInMessageReceiver"/>
 
         <messageReceiver mep="http://www.w3.org/2006/01/wsdl/in-only"
                          class="org.apache.axis2.receivers.RawXMLINOnlyMessageReceiver"/>
@@ -136,7 +136,7 @@
 
        <!-- Added by Tuscany -->
         <messageReceiver mep="http://www.w3.org/2006/01/wsdl/in-out"
-                         class="org.apache.tuscany.sca.binding.ws.axis2.Axis2ServiceInOutSyncMessageReceiver"/>
+                         class="org.apache.tuscany.sca.binding.ws.axis2.provider.Axis2ServiceInOutSyncMessageReceiver"/>
 
     </messageReceivers>
     <!-- ================================================= -->
@@ -415,7 +415,7 @@
 
             <!-- Added by Tuscany -->
             <handler name="TuscanyDispatcher"
-                     class="org.apache.tuscany.sca.binding.ws.axis2.TuscanyDispatcher">
+                     class="org.apache.tuscany.sca.binding.ws.axis2.provider.TuscanyDispatcher">
                 <order phase="Transport"/>
             </handler>
 

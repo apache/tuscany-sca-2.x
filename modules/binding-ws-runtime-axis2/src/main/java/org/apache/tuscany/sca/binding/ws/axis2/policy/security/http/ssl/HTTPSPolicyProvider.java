@@ -22,7 +22,7 @@ package org.apache.tuscany.sca.binding.ws.axis2.policy.security.http.ssl;
 import java.security.KeyStore;
 import java.util.logging.Logger;
 
-import org.apache.tuscany.sca.binding.ws.axis2.Axis2BaseBindingProvider;
+import org.apache.tuscany.sca.binding.ws.axis2.provider.Axis2BaseBindingProvider;
 import org.apache.tuscany.sca.host.http.SecurityContext;
 import org.apache.tuscany.sca.policy.PolicySubject;
 import org.apache.tuscany.sca.policy.security.http.ssl.HTTPSPolicy;

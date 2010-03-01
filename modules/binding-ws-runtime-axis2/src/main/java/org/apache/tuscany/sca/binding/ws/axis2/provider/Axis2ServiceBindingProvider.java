@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.binding.ws.axis2;
+package org.apache.tuscany.sca.binding.ws.axis2.provider;
 
 import java.net.URI;
 import java.net.URISyntaxException;

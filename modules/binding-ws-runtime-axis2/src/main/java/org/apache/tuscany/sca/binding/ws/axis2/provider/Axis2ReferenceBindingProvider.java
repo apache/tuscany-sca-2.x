@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.binding.ws.axis2;
+package org.apache.tuscany.sca.binding.ws.axis2.provider;
 
 import java.io.IOException;
 import java.security.AccessController;
@@ -56,7 +56,6 @@ import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.binding.ws.axis2.transport.TransportReferenceInterceptor;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
-import org.apache.tuscany.sca.binding.ws.axis2.provider.Axis2ReferenceBindingInvoker;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
