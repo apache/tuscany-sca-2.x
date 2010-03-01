@@ -338,6 +338,9 @@ public class ComponentPolicyBuilderImpl {
         subject.getRequiredIntents().clear();
         subject.getRequiredIntents().addAll(intents);
 
+        // resolve policy set names that have been specified for the
+        // policy subject against the real policy sets from the 
+        // definitions files
         Set<PolicySet> policySets = new HashSet<PolicySet>();
         if (definitions != null) {
             for (PolicySet policySet : subject.getPolicySets()) {
@@ -351,22 +354,52 @@ public class ComponentPolicyBuilderImpl {
             }
         }
 
+        // find the policy sets that satisfy the intents that are now
+        // attached to the policy subject. From the OASIS policy
+        // spec CD02 rev7:
+        //  1272 A policySet provides an intent if any of the statements are true:
+        //  1273 1. The intent is contained in the policySet @provides list.
+        //  1274 2. The intent is a qualified intent and the unqualified form of the intent is contained in the policySet
+        //  1275 @provides list.
+        //  1276 3. The policySet @provides list contains a qualified form of the intent (where the intent is qualifiable).
         for (Intent intent : subject.getRequiredIntents()) {
+            boolean intentMatched = false;
+            
             loop: for (PolicySet ps : definitions.getPolicySets()) {
                 // FIXME: We will have to check the policy references and intentMap too
                 // as well as the appliesTo
                 if (ps.getProvidedIntents().contains(intent)) {
                     policySets.add(ps);
+                    intentMatched = true;
                     break;
                 }
+                
+                for (Intent psProvidedIntent : ps.getProvidedIntents()){
+                    if (isQualifiedBy(psProvidedIntent, intent)){
+                        policySets.add(ps);
+                        intentMatched = true;
+                        break loop;
+                    }
+                }
+                
                 for (IntentMap map : ps.getIntentMaps()) {
                     for (Qualifier q : map.getQualifiers()) {
                         if (intent.equals(q.getIntent())) {
                             policySets.add(ps);
+                            intentMatched = true;
                             break loop;
                         }
                     }
                 }
+            }
+            
+            if (!intentMatched){
+                // Raise a warning as we have an intent that doesn't have a matching 
+                // policy set at this start. 
+                // TODO - this could be because the intent is provided by and extension
+                //        and hence there is no explicit policy set. Need and extra piece
+                //        of processing to walk through the extension models. 
+                warning(context.getMonitor(), "IntentNotSatisfied", subject, intent.getName(), subject.toString());
             }
         }
 
@@ -386,6 +419,14 @@ public class ComponentPolicyBuilderImpl {
             }
         }
         return names;
+    }
+    
+    protected boolean isQualifiedBy(Intent qualifiableIntent, Intent qualifiedIntent){
+        if (qualifiedIntent.getQualifiableIntent() == qualifiableIntent){
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }

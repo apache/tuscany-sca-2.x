@@ -43,7 +43,9 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.IntentMap;
 import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.policy.Qualifier;
 import org.apache.tuscany.sca.runtime.EndpointReferenceBinder;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
 
@@ -466,12 +468,31 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
             } else {
             
 */  
-                for (PolicySet policySet : referencePolicySets){
+               // TODO - this code also appears in the ComponentPolicyBuilder
+               //        so should rationalize
+               loop: for (PolicySet policySet : referencePolicySets){
                     if (policySet.getProvidedIntents().contains(intent)){
                         eprIntents.remove(intent);
                         break;
                     }
+                    
+                    for (Intent psProvidedIntent : policySet.getProvidedIntents()){
+                        if (isQualifiedBy(psProvidedIntent, intent)){
+                            eprIntents.remove(intent);
+                            break loop;
+                        }
+                    }
+
+                    for (IntentMap map : policySet.getIntentMaps()) {
+                        for (Qualifier q : map.getQualifiers()) {
+                            if (intent.equals(q.getIntent())) {
+                                eprIntents.remove(intent);
+                                break loop;
+                            }
+                        }
+                    }                    
                 }
+                                
 /*          
             }                
  */
@@ -570,6 +591,14 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
         
         return match;
     }
+    
+    protected boolean isQualifiedBy(Intent qualifiableIntent, Intent qualifiedIntent){
+        if (qualifiedIntent.getQualifiableIntent() == qualifiableIntent){
+            return true;
+        } else {
+            return false;
+        }
+    }    
     
     /**
      * Determine if endpoint reference and endpoint interface contracts match 
