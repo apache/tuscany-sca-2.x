@@ -43,11 +43,11 @@
 
     <prerequisites>
         <maven>2.0.6</maven>
-        <tools.jar>${java.home}/../lib/tools.jar</tools.jar>
     </prerequisites>
 
     <properties>
         <notice.dir>.</notice.dir>
+        <tools.jar>${java.home}/../lib/tools.jar</tools.jar>        
     </properties>
 
     <issueManagement>
