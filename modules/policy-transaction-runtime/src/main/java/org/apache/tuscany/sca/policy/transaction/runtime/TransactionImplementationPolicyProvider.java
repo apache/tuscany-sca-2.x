@@ -49,7 +49,7 @@ public class TransactionImplementationPolicyProvider extends BasePolicyProvider<
         for (PolicySet policySet : policySets) {
             for (PolicyExpression p : policySet.getPolicies()) {
                 if (p.getPolicy() instanceof TransactionPolicy) {
-                    TransactionInterceptor interceptor = new TransactionInterceptor(helper, false, (TransactionPolicy)p.getPolicy(), null, getPhase());
+                    TransactionInterceptor interceptor = new TransactionInterceptor(helper, false, null, (TransactionPolicy)p.getPolicy(), getPhase());
                     return interceptor;
                 }
             }
