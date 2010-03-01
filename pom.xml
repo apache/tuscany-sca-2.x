@@ -43,6 +43,7 @@
 
     <prerequisites>
         <maven>2.0.6</maven>
+        <tools.jar>${java.home}/../lib/tools.jar</tools.jar>
     </prerequisites>
 
     <properties>
@@ -266,9 +267,6 @@
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
-            <properties>
-                <tools.jar>${java.home}/../lib/tools.jar</tools.jar>
-            </properties>            
             <modules>
                 <module>modules</module>
                 <module>samples</module>
@@ -310,9 +308,6 @@
         <!-- ====================================================================== -->
         <profile>
             <id>eclipse</id>
-            <properties>
-                <tools.jar>${java.home}/../lib/tools.jar</tools.jar>
-            </properties>            
             <modules>
                 <module>modules</module>
                 <module>samples</module>
@@ -385,9 +380,6 @@
         <!-- ====================================================================== -->
         <profile>
             <id>distribution</id>
-            <properties>
-                <tools.jar>${java.home}/../lib/tools.jar</tools.jar>
-            </properties>                        
             <modules>
                 <module>modules</module>
                 <module>samples</module>
