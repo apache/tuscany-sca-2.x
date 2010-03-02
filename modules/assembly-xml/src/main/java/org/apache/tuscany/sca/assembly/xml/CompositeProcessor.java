@@ -229,7 +229,7 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                                 contract = compositeService;
                                 compositeService.setName(getString(reader, NAME));
 
-                                String promoted = getString(reader, PROMOTE);
+                                String promoted = getURIString(reader, PROMOTE);
                                 if (promoted != null) {
                                     String promotedComponentName;
                                     String promotedServiceName;

@@ -309,6 +309,71 @@ public class StAXHelper {
     public static String getAttributeAsString(XMLStreamReader reader, String name) {
         return reader.getAttributeValue(null, name);
     }
+    
+    /**
+     * TUSCANY-242
+     * 
+     * Returns the URI value of an attribute as a string and first applies the 
+     * URI whitespace processing as defined in section 4.3.6 of XML Schema Part2: Datatypes
+     * [http://www.w3.org/TR/xmlschema-2/#rf-facets]. anyURI is defined with the following 
+     * XSD:
+     *   <xs:simpleType name="anyURI" id="anyURI">
+     *        <xs:restriction base="xs:anySimpleType">
+     *          <xs:whiteSpace value="collapse" fixed="true" id="anyURI.whiteSpace"/>
+     *        </xs:restriction>
+     *   </xs:simpleType>
+     *   
+     * The <xs:whiteSpace value="collapse"/> constraining facet is defined as follows
+     * 
+     *   replace
+     *      All occurrences of #x9 (tab), #xA (line feed) and #xD (carriage return) are replaced with #x20 (space) 
+     *   collapse
+     *      After the processing implied by replace, contiguous sequences of #x20's are collapsed to a single #x20, 
+     *      and leading and trailing #x20's are removed
+     *      
+     * It seems that the StAX parser does apply this rule so we do it here. 
+     * 
+     * @param reader
+     * @param name
+     * @return
+     */
+    public static String getAttributeAsURIString(XMLStreamReader reader, String name) {
+        // get the basic string value
+        String uri = reader.getAttributeValue(null, name);
+        
+        // apply the "collapse" rule
+        if (uri != null){
+            // turn tabs, line feeds and carriage returns into spaces
+            uri = uri.replace('\t', ' ');
+            uri = uri.replace('\n', ' ');
+            uri = uri.replace('\r', ' ');
+            
+            // remote leading and trailing spaces. Other whitespace
+            // has already been converted to spaces above
+            uri = uri.trim();
+                        
+            // collapse any contiguous spaces into a single space
+            StringBuilder sb= new StringBuilder(uri.length());
+            boolean spaceFound= false;
+            for(int i=0; i< uri.length(); ++i){
+                char c= uri.charAt(i);
+                if(c == ' '){
+                    if(!spaceFound){
+                        sb.append(c);
+                        spaceFound = true;
+                    } else {
+                        // collapse the space by ignoring it
+                    }
+                }else{
+                    sb.append(c);
+                    spaceFound= false;
+                }
+            }     
+            uri = sb.toString();            
+        }
+        
+        return uri;
+    }
 
     /**
      * Returns the value of xsi:type attribute

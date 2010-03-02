@@ -101,6 +101,16 @@ public abstract class BaseStAXArtifactProcessor {
     protected String getString(XMLStreamReader reader, String name) {
         return StAXHelper.getAttributeAsString(reader, name);
     }
+    
+    /**
+     * Returns the string value of an attribute.
+     * @param reader
+     * @param name
+     * @return
+     */
+    protected String getURIString(XMLStreamReader reader, String name) {
+        return StAXHelper.getAttributeAsURIString(reader, name);
+    }    
 
     /**
      * Test if an attribute is explicitly set
