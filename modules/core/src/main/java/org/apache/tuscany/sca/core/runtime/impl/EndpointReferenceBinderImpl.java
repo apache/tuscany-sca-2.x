@@ -33,6 +33,7 @@ import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.Multiplicity;
+import org.apache.tuscany.sca.assembly.builder.BindingBuilder;
 import org.apache.tuscany.sca.assembly.builder.BuilderContext;
 import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
 import org.apache.tuscany.sca.assembly.builder.PolicyBuilder;
@@ -323,9 +324,21 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
             return;
         } else {
             endpointReference.setTargetEndpoint(matchedEndpoint);
-            endpointReference.setBinding(endpointReference.getTargetEndpoint().getBinding());
+            Binding binding = endpointReference.getTargetEndpoint().getBinding();
+            endpointReference.setBinding(binding);
+            build(endpointReference);
             endpointReference.setStatus(EndpointReference.Status.WIRED_TARGET_FOUND_AND_MATCHED);
             endpointReference.setUnresolved(false);
+        }
+    }
+
+    private void build(EndpointReference endpointReference) {
+        BindingBuilder builder = builders.getBindingBuilder(endpointReference.getBinding().getType());
+        if (builder != null) {
+            builder.build(endpointReference.getComponent(),
+                          endpointReference.getReference(),
+                          endpointReference.getBinding(),
+                          new BuilderContext(extensionPoints));
         }
     }
 

@@ -101,6 +101,8 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
     protected InterfaceContract referenceInterfaceContract;
     private String xml;
 
+    private boolean started;
+    
     /**
      * No-arg constructor for Java serilization
      */
@@ -321,6 +323,7 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
             policyProvider.start();
         }
 
+        started = true;
         // InterfaceContract bindingContract = getBindingInterfaceContract();
         // endpoint.setInterfaceContract(bindingContract);
     }
@@ -530,6 +533,10 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
                 throw new IllegalStateException("No serializer is configured");
             }
         }
+    }
+
+    public boolean isStarted() {
+        return started;
     }
 
 }

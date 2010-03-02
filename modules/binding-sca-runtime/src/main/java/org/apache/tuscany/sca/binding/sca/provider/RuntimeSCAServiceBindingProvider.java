@@ -19,22 +19,10 @@
 
 package org.apache.tuscany.sca.binding.sca.provider;
 
-import java.net.URI;
-import java.util.Collection;
-
-import org.apache.tuscany.sca.assembly.DistributedSCABinding;
-import org.apache.tuscany.sca.assembly.Endpoint;
-import org.apache.tuscany.sca.assembly.SCABinding;
-import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
-import org.apache.tuscany.sca.provider.BindingProviderFactory;
-import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
-import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
-import org.apache.tuscany.sca.runtime.EndpointRegistry;
-import org.apache.tuscany.sca.runtime.ExtensibleDomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 
@@ -49,69 +37,39 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 public class RuntimeSCAServiceBindingProvider implements ServiceBindingProvider {
     private RuntimeEndpoint endpoint;
     private RuntimeComponentService service;
-    private SCABinding binding;
-    
-    
-    private BindingProviderFactory<DistributedSCABinding> distributedProviderFactory;
+
     private ServiceBindingProvider distributedProvider;
-    private DistributedSCABinding distributedBinding;
-    
+    private SCABindingMapper scaBindingMapper;
 
     public RuntimeSCAServiceBindingProvider(ExtensionPointRegistry extensionPoints, RuntimeEndpoint endpoint) {
         this.endpoint = endpoint;
         this.service = (RuntimeComponentService)endpoint.getService();
-        this.binding = (SCABinding)endpoint.getBinding();
-        
+        UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
+        this.scaBindingMapper = utilities.getUtility(SCABindingMapper.class);
+
         // if there is potentially a wire to this service that crosses the node boundary
         // then we need to create a remote endpoint 
         if (service.getInterfaceContract().getInterface().isRemotable()) {
 
-            // look to see if a distributed SCA binding implementation has
-            // been included on the classpath. This will be needed by the
-            // provider itself to do it's thing
-            ProviderFactoryExtensionPoint factoryExtensionPoint =
-                extensionPoints.getExtensionPoint(ProviderFactoryExtensionPoint.class);
-            distributedProviderFactory =
-                (BindingProviderFactory<DistributedSCABinding>)factoryExtensionPoint
-                    .getProviderFactory(DistributedSCABinding.class);
-
-            if (isDistributed(extensionPoints, endpoint)) {
-
-                SCABindingFactory scaBindingFactory =
-                    extensionPoints.getExtensionPoint(FactoryExtensionPoint.class).getFactory(SCABindingFactory.class);
-
-                //  create a nested provider to handle the remote case
-                distributedBinding = scaBindingFactory.createDistributedSCABinding();
-                distributedBinding.setSCABinding(binding);
-                
-                // create a copy of the endpoint and change the binding
-                RuntimeEndpoint ep = null;
-                try {
-                    ep = (RuntimeEndpoint)endpoint.clone();
-                } catch (Exception ex) {
-                    // we know we can clone endpoint 
-                }
-                ep.setBinding(distributedBinding);
-
-                distributedProvider =
-                    distributedProviderFactory.createServiceBindingProvider(ep);
-            } 
+            if (scaBindingMapper.isRemotable()) {
+                distributedProvider = new DelegatingSCAServiceBindingProvider(endpoint, scaBindingMapper);
+            }
         }
     }
-    
+
+    /*
     protected boolean isDistributed(ExtensionPointRegistry extensionPoints, Endpoint endpoint) {
         // find if the node config is for distributed endpoints
         // TODO: temp, need a much better way to do this
-        if (distributedProviderFactory != null) {
-            DomainRegistryFactory domainRegistryFactory = ExtensibleDomainRegistryFactory.getInstance(extensionPoints);
-            Collection<EndpointRegistry> eprs = domainRegistryFactory.getEndpointRegistries();
-            if (eprs.size() > 0) {
-                String eprName = eprs.iterator().next().getClass().getName();
-                return !eprName.equals("org.apache.tuscany.sca.core.assembly.impl.EndpointRegistryImpl");
-            }
+        DomainRegistryFactory domainRegistryFactory = ExtensibleDomainRegistryFactory.getInstance(extensionPoints);
+        Collection<EndpointRegistry> eprs = domainRegistryFactory.getEndpointRegistries();
+        if (eprs.size() > 0) {
+            String eprName = eprs.iterator().next().getClass().getName();
+            return !eprName.equals("org.apache.tuscany.sca.core.assembly.impl.EndpointRegistryImpl");
         }
         return false;
     }
+    */
 
     public InterfaceContract getBindingInterfaceContract() {
         if (distributedProvider != null) {
@@ -122,6 +80,9 @@ public class RuntimeSCAServiceBindingProvider implements ServiceBindingProvider 
     }
 
     public boolean supportsOneWayInvocation() {
+        if (distributedProvider != null) {
+            return distributedProvider.supportsOneWayInvocation();
+        }
         return false;
     }
 
@@ -135,21 +96,6 @@ public class RuntimeSCAServiceBindingProvider implements ServiceBindingProvider 
         if (distributedProvider != null) {
             distributedProvider.stop();
         }
-
-        if (distributedBinding != null) {
-            // reset the binding URI to null so that if the composite containing the component
-            // with the service/binding is restarted the binding will have the correct URI set
-            SCABinding scaBinding = distributedBinding.getSCABinding();
-            try {
-                URI tempURI = new URI(scaBinding.getURI());
-                if (!tempURI.isAbsolute()){
-                    scaBinding.setURI(null);
-                }
-            } catch (Exception ex){
-                scaBinding.setURI(null);
-            }
-        }
-
     }
 
 }

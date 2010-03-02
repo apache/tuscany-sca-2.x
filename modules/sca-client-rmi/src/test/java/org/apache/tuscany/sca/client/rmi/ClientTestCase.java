@@ -23,6 +23,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.net.URI;
 
+import org.apache.tuscany.sca.binding.rmi.RMIBinding;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.Ignore;
@@ -37,6 +38,7 @@ public class ClientTestCase {
     //@Test
     public void foo() throws NoSuchServiceException, NoSuchDomainException {
         
+        System.setProperty("org.apache.tuscany.sca.binding.sca.provider.SCABindingMapper.mappedBinding", RMIBinding.TYPE.toString());
         Node node = NodeFactory.newInstance().createNode(URI.create("tuscany:foo?listen=127.0.0.1:14828"), new String[]{"../../samples/calculator/target/sample-calculator.jar"});
         node.start();
         
@@ -45,5 +47,6 @@ public class ClientTestCase {
         assertEquals(3, service.add(1, 2), 0);
         
         node.stop();
+        System.clearProperty("org.apache.tuscany.sca.binding.sca.provider.SCABindingMapper.mappedBinding");
     }
 }

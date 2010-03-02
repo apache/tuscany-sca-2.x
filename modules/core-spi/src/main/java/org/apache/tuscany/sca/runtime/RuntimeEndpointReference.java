@@ -56,5 +56,5 @@ public interface RuntimeEndpointReference extends EndpointReference, Invocable, 
     InterfaceContract getComponentTypeReferenceInterfaceContract();    
     boolean isOutOfDate();
     void rebuild();
-
+    boolean isStarted();
 }

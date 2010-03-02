@@ -20,6 +20,7 @@ package org.apache.tuscany.sca.binding.sca.rmi;
 
 import junit.framework.Assert;
 
+import org.apache.tuscany.sca.binding.rmi.RMIBinding;
 import org.apache.tuscany.sca.binding.sca.rmi.helloworld.HelloWorldClient;
 import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.Node;
@@ -37,6 +38,7 @@ public class PromotionTestCase {
     @BeforeClass
     public static void init() throws Exception {
         System.out.println("Setting up nodes");
+        System.setProperty("org.apache.tuscany.sca.binding.sca.provider.SCABindingMapper.mappedBinding", RMIBinding.TYPE.toString());
 
         try {
             // create and start nodes
@@ -59,6 +61,8 @@ public class PromotionTestCase {
     public static void destroy() throws Exception {
         nodeA.stop();
         nodeB.stop();
+        System.clearProperty("org.apache.tuscany.sca.binding.sca.provider.SCABindingMapper.mappedBinding");
+
     }     
     
     @Test

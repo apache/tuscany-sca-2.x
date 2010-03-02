@@ -22,6 +22,7 @@
 
 	<target name="run">
 		<java classpath="${runtime_classpath}" classname="org.apache.tuscany.sca.node.launcher.NodeMain" fork="true">
+            <sysproperty key="org.apache.tuscany.sca.binding.sca.provider.SCABindingMapper.mappedBinding" value="{http://tuscany.apache.org/xmlns/sca/1.1}binding.rmi"/>
 			<arg value="-node"/>
 			<arg value="./server-config.xml"/>
             <arg value="-ttl"/>

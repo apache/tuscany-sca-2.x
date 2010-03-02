@@ -558,17 +558,19 @@ public class CompositeActivatorImpl implements CompositeActivator {
     }
 
     public void stop(RuntimeEndpointReference epr) {
-        CompositeContext compositeContext = epr.getCompositeContext();
-        if (compositeContext == null) {
-            throw new IllegalStateException("The endpoint reference is not bound");
-        }
-        compositeContext.getEndpointRegistry().removeEndpointReference(epr);
-        ReferenceBindingProvider bindingProvider = epr.getBindingProvider();
-        if (bindingProvider != null) {
-            bindingProvider.stop();
-        }
-        for (PolicyProvider policyProvider : epr.getPolicyProviders()) {
-            policyProvider.stop();
+        if (epr.isStarted()) {
+            CompositeContext compositeContext = epr.getCompositeContext();
+            if (compositeContext == null) {
+                throw new IllegalStateException("The endpoint reference is not bound");
+            }
+            compositeContext.getEndpointRegistry().removeEndpointReference(epr);
+            ReferenceBindingProvider bindingProvider = epr.getBindingProvider();
+            if (bindingProvider != null) {
+                bindingProvider.stop();
+            }
+            for (PolicyProvider policyProvider : epr.getPolicyProviders()) {
+                policyProvider.stop();
+            }
         }
     }
 

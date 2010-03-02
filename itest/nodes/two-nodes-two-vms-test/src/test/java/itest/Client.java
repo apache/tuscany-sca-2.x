@@ -21,6 +21,7 @@ package itest;
 
 import java.io.File;
 
+import org.apache.tuscany.sca.binding.rmi.RMIBinding;
 import org.apache.tuscany.sca.domain.node.DomainNode;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
@@ -35,6 +36,7 @@ public class Client {
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
+        System.setProperty("org.apache.tuscany.sca.binding.sca.provider.SCABindingMapper.mappedBinding", RMIBinding.TYPE.toString());
         NodeFactory factory = NodeFactory.newInstance();
 
         clientNode = factory.createNode(new File("client-config.xml").toURI().toURL());
@@ -59,6 +61,8 @@ public class Client {
         if (clientNode != null) {
             clientNode.stop();
         }
+        System.clearProperty("org.apache.tuscany.sca.binding.sca.provider.SCABindingMapper.mappedBinding");
+
     }
     
     public static void main(String[] args) throws Exception {

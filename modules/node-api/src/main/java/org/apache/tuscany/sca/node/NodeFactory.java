@@ -193,7 +193,7 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
      * Configure the NodeFactory instance
      * @param attributes
      */
-    protected void configure(Map<String, Map<String, String>> attributes) {
+    public void configure(Map<String, Map<String, String>> attributes) {
     }
     
     private synchronized static Class<?> getFactoryImplClass() throws Exception {

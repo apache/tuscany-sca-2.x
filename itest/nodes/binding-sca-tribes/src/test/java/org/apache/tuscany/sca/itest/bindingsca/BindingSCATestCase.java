@@ -21,6 +21,8 @@ package org.apache.tuscany.sca.itest.bindingsca;
 
 import java.io.File;
 
+import org.apache.tuscany.sca.assembly.SCABinding;
+import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
@@ -66,7 +68,10 @@ public class BindingSCATestCase {
     static Node createServiceNode(NodeFactory factory) {
         NodeConfiguration config2 =
             factory.createNodeConfiguration().setDomainURI(DOMAIN_URI).setURI("node2").addContribution("c2", ROOT)
-                .addDeploymentComposite("c2", SERVICE).setDomainRegistryURI(REGISTRY_URI);
+                .addDeploymentComposite("c2", SERVICE).setDomainRegistryURI(REGISTRY_URI)
+                .addBinding(WebServiceBinding.TYPE, "http://localhost:8085/").addBinding(SCABinding.TYPE,
+                                                                                         "http://localhost:8085/");
+
         Node node2 = factory.createNode(config2);
         return node2;
     }
@@ -79,7 +84,9 @@ public class BindingSCATestCase {
     static Node createClientNode(NodeFactory factory) {
         NodeConfiguration config1 =
             factory.createNodeConfiguration().setDomainURI(DOMAIN_URI).setURI("node1").addContribution("c1", ROOT)
-                .addDeploymentComposite("c1", CLIENT).setDomainRegistryURI(REGISTRY_URI);
+                .addDeploymentComposite("c1", CLIENT).setDomainRegistryURI(REGISTRY_URI)
+                .addBinding(WebServiceBinding.TYPE, "http://localhost:8085/").addBinding(SCABinding.TYPE,
+                                                                                         "http://localhost:8085/");
         Node node1 = factory.createNode(config1);
         return node1;
     }

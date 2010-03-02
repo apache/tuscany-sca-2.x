@@ -23,12 +23,14 @@ import itest.nodes.Helloworld;
 
 import java.net.URI;
 
+import org.apache.tuscany.sca.binding.rmi.RMIBinding;
 import org.apache.tuscany.sca.node.NodeFactory;
 import org.oasisopen.sca.client.SCAClientFactory;
 
 public class SCAClient {
 
     public void testSCAClient() throws Exception {
+        System.setProperty("org.apache.tuscany.sca.binding.sca.provider.SCABindingMapper.mappedBinding", RMIBinding.TYPE.toString());
         // The configuration required when running with sca-client-rmi and endpoint-hazelcast-rmi
         //SCAClientFactory factory = SCAClientFactory.newInstance(URI.create("tuscanyclient:default?remotes=192.168.247.1:14820"));
         
@@ -56,6 +58,7 @@ public class SCAClient {
         //       or just rely on the runtime hosting the classes using the SCAClient
         //       when it's on its way down
         NodeFactory.getInstance().destroy();
+        System.clearProperty("org.apache.tuscany.sca.binding.sca.provider.SCABindingMapper.mappedBinding");
     }
    
     public static void main(String[] args) throws Exception {

@@ -20,6 +20,7 @@ package org.apache.tuscany.sca.binding.sca.rmi;
 
 import junit.framework.Assert;
 
+import org.apache.tuscany.sca.binding.rmi.RMIBinding;
 import org.apache.tuscany.sca.binding.sca.rmi.helloworld.HelloWorldClient;
 import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.Node;
@@ -31,21 +32,24 @@ import org.oasisopen.sca.ServiceUnavailableException;
 
 public class SimpleTestCase {
     
+    private static NodeFactory factory;
     public static Node nodeA;
     public static Node nodeB;
 
     @BeforeClass
     public static void init() throws Exception {
         System.out.println("Setting up nodes");
+        System.setProperty("org.apache.tuscany.sca.binding.sca.provider.SCABindingMapper.mappedBinding", RMIBinding.TYPE.toString());
 
         try {
+            factory = NodeFactory.getInstance();
             // create and start nodes
             Contribution contrib = new Contribution("reference", "./target/test-classes/simpleReference");
-            nodeA = NodeFactory.getInstance().createNode("HelloWorld.composite", contrib);
+            nodeA = factory.createNode("HelloWorld.composite", contrib);
             nodeA.start();
             
             contrib = new Contribution("service", "./target/test-classes/simpleService");
-            nodeB = NodeFactory.getInstance().createNode("HelloWorld.composite", contrib);
+            nodeB = factory.createNode("HelloWorld.composite", contrib);
             nodeB.start();
 
         } catch (Exception ex) {
@@ -59,6 +63,8 @@ public class SimpleTestCase {
     public static void destroy() throws Exception {
         nodeA.stop();
         nodeB.stop();
+        factory.destroy();
+        System.clearProperty("org.apache.tuscany.sca.binding.sca.provider.SCABindingMapper.mappedBinding");
     }    
     
     @Test

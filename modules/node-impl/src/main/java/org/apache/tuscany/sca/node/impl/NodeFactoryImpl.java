@@ -465,7 +465,7 @@ public class NodeFactoryImpl extends NodeFactory {
     }
 
     @Override
-    protected void configure(Map<String, Map<String, String>> attributes) {
+    public void configure(Map<String, Map<String, String>> attributes) {
         ServiceDiscovery discovery = getExtensionPoints().getServiceDiscovery();
         for (Map.Entry<String, Map<String, String>> e : attributes.entrySet()) {
             discovery.setAttribute(e.getKey(), e.getValue());

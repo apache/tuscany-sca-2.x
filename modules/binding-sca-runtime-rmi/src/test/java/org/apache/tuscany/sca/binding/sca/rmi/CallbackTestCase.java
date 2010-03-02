@@ -36,6 +36,7 @@ public class CallbackTestCase {
     @BeforeClass
     public static void init() throws Exception {
         System.out.println("Setting up nodes");
+        // System.setProperty("org.apache.tuscany.sca.binding.sca.provider.SCABindingMapper.mappedBinding", RMIBinding.TYPE.toString());
 
         try {
             // create and start nodes
@@ -58,6 +59,7 @@ public class CallbackTestCase {
     public static void destroy() throws Exception {
         nodeA.stop();
         nodeB.stop();
+        // System.clearProperty("org.apache.tuscany.sca.binding.sca.provider.SCABindingMapper.mappedBinding");
     } 
     
     //@Test

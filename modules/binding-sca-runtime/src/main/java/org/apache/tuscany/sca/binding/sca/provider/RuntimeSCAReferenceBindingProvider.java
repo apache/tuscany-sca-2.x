@@ -19,14 +19,9 @@
 
 package org.apache.tuscany.sca.binding.sca.provider;
 
-import java.util.logging.Logger;
-
-import org.apache.tuscany.sca.assembly.DistributedSCABinding;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.SCABinding;
-import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.databinding.Mediator;
 import org.apache.tuscany.sca.interfacedef.Compatibility;
@@ -35,9 +30,7 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
-import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.EndpointReferenceProvider;
-import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
@@ -58,19 +51,17 @@ import org.oasisopen.sca.ServiceUnavailableException;
  */
 public class RuntimeSCAReferenceBindingProvider implements EndpointReferenceProvider {
 
-    private static final Logger logger = Logger.getLogger(RuntimeSCAReferenceBindingProvider.class.getName());
-
     private RuntimeEndpointReference endpointReference;
     private RuntimeComponent component;
     private RuntimeComponentReference reference;
     private SCABinding binding;
+    private boolean remotable;
     private boolean started = false;
 
-    private BindingProviderFactory<DistributedSCABinding> distributedProviderFactory = null;
-    private ReferenceBindingProvider distributedProvider = null;
-    private SCABindingFactory scaBindingFactory;
+    private ReferenceBindingProvider distributedProvider;
     private Mediator mediator;
     private InterfaceContractMapper interfaceContractMapper;
+    private SCABindingMapper scaBindingMapper;
 
     public RuntimeSCAReferenceBindingProvider(ExtensionPointRegistry extensionPoints,
                                               RuntimeEndpointReference endpointReference) {
@@ -78,93 +69,36 @@ public class RuntimeSCAReferenceBindingProvider implements EndpointReferenceProv
         this.component = (RuntimeComponent)endpointReference.getComponent();
         this.reference = (RuntimeComponentReference)endpointReference.getReference();
         this.binding = (SCABinding)endpointReference.getBinding();
-        this.scaBindingFactory =
-            extensionPoints.getExtensionPoint(FactoryExtensionPoint.class).getFactory(SCABindingFactory.class);
-
-        // look to see if a distributed SCA binding implementation has
-        // been included on the classpath. This will be needed by the
-        // provider itself to do it's thing
-        ProviderFactoryExtensionPoint factoryExtensionPoint =
-            extensionPoints.getExtensionPoint(ProviderFactoryExtensionPoint.class);
-        distributedProviderFactory =
-            (BindingProviderFactory<DistributedSCABinding>)factoryExtensionPoint
-                .getProviderFactory(DistributedSCABinding.class);
 
         UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
         this.mediator = utilities.getUtility(Mediator.class);
         this.interfaceContractMapper = utilities.getUtility(InterfaceContractMapper.class);
+        this.scaBindingMapper = utilities.getUtility(SCABindingMapper.class);
+        remotable = isTargetRemote();
+        getDistributedProvider();
     }
 
-    public boolean isTargetRemote() {
+    private boolean isTargetRemote() {
         return endpointReference.getTargetEndpoint().isRemote();
-        /*
-        boolean targetIsRemote = false;
-
-        // The decision is based on the results of the wiring process in the assembly model
-        // and there are three possibilities
-        // 1 - target service is running in a separate node in a separate JVM
-        // 2 - target service is running in a separate node in the same JVM
-        // 3 - target service is running in the same node
-        
-        // TODO - EPR - the method needs to be able to indicate the three cases
-        
-
-        if (RemoteBindingHelper.isTargetRemote()) {
-        	// TODO - EPR - what is this RemoteBindingHelper for?
-            if (reference.getInterfaceContract() != null) {
-                targetIsRemote = reference.getInterfaceContract().getInterface().isRemotable();
-            } else {
-                targetIsRemote = true;
-            }
-        } if ( (endpointReference.isRemote()) &&
-               (endpointReference.getTargetEndpoint().isRemote())){
-        	// case 1
-            targetIsRemote = true;
-        } else if (endpointReference.isRemote()) {
-        	// case 2
-        	targetIsRemote = false;
-        } else {
-        	// case 3
-        	targetIsRemote = false;
-        }
-        return targetIsRemote;
-        */
     }
 
     private ReferenceBindingProvider getDistributedProvider() {
 
-        if (isTargetRemote()) {
+        if (remotable) {
             // initialize the remote provider if it hasn't been done already
             if (distributedProvider == null) {
-                if (reference.getInterfaceContract() != null && !reference.getInterfaceContract().getInterface().isRemotable()) {
+                if (reference.getInterfaceContract() != null && !reference.getInterfaceContract().getInterface()
+                    .isRemotable()) {
                     throw new ServiceRuntimeException("Reference interface not remotable for component: " + component
                         .getName()
                         + " and reference: "
                         + reference.getName());
                 }
 
-                if (distributedProviderFactory == null) {
-                    throw new ServiceRuntimeException("No distributed SCA binding available for component: " + component
-                        .getName()
-                        + " and reference: "
-                        + reference.getName());
+                if (scaBindingMapper.isRemotable()) {
+                    distributedProvider =
+                        new DelegatingSCAReferenceBindingProvider(endpointReference, scaBindingMapper);
                 }
-
-                // create the remote provider
-                DistributedSCABinding distributedBinding = scaBindingFactory.createDistributedSCABinding();
-                distributedBinding.setSCABinding(binding);
-                
-                // create a copy of the endpoint reference and change the binding
-                RuntimeEndpointReference epr = null;
-                try {
-                    epr = (RuntimeEndpointReference)endpointReference.clone();
-                } catch (Exception ex) {
-                    // we know we can clone endpoint references
-                }
-                epr.setBinding(distributedBinding);
-
-                distributedProvider =
-                    distributedProviderFactory.createReferenceBindingProvider(epr);
             }
         }
 
@@ -172,8 +106,8 @@ public class RuntimeSCAReferenceBindingProvider implements EndpointReferenceProv
     }
 
     public InterfaceContract getBindingInterfaceContract() {
-        if (isTargetRemote()) {
-            return getDistributedProvider().getBindingInterfaceContract();
+        if (remotable && distributedProvider != null) {
+            return distributedProvider.getBindingInterfaceContract();
         } else {
             // Check if there is a target
             RuntimeEndpoint endpoint = (RuntimeEndpoint)endpointReference.getTargetEndpoint();
@@ -186,31 +120,32 @@ public class RuntimeSCAReferenceBindingProvider implements EndpointReferenceProv
     }
 
     public boolean supportsOneWayInvocation() {
-        if (isTargetRemote()) {
-            return getDistributedProvider().supportsOneWayInvocation();
+        if (remotable && distributedProvider != null) {
+            return distributedProvider.supportsOneWayInvocation();
         } else {
             return false;
         }
     }
-   
 
     private Invoker getInvoker(RuntimeEndpointReference epr, Operation operation) {
         Endpoint target = epr.getTargetEndpoint();
         if (target != null) {
             RuntimeComponentService service = (RuntimeComponentService)target.getService();
             if (service != null) { // not a callback wire
-                InvocationChain chain = ((RuntimeEndpoint) target).getInvocationChain(operation);
-                
+                InvocationChain chain = ((RuntimeEndpoint)target).getInvocationChain(operation);
+
                 boolean passByValue = false;
                 Operation targetOp = chain.getTargetOperation();
                 if (!operation.getInterface().isRemotable()) {
                     if (interfaceContractMapper.isCompatibleByReference(operation, targetOp, Compatibility.SUBSET)) {
-                       passByValue = false;
+                        passByValue = false;
                     }
                 } else {
 //                    boolean allowsPBR = chain.allowsPassByReference(); TODO: TUSCANY-3479 this breaks the conformance tests as it needs to consider _both_ ends
                     boolean allowsPBR = false;
-                    if (allowsPBR && interfaceContractMapper.isCompatibleByReference(operation, targetOp, Compatibility.SUBSET)) {
+                    if (allowsPBR && interfaceContractMapper.isCompatibleByReference(operation,
+                                                                                     targetOp,
+                                                                                     Compatibility.SUBSET)) {
                         passByValue = false;
                     } else if (interfaceContractMapper.isCompatibleByValue(operation, targetOp, Compatibility.SUBSET)) {
                         passByValue = true;
@@ -226,19 +161,21 @@ public class RuntimeSCAReferenceBindingProvider implements EndpointReferenceProv
     }
 
     public Invoker createInvoker(Operation operation) {
-        if (isTargetRemote()) {
-            return getDistributedProvider().createInvoker(operation);
+        if (remotable && distributedProvider != null) {
+            return distributedProvider.createInvoker(operation);
         } else {
             Invoker invoker = getInvoker(endpointReference, operation);
             if (invoker == null) {
-                throw new ServiceUnavailableException("Unable to create SCA binding invoker for local target " + component.getName()
-                    + " reference "
-                    + reference.getName()
-                    + " (bindingURI="
-                    + binding.getURI()
-                    + " operation="
-                    + operation.getName()
-                    + ")" );
+                throw new ServiceUnavailableException(
+                                                      "Unable to create SCA binding invoker for local target " + component
+                                                          .getName()
+                                                          + " reference "
+                                                          + reference.getName()
+                                                          + " (bindingURI="
+                                                          + binding.getURI()
+                                                          + " operation="
+                                                          + operation.getName()
+                                                          + ")");
             }
             return invoker;
         }
@@ -247,8 +184,8 @@ public class RuntimeSCAReferenceBindingProvider implements EndpointReferenceProv
     public void start() {
         if (started) {
             return;
-        } 
-        if (getDistributedProvider() != null) {
+        }
+        if (distributedProvider != null) {
             distributedProvider.start();
         }
         started = true;
@@ -257,10 +194,10 @@ public class RuntimeSCAReferenceBindingProvider implements EndpointReferenceProv
     public void stop() {
         if (!started) {
             return;
-        } 
+        }
 
         try {
-            if (getDistributedProvider() != null) {
+            if (distributedProvider != null) {
                 distributedProvider.stop();
             }
         } finally {

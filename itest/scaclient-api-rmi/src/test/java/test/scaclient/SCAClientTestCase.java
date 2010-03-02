@@ -19,14 +19,17 @@
 
 package test.scaclient;
 
+import static org.junit.Assert.assertEquals;
 import itest.HelloworldService;
 
 import java.net.URI;
 
-import junit.framework.TestCase;
-
+import org.apache.tuscany.sca.binding.rmi.RMIBinding;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.oasisopen.sca.client.SCAClientFactory;
 
@@ -35,9 +38,19 @@ import org.oasisopen.sca.client.SCAClientFactory;
  *
  * @version $Rev: 904064 $ $Date: 2010-01-28 12:31:36 +0000 (Thu, 28 Jan 2010) $
  */
-public class SCAClientTestCase extends TestCase {
+public class SCAClientTestCase {
 
     private Node node;
+    
+    @BeforeClass
+    public static void setUpBeforeClass() throws Exception {
+        System.setProperty("org.apache.tuscany.sca.binding.sca.provider.SCABindingMapper.mappedBinding", RMIBinding.TYPE.toString());
+    }
+    
+    @AfterClass
+    public static void tearDownAfterClass() throws Exception {
+        System.clearProperty("org.apache.tuscany.sca.binding.sca.provider.SCABindingMapper.mappedBinding");
+    }
 
     @Test
     public void testDefault() throws Exception {
@@ -77,8 +90,8 @@ public class SCAClientTestCase extends TestCase {
         assertEquals("Hello petra", service.sayHello("petra"));
     }
 
-    @Override
-    protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
         node.stop();
     }
 
