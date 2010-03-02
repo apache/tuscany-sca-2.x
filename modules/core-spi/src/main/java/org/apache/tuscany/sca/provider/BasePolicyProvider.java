@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.provider;
 
+import java.security.Policy;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +30,7 @@ import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.PhasedInterceptor;
+import org.apache.tuscany.sca.policy.PolicyContainer;
 import org.apache.tuscany.sca.policy.PolicyExpression;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySubject;
@@ -57,13 +59,23 @@ public abstract class BasePolicyProvider<T> implements PolicyProvider {
                 if (policyType.isInstance(p)) {
                     policies.add(policyType.cast(p));
                 }
+                
                 if (p instanceof PolicyExpression) {
                     PolicyExpression exp = (PolicyExpression)p;
                     if (policyType.isInstance(exp.getPolicy())) {
                         policies.add(policyType.cast(exp.getPolicy()));
                     }
+                    
+                    // TODO - some code to handle the case where the 
+                    //        policy expression is a WS-Policy
+                    //        Experimental at the moment. 
+                    if (PolicyContainer.class.isInstance(exp.getPolicy())){
+                        Object policy = ((PolicyContainer)exp.getPolicy()).getChildPolicy(policyType);
+                        if(policy != null){
+                            policies.add(policyType.cast(policy));
+                        }
+                    }
                 }
-
             }
         }
         return policies;

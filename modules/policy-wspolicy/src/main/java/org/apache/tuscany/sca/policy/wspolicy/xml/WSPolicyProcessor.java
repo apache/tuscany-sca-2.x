@@ -23,6 +23,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
@@ -102,13 +104,24 @@ public class WSPolicyProcessor extends BaseStAXArtifactProcessor implements
         WSPolicy wsPolicy = new WSPolicy();
         wsPolicy.setNeethiPolicy(neethiPolicy);
         
-        // read policy assertions   
-        readPolicyAssertions(wsPolicy,neethiPolicy, context);
+        // normalize the neethi tree so we can easily identify
+        // the policy alternatives
+        neethiPolicy.normalize(true);
+        
+        // top-level children of ExactlyOne are policy alternatives so
+        // for each child create a policy model list and pull the 
+        // policies out
+        for(Object alternative : neethiPolicy.getPolicyComponents()) {
+            List<Object> assertions = new ArrayList<Object>();
+            readPolicyAssertions(assertions, (PolicyComponent)alternative, context);
+            wsPolicy.getPolicyAssertions().add(assertions);
+        }
+               
         
         return wsPolicy;
     }
     
-    private void readPolicyAssertions(WSPolicy wsPolicy, PolicyComponent policyComponent, ProcessorContext context){
+    private void readPolicyAssertions(List<Object> policyAssertions, PolicyComponent policyComponent, ProcessorContext context){
         
         // recurse into the policy alternatives
         // TODO - lots of todos here as this just walks down the neethi hierarchy
@@ -116,12 +129,14 @@ public class WSPolicyProcessor extends BaseStAXArtifactProcessor implements
         //        regard to the policy alternatives. Undecided about whether to 
         //        commit to prepresenting this hierarchy in Tuscany or whether
         //        to rely on neethi
+        // Should this be in the builder? Not really as this drives the 
+        // Tuscany specific readers
         if (policyComponent.getType() != Constants.TYPE_ASSERTION){
             PolicyOperator policyOperator = (PolicyOperator)policyComponent;
             for(Object childComponent : policyOperator.getPolicyComponents()){
                 // TODO - create assertion hierarchy in wsPolicy model
                 //        how we do this depends on if we continue to use neethi
-                readPolicyAssertions(wsPolicy, (PolicyComponent)childComponent, context);
+                readPolicyAssertions(policyAssertions, (PolicyComponent)childComponent, context);
             }
         } else {
             try {
@@ -136,10 +151,14 @@ public class WSPolicyProcessor extends BaseStAXArtifactProcessor implements
                 ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
                 XMLStreamReader reader = inputFactory.createXMLStreamReader(inputStream);
 
+                Object neethiAssertion = policyComponent;
                 Object tuscanyAssertion = extensionProcessor.read(reader, context);
                 
                 if (tuscanyAssertion != null) {
-                    wsPolicy.getPolicyAssertions().add(tuscanyAssertion);
+                    policyAssertions.add(tuscanyAssertion);
+                } else {
+                    // add neethi assertion
+                    policyAssertions.add(neethiAssertion);
                 }
             } catch (Exception ex) {
                 // TODO - report the error properly

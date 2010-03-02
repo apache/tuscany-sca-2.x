@@ -33,6 +33,7 @@ import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.builder.BuilderContext;
 import org.apache.tuscany.sca.assembly.builder.PolicyBuilder;
+import org.apache.tuscany.sca.policy.PolicyContainer;
 import org.apache.tuscany.sca.policy.PolicyExpression;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySubject;
@@ -41,7 +42,7 @@ import org.apache.tuscany.sca.policy.wspolicy.xml.WSPolicyProcessor;
 /**
  * The WS-Policy model. Currently defers to the Neethi policy model under the covers. 
  */
-public class WSPolicy  {
+public class WSPolicy implements PolicyContainer {
 
     public final static String WS_POLICY_NS = "http://schemas.xmlsoap.org/ws/2004/09/policy";
     public final static String WS_POLICY = "Policy";
@@ -70,5 +71,16 @@ public class WSPolicy  {
     @Override
     public String toString() {
         return "WSPolicy [" + neethiPolicy + "]";
+    }
+    
+    public <T> Object getChildPolicy(Class<T> policyType) {
+        for (Object alternative : policyAssertions){
+            for (Object policy : (List<Object>)alternative){
+                if (policyType.isInstance(policy)){
+                    return policy;
+                }
+            }
+        }
+        return null;
     }
 }

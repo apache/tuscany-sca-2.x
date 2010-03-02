@@ -16,20 +16,21 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+package org.apache.tuscany.sca.policy;
 
-package org.apache.tuscany.sca.policy.wspolicy.helloworld;
-
-import org.oasisopen.sca.annotation.Reference;
-
-public class HelloWorldClient implements HelloWorld {
-
-    @Reference
-    public HelloWorld helloWorldWS;
-    
-    public String getGreetings(String s) {
-        String response = helloWorldWS.getGreetings(s);
-        System.out.println("At client: " + response);
-        return response;
-    }
-
+/**
+ * Base interface for policy models. Mainly allows policies to hold 
+ * other policies
+ *
+ * @version $Rev$ $Date$
+ */
+public interface PolicyContainer {
+    /**
+     * For complex policy models, such as ws-policy, 
+     * a policy provider may only match against one of a 
+     * number of child policy models
+     * 
+     * @return the matching child policy object or null
+     */
+    <T> Object getChildPolicy(Class<T> policyType);
 }

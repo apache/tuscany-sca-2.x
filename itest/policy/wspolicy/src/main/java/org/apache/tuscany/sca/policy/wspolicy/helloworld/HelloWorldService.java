@@ -19,8 +19,6 @@
 
 package org.apache.tuscany.sca.policy.wspolicy.helloworld;
 
-import org.apache.tuscany.sca.binding.ws.axis2.helloworld.HelloWorld;
-
 public class HelloWorldService implements HelloWorld {
 
     public String getGreetings(String s) {

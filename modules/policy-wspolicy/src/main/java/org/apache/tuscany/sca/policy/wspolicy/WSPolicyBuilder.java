@@ -34,7 +34,6 @@ import org.apache.tuscany.sca.assembly.builder.PolicyBuilder;
 import org.apache.tuscany.sca.policy.PolicyExpression;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySubject;
-import org.apache.tuscany.sca.policy.wspolicy.xml.WSPolicyProcessor;
 
 /**
  * Processing for WS-Policy objects
@@ -43,19 +42,19 @@ import org.apache.tuscany.sca.policy.wspolicy.xml.WSPolicyProcessor;
 public class WSPolicyBuilder implements PolicyBuilder<Policy> {
 
     public boolean build(Endpoint endpoint, BuilderContext context) {
-        List<Policy> polices = getPolicies(endpoint);
+        List<WSPolicy> polices = getPolicies(endpoint);
         System.out.println(endpoint + ": " + polices);
         return true;
     }
 
     public boolean build(EndpointReference endpointReference, BuilderContext context) {
-        List<Policy> polices = getPolicies(endpointReference);
+        List<WSPolicy> polices = getPolicies(endpointReference);
         System.out.println(endpointReference + ": " + polices);
         return true;
     }
 
     public boolean build(Component component, Implementation implementation, BuilderContext context) {
-        List<Policy> polices = getPolicies(implementation);
+        List<WSPolicy> polices = getPolicies(implementation);
         System.out.println(implementation + ": " + polices);
         return true;
     }
@@ -67,18 +66,6 @@ public class WSPolicyBuilder implements PolicyBuilder<Policy> {
     public List<QName> getSupportedBindings() {
         return null;
     }    
-
-    private List<Policy> getPolicies(PolicySubject subject) {
-        List<Policy> polices = new ArrayList<Policy>();
-        for (PolicySet ps : subject.getPolicySets()) {
-            for (PolicyExpression exp : ps.getPolicies()) {
-                if (getPolicyType().equals(exp.getName())) {
-                    polices.add((Policy)exp.getPolicy());
-                }
-            }
-        }
-        return polices;
-    }
 
     public boolean build(EndpointReference endpointReference, Endpoint endpoint, BuilderContext context) {
         
@@ -146,6 +133,18 @@ public class WSPolicyBuilder implements PolicyBuilder<Policy> {
         
         return true;
     }
+    
+    private List<WSPolicy> getPolicies(PolicySubject subject) {
+        List<WSPolicy> polices = new ArrayList<WSPolicy>();
+        for (PolicySet ps : subject.getPolicySets()) {
+            for (PolicyExpression exp : ps.getPolicies()) {
+                if (getPolicyType().equals(exp.getName())) {
+                    polices.add((WSPolicy)exp.getPolicy());
+                }
+            }
+        }
+        return polices;
+    }    
     
     private boolean build(WSPolicy wsPolicy1, WSPolicy wsPolicy2){
         // TODO - cheating here as we assume a flat policy structure
