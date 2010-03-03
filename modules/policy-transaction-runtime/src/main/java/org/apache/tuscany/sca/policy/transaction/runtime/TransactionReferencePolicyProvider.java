@@ -25,8 +25,6 @@ import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Phase;
 import org.apache.tuscany.sca.invocation.PhasedInterceptor;
-import org.apache.tuscany.sca.policy.PolicyExpression;
-import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.transaction.TransactionPolicy;
 import org.apache.tuscany.sca.provider.BasePolicyProvider;
 
@@ -35,25 +33,15 @@ import org.apache.tuscany.sca.provider.BasePolicyProvider;
  */
 public class TransactionReferencePolicyProvider extends BasePolicyProvider<TransactionPolicy> {
     private TransactionManagerHelper helper;
-    private List<PolicySet> policySets;
 
     public TransactionReferencePolicyProvider(TransactionManagerHelper helper, EndpointReference epr) {
         super(TransactionPolicy.class, epr);
         this.helper = helper;
-        this.policySets = epr.getPolicySets();
     }
 
     public PhasedInterceptor createInterceptor(Operation operation) {
-        /* TODO - 2.x better way of doing this in 2.x */
-        for (PolicySet policySet : policySets) {
-            for (PolicyExpression p : policySet.getPolicies()) {
-                if (p.getPolicy() instanceof TransactionPolicy) {
-                    TransactionInterceptor interceptor = new TransactionInterceptor(helper, true, (TransactionPolicy)p.getPolicy(), null,getPhase());
-                    return interceptor;
-                }
-            }
-        }
-        return null;
+        List<TransactionPolicy> policies = findPolicies();
+        return policies.isEmpty() ? null : new TransactionInterceptor(helper, true, policies.get(0), null, getPhase());
     }
 
     public String getPhase() {
