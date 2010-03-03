@@ -987,13 +987,13 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                             composite.getIncludes().set(i, resolved);
                         } else {
                             ContributionResolveException ce =
-                                new ContributionResolveException("Error: Composite " + composite.getName()
+                                new ContributionResolveException("[ASM60041] Error: Composite " + composite.getName()
                                     + " can only include another composite with the identical @local attribute value");
                             error(monitor, "ContributionResolveException", include, ce);
                         }
                     } else {
                         ContributionResolveException ce =
-                            new ContributionResolveException("Error: Composite " + include.getName()
+                            new ContributionResolveException("[ASM60042] Error: Composite " + include.getName()
                                 + " is not a valid composite within the domain");
                         error(monitor, "ContributionResolveException", include, ce);
                     }
