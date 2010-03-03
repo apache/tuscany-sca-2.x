@@ -120,6 +120,11 @@ public class ComponentPolicyBuilderImpl {
                     }
                     policySubject.getRequiredIntents().addAll(intents);
                 }
+                //FIXME this duplicates the intents for a implementation
+                //e.g <implementation.java requires="managedTransaction.local managedTransaction.local" 
+                //becomes twice
+                //[{http://docs.oasis-open.org/ns/opencsa/sca/200912}managedTransaction.local, 
+                //{http://docs.oasis-open.org/ns/opencsa/sca/200912}managedTransaction.local]
                 policySubject.getPolicySets().addAll(subject.getPolicySets());
             }
         }
