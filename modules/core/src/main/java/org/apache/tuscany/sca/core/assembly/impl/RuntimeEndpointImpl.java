@@ -334,7 +334,7 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
             for (PolicyProvider p : pps) {
                 Interceptor interceptor = p.createInterceptor(operation);
                 if (interceptor != null) {
-                    chain.addInterceptor(p.createInterceptor(operation));
+                    chain.addInterceptor(interceptor);
                 }
             }
         }
@@ -389,7 +389,8 @@ public class RuntimeEndpointImpl extends EndpointImpl implements RuntimeEndpoint
             for (PolicyProvider p : pps) {
                 Interceptor interceptor = p.createInterceptor(operation);
                 if (interceptor != null) {
-                    chain.addInterceptor(p.createInterceptor(operation));
+                    //chain.addInterceptor(p.createInterceptor(operation));
+                    chain.addInterceptor(interceptor);
                 }
             }
         }
