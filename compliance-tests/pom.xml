@@ -39,7 +39,11 @@
     </repositories>
 
     <modules>
-       <module>assembly-tests</module>
+       <module>assembly</module>
+<!-- 
+       <module>java-ca</module>
+       <module>java-ci</module>
+-->
     </modules>
 
 </project>
