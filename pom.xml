@@ -47,7 +47,9 @@
 
     <properties>
         <notice.dir>.</notice.dir>
-        <tools.jar>${java.home}/../lib/tools.jar</tools.jar>        
+        <tools.jar>${java.home}/../lib/tools.jar</tools.jar>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>        
     </properties>
 
     <issueManagement>
