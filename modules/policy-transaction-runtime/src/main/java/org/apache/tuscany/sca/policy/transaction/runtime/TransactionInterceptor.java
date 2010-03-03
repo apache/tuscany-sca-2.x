@@ -76,15 +76,24 @@ public class TransactionInterceptor implements PhasedInterceptor {
         if (msg.getOperation().isNonBlocking()) {
 
         }
-        TransactionIntent interactionIntent = TransactionIntent.propagatesTransacton;
+        
+        // initialize default values
+        TransactionIntent interactionIntent = null; //TransactionIntent.propagatesTransacton;
+        TransactionIntent implementationIntent = TransactionIntent.managedTransactionGlobal;
+        
         if (interactionPolicy != null) {
             if (interactionPolicy.getAction() == TransactionPolicy.Action.PROPAGATE) {
                 interactionIntent = TransactionIntent.propagatesTransacton;
+            } else if (interactionPolicy.getAction() == TransactionPolicy.Action.REQUIRE_NONE) {
+                interactionIntent = TransactionIntent.suspendsTransaction;
+                if(implementationPolicy == null) {
+                    implementationIntent = TransactionIntent.noManagedTransaction;
+                }
             } else {
                 interactionIntent = TransactionIntent.suspendsTransaction;
             }
         }
-        TransactionIntent implementationIntent = TransactionIntent.managedTransactionGlobal;
+        
         if (implementationPolicy != null) {
             switch (implementationPolicy.getAction()) {
                 case REQUIRE_GLOBAL:
