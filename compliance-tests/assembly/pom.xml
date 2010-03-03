@@ -32,19 +32,6 @@
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>oasis-assembly-contributions</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <type>zip</type>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>oasis-assembly-test-runner</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-node-impl</artifactId>
             <version>2.0-SNAPSHOT</version>
         </dependency>
