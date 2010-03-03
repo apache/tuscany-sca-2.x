@@ -134,7 +134,7 @@ public class DefaultSCABindingMapper implements SCABindingMapper {
             // we know we can clone endpoint references
         }
 
-        Binding binding = map(endpoint.getBinding(), false);
+        Binding binding = map(endpoint.getBinding());
         ep.setBinding(binding);
         if (builder != null) {
             builder.build(ep.getComponent(), ep.getService(), binding, new BuilderContext(registry));
@@ -154,7 +154,7 @@ public class DefaultSCABindingMapper implements SCABindingMapper {
             // we know we can clone endpoint references
         }
 
-        Binding binding = map(endpointReference.getBinding(), true);
+        Binding binding = map(endpointReference.getBinding());
         epr.setBinding(binding);
 
         // epr.setTargetEndpoint(map((RuntimeEndpoint)epr.getTargetEndpoint()));
@@ -166,14 +166,11 @@ public class DefaultSCABindingMapper implements SCABindingMapper {
         return epr;
     }
 
-    protected Binding map(Binding scaBinding, boolean referenceSide) {
+    protected Binding map(Binding scaBinding) {
         try {
             Binding binding = createDelegatingBinding();
             binding.setName(scaBinding.getName());
-            if (!referenceSide) {
-                // Only set the binding URI for the service side
-                binding.setURI(scaBinding.getURI());
-            }
+            binding.setURI(scaBinding.getURI());
             binding.setOperationSelector(scaBinding.getOperationSelector());
             binding.setRequestWireFormat(scaBinding.getRequestWireFormat());
             binding.setResponseWireFormat(scaBinding.getResponseWireFormat());

@@ -31,6 +31,7 @@ import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Implementation;
+import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.builder.BuilderContext;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
@@ -195,6 +196,10 @@ public class BindingURIBuilderImpl implements CompositeBuilder {
 
             // calculate the service binding URI
             URI bindingURI = binding.getURI() == null ? null : new URI(binding.getURI());
+            if (binding instanceof SCABinding) {
+                // Per assembly spec, the @uri for service side binding.sca should be ignored
+                bindingURI = null;
+            }
             
             // if the user has provided an absolute binding URI then use it
             if (bindingURI != null && bindingURI.isAbsolute()) {
@@ -218,10 +223,12 @@ public class BindingURIBuilderImpl implements CompositeBuilder {
 
             // calculate the base URI
             URI baseURI = null;
-            if (defaultBindings != null) {
-                List<String> uris = defaultBindings.get(binding.getType());
-                if (uris != null && uris.size() > 0) {
-                    baseURI = new URI(addSlashToPath(uris.get(0)));
+            if (!(binding instanceof SCABinding)) {
+                if (defaultBindings != null) {
+                    List<String> uris = defaultBindings.get(binding.getType());
+                    if (uris != null && uris.size() > 0) {
+                        baseURI = new URI(addSlashToPath(uris.get(0)));
+                    }
                 }
             }
 

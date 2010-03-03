@@ -21,7 +21,6 @@ package org.apache.tuscany.sca.binding.sca.provider;
 
 import java.util.logging.Logger;
 
-import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
@@ -37,14 +36,15 @@ public class DelegatingSCAServiceBindingProvider implements ServiceBindingProvid
     private static final Logger logger = Logger.getLogger(DelegatingSCAServiceBindingProvider.class.getName());
 
     private ServiceBindingProvider provider;
-    protected Class<? extends Binding> bindingClass;
+    private RuntimeEndpoint endpoint;
+    private RuntimeEndpoint mappedEndpoint;
     private boolean started = false;
 
     public DelegatingSCAServiceBindingProvider(RuntimeEndpoint endpoint, SCABindingMapper mapper) {
-        RuntimeEndpoint ep = mapper.map(endpoint);
-        if (ep != null) {
-            endpoint.setBinding(ep.getBinding());
-            provider = ep.getBindingProvider();
+        this.endpoint = endpoint;
+        this.mappedEndpoint = mapper.map(endpoint);
+        if (mappedEndpoint != null) {
+            provider = mappedEndpoint.getBindingProvider();
         }
 
     }
@@ -62,6 +62,8 @@ public class DelegatingSCAServiceBindingProvider implements ServiceBindingProvid
             return;
         } else {
             provider.start();
+            // Set the resolved binding URI back to the binding.sca
+            endpoint.getBinding().setURI(mappedEndpoint.getBinding().getURI());
             started = true;
         }
     }
