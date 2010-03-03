@@ -17,21 +17,7 @@
     * specific language governing permissions and limitations
     * under the License.    
 -->
-<project>
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.apache.tuscany.sca</groupId>
-        <artifactId>tuscany-itest</artifactId>
-        <version>2.0-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
-    </parent>
-    <packaging>pom</packaging>
-    <artifactId>itest-policy</artifactId>
-    <name>Apache Tuscany SCA iTest Policy</name>
-    
-  <modules>
-    <module>matching</module>
-    <module>wspolicy</module>
-  </modules>
-
-</project>
+<contribution xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
+              xmlns:itest="http://www.tuscany.apache.org/itests/policy">
+   <deployable composite="itest:HelloWorld"/>
+</contribution>
