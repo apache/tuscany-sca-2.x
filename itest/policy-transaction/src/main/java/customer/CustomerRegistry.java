@@ -19,9 +19,12 @@
 
 package customer;
 
+import org.oasisopen.sca.annotation.Remotable;
+
 /**
  * 
  */
+@Remotable
 public interface CustomerRegistry {
     Customer find(String id);
 }

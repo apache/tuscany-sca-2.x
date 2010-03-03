@@ -23,11 +23,7 @@
     xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1"
     name="CustomerTransaction">
 
-    <service name="Registry" promote="CustomerRegistry">
-        <binding.sca/>
-    </service>
-    
-    <component name="CustomerRegistry">
+    <component name="CustomerRegistryComponent">
         <implementation.java class="customer.impl.CustomerRegistryImpl" requires="managedTransaction.local"/>
     </component>
 

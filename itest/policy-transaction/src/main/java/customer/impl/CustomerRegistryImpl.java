@@ -33,8 +33,8 @@ import customer.CustomerRegistry;
 /**
  * 
  */
-@Service(CustomerRegistry.class)
 @Scope("COMPOSITE")
+@Service(CustomerRegistry.class)
 public class CustomerRegistryImpl implements CustomerRegistry {
     private Map<String, Customer> customers = new HashMap<String, Customer>();
     
