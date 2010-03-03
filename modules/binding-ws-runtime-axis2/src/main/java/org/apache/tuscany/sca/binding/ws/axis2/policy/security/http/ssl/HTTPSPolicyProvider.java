@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.binding.ws.axis2.policy.security.http.ssl;
 
-import java.security.KeyStore;
 import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.binding.ws.axis2.provider.Axis2BaseBindingProvider;
