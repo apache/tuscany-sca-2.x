@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.policy.transaction.runtime;
+package org.apache.tuscany.sca.policy.transaction.runtime.geronimo;
 
 import java.util.logging.Logger;
 
@@ -31,13 +31,13 @@ import junit.framework.TestCase;
 
 import org.apache.geronimo.transaction.manager.NamedXAResource;
 import org.apache.tuscany.sca.policy.transaction.runtime.TransactionManagerHelper;
-import org.apache.tuscany.sca.policy.transaction.runtime.TransactionManagerWrapper;
+import org.apache.tuscany.sca.policy.transaction.runtime.geronimo.TransactionManagerWrapper;
 
 /**
  * @version $Rev$ $Date$
  */
 public class TransactionManagerHelperTestCaseOFF extends TestCase {
-    private static final Logger logger = Logger.getLogger(TransactionManagerHelper.class.getName());
+    private static final Logger logger = Logger.getLogger(TransactionManagerHelperTestCaseOFF.class.getName());
 
     public static class MockXAResource implements NamedXAResource {
 

@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.policy.transaction.runtime;
+package org.apache.tuscany.sca.policy.transaction.runtime.geronimo;
 
 import javax.transaction.TransactionManager;
 

@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 SCA-Version: 1.1
-Bundle-Name: Apache Tuscany Transaction Policy Runtime
+Bundle-Name: Apache Tuscany Transaction Policy Runtime Geronimo
 Bundle-Vendor: The Apache Software Foundation
 Bundle-Version: 2.0.0
 Bundle-ManifestVersion: 2
@@ -27,6 +27,6 @@ Import-Package: javax.security.auth.callback,
  org.apache.tuscany.sca.provider;version="2.0.0",
  org.apache.tuscany.sca.runtime;version="2.0.0",
  org.oasisopen.sca;version="2.0.0"
-Bundle-SymbolicName: org.apache.tuscany.sca.policy.transaction.runtime
+Bundle-SymbolicName: org.apache.tuscany.sca.policy.transaction.runtime.geronimo
 Bundle-DocURL: http://www.apache.org/
 Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6
