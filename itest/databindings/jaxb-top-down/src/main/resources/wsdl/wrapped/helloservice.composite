@@ -33,7 +33,7 @@
         <implementation.java class="org.apache.tuscany.sca.itest.databindings.jaxb.impl.HelloServiceClientImpl" />
         <reference name="helloService">
             <interface.wsdl interface="http://jaxb.databindings.itest.sca.tuscany.apache.org/#wsdl.interface(HelloService)"/>
-            <binding.ws uri="http://localhost:8085/hs-ep-w" requires="MTOM"/>
+            <binding.ws uri="http://localhost:8085/hs-ep-w"/>
         </reference>
     </component>
         
@@ -44,7 +44,7 @@
         <implementation.java class="org.apache.tuscany.sca.itest.databindings.jaxb.impl.HelloServiceClientImpl" />
         <reference name="helloService">
             <interface.java interface="org.apache.tuscany.sca.itest.databindings.jaxb.HelloService"/>
-            <binding.ws uri="http://localhost:8085/hs-ep-w" requires="MTOM"/>
+            <binding.ws uri="http://localhost:8085/hs-ep-w"/>
         </reference>
     </component>
         
@@ -55,7 +55,7 @@
         <implementation.java class="org.apache.tuscany.sca.itest.databindings.jaxb.impl.HelloServiceClientImpl" />
         <reference name="helloService">
             <interface.wsdl interface="http://jaxb.databindings.itest.sca.tuscany.apache.org/#wsdl.interface(HelloService)"/>
-            <binding.ws uri="http://localhost:8085/hs-ep-j" requires="MTOM"/>
+            <binding.ws uri="http://localhost:8085/hs-ep-j"/>
         </reference>
     </component>
         
@@ -65,7 +65,7 @@
         <implementation.java class="org.apache.tuscany.sca.itest.databindings.jaxb.impl.HelloServiceImpl"/>
         <service name="HelloService">
             <interface.wsdl interface="http://jaxb.databindings.itest.sca.tuscany.apache.org/#wsdl.interface(HelloService)"/>
-            <binding.ws uri="http://localhost:8085/hs-ep-w" requires="MTOM"/>
+            <binding.ws uri="http://localhost:8085/hs-ep-w"/>
         </service>
     </component>
 
@@ -74,7 +74,7 @@
         <implementation.java class="org.apache.tuscany.sca.itest.databindings.jaxb.impl.HelloServiceImpl"/>
         <service name="HelloService">
             <interface.java interface="org.apache.tuscany.sca.itest.databindings.jaxb.HelloService"/>
-            <binding.ws uri="http://localhost:8085/hs-ep-j" requires="MTOM"/>
+            <binding.ws uri="http://localhost:8085/hs-ep-j"/>
         </service>
     </component>
 </composite>

@@ -28,7 +28,7 @@
         <implementation.java class="org.apache.tuscany.sca.itest.databindings.jaxb.impl.PrimitivesServiceClientImpl" />
         <reference name="primitivesService">
             <interface.java interface="org.apache.tuscany.sca.itest.databindings.jaxb.PrimitivesService"/>
-            <binding.ws uri="http://localhost:8085/ps-ep" requires="MTOM"/>
+            <binding.ws uri="http://localhost:8085/ps-ep"/>
         </reference>
     </component>
 
@@ -56,7 +56,7 @@
         <implementation.java class="org.apache.tuscany.sca.itest.databindings.jaxb.impl.PrimitivesServiceImpl"/>
         <service name="PrimitivesService">
             <interface.java interface="org.apache.tuscany.sca.itest.databindings.jaxb.PrimitivesService"/>
-            <binding.ws uri="http://localhost:8085/ps-ep" requires="MTOM"/>
+            <binding.ws uri="http://localhost:8085/ps-ep"/>
         </service>
         <service name="PrimitivesLocalService">
             <interface.java interface="org.apache.tuscany.sca.itest.databindings.jaxb.PrimitivesLocalService"/>

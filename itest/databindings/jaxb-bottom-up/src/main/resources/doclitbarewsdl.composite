@@ -23,7 +23,7 @@
         <implementation.java class="org.apache.tuscany.sca.itest.databindings.jaxb.impl.AServiceImpl"/>
         <service name="AService">
             <interface.wsdl interface="http://jaxb.databindings.itest.sca.tuscany.apache.org#wsdl.interface(AServicePortType)"/>
-            <binding.ws uri="http://localhost:8085/AService/endpointref" requires="MTOM"/>
+            <binding.ws uri="http://localhost:8085/AService/endpointref"/>
         </service>
     </component>
     <component name="AClientComponent">
@@ -31,7 +31,7 @@
         <reference name="aService">
             <!--interface.wsdl interface="http://jaxb.databindings.itest.sca.tuscany.apache.org#wsdl.interface(AServicePortType)"/-->
             <interface.java interface="org.apache.tuscany.sca.itest.databindings.jaxb.AService"/>
-            <binding.ws uri="http://localhost:8085/AService/endpointref" requires="MTOM"/>
+            <binding.ws uri="http://localhost:8085/AService/endpointref"/>
         </reference>
     </component>
 </composite>

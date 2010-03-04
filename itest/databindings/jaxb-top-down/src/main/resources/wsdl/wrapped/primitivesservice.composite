@@ -33,7 +33,7 @@
         <implementation.java class="org.apache.tuscany.sca.itest.databindings.jaxb.impl.PrimitivesServiceClientImpl" />
         <reference name="primitivesService">
             <interface.wsdl interface="http://jaxb.databindings.itest.sca.tuscany.apache.org/#wsdl.interface(PrimitivesService)"/>
-            <binding.ws uri="http://localhost:8085/ps-ep-w" requires="MTOM"/>
+            <binding.ws uri="http://localhost:8085/ps-ep-w"/>
         </reference>
     </component>
 
@@ -44,7 +44,7 @@
         <implementation.java class="org.apache.tuscany.sca.itest.databindings.jaxb.impl.PrimitivesServiceClientImpl" />
         <reference name="primitivesService">
             <interface.java interface="org.apache.tuscany.sca.itest.databindings.jaxb.PrimitivesService"/>
-            <binding.ws uri="http://localhost:8085/ps-ep-w" requires="MTOM"/>
+            <binding.ws uri="http://localhost:8085/ps-ep-w"/>
         </reference>
     </component>
 
@@ -55,7 +55,7 @@
         <implementation.java class="org.apache.tuscany.sca.itest.databindings.jaxb.impl.PrimitivesServiceClientImpl" />
         <reference name="primitivesService">
             <interface.wsdl interface="http://jaxb.databindings.itest.sca.tuscany.apache.org/#wsdl.interface(PrimitivesService)"/>
-            <binding.ws uri="http://localhost:8085/ps-ep-j" requires="MTOM"/>
+            <binding.ws uri="http://localhost:8085/ps-ep-j"/>
         </reference>
     </component>
 
@@ -65,7 +65,7 @@
         <implementation.java class="org.apache.tuscany.sca.itest.databindings.jaxb.impl.PrimitivesServiceImpl"/>
         <service name="PrimitivesService">
             <interface.java interface="org.apache.tuscany.sca.itest.databindings.jaxb.PrimitivesService"/>
-            <binding.ws uri="http://localhost:8085/ps-ep-j" requires="MTOM"/>
+            <binding.ws uri="http://localhost:8085/ps-ep-j"/>
         </service>
     </component>
     
@@ -74,7 +74,7 @@
         <implementation.java class="org.apache.tuscany.sca.itest.databindings.jaxb.impl.PrimitivesServiceImpl"/>
         <service name="PrimitivesService">
             <interface.wsdl interface="http://jaxb.databindings.itest.sca.tuscany.apache.org/#wsdl.interface(PrimitivesService)"/>
-            <binding.ws uri="http://localhost:8085/ps-ep-w" requires="MTOM"/>
+            <binding.ws uri="http://localhost:8085/ps-ep-w"/>
         </service>
     </component>
 </composite>

@@ -28,7 +28,7 @@
         <implementation.java class="org.apache.tuscany.sca.itest.databindings.jaxb.impl.StandardTypesServiceClientImpl" />
         <reference name="standardTypesService">
             <interface.java interface="org.apache.tuscany.sca.itest.databindings.jaxb.StandardTypesService"/>
-            <binding.ws uri="http://localhost:8085/sts-ep" requires="MTOM"/>
+            <binding.ws uri="http://localhost:8085/sts-ep"/>
         </reference>
     </component>
 
@@ -56,7 +56,7 @@
         <implementation.java class="org.apache.tuscany.sca.itest.databindings.jaxb.impl.StandardTypesServiceImpl"/>
         <service name="StandardTypesService">
             <interface.java interface="org.apache.tuscany.sca.itest.databindings.jaxb.StandardTypesService"/>
-            <binding.ws uri="http://localhost:8085/sts-ep" requires="MTOM"/>
+            <binding.ws uri="http://localhost:8085/sts-ep"/>
         </service>
         <service name="StandardTypesLocalService">
             <interface.java interface="org.apache.tuscany.sca.itest.databindings.jaxb.StandardTypesLocalService"/>

@@ -33,7 +33,7 @@
         <implementation.java class="org.apache.tuscany.sca.itest.databindings.jaxb.impl.StandardTypesServiceClientImpl" />
         <reference name="standardTypesService">
             <interface.wsdl interface="http://jaxb.databindings.itest.sca.tuscany.apache.org/#wsdl.interface(StandardTypesService)"/>
-            <binding.ws uri="http://localhost:8085/sts-ep-w" requires="MTOM"/>
+            <binding.ws uri="http://localhost:8085/sts-ep-w"/>
         </reference>
     </component>
 
@@ -44,7 +44,7 @@
         <implementation.java class="org.apache.tuscany.sca.itest.databindings.jaxb.impl.StandardTypesServiceClientImpl" />
         <reference name="standardTypesService">
             <interface.java interface="org.apache.tuscany.sca.itest.databindings.jaxb.StandardTypesService"/>
-            <binding.ws uri="http://localhost:8085/sts-ep-w" requires="MTOM"/>
+            <binding.ws uri="http://localhost:8085/sts-ep-w"/>
         </reference>
     </component>
 
@@ -55,7 +55,7 @@
         <implementation.java class="org.apache.tuscany.sca.itest.databindings.jaxb.impl.StandardTypesServiceClientImpl" />
         <reference name="standardTypesService">
             <interface.wsdl interface="http://jaxb.databindings.itest.sca.tuscany.apache.org/#wsdl.interface(StandardTypesService)"/>
-            <binding.ws uri="http://localhost:8085/sts-ep-j" requires="MTOM"/>
+            <binding.ws uri="http://localhost:8085/sts-ep-j"/>
         </reference>
     </component>
 
@@ -65,7 +65,7 @@
         <implementation.java class="org.apache.tuscany.sca.itest.databindings.jaxb.impl.StandardTypesServiceImpl"/>
         <service name="StandardTypesService">
             <interface.java interface="org.apache.tuscany.sca.itest.databindings.jaxb.StandardTypesService"/>
-            <binding.ws uri="http://localhost:8085/sts-ep-j" requires="MTOM"/>
+            <binding.ws uri="http://localhost:8085/sts-ep-j"/>
         </service>
     </component>
 
@@ -74,7 +74,7 @@
         <implementation.java class="org.apache.tuscany.sca.itest.databindings.jaxb.impl.StandardTypesServiceImpl"/>
         <service name="StandardTypesService">
             <interface.wsdl interface="http://jaxb.databindings.itest.sca.tuscany.apache.org/#wsdl.interface(StandardTypesService)"/>
-            <binding.ws uri="http://localhost:8085/sts-ep-w" requires="MTOM"/>
+            <binding.ws uri="http://localhost:8085/sts-ep-w"/>
         </service>
     </component>
 </composite>
