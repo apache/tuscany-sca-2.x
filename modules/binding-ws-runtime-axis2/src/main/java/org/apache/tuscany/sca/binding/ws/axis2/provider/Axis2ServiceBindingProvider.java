@@ -96,7 +96,7 @@ public class Axis2ServiceBindingProvider extends Axis2BaseBindingProvider implem
         contract = wsBinding.getBindingInterfaceContract();
         contract.getInterface().resetDataBinding(OMElement.class.getName());
 
-        configContext = Axis2EngineIntegration.getAxisConfigurationContext();
+        configContext = Axis2EngineIntegration.getAxisConfigurationContext(extensionPoints.getServiceDiscovery());
         
         // set the root context for this instance of Axis
         configContext.setContextRoot(servletHost.getContextPath());

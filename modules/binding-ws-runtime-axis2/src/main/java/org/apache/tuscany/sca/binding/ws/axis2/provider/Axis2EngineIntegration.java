@@ -39,6 +39,8 @@ import javax.wsdl.extensions.UnknownExtensibilityElement;
 import javax.wsdl.extensions.soap.SOAPAddress;
 import javax.wsdl.extensions.soap12.SOAP12Address;
 import javax.xml.namespace.QName;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.stream.XMLInputFactory;
 
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.Constants;
@@ -59,11 +61,11 @@ import org.apache.axis2.description.WSDLToAxisServiceBuilder;
 import org.apache.axis2.engine.MessageReceiver;
 import org.apache.axis2.transport.local.LocalResponder;
 import org.apache.tuscany.sca.assembly.AbstractContract;
-
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.common.xml.XMLDocumentHelper;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.extensibility.ClassLoaderContext;
+import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
@@ -73,14 +75,11 @@ import org.apache.tuscany.sca.xsd.XSDefinition;
 import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaExternal;
 import org.apache.ws.commons.schema.resolver.URIResolver;
-import org.apache.xerces.jaxp.DocumentBuilderFactoryImpl;
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import com.ctc.wstx.stax.WstxInputFactory;
 
 
 public class Axis2EngineIntegration {
@@ -119,32 +118,70 @@ public class Axis2EngineIntegration {
     /*
      * Create the whole configuration context for the Axis engine
      */
-    public static ConfigurationContext getAxisConfigurationContext(){ 
-        ConfigurationContext configContext = null;
+    private static class Axis2Config {
+        private ClassLoaderContext classLoaderContext;
+        private URL axis2xmlURL;
+        private URL repositoryURL;
+    }
+
+    // Cache the discovered axis2 configuration but we need to create a new instance of ConfigurationContext every time
+    private static Axis2Config axis2Config;
+
+    public synchronized static ConfigurationContext getAxisConfigurationContext(final ServiceDiscovery serviceDiscovery) {
+
         // get the axis configuration context from the Tuscany axis2.xml file
         // Allow privileged access to read properties. Requires PropertyPermission read in
         // security policy.
-        try {
-            configContext = AccessController.doPrivileged(new PrivilegedExceptionAction<ConfigurationContext>() {
-                public ConfigurationContext run() throws AxisFault, MalformedURLException {
-                    // collect together the classloaders that Axis2 requireds in order to load
-                    // pluggable items such as the Tuscany MessageReceivers and the xerces 
-                    // document builder. 
-                    ClassLoader wsBindingCL = getClass().getClassLoader();
-                    ClassLoader axis2CL = URLBasedAxisConfigurator.class.getClassLoader();
-                    ClassLoader xercesCL = DocumentBuilderFactoryImpl.class.getClassLoader();
-                    ClassLoader wstxCL = WstxInputFactory.class.getClassLoader();
-                    ClassLoader localtransportCL = LocalResponder.class.getClassLoader();
-                    ClassLoader oldTCCL = ClassLoaderContext.setContextClassLoader(wsBindingCL, axis2CL, xercesCL, wstxCL, localtransportCL);
-                    
-                    try {
-                        URL axis2xmlURL = wsBindingCL.getResource("org/apache/tuscany/sca/binding/ws/axis2/engine/conf/tuscany-axis2.xml");
-                        if (axis2xmlURL != null){
-                            URL repositoryURL = new URL(axis2xmlURL.toExternalForm().replaceFirst("conf/tuscany-axis2.xml", "repository/"));
-                            return ConfigurationContextFactory.createConfigurationContextFromURIs(axis2xmlURL, repositoryURL);
+        if (axis2Config == null) {
+            try {
+                axis2Config = AccessController.doPrivileged(new PrivilegedExceptionAction<Axis2Config>() {
+                    public Axis2Config run() throws AxisFault, MalformedURLException {
+                        // collect together the classloaders that Axis2 requireds in order to load
+                        // pluggable items such as the Tuscany MessageReceivers and the xerces 
+                        // document builder. 
+                        ClassLoader wsBindingCL = getClass().getClassLoader();
+                        ClassLoader axis2CL = URLBasedAxisConfigurator.class.getClassLoader();
+                        ClassLoader localtransportCL = LocalResponder.class.getClassLoader();
+                        ClassLoaderContext classLoaderContext =
+                            new ClassLoaderContext(wsBindingCL, axis2CL, localtransportCL);
+
+                        classLoaderContext =
+                            new ClassLoaderContext(classLoaderContext.getClassLoader(), serviceDiscovery,
+                                                   XMLInputFactory.class, DocumentBuilderFactory.class);
+
+                        URL axis2xmlURL =
+                            wsBindingCL
+                                .getResource("org/apache/tuscany/sca/binding/ws/axis2/engine/conf/tuscany-axis2.xml");
+                        if (axis2xmlURL != null) {
+                            URL repositoryURL = new URL(axis2xmlURL, "../repository/");
+                            Axis2Config config = new Axis2Config();
+                            config.classLoaderContext = classLoaderContext;
+                            config.axis2xmlURL = axis2xmlURL;
+                            config.repositoryURL = repositoryURL;
+                            return config;
                         } else {
                             return null;
                         }
+                    }
+                });
+            } catch (PrivilegedActionException e) {
+                throw new ServiceRuntimeException(e.getException());
+            }
+        }
+
+        if (axis2Config == null) {
+            return null;
+        }
+
+        try {
+            return AccessController.doPrivileged(new PrivilegedExceptionAction<ConfigurationContext>() {
+                public ConfigurationContext run() throws AxisFault {
+                    ClassLoader oldTCCL = axis2Config.classLoaderContext.setContextClassLoader();
+                    try {
+                        ConfigurationContext configurationContext =
+                            ConfigurationContextFactory.createConfigurationContextFromURIs(axis2Config.axis2xmlURL,
+                                                                                           axis2Config.repositoryURL);
+                        return configurationContext;
                     } finally {
                         if (oldTCCL != null) {
                             Thread.currentThread().setContextClassLoader(oldTCCL);
@@ -154,9 +191,8 @@ public class Axis2EngineIntegration {
             });
         } catch (PrivilegedActionException e) {
             throw new ServiceRuntimeException(e.getException());
-        } 
-        
-        return configContext;
+        }
+
     }
     
     //=========================================================  

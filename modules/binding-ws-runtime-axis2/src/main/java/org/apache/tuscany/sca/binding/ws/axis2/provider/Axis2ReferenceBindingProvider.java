@@ -54,8 +54,8 @@ import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.assembly.xml.Constants;
-import org.apache.tuscany.sca.binding.ws.axis2.transport.TransportReferenceInterceptor;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
+import org.apache.tuscany.sca.binding.ws.axis2.transport.TransportReferenceInterceptor;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -125,7 +125,7 @@ public class Axis2ReferenceBindingProvider extends Axis2BaseBindingProvider impl
     }
     
     public void start() {
-        configContext = Axis2EngineIntegration.getAxisConfigurationContext();
+        configContext = Axis2EngineIntegration.getAxisConfigurationContext(extensionPoints.getServiceDiscovery());
         
         try {
             Definition definition = wsBinding.getWSDLDocument();
