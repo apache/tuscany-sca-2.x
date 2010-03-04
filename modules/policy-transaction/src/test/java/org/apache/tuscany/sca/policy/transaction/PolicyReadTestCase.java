@@ -25,6 +25,8 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 
 import junit.framework.TestCase;
 
@@ -40,8 +42,8 @@ public class PolicyReadTestCase extends TestCase {
     }
 
     public void testPolicyReading() throws Exception {
-
-        TransactionPolicyProcessor processor = new TransactionPolicyProcessor(null);
+        ExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
+        TransactionPolicyProcessor processor = new TransactionPolicyProcessor(extensionPoints);
 
         URL url = getClass().getResource("/org/apache/tuscany/sca/policy/transaction/definitions.xml");
         XMLInputFactory inputFactory = XMLInputFactory.newInstance();

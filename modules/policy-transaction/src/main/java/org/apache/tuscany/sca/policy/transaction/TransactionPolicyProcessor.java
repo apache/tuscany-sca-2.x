@@ -32,6 +32,7 @@ import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
 import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 
 
@@ -42,15 +43,23 @@ public class TransactionPolicyProcessor implements StAXArtifactProcessor<Transac
     public static final String TIMEOUT = "transactionTimeout";
     public static final String ACTION = "action";
     
+    TransactionPolicyFactory transactionPolicyFactory;
+    
     public QName getArtifactType() {
         return TransactionPolicy.NAME;
     }
 
-    public TransactionPolicyProcessor(FactoryExtensionPoint modelFactories) {
+    public Class<TransactionPolicy> getModelType() {
+        return TransactionPolicy.class;
+    }
+
+    public TransactionPolicyProcessor(ExtensionPointRegistry extensions) {
+        FactoryExtensionPoint factories = extensions.getExtensionPoint(FactoryExtensionPoint.class);
+        transactionPolicyFactory = factories.getFactory(TransactionPolicyFactory.class);
     }
 
     public TransactionPolicy read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException, XMLStreamException {
-        TransactionPolicy txPolicy = new TransactionPolicyImpl();
+        TransactionPolicy txPolicy = transactionPolicyFactory.createTransactionPolicy();
         int event = reader.getEventType();
         while (reader.hasNext()) {
             event = reader.getEventType();
@@ -86,10 +95,6 @@ public class TransactionPolicyProcessor implements StAXArtifactProcessor<Transac
     public void write(TransactionPolicy policy, XMLStreamWriter writer, ProcessorContext context) throws ContributionWriteException,
         XMLStreamException {
         // TODO 
-    }
-
-    public Class<TransactionPolicy> getModelType() {
-        return TransactionPolicy.class;
     }
 
     public void resolve(TransactionPolicy policy, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {

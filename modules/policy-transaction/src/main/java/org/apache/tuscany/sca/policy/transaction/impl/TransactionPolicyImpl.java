@@ -17,9 +17,12 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.policy.transaction;
+package org.apache.tuscany.sca.policy.transaction.impl;
 
 import javax.xml.namespace.QName;
+
+import org.apache.tuscany.sca.policy.transaction.TransactionPolicy;
+import org.apache.tuscany.sca.policy.transaction.TransactionPolicy.Action;
 
 /**
  * @version $Rev$ $Date$
