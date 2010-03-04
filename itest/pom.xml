@@ -71,6 +71,9 @@
 <!-- why commented out?
                 <module>operation-overloading</module>
 -->
+                <module>policy</module>
+                <module>policies</module>
+                <module>policy-transaction</module>  
 <!-- wait until databinding-sdo is in
                 <module>properties</module>
 -->
@@ -86,9 +89,7 @@
                 <module>scdl</module>
                 <module>services</module>
                 <module>service-reference</module>
-                <module>wires</module>
-                <module>policies</module>
-                <module>policy-transaction</module>                
+                <module>wires</module>              
                 <module>ws</module>
            </modules>
         </profile>
