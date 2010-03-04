@@ -31,62 +31,29 @@
     <dependencies>
 
         <dependency>
+            <!-- This is only needed to get the module working in Eclipse which doesn't pick it up from the dependency plugin unpack -->
+            <!-- The dependency plugin unpack is needed as presently the surefire plugin wont run tests in a dependency jar -->
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-node-impl</artifactId>
-            <version>2.0-SNAPSHOT</version>
+            <artifactId>oasis-assembly-test-runner</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
+
         <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-deployment</artifactId>
+            <groupId>org.apache.tuscany.sca.shades</groupId>
+            <artifactId>tuscany-base</artifactId>
             <version>2.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-node-impl-osgi</artifactId>
-            <version>2.0-SNAPSHOT</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-node-launcher</artifactId>
-            <version>2.0-SNAPSHOT</version>
-        </dependency>        
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-node-launcher-equinox</artifactId>
-            <version>2.0-SNAPSHOT</version>
-        </dependency> 
-        
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-implementation-java-runtime</artifactId>
+            <groupId>org.apache.tuscany.sca.shades</groupId>
+            <artifactId>tuscany-webservices</artifactId>
             <version>2.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-binding-ws-runtime-axis2</artifactId>
-            <version>2.0-SNAPSHOT</version>
-        </dependency>
-        
-         <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-host-jetty</artifactId>
-            <version>2.0-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>2.5</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.sun.xml.ws</groupId>
-            <artifactId>jaxws-rt</artifactId>
-            <version>2.1.7</version>
+            <groupId>org.mortbay.jetty</groupId>
+            <artifactId>jetty</artifactId>
+            <version>6.1.19</version>
         </dependency>
 
         <dependency>
@@ -97,8 +64,6 @@
         </dependency>
 
     </dependencies>
-
-
 
   <build>
     <finalName>${artifactId}</finalName>
