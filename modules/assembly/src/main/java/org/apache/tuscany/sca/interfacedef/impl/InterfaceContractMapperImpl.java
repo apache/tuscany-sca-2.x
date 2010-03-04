@@ -259,7 +259,11 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
             Operation targetOperation = map(target.getInterface(), operation);
             if (targetOperation == null) {
                 if (!silent) {
-                    throw new IncompatibleInterfaceContractException("Operation not found on target", source, target);
+                    throw new IncompatibleInterfaceContractException("Operation " + 
+                                                                     operation.getName() +
+                                                                     " not found on target", 
+                                                                     source, 
+                                                                     target);
                 } else {
                     return false;
                 }
@@ -268,8 +272,11 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
                 // FIXME: for remotable operation, only compare name for now
                 if (!isCompatible(operation, targetOperation, Compatibility.SUBSET)) {
                     if (!silent) {
-                        throw new IncompatibleInterfaceContractException("Target operations are not compatible",
-                                                                         source, target);
+                        throw new IncompatibleInterfaceContractException("Target operations called " +
+                                                                         operation.getName() +
+                                                                         " are not compatible",
+                                                                         source, 
+                                                                         target);
                     } else {
                         return false;
                     }
