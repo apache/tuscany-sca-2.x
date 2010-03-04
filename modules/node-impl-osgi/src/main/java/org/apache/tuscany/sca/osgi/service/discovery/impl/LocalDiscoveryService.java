@@ -129,7 +129,7 @@ public class LocalDiscoveryService extends AbstractDiscoveryService implements B
     }
 
     public Object addingBundle(Bundle bundle, BundleEvent event) {
-        if (bundle.getHeaders().get(Constants.FRAGMENT_HOST) != null) {
+        if (bundle.getHeaders().get(Constants.FRAGMENT_HOST) != null || bundle.getBundleId() == 0) {
             // Ignore fragments
             return null;
         }
@@ -157,6 +157,9 @@ public class LocalDiscoveryService extends AbstractDiscoveryService implements B
                 // throw new ServiceRuntimeException(e);
             }
         }
+        
+        // Add to the extenders before notifying the listeners (the endpoints may references to the config)
+        this.extenders.add(extender);
 
         // Notify
         for (ServiceDescriptions sds : extender.getRemoteServiceDescriptions()) {
@@ -167,7 +170,6 @@ public class LocalDiscoveryService extends AbstractDiscoveryService implements B
             }
         }
 
-        this.extenders.add(extender);
         return extender;
     }
 
