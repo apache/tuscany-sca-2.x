@@ -378,7 +378,16 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
      *   - a given endpoint or endpoint reference's policy sets will only contain
      *     expressions from a single language
      *     
-     * TODO - narative of matching algorithm
+     * Matching algorithm (read from the top down):
+     *   - FAIL if there are intents that are mutually exclusive between reference and service
+     *   - PASS if there are no intents or policies present at reference and service
+     *   - FAIL if there are unresolved intents (intents with no policy set) at the reference (service should have been checked previously)
+     *   - PASS if there are no policies at reference and service (now we know all intents are resolved)
+     *   - FAIL if there are some policies on one side but not on the other
+     *   - PASS if the QName of the policy sets on each side match
+     *   - FAIL if the policy languages on both sides are different
+     *   - Perform policy specific match
+     *   
      */
     private boolean haveMatchingPolicy(EndpointReference endpointReference, Endpoint endpoint, StringBuffer matchAudit){
         matchAudit.append("Match policy of " + endpointReference.toString() + " to " + endpoint.toString() + " ");
@@ -455,7 +464,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
             (endpoint.getRequiredIntents().size() == 0) &&
             (noEndpointReferencePolicies) &&
             (noEndpointPolicies)) {
-            matchAudit.append("Match because there are no intents or policy sets ");
+            matchAudit.append("Match because there are no intents or policies ");
             return true;
         }        
         
@@ -517,7 +526,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
             return false;
         }   
         
-        // if there are no policy sets on epr or ep side then 
+        // if there are no policies on epr or ep side then 
         // they match
         if (noEndpointPolicies && noEndpointReferencePolicies){
             matchAudit.append("Match because the intents are resolved and there are no policy sets ");
