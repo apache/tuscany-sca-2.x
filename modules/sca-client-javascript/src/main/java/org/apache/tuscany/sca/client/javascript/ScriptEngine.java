@@ -30,17 +30,9 @@ import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.List;
 
-import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.assembly.Endpoint;
-import org.apache.tuscany.sca.assembly.EndpointReference;
-import org.apache.tuscany.sca.client.rmi.SCAClientFactoryImpl;
-import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
-import org.apache.tuscany.sca.runtime.EndpointRegistry;
 import org.oasisopen.sca.NoSuchDomainException;
+import org.oasisopen.sca.client.SCAClientFactory;
 
 import sun.org.mozilla.javascript.internal.Context;
 import sun.org.mozilla.javascript.internal.Function;
@@ -83,7 +75,7 @@ public class ScriptEngine extends ScriptableObject implements Runnable{
 	/**
 	 * instance of Tuscany runtime
 	 */
-	private SCAClientFactoryImpl tuscany;
+	private SCAClientFactory tuscany;
 	
 	/**
 	 * A reference to the old class loader
@@ -498,7 +490,7 @@ public class ScriptEngine extends ScriptableObject implements Runnable{
 //        Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
 
         try {
-            tuscany = new SCAClientFactoryImpl(URI.create("tuscany:foo"));
+            tuscany = SCAClientFactory.newInstance(URI.create("tuscany:foo"));
         } catch (NoSuchDomainException e) {
             throw new RuntimeException(e);
         }        

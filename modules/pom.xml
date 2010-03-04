@@ -50,12 +50,8 @@
         <module>binding-rmi</module>
         <module>binding-rmi-runtime</module>
         <module>binding-sca-runtime</module>
-        <module>binding-sca-runtime-rmi</module>
-        <module>binding-sca-axis2-runtime</module>
         <module>binding-ws</module>
-        <!--module>binding-ws-axis2</module-->
         <module>binding-ws-runtime-axis2</module>
-        <!--module>binding-ws-axis2-policy</module-->
         <module>binding-ws-wsdlgen</module>
         <module>builder</module>
         <module>common-http</module>        
@@ -114,7 +110,6 @@
         <module>sca-api</module>
         <module>sca-client-impl</module>
         <module>sca-client-javascript</module>
-        <module>sca-client-rmi</module>
         <module>stripes</module>
         <module>xsd</module>
         <module>web-javascript</module>
