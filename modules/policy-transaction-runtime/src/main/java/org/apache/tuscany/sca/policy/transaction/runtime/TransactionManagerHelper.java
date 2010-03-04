@@ -31,6 +31,9 @@ import javax.transaction.SystemException;
 import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
 
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
+
 /**
  * @version $Rev$ $Date$
  */
@@ -39,6 +42,12 @@ public class TransactionManagerHelper {
 
     private TransactionManager tm;
 
+    public TransactionManagerHelper(ExtensionPointRegistry registry) {
+        super();
+        UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
+        this.tm = utilities.getUtility(TransactionManager.class);
+    }
+    
     public TransactionManagerHelper(TransactionManager tm) {
         super();
         this.tm = tm;

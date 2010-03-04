@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.policy.transaction.runtime;
 
-import javax.transaction.TransactionManager;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
@@ -39,8 +38,7 @@ public class TransactionPolicyProviderFactory implements PolicyProviderFactory<T
     public TransactionPolicyProviderFactory(ExtensionPointRegistry registry) {
         super();
         UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
-        TransactionManager tm = utilities.getUtility(TransactionManager.class);
-        this.helper = new TransactionManagerHelper(tm);
+        this.helper = utilities.getUtility(TransactionManagerHelper.class); 
     }
 
     public PolicyProvider createImplementationPolicyProvider(RuntimeComponent component) {
