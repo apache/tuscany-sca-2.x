@@ -207,11 +207,11 @@ public class DirectedGraph<V, E> implements Cloneable {
         if (edge != null) {
             // An existing edge has higher weight, let's replace it
             if (edge.weight > weight) {
-                logger.warning("An edge exists with higher weight: " + edge);
+                logger.fine("An edge exists with higher weight: " + edge);
                 removeEdge(edge);
             } else {
                 // Don't add this edge
-                logger.warning("An edge exists with lower weight: " + edge);
+                logger.fine("An edge exists with lower weight: " + edge);
                 return;
             }
         }
