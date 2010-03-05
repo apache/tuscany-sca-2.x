@@ -28,10 +28,38 @@
     <intent name="testIntent2" constrains="sca:binding" intentType="interaction"/>
     
     <intent name="testIntent3" constrains="sca:binding" intentType="interaction" excludes="tuscany:testIntent1" />
+    
+    <intent name="testIntent4" constrains="sca:binding" intentType="interaction"/>
+    
+    <intent name="testIntent5" constrains="sca:binding" intentType="interaction"/>
+    
+    <intent name="testIntent6" constrains="sca:binding" intentType="interaction"/>
    
     <policySet name="testPolicy1" 
                provides="tuscany:testIntent1" 
                appliesTo="//binding | //implementation">
     </policySet>
+    
+    <policySet name="testPolicy2" 
+               provides="tuscany:testIntent4 tuscany:testIntent5" 
+               appliesTo="//binding | //implementation">
+        <tuscany:jdkLogger name="test.logger">
+            <tuscany:logLevel>FINE</tuscany:logLevel>
+            <tuscany:resourceBundle>LoggingMessages.properties</tuscany:resourceBundle>
+        </tuscany:jdkLogger>               
+    </policySet>  
+    
+    <policySet name="testPolicy3" 
+               provides="tuscany:testIntent6" 
+               appliesTo="//binding | //implementation">
+        <wsp:ExactlyOne>
+            <wsp:All>
+                <tuscany:jdkLogger name="test.logger">
+                    <tuscany:logLevel>FINE</tuscany:logLevel>
+                    <tuscany:resourceBundle>LoggingMessages.properties</tuscany:resourceBundle>
+                </tuscany:jdkLogger>
+            </wsp:All>
+        </wsp:ExactlyOne>              
+    </policySet> 
     
 </definitions>

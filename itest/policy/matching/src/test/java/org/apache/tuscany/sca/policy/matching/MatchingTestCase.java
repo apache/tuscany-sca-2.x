@@ -19,12 +19,15 @@
 
 package org.apache.tuscany.sca.policy.matching;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
 
 import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 import org.apache.tuscany.sca.policy.matching.helloworld.HelloWorld;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /* 
  * Test the various conditions in the matching algorithm
@@ -37,16 +40,18 @@ import org.apache.tuscany.sca.policy.matching.helloworld.HelloWorld;
  *  7 - FAIL if the policy languages on both sides are different
  *  8 - Perform policy specific match
  */
-public class MatchingTestCase extends TestCase {
+public class MatchingTestCase {
 
-    private Node node;
+    private static Node node;
 
-    @Override
-    protected void setUp() throws Exception {
+    
+    @BeforeClass
+    public static void setUp() throws Exception {
         node = NodeFactory.newInstance().createNode(new Contribution("test", "target/classes"));
         node.start();
     }
     
+    @Test
     public void testMutuallyExclusiveIntents() throws Exception {
         HelloWorld helloWorld = node.getService(HelloWorld.class, "HelloWorldClientMutuallyExclusiveIntents");
         try {
@@ -56,11 +61,13 @@ public class MatchingTestCase extends TestCase {
         }
     }
     
+    @Test
     public void testNoIntentsOrPolicies() throws Exception {
         HelloWorld helloWorld = node.getService(HelloWorld.class, "HelloWorldClientNoIntentsOrPolicies");
         assertEquals("Hello petra", helloWorld.getGreetings("petra"));
     }    
    
+    @Test
     public void testUnresolvedIntentsOnReference() throws Exception {
         HelloWorld helloWorld = node.getService(HelloWorld.class, "HelloUnresolvedIntentsOnReference");
         try {
@@ -69,34 +76,49 @@ public class MatchingTestCase extends TestCase {
             assertEquals("Unable to bind", ex.getMessage().substring(0, 14));
         }
     }   
-    
-    public void testMatchingIntents() throws Exception {
-        HelloWorld helloWorld = node.getService(HelloWorld.class, "HelloWorldClientMatchingIntents");
-        assertEquals("Hello petra", helloWorld.getGreetings("petra"));
-    }
-    
+       
+    @Test
     public void testIntentsButNoPolicies() throws Exception {
+        HelloWorld helloWorld = node.getService(HelloWorld.class, "HelloWorldClientIntentsButNoPolicies1");
+        assertEquals("Hello petra", helloWorld.getGreetings("petra"));
         
+        helloWorld = node.getService(HelloWorld.class, "HelloWorldClientIntentsButNoPolicies2");
+        assertEquals("Hello petra", helloWorld.getGreetings("petra"));        
     } 
     
+    @Test
     public void testSomePoliciesOnOneSideButNoneOnTheOther() throws Exception {
-        
+        try {
+            HelloWorld helloWorld = node.getService(HelloWorld.class, "HelloWorldClientSomePoliciesOnOneSideButNoneOnTheOther");
+            assertEquals("Hello petra", helloWorld.getGreetings("petra")); 
+        } catch (Exception ex) {
+            assertEquals("Unable to bind", ex.getMessage().substring(0, 14));
+        }
     } 
     
+    @Test
     public void testPolicySetQNameMatch() throws Exception {
-        
+        HelloWorld helloWorld = node.getService(HelloWorld.class, "HelloWorldClientPolicySetQNameMatch");
+        assertEquals("Hello petra", helloWorld.getGreetings("petra"));
     } 
     
+    @Test
     public void testDifferentPolicyLanguage() throws Exception {
-        
+        try {
+            HelloWorld helloWorld = node.getService(HelloWorld.class, "HelloWorldClientDifferentPolicyLanguage");
+            assertEquals("Hello petra", helloWorld.getGreetings("petra"));        
+        } catch (Exception ex) {
+            assertEquals("Unable to bind", ex.getMessage().substring(0, 14));
+        }    
     } 
     
+    @Test
     public void testPolicySpecificMatch() throws Exception {
-        
+        // TODO
     }    
     
-    @Override
-    protected void tearDown() throws Exception {
+    @AfterClass
+    public static void tearDown() throws Exception {
         node.stop();
     }
 

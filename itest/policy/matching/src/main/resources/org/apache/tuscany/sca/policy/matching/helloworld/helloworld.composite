@@ -38,12 +38,30 @@
         <reference name="helloWorld" target="HelloWorldService2" requires="tuscany:testIntent1 tuscany:testIntent2"/>
     </component>    
     
-    <component name="HelloWorldClientMatchingIntents">
+    <component name="HelloWorldClientIntentsButNoPolicies1">
         <implementation.java class="org.apache.tuscany.sca.policy.matching.helloworld.HelloWorldClient"/>
-        <reference name="helloWorld" target="HelloWorldService1" />
-    </component>    
+        <reference name="helloWorld" target="HelloWorldService2" />
+    </component>   
     
+    <component name="HelloWorldClientIntentsButNoPolicies2">
+        <implementation.java class="org.apache.tuscany.sca.policy.matching.helloworld.HelloWorldClient"/>
+        <reference name="helloWorld" target="HelloWorldService2" requires="tuscany:testIntent1"/>
+    </component>      
     
+    <component name="HelloWorldClientSomePoliciesOnOneSideButNoneOnTheOther">
+        <implementation.java class="org.apache.tuscany.sca.policy.matching.helloworld.HelloWorldClient"/>
+        <reference name="helloWorld" target="HelloWorldService3" />
+    </component>      
+    
+    <component name="HelloWorldClientPolicySetQNameMatch">
+        <implementation.java class="org.apache.tuscany.sca.policy.matching.helloworld.HelloWorldClient"/>
+        <reference name="helloWorld" target="HelloWorldService3" requires="tuscany:testIntent5"/>
+    </component> 
+    
+    <component name="HelloWorldClientDifferentPolicyLanguage">
+        <implementation.java class="org.apache.tuscany.sca.policy.matching.helloworld.HelloWorldClient"/>
+        <reference name="helloWorld" target="HelloWorldService3" requires="tuscany:testIntent6"/>
+    </component>     
     
     <component name="HelloWorldService1">
 		<implementation.java class="org.apache.tuscany.sca.policy.matching.helloworld.HelloWorldService"/>
@@ -54,5 +72,10 @@
         <implementation.java class="org.apache.tuscany.sca.policy.matching.helloworld.HelloWorldService"/>
         <service name="HelloWorld" requires="tuscany:testIntent1"/>     
     </component>    
+    
+    <component name="HelloWorldService3">
+        <implementation.java class="org.apache.tuscany.sca.policy.matching.helloworld.HelloWorldService"/>
+        <service name="HelloWorld" requires="tuscany:testIntent4"/>     
+    </component>      
     
 </composite>
