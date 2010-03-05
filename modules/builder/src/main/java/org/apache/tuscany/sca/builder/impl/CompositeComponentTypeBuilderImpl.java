@@ -35,6 +35,7 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeReference;
 import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.Contract;
+import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
@@ -263,6 +264,9 @@ public class CompositeComponentTypeBuilderImpl {
             List<ComponentReference> promotedReferences = compositeReference.getPromotedReferences();
 
             for (ComponentReference promotedComponentReference : promotedReferences) {
+                
+                // promote multiplicity
+                reconcileReferenceMultiplicity(componentType, compositeReference, promotedComponentReference, monitor);
 
                 // promote interface contracts
                 calculatePromotedReferenceInterfaceContract(compositeReference, promotedComponentReference, monitor);
@@ -520,5 +524,68 @@ public class CompositeComponentTypeBuilderImpl {
             }
         }
     }
+    
+    private void reconcileReferenceMultiplicity(ComponentType componentType,
+                                                Reference compositeReference, 
+                                                Reference promotedComponentReference,
+                                                Monitor monitor) {
+        if (compositeReference.getMultiplicity() != null) {
+            if (!isValidMultiplicityOverride(promotedComponentReference.getTargets().size() > 0,
+                                             promotedComponentReference.getMultiplicity(), 
+                                             compositeReference.getMultiplicity())) {
+                Monitor.error(monitor, 
+                              this, 
+                              Messages.ASSEMBLY_VALIDATION,
+                              "CompositeReferenceIncompatibleMultiplicity", 
+                              componentType.getURI(), 
+                              compositeReference.getName(),
+                              promotedComponentReference.getName());
+            }
+        } else {
+            compositeReference.setMultiplicity(promotedComponentReference.getMultiplicity());
+        }
+    }    
+    
+    private boolean isValidMultiplicityOverride(boolean componentRefHasTarget,
+                                                Multiplicity componentRefMul, 
+                                                Multiplicity compositeRefMul) {
+        if ((componentRefMul != null) && 
+            (compositeRefMul != null) &&
+             componentRefMul != compositeRefMul) {
+            if (componentRefHasTarget){
+                switch (componentRefMul) {
+                    case ZERO_ONE:
+                        return compositeRefMul == Multiplicity.ZERO_ONE || 
+                               compositeRefMul == Multiplicity.ONE_ONE;
+                    case ONE_ONE:
+                        return compositeRefMul == Multiplicity.ZERO_ONE || 
+                               compositeRefMul == Multiplicity.ONE_ONE;                      
+                    case ZERO_N:
+                        return true;
+                    case ONE_N:
+                        return true;
+                    default:
+                        return false;
+                }
+            } else {
+                switch (componentRefMul) {
+                    case ZERO_ONE:
+                        return compositeRefMul == Multiplicity.ONE_ONE;
+                    case ONE_ONE:
+                        return compositeRefMul == Multiplicity.ONE_ONE;                      
+                    case ZERO_N:
+                        return true;
+                    case ONE_N:
+                        return compositeRefMul == Multiplicity.ONE_ONE || 
+                               compositeRefMul == Multiplicity.ONE_N;
+
+                    default:
+                        return false;
+                }
+            }
+        } else {
+            return true;
+        }
+    }    
 
 } //end class
