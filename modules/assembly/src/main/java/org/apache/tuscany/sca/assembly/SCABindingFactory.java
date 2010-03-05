@@ -32,6 +32,4 @@ public interface SCABindingFactory {
      */
     SCABinding createSCABinding();
 
-    DistributedSCABinding createDistributedSCABinding();
-
 }

@@ -69,7 +69,6 @@ public class SCABindingTestCase {
             extensionPoints.getExtensionPoint(FactoryExtensionPoint.class).getFactory(SCABindingFactory.class);
 
         Assert.assertNotNull(factory.createSCABinding());
-        Assert.assertNotNull(factory.createDistributedSCABinding());
     }
 
     @Test

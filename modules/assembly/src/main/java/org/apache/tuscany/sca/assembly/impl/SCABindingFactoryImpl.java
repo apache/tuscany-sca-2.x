@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.assembly.impl;
 
-import org.apache.tuscany.sca.assembly.DistributedSCABinding;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 
@@ -36,10 +35,6 @@ public class SCABindingFactoryImpl implements SCABindingFactory {
 
     public SCABinding createSCABinding() {
         return new SCABindingImpl();
-    }
-
-    public DistributedSCABinding createDistributedSCABinding() {
-        return new DistributedSCABindingImpl();
     }
 
 }

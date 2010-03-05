@@ -65,10 +65,6 @@ public class DefaultSCABindingMapper implements SCABindingMapper {
 
     public DefaultSCABindingMapper(ExtensionPointRegistry registry, Map<String, String> attributes) {
         this.registry = registry;
-        providerFactories = registry.getExtensionPoint(ProviderFactoryExtensionPoint.class);
-        BuilderExtensionPoint builders = registry.getExtensionPoint(BuilderExtensionPoint.class);
-        StAXArtifactProcessorExtensionPoint processors =
-            registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         if (attributes != null) {
             String qname = attributes.get("mappedBinding");
             if (qname != null) {
@@ -86,8 +82,10 @@ public class DefaultSCABindingMapper implements SCABindingMapper {
             }
         }
 
+        providerFactories = registry.getExtensionPoint(ProviderFactoryExtensionPoint.class);
+        StAXArtifactProcessorExtensionPoint processors =
+            registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         processor = processors.getProcessor(mappedBinding);
-        builder = builders.getBindingBuilder(mappedBinding);
         if (processor == null) {
             logger.warning("Mapped binding for binding.sca is not supported: " + mappedBinding);
         }
@@ -104,6 +102,8 @@ public class DefaultSCABindingMapper implements SCABindingMapper {
         } catch (Throwable e) {
             throw new ServiceRuntimeException(e);
         }
+        BuilderExtensionPoint builders = registry.getExtensionPoint(BuilderExtensionPoint.class);
+        builder = builders.getBindingBuilder(mappedBinding);
         remotable = isDistributed() && processor != null;
     }
 

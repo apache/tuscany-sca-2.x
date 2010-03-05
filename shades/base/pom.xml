@@ -59,17 +59,17 @@
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-binding-sca-runtime-rmi</artifactId>
+            <artifactId>tuscany-endpoint-hazelcast-client</artifactId>
             <version>${pom.version}</version>
         </dependency>
-        <dependency>
+         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-sca-client-javascript</artifactId>
             <version>${pom.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-sca-client-rmi</artifactId>
+            <artifactId>tuscany-sca-client-impl</artifactId>
             <version>${pom.version}</version>
         </dependency>
         <dependency>
