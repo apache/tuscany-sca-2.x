@@ -41,7 +41,7 @@ public class TransactionImplementationPolicyProvider extends BasePolicyProvider<
 
     public PhasedInterceptor createInterceptor(Operation operation) {
         List<TransactionPolicy> policies = findPolicies();
-        return policies.isEmpty() ? null : new TransactionInterceptor(helper, true, null, policies.get(0), getPhase());
+        return policies.isEmpty() ? null : new TransactionInterceptor(helper, false, null, policies.get(0), getPhase());
     }
 
     public String getPhase() {
