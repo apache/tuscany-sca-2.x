@@ -70,7 +70,18 @@
   <build>
     <finalName>${artifactId}</finalName>
     <plugins>
-                        
+
+      <plugin>
+         <groupId>org.apache.maven.plugins</groupId>
+         <artifactId>maven-surefire-plugin</artifactId>
+         <configuration>
+           <excludes>
+              <exclude>**/JCA_8005_TestCase.java</exclude><!--  see TUSCANY-3482 -->
+              <exclude>**/JCA_8007_TestCase.java</exclude><!--  see TUSCANY-3482 -->
+           </excludes>
+         </configuration>
+      </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
