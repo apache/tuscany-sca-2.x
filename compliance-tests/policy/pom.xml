@@ -70,6 +70,28 @@
     <plugins>
                         
       <plugin>
+         <groupId>org.apache.maven.plugins</groupId>
+         <artifactId>maven-surefire-plugin</artifactId>
+         <configuration>
+           <excludes>
+              <exclude>**/POL_3001_TestCase.java</exclude><!--  see TUSCANY-xxxx -->
+              <exclude>**/POL_3002_TestCase.java</exclude><!--  see TUSCANY-xxxx -->
+              <exclude>**/POL_4003_TestCase.java</exclude><!--  see TUSCANY-xxxx -->
+              <exclude>**/POL_4013_TestCase.java</exclude><!--  see TUSCANY-xxxx -->
+              <exclude>**/POL_4028_TestCase.java</exclude><!--  see TUSCANY-xxxx -->
+              <exclude>**/POL_9006_TestCase.java</exclude><!--  see TUSCANY-3487-->
+              <exclude>**/POL_9009_TestCase.java</exclude><!--  see TUSCANY-3487-->
+              <exclude>**/POL_9015_TestCase.java</exclude><!--  see TUSCANY-3487-->
+              <exclude>**/POL_9016_TestCase.java</exclude><!--  see TUSCANY-3487-->
+              <exclude>**/POL_9017_TestCase.java</exclude><!--  see TUSCANY-3487-->
+              <exclude>**/POL_9018_TestCase.java</exclude><!--  see TUSCANY-3487-->
+              <exclude>**/POL_10001_TestCase.java</exclude><!--  see TUSCANY-xxxx -->
+              <exclude>**/POL_10002_TestCase.java</exclude><!--  see TUSCANY-xxxx -->
+           </excludes>
+         </configuration>
+      </plugin>
+
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
         <executions>
