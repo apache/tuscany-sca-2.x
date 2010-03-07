@@ -70,6 +70,17 @@
     <plugins>
                         
       <plugin>
+         <groupId>org.apache.maven.plugins</groupId>
+         <artifactId>maven-surefire-plugin</artifactId>
+         <configuration>
+           <excludes>
+              <exclude>**/ASM_6008_TestCase.java</exclude><!--  see TUSCANY-xxxx -->
+              <exclude>**/ASM_6015_TestCase.java</exclude><!--  see TUSCANY-xxxx -->
+           </excludes>
+         </configuration>
+      </plugin>
+
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
         <executions>
