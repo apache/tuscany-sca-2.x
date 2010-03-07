@@ -104,7 +104,7 @@
                    <artifactId>oasis-assembly-test-runner</artifactId>
                    <version>1.0-SNAPSHOT</version>
                    <type>jar</type>
-                   <excludes>oasis-sca-tests.properties</excludes>
+                   <excludes>commons-logging.properties,oasis-sca-tests.properties</excludes>
                    <outputDirectory>${project.build.directory}/test-classes</outputDirectory>
                  </artifactItem>
                </artifactItems>
