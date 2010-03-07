@@ -70,6 +70,18 @@
     <plugins>
                         
       <plugin>
+         <groupId>org.apache.maven.plugins</groupId>
+         <artifactId>maven-surefire-plugin</artifactId>
+         <configuration>
+           <excludes>
+              <exclude>**/POJO_8012_TestCase.java</exclude><!--  see TUSCANY-xxxx -->
+              <exclude>**/POJO_8003_TestCase.java</exclude><!--  see TUSCANY-xxxx -->
+              <exclude>**/POJO_8002_TestCase.java</exclude><!--  see TUSCANY-xxxx -->
+           </excludes>
+         </configuration>
+      </plugin>
+
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
         <executions>
