@@ -649,7 +649,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
                                                      endpoint.getComponentServiceInterfaceContract());
         
         if (!match){
-            matchAudit.append("Match because the linterface contract mapper failed ");
+            matchAudit.append("Match failed because the linterface contract mapper failed ");
         } else {
             matchAudit.append("Match because the interface contract mapper succeeded ");
         }
