@@ -414,6 +414,13 @@
            </build>
         </profile>
 
+        <profile>
+            <id>compliance</id>
+            <modules>
+                <module>compliance-tests</module>
+            </modules>
+        </profile>
+
 <!-- START - WHAT ARE THE FOLLOWING PROFILES FOR? -->
 
         <profile>
