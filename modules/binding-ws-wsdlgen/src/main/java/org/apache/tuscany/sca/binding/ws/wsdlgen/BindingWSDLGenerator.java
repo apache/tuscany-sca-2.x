@@ -178,7 +178,7 @@ public class BindingWSDLGenerator {
             }
         } catch (RuntimeException ex) {
             warning(monitor, "WsdlGenException", wsBinding, component.getName(), contract.getName());
-            error(monitor, "WsdlGenException2", wsBinding, ex.getMessage());
+            error(monitor, "WsdlGenException2", wsBinding, component.getName(), contract.getName(), ex.getMessage());
         }    
     }        
 
