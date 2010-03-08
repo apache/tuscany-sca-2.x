@@ -128,6 +128,8 @@ public interface Constants {
             cachedXSDs.put("http://www.w3.org/2000/09/xmldsig#", Constants.class
                 .getResource("/org/apache/tuscany/sca/assembly/xsd/xmldsig-core-schema.xsd"));
 
+            cachedXSDs.put("-//W3C//DTD XMLSchema 200102//EN", Constants.class
+                           .getResource("/org/apache/tuscany/sca/assembly/xsd/XMLSchema.dtd"));
             cachedXSDs.put("-//W3C//DTD XMLSCHEMA 200102//EN", Constants.class
                 .getResource("/org/apache/tuscany/sca/assembly/xsd/XMLSchema.dtd"));
             cachedXSDs.put("datatypes", Constants.class
