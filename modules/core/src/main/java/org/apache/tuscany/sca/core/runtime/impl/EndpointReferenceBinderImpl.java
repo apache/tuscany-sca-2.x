@@ -49,6 +49,7 @@ import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.Qualifier;
 import org.apache.tuscany.sca.runtime.EndpointReferenceBinder;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
  * A builder that takes endpoint references and resolves them. It either finds local
@@ -92,9 +93,9 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
      * @param endpointRegistry
      * @param endpointReference
      */
-    public boolean bindBuildTime(EndpointRegistry endpointRegistry, 
+    public void bindBuildTime(EndpointRegistry endpointRegistry, 
                                  EndpointReference endpointReference) {
-       return bind(endpointRegistry, endpointReference, false);
+       bind(endpointRegistry, endpointReference, false);
     }
     
     /**
@@ -104,9 +105,9 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
      * @param endpointRegistry
      * @param endpointReference
      */
-    public boolean bindRunTime(EndpointRegistry endpointRegistry,
+    public void bindRunTime(EndpointRegistry endpointRegistry,
                                EndpointReference endpointReference) {
-        return bind(endpointRegistry, endpointReference, true);
+        bind(endpointRegistry, endpointReference, true);
     }
     
     /**
@@ -116,7 +117,7 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
      * @param endpointReference
      * @param runtime set true if called from the runtime 
      */
-    public boolean bind(EndpointRegistry endpointRegistry,  
+    public void bind(EndpointRegistry endpointRegistry,  
                         EndpointReference endpointReference,
                         boolean runtime){
         
@@ -183,7 +184,8 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
                                   "endpoint-validation-messages",
                                   "NoComponentReferenceTarget",
                                   endpointReference.getReference().getName());
-                    return false;
+                    throw new ServiceRuntimeException("Unable to bind " +
+                                                      monitor.getLastProblem().toString());
                 }
             }
             
@@ -242,7 +244,8 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
                                   "endpoint-validation-messages", 
                                   "NoEndpointsFound", 
                                   endpointReference.toString()); 
-                    return false;
+                    throw new ServiceRuntimeException("Unable to bind " + 
+                                                      monitor.getLastProblem().toString());
                 }
             }            
 
@@ -277,10 +280,9 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
                                 endpointReference.toString());
             }
                
-            return false;
+            throw new ServiceRuntimeException("Unable to bind " + 
+                                               monitor.getLastProblem().toString());
         }
-       
-        return true;
     }    
    
     /**

@@ -20,6 +20,8 @@
 package org.apache.tuscany.sca.policy.matching;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.Node;
@@ -56,8 +58,9 @@ public class MatchingTestCase {
         HelloWorld helloWorld = node.getService(HelloWorld.class, "HelloWorldClientMutuallyExclusiveIntents");
         try {
             helloWorld.getGreetings("petra");
+            fail("Exception expected");
         } catch (Exception ex) {
-            assertEquals("Unable to bind", ex.getMessage().substring(0, 14));
+            assertTrue(ex.getMessage().indexOf("No match because the following intents are mutually exclusive {http://tuscany.apache.org/xmlns/sca/1.1}testIntent3 {http://tuscany.apache.org/xmlns/sca/1.1}testIntent1") > -1);
         }
     }
     
@@ -72,8 +75,9 @@ public class MatchingTestCase {
         HelloWorld helloWorld = node.getService(HelloWorld.class, "HelloUnresolvedIntentsOnReference");
         try {
             helloWorld.getGreetings("petra");
+            fail("Exception expected");
         } catch (Exception ex) {
-            assertEquals("Unable to bind", ex.getMessage().substring(0, 14));
+            assertTrue(ex.getMessage().indexOf("No match because there are unresolved intents [{http://tuscany.apache.org/xmlns/sca/1.1}testIntent2]") > -1);
         }
     }   
        
@@ -90,9 +94,10 @@ public class MatchingTestCase {
     public void testSomePoliciesOnOneSideButNoneOnTheOther() throws Exception {
         try {
             HelloWorld helloWorld = node.getService(HelloWorld.class, "HelloWorldClientSomePoliciesOnOneSideButNoneOnTheOther");
-            assertEquals("Hello petra", helloWorld.getGreetings("petra")); 
+            helloWorld.getGreetings("petra");
+            fail("Exception expected");
         } catch (Exception ex) {
-            assertEquals("Unable to bind", ex.getMessage().substring(0, 14));
+            assertTrue(ex.getMessage().indexOf("No match because there are policy sets at the endpoint but not at the endpoint reference") > -1);
         }
     } 
     
@@ -106,9 +111,10 @@ public class MatchingTestCase {
     public void testDifferentPolicyLanguage() throws Exception {
         try {
             HelloWorld helloWorld = node.getService(HelloWorld.class, "HelloWorldClientDifferentPolicyLanguage");
-            assertEquals("Hello petra", helloWorld.getGreetings("petra"));        
+            helloWorld.getGreetings("petra");
+            fail("Exception expected");
         } catch (Exception ex) {
-            assertEquals("Unable to bind", ex.getMessage().substring(0, 14));
+            assertTrue(ex.getMessage().indexOf("No match because the policy sets on either side have policies in differnt languages {http://schemas.xmlsoap.org/ws/2004/09/policy}ExactlyOne and {http://tuscany.apache.org/xmlns/sca/1.1}jdkLogger") > -1);
         }    
     } 
     

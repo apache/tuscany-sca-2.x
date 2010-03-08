@@ -302,10 +302,7 @@ public class RuntimeEndpointReferenceImpl extends EndpointReferenceImpl implemen
     private void resolveEndpointReference() {
         resolve();
 
-        boolean ok = eprBinder.bindRunTime(endpointRegistry, this);
-        if (!ok) {
-            throw new ServiceRuntimeException("Unable to bind " + this);
-        }
+        eprBinder.bindRunTime(endpointRegistry, this);
 
         // start the binding provider
         final ReferenceBindingProvider bindingProvider = getBindingProvider();
