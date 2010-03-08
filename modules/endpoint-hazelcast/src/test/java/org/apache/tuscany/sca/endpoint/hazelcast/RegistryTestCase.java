@@ -126,7 +126,7 @@ public class RegistryTestCase {
         }
         
         if (connectPorts.length > 0) {
-            TcpIpConfig tcpconfig = config.getNetworkConfig().getJoin().getJoinMembers();
+            TcpIpConfig tcpconfig = config.getNetworkConfig().getJoin().getTcpIpConfig();
             tcpconfig.setEnabled(true);
 
             List<Address> lsMembers = tcpconfig.getAddresses();

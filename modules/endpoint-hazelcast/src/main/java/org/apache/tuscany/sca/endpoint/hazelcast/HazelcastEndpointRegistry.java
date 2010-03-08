@@ -116,7 +116,7 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
         // config.getMapConfig(configURI.getDomainName() + "/Endpoints").setBackupCount(0);
 
         if (configURI.getRemotes().size() > 0) {
-            TcpIpConfig tcpconfig = config.getNetworkConfig().getJoin().getJoinMembers();
+            TcpIpConfig tcpconfig = config.getNetworkConfig().getJoin().getTcpIpConfig();
             tcpconfig.setEnabled(true);
             List<Address> lsMembers = tcpconfig.getAddresses();
             lsMembers.clear();
