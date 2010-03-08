@@ -37,13 +37,7 @@
         </dependency>
     </dependencies>
 
-    <profiles>
-        <profile>
-            <id>default</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <modules>
+  <modules>
                 <module>builder</module>
                 <module>bpel</module>
                 <module>callback-api</module>
@@ -91,90 +85,6 @@
                 <module>service-reference</module>
                 <module>wires</module>              
                 <module>ws</module>
-           </modules>
-        </profile>
-        
-        <profile>
-            <id>old</id>
-            <modules>
-                <module>bpel</module>
-                <module>builder</module>
-                <module>callablereferences</module>
-                <module>callablereferences-ws</module>
-                <module>callback-api</module>
-                <module>callback-basic</module>
-                <module>callback-complex-type</module>
-                <module>callback-id</module>
-                <module>callback-multiple-wires</module>
-                <module>callback-separatethread</module>
-                <module>callback-set-callback</module>
-                <module>callback-set-conversation</module>
-                <module>component-type</module>
-                <module>contribution</module>
-                <!--  
-                <module>contribution-classloader</module>
-                -->
-                <module>contribution-import-export</module>
-                <module>conversations</module>
-                <module>conversations-ws</module>
-                <module>corba</module>
-                <module>databindings</module>
-                <module>exceptions</module>
-                <module>exceptions-cross-binding</module>
-                <module>exceptions-cross-binding-ws</module>
-                <module>exceptions-simple-ws</module>
-                <module>extended-api</module>
-                <module>interfaces</module>
-                <!--
-                <module>interop-soap-client</module>
-                <module>interop-soap-round2-client</module>
-                <module>interop-soap-service</module>
-                -->
-                <module>jms</module>
-                <module>jms-args</module>
-                <module>jms-callbacks</module>
-                <module>jms-definitions</module>
-                <module>jms-format</module>
-                <module>jms-selectors</module>
-                <module>large-sdo-ws</module>
-                <module>late-reference-resolution</module>
-                <module>oneway</module>
-                <module>operation-overloading</module>
-                <!--
-                <module>osgi-implementation</module>
-                <module>osgi-contribution</module>
-                -->
-                <module>policy</module>
-                <module>policy-security</module>
-                <module>policy-security-basicauth</module>
-                <module>policy-security-jsr250</module>
-                <module>policy-security-token</module>
-                <!--
-                <module>promotion-interface-missmatch</module>
-                -->
-                <module>properties</module>
-                <module>recursive</module>
-                <module>recursive-multi-level</module>
-                <module>recursive-ws</module>
-                <module>references</module>
-                <module>scopes</module>
-                <module>serialization</module>
-                <module>services</module>
-                <module>spring</module>
-                <module>transaction</module>
-                <module>validation</module>
-                <module>wires</module>
-                <module>wsdl</module>
-                <module>wsdl2java</module>
-                <module>wsdlless</module>
-                <module>wsdl-multiple</module>
-                <module>ws-void-args-return</module>
-           </modules>
-        </profile>
-    </profiles>
-
-  <modules>
-    <module>jaxws</module>
   </modules>
 
   <build>
