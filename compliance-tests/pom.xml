@@ -40,10 +40,9 @@
 
     <modules>
        <module>assembly</module>
-<!-- 
-       <module>java-ca</module>
+       <module>policy</module>
+       <module>java-caa</module>
        <module>java-ci</module>
--->
     </modules>
 
 </project>
