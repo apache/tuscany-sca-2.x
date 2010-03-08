@@ -74,11 +74,11 @@
          <artifactId>maven-surefire-plugin</artifactId>
          <configuration>
            <excludes>
-              <exclude>**/POL_3001_TestCase.java</exclude><!--  see TUSCANY-xxxx -->
-              <exclude>**/POL_3002_TestCase.java</exclude><!--  see TUSCANY-xxxx -->
-              <exclude>**/POL_4003_TestCase.java</exclude><!--  see TUSCANY-xxxx -->
+              <exclude>**/POL_3001_TestCase.java</exclude><!--  see TUSCANY-3370 -->
+              <exclude>**/POL_3002_TestCase.java</exclude><!--  see TUSCANY-3370 -->
+              <exclude>**/POL_4003_TestCase.java</exclude><!--  see TUSCANY-3372 -->
               <exclude>**/POL_4013_TestCase.java</exclude><!--  see TUSCANY-xxxx -->
-              <exclude>**/POL_4028_TestCase.java</exclude><!--  see TUSCANY-xxxx -->
+              <exclude>**/POL_4028_TestCase.java</exclude><!--  see TUSCANY-3380 -->
               <exclude>**/POL_9006_TestCase.java</exclude><!--  see TUSCANY-3487-->
               <exclude>**/POL_9009_TestCase.java</exclude><!--  see TUSCANY-3487-->
               <exclude>**/POL_9015_TestCase.java</exclude><!--  see TUSCANY-3487-->
