@@ -76,15 +76,17 @@
            <excludes>
               <exclude>**/POL_3001_TestCase.java</exclude><!--  see TUSCANY-3370 -->
               <exclude>**/POL_3002_TestCase.java</exclude><!--  see TUSCANY-3370 -->
-              <exclude>**/POL_4003_TestCase.java</exclude><!--  see TUSCANY-3372 -->
-              <exclude>**/POL_4013_TestCase.java</exclude><!--  see TUSCANY-xxxx -->
-              <exclude>**/POL_4028_TestCase.java</exclude><!--  see TUSCANY-3380 -->
+              <exclude>**/POL_4003_TestCase.java</exclude><!--  see TUSCANY-3488 -->
+              <exclude>**/POL_4013_TestCase.java</exclude><!--  see TUSCANY-xxxx Doesn't fail for me - SL -->
+              <exclude>**/POL_4028_TestCase.java</exclude><!--  see TUSCANY-xxxx Should now work -->
+              <!-- transaction intents -->
               <exclude>**/POL_9006_TestCase.java</exclude><!--  see TUSCANY-3487-->
               <exclude>**/POL_9009_TestCase.java</exclude><!--  see TUSCANY-3487-->
               <exclude>**/POL_9015_TestCase.java</exclude><!--  see TUSCANY-3487-->
               <exclude>**/POL_9016_TestCase.java</exclude><!--  see TUSCANY-3487-->
               <exclude>**/POL_9017_TestCase.java</exclude><!--  see TUSCANY-3487-->
               <exclude>**/POL_9018_TestCase.java</exclude><!--  see TUSCANY-3487-->
+              <!-- noListener intents -->
               <exclude>**/POL_10001_TestCase.java</exclude><!--  see TUSCANY-xxxx -->
               <exclude>**/POL_10002_TestCase.java</exclude><!--  see TUSCANY-xxxx -->
            </excludes>
