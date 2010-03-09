@@ -76,7 +76,6 @@
            <excludes>
               <exclude>**/POJO_8012_TestCase.java</exclude><!--  see TUSCANY-3483 -->
               <exclude>**/POJO_8003_TestCase.java</exclude><!--  see TUSCANY-3483 -->
-              <exclude>**/POJO_8002_TestCase.java</exclude><!--  see TUSCANY-xxxx -->
            </excludes>
          </configuration>
       </plugin>
