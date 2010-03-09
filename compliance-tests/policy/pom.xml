@@ -51,6 +51,22 @@
         </dependency>
 
         <dependency>
+            <!-- This is need for POL_4013 and POL_4028 when running with Sun JDK which 
+            gets an unsupported operation exception creating an XMLStreamReader from a DOMSource
+            when Tuscany is writing a property value  -->
+            <groupId>org.codehaus.woodstox</groupId>
+            <artifactId>wstx-asl</artifactId>
+            <version>3.2.4</version>
+            <scope>runtime</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>stax</groupId>
+                    <artifactId>stax-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
             <groupId>org.mortbay.jetty</groupId>
             <artifactId>jetty</artifactId>
             <version>6.1.19</version>
@@ -77,7 +93,6 @@
               <exclude>**/POL_3001_TestCase.java</exclude><!--  see TUSCANY-3370 -->
               <exclude>**/POL_3002_TestCase.java</exclude><!--  see TUSCANY-3370 -->
               <exclude>**/POL_4003_TestCase.java</exclude><!--  see TUSCANY-3488 -->
-              <exclude>**/POL_4013_TestCase.java</exclude><!--  see TUSCANY-xxxx - Passes in otest module -->
               <exclude>**/POL_4028_TestCase.java</exclude><!--  see TUSCANY-xxxx - Passes in otest module -->
               <!-- transaction intents -->
               <exclude>**/POL_9006_TestCase.java</exclude><!--  see TUSCANY-3487-->
