@@ -118,7 +118,7 @@ public class DomainRegistryURI {
                         }
                     }
                     if (paramMap.containsKey("multicast")) {
-                        throw new IllegalArgumentException("Cannot have multicast and remotes (for now)");
+//                        throw new IllegalArgumentException("Cannot have multicast and remotes (for now)");
                     } else {
                         this.multicastDisabled = true;
                     }
