@@ -19,10 +19,6 @@
 
 package org.apache.tuscany.sca.endpoint.hazelcast;
 
-import java.net.InetAddress;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
@@ -31,18 +27,12 @@ import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.runtime.EndpointListener;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.junit.Assert;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
-import com.hazelcast.core.IMap;
-
-// Ignore so its not run in the build yet till its working
-@Ignore("Hazelcast doesn't support the map entry management by members")
-public class MultiRegTestCase implements EndpointListener {
+public class MultiRegTestCase {
     private static ExtensionPointRegistry extensionPoints;
     private static AssemblyFactory assemblyFactory;
     private static SCABindingFactory scaBindingFactory;
@@ -57,97 +47,69 @@ public class MultiRegTestCase implements EndpointListener {
 
     @Test
     public void testReplication() throws Exception {
-        RuntimeEndpoint ep1 = createEndpoint("ep1uri");
 
-        String host = InetAddress.getLocalHost().getHostAddress();
-        String bind = null; // "9.65.158.31";
-        String port1 = "8085";
-        String port2 = "8086";
-        String port3 = "8087";
-        String range = "1";
-
-        Map<String, String> attrs1 = new HashMap<String, String>();
-        // attrs1.put("nomcast", "true");
-        attrs1.put("bind", bind);
-        attrs1.put("receiverPort", port1);
-        attrs1.put("receiverAutoBind", range);
-        // attrs1.put("routes", host + ":" + port2 + " " + host + ":" + port3);
-        HazelcastEndpointRegistry reg1 = new HazelcastEndpointRegistry(extensionPoints, attrs1, "tuscany:foo", "bar");
-        reg1.addListener(this);
+        System.out.println("Starting reg1");
+        HazelcastEndpointRegistry reg1 = new HazelcastEndpointRegistry(extensionPoints, null, "tuscany:foo?listen=127.0.0.1:9876&multicast=off", "bar");
         reg1.start();
 
-        Map<String, String> attrs2 = new HashMap<String, String>();
-        // attrs2.put("nomcast", "true");
-        attrs1.put("bind", bind);
-        attrs2.put("receiverPort", port2);
-        attrs2.put("receiverAutoBind", range);
-        // attrs2.put("routes", host + ":"+port1);
-        HazelcastEndpointRegistry reg2 = new HazelcastEndpointRegistry(extensionPoints, attrs2, "tuscany:foo", "bar");
-        reg2.addListener(this);
-        reg2.start();
-
-        Map<String, String> attrs3 = new HashMap<String, String>();
-        // attrs3.put("nomcast", "true");
-        attrs1.put("bind", bind);
-        attrs3.put("receiverPort", port3);
-        attrs3.put("receiverAutoBind", range);
-        // attrs3.put("routes", host + ":"+port1);
-        HazelcastEndpointRegistry reg3 = new HazelcastEndpointRegistry(extensionPoints, attrs3, "tuscany:foo", "bar");
-        reg3.addListener(this);
-        reg3.start();
-
+        System.out.println("Adding ep1");
+        RuntimeEndpoint ep1 = createEndpoint("ep1uri");
         ep1.bind(extensionPoints, reg1);
         reg1.addEndpoint(ep1);
+
+        System.out.println("Starting reg3");
+        HazelcastEndpointRegistry reg2 = new HazelcastEndpointRegistry(extensionPoints, null, "tuscany:foo?listen=127.0.0.1:9877&multicast=off&remotes=127.0.0.1:9876", "bar");
+        reg2.start();
+
+        System.out.println("Starting reg2");
+        HazelcastEndpointRegistry reg3 = new HazelcastEndpointRegistry(extensionPoints, null, "tuscany:foo?listen=127.0.0.1:9878&multicast=off&remotes=127.0.0.1:9877", "bar");
+        reg3.start();
+
         assertExists(reg1, "ep1uri");
         assertExists(reg2, "ep1uri");
         assertExists(reg3, "ep1uri");
 
+        System.out.println("Adding ep2");
         RuntimeEndpoint ep2 = createEndpoint("ep2uri");
         ep2.bind(extensionPoints, reg2);
         reg2.addEndpoint(ep2);
+
         assertExists(reg2, "ep2uri");
         assertExists(reg1, "ep2uri");
         assertExists(reg3, "ep2uri");
         
-        System.out.println(((IMap)reg1.map).localKeySet().size());
-        System.out.println(((IMap)reg2.map).localKeySet().size());
-        System.out.println(((IMap)reg3.map).localKeySet().size());
-
+        System.out.println("Stopping reg1");
         reg1.stop();
-        Thread.sleep(6000);
+        System.out.println("Stopped reg1");
+        Thread.sleep(500);
+
         Assert.assertNull(reg2.getEndpoint("ep1uri"));
         Assert.assertNull(reg3.getEndpoint("ep1uri"));
-
-        System.out.println(((IMap)reg2.map).localKeySet().size());
-        System.out.println(((IMap)reg3.map).localKeySet().size());
 
         assertExists(reg2, "ep2uri");
         assertExists(reg3, "ep2uri");
         
+        System.out.println("Starting reg1");
         reg1.start();
         ep1.bind(extensionPoints, reg1);
+
+        System.out.println("adding ep1");
         reg1.addEndpoint(ep1);
         assertExists(reg1, "ep1uri");
         assertExists(reg2, "ep1uri");
         assertExists(reg3, "ep1uri");
         
+        System.out.println("Stopping reg1");
         reg1.stop();
+        System.out.println("Stopping reg2");
         reg2.stop();
+        System.out.println("Stopping reg3");
         reg3.stop();
-        System.out.println(); // closed
+        System.out.println("done");
     }
 
     private Endpoint assertExists(HazelcastEndpointRegistry reg, String uri) throws InterruptedException {
-        Endpoint ep = null;
-        int count = 0;
-        while (ep == null && count < 15) {
-            ep = reg.getEndpoint(uri);
-            if (ep == null) {
-                Thread.sleep(1000);
-                System.out.println(reg + ": tries=" + count);
-            }
-            count++;
-        }
+        Endpoint ep = reg.getEndpoint(uri);
         Assert.assertNotNull(ep);
         Assert.assertEquals(uri, ep.getURI());
         return ep;
@@ -164,20 +126,4 @@ public class MultiRegTestCase implements EndpointListener {
         return ep;
     }
     
-    private void print(String prefix, Endpoint ep) {
-        System.out.println(prefix + ": "+ep);
-    }
-
-    public void endpointAdded(Endpoint endpoint) {
-        print("Added", endpoint);
-    }
-
-    public void endpointRemoved(Endpoint endpoint) {
-        print("Removed", endpoint);
-    }
-
-    public void endpointUpdated(Endpoint oldEndpoint, Endpoint newEndpoint) {
-        print("Updated", newEndpoint);
-    }
-
 }
