@@ -80,7 +80,7 @@ public class WidgetImplementationProcessor extends BaseStAXArtifactProcessor imp
         WidgetImplementation implementation = null;
 
         // Read the location attribute specifying the location of the resources
-        String location = reader.getAttributeValue(null, "location");
+        String location = getURIString(reader, "location");
         if (location != null) {
             implementation = implementationFactory.createWidgetImplementation();
             implementation.setLocation(location);

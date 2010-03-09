@@ -224,7 +224,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor {
      * @param reader
      */
     protected void readTargets(Reference reference, XMLStreamReader reader) {
-        String value = reader.getAttributeValue(null, TARGET);
+        String value = getURIString(reader, TARGET);
         ComponentService target = null;
         if (value != null) {
             for (StringTokenizer tokens = new StringTokenizer(value); tokens.hasMoreTokens();) {

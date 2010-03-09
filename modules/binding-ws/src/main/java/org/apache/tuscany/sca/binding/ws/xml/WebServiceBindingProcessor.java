@@ -36,6 +36,7 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.tuscany.sca.assembly.xml.PolicySubjectProcessor;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.WebServiceBindingFactory;
+import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
@@ -60,7 +61,7 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
  *
  * @version $Rev$ $Date$
  */
-public class WebServiceBindingProcessor implements StAXArtifactProcessor<WebServiceBinding>, WebServiceConstants {
+public class WebServiceBindingProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<WebServiceBinding>, WebServiceConstants {
 
     private ExtensionPointRegistry extensionPoints;
     private WSDLFactory wsdlFactory;
@@ -135,7 +136,7 @@ public class WebServiceBindingProcessor implements StAXArtifactProcessor<WebServ
         // Read a qname in the form:
         // namespace#wsdl.???(name)
         Boolean wsdlElementIsBinding = null;
-        String wsdlElement = reader.getAttributeValue(null, WSDL_ELEMENT);
+        String wsdlElement = getURIString(reader, WSDL_ELEMENT);
         if (wsdlElement != null) {
             int index = wsdlElement.indexOf('#');
             if (index == -1) {

@@ -28,6 +28,7 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.xml.PolicySubjectProcessor;
+import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
@@ -53,7 +54,7 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
  * Handles a <interface.wsdl ... /> element in a SCDL file
  * @version $Rev$ $Date$
  */
-public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfaceContract>, WSDLConstants {
+public class WSDLInterfaceProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<WSDLInterfaceContract>, WSDLConstants {
 
     private WSDLFactory wsdlFactory;
     private InterfaceContractMapper interfaceContractMapper;
@@ -177,14 +178,14 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
         String location = reader.getAttributeValue(WSDLI_NS, WSDL_LOCATION);
         wsdlInterfaceContract.setLocation(location);
         
-        String uri = reader.getAttributeValue(null, INTERFACE);
+        String uri = getURIString(reader, INTERFACE);
         if (uri != null) {
             WSDLInterface wsdlInterface = createWSDLInterface(uri, monitor);
             if (wsdlInterface != null)
                 wsdlInterfaceContract.setInterface(wsdlInterface);
         }
         
-        uri = reader.getAttributeValue(null, CALLBACK_INTERFACE);
+        uri = getURIString(reader, CALLBACK_INTERFACE);
         if (uri != null) {
             WSDLInterface wsdlCallbackInterface = createWSDLInterface(uri, monitor);
             if (wsdlCallbackInterface != null)

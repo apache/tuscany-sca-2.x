@@ -116,7 +116,7 @@ public class NamespaceImportProcessor extends BaseStAXArtifactProcessor implemen
                                 namespaceImport.setNamespace(ns);
                             }
 
-                            String location = reader.getAttributeValue(null, LOCATION);
+                            String location = getURIString(reader, LOCATION);
                             if (location != null) {
                                 namespaceImport.setLocation(location);
                             }

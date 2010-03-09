@@ -95,7 +95,7 @@ public class DefinitionsProcessor extends BaseStAXArtifactProcessor implements S
                     name = reader.getName();
                     if (DEFINITIONS_QNAME.equals(name)) {
                         definitions = definitionsFactory.createDefinitions();
-                        targetNamespace = reader.getAttributeValue(null, TARGET_NAMESPACE);
+                        targetNamespace = getURIString(reader, TARGET_NAMESPACE);
                         definitions.setTargetNamespace(targetNamespace);
                     } else {
                         Object extension = extensionProcessor.read(reader, context);
