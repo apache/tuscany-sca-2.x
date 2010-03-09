@@ -42,11 +42,11 @@ public class HazelcastClientEndpointRegistry extends HazelcastEndpointRegistry {
 
     @Override
     public void start() {
-        if (map != null) {
+        if (endpointMap != null) {
             throw new IllegalStateException("The registry has already been started");
         }
         initHazelcastClientInstance();
-        map = hazelcastClient.getMap(configURI.getDomainName() + "/Endpoints");
+        endpointMap = hazelcastClient.getMap(configURI.getDomainName() + "/Endpoints");
     }
 
     @Override
@@ -54,7 +54,7 @@ public class HazelcastClientEndpointRegistry extends HazelcastEndpointRegistry {
         if (hazelcastClient != null) {
             hazelcastClient.shutdown();
             hazelcastClient = null;
-            map = null;
+            endpointMap = null;
         }
     }
 
