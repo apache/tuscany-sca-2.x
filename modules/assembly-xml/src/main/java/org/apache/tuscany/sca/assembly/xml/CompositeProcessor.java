@@ -294,7 +294,7 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                                 compositeReference.setName(getString(reader, NAME));
                                 readMultiplicity(compositeReference, reader);
                                 readTargets(compositeReference, reader);
-                                String promote = getURIString(reader, Constants.PROMOTE);
+                                String promote = getString(reader, Constants.PROMOTE);
                                 if (promote != null) {
                                     for (StringTokenizer tokens = new StringTokenizer(promote); tokens.hasMoreTokens();) {
                                         String refName = tokens.nextToken();

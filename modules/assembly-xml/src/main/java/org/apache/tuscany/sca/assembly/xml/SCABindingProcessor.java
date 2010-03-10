@@ -28,6 +28,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
+import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
@@ -45,7 +46,7 @@ import org.apache.tuscany.sca.policy.PolicySubject;
  * @version $Rev$ $Date$
  */
 
-public class SCABindingProcessor implements StAXArtifactProcessor<SCABinding> {
+public class SCABindingProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<SCABinding> {
     private static final String NAME = "name";
     private static final String URI = "uri";
 
@@ -91,7 +92,7 @@ public class SCABindingProcessor implements StAXArtifactProcessor<SCABinding> {
         }
 
         // Read binding URI
-        String uri = reader.getAttributeValue(null, URI);
+        String uri = getURIString(reader, URI);
         if (uri != null) {
             scaBinding.setURI(uri);
         }

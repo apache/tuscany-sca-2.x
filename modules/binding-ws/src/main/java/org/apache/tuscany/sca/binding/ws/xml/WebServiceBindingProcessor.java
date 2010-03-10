@@ -128,7 +128,7 @@ public class WebServiceBindingProcessor extends BaseStAXArtifactProcessor implem
         }
 
         // Read URI
-        String uri = reader.getAttributeValue(null, URI);
+        String uri = getURIString(reader, URI);
         if (uri != null) {
             wsBinding.setURI(uri);
         }

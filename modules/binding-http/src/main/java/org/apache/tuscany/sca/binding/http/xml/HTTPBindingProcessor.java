@@ -84,7 +84,7 @@ public class HTTPBindingProcessor extends BaseStAXArtifactProcessor implements S
                             httpBinding.setName(name);
                         }
 
-                        String uri = getString(reader, URI);
+                        String uri = getURIString(reader, URI);
                         if (uri != null) {
                             httpBinding.setURI(uri);
                         }

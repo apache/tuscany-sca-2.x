@@ -139,7 +139,12 @@ public class DefaultBeanModelProcessor<T> extends BaseAssemblyProcessor implemen
                 String attributeName = reader.getAttributeLocalName(i);
                 Method setter = setterMethods.get(attributeName);
                 if (setter != null) {
-                    String value = reader.getAttributeValue(i);
+                    String value = null;
+                    if (attributeName.equals("uri")){
+                        value = getURIString(reader, "uri");
+                    } else {
+                        value = reader.getAttributeValue(i);
+                    }
                     setter.invoke(model, value);
                 }
             }
