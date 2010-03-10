@@ -68,6 +68,7 @@ public class ReplicatedEndpointRegistry extends BaseEndpointRegistry implements 
     private String address = MULTICAST_ADDRESS;
     private String bind = null;
     private int timeout = 50;
+    private String receiverAddress;
     private int receiverPort = 4000;
     private int receiverAutoBind = 100;
     private List<URI> staticRoutes;
@@ -198,6 +199,7 @@ public class ReplicatedEndpointRegistry extends BaseEndpointRegistry implements 
         if (mcast != null) {
             noMultiCast = Boolean.valueOf(mcast);
         }
+        receiverAddress = attributes.get("receiverAddress");
         String recvPort = attributes.get("receiverPort");
         if (recvPort != null) {
             receiverPort = Integer.parseInt(recvPort);
@@ -225,8 +227,11 @@ public class ReplicatedEndpointRegistry extends BaseEndpointRegistry implements 
         // Configure the receiver ports
         ChannelReceiver receiver = channel.getChannelReceiver();
         if (receiver instanceof ReceiverBase) {
-            ((ReceiverBase)receiver).setAutoBind(receiverAutoBind);
+            if (receiverAddress != null) {
+                ((ReceiverBase)receiver).setAddress(receiverAddress);
+            }
             ((ReceiverBase)receiver).setPort(receiverPort);
+            ((ReceiverBase)receiver).setAutoBind(receiverAutoBind);
         }
 
         /*
