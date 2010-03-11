@@ -408,7 +408,9 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
         for (Intent eprIntent : endpointReference.getRequiredIntents()){
             for (Intent epIntent : endpoint.getRequiredIntents()){ 
                 if (eprIntent.getExcludedIntents().contains(epIntent) ||
-                    epIntent.getExcludedIntents().contains(eprIntent)){
+                    epIntent.getExcludedIntents().contains(eprIntent) ||
+                    checkQualifiedMutualExclusion(eprIntent.getExcludedIntents(), epIntent) ||
+                    checkQualifiedMutualExclusion(epIntent.getExcludedIntents(), eprIntent)){
                     matchAudit.append("No match because the following intents are mutually exclusive " + 
                                       eprIntent.toString() +
                                       " " +
@@ -622,7 +624,18 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
         } else {
             return false;
         }
-    }    
+    }
+    
+    protected boolean checkQualifiedMutualExclusion(List<Intent> excludedIntentList, Intent intent){
+        for (Intent excludedIntent : excludedIntentList){
+            if (intent.getQualifiableIntent() != null &&
+                excludedIntent != null &&
+                intent.getQualifiableIntent().equals(excludedIntent)){
+                return true;
+            }
+        }
+        return false;
+    }      
     
     /**
      * Determine if endpoint reference and endpoint interface contracts match 

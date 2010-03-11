@@ -89,21 +89,33 @@ public class ComponentPolicyBuilderImpl {
         Monitor.error(monitor, this, Messages.ASSEMBLY_VALIDATION, message, messageParameters);
     }
 
+
     /**
      * Inherit the intents and policySets from the list of models
-     * @param ignoreExclusiveIntents TODO
-     * @param models
-     * @param intents
-     * @param policySets
+     * 
+     * @param policySubject - the subject to which intents will be added
+     * @param intentType - choose to copy interaction or implementation intents. Null = both
+     * @param ignoreExclusiveIntents - when set true mutually exclusive intents won't be copied
+     * @param models - the subjects from which intents will be copied
      */
-    protected void inherit(PolicySubject policySubject, boolean ignoreExclusiveIntents, Object... models) {
+    protected void inherit(PolicySubject policySubject, Intent.Type intentType, boolean ignoreExclusiveIntents, Object... models) {
         for (Object model : models) {
             if (model instanceof PolicySubject) {
                 PolicySubject subject = (PolicySubject)model;
 
                 if (!ignoreExclusiveIntents) {
                     // The intents are merged and the exclusion check will be done after
-                    policySubject.getRequiredIntents().addAll(subject.getRequiredIntents());
+                    for (Intent intent : subject.getRequiredIntents()) {
+                        if (!policySubject.getRequiredIntents().contains(intent)){
+                            if (intentType != null) {
+                                if (intent.getType().equals(intentType)){
+                                    policySubject.getRequiredIntents().add(intent);
+                                }
+                            } else {
+                                policySubject.getRequiredIntents().add(intent);
+                            }
+                        }
+                    }
                 } else {
                     Set<Intent> intents = new HashSet<Intent>();
                     for (Intent i1 : subject.getRequiredIntents()) {
@@ -115,7 +127,15 @@ public class ComponentPolicyBuilderImpl {
                             }
                         }
                         if (!exclusive) {
-                            intents.add(i1);
+                            if (!intents.contains(i1)){
+                                if (intentType != null) {
+                                    if (i1.getType().equals(intentType)){
+                                        intents.add(i1);
+                                    }
+                                } else {
+                                    intents.add(i1);
+                                }
+                            }
                         }
                     }
                     policySubject.getRequiredIntents().addAll(intents);
@@ -130,21 +150,21 @@ public class ComponentPolicyBuilderImpl {
         }
     }
 
-    protected void configure(PolicySubject subject1, PolicySubject subject2, BuilderContext context) {
+    protected void configure(PolicySubject subject1, PolicySubject subject2, Intent.Type intentType, BuilderContext context) {
         if (subject1 != null) {
             resolveAndCheck(subject1, context);
         }
         if (subject2 != null) {
             resolveAndCheck(subject2, context);
         }
-        inherit(subject1, false, subject2);
+        inherit(subject1, intentType, false, subject2);
         checkMutualExclusion(subject1, context);
     }
 
     protected void configure(ComponentService componentService, BuilderContext context) {
         Service service = componentService.getService();
         if (service != null) {
-            configure(componentService, service, context);
+            configure(componentService, service, null, context);
             configureBindings(componentService, service, context);
         }
     }
@@ -160,7 +180,7 @@ public class ComponentPolicyBuilderImpl {
         for (Binding binding : componentContract.getBindings()) {
             Binding componentTypeBinding = componentTypeContractBindings.get(binding.getName());
             if (binding instanceof PolicySubject) {
-                inherit((PolicySubject)binding, false, componentTypeBinding, context);
+                inherit((PolicySubject)binding, null, false, componentTypeBinding, context);
             }
         }
     }
@@ -168,35 +188,64 @@ public class ComponentPolicyBuilderImpl {
     protected void configure(ComponentReference componentReference, BuilderContext context) {
         Reference reference = componentReference.getReference();
         if (reference != null) {
-            configure(componentReference, reference, context);
+            configure(componentReference, reference, null, context);
             configureBindings(componentReference, reference, context);
         }
     }
 
     protected void configure(CompositeService compositeService, BuilderContext context) {
-        configure(compositeService, compositeService.getPromotedService(), context);
+        configure(compositeService, compositeService.getPromotedService(), null, context);
     }
 
     protected void configure(CompositeReference compositeReference, BuilderContext context) {
         for (ComponentReference reference : compositeReference.getPromotedReferences()) {
-            configure(compositeReference, reference, context);
+            configure(compositeReference, reference, null, context);
         }
     }
 
     public void configure(Component component, BuilderContext context) {
-        // Inherit the intents and policySets from the componentType
-        configure(component, component.getImplementation(), context);
+        // fix up the component type by copying all implementation level
+        // interaction intents to *all* the component type services
+        for (ComponentService componentService : component.getServices()) {
+            configure(componentService, component.getImplementation(), Intent.Type.interaction, context);
+        }
+        
         // Inherit the intents and policySets from the componentType
         for (ComponentReference componentReference : component.getReferences()) {
             configure(componentReference, context);
         }
+        
         for (ComponentService componentService : component.getServices()) {
             configure(componentService, context);
         }
     }
+    
+    protected boolean checkQualifiedMutualExclusion(List<Intent> excludedIntentList, Intent intent){
+        for (Intent excludedIntent : excludedIntentList){
+            if (intent.getQualifiableIntent() != null &&
+                excludedIntent != null && 
+                intent.getQualifiableIntent().equals(excludedIntent)){
+                return true;
+            }
+        }
+        return false;
+    }    
+    
+    protected boolean checkMutualExclusion(Intent i1, Intent i2, BuilderContext context){
+        if ((i1 != i2) && 
+            (i1.getExcludedIntents().contains(i2) || 
+             i2.getExcludedIntents().contains(i1) ||
+             checkQualifiedMutualExclusion(i1.getExcludedIntents(), i2) ||
+             checkQualifiedMutualExclusion(i2.getExcludedIntents(), i1))) {
+            error(context.getMonitor(), "MutuallyExclusiveIntents", this, i1, i2);
+            return true;
+        }
+        
+        return false;
+    }
 
     /**
-     * Check if a single policy subject requires multually exclusive intents
+     * Check if a single policy subject requires mutually exclusive intents
      * @param subject1 - the policy subject to check
      * @param context - context containing useful things like the monitor instance
      * @return true if the policy subject contains mutually exclusive intents
@@ -207,17 +256,26 @@ public class ComponentPolicyBuilderImpl {
         }
         for (Intent i1 : subject1.getRequiredIntents()) {
             for (Intent i2 : subject1.getRequiredIntents()) {
-                if ((i1 != i2) && (i1.getExcludedIntents().contains(i2) || i2.getExcludedIntents().contains(i1))) {
+                if (checkMutualExclusion(i1, i2, context)){
+                    return true;
+                }
+/*                
+                if ((i1 != i2) && 
+                    (i1.getExcludedIntents().contains(i2) || 
+                     i2.getExcludedIntents().contains(i1) ||
+                     matchQualifiedMutualExclusion(i1.getExcludedIntents(), i2) ||
+                     matchQualifiedMutualExclusion(i2.getExcludedIntents(), i1))) {
                     error(context.getMonitor(), "MutuallyExclusiveIntents", new Object[] {subject1}, i1, i2);
                     return true;
                 }
+*/                
             }
         }
         return false;
     }
 
     /**
-     * Check if two policy subjects requires multually exclusive intents
+     * Check if two policy subjects requires mutually exclusive intents
      * @param subject1
      * @param subject2
      * @param monitor 
@@ -229,10 +287,18 @@ public class ComponentPolicyBuilderImpl {
         }
         for (Intent i1 : subject1.getRequiredIntents()) {
             for (Intent i2 : subject2.getRequiredIntents()) {
-                if (i1.getExcludedIntents().contains(i2) || i2.getExcludedIntents().contains(i1)) {
+                if (checkMutualExclusion(i1, i2, context)){
+                    return true;
+                }
+/*                
+                if (i1.getExcludedIntents().contains(i2) || 
+                    i2.getExcludedIntents().contains(i1) ||
+                    matchQualifiedMutualExclusion(i1.getExcludedIntents(), i2) ||
+                    matchQualifiedMutualExclusion(i2.getExcludedIntents(), i1)) {
                     error(context.getMonitor(), "MutuallyExclusiveIntents", new Object[] {subject1, subject2}, i1, i2);
                     return true;
                 }
+*/                
             }
         }
         return false;
@@ -250,10 +316,15 @@ public class ComponentPolicyBuilderImpl {
             for (int j = i + 1; j < size; j++) {
                 Intent i1 = intents.get(i);
                 Intent i2 = intents.get(j);
+                if (checkMutualExclusion(i1, i2, context)){
+                    return true;
+                }
+/*                
                 if (i1 != i2 && i1.getExcludedIntents().contains(i2) || i2.getExcludedIntents().contains(i1)) {
                     error(context.getMonitor(), "MutuallyExclusiveIntents", subject, i1, i2);
                     return true;
                 }
+*/                
             }
         }
         return false;

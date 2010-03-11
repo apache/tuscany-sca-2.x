@@ -64,4 +64,8 @@
     <policySet name="ClientAuthenticationTransportPolicy" 
                provides="sca:clientAuthentication.transport" 
                appliesTo="//binding | //implementation"/>  
+               
+    <policySet name="IntegrityTransportPolicy" 
+               provides="sca:integrity.transport" 
+               appliesTo="//binding | //implementation"/>                
 </definitions>

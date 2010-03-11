@@ -77,7 +77,7 @@ public class CompositePolicyBuilderImpl extends ComponentPolicyBuilderImpl imple
                 
                 try {
                     Implementation implementation = component.getImplementation();
-
+                    
                     for (ComponentService componentService : component.getServices()) {
                         monitor.pushContext("Service: " + componentService.getName());
 
@@ -94,12 +94,14 @@ public class CompositePolicyBuilderImpl extends ComponentPolicyBuilderImpl imple
                             for (Endpoint ep : componentService.getEndpoints()) {
                                 if (componentService.getInterfaceContract() != null) {
                                     // Inherit from the component.service.interface
-                                    inherit(ep, true, componentService.getInterfaceContract().getInterface());
+                                    inherit(ep, null, true, componentService.getInterfaceContract().getInterface());
                                 }
+                                
                                 // Inherit from composite/component/service
-                                inherit(ep, true, composite, ep.getComponent(), ep.getService());
+                                inherit(ep, null, true, composite, ep.getComponent(), ep.getService());
+                                
                                 // Inherit from binding
-                                inherit(ep, true, ep.getBinding());
+                                inherit(ep, null, true, ep.getBinding());
 
                                 // Replace profile intents with their required intents
                                 // Remove the intents whose @contraints do not include the current element
@@ -131,12 +133,14 @@ public class CompositePolicyBuilderImpl extends ComponentPolicyBuilderImpl imple
 
                                 // Inherit from the component.reference.interface
                                 if (componentReference.getInterfaceContract() != null) {
-                                    inherit(epr, true, componentReference.getInterfaceContract().getInterface());
+                                    inherit(epr, null, true, componentReference.getInterfaceContract().getInterface());
                                 }
 
-                                // Inherit from composite/component/reference/binding
-                                inherit(epr, true, composite, epr.getComponent(), epr.getReference());
-                                inherit(epr, true, epr.getBinding());
+                                // Inherit from composite/component/reference
+                                inherit(epr, null, true, composite, epr.getComponent(), epr.getReference());
+                                
+                                // Inherit from binding
+                                inherit(epr, null, true, epr.getBinding());
 
                                 // Replace profile intents with their required intents
                                 // Remove the intents whose @contraints do not include the current element
@@ -153,12 +157,12 @@ public class CompositePolicyBuilderImpl extends ComponentPolicyBuilderImpl imple
                     }
 
                     if (implementation instanceof Composite) {
-                        inherit(implementation, true, component, composite);
+                        inherit(implementation, null, true, component, composite);
                         computePolicies((Composite)implementation, context);
                     } else {
                         resolveAndCheck(implementation, context);
                         if (implementation != null) {
-                            inherit(implementation, true, component, composite);
+                            inherit(implementation, null, true, component, composite);
                         }
                     }
                 } finally {

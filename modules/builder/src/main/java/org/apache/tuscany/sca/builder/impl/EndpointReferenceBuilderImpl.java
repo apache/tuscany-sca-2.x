@@ -271,6 +271,18 @@ public class EndpointReferenceBuilderImpl {
                     endpointRef.setTargetEndpoint(createEndpoint(component, target.getName()));
                     endpointRef.setStatus(EndpointReference.Status.WIRED_TARGET_NOT_FOUND);
                     reference.getEndpointReferences().add(endpointRef);
+                    
+                    // There is a special case where the user has defined policies on a 
+                    // non-targetted, i.e. no URI, binding.sca in order to control the 
+                    // intended QoS of the wire when matching takes place. If any other 
+                    // bindings are specified then the test later on will complain about
+                    // mixing targts with bindings
+                    if (reference.getBindings().size() == 1){
+                        Binding binding = reference.getBindings().get(0);
+                        if ((binding instanceof SCABinding) && (binding.getURI() == null)){
+                            endpointRef.setBinding(binding);
+                        }
+                    }
                 }
             } 
     
