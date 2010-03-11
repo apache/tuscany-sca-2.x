@@ -102,6 +102,17 @@ public class DefaultProviderFactoryExtensionPoint implements ProviderFactoryExte
         loadProviderFactories();
         return policyProviderFactories;
     }
+    
+    public <P extends ProviderFactory> Collection<P> getProviderFactories(Class<P> factoryType) {
+        loadProviderFactories();
+        List<P> factories = new ArrayList<P>();
+        for (ProviderFactory pf : providerFactories.values()) {
+            if (factoryType.isInstance(pf)) {
+                factories.add(factoryType.cast(pf));
+            }
+        }
+        return factories;
+    }
 
     /**
      * Load provider factories declared under META-INF/services.

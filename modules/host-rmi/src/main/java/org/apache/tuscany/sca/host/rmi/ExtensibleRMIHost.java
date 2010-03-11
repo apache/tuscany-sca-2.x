@@ -35,16 +35,16 @@ public class ExtensibleRMIHost implements RMIHost {
         this.rmiHosts = rmiHosts;
     }
 
-    public void registerService(String uri, Remote serviceObject) throws RMIHostException, RMIHostRuntimeException {
+    public String registerService(String uri, Remote serviceObject) throws RMIHostException, RMIHostRuntimeException {
         if (rmiHosts.getRMIHosts().isEmpty()) {
-            throw new RMIHostException("No RMI host available");
+            throw new RMIHostException("No RMI host is available");
         }
-        getDefaultHost().registerService(uri, serviceObject);
+        return getDefaultHost().registerService(uri, serviceObject);
     }
 
     public void unregisterService(String uri) throws RMIHostException, RMIHostRuntimeException {
         if (rmiHosts.getRMIHosts().isEmpty()) {
-            throw new RMIHostException("No RMI host available");
+            throw new RMIHostException("No RMI host is available");
         }
         getDefaultHost().unregisterService(uri);
     }

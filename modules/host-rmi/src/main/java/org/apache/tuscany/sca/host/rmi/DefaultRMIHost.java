@@ -19,7 +19,9 @@
 
 package org.apache.tuscany.sca.host.rmi;
 
+import java.net.InetAddress;
 import java.net.URI;
+import java.net.UnknownHostException;
 import java.rmi.AlreadyBoundException;
 import java.rmi.NoSuchObjectException;
 import java.rmi.NotBoundException;
@@ -53,7 +55,7 @@ public class DefaultRMIHost implements RMIHost {
         this.socketFactory = new RMISocketFactoryImpl(CONNECTION_TIMEOUT);
     }
     
-    public void registerService(String uri, Remote serviceObject) throws RMIHostException, RMIHostRuntimeException {
+    public String registerService(String uri, Remote serviceObject) throws RMIHostException, RMIHostRuntimeException {
         RMIURI rmiURI = new RMIURI(uri);
 
         Registry registry;
@@ -69,6 +71,7 @@ public class DefaultRMIHost implements RMIHost {
             }
             registry.bind(rmiURI.serviceName, serviceObject);
             logger.info("RMI service registered: " + rmiURI);
+            return rmiURI.toString();
         } catch (AlreadyBoundException e) {
             throw new RMIHostException(e);
         } catch (RemoteException e) {
@@ -134,11 +137,14 @@ public class DefaultRMIHost implements RMIHost {
         private String serviceName;
 
         private RMIURI(String uriStr) {
-            this.uriStr = uriStr;
             URI uri = URI.create(uriStr);
             host = uri.getHost();
             if (host == null) {
-                host = "localhost";
+                try {
+                    host = InetAddress.getLocalHost().getHostName();
+                } catch (UnknownHostException e) {
+                    host = "localhost";
+                }
             }
             port = uri.getPort();
             if (port <= 0) {
@@ -149,6 +155,7 @@ public class DefaultRMIHost implements RMIHost {
                 path = path.substring(1);
             }
             serviceName = path;
+            this.uriStr = "rmi://" + host + ":" + port + "/" + serviceName;
         }
 
         public String toString() {

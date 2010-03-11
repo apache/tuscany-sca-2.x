@@ -34,10 +34,11 @@ public interface RMIHost {
      *
      * @param uri the URI against which the server is to be registered
      * @param serviceObject the server object to be registered
+     * @return TODO
      * @throws RMIHostException
      * @throws RMIHostRuntimeException
      */
-    void registerService(String uri, Remote serviceObject) throws RMIHostException, RMIHostRuntimeException;
+    String registerService(String uri, Remote serviceObject) throws RMIHostException, RMIHostRuntimeException;
 
     /**
      * Unregister a service registered under the given service name and port number

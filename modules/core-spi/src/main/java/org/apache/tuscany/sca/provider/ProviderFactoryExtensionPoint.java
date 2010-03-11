@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.provider;
 
+import java.util.Collection;
 import java.util.List;
 
 
@@ -59,5 +60,14 @@ public interface ProviderFactoryExtensionPoint {
      * @return a list of registered PolicyProviderFactory
      */
     List<PolicyProviderFactory> getPolicyProviderFactories();
+    
+    /**
+     * Get a collection of provider factories by the factory type 
+     * @param <P>
+     * @param factoryType The factory type such as BindingProviderFactory
+     * @return a collection of provider factories of the factory type
+     */
+    <P extends ProviderFactory> Collection<P> getProviderFactories(Class<P> factoryType);
+
     
 }
