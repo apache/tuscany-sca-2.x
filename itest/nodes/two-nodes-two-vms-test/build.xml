@@ -27,7 +27,7 @@
             </daemons>
       	
             <sequential>
-                <sleep seconds="5"/>
+                <sleep seconds="10"/>
                 <ant antfile="client.xml"/>
             </sequential>
 
