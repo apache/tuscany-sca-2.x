@@ -34,8 +34,6 @@ public class Service {
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        System.setProperty("org.apache.tuscany.sca.binding.sca.provider.SCABindingMapper.mappedBinding", RMIBinding.TYPE.toString());
-
         serviceNode = NodeFactory.newInstance().createNode(URI.create("tuscany:default"), "../helloworld-service/target/classes");
         serviceNode.start();
     }
@@ -51,7 +49,6 @@ public class Service {
         if (serviceNode != null) {
             serviceNode.stop();
         }
-        System.clearProperty("org.apache.tuscany.sca.binding.sca.provider.SCABindingMapper.mappedBinding");
     } 
     
     public static void main(String[] args) throws Exception {

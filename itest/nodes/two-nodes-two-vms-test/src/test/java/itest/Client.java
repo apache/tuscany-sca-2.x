@@ -36,7 +36,6 @@ public class Client {
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        System.setProperty("org.apache.tuscany.sca.binding.sca.provider.SCABindingMapper.mappedBinding", RMIBinding.TYPE.toString());
         NodeFactory factory = NodeFactory.newInstance();
 
         clientNode = factory.createNode(new File("client-config.xml").toURI().toURL());
@@ -61,8 +60,6 @@ public class Client {
         if (clientNode != null) {
             clientNode.stop();
         }
-        System.clearProperty("org.apache.tuscany.sca.binding.sca.provider.SCABindingMapper.mappedBinding");
-
     }
     
     public static void main(String[] args) throws Exception {
