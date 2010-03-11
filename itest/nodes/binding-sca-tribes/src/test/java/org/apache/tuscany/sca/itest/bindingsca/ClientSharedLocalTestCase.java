@@ -36,7 +36,7 @@ public class ClientSharedLocalTestCase {
     public static void setUpBeforeClass() throws Exception {
         runner =
             new TestCaseRunner(ServiceNode.class, Remote.class.getName(), RemoteServiceImpl.class.getName(),
-                               Customer.class.getName());
+                               Customer.class.getName(), CustomerNotFoundException.class.getName());
         runner.beforeClass();
         client = new SCAClientImpl(BindingSCATestCase.DOMAIN_URI);
         Thread.sleep(1000);
@@ -46,6 +46,12 @@ public class ClientSharedLocalTestCase {
     public void testClient() throws Exception {
         BindingSCATestCase.runClient(client);
     }
+    
+    @Test
+    public void testClientNotFound() throws Exception {
+        BindingSCATestCase.runClientNotFound(client);
+    }
+
 
     @AfterClass
     public static void tearDownAfterClass() throws Exception {

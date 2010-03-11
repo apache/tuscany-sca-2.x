@@ -49,6 +49,7 @@ import org.apache.tuscany.sca.databinding.TransformerExtensionPoint;
 import org.apache.tuscany.sca.databinding.javabeans.JavaBeansDataBinding;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.FaultExceptionMapper;
+import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.util.FaultException;
@@ -67,6 +68,7 @@ public class MediatorImpl implements Mediator {
     private ExtensionPointRegistry registry;
     private DataBindingExtensionPoint dataBindings;
     private TransformerExtensionPoint transformers;
+    private InterfaceContractMapper interfaceContractMapper;
     private FaultExceptionMapper faultExceptionMapper;
 
     MediatorImpl(DataBindingExtensionPoint dataBindings, TransformerExtensionPoint transformers) {
@@ -78,8 +80,9 @@ public class MediatorImpl implements Mediator {
         this.registry = registry;
         this.dataBindings = registry.getExtensionPoint(DataBindingExtensionPoint.class);
         this.transformers = registry.getExtensionPoint(TransformerExtensionPoint.class);
-        this.faultExceptionMapper =
-            registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(FaultExceptionMapper.class);
+        UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
+        this.interfaceContractMapper = utilities.getUtility(InterfaceContractMapper.class);
+        this.faultExceptionMapper = utilities.getUtility(FaultExceptionMapper.class);
 
     }
 
@@ -207,6 +210,11 @@ public class MediatorImpl implements Mediator {
         return transformers;
     }
 
+    /**
+     * Find the fault data type behind the exception data type
+     * @param exceptionType The exception data type
+     * @return The fault data type
+     */
     private DataType getFaultType(DataType exceptionType) {
         return exceptionType == null ? null : (DataType)exceptionType.getLogical();
     }
@@ -277,30 +285,11 @@ public class MediatorImpl implements Mediator {
         if (result instanceof InvocationTargetException) {
             result = ((InvocationTargetException)result).getCause();
         }
-        DataType targetDataType = null;
-        for (DataType exType : targetOperation.getFaultTypes()) {
-            if (((Class)exType.getPhysical()).isInstance(result)) {
-                if (result instanceof FaultException) {
-                    DataType faultType = (DataType)exType.getLogical();
-                    if (((FaultException)result).isMatchingType(faultType.getLogical())) {
-                        targetDataType = exType;
-                        break;
-                    }
-                } else {
-                    targetDataType = exType;
-                    break;
-                }
-            }
-        }
-
-        /*
-        if (targetDataType == null) {
-            // Not a business exception
-            return resultMsg;
-        }
-        */
-
+        
+        DataType targetDataType = findFaultDataType(targetOperation, result);
         DataType targetFaultType = getFaultType(targetDataType);
+
+
         if (targetFaultType == null) {
             // No matching fault type, it's a system exception
             Throwable cause = (Throwable)result;
@@ -343,6 +332,31 @@ public class MediatorImpl implements Mediator {
 
         return newResult;
 
+    }
+
+    /**
+     * Look up the fault data type that matches the fault or exception instance 
+     * @param operation The operation
+     * @param faultOrException The fault or exception
+     * @return The matching fault data type
+     */
+    private DataType findFaultDataType(Operation operation, Object faultOrException) {
+        DataType targetDataType = null;
+        for (DataType exType : operation.getFaultTypes()) {
+            if (((Class)exType.getPhysical()).isInstance(faultOrException)) {
+                if (faultOrException instanceof FaultException) {
+                    DataType faultType = (DataType)exType.getLogical();
+                    if (((FaultException)faultOrException).isMatchingType(faultType.getLogical())) {
+                        targetDataType = exType;
+                        break;
+                    }
+                } else {
+                    targetDataType = exType;
+                    break;
+                }
+            }
+        }
+        return targetDataType;
     }
 
     private boolean typesMatch(Object first, Object second) {
@@ -525,14 +539,14 @@ public class MediatorImpl implements Mediator {
      * @return the copy
      */
     public Object copyInput(Object input, Operation operation) {
-        return copyInput(input, operation, null);
+        return copyInput(input, operation, operation);
     }
-    public Object copyInput(Object input, Operation operation, Operation targetOperation) {
+    public Object copyInput(Object input, Operation sourceOperation, Operation targetOperation) {
         if (input == null) {
             return null;
         }
         Object[] data = (input instanceof Object[]) ? (Object[])input : new Object[] {input};
-        List<DataType> inputTypes = operation.getInputType().getLogical();
+        List<DataType> inputTypes = sourceOperation.getInputType().getLogical();
         List<DataType> inputTypesTarget = targetOperation == null ? null : targetOperation.getInputType().getLogical();
         Object[] copy = new Object[data.length];
         Map<Object, Object> map = new IdentityHashMap<Object, Object>();
@@ -545,7 +559,12 @@ public class MediatorImpl implements Mediator {
                 if (copiedArg != null) {
                     copy[i] = copiedArg;
                 } else {
-                    copiedArg = copy(arg, inputTypes.get(i), inputTypesTarget == null ? null : inputTypesTarget.get(i));
+                    copiedArg =
+                        copy(arg,
+                             inputTypes.get(i),
+                             inputTypesTarget == null ? null : inputTypesTarget.get(i),
+                             sourceOperation,
+                             targetOperation);
                     map.put(arg, copiedArg);
                     copy[i] = copiedArg;
                 }
@@ -555,42 +574,55 @@ public class MediatorImpl implements Mediator {
     }
 
     public Object copyOutput(Object data, Operation operation) {
-        return copyOutput(data, operation, null);
+        return copyOutput(data, operation, operation);
     }
-    public Object copyOutput(Object data, Operation operation, Operation targetOperation) {
-        return copy(data, operation.getOutputType(), targetOperation.getOutputType(), operation, targetOperation);
+    
+    public Object copyOutput(Object data, Operation sourceOperation, Operation targetOperation) {
+        return copy(data, targetOperation.getOutputType(), sourceOperation.getOutputType(), targetOperation, sourceOperation);
     }
 
     public Object copyFault(Object fault, Operation operation) {
-        return copyFault(fault, operation, null);
+        return copyFault(fault, operation, operation);
     }
-    public Object copyFault(Object fault, Operation operation, Operation targetOperation) {
+    
+    public Object copyFault(Object fault, Operation sourceOperation, Operation targetOperation) {
         if (faultExceptionMapper == null) {
             return fault;
         }
-        List<DataType> fts = operation.getFaultTypes();
-        for (int i=0; i<fts.size(); i++) {
+        List<DataType> fts = targetOperation.getFaultTypes();
+        for (int i = 0; i < fts.size(); i++) {
             DataType et = fts.get(i); 
             if (et.getPhysical().isInstance(fault)) {
                 Throwable ex = (Throwable)fault;
-                DataType<DataType> exType =
-                    new DataTypeImpl<DataType>(ex.getClass(), new DataTypeImpl<XMLType>(ex.getClass(), XMLType.UNKNOWN));
-                faultExceptionMapper.introspectFaultDataType(exType, operation, false);
-                DataType faultType = exType.getLogical();
-                Object faultInfo = faultExceptionMapper.getFaultInfo(ex, faultType.getPhysical(), operation);
-                DataType targetFaultType;
-                try {
-                    targetFaultType = (DataType)faultType.clone();
-                } catch (CloneNotSupportedException e) {
-                    throw new IllegalStateException(e);
-                }
-                targetFaultType.setPhysical(targetOperation.getFaultTypes().get(i).getPhysical());
-                faultInfo = copy(faultInfo, faultType, targetFaultType);
-                fault = faultExceptionMapper.wrapFaultInfo(exType, ex.getMessage(), faultInfo, ex.getCause(), operation);
+                DataType<DataType> exType = findFaultDataType(targetOperation, fault);
+                DataType faultType = getFaultType(exType);
+                Object faultInfo = faultExceptionMapper.getFaultInfo(ex, faultType.getPhysical(), targetOperation);
+                DataType targetExType = findSourceFaultDataType(sourceOperation, exType);
+                DataType targetFaultType = getFaultType(targetExType);
+                faultInfo = copy(faultInfo, faultType, targetFaultType, targetOperation, sourceOperation);
+                fault = faultExceptionMapper.wrapFaultInfo(targetExType, ex.getMessage(), faultInfo, ex.getCause(), sourceOperation);
                 return fault;
             }
         }
         return fault;
+    }
+    
+    /**
+     * Lookup a fault data type from the source operation which matches the target fault data type
+     * @param sourceOperation The source operation
+     * @param targetExceptionType The target fault data type
+     * @return The matching source target fault type
+     */
+    private DataType findSourceFaultDataType(Operation sourceOperation, DataType targetExceptionType) {
+        boolean remotable = sourceOperation.getInterface().isRemotable();
+        DataType targetFaultType = getFaultType(targetExceptionType);
+        for (DataType dt : sourceOperation.getFaultTypes()) {
+            DataType sourceFaultType = getFaultType(dt);
+            if (interfaceContractMapper.isCompatible(targetFaultType, sourceFaultType, remotable)) {
+                return dt;
+            }
+        }
+        return null;
     }
 
 }

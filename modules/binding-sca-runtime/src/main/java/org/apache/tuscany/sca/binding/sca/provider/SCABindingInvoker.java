@@ -78,10 +78,10 @@ public class SCABindingInvoker implements Interceptor, DataExchangeSemantics {
         if (passByValue) {
             // Note source and target operation swapped so result is in source class loader
             if (resultMsg.isFault()) {
-                resultMsg.setFaultBody(mediator.copyFault(resultMsg.getBody(), targetOperation, sourceOperation));
+                resultMsg.setFaultBody(mediator.copyFault(resultMsg.getBody(), sourceOperation, targetOperation));
             } else {
                 if (sourceOperation.getOutputType() != null) {
-                    resultMsg.setBody(mediator.copyOutput(resultMsg.getBody(), targetOperation, sourceOperation));
+                    resultMsg.setBody(mediator.copyOutput(resultMsg.getBody(), sourceOperation, targetOperation));
                 }
             }
         }

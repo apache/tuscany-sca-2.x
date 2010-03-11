@@ -19,18 +19,46 @@
 
 package org.apache.tuscany.sca.itest.bindingsca;
 
-import org.oasisopen.sca.annotation.Remotable;
-
 /**
  * 
  */
-@Remotable
-public interface Remote {
-    String generateId();
+public class CustomerNotFoundException extends Exception {
+    private String customerId;
 
-    String getId(Customer customer);
+    /**
+     * 
+     */
+    public CustomerNotFoundException() {
+    }
 
-    Customer getCustomer(String id) throws CustomerNotFoundException;
+    /**
+     * @param message
+     */
+    public CustomerNotFoundException(String message) {
+        super(message);
+    }
 
-    Customer createCustomer(String id, String name);
+    /**
+     * @param cause
+     */
+    public CustomerNotFoundException(Throwable cause) {
+        super(cause);
+    }
+
+    /**
+     * @param message
+     * @param cause
+     */
+    public CustomerNotFoundException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public String getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(String customerId) {
+        this.customerId = customerId;
+    }
+
 }

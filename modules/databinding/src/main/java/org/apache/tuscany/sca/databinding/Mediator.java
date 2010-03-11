@@ -132,10 +132,11 @@ public interface Mediator {
 
     /**
      * Copy an array of data objects passed to an operation
-     * @param data array of objects to copy
+     * @param sourceOperation The source operation
+     * @param targetOperation The target operation
      * @return the copy
      */
-    public Object copyInput(Object input, Operation operation, Operation targetOperation);
+    public Object copyInput(Object input, Operation sourceOperation, Operation targetOperation);
 
     /**
      * Copy the output data
@@ -146,13 +147,13 @@ public interface Mediator {
     Object copyOutput(Object data, Operation operation);
 
     /**
-     * Copy the output data
+     * Copy the output data from target operation into source operation
      * @param data The orginal output
-     * @param operation The operation
+     * @param sourceOperation The operation
      * @param targetOperation The target operation
      * @return The copy
      */
-    Object copyOutput(Object data, Operation operation, Operation targetOperation);
+    Object copyOutput(Object data, Operation sourceOperation, Operation targetOperation);
 
     /**
      * Copy the fault data
@@ -163,13 +164,13 @@ public interface Mediator {
     Object copyFault(Object fault, Operation operation);
 
     /**
-     * Copy the fault data
+     * Copy the fault data from target operation into source operation
      * @param fault The orginal fault data
-     * @param operation The operation
+     * @param sourceOperation The operation
      * @param targetOperation The target operation
      * @return The copy
      */
-    Object copyFault(Object fault, Operation operation, Operation targetOperation);
+    Object copyFault(Object fault, Operation sourceOperation, Operation targetOperation);
 
     /**
      * Get the DataBindings used by this mediator.

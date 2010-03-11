@@ -37,7 +37,12 @@ public class SCAClientImpl implements Client {
     }
 
     public String getName(String id) {
-        Customer customer = remote.getCustomer(id);
+        Customer customer = null;
+        try {
+            customer = remote.getCustomer(id);
+        } catch (CustomerNotFoundException e) {
+            return null;
+        }
         customer.dump("Client.getName()");
         return local.getName(customer);
     }
