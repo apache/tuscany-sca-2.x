@@ -74,7 +74,7 @@
          <artifactId>maven-surefire-plugin</artifactId>
          <configuration>
            <excludes>
-              <exclude>**/ASM_6015_TestCase.java</exclude><!--  see TUSCANY-xxxx -->
+              <exclude>**/ASM_6015_TestCase.java</exclude><!--  see TUSCANY-3481 -->
            </excludes>
          </configuration>
       </plugin>
