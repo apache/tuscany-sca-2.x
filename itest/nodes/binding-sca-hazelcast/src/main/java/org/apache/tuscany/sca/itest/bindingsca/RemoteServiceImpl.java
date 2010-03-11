@@ -45,8 +45,13 @@ public class RemoteServiceImpl implements Remote {
         return customer.getId();
     }
 
-    public Customer getCustomer(String id) {
+    public Customer getCustomer(String id) throws CustomerNotFoundException {
         Customer customer = customers.get(id);
+        if (customer == null) {
+            CustomerNotFoundException ex = new CustomerNotFoundException("Customer not found");
+            ex.setCustomerId(id);
+            throw ex;
+        }
         customer.dump("Remote.getCustomer()");
         return customer;
     }

@@ -134,6 +134,11 @@ public class BindingSCATestCase {
         String id = client.create("Ray");
         Assert.assertEquals("Ray", client.getName(id));
     }
+    
+    static void runClientNotFound(Client client) {
+        String id = "not-there";
+        Assert.assertNull(client.getName(id));
+    }
 
     static String createCustomer(Node node) {
         Client client = node.getService(Client.class, "ClientComponent/Client");
