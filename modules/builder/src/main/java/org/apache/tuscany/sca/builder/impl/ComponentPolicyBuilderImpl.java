@@ -220,6 +220,24 @@ public class ComponentPolicyBuilderImpl {
         }
     }
     
+    /**
+     * Checks if any qualifiable intents of intents in an excluded intent list match 
+     * with a second intent. looking for the case where 
+     * 
+     *  <intent name="intentA" excludes="intentB"/>
+     *  <intent name="intentB" >
+     *      <sca:qualifier name="q1" default="true"/>
+     *      <sca:qualifier name="q2" default="true"/>
+     *  </intent>
+     *  
+     *  And were
+     *  
+     *  requires="intentA intentB.q1" appears on an element
+     *  
+     * @param excludedIntentList
+     * @param intent
+     * @return
+     */
     protected boolean checkQualifiedMutualExclusion(List<Intent> excludedIntentList, Intent intent){
         for (Intent excludedIntent : excludedIntentList){
             if (intent.getQualifiableIntent() != null &&
@@ -231,6 +249,14 @@ public class ComponentPolicyBuilderImpl {
         return false;
     }    
     
+    /**
+     * Check if two intents are mutually exclusive
+     * 
+     * @param i1
+     * @param i2
+     * @param context
+     * @return
+     */
     protected boolean checkMutualExclusion(Intent i1, Intent i2, BuilderContext context){
         if ((i1 != i2) && 
             (i1.getExcludedIntents().contains(i2) || 
@@ -258,17 +284,7 @@ public class ComponentPolicyBuilderImpl {
             for (Intent i2 : subject1.getRequiredIntents()) {
                 if (checkMutualExclusion(i1, i2, context)){
                     return true;
-                }
-/*                
-                if ((i1 != i2) && 
-                    (i1.getExcludedIntents().contains(i2) || 
-                     i2.getExcludedIntents().contains(i1) ||
-                     matchQualifiedMutualExclusion(i1.getExcludedIntents(), i2) ||
-                     matchQualifiedMutualExclusion(i2.getExcludedIntents(), i1))) {
-                    error(context.getMonitor(), "MutuallyExclusiveIntents", new Object[] {subject1}, i1, i2);
-                    return true;
-                }
-*/                
+                }              
             }
         }
         return false;
@@ -289,16 +305,7 @@ public class ComponentPolicyBuilderImpl {
             for (Intent i2 : subject2.getRequiredIntents()) {
                 if (checkMutualExclusion(i1, i2, context)){
                     return true;
-                }
-/*                
-                if (i1.getExcludedIntents().contains(i2) || 
-                    i2.getExcludedIntents().contains(i1) ||
-                    matchQualifiedMutualExclusion(i1.getExcludedIntents(), i2) ||
-                    matchQualifiedMutualExclusion(i2.getExcludedIntents(), i1)) {
-                    error(context.getMonitor(), "MutuallyExclusiveIntents", new Object[] {subject1, subject2}, i1, i2);
-                    return true;
-                }
-*/                
+                }               
             }
         }
         return false;
@@ -318,13 +325,7 @@ public class ComponentPolicyBuilderImpl {
                 Intent i2 = intents.get(j);
                 if (checkMutualExclusion(i1, i2, context)){
                     return true;
-                }
-/*                
-                if (i1 != i2 && i1.getExcludedIntents().contains(i2) || i2.getExcludedIntents().contains(i1)) {
-                    error(context.getMonitor(), "MutuallyExclusiveIntents", subject, i1, i2);
-                    return true;
-                }
-*/                
+                }               
             }
         }
         return false;
