@@ -327,8 +327,9 @@ public class EmbeddedODEServer {
     	odeProperties.put("ode.scheduler.staleInterval", "100000" );
     	
         SimpleScheduler scheduler = new SimpleScheduler(new GUID().toString(),
-        		                                        new JdbcDelegate(_db.getDataSource()),
+        		                                new JdbcDelegate(_db.getDataSource()),
                                                         odeProperties );
+        scheduler.setExecutorService(_executorService);
         scheduler.setTransactionManager(_txMgr);
 
         return scheduler;
