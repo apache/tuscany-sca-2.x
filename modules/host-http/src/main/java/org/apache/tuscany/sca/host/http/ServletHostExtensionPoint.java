@@ -26,6 +26,17 @@ import java.util.List;
  * @version $Rev$ $Date$
  */
 public interface ServletHostExtensionPoint {
+    /**
+     * Test if it's inside a web application
+     * @return
+     */
+    boolean isWebApp();
+
+    /**
+     * Set the flag to indicate it's inside a web application
+     * @param webApp
+     */
+    void setWebApp(boolean webApp);
 
     /**
      * Adds a Servlet host extension.

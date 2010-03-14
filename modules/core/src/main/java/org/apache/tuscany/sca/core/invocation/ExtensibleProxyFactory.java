@@ -21,6 +21,8 @@ package org.apache.tuscany.sca.core.invocation;
 
 import java.util.List;
 
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.runtime.Invocable;
 import org.oasisopen.sca.ServiceReference;
 
@@ -35,6 +37,15 @@ public class ExtensibleProxyFactory implements ProxyFactory {
 
     public ExtensibleProxyFactory(ProxyFactoryExtensionPoint proxyFactories) {
         this.proxyFactories = proxyFactories;
+    }
+    
+    public ExtensibleProxyFactory(ExtensionPointRegistry registry) {
+        this.proxyFactories = registry.getExtensionPoint(ProxyFactoryExtensionPoint.class);
+    }
+    
+    public static ExtensibleProxyFactory getInstance(ExtensionPointRegistry registry) {
+        UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
+        return utilities.getUtility(ExtensibleProxyFactory.class);
     }
     
     /**

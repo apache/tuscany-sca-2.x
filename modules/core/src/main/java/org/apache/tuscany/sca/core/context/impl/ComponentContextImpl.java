@@ -43,7 +43,6 @@ import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.invocation.ExtensibleProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
-import org.apache.tuscany.sca.core.invocation.ProxyFactoryExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
@@ -92,7 +91,7 @@ public class ComponentContextImpl implements RuntimeComponentContext {
 
         this.requestContextFactory =
             registry.getExtensionPoint(ContextFactoryExtensionPoint.class).getFactory(RequestContextFactory.class);
-        this.proxyFactory = new ExtensibleProxyFactory(registry.getExtensionPoint(ProxyFactoryExtensionPoint.class));
+        this.proxyFactory = ExtensibleProxyFactory.getInstance(registry);
         this.propertyFactory = factories.getFactory(PropertyValueFactory.class);
 
         this.eprBinder = utilities.getUtility(EndpointReferenceBinder.class);

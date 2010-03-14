@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.ConnectException;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.net.URL;
 
@@ -41,6 +42,7 @@ import junit.framework.TestCase;
 import org.apache.tuscany.sca.host.http.DefaultResourceServlet;
 import org.apache.tuscany.sca.work.NotificationListener;
 import org.apache.tuscany.sca.work.WorkScheduler;
+import org.junit.Assert;
 
 /**
  * @version $Rev$ $Date$
@@ -97,6 +99,30 @@ public class JettyServerTestCase extends TestCase {
         read(client);
         service.stop();
         assertTrue(servlet.invoked);
+    }
+    
+    /**
+     * Verifies requests are properly routed according to the Servlet mapping
+     */
+    public void testDeployedURI() throws Exception {
+        JettyServer service = new JettyServer(workScheduler);
+        service.setDefaultPort(8085);
+        service.start();
+        TestServlet servlet = new TestServlet();
+        String host = InetAddress.getLocalHost().getHostAddress();
+        String hostName = InetAddress.getLocalHost().getHostName();
+        String url1 = service.addServletMapping("/MyService", servlet);
+        Assert.assertEquals("http://" + host + ":8085/MyService", url1);
+        String url2 = service.addServletMapping("http://localhost:8086/MyService", servlet);
+        Assert.assertEquals("http://localhost:8086/MyService", url2);
+        String url3 = service.addServletMapping("http://" + host + ":8087/MyService", servlet);
+        Assert.assertEquals("http://" + host + ":8087/MyService", url3);
+        String url4 = service.addServletMapping("http://0.0.0.0:8088/MyService", servlet);
+        Assert.assertEquals("http://" + host + ":8088/MyService", url4);
+        String url5 = service.addServletMapping("http://" + hostName + ":8089/MyService", servlet);
+        Assert.assertEquals("http://" + hostName + ":8089/MyService", url5);
+
+        service.stop();
     }
 
     public void testRegisterServletMappingSSL() throws Exception {

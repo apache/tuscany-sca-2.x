@@ -118,6 +118,7 @@ public class JettyServer implements ServletHost, LifeCycleListener {
     }
 
     protected JettyServer(WorkScheduler workScheduler) {
+        this.defaultPort = portDefault;
         this.workScheduler = workScheduler;
         AccessController.doPrivileged(new PrivilegedAction<Object>() {
             public Object run() {
@@ -203,11 +204,11 @@ public class JettyServer implements ServletHost, LifeCycleListener {
 
     }
     
-    public void addServletMapping(String suri, Servlet servlet) throws ServletMappingException {
-        addServletMapping(suri, servlet, null);
+    public String addServletMapping(String suri, Servlet servlet) throws ServletMappingException {
+        return addServletMapping(suri, servlet, null);
     }    
 
-    public void addServletMapping(String suri, Servlet servlet, final SecurityContext securityContext) throws ServletMappingException {
+    public String addServletMapping(String suri, Servlet servlet, final SecurityContext securityContext) throws ServletMappingException {
         URI uri = URI.create(suri);
 
         // Get the URI scheme and port
@@ -219,6 +220,11 @@ public class JettyServer implements ServletHost, LifeCycleListener {
             if (scheme == null) {
                 scheme = "http";
             }            
+        }
+        
+        String host = uri.getHost();
+        if ("0.0.0.0".equals(host)) {
+            host = null;
         }
         
         int portNumber = uri.getPort();
@@ -243,11 +249,17 @@ public class JettyServer implements ServletHost, LifeCycleListener {
                     //                    httpConnector.setPort(portNumber);
                     SslSocketConnector sslConnector = new SslSocketConnector();
                     sslConnector.setPort(portNumber);
+                    // FIXME: [rfeng] We should set the host to be bound but binding-ws-axis2 is passing 
+                    // in an absolute URI with host set to one of the ip addresses
+                    sslConnector.setHost(host);
                     configureSSL(sslConnector, securityContext);
                     server.setConnectors(new Connector[] {sslConnector});
                 } else {
                     SelectChannelConnector selectConnector = new SelectChannelConnector();
                     selectConnector.setPort(portNumber);
+                    // FIXME: [rfeng] We should set the host to be bound but binding-ws-axis2 is passing 
+                    // in an absolute URI with host set to one of the ip addresses
+                    selectConnector.setHost(host);
                     server.setConnectors(new Connector[] {selectConnector});
                 }
 
@@ -318,11 +330,12 @@ public class JettyServer implements ServletHost, LifeCycleListener {
         servletHandler.addServletMapping(mapping);
 
         // Compute the complete URL
-        String host;
-        try {
-            host = InetAddress.getLocalHost().getHostName();
-        } catch (UnknownHostException e) {
-            host = "localhost";
+        if (host == null) {
+            try {
+                host = InetAddress.getLocalHost().getHostAddress();
+            } catch (UnknownHostException e) {
+                host = "localhost";
+            }
         }
         URL addedURL;
         try {
@@ -331,9 +344,14 @@ public class JettyServer implements ServletHost, LifeCycleListener {
             throw new ServletMappingException(e);
         }
         logger.info("Added Servlet mapping: " + addedURL);
+        return addedURL.toString();
     }
 
     public URL getURLMapping(String suri, SecurityContext securityContext) throws ServletMappingException {
+        return map(suri, securityContext, true);
+    }
+    
+    private URL map(String suri, SecurityContext securityContext, boolean resolve) throws ServletMappingException {
         URI uri = URI.create(suri);
         
         // Get the URI scheme and port
@@ -357,11 +375,16 @@ public class JettyServer implements ServletHost, LifeCycleListener {
         }        
 
         // Get the host
-        String host;
-        try {
-            host = InetAddress.getLocalHost().getHostName();
-        } catch (UnknownHostException e) {
-            host = "localhost";
+        String host = uri.getHost();
+        if (host == null) {
+            host = "0.0.0.0";
+            if (resolve) {
+                try {
+                    host = InetAddress.getLocalHost().getHostAddress();
+                } catch (UnknownHostException e) {
+                    host = "localhost";
+                }
+            }
         }
 
         // Construct the URL

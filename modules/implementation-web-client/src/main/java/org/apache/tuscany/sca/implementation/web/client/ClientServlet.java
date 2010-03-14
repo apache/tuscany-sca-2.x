@@ -36,9 +36,10 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.tuscany.sca.assembly.ComponentReference;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.invocation.ExtensibleProxyFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
+import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 import org.directwebremoting.Container;
 import org.directwebremoting.create.AbstractCreator;
 import org.directwebremoting.extend.CreatorManager;
@@ -57,7 +58,7 @@ import org.directwebremoting.servlet.UrlProcessor;
 public class ClientServlet extends DwrServlet {
     private static final long serialVersionUID = 1L;
 
-    private transient Map<String, ServiceHolder> services;
+    private transient Map<String, RuntimeEndpointReference> serviceRefs;
 //    private transient List<String> referenceNames;
     private transient boolean initialized;
     private transient Map<String, String> initParams;
@@ -65,7 +66,7 @@ public class ClientServlet extends DwrServlet {
     public static final String SCRIPT_PATH = "/org.oasisopen.sca.componentContext.js";
 
     public ClientServlet() {
-        this.services = new HashMap<String, ServiceHolder>();
+        this.serviceRefs = new HashMap<String, RuntimeEndpointReference>();
 //        this.referenceNames = new ArrayList<String>();
 
         this.initParams = new HashMap<String, String>();
@@ -88,7 +89,7 @@ public class ClientServlet extends DwrServlet {
         if (!initialized) {
             super.init(patchConfig(servletConfig));
             addScriptHandler();
-            initServices();
+            // initServices();
             initialized = true;
         }
     }
@@ -159,8 +160,8 @@ public class ClientServlet extends DwrServlet {
         Remoter remoter = (Remoter)getContainer().getBean(Remoter.class.getName());
 
 
-        for (String serviceName : services.keySet()) {
-            String path = request.getServletPath() + "/" + services.get(serviceName).c.getName();
+        for (String serviceName : serviceRefs.keySet()) {
+            String path = request.getServletPath() + "/" + serviceName;
             String serviceScript = remoter.generateInterfaceScript(serviceName, path);
             out.println(serviceScript);
             out.println("SCA.componentContext.serviceNames.push('" + serviceName + "');");
@@ -210,42 +211,27 @@ public class ClientServlet extends DwrServlet {
     /**
      * Add an SCA service to be added to the DWR runtime
      */
-    public void addService(ComponentReference cr, RuntimeComponent c) {
-        ServiceHolder holder = new ServiceHolder();
-        holder.name = cr.getName();
-        holder.cr = cr;
-        holder.c = c;
-        services.put(cr.getName(), holder);
-    }
-
-    /**
-     * Defines each SCA service proxy instance to DWR 
-     */
-    private void initServices() {
+    public void addService(RuntimeEndpointReference epr) {
+        
         CreatorManager creatorManager = (CreatorManager)getContainer().getBean(CreatorManager.class.getName());
-
-        for (final ServiceHolder service : services.values()) {
-
-            final Class<?> iface = ((JavaInterface)service.cr.getInterfaceContract().getInterface()).getJavaClass();
-            final Object instance = service.c.getComponentContext().getServiceReference(iface, service.cr.getName()).getService();
-            
-            creatorManager.addCreator(service.cr.getName(), new AbstractCreator() {
-                public Class<?> getType() {
-                    return iface;
-                }
-
-                public Object getInstance() throws InstantiationException {
-                    return instance;
-                }
-            });
-        }
+        addService(creatorManager, epr);
+        serviceRefs.put(epr.getReference().getName(), epr);
     }
 
-    // utility class to aid passing around services
-    private class ServiceHolder {
-        String name;
-        ComponentReference cr;
-        RuntimeComponent c;
+    private void addService(CreatorManager creatorManager, final RuntimeEndpointReference epr) {
+        final Class<?> iface = ((JavaInterface)epr.getComponentTypeReferenceInterfaceContract().getInterface()).getJavaClass();
+        
+        creatorManager.addCreator(epr.getReference().getName(), new AbstractCreator() {
+            public Class<?> getType() {
+                return iface;
+            }
+
+            public Object getInstance() throws InstantiationException {
+                ExtensionPointRegistry registry = epr.getCompositeContext().getExtensionPointRegistry();
+                ExtensibleProxyFactory proxyFactory = ExtensibleProxyFactory.getInstance(registry);
+                return proxyFactory.createProxy(iface, epr);
+            }
+        });
     }
 
     /**

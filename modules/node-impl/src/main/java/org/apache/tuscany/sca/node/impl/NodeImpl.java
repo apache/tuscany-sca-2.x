@@ -292,8 +292,8 @@ public class NodeImpl implements Node {
         return configuration;
     }
 
-    public ExtensionPointRegistry getExtensionPoints() {
-        return manager.getExtensionPoints();
+    public ExtensionPointRegistry getExtensionPointRegistry() {
+        return manager.getExtensionPointRegistry();
     }
 
     /**
@@ -326,7 +326,7 @@ public class NodeImpl implements Node {
     public String dumpDomainComposite() {
         
         StAXArtifactProcessorExtensionPoint xmlProcessors = 
-            getExtensionPoints().getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+            getExtensionPointRegistry().getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         StAXArtifactProcessor<Composite>  compositeProcessor = 
             xmlProcessors.getProcessor(Composite.class);   
      
@@ -336,7 +336,7 @@ public class NodeImpl implements Node {
     private String writeComposite(Composite composite, StAXArtifactProcessor<Composite> compositeProcessor){
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         XMLOutputFactory outputFactory =
-            manager.getExtensionPoints().getExtensionPoint(FactoryExtensionPoint.class)
+            manager.getExtensionPointRegistry().getExtensionPoint(FactoryExtensionPoint.class)
                 .getFactory(XMLOutputFactory.class);
         
         try {

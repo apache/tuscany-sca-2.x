@@ -490,5 +490,5 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
      */
     public abstract NodeConfiguration loadConfiguration(InputStream xml, URL base);
 
-
+    public abstract <T> T getExtensionPointRegistry();
 }

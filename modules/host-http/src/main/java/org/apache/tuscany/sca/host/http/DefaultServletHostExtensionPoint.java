@@ -32,7 +32,6 @@ import javax.servlet.Servlet;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.LifeCycleListener;
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
-import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 
 /**
  * Default implementation of a Servlet host extension point.
@@ -43,6 +42,7 @@ public class DefaultServletHostExtensionPoint implements ServletHostExtensionPoi
 
     private List<ServletHost> servletHosts = new ArrayList<ServletHost>();
     private boolean loaded;
+    private boolean webApp;
 
     private ExtensionPointRegistry registry;
 
@@ -129,12 +129,12 @@ public class DefaultServletHostExtensionPoint implements ServletHostExtensionPoi
             return host;
         }
 
-        public void addServletMapping(String uri, Servlet servlet) throws ServletMappingException {
-            getServletHost().addServletMapping(uri, servlet);
+        public String addServletMapping(String uri, Servlet servlet) throws ServletMappingException {
+            return getServletHost().addServletMapping(uri, servlet);
         }
         
-        public void addServletMapping(String uri, Servlet servlet, SecurityContext securityContext) throws ServletMappingException {
-            getServletHost().addServletMapping(uri, servlet, securityContext);
+        public String addServletMapping(String uri, Servlet servlet, SecurityContext securityContext) throws ServletMappingException {
+            return getServletHost().addServletMapping(uri, servlet, securityContext);
         }        
 
         public String getContextPath() {
@@ -198,5 +198,13 @@ public class DefaultServletHostExtensionPoint implements ServletHostExtensionPoi
         }
         servletHosts.clear();
         registry = null;
+    }
+
+    public boolean isWebApp() {
+        return webApp;
+    }
+
+    public void setWebApp(boolean webApp) {
+        this.webApp = webApp;
     }
 }

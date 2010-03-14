@@ -51,7 +51,6 @@ import org.apache.tuscany.sca.core.context.ServiceReferenceExt;
 import org.apache.tuscany.sca.core.factory.ObjectCreationException;
 import org.apache.tuscany.sca.core.invocation.ExtensibleProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
-import org.apache.tuscany.sca.core.invocation.ProxyFactoryExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
@@ -126,7 +125,7 @@ public class ServiceReferenceImpl<B> implements ServiceReferenceExt<B> {
         this.staxProcessors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         this.staxProcessor = staxProcessors.getProcessor(EndpointReference.class);
         this.builders = registry.getExtensionPoint(BuilderExtensionPoint.class);
-        this.proxyFactory = new ExtensibleProxyFactory(registry.getExtensionPoint(ProxyFactoryExtensionPoint.class));
+        this.proxyFactory = ExtensibleProxyFactory.getInstance(registry);
     }
 
     public RuntimeEndpointReference getEndpointReference() {
@@ -412,9 +411,7 @@ public class ServiceReferenceImpl<B> implements ServiceReferenceExt<B> {
 
     private ProxyFactory getProxyFactory(CompositeContext compositeContext) {
         ExtensionPointRegistry extensionPointRegistry = compositeContext.getExtensionPointRegistry();
-        ProxyFactoryExtensionPoint proxyFactories =
-            extensionPointRegistry.getExtensionPoint(ProxyFactoryExtensionPoint.class);
-        return new ExtensibleProxyFactory(proxyFactories);
+        return ExtensibleProxyFactory.getInstance(extensionPointRegistry);
     }
 
     // ==================================================================================

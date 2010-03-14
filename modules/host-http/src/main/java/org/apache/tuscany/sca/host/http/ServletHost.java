@@ -55,9 +55,10 @@ public interface ServletHost {
      * 
      * @param uri the URI-mapping for the Servlet
      * @param servlet the Servlet that should be invoked
+     * @return The deployed URI
      * @throws ServletMappingException
      */
-    void addServletMapping(String uri, Servlet servlet) throws ServletMappingException;
+    String addServletMapping(String uri, Servlet servlet) throws ServletMappingException;
     
     /**
      * Add a mapping for an instance of a Servlet. This requests that the
@@ -68,9 +69,10 @@ public interface ServletHost {
      * @param uri the URI-mapping for the Servlet
      * @param servlet the Servlet that should be invoked
      * @param securityContext the SecurityContext to enable QoS services
+     * @return The deployed URI
      * @throws ServletMappingException
      */    
-    void addServletMapping(String uri, Servlet servlet, SecurityContext securityContext) throws ServletMappingException;    
+    String addServletMapping(String uri, Servlet servlet, SecurityContext securityContext) throws ServletMappingException;    
 
     /**
      * Remove a Servlet mapping. This directs the Servlet container not to direct

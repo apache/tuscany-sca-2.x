@@ -19,34 +19,12 @@
 
 package org.apache.tuscany.sca.host.http;
 
-import java.util.List;
-
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 
 public class ServletHostHelper {
-    
-    private static boolean webappHost;
-    
+
     public static ServletHost getServletHost(ExtensionPointRegistry extensionPoints) {
-        ServletHostExtensionPoint servletHosts = extensionPoints.getExtensionPoint(ServletHostExtensionPoint.class);
-        List<ServletHost> hosts = servletHosts.getServletHosts();
-        for (ServletHost servletHost : hosts) {
-            if (webappHost && !"webapp".equals(servletHost.getName())) {
-                continue;
-            }
-            if (!webappHost && "webapp".equals(servletHost.getName())) {
-                continue;
-            }
-            if(servletHost instanceof DefaultServletHostExtensionPoint.LazyServletHost) {
-                return ((DefaultServletHostExtensionPoint.LazyServletHost) servletHost).getServletHost();
-            } else {
-                return servletHost;
-            }
-        }
-        throw new IllegalStateException("No ServletHost found");
-    }
-    
-    public static void setWebappHost(boolean b) {
-        ServletHostHelper.webappHost = b;
+        ExtensibleServletHost host = ExtensibleServletHost.getInstance(extensionPoints);
+        return host.getDefaultServletHost();
     }
 }

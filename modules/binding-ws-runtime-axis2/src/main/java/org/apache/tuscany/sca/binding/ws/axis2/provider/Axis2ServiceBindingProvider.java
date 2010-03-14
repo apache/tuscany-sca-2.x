@@ -67,6 +67,7 @@ public class Axis2ServiceBindingProvider extends Axis2BaseBindingProvider implem
     private WebServiceBinding wsBinding;
     private Port wsdlPort;
     private String endpointURI;
+    private String deployedURI;
     private InterfaceContract contract;
        
     // The Axis2 configuration that the binding creates
@@ -140,15 +141,16 @@ public class Axis2ServiceBindingProvider extends Axis2BaseBindingProvider implem
         endpointURI = Axis2EngineIntegration.getPortAddress(wsdlPort);
         
         if (endpointURI.startsWith("jms:")) {
+            deployedURI = endpointURI;
             isJMSRequired = true;
         } else {
             if (servletHost == null) {
                 throw new ServiceRuntimeException("No Servlet host is avaible for HTTP web services");
             }
-            endpointURI = servletHost.getURLMapping(endpointURI, httpSecurityContext).toString();
+            deployedURI = servletHost.getURLMapping(endpointURI, httpSecurityContext).toString();
         } 
         
-        Axis2EngineIntegration.setPortAddress(wsdlPort, endpointURI);  
+        Axis2EngineIntegration.setPortAddress(wsdlPort, deployedURI);  
         
         // Apply the configuration from the mayProvides intents        
         
@@ -163,28 +165,28 @@ public class Axis2ServiceBindingProvider extends Axis2BaseBindingProvider implem
         if (isJMSRequired){
             // TODO - do we need to go back to configurator?
         }  
-        wsBinding.setURI(endpointURI);
+        wsBinding.setURI(deployedURI);
     }
     
     private static final String DEFAULT_QUEUE_CONNECTION_FACTORY = "TuscanyQueueConnectionFactory";
 
     public void start() {
         try {
-            createAxisService(endpointURI, wsdlPort);
+            createAxisService(deployedURI, wsdlPort);
            
-            if (endpointURI.startsWith("http://") || 
-                endpointURI.startsWith("https://") || 
-                endpointURI.startsWith("/")) {
+            if (deployedURI.startsWith("http://") || 
+                deployedURI.startsWith("https://") || 
+                deployedURI.startsWith("/")) {
                 Axis2ServiceServlet servlet = new Axis2ServiceServlet();
                 servlet.init(configContext);
                 
                 if (httpSecurityContext.isSSLEnabled()){
-                    servletHost.addServletMapping(endpointURI, servlet, httpSecurityContext);
+                    deployedURI = servletHost.addServletMapping(endpointURI, servlet, httpSecurityContext);
                 } else {
-                    servletHost.addServletMapping(endpointURI, servlet);
+                    deployedURI = servletHost.addServletMapping(endpointURI, servlet);
                 }
-            } else if (endpointURI.startsWith("jms")) {
-                logger.log(Level.INFO, "Axis2 JMS URL=" + endpointURI);
+            } else if (deployedURI.startsWith("jms")) {
+                logger.log(Level.INFO, "Axis2 JMS URL=" + deployedURI);
 
                 jmsListener = new JMSListener();
                 jmsSender = new JMSSender();
@@ -249,7 +251,7 @@ public class Axis2ServiceBindingProvider extends Axis2BaseBindingProvider implem
 
             // get the path to the service
             // [nash] Need a leading slash for WSDL imports to work with ?wsdl
-            URI uriPath = new URI(endpointURI);
+            URI uriPath = new URI(deployedURI);
             String stringURIPath = uriPath.getPath();
             configContext.getAxisConfiguration().removeService(stringURIPath);
         } catch (URISyntaxException e) {

@@ -73,7 +73,7 @@ public class JavaImplementationProviderFactory implements ImplementationProvider
         componentContextFactory = contextFactories.getFactory(ComponentContextFactory.class);
         requestContextFactory = contextFactories.getFactory(RequestContextFactory.class);
 
-        proxyFactory = new ExtensibleProxyFactory(proxyFactories);
+        proxyFactory = ExtensibleProxyFactory.getInstance(registry);
     }
     
     /*

@@ -29,16 +29,18 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.host.http.ServletHost;
+import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
-import org.apache.tuscany.sca.node.impl.NodeImpl;
 
-public class ServletHostHelper {
+public class WebAppHelper {
     public static final String DOMAIN_NAME_ATTR = "org.apache.tuscany.sca.domain.name";
     public static final String SCA_NODE_ATTRIBUTE = Node.class.getName();
     private static NodeFactory factory;
+    private static WebAppServletHost host;
 
     private static URL getResource(ServletContext servletContext, String location) throws IOException {
         URI uri = URI.create(location);
@@ -125,50 +127,57 @@ public class ServletHostHelper {
         return domainName;
     }
     
-    public static ServletHost init(final ServletContext servletContext) {
-        Node node = (Node)servletContext.getAttribute(SCA_NODE_ATTRIBUTE);
-        if (node == null) {
-            org.apache.tuscany.sca.host.http.ServletHostHelper.setWebappHost(true);
+    public synchronized static ServletHost init(final ServletContext servletContext) {
+        if (host == null) {
             try {
-                String domainName = (String)servletContext.getAttribute(DOMAIN_NAME_ATTR);
                 factory = NodeFactory.getInstance();
+                ExtensionPointRegistry registry = factory.getExtensionPointRegistry();
+                ServletHostExtensionPoint servletHosts = registry.getExtensionPoint(ServletHostExtensionPoint.class);
+                servletHosts.setWebApp(true);
                 for (Enumeration<String> e = servletContext.getInitParameterNames(); e.hasMoreElements();) {
                     String name = e.nextElement();
                     String value = servletContext.getInitParameter(name);
                     servletContext.setAttribute(name, value);
                 }
-                node = createNode(servletContext);
+                host = getServletHost(servletContext);
+                Node node = createAndStartNode(servletContext);
                 servletContext.setAttribute(SCA_NODE_ATTRIBUTE, node);
-                getServletHost(node).init(new ServletConfig() {
-                    public String getInitParameter(String name) {
-                        return servletContext.getInitParameter(name);
-                    }
-
-                    public Enumeration<?> getInitParameterNames() {
-                        return servletContext.getInitParameterNames();
-                    }
-
-                    public ServletContext getServletContext() {
-                        return servletContext;
-                    }
-
-                    public String getServletName() {
-                        return servletContext.getServletContextName();
-                    }
-                });
+                return host;
             } catch (ServletException e) {
                 throw new RuntimeException(e);
             }
         }
-        return getServletHost(node);
+        return host;
     }
 
-    private static WebAppServletHost getServletHost(Node node) {
-        NodeImpl nodeImpl = (NodeImpl)node;
-        return (WebAppServletHost) org.apache.tuscany.sca.host.http.ServletHostHelper.getServletHost(nodeImpl.getExtensionPoints());
+    private static WebAppServletHost getServletHost(final ServletContext servletContext) throws ServletException {
+        WebAppServletHost host = (WebAppServletHost) getServletHost(factory);
+        host.init(new ServletConfig() {
+            public String getInitParameter(String name) {
+                return servletContext.getInitParameter(name);
+            }
+
+            public Enumeration<?> getInitParameterNames() {
+                return servletContext.getInitParameterNames();
+            }
+
+            public ServletContext getServletContext() {
+                return servletContext;
+            }
+
+            public String getServletName() {
+                return servletContext.getServletContextName();
+            }
+        });
+        return host;
     }
 
-    private static Node createNode(final ServletContext servletContext) throws ServletException {
+    private static WebAppServletHost getServletHost(NodeFactory factory) {
+        ExtensionPointRegistry registry = factory.getExtensionPointRegistry();
+        return (WebAppServletHost) org.apache.tuscany.sca.host.http.ServletHostHelper.getServletHost(registry);
+    }
+
+    private static Node createAndStartNode(final ServletContext servletContext) throws ServletException {
         NodeConfiguration configuration;
         try {
             configuration = getNodeConfiguration(servletContext);
@@ -180,10 +189,10 @@ public class ServletHostHelper {
     }
 
     public static void stop(ServletContext servletContext) {
-        Node node = (Node)servletContext.getAttribute(ServletHostHelper.SCA_NODE_ATTRIBUTE);
+        Node node = (Node)servletContext.getAttribute(WebAppHelper.SCA_NODE_ATTRIBUTE);
         if (node != null) {
             node.stop();
-            servletContext.setAttribute(ServletHostHelper.SCA_NODE_ATTRIBUTE, null);
+            servletContext.setAttribute(WebAppHelper.SCA_NODE_ATTRIBUTE, null);
         }
     }
 }

@@ -135,11 +135,11 @@ public class NodeImplTestCase {
         attrs.put(DomainRegistryFactoryExtensionPoint.class.getName(), map2);
 
         NodeFactoryImpl factory = (NodeFactoryImpl)NodeFactory.newInstance(attrs);
-        Assert.assertFalse(factory.getExtensionPoints().getExtensionPoint(ValidationSchemaExtensionPoint.class)
+        Assert.assertFalse(factory.getExtensionPointRegistry().getExtensionPoint(ValidationSchemaExtensionPoint.class)
             .isEnabled());
 
         DomainRegistryFactoryExtensionPoint domainRegistryFactoryExtensionPoint =
-            factory.getExtensionPoints().getExtensionPoint(DomainRegistryFactoryExtensionPoint.class);
+            factory.getExtensionPointRegistry().getExtensionPoint(DomainRegistryFactoryExtensionPoint.class);
         Map<String, String> mapping = domainRegistryFactoryExtensionPoint.getDomainRegistryMapping();
         Assert.assertEquals(1, mapping.size());
         Assert.assertEquals("multicast://200.0.0.100:50000/MyDomain", mapping.get("urn:MyDomain"));

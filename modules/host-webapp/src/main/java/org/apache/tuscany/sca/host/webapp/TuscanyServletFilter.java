@@ -60,7 +60,7 @@ public class TuscanyServletFilter implements Filter {
                 String value = config.getInitParameter(name);
                 context.setAttribute(name, value);
             }
-            servletHost = ServletHostHelper.init(context);
+            servletHost = WebAppHelper.init(context);
         } catch (Throwable e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
             context.log(e.getMessage(), e);
@@ -69,7 +69,7 @@ public class TuscanyServletFilter implements Filter {
     }
 
     public void destroy() {
-        ServletHostHelper.stop(context);
+        WebAppHelper.stop(context);
         servletHost = null;
     }
 

@@ -52,7 +52,7 @@ public class CustomCompositeBuilder {
         node.start();
         
         // get some things out of the extension registry
-        extensionPoints = ((NodeImpl)node).getExtensionPoints();
+        extensionPoints = ((NodeImpl)node).getExtensionPointRegistry();
         
         UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
         MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);

@@ -115,7 +115,7 @@ public class DomainNode {
     public List<String> getServiceNames() {
         List<String> serviceNames = new ArrayList<String>();
         if (nodes.size() > 0) {
-            ExtensionPointRegistry extensionsRegistry = ((NodeImpl)nodes.values().iterator().next()).getExtensionPoints();
+            ExtensionPointRegistry extensionsRegistry = ((NodeImpl)nodes.values().iterator().next()).getExtensionPointRegistry();
             DomainRegistryFactory domainRegistryFactory = ExtensibleDomainRegistryFactory.getInstance(extensionsRegistry);
             EndpointRegistry endpointRegistry = domainRegistryFactory.getEndpointRegistry(getDomainConfigURI(), getDomainName());
             for (Endpoint endpoint : endpointRegistry.getEndpoints()) {

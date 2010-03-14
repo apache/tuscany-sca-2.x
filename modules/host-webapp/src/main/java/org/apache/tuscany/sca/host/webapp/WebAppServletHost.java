@@ -58,6 +58,7 @@ public class WebAppServletHost implements ServletHost {
     private int defaultPortNumber = 8080;
     private String contributionRoot;
 
+    private ServletConfig servletConfig;
     private ServletContext servletContext;
     private Map<String, Object> tempAttributes = new HashMap<String, Object>();
 
@@ -77,11 +78,11 @@ public class WebAppServletHost implements ServletHost {
         return "webapp";
     }
     
-    public void addServletMapping(String suri, Servlet servlet) throws ServletMappingException {
-        addServletMapping(suri, servlet, null);
+    public String addServletMapping(String suri, Servlet servlet) throws ServletMappingException {
+        return addServletMapping(suri, servlet, null);
     }    
 
-    public void addServletMapping(String suri, Servlet servlet, SecurityContext securityContext) throws ServletMappingException {
+    public String addServletMapping(String suri, Servlet servlet, SecurityContext securityContext) throws ServletMappingException {
         URI pathURI = URI.create(suri);
 
         // Make sure that the path starts with a /
@@ -90,15 +91,27 @@ public class WebAppServletHost implements ServletHost {
             suri = '/' + suri;
         }
 
-        if (!suri.startsWith(contextPath)) {
+        // String relativeURI = suri;
+        if (!suri.startsWith(contextPath + "/")) {
             suri = contextPath + suri;
-        }
+        } 
 
+        if (!servlets.values().contains(servlet)) {
+            // The same servlet can be registred more than once
+            try {
+                servlet.init(servletConfig);
+            } catch (ServletException e) {
+                throw new ServletMappingException(e);
+            }
+        }
+        
         // In a webapp just use the given path and ignore the host and port
         // as they are fixed by the Web container
         servlets.put(suri, servlet);
 
-        logger.info("Added Servlet mapping: " + suri);
+        URL url = getURLMapping(suri, securityContext);
+        logger.info("Added Servlet mapping: " + url);
+        return url.toString();
     }
 
     public Servlet removeServletMapping(String suri) throws ServletMappingException {
@@ -116,7 +129,13 @@ public class WebAppServletHost implements ServletHost {
 
         // In a webapp just use the given path and ignore the host and port
         // as they are fixed by the Web container
-        return servlets.remove(suri);
+        Servlet servlet = servlets.remove(suri);
+        /*
+        if (servlet != null) {
+            servlet.destroy();
+        }
+        */
+        return servlet;
     }
 
     public Servlet getServletMapping(String suri) throws ServletMappingException {
@@ -147,11 +166,13 @@ public class WebAppServletHost implements ServletHost {
         }
 
         // Get the host
-        String host;
-        try {
-            host = InetAddress.getLocalHost().getHostName();
-        } catch (UnknownHostException e) {
-            host = "localhost";
+        String host = uri.getHost();
+        if (host == null) {
+            try {
+                host = InetAddress.getLocalHost().getHostName();
+            } catch (UnknownHostException e) {
+                host = "localhost";
+            }
         }
 
         // Construct the URL
@@ -210,14 +231,14 @@ public class WebAppServletHost implements ServletHost {
     }
 
     public void init(ServletConfig config) throws ServletException {
-
+        this.servletConfig = config;
         servletContext = config.getServletContext();
         
         for (String name : tempAttributes.keySet()) {
             servletContext.setAttribute(name, tempAttributes.get(name));
         }
         
-        ServletHostHelper.init(servletContext);
+        // WebAppHelper.init(servletContext);
         
         initContextPath(config);
 
@@ -282,7 +303,7 @@ public class WebAppServletHost implements ServletHost {
         }
 
         // Close the SCA domain
-        ServletHostHelper.stop(servletContext);
+        WebAppHelper.stop(servletContext);
     }
 
     public String getContextPath() {

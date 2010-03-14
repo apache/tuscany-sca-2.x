@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.implementation.web.client;
 
 import org.apache.tuscany.sca.assembly.ComponentReference;
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.host.http.ServletHostHelper;
@@ -30,6 +31,7 @@ import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
+import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 
 public class JSClientExtensionPointImpl implements ClientExtensionPoint {
 
@@ -46,7 +48,9 @@ public class JSClientExtensionPointImpl implements ClientExtensionPoint {
 
         if (component.getReferences().size() > 0) {
             for (ComponentReference cr : component.getReferences()) {
-                clientServlet.addService(cr, component);
+                for (EndpointReference epr : cr.getEndpointReferences()) {
+                    clientServlet.addService((RuntimeEndpointReference)epr);
+                }
             }
         }
 

@@ -36,7 +36,7 @@ public class TuscanyContextListener implements ServletContextListener {
     public void contextInitialized(ServletContextEvent event) {
         logger.info(event.getServletContext().getServletContextName() + " is starting.");
         try {
-            ServletHostHelper.init(event.getServletContext());
+            WebAppHelper.init(event.getServletContext());
         } catch (Throwable e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
         }
@@ -49,7 +49,7 @@ public class TuscanyContextListener implements ServletContextListener {
             return;
         }
         try {
-            ServletHostHelper.stop(event.getServletContext());
+            WebAppHelper.stop(event.getServletContext());
         } catch (Throwable e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
         }

@@ -65,7 +65,6 @@ import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.RuntimeAssemblyFactory;
 import org.apache.tuscany.sca.core.invocation.ExtensibleProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
-import org.apache.tuscany.sca.core.invocation.ProxyFactoryExtensionPoint;
 import org.apache.tuscany.sca.deployment.Deployer;
 import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 import org.apache.tuscany.sca.monitor.Monitor;
@@ -210,7 +209,7 @@ public class NodeFactoryImpl extends NodeFactory {
         return attached;
     }
 
-    public ExtensionPointRegistry getExtensionPoints() {
+    public ExtensionPointRegistry getExtensionPointRegistry() {
         if (registry == null) {
             // Create extension point registry
             registry = createExtensionPointRegistry();
@@ -225,7 +224,7 @@ public class NodeFactoryImpl extends NodeFactory {
         }
         long start = currentTimeMillis();
 
-        getExtensionPoints();
+        getExtensionPointRegistry();
         
         // Use the runtime-enabled assembly factory
         FactoryExtensionPoint modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
@@ -248,8 +247,7 @@ public class NodeFactoryImpl extends NodeFactory {
         // Initialize runtime
 
         // Get proxy factory
-        ProxyFactoryExtensionPoint proxyFactories = registry.getExtensionPoint(ProxyFactoryExtensionPoint.class);
-        proxyFactory = new ExtensibleProxyFactory(proxyFactories);
+        proxyFactory = ExtensibleProxyFactory.getInstance(registry);
 
         utilities.getUtility(WorkScheduler.class);
 
@@ -466,7 +464,7 @@ public class NodeFactoryImpl extends NodeFactory {
 
     @Override
     public void configure(Map<String, Map<String, String>> attributes) {
-        ServiceDiscovery discovery = getExtensionPoints().getServiceDiscovery();
+        ServiceDiscovery discovery = getExtensionPointRegistry().getServiceDiscovery();
         for (Map.Entry<String, Map<String, String>> e : attributes.entrySet()) {
             discovery.setAttribute(e.getKey(), e.getValue());
         }

@@ -36,13 +36,7 @@
             <groupId>org.apache.tuscany.sca.shades</groupId>
             <artifactId>tuscany-json</artifactId>
             <version>${pom.version}</version>
-            <exclusions>
-                <exclusion>
-                    <!-- commpons logging is in the tuscany-base-nodep jar -->
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
-                </exclusion>
-            </exclusions>
+
         </dependency>
 
         <dependency>

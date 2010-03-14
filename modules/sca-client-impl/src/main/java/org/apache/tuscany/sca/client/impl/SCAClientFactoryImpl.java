@@ -36,7 +36,6 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.invocation.ExtensibleProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
-import org.apache.tuscany.sca.core.invocation.ProxyFactoryExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
@@ -75,7 +74,7 @@ public class SCAClientFactoryImpl extends SCAClientFactory {
         
         this.nodeFactory = (NodeFactoryImpl)NodeFactory.getInstance();
         this.nodeFactory.init();
-        this.extensionsRegistry = nodeFactory.getExtensionPoints();
+        this.extensionsRegistry = nodeFactory.getExtensionPointRegistry();
         DomainRegistryFactory domainRegistryFactory = ExtensibleDomainRegistryFactory.getInstance(extensionsRegistry);
         
         String registryURI = getDomainURI().toString();
@@ -91,7 +90,7 @@ public class SCAClientFactoryImpl extends SCAClientFactory {
         FactoryExtensionPoint factories = extensionsRegistry.getExtensionPoint(FactoryExtensionPoint.class);
         this.assemblyFactory = factories.getFactory(AssemblyFactory.class);
         this.javaInterfaceFactory = factories.getFactory(JavaInterfaceFactory.class);
-        this.proxyFactory = new ExtensibleProxyFactory(extensionsRegistry.getExtensionPoint(ProxyFactoryExtensionPoint.class));
+        this.proxyFactory = ExtensibleProxyFactory.getInstance(extensionsRegistry);
 
         String client = "sca.client." + UUID.randomUUID();
         this.compositeContext =
