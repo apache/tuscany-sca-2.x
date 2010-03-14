@@ -33,7 +33,7 @@
             <groupId>org.apache.tomcat</groupId>
             <artifactId>tribes</artifactId>
             <!--  DO NOT upgrade to 6.0.20: https://issues.apache.org/bugzilla/show_bug.cgi?id=47419 -->
-            <version>6.0.18</version>
+            <version>6.0.26</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

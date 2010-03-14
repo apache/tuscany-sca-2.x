@@ -279,7 +279,7 @@ The following components come under Apache Software License 2.0
  jettison-1.1.jar
  jetty-6.1.19.jar
  jetty-util-6.1.19.jar
- juli-6.0.18.jar
+ juli-6.0.26.jar
  log4j-1.2.15.jar
  mex-1.5.1-impl.jar
  myfaces-api-1.2.2.jar
@@ -310,7 +310,7 @@ The following components come under Apache Software License 2.0
  spring-core-2.5.5.jar
  stripes-1.5.jar
  tranql-connector-1.1.jar
- tribes-6.0.18.jar
+ tribes-6.0.26.jar
  woden-api-1.0M8.jar
  woden-impl-dom-1.0M8.jar
  wss4j-1.5.4.jar
