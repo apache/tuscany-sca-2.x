@@ -19,7 +19,9 @@
 
 package org.apache.tuscany.sca.itest.scdl;
 
+import java.net.URI;
 import java.net.URL;
+import java.util.Arrays;
 
 import javax.xml.stream.XMLStreamException;
 
@@ -31,11 +33,14 @@ import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.binding.jms.JMSBinding;
 import org.apache.tuscany.sca.binding.jsonp.JSONPBinding;
 import org.apache.tuscany.sca.binding.rmi.RMIBinding;
+import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.deployment.Deployer;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.Problem;
 import org.junit.Test;
 
 /**
@@ -82,6 +87,23 @@ public class SCDLTestCase {
 //        Assert.assertEquals(1, wsService.getBindings().size());
 //        WSBinding wsBinding = wsService.getBinding(WSBinding.class);
 //        Assert.assertNotNull(wsBinding);
+    }
+    
+    @Test
+    public void testBuild() throws Exception {
+        ExtensionPointRegistry registry = new DefaultExtensionPointRegistry();
+        Deployer deployer = registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(Deployer.class);
+        URL r = getClass().getResource("/test.composite");
+        r = new URL(r, "../");
+        Monitor monitor = deployer.createMonitor();
+        Contribution contribution = deployer.loadContribution(URI.create("c1"), r, monitor);
+        deployer.build(Arrays.asList(contribution), null, monitor);
+        int i = 0;
+        for (Problem p : monitor.getProblems()) {
+            System.err.println(i + ": " + p);
+            i++;
+        }
+        Assert.assertTrue(i > 0);
     }
 
 }
