@@ -301,7 +301,7 @@ public class ReplicatedEndpointRegistry extends BaseEndpointRegistry implements 
                 Endpoint endpoint = (Endpoint)v;
                 // TODO: implement more complete matching
                 logger.fine("Matching against - " + endpoint);
-                if (matches(uri, endpoint.getURI())) {
+                if (endpoint.matches(uri)) {
                     MapEntry entry = map.getInternal(endpoint.getURI());
                     // if (!entry.isPrimary()) {
                     ((RuntimeEndpoint)endpoint).bind(registry, this);
