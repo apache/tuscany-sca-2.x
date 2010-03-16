@@ -24,7 +24,6 @@ import itest.HelloworldService;
 
 import java.net.URI;
 
-import org.apache.tuscany.sca.binding.rmi.RMIBinding;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.After;
