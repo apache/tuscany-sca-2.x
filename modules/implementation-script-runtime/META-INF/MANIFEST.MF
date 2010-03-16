@@ -1,0 +1,58 @@
+Manifest-Version: 1.0
+Export-Package: org.apache.tuscany.sca.implementation.script.provider;
+ uses:="org.apache.tuscany.sca.databinding,org.apache.tuscany.sca.runt
+ ime,org.apache.tuscany.sca.assembly,org.apache.tuscany.sca.databindin
+ g.impl,org.apache.tuscany.sca.provider,org.apache.bsf.xml,org.apache.
+ tuscany.sca.core,org.apache.tuscany.sca.interfacedef.java,org.w3c.dom
+ ,javax.script,org.apache.tuscany.sca.interfacedef,javax.xml.namespace
+ ,org.apache.axiom.om,org.apache.tuscany.sca.implementation.script,org
+ .apache.tuscany.sca.invocation,org.apache.tuscany.sca.core.factory,or
+ g.apache.tuscany.sca.interfacedef.wsdl";version="2.0.0"
+Private-Package: org.apache.tuscany.sca.implementation.script.engines;
+ version="2.0.0"
+Tool: Bnd-0.0.255
+Bundle-Name: Apache Tuscany SCA Script Implementation Extension
+Created-By: 1.6.0_07 (Sun Microsystems Inc.)
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 2.0.0
+Bnd-LastModified: 1225397459984
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA Script Implementation Extension
+Import-Package: com.sun.script.jruby,
+ javax.script,
+ javax.xml.namespace,
+ org.apache.axiom.om,
+ org.apache.bsf.xml,
+ org.apache.tuscany.sca.assembly;version="2.0.0",
+ org.apache.tuscany.sca.core;version="2.0.0",
+ org.apache.tuscany.sca.core.factory;version="2.0.0",
+ org.apache.tuscany.sca.databinding;version="2.0.0",
+ org.apache.tuscany.sca.databinding.impl;version="2.0.0",
+ org.apache.tuscany.sca.implementation.script;version="2.0.0",
+ org.apache.tuscany.sca.implementation.script.provider;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef.java;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef.util;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef.wsdl;version="2.0.0",
+ org.apache.tuscany.sca.invocation;version="2.0.0",
+ org.apache.tuscany.sca.policy;version="2.0.0",
+ org.apache.tuscany.sca.provider;version="2.0.0",
+ org.apache.tuscany.sca.runtime;version="2.0.0",
+ org.jruby,
+ org.jruby.ast,
+ org.jruby.exceptions,
+ org.jruby.internal.runtime,
+ org.jruby.javasupport,
+ org.jruby.runtime,
+ org.jruby.runtime.builtin,
+ org.jruby.runtime.load,
+ org.jruby.util,
+ org.jruby.util.io,
+ org.oasisopen.sca;version="2.0.0",
+ org.oasisopen.sca.annotation;version="2.0.0";resolution:=optional,
+ org.w3c.dom
+Bundle-SymbolicName: org.apache.tuscany.sca.implementation.script.runt
+ ime
+Bundle-DocURL: http://www.apache.org/
+
