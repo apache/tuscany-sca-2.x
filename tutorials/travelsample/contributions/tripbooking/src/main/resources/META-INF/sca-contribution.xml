@@ -17,7 +17,7 @@
     * specific language governing permissions and limitations
     * under the License.    
 -->
-<contribution xmlns="http://www.osoa.org/xmlns/sca/1.0">
+<contribution xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912">
     <import.java package="com.tuscanyscatours.common" />
     <import.java package="com.tuscanyscatours.currencyconverter" />
     <import.java package="com.tuscanyscatours.shoppingcart" />
