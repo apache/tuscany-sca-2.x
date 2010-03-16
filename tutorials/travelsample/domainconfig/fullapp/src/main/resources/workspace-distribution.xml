@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+-->
+<workspace xmlns="http://tuscany.apache.org/xmlns/sca/1.0" 
+           xmlns:ns1="http://tuscany.apache.org/xmlns/sca/1.0">
+  <contribution location="file:../contributions/scatours-contribution-common.jar"  uri="common"/>
+  <contribution location="file:../contributions/scatours-contribution-currency.jar"  uri="currency"/>
+  <contribution location="file:../contributions/scatours-contribution-hotel.jar"  uri="hotel"/>
+  <contribution location="file:../contributions/scatours-contribution-flight.jar"  uri="flight"/>
+  <contribution location="file:../contributions/scatours-contribution-car.jar"  uri="car"/>
+  <contribution location="file:../contributions/scatours-contribution-trip.jar"  uri="trip"/>
+  <contribution location="file:../contributions/scatours-contribution-tripbooking.jar"  uri="tripbooking"/>
+  <contribution location="file:../contributions/scatours-contribution-travelcatalog.jar"  uri="travelcatalog"/>
+  <contribution location="file:../contributions/scatours-contribution-payment-spring-policy.jar"  uri="fullapp-payment"/>
+  <contribution location="file:../contributions/scatours-contribution-creditcard-payment-jaxb-policy.jar"  uri="fullapp-creditcard"/>
+  <contribution location="file:../contributions/scatours-contribution-shoppingcart.jar"  uri="shoppingcart"/>
+  <contribution location="file:../contributions/scatours-contribution-scatours.jar"  uri="scatours"/>
+  <contribution location="file:../contributions/scatours-contribution-fullapp-ui.jar"  uri="fullapp-ui"/>
+  <contribution location="file:../contributions/scatours-contribution-fullapp-coordination.jar"  uri="fullapp-coordination"/>
+  <contribution location="file:../contributions/scatours-contribution-fullapp-currency.jar"  uri="fullapp-currency"/>
+  <contribution location="file:../contributions/scatours-contribution-fullapp-packagedtrip.jar"  uri="fullapp-packagedtrip"/>
+  <contribution location="file:../contributions/scatours-contribution-fullapp-bespoketrip.jar"  uri="fullapp-bespoketrip"/>
+  <contribution location="file:../contributions/scatours-contribution-fullapp-shoppingcart.jar"  uri="fullapp-shoppingcart"/>
+  <contribution location="file:../domainconfig/fullapp/cloud" uri="http://tuscany.apache.org/cloud"/>  
+</workspace>

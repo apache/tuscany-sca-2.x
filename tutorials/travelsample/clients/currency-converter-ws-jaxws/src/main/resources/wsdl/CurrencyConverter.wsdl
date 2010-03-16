@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+ -->
+<wsdl:definitions name="CurrencyConverterService" targetNamespace="http://currencyconverter.tuscanyscatours.com/"
+    xmlns:tns="http://currencyconverter.tuscanyscatours.com/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+    xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:SOAP="http://schemas.xmlsoap.org/wsdl/soap/" 
+    xmlns:SOAP11="http://schemas.xmlsoap.org/wsdl/soap/">
+  <wsdl:types>
+    <xs:schema attributeFormDefault="qualified" elementFormDefault="unqualified" targetNamespace="http://currencyconverter.tuscanyscatours.com/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:element name="getExchangeRate">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="arg0" nillable="true" type="xs:string"/>
+            <xs:element minOccurs="0" name="arg1" nillable="true" type="xs:string"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="convertResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="return" type="xs:double"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="getExchangeRateResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="return" type="xs:double"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="convert">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="arg0" nillable="true" type="xs:string"/>
+            <xs:element minOccurs="0" name="arg1" nillable="true" type="xs:string"/>
+            <xs:element minOccurs="0" name="arg2" type="xs:double"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:schema>
+  </wsdl:types>
+  <wsdl:message name="getExchangeRate">
+    <wsdl:part name="getExchangeRate" element="tns:getExchangeRate">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="convertResponse">
+    <wsdl:part name="convertResponse" element="tns:convertResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getExchangeRateResponse">
+    <wsdl:part name="getExchangeRateResponse" element="tns:getExchangeRateResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="convert">
+    <wsdl:part name="convert" element="tns:convert">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="CurrencyConverter">
+    <wsdl:operation name="getExchangeRate">
+      <wsdl:input message="tns:getExchangeRate">
+    </wsdl:input>
+      <wsdl:output message="tns:getExchangeRateResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="convert">
+      <wsdl:input message="tns:convert">
+    </wsdl:input>
+      <wsdl:output message="tns:convertResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="CurrencyConverterBinding" type="tns:CurrencyConverter">
+    <SOAP:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="getExchangeRate">
+      <SOAP:operation/>
+      <wsdl:input>
+        <SOAP:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <SOAP:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="convert">
+      <SOAP:operation/>
+      <wsdl:input>
+        <SOAP:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <SOAP:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="CurrencyConverterService">
+    <wsdl:port name="CurrencyConverterPort" binding="tns:CurrencyConverterBinding">
+      <SOAP:address location="http://localhost:8080/CurrencyConverter"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

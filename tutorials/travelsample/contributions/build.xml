@@ -1,0 +1,97 @@
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+-->
+
+<project name="scatours-contributions" default="compile">
+
+    <target name="compile">
+        <antcall target="allsubdirs">
+            <param name="target" value="compile"/>
+        </antcall>
+    </target>
+
+    <target name="test">
+        <antcall target="allsubdirs">
+            <param name="target" value="test"/>
+        </antcall>
+    </target>
+
+    <target name="clean">
+        <antcall target="allsubdirs">
+            <param name="target" value="clean"/>
+        </antcall>
+    </target>
+
+    <target name="allsubdirs">
+        <ant dir="blog-feed" target="${target}"/>
+        <ant dir="introducing-trips" target="${target}"/> <!--needed by buildingblocks-->
+        <ant dir="buildingblocks" target="${target}"/>
+        <ant dir="buildingblocks-client" target="${target}"/>
+        <ant dir="calendar" target="${target}"/>
+        <ant dir="common" target="${target}"/> <!--needed by car-->
+        <ant dir="car" target="${target}"/>
+        <ant dir="creditcard-payment-jaxb" target="${target}"/>
+        <ant dir="creditcard-payment-jaxb-policy" target="${target}"/>
+        <ant dir="creditcard-payment-sdo" target="${target}"/>
+        <ant dir="creditcard-payment-webapp" target="${target}"/>
+        <ant dir="currency" target="${target}"/>
+        <ant dir="currency-corba" target="${target}"/>
+        <ant dir="currency-jms" target="${target}"/>
+        <ant dir="currency-jsp" target="${target}"/>
+        <ant dir="currency-rmi" target="${target}"/>
+        <ant dir="currency-servlet" target="${target}"/>
+        <ant dir="currency-ws" target="${target}"/>
+        <ant dir="payment-java" target="${target}"/> <!--needed by databinding-client-->
+        <ant dir="databinding-client" target="${target}"/>
+        <ant dir="emailgateway" target="${target}"/>
+        <ant dir="feed-logger" target="${target}"/>
+        <ant dir="flight" target="${target}"/>
+        <ant dir="fullapp-bespoketrip" target="${target}"/>
+        <ant dir="fullapp-coordination" target="${target}"/>
+        <ant dir="fullapp-currency" target="${target}"/>
+        <ant dir="fullapp-packagedtrip" target="${target}"/>
+        <ant dir="fullapp-shoppingcart" target="${target}"/>
+        <ant dir="fullapp-ui" target="${target}"/>
+        <ant dir="help-pages" target="${target}"/>
+        <ant dir="hotel" target="${target}"/>
+        <ant dir="shoppingcart" target="${target}"/> <!--needed by interaction-client-->
+        <ant dir="interaction-client" target="${target}"/>
+        <ant dir="interaction-service-remote" target="${target}"/>
+        <ant dir="introducing-tours" target="${target}"/> <!--needed by introducing-client-->
+        <ant dir="introducing-client" target="${target}"/>
+        <ant dir="notification" target="${target}"/>
+        <ant dir="notification-corba" target="${target}"/>
+        <ant dir="notification-ejb" target="${target}"/>
+        <ant dir="notification-jms" target="${target}"/>
+        <ant dir="notification-rmi" target="${target}"/>
+        <ant dir="notification-ws" target="${target}"/>
+        <ant dir="payment-java-policy" target="${target}"/>
+        <ant dir="payment-bpel-process" target="${target}"/> <!--needed by payment-bpel-->
+        <ant dir="payment-bpel" target="${target}"/>
+        <ant dir="payment-groovy" target="${target}"/>
+        <ant dir="payment-spring" target="${target}"/>
+        <ant dir="payment-spring-policy" target="${target}"/>
+        <ant dir="payment-spring-scatag" target="${target}"/>
+        <ant dir="policy-client" target="${target}"/>
+        <ant dir="travelcatalog" target="${target}"/> <!--needed by scatours-->
+        <ant dir="tripbooking" target="${target}"/> <!--needed by scatours-->
+        <ant dir="scatours" target="${target}"/>
+        <ant dir="trip" target="${target}"/>
+    </target>
+
+</project>

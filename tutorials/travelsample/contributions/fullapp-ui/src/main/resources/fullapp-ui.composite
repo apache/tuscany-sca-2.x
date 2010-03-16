@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+-->
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+           targetNamespace="http://tuscanyscatours.com/"
+           xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
+           name="fullapp-ui">
+           
+    <component name="SCAToursUserInterface">
+        <tuscany:implementation.widget location="scatours.html"/>
+        <service name="Widget">
+            <tuscany:binding.http uri="/scatours"/>
+        </service>
+        <reference name="scaToursCatalog" target="SCATours/SCAToursSearch">
+            <tuscany:binding.jsonrpc/>
+        </reference> 
+        <reference name="scaToursBooking" target="SCATours/SCAToursBooking">
+            <tuscany:binding.jsonrpc/>
+        </reference>
+        <reference name="scaToursCart" target="SCATours/SCAToursCart">
+            <tuscany:binding.jsonrpc/>
+        </reference>                
+    </component>   
+    
+    <component name="SCATours">
+        <implementation.java class="com.tuscanyscatours.impl.SCAToursImpl"/>
+        <service name="SCAToursSearch">
+            <tuscany:binding.jsonrpc/>
+        </service>
+        <service name="SCAToursBooking">
+            <tuscany:binding.jsonrpc/>
+        </service>
+        <service name="SCAToursCart">
+            <tuscany:binding.jsonrpc/>
+        </service>        
+        <reference name="travelCatalogSearch" target="TravelCatalog/TravelCatalogSearch"/>
+        <reference name="tripBooking" target="TripBooking"/>
+        <reference name="cartInitialize" target="ShoppingCart/CartInitialize"/>    
+        <reference name="cartCheckout" target="ShoppingCart/CartCheckout"/>       
+    </component>    
+   
+</composite>

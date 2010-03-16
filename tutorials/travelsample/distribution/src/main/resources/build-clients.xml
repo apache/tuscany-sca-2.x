@@ -1,0 +1,54 @@
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+-->
+
+<project name="scatours-distribution-clients">
+    <import file="../util/build-defs.xml"/>
+
+    <target name="run-currency-converter-corba">
+        <java classname="scatours.CurrencyConverterCORBAClient" fork="true" failonerror="true">
+            <classpath location="scatours-client-currency-converter-corba.jar"/>
+        </java>
+    </target>
+
+    <target name="run-currency-converter-jms">
+        <java classname="scatours.CurrencyConverterJMSClient" fork="true" failonerror="true">
+            <classpath>
+                <pathelement location="scatours-client-currency-converter-jms.jar"/>
+                <!-- The following is used to bring in the ActiveMQ runtime. -->
+                <path refid="scatours.tuscany-manifest"/>
+            </classpath>
+        </java>
+    </target>
+
+    <target name="run-currency-converter-rmi">
+        <java classname="scatours.CurrencyConverterRMIClient" fork="true" failonerror="true">
+            <classpath location="scatours-client-currency-converter-rmi.jar"/>
+        </java>
+    </target>
+
+    <target name="run-currency-converter-ws-jaxws">
+        <java classname="scatours.CurrencyConverterWSClient" fork="true" failonerror="true">
+            <classpath>
+                <pathelement location="scatours-client-currency-converter-ws-jaxws.jar"/>
+                <!-- The following is used to bring in additional dependencies of the JAX-WS runtime. -->
+                <path refid="scatours.tuscany-manifest"/>
+            </classpath>
+        </java>
+    </target>
+</project>

@@ -1,0 +1,64 @@
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+-->
+
+<project name="scatours-client-currency-converter-ws-jaxws" default="compile">
+    <import file="../../antdefs.xml"/>
+
+    <target name="wsdljava">
+        <antcall target="wsimport">
+            <param name="wsdlfile" value="wsdl/CurrencyConverter.wsdl"/>
+            <param name="javaclass" value="scatours/currencyconverter/client/CurrencyConverter.class"/>
+            <param name="package" value="scatours.currencyconverter.client"/>
+        </antcall>
+    </target>
+
+    <!-- Before invoking the "run" target, the Web Services implementation of
+       the currency converter service needs to be started in its own process. -->
+    <target name="run-service">
+        <ant dir="../../launchers/currency-converter-ws" target="run"/>
+    </target>
+
+    <target name="run" depends="is-jdk6, jaxws-jdk6, jaxws-jdk5">
+        <java classname="scatours.CurrencyConverterWSClient" fork="true" failonerror="true">
+            <classpath>
+                <pathelement location="target/${ant.project.name}.jar"/>
+                <path refid="jaxws-path"/>
+            </classpath>
+        </java>
+    </target>
+
+    <!-- check to see if we are running on JDK 6 -->
+    <target name="is-jdk6">
+        <condition property="jdk6">
+            <available classname="javax.xml.ws.Service"/>
+        </condition>
+    </target>
+
+    <!-- JDK 6 contains JAX-WS so we don't need it on the classpath -->
+    <target name="jaxws-jdk6" if="jdk6">
+        <path id="jaxws-path"/>
+    </target>
+
+    <!-- on JDK 5 we need to add the JAX-WS runtime to the classpath -->
+    <target name="jaxws-jdk5" unless="jdk6">
+        <path id="jaxws-path">
+            <fileset dir="${env.JAXWS_HOME}/lib"/>
+        </path>
+    </target>
+</project>

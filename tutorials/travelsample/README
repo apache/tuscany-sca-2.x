@@ -1,0 +1,534 @@
+
+Building the travel sample using ant
+------------------------------------
+
+1. Download and unzip JDK 6 update 7 (or later) or JDK 5 update 22, and set
+   the JAVA_HOME environment variable to the JDK base directory.
+2. Install svn and ant.
+3. Create a local directory to hold the travel sample code.  With this as
+   your current directory, check out the complete travel sample from svn
+   using the following command:
+     svn co http://svn.apache.org/repos/asf/tuscany/sca-java-1.x/trunk/tutorials/travelsample
+4. Download and unzip the Tuscany SCA Java 1.6 (or later) binary distribution
+   and set the TUSCANY_HOME environment variable to the base directory
+   containing the unzipped binary distribution.
+5. Download and unzip the OpenEJB 3.1.2 (or later) binary distribution and set
+   the OPENEJB_HOME environment variable to the base directory containing
+   the unzipped binary distribution.
+6. If you are using JDK 5, download and unzip the JAX-WS reference implementation
+   version 2.1.7 and set the JAXWS_HOME environment variable to the base directory
+   containing the unzipped download.
+7. With the travelsample directory as your current directory, enter the
+   command "ant compile".
+
+
+Building the travel sample using maven
+--------------------------------------
+
+Most of the steps are similar to the above.  For completeness, a full list
+of the steps needed is given here.
+
+1. Download and unzip JDK 6 update 7 (or later) or JDK 5 update 22, and set
+   the JAVA_HOME environment variable to the JDK base directory.
+2. Install svn and maven.
+3. Create a local directory to hold the travel sample code.  With this as
+   your current directory, check out the complete travel sample from svn
+   using the following command:
+     svn co http://svn.apache.org/repos/asf/tuscany/sca-java-1.x/trunk/tutorials/travelsample
+4. Check the setting of the <tuscany.version> property in the
+   travelsample/pom.xml file.  If you want to build the travel sample using
+   a different Tuscany version, change this property as necessary.  The
+   travel sample has been tested and runs correctly with Tuscany SCA Java 1.6. 
+5. With the travelsample directory as your current directory, enter the
+   command "mvn".  You will need a live internet connection so that maven
+   can download any required files to your local repository.
+6. By default the maven build produces a binary distribution that is an
+   add-on delta to the Tuscany SCA Java 1.6 binary distribution.  If you
+   want to produce a fully self-contained binary distribution for the
+   travel sample, you can use the command "mvn -Pselfcontained" instead
+   of "mvn" to do this.
+
+
+Running the travel sample from the build directories
+----------------------------------------------------
+
+The travel sample consists of a number of related scenarios.  These scenarios
+are listed below, together with instructions for running them.  The instructions
+in this section will work irrespective of whether the travel sample was built
+using ant or maven.
+
+Most of the scenarios are run by opening a single command prompt window
+and entering the command "ant run" into that window.  If a scenario is
+listed with multiple commands, this means that it needs multiple command
+prompt windows.  In this case, each of the listed commands must be entered
+into its own separate command prompt window in the order shown.
+
+Before running these scenarios, you need to perform the setup described above
+in "Building the travel sample using ant" if you have not already done this.
+
+Some of the scenarios are packaged as web applications (.war files).  Instead
+of being run from the command line, these are deployed to a suitable web
+application server (such as Apache Tomcat) and run from a browser.
+
+For each scenario, the following are listed below:
+ Command(s): the command or commands for running the scenario, if any
+ Directory: the current directory for the command prompt window or windows
+ Webapp: .war file to be deployed for this scenario, if any
+ URL(s): browser URL or URLs used to run this scenario, if any
+ Contributions: SCA contributions used in this scenario
+ Launchers: other launcher directories used in this scenario, if any
+ Services: non-SCA services used in this scenario, if any
+ Clients: non-SCA clients used in this scenario, if any
+
+1) Jumpstart - First simple example of using Tuscany
+
+Command: ant run
+Directory: launchers/jumpstart
+Contributions: introducing-trips
+
+2) Introducing - Simplified introduction to the travel application
+
+Command: ant run 
+Directory: launchers/introducing
+Contributions: introducing-client, introducing-tours, introducing-trips
+
+3) Introducing (distributed) - Distributed services with a domain manager
+
+Commands: ant run-domain, ant run-trips, ant run-tours, ant run
+Directory: launchers/introducing-client
+Contributions: introducing-client, introducing-tours, introducing-trips
+Launchers: introducing-domain, introducing-tours, introducing-trips
+
+4) Interaction - Different SCA interaction styles 
+
+Command: ant run
+Directory: launchers/interaction
+Contributions: calendar, common, currency, flight, hotel, interaction-client, 
+   interaction-service-remote, shoppingcart
+
+5) Full application - The full interactive travel application
+
+Command: ant run
+Directory: launchers/fullapp
+URL: http://localhost:8080/scatours
+Contributions: car, common, creditcard-payment-jaxb-policy, currency, flight,
+   fullapp-bespoketrip, fullapp-coordination, fullapp-currency, fullapp-packagedtrip,
+   fullapp-shoppingcart, fullapp-ui, hotel, payment-spring-policy, scatours,
+   shoppingcart, travelcatalog, trip, tripbooking
+
+6) Full application (distributed) - Distributed services with a domain manager
+
+Commands: ant run-domain, ant run
+Directory: launchers/fullapp-nodes
+URL: http://localhost:8080/scatours
+Contributions: car, common, creditcard-payment-jaxb-policy, currency, flight,
+   fullapp-bespoketrip, fullapp-coordination, fullapp-currency, fullapp-packagedtrip,
+   fullapp-shoppingcart, fullapp-ui, hotel, payment-spring-policy, scatours,
+   shoppingcart, travelcatalog, trip, tripbooking
+Launchers: fullapp-domain
+
+7) Building blocks - Using SCA composites as application building blocks
+
+Commands: ant run
+Directory: launchers/buildingblocks
+Contributions: buildingblocks, buildingblocks-client, introducing-trips
+
+8) Blog feed
+
+Command: ant run
+Directory: launchers/blog-feed
+URLs: http://localhost:8090/BlogAtom, http://localhost:8090/BlogRSS,
+   http://localhost:8090/BlogAtomAPIs, http://localhost:8090/BlogRSSAPIs
+Contributions: blog-feed
+
+9) Data binding
+
+Command: ant run
+Directory: launchers/databinding
+Contributions: creditcard-payment-sdo, databinding-client, payment-java
+
+10) Feed logger
+
+Command: ant run
+Directory: launchers/feed-logger
+Contributions: feed-logger
+
+11) Help pages
+
+Command: ant run
+Directory: launchers/help-pages
+URL: http://localhost:8085/help/index.html
+Contributions: help-pages
+
+12) Policy
+
+Command: ant run
+Directory: launchers/policy
+Contributions: creditcard-payment-jaxb-policy, payment-java-policy, policy-client
+
+13) Payment service with different implementation types
+
+13a) implementation.bpel
+
+Command: ant run
+Directory: launchers/payment-bpel
+Contributions: creditcard-payment-jaxb, emailgateway, payment-bpel, payment-bpel-process 
+
+13b) implementation.script written in Groovy
+
+Command: ant run
+Directory: launchers/payment-groovy
+Contributions: creditcard-payment-jaxb, emailgateway, payment-groovy
+
+13c) implementation.java
+
+Command: ant run
+Directory: launchers/payment-java
+Contributions: creditcard-payment-jaxb, payment-java 
+
+13d) implementation.java with policy
+
+Command: ant run
+Directory: launchers/payment-java-policy
+Contributions: creditcard-payment-jaxb-policy, payment-java-policy 
+
+13e) implementation.spring
+
+Command: ant run
+Directory: launchers/payment-spring
+Contributions: creditcard-payment-jaxb, payment-spring
+
+13f) implementation.spring with SCA tags
+
+Command: ant run
+Directory: launchers/payment-spring-scatag
+Contributions: creditcard-payment-jaxb, payment-spring-scatag
+
+14) SCA service packaged in a web application
+
+Webapp: scatours-contribution-creditcard-payment-webapp.war
+Contributions: creditcard-payment-jaxb, creditcard-payment-webapp
+URL: http://localhost:8080/scatours-contribution-creditcard-payment-webapp
+
+Note: The host name and port number may differ depending on the configuration
+of the web application server.
+
+15) SCA currency converter service interoperating with SCA or non-SCA client
+
+15a) SCA client
+
+Command: ant run
+Directory: launchers/currency-converter
+Contributions: currency
+
+15b) CORBA client
+
+Commands: ant run, ant run-client
+Directory: launchers/currency-converter-corba
+Contributions: currency, currency-corba
+Clients: currency-converter-corba
+
+15c) JMS client
+
+Commands: ant run, ant run-client
+Directory: launchers/currency-converter-jms
+Contributions: currency, currency-jms
+Clients: currency-converter-jms
+
+15d) RMI client
+
+Commands: ant run, ant run-client
+Directory: launchers/currency-converter-rmi
+Contributions: currency, currency-rmi
+Clients: currency-converter-rmi
+
+15e) JAX-WS client
+
+Commands: ant run, ant run-client
+Directory: launchers/currency-converter-ws
+Contributions: currency, currency-ws
+Clients: currency-converter-ws-jaxws
+
+15f) Web application JSP client
+
+Webapp: scatours-contribution-currency-jsp.war
+Contributions: currency, currency-jsp
+URL: http://localhost:8080/scatours-contribution-currency-jsp
+
+Note: The URL host name and port number may differ depending on the
+configuration of the web application server.
+
+15g) Web application servlet client
+
+Webapp: scatours-contribution-currency-servlet.war
+Contributions: currency, currency-servlet
+URL: http://localhost:8080/scatours-contribution-currency-servlet
+
+Note: The URL host name and port number may differ depending on the
+configuration of the web application server.
+
+16) SCA notification service interoperating with non-SCA SMS gateway service
+
+16a) SMS gateway CORBA service
+
+Commands: ant run-smsgateway, ant run 
+Directory: launchers/notification-corba
+Contributions: notification, notification-corba
+Services: smsgateway-corba
+
+16b) SMS gateway EJB service
+
+Commands: ant run-smsgateway, ant run 
+Directory: launchers/notification-ejb
+Contributions: notification, notification-ejb
+Services: smsgateway-ejb
+
+16c) SMS gateway JMS service
+
+Commands: ant run-smsgateway, ant run 
+Directory: launchers/notification-jms
+Contributions: notification, notification-jms
+Services: smsgateway-jms
+
+16d) SMS gateway RMI service
+
+Commands: ant run-smsgateway, ant run 
+Directory: launchers/notification-rmi
+Contributions: notification, notification-rmi
+Services: smsgateway-rmi
+
+16e) SMS gateway JAX-WS service
+
+Commands: ant run-smsgateway, ant run 
+Directory: launchers/notification-ws
+Contributions: notification, notification-ws
+Services: smsgateway-jaxws
+
+
+Running the travel sample from the distribution directories
+-----------------------------------------------------------
+
+If the travel sample was built using maven, a binary distribution
+directory will be created containing all the built jar files, together with
+some directories containing runtime dependencies for these jar files.
+
+The following directories contain the jar files for the travel sample:
+  clients - non-SCA clients using various communication technologies
+  contributions - SCA contributions for the travel sample
+  launchers - executable launchers for the travel sample
+  services - non-SCA services using various communication technologies
+  util - jar files needed by other jars in the travel sample
+
+The following directories contain runtime dependencies of the above jar files:
+  domainconfig - domain configuration files
+  jaxws - JAX-WS runtime jars neeed when running the travel sample on JDK 5
+  lib - Tuscany runtime jars and their dependencies needed by the travel sample
+     (only present if the travel sample was  built using "mvn -Pselfcontained")
+  ode - JPA Derby database needed by the ODE runtime
+  openejb - OpenEJB 3.1.2 runtime jars needed by the travel sample
+
+You can run each of the scenarios from the binary distribution by running one
+or more jar files using ant scripts that are included in the binary distribution.
+
+The ant commands that you need to use for running each scenario are listed below.
+If multiple ant commands are listed for a scenario, they must be run in
+separate processes in the order listed.  The current directory when invoking
+the ant command must be set as follows:
+ launchers/scatours-launcher-*.jar are run from the launchers directory 
+ clients/scatours-client-*.jar are run from the clients directory 
+ services/scatours-service-*.jar are run from the services directory
+ 
+To run a jar, you need to used the command "ant run-jarsuffix" where
+"jarsuffix" is the last part of the jar file name omitting the standard prefix
+"scatours-client", "scatours-launcher" or "scatours-service".  For example,
+to run the "jumpstart" scenario, you would set your current directory to the
+binary distribution "launchers" directory and run the command
+  ant run-jumpstart
+This runs the travel sample jar file scatours-launcher-jumpstart.jar using a
+classpath with the required runtime dependencies from the Tuscany SCA binary
+distribution.  The location of the Tuscany SCA binary distribution is specified
+by the TUSCANY_HOME environment variable).
+
+If the travel sample binary distribution was built using the "mvn -Pselfcontained"
+command, you can use the "java -jar" command to run the travel sample executable
+jars directly as an alternative to using ant scripts.  For example, instead of
+using the command
+  ant run-jumpstart
+you can use the command
+  java -jar scatours-launcher-jumpstart.jar
+
+Here is a complete list of the ant commands to run the scenarios described above
+from the travel sample binary distribution.  These are run from the "launchers"
+directory unlesss otherwise indicated.
+
+ 1) Jumpstart - First simple example of using Tuscany
+   ant run-jumpstart
+
+ 2) Introducing - Simplified introduction to the travel application
+   ant run-introducing
+
+ 3) Introducing (distributed) - Distributed services with a domain manager
+   ant run-introducing-domain
+   ant run-introducing-trips
+   ant run-introducing-tours
+   ant run-introducing-client
+
+ 4) Interaction - Different SCA interaction styles 
+   ant run-interaction
+
+ 5) Full application - The full interactive travel application
+   jant run-fullapp
+
+ 6) Full application (distributed) - Distributed services with a domain manager
+   ant run-fullapp-domain
+   ant run-fullapp-nodes
+
+ 7) Building blocks - Using SCA composites as application building blocks
+   ant run-buildingblocks
+
+ 8) Blog feed
+   ant run-blog-feed
+
+ 9) Data binding
+   ant run-databinding
+
+10) Feed logger
+   ant run-feed-logger
+
+11) Help pages
+   ant run-help-pages
+
+12) Policy
+   ant run-policy
+
+13) Payment service with different implementation types
+
+13a) implementation.bpel
+   ant run-payment-bpel
+
+13b) implementation.script written in Groovy
+   ant run-payment-groovy
+
+13c) implementation.java
+   ant run-payment-java
+
+13d) implementation.java with policy
+   ant run-payment-java-policy
+
+13e) implementation.spring
+   ant run-payment-spring
+
+13f) implementation.spring with SCA tags
+   ant run-payment-spring-scatag
+
+14) SCA service packaged in a web application
+   not available in binary distribution
+
+15) SCA currency converter service interoperating with SCA or non-SCA client
+
+15a) SCA client
+   ant run-currency-converter
+
+15b) CORBA client
+   ant run-currency-converter-corba
+   ant run-currency-converter-corba (from "clients" directory)
+
+15c) JMS client
+   ant run-currency-converter-jms
+   ant run-currency-converter-jms (from "clients" directory)
+
+15d) RMI client
+   ant run-currency-converter-rmi
+   ant run-currency-converter-rmi (from "clients" directory)
+
+15e) JAX-WS client
+   ant run-currency-converter-ws
+   ant run-currency-converter-ws-jaxws (from "clients" directory)
+
+15f) Web application JSP client
+   not available in binary distribution
+
+15g) Web application servlet client
+   not available in binary distribution
+
+16) SCA notification service interoperating with non-SCA SMS gateway service
+
+16a) SMS gateway CORBA service
+   ant run-smsgateway-corba (from "services" directory)
+   ant run-notification-corba
+
+16b) SMS gateway EJB service
+   ant run-smsgateway-ejb (from "services" directory)
+   ant run-notification-ejb
+
+16c) SMS gateway JMS service
+   ant run-smsgateway-jms (from "services" directory)
+   ant run-notification-jms
+
+16d) SMS gateway RMI service
+   ant run-smsgateway-rmi (from "services" directory)
+   ant run-notification-rmi
+
+16e) SMS gateway JAX-WS service
+   ant run-smsgateway-jaxws (from "services" directory)
+   ant run-notification-ws
+
+
+Cross-reference of contributions to scenarios
+---------------------------------------------
+
+The following table shows which contributions are used in which scenarios.
+
+contributions/blog-feed  8
+contributions/buildingblocks  7
+contributions/buildingblocks-client  7
+contributions/calendar  4
+contributions/car  5, 6
+contributions/common  4, 5, 6
+contributions/creditcard-payment-jaxb  13a, 13b, 13c, 13e, 13f, 14
+contributions/creditcard-payment-jaxb-policy  5, 6, 12, 13d
+contributions/creditcard-payment-sdo  9
+contributions/creditcard-payment-webapp  14
+contributions/currency  4, 5, 6, 15a, 15b, 15c, 15d, 15e, 15f, 15g
+contributions/currency-corba  15b
+contributions/currency-jms  15c
+contributions/currency-jsp  15f
+contributions/currency-rmi  15d
+contributions/currency-servlet  15g
+contributions/currency-ws  15e
+contributions/databinding-client  9
+contributions/emailgateway  13a, 13b
+contributions/feed-logger  10
+contributions/flight  4, 5, 6
+contributions/fullapp-bespoketrip  5, 6
+contributions/fullapp-coordination  5, 6
+contributions/fullapp-currency  5, 6
+contributions/fullapp-packagedtrip  5, 6 
+contributions/fullapp-shoppingcart  5, 6
+contributions/fullapp-ui  5, 6
+contributions/help-pages  11
+contributions/hotel  5, 6
+contributions/interaction-client  4
+contributions/interaction-service-remote  4
+contributions/introducing-client  2, 3
+contributions/introducing-tours  2, 3
+contributions/introducing-trips  1, 2, 3, 7
+contributions/notification  16a, 16b, 16c, 16d
+contributions/notification-corba  16a
+contributions/notification-ejb  16b
+contributions/notification-jms  16c
+contributions/notification-rmi  16d
+contributions/payment-bpel  13a
+contributions/payment-bpel-process  13a
+contributions/payment-groovy  13b
+contributions/payment-java  9, 13c
+contributions/payment-java-policy  12, 13d
+contributions/payment-spring  13e
+contributions/payment-spring-policy  5, 6
+contributions/payment-spring-scatag  13f
+contributions/policy-client  12
+contributions/scatours  5, 6
+contributions/shoppingcart  4, 5, 6
+contributions/travelcatalog  5, 6
+contributions/trip  5, 6
+contributions/tripbooking  5, 6

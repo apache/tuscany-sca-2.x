@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+-->
+<wsdl:definitions name="EmailGateway" 
+                  targetNamespace="http://www.tuscanyscatours.com/EmailGateway/"
+                  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+                  xmlns:tns="http://www.tuscanyscatours.com/EmailGateway/" 
+                  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  xmlns:bpws="http://schemas.xmlsoap.org/ws/2004/03/business-process/"
+                  xmlns:plnk="http://schemas.xmlsoap.org/ws/2004/03/partner-link/">
+    <wsdl:types>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+                    targetNamespace="http://www.tuscanyscatours.com/EmailGateway/"
+                    xmlns:tns="http://www.tuscanyscatours.com/EmailGateway/">
+                    
+            <xsd:element name="sendEmail" type="tns:SendEmailType"/>
+            <xsd:complexType name="SendEmailType">
+                <xsd:sequence>
+                    <xsd:element name="Email" type="tns:EmailType"></xsd:element>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:element name="sendEmailResponse" type="tns:SendEmailResponseType"/>
+            <xsd:complexType name="SendEmailResponseType">
+                <xsd:sequence>
+                    <xsd:element name="Status" type="xsd:string"></xsd:element>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:complexType name="EmailType">
+                <xsd:sequence>
+                    <xsd:element name="To" type="xsd:string"/>
+                    <xsd:element name="Title" type="xsd:string"/>
+                    <xsd:element name="Body" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="SendEmailRequest">
+        <wsdl:part name="parameters" element="tns:sendEmail"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="SendEmailResponse">
+        <wsdl:part name="parameters" element="tns:sendEmailResponse"></wsdl:part>
+    </wsdl:message>
+    <wsdl:portType name="EmailGateway">
+        <wsdl:operation name="sendEmail">
+            <wsdl:input message="tns:SendEmailRequest"></wsdl:input>
+            <wsdl:output message="tns:SendEmailResponse"></wsdl:output>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="EmailGatwayBinding" type="tns:EmailGateway">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+        <wsdl:operation name="sendEmail">
+            <soap:operation soapAction="http://www.tuscanyscatours.com/EmailGateway/sendEmail" />
+            <wsdl:input>
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="EmailGatewayService">
+        <wsdl:port name="EmailGatewayPort" binding="tns:EmailGatwayBinding">
+            <soap:address location="http://localhost:8088/EmailGateway" />
+        </wsdl:port>
+    </wsdl:service>
+    
+    <plnk:partnerLinkType name="EmailGatewayLinkType">
+        <plnk:role name="forward" portType="tns:EmailGateway"/>
+    </plnk:partnerLinkType>
+</wsdl:definitions>
