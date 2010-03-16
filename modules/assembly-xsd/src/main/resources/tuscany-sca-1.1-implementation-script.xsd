@@ -31,8 +31,6 @@
         <complexContent>
             <extension base="sca:Implementation">
                 <attribute name="script" type="anyURI" use="optional"/>
-                <attribute name="uri" type="anyURI" use="optional"/>
-                <attribute name="location" type="anyURI" use="optional"/>
             </extension>
         </complexContent>
     </complexType>
