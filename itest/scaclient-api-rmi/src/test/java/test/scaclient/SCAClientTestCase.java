@@ -44,18 +44,16 @@ public class SCAClientTestCase {
     
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        System.setProperty("org.apache.tuscany.sca.binding.sca.provider.SCABindingMapper.mappedBinding", RMIBinding.TYPE.toString());
     }
     
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
-        System.clearProperty("org.apache.tuscany.sca.binding.sca.provider.SCABindingMapper.mappedBinding");
     }
 
     @Test
     public void testDefault() throws Exception {
 
-        node = NodeFactory.getInstance().createNode((String)null, new String[] {"target/classes"});
+        node = NodeFactory.getInstance().createNode(URI.create("SCAClientTestCaseDomain"),(String)null, new String[] {"target/classes"});
         node.start();
 
         HelloworldService service = SCAClientFactory.newInstance(URI.create("default")).getService(HelloworldService.class, "HelloworldComponent");
