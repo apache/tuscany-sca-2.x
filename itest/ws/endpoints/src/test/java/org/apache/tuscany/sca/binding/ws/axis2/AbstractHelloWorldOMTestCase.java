@@ -28,7 +28,6 @@ import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.OMText;
 import org.apache.tuscany.sca.binding.ws.axis2.HelloWorldOM;
 import org.apache.tuscany.sca.node.Contribution;
-import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 
@@ -39,8 +38,7 @@ public abstract class AbstractHelloWorldOMTestCase extends TestCase {
 
     @Override
     protected void setUp() throws Exception {
-        String contribution = ContributionLocationHelper.getContributionLocation(getClass());
-        contribution = contribution.replace("test-classes", "classes");
+        String contribution = "target/classes";
         node = NodeFactory.newInstance().createNode(getCompositeName(), new Contribution("test", contribution));
         node.start();
         helloWorld = node.getService(HelloWorldOM.class, "HelloWorldComponent");

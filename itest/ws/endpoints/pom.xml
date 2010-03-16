@@ -26,8 +26,8 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>itest-ws-om-endpoints</artifactId>
-    <name>Apache Tuscany SCA iTest WS OM Endpoints</name>
+    <artifactId>itest-ws-endpoints</artifactId>
+    <name>Apache Tuscany SCA iTest WS Endpoints</name>
 
     <dependencies>
         
