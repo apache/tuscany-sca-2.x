@@ -128,4 +128,11 @@ public interface Endpoint extends Base, PolicySubject, Cloneable, Serializable {
      */
     Object clone() throws CloneNotSupportedException;
 
+    /**
+     * Tests if the URI of this endpoint matches the service URI
+     * @param serviceName the service URI to test
+     * @return true if the endpoint URI matches the service URI
+     */
+    boolean matches(String serviceURI);
+    
 }
