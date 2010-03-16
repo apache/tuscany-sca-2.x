@@ -54,7 +54,7 @@ public class EndpointRegistryImpl extends BaseEndpointRegistry implements Endpoi
     public List<Endpoint> findEndpoint(String uri) {
         List<Endpoint> foundEndpoints = new ArrayList<Endpoint>();
         for (Endpoint endpoint : endpoints) {
-            if (matches(uri, endpoint.getURI())) {
+            if (endpoint.matches(uri)) {
                 foundEndpoints.add(endpoint);
                 logger.fine("Found endpoint with matching service  - " + endpoint);
             }
