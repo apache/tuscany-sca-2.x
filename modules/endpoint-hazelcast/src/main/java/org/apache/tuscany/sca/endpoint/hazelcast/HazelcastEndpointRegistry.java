@@ -168,8 +168,9 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
         for (Object v : endpointMap.values()) {
             Endpoint endpoint = (Endpoint)v;
             logger.fine("Matching against - " + endpoint);
-            if (matches(uri, endpoint.getURI())) {
+            if (endpoint.matches(uri)) {
                 if (!isLocal(endpoint)) {
+                    endpoint.setRemote(true);
                     ((RuntimeEndpoint)endpoint).bind(registry, this);
                 } else {
                     // get the local version of the endpoint
