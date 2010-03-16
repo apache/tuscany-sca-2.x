@@ -73,6 +73,10 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
         super(registry, attributes, domainRegistryURI, domainURI);
         this.configURI = new DomainRegistryURI(domainRegistryURI);
     }
+    
+    public HazelcastInstance getHazelcastInstance() {
+        return hazelcastInstance;
+    }
 
     public void start() {
         if (endpointMap != null) {
