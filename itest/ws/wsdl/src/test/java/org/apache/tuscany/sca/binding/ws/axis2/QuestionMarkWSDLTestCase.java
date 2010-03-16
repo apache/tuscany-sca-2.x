@@ -35,9 +35,7 @@ import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 
-import org.apache.axis2.transport.http.server.HttpUtils;
 import org.apache.tuscany.sca.node.Contribution;
-import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 
@@ -99,6 +97,7 @@ public class QuestionMarkWSDLTestCase extends TestCase {
         Port port = service.getPort("HelloWorldPort");
 
         String endpoint = getEndpoint(port);
+        // TODO - used to get the real host here but WSDL seems to have localhost in it atm?
         assertEquals("http://localhost:8085/foo/bar", endpoint);
     }
 
