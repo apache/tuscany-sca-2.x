@@ -159,7 +159,7 @@ public class ScriptImplementationProcessor implements StAXArtifactProcessor<Scri
      */
     private void error(Monitor monitor, String message, Object model, Object... messageParameters) {
         if (monitor != null) {
-            Problem problem = monitor.createProblem(this.getClass().getName(), "impl-widget-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
+            Problem problem = monitor.createProblem(this.getClass().getName(), "impl-script-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
             monitor.problem(problem);
         }
     }    

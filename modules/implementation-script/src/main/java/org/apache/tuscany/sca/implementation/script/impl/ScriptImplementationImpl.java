@@ -32,20 +32,20 @@ import org.apache.tuscany.sca.implementation.script.ScriptImplementation;
 public class ScriptImplementationImpl extends ImplementationImpl implements ScriptImplementation {
     public static final QName TYPE = new QName(Base.SCA11_TUSCANY_NS, "implementation.script");
 
-    private String uri;
-    private String language;
-    private String location;
+    private String script; // Relative URI to the script
+    private String language; // Scripting lang
+    private String location; // Resolved location of the script
     
     public ScriptImplementationImpl() {
         super(TYPE);
     }
 
     public String getScript() {
-        return uri;
+        return script;
     }
 
-    public void setScript(String uri) {
-        this.uri = uri;
+    public void setScript(String script) {
+        this.script = script;
     }
     
     public String getLocation() {
@@ -64,16 +64,39 @@ public class ScriptImplementationImpl extends ImplementationImpl implements Scri
         return language;
     }
 
-    public String getURI() {
-        return uri;
-    }
-
-    public void setURI(String uri) {
-        this.uri = uri;
+    @Override
+    public String toString() {
+        return "Script : " + getScript(); 
     }
 
     @Override
-    public String toString() {
-        return "Script : " + getURI(); 
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + ((language == null) ? 0 : language.hashCode());
+        result = prime * result + ((script == null) ? 0 : script.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (!super.equals(obj))
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        ScriptImplementationImpl other = (ScriptImplementationImpl)obj;
+        if (language == null) {
+            if (other.language != null)
+                return false;
+        } else if (!language.equals(other.language))
+            return false;
+        if (script == null) {
+            if (other.script != null)
+                return false;
+        } else if (!script.equals(other.script))
+            return false;
+        return true;
     }
 }

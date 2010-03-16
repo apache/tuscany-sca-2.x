@@ -43,8 +43,4 @@ public interface ScriptImplementation extends Implementation {
 
     String getLanguage();
 
-    String getURI();
-
-    void setURI(String uri);
-
 }
