@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,22 +15,44 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.    
--->
-<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-		   xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-		   targetNamespace="http://www.tuscany.apache.org/itests/binding/ws/axis2"
-           name="HelloWorld">
+ */
 
-    <component name="HelloWorldClient">
-        <implementation.java class="org.apache.tuscany.sca.binding.ws.axis2.helloworld.HelloWorldClient"/>
-        <reference name="helloWorldWS" target="HelloWorldService"/>
-    </component>
+package org.apache.tuscany.sca.binding.ws.axis2;
+
+import java.io.Serializable;
+
+public class Bar implements Serializable {
+    private static final long serialVersionUID = 1249963611910502668L;
     
-    <component name="HelloWorldService">
-		<implementation.java class="org.apache.tuscany.sca.binding.ws.axis2.helloworld.HelloWorldService"/>
-	    <service name="HelloWorld">
-	        <binding.ws/>
-	    </service>		
-    </component>
+    private String s;
+    private int x;
+    private Integer y;
     
-</composite>
+    private Boolean b;
+    
+    public Boolean getB() {
+        return b;
+    }
+    public void setB(Boolean b) {
+        this.b = b;
+    }
+    public String getS() {
+        return s;
+    }
+    public void setS(String s) {
+        this.s = s;
+    }
+    public int getX() {
+        return x;
+    }
+    public void setX(int x) {
+        this.x = x;
+    }
+    public Integer getY() {
+        return y;
+    }
+    public void setY(Integer y) {
+        this.y = y;
+    }
+    
+}

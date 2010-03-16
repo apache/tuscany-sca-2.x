@@ -17,13 +17,26 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.ws.axis2.helloworld;
+package org.apache.tuscany.sca.binding.ws.axis2;
 
-import org.oasisopen.sca.annotation.Remotable;
+public class HelloWorldService implements HelloWorld {
 
-@Remotable
-public interface HelloWorld {
+    public String getGreetings(String s) {
+        String response = "Hello " + s;
+        System.out.println("At service: " + response);
+        return response;
+    }
     
-    String getGreetings(String s);
+    public Foo getGreetingsComplex(Foo foo){
+        Foo response = foo;
+        Bar b3 = new Bar();
+        b3.setS("simon");
+        b3.setX(4);
+        b3.setY(new Integer(5));
+        b3.setB(Boolean.TRUE);
+        response.getBars()[1] = b3;
+        System.out.println("At sevice: " + response.getBars()[0].getS());
+        return response;
+    }    
 
 }

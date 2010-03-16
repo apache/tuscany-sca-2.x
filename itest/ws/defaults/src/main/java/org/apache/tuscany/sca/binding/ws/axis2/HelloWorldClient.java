@@ -17,14 +17,24 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.ws.axis2.helloworld;
+package org.apache.tuscany.sca.binding.ws.axis2;
 
-public class HelloWorldService implements HelloWorld {
+import org.oasisopen.sca.annotation.Reference;
 
+public class HelloWorldClient implements HelloWorld {
+
+    @Reference
+    public HelloWorld helloWorldWS;
+    
     public String getGreetings(String s) {
-        String response = "Hello " + s;
-        System.out.println("At service: " + response);
+        String response = helloWorldWS.getGreetings(s);
+        System.out.println("At client: " + response);
         return response;
     }
 
+    public Foo getGreetingsComplex(Foo foo){
+        Foo response = helloWorldWS.getGreetingsComplex(foo);
+        System.out.println("At client: " + response.getBars()[0].getS());
+        return response;
+    }
 }

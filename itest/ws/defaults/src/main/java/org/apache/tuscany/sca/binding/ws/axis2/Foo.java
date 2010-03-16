@@ -17,19 +17,20 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.ws.axis2.helloworld;
+package org.apache.tuscany.sca.binding.ws.axis2;
 
-import org.oasisopen.sca.annotation.Reference;
+import java.io.Serializable;
 
-public class HelloWorldClient implements HelloWorld {
-
-    @Reference
-    public HelloWorld helloWorldWS;
+public class Foo implements Serializable {
+    private static final long serialVersionUID = 4879476066850018458L;
     
-    public String getGreetings(String s) {
-        String response = helloWorldWS.getGreetings(s);
-        System.out.println("At client: " + response);
-        return response;
+    private Bar[] bars;
+
+    public Bar[] getBars() {
+        return bars;
     }
 
+    public void setBars(Bar[] bars) {
+        this.bars = bars;
+    }
 }
