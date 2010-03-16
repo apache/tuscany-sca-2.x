@@ -59,6 +59,8 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
 
     protected static NodeFactory instance;
     protected static Class<?> factoryImplClass;
+    
+    protected static List<NodeFactory> factories = new ArrayList<NodeFactory>();
 
     protected static void setNodeFactory(NodeFactory factory) {
         instance = factory;
@@ -174,6 +176,7 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);
         }
+        factories.add(nodeFactory);
         return nodeFactory;
     }
 
@@ -474,6 +477,11 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
     public void destroy() {
         count = 0;
         instance = null;
+        factories.remove(this);
+    }
+    
+    public static List<NodeFactory> getNodeFactories() {
+        return factories;
     }
 
     /**
