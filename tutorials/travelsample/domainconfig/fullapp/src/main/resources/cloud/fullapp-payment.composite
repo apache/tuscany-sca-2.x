@@ -18,9 +18,9 @@
  * under the License.    
 -->
 <composite	xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
-		xmlns:t="http://tuscany.apache.org/xmlns/sca/1.0"
+		xmlns:t="http://tuscany.apache.org/xmlns/sca/1.1"
         targetNamespace="http://tuscany.apache.org/cloud"
-        xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
+        xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1"
         xmlns:s="http://tuscanyscatours.com/"
 		name="payment">
 

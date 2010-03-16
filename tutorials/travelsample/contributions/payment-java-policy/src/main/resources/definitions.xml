@@ -20,7 +20,7 @@
 <definitions xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
  			targetNamespace="http://docs.oasis-open.org/ns/opencsa/sca/200912"
  			xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
- 			xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0">
+ 			xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1">
 
     <!-- Policy Intents Defined by the SCA Runtime -->
     <intent name="authorization" constrains="sca:implementation"/>

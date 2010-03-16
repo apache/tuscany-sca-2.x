@@ -18,7 +18,7 @@
  * under the License.    
 -->
 <composite name="cloud.composite"
-           targetNamespace="http://tuscany.apache.org/xmlns/sca/1.0"
+           targetNamespace="http://tuscany.apache.org/xmlns/sca/1.1"
            xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912" 
            xmlns:ns1="http://docs.oasis-open.org/ns/opencsa/sca/200912"
            xmlns:ns2="http://tuscany.apache.org/cloud">

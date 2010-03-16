@@ -17,8 +17,8 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<workspace xmlns="http://tuscany.apache.org/xmlns/sca/1.0" 
-           xmlns:ns1="http://tuscany.apache.org/xmlns/sca/1.0">
+<workspace xmlns="http://tuscany.apache.org/xmlns/sca/1.1" 
+           xmlns:ns1="http://tuscany.apache.org/xmlns/sca/1.1">
   <contribution location="file:../contributions/scatours-contribution-common.jar"  uri="common"/>
   <contribution location="file:../contributions/scatours-contribution-currency.jar"  uri="currency"/>
   <contribution location="file:../contributions/scatours-contribution-hotel.jar"  uri="hotel"/>

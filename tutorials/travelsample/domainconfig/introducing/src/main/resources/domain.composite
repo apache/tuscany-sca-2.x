@@ -18,7 +18,7 @@
  * under the License.    
 -->
 <composite local="true" name="domain"
-  targetNamespace="http://tuscany.apache.org/xmlns/sca/1.0"
+  targetNamespace="http://tuscany.apache.org/xmlns/sca/1.1"
   xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912" xmlns:ns1="http://docs.oasis-open.org/ns/opencsa/sca/200912">
   <include name="ns2:Tours" uri="introducing-tours" xmlns:ns2="http://tuscanyscatours.com/"/>
   <include name="ns2:Trips" uri="introducing-trips" xmlns:ns2="http://goodvaluetrips.com/"/>

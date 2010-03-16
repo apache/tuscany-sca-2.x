@@ -17,7 +17,7 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912" xmlns:t="http://tuscany.apache.org/xmlns/sca/1.0" xmlns:c="http://client.scatours/" targetNamespace="http://tuscany.apache.org/cloud" name="ClientNode">
+<composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912" xmlns:t="http://tuscany.apache.org/xmlns/sca/1.1" xmlns:c="http://client.scatours/" targetNamespace="http://tuscany.apache.org/cloud" name="ClientNode">
 
 	<component name="ClientNode">
 		<t:implementation.node uri="introducing-client" composite="c:Client" />
