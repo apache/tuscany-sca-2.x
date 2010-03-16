@@ -33,6 +33,9 @@
     <module>defaults</module>
     <module>authentication-basic</module>
     <module>http-ssl</module>
+    <module>wsdl</module>
+    <module>endpoints</module>
+    <module>endpoint-references</module>
 <!--
     <module>jms</module>
     <module>mtom</module>
