@@ -34,7 +34,7 @@ public class Client {
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        clientNode = NodeFactory.newInstance().createNode(URI.create("tuscany:default"), "../helloworld-client/target//classes");
+        clientNode = NodeFactory.newInstance().createNode(URI.create("tuscany:default?listen=127.0.0.1:14821"), "../helloworld-client/target//classes");
         clientNode.start();
     }
 

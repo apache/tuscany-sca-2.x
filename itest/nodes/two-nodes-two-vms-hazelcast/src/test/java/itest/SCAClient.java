@@ -31,13 +31,13 @@ public class SCAClient {
 
     public void testSCAClient() throws Exception {
         // The configuration required when running with sca-client-rmi and endpoint-hazelcast-rmi
-        //SCAClientFactory factory = SCAClientFactory.newInstance(URI.create("tuscanyclient:default?remotes=192.168.247.1:14820"));
+        SCAClientFactory factory = SCAClientFactory.newInstance(URI.create("tuscanyclient:default?remotes=127.0.0.1:14820"));
         
         // The configuration required when running with sca-client-impl and endpoint-hazelcast
-        SCAClientFactory factory = SCAClientFactory.newInstance(URI.create("tuscany:default"));
+        //SCAClientFactory factory = SCAClientFactory.newInstance(URI.create("tuscany:default"));
         
         // Sleep 3 seconds so that the endpoint is populated into the EndpointRegistry
-        Thread.sleep(3000);
+        //Thread.sleep(3000);
         
         Helloworld service = factory.getService(Helloworld.class, "HelloworldService");
         
@@ -56,7 +56,7 @@ public class SCAClient {
         //       for doing this so we may need to talk to OASIS about adding one
         //       or just rely on the runtime hosting the classes using the SCAClient
         //       when it's on its way down
-        NodeFactory.getInstance().destroy();
+        //NodeFactory.getInstance().destroy();
     }
    
     public static void main(String[] args) throws Exception {
