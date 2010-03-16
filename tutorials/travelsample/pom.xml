@@ -22,11 +22,11 @@
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
         <artifactId>tuscany-sca</artifactId>
-        <version>1.6</version>
+        <version>2.0-SNAPSHOT</version>
     </parent>
     <artifactId>scatours</artifactId>
     <packaging>pom</packaging>
-    <version>1.0-SNAPSHOT</version>
+    <version>2.0-SNAPSHOT</version>
     <name>Apache Tuscany SCA Tours Travel Sample</name>
 
     <repositories>
@@ -94,18 +94,22 @@
     </profiles>
 
     <properties>
-        <scatours.version>1.0-SNAPSHOT</scatours.version>
-        <tuscany.version>1.6</tuscany.version>
+        <scatours.version>2.0-SNAPSHOT</scatours.version>
+        <tuscany.version>2.0-SNAPSHOT</tuscany.version>
     </properties>
 
     <modules>
         <module>util</module>
         <module>contributions</module>
+<!--
         <module>domainconfig</module>
+-->
         <module>launchers</module>
         <module>services</module>
         <module>clients</module>
+<!--
         <module>distribution</module>
+-->
     </modules>
 
 </project>

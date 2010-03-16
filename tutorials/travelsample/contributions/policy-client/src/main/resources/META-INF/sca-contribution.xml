@@ -17,8 +17,8 @@
     * specific language governing permissions and limitations
     * under the License.    
 -->
-<contribution xmlns="http://www.osoa.org/xmlns/sca/1.0"
+<contribution xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
               xmlns:client="http://client.scatours/">
-    <import.java package="payment" />
     <deployable composite="client:Client" />
+    <import.java package="payment" />
 </contribution>

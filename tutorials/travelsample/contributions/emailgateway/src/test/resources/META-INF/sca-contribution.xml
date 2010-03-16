@@ -17,9 +17,9 @@
     * specific language governing permissions and limitations
     * under the License.    
 -->
-<contribution xmlns="http://www.osoa.org/xmlns/sca/1.0"
+<contribution xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
               xmlns:e="http://emailgateway-test">
+    <deployable composite="e:emailgateway-test" />
     <import.java package="com.tuscanyscatours.emailgateway" />
     <import.java package="com.tuscanyscatours.emailgateway.impl" />
-    <deployable composite="e:emailgateway-test" />
 </contribution>

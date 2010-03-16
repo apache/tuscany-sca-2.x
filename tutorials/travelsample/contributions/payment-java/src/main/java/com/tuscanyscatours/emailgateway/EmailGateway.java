@@ -19,7 +19,7 @@
 
 package com.tuscanyscatours.emailgateway;
 
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 
 /**
  * A gateway to send e-mail

@@ -21,27 +21,27 @@ package scatours;
 
 import static scatours.launcher.LauncherUtil.locate;
 
-import org.apache.tuscany.sca.node.SCAClient;
-import org.apache.tuscany.sca.node.SCAContribution;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 
 import scatours.notification.Notification;
 
 public class NotificationWSLauncher {
 
     public static void main(String[] args) throws Exception {
-        SCAContribution notificationContribution = locate("notification");
-        SCAContribution notificationWSContribution = locate("notification-ws");
+        Contribution notificationContribution = locate("notification");
+        Contribution notificationWSContribution = locate("notification-ws");
 
-        SCANode node =
-            SCANodeFactory.newInstance().createSCANode("notification-ws.composite",
+        Node node =
+            NodeFactory.getInstance().createNode("notification-ws.composite",
                                                        notificationContribution,
                                                        notificationWSContribution);
         node.start();
 
         System.out.println("Quick notification test");
-        Notification notification = ((SCAClient)node).getService(Notification.class, "Notification");
+        Notification notification = ((Node)node).getService(Notification.class, "Notification");
         String accountID = "1234";
         String subject = "Holiday payment taken";
         String message = "Payment of £102.37 accepted...";

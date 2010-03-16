@@ -21,22 +21,22 @@ package scatours;
 
 import static scatours.launcher.LauncherUtil.locate;
 
-import org.apache.tuscany.sca.node.SCAClient;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 
 public class IntroducingLauncher {
 
     public static void main(String[] args) throws Exception {
-        SCANode node =
-            SCANodeFactory.newInstance().createSCANode(null,
+        Node node =
+            NodeFactory.getInstance().createNode(
                                                        locate("introducing-tours"),
                                                        locate("introducing-trips"),
                                                        locate("introducing-client"));
 
         node.start();
 
-        Runnable proxy = ((SCAClient)node).getService(Runnable.class, "TestClient/Runnable");
+        Runnable proxy = ((Node)node).getService(Runnable.class, "TestClient/Runnable");
         proxy.run();
 
         node.stop();

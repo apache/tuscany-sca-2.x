@@ -21,41 +21,41 @@ package scatours;
 
 import java.io.IOException;
 
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 
 public class FullAppNodesLauncher {
 
     public static void main(String[] args) throws Exception {
-        SCANode nodeCreditcard =
-            SCANodeFactory.newInstance().createSCANodeFromURL("http://localhost:9990/node-config/creditcard");
+        Node nodeCreditcard =
+            NodeFactory.getInstance().createNodeFromURL("http://localhost:9990/node-config/creditcard");
         nodeCreditcard.start();
 
-        SCANode nodePayment =
-            SCANodeFactory.newInstance().createSCANodeFromURL("http://localhost:9990/node-config/payment");
+        Node nodePayment =
+            NodeFactory.getInstance().createNodeFromURL("http://localhost:9990/node-config/payment");
         nodePayment.start();
 
-        SCANode nodeShoppingcart =
-            SCANodeFactory.newInstance().createSCANodeFromURL("http://localhost:9990/node-config/shoppingcart");
+        Node nodeShoppingcart =
+            NodeFactory.getInstance().createNodeFromURL("http://localhost:9990/node-config/shoppingcart");
         nodeShoppingcart.start();
 
-        SCANode nodeCurrency =
-            SCANodeFactory.newInstance().createSCANodeFromURL("http://localhost:9990/node-config/currency");
+        Node nodeCurrency =
+            NodeFactory.getInstance().createNodeFromURL("http://localhost:9990/node-config/currency");
         nodeCurrency.start();
 
-        SCANode nodePackagedtrip =
-            SCANodeFactory.newInstance().createSCANodeFromURL("http://localhost:9990/node-config/packagedtrip");
+        Node nodePackagedtrip =
+            NodeFactory.getInstance().createNodeFromURL("http://localhost:9990/node-config/packagedtrip");
         nodePackagedtrip.start();
 
-        SCANode nodeBespoketrip =
-            SCANodeFactory.newInstance().createSCANodeFromURL("http://localhost:9990/node-config/bespoketrip");
+        Node nodeBespoketrip =
+            NodeFactory.getInstance().createNodeFromURL("http://localhost:9990/node-config/bespoketrip");
         nodeBespoketrip.start();
 
-        SCANode nodeFrontend =
-            SCANodeFactory.newInstance().createSCANodeFromURL("http://localhost:9990/node-config/coordination");
+        Node nodeFrontend =
+            NodeFactory.getInstance().createNodeFromURL("http://localhost:9990/node-config/coordination");
         nodeFrontend.start();
 
-        SCANode nodeUI = SCANodeFactory.newInstance().createSCANodeFromURL("http://localhost:9990/node-config/ui");
+        Node nodeUI = NodeFactory.getInstance().createNodeFromURL("http://localhost:9990/node-config/ui");
         nodeUI.start();
 
         System.out.println("Point your browser at - http://localhost:8080/scatours/ ");

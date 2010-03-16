@@ -17,10 +17,10 @@
     * specific language governing permissions and limitations
     * under the License.    
 -->
-<contribution xmlns="http://www.osoa.org/xmlns/sca/1.0"
+<contribution xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
               xmlns:tours="http://com.tuscanyscatours/">
+    <deployable composite="tours:service" />
     <import.java package="com.tuscanyscatours.common" />
     <import.java package="com.tuscanyscatours.flight.impl" />
     <import.java package="com.tuscanyscatours.hotel.impl" />
-    <deployable composite="tours:service" />
 </contribution>

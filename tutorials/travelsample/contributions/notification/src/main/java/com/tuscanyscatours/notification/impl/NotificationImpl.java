@@ -19,8 +19,8 @@
 
 package com.tuscanyscatours.notification.impl;
 
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 
 import com.tuscanyscatours.notification.Notification;
 import com.tuscanyscatours.smsgateway.SMSGateway;

@@ -26,8 +26,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.osoa.sca.ComponentContext;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.ComponentContext;
+import org.oasisopen.sca.annotation.Reference;
 
 import com.tuscanyscatours.currencyconverter.CurrencyConverter;
 
@@ -43,7 +43,7 @@ public class CurrencyConverterServlet extends HttpServlet {
             // annotation in containers supporting SCA "deep" integration. In other 
             // environments in can be looked up from the ComponentContext.
             ComponentContext context =
-                (ComponentContext)config.getServletContext().getAttribute("org.osoa.sca.ComponentContext");
+                (ComponentContext)config.getServletContext().getAttribute("org.oasisopen.sca.ComponentContext");
             currencyConverter = context.getService(CurrencyConverter.class, "currencyConverter");
         }
     }

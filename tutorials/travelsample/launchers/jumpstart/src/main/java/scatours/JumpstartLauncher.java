@@ -21,21 +21,20 @@ package scatours;
 
 import static scatours.launcher.LauncherUtil.locate;
 
-import org.apache.tuscany.sca.node.SCAClient;
-import org.apache.tuscany.sca.node.SCAContribution;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 
 public class JumpstartLauncher {
 
     public static void main(String[] args) throws Exception {
-        SCAContribution gvtContribution = locate("introducing-trips");
+        Contribution gvtContribution = locate("introducing-trips");
 
-        SCANode node = SCANodeFactory.newInstance().createSCANode("trips.composite", gvtContribution);
+        Node node = NodeFactory.getInstance().createNode("trips.composite", gvtContribution);
 
         node.start();
 
-        Trips tripProvider = ((SCAClient)node).getService(Trips.class, "TripProvider/Trips");
+        Trips tripProvider = node.getService(Trips.class, "TripProvider/Trips");
 
         System.out.println("Trip boooking code = " + tripProvider.checkAvailability("FS1APR4", 1));
 

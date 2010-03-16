@@ -23,10 +23,10 @@ import static scatours.launcher.LauncherUtil.locate;
 
 import javax.naming.Context;
 
-import org.apache.tuscany.sca.node.SCAClient;
-import org.apache.tuscany.sca.node.SCAContribution;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 
 import scatours.notification.Notification;
 
@@ -36,17 +36,17 @@ public class NotificationEJBLauncher {
         System.setProperty(Context.INITIAL_CONTEXT_FACTORY, "org.apache.openejb.client.RemoteInitialContextFactory");
         System.setProperty(Context.PROVIDER_URL, "ejbd://localhost:4201");
 
-        SCAContribution notificationContribution = locate("notification");
-        SCAContribution notificationEJBContribution = locate("notification-ejb");
+        Contribution notificationContribution = locate("notification");
+        Contribution notificationEJBContribution = locate("notification-ejb");
 
-        SCANode node =
-            SCANodeFactory.newInstance().createSCANode("notification-ejb.composite",
+        Node node =
+            NodeFactory.getInstance().createNode("notification-ejb.composite",
                                                        notificationContribution,
                                                        notificationEJBContribution);
         node.start();
 
         System.out.println("Quick notification test");
-        Notification notification = ((SCAClient)node).getService(Notification.class, "Notification");
+        Notification notification = ((Node)node).getService(Notification.class, "Notification");
         String accountID = "1234";
         String subject = "Holiday payment taken";
         String message = "Payment of £102.37 accepted...";

@@ -21,22 +21,22 @@ package scatours;
 
 import static scatours.launcher.LauncherUtil.locate;
 
-import org.apache.tuscany.sca.node.SCAClient;
-import org.apache.tuscany.sca.node.SCAContribution;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 
 import scatours.feedlogger.FeedLogger;
 
 public class FeedLoggerLauncher {
 
     public static void main(String[] args) throws Exception {
-        SCAContribution feedContribution = locate("feed-logger");
+        Contribution feedContribution = locate("feed-logger");
 
-        SCANode node = SCANodeFactory.newInstance().createSCANode("feed-logger.composite", feedContribution);
+        Node node = NodeFactory.getInstance().createNode("feed-logger.composite", feedContribution);
         node.start();
 
-        FeedLogger logger = ((SCAClient)node).getService(FeedLogger.class, "FeedLogger");
+        FeedLogger logger = ((Node)node).getService(FeedLogger.class, "FeedLogger");
         logger.logFeeds(5);
 
         node.stop();

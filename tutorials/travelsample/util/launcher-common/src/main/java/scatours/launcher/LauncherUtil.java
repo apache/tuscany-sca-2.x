@@ -21,9 +21,9 @@ package scatours.launcher;
 
 import java.io.File;
 
-import org.apache.tuscany.sca.node.SCAContribution;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 
 /**
  * This utility locates SCA contributions by name so that the launcher can work with various environments where 
@@ -34,9 +34,9 @@ public class LauncherUtil {
     /**
      * Locate an SCA contribution by name
      * @param name The name of the SCA contribution archive
-     * @return The SCAContribution
+     * @return The Contribution
      */
-    public static SCAContribution locate(String name) {
+    public static Contribution locate(String name) {
         // Try to use the target/classes directory inside Eclipse/Maven
         File file = new File("../../contributions/" + name + "/target/classes");
         if (!file.exists()) {
@@ -54,18 +54,18 @@ public class LauncherUtil {
                 }
             }
         }
-        return new SCAContribution(name, file.toURI().toString());
+        return new Contribution(name, file.toURI().toString());
     }
 
     /**
      * Locate an SCA contribution by replacing the ${name} in the pattern 
      * @param urlPattern The url pattern that contains ${name}
      * @param name The name of the contribution archive
-     * @return The SCAContribution
+     * @return The Contribution
      */
-    public static SCAContribution locate(String urlPattern, String name) {
+    public static Contribution locate(String urlPattern, String name) {
         String url = urlPattern.replace("${name}", name);
-        return new SCAContribution(name, url);
+        return new Contribution(name, url);
     }
 
     /**
@@ -74,13 +74,13 @@ public class LauncherUtil {
      * @param contributionNames
      * @return
      */
-    public static SCANode createNode(String composite, String... contributionNames) {
-        SCAContribution[] contributions = new SCAContribution[contributionNames.length];
+    public static Node createNode(String composite, String... contributionNames) {
+        Contribution[] contributions = new Contribution[contributionNames.length];
         int index = 0;
         for (String name : contributionNames) {
             contributions[index++] = locate(name);
         }
-        SCANode node = SCANodeFactory.newInstance().createSCANode(composite, contributions);
+        Node node = NodeFactory.getInstance().createNode(composite, contributions);
         return node;
     }
 }

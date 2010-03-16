@@ -24,10 +24,10 @@ import java.math.BigDecimal;
 import com.tuscanyscatours.Bookings;
 import com.tuscanyscatours.Checkout;
 
-import org.apache.tuscany.sca.node.SCAClient;
-import org.apache.tuscany.sca.node.SCAContribution;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,22 +37,22 @@ import org.junit.Test;
  */
 public class BuildingBlocksImplTestCase {
 
-    private SCANode node;
+    private Node node;
 
     @Before
     public void startServer() throws Exception {
-        node = SCANodeFactory.newInstance().createSCANode("tours-impl.composite",
-                   new SCAContribution("buildingblocks", "./target/classes"));
+        node = NodeFactory.getInstance().createNode("tours-impl.composite",
+                   new Contribution("buildingblocks", "./target/classes"));
         node.start();
     }
 
     @Test
     public void testImpl() {
-        Bookings bookings = ((SCAClient)node).getService(Bookings.class, "MyTours/BookTrip");
+        Bookings bookings = ((Node)node).getService(Bookings.class, "MyTours/BookTrip");
         String bookingCode = bookings.newBooking("FS1APR4", 1);
         System.out.println("Booking code is " + bookingCode);
 
-        Checkout checkout = ((SCAClient)node).getService(Checkout.class, "MyTours/Checkout");
+        Checkout checkout = ((Node)node).getService(Checkout.class, "MyTours/Checkout");
         checkout.makePayment(new BigDecimal("1995.00"), "1234567843218765 10/10");
     }
 

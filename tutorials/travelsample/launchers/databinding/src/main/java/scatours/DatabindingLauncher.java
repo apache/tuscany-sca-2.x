@@ -21,22 +21,22 @@ package scatours;
 
 import static scatours.launcher.LauncherUtil.locate;
 
-import org.apache.tuscany.sca.node.SCAClient;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 
 public class DatabindingLauncher {
     public static void main(String[] args) throws Exception {
-        SCANode node1 = SCANodeFactory.newInstance().createSCANode(null, 
+        Node node1 = NodeFactory.getInstance().createNode(
                                                                    locate("payment-java"), 
                                                                    locate("databinding-client"));
 
-        SCANode node2 = SCANodeFactory.newInstance().createSCANode(null, locate("creditcard-payment-sdo"));
+        Node node2 = NodeFactory.getInstance().createNode(locate("creditcard-payment-sdo"));
 
         node1.start();
         node2.start();
 
-        Runnable runner = ((SCAClient)node1).getService(Runnable.class, "TestClient/Runnable");
+        Runnable runner = ((Node)node1).getService(Runnable.class, "TestClient/Runnable");
         runner.run();
 
         node1.stop();

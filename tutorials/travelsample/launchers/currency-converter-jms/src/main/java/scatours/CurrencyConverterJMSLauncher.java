@@ -22,9 +22,9 @@ package scatours;
 import static scatours.launcher.LauncherUtil.locate;
 
 import org.apache.activemq.broker.BrokerService;
-import org.apache.tuscany.sca.node.SCAContribution;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 
 public class CurrencyConverterJMSLauncher {
 
@@ -35,11 +35,11 @@ public class CurrencyConverterJMSLauncher {
         jmsBroker.addConnector("tcp://localhost:61619");
         jmsBroker.start();
 
-        SCAContribution currencyJMSContribution = locate("currency-jms");
-        SCAContribution currencyContribution = locate("currency");
+        Contribution currencyJMSContribution = locate("currency-jms");
+        Contribution currencyContribution = locate("currency");
 
-        SCANode node =
-            SCANodeFactory.newInstance().createSCANode("currency-converter-jms.composite",
+        Node node =
+            NodeFactory.getInstance().createNode("currency-converter-jms.composite",
                                                        currencyContribution,
                                                        currencyJMSContribution);
         node.start();

@@ -23,14 +23,14 @@ import static scatours.launcher.LauncherUtil.locate;
 
 import java.io.IOException;
 
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 
 public class FullAppLauncher {
 
     public static void main(String[] args) throws Exception {
-        SCANode node =
-            SCANodeFactory.newInstance().createSCANode(null,
+        Node node =
+            NodeFactory.getInstance().createNode(
                                                        locate("common"),
                                                        locate("currency"),
                                                        locate("hotel"),

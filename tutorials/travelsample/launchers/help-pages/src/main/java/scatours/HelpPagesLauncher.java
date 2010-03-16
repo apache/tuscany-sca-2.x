@@ -21,16 +21,16 @@ package scatours;
 
 import static scatours.launcher.LauncherUtil.locate;
 
-import org.apache.tuscany.sca.node.SCAContribution;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 
 public class HelpPagesLauncher {
 
     public static void main(String[] args) throws Exception {
-        SCAContribution helpContribution = locate("help-pages");
+        Contribution helpContribution = locate("help-pages");
 
-        SCANode node = SCANodeFactory.newInstance().createSCANode("help-pages.composite", helpContribution);
+        Node node = NodeFactory.getInstance().createNode("help-pages.composite", helpContribution);
         node.start();
 
         System.out.println("Node started - Press enter to shutdown.");

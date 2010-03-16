@@ -19,10 +19,10 @@
 
 package scatours.payment;
 
-import org.apache.tuscany.sca.node.SCAClient;
-import org.apache.tuscany.sca.node.SCAContribution;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -31,19 +31,19 @@ import org.junit.Test;
 import com.tuscanyscatours.payment.Payment;
 
 public class PaymentTestCase {
-    private static SCANode node1;
-    private static SCANode node2;
+    private static Node node1;
+    private static Node node2;
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
         node1 =
-            SCANodeFactory.newInstance()
-                .createSCANode("payment.composite",
-                               new SCAContribution("payment", "./target/classes"));
+            NodeFactory.getInstance()
+                .createNode("payment.composite",
+                               new Contribution("payment", "./target/classes"));
         node2 =
-            SCANodeFactory.newInstance()
-                .createSCANode("creditcard.composite",        
-                               new SCAContribution("creditcard",
+            NodeFactory.getInstance()
+                .createNode("creditcard.composite",        
+                               new Contribution("creditcard",
                                                    "../../contributions/creditcard-payment-jaxb/target/classes"));
         node1.start();
         node2.start();
@@ -51,7 +51,7 @@ public class PaymentTestCase {
 
     @Test
     public void testPayment() {
-        SCAClient client = (SCAClient)node1;
+        Node client = (Node)node1;
         Payment payment = client.getService(Payment.class, "Payment");
 
         System.out.println("\n\nSuccessful Payment - Status = \n\n" + payment.makePaymentMember("c-0", 100.00f));

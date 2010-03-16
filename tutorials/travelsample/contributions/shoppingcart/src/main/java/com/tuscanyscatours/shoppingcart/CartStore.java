@@ -18,9 +18,7 @@
  */
 package com.tuscanyscatours.shoppingcart;
 
-import org.osoa.sca.annotations.Conversational;
-import org.osoa.sca.annotations.EndsConversation;
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 
 import com.tuscanyscatours.common.TripItem;
 
@@ -28,7 +26,6 @@ import com.tuscanyscatours.common.TripItem;
  * The CartStore service interface
  */
 @Remotable
-@Conversational
 public interface CartStore {
     void addTrip(TripItem trip);
 
@@ -36,6 +33,5 @@ public interface CartStore {
 
     TripItem[] getTrips();
 
-    @EndsConversation
     void reset();
 }

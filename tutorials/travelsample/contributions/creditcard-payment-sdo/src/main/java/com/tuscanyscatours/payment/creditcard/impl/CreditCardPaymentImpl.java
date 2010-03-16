@@ -19,7 +19,7 @@
 
 package com.tuscanyscatours.payment.creditcard.impl;
 
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Service;
 
 import com.tuscanyscatours.payment.creditcard.CreditCardDetailsType;
 import com.tuscanyscatours.payment.creditcard.CreditCardPayment;

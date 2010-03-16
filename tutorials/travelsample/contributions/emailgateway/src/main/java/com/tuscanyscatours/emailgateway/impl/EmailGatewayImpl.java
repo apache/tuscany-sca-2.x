@@ -19,7 +19,7 @@
 
 package com.tuscanyscatours.emailgateway.impl;
 
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Service;
 
 import com.tuscanyscatours.emailgateway.EmailGateway;
 import com.tuscanyscatours.emailgateway.EmailType;

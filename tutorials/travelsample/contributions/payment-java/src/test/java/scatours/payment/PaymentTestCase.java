@@ -19,10 +19,10 @@
 
 package scatours.payment;
 
-import org.apache.tuscany.sca.node.SCAClient;
-import org.apache.tuscany.sca.node.SCAContribution;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -31,22 +31,22 @@ import org.junit.Test;
 import com.tuscanyscatours.payment.Payment;
 
 public class PaymentTestCase {
-    private static SCANode node;
+    private static Node node;
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
         node =
-            SCANodeFactory.newInstance()
-                .createSCANode(null,
-                               new SCAContribution("payment", "./target/classes"),
-                               new SCAContribution("creditcard",
+            NodeFactory.getInstance()
+                .createNode(
+                               new Contribution("payment", "./target/classes"),
+                               new Contribution("creditcard",
                                                    "../../contributions/creditcard-payment-jaxb/target/classes"));
         node.start();
     }
 
     @Test
     public void testPayment() {
-        SCAClient client = (SCAClient)node;
+        Node client = (Node)node;
         Payment payment = client.getService(Payment.class, "Payment");
 
         System.out.println("\n\nSuccessful Payment - Status = \n\n" + payment.makePaymentMember("c-0", 100.00f));

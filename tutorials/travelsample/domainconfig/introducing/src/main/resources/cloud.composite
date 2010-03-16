@@ -19,7 +19,7 @@
 -->
 <composite local="true" name="cloud"
   targetNamespace="http://tuscany.apache.org/xmlns/sca/1.0"
-  xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:ns1="http://www.osoa.org/xmlns/sca/1.0">
+  xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912" xmlns:ns1="http://docs.oasis-open.org/ns/opencsa/sca/200912">
   <include name="ns2:ToursNode" uri="http://tuscany.apache.org/cloud" xmlns:ns2="http://tuscany.apache.org/cloud"/>
   <include name="ns2:TripsNode" uri="http://tuscany.apache.org/cloud" xmlns:ns2="http://tuscany.apache.org/cloud"/>
   <include name="ns2:ClientNode" uri="http://tuscany.apache.org/cloud" xmlns:ns2="http://tuscany.apache.org/cloud"/>

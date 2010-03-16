@@ -17,14 +17,14 @@
     * specific language governing permissions and limitations
     * under the License.    
 -->
-<definitions xmlns="http://www.osoa.org/xmlns/sca/1.0" 
+<definitions xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912" 
              targetNamespace="http://tuscany.apache.org/xmlns/sca/1.0"
-             xmlns:sca="http://www.osoa.org/xmlns/sca/1.0" 
+             xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912" 
              xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0">
 
     <!-- PolicySets -->
     <policySet name="JDKLoggingPolicy" provides="tuscany:logging" appliesTo="sca:implementation.java"
-        xmlns="http://www.osoa.org/xmlns/sca/1.0">
+        xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912">
         <tuscany:jdkLogger name="myLogger">
             <logLevel>FINER</logLevel>
         </tuscany:jdkLogger>

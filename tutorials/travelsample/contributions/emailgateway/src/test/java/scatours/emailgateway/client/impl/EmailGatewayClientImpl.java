@@ -19,8 +19,8 @@
 
 package scatours.emailgateway.client.impl;
 
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 
 import com.tuscanyscatours.emailgateway.EmailGateway;
 import com.tuscanyscatours.emailgateway.EmailType;

@@ -22,10 +22,10 @@
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
         <artifactId>scatours</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>2.0-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
-    <version>1.0-SNAPSHOT</version>
+    <version>2.0-SNAPSHOT</version>
     <artifactId>scatours-contribution-payment-spring-scatag</artifactId>
     <name>Apache Tuscany SCA Tours Payment Spring SCA Tag Contribution</name>
 
@@ -52,7 +52,7 @@
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-binding-ws-axis2</artifactId>
+            <artifactId>tuscany-binding-ws-runtime-axis2</artifactId>
             <version>${tuscany.version}</version>
             <scope>runtime</scope>
         </dependency>

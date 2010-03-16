@@ -21,11 +21,10 @@ package com.tuscanyscatours.shoppingcart.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.osoa.sca.annotations.ConversationID;
-import org.osoa.sca.annotations.Destroy;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Scope;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Scope;
+import org.oasisopen.sca.annotation.Service;
 
 import com.tuscanyscatours.common.TripItem;
 import com.tuscanyscatours.shoppingcart.CartStore;
@@ -34,10 +33,9 @@ import com.tuscanyscatours.shoppingcart.CartStore;
  * An implementation of the CartStore service
  */
 @Scope("CONVERSATION")
-@Service(interfaces = {CartStore.class})
+@Service({CartStore.class})
 public class CartStoreImpl implements CartStore {
 
-    @ConversationID
     protected String cartId;
 
     private List<TripItem> trips = new ArrayList<TripItem>();

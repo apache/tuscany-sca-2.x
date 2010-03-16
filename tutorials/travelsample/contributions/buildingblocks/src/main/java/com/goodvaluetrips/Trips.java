@@ -18,7 +18,7 @@
  */
 package com.goodvaluetrips;
 
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 
 @Remotable
 public interface Trips {

@@ -21,11 +21,11 @@ package com.tuscanyscatours.flight.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.osoa.sca.annotations.Callback;
-import org.osoa.sca.annotations.ComponentName;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Scope;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Callback;
+import org.oasisopen.sca.annotation.ComponentName;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Scope;
+import org.oasisopen.sca.annotation.Service;
 
 import com.tuscanyscatours.common.Book;
 import com.tuscanyscatours.common.Search;
@@ -37,7 +37,7 @@ import com.tuscanyscatours.common.TripLeg;
  * An implementation of the Flight service
  */
 @Scope("CONVERSATION")
-@Service(interfaces = {Search.class, Book.class})
+@Service({Search.class, Book.class})
 public class FlightImpl implements Search, Book {
 
     private List<FlightInfo> flights = new ArrayList<FlightInfo>();

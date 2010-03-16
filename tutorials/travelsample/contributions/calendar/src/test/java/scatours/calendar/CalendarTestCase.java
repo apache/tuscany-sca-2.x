@@ -18,10 +18,10 @@
  */
 package scatours.calendar;
 
-import org.apache.tuscany.sca.node.SCAClient;
-import org.apache.tuscany.sca.node.SCAContribution;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,20 +33,20 @@ import com.tuscanyscatours.calendar.Calendar;
  */
 public class CalendarTestCase {
 
-    private SCANode node;
+    private Node node;
 
     @Before
     public void startNode() throws Exception {
         node =
-            SCANodeFactory.newInstance().createSCANode("calendar.composite",
-                                                       new SCAContribution("calendar", "./target/classes"),
-                                                       new SCAContribution("calendar-test", "./target/test-classes"));
+            NodeFactory.getInstance().createNode("calendar.composite",
+                                                       new Contribution("calendar", "./target/classes"),
+                                                       new Contribution("calendar-test", "./target/test-classes"));
         node.start();
     }
 
     @Test
     public void testCalendar() throws Exception {
-        Calendar calendar = ((SCAClient)node).getService(Calendar.class, "Calendar");
+        Calendar calendar = ((Node)node).getService(Calendar.class, "Calendar");
         System.out.println(calendar.getEndDate("07/10/96 04:05", 3));
     }
 

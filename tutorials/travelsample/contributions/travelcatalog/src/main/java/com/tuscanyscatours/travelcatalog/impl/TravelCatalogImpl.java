@@ -23,14 +23,14 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 
-import org.osoa.sca.ComponentContext;
-import org.osoa.sca.RequestContext;
-import org.osoa.sca.ServiceReference;
-import org.osoa.sca.annotations.Context;
-import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Scope;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.ComponentContext;
+import org.oasisopen.sca.RequestContext;
+import org.oasisopen.sca.ServiceReference;
+import org.oasisopen.sca.annotation.Context;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Scope;
+import org.oasisopen.sca.annotation.Service;
 
 import com.tuscanyscatours.common.Search;
 import com.tuscanyscatours.common.SearchCallback;
@@ -43,7 +43,7 @@ import com.tuscanyscatours.travelcatalog.TravelCatalogSearch;
  * An implementation of the travel catalog service
  */
 @Scope("COMPOSITE")
-@Service(interfaces = {TravelCatalogSearch.class})
+@Service({TravelCatalogSearch.class})
 public class TravelCatalogImpl implements TravelCatalogSearch, SearchCallback {
 
     @Reference
@@ -80,7 +80,7 @@ public class TravelCatalogImpl implements TravelCatalogSearch, SearchCallback {
 
         ServiceReference<Search> dynamicHotelSearch = componentContext.getServiceReference(Search.class, "hotelSearch");
 
-        dynamicHotelSearch.setCallbackID("HotelSearchCallbackID-" + tripLeg.getId());
+        // dynamicHotelSearch.setCallbackID("HotelSearchCallbackID-" + tripLeg.getId());
         dynamicHotelSearch.getService().searchAsynch(tripLeg);
 
         flightSearch.searchAsynch(tripLeg);
@@ -109,8 +109,8 @@ public class TravelCatalogImpl implements TravelCatalogSearch, SearchCallback {
 
     public synchronized void searchResults(TripItem[] items) {
         RequestContext requestContext = componentContext.getRequestContext();
-        Object callbackID = requestContext.getServiceReference().getCallbackID();
-        System.out.println("Asynch response - " + callbackID);
+        // Object callbackID = requestContext.getServiceReference().getCallbackID();
+        // System.out.println("Asynch response - " + callbackID);
 
         if (items != null) {
             for (int i = 0; i < items.length; i++) {

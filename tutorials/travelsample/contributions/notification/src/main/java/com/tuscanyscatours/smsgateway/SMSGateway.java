@@ -19,7 +19,7 @@
 
 package com.tuscanyscatours.smsgateway;
 
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 
 /**
  * A gateway to send SMS messages.

@@ -19,10 +19,10 @@
 
 package scatours.trip;
 
-import org.apache.tuscany.sca.node.SCAClient;
-import org.apache.tuscany.sca.node.SCAContribution;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -34,15 +34,15 @@ import com.tuscanyscatours.common.TripItem;
  * 
  */
 public class TripTestCase {
-    private static SCANode tripNode;
+    private static Node tripNode;
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
         try {
             tripNode =
-                SCANodeFactory.newInstance().createSCANode("trip.composite",
-                                                           new SCAContribution("trip", "./target/classes"),
-                                                           new SCAContribution("trip-test", "./target/test-classes"));
+                NodeFactory.getInstance().createNode("trip.composite",
+                                                           new Contribution("trip", "./target/classes"),
+                                                           new Contribution("trip-test", "./target/test-classes"));
 
             tripNode.start();
         } catch (Exception ex) {
@@ -52,7 +52,7 @@ public class TripTestCase {
 
     @Test
     public void testPayment() {
-        SCAClient client = (SCAClient)tripNode;
+        Node client = (Node)tripNode;
         Book booking = client.getService(Book.class, "Trip/Book");
         TripItem tripItem =
             new TripItem("1234", "5678", TripItem.TRIP, "FS1DEC06", "Florence and Siena pre-packaged tour", "FLR",

@@ -19,18 +19,17 @@
 
 package scatours;
 
-import org.apache.tuscany.sca.node.SCAClient;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 
 public class IntroducingClientLauncher {
 
     public static void main(String[] args) throws Exception {
-        SCANode node =
-            SCANodeFactory.newInstance().createSCANodeFromURL("http://localhost:9990/node-config/ClientNode");
+        Node node =
+            NodeFactory.getInstance().createNodeFromURL("http://localhost:9990/node-config/ClientNode");
         node.start();
 
-        Runnable client = ((SCAClient)node).getService(Runnable.class, "TestClient/Runnable");
+        Runnable client = node.getService(Runnable.class, "TestClient/Runnable");
         client.run();
 
         node.stop();

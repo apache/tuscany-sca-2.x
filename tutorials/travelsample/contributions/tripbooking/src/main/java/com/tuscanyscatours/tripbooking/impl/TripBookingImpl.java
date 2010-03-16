@@ -18,11 +18,11 @@
  */
 package com.tuscanyscatours.tripbooking.impl;
 
-import org.osoa.sca.ComponentContext;
-import org.osoa.sca.ServiceReference;
-import org.osoa.sca.annotations.Context;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.ComponentContext;
+import org.oasisopen.sca.ServiceReference;
+import org.oasisopen.sca.annotation.Context;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 
 import com.tuscanyscatours.common.Book;
 import com.tuscanyscatours.common.TripItem;
@@ -32,7 +32,7 @@ import com.tuscanyscatours.tripbooking.TripBooking;
 /**
  * An implementation of the TripBooking service
  */
-@Service(interfaces = {TripBooking.class})
+@Service({TripBooking.class})
 public class TripBookingImpl implements TripBooking {
 
     @Reference
@@ -82,7 +82,7 @@ public class TripBookingImpl implements TripBooking {
 
         // add trip to the shopping cart
         ServiceReference<CartUpdates> cart = componentContext.getServiceReference(CartUpdates.class, "cartUpdates");
-        cart.setConversationID(cartId);
+        // cart.setConversationID(cartId);
         cart.getService().addTrip(cartId, trip);
 
         return trip;

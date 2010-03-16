@@ -23,12 +23,12 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.osoa.sca.annotations.Destroy;
-import org.osoa.sca.annotations.EagerInit;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Requires;
-import org.osoa.sca.annotations.Scope;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Destroy;
+import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Requires;
+import org.oasisopen.sca.annotation.Scope;
+import org.oasisopen.sca.annotation.Service;
 
 import com.tuscanyscatours.customer.Customer;
 import com.tuscanyscatours.customer.CustomerNotFoundException;
@@ -44,7 +44,7 @@ import com.tuscanyscatours.payment.creditcard.PayerType;
 @Service(CustomerRegistry.class)
 @Scope("COMPOSITE")
 @EagerInit
-@Requires("{http://www.osoa.org/xmlns/sca/1.0}managedTransaction.global")
+@Requires("{http://docs.oasis-open.org/ns/opencsa/sca/200912}managedTransaction.global")
 public class CustomerRegistryImpl implements CustomerRegistry {
     private volatile static int idGenerator = 0;
     private Map<String, Customer> customers = new HashMap<String, Customer>();

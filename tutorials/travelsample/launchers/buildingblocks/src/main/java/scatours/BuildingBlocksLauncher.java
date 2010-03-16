@@ -20,11 +20,8 @@
 package scatours;
 
 import org.apache.activemq.broker.BrokerService;
-import org.apache.tuscany.sca.node.SCAClient;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
-
-import static scatours.launcher.LauncherUtil.locate;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 
 public class BuildingBlocksLauncher {
 
@@ -35,29 +32,29 @@ public class BuildingBlocksLauncher {
     }
 
     private static void runImpl() throws Exception {
-        SCANode node =
-            SCANodeFactory.newInstance().createSCANode("tours-impl-client.composite",
+        Node node =
+            NodeFactory.getInstance().createNode("tours-impl-client.composite",
                                                        locate("buildingblocks"),
                                                        locate("buildingblocks-client"));
 
         node.start();
 
-        Runnable client = ((SCAClient)node).getService(Runnable.class, "ToursClient/Runnable");
+        Runnable client = ((Node)node).getService(Runnable.class, "ToursClient/Runnable");
         client.run();
 
         node.stop();
     }
 
     private static void runImplInclude() throws Exception {
-        SCANode node =
-            SCANodeFactory.newInstance().createSCANode("tours-impl-include-client.composite",
+        Node node =
+            NodeFactory.getInstance().createNode("tours-impl-include-client.composite",
                                                        locate("introducing-trips"),
                                                        locate("buildingblocks"),
                                                        locate("buildingblocks-client"));
 
         node.start();
 
-        Runnable client = ((SCAClient)node).getService(Runnable.class, "ToursClient/Runnable");
+        Runnable client = ((Node)node).getService(Runnable.class, "ToursClient/Runnable");
         client.run();
 
         node.stop();
@@ -69,20 +66,20 @@ public class BuildingBlocksLauncher {
         jmsBroker.setUseJmx(false);
         jmsBroker.addConnector("tcp://localhost:61619");
 
-        SCANode node1 =
-            SCANodeFactory.newInstance().createSCANode("tours-appl.composite",
+        Node node1 =
+            NodeFactory.getInstance().createNode("tours-appl.composite",
                                                        locate("introducing-trips"),
                                                        locate("buildingblocks"));
 
-        SCANode node2 =
-            SCANodeFactory.newInstance().createSCANode("tours-appl-client.composite",
+        Node node2 =
+            NodeFactory.getInstance().createNode("tours-appl-client.composite",
                                                        locate("buildingblocks-client"));
 
         jmsBroker.start();
         node1.start();
         node2.start();
 
-        Runnable client = ((SCAClient)node2).getService(Runnable.class, "ApplClient/Runnable");
+        Runnable client = ((Node)node2).getService(Runnable.class, "ApplClient/Runnable");
         client.run();
 
         node2.stop();

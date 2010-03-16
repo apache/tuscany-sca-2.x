@@ -18,9 +18,9 @@
  */
 package com.tuscanyscatours.impl;
 
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Scope;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Scope;
+import org.oasisopen.sca.annotation.Service;
 
 import com.tuscanyscatours.SCAToursBooking;
 import com.tuscanyscatours.SCAToursCart;
@@ -37,7 +37,7 @@ import com.tuscanyscatours.tripbooking.TripBooking;
  * the outward facing bindings to be changed without changing the individual contributions
  */
 @Scope("COMPOSITE")
-@Service(interfaces = {SCAToursSearch.class, SCAToursBooking.class, SCAToursCart.class})
+@Service({SCAToursSearch.class, SCAToursBooking.class, SCAToursCart.class})
 public class SCAToursImpl implements SCAToursSearch, SCAToursBooking, SCAToursCart {
 
     @Reference

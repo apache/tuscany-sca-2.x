@@ -21,14 +21,14 @@ package com.tuscanyscatours.currencyconverter.impl;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Service;
 
 import com.tuscanyscatours.currencyconverter.CurrencyConverter;
 
 /**
  * An implementation of the CurrencyConverter service
  */
-@Service(interfaces = {CurrencyConverter.class})
+@Service({CurrencyConverter.class})
 public class CurrencyConverterImpl implements CurrencyConverter {
 
     // currency index

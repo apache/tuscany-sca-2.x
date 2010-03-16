@@ -17,11 +17,11 @@
     * specific language governing permissions and limitations
     * under the License.    
 -->
-<contribution xmlns="http://www.osoa.org/xmlns/sca/1.0"
+<contribution xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
               xmlns:tst="http://tuscanyscatours.com/">
-    <import namespace="http://goodvaluetrips.com/" />
-    <export namespace="http://tuscanyscatours.com/" />
     <deployable composite="tst:ToursAppl" />
     <deployable composite="tst:ToursImpl" />
     <deployable composite="tst:ToursImplInclude" />
+    <import namespace="http://goodvaluetrips.com/" />
+    <export namespace="http://tuscanyscatours.com/" />
 </contribution>

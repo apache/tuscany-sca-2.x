@@ -21,16 +21,16 @@ package scatours;
 
 import static scatours.launcher.LauncherUtil.locate;
 
-import org.apache.tuscany.sca.node.SCAContribution;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 
 public class BlogFeedLauncher {
 
     public static void main(String[] args) throws Exception {
-        SCAContribution feedContribution = locate("blog-feed");
+        Contribution feedContribution = locate("blog-feed");
 
-        SCANode node = SCANodeFactory.newInstance().createSCANode("blog-feed.composite", feedContribution);
+        Node node = NodeFactory.getInstance().createNode("blog-feed.composite", feedContribution);
         node.start();
 
         System.out.println("Node started - Press enter to shutdown.");

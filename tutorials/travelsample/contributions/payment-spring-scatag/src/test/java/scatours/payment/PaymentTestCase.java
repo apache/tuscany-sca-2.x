@@ -19,10 +19,10 @@
 
 package scatours.payment;
 
-import org.apache.tuscany.sca.node.SCAClient;
-import org.apache.tuscany.sca.node.SCAContribution;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -33,23 +33,23 @@ import com.tuscanyscatours.payment.Payment;
  * 
  */
 public class PaymentTestCase {
-    private static SCANode paymentNode;
-    private static SCANode creditCardNode;
+    private static Node paymentNode;
+    private static Node creditCardNode;
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
         creditCardNode =
-            SCANodeFactory.newInstance()
-                .createSCANode("creditcard.composite",
-                               new SCAContribution("creditcard", "../creditcard-payment-jaxb/target/classes"));
+            NodeFactory.getInstance()
+                .createNode("creditcard.composite",
+                               new Contribution("creditcard", "../creditcard-payment-jaxb/target/classes"));
 
         creditCardNode.start();
 
         paymentNode =
-            SCANodeFactory.newInstance().createSCANode(null,
-                                                       new SCAContribution("payment-spring-annotation",
+            NodeFactory.getInstance().createNode(
+                                                       new Contribution("payment-spring-annotation",
                                                                            "./target/classes"),
-                                                       new SCAContribution("payment-spring-annotation-test",
+                                                       new Contribution("payment-spring-annotation-test",
                                                                            "./target/test-classes"));
 
         paymentNode.start();
@@ -57,7 +57,7 @@ public class PaymentTestCase {
 
     @Test
     public void testPayment() {
-        SCAClient client = (SCAClient)paymentNode;
+        Node client = (Node)paymentNode;
         Payment payment = client.getService(Payment.class, "PaymentClient");
         System.out.println("Result = " + payment.makePaymentMember("Fred", 100.00f));
     }

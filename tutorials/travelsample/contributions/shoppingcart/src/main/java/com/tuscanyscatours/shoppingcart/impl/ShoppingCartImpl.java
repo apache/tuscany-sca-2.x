@@ -22,11 +22,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import org.osoa.sca.ComponentContext;
-import org.osoa.sca.ServiceReference;
-import org.osoa.sca.annotations.Context;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.ComponentContext;
+import org.oasisopen.sca.ServiceReference;
+import org.oasisopen.sca.annotation.Context;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Service;
 
 import com.tuscanyscatours.common.TripItem;
 import com.tuscanyscatours.payment.Payment;
@@ -38,7 +38,7 @@ import com.tuscanyscatours.shoppingcart.CartUpdates;
 /**
  * An implementation of the ShoppingCart service
  */
-@Service(interfaces = {CartInitialize.class, CartUpdates.class, CartCheckout.class})
+@Service({CartInitialize.class, CartUpdates.class, CartCheckout.class})
 public class ShoppingCartImpl implements CartInitialize, CartUpdates, CartCheckout {
 
     @Reference
@@ -55,7 +55,7 @@ public class ShoppingCartImpl implements CartInitialize, CartUpdates, CartChecko
     public String newCart() {
         String cartId = UUID.randomUUID().toString();
         ServiceReference<CartStore> cartStore = componentContext.getServiceReference(CartStore.class, "cartStore");
-        cartStore.setConversationID(cartId);
+        // cartStore.setConversationID(cartId);
         cartStores.put(cartId, cartStore.getService());
 
         return cartId;

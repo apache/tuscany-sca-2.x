@@ -21,27 +21,27 @@ package scatours;
 
 import static scatours.launcher.LauncherUtil.locate;
 
-import org.apache.tuscany.sca.node.SCAClient;
-import org.apache.tuscany.sca.node.SCAContribution;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 
 import scatours.currencyconverter.CurrencyConverter;
 
 public class CurrencyConverterWSLauncher {
 
     public static void main(String[] args) throws Exception {
-        SCAContribution currencyWSContribution = locate("currency-ws");
-        SCAContribution currencyContribution = locate("currency");
+        Contribution currencyWSContribution = locate("currency-ws");
+        Contribution currencyContribution = locate("currency");
 
-        SCANode node =
-            SCANodeFactory.newInstance().createSCANode("currency-converter-ws.composite",
+        Node node =
+            NodeFactory.getInstance().createNode("currency-converter-ws.composite",
                                                        currencyContribution,
                                                        currencyWSContribution);
         node.start();
 
         System.out.println("Quick currency converter test");
-        CurrencyConverter converter = ((SCAClient)node).getService(CurrencyConverter.class, "CurrencyConverter");
+        CurrencyConverter converter = ((Node)node).getService(CurrencyConverter.class, "CurrencyConverter");
         System.out.println("USD -> GBP = " + converter.getExchangeRate("USD", "GBP"));
         System.out.println("100 USD = " + converter.convert("USD", "GBP", 100) + "GBP");
 

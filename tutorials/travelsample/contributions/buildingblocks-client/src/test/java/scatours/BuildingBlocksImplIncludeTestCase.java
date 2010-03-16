@@ -19,10 +19,10 @@
 
 package scatours;
 
-import org.apache.tuscany.sca.node.SCAClient;
-import org.apache.tuscany.sca.node.SCAContribution;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,21 +32,21 @@ import org.junit.Test;
  */
 public class BuildingBlocksImplIncludeTestCase {
 
-    private SCANode node;
+    private Node node;
 
     @Before
     public void startServer() throws Exception {
-        node = SCANodeFactory.newInstance().createSCANode("tours-impl-include-client.composite",
-                   new SCAContribution("introducing-trips", "../introducing-trips/target/classes"),
-                   new SCAContribution("buildingblocks", "../buildingblocks/target/classes"),
-                   new SCAContribution("buildingblocks-client", "./target/classes"));
+        node = NodeFactory.getInstance().createNode("tours-impl-include-client.composite",
+                   new Contribution("introducing-trips", "../introducing-trips/target/classes"),
+                   new Contribution("buildingblocks", "../buildingblocks/target/classes"),
+                   new Contribution("buildingblocks-client", "./target/classes"));
 
         node.start();
     }
 
     @Test
     public void testImplInclude() {
-        Runnable client = ((SCAClient)node).getService(Runnable.class, "ToursClient/Runnable");
+        Runnable client = ((Node)node).getService(Runnable.class, "ToursClient/Runnable");
         client.run();
     }
 

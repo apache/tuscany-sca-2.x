@@ -20,7 +20,7 @@ package com.tuscanyscatours;
 
 import java.math.BigDecimal;
 
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 
 @Remotable
 public interface Checkout {

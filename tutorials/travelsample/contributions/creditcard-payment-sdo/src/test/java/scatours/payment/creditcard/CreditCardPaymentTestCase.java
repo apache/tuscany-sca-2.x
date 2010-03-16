@@ -19,10 +19,10 @@
 
 package scatours.payment.creditcard;
 
-import org.apache.tuscany.sca.node.SCAClient;
-import org.apache.tuscany.sca.node.SCAContribution;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -36,21 +36,21 @@ import com.tuscanyscatours.payment.creditcard.PayerType;
  * 
  */
 public class CreditCardPaymentTestCase {
-    private static SCANode node;
+    private static Node node;
 
     /**
      * @throws java.lang.Exception
      */
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        SCANodeFactory factory = SCANodeFactory.newInstance();
-        node = factory.createSCANode(null, new SCAContribution("creditcard-sdo", "./target/classes"));
+        NodeFactory factory = NodeFactory.getInstance();
+        node = factory.createNode(new Contribution("creditcard-sdo", "./target/classes"));
         node.start();
     }
 
     @Test
     public void testCreditCardPayment() {
-        SCAClient client = (SCAClient)node;
+        Node client = (Node)node;
         CreditCardPayment cc = client.getService(CreditCardPayment.class, "CreditCardPayment");
 
         CreditCardPaymentFactory factory = CreditCardPaymentFactory.INSTANCE;

@@ -21,10 +21,10 @@ package scatours;
 
 import org.apache.activemq.broker.BrokerService;
 
-import org.apache.tuscany.sca.node.SCAClient;
-import org.apache.tuscany.sca.node.SCAContribution;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,7 +35,7 @@ import org.junit.Test;
 public class BuildingBlocksApplTestCase {
 
     private BrokerService jmsBroker;
-    private SCANode node1, node2;
+    private Node node1, node2;
 
     @Before
     public void startServer() throws Exception {
@@ -44,12 +44,12 @@ public class BuildingBlocksApplTestCase {
         jmsBroker.setUseJmx(false);
         jmsBroker.addConnector("tcp://localhost:61619");
 
-        node1 = SCANodeFactory.newInstance().createSCANode("tours-appl.composite",
-                    new SCAContribution("introducing-trips", "../introducing-trips/target/classes"),
-                    new SCAContribution("buildingblocks", "../buildingblocks/target/classes"));
+        node1 = NodeFactory.getInstance().createNode("tours-appl.composite",
+                    new Contribution("introducing-trips", "../introducing-trips/target/classes"),
+                    new Contribution("buildingblocks", "../buildingblocks/target/classes"));
 
-        node2 = SCANodeFactory.newInstance().createSCANode("tours-appl-client.composite",
-                    new SCAContribution("buildingblocks-client", "./target/classes"));
+        node2 = NodeFactory.getInstance().createNode("tours-appl-client.composite",
+                    new Contribution("buildingblocks-client", "./target/classes"));
 
         jmsBroker.start();
         node1.start();
@@ -58,7 +58,7 @@ public class BuildingBlocksApplTestCase {
 
     @Test
     public void testAppl() {
-        Runnable client = ((SCAClient)node2).getService(Runnable.class, "ApplClient/Runnable");
+        Runnable client = ((Node)node2).getService(Runnable.class, "ApplClient/Runnable");
         client.run();
     }
 

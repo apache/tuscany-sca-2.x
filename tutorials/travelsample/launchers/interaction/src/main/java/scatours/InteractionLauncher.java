@@ -21,23 +21,23 @@ package scatours;
 
 import static scatours.launcher.LauncherUtil.locate;
 
-import org.apache.tuscany.sca.node.SCAClient;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 
 public class InteractionLauncher {
 
     public static void main(String[] args) throws Exception {
-        SCANode node1 =
-            SCANodeFactory.newInstance().createSCANode("client.composite",
+        Node node1 =
+            NodeFactory.getInstance().createNode("client.composite",
                                                        locate("common"),
                                                        locate("currency"),
                                                        locate("calendar"),
                                                        locate("shoppingcart"),
                                                        locate("interaction-client"));
 
-        SCANode node2 =
-            SCANodeFactory.newInstance().createSCANode("service.composite",
+        Node node2 =
+            NodeFactory.getInstance().createNode("service.composite",
                                                        locate("common"),
                                                        locate("hotel"),
                                                        locate("flight"),
@@ -46,22 +46,22 @@ public class InteractionLauncher {
         node2.start();
         node1.start();
 
-        Runnable localInteraction = ((SCAClient)node1).getService(Runnable.class, "InteractionLocalClient/Runnable");
+        Runnable localInteraction = ((Node)node1).getService(Runnable.class, "InteractionLocalClient/Runnable");
         localInteraction.run();
 
-        Runnable remoteInteraction = ((SCAClient)node1).getService(Runnable.class, "InteractionRemoteClient/Runnable");
+        Runnable remoteInteraction = ((Node)node1).getService(Runnable.class, "InteractionRemoteClient/Runnable");
         remoteInteraction.run();
 
         Runnable requestResponseInteraction =
-            ((SCAClient)node1).getService(Runnable.class, "InteractionRequestResponseClient/Runnable");
+            ((Node)node1).getService(Runnable.class, "InteractionRequestResponseClient/Runnable");
         requestResponseInteraction.run();
 
         Runnable onewayCallbackInteraction =
-            ((SCAClient)node1).getService(Runnable.class, "InteractionOneWayCallbackClient/Runnable");
+            ((Node)node1).getService(Runnable.class, "InteractionOneWayCallbackClient/Runnable");
         onewayCallbackInteraction.run();
 
         Runnable conversationalInteraction =
-            ((SCAClient)node1).getService(Runnable.class, "InteractionConversationClient/Runnable");
+            ((Node)node1).getService(Runnable.class, "InteractionConversationClient/Runnable");
         conversationalInteraction.run();
 
         node1.stop();

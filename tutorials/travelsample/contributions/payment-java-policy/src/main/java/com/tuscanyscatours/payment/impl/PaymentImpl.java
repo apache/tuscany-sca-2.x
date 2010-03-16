@@ -19,10 +19,10 @@
 
 package com.tuscanyscatours.payment.impl;
 
-import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Requires;
-import org.osoa.sca.annotations.Service;
+import org.oasisopen.sca.annotation.Property;
+import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Requires;
+import org.oasisopen.sca.annotation.Service;
 
 import com.tuscanyscatours.customer.Customer;
 import com.tuscanyscatours.customer.CustomerNotFoundException;
@@ -45,7 +45,7 @@ public class PaymentImpl implements Payment {
 
     @Reference
     //@Authentication - not supported
-    @Requires("{http://www.osoa.org/xmlns/sca/1.0}authentication")
+    @Requires("{http://docs.oasis-open.org/ns/opencsa/sca/200912}authentication")
     protected CreditCardPayment creditCardPayment;
 
     @Reference

@@ -18,10 +18,10 @@
  */
 package scatours;
 
-import org.apache.tuscany.sca.node.SCAClient;
-import org.apache.tuscany.sca.node.SCAContribution;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,21 +31,21 @@ import org.junit.Test;
  */
 public class JumpstartTestCase {
 
-    private SCANode node;
+    private Node node;
 
     @Before
     public void startServer() throws Exception {
         node =
-            SCANodeFactory.newInstance()
-                .createSCANode("trips.composite",
-                               new SCAContribution("introducing-trips",
+            NodeFactory.getInstance()
+                .createNode("trips.composite",
+                               new Contribution("introducing-trips",
                                                    "../../contributions/introducing-trips/target/classes"));
         node.start();
     }
 
     @Test
     public void testClient() throws Exception {
-        Trips tripProvider = ((SCAClient)node).getService(Trips.class, "TripProvider/Trips");
+        Trips tripProvider = ((Node)node).getService(Trips.class, "TripProvider/Trips");
         System.out.println("Trip boooking code = " + tripProvider.checkAvailability("FS1APR4", 2));
     }
 

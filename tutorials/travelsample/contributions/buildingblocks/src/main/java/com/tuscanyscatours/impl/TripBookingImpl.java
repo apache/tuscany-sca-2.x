@@ -18,7 +18,7 @@
  */
 package com.tuscanyscatours.impl;
 
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 import com.goodvaluetrips.Trips;
 import com.tuscanyscatours.Bookings;

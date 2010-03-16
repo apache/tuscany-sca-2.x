@@ -18,10 +18,10 @@
  */
 package scatours;
 
-import org.apache.tuscany.sca.node.SCAClient;
-import org.apache.tuscany.sca.node.SCAContribution;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,25 +33,25 @@ import org.junit.Test;
  */
 public class IntroducingTestCase {
 
-    private SCANode node;
+    private Node node;
 
     @Before
     public void startServer() throws Exception {
         node =
-            SCANodeFactory.newInstance()
-                .createSCANode(null,
-                               new SCAContribution("introducing-tours",
+            NodeFactory.getInstance()
+                .createNode(
+                               new Contribution("introducing-tours",
                                                    "../../contributions/introducing-tours/target/classes"),
-                               new SCAContribution("introducing-trips",
+                               new Contribution("introducing-trips",
                                                    "../../contributions/introducing-trips/target/classes"),
-                               new SCAContribution("introducing-client",
+                               new Contribution("introducing-client",
                                                    "../../contributions/introducing-client/target/classes"));
         node.start();
     }
 
     @Test
     public void testClient() throws Exception {
-        Runnable proxy = ((SCAClient)node).getService(Runnable.class, "TestClient/Runnable");
+        Runnable proxy = ((Node)node).getService(Runnable.class, "TestClient/Runnable");
         proxy.run();
     }
 

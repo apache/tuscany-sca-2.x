@@ -21,21 +21,21 @@ package scatours.payment;
 
 import static scatours.launcher.LauncherUtil.locate;
 
-import org.apache.tuscany.sca.node.SCAClient;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 
 import com.tuscanyscatours.payment.Payment;
 
 public class PaymentLauncher {
 
     public static void main(String[] args) throws Exception {
-        SCANode node = SCANodeFactory.newInstance().createSCANode(null, 
+        Node node = NodeFactory.getInstance().createNode(
         		                                                  locate("payment-java-policy"),
         		                                                  locate("creditcard-payment-jaxb-policy"));
         node.start();
         
-        SCAClient client = (SCAClient)node;
+        Node client = (Node)node;
         Payment payment = client.getService(Payment.class, "Payment");
 
         System.out.println("Payment Java Policy test");

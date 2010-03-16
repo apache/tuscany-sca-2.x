@@ -23,7 +23,7 @@ import java.util.List;
 
 import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.Feed;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 import com.sun.syndication.feed.synd.SyndEntry;
 import com.sun.syndication.feed.synd.SyndFeed;
