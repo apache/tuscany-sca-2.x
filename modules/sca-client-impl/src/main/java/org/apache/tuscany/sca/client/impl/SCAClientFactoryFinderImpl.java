@@ -43,7 +43,7 @@ public class SCAClientFactoryFinderImpl implements SCAClientFactoryFinder {
     public SCAClientFactory find(Properties properties,
                                  ClassLoader classLoader,
                                  URI domainURI ) throws NoSuchDomainException, ServiceRuntimeException {
-        return new SCAClientFactoryImpl(domainURI);
+        return new SCAClientFactoryImpl2(domainURI);
     }
     
 }
