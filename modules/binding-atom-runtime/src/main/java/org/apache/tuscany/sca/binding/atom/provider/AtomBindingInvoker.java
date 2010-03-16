@@ -40,7 +40,6 @@ import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.tuscany.sca.binding.atom.collection.NotFoundException;
 import org.apache.tuscany.sca.data.collection.Entry;
 import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.invocation.DataExchangeSemantics;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.oasisopen.sca.ServiceRuntimeException;
@@ -50,7 +49,7 @@ import org.oasisopen.sca.ServiceRuntimeException;
  * 
  * @version $Rev$ $Date$
  */
-class AtomBindingInvoker implements Invoker, DataExchangeSemantics {
+class AtomBindingInvoker implements Invoker {
     
     private static final Factory abderaFactory = Abdera.getNewFactory();
     private static final Parser abderaParser = Abdera.getNewParser();
@@ -506,10 +505,6 @@ class AtomBindingInvoker implements Invoker, DataExchangeSemantics {
         	// PutInvoker can detect media by content type (non-Feed, non-Entry)
             return super.invoke(msg);
         }
-    }
-
-    public boolean allowsPassByReference() {
-        return true;
     }
 
 }

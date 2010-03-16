@@ -31,7 +31,6 @@ import org.apache.tuscany.sca.binding.jms.JMSBindingException;
 import org.apache.tuscany.sca.binding.jms.context.JMSBindingContext;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.util.FaultException;
-import org.apache.tuscany.sca.invocation.DataExchangeSemantics;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 import org.oasisopen.sca.ServiceRuntimeException;
@@ -41,7 +40,7 @@ import org.oasisopen.sca.ServiceRuntimeException;
  * 
  * @version $Rev$ $Date$
  */
-public class RRBJMSBindingInvoker implements Invoker, DataExchangeSemantics {
+public class RRBJMSBindingInvoker implements Invoker {
 
     protected Operation operation;
     protected String operationName;
@@ -259,9 +258,4 @@ public class RRBJMSBindingInvoker implements Invoker, DataExchangeSemantics {
         return replyToDest;
     }  
     
-    public boolean allowsPassByReference() {
-        // JMS always pass by value
-        return true;
-    }
-
 }

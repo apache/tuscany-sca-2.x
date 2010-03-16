@@ -40,7 +40,6 @@ import org.apache.axis2.context.MessageContext;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.interfacedef.util.FaultException;
-import org.apache.tuscany.sca.invocation.DataExchangeSemantics;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
@@ -52,7 +51,7 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
  *
  * @version $Rev$ $Date$
  */
-public class Axis2ReferenceBindingInvoker implements Invoker, DataExchangeSemantics {
+public class Axis2ReferenceBindingInvoker implements Invoker {
     public static final QName QNAME_WSA_FROM =
         new QName(AddressingConstants.Final.WSA_NAMESPACE, 
                   AddressingConstants.WSA_FROM,
@@ -166,7 +165,4 @@ public class Axis2ReferenceBindingInvoker implements Invoker, DataExchangeSemant
         return operationClient;
     }
     
-    public boolean allowsPassByReference() {
-        return true;
-    }
 }

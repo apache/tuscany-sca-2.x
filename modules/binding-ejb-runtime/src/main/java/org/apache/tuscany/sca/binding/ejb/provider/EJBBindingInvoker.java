@@ -24,14 +24,13 @@ import org.apache.tuscany.sca.binding.ejb.util.NamingEndpoint;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
-import org.apache.tuscany.sca.invocation.DataExchangeSemantics;
 
 /**
  * EJBTargetInvoker
  *
  * @version $Rev$ $Date$
  */
-public class EJBBindingInvoker implements Invoker, DataExchangeSemantics {
+public class EJBBindingInvoker implements Invoker {
 
     private Operation operation;
     private String location;
@@ -84,9 +83,4 @@ public class EJBBindingInvoker implements Invoker, DataExchangeSemantics {
         return new NamingEndpoint(location);
     }
     
-    public boolean allowsPassByReference() {
-        // EJB RMI/IIOP always pass by value
-        return true;
-    }
-
 }

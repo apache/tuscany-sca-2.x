@@ -28,7 +28,6 @@ import org.apache.http.util.EntityUtils;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.binding.jsonrpc.JSONRPCBinding;
 import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.invocation.DataExchangeSemantics;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.json.JSONArray;
@@ -39,7 +38,7 @@ import org.json.JSONObject;
  * 
  * @version $Rev$ $Date$
  */
-public class JSONRPCBindingInvoker implements Invoker, DataExchangeSemantics {
+public class JSONRPCBindingInvoker implements Invoker {
     private EndpointReference endpointReference;
     private Operation operation;
     private String uri;
@@ -141,7 +140,4 @@ public class JSONRPCBindingInvoker implements Invoker, DataExchangeSemantics {
         return jsonRequest;
     }
     
-    public boolean allowsPassByReference() {
-        return true;
-    }    
 }

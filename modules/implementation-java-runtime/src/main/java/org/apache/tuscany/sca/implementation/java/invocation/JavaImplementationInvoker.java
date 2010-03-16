@@ -29,7 +29,6 @@ import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil;
-import org.apache.tuscany.sca.invocation.DataExchangeSemantics;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -41,7 +40,7 @@ import org.oasisopen.sca.ServiceRuntimeException;
  * 
  * @version $Rev$ $Date$
  */
-public class JavaImplementationInvoker implements Invoker, DataExchangeSemantics {
+public class JavaImplementationInvoker implements Invoker {
     protected Operation operation;
     protected Method method;
     protected boolean allowsPBR;
@@ -145,10 +144,6 @@ public class JavaImplementationInvoker implements Invoker, DataExchangeSemantics
             Thread.currentThread().setContextClassLoader(tccl);
         }
         return msg;
-    }
-
-    public boolean allowsPassByReference() {
-        return allowsPBR;
     }
 
 }

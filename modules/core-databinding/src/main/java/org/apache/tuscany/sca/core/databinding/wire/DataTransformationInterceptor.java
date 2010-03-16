@@ -24,7 +24,6 @@ import java.util.Map;
 
 import org.apache.tuscany.sca.databinding.Mediator;
 import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.invocation.DataExchangeSemantics;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
@@ -35,7 +34,7 @@ import org.apache.tuscany.sca.runtime.Invocable;
  * 
  * @version $Rev$ $Date$
  */
-public class DataTransformationInterceptor implements Interceptor, DataExchangeSemantics {
+public class DataTransformationInterceptor implements Interceptor {
     private Invoker next;
 
     private Operation sourceOperation;
@@ -94,10 +93,6 @@ public class DataTransformationInterceptor implements Interceptor, DataExchangeS
 
     public void setNext(Invoker next) {
         this.next = next;
-    }
-
-    public boolean allowsPassByReference() {
-        return true;
     }
 
 }

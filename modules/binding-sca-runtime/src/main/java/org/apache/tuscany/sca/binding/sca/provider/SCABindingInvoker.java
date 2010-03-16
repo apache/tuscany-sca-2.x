@@ -21,7 +21,6 @@ package org.apache.tuscany.sca.binding.sca.provider;
 
 import org.apache.tuscany.sca.databinding.Mediator;
 import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.invocation.DataExchangeSemantics;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
@@ -31,7 +30,7 @@ import org.apache.tuscany.sca.invocation.Phase;
 /**
  * @version $Rev$ $Date$
  */
-public class SCABindingInvoker implements Interceptor, DataExchangeSemantics {
+public class SCABindingInvoker implements Interceptor {
     private InvocationChain chain;
     private Mediator mediator;
     private Operation sourceOperation;
@@ -87,13 +86,6 @@ public class SCABindingInvoker implements Interceptor, DataExchangeSemantics {
         }
 
         return resultMsg;
-    }
-
-    /**
-     * @see org.apache.tuscany.sca.invocation.DataExchangeSemantics#allowsPassByReference()
-     */
-    public boolean allowsPassByReference() {
-        return false;
     }
 
 }

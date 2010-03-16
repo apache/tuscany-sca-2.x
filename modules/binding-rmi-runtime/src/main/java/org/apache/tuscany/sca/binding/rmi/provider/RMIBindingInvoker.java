@@ -34,7 +34,7 @@ import org.apache.tuscany.sca.invocation.Message;
  *
  * @version $Rev$ $Date$
  */
-public class RMIBindingInvoker implements Invoker, DataExchangeSemantics {
+public class RMIBindingInvoker implements Invoker {
 
     private RMIHost rmiHost;
     private String uri;
@@ -96,11 +96,6 @@ public class RMIBindingInvoker implements Invoker, DataExchangeSemantics {
         } else {
             return remoteMethod.invoke(proxy, (Object[])payload);
         }
-    }
-
-    public boolean allowsPassByReference() {
-        // RMI always pass by value
-        return true;
     }
 
 }
