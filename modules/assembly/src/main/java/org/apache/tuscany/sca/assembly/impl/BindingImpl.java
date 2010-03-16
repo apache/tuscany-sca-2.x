@@ -25,6 +25,8 @@ import java.util.List;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.assembly.OperationSelector;
+import org.apache.tuscany.sca.assembly.WireFormat;
 import org.apache.tuscany.sca.policy.ExtensionType;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySet;
@@ -87,6 +89,27 @@ public abstract class BindingImpl extends ExtensibleImpl implements Binding {
         this.uri = uri;
     }
     
+    public OperationSelector getOperationSelector() {
+        return null;
+    }
+
+    public WireFormat getRequestWireFormat() {
+        return null;
+    }
+
+    public WireFormat getResponseWireFormat() {
+        return null;
+    }
+
+    public void setOperationSelector(OperationSelector operationSelector) {
+    }
+
+    public void setRequestWireFormat(WireFormat wireFormat) {
+    }
+
+    public void setResponseWireFormat(WireFormat wireFormat) {
+    }
+
     public String toString() {
         StringBuffer buf = new StringBuffer();
         buf.append(getType()).append(" (");
