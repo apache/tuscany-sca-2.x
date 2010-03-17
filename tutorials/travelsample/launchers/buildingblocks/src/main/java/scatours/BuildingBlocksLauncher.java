@@ -19,6 +19,8 @@
 
 package scatours;
 
+import static scatours.launcher.LauncherUtil.locate;
+
 import org.apache.activemq.broker.BrokerService;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;

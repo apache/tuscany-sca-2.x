@@ -92,7 +92,7 @@
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-binding-atom-abdera</artifactId>
+            <artifactId>tuscany-binding-atom-runtime</artifactId>
             <version>${tuscany.version}</version>
             <scope>runtime</scope>
         </dependency>

@@ -58,12 +58,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-host-jms-asf</artifactId>
-            <version>${tuscany.version}</version>
-        </dependency>
-
-        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.5</version>
