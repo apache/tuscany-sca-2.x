@@ -1,0 +1,35 @@
+Manifest-Version: 1.0
+Private-Package: org.apache.tuscany.sca.binding.corba.provider.meta;ve
+ rsion="1.4",org.apache.tuscany.sca.binding.corba.provider.types.util;
+ version="2.0.0",org.apache.tuscany.sca.binding.corba.provider.util;vers
+ ion="1.4"
+Tool: Bnd-0.0.255
+Bundle-Name: Apache Tuscany SCA CORBA Binding Runtime
+Created-By: 1.6.0_07 (Sun Microsystems Inc.)
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 2.0.0
+Bnd-LastModified: 1225397143078
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA CORBA Binding Runtime
+Import-Package: javax.xml.namespace;resolution:=optional,
+ net.sf.cglib.proxy,
+ org.apache.tuscany.sca.assembly;version="2.0.0",
+ org.apache.tuscany.sca.binding.corba;version="2.0.0",
+ org.apache.tuscany.sca.context;version="2.0.0",
+ org.apache.tuscany.sca.core;version="2.0.0",
+ org.apache.tuscany.sca.host.corba;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef.java;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef.util;version="2.0.0";resolution:=optional,
+ org.apache.tuscany.sca.invocation;version="2.0.0",
+ org.apache.tuscany.sca.policy;version="2.0.0";resolution:=optional,
+ org.apache.tuscany.sca.provider;version="2.0.0",
+ org.apache.tuscany.sca.runtime;version="2.0.0",
+ org.oasisopen.sca;version="2.0.0",
+ org.omg.CORBA,
+ org.omg.CORBA.portable,
+ org.omg.CosNaming;resolution:=optional
+Bundle-SymbolicName: org.apache.tuscany.sca.binding.corba.runtime
+Bundle-DocURL: http://www.apache.org/
+

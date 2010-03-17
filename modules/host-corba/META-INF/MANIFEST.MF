@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Export-Package: org.apache.tuscany.sca.host.corba;uses:="org.omg.CORBA
+ ";version="2.0.0"
+Tool: Bnd-0.0.255
+Bundle-Name: Apache Tuscany SCA CORBA Host Extension Point
+Created-By: 1.6.0_07 (Sun Microsystems Inc.)
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 2.0.0
+Bnd-LastModified: 1225397126578
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA CORBA Host Extension Point
+Import-Package: org.apache.tuscany.sca.host.corba;version="2.0.0",org.om
+ g.CORBA
+Bundle-SymbolicName: org.apache.tuscany.sca.host.corba
+Bundle-DocURL: http://www.apache.org/
+

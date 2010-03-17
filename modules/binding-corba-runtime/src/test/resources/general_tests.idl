@@ -1,0 +1,124 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+ */
+
+/*
+ * compile by
+ * idlj -fall -oldImplBase general_tests.idl
+ */
+ 
+module org {
+	module apache {
+		module tuscany {
+			module sca {
+				module binding {
+					module corba {
+						module testing {
+								module generated {
+
+									interface RemoteObject {
+								
+									};
+								
+									typedef sequence<RemoteObject> remote_object_list;
+									typedef sequence<boolean> boolean_list;
+									typedef sequence<char> char_list;
+									typedef sequence<wchar> wchar_list;
+									typedef sequence<octet> octet_list;
+									typedef sequence<short> short_list;
+									typedef sequence<unsigned short> unsigned_short_list;
+									typedef sequence<long> long_list;
+									typedef sequence<unsigned long> unsigned_long_list;
+									typedef sequence<long long> long_long_list;
+									typedef sequence<unsigned long long> unsigned_long_long_list;
+									typedef sequence<float> float_list;
+									typedef sequence<double> double_list;
+									typedef sequence<string> string_list;
+									typedef sequence<wstring> wstring_list;
+								
+									interface PrimitivesSetter {
+										boolean setBoolean(in boolean arg);
+										char setChar(in char arg);
+										wchar setWchar(in wchar arg);
+										octet setOctet(in octet arg);
+										short setShort(in short arg);
+										unsigned short setUnsignedShort(in unsigned short arg);
+										long setLong(in long arg);
+										unsigned long setUnsignedLong(in unsigned long arg);
+										long long setLongLong(in long long arg);
+										unsigned long long setUnsignedLongLong(in unsigned long long arg);
+										float setFloat(in float arg);
+										double setDouble(in double arg);
+										string setString(in string arg);
+										wstring setWstring(in wstring arg);
+										RemoteObject setRemoteObject(in RemoteObject obj);
+									};
+								
+									interface ArraysSetter {
+										boolean_list setBoolean(in boolean_list arg);
+										char_list setChar(in char_list arg);
+										wchar_list setWchar(in wchar_list arg);
+										octet_list setOctet(in octet_list arg);
+										short_list setShort(in short_list arg);
+										unsigned_short_list setUnsignedShort(in unsigned_short_list arg);
+										long_list setLong(in long_list arg);
+										unsigned_long_list setUnsignedLong(in unsigned_long_list arg);
+										long_long_list setLongLong(in long_long_list arg);
+										unsigned_long_long_list setUnsignedLongLong(in unsigned_long_long_list arg);
+										float_list setFloat(in float_list arg);
+										double_list setDouble(in double_list arg);
+										string_list setString(in string_list arg);
+										wstring_list setWstring(in wstring_list arg);
+										remote_object_list setRemoteObject(in remote_object_list obj);
+									};
+								
+									typedef sequence<long> long_seq1;
+									typedef sequence<long_seq1> long_seq2;
+									typedef sequence<long_seq2> long_seq3;
+								
+									struct SimpleStruct {
+										string field1;
+										long field2;
+									};
+								
+								
+									struct SomeStruct {
+										SimpleStruct innerStruct;
+										string str;
+										string_list str_list;
+										long_seq2 twoDimSeq;
+										long_seq3 threeDimSeq;
+									};
+								
+									interface TestObject {
+										SomeStruct pickStructFromArgs(in SomeStruct arg1, in SomeStruct arg2, in SomeStruct arg3, in long structNumber);
+										SomeStruct setStruct(in SomeStruct arg);
+										SimpleStruct setSimpleStruct(inout SimpleStruct arg);
+										long_seq1 setLongSeq1(inout long_seq1 arg);
+										long_seq2 setLongSeq2(inout long_seq2 arg);
+										long_seq3 setLongSeq3(inout long_seq3 arg);
+									};
+								
+								};
+						};
+					};
+				};
+			};
+		};
+	};
+};
