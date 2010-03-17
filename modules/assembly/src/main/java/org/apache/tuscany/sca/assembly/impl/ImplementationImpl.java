@@ -73,4 +73,16 @@ public abstract class ImplementationImpl extends ComponentTypeImpl implements Im
         }
         return impl;
     }
+
+    // Override the ComponentTypeImpl.hashCode()
+    @Override
+    public int hashCode() {
+        return System.identityHashCode(this);
+    }
+
+    // Override the ComponentTypeImpl.equals()
+    @Override
+    public boolean equals(Object obj) {
+        return this == obj;
+    }
 }

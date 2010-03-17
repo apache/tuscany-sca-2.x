@@ -38,8 +38,6 @@ class WebImplementationImpl extends ImplementationImpl implements WebImplementat
 
     private List<Property> properties = new ArrayList<Property>();
     private List<Reference> references = new ArrayList<Reference>();
-    private String uri;
-    private boolean unresolved;
 
     private String webURI;
     private boolean jsClient = true;
@@ -62,22 +60,6 @@ class WebImplementationImpl extends ImplementationImpl implements WebImplementat
 
     public List<Reference> getReferences() {
         return references;
-    }
-
-    public String getURI() {
-        return uri;
-    }
-
-    public void setURI(String uri) {
-        this.uri = uri;
-    }
-
-    public boolean isUnresolved() {
-        return unresolved;
-    }
-
-    public void setUnresolved(boolean unresolved) {
-        this.unresolved = unresolved;
     }
 
     public String getWebURI() {
@@ -139,6 +121,36 @@ class WebImplementationImpl extends ImplementationImpl implements WebImplementat
 
     public void setJSClient(boolean jsClient) {
         this.jsClient = jsClient;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + ((webURI == null) ? 0 : webURI.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (!(obj instanceof WebImplementationImpl)) {
+            return false;
+        }
+        WebImplementationImpl other = (WebImplementationImpl)obj;
+        if (webURI == null) {
+            if (other.webURI != null) {
+                return false;
+            }
+        } else if (!webURI.equals(other.webURI)) {
+            return false;
+        }
+        return true;
     }
 
 }

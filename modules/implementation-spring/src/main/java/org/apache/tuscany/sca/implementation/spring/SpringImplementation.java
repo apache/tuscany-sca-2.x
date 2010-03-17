@@ -225,4 +225,34 @@ public class SpringImplementation extends ImplementationImpl implements Implemen
     public void setClassLoader(ClassLoader classLoader) {
     	this.classLoader = classLoader;
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + ((location == null) ? 0 : location.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (!(obj instanceof SpringImplementation)) {
+            return false;
+        }
+        SpringImplementation other = (SpringImplementation)obj;
+        if (location == null) {
+            if (other.location != null) {
+                return false;
+            }
+        } else if (!location.equals(other.location)) {
+            return false;
+        }
+        return true;
+    }
 }

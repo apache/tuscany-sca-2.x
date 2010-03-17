@@ -80,16 +80,6 @@ public class WidgetImplementationImpl extends ImplementationImpl implements Widg
         return TYPE;
     }
     
-    @Override
-    public String getURI() {
-        return location;
-    }
-
-    @Override
-    public void setURI(String uri) {
-        this.location = uri;
-    }
-    
     public String getLocation() {
         return location;
     }
@@ -110,5 +100,35 @@ public class WidgetImplementationImpl extends ImplementationImpl implements Widg
     @Override
     public String toString() {
         return "Widget : " + getLocation(); 
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + ((location == null) ? 0 : location.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (!(obj instanceof WidgetImplementationImpl)) {
+            return false;
+        }
+        WidgetImplementationImpl other = (WidgetImplementationImpl)obj;
+        if (location == null) {
+            if (other.location != null) {
+                return false;
+            }
+        } else if (!location.equals(other.location)) {
+            return false;
+        }
+        return true;
     }
 }

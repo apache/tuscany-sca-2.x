@@ -128,27 +128,6 @@ public class ComponentTypeImpl extends ExtensibleImpl implements ComponentType, 
         return service;
     }  
 
-    @Override
-    public int hashCode() {
-        return String.valueOf(getURI()).hashCode();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        } else {
-            if (obj instanceof ComponentType) {
-                if (getURI() != null) {
-                    return getURI().equals(((ComponentType)obj).getURI());
-                } else {
-                    return ((ComponentType)obj).getURI() == null;
-                }
-            } else {
-                return false;
-            }
-        }
-    }
 
     public List<Intent> getRequiredIntents() {
         return requiredIntents;
@@ -163,5 +142,35 @@ public class ComponentTypeImpl extends ExtensibleImpl implements ComponentType, 
     }
 
     public void setExtensionType(ExtensionType type) {
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((uri == null) ? 0 : uri.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        ComponentTypeImpl other = (ComponentTypeImpl)obj;
+        if (uri == null) {
+            if (other.uri != null) {
+                return false;
+            }
+        } else if (!uri.equals(other.uri)) {
+            return false;
+        }
+        return true;
     }
 }
