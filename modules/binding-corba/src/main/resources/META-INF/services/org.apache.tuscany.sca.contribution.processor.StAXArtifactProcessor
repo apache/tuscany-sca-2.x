@@ -16,4 +16,4 @@
 # under the License. 
 
 # Implementation class for the artifact processor extension
-org.apache.tuscany.sca.binding.corba.impl.CorbaBindingProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.0#binding.corba,model=org.apache.tuscany.sca.binding.corba.CorbaBinding,factory=org.apache.tuscany.sca.binding.corba.CorbaBindingFactory
+org.apache.tuscany.sca.binding.corba.impl.CorbaBindingProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.1#binding.corba,model=org.apache.tuscany.sca.binding.corba.CorbaBinding,factory=org.apache.tuscany.sca.binding.corba.CorbaBindingFactory
