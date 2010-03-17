@@ -50,8 +50,8 @@
     <module>binding-sca-hazelcast</module>
     <module>binding-sca-tribes</module>
     <module>one-node-test</module>
-    <module>two-nodes-two-vms-hazelcast</module>
 <!-- failing now and then with RMI already bound problem
+    <module>two-nodes-two-vms-hazelcast</module>
     <module>two-nodes-test</module>
 -->
 
