@@ -19,14 +19,9 @@
 
 package org.apache.tuscany.sca.builder.impl;
 
-import static javax.xml.XMLConstants.DEFAULT_NS_PREFIX;
-import static javax.xml.XMLConstants.XMLNS_ATTRIBUTE;
-import static javax.xml.XMLConstants.XMLNS_ATTRIBUTE_NS_URI;
-
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Set;
-import java.util.StringTokenizer;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -56,7 +51,6 @@ import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySubject;
-import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -66,18 +60,18 @@ import org.xml.sax.SAXException;
 /**
  * A builder that attaches policy sets to the domain composite using the xpath defined by
  * the attachTo attribute. It first creates a DOM model for the composite so that the xpath
- * expression can be evaluated. For the nodes selected by the xpath, add the policySets attribute
- * to the subject element. Then reload the patched DOM into a Composite model again.  
+ * expression can be evaluated. For the nodes selected by the xpath, caluclate the element
+ * URI and add the policy set into the composite model  
  *
  * @version $Rev$ $Date$
  */
 public class PolicyAttachmentBuilderImpl implements CompositeBuilder {
-    private static final String BUILDER_VALIDATION_BUNDLE = "org.apache.tuscany.sca.builder.builder-validation-messages";
+    protected static final String BUILDER_VALIDATION_BUNDLE = "org.apache.tuscany.sca.builder.builder-validation-messages";
     
-    private StAXHelper staxHelper;
-    private DOMHelper domHelper;
-    private ExtensionPointRegistry registry;
-    private StAXArtifactProcessor<Composite> processor;
+    protected StAXHelper staxHelper;
+    protected DOMHelper domHelper;
+    protected ExtensionPointRegistry registry;
+    protected StAXArtifactProcessor<Composite> processor;
 
     public PolicyAttachmentBuilderImpl(ExtensionPointRegistry registry) {
         this.registry = registry;
@@ -197,7 +191,7 @@ public class PolicyAttachmentBuilderImpl implements CompositeBuilder {
         }            
     }
 
-    private Document saveAsDOM(Composite composite) throws XMLStreamException, ContributionWriteException, IOException,
+    protected Document saveAsDOM(Composite composite) throws XMLStreamException, ContributionWriteException, IOException,
         SAXException {
         // First write the composite into a DOM document so that we can apply the xpath
         StringWriter sw = new StringWriter();
@@ -218,7 +212,7 @@ public class PolicyAttachmentBuilderImpl implements CompositeBuilder {
     private static final QName SERVICE = new QName(Base.SCA11_NS, "service");
     private static final QName REFERENCE = new QName(Base.SCA11_NS, "reference");
 
-    private static String getStructuralURI(Node node) {
+    protected static String getStructuralURI(Node node) {
         if (node != null) {
             QName name = new QName(node.getNamespaceURI(), node.getLocalName());
             if (COMPONENT.equals(name)) {
@@ -253,7 +247,7 @@ public class PolicyAttachmentBuilderImpl implements CompositeBuilder {
         return null;
     }
 
-    private Binding getBinding(Contract contract, String name) {
+    protected Binding getBinding(Contract contract, String name) {
         for (Binding binding : contract.getBindings()) {
             if (name.equals(binding.getName())) {
                 return binding;
@@ -262,7 +256,7 @@ public class PolicyAttachmentBuilderImpl implements CompositeBuilder {
         return null;
     }
 
-    private PolicySubject lookup(Composite composite, String structuralURI) {
+    protected PolicySubject lookup(Composite composite, String structuralURI) {
         if (structuralURI == null) {
             return null;
         }
@@ -287,7 +281,7 @@ public class PolicyAttachmentBuilderImpl implements CompositeBuilder {
                     int pos = path.indexOf('/');
                     if (pos != -1) {
                         binding = path.substring(pos + 1);
-                        path = path.substring(0, index);
+                        path = path.substring(0, pos);
                         if ("service-binding".equals(prefix)) {
                             service = path;
                         } else if ("reference-binding".equals(prefix)) {
@@ -339,82 +333,4 @@ public class PolicyAttachmentBuilderImpl implements CompositeBuilder {
         }
         return null;
     }
-
-    /**
-     * Attach the policySet to the given DOM node 
-     * @param node The DOM node (should be an element)
-     * @param policySet The policy set to be attached
-     * @return true if the element is changed, false if the element already contains the same policy set
-     * and no change is made
-     */
-    private boolean attach(Node node, PolicySet policySet) {
-        Element element = (Element)node;
-        Document document = element.getOwnerDocument();
-
-        QName qname = policySet.getName();
-        String prefix = DOMHelper.getPrefix(element, qname.getNamespaceURI());
-        if (prefix == null) {
-            // Find the a non-conflicting prefix
-            int i = 0;
-            while (true) {
-                prefix = "ns" + i;
-                String ns = DOMHelper.getNamespaceURI(element, prefix);
-                if (ns == null) {
-                    break;
-                }
-            }
-            // Declare the namespace
-            Attr nsAttr = document.createAttributeNS(XMLNS_ATTRIBUTE_NS_URI, XMLNS_ATTRIBUTE + ":" + prefix);
-            nsAttr.setValue(qname.getNamespaceURI());
-            element.setAttributeNodeNS(nsAttr);
-        }
-        // Form the value as a qualified name
-        String qvalue = null;
-        if (DEFAULT_NS_PREFIX.equals(prefix)) {
-            qvalue = qname.getLocalPart();
-        } else {
-            qvalue = prefix + ":" + qname.getLocalPart();
-        }
-
-        // Check if the attribute exists
-        Attr attr = element.getAttributeNode("policySets");
-        if (attr == null) {
-            // Create the policySets attr
-            attr = document.createAttributeNS(null, "policySets");
-            attr.setValue(qvalue);
-            element.setAttributeNodeNS(attr);
-            return true;
-        } else {
-            // Append to the existing value
-            boolean duplicate = false;
-            String value = attr.getValue();
-            StringTokenizer tokenizer = new StringTokenizer(value);
-            while (tokenizer.hasMoreTokens()) {
-                String ps = tokenizer.nextToken();
-                int index = ps.indexOf(':');
-                String ns = null;
-                String localName = null;
-                if (index == -1) {
-                    ns = DOMHelper.getNamespaceURI(element, DEFAULT_NS_PREFIX);
-                    localName = ps;
-                } else {
-                    ns = DOMHelper.getNamespaceURI(element, ps.substring(0, index));
-                    localName = ps.substring(index + 1);
-                }
-                QName psName = new QName(ns, localName);
-                if (qname.equals(psName)) {
-                    duplicate = true;
-                    break;
-                }
-            }
-            if (!duplicate) {
-                // REVIEW: [rfeng] How to comply to POL40012?
-                value = value + " " + qvalue;
-                attr.setValue(value.trim());
-                return true;
-            }
-            return false;
-        }
-    }
-
 }
