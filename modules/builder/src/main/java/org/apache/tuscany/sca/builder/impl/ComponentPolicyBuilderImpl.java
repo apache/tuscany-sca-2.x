@@ -346,20 +346,7 @@ public class ComponentPolicyBuilderImpl {
         resolveAndNormalize(subject, context);
         
         checkMutualExclusion(subject, context);
-        
-/*     
-        List<Intent> intents = subject.getRequiredIntents();
-        int size = intents.size();
-        for (int i = 0; i < size; i++) {
-            for (int j = i + 1; j < size; j++) {
-                Intent i1 = intents.get(i);
-                Intent i2 = intents.get(j);
-                if (checkMutualExclusion(i1, i2, context)){
-                    return true;
-                }               
-            }
-        }
-*/        
+            
         return false;
     }
 
@@ -540,11 +527,6 @@ public class ComponentPolicyBuilderImpl {
                 warning(context.getMonitor(), "IntentNotSatisfiedAtBuild", subject, intent.getName(), subject.toString());
             }
         }
-
-
-        //subject.getPolicySets().clear();
-        //subject.getPolicySets().addAll(policySets);
-
     }
 
     protected Set<QName> getPolicyNames(PolicySubject subject) {
