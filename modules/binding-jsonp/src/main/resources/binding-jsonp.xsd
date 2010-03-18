@@ -25,16 +25,16 @@
 
     <import namespace="http://docs.oasis-open.org/ns/opencsa/sca/200912" />
 
-    <element name="binding.jsonp" type="t:JSONPBinding"/>
+    <element name="binding.jsonp" type="t:JSONPBinding" substitutionGroup="sca:binding"/>
     
     <complexType name="JSONPBinding">
         <complexContent>
             <extension base="sca:Binding">
-                <sequence>
+                <!-- sequence>
                     <any namespace="##targetNamespace" processContents="lax" minOccurs="0"
                          maxOccurs="unbounded"/>
-                </sequence>
-                <anyAttribute namespace="##other" processContents="lax"/>
+                </sequence -->
+                <!-- anyAttribute namespace="##other" processContents="lax"/-->
             </extension>
         </complexContent>
     </complexType>

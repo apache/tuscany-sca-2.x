@@ -257,7 +257,7 @@
                <element ref="sca:binding"/>
                <element ref="sca:requires"/>
                <element ref="sca:policySetAttachment"/>
-               <any namespace="##other" processContents="lax"/>
+               <!-- any namespace="##other" processContents="lax"/ -->
             </choice>
             <attribute name="requires" type="sca:listOfQNames" 
                        use="optional"/>

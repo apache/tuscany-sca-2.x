@@ -25,14 +25,14 @@
 
     <import namespace="http://docs.oasis-open.org/ns/opencsa/sca/200912" schemaLocation="sca-1.1-cd05.xsd"/>
 
-    <element name="binding.rmi" type="t:RMIBinding"/>
+    <element name="binding.rmi" type="t:RMIBinding" substitutionGroup="sca:binding"/>
     
     <complexType name="RMIBinding">
         <complexContent>
             <extension base="sca:Binding">
                 <sequence>
-                    <any namespace="##targetNamespace" processContents="lax" minOccurs="0"
-                         maxOccurs="unbounded"/>
+                    <!-- any namespace="##targetNamespace" processContents="lax" minOccurs="0"
+                         maxOccurs="unbounded"/ -->
                 </sequence>
             </extension>
         </complexContent>

@@ -25,16 +25,16 @@
 
     <import namespace="http://docs.oasis-open.org/ns/opencsa/sca/200912" schemaLocation="sca-1.1-cd05.xsd"/>
 
-    <element name="binding.http" type="t:HTTPBinding"/>
+    <element name="binding.http" type="t:HTTPBinding" substitutionGroup="sca:binding"/>
     
     <complexType name="HTTPBinding">
         <complexContent>
             <extension base="sca:Binding">
                 <sequence>
-                    <any namespace="##targetNamespace" processContents="lax" minOccurs="0"
-                         maxOccurs="unbounded"/>
+                    <!-- any namespace="##targetNamespace" processContents="lax" minOccurs="0"
+                         maxOccurs="unbounded"/ -->
                 </sequence>
-                <anyAttribute namespace="##any" processContents="lax"/>
+                <!-- anyAttribute namespace="##any" processContents="lax"/-->
             </extension>
         </complexContent>
     </complexType>
