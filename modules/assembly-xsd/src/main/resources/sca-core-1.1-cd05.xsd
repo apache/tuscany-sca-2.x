@@ -41,8 +41,8 @@
                      type="sca:ComponentTypeReference"/>
                   <element name="property" type="sca:Property"/>
                </choice>
-               <any namespace="##other" processContents="lax" minOccurs="0" 
-                    maxOccurs="unbounded"/>
+               <!-- any namespace="##other" processContents="lax" minOccurs="0" 
+                    maxOccurs="unbounded"/ -->
             </sequence>
          </extension>
       </complexContent>
