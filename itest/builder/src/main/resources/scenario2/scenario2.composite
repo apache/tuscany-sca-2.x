@@ -25,7 +25,7 @@
     <service name="Service1" promote="ComponentB/Service2">
         <!-- bindings and/or interfaces may or may not be specified explicitly here -->
     </service>
-    <reference name="reference1" promote="ComponentB/reference2">
+    <reference name="reference1" promote="ComponentB/reference2" multiplicity="1..1">
         <!-- bindings and/or interfaces may or may not be specified explicitly here -->
     </reference>
 
