@@ -277,7 +277,7 @@
                 <module>shades</module>
                 <module>distribution</module>
                 <module>archetypes</module>
-                <module>compliance-tests</module>
+                <!-- module>compliance-tests</module -->
             </modules>
         </profile>
 
