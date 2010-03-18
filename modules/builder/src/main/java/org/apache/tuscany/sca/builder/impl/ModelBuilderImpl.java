@@ -103,6 +103,9 @@ public class ModelBuilderImpl implements CompositeBuilder {
             // Apply policy external attachment. Happens before the composite type
             // is created so that suitable promotion and structural processing is
             // applied to the attached policies
+            // TODO - I don't think this is correct. The policy spec (4.12.1)implies that
+            //        policy attachment happens independently of implementation or 
+            //        structural inheritance
             composite = policyAttachmentBuilder.build(composite, context);
 
             // Process the implementation hierarchy by calculating the component type 
