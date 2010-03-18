@@ -26,7 +26,7 @@
         <interface.java interface="org.apache.tuscany.sca.binding.sca.rmi.helloworld.HelloWorldClient"/>
     </service>
     
-    <reference name="AHelloWorldClientRemoteReference" promote="AHelloWorldClientRemoteComponent/helloWorldService">
+    <reference name="AHelloWorldClientRemoteReference" promote="AHelloWorldClientRemoteComponent/helloWorldService"  multiplicity="1..1">
         <interface.java interface="org.apache.tuscany.sca.binding.sca.rmi.helloworld.HelloWorldServiceRemote"/>
     </reference>
     
