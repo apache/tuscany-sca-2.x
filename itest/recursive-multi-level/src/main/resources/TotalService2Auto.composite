@@ -45,5 +45,5 @@
         <property name="newYear" source="$newYear"/>
     </component>
   
-    <reference name="myServiceReference2Auto" promote="TotalServiceInRecursive2Auto/myServiceReference1Auto"/>
+    <reference name="myServiceReference2Auto" promote="TotalServiceInRecursive2Auto/myServiceReference1Auto" multiplicity="1..1"/>
 </composite>

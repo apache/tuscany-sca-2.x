@@ -45,7 +45,7 @@
         <reference name="myService" autowire="true"/>
     </component>
 
-    <reference name="myServiceReference1Auto" promote="TotalServiceComponentLevel1Auto/myService">
+    <reference name="myServiceReference1Auto" promote="TotalServiceComponentLevel1Auto/myService" multiplicity="1..1">
         <interface.java interface="mysca.test.myservice.MyService"/>
    </reference>
 </composite>
