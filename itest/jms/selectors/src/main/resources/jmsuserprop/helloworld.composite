@@ -51,13 +51,13 @@
         <implementation.java class="org.apache.tuscany.sca.binding.jms.operationselector.jmsuserprop.HelloWorldServiceImpl" />
         <service name="HelloWorldService">
             <binding.jms>
+				<tuscany:operationSelector.jmsUserProp propertyName="myProperty"/>
                 <destination jndiName="HelloWorldService4"/>
                 <operationProperties name="getGreetingsThree" nativeOperation="getGreetingsFour">
                   <headers>
                      <property name="blaNotUsed2">getGreetingsThree</property>
                   </headers>
                 </operationProperties>
-                <tuscany:operationSelector.jmsUserProp propertyName="myProperty"/>
             </binding.jms>
         </service>
     </component>     
