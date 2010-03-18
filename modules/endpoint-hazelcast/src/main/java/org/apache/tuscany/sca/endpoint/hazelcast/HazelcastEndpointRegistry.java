@@ -27,8 +27,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.LifeCycleListener;
 import org.apache.tuscany.sca.runtime.BaseEndpointRegistry;
 import org.apache.tuscany.sca.runtime.DomainRegistryURI;
@@ -65,6 +67,7 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
     protected Map<Object, Object> endpointMap;
     private Map<String, Endpoint> localEndpoints = new HashMap<String, Endpoint>();
     private MultiMap<String, String> endpointOwners;
+    private AssemblyFactory assemblyFactory;
 
     public HazelcastEndpointRegistry(ExtensionPointRegistry registry,
                                      Map<String, String> attributes,
@@ -72,6 +75,7 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
                                      String domainURI) {
         super(registry, attributes, domainRegistryURI, domainURI);
         this.configURI = new DomainRegistryURI(domainRegistryURI);
+        this.assemblyFactory = registry.getExtensionPoint(FactoryExtensionPoint.class).getFactory(AssemblyFactory.class);
     }
     
     public HazelcastInstance getHazelcastInstance() {
@@ -291,5 +295,22 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
                 }
             }
         }
+    }
+
+    public Member getOwningMember(String serviceURI) {
+        for (String memberAddr : endpointOwners.keySet()) {
+            for (String service : endpointOwners.get(memberAddr)) {
+                Endpoint ep = assemblyFactory.createEndpoint();
+                ep.setURI(service);
+                if (ep.matches(serviceURI)) {
+                    for (Member m : hazelcastInstance.getCluster().getMembers()) {
+                        if (memberAddr.equals(m.getInetSocketAddress().toString())) {
+                            return m;
+                        }
+                    }
+                }
+            }
+        }
+        return null;
     }
 }
