@@ -17,14 +17,16 @@
     * specific language governing permissions and limitations
     * under the License.    
 -->
-<definitions xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912" targetNamespace="http://tuscany.apache.org/xmlns/sca/1.1"
-    xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912" xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1"
-    xmlns:calc="http://calculator">
+<definitions xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912" 
+             targetNamespace="http://tuscany.apache.org/xmlns/sca/1.1"
+             xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912" 
+             xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1"
+             xmlns:calc="http://calculator">
 
-    <intent name="logging" constrains="sca:implementation" intentType="interaction"/>
+    <intent name="logging" constrains="sca:implementation" intentType="implementation"/>
     
     <!-- PolicySets -->
-    <policySet name="JaasPolicy" provides="tuscany:jaasAuthentication" appliesTo="sca:binding">
+    <policySet name="JaasPolicy" provides="tuscany:jaasAuthentication" appliesTo="//sca:binding">
 <!-- empty policy set so that intents are resolved and match works but without including 
      any actual policy runtime artifacts
         <tuscany:jaasAuthentication>
@@ -37,7 +39,7 @@
 
     <!-- PolicySets -->
 
-    <policySet name="JDKLoggingPolicy" provides="tuscany:logging" appliesTo="sca:implementation.spring">
+    <policySet name="JDKLoggingPolicy" provides="tuscany:logging" appliesTo="//sca:implementation.spring">
 <!-- empty policy set so that intents are resolved and match works but without including 
      any actual policy runtime artifacts
         <tuscany:jdkLogger name="calculator">

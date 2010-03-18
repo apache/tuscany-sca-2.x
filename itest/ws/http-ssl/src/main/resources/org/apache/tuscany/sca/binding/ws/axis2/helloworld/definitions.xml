@@ -25,7 +25,7 @@
 
     <sca:policySet name="HTTPSPolicySet"
                    provides="confidentiality.transport"
-                   appliesTo="sca:binding.ws">
+                   appliesTo="//sca:reference | //sca:binding.ws">
         <tuscany:https>
           <tuscany:keyStore type="JKS" file="target/classes/org/apache/tuscany/sca/binding/ws/axis2/helloworld/tuscany.jks" password="tuscany"/>
           <tuscany:trustStore type="JKS" file="target/classes/org/apache/tuscany/sca/binding/ws/axis2/helloworld/tuscany.jks" password="tuscany"/>

@@ -17,6 +17,11 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
+
+<!--  
+   NOTE - not using external attachment yet in this test because the 
+          policy xpath functions are not working yet
+-->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
 		   xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
 		   targetNamespace="http://www.tuscany.apache.org/itests/policy"
@@ -35,7 +40,7 @@
     
     <component name="HelloUnresolvedIntentsOnReference">
         <implementation.java class="org.apache.tuscany.sca.policy.matching.helloworld.HelloWorldClient"/>
-        <reference name="helloWorld" target="HelloWorldService2" requires="tuscany:testIntent1 tuscany:testIntent2"/>
+        <reference name="helloWorld" target="HelloWorldService2" requires="tuscany:testIntent1 tuscany:testIntent2" policySets="tuscany:testPolicy1"/>
     </component>    
     
     <component name="HelloWorldClientIntentsButNoPolicies1">
@@ -45,7 +50,7 @@
     
     <component name="HelloWorldClientIntentsButNoPolicies2">
         <implementation.java class="org.apache.tuscany.sca.policy.matching.helloworld.HelloWorldClient"/>
-        <reference name="helloWorld" target="HelloWorldService2" requires="tuscany:testIntent1"/>
+        <reference name="helloWorld" target="HelloWorldService2" requires="tuscany:testIntent1" policySets="tuscany:testPolicy1"/>
     </component>      
     
     <component name="HelloWorldClientSomePoliciesOnOneSideButNoneOnTheOther">
@@ -55,12 +60,12 @@
     
     <component name="HelloWorldClientPolicySetQNameMatch">
         <implementation.java class="org.apache.tuscany.sca.policy.matching.helloworld.HelloWorldClient"/>
-        <reference name="helloWorld" target="HelloWorldService3" requires="tuscany:testIntent5"/>
+        <reference name="helloWorld" target="HelloWorldService3" requires="tuscany:testIntent5" policySets="tuscany:testPolicy2"/>
     </component> 
     
     <component name="HelloWorldClientDifferentPolicyLanguage">
         <implementation.java class="org.apache.tuscany.sca.policy.matching.helloworld.HelloWorldClient"/>
-        <reference name="helloWorld" target="HelloWorldService3" requires="tuscany:testIntent6"/>
+        <reference name="helloWorld" target="HelloWorldService3" requires="tuscany:testIntent6" policySets="tuscany:testPolicy3"/>
     </component>     
     
     <component name="HelloWorldService1">
@@ -75,7 +80,7 @@
     
     <component name="HelloWorldService3">
         <implementation.java class="org.apache.tuscany.sca.policy.matching.helloworld.HelloWorldService"/>
-        <service name="HelloWorld" requires="tuscany:testIntent4"/>     
+        <service name="HelloWorld" requires="tuscany:testIntent4" policySets="tuscany:testPolicy2"/>     
     </component>      
     
 </composite>

@@ -20,7 +20,7 @@
 <definitions xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
             xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
             targetNamespace="http://tuscany.apache.org/xmlns/sca/1.1"
-            xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy"
+            xmlns:wsp="http://www.w3.org/ns/ws-policy"
             xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1">
 
     <intent name="testIntent1" constrains="sca:binding" intentType="interaction"/>

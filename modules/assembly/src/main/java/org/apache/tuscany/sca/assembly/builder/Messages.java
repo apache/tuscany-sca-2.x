@@ -27,4 +27,5 @@ public interface Messages {
     String ASSEMBLY_VALIDATION = RESOURCE_PACKAGE + "assembly-validation-messages";
     String ASSEMBLY_CONFORMANCE = RESOURCE_PACKAGE + "assembly-conformance-messages";
     String DEFINITIONS_VALIDATION = RESOURCE_PACKAGE + "definitions-validation-messages";
+    String BUILDER_VALIDATION_BUNDLE = "org.apache.tuscany.sca.builder.builder-validation-messages";
 }

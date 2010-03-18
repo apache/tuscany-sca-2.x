@@ -19,8 +19,10 @@
 -->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
 		   xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
+           xmlns:itest="http://www.tuscany.apache.org/itests/binding/ws/axis2"
 		   targetNamespace="http://www.tuscany.apache.org/itests/binding/ws/axis2"
-           name="HelloWorld">
+           name="HelloWorld"
+           policySets="itest:HTTPSPolicySet">
 
     <component name="HelloWorldClient">
         <implementation.java class="org.apache.tuscany.sca.binding.ws.axis2.helloworld.HelloWorldClient"/>
@@ -52,6 +54,6 @@
     
     <component name="HelloWorldClient3">
         <implementation.java class="org.apache.tuscany.sca.binding.ws.axis2.helloworld.HelloWorldClient"/>
-        <reference name="helloWorldWS" requires="confidentiality" target="HelloWorldService2"/>
+        <reference name="helloWorldWS" target="HelloWorldService2"/>
     </component>  
 </composite>

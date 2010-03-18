@@ -36,6 +36,7 @@ import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.assembly.builder.PolicyBuilder;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.policy.Intent;
 
 /**
  * A composite builder that computes policy sets based on attached intents and policy sets.
@@ -45,10 +46,13 @@ import org.apache.tuscany.sca.monitor.Monitor;
  * @version $Rev$ $Date$
  */
 public class CompositePolicyBuilderImpl extends ComponentPolicyBuilderImpl implements CompositeBuilder {
-    private static final String BUILDER_VALIDATION_BUNDLE = "org.apache.tuscany.sca.builder.builder-validation-messages";
 
+    private CompositeBuilder policyAppliesToBuilder = null;
+    
     public CompositePolicyBuilderImpl(ExtensionPointRegistry registry) {
         super(registry);
+        
+        policyAppliesToBuilder = new PolicyAppliesToBuilderImpl(registry);
     }
 
     public String getID() {
@@ -57,6 +61,7 @@ public class CompositePolicyBuilderImpl extends ComponentPolicyBuilderImpl imple
 
     public Composite build(Composite composite, BuilderContext context) throws CompositeBuilderException {
         computePolicies(composite, context);
+        checkPolicies(composite, context);
         buildPolicies(composite, context);
         return composite;
     }
@@ -94,20 +99,25 @@ public class CompositePolicyBuilderImpl extends ComponentPolicyBuilderImpl imple
                             for (Endpoint ep : componentService.getEndpoints()) {
                                 if (componentService.getInterfaceContract() != null) {
                                     // Inherit from the component.service.interface
-                                    inherit(ep, null, true, componentService.getInterfaceContract().getInterface());
+                                    inherit(ep, Intent.Type.interaction, true, componentService.getInterfaceContract().getInterface());
                                 }
                                 
                                 // Inherit from composite/component/service
-                                inherit(ep, null, true, composite, ep.getComponent(), ep.getService());
+                                inherit(ep, Intent.Type.interaction, true, composite, ep.getComponent(), ep.getService());
                                 
                                 // Inherit from binding
-                                inherit(ep, null, true, ep.getBinding());
+                                inherit(ep, Intent.Type.interaction, true, ep.getBinding());
 
                                 // Replace profile intents with their required intents
-                                // Remove the intents whose @contraints do not include the current element
                                 // Replace unqualified intents if there is a qualified intent in the list
                                 // Replace qualifiable intents with the default qualied intent
                                 resolveAndNormalize(ep, context);
+                                
+                                // Remove the intents whose @contraints do not include the current element
+                                removeConstrainedIntents(ep, context);
+                                
+                                // check that all intents are resolved
+                                checkIntentsResolved(ep, context);
 
                                 // check that the resulting endpoint has no mutually exclusive intents
                                 checkMutualExclusion(ep, context);
@@ -133,20 +143,25 @@ public class CompositePolicyBuilderImpl extends ComponentPolicyBuilderImpl imple
 
                                 // Inherit from the component.reference.interface
                                 if (componentReference.getInterfaceContract() != null) {
-                                    inherit(epr, null, true, componentReference.getInterfaceContract().getInterface());
+                                    inherit(epr, Intent.Type.interaction, true, componentReference.getInterfaceContract().getInterface());
                                 }
 
                                 // Inherit from composite/component/reference
-                                inherit(epr, null, true, composite, epr.getComponent(), epr.getReference());
+                                inherit(epr, Intent.Type.interaction, true, composite, epr.getComponent(), epr.getReference());
                                 
                                 // Inherit from binding
-                                inherit(epr, null, true, epr.getBinding());
+                                inherit(epr, Intent.Type.interaction, true, epr.getBinding());
 
                                 // Replace profile intents with their required intents
-                                // Remove the intents whose @contraints do not include the current element
                                 // Replace unqualified intents if there is a qualified intent in the list
-                                // Replace qualifiable intents with the default qualied intent
+                                // Replace qualifiable intents with the default qualified intent
                                 resolveAndNormalize(epr, context);
+                                
+                                // Remove the intents whose @contraints do not include the current element
+                                removeConstrainedIntents(epr, context);
+                                
+                                // check that all intents are resolved
+                                checkIntentsResolved(epr, context);
 
                                 // check that the resulting endpoint reference has no mutually exclusive intents
                                 checkMutualExclusion(epr, context);
@@ -157,12 +172,19 @@ public class CompositePolicyBuilderImpl extends ComponentPolicyBuilderImpl imple
                     }
 
                     if (implementation instanceof Composite) {
-                        inherit(implementation, null, true, component, composite);
+                        inherit(implementation, Intent.Type.implementation, true, component, composite);
+                        checkIntentsResolved(implementation, context);
                         computePolicies((Composite)implementation, context);
                     } else {
                         resolveAndCheck(implementation, context);
                         if (implementation != null) {
-                            inherit(implementation, null, true, component, composite);
+                            inherit(implementation, Intent.Type.implementation, true, component, composite);
+                            
+                            // Remove the intents whose @contraints do not include the current element
+                            removeConstrainedIntents(implementation, context);
+                            
+                            // check that all intents are resolved
+                            checkIntentsResolved(implementation, context);
                         }
                     }
                 } finally {
@@ -172,6 +194,17 @@ public class CompositePolicyBuilderImpl extends ComponentPolicyBuilderImpl imple
         } finally {
             monitor.popContext();
         }
+    }
+    
+    /**
+     * This is mainly about removing policies that don't "applyTo" the element where
+     * they have ended up after all the attachment and inheritance processing
+     * 
+     * @param composite
+     * @param context
+     */
+    protected void checkPolicies(Composite composite, BuilderContext context) throws CompositeBuilderException{
+        policyAppliesToBuilder.build(composite, context);
     }
 
     protected void buildPolicies(Composite composite, BuilderContext context) {
@@ -192,12 +225,11 @@ public class CompositePolicyBuilderImpl extends ComponentPolicyBuilderImpl imple
                     
                     // check that only one policy language is present in the endpoint's policy sets
                     if (policyNames.size() > 1){
-                        Monitor.error(context.getMonitor(), 
-                                      this, 
-                                      BUILDER_VALIDATION_BUNDLE, 
-                                      "MultiplePolicyLanguagesInEP", 
-                                      ep.toString(), 
-                                      policyNames.toString());
+                        error(context.getMonitor(), 
+                              "MultiplePolicyLanguagesInEP", 
+                              this,
+                              ep.toString(), 
+                              policyNames.toString());
                     } else {
                         for (QName policyType : policyNames) {
                             PolicyBuilder builder = builders.getPolicyBuilder(policyType);
@@ -215,12 +247,11 @@ public class CompositePolicyBuilderImpl extends ComponentPolicyBuilderImpl imple
                     
                     // check that only one policy language is present in the endpoint references's policy sets
                     if (policyNames.size() > 1){
-                        Monitor.error(context.getMonitor(), 
-                                      this, 
-                                      BUILDER_VALIDATION_BUNDLE, 
-                                      "MultiplePolicyLanguagesInEPR", 
-                                      epr.toString(), 
-                                      policyNames.toString());
+                        error(context.getMonitor(),  
+                              "MultiplePolicyLanguagesInEPR",
+                              this,
+                              epr.toString(), 
+                              policyNames.toString());
                     } else {                    
                         for (QName policyType : policyNames) {
                             PolicyBuilder builder = builders.getPolicyBuilder(policyType);
@@ -238,12 +269,11 @@ public class CompositePolicyBuilderImpl extends ComponentPolicyBuilderImpl imple
                 
                 // check that only one policy language is present in the implementations's policy sets
                 if (policyNames.size() > 1){
-                    Monitor.error(context.getMonitor(), 
-                                  this, 
-                                  BUILDER_VALIDATION_BUNDLE, 
-                                  "MultiplePolicyLanguagesInImplementation", 
-                                  component.toString(), 
-                                  policyNames.toString());
+                    error(context.getMonitor(), 
+                          "MultiplePolicyLanguagesInImplementation", 
+                          this,
+                          component.toString(), 
+                          policyNames.toString());
                 } else {
                     for (QName policyType : policyNames) {
                         PolicyBuilder builder = builders.getPolicyBuilder(policyType);

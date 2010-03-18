@@ -20,14 +20,14 @@
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
            targetNamespace="http://sample"
            xmlns:sample="http://sample"
-           name="Calculator"
-           xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1">
+           xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1"
+           name="Calculator">
 
     <component name="CalculatorServiceComponent">
         <implementation.spring location="META-INF/spring/CalculatorService-context.xml"/>		
         <reference name="addService" target="AddServiceComponent" />
         <reference name="subtractService" target="SubtractServiceComponent" />
-        <reference name="multiplyService" target="MultiplyServiceComponent" requires="tuscany:jaasAuthentication"/>
+        <reference name="multiplyService" target="MultiplyServiceComponent" policySets="tuscany:JaasPolicy"/>
         <reference name="divideService" target="DivideServiceComponent" />
     </component>
 
@@ -39,7 +39,7 @@
         <implementation.java class="calculator.SubtractServiceImpl"/>
     </component>
 
-    <component name="MultiplyServiceComponent" requires="tuscany:jaasAuthentication">
+    <component name="MultiplyServiceComponent" policySets="tuscany:JaasPolicy">
         <implementation.java class="calculator.MultiplyServiceImpl" />
     </component>
 
@@ -51,7 +51,7 @@
         <implementation.spring location="META-INF/spring/CalculatorService-context.xml" requires="tuscany:logging"/>		
         <reference name="addService" target="AddServiceComponent" />
         <reference name="subtractService" target="SubtractServiceComponent" />
-        <reference name="multiplyService" target="MultiplyServiceComponent" requires="tuscany:jaasAuthentication"/>
+        <reference name="multiplyService" target="MultiplyServiceComponent" policySets="tuscany:JaasPolicy"/>
         <reference name="divideService" target="DivideServiceComponent" />
     </component>
 

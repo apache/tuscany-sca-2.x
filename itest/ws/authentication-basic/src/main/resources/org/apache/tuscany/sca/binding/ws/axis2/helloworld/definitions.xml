@@ -25,8 +25,9 @@
 
 
     <sca:policySet name="BasicAuthenticationPolicySet"
+                   attachTo="//sca:binding.ws"
                    provides="clientAuthentication.transport"
-                   appliesTo="sca:binding.ws">
+                   appliesTo="//sca:binding.ws">
         <tuscany:basicAuthentication>
           <tuscany:userName>myname</tuscany:userName>
           <tuscany:password>mypassword</tuscany:password>
@@ -34,8 +35,9 @@
     </sca:policySet>
     
     <sca:policySet name="ImplementationIdentityPolicySet"
-                    provides="tuscany:identity"
-                   appliesTo="sca:implementation.java">
+                   attachTo="//sca:implementation.java"
+                   provides="tuscany:identity"
+                   appliesTo="//sca:implementation.java">
         <tuscany:securityIdentity>
             <tuscany:useCallerIdentity/>
         </tuscany:securityIdentity>  

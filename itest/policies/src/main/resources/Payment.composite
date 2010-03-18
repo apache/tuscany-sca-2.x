@@ -17,6 +17,12 @@
     * specific language governing permissions and limitations
     * under the License.    
 -->
+
+<!--  
+      NOTE - policy sets all defined at top level as external attach functions
+             not working yet so it's difficult to know precisely where to
+             attach policy to
+-->
 <composite xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912" 
     xmlns:p="http://payment"
     xmlns:c="http://customer"
@@ -24,7 +30,8 @@
     xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1"
     requires = "sca:authorization" 
     targetNamespace="http://payment"
-    name="Payment">
+    name="Payment"
+    policySets="tuscany:JDKLoggingPolicy tuscany:JDKLoggingImplPolicy tuscany:SuspendsTransactionPolicy tuscany:AuthorizationFineGrainPolicy tuscany:ConfidentialityTransportPolicy tuscany:ConfidentialityMessagePolicy tuscany:ClientAuthenticationTransportPolicy tuscany:IntegrityTransportPolicy">
 
     <component name="Payment">
         <implementation.java class="org.apache.tuscany.sca.itest.policies.impl.PaymentImpl" />

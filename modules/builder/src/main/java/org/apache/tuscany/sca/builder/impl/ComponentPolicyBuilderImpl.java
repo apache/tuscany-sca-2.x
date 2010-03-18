@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.builder.impl;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -43,6 +44,7 @@ import org.apache.tuscany.sca.assembly.builder.Messages;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.policy.ExtensionType;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentMap;
 import org.apache.tuscany.sca.policy.PolicyExpression;
@@ -74,7 +76,7 @@ public class ComponentPolicyBuilderImpl {
      * @param model
      */
     protected void warning(Monitor monitor, String message, Object model, Object... messageParameters) {
-        Monitor.warning(monitor, this, Messages.ASSEMBLY_VALIDATION, message, messageParameters);
+        Monitor.warning(monitor, this, Messages.BUILDER_VALIDATION_BUNDLE, message, messageParameters);
     }
 
     /**
@@ -86,7 +88,7 @@ public class ComponentPolicyBuilderImpl {
      * @param model
      */
     protected void error(Monitor monitor, String message, Object model, Object... messageParameters) {
-        Monitor.error(monitor, this, Messages.ASSEMBLY_VALIDATION, message, messageParameters);
+        Monitor.error(monitor, this, Messages.BUILDER_VALIDATION_BUNDLE, message, messageParameters);
     }
 
 
@@ -145,7 +147,11 @@ public class ComponentPolicyBuilderImpl {
                 //becomes twice
                 //[{http://docs.oasis-open.org/ns/opencsa/sca/200912}managedTransaction.local, 
                 //{http://docs.oasis-open.org/ns/opencsa/sca/200912}managedTransaction.local]
-                policySubject.getPolicySets().addAll(subject.getPolicySets());
+                for (PolicySet policySet : subject.getPolicySets()){
+                    if (!policySubject.getPolicySets().contains(policySet)){
+                        policySubject.getPolicySets().add(policySet);
+                    }
+                }
             }
         }
     }
@@ -179,8 +185,9 @@ public class ComponentPolicyBuilderImpl {
         }
         for (Binding binding : componentContract.getBindings()) {
             Binding componentTypeBinding = componentTypeContractBindings.get(binding.getName());
-            if (binding instanceof PolicySubject) {
-                inherit((PolicySubject)binding, null, false, componentTypeBinding, context);
+            if (binding instanceof PolicySubject &&
+                componentTypeBinding instanceof PolicySubject) {
+                configure((PolicySubject)binding, (PolicySubject)componentTypeBinding, Intent.Type.interaction, context);
             }
         }
     }
@@ -204,19 +211,39 @@ public class ComponentPolicyBuilderImpl {
     }
 
     public void configure(Component component, BuilderContext context) {
+        Monitor monitor = context.getMonitor();
+        
         // fix up the component type by copying all implementation level
         // interaction intents to *all* the component type services
         for (ComponentService componentService : component.getServices()) {
-            configure(componentService, component.getImplementation(), Intent.Type.interaction, context);
+            monitor.pushContext("Service: " + componentService.getName());
+            try {
+                configure(componentService, component.getImplementation(), Intent.Type.interaction, context);
+                removeConstrainedIntents(componentService, context);
+            } finally {
+                monitor.popContext();
+            }            
         }
         
         // Inherit the intents and policySets from the componentType
         for (ComponentReference componentReference : component.getReferences()) {
-            configure(componentReference, context);
+            monitor.pushContext("Reference: " + componentReference.getName());
+            try {
+                configure(componentReference, context);
+                removeConstrainedIntents(componentReference, context);
+            } finally {
+                monitor.popContext();
+            } 
         }
         
         for (ComponentService componentService : component.getServices()) {
-            configure(componentService, context);
+            monitor.pushContext("Service: " + componentService.getName());
+            try {
+                configure(componentService, context);
+                removeConstrainedIntents(componentService, context);
+            } finally {
+                monitor.popContext();
+            } 
         }
     }
     
@@ -263,7 +290,7 @@ public class ComponentPolicyBuilderImpl {
              i2.getExcludedIntents().contains(i1) ||
              checkQualifiedMutualExclusion(i1.getExcludedIntents(), i2) ||
              checkQualifiedMutualExclusion(i2.getExcludedIntents(), i1))) {
-            error(context.getMonitor(), "MutuallyExclusiveIntents", this, i1, i2);
+            error(context.getMonitor(), "MutuallyExclusiveIntentsAtBuild", this, i1, i2);
             return true;
         }
         
@@ -317,6 +344,10 @@ public class ComponentPolicyBuilderImpl {
         }
         // FIXME: [rfeng] Should we resolve the intents during the "build" phase?
         resolveAndNormalize(subject, context);
+        
+        checkMutualExclusion(subject, context);
+        
+/*     
         List<Intent> intents = subject.getRequiredIntents();
         int size = intents.size();
         for (int i = 0; i < size; i++) {
@@ -328,6 +359,7 @@ public class ComponentPolicyBuilderImpl {
                 }               
             }
         }
+*/        
         return false;
     }
 
@@ -371,7 +403,7 @@ public class ComponentPolicyBuilderImpl {
                 if (resolved != null) {
                     intents.add(resolved);
                 } else {
-                    error(context.getMonitor(), "IntentNotFound", subject, i);
+                    error(context.getMonitor(), "IntentNotFoundAtBuild", subject, i);
                     // Intent cannot be resolved
                 }
             }
@@ -393,14 +425,14 @@ public class ComponentPolicyBuilderImpl {
                 break;
             }
         }
-
-        // Remove the intents whose @contraints do not include the current element
+        
         // Replace unqualified intents if there is a qualified intent in the list
         Set<Intent> copy = new HashSet<Intent>(intents);
         for (Intent i : copy) {
             if (i.getQualifiableIntent() != null) {
                 intents.remove(i.getQualifiableIntent());
             }
+
         }
 
         // Replace qualifiable intents with the default qualified intent
@@ -415,6 +447,8 @@ public class ComponentPolicyBuilderImpl {
         subject.getRequiredIntents().clear();
         subject.getRequiredIntents().addAll(intents);
 
+        // TUSCANY-3503 - policy sets now only applied through direct
+        //                or external attachement
         // resolve policy set names that have been specified for the
         // policy subject against the real policy sets from the 
         // definitions files
@@ -426,11 +460,41 @@ public class ComponentPolicyBuilderImpl {
                     policySets.add(definitions.getPolicySets().get(index));
                 } else {
                     // PolicySet cannot be resolved
-                    warning(context.getMonitor(), "PolicySetNotFound", subject, policySet);
+                    warning(context.getMonitor(), "PolicySetNotFoundAtBuild", subject, policySet);
                 }
             }
         }
-
+        
+        subject.getPolicySets().clear();
+        subject.getPolicySets().addAll(policySets);
+    }
+    
+    protected void removeConstrainedIntents(PolicySubject subject, BuilderContext context) {
+        List<Intent> intents = subject.getRequiredIntents();
+        
+        // Remove the intents whose @contrains do not include the current element
+        ExtensionType extensionType = subject.getExtensionType();
+        if(extensionType != null){
+            List<Intent> copy = new ArrayList<Intent>(intents);
+            for (Intent i : copy) {
+                if (i.getConstrainedTypes().size() > 0){
+                    boolean constraintFound = false;
+                    for (ExtensionType constrainedType : i.getConstrainedTypes()){
+                        if (constrainedType.getType().equals(extensionType.getType()) ||
+                            constrainedType.getType().equals(extensionType.getBaseType())){
+                            constraintFound = true;
+                            break;
+                        }
+                    }
+                    if(!constraintFound){
+                        intents.remove(i);
+                    }
+                }
+            }
+        }
+    }
+    
+    protected void checkIntentsResolved(PolicySubject subject, BuilderContext context) {
         // find the policy sets that satisfy the intents that are now
         // attached to the policy subject. From the OASIS policy
         // spec CD02 rev7:
@@ -442,18 +506,16 @@ public class ComponentPolicyBuilderImpl {
         for (Intent intent : subject.getRequiredIntents()) {
             boolean intentMatched = false;
             
-            loop: for (PolicySet ps : definitions.getPolicySets()) {
+            loop: for (PolicySet ps : subject.getPolicySets()) {
                 // FIXME: We will have to check the policy references and intentMap too
                 // as well as the appliesTo
                 if (ps.getProvidedIntents().contains(intent)) {
-                    policySets.add(ps);
                     intentMatched = true;
                     break;
                 }
                 
                 for (Intent psProvidedIntent : ps.getProvidedIntents()){
                     if (isQualifiedBy(psProvidedIntent, intent)){
-                        policySets.add(ps);
                         intentMatched = true;
                         break loop;
                     }
@@ -462,7 +524,6 @@ public class ComponentPolicyBuilderImpl {
                 for (IntentMap map : ps.getIntentMaps()) {
                     for (Qualifier q : map.getQualifiers()) {
                         if (intent.equals(q.getIntent())) {
-                            policySets.add(ps);
                             intentMatched = true;
                             break loop;
                         }
@@ -476,12 +537,13 @@ public class ComponentPolicyBuilderImpl {
                 // TODO - this could be because the intent is provided by and extension
                 //        and hence there is no explicit policy set. Need and extra piece
                 //        of processing to walk through the extension models. 
-                warning(context.getMonitor(), "IntentNotSatisfied", subject, intent.getName(), subject.toString());
+                warning(context.getMonitor(), "IntentNotSatisfiedAtBuild", subject, intent.getName(), subject.toString());
             }
         }
 
-        subject.getPolicySets().clear();
-        subject.getPolicySets().addAll(policySets);
+
+        //subject.getPolicySets().clear();
+        //subject.getPolicySets().addAll(policySets);
 
     }
 

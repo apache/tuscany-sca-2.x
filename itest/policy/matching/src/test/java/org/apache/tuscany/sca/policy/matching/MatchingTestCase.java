@@ -49,8 +49,12 @@ public class MatchingTestCase {
     
     @BeforeClass
     public static void setUp() throws Exception {
-        node = NodeFactory.newInstance().createNode(new Contribution("test", "target/classes"));
-        node.start();
+        try {
+            node = NodeFactory.newInstance().createNode(new Contribution("test", "target/classes"));
+            node.start();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
     
     @Test
@@ -114,7 +118,7 @@ public class MatchingTestCase {
             helloWorld.getGreetings("petra");
             fail("Exception expected");
         } catch (Exception ex) {
-            assertTrue(ex.getMessage().indexOf("No match because the policy sets on either side have policies in differnt languages {http://schemas.xmlsoap.org/ws/2004/09/policy}ExactlyOne and {http://tuscany.apache.org/xmlns/sca/1.1}jdkLogger") > -1);
+            assertTrue(ex.getMessage().indexOf("No match because the policy sets on either side have policies in differnt languages {http://www.w3.org/ns/ws-policy}ExactlyOne and {http://tuscany.apache.org/xmlns/sca/1.1}jdkLogger") > -1);
         }    
     } 
     
