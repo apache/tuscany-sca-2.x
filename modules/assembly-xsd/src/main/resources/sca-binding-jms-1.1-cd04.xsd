@@ -90,7 +90,7 @@
 
    <complexType name="JMSResponse">
       <sequence>
-         <element name="wireFormat" type="sca:WireFormatType" minOccurs="0"/>
+         <element ref="sca:wireFormat" minOccurs="0" />
          <element name="destination" type="sca:JMSDestination" minOccurs="0"/>
          <choice minOccurs="0"> 
             <element name="connectionFactory" type="sca:JMSConnectionFactory"/> 
