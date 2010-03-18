@@ -28,11 +28,11 @@
     <service name="Service2a" promote="ComponentD/Service3a">
         <!-- bindings and/or interfaces may or may not be specified explicitly here -->
     </service>
-    <reference name="reference2" promote="ComponentD/reference3" target="ComponentB/Service2a">
+    <reference name="reference2" promote="ComponentD/reference3" target="ComponentB/Service2a" multiplicity="1..1">
         <!-- bindings and/or interfaces may or may not be specified explicitly here -->
         <binding.ws />
     </reference>
-    <reference name="reference2a" promote="ComponentD/reference3a">
+    <reference name="reference2a" promote="ComponentD/reference3a" multiplicity="1..1">
         <!-- bindings and/or interfaces may or may not be specified explicitly here -->
         <interface.wsdl interface="http://scenarios#wsdl.interface(Service3)" />
         <binding.ws />

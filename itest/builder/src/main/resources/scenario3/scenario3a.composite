@@ -29,7 +29,7 @@
     <service name="Service2a" promote="ComponentD/Service3a">
         <!-- bindings and/or interfaces may or may not be specified explicitly here -->
     </service>
-    <reference name="reference2" promote="ComponentD/reference3">
+    <reference name="reference2" promote="ComponentD/reference3" multiplicity="1..1">
         <!-- bindings and/or interfaces may or may not be specified explicitly here -->
     </reference>
 
