@@ -228,6 +228,9 @@ public class EndpointImpl implements Endpoint {
      * @return
      */
     private static String[] parseServiceURI(String serviceURI) {
+        if (serviceURI.startsWith("/")) {
+            serviceURI = serviceURI.substring(1);
+        }
         if (serviceURI.contains("#")) {
             return parseStructuralURI(serviceURI);
         }
