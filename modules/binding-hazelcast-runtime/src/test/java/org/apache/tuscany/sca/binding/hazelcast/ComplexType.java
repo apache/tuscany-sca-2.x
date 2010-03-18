@@ -19,27 +19,15 @@
 
 package org.apache.tuscany.sca.binding.hazelcast;
 
-import org.oasisopen.sca.annotation.Reference;
-
-public class TestServiceClient implements TestService {
-
-    @Reference
-    public TestService service;
+public class ComplexType {
     
-    public String echoString(String s) {
-        return service.echoString(s);
+    private String s;
+    
+    public void setString(String s) {
+        this.s = s;
     }
 
-    public void onewayString(String s) {
-        service.onewayString(s);
+    public String getString() {
+        return s;
     }
-
-    public ComplexType echoComplexType(ComplexType ct) {
-        return service.echoComplexType(ct);
-    }
-
-    public String testExceptions(String s) throws BadStringException {
-        return service.testExceptions(s);
-    }
-
 }

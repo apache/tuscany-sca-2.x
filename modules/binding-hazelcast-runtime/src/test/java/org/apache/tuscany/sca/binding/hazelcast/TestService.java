@@ -23,7 +23,8 @@ import org.oasisopen.sca.annotation.Remotable;
 
 @Remotable
 public interface TestService {
-
     String echoString(String s);
-    
+    void onewayString(String s);
+    ComplexType echoComplexType(ComplexType ct);
+    String testExceptions(String s) throws BadStringException;
 }

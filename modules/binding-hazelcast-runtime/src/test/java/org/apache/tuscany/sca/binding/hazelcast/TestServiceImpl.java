@@ -25,4 +25,19 @@ public class TestServiceImpl implements TestService {
         return s;
     }
 
+    public void onewayString(String s) {
+        System.out.println("onewayString " + s);
+    }
+
+    public ComplexType echoComplexType(ComplexType ct) {
+        return ct;
+    }
+
+    public String testExceptions(String s) throws BadStringException {
+        if (s.equals("runtime")) {
+            throw new RuntimeException();
+        }
+        throw new BadStringException(s);
+    }
+
 }

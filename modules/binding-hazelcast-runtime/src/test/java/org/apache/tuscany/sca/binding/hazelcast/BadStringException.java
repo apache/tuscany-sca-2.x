@@ -19,27 +19,11 @@
 
 package org.apache.tuscany.sca.binding.hazelcast;
 
-import org.oasisopen.sca.annotation.Reference;
+public class BadStringException extends Exception {
+    private static final long serialVersionUID = 1L;
 
-public class TestServiceClient implements TestService {
-
-    @Reference
-    public TestService service;
-    
-    public String echoString(String s) {
-        return service.echoString(s);
-    }
-
-    public void onewayString(String s) {
-        service.onewayString(s);
-    }
-
-    public ComplexType echoComplexType(ComplexType ct) {
-        return service.echoComplexType(ct);
-    }
-
-    public String testExceptions(String s) throws BadStringException {
-        return service.testExceptions(s);
+    public BadStringException(String msg) {
+        super(msg);
     }
 
 }
