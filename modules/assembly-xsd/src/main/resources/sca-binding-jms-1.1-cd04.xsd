@@ -6,7 +6,7 @@
         xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
         elementFormDefault="qualified">
 
-   <include schemaLocation="sca-core-1.1-cd04.xsd"/>
+   <include schemaLocation="sca-core-1.1-cd05.xsd"/>
 
    <complexType name="JMSBinding">
       <complexContent>
@@ -95,11 +95,6 @@
             <element name="connectionFactory" type="sca:JMSConnectionFactory"/> 
             <element name="activationSpec" type="sca:JMSActivationSpec"/> 
          </choice> 
-
-         <!-- TUSCANY-3297 -->
-         <any namespace="##other" processContents="lax" 
-              minOccurs="0" maxOccurs="unbounded"/>
-
       </sequence>
    </complexType>
 

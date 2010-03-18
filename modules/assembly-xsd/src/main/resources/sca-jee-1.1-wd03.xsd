@@ -5,7 +5,7 @@
    targetNamespace="http://docs.oasis-open.org/ns/opencsa/sca/200912" 
    elementFormDefault="qualified">
 
-	<include schemaLocation="sca-core-1.1-cd04.xsd"/>
+	<include schemaLocation="sca-core-1.1-cd05.xsd"/>
 
 	<element name="implementation.ejb" type="sca:EJBImplementation" 
       substitutionGroup="sca:implementation"/>

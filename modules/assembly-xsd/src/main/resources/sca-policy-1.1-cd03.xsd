@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright(C) OASIS(R) 2005,2009. All Rights Reserved. 
+<!-- Copyright(C) OASIS(R) 2005,2010. All Rights Reserved. 
      OASIS trademark, IPR and other policies apply.  -->
 <schema xmlns="http://www.w3.org/2001/XMLSchema"
 	targetNamespace="http://docs.oasis-open.org/ns/opencsa/sca/200912"
@@ -7,7 +7,7 @@
 	xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy"
 	elementFormDefault="qualified">
 
-	<include schemaLocation="sca-core-1.1-cd04.xsd"/>	
+	<include schemaLocation="sca-core-1.1-cd05.xsd"/>	
 	<import namespace="http://www.w3.org/ns/ws-policy"
 		schemaLocation="http://www.w3.org/2007/02/ws-policy.xsd"/>
 
@@ -40,11 +40,23 @@
 		<sequence>
 			<element name="description" type="string" minOccurs="0" 
 			   maxOccurs="1" />
+			<any namespace="##other" processContents="lax" minOccurs="0"
+			   maxOccurs="unbounded"/> 
 		</sequence>
   		<attribute name="name" type="NCName" use="required"/>
   		<attribute name="default" type="boolean" use="optional" 
   		   default="false"/>
 	</complexType>
+
+	<element name="requires"> 
+		<complexType>
+			<sequence minOccurs="0" maxOccurs="unbounded">
+				<any namespace="##other" processContents="lax"/>
+			</sequence>		
+			<attribute name="intents" type="sca:listOfQNames" use="required"/>
+			<anyAttribute namespace="##other" processContents="lax"/>
+		</complexType>
+	</element>
 
 	<element name="policySet" type="sca:PolicySet"/>
 	<complexType name="PolicySet">
@@ -61,12 +73,15 @@
 		<anyAttribute namespace="##other" processContents="lax"/>
 	</complexType>
 
-	<element name="policySetAttachment" 
-	   type="sca:PolicySetAttachment"/>
-	<complexType name="PolicySetAttachment">
-		<attribute name="name" type="QName" use="required"/>
-		<anyAttribute namespace="##other" processContents="lax"/>
-	</complexType>
+	<element name="policySetAttachment">
+		<complexType>
+			<sequence minOccurs="0" maxOccurs="unbounded">
+				<any namespace="##other" processContents="lax"/>
+			</sequence>
+			<attribute name="name" type="QName" use="required"/>
+			<anyAttribute namespace="##other" processContents="lax"/>
+		</complexType>
+	</element>
 
 	<complexType name="PolicySetReference">
 		<attribute name="name" type="QName" use="required"/>

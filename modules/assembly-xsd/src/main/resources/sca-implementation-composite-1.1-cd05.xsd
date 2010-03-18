@@ -6,7 +6,7 @@
    targetNamespace="http://docs.oasis-open.org/ns/opencsa/sca/200912" 
    elementFormDefault="qualified">
 
-   <include schemaLocation="sca-core-1.1-cd04.xsd"/>
+   <include schemaLocation="sca-core-1.1-cd05.xsd"/>
 
    <!-- Composite Implementation -->
    <element name="implementation.composite" type="sca:SCAImplementation" 

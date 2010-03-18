@@ -9,7 +9,7 @@
    elementFormDefault="qualified">
 
    <!-- SCA-Assembly XML Schema -->
-   <include schemaLocation="sca-core-1.1-cd04.xsd" />
+   <include schemaLocation="sca-core-1.1-cd05.xsd" />
 
    <!-- SCA-BPEL Component Implementation Type -->
    <element name="implementation.bpel" 

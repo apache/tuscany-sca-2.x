@@ -6,8 +6,8 @@
    xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912" 
    elementFormDefault="qualified">
    
-   <include schemaLocation="sca-core-1.1-cd04.xsd"/>
-   <include schemaLocation="sca-policy-1.1-cd04.xsd"/>
+   <include schemaLocation="sca-core-1.1-cd05.xsd"/>
+   <include schemaLocation="sca-policy-1.1-cd03.xsd"/>
    
    <!-- Definitions -->
    <element name="definitions" type="sca:tDefinitions"/>
@@ -17,7 +17,6 @@
             <choice minOccurs="0" maxOccurs="unbounded">
                <element ref="sca:intent"/>
                <element ref="sca:policySet"/>
-               <element ref="sca:binding"/>
                <element ref="sca:bindingType"/>
                <element ref="sca:implementationType"/>
                <any namespace="##other" processContents="lax" 

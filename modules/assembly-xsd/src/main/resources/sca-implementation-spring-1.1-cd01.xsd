@@ -6,7 +6,7 @@
   elementFormDefault="qualified"
   targetNamespace="http://docs.oasis-open.org/ns/opencsa/sca/200912">  
 	
-	<include schemaLocation="sca-core-1.1-cd04.xsd"/>
+	<include schemaLocation="sca-core-1.1-cd05.xsd"/>
 	<element name="implementation.spring" type="sca:SpringImplementation" substitutionGroup="sca:implementation"/>
 	<complexType name="SpringImplementation">
 		<complexContent>

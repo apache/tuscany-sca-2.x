@@ -13,7 +13,7 @@
     <import namespace="http://www.w3.org/2005/08/addressing"
             schemaLocation="http://www.w3.org/2006/03/addressing/ws-addr.xsd"/>
 
-    <include schemaLocation="sca-core-1.1-cd04.xsd"/>
+    <include schemaLocation="sca-core-1.1-cd05.xsd"/>
 
     <element name="binding.ws" type="sca:WebServiceBinding"
              substitutionGroup="sca:binding"/>
