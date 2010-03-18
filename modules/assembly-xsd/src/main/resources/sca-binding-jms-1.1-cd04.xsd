@@ -28,8 +28,8 @@
                <element name="operationProperties" 
                         type="sca:JMSOperationProperties" 
                         minOccurs="0" maxOccurs="unbounded"/>
-               <any namespace="##other" processContents="lax" 
-                    minOccurs="0" maxOccurs="unbounded"/>
+               <!-- any namespace="##other" processContents="lax" 
+                    minOccurs="0" maxOccurs="unbounded"/ -->
             </sequence>
             <attribute name="correlationScheme" type="QName"
                        default="sca:messageId"/>
@@ -69,8 +69,9 @@
    </complexType>
 
    <complexType name="JMSConnectionFactory">
-      <sequence>          <element name="property" type="sca:BindingProperty" 
-                  minOccurs="0" maxOccurs="unbounded"/>
+      <sequence>
+          <element name="property" type="sca:BindingProperty" 
+            minOccurs="0" maxOccurs="unbounded"/>
       </sequence>
       <attribute name="jndiName" type="anyURI" use="required"/>
       <attribute name="create" type="sca:JMSCreateResource" 

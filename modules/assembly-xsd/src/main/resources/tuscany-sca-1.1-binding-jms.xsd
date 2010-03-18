@@ -18,14 +18,14 @@
  * under the License.    
 -->
 <schema xmlns="http://www.w3.org/2001/XMLSchema" 
-        targetNamespace="http://tuscany.apache.org/xmlns/sca/1.0" 
-        xmlns:sca="http://www.osoa.org/xmlns/sca/1.0"
-        xmlns:t="http://tuscany.apache.org/xmlns/sca/1.0" 
-        elementFormDefault="qualified">
+    targetNamespace="http://tuscany.apache.org/xmlns/sca/1.1" 
+    xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
+    xmlns:t="http://tuscany.apache.org/xmlns/sca/1.1" 
+    elementFormDefault="qualified">
 
-   <import namespace="http://www.osoa.org/xmlns/sca/1.0" schemaLocation="sca-binding-jms.xsd"/>
+   <import namespace="http://docs.oasis-open.org/ns/opencsa/sca/200912" schemaLocation="sca-binding-jms-1.1-cd04.xsd"/>
    
-   <include schemaLocation="tuscany-core.xsd"/>
+   <import namespace="http://docs.oasis-open.org/ns/opencsa/sca/200912"  schemaLocation="sca-1.1-cd05.xsd"/>
         
    <!-- these schema types are not actually used at the moment as we rely on 
         any elements in the underlying JMS binding schema to pull in wireFormat 
@@ -34,10 +34,10 @@
         
         
    <!--  wire formats -->
-    
+   <!-- -->
    <complexType name="WireFormatJMSDefaultType">
       <complexContent>
-         <extension base="t:WireFormat">
+         <extension base="sca:WireFormatType">
              <attribute name="sendFormat" default="bytes">
                   <simpleType>
                       <restriction base="string">
@@ -51,47 +51,47 @@
    </complexType>    
    <element name="wireFormat.jmsdefault" 
             type="t:WireFormatJMSDefaultType"
-            substitutionGroup="t:wireFormat"/>            
+            substitutionGroup="sca:wireFormat"/>            
 
   <complexType name="WireFormatJMSTextType">
       <complexContent>
-         <extension base="t:WireFormat"/>
+         <extension base="sca:WireFormatType"/>
       </complexContent>
    </complexType>
    <element name="wireFormat.jmsText" 
             type="t:WireFormatJMSTextType"
-            substitutionGroup="t:wireFormat"/>
+            substitutionGroup="sca:wireFormat"/>
                   
    <complexType name="WireFormatJMSTextXMLType">
       <complexContent>
-         <extension base="t:WireFormat"/>
+         <extension base="sca:WireFormatType"/>
       </complexContent>
    </complexType>
    <element name="wireFormat.jmsTextXML" 
             type="t:WireFormatJMSTextXMLType"
-            substitutionGroup="t:wireFormat"/>
+            substitutionGroup="sca:wireFormat"/>
       
    <complexType name="WireFormatJMSBytesType">
       <complexContent>
-         <extension base="t:WireFormat"/>
+         <extension base="sca:WireFormatType"/>
       </complexContent>
    </complexType>
    <element name="wireFormat.jmsBytes" 
             type="t:WireFormatJMSBytesType"
-            substitutionGroup="t:wireFormat"/>
+            substitutionGroup="sca:wireFormat"/>
    
    <complexType name="WireFormatJMSBytesXMLType">
       <complexContent>
-         <extension base="t:WireFormat"/>
+         <extension base="sca:WireFormatType"/>
       </complexContent>
    </complexType>
    <element name="wireFormat.jmsBytesXML" 
             type="t:WireFormatJMSBytesXMLType"
-            substitutionGroup="t:wireFormat"/>
+            substitutionGroup="sca:wireFormat"/>
    
    <complexType name="WireFormatJMSObjectType">
       <complexContent>
-         <extension base="t:WireFormat">
+         <extension base="sca:WireFormatType">
              <attribute name="wrapSingle" default="false">
                   <simpleType>
                       <restriction base="string">
@@ -105,28 +105,30 @@
    </complexType>       
    <element name="wireFormat.jmsObject" 
             type="t:WireFormatJMSObjectType"
-            substitutionGroup="t:wireFormat"/>   
+            substitutionGroup="sca:wireFormat"/>   
+   <!--  -->
                    
-                   
-    <!--  operation selectors -->      
+   <!--  operation selectors -->
+   <!-- -->      
    <complexType name="OperationSelectorJMSDefaultType">
       <complexContent>
-         <extension base="t:OperationSelector"/>
+         <extension base="sca:OperationSelectorType"/>
       </complexContent>
    </complexType>    
    <element name="operationSelector.jmsdefault" 
             type="t:OperationSelectorJMSDefaultType"
-            substitutionGroup="t:operationSelector"/>            
+            substitutionGroup="sca:operationSelector"/>            
 
    <complexType name="OperationSelectorJMSUserPropType">
       <complexContent>
-         <extension base="t:OperationSelector">
+         <extension base="sca:OperationSelectorType">
              <attribute name="propertyName" type="string"/>           
          </extension>         
       </complexContent>
    </complexType>    
    <element name="operationSelector.jmsUserProp" 
             type="t:OperationSelectorJMSUserPropType"
-            substitutionGroup="t:operationSelector"/>
-                           
+            substitutionGroup="sca:operationSelector"/>
+
+	<!-- -->                           
 </schema>
