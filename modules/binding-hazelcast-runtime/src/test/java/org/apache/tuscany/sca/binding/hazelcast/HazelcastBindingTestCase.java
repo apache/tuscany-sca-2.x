@@ -89,8 +89,7 @@ public class HazelcastBindingTestCase {
             service.testExceptions("runtime");
             fail();
         } catch (ServiceRuntimeException e) {
-            // TODO test what the exception should be
-//            assertEquals("runtime", e.getMessage());
+            assertEquals("org.oasisopen.sca.ServiceRuntimeException: Remote exception: class java.lang.RuntimeException:runtime", e.getMessage());
         }
     }
 

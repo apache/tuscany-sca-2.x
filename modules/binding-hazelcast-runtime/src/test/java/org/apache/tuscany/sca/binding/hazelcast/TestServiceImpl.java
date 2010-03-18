@@ -35,7 +35,7 @@ public class TestServiceImpl implements TestService {
 
     public String testExceptions(String s) throws BadStringException {
         if (s.equals("runtime")) {
-            throw new RuntimeException();
+            throw new RuntimeException("runtime");
         }
         throw new BadStringException(s);
     }

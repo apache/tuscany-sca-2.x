@@ -21,12 +21,14 @@ package org.apache.tuscany.sca.binding.hazelcast;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.Callable;
 
 import org.apache.tuscany.sca.common.xml.dom.DOMHelper;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.util.FaultException;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.w3c.dom.Document;
@@ -52,8 +54,17 @@ public class ServiceInvoker implements Callable<String>, Serializable {
         Operation operation = getRequestOperation(endpoint);
         DOMHelper domHelper = DOMHelper.getInstance(endpoint.getCompositeContext().getExtensionPointRegistry());
         Object[] args = getRequestArgs(domHelper);
-        Object response = endpoint.invoke(operation, args);
-        String responseXML = getResponseXML(domHelper, response);
+        String responseXML;
+        try {
+            Object response = endpoint.invoke(operation, args);
+            responseXML = getResponseXML(domHelper, response);
+        } catch (Exception e) {
+           if (e instanceof InvocationTargetException && ((InvocationTargetException)e).getTargetException() instanceof FaultException) {
+               responseXML = "DECLAREDEXCEPTION:" + getResponseXML(domHelper, ((FaultException)((InvocationTargetException)e).getTargetException()).getFaultInfo());
+           } else {
+               responseXML = "EXCEPTION: " + e.getClass() + ":" + e.getMessage();
+           }
+        }
         return responseXML;
     }
 

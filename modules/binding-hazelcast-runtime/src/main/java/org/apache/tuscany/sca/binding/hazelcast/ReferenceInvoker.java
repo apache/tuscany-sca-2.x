@@ -24,11 +24,14 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.FutureTask;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.sca.common.xml.dom.DOMHelper;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.endpoint.hazelcast.HazelcastEndpointRegistry;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.util.FaultException;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
@@ -87,9 +90,19 @@ public class ReferenceInvoker implements Invoker {
     }
 
     private Message getResponseNode(String responseXML) throws IOException, SAXException {
-        Document responseDOM = domHelper.load(responseXML);
         Message msg = messageFactory.createMessage();
-        msg.setBody(responseDOM);
+        if (responseXML.startsWith("DECLAREDEXCEPTION:")) {
+            Document responseDOM = domHelper.load(responseXML.substring(18));
+            FaultException e = new FaultException("remote exception", responseDOM);
+            Node node = ((Node)responseDOM).getFirstChild();
+            e.setFaultName(new QName(node.getNamespaceURI(), node.getLocalName()));
+            msg.setFaultBody(e);
+        } else if (responseXML.startsWith("EXCEPTION:")) {
+            throw new ServiceRuntimeException("Remote exception:" + responseXML.substring(10));
+        } else {
+            Document responseDOM = domHelper.load(responseXML);
+            msg.setBody(responseDOM);
+        }
         return msg;
     }
 
