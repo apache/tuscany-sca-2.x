@@ -78,9 +78,12 @@ public class DefaultSCABindingMapper implements SCABindingMapper {
                 mappedBinding = ServiceDeclarationParser.getQName(qname);
             } else {
                 // By default, mapping to binding.ws or if thats not available then binding.rmi
-                mappedBinding = new QName(Base.SCA11_NS, "binding.ws");
+                mappedBinding = new QName(Base.SCA11_TUSCANY_NS, "binding.hazelcast");
                 if (registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class).getProcessor(mappedBinding) == null) {
-                    mappedBinding = new QName(Base.SCA11_TUSCANY_NS, "binding.rmi");
+                    mappedBinding = new QName(Base.SCA11_NS, "binding.ws");
+                    if (registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class).getProcessor(mappedBinding) == null) {
+                        mappedBinding = new QName(Base.SCA11_TUSCANY_NS, "binding.rmi");
+                    }
                 }
             }
         }
