@@ -215,8 +215,8 @@
       <complexContent>
          <extension base="sca:CommonExtensionBase">
             <sequence>
-               <any namespace="##other" processContents="lax" minOccurs="0" 
-                    maxOccurs="unbounded"/>
+               <!-- any namespace="##other" processContents="lax" minOccurs="0" 
+                    maxOccurs="unbounded"/-->
             </sequence>
             <attribute name="type" type="QName" use="required"/>
             <attribute name="alwaysProvides" type="sca:listOfQNames" 

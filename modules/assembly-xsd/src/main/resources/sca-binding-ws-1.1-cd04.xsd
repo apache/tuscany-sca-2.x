@@ -24,8 +24,8 @@
                 <sequence>
                     <element name="endpointReference" type="wsa:EndpointReferenceType"
                              minOccurs="0" maxOccurs="unbounded"/>
-                    <any namespace="##other" processContents="lax"
-                         minOccurs="0" maxOccurs="unbounded"/>
+                    <!-- any namespace="##other" processContents="lax"
+                         minOccurs="0" maxOccurs="unbounded"/-->
                 </sequence>
                 <attribute name="wsdlElement" type="anyURI" use="optional"/>
                 <attribute ref="wsdli:wsdlLocation" use="optional"/>

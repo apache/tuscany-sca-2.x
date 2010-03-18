@@ -20,9 +20,9 @@
    <include schemaLocation="sca-implementation-spring-1.1-cd01.xsd"/>
 
    <include schemaLocation="sca-binding-ws-1.1-cd04.xsd"/>
-   <include schemaLocation="sca-binding-ws-callback-1.1-cd04.xsd"/>
+   <include schemaLocation="sca-binding-ws-callback-1.1-cd04.xsd"/>  
    <include schemaLocation="sca-binding-jms-1.1-cd04.xsd"/>
-   <include schemaLocation="sca-binding-jca-1.1-cd04.xsd"/>   
+   <include schemaLocation="sca-binding-jca-1.1-cd04.xsd"/>
    <include schemaLocation="sca-binding-sca-1.1-cd05.xsd"/>
    <include schemaLocation="sca-binding-ejb-1.1-cd01.xsd"/>
 
@@ -35,5 +35,4 @@
    <include schemaLocation="sca-contribution-java-1.1-cd02.xsd"/>
    
    <include schemaLocation="sca-jee-1.1-wd03.xsd"/>
-   
 </schema>

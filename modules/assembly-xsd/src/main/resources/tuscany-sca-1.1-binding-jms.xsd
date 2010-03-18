@@ -27,12 +27,6 @@
    
    <import namespace="http://docs.oasis-open.org/ns/opencsa/sca/200912"  schemaLocation="sca-1.1-cd05.xsd"/>
         
-   <!-- these schema types are not actually used at the moment as we rely on 
-        any elements in the underlying JMS binding schema to pull in wireFormat 
-        and operationSelection elements. However it's useful to keep track of
-        what we expect the shape of these elements to be -->
-        
-        
    <!--  wire formats -->
    <!-- -->
    <complexType name="WireFormatJMSDefaultType">

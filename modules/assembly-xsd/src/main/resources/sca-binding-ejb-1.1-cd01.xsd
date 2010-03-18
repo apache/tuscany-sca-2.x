@@ -21,10 +21,10 @@
     <complexType name="EJBSessionBeanBinding">
         <complexContent>
             <extension base="sca:Binding">
-                <sequence>
+                <!-- sequence>
                     <any namespace="##other" processContents="lax"
                          minOccurs="0" maxOccurs="unbounded"/>
-                </sequence>
+                </sequence-->
                 <attribute name="homeInterface" type="NCName" use="optional"/>
                 <attribute name="ejb-link-name" type="string" use="optional"/>
                 <attribute name="ejb-version" type="sca:VersionValue" use="optional" default="EJB3"/>

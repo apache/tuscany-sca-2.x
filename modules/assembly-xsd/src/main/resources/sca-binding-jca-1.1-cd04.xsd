@@ -22,8 +22,8 @@
                         type="sca:JCAInboundInteraction" minOccurs="0" />
                <element name="property" type="sca:Property" minOccurs="0"
                         maxOccurs="unbounded" />
-               <any namespace="##other" processContents="lax" minOccurs="0"
-                    maxOccurs="unbounded" />
+               <!-- any namespace="##other" processContents="lax" minOccurs="0"
+                    maxOccurs="unbounded" /-->
             </sequence>
             <attribute name="connectionInfo" type="anyURI" use="optional" />
             <attribute name="initialContextFactory" type="anyURI" 
