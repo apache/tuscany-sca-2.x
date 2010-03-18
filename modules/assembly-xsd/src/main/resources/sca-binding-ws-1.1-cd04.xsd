@@ -22,7 +22,7 @@
         <complexContent>
             <extension base="sca:Binding">
                 <sequence>
-                    <element name="endpointReference" type="wsa:EndpointReferenceType"
+                    <element ref="wsa:EndpointReference"
                              minOccurs="0" maxOccurs="unbounded"/>
                     <!-- any namespace="##other" processContents="lax"
                          minOccurs="0" maxOccurs="unbounded"/-->
