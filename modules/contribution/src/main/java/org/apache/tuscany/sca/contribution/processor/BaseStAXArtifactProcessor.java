@@ -22,6 +22,8 @@ package org.apache.tuscany.sca.contribution.processor;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
+
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -43,6 +45,9 @@ import org.apache.tuscany.sca.common.xml.stax.StAXHelper;
  * @version $Rev$ $Date$
  */
 public abstract class BaseStAXArtifactProcessor {
+    private static String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200912";
+    private static String SCA11_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.1";
+
     /**
      * The StAXHelper without states
      */
@@ -319,6 +324,7 @@ public abstract class BaseStAXArtifactProcessor {
                                            Extensible extensibleElement,
                                            StAXAttributeProcessor extensionAttributeProcessor, ProcessorContext context)
         throws ContributionWriteException, XMLStreamException {
+        
         for (Extension extension : extensibleElement.getAttributeExtensions()) {
             if (extension.isAttribute()) {
                 extensionAttributeProcessor.write(extension, writer, context);
@@ -328,8 +334,9 @@ public abstract class BaseStAXArtifactProcessor {
 
     protected void readExtendedElement(XMLStreamReader reader,
                                        Extensible extensible,
-                                       StAXArtifactProcessor extensionProcessor, ProcessorContext context) throws ContributionReadException,
-        XMLStreamException {
+                                       StAXArtifactProcessor extensionProcessor, ProcessorContext context) 
+        throws ContributionReadException, XMLStreamException {
+        
         Object ext = extensionProcessor.read(reader, context);
         if (extensible != null) {
             extensible.getExtensions().add(ext);
@@ -338,11 +345,33 @@ public abstract class BaseStAXArtifactProcessor {
 
     protected void writeExtendedElements(XMLStreamWriter writer,
                                          Extensible extensible,
-                                         StAXArtifactProcessor extensionProcessor, ProcessorContext context) throws ContributionWriteException,
-        XMLStreamException {
+                                         StAXArtifactProcessor extensionProcessor, ProcessorContext context) 
+        throws ContributionWriteException, XMLStreamException {
+        
+        List <Object> otherExtensions = new ArrayList<Object>();
+        
+        // write all generic extensions as elements 
+        // to produce semanticaly equal xml output 
         for (Object ext : extensible.getExtensions()) {
-            extensionProcessor.write(ext, writer, context);
+            if (ext instanceof Extension) {
+                extensionProcessor.write(ext, writer, context);
+            } else {
+                otherExtensions.add(ext);
+            }
         }
+        
+        //wrap xml extensibility into a extension wrapper element
+        if(otherExtensions.size() > 0) {
+            
+            writeStart(writer, SCA11_NS, "extensions");
+            
+            for (Object extension : otherExtensions) {
+                extensionProcessor.write(extension, writer, context);
+            }
+            
+            writeEnd(writer);
+        }
+        
     }
 
     /**

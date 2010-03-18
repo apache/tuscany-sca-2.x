@@ -25,23 +25,30 @@
     <!-- The service elment defines an SCA proxy to a remote OSGi service -->
     <service name="AddService">
         <interface.java interface="calculator.dosgi.operations.AddService"/>
-        <t:osgi.property name="prop1">1</t:osgi.property>
-        <t:osgi.property name="prop2">ABC</t:osgi.property>
+        <extensions>
+        	<t:osgi.property name="prop1">1</t:osgi.property>
+        	<t:osgi.property name="prop2">ABC</t:osgi.property>
+        </extensions>
     </service>
     <service name="SubtractService">
         <interface.java interface="calculator.dosgi.operations.SubtractService"/>
-        <t:osgi.property name="prop1">1</t:osgi.property>
-        <t:osgi.property name="prop2">ABC</t:osgi.property>
+        <extensions>
+        	<t:osgi.property name="prop1">1</t:osgi.property>
+        	<t:osgi.property name="prop2">ABC</t:osgi.property>
+        </extensions>
     </service>
     <service name="MultiplyService">
         <interface.java interface="calculator.dosgi.operations.MultiplyService"/>
-        <t:osgi.property name="prop1">1</t:osgi.property>
-        <t:osgi.property name="prop2">ABC</t:osgi.property>
+        <extensions>
+        	<t:osgi.property name="prop1">1</t:osgi.property>
+        	<t:osgi.property name="prop2">ABC</t:osgi.property>
+        </extensions>
     </service>
     <service name="DivideService">
         <interface.java interface="calculator.dosgi.operations.DivideService"/>
-        <t:osgi.property name="prop1">1</t:osgi.property>
-        <t:osgi.property name="prop2">ABC</t:osgi.property>
+        <extensions>
+        	<t:osgi.property name="prop1">1</t:osgi.property>
+        	<t:osgi.property name="prop2">ABC</t:osgi.property>
+        </extensions>
     </service>
-    
 </componentType>

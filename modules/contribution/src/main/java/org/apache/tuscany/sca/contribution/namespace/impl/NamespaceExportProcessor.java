@@ -115,7 +115,11 @@ public class NamespaceExportProcessor extends BaseStAXArtifactProcessor implemen
                             }
                             readExtendedAttributes(reader, namespaceExport, attributeProcessor, extensionFactory, context);
                         } else {
-                            readExtendedElement(reader, namespaceExport, extensionProcessor, context);
+                            //read extended elements
+                            Object ext = extensionProcessor.read(reader, context);
+                            if (namespaceExport != null) {
+                                namespaceExport.getExtensions().add(ext);
+                            }
                         }
 
                         break;
@@ -151,7 +155,10 @@ public class NamespaceExportProcessor extends BaseStAXArtifactProcessor implemen
 
         writeExtendedAttributes(writer, namespaceExport, attributeProcessor, context);
 
-        writeExtendedElements(writer, namespaceExport, extensionProcessor, context);
+        // handle extended elements
+        for (Object ext : namespaceExport.getExtensions()) {
+            extensionProcessor.write(ext, writer, context);
+        }
 
         writer.writeEndElement();
     }

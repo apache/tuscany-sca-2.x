@@ -59,6 +59,8 @@ import static org.apache.tuscany.sca.assembly.xml.Constants.URI;
 import static org.apache.tuscany.sca.assembly.xml.Constants.WIRE;
 import static org.apache.tuscany.sca.assembly.xml.Constants.WIRED_BY_IMPL;
 import static org.apache.tuscany.sca.assembly.xml.Constants.WIRE_QNAME;
+import static org.apache.tuscany.sca.assembly.xml.Constants.EXTENSION;
+import static org.apache.tuscany.sca.assembly.xml.Constants.EXTENSION_QNAME;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -217,8 +219,7 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                                 componentService.setName(getString(reader, NAME));
 
                                 //handle extension attributes
-                                this
-                                    .readExtendedAttributes(reader, name, componentService, extensionAttributeProcessor, context);
+                                this.readExtendedAttributes(reader, name, componentService, extensionAttributeProcessor, context);
 
                                 component.getServices().add(componentService);
                                 policyProcessor.readPolicies(contract, reader);
@@ -254,8 +255,7 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                                 }
 
                                 //handle extension attributes
-                                this
-                                    .readExtendedAttributes(reader, name, compositeService, extensionAttributeProcessor, context);
+                                this.readExtendedAttributes(reader, name, compositeService, extensionAttributeProcessor, context);
 
                                 composite.getServices().add(compositeService);
                                 policyProcessor.readPolicies(contract, reader);
@@ -499,7 +499,10 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                                     callback.getPolicySets().add(policySet);
                                 }
                             }
-
+                        } else if(EXTENSION_QNAME.equals(name)) {
+                            // Handle <extension>
+                            //ignore element as this is a wrapper for extensibility
+                            break;
                         } else {
 
                             // Read an extension element
@@ -697,17 +700,13 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                 }
 
                 // Write extensions
-                for (Object extension : callback.getExtensions()) {
-                    extensionProcessor.write(extension, writer, context);
-                }
+                this.writeExtendedElements(writer, service, extensionProcessor, context);
 
                 writeEnd(writer);
             }
 
             // Write extensions
-            for (Object extension : service.getExtensions()) {
-                extensionProcessor.write(extension, writer, context);
-            }
+            this.writeExtendedElements(writer, service, extensionProcessor, context);
 
             writeEnd(writer);
         }
@@ -770,18 +769,14 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                     }
 
                     // Write extensions
-                    for (Object extension : callback.getExtensions()) {
-                        extensionProcessor.write(extension, writer, context);
-                    }
+                    this.writeExtendedElements(writer, callback, extensionProcessor, context);
 
                     writeEnd(writer);
                 }
 
                 // Write extensions
-                for (Object extension : service.getExtensions()) {
-                    extensionProcessor.write(extension, writer, context);
-                }
-
+                this.writeExtendedElements(writer, service, extensionProcessor, context);
+                
                 writeEnd(writer);
             }
 
@@ -821,17 +816,13 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                     }
 
                     // Write extensions
-                    for (Object extensions : callback.getExtensions()) {
-                        extensionProcessor.write(extensions, writer, context);
-                    }
+                    this.writeExtendedElements(writer, callback, extensionProcessor, context);
 
                     writeEnd(writer);
                 }
 
                 // Write extensions
-                for (Object extensions : reference.getExtensions()) {
-                    extensionProcessor.write(extensions, writer, context);
-                }
+                this.writeExtendedElements(writer, reference, extensionProcessor, context);
 
                 writeEnd(writer);
             }
@@ -909,17 +900,13 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                 }
 
                 // Write extensions
-                for (Object extension : callback.getExtensions()) {
-                    extensionProcessor.write(extension, writer, context);
-                }
+                this.writeExtendedElements(writer, callback, extensionProcessor, context);
 
                 writeEnd(writer);
             }
 
             // Write extensions
-            for (Object extension : reference.getExtensions()) {
-                extensionProcessor.write(extension, writer, context);
-            }
+            this.writeExtendedElements(writer, reference, extensionProcessor, context);
 
             writeEnd(writer);
         }

@@ -122,7 +122,11 @@ public class NamespaceImportProcessor extends BaseStAXArtifactProcessor implemen
                             }
                             readExtendedAttributes(reader, namespaceImport, attributeProcessor, extensionFactory, context);
                         } else {
-                            readExtendedElement(reader, namespaceImport, extensionProcessor, context);
+                            // handle extended elements
+                            Object ext = extensionProcessor.read(reader, context);
+                            if (namespaceImport != null) {
+                                namespaceImport.getExtensions().add(ext);
+                            }
                         }
                         break;
                     case XMLStreamConstants.END_ELEMENT:
@@ -159,7 +163,12 @@ public class NamespaceImportProcessor extends BaseStAXArtifactProcessor implemen
         }
 
         writeExtendedAttributes(writer, namespaceImport, attributeProcessor, context);
-        writeExtendedElements(writer, namespaceImport, extensionProcessor, context);
+        
+        //handle extended elements
+        for (Object ext : namespaceImport.getExtensions()) {
+            extensionProcessor.write(ext, writer, context);
+        }
+        
         writer.writeEndElement();
     }
 

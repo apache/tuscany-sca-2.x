@@ -38,6 +38,8 @@ import static org.apache.tuscany.sca.assembly.xml.Constants.REFERENCE_QNAME;
 import static org.apache.tuscany.sca.assembly.xml.Constants.SERVICE;
 import static org.apache.tuscany.sca.assembly.xml.Constants.SERVICE_QNAME;
 import static org.apache.tuscany.sca.assembly.xml.Constants.TYPE;
+import static org.apache.tuscany.sca.assembly.xml.Constants.EXTENSION;
+import static org.apache.tuscany.sca.assembly.xml.Constants.EXTENSION_QNAME;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -166,7 +168,12 @@ public class ComponentTypeProcessor extends BaseAssemblyProcessor implements StA
                             } else {
                                 policyProcessor.readPolicies(contract, operation, reader);
                             }
+                        } else if(EXTENSION_QNAME.equals(name)) {
+                            // Handle <extension>
+                            //ignore element as this is a wrapper for extensibility
+                            break;
                         } else {
+                        
     
                             // Read an extension element
                             Object extension = extensionProcessor.read(reader, context);
@@ -267,9 +274,7 @@ public class ComponentTypeProcessor extends BaseAssemblyProcessor implements StA
                 writeEnd(writer);
             }
             
-            for (Object extension: service.getExtensions()) {
-                extensionProcessor.write(extension, writer, context);
-            }
+            this.writeExtendedElements(writer, service, extensionProcessor, context);
             
             writeEnd(writer);
         }
@@ -304,9 +309,7 @@ public class ComponentTypeProcessor extends BaseAssemblyProcessor implements StA
                 writeEnd(writer);
             }
 
-            for (Object extension: reference.getExtensions()) {
-                extensionProcessor.write(extension, writer, context);
-            }
+            this.writeExtendedElements(writer, reference, extensionProcessor, context);
             
             writeEnd(writer);
         }

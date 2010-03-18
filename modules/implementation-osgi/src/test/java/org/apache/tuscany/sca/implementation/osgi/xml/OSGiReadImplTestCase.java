@@ -25,6 +25,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.io.StringWriter;
 
 import javax.xml.stream.XMLInputFactory;
@@ -34,6 +35,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.contribution.ContributionMetadata;
 import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
@@ -45,6 +47,7 @@ import org.apache.tuscany.sca.implementation.osgi.OSGiImplementation;
 import org.apache.tuscany.sca.implementation.osgi.OSGiProperty;
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -77,8 +80,34 @@ public class OSGiReadImplTestCase {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
         Composite composite = (Composite)staxProcessor.read(reader, context);
         assertNotNull(composite);
+        reader.close();
     }
 
+    @Test
+    public void testReadWriteComponentType() throws Exception {
+        InputStream is = getClass().getClassLoader().getResourceAsStream("OSGI-INF/sca/bundle.componentType");
+        XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
+        ComponentType componentType = (ComponentType)staxProcessor.read(reader, context);
+        assertNotNull(componentType);
+
+        assertEquals(2, componentType.getServices().get(0).getExtensions().size());
+        
+        //write composite back
+        StringWriter stringWriter = new StringWriter();
+        XMLStreamWriter writer = outputFactory.createXMLStreamWriter(stringWriter);
+        staxProcessor.write(componentType, writer, context);
+        stringWriter.close();
+        
+        //read from the output from write
+        reader = inputFactory.createXMLStreamReader(new StringReader(stringWriter.toString()));
+        componentType = (ComponentType)staxProcessor.read(reader, context);
+        assertNotNull(componentType);
+
+        assertEquals(2, componentType.getServices().get(0).getExtensions().size());
+
+        reader.close();
+    }    
+    
     @Test
     public void testReadAndResolveComposite() throws Exception {
         InputStream is = getClass().getClassLoader().getResourceAsStream("osgitest.composite");
@@ -109,6 +138,8 @@ public class OSGiReadImplTestCase {
         resolver.addModel(componentType, context);
 
         staxProcessor.resolve(composite, resolver, context);
+        
+        reader.close();
     }
 
     @Test
@@ -133,7 +164,10 @@ public class OSGiReadImplTestCase {
         XMLStreamWriter writer = outputFactory.createXMLStreamWriter(sw);
         staxProcessor.write(osgiImpl, writer, context);
         writer.flush();
+        writer.close();
         Assert.assertTrue(sw.toString().contains("bundleSymbolicName=\"osgi.test\" bundleVersion=\"1.0.0\""));
+        
+        reader.close();
     }
 
 }

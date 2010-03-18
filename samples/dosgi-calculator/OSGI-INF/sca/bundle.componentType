@@ -25,30 +25,40 @@
         <!-- The interface will be mapped into the OSGi service class -->
         <interface.java interface="calculator.dosgi.CalculatorService"/>
         <!-- The list of OSGi properties -->
-        <t:osgi.property name="prop1">1</t:osgi.property>
-        <t:osgi.property name="prop2">ABC</t:osgi.property>
+        <extensions>
+        	<t:osgi.property name="prop1">1</t:osgi.property>
+        	<t:osgi.property name="prop2">ABC</t:osgi.property>
+		</extensions>        	
     </service>
 
     <!-- The reference elment defines an SCA proxy to a remote OSGi service -->
     <reference name="addService">
         <interface.java interface="calculator.dosgi.operations.AddService"/>
-        <t:osgi.property name="prop1">1</t:osgi.property>
-        <t:osgi.property name="prop2">ABC</t:osgi.property>
+        <extensions>
+        	<t:osgi.property name="prop1">1</t:osgi.property>
+        	<t:osgi.property name="prop2">ABC</t:osgi.property>
+        </extensions>
     </reference>
     <reference name="subtractService">
         <interface.java interface="calculator.dosgi.operations.SubtractService"/>
-        <t:osgi.property name="prop1">1</t:osgi.property>
-        <t:osgi.property name="prop2">ABC</t:osgi.property>
+        <extensions>
+        	<t:osgi.property name="prop1">1</t:osgi.property>
+        	<t:osgi.property name="prop2">ABC</t:osgi.property>
+        </extensions>
     </reference>
     <reference name="multiplyService">
         <interface.java interface="calculator.dosgi.operations.MultiplyService"/>
-        <t:osgi.property name="prop1">1</t:osgi.property>
-        <t:osgi.property name="prop2">ABC</t:osgi.property>
+        <extensions>
+        	<t:osgi.property name="prop1">1</t:osgi.property>
+        	<t:osgi.property name="prop2">ABC</t:osgi.property>
+		</extensions>        	
     </reference>
     <reference name="divideService">
         <interface.java interface="calculator.dosgi.operations.DivideService"/>
-        <t:osgi.property name="prop1">1</t:osgi.property>
-        <t:osgi.property name="prop2">ABC</t:osgi.property>
+        <extensions>
+        	<t:osgi.property name="prop1">1</t:osgi.property>
+        	<t:osgi.property name="prop2">ABC</t:osgi.property>
+        </extensions>
     </reference>
 
 </componentType>

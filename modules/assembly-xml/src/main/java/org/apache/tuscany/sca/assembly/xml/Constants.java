@@ -69,6 +69,9 @@ public interface Constants {
     String BINDING_SCA = "binding.sca";
     QName BINDING_SCA_QNAME = new QName(Constants.SCA11_NS, BINDING_SCA);
     
+    String EXTENSION = "extensions";
+    QName EXTENSION_QNAME = new QName(Constants.SCA11_NS, EXTENSION);
+    
     String NAME = "name";
     String VALUE = "value";
     QName VALUE_QNAME = new QName(SCA11_NS, VALUE);
