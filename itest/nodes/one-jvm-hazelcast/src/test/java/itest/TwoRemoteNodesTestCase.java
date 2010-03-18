@@ -25,7 +25,6 @@ import itest.nodes.Helloworld;
 
 import java.net.URI;
 
-import org.apache.tuscany.sca.binding.rmi.RMIBinding;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.AfterClass;
@@ -61,9 +60,9 @@ public class TwoRemoteNodesTestCase{
         assertNotNull(client);
         assertEquals("Hi Hello Petra", client.sayHello("Petra"));
 
-//        Helloworld scaClientService = SCAClientFactory.newInstance(URI.create("TwoRemoteNodesTestCase")).getService(Helloworld.class, "HelloworldService");
-//        assertNotNull(scaClientService);
-//        assertEquals("Hello Petra", scaClientService.sayHello("Petra"));
+        Helloworld scaClientService = SCAClientFactory.newInstance(URI.create("TwoRemoteNodesTestCase")).getService(Helloworld.class, "HelloworldService");
+        assertNotNull(scaClientService);
+        assertEquals("Hello Petra", scaClientService.sayHello("Petra"));
 
         Helloworld scaClientClient = SCAClientFactory.newInstance(URI.create("TwoRemoteNodesTestCase")).getService(Helloworld.class, "HelloworldClient");
         assertNotNull(scaClientClient);
