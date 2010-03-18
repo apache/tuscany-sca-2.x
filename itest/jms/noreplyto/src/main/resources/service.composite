@@ -26,11 +26,11 @@
         <implementation.java class="org.apache.tuscany.sca.binding.jms.HelloWorldServiceImpl"/>
         <service name="HelloWorldService">
             <binding.jms>
+               <tuscany:wireFormat.jmsObject/>
                <destination jndiName="RequestQueue"/>
                <response>
                   <destination jndiName="ResponseQueue"/>
                </response>
-               <tuscany:wireFormat.jmsObject/>
             </binding.jms>  
         </service> 
     </component>       

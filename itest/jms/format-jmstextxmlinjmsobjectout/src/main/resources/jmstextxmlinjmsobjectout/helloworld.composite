@@ -27,11 +27,11 @@
         <implementation.java class="org.apache.tuscany.sca.binding.jms.format.jmstextxmlinjmsobjectout.helloworld.HelloWorldReferenceImpl" />
         <reference name="helloWorldService1" >
             <binding.jms>
+                <tuscany:wireFormat.jmsTextXML/>
                 <destination jndiName="HelloWorldService1"/>
                 <response>
                     <tuscany:wireFormat.jmsObject/>
                 </response>
-                <tuscany:wireFormat.jmsTextXML/>
             </binding.jms>
         </reference>       
     </component>
@@ -40,11 +40,11 @@
         <implementation.java class="org.apache.tuscany.sca.binding.jms.format.jmstextxmlinjmsobjectout.helloworld.HelloWorldServiceImpl" />
         <service name="HelloWorldService">
             <binding.jms>
+                <tuscany:wireFormat.jmsTextXML/>            
                 <destination jndiName="HelloWorldService1"/>
                 <response>
                     <tuscany:wireFormat.jmsObject/>
                 </response>
-                <tuscany:wireFormat.jmsTextXML/>
             </binding.jms>
         </service>
     </component> 

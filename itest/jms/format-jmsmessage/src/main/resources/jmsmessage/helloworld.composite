@@ -29,8 +29,8 @@
             <!--interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)"/-->
             <interface.java interface="org.apache.tuscany.sca.binding.jms.format.jmsmessage.helloworld.HelloWorldServiceReferenceSide"/>
             <binding.jms>
+                <tuscany:wireFormat.jmsText/>            
                 <destination jndiName="HelloWorldService1"/>
-                <tuscany:wireFormat.jmsText/>
             </binding.jms>
         </reference>  
     </component>

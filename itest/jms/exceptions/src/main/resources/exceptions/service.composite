@@ -35,8 +35,8 @@
         <implementation.java class="org.apache.tuscany.sca.binding.jms.ExceptionServiceImpl"/>
         <service name="ExceptionService">
             <binding.jms>
+                 <tuscany:wireFormat.jmsObject/>            
                  <destination jndiName="ObjectExceptionService"/>
-                 <tuscany:wireFormat.jmsObject/>
             </binding.jms>
         </service> 
     </component>       
