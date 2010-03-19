@@ -49,11 +49,6 @@
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-binding-rmi-runtime</artifactId>
-            <version>${pom.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-endpoint-hazelcast</artifactId>
             <version>${pom.version}</version>
         </dependency>
@@ -98,22 +93,8 @@
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-binding-jms-runtime</artifactId>
+            <artifactId>tuscany-binding-hazelcast-runtime</artifactId>
             <version>${pom.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.tuscany.sca</groupId>
-                    <artifactId>tuscany-databinding-axiom</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.tuscany.sca</groupId>
-                    <artifactId>tuscany-binding-ws-wsdlgen</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.tuscany.sca</groupId>
-                    <artifactId>tuscany-interface-wsdl</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
 <!-- these remaining dependencies are not required when using JDK6, so use a scope of provided  -->
