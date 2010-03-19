@@ -83,9 +83,8 @@ public class DestroyProcessorTestCase {
         Method method = Bar.class.getDeclaredMethod("protectedDestroy");
         try {
             processor.visitMethod(method, type);
-            fail();
         } catch (IllegalDestructorException e) {
-            // expected
+            fail();
         }
     }
 
@@ -96,9 +95,20 @@ public class DestroyProcessorTestCase {
         Method method = Bar.class.getDeclaredMethod("privateDestroy");
         try {
             processor.visitMethod(method, type);
-            fail();
         } catch (IllegalDestructorException e) {
-            // expected
+            fail();
+        }
+    }
+
+    @Test
+    public void testDefaultVisibilityDestroy() throws Exception {
+        DestroyProcessor processor = new DestroyProcessor(assemblyFactory);
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
+        Method method = Bar.class.getDeclaredMethod("defaultVisibilityDestroy");
+        try {
+            processor.visitMethod(method, type);
+        } catch (IllegalDestructorException e) {
+            fail();
         }
     }
 
@@ -130,6 +140,10 @@ public class DestroyProcessorTestCase {
 
         @Destroy
         private void privateDestroy(){
+        }
+
+        @Destroy
+        void defaultVisibilityDestroy(){
         }
 
     }
