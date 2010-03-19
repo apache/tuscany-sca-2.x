@@ -39,6 +39,18 @@
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.tuscany.sca</groupId>
+                    <artifactId>tuscany-binding-ws</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.tuscany.sca</groupId>
+                    <artifactId>tuscany-binding-ws-wsdlgen</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.tuscany.sca</groupId>
+                    <artifactId>tuscany-interface-wsdl</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.tuscany.sca</groupId>
                     <artifactId>tuscany-core</artifactId>
                 </exclusion>
                 <exclusion>
@@ -128,6 +140,10 @@
                 <exclusion>
                     <groupId>javax.activation</groupId>
                     <artifactId>activation</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
                 </exclusion>
                 <exclusion>
                     <groupId>log4j</groupId>
