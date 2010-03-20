@@ -66,7 +66,7 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
     private HazelcastInstance hazelcastInstance;
     protected Map<Object, Object> endpointMap;
     private Map<String, Endpoint> localEndpoints = new HashMap<String, Endpoint>();
-    private MultiMap<String, String> endpointOwners;
+    protected MultiMap<String, String> endpointOwners;
     private AssemblyFactory assemblyFactory;
 
     public HazelcastEndpointRegistry(ExtensionPointRegistry registry,
@@ -303,7 +303,7 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
                 Endpoint ep = assemblyFactory.createEndpoint();
                 ep.setURI(service);
                 if (ep.matches(serviceURI)) {
-                    for (Member m : hazelcastInstance.getCluster().getMembers()) {
+                    for (Member m : getHazelcastInstance().getCluster().getMembers()) {
                         if (memberAddr.equals(m.getInetSocketAddress().toString())) {
                             return m;
                         }

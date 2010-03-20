@@ -25,6 +25,7 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.endpoint.hazelcast.HazelcastEndpointRegistry;
 
 import com.hazelcast.client.HazelcastClient;
+import com.hazelcast.core.HazelcastInstance;
 
 /**
  * An EndpointRegistry using a Hazelcast Native Client
@@ -47,6 +48,7 @@ public class HazelcastClientEndpointRegistry extends HazelcastEndpointRegistry {
         }
         initHazelcastClientInstance();
         endpointMap = hazelcastClient.getMap(configURI.getDomainName() + "/Endpoints");
+        endpointOwners = hazelcastClient.getMultiMap(configURI.getDomainName() + "/EndpointOwners");
     }
 
     @Override
@@ -64,4 +66,10 @@ public class HazelcastClientEndpointRegistry extends HazelcastEndpointRegistry {
         }
         this.hazelcastClient = HazelcastClient.newHazelcastClient(configURI.getDomainName(), configURI.getPassword(), configURI.getRemotes().toArray(new String[0]));
     }
+
+    @Override
+    public HazelcastInstance getHazelcastInstance() {
+        return hazelcastClient;
+    }
+
 }
