@@ -108,6 +108,34 @@ public class MultiRegTestCase {
         System.out.println("done");
     }
 
+    @Test
+    public void testDuplicates() throws Exception {
+        HazelcastEndpointRegistry reg1 = new HazelcastEndpointRegistry(extensionPoints, null, "tuscany:foo?listen=127.0.0.1:9876&multicast=off", "bar");
+        reg1.start();
+        RuntimeEndpoint ep1 = createEndpoint("ep1uri");
+        ep1.bind(extensionPoints, reg1);
+        reg1.addEndpoint(ep1);
+
+        HazelcastEndpointRegistry reg2 = new HazelcastEndpointRegistry(extensionPoints, null, "tuscany:foo?listen=127.0.0.1:9877&multicast=off&remotes=127.0.0.1:9876", "bar");
+        reg2.start();
+
+        try {
+            reg2.addEndpoint(ep1);
+            Assert.fail();
+        } catch (IllegalStateException e) {
+            // expected
+        }
+        
+        reg1.stop();
+        
+        Thread.sleep(200);
+        
+        // now it should work
+        reg2.addEndpoint(ep1);
+
+        reg2.stop();
+    }
+
     private Endpoint assertExists(HazelcastEndpointRegistry reg, String uri) throws InterruptedException {
         Endpoint ep = reg.getEndpoint(uri);
         Assert.assertNotNull(ep);

@@ -155,6 +155,11 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
     }
 
     public void addEndpoint(Endpoint endpoint) {
+        if (findEndpoint(endpoint.getURI()).size() > 0) {
+            Member m = getOwningMember(endpoint.getURI());
+            throw new IllegalStateException("Endpoint " + endpoint.getURI() + " already exists in domain " + configURI.getDomainName() + " at " + m.getInetSocketAddress());
+        }
+            
         String localMemberAddr = hazelcastInstance.getCluster().getLocalMember().getInetSocketAddress().toString();
         String endpointURI = endpoint.getURI();
         Transaction txn = hazelcastInstance.getTransaction();
