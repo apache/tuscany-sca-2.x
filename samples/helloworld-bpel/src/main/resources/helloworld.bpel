@@ -51,7 +51,8 @@
       <assign name="assign1">
           <copy>
               <!-- from>concat($helloMessage.TestPart/test:message/text(), ' World')</from -->
-              <from>concat('Hello ', 'world')</from>
+              <from>concat($helloMessage.TestPart/test:arg0/text(), ' World')</from>
+              <!-- from>concat('Hello ', 'world')</from -->
               <to variable="tmpVar"/>
           </copy>
           <!-- Initialize the response -->
