@@ -25,30 +25,18 @@
         <version>2.0-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
+
+    <packaging>zip</packaging>
     <artifactId>sample-helloworld-bpel</artifactId>
     <name>Apache Tuscany SCA Sample HelloWorld BPEL</name>
 
     <dependencies>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-node-impl</artifactId>
+            <artifactId>tuscany-sca-api</artifactId>
             <version>2.0-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-implementation-java-runtime</artifactId>
-            <version>2.0-SNAPSHOT</version>
-            <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-implementation-bpel-runtime</artifactId>
-            <version>2.0-SNAPSHOT</version>
-            <scope>runtime</scope>
-        </dependency>
-
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -58,65 +46,58 @@
     </dependencies>
 
     <build>
-        <finalName>${artifactId}</finalName>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>unpack</id>
-						<phase>test-compile</phase>
-						<goals>
-							<goal>unpack</goal>
-						</goals>
-						<configuration>
-							<artifactItems>
-								<artifactItem>
-									<groupId>org.apache.ode</groupId>
-									<artifactId>ode-dao-jpa-ojpa-derby</artifactId>
-									<version>1.3.2</version>
-									<type>zip</type>
-									<overWrite>true</overWrite>
-									<outputDirectory>${project.build.directory}/test-classes/</outputDirectory>
-								</artifactItem>
-							</artifactItems>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-            <!-- 
-            <plugin>
-                <groupId>org.apache.tuscany.maven.plugins</groupId>
-                <artifactId>maven-osgi-junit-plugin</artifactId>
-                <version>1.0</version>
-                <dependencies>
-                   <dependency>
-                      <groupId>org.apache.tuscany.sca</groupId>
-                      <artifactId>tuscany-node-launcher-equinox</artifactId>
-                      <version>${pom.version}</version>
-                   </dependency>
-                </dependencies>
-                <executions>
-                    <execution>
-                        <id>osgi-test</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                        <configuration>
-                            <systemProperties>
-                                <property>
-                                    <name>osgi.configuration.area</name>
-                                    <value>${project.build.directory}/equinox</value>
-                                </property>
-                            </systemProperties>                        
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-             -->            
-		</plugins>
-    </build>
+       <finalName>${artifactId}</finalName>
+       <plugins>
 
+         <plugin>
+            <!-- plugin to support zip packaging for SCA contributions -->
+            <groupId>org.apache.tuscany.maven.plugins</groupId>
+            <artifactId>maven-zip-plugin</artifactId>
+            <version>alpha2</version>
+            <extensions>true</extensions>
+         </plugin>
+
+         <!-- plugin to support using mvn tuscany:run to run this contribution -->
+         <plugin>
+             <groupId>org.apache.tuscany.maven.plugins</groupId>
+             <artifactId>maven-tuscany-plugin</artifactId>
+             <version>2.0-SNAPSHOT</version>
+             <dependencies>
+                <dependency>
+                   <groupId>org.apache.tuscany.sca.shades</groupId>
+                   <artifactId>tuscany-bpel</artifactId>
+                   <version>2.0-SNAPSHOT</version>
+                </dependency>
+             </dependencies>
+         </plugin>
+
+      <!-- Override enforcer to allow snapshot of tuscabny plugin, only temp until this is fixe din the build -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>1.0-beta-1</version>
+        <executions>
+          <execution>
+            <id>enforce-plugin-versions</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requirePluginVersions>
+                   <message>Best Practice is to always define released plugin versions!</message>
+                   <banLatest>true</banLatest>
+                   <banRelease>true</banRelease>
+                   <banSnapshots>false</banSnapshots>
+                   <phases>clean,deploy,site</phases>
+                   <additionalPlugins>
+                   </additionalPlugins>
+                </requirePluginVersions>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+       </plugins>
+    </build>
 </project>
