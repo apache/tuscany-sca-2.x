@@ -22,7 +22,7 @@
       xmlns:hns="http://tuscany.apache.org/implementation/bpel/example/helloworld"
       name="helloworld">
     
-    <component name="HelloWorldComponent">
+    <component name="HelloworldComponent">
         <implementation.spring location="helloworld-context.xml"/>
     </component>
 
