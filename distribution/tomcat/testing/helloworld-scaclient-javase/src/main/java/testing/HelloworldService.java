@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package testingxxx;
+package testing;
 
 import org.oasisopen.sca.annotation.Remotable;
 
