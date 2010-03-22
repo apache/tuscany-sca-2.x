@@ -16,13 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package testing;
+package testingxxx;
 
 import java.net.URI;
 
 import org.oasisopen.sca.NoSuchDomainException;
 import org.oasisopen.sca.NoSuchServiceException;
 import org.oasisopen.sca.client.SCAClientFactory;
+
+import com.hazelcast.client.InRunnable;
 
 
 public class HelloworldClient {
@@ -33,11 +35,14 @@ public class HelloworldClient {
 		if (args.length > 0) {
 			domainURI = URI.create(args[0]);
 		} else {
-			domainURI = URI.create("tuscany:default?remotes=192.168.1.73:14820");
+			domainURI = URI.create("tuscanyclient:foo?remotes=127.0.0.1:14820");
 		}
+		InRunnable xx;
 		
 		SCAClientFactory factory = SCAClientFactory.newInstance(domainURI);
 		HelloworldService service = factory.getService(HelloworldService.class, "HelloworldComponent");
-		System.out.println(service.sayHello("world"));
+                System.out.println(service.sayHello("world"));
+                System.out.println(service.sayHello("world2"));
+                System.out.println(service.sayHello("world3"));
 	}
 }

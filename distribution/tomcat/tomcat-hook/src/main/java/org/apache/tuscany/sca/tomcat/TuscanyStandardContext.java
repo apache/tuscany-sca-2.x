@@ -20,7 +20,6 @@
 package org.apache.tuscany.sca.tomcat;
 
 import java.io.File;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URL;
@@ -31,6 +30,7 @@ import javax.naming.NameClassPair;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 
+import org.apache.catalina.LifecycleException;
 import org.apache.catalina.Loader;
 import org.apache.catalina.core.StandardContext;
 
@@ -49,6 +49,9 @@ public class TuscanyStandardContext extends StandardContext {
     // TODO: this gives an instance per webapp, work out how to have only one per server
     // ?? is that comment still true?
     private static URLClassLoader tuscanyClassLoader;
+    private static Object node;
+    private static Class<?> nodeClass;
+    private static Method nodeStopMethod;
 
     public TuscanyStandardContext() {
     }
@@ -165,9 +168,10 @@ public class TuscanyStandardContext extends StandardContext {
             Object instance = getInstanceMethod.invoke(null);
             Method createNodeMethod = nodeFactoryClass.getMethod("createNode", new Class[]{URI.class, new String[0].getClass()});
             URI domainURI = URI.create(TuscanyLifecycleListener.getDomainURI());
-            Object node = createNodeMethod.invoke(instance, new Object[]{domainURI, new String[0]});
-            Class<?> nodeClass = Class.forName("org.apache.tuscany.sca.node.Node", true, tuscanyClassLoader);
+            this.node = createNodeMethod.invoke(instance, new Object[]{domainURI, new String[0]});
+            this.nodeClass = Class.forName("org.apache.tuscany.sca.node.Node", true, tuscanyClassLoader);
             Method nodeStartMethod = nodeClass.getMethod("start", new Class[0]);
+            this.nodeStopMethod = nodeClass.getMethod("stop", new Class[0]);
             nodeStartMethod.invoke(node);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -175,5 +179,18 @@ public class TuscanyStandardContext extends StandardContext {
             Thread.currentThread().setContextClassLoader(oldCL);
         }
     }
-    
+
+    @Override
+    public synchronized void stop() throws LifecycleException {
+        super.stop();
+        
+        if (node != null && nodeStopMethod != null) {
+            try {
+                nodeStopMethod.invoke(node);
+                node = null;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
 }
