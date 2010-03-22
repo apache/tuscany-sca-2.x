@@ -22,7 +22,7 @@
       xmlns:hns="http://tuscany.apache.org/implementation/bpel/example/helloworld"
       name="bpel">
     
-    <component name="BPELHelloWorldComponent">
+    <component name="HelloworldComponent">
         <implementation.bpel process="hns:HelloWorld"/>
     </component>
 
