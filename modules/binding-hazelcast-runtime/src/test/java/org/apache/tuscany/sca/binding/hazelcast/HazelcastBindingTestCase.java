@@ -47,6 +47,16 @@ public class HazelcastBindingTestCase {
     }
 
     @Test
+    public void testNestedClient() throws Exception {
+        Node client2Node = NodeFactory.newInstance().createNode(URI.create("tuscany:HazelcastBindingTestCase"),  "client2.composite", new String[]{"target/test-classes"});
+        client2Node.start();
+        TestService service = client2Node.getService(TestService.class, "TestServiceClient2");
+        assertNotNull(service);
+        assertEquals("Petra", service.echoString("Petra"));
+        client2Node.stop();
+    }
+
+    @Test
     public void testEchoString() throws Exception {
         TestService service = clientNode.getService(TestService.class, "TestServiceClient");
         assertNotNull(service);

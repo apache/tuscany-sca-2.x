@@ -74,12 +74,27 @@ public class ReferenceInvoker implements Invoker {
         String requestXML = getRequestXML(msg);
         Callable<String> callable = new ServiceInvoker(serviceURI, operation.getName(), requestXML);
         FutureTask<String> task = new DistributedTask<String>(callable, owningMember);
-        ExecutorService executorService = hzRegistry.getHazelcastInstance().getExecutorService();
+        ExecutorService executorService = getExecutorService();
         executorService.execute(task);
         try {
             return getResponseNode(task.get());
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);
+        }
+    }
+
+    /**
+     * Hazelcast ExecutorService can't nest invocations so use a separate ExecutorService
+     * for nested calls. See http://groups.google.com/group/hazelcast/browse_thread/thread/1cc0b943716476e9
+     */
+    private ExecutorService getExecutorService() {
+        String threadName = Thread.currentThread().getName();
+        if (!threadName.startsWith("hz.executor.")) {
+            return hzRegistry.getHazelcastInstance().getExecutorService("binding.sca.1");
+        } else {
+            String oldName = threadName.substring(threadName.lastIndexOf("binding.sca."), threadName.lastIndexOf(".thread-"));
+            int x = Integer.parseInt(oldName.substring(oldName.lastIndexOf('.') + 1));
+            return hzRegistry.getHazelcastInstance().getExecutorService(oldName.substring(0, 12) + (x + 1));
         }
     }
 
