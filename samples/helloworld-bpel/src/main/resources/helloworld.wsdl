@@ -18,10 +18,10 @@
   ~ under the License.
   -->
 
-<wsdl:definitions 
-    targetNamespace="http://tuscany.apache.org/implementation/bpel/example/helloworld.wsdl"
+<wsdl:definitions name="helloworld"
+    targetNamespace="http://testing/"
     xmlns="http://schemas.xmlsoap.org/wsdl/"
-    xmlns:tns="http://tuscany.apache.org/implementation/bpel/example/helloworld.wsdl"
+    xmlns:tns="http://testing/"
     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
     xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"
     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
@@ -31,7 +31,7 @@
     
     <wsdl:types>
         <schema elementFormDefault="qualified" 
-           targetNamespace="http://tuscany.apache.org/implementation/bpel/example/helloworld.wsdl" 
+           targetNamespace="http://testing/" 
            xmlns="http://www.w3.org/2001/XMLSchema">
 
             <element name="hello">
@@ -40,7 +40,15 @@
                         <element name="message" type="xsd:string"/>
                     </sequence>
                 </complexType>
-            </element>            
+            </element>
+            
+            <element name="helloResponse">
+                <complexType>
+                    <sequence>
+                        <element name="messageResponse" type="xsd:string"/>
+                    </sequence>
+                </complexType>
+            </element>                     
         </schema>
     </wsdl:types>
     
@@ -48,10 +56,14 @@
         <wsdl:part element="tns:hello" name="TestPart"/>
     </wsdl:message>
     
+    <wsdl:message name="HelloMessageResponse">
+        <wsdl:part element="tns:helloResponse" name="TestResponse"/>
+    </wsdl:message>
+    
     <wsdl:portType name="HelloPortType">
         <wsdl:operation name="hello">
             <wsdl:input message="tns:HelloMessage" name="TestIn"/>
-            <wsdl:output message="tns:HelloMessage" name="TestOut"/>
+            <wsdl:output message="tns:HelloMessageResponse" name="TestOut"/>
         </wsdl:operation>    
     </wsdl:portType>
     
