@@ -90,7 +90,7 @@
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-implementation-widget-runtime-tuscany</artifactId>
+            <artifactId>tuscany-implementation-widget-runtime-dojo</artifactId>
             <version>${tuscany.version}</version>
             <scope>runtime</scope>
         </dependency>
@@ -104,7 +104,7 @@
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-binding-jsonrpc-js</artifactId>
+            <artifactId>tuscany-binding-jsonrpc-js-dojo</artifactId>
             <version>${tuscany.version}</version>
             <scope>runtime</scope>
         </dependency>
@@ -132,7 +132,7 @@
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-binding-sca-axis2</artifactId>
+            <artifactId>tuscany-binding-sca-runtime</artifactId>
             <version>${tuscany.version}</version>
             <scope>runtime</scope>
         </dependency>
@@ -153,7 +153,7 @@
         
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-implementation-bpel-ode</artifactId>
+            <artifactId>tuscany-implementation-bpel-runtime</artifactId>
             <version>${tuscany.version}</version>
             <scope>runtime</scope>
         </dependency> 
@@ -167,7 +167,7 @@
         
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-implementation-spring-runtime</artifactId>
+            <artifactId>tuscany-implementation-spring-sca</artifactId>
             <version>${tuscany.version}</version>
             <scope>runtime</scope>
         </dependency>        
