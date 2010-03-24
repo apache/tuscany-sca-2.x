@@ -42,6 +42,7 @@ import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ClassReference;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
@@ -61,11 +62,10 @@ import commonj.sdo.helper.XSDHelper;
 public class ImportSDOProcessor implements StAXArtifactProcessor<ImportSDO> {
     
     private ContributionFactory contributionFactory;
-    private Monitor monitor;
 
-    public ImportSDOProcessor(FactoryExtensionPoint modelFactories, Monitor monitor) {
+    public ImportSDOProcessor(ExtensionPointRegistry registry) {
+        FactoryExtensionPoint modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
         this.contributionFactory = modelFactories.getFactory(ContributionFactory.class);
-        this.monitor = monitor;
     }
     
     /**
@@ -75,11 +75,13 @@ public class ImportSDOProcessor implements StAXArtifactProcessor<ImportSDO> {
      * @param message
      * @param model
      */
-    private void error(String message, Object model, Object... messageParameters) {
-		 if (monitor != null) {
-		    Problem problem = new ProblemImpl(this.getClass().getName(), "databinding-sdo-validation-messages", Severity.ERROR,message, model, message, (Object[])messageParameters);
-		    monitor.problem(problem);
-		 }
+    private void error(Monitor monitor, String message, Object model, Object... messageParameters) {
+        if (monitor != null) {
+            Problem problem =
+                new ProblemImpl(this.getClass().getName(), "databinding-sdo-validation-messages", Severity.ERROR,
+                                message, model, message, (Object[])messageParameters);
+            monitor.problem(problem);
+        }
     }
      
      /**
@@ -89,7 +91,7 @@ public class ImportSDOProcessor implements StAXArtifactProcessor<ImportSDO> {
       * @param message
       * @param model
       */
-    private void error(String message, Object model, Exception ex) {
+    private void error(Monitor monitor, String message, Object model, Exception ex) {
      	 if (monitor != null) {
      		 Problem problem = new ProblemImpl(this.getClass().getName(), "databinding-sdo-validation-messages", Severity.ERROR, message,model, message, ex);
      	     monitor.problem(problem);
@@ -136,11 +138,11 @@ public class ImportSDOProcessor implements StAXArtifactProcessor<ImportSDO> {
                     importSDO.setUnresolved(false);
                 } catch (Exception e) {
                 	ContributionResolveException ce = new ContributionResolveException(e);
-                	error("ContributionResolveException", resolver, ce);
+                	error(context.getMonitor(), "ContributionResolveException", resolver, ce);
                     //throw ce;
                 }                
             } else {
-            	error("FailToResolveClass", resolver, factoryName);
+            	error(context.getMonitor(), "FailToResolveClass", resolver, factoryName);
                 //ContributionResolveException loaderException =
                     //new ContributionResolveException("Fail to resolve class: " + factoryName);
                 //throw loaderException;
@@ -178,13 +180,13 @@ public class ImportSDOProcessor implements StAXArtifactProcessor<ImportSDO> {
                     }
                     importSDO.setUnresolved(false);
                 } else {
-                   	error("FailToResolveLocation", resolver, location);
+                   	error(context.getMonitor(), "FailToResolveLocation", resolver, location);
                     //ContributionResolveException loaderException = new ContributionResolveException("Fail to resolve location: " + location);
                     //throw loaderException;
                 }                
             } catch (IOException e) {
             	ContributionResolveException ce = new ContributionResolveException(e);
-            	error("ContributionResolveException", resolver, ce);
+            	error(context.getMonitor(), "ContributionResolveException", resolver, ce);
                 //throw ce;
             }            
         }

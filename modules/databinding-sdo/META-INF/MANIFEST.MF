@@ -8,7 +8,11 @@ Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Data Binding for SDO
 Import-Package: javax.xml.namespace,
+ javax.xml.parsers,
  javax.xml.stream,
+ javax.xml.transform.dom,
+ commonj.sdo,
+ commonj.sdo.helper,
  org.apache.tuscany.sca.assembly;version="2.0.0",
  org.apache.tuscany.sca.assembly.impl;version="2.0.0",
  org.apache.tuscany.sca.common.java.collection;version="2.0.0",
@@ -24,7 +28,8 @@ Import-Package: javax.xml.namespace,
  org.apache.tuscany.sca.interfacedef.impl;version="2.0.0";resolution:=optional,
  org.apache.tuscany.sca.interfacedef.util;version="2.0.0",
  org.oasisopen.sca;version="2.0.0",
- org.oasisopen.sca.annotation;version="2.0.0"
+ org.oasisopen.sca.annotation;version="2.0.0",
+ org.w3c.dom
 Bundle-SymbolicName: org.apache.tuscany.sca.databinding.sdo
 Bundle-DocURL: http://www.apache.org/
-
+Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6

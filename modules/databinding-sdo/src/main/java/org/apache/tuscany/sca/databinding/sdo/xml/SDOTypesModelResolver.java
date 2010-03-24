@@ -31,22 +31,20 @@ import java.util.List;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
-import org.apache.tuscany.sca.core.DefaultFactoryExtensionPoint;
+import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
+import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.resolver.ClassReference;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
-import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
-import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.core.UtilityExtensionPoint;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.databinding.sdo.SDOTypes;
 import org.apache.tuscany.sca.monitor.Monitor;
-import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
 import org.apache.tuscany.sca.monitor.impl.ProblemImpl;
 import org.apache.tuscany.sca.xsd.XSDFactory;
 import org.apache.tuscany.sca.xsd.XSDefinition;
 import org.apache.tuscany.sdo.api.SDOUtil;
-import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
+
 import commonj.sdo.Type;
 import commonj.sdo.helper.HelperContext;
 import commonj.sdo.helper.XSDHelper;
@@ -60,34 +58,20 @@ public class SDOTypesModelResolver implements ModelResolver {
     private List<SDOTypes> sdoTypes = new ArrayList<SDOTypes>();
     private ContributionFactory contributionFactory;
     private XSDFactory xsdFactory;
-    private Monitor monitor;
-	private ProcessorContext context;
+    private ProcessorContext context;
 
-    public SDOTypesModelResolver(Contribution contribution, ExtensionPointRegistry registry) {
+    public SDOTypesModelResolver(Contribution contribution, FactoryExtensionPoint modelFactories) {
         super();
-        DefaultFactoryExtensionPoint modelFactories = registry.getExtensionPoint(DefaultFactoryExtensionPoint.class);
         this.contributionFactory = modelFactories.getFactory(ContributionFactory.class);
         this.xsdFactory = modelFactories.getFactory(XSDFactory.class);
-        this.monitor = createMonitor(registry);
         this.contribution = contribution;
     }
 
-    private static Monitor createMonitor(ExtensionPointRegistry extensionPoints) {
-        UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
-        if (utilities != null) {
-            MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
-            if (monitorFactory != null) {
-                return monitorFactory.createMonitor();
-            }
-        }
-        return null;
-    }
-
-    public void addModel(Object resolved,ProcessorContext context) {
+    public void addModel(Object resolved, ProcessorContext context) {
         if (helperContext == null) {
             helperContext = SDOUtil.createHelperContext();
         }
-		this.context=context;
+        this.context = context;
         SDOTypes types = (SDOTypes)resolved;
         try {
             loadSDOTypes(types, contribution.getModelResolver());
@@ -98,16 +82,16 @@ public class SDOTypesModelResolver implements ModelResolver {
         sdoTypes.add(types);
     }
 
-    public Object removeModel(Object resolved,ProcessorContext context) {
+    public Object removeModel(Object resolved, ProcessorContext context) {
         SDOTypes types = (SDOTypes)resolved;
-		
+
         return sdoTypes.remove(types);
     }
 
-    public <T> T resolveModel(Class<T> modelClass, T unresolved,ProcessorContext context) {
+    public <T> T resolveModel(Class<T> modelClass, T unresolved, ProcessorContext context) {
         SDOTypes types = (SDOTypes)unresolved;
         String ns = types.getNamespace();
-		this.context=context;
+        this.context = context;
         for (SDOTypes t : sdoTypes) {
             if (t.getNamespace().equals(types.getNamespace())) {
                 try {
@@ -133,7 +117,7 @@ public class SDOTypesModelResolver implements ModelResolver {
         String factoryName = importSDO.getFactory();
         if (factoryName != null) {
             ClassReference reference = new ClassReference(factoryName);
-            ClassReference resolved = resolver.resolveModel(ClassReference.class, reference,context);
+            ClassReference resolved = resolver.resolveModel(ClassReference.class, reference, context);
             if (resolved != null && !resolved.isUnresolved()) {
                 try {
                     Class<?> factoryClass = resolved.getJavaClass();
@@ -144,11 +128,11 @@ public class SDOTypesModelResolver implements ModelResolver {
                     importSDO.setUnresolved(false);
                 } catch (Exception e) {
                     ContributionResolveException ce = new ContributionResolveException(e);
-                    error("ContributionResolveException", resolver, ce);
+                    error(context.getMonitor(), "ContributionResolveException", resolver, ce);
                     //throw ce;
                 }
             } else {
-                error("FailToResolveClass", resolver, factoryName);
+                error(context.getMonitor(), "FailToResolveClass", resolver, factoryName);
                 //ContributionResolveException loaderException =
                 //new ContributionResolveException("Fail to resolve class: " + factoryName);
                 //throw loaderException;
@@ -162,7 +146,7 @@ public class SDOTypesModelResolver implements ModelResolver {
             try {
                 Artifact artifact = contributionFactory.createArtifact();
                 artifact.setURI(location);
-                artifact = resolver.resolveModel(Artifact.class, artifact,context);
+                artifact = resolver.resolveModel(Artifact.class, artifact, context);
                 if (artifact.getLocation() != null) {
                     String wsdlURL = artifact.getLocation();
                     URLConnection connection = new URL(wsdlURL).openConnection();
@@ -181,13 +165,13 @@ public class SDOTypesModelResolver implements ModelResolver {
                     }
                     importSDO.setUnresolved(false);
                 } else {
-                    error("FailToResolveLocation", resolver, location);
+                    error(context.getMonitor(), "FailToResolveLocation", resolver, location);
                     //ContributionResolveException loaderException = new ContributionResolveException("Fail to resolve location: " + location);
                     //throw loaderException;
                 }
             } catch (IOException e) {
                 ContributionResolveException ce = new ContributionResolveException(e);
-                error("ContributionResolveException", resolver, ce);
+                error(context.getMonitor(), "ContributionResolveException", resolver, ce);
                 //throw ce;
             }
         } else {
@@ -196,7 +180,7 @@ public class SDOTypesModelResolver implements ModelResolver {
                 XSDefinition xsd = xsdFactory.createXSDefinition();
                 xsd.setUnresolved(true);
                 xsd.setNamespace(ns);
-                xsd = resolver.resolveModel(XSDefinition.class, xsd,context);
+                xsd = resolver.resolveModel(XSDefinition.class, xsd, context);
                 if (!xsd.isUnresolved()) {
                     XSDHelper xsdHelper = helperContext.getXSDHelper();
                     xsdHelper.define(xsd.getLocation().toString());
@@ -222,11 +206,11 @@ public class SDOTypesModelResolver implements ModelResolver {
      * @param message
      * @param model
      */
-    private void error(String message, Object model, Exception ex) {
+    private void error(Monitor monitor, String message, Object model, Exception ex) {
         if (monitor != null) {
             Problem problem =
                 new ProblemImpl(this.getClass().getName(), "databinding-sdo-validation-messages", Severity.ERROR,
-                               message, model, message, ex);
+                                message, model, message, ex);
             monitor.problem(problem);
         }
     }
@@ -238,15 +222,13 @@ public class SDOTypesModelResolver implements ModelResolver {
      * @param message
      * @param model
      */
-    private void error(String message, Object model, Object... messageParameters) {
+    private void error(Monitor monitor, String message, Object model, Object... messageParameters) {
         if (monitor != null) {
             Problem problem =
                 new ProblemImpl(this.getClass().getName(), "databinding-sdo-validation-messages", Severity.ERROR,
-                                message,model, message, (Object[])messageParameters);
+                                message, model, message, (Object[])messageParameters);
             monitor.problem(problem);
         }
     }
 
-	
-					   
 }

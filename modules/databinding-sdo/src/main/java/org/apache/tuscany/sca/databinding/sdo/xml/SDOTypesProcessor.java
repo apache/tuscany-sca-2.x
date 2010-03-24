@@ -25,15 +25,14 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.tuscany.sca.core.DefaultFactoryExtensionPoint;
-import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
-import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.processor.ContributionWriteException;
-import org.apache.tuscany.sca.databinding.sdo.SDOTypes;
-import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.databinding.sdo.SDOTypes;
 
 
 /**
@@ -43,7 +42,7 @@ import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
  */
 public class SDOTypesProcessor implements StAXArtifactProcessor<SDOTypes> {
 
-    public SDOTypesProcessor(DefaultFactoryExtensionPoint modelFactories, Monitor monitor) {
+    public SDOTypesProcessor(ExtensionPointRegistry registry) {
     }
 
     public QName getXMLType() {

@@ -83,7 +83,7 @@ public class ImportSDOProcessorTestCase {
     public static void setUp() throws Exception {
         registry = new DefaultExtensionPointRegistry();
         FactoryExtensionPoint factories = registry.getExtensionPoint(FactoryExtensionPoint.class);
-        loader = new ImportSDOProcessor(factories, null);
+        loader = new ImportSDOProcessor(registry);
         xmlFactory = factories.getFactory(XMLInputFactory.class);
     }
 
