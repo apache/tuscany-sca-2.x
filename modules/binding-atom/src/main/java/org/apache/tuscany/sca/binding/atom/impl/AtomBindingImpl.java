@@ -37,6 +37,10 @@ class AtomBindingImpl implements AtomBinding {
     private String title;
     private String description;
 
+    public QName getType() {
+        return AtomBinding.TYPE;
+    }
+
     public String getName() {
         return name;
     }
@@ -61,16 +65,10 @@ class AtomBindingImpl implements AtomBinding {
         this.title = title;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getDescription() {
         return description;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setDescription(String description) {
         this.description = description;
     }
@@ -84,15 +82,6 @@ class AtomBindingImpl implements AtomBinding {
         // The binding is always resolved
     }
 
-    public QName getType() {
-        return AtomBinding.TYPE;
-    }
-
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
-    
     public WireFormat getRequestWireFormat() {
         return null;
     }
@@ -113,4 +102,9 @@ class AtomBindingImpl implements AtomBinding {
     
     public void setOperationSelector(OperationSelector operationSelector) {
     }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }    
 }
