@@ -35,6 +35,7 @@
                          maxOccurs="unbounded"/>
                 </sequence -->
                 <attribute name="title" type="string" use="optional"/>
+                <attribute name="description" type="string" use="optional"/>
                 <!--anyAttribute namespace="##any" processContents="lax"/-->
             </extension>
         </complexContent>
