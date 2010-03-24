@@ -46,6 +46,7 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.DataExchangeSemantics;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
+import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 /**
@@ -159,7 +160,11 @@ public class JAXWSBindingInvoker implements Invoker, DataExchangeSemantics {
         javax.xml.soap.SOAPEnvelope envelope = soapPart.getEnvelope();
         javax.xml.soap.SOAPBody body = envelope.getBody();
         Object[] args = (Object[])msg.getBody();
-        body.addDocument(((Node)args[0]).getOwnerDocument());
+        // In the unit test the owner doc is null
+        // so explicitly adopt the node instead
+        //body.addDocument(((Node)args[0]).getOwnerDocument());
+        Node msgNode = body.getOwnerDocument().importNode((Node)args[0], true);
+        body.appendChild(msgNode);
         soapMessage.saveChanges();
         if (operation.isNonBlocking()) {
             dispatch.invokeOneWay(soapMessage);

@@ -77,7 +77,7 @@ public class JAXWSServiceBindingProvider implements ServiceBindingProvider, Prov
             throw new ServiceRuntimeException("No WSDL document for " + endpoint.getURI());
         }
 
-        // Set to use the Axiom data binding
+        // Set to use the DOM data binding
         InterfaceContract contract = wsBinding.getBindingInterfaceContract();
         contract.getInterface().resetDataBinding(Node.class.getName());
 
@@ -117,7 +117,8 @@ public class JAXWSServiceBindingProvider implements ServiceBindingProvider, Prov
             }
 
             Message requestMsg = messageFactory.createMessage();
-            requestMsg.setBody(root);
+            Object[] body = new Object[]{root};
+            requestMsg.setBody(body);
             requestMsg.setOperation(operation);
             Message responseMsg = endpoint.invoke(operation, requestMsg);
             Element element = responseMsg.getBody();

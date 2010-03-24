@@ -46,7 +46,7 @@ public class JAXWSReferenceBindingProvider implements ReferenceBindingProvider {
             throw new ServiceRuntimeException("No WSDL document for " + endpointReference.getURI());
         }
 
-        // Set to use the Axiom data binding
+        // Set to use the DOM data binding
         InterfaceContract contract = wsBinding.getBindingInterfaceContract();
         if (contract.getInterface() != null) {
             contract.getInterface().resetDataBinding(Node.class.getName());

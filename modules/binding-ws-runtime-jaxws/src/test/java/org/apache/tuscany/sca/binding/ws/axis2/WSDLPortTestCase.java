@@ -17,45 +17,35 @@
  * under the License.    
  */
 
-package weather;
+package org.apache.tuscany.sca.binding.ws.axis2;
 
+import junit.framework.TestCase;
+
+import org.apache.tuscany.sca.binding.ws.axis2.helloworld.HelloWorld;
 import org.apache.tuscany.sca.node.Contribution;
-import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
-/**
- * 
- */
-public class BindingWSJAXWSTestCase {
-    private static Node node;
+public class WSDLPortTestCase extends TestCase {
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
-        String location = ContributionLocationHelper.getContributionLocation(WeatherForecastImpl.class);
-        node = NodeFactory.getInstance().createNode("WeatherForecast.composite", new Contribution("c1", location));
+    private Node node;
+    private HelloWorld helloWorld;
+
+    public void testCalculator() throws Exception {
+        assertEquals("Hello petra", helloWorld.getGreetings("petra"));
+    }
+
+    @Override
+    protected void setUp() throws Exception {
+        node = NodeFactory.newInstance().createNode("org/apache/tuscany/sca/binding/ws/axis2/wsdlport/helloworld.composite", 
+                                                    new Contribution("test", "target/test-classes"));
         node.start();
+        helloWorld = node.getService(HelloWorld.class, "HelloWorldClient");
     }
-
-    @Test
-    public void testJAXWS() throws Exception {
-        WeatherForecastClient.testJAXWS(node);
-    }
-
-    /**
-     * @throws java.lang.Exception
-     */
-    @AfterClass
-    public static void tearDownAfterClass() throws Exception {
-        if (node != null) {
-            node.stop();
-        }
+    
+    @Override
+    protected void tearDown() throws Exception {
+        node.stop();
     }
 
 }
