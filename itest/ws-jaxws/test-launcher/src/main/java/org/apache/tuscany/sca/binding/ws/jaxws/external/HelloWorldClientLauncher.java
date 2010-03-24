@@ -25,7 +25,7 @@ import java.net.URL;
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
 
-import org.apache.tuscany.sca.binding.ws.jaxws.provided.HelloWorld;
+import org.apache.tuscany.sca.binding.ws.jaxws.sca.HelloWorld;
 
 public class HelloWorldClientLauncher {
     
