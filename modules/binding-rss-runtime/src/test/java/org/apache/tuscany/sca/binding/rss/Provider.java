@@ -21,13 +21,21 @@ package org.apache.tuscany.sca.binding.rss;
 
 import java.io.IOException;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 
 public class Provider {
 
     public static void main(String[] args) {
+        
+        
+        String contribution = ContributionLocationHelper.getContributionLocation(Provider.class);
+        Node node = NodeFactory.newInstance().createNode("org/apache/tuscany/sca/binding/feed/Provider.composite", new Contribution("provider", contribution));
 
-        SCADomain scaDomain = SCADomain.newInstance("org/apache/tuscany/sca/binding/feed/Provider.composite");
+        node.start();        
+
         System.out.println("Provider.composite ready...");
 
         try {
@@ -36,6 +44,6 @@ public class Provider {
             e.printStackTrace();
         }
 
-        scaDomain.close();
+        node.stop();
     }
 }

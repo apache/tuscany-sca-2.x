@@ -16,4 +16,4 @@
 # under the License. 
 
 # Implementation class for the artifact processor extension
-org.apache.tuscany.sca.assembly.xml.DefaultBeanModelProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.0#binding.rss,model=org.apache.tuscany.sca.binding.rss.RSSBinding,factory=org.apache.tuscany.sca.binding.rss.RSSBindingFactory
+org.apache.tuscany.sca.assembly.xml.DefaultBeanModelProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.1#binding.rss,model=org.apache.tuscany.sca.binding.rss.RSSBinding,factory=org.apache.tuscany.sca.binding.rss.RSSBindingFactory

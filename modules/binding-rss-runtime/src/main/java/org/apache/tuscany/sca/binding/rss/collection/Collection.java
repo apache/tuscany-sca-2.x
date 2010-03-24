@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.sca.binding.rss.collection;
 
-import org.osoa.sca.annotations.Remotable;
+import org.oasisopen.sca.annotation.Remotable;
 
 import com.sun.syndication.feed.synd.SyndEntry;
 import com.sun.syndication.feed.synd.SyndFeed;

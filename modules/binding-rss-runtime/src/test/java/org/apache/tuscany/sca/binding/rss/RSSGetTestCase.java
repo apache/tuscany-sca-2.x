@@ -21,7 +21,10 @@ package org.apache.tuscany.sca.binding.rss;
 
 import junit.framework.Assert;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.node.Contribution;
+import org.apache.tuscany.sca.node.ContributionLocationHelper;
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -30,33 +33,39 @@ import org.junit.Test;
  * Basic test case that will get the feed entries from an RSS feed.
  */
 public class RSSGetTestCase {
-    protected static SCADomain scaConsumerDomain;
-    protected static SCADomain scaProviderDomain;
+    protected static Node scaConsumerNode;
+    protected static Node scaProviderNode;
     protected static CustomerClient testService;
 
     @BeforeClass
     public static void init() throws Exception {
         System.out.println(">>>RSSGetTestCase.init entry");
-        scaProviderDomain = SCADomain.newInstance("org/apache/tuscany/sca/binding/rss/Provider.composite");
-        scaConsumerDomain = SCADomain.newInstance("org/apache/tuscany/sca/binding/rss/Consumer.composite");
-        testService = scaConsumerDomain.getService(CustomerClient.class, "CustomerClient");
+        String contribution = ContributionLocationHelper.getContributionLocation(RSSGetTestCase.class);
+
+        scaProviderNode = NodeFactory.newInstance().createNode("org/apache/tuscany/sca/binding/rss/Provider.composite", new Contribution("provider", contribution));
+        scaProviderNode.start();
+
+        scaConsumerNode = NodeFactory.newInstance().createNode("org/apache/tuscany/sca/binding/rss/Consumer.composite", new Contribution("consumer", contribution));
+        scaConsumerNode.start();
+
+        testService = scaConsumerNode.getService(CustomerClient.class, "CustomerClient");
     }
 
     @AfterClass
     public static void destroy() throws Exception {
         // System.out.println(">>>RSSGetTestCase.destroy entry");
-        if (scaConsumerDomain != null) {
-            scaConsumerDomain.close();
+        if (scaConsumerNode != null) {
+            scaConsumerNode.stop();
         }
-        if (scaProviderDomain != null) {
-            scaProviderDomain.close();
+        if (scaProviderNode != null) {
+            scaProviderNode.stop();
         }
     }
 
     @Test
     public void testPrelim() throws Exception {
-        Assert.assertNotNull(scaProviderDomain);
-        Assert.assertNotNull(scaConsumerDomain);
+        Assert.assertNotNull(scaProviderNode);
+        Assert.assertNotNull(scaConsumerNode);
         Assert.assertNotNull(testService);
     }
 

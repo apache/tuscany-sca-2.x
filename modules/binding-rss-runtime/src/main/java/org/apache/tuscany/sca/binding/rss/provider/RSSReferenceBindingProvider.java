@@ -19,12 +19,13 @@
 
 package org.apache.tuscany.sca.binding.rss.provider;
 
+import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.binding.rss.RSSBinding;
+import org.apache.tuscany.sca.databinding.Mediator;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 
 /**
@@ -34,14 +35,16 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
  */
 class RSSReferenceBindingProvider implements ReferenceBindingProvider {
 
+    private EndpointReference endpointReference;
+    
     private RuntimeComponentReference reference;
     private RSSBinding binding;
 
-    RSSReferenceBindingProvider(RuntimeComponent component,
-                                       RuntimeComponentReference reference,
-                                       RSSBinding binding) {
-        this.reference = reference;
-        this.binding = binding;
+    RSSReferenceBindingProvider(EndpointReference endpointReference,
+                                Mediator mediator) {
+        this.endpointReference = endpointReference;
+        this.reference = (RuntimeComponentReference) endpointReference.getReference();
+        this.binding = (RSSBinding) endpointReference.getBinding();
     }
 
     public Invoker createInvoker(Operation operation) {

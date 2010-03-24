@@ -19,10 +19,15 @@
 
 package org.apache.tuscany.sca.binding.rss;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.sca.assembly.Binding;
 
 /**
  * RSS Feed binding model.
+ * 
+ * @version $Rev$ $Date$
  */
 public interface RSSBinding extends Binding {
+    QName TYPE = new QName(SCA11_TUSCANY_NS, "binding.rss");
 }

@@ -46,7 +46,7 @@ import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
-import org.apache.tuscany.sca.runtime.RuntimeWire;
+import org.apache.tuscany.sca.runtime.Invocable;
 
 import com.sun.syndication.feed.synd.SyndContent;
 import com.sun.syndication.feed.synd.SyndContentImpl;
@@ -69,7 +69,7 @@ class RSSBindingListenerServlet extends HttpServlet {
     private static final Logger logger = Logger.getLogger(RSSBindingListenerServlet.class.getName());
     private static final long serialVersionUID = 1L;
 
-    private RuntimeWire wire;
+    private Invocable wire;
     private Invoker getFeedInvoker;
     private Invoker getAllInvoker;
     private Invoker queryInvoker;
@@ -85,7 +85,7 @@ class RSSBindingListenerServlet extends HttpServlet {
      * @param wire
      * @param messageFactory
      */
-    RSSBindingListenerServlet(RuntimeWire wire, MessageFactory messageFactory, Mediator mediator) {
+    RSSBindingListenerServlet(Invocable wire, MessageFactory messageFactory, Mediator mediator) {
         this.wire = wire;
         this.messageFactory = messageFactory;
         this.mediator = mediator;

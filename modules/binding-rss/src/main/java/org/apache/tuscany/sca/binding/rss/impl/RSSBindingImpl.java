@@ -19,41 +19,36 @@
 
 package org.apache.tuscany.sca.binding.rss.impl;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.assembly.OperationSelector;
+import org.apache.tuscany.sca.assembly.WireFormat;
 import org.apache.tuscany.sca.binding.rss.RSSBinding;
-import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.IntentAttachPointType;
-import org.apache.tuscany.sca.policy.PolicySet;
-import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 
 /**
  * Implementation of the RSS Feed binding model.
+ * 
+ * @version $Rev$ $Date$
  */
-class RSSBindingImpl implements RSSBinding, PolicySetAttachPoint {
+class RSSBindingImpl implements RSSBinding {
 
     private String name;
     private String uri;
-    private List<Intent> requiredIntents = new ArrayList<Intent>();
-    private List<PolicySet> policySets = new ArrayList<PolicySet>();
-    private IntentAttachPointType intentAttachPointType;
-    private List<PolicySet> applicablePolicySets = new ArrayList<PolicySet>();
 
-    public List<PolicySet> getApplicablePolicySets() {
-        return applicablePolicySets;
+    public QName getType() {
+        return RSSBinding.TYPE;
     }
 
     public String getName() {
         return name;
     }
 
-    public String getURI() {
-        return uri;
-    }
-
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getURI() {
+        return uri;
     }
 
     public void setURI(String uri) {
@@ -68,28 +63,25 @@ class RSSBindingImpl implements RSSBinding, PolicySetAttachPoint {
         // The binding is always resolved
     }
 
-    public List<PolicySet> getPolicySets() {
-        return policySets;
+    public WireFormat getRequestWireFormat() {
+        return null;
     }
     
-    public List<Intent> getRequiredIntents() {
-        return requiredIntents;
-    }
-
-    public IntentAttachPointType getType() {
-        return intentAttachPointType;
+    public void setRequestWireFormat(WireFormat wireFormat) {  
     }
     
-    public void setType(IntentAttachPointType intentAttachPointType) {
-        this.intentAttachPointType = intentAttachPointType;
+    public WireFormat getResponseWireFormat() {
+        return null;
     }
     
-    public void setPolicySets(List<PolicySet> policySets) {
-        this.policySets = policySets; 
+    public void setResponseWireFormat(WireFormat wireFormat) {
     }
-
-    public void setRequiredIntents(List<Intent> intents) {
-        this.requiredIntents = intents;
+    
+    public OperationSelector getOperationSelector() {
+        return null;
+    }
+    
+    public void setOperationSelector(OperationSelector operationSelector) {
     }
 
     @Override

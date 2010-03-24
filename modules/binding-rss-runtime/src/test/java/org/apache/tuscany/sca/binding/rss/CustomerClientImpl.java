@@ -20,7 +20,7 @@
 package org.apache.tuscany.sca.binding.rss;
 
 import org.apache.tuscany.sca.binding.rss.collection.Collection;
-import org.osoa.sca.annotations.Reference;
+import org.oasisopen.sca.annotation.Reference;
 
 import com.sun.syndication.feed.synd.SyndEntry;
 import com.sun.syndication.feed.synd.SyndFeed;

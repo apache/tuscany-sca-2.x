@@ -29,7 +29,7 @@ import java.util.UUID;
 
 import org.apache.tuscany.sca.binding.rss.collection.Collection;
 import org.apache.tuscany.sca.binding.rss.collection.NotFoundException;
-import org.osoa.sca.annotations.Scope;
+import org.oasisopen.sca.annotation.Scope;
 
 import com.sun.syndication.feed.synd.SyndContent;
 import com.sun.syndication.feed.synd.SyndContentImpl;
