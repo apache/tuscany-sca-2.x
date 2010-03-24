@@ -1,0 +1,214 @@
+Hello World Web Service References using SDO Sample
+===================================================
+This sample demonstrates an SCA reference that uses a web service binding which works with SDO.  
+
+The README in the samples directory (the directory above this) provides 
+general instructions about building and running samples. Take a look there 
+first. 
+
+To run this sample
+------------------
+This sample is dependent on helloworld-ws-service. Open a command prompt to start
+the service. If you are running ant do the following:
+
+cd helloworld-ws-service
+ant run
+
+if you don't have ant, issue one of the following commands for windows or *nix:
+
+java -cp ..\..\lib\tuscany-sca-manifest.jar;target\sample-helloworld-ws-service.jar helloworld.HelloWorldServer
+
+and on *nix do
+
+java -cp ../../lib/tuscany-sca-manifest.jar:target/sample-helloworld-ws-service.jar helloworld.HelloWorldServer
+
+You should see the following output:
+
+Buildfile: build.xml
+
+run-server:
+     [java] log4j:WARN No appenders could be found for logger (org.apache.axiom.
+om.util.StAXUtils).
+     [java] log4j:WARN Please initialize the log4j system properly.
+     [java] Aug 24, 2007 11:17:33 AM org.apache.catalina.core.StandardEngine sta
+rt
+     [java] INFO: Starting Servlet Engine: Apache Tomcat/6.0.10
+     [java] Aug 24, 2007 11:17:34 AM org.apache.catalina.startup.ContextConfig d
+efaultWebConfig
+     [java] INFO: No default web.xml
+     [java] Aug 24, 2007 11:17:34 AM org.apache.catalina.startup.DigesterFactory
+ register
+     [java] WARNING: Could not get url for /javax/servlet/jsp/resources/jsp_2_0.
+xsd
+     [java] Aug 24, 2007 11:17:34 AM org.apache.catalina.startup.DigesterFactory
+ register
+     [java] WARNING: Could not get url for /javax/servlet/jsp/resources/web-jspt
+aglibrary_1_1.dtd
+     [java] Aug 24, 2007 11:17:34 AM org.apache.catalina.startup.DigesterFactory
+ register
+     [java] WARNING: Could not get url for /javax/servlet/jsp/resources/web-jspt
+aglibrary_1_2.dtd
+     [java] Aug 24, 2007 11:17:34 AM org.apache.catalina.startup.DigesterFactory
+ register
+     [java] WARNING: Could not get url for /javax/servlet/jsp/resources/web-jspt
+aglibrary_2_0.xsd
+     [java] Aug 24, 2007 11:17:34 AM org.apache.catalina.startup.DigesterFactory
+ register
+     [java] WARNING: Could not get url for /javax/servlet/resources/j2ee_web_ser
+vices_1_1.xsd
+     [java] Aug 24, 2007 11:17:34 AM org.apache.coyote.http11.Http11Protocol ini
+t
+     [java] INFO: Initializing Coyote HTTP/1.1 on http-8085
+     [java] Aug 24, 2007 11:17:34 AM org.apache.coyote.http11.Http11Protocol sta
+rt
+     [java] INFO: Starting Coyote HTTP/1.1 on http-8085
+     [java] Aug 24, 2007 11:17:34 AM org.apache.tuscany.sca.http.tomcat.TomcatSe
+rver addServletMapping
+     [java] INFO: Added Servlet mapping: http://localhost:8085/HelloWorldService
+
+     [java] HelloWorld server started (press enter to shutdown)
+
+The server is now ready.
+
+
+Now, open another command window to run the client.  
+
+cd helloworld-ws-sdo
+ant run
+
+OR if you don't have ant, on Windows do
+
+java -cp ..\..\lib\tuscany-sca-manifest.jar;target\sample-helloworld-ws-sdo.jar helloworld.HelloWorldClient
+
+and on *nix do
+
+java -cp ../../lib/tuscany-sca-manifest.jar:target/sample-helloworld-ws-sdo.jar helloworl.HelloWorldClient
+
+You should be able to see the following result:
+
+Buildfile: build.xml
+
+run:
+     [java] log4j:WARN No appenders could be found for logger (org.apache.axiom.
+om.util.StAXUtils).
+     [java] log4j:WARN Please initialize the log4j system properly.
+     [java] Injected helloWorldService
+     [java] Called getGreetings
+     [java] Hello David Haney
+
+BUILD SUCCESSFUL
+Total time: 9 seconds
+
+
+Sample Overview
+---------------
+The sample provides a single component that is wired to a reference with a 
+web service binding. The binding refers to WSDL that identifies the service
+exposed by the helloworld-ws-service sample. 
+
+helloworld-ws-sdo/
+  src/
+    main/
+      java/
+        helloworld/
+          HelloWorldService.java          - interface description for 
+                                            HelloWorldServiceComponent
+          HelloWorldServiceComponent.java - component implementation
+          HelloWorldClient.java           - starts the SCA Runtime and 
+                                            deploys the helloworldwsclient
+                                            .composite. It then calls the 
+                                            HelloWorldServiceComponent
+      resources/
+        wsdl
+          helloworld.wsdl                 - the service description that the 
+                                            SCA reference uses to bind to service. 
+      
+    test/
+      java/
+        helloworld/
+          HelloWorldClientTestCase.java   - JUnit test case
+        helloworld-ws-sdo.png             - a pictorial representation of the 
+                                            sample .composite file
+  build.xml                               - the Ant build file
+  pom.xml                                 - the Maven build file        
+
+Building And Running The Sample Using Ant
+-----------------------------------------
+You can build and run the sample with the binary distribution using Ant. 
+Make sure that you have started helloworld-ws-service which this sample is dependent on
+in a separate command window. You can either follow the instruction at the begining of this 
+sample file or if you want to build and run the service, follow the README under helloworld-ws-service.
+
+Now, let's build and run helloworld-ws-sdo sample:
+
+cd helloworld-ws-sdo                                             
+ant 
+ant run 
+
+You should see the following output from the run target.
+
+run:
+     [java] log4j:WARN No appenders could be found for logger (org.apache.axiom.
+om.util.StAXUtils).
+     [java] log4j:WARN Please initialize the log4j system properly.
+     [java] Injected helloWorldService
+     [java] Called getGreetings
+     [java] Hello World
+
+Building And Running The Sample Using Maven 
+-------------------------------------------
+You can build and run the sample with either the binary or source distributions using Maven. Please note that you do not need to start helloworld-ws-service in this case since Maven does this for you.
+
+cd helloworld-ws-sdo
+mvn
+
+You should see the following output from the test phase.
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running helloworld.HelloWorldClientTestCase
+log4j:WARN No appenders could be found for logger (org.apache.axiom.om.util.StAX
+Utils).
+log4j:WARN Please initialize the log4j system properly.
+log4j:WARN No appenders could be found for logger (org.apache.axiom.om.util.StAX
+Utils).
+log4j:WARN Please initialize the log4j system properly.
+Aug 23, 2007 2:27:32 PM org.apache.catalina.core.StandardEngine start
+INFO: Starting Servlet Engine: Apache Tomcat/6.0.10
+Aug 23, 2007 2:27:32 PM org.apache.catalina.startup.ContextConfig defaultWebConf
+ig
+INFO: No default web.xml
+Aug 23, 2007 2:27:32 PM org.apache.catalina.startup.DigesterFactory register
+WARNING: Could not get url for /javax/servlet/jsp/resources/jsp_2_0.xsd
+Aug 23, 2007 2:27:32 PM org.apache.catalina.startup.DigesterFactory register
+WARNING: Could not get url for /javax/servlet/jsp/resources/web-jsptaglibrary_1_
+1.dtd
+Aug 23, 2007 2:27:32 PM org.apache.catalina.startup.DigesterFactory register
+WARNING: Could not get url for /javax/servlet/jsp/resources/web-jsptaglibrary_1_
+2.dtd
+Aug 23, 2007 2:27:32 PM org.apache.catalina.startup.DigesterFactory register
+WARNING: Could not get url for /javax/servlet/jsp/resources/web-jsptaglibrary_2_
+0.xsd
+Aug 23, 2007 2:27:32 PM org.apache.catalina.startup.DigesterFactory register
+WARNING: Could not get url for /javax/servlet/resources/j2ee_web_services_1_1.xs
+d
+Aug 23, 2007 2:27:32 PM org.apache.coyote.http11.Http11Protocol init
+INFO: Initializing Coyote HTTP/1.1 on http-8085
+Aug 23, 2007 2:27:32 PM org.apache.coyote.http11.Http11Protocol start
+INFO: Starting Coyote HTTP/1.1 on http-8085
+Aug 23, 2007 2:27:32 PM org.apache.tuscany.sca.http.tomcat.TomcatServer addServl
+etMapping
+INFO: Added Servlet mapping: http://localhost:8085/HelloWorldService
+Injected helloWorldService
+Called getGreetings
+Aug 23, 2007 2:27:34 PM org.apache.coyote.http11.Http11Protocol destroy
+INFO: Stopping Coyote HTTP/1.1 on http-8085
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 8.502 sec
+
+Results :
+
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+
+
+This shows that the Junit test cases have run successfully. 
