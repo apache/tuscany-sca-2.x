@@ -33,6 +33,11 @@
     <dependencies>
 
         <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging-api</artifactId>
+            <version>1.1</version>
+        </dependency>
+        <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-domain-node</artifactId>
             <version>${pom.version}</version>
@@ -201,6 +206,7 @@
                            <artifactSet>
                               <includes>
                                  <include>org.apache.tuscany.sca:*</include>
+                                 <include>org.apache.tuscany.sca.shades:*</include>
                               </includes>
                            </artifactSet>
                            <transformers>
