@@ -80,12 +80,32 @@ public class JAXWSServiceBindingProvider implements ServiceBindingProvider, Prov
         // Set to use the DOM data binding
         InterfaceContract contract = wsBinding.getBindingInterfaceContract();
         contract.getInterface().resetDataBinding(Node.class.getName());
+        
+        // Can we safely assume there is only one port because you configure
+        // a binding in the following ways: 
+        // 1/ default             - one port generated = host domain : host port / structural path 
+        // 2/ uri="absolute addr" - one port generated = host domain : uri port  / uri path
+        // 3/ uri="relative addr" - one port generated = host domain : host port / structural path / relative path
+        // 4/ wsdl.binding        - one port generated = host domain : host port / structural path 
+        // 5/ wsdl.port           - one port generated = host domain : port port / port path
+        // 6/ wsa:Address         - one port generated = host domain : address port / address path
+        // 7/ 4 + 6               - as 6
 
+        // TODO the binding URI will currently have been calculated during build
+        // however we don't give the provider a chance to get in and effect the
+        // calculation (see above comment). For now just fake the addition of binding 
+        // specific processing by adding a root if it's not already present
+        if (!wsBinding.getURI().startsWith("http://")) {
+            wsBinding.setURI("http://localhost:8085" + wsBinding.getURI());
+        }
     }
 
     public void start() {
+        // TODO - turn on Axis2 JAXWS support
+        
+        
         wsEndpoint = Endpoint.create(this);
-        wsEndpoint.publish("http://localhost:8085" + wsBinding.getURI());
+        wsEndpoint.publish(wsBinding.getURI());
     }
 
     public void stop() {

@@ -39,6 +39,7 @@ import javax.xml.ws.Dispatch;
 import javax.xml.ws.Service;
 import javax.xml.ws.WebServiceException;
 import javax.xml.ws.WebServiceFeature;
+import javax.xml.ws.soap.SOAPBinding;
 import javax.xml.ws.soap.SOAPFaultException;
 
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
@@ -78,20 +79,36 @@ public class JAXWSBindingInvoker implements Invoker, DataExchangeSemantics {
     }
 
     private Dispatch<SOAPMessage> createDispatch(WebServiceBinding wsBinding) {
-        // FIXME: What should we do if the WSDL is generated in memory?
         URL wsdlLocation = null;
         try {
             wsdlLocation = new URL(wsBinding.getWSDLDocument().getDocumentBaseURI());
         } catch (MalformedURLException e) {
             try {
-                wsdlLocation = wsBinding.getWSDLDefinition().getLocation().toURL();
+                if (wsBinding.getWSDLDefinition().getLocation() != null){
+                    wsdlLocation = wsBinding.getWSDLDefinition().getLocation().toURL();
+                }
             } catch (MalformedURLException e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
         }
-        Service service = Service.create(wsdlLocation, wsBinding.getServiceName());
-        return service.createDispatch(new QName(wsBinding.getServiceName().getNamespaceURI(), wsBinding.getPortName()),
+
+        QName serviceName = null;
+        QName portName = null;
+        Service service = null;
+        
+        if (wsdlLocation != null){
+            serviceName = wsBinding.getServiceName();
+            portName = new QName(serviceName.getNamespaceURI(), wsBinding.getPortName());
+            service = Service.create(wsdlLocation, serviceName);
+        } else {
+            serviceName = wsBinding.getService().getQName();
+            portName = new QName(serviceName.getNamespaceURI(), wsBinding.getPort().getName());
+            service = Service.create(serviceName);
+            service.addPort(portName, SOAPBinding.SOAP11HTTP_BINDING, wsBinding.getURI());
+        }
+        
+        return service.createDispatch(portName,
                                       SOAPMessage.class,
                                       Service.Mode.MESSAGE);
     }
