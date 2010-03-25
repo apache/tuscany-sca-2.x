@@ -237,6 +237,7 @@ The following components come under Apache Software License 2.0
  commons-fileupload-1.2.jar
  commons-httpclient-3.1.jar
  commons-io-1.4.jar
+ commons-logging-api-1.1.jar
  geronimo-activation_1.1_spec-1.0.1.jar
  geronimo-javamail_1.4_spec-1.6.jar
  geronimo-jms_1.1_spec-1.1.jar
