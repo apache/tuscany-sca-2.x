@@ -25,10 +25,10 @@
     <component name="HelloWorldService">
 		<implementation.java class="org.apache.tuscany.sca.binding.ws.jaxws.impl.HelloWorldImpl"/>
 	    <service name="HelloWorld">
-            <binding.ws uri="http://localhost:8085/HelloWorldService/HelloWorld"/>
+            <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)"/>
 	    </service>
         <reference name="helloWorldExternal">
-            <binding.ws uri="http://localhost:8086/External/HelloWorld"/>
+            <binding.ws wsdlElement="http://helloworld/external#wsdl.port(HelloWorldService/HelloWorldSoapPort)"/>
         </reference>	
     </component>
     

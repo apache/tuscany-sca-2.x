@@ -2,9 +2,16 @@
 Scenarios
 =========
 
-General Pattern
----------------
-Jaxws client -> SCA Component -> Jaxws Service
+General Patterns
+----------------
+
+For simple synchronous tests:
+
+Jaxws client -> (b.ws service) SCA Component (b.ws reference) -> Jaxws Service
+
+For callback or asynchronous tests
+
+JUnit client -> SCA Component (b.ws reference) -> (b.ws service) SCA component
 
 Java First
 ----------
