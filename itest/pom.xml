@@ -61,6 +61,7 @@
                 <module>interfaces</module>
                 <module>jms</module>
                 <module>nodes</module>
+                <module>node-launcher-equinox</module>
                 <module>oneway</module>
 <!-- why commented out?
                 <module>operation-overloading</module>
