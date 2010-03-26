@@ -1,0 +1,25 @@
+Manifest-Version: 1.0
+SCA-Version: 1.1
+Bundle-Name: Apache Tuscany SCA JAX-RS Implementation JAXRS Runtime
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 2.0.0
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany SCA Implementation JAXRS Runtime
+Bundle-SymbolicName: org.apache.tuscany.sca.implementation.jaxrs.provider
+Bundle-DocURL: http://www.apache.org/
+Import-Package: javax.servlet,
+ javax.servlet.jsp,
+ javax.servlet.jsp.tagext,
+ org.apache.tuscany.sca.assembly;version="2.0.0",
+ org.apache.tuscany.sca.core;version="2.0.0",
+ org.apache.tuscany.sca.host.http;version="2.0.0",
+ org.apache.tuscany.sca.implementation.jaxrs;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef;version="2.0.0",
+ org.apache.tuscany.sca.invocation;version="2.0.0",
+ org.apache.tuscany.sca.policy;version="2.0.0",
+ org.apache.tuscany.sca.provider;version="2.0.0",
+ org.apache.tuscany.sca.runtime;version="2.0.0",
+ org.oasisopen.sca.annotation;version="2.0.0",
+ org.oasisopen.sca;version="2.0.0"
+Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6
