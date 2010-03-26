@@ -115,6 +115,7 @@
         <module>xsd</module>
         <module>web-javascript</module>
         <module>web-javascript-dojo</module>
+        <module>wink</module>
         <!-- OSGi Remote Services with SCA -->
         <module>contribution-osgi</module>
         <module>implementation-osgi</module>
