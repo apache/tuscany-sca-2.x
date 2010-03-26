@@ -41,6 +41,7 @@
                 <include>dosgi-dynamic-calculator-operations/**/*</include>
                 <include>webapps/helloworld/**/*</include>
                 <include>webapps/helloworld-bpel/**/*</include>
+                <include>webapps/helloworld-jaxrs/**/*</include>
                 <include>webapps/helloworld-jms/**/*</include>
                 <include>webapps/helloworld-js-client/**/*</include>
                 <include>webapps/helloworld-jsf/**/*</include>
