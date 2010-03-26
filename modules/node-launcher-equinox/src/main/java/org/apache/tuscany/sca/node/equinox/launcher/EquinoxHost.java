@@ -256,6 +256,9 @@ public class EquinoxHost {
             if (logger.isLoggable(Level.FINE)) {
                 logger.fine("Generating third-party library bundle.");
             }
+            
+            logger.info("Checking for manfiests customized by Tuscany in node-launcher-equinox/resources");
+            
             long libraryStart = currentTimeMillis();
             
             Set<String> serviceProviders = new HashSet<String>();

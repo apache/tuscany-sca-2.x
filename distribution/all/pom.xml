@@ -150,12 +150,12 @@
                              <useDistributionName>false</useDistributionName>
                              <generateManifestJar>true</generateManifestJar>
                              <artifactManifests>
-                                 <!--artifactManifest>
+                                 <artifactManifest>
                                      <groupId>org.apache.ws.commons.axiom</groupId>
                                      <artifactId>axiom-api</artifactId>
                                      <version>1.2.8</version>
                                      <manifestFile>${basedir}/manifests/axiom-api-1.2.8.MF</manifestFile>
-                                 </artifactManifest-->
+                                 </artifactManifest>
                                  <artifactManifest>
                                      <groupId>org.apache.woden</groupId>
                                      <artifactId>woden-impl-dom</artifactId>
