@@ -102,6 +102,12 @@
             <version>${pom.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-wink</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+
 <!-- these remaining dependencies are not required when using JDK6, so use a scope of provided  -->
 
         <dependency>
