@@ -19,8 +19,9 @@
 
 package itest;
 
-//import static org.junit.Assert.assertEquals;
-//import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import itest.test.TestIt;
+
 import java.net.URI;
 
 import org.apache.tuscany.sca.node.Node;
@@ -29,39 +30,20 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-/**
- * This shows how to test the Calculator service component.
- */
 public class OneNodeTestCase{
 
-    private static final URI DOMAIN_URI = URI.create("OneNodeTestCase");
     private static Node node;
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        node = NodeFactory.getInstance().createNode(DOMAIN_URI, "../test-iface-export/target/classes", "../test-service/target/classes", "../test-client/target/classes");
+        node = NodeFactory.newInstance().createNode(URI.create("OneNodeTestCase"), "../iface-export/target/classes", "../service/target/classes", "../client/target/classes");
         node.start();
     }
 
     @Test
     public void testNode() throws Exception {
-
-//        Helloworld service = node.getService(Helloworld.class, "HelloworldService");
-//        assertNotNull(service);
-//        assertEquals("Hello Petra", service.sayHello("Petra"));
-//
-//        Helloworld client = node.getService(Helloworld.class, "HelloworldClient");
-//        assertNotNull(client);
-//        assertEquals("Hi Hello Petra", client.sayHello("Petra"));
-//
-//        Helloworld scaClientService = SCAClientFactory.newInstance(domainURI).getService(Helloworld.class, "HelloworldService");
-//        assertNotNull(scaClientService);
-//        assertEquals("Hello Petra", scaClientService.sayHello("Petra"));
-//
-//        Helloworld scaClientClient = SCAClientFactory.newInstance(domainURI).getService(Helloworld.class, "HelloworldClient");
-//        assertNotNull(scaClientClient);
-//        assertEquals("Hi Hello Petra", scaClientClient.sayHello("Petra"));
-    
+      TestIt service = node.getService(TestIt.class, "TestClient");
+      assertTrue(service.testIt());
     }
 
     @AfterClass

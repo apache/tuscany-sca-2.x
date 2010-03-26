@@ -25,10 +25,15 @@
         <version>2.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>itest-nodes-export</artifactId>
-    <name>Apache Tuscany SCA iTest Nodes Export Local</name>
+    <artifactId>itest-import-export-test-export-local</artifactId>
+    <name>Apache Tuscany SCA iTest Import Export Test Export Local</name>
 
     <dependencies>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>itest-import-export-client</artifactId>
+            <version>2.0-SNAPSHOT</version>
+        </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-sca-client-impl</artifactId>
@@ -37,11 +42,6 @@
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-endpoint-hazelcast</artifactId>
-            <version>2.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-binding-sca-runtime-rmi</artifactId>
             <version>2.0-SNAPSHOT</version>
         </dependency>
         <dependency>

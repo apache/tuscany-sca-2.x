@@ -25,21 +25,15 @@
         <version>2.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>itest-import-export-service</artifactId>
-    <name>Apache Tuscany SCA iTest import Export Service</name>
+    <packaging>pom</packaging>
+    <artifactId>itest-import-export</artifactId>
+    <name>Apache Tuscany SCA iTest Import Export</name>
+    
+  <modules>
+    <module>iface-export</module>
+    <module>service</module>
+    <module>client</module>
+    <module>test-export-local</module>
+  </modules>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-sca-api</artifactId>
-            <version>2.0-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>itest-import-export-iface-export</artifactId>
-            <version>2.0-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-    </dependencies>
 </project>

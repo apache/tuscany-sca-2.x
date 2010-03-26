@@ -23,14 +23,11 @@ import itest.iface.NonSimpleType;
 import itest.iface.SomeException;
 import itest.iface.TestService;
 
-import org.oasisopen.sca.annotation.EagerInit;
-import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
-import org.oasisopen.sca.annotation.Scope;
+import org.oasisopen.sca.annotation.Service;
 
-@Scope("COMPOSITE")
-@EagerInit
-public class TestClientImpl implements TestService {
+@Service(TestIt.class)
+public class TestClientImpl implements TestIt, TestService {
 
     @Reference
     protected TestService service;
@@ -47,22 +44,19 @@ public class TestClientImpl implements TestService {
         return service.testCT(name);
     }
     
-    @Init
-    public void init() {
+    public boolean testIt() {
         try {
             System.out.println(sayHello("petra"));            
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        try {
             System.out.println(testCT(new NonSimpleType("beate")).getName());            
+            try {
+                System.out.println(testCT(new NonSimpleType("bang")).getName());            
+            } catch (SomeException e) {
+                // expected
+            }
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
-        }
-        try {
-            System.out.println(testCT(new NonSimpleType("bang")).getName());            
-        } catch (Exception e) {
-            e.printStackTrace();
+            return false;
         }
     }
 }

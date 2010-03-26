@@ -25,8 +25,8 @@
         <version>2.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>itest-import-export-test-client</artifactId>
-    <name>Apache Tuscany SCA iTest Import Export Test Client</name>
+    <artifactId>itest-import-export-client</artifactId>
+    <name>Apache Tuscany SCA iTest Import Export Client</name>
 
     <dependencies>
         <dependency>
@@ -37,7 +37,7 @@
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>itest-import-export-test-iface-export</artifactId>
+            <artifactId>itest-import-export-iface-export</artifactId>
             <version>2.0-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
