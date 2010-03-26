@@ -70,6 +70,7 @@
                 <module>store-webapp</module>                
                 <module>webapps/helloworld</module>
                 <module>webapps/helloworld-bpel</module>
+                <module>webapps/helloworld-jaxrs</module>
                 <module>webapps/helloworld-jms</module>
                 <module>webapps/helloworld-js-client</module>
                 <module>webapps/helloworld-jsp</module>
