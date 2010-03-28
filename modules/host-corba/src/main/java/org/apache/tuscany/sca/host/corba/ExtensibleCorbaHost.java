@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.host.corba;
 
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.omg.CORBA.Object;
 
 /**
@@ -29,10 +31,15 @@ public class ExtensibleCorbaHost implements CorbaHost {
 
     private CorbaHostExtensionPoint hosts;
 
-    public ExtensibleCorbaHost(CorbaHostExtensionPoint chep) {
-        this.hosts = chep;
+    public ExtensibleCorbaHost(ExtensionPointRegistry registry) {
+        this.hosts = registry.getExtensionPoint(CorbaHostExtensionPoint.class);
     }
-
+    
+    public static ExtensibleCorbaHost getInstance(ExtensionPointRegistry registry) {
+        UtilityExtensionPoint utilityExtensionPoint = registry.getExtensionPoint(UtilityExtensionPoint.class);
+        return utilityExtensionPoint.getUtility(ExtensibleCorbaHost.class);
+    }
+    
     public Object lookup(String uri) throws CorbaHostException {
         return getCorbaHost().lookup(uri);
     }
