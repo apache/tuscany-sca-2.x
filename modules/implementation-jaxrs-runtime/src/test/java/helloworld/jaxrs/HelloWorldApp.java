@@ -50,7 +50,7 @@ public class HelloWorldApp extends Application {
      */
     public HelloWorldApp() {
         instances.add(new HelloWorld());
-        classes.add(HelloWorld.class);
+        // classes.add(HelloWorld.class);
     }
 
     /**

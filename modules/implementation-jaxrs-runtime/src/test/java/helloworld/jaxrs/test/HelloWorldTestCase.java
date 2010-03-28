@@ -21,9 +21,13 @@ package helloworld.jaxrs.test;
 
 import java.io.File;
 
+import junit.framework.Assert;
+
 import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
+import org.apache.wink.client.ClientResponse;
+import org.apache.wink.client.RestClient;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -49,6 +53,9 @@ public class HelloWorldTestCase {
 
     @Test
     public void testDummy() {
+        RestClient client = new RestClient();
+        ClientResponse response = client.resource("http://localhost:8080/world").get();
+        Assert.assertEquals(200, response.getStatusCode());
     }
 
     /**

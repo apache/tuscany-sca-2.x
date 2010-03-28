@@ -9,8 +9,9 @@ Bundle-Description: Apache Tuscany SCA Implementation JAXRS Runtime
 Bundle-SymbolicName: org.apache.tuscany.sca.implementation.jaxrs.provider
 Bundle-DocURL: http://www.apache.org/
 Import-Package: javax.servlet,
- javax.servlet.jsp,
- javax.servlet.jsp.tagext,
+ javax.ws.rs.core,
+ org.apache.wink.server.internal,
+ org.apache.wink.server.utils,
  org.apache.tuscany.sca.assembly;version="2.0.0",
  org.apache.tuscany.sca.core;version="2.0.0",
  org.apache.tuscany.sca.host.http;version="2.0.0",
