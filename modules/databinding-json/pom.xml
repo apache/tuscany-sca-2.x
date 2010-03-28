@@ -46,7 +46,23 @@
             <artifactId>tuscany-databinding</artifactId>
             <version>2.0-SNAPSHOT</version>
         </dependency>
-
+        
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-core-asl</artifactId>
+            <version>1.5.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-asl</artifactId>
+            <version>1.5.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-xc</artifactId>
+            <version>1.5.0</version>
+        </dependency>
+        
         <dependency>
             <groupId>org.jabsorb</groupId>
             <artifactId>jabsorb</artifactId>
@@ -56,7 +72,7 @@
         <dependency>
             <groupId>org.codehaus.jettison</groupId>
             <artifactId>jettison</artifactId>
-            <version>1.1</version>
+            <version>1.2</version>
             <scope>compile</scope>
             <exclusions>
                 <exclusion>
