@@ -25,4 +25,4 @@ ant run
 Once the store application is running use your browser to visit the following
 URL:
 
-http://localhost:8080/
+http://localhost:8080/store

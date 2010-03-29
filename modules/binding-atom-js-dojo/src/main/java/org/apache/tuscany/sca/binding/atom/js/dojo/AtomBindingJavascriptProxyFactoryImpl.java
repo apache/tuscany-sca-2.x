@@ -70,9 +70,6 @@ public class AtomBindingJavascriptProxyFactoryImpl implements JavascriptProxyFac
         
         URI targetURI = URI.create(binding.getURI());
         String targetPath = targetURI.getPath();
-        if (targetPath.startsWith("/")) {
-            targetPath = targetPath.substring(1);
-        }
         
         return "tuscany.AtomService(\"" + targetPath + "\")";        
     }
