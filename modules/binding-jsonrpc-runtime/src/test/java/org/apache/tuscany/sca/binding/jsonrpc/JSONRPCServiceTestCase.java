@@ -19,9 +19,11 @@
 package org.apache.tuscany.sca.binding.jsonrpc;
 
 import java.io.ByteArrayInputStream;
+import java.net.URLEncoder;
 
 import junit.framework.Assert;
 
+import org.apache.axiom.om.util.Base64;
 import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;
@@ -31,6 +33,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.meterware.httpunit.GetMethodWebRequest;
 import com.meterware.httpunit.PostMethodWebRequest;
 import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
@@ -75,5 +78,24 @@ public class JSONRPCServiceTestCase{
 
         JSONObject jsonResp = new JSONObject(response.getText());
         Assert.assertEquals("echo: Hello JSON-RPC", jsonResp.getString("result"));
-    }   
+    }
+    
+    @Test
+    public void testJSONRPCBindingGET() throws Exception {
+        String params = Base64.encode("[\"Hello JSON-RPC\"]".getBytes());
+        String queryString = "?method=echo&params=" + URLEncoder.encode(params,"UTF-8") + "&id=1";
+
+        WebConversation wc = new WebConversation();
+        WebRequest request = new GetMethodWebRequest(SERVICE_URL + queryString);
+        WebResponse response = wc.getResource(request);
+
+        Assert.assertEquals(200, response.getResponseCode());
+
+        JSONObject jsonResp = new JSONObject(response.getText());
+        Assert.assertEquals("echo: Hello JSON-RPC", jsonResp.getString("result"));
+    }
+    
+    
+    
+    
 }
