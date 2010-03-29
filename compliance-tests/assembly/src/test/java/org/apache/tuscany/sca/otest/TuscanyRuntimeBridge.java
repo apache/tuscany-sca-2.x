@@ -22,6 +22,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -113,6 +114,9 @@ public class TuscanyRuntimeBridge implements RuntimeBridge {
                 // Looks like bugs in the oasis code that sometimes still uses jars for some
                 if (aLocation.endsWith("_Java-1.0.zip") && !aLocation.endsWith("ASM_8005_Java-1.0.zip")) {
                     aLocation = aLocation.substring(0, aLocation.length()-3) + "jar";                	
+                }
+                if (!(new File(aLocation)).exists()) {
+                       aLocation = aLocation.replace(".zip", ".jar");
                 }
                 locations[i] = aLocation;
             } // end for    	  	
