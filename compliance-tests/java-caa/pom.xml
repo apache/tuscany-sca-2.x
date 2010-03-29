@@ -56,6 +56,21 @@
             <version>6.1.19</version>
         </dependency>
 
+        <!-- This is need when running with Sun JDK which gets an unsupported operation exception creating an XMLStreamReader from a DOMSource
+             when Tuscany is writing a property value  -->
+        <dependency>
+            <groupId>org.codehaus.woodstox</groupId>
+            <artifactId>wstx-asl</artifactId>
+            <version>3.2.4</version>
+            <scope>runtime</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>stax</groupId>
+                    <artifactId>stax-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -76,7 +91,6 @@
          <artifactId>maven-surefire-plugin</artifactId>
          <configuration>
            <excludes>
-              <exclude>**/JCA_8005_TestCase.java</exclude><!--  see TUSCANY-3482 -->
               <exclude>**/JCA_8007_TestCase.java</exclude><!--  see TUSCANY-3482 -->
            </excludes>
          </configuration>
