@@ -24,8 +24,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
 import java.net.URLDecoder;
-import java.util.Calendar;
+import java.security.MessageDigest;
 import java.util.Date;
 import java.util.List;
 
@@ -153,7 +154,6 @@ public class JSONRPCServiceServlet extends JSONRPCServlet {
             while ((ret = in.read(buf, 0, 4096)) != -1) {
                 data.write(buf, 0, ret);
             }
-            
         }
         
         JSONObject jsonReq = null;
@@ -195,6 +195,27 @@ public class JSONRPCServiceServlet extends JSONRPCServlet {
         //that would identify if the value was current or not
         response.setHeader("Cache-Control", "no-cache");
         response.setHeader("Expires", new Date(0).toGMTString());
+        
+        //handle etag if using GET
+        if( request.getMethod().equals("GET")) {
+            String eTag = calculateETag(bout);
+            
+            // Test request for predicates.
+            String predicate = request.getHeader( "If-Match" );
+            if (( predicate != null ) && ( !predicate.equals(eTag) )) {
+                // No match, should short circuit
+                response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED);
+                return;
+            }
+            predicate = request.getHeader( "If-None-Match" );
+            if (( predicate != null ) && ( predicate.equals(eTag) )) {
+                // Match, should short circuit
+                response.sendError(HttpServletResponse.SC_NOT_MODIFIED);
+                return;
+            }
+            
+            response.addHeader("ETag", eTag);
+        }
         
         OutputStream out = response.getOutputStream();
         out.write(bout);
@@ -342,5 +363,21 @@ public class JSONRPCServiceServlet extends JSONRPCServlet {
         }
 
         return result;
-    }    
+    } 
+    
+    private String calculateETag(byte[] content) {
+        String eTag = "invalid";
+        try {
+            MessageDigest messageDigest = MessageDigest.getInstance("MD5");
+            byte[] digest = messageDigest.digest(content);
+            BigInteger number = new BigInteger(1, digest);
+            StringBuffer sb = new StringBuffer('0');
+            sb.append(number.toString(16));
+            eTag = sb.toString();
+        } catch(Exception e) {
+            //ignore, we will return random etag
+            eTag =  Integer.toString((new java.util.Random()).nextInt(Integer.MAX_VALUE));
+        }
+        return eTag;
+    }
 }
