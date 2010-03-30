@@ -277,7 +277,7 @@
                 <module>shades</module>
                 <module>distribution</module>
                 <module>archetypes</module>
-                <!-- module>compliance-tests</module -->
+                <module>compliance-tests</module>
             </modules>
         </profile>
 
@@ -303,6 +303,7 @@
                 <module>shades</module>
                 <module>distribution</module>
                 <module>archetypes</module>
+                <module>compliance-tests</module>
             </modules>
         </profile>
 
@@ -391,7 +392,7 @@
                 <module>shades</module>
                 <module>distribution</module>
                 <module>archetypes</module>
-                <!-- module>compliance-tests</module -->
+                <module>compliance-tests</module>
             </modules>
            <build>
               <plugins>
@@ -840,7 +841,7 @@
                             <groupId>org.apache.tuscany.maven.plugins</groupId>
                             <artifactId>maven-eclipse-compiler</artifactId>
                             <version>1.0.1</version>
-                            <scope>provided</scope>
+                            <scope>runtime</scope>
                         </dependency>
                     </dependencies>
                 </plugin>
