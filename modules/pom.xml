@@ -67,6 +67,8 @@
         <module>databinding-axiom</module>
         <module>databinding-jaxb</module>
         <module>databinding-jaxb-axiom</module>
+        <module>databinding-sdo</module>
+        <module>databinding-sdo-axiom</module>
         <module>databinding-json</module>
         <module>deployment</module>
         <module>domain-node</module>
@@ -121,6 +123,19 @@
         <module>implementation-osgi</module>
         <module>implementation-osgi-runtime</module>
         <module>node-impl-osgi</module>
+
+        <module>host-corba</module>
+        <module>host-corba-jee</module>
+        <module>host-corba-jse</module>
+        <module>host-corba-jse-tns</module>
+        <module>binding-corba</module>
+        <module>binding-corba-runtime</module>
+
+        <module>implementation-script</module>
+        <module>implementation-script-runtime</module>
+        <module>implementation-jaxrs</module>
+        <module>implementation-jaxrs-runtime</module>
+
     </modules>
 
     <profiles>

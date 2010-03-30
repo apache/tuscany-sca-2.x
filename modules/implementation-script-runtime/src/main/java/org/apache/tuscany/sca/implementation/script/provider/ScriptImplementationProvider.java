@@ -39,7 +39,6 @@ import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.core.factory.ObjectCreationException;
 import org.apache.tuscany.sca.core.factory.ObjectFactory;
 import org.apache.tuscany.sca.implementation.script.ScriptImplementation;
-import org.apache.tuscany.sca.implementation.script.engines.TuscanyJRubyScriptEngine;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
@@ -146,22 +145,21 @@ public class ScriptImplementationProvider implements ImplementationProvider {
         if ("rb".equals(language)) {
 
             // Hack for now to work around a problem with the JRuby script engine
-            return new TuscanyJRubyScriptEngine();
+            // return new TuscanyJRubyScriptEngine();
         } else {
             if ("py".equals(language)) {
                 pythonCachedir();
             }
-            
-            // Allow privileged access to run access classes. Requires RuntimePermission
-            // for accessClassInPackage.sun.misc.
-            ScriptEngineManager scriptEngineManager =
-                AccessController.doPrivileged(new PrivilegedAction<ScriptEngineManager>() {
-                    public ScriptEngineManager run() {
-                        return new ScriptEngineManager();
-                    }
-                });
-            return scriptEngineManager.getEngineByExtension(language);
         }
+        // Allow privileged access to run access classes. Requires RuntimePermission
+        // for accessClassInPackage.sun.misc.
+        ScriptEngineManager scriptEngineManager =
+            AccessController.doPrivileged(new PrivilegedAction<ScriptEngineManager>() {
+                public ScriptEngineManager run() {
+                    return new ScriptEngineManager();
+                }
+            });
+        return scriptEngineManager.getEngineByExtension(language);
     }
 
     /**

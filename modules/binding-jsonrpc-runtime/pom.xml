@@ -84,7 +84,18 @@
             <artifactId>jabsorb</artifactId>
             <version>1.3.1</version>
         </dependency>
-        
+
+        <!-- Explicitly add slf4j so that jabsorb uses the latest versions -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.5.8</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jdk14</artifactId>
+            <version>1.5.8</version>
+        </dependency>
         
         <dependency>
             <groupId>javax.servlet</groupId>

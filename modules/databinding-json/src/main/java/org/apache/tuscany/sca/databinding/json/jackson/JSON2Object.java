@@ -42,8 +42,8 @@ public class JSON2Object implements PullTransformer<Object, Object> {
     public JSON2Object() {
         super();
         mapper = new ObjectMapper();
-        AnnotationIntrospector primary = new JacksonAnnotationIntrospector();
-        AnnotationIntrospector secondary = new JaxbAnnotationIntrospector();
+        AnnotationIntrospector primary = new JaxbAnnotationIntrospector();
+        AnnotationIntrospector secondary = new JacksonAnnotationIntrospector();
         AnnotationIntrospector pair = new AnnotationIntrospector.Pair(primary, secondary);
         mapper.getDeserializationConfig().setAnnotationIntrospector(pair);
         mapper.getSerializationConfig().setAnnotationIntrospector(pair);
