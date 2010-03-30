@@ -59,7 +59,13 @@
             <artifactId>tuscany-binding-atom-runtime</artifactId>
             <version>${tuscany.version}</version>
         </dependency>
-
+        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-binding-rss-runtime</artifactId>
+            <version>${tuscany.version}</version>
+        </dependency>
+        
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
