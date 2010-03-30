@@ -104,6 +104,8 @@
               <!-- noListener intents -->
               <exclude>**/POL_10001_TestCase.java</exclude><!--  see TUSCANY-3491-->
               <exclude>**/POL_10002_TestCase.java</exclude><!--  see TUSCANY-3491-->
+
+              <exclude>**/POL_11001_TestCase.java</exclude><!--  see TUSCANY-xxxx -->
            </excludes>
          </configuration>
       </plugin>
