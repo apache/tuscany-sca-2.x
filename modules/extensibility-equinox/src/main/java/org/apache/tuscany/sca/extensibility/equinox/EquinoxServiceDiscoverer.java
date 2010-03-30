@@ -36,9 +36,11 @@ import org.apache.tuscany.sca.extensibility.ServiceDeclarationParser;
 import org.apache.tuscany.sca.extensibility.ServiceDiscoverer;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleEvent;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;
 import org.osgi.framework.Version;
+import org.osgi.util.tracker.BundleTracker;
 
 /**
  * A ServiceDiscoverer that find META-INF/services/... in installed bundles
@@ -50,6 +52,7 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
 
     private BundleContext context;
     private Version version;
+    private BundleTracker bundleTracker;
 
     public EquinoxServiceDiscoverer(BundleContext context) {
         this.context = context;
@@ -58,6 +61,12 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
         if (this.version.equals(Version.emptyVersion)) {
             this.version = Version.parseVersion("1.1");
         }
+        bundleTracker = new ActiveBundleTracker(context);
+        bundleTracker.open();
+    }
+    
+    public void stop() {
+        bundleTracker.close();
     }
 
     private Version getSCAVersion(Bundle bundle) {
@@ -65,25 +74,27 @@ public class EquinoxServiceDiscoverer implements ServiceDiscoverer {
         return Version.parseVersion(header);
     }
     
-    /*
-    private Map<Bundle, Object> bundles = new ConcurrentHashMap<Bundle, Object>();
+    public static class ActiveBundleTracker extends BundleTracker {
 
-    public Object addingBundle(Bundle bundle, BundleEvent event) {
-        if (isProviderBundle(bundle)) {
-            bundles.put(bundle, bundle);
-            System.out.println("Bundle added: " + toString(bundle));
-            return bundle;
+        /**
+         * @param context
+         * @param stateMask
+         * @param customizer
+         */
+        public ActiveBundleTracker(BundleContext context) {
+            super(context, Bundle.RESOLVED | Bundle.ACTIVE | Bundle.STARTING, null);
         }
-        return null;
+
+        @Override
+        public Object addingBundle(Bundle bundle, BundleEvent event) {
+            if (event != null && event.getType() == BundleEvent.STOPPED) {
+                return null;
+            }
+            return super.addingBundle(bundle, event);
+        }
+
     }
 
-    public void modifiedBundle(Bundle bundle, BundleEvent event, Object object) {
-    }
-
-    public void removedBundle(Bundle bundle, BundleEvent event, Object object) {
-        bundles.remove(object);
-    }
-    */
 
     public static class ServiceDeclarationImpl implements ServiceDeclaration {
         private Bundle bundle;

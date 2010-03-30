@@ -30,15 +30,20 @@ import org.osgi.framework.BundleContext;
  */
 public class EquinoxServiceDiscoveryActivator implements BundleActivator {
     // private static final Logger logger = Logger.getLogger(EquinoxServiceDiscoveryActivator.class.getName());
+    private EquinoxServiceDiscoverer discoverer;
 
     public void start(BundleContext context) throws Exception {
-        EquinoxServiceDiscoverer discoverer = new EquinoxServiceDiscoverer(context);
+        discoverer = new EquinoxServiceDiscoverer(context);
         ServiceDiscovery.getInstance().setServiceDiscoverer(discoverer);
         // logger.info("Equinox-based service discoverer is now configured.");
     }
 
     public void stop(BundleContext context) throws Exception {
         ServiceDiscovery.getInstance().setServiceDiscoverer(null);
+        if (discoverer != null) {
+            discoverer.stop();
+            discoverer = null;
+        }
     }
 
 }
