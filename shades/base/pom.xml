@@ -108,6 +108,12 @@
             <version>${pom.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-binding-ws-runtime-jaxws</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+
 <!-- these remaining dependencies are not required when using JDK6, so use a scope of provided  -->
 
         <dependency>
@@ -183,13 +189,6 @@
             <groupId>javax.xml.stream</groupId>
             <artifactId>stax-api</artifactId>
             <version>1.0-2</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>javax.activation</groupId>
-            <artifactId>activation</artifactId>
-            <version>1.1</version>
             <scope>provided</scope>
         </dependency>
 
