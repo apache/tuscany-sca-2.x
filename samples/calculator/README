@@ -1,6 +1,6 @@
 Calculator Sample
 =================
-This sample implements a simple calculator using SCA components. 
+This sample implements a simple calculator using SCA components.  It also optionally demonstrates tracing Tuscany code.
 
 The README in the samples directory (the directory above this) provides 
 general instructions about building and running samples. Take a look there 
@@ -18,6 +18,18 @@ java -cp ..\..\features\tuscany-sca-manifest.jar;target\sample-calculator.jar ca
 and on *nix do
 
 java -cp ../../features/tuscany-sca-manifest.jar:target/sample-calculator.jar calculator.CalculatorClient
+
+If you want to see an example of tracing the Tuscany code ... then try the command
+---------------------------------------------------------
+ant runtraced
+
+or on Windows run the command
+
+java -javaagent:../../bin/aspectjweaver.jar -cp ..\..\features\tuscany-sca-manifest.jar;target\sample-calculator.jar calculator.CalculatorClient
+
+or on *nix run the command
+
+java -javaagent:../../bin/aspectjweaver.jar -cp ..\..\features\tuscany-sca-manifest.jar:target\sample-calculator.jar calculator.CalculatorClient
 
 Sample Overview
 ---------------

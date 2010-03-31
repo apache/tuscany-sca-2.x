@@ -26,6 +26,9 @@
                 <include>modules/**/*</include>
                 <include>features/**/*</include>
             </includes>
+            <excludes>
+                <exclude>org.aspectj:aspectjweaver</exclude> 
+            </excludes>
         </fileSet>
 
     </fileSets>

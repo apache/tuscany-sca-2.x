@@ -24,8 +24,9 @@ and the extensions that come packaged with it.
 binding-ws-calculator              - Calculator running inside a web app also 
                                      showing webservices binding
 
-calculator                         - Calculator built with java components and 
-                                     local wires. 
+calculator (also traced)           - Calculator built with java components and 
+                                     local wires. A second build target shows how to
+                                     execute the sample with Tuscany trace turned on. 
 
 calculator-equinox                 - Calculator running inside a Equinox OSGi runtime
 

@@ -21,8 +21,8 @@
     <aspects>
         <!-- Uncomment either of these two aspects to perform standard logging -->
         <!-- or standard tracing on the Tuscany runtime.                       -->
-        <!-- <aspect name="org.apache.tuscany.sca.aspectj.SimpleTracingAspect" /> -->   
-        <!-- <aspect name="org.apache.tuscany.sca.aspectj.LoggingAspect" /> --> 
+        <aspect name="org.apache.tuscany.sca.aspectj.SimpleTracingAspect" />   
+        <aspect name="org.apache.tuscany.sca.aspectj.LoggingAspect" /> 
         
         <!-- Following is a concrete-aspect that defines the point cut for   -->
         <!-- the TimingAspect. Which ever calls you define in this pointcut  -->

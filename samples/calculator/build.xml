@@ -21,6 +21,8 @@
 
 	<property name="jar.name"   value="sample-calculator.jar" />
 	<property name="main.class" value="calculator.CalculatorClient" />
+    <property name="aspectjweaver" value="../../bin/aspectjweaver.jar"/>
+    <property name="manifestjar" value="../../features/tuscany-sca-manifest.jar"/>
 
 	<target name="compile" depends="init">
 		<javac srcdir="src/main/java" destdir="target/classes" debug="on" source="1.5" target="1.5">
@@ -60,6 +62,19 @@
 		</java>
 	</target>
 
+	<target name="runtraced" depends="compile">
+		<java classname="calculator.CalculatorClient"
+              fork="true"
+        	  failonerror="true">
+			<classpath>
+                <pathelement location="${manifestjar}"></pathelement>
+                <pathelement location="target/${jar.name}"></pathelement>
+             </classpath>
+            <jvmarg value="-javaagent:${aspectjweaver}"/>
+			<arg value="unmanaged"/>
+			<arg value="target/${jar.name}"/>
+		</java>
+	</target>
 </project>
 
 

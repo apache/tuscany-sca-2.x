@@ -50,7 +50,7 @@
     <build>
         <plugins>
         <!-- Copy the aspectjweaver jar to avoid surefire problems for
-        directorites with space -->
+        directories with space -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>

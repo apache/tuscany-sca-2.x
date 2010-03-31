@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <!--
     * Licensed to the Apache Software Foundation (ASF) under one
     * or more contributor license agreements.  See the NOTICE file
@@ -17,20 +16,26 @@
     * specific language governing permissions and limitations
     * under the License.
 -->
-<assembly>
-    <!-- id typically identifies the "type" (src vs bin etc) of the assembly -->
-    <id></id>
-    <includeBaseDirectory>true</includeBaseDirectory>
-    <baseDirectory>tuscany-sca-${version}</baseDirectory>
-    <formats>
-        <format>dir</format>
-    </formats>
+<component>
+    <fileSets>
+        <fileSet>
+            <directory>src/main/release/tracing</directory>
+            <outputDirectory>bin</outputDirectory>
+            <includes>
+            </includes>
+        </fileSet>
+    </fileSets>
 
-    <componentDescriptors>
-        <componentDescriptor>src/main/components/bin-common.xml</componentDescriptor>
-        <componentDescriptor>src/main/components/bin-modules.xml</componentDescriptor>
-        <componentDescriptor>src/main/components/bin-samples.xml</componentDescriptor>
-        <componentDescriptor>src/main/components/bin-launcher.xml</componentDescriptor>
-        <componentDescriptor>src/main/components/bin-tracing.xml</componentDescriptor>
-    </componentDescriptors>
-</assembly>
+    <dependencySets>
+        <dependencySet>
+            <outputDirectory>bin</outputDirectory>
+            <unpack>false</unpack>
+            <includes>
+                <include>org.aspectj:aspectjweaver</include>
+            </includes>
+            <outputFileNameMapping>aspectjweaver.jar</outputFileNameMapping>
+        </dependencySet>
+
+    </dependencySets>
+
+</component>
