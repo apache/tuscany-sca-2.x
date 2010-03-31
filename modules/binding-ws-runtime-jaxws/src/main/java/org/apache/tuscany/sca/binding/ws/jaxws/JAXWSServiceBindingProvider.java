@@ -98,8 +98,9 @@ public class JAXWSServiceBindingProvider implements ServiceBindingProvider, Prov
         // calculation (see above comment). For now just fake the addition of binding 
         // specific processing by adding a root if it's not already present
         if (!wsBinding.getURI().startsWith("http://")) {
-            wsBinding.setURI("http://localhost:8085" + wsBinding.getURI());
+            wsBinding.setURI("http://localhost:8080" + wsBinding.getURI());
         }
+        System.out.println("Service URI: " + wsBinding.getURI());
     }
 
     public void start() {
