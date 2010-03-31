@@ -16,5 +16,6 @@
 # under the License. 
 
 # Implementation class for the binding extension
-org.apache.tuscany.sca.binding.ws.axis2.provider.Axis2BindingProviderFactory;model=org.apache.tuscany.sca.binding.ws.WebServiceBinding
+org.apache.tuscany.sca.binding.ws.axis2.provider.Axis2BindingProviderFactory;model=org.apache.tuscany.sca.binding.ws.WebServiceBinding,ranking=462
+
 
