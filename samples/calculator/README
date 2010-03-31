@@ -25,11 +25,11 @@ ant runtraced
 
 or on Windows run the command
 
-java -javaagent:../../bin/aspectjweaver.jar -cp ..\..\features\tuscany-sca-manifest.jar;target\sample-calculator.jar calculator.CalculatorClient
+java -javaagent:..\..\bin/aspectjweaver.jar -cp ..\..\features\tuscany-sca-manifest.jar;target\sample-calculator.jar calculator.CalculatorClient
 
 or on *nix run the command
 
-java -javaagent:../../bin/aspectjweaver.jar -cp ..\..\features\tuscany-sca-manifest.jar:target\sample-calculator.jar calculator.CalculatorClient
+java -javaagent:../../bin/aspectjweaver.jar -cp ../../features/tuscany-sca-manifest.jar:target/sample-calculator.jar calculator.CalculatorClient
 
 Sample Overview
 ---------------
