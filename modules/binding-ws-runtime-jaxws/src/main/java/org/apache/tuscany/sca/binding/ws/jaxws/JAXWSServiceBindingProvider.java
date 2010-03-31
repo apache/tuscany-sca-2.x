@@ -150,7 +150,9 @@ public class JAXWSServiceBindingProvider implements ServiceBindingProvider, Prov
                 Detail d = fault.addDetail();
                 DetailEntry de = d.addDetailEntry(fe.getFaultName());
                 SOAPElement dece = de.addChildElement("message");
-                dece.addTextNode(fe.getMessage());
+                if (fe.getMessage() != null) {
+                    dece.addTextNode(fe.getMessage());
+                }
             } else {
                 Element element = responseMsg.getBody();
                 response.getSOAPBody().addChildElement(soapFactory.createElement(element));
