@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
@@ -65,7 +66,7 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
 
     private HazelcastInstance hazelcastInstance;
     protected Map<Object, Object> endpointMap;
-    private Map<String, Endpoint> localEndpoints = new HashMap<String, Endpoint>();
+    private Map<String, Endpoint> localEndpoints = new ConcurrentHashMap<String, Endpoint>();
     protected MultiMap<String, String> endpointOwners;
     private AssemblyFactory assemblyFactory;
 
