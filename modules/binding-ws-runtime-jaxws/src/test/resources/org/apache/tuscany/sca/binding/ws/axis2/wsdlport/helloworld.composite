@@ -32,7 +32,7 @@
     <component name="HelloWorldService">
 		<implementation.java class="org.apache.tuscany.sca.binding.ws.axis2.helloworld.HelloWorldService"/>
 	    <service name="HelloWorld">
-            <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)"/>
+            <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)" uri="http://localhost:8085/HelloWorldService/HelloWorld"/>
 	    </service>		
     </component>
     
