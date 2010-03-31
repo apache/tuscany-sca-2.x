@@ -44,10 +44,10 @@ import javax.xml.ws.soap.SOAPFaultException;
 
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.util.FaultException;
 import org.apache.tuscany.sca.invocation.DataExchangeSemantics;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
-import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 /**
@@ -120,7 +120,7 @@ public class JAXWSBindingInvoker implements Invoker, DataExchangeSemantics {
             if (body != null) {
                 SOAPFault fault = body.getFault();
                 if (fault != null) {
-                    setFault(msg, fault);
+//                    setFault(msg, fault);
                 } else {
                     // The 1st child element
                     msg.setBody(body.getChildElements().next());
@@ -128,8 +128,7 @@ public class JAXWSBindingInvoker implements Invoker, DataExchangeSemantics {
 
             }
         } catch (SOAPFaultException e) {
-            e.printStackTrace();
-            setFault(msg, e.getFault());
+            setFault(msg, e);
         } catch (WebServiceException e) {
             msg.setFaultBody(e);
         } catch (SOAPException e) {
@@ -141,14 +140,16 @@ public class JAXWSBindingInvoker implements Invoker, DataExchangeSemantics {
         return msg;
     }
 
-    private void setFault(Message msg, SOAPFault fault) {
+    private void setFault(Message msg, SOAPFaultException e) {
+        SOAPFault fault = e.getFault();
         Detail detail = fault.getDetail();
-        if (detail == null) {
-            return;
-        }
-        for (Iterator i = detail.getDetailEntries(); i.hasNext();) {
-            DetailEntry entry = (DetailEntry)i.next();
-            msg.setFaultBody(entry);
+        if (detail != null) {
+           for (Iterator i = detail.getDetailEntries(); i.hasNext();) {
+               DetailEntry entry = (DetailEntry)i.next();
+               FaultException fe = new FaultException(e.getMessage(), entry.getFirstChild(), e);
+               fe.setFaultName(entry.getElementQName());
+               msg.setFaultBody(fe);
+           }
         }
     }
 

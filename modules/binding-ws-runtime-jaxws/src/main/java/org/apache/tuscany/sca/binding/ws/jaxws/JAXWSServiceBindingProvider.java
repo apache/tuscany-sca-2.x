@@ -18,8 +18,13 @@
  */
 package org.apache.tuscany.sca.binding.ws.jaxws;
 
+import javax.xml.namespace.QName;
+import javax.xml.soap.Detail;
+import javax.xml.soap.DetailEntry;
+import javax.xml.soap.SOAPElement;
 import javax.xml.soap.SOAPException;
 import javax.xml.soap.SOAPFactory;
+import javax.xml.soap.SOAPFault;
 import javax.xml.soap.SOAPMessage;
 import javax.xml.ws.Endpoint;
 import javax.xml.ws.Provider;
@@ -33,6 +38,7 @@ import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.util.FaultException;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
@@ -56,10 +62,6 @@ public class JAXWSServiceBindingProvider implements ServiceBindingProvider, Prov
                                        ServletHost servletHost,
                                        FactoryExtensionPoint modelFactories,
                                        DataBindingExtensionPoint dataBindings) {
-
-        if (servletHost == null) {
-            throw new ServiceRuntimeException("No Servlet host is avaible for HTTP web services");
-        }
 
         this.messageFactory = modelFactories.getFactory(MessageFactory.class);
 
@@ -141,9 +143,18 @@ public class JAXWSServiceBindingProvider implements ServiceBindingProvider, Prov
             requestMsg.setBody(body);
             requestMsg.setOperation(operation);
             Message responseMsg = endpoint.invoke(operation, requestMsg);
-            Element element = responseMsg.getBody();
             SOAPMessage response = soapMessageFactory.createMessage();
-            response.getSOAPBody().addChildElement(soapFactory.createElement(element));
+            if (responseMsg.isFault()) {
+                FaultException fe = responseMsg.getBody();
+                SOAPFault fault = response.getSOAPBody().addFault(new QName(response.getSOAPBody().getNamespaceURI(), "Server"), "unknown");
+                Detail d = fault.addDetail();
+                DetailEntry de = d.addDetailEntry(fe.getFaultName());
+                SOAPElement dece = de.addChildElement("message");
+                dece.addTextNode(fe.getMessage());
+            } else {
+                Element element = responseMsg.getBody();
+                response.getSOAPBody().addChildElement(soapFactory.createElement(element));
+            }
             return response;
         } catch (SOAPException e) {
             throw new ServiceRuntimeException(e);
