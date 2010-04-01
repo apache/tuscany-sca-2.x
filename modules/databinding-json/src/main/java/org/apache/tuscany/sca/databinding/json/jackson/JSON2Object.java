@@ -26,12 +26,9 @@ import org.apache.tuscany.sca.databinding.javabeans.JavaBeansDataBinding;
 import org.apache.tuscany.sca.databinding.json.JSONDataBinding;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.map.AnnotationIntrospector;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.introspect.JacksonAnnotationIntrospector;
 import org.codehaus.jackson.map.type.TypeFactory;
 import org.codehaus.jackson.type.JavaType;
-import org.codehaus.jackson.xc.JaxbAnnotationIntrospector;
 
 /**
  * @version $Rev$ $Date$
@@ -41,12 +38,7 @@ public class JSON2Object implements PullTransformer<Object, Object> {
 
     public JSON2Object() {
         super();
-        mapper = new ObjectMapper();
-        AnnotationIntrospector primary = new JaxbAnnotationIntrospector();
-        AnnotationIntrospector secondary = new JacksonAnnotationIntrospector();
-        AnnotationIntrospector pair = new AnnotationIntrospector.Pair(primary, secondary);
-        mapper.getDeserializationConfig().setAnnotationIntrospector(pair);
-        mapper.getSerializationConfig().setAnnotationIntrospector(pair);
+        mapper = JacksonHelper.createObjectMapper();
     }
 
     public Object transform(Object source, TransformationContext context) {

@@ -24,10 +24,10 @@ import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
 import org.apache.tuscany.sca.databinding.javabeans.JavaBeansDataBinding;
 import org.apache.tuscany.sca.databinding.json.JSONDataBinding;
-import org.codehaus.jackson.map.AnnotationIntrospector;
+import org.apache.tuscany.sca.databinding.json.JSONHelper;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.introspect.JacksonAnnotationIntrospector;
-import org.codehaus.jackson.xc.JaxbAnnotationIntrospector;
 
 /**
  * @version $Rev$ $Date$
@@ -37,12 +37,7 @@ public class Object2JSON implements PullTransformer<Object, Object> {
 
     public Object2JSON() {
         super();
-        mapper = new ObjectMapper();
-        AnnotationIntrospector primary = new JacksonAnnotationIntrospector();
-        AnnotationIntrospector secondary = new JaxbAnnotationIntrospector();
-        AnnotationIntrospector pair = new AnnotationIntrospector.Pair(primary, secondary);
-        mapper.getDeserializationConfig().setAnnotationIntrospector(pair);
-        mapper.getSerializationConfig().setAnnotationIntrospector(pair);
+        mapper = JacksonHelper.createObjectMapper();
     }
 
     public Object transform(Object source, TransformationContext context) {
@@ -50,8 +45,25 @@ public class Object2JSON implements PullTransformer<Object, Object> {
             return null;
         }
 
+        Class<?> targetType = null;
+        if (context != null && context.getTargetDataType() != null) {
+            targetType = context.getTargetDataType().getPhysical();
+        }
+        if (targetType == null) {
+            targetType = String.class;
+        }
         try {
-            return mapper.writeValueAsString(source);
+            String value = mapper.writeValueAsString(source);
+            if (targetType == String.class) {
+                return value;
+            } else if (JsonNode.class.isAssignableFrom(targetType)) {
+                return JacksonHelper.createJsonParser(value).readValueAsTree();
+            }
+            if (JsonParser.class.isAssignableFrom(targetType)) {
+                return JacksonHelper.createJsonParser(value);
+            } else {
+                return JSONHelper.toJSON(value, targetType);
+            }
         } catch (Exception e) {
             throw new TransformationException(e);
         }

@@ -23,7 +23,6 @@ import java.io.StringReader;
 import java.io.StringWriter;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
@@ -43,64 +42,68 @@ import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.json.JSONObject;
 import org.junit.Test;
 
-public class JSONTransformerTestCase  {
-    private static final String IPO_XML = "<?xml version=\"1.0\"?>" + "<ipo:purchaseOrder"
-                                          + "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
-                                          + "  xmlns:ipo=\"http://www.example.com/IPO\""
-                                          + "  xsi:schemaLocation=\"http://www.example.com/IPO ipo.xsd\""
-                                          + "  orderDate=\"1999-12-01\">"
-                                          + "  <shipTo exportCode=\"1\" xsi:type=\"ipo:UKAddress\">"
-                                          + "    <name>Helen Zoe</name>"
-                                          + "    <street>47 Eden Street</street>"
-                                          + "    <city>Cambridge</city>"
-                                          + "    <postcode>CB1 1JR</postcode>"
-                                          + "  </shipTo>"
-                                          + "  <billTo xsi:type=\"ipo:USAddress\">"
-                                          + "    <name>Robert Smith</name>"
-                                          + "    <street>8 Oak Avenue</street>"
-                                          + "    <city>Old Town</city>"
-                                          + "    <state>PA</state>"
-                                          + "    <zip>95819</zip>"
-                                          + "  </billTo>"
-                                          + "  <items>"
-                                          + "    <item partNum=\"833-AA\">"
-                                          + "      <productName>Lapis necklace</productName>"
-                                          + "      <quantity>1</quantity>"
-                                          + "      <USPrice>99.95</USPrice>"
-                                          + "      <ipo:comment>Want this for the holidays</ipo:comment>"
-                                          + "      <shipDate>1999-12-05</shipDate>"
-                                          + "    </item>"
-                                          + "  </items>"
-                                          + "</ipo:purchaseOrder>";
+public class JSONTransformerTestCase {
+    private static final String IPO_XML =
+        "<?xml version=\"1.0\"?>" + "<ipo:purchaseOrder"
+            + "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+            + "  xmlns:ipo=\"http://www.example.com/IPO\""
+            + "  xsi:schemaLocation=\"http://www.example.com/IPO ipo.xsd\""
+            + "  orderDate=\"1999-12-01\">"
+            + "  <shipTo exportCode=\"1\" xsi:type=\"ipo:UKAddress\">"
+            + "    <name>Helen Zoe</name>"
+            + "    <street>47 Eden Street</street>"
+            + "    <city>Cambridge</city>"
+            + "    <postcode>CB1 1JR</postcode>"
+            + "  </shipTo>"
+            + "  <billTo xsi:type=\"ipo:USAddress\">"
+            + "    <name>Robert Smith</name>"
+            + "    <street>8 Oak Avenue</street>"
+            + "    <city>Old Town</city>"
+            + "    <state>PA</state>"
+            + "    <zip>95819</zip>"
+            + "  </billTo>"
+            + "  <items>"
+            + "    <item partNum=\"833-AA\">"
+            + "      <productName>Lapis necklace</productName>"
+            + "      <quantity>1</quantity>"
+            + "      <USPrice>99.95</USPrice>"
+            + "      <ipo:comment>Want this for the holidays</ipo:comment>"
+            + "      <shipDate>1999-12-05</shipDate>"
+            + "    </item>"
+            + "  </items>"
+            + "</ipo:purchaseOrder>";
 
-    private static final String JSON_STR = "{\"xsl:root\":{\"@xmlns\":{\"xsl\":\"http://foo.com\"},\"data\":{\"$\":\"my json string\"}}}";
+    private static final String JSON_STR =
+        "{\"xsl:root\":{\"@xmlns\":{\"xsl\":\"http://foo.com\"},\"data\":{\"$\":\"my json string\"}}}";
 
     @Test
     public void testXML2JSON() throws Exception {
-    	ExtensionPointRegistry extensionPointRegistry = new DefaultExtensionPointRegistry();
-    	
-        XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(new StringReader(IPO_XML));
+        ExtensionPointRegistry extensionPointRegistry = new DefaultExtensionPointRegistry();
+        StAXHelper staxHelper = StAXHelper.getInstance(extensionPointRegistry);
+
+        XMLStreamReader reader = staxHelper.createXMLStreamReader(new StringReader(IPO_XML));
         XMLStreamReader2JSON t1 = new XMLStreamReader2JSON(extensionPointRegistry);
-        JSONObject json = (JSONObject) t1.transform(reader, null);
+        JSONObject json = (JSONObject)t1.transform(reader, null);
         Assert.assertNotNull(json);
 
-        // Cannot round-trip as we hit a bug in Jettison: http://jira.codehaus.org/browse/JETTISON-37
+        // Cannot round-trip as we hit a bug in Jettison: http://jira.codehaus.org/browse/JETTISON-93
         /*
-         JSON2XMLStreamReader t2 = new JSON2XMLStreamReader();
-         XMLStreamReader reader2 = t2.transform(json, null);
-         StringWriter sw = new StringWriter();
-         XMLStreamWriter streamWriter = XMLOutputFactory.newInstance().createXMLStreamWriter(sw);
-         new XMLStreamSerializer().serialize(reader2, streamWriter);
-         streamWriter.flush();
-         System.out.println(sw.toString());
-         */
+        JSON2XMLStreamReader t2 = new JSON2XMLStreamReader();
+        XMLStreamReader reader2 = t2.transform(json, null);
+        StringWriter sw = new StringWriter();
+        XMLStreamWriter streamWriter = staxHelper.createXMLStreamWriter(sw);
+        staxHelper.save(reader2, streamWriter);
+        streamWriter.flush();
+        System.out.println(sw.toString());
+        */
+
     }
 
     @Test
     public void testJSON2XML() throws Exception {
-    	ExtensionPointRegistry extensionPointRegistry = new DefaultExtensionPointRegistry();
-    	StAXHelper helper = StAXHelper.getInstance(extensionPointRegistry);
-    	
+        ExtensionPointRegistry extensionPointRegistry = new DefaultExtensionPointRegistry();
+        StAXHelper helper = StAXHelper.getInstance(extensionPointRegistry);
+
         JSON2XMLStreamReader t2 = new JSON2XMLStreamReader();
         XMLStreamReader reader2 = t2.transform(new JSONObject(JSON_STR), null);
         StringWriter sw = new StringWriter();
@@ -126,7 +129,7 @@ public class JSONTransformerTestCase  {
     public void testString2JSON() throws Exception {
         String json = "{\"name\":\"John\",\"age\":25}";
         String2JSON t1 = new String2JSON();
-        JSONObject jsonObject = (JSONObject) t1.transform(json, null);
+        JSONObject jsonObject = (JSONObject)t1.transform(json, null);
         Assert.assertEquals(jsonObject.getString("name"), "John");
         Assert.assertEquals(jsonObject.getInt("age"), 25);
         JSON2String t2 = new JSON2String();
