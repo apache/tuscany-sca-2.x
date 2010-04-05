@@ -20,7 +20,6 @@
 package org.apache.tuscany.sca.host.http;
 
 import java.io.IOException;
-import java.lang.reflect.Constructor;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,6 +31,7 @@ import javax.servlet.Servlet;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.LifeCycleListener;
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
+import org.apache.tuscany.sca.extensibility.ServiceHelper;
 
 /**
  * Default implementation of a Servlet host extension point.
@@ -110,18 +110,8 @@ public class DefaultServletHostExtensionPoint implements ServletHostExtensionPoi
         public synchronized ServletHost getServletHost() {
             if (host == null) {
                 try {
-                    Class<?> cls = sd.loadClass();
-                    Constructor<?> ctor = null;
-                    try {
-                        ctor = cls.getConstructor(ExtensionPointRegistry.class);
-                        host = (ServletHost)ctor.newInstance(registry);
-                    } catch (NoSuchMethodException e) {
-                        ctor = cls.getConstructor();
-                        host = (ServletHost)ctor.newInstance();
-                    }
-                    if(host instanceof LifeCycleListener) {
-                        ((LifeCycleListener) host).start();
-                    }
+                    host = ServiceHelper.newInstance(registry, sd);
+                    ServiceHelper.start(host);
                 } catch (Throwable e) {
                     throw new IllegalStateException(e);
                 }
@@ -181,9 +171,7 @@ public class DefaultServletHostExtensionPoint implements ServletHostExtensionPoi
         }
 
         public void stop() {
-            if (host instanceof LifeCycleListener) {
-                ((LifeCycleListener)host).stop();
-            }
+            ServiceHelper.stop(host);
         }
     }
 
@@ -191,11 +179,7 @@ public class DefaultServletHostExtensionPoint implements ServletHostExtensionPoi
     }
 
     public void stop() {
-        for (ServletHost host : servletHosts) {
-            if (host instanceof LifeCycleListener) {
-                ((LifeCycleListener)host).stop();
-            }
-        }
+        ServiceHelper.stop(servletHosts);
         servletHosts.clear();
         registry = null;
     }
