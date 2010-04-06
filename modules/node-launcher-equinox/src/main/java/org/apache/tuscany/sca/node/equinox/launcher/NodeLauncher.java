@@ -325,7 +325,6 @@ public class NodeLauncher {
     private static void destroyNode(Object node) throws Exception {
         try {
             node.getClass().getMethod("stop").invoke(node);
-            node.getClass().getMethod("destroy").invoke(node);
             logger.info("SCA Node is now stopped.");
         } catch (Exception e) {
             logger.log(Level.SEVERE, "SCA Node could not be stopped", e);
