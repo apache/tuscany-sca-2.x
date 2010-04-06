@@ -194,7 +194,7 @@ public class EquinoxHost {
                 // Get bundle context from the running Eclipse instance
                 bundleContext = injectedBundleContext;
             }
-
+            
             // Determine the runtime classpath entries
             Set<URL> urls;
             urls = findBundleLocations();
@@ -203,6 +203,7 @@ public class EquinoxHost {
             // regular JARs
             for (URL url : urls) {
                 File file = file(url);
+               
                 Manifest manifest = getCustomizedMF(file.getName());
                 String bundleName = null;
                 if (manifest == null) {
@@ -550,14 +551,13 @@ public class EquinoxHost {
     }
 
     private Set<URL> findBundleLocations() throws FileNotFoundException, URISyntaxException, MalformedURLException {
-        if (bundleLocations == null) {
+        if (bundleLocations == null || 
+            (bundleLocations != null && bundleLocations.size() == 0)) {
             if (injectedBundleContext != null) {
-
                 // Use classpath entries from a distribution if there is one and the modules
                 // directories available in a dev environment for example
                 bundleLocations = runtimeClasspathEntries(true, false, true);
             } else {
-
                 // Use classpath entries from a distribution if there is one and the classpath
                 // entries on the current application's classloader
                 // *** Changed by Mike Edwards, 9th April 2009 ***
