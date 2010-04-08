@@ -32,7 +32,7 @@
 
     <modules>
         <module>all</module>
-        <module>tomcat</module>
+        <!-- module>tomcat</module -->
     </modules>
 
 </project>
