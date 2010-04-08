@@ -1,5 +1,5 @@
 /*
- * Copyright(C) OASIS(R) 2005,2009. All Rights Reserved.
+ * Copyright(C) OASIS(R) 2005,2010. All Rights Reserved.
  * OASIS trademark, IPR and other policies apply.
  */
 package org.oasisopen.sca.annotation;

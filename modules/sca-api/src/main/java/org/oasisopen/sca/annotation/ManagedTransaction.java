@@ -1,6 +1,6 @@
 /*
- * Copyright(C) OASIS(R) 2005,2009. All Rights Reserved.
- * OASIS trademark, IPR and other policies apply.    
+ * Copyright(C) OASIS(R) 2005,2010. All Rights Reserved.
+ * OASIS trademark, IPR and other policies apply.
  */
 package org.oasisopen.sca.annotation;
 
@@ -24,8 +24,20 @@ import java.lang.annotation.Target;
 @Retention(RUNTIME)
 @Intent(ManagedTransaction.MANAGEDTRANSACTION)
 public @interface ManagedTransaction {
+	/**
+	 * The serialized QName of the managedTransaction policy intent,
+	 * for use with the SCA @Requires annotation.
+	 */
     String MANAGEDTRANSACTION = SCA_PREFIX + "managedTransaction";
+    /**
+	 * The serialized QName of the managedTransaction.local policy intent,
+	 * for use with the SCA @Requires annotation.
+	 */
     String MANAGEDTRANSACTION_MESSAGE = MANAGEDTRANSACTION + ".local";
+    /**
+	 * The serialized QName of the managedTransaction.global policy intent,
+	 * for use with the SCA @Requires annotation.
+	 */
     String MANAGEDTRANSACTION_TRANSPORT = MANAGEDTRANSACTION + ".global";
 
     /**
@@ -36,5 +48,3 @@ public @interface ManagedTransaction {
     @Qualifier
     String[] value() default "";
 }
-
-

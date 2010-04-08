@@ -1,6 +1,6 @@
 /*
- * Copyright(C) OASIS(R) 2005,2009. All Rights Reserved.
- * OASIS trademark, IPR and other policies apply.    
+ * Copyright(C) OASIS(R) 2005,2010. All Rights Reserved.
+ * OASIS trademark, IPR and other policies apply.
  */
 package org.oasisopen.sca.annotation;
 
@@ -24,6 +24,9 @@ import java.lang.annotation.Target;
 @Retention(RUNTIME)
 @Intent(ManagedSharedTransaction.MANAGEDSHAREDTRANSACTION)
 public @interface ManagedSharedTransaction {
+	/**
+	 * The serialized QName of the managedSharedTransaction policy intent,
+	 * for use with the SCA @Requires annotation.
+	 */
     String MANAGEDSHAREDTRANSACTION = SCA_PREFIX + "managedSharedTransaction";
 }
-

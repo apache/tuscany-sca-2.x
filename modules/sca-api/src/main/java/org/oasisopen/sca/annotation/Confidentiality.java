@@ -1,5 +1,5 @@
 /*
- * Copyright(C) OASIS(R) 2005,2009. All Rights Reserved.
+ * Copyright(C) OASIS(R) 2005,2010. All Rights Reserved.
  * OASIS trademark, IPR and other policies apply.
  */
 package org.oasisopen.sca.annotation;
@@ -16,33 +16,28 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * Annotation denoting the intent that service operations require confidentiality.
- * <p/>
- * Applied to the injection site (field, method or constructor parameter) for a reference,
- * it indicates that all invocations through that reference require confidentiality.
- * <p/>
- * Applied to a interface method on a service contract, it indicates that all invocations
- * of that service operation require confidentiality; applied to the type of a service contract,
- * it indicates that all service operations on that interface require confidentiality.
- * <p/>
- * Applied to a method on an implementation class, it indicates that all invocations that
- * are dispatched to that implementation method (through any service) require confidentiality.
- * Applied to a interface implemented by an implementation class, it indicates that all
- * invocations that are dispatched to the implementation method for that interface operation
- * require confidentiality.
- * <p/>
- * Applied to an implementation class, it indicates that all invocations of that implementation
- * and that all invocations made by that implementation require confidentiality.
- *
- * @version $Rev$ $Date$
+ * The @Confidentiality annotation is used to indicate that the
+ * invocation requires confidentiality.
  */
 @Inherited
 @Target({TYPE, FIELD, METHOD, PARAMETER})
 @Retention(RUNTIME)
 @Intent(Confidentiality.CONFIDENTIALITY)
 public @interface Confidentiality {
+	/**
+	 * The serialized QName of the confidentiality policy intent,
+	 * for use with the SCA @Requires annotation.
+	 */
     String CONFIDENTIALITY = SCA_PREFIX + "confidentiality";
+    /**
+	 * The serialized QName of the confidentiality.message policy intent,
+	 * for use with the SCA @Requires annotation.
+	 */
     String CONFIDENTIALITY_MESSAGE = CONFIDENTIALITY + ".message";
+    /**
+	 * The serialized QName of the confidentiality.transport policy intent,
+	 * for use with the SCA @Requires annotation.
+	 */
     String CONFIDENTIALITY_TRANSPORT = CONFIDENTIALITY + ".transport";
 
     /**

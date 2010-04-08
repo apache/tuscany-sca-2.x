@@ -1,5 +1,5 @@
 /*
- * Copyright(C) OASIS(R) 2005,2009. All Rights Reserved.
+ * Copyright(C) OASIS(R) 2005,2010. All Rights Reserved.
  * OASIS trademark, IPR and other policies apply.
  */
 package org.oasisopen.sca.annotation;
@@ -15,20 +15,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * Annotation that allows the attachment of any intent to a Java Class or interface or to members of that
- * class such as methods, fields or constructor parameters.
- * <p/>
- * Intents are specified as XML QNames in the representation defined by
- * {@link javax.xml.namespace.QName#toString()}. Intents may be qualified with one or more
- * suffixes separated by a "." such as:
- * <ul>
- * <li>{http://docs.oasis-open.org/ns/opencsa/sca/200912}confidentiality</li>
- * <li>{http://docs.oasis-open.org/ns/opencsa/sca/200912}confidentiality.message</li>
- * </ul>
- * This annotation supports general purpose intents specified as strings.  Users may also define
- * specific intents using the {@link @org.oasisopen.sca.annotation.Intent} annotation.
- *
- * @version $Rev$ $Date$
+ * The @Requires annotation supports general purpose intents
+ * specified as strings. Users can also define specific intent
+ * annotations using the @Intent annotation.
  */
 @Inherited
 @Retention(RUNTIME)

@@ -1,6 +1,6 @@
 /*
- * Copyright(C) OASIS(R) 2005,2009. All Rights Reserved.
- * OASIS trademark, IPR and other policies apply.    
+ * Copyright(C) OASIS(R) 2005,2010. All Rights Reserved.
+ * OASIS trademark, IPR and other policies apply.
  */
 package org.oasisopen.sca.annotation;
 
@@ -17,14 +17,16 @@ import java.lang.annotation.Target;
 
 /**
  * The @Authorization annotation is used to indicate that
- * an authorization policy is required - for a method, for an implementation class, for a reference
- * (either injected as a method parameter or injected into a field)
+ * an authorization policy is required.
  */
 @Inherited
 @Target({TYPE, FIELD, METHOD, PARAMETER})
 @Retention(RUNTIME)
 @Intent(Authorization.AUTHORIZATION)
 public @interface Authorization {
+	/**
+	 * The serialized QName of the authorization policy intent,
+	 * for use with the SCA @Requires annotation.
+	 */
     String AUTHORIZATION = SCA_PREFIX + "authorization";
 }
-

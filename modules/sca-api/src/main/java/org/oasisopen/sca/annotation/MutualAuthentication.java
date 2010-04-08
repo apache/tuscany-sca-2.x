@@ -1,6 +1,6 @@
 /*
- * Copyright(C) OASIS(R) 2005,2009. All Rights Reserved.
- * OASIS trademark, IPR and other policies apply.    
+ * Copyright(C) OASIS(R) 2005,2010. All Rights Reserved.
+ * OASIS trademark, IPR and other policies apply.
  */
 package org.oasisopen.sca.annotation;
 
@@ -24,7 +24,9 @@ import java.lang.annotation.Target;
 @Retention(RUNTIME)
 @Intent(MutualAuthentication.MUTUALAUTHENTICATION)
 public @interface MutualAuthentication {
+	/**
+	 * The serialized QName of the mutualAuthentication policy intent,
+	 * for use with the SCA @Requires annotation.
+	 */
     String MUTUALAUTHENTICATION = SCA_PREFIX + "mutualAuthentication";
 }
-
-
