@@ -88,6 +88,11 @@
                 <module>ws</module>
   </modules>
 
+  <!-- We don't want to deploy any of the test modules -->
+  <properties>
+     <maven.deploy.skip>true</maven.deploy.skip>
+  </properties>
+
   <build>
      <plugins>
         <plugin>
