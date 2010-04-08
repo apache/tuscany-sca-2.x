@@ -351,6 +351,8 @@ public class WebServiceBindingProcessor extends BaseStAXArtifactProcessor implem
                 model.setBindingInterfaceContract(interfaceContract);
             }
         }
+        
+        policyProcessor.resolvePolicies(model, resolver, context);
     }
 
     private PortType getPortType(WebServiceBinding model) {
