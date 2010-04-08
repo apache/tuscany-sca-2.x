@@ -550,12 +550,12 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
     }
 
     /**
-     * <headers JMSType=”string”?
-     *          JMSCorrelationID=”string”?
-     *          JMSDeliveryMode=”PERSISTENT or NON_PERSISTENT”?
-     *          timeToLive=”long”?      
-     *          JMSPriority=”0 .. 9”?>
-     *     <property name=”NMTOKEN” type=”NMTOKEN”?>*    
+     * <headers JMSType="string"?
+     *          JMSCorrelationID="string"?
+     *          JMSDeliveryMode="PERSISTENT or NON_PERSISTENT"?
+     *          timeToLive="long"?      
+     *          JMSPriority="0 .. 9"?>
+     *     <property name="NMTOKEN" type="NMTOKEN"?>*    
      * </headers>?
      */
     private void parseHeaders(XMLStreamReader reader, JMSBinding jmsBinding, Monitor monitor) throws XMLStreamException {
@@ -640,14 +640,14 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
     }
 
     /**
-     * <operationProperties name=”string” nativeOperation=”string”?>
-     *   <property name=”NMTOKEN” type=”NMTOKEN”?>*
-     *   <headers JMSType=”string”?
-     *            JMSCorrelationID=”string”?
-     *            JMSDeliveryMode=”PERSISTENT or NON_PERSISTENT”?
-     *            timeToLive=”long”?
-     *            JMSPriority=”0 .. 9”?>
-     *       <property name=”NMTOKEN” type=”NMTOKEN”?>*
+     * <operationProperties name="string" nativeOperation="string"?>
+     *   <property name="NMTOKEN" type="NMTOKEN"?>*
+     *   <headers JMSType="string"?
+     *            JMSCorrelationID="string"?
+     *            JMSDeliveryMode="PERSISTENT or NON_PERSISTENT"?
+     *            timeToLive="long"?
+     *            JMSPriority="0 .. 9"?>
+     *       <property name="NMTOKEN" type="NMTOKEN"?>*
      *   </headers>?
      * </operationProperties>*
      */
@@ -879,7 +879,7 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
         }
 
         // Given a response connection name attribute, there must not be a response element.
-        // 156 • /binding.jms/@responseConnection – identifies a binding.jms element that is present in a
+        // 156  /binding.jms/@responseConnection - identifies a binding.jms element that is present in a
         // 157 definition document, whose response child element is used to define the values for this binding. In
         // 158 this case this binding.jms element MUST NOT contain a response element.
         QName responseConnectionName = jmsBinding.getResponseConnectionName();
@@ -1004,12 +1004,12 @@ public class JMSBindingProcessor extends BaseStAXArtifactProcessor implements St
 
     /**
      * Writes headers element and its attributes.
-     * <headers JMSType=”string”?
-     *          JMSCorrelationID=”string”?
-     *          JMSDeliveryMode=”PERSISTENT or NON_PERSISTENT”?
-     *          timeToLive=”long”?      
-     *          JMSPriority=”0 .. 9”?>
-     *     <property name=”NMTOKEN” type=”NMTOKEN”?>*    
+     * <headers JMSType="string"?
+     *          JMSCorrelationID="string"?
+     *          JMSDeliveryMode="PERSISTENT or NON_PERSISTENT"?
+     *          timeToLive="long"?      
+     *          JMSPriority="0 .. 9"?>
+     *     <property name="NMTOKEN" type="NMTOKEN"?>*    
      * </headers>?
      */
     private void writeHeaders( JMSBinding jmsBinding, XMLStreamWriter writer) throws XMLStreamException {
