@@ -19,9 +19,11 @@
 package org.apache.tuscany.sca.runtime;
 
 import org.junit.Test;
+import org.junit.Ignore;
 
 /**
  */
+@Ignore
 public class VersionTestCase {
 
     @Test
