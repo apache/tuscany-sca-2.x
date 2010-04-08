@@ -35,6 +35,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Message;
@@ -47,8 +48,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.oasisopen.sca.ServiceRuntimeException;
-
-import com.sun.xml.internal.messaging.saaj.util.Base64;
 
 /**
  * Servlet that handles JSON-RPC requests invoking SCA services.
@@ -127,8 +126,7 @@ public class JSONRPCServiceServlet extends JSONRPCServlet {
 
             //parse the GET QueryString
             try {
-                String params = Base64.base64Decode(URLDecoder.decode(request.getParameter("params"),charset));
-                
+                String params = new String(Base64.decodeBase64(URLDecoder.decode(request.getParameter("params"),charset).getBytes()));
                 StringBuffer sb = new StringBuffer();
                 sb.append("{");
                 sb.append("\"method\": \"" + request.getParameter("method") + "\",");

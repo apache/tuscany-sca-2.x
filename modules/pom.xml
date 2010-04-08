@@ -113,7 +113,7 @@
         <module>policy-transaction-runtime-geronimo</module>        
         <module>sca-api</module>
         <module>sca-client-impl</module>
-        <module>sca-client-javascript</module>
+        <!-- module>sca-client-javascript</module -->
         <module>stripes</module>
         <module>tracing-aspectj</module>
         <module>xsd</module>

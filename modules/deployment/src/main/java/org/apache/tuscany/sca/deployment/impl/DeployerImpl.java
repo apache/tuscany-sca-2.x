@@ -507,7 +507,7 @@ public class DeployerImpl implements Deployer {
         return (T)model;
     }
 
-    public <T> T loadXMLDocument(URL document, Monitor monitor) throws XMLStreamException, ContributionReadException {
+    public Object loadXMLDocument(URL document, Monitor monitor) throws XMLStreamException, ContributionReadException {
         init();
         XMLStreamReader reader = staxHelper.createXMLStreamReader(document);
         reader.nextTag();
@@ -533,13 +533,13 @@ public class DeployerImpl implements Deployer {
     }
 
     @SuppressWarnings("unchecked")
-    public <T> T loadXMLElement(XMLStreamReader reader, Monitor monitor) throws ContributionReadException,
+    public Object loadXMLElement(XMLStreamReader reader, Monitor monitor) throws ContributionReadException,
         XMLStreamException {
         init();
-        return (T)staxProcessor.read(reader, new ProcessorContext(monitor));
+        return staxProcessor.read(reader, new ProcessorContext(monitor));
     }
 
-    public <T> T loadXMLDocument(Reader document, Monitor monitor) throws XMLStreamException, ContributionReadException {
+    public Object loadXMLDocument(Reader document, Monitor monitor) throws XMLStreamException, ContributionReadException {
         init();
         XMLStreamReader reader = staxHelper.createXMLStreamReader(document);
         ValidatingXMLInputFactory.setMonitor(reader, monitor);

@@ -828,22 +828,9 @@
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>2.0.2</version>
                     <configuration>
-                        <compilerId>tuscany-eclipse</compilerId>
-                        <source>1.5</source>
-                        <target>1.5</target>
-                        <compilerArguments>
-                            <osgi>true</osgi>
-                        </compilerArguments>
+                        <source>1.6</source>
+                        <target>1.6</target>
                     </configuration>
-
-                    <dependencies>
-                        <dependency>
-                            <groupId>org.apache.tuscany.maven.plugins</groupId>
-                            <artifactId>maven-eclipse-compiler</artifactId>
-                            <version>1.0.2</version>
-                            <scope>runtime</scope>
-                        </dependency>
-                    </dependencies>
                 </plugin>
 
                 <!-- surefire plugin configuration -->
