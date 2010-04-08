@@ -42,7 +42,7 @@ public class ComponentContextProxy implements ComponentContext {
         return runtimeComponent.getComponentContext();
     }
 
-    public <B, R extends ServiceReference<B>> R cast(B target) throws IllegalArgumentException {
+    public <B> ServiceReference<B> cast(B target) throws IllegalArgumentException {
         return getComponentContext().cast(target);
     }
 
