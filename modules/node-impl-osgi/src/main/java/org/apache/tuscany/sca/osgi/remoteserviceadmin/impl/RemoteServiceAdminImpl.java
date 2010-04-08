@@ -218,26 +218,26 @@ public class RemoteServiceAdminImpl implements RemoteServiceAdmin, ManagedServic
         }
         String topic = "org/osgi/service/remoteserviceadmin/" + eventType;
         Map<String, Object> props = new HashMap<String, Object>();
-        /*
-         * <ul>
-        <li>bundle – (Bundle) The Remote Service Admin bundle
-        <li>bundle-id – (Long) The id of the Blueprint bundle.
-        <li>bundle-symbolicname – (String) The Bundle Symbolic Name of the
-        Remote Service Admin bundle.
-        <li>bundle-version - (Version) The version of the Blueprint bundle.
-        <li>cause – The exception, if present.
-        <li>import.registration – An imported endpoint, if present
-        <li>export.registration – An exported endpoint, if present
-        <li>service.remote.id – Remote service UUID, if present
-        <li>service.remote.uuid – Remote service UUID, if present
-        <li>service.remote.uri – (String) The URI of the endpoint, if present
-        <li>objectClass – (String[]) The interface names, if present
-        <li>service.imported.configs – (String+) The configuration types of the
-        imported services, if present
-        <li>timestamp – (Long) The time when the event occurred
-        <li>event – (RemoteServiceAdminEvent) The RemoteServiceAdminEvent
-        object that caused this event.
-        </ul>
+         /*
+          * <ul>
+         <li>bundle – (Bundle) The Remote Service Admin bundle
+         <li>bundle-id – (Long) The id of the Blueprint bundle.
+         <li>bundle-symbolicname – (String) The Bundle Symbolic Name of the
+         Remote Service Admin bundle.
+         <li>bundle-version - (Version) The version of the Blueprint bundle.
+         <li>cause – The exception, if present.
+         <li>import.registration – An imported endpoint, if present
+         <li>export.registration – An exported endpoint, if present
+         <li>service.remote.id – Remote service UUID, if present
+         <li>service.remote.uuid – Remote service UUID, if present
+         <li>service.remote.uri – (String) The URI of the endpoint, if present
+         <li>objectClass – (String[]) The interface names, if present
+         <li>service.imported.configs – (String+) The configuration types of the
+         imported services, if present
+         <li>timestamp – (Long) The time when the event occurred
+         <li>event – (RemoteServiceAdminEvent) The RemoteServiceAdminEvent
+         object that caused this event.
+         </ul>
         */
         Bundle rsaBundle = context.getBundle();
         props.put("bundle", rsaBundle);
