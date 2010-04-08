@@ -1,5 +1,5 @@
 /*
- * Copyright(C) OASIS(R) 2005,2009. All Rights Reserved.
+ * Copyright(C) OASIS(R) 2005,2010. All Rights Reserved.
  * OASIS trademark, IPR and other policies apply.
  */
 package org.oasisopen.sca.client;
@@ -14,7 +14,7 @@ import org.oasisopen.sca.client.impl.SCAClientFactoryFinderImpl;
 
 /**
  * The SCAClientFactory can be used by non-SCA managed code to 
- * lookup services that exist in a SCADomain.
+ * lookup services that exist in a SCA Domain.
  * 
  * @see SCAClientFactoryFinderImpl
  * 
@@ -51,7 +51,7 @@ public abstract class SCAClientFactory {
      * SCAClientFactory
      */
     protected SCAClientFactory(URI domainURI)
-        throws NoSuchDomainException {
+    	throws NoSuchDomainException {
         this.domainURI = domainURI;
     }
 
@@ -68,11 +68,11 @@ public abstract class SCAClientFactory {
      * Creates a new instance of the SCAClientFactory that can be 
      * used to lookup SCA Services.
      * 
-     * @param domainURI         URI of the target domain for the SCAClientFactory
+     * @param domainURI 	URI of the target domain for the SCAClientFactory
      * @return A new SCAClientFactory 
      */
     public static SCAClientFactory newInstance( URI domainURI ) 
-        throws NoSuchDomainException {
+    	throws NoSuchDomainException {
         return newInstance(null, null, domainURI);
     }
     
@@ -82,12 +82,12 @@ public abstract class SCAClientFactory {
      *
      * @param properties   Properties that may be used when 
      * creating a new instance of the SCAClientFactory
-     * @param domainURI         URI of the target domain for the SCAClientFactory
+     * @param domainURI 	URI of the target domain for the SCAClientFactory
      * @return A new SCAClientFactory instance
      */
     public static SCAClientFactory newInstance(Properties properties,
-                                                                        URI domainURI) 
-        throws NoSuchDomainException {
+    									URI domainURI) 
+    	throws NoSuchDomainException {
         return newInstance(properties, null, domainURI);
     }
 
@@ -97,12 +97,12 @@ public abstract class SCAClientFactory {
      *
      * @param classLoader   ClassLoader that may be used when 
      * creating a new instance of the SCAClientFactory
-     * @param domainURI         URI of the target domain for the SCAClientFactory
+     * @param domainURI 	URI of the target domain for the SCAClientFactory
      * @return A new SCAClientFactory instance
      */
     public static SCAClientFactory newInstance(ClassLoader classLoader, 
-                                                                        URI domainURI) 
-        throws NoSuchDomainException {
+    									URI domainURI) 
+    	throws NoSuchDomainException {
         return newInstance(null, classLoader, domainURI);
     }
 
@@ -114,16 +114,16 @@ public abstract class SCAClientFactory {
      * creating a new instance of the SCAClientFactory
      * @param classLoader   ClassLoader that may be used when 
      * creating a new instance of the SCAClientFactory
-     * @param domainURI         URI of the target domain for the SCAClientFactory
+     * @param domainURI 	URI of the target domain for the SCAClientFactory
      * @return A new SCAClientFactory instance
      */
     public static SCAClientFactory newInstance(Properties properties, 
-                                            ClassLoader classLoader,
-                                            URI domainURI) 
-        throws NoSuchDomainException {
+    		                            ClassLoader classLoader,
+    		                            URI domainURI) 
+    	throws NoSuchDomainException {
         final SCAClientFactoryFinder finder =
             factoryFinder != null ? factoryFinder :
-                new SCAClientFactoryFinderImpl();
+            	new SCAClientFactoryFinderImpl();
         final SCAClientFactory factory
             = finder.find(properties, classLoader, domainURI);
         return factory;

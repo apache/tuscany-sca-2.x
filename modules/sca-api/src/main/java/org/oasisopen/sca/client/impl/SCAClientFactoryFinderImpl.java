@@ -1,5 +1,5 @@
 /*
- * Copyright(C) OASIS(R) 2005,2009. All Rights Reserved.
+ * Copyright(C) OASIS(R) 2005,2010. All Rights Reserved.
  * OASIS trademark, IPR and other policies apply.
  */
 package org.oasisopen.sca.client.impl;
@@ -36,7 +36,7 @@ public class SCAClientFactoryFinderImpl implements SCAClientFactoryFinder {
      * implementation to use for the SCAClientFactory.
      */
     private static final String SCA_CLIENT_FACTORY_PROVIDER_KEY = 
-        SCAClientFactory.class.getName();
+    	SCAClientFactory.class.getName();
 
     /**
      * The name of the file loaded from the ClassPath to determine 
@@ -67,20 +67,20 @@ public class SCAClientFactoryFinderImpl implements SCAClientFactoryFinder {
     public SCAClientFactory find(Properties properties,
                                  ClassLoader classLoader,
                                  URI domainURI ) 
-        throws NoSuchDomainException, ServiceRuntimeException {
-                if (classLoader == null) {
-                        classLoader = getThreadContextClassLoader ();
-                }
-                final String factoryImplClassName =
-                        discoverProviderFactoryImplClass(properties, classLoader);
-                final Class<? extends SCAClientFactory> factoryImplClass
-                        = loadProviderFactoryClass(factoryImplClassName, 
-                                                           classLoader);
-                final SCAClientFactory factory =
-                        instantiateSCAClientFactoryClass(factoryImplClass,
-                                                                   domainURI );
-                return factory;
-        }
+    	throws NoSuchDomainException, ServiceRuntimeException {
+		if (classLoader == null) {
+			classLoader = getThreadContextClassLoader ();
+		}
+		final String factoryImplClassName =
+			discoverProviderFactoryImplClass(properties, classLoader);
+		final Class<? extends SCAClientFactory> factoryImplClass
+			= loadProviderFactoryClass(factoryImplClassName, 
+					                   classLoader);
+		final SCAClientFactory factory =
+			instantiateSCAClientFactoryClass(factoryImplClass,
+								   domainURI );
+		return factory;
+	}
     
     /**
      * Gets the Context ClassLoader for the current Thread.
@@ -89,7 +89,7 @@ public class SCAClientFactoryFinderImpl implements SCAClientFactoryFinder {
      */
     private static ClassLoader getThreadContextClassLoader () {
         final ClassLoader threadClassLoader = 
-                Thread.currentThread().getContextClassLoader();
+        	Thread.currentThread().getContextClassLoader();
         return threadClassLoader;
     }
 
@@ -104,24 +104,24 @@ public class SCAClientFactoryFinderImpl implements SCAClientFactoryFinder {
      */
     private static String 
         discoverProviderFactoryImplClass(Properties properties, 
-                                             ClassLoader classLoader) 
+    		                             ClassLoader classLoader) 
         throws ServiceRuntimeException {
         String providerClassName = 
-                checkPropertiesForSPIClassName(properties);
+        	checkPropertiesForSPIClassName(properties);
         if (providerClassName != null) {
             return providerClassName;
         }
 
         providerClassName = 
-                checkPropertiesForSPIClassName(System.getProperties());
+        	checkPropertiesForSPIClassName(System.getProperties());
         if (providerClassName != null) {
             return providerClassName;
         }
         
-        providerClassName = checkMETAINFServicesForSIPClassName(classLoader);
+        providerClassName = checkMETAINFServicesForSPIClassName(classLoader);
         if (providerClassName == null) {
             throw new ServiceRuntimeException(
-                "Failed to find implementation for SCAClientFactory");
+            	"Failed to find implementation for SCAClientFactory");
         }
         
         return providerClassName;
@@ -141,7 +141,7 @@ public class SCAClientFactoryFinderImpl implements SCAClientFactoryFinder {
         }
         
         final String providerClassName = 
-                properties.getProperty(SCA_CLIENT_FACTORY_PROVIDER_KEY);
+        	properties.getProperty(SCA_CLIENT_FACTORY_PROVIDER_KEY);
         if (providerClassName != null && providerClassName.length() > 0) {
             return providerClassName;
         }
@@ -156,10 +156,10 @@ public class SCAClientFactoryFinderImpl implements SCAClientFactoryFinder {
      * @return The class name for the SCAClientFactorySPI implementation or
      * <code>null</code> if not found.
      */
-    private static String checkMETAINFServicesForSIPClassName(ClassLoader cl) 
+    private static String checkMETAINFServicesForSPIClassName(ClassLoader cl) 
     {
         final URL url = 
-                cl.getResource(SCA_CLIENT_FACTORY_PROVIDER_META_INF_SERVICE);
+        	cl.getResource(SCA_CLIENT_FACTORY_PROVIDER_META_INF_SERVICE);
         if (url == null) {
             return null;
         }
@@ -170,7 +170,7 @@ public class SCAClientFactoryFinderImpl implements SCAClientFactoryFinder {
             BufferedReader reader = null;
             try {
                 reader = 
-                        new BufferedReader(new InputStreamReader(in, "UTF-8"));
+                	new BufferedReader(new InputStreamReader(in, "UTF-8"));
 
                 String line;
                 while ((line = readNextLine(reader)) != null) {
@@ -185,7 +185,7 @@ public class SCAClientFactoryFinderImpl implements SCAClientFactoryFinder {
             }
         } catch (IOException ex) {
             throw new ServiceRuntimeException(
-                        "Failed to discover SCAClientFactory provider", ex);
+            		"Failed to discover SCAClientFactory provider", ex);
         } finally {
             closeStream(in);
         }
@@ -202,7 +202,7 @@ public class SCAClientFactoryFinderImpl implements SCAClientFactoryFinder {
      */
     private static String readNextLine(BufferedReader reader) 
         throws IOException {
-        
+    	
         String line = reader.readLine();
         if (line != null) {
             line = line.trim();
@@ -221,23 +221,23 @@ public class SCAClientFactoryFinderImpl implements SCAClientFactoryFinder {
      */
     private static Class<? extends SCAClientFactory> 
         loadProviderFactoryClass(String factoryImplClassName, 
-                                         ClassLoader classLoader) 
+        		                 ClassLoader classLoader) 
         throws ServiceRuntimeException {
 
         try {
             final Class<?> providerClass = 
-                classLoader.loadClass(factoryImplClassName);
+            	classLoader.loadClass(factoryImplClassName);
             final Class<? extends SCAClientFactory> providerFactoryClass =
                 providerClass.asSubclass(SCAClientFactory.class);
             return providerFactoryClass;
         } catch (ClassNotFoundException ex) {
             throw new ServiceRuntimeException(
-                "Failed to load SCAClientFactory implementation class "
-                + factoryImplClassName, ex);
+            	"Failed to load SCAClientFactory implementation class "
+            	+ factoryImplClassName, ex);
         } catch (ClassCastException ex) {
             throw new ServiceRuntimeException(
-                        "Loaded SCAClientFactory implementation class "
-                        + factoryImplClassName
+            		"Loaded SCAClientFactory implementation class "
+            		+ factoryImplClassName
                     + " is not a subclass of " 
                     + SCAClientFactory.class.getName() , ex);
         }
@@ -254,13 +254,13 @@ public class SCAClientFactoryFinderImpl implements SCAClientFactoryFinder {
      * specified SCAClientFactorySPI Implementation class  
      */
     private static SCAClientFactory instantiateSCAClientFactoryClass(
-                        Class<? extends SCAClientFactory> factoryImplClass,
-                        URI domainURI)
+    			Class<? extends SCAClientFactory> factoryImplClass,
+        		URI domainURI)
         throws NoSuchDomainException, ServiceRuntimeException {
         
         try {
             Constructor<? extends SCAClientFactory> URIConstructor = 
-                factoryImplClass.getConstructor(domainURI.getClass());
+            	factoryImplClass.getConstructor(domainURI.getClass());
             SCAClientFactory provider = 
                URIConstructor.newInstance( domainURI );
             return provider;
@@ -282,7 +282,7 @@ public class SCAClientFactoryFinderImpl implements SCAClientFactoryFinder {
                 closeable.close();
             } catch (IOException ex) {
                 throw new ServiceRuntimeException("Failed to close stream", 
-                                                          ex);
+                		                          ex);
             }
         }
     }
