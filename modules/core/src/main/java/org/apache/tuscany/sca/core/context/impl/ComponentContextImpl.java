@@ -102,8 +102,8 @@ public class ComponentContextImpl implements RuntimeComponentContext {
         return component.getURI();
     }
 
-    public <B, R extends ServiceReference<B>> R cast(B target) throws IllegalArgumentException {
-        return (R)proxyFactory.cast(target);
+    public <B> ServiceReference<B> cast(B target) throws IllegalArgumentException {
+        return proxyFactory.cast(target);
     }
 
     public <B> B getService(Class<B> businessInterface, String referenceName) {
