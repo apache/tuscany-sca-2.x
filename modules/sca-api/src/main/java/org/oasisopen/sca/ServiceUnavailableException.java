@@ -1,51 +1,62 @@
 /*
- * Copyright(C) OASIS(R) 2005,2009. All Rights Reserved.
+ * Copyright(C) OASIS(R) 2005,2010. All Rights Reserved.
  * OASIS trademark, IPR and other policies apply.
  */
 package org.oasisopen.sca;
 
 /**
- * Exception used to indicate that a runtime exception occurred during the invocation of and external service.
+ * This exception signals problems in the interaction with remote
+ * services.
  *
- * @version $Rev$ $Date$
+ * These are exceptions that can be transient, so retrying is
+ * appropriate.  Any exception that is a ServiceRuntimeException
+ * that is not a ServiceUnavailableException is unlikely to be
+ * resolved by retrying the operation, since it most likely
+ * requires human intervention.
  */
 public class ServiceUnavailableException extends ServiceRuntimeException {
-
-    private static final long serialVersionUID = -5869397223249401047L;
-
     /**
-     * Constructs a new ServiceUnavailableException.
+     * Constructs a ServiceUnavailableException with no detail message. 
      */
     public ServiceUnavailableException() {
-        super((Throwable) null);
+        super();
     }
 
     /**
-     * Constructs a new ServiceUnavailableException with the specified detail message.
+     * Constructs a ServiceUnavailableException with the specified detail
+     * message. 
      *
-     * @param message The detail message (which is saved to later retrieval by the getMessage() method).
+     * @param     message the detail message
      */
     public ServiceUnavailableException(String message) {
         super(message);
     }
 
     /**
-     * Constructs a new ServiceUnavailableException with the specified cause.
+     * Constructs a ServiceUnavailableException with the specified detail
+     * message and cause.
      *
-     * @param cause The cause (which is saved to later retrieval by the getCause() method).
+     * The detail message associated with <code>cause</code> is not
+     * automatically incorporated in this exception's detail message.
+     *
+     * @param     message the detail message
+     * @param     cause the cause, or null if the cause is nonexistent
+     *            or unknown
+     */
+    public ServiceUnavailableException(String message, Throwable cause) {
+        super(message, cause);
+    }
+ 
+    /**
+     * Constructs a ServiceUnavailableException with the specified cause and
+     * a detail message of <tt>(cause==null ? null : cause.toString())</tt>.
+     *
+     * @param     cause the cause, or null if the cause is nonexistent
+     *            or unknown
      */
     public ServiceUnavailableException(Throwable cause) {
         super(cause);
     }
 
-    /**
-     * Constructs a new ServiceUnavailableException with the specified detail message and cause.
-     *
-     * @param message The message (which is saved to later retrieval by the getMessage() method).
-     * @param cause   The cause (which is saved to later retrieval by the getCause() method).
-     */
-    public ServiceUnavailableException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
+    private static final long serialVersionUID = 5750303470949048271L;
 }
