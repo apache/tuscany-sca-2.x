@@ -91,7 +91,7 @@ public class SCAClientHandler implements InvocationHandler {
 
             String client = "sca.client." + UUID.randomUUID();
             CompositeContext compositeContext =
-                new CompositeContext(extensionsRegistry, endpointRegistry, null, domainURI.toString(), client, null);
+                new CompositeContext(extensionsRegistry, endpointRegistry, null, domainURI.toString(), client, nodeFactory.getDeployer().getSystemDefinitions());
 
             List<Endpoint> eps = endpointRegistry.findEndpoint(serviceName);
             if (eps == null || eps.size() < 1) {
