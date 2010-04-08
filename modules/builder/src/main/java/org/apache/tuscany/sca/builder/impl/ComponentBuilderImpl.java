@@ -240,7 +240,7 @@ public class ComponentBuilderImpl {
             calculateServiceInterfaceContract(component, componentService, componentTypeService, monitor);
 
             // bindings
-            calculateBindings(componentService, componentTypeService);
+            calculateBindings(component, componentService, componentTypeService, monitor);
 
             // add callback reference model objects
             createCallbackReference(component, componentService);
@@ -1183,7 +1183,7 @@ public class ComponentBuilderImpl {
      * @param componentService the top service 
      * @param componentTypeService the bottom service
      */
-    private void calculateBindings(Service componentService, Service componentTypeService) {
+    private void calculateBindings(Component component, Service componentService, Service componentTypeService, Monitor monitor) {
         // forward bindings
         if (componentService.getBindings().isEmpty()) {
             componentService.getBindings().addAll(componentTypeService.getBindings());
@@ -1202,6 +1202,23 @@ public class ComponentBuilderImpl {
             }
         } else if (componentService.getCallback().getBindings().isEmpty() && componentTypeService.getCallback() != null) {
             componentService.getCallback().getBindings().addAll(componentTypeService.getCallback().getBindings());
+        }
+        
+        // [ASM90005] validate that binding.sca has no uri set
+        for (Binding binding : componentService.getBindings()){
+            if (binding instanceof SCABinding){
+                if ((binding.getURI() != null) &&
+                    (binding.getURI().length() > 0)){
+                    Monitor.error(monitor,
+                            this,
+                            Messages.BUILDER_VALIDATION_BUNDLE,
+                            "URIFoundOnServiceSCABinding",
+                            binding.getName(),
+                            component.getName(),
+                            componentService.getName(),
+                            binding.getURI());
+                } 
+            }
         }
 
     }
@@ -1224,7 +1241,6 @@ public class ComponentBuilderImpl {
         } else if (componentReference.getCallback().getBindings().isEmpty() && componentTypeReference.getCallback() != null) {
             componentReference.getCallback().getBindings().addAll(componentTypeReference.getCallback().getBindings());
         }
-
     }    
 
 }
