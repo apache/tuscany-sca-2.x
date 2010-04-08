@@ -443,9 +443,9 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
                 }
         }
         
-        // run the "appliesTo" algorithm to remove any policy sets that 
-        // don't apply to the service binding
-        // TODO - is this done somewhere else already?
+        // the "appliesTo" algorithm to remove any policy sets that 
+        // don't apply to the service binding will already have been 
+        // run during the build phase
         
         // Determine if there are any reference policies
         boolean noEndpointReferencePolicies = true;
