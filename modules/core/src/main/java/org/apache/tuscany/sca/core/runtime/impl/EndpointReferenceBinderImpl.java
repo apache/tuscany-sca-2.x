@@ -40,15 +40,19 @@ import org.apache.tuscany.sca.assembly.builder.PolicyBuilder;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
+import org.apache.tuscany.sca.core.assembly.impl.RuntimeEndpointImpl;
+import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
+import org.apache.tuscany.sca.policy.BindingType;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentMap;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.Qualifier;
 import org.apache.tuscany.sca.runtime.EndpointReferenceBinder;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
@@ -482,18 +486,26 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
         List<Intent> eprIntents = new ArrayList<Intent>();
         eprIntents.addAll(endpointReference.getRequiredIntents());
         
+        // TODO - seems that we should do this loop on a binding by binding basis
+        //        rather than each time we do matching
+        BindingType bindingType = null;
+        Definitions systemDefinitions = ((RuntimeEndpoint)endpoint).getCompositeContext().getSystemDefinitions();
+        for (BindingType loopBindingType : systemDefinitions.getBindingTypes()){
+            if (loopBindingType.getType().equals(binding.getType())){
+                bindingType = loopBindingType;
+                break;
+            }
+        }
+        
         // first check the binding type
-        for (Intent intent : endpointReference.getRequiredIntents()){
-/* TODO 
-            BindingType bindingType = null; //TODO - where to get this?
-            
-            if (bindingType.getAlwaysProvidedIntents().contains(intent)){
+        for (Intent intent : endpointReference.getRequiredIntents()){ 
+            if (bindingType != null && 
+                bindingType.getAlwaysProvidedIntents().contains(intent)){
                 eprIntents.remove(intent);
-            } else if (bindingType.getMayProvidedIntents().contains(intent)){
+            } else if (bindingType != null &&
+                       bindingType.getMayProvidedIntents().contains(intent)){
                 eprIntents.remove(intent);
             } else {
-            
-*/  
                // TODO - this code also appears in the ComponentPolicyBuilder
                //        so should rationalize
                loop: for (PolicySet policySet : referencePolicySets){
@@ -517,11 +529,8 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
                             }
                         }
                     }                    
-                }
-                                
-/*          
+                }          
             }                
- */
         }
         
         // if there are unresolved intents the service and reference don't match

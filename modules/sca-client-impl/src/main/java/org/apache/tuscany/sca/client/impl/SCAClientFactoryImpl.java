@@ -93,8 +93,14 @@ public class SCAClientFactoryImpl extends SCAClientFactory {
         this.proxyFactory = ExtensibleProxyFactory.getInstance(extensionsRegistry);
 
         String client = "sca.client." + UUID.randomUUID();
+
         this.compositeContext =
-            new CompositeContext(extensionsRegistry, endpointRegistry, null, domainURI.toString(), client);
+            new CompositeContext(extensionsRegistry, 
+                                 endpointRegistry, 
+                                 null, 
+                                 domainURI.toString(), 
+                                 client, 
+                                 this.nodeFactory.getDeployer().getSystemDefinitions());
     }   
     
     @Override

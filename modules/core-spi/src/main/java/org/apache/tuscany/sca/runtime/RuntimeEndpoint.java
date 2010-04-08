@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.runtime;
 import java.io.Serializable;
 
 import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.context.CompositeContext;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 
@@ -55,4 +56,11 @@ public interface RuntimeEndpoint extends Endpoint, Invocable, Serializable {
      * @return The target component type service interface contract
      */
     InterfaceContract getComponentTypeServiceInterfaceContract();
+    
+    /**
+     * Get the composite context for the composite that contains this endpoint. This
+     * is useful for accessing various composite level objects from within the 
+     * runtime code
+     */
+    CompositeContext getCompositeContext();
 }

@@ -128,8 +128,13 @@ public class NodeImpl implements Node {
                 domainComposite = manager.configureNode(configuration, contributions, context);
 
                 this.compositeContext =
-                    new CompositeContext(manager.registry, endpointRegistry, domainComposite, configuration
-                        .getDomainURI(), configuration.getURI());
+                    new CompositeContext(manager.registry, 
+                                         endpointRegistry, 
+                                         domainComposite, 
+                                         configuration.getDomainURI(), 
+                                         configuration.getURI(),
+                                         manager.getDeployer().getSystemDefinitions());
+                
                 CompositeContext.setThreadCompositeContext(compositeContext);
             } finally {
                 // Reset the thread context monitor

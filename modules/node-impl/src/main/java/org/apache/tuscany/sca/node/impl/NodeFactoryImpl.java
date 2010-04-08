@@ -471,4 +471,14 @@ public class NodeFactoryImpl extends NodeFactory {
         super.configure(attributes);
     }
     
+    /**
+     * Added to allow the node access to the deployer in order to get 
+     * to the systemContribution and hence set up the CompositeContext so that
+     * the runtime epr matching algorithm can get at the binding types
+     * @return
+     */
+    public Deployer getDeployer() {
+        return deployer;
+    }
+    
 }

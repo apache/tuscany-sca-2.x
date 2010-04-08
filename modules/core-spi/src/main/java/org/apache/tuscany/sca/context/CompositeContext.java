@@ -23,6 +23,7 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -41,8 +42,9 @@ public class CompositeContext {
     protected Composite domainComposite;
     protected String nodeURI;
     protected String domainURI;
+    protected Definitions systemDefinitions;
     
-    public CompositeContext(ExtensionPointRegistry registry, EndpointRegistry endpointRegistry, Composite domainComposite, String domainURI, String nodeURI) {
+    public CompositeContext(ExtensionPointRegistry registry, EndpointRegistry endpointRegistry, Composite domainComposite, String domainURI, String nodeURI, Definitions systemDefinitions) {
         this.extensionPointRegistry = registry;
         this.endpointRegistry = endpointRegistry;
         ContextFactoryExtensionPoint contextFactories = registry.getExtensionPoint(ContextFactoryExtensionPoint.class);
@@ -50,10 +52,11 @@ public class CompositeContext {
         this.domainComposite = domainComposite;
         this.domainURI = domainURI;
         this.nodeURI = nodeURI;
+        this.systemDefinitions = systemDefinitions;
     }    
     
     public CompositeContext(ExtensionPointRegistry registry, EndpointRegistry endpointRegistry) {
-        this(registry, endpointRegistry, null, "default", "default");
+        this(registry, endpointRegistry, null, "default", "default", null);
     }
     
     /**
@@ -135,5 +138,15 @@ public class CompositeContext {
 
     public String getDomainURI() {
         return domainURI;
+    }
+    
+    /**
+     * The system definitions that result from starting the runtime. 
+     * TODO - these can be null when the SCAClient starts the runtime
+     * 
+     * @return systemDefinitions
+     */
+    public Definitions getSystemDefinitions() {
+        return systemDefinitions;
     }
 }
