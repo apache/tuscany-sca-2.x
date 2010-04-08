@@ -273,8 +273,8 @@ The following components come under Apache Software License 2.0
  geronimo-transaction-2.1.3.jar
  geronimo-ws-metadata_2.0_spec-1.1.2.jar
  groovy-all-1.7.1.jar
- hazelcast-1.8.1.jar
- hazelcast-client-1.8.1.jar
+ hazelcast-1.8.3.jar
+ hazelcast-client-1.8.3.jar
  httpclient-4.0.jar
  httpcore-4.0.1.jar
  httpcore-nio-4.0.1.jar
