@@ -1,55 +1,55 @@
 /*
- * Copyright(C) OASIS(R) 2005,2009. All Rights Reserved.
+ * Copyright(C) OASIS(R) 2005,2010. All Rights Reserved.
  * OASIS trademark, IPR and other policies apply.
  */
 package org.oasisopen.sca;
 
-
 /**
- * Base for Exceptions that may be raised by an SCA runtime and which typical
- * application code is not expected to be able to handle.
- *
- * @version $Rev$ $Date$
+ * This exception signals problems in the management of SCA component execution.
  */
 public class ServiceRuntimeException extends RuntimeException {
-    private static final long serialVersionUID = -3876058842262557092L;
-
     /**
-     * Override constructor from RuntimeException.
-     *
-     * @see RuntimeException
+     * Constructs a ServiceRuntimeException with no detail message. 
      */
     public ServiceRuntimeException() {
+        super();
     }
 
     /**
-     * Override constructor from RuntimeException.
+     * Constructs a ServiceRuntimeException with the specified detail
+     * message. 
      *
-     * @param message passed to RuntimeException
-     * @see RuntimeException
+     * @param     message the detail message
      */
     public ServiceRuntimeException(String message) {
         super(message);
     }
 
     /**
-     * Override constructor from RuntimeException.
+     * Constructs a ServiceRuntimeException with the specified detail
+     * message and cause.
      *
-     * @param message passed to RuntimeException
-     * @param cause   passed to RuntimeException
-     * @see RuntimeException
+     * The detail message associated with <code>cause</code> is not
+     * automatically incorporated in this exception's detail message.
+     *
+     * @param     message the detail message
+     * @param     cause the cause, or null if the cause is nonexistent
+     *            or unknown
      */
     public ServiceRuntimeException(String message, Throwable cause) {
         super(message, cause);
     }
-
+ 
     /**
-     * Override constructor from RuntimeException.
+     * Constructs a ServiceRuntimeException with the specified cause and a
+     * detail message of <tt>(cause==null ? null : cause.toString())</tt>.
      *
-     * @param cause passed to RuntimeException
-     * @see RuntimeException
+     * @param     cause the cause, or null if the cause is nonexistent
+     *            or unknown
      */
     public ServiceRuntimeException(Throwable cause) {
         super(cause);
     }
+
+    private static final long serialVersionUID = 6761623124602414622L;
 }
