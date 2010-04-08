@@ -1211,7 +1211,7 @@ public class ComponentBuilderImpl {
                     (binding.getURI().length() > 0)){
                     Monitor.error(monitor,
                             this,
-                            Messages.BUILDER_VALIDATION_BUNDLE,
+                            Messages.ASSEMBLY_VALIDATION,
                             "URIFoundOnServiceSCABinding",
                             binding.getName(),
                             component.getName(),
