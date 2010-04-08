@@ -1,5 +1,5 @@
 /*
- * Copyright(C) OASIS(R) 2005,2009. All Rights Reserved.
+ * Copyright(C) OASIS(R) 2005,2010. All Rights Reserved.
  * OASIS trademark, IPR and other policies apply.
  */
 package org.oasisopen.sca.annotation;
@@ -14,11 +14,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * Annotation that allows application of SCA Policy Sets.
- * <p/>
- * Each policy set is specified using its XML QName in the form defined by {@link javax.xml.namespace.QName#toString()}.
- *
- * @version $Rev$ $Date$
+ * The @PolicySets annotation is used to attach one or more
+ * SCA Policy Sets to a Java implementation class or to one
+ * of its subelements.
  */
 @Target({TYPE, FIELD, METHOD, PARAMETER})
 @Retention(RUNTIME)
