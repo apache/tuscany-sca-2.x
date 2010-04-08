@@ -1,5 +1,5 @@
 /*
- * Copyright(C) OASIS(R) 2005,2009. All Rights Reserved.
+ * Copyright(C) OASIS(R) 2005,2010. All Rights Reserved.
  * OASIS trademark, IPR and other policies apply.
  */
 package org.oasisopen.sca;
@@ -7,46 +7,65 @@ package org.oasisopen.sca;
 import javax.security.auth.Subject;
 
 /**
- * Interface that provides information on the current request.
- *
- * @version $Rev$ $Date$
+ * The RequestContext interface is used to obtain information about
+ * the service invocation which is executing when one of the
+ * RequestContext methods is called.
  */
 public interface RequestContext {
-    /**
-     * Returns the JAAS Subject of the current request.
-     *
-     * @return the Subject of the current request
-     */
-    Subject getSecuritySubject();
 
     /**
-     * Returns the name of the service that was invoked.
-     *
-     * @return the name of the service that was invoked
+     * Returns the JAAS Subject of the current request.
+     * 
+     * @return The JAAS (javax.security.auth.Subject) Subject of the
+     *         current request. Returns null if there is no JAAS
+     *         Subject.
+     */
+    Subject getSecuritySubject();
+    
+    /**
+     * Returns the name of the service under which the current service
+     * method is executing.
+     * 
+     * @return the name of the service under which the current service
+     *         operation is executing, or null if called outside of the
+     *         execution of a service method. 
      */
     String getServiceName();
 
     /**
-     * Returns a CallableReference for the service that was invoked by the caller.
-     *
-     * @param <B> the Java type of the business interface for the reference
-     * @return a CallableReference for the service that was invoked by the caller
+     * Returns a service reference for the callback for the invoked service
+     * operation, as specified by the service caller.  
+     * 
+     * @param     <CB> the Java interface type of the callback.
+     * @return    a service reference for the callback as specified by
+     *            the service caller. Returns null when called for a service
+     *            request whose interface is not bidirectional, or when called
+     *            during execution of a callback request, or when called outside
+     *            the execution of a service method.
      */
-    <B> ServiceReference<B> getServiceReference();
+    <CB> ServiceReference<CB> getCallbackReference();
 
     /**
-     * Returns a type-safe reference to the callback provided by the caller.
-     *
-     * @param <CB> the Java type of the business interface for the callback
-     * @return a type-safe reference to the callback provided by the caller
+     * Returns a proxy for the callback for the invoked service as specified
+     * by the service client. 
+     * 
+     * @param     <CB> the type of the callback proxy
+     * @return    a proxy for the callback for the invoked service as specified
+     *            by the service client. Returns null when called during the
+     *            execution of a service method whose interface is not
+     *            bidirectional, or when called during the execution of a
+     *            callback request, or when called outside the execution of a
+     *            service method.
      */
     <CB> CB getCallback();
 
     /**
-     * Returns a CallableReference to the callback provided by the caller.
-     *
-     * @param <CB> the Java type of the business interface for the callback
-     * @return a CallableReference to the callback provided by the caller
+     * Returns a ServiceReference object for the service that is executing. 
+     * 
+     * @param     <B> the Java interface type associated with the service reference.
+     * @return    the ServiceReference representing the service or callback
+     *            that is executing. Returns null if when called outside the
+     *            execution of a service method.
      */
-    <CB> ServiceReference<CB> getCallbackReference();
+    <B> ServiceReference<B> getServiceReference();
 }
