@@ -841,7 +841,7 @@
                         <reportFormat>brief</reportFormat>
                         <useFile>false</useFile>
                         <forkMode>once</forkMode>
-                        <argLine>-ea -Xmx256m</argLine>
+                        <argLine>-ea -Xmx756m -Xms756m -XX:MaxPermSize=512m</argLine>
                     </configuration>
                 </plugin>
 
