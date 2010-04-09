@@ -140,13 +140,20 @@ public class WebAppHelper {
                     servletContext.setAttribute(name, value);
                 }
                 host = getServletHost(servletContext);
-                Node node = createAndStartNode(servletContext);
-                servletContext.setAttribute(SCA_NODE_ATTRIBUTE, node);
-                return host;
             } catch (ServletException e) {
                 throw new RuntimeException(e);
             }
         }
+        Node node = (Node)servletContext.getAttribute(SCA_NODE_ATTRIBUTE);
+        if (node == null) {
+            try {
+                node = createAndStartNode(servletContext);
+            } catch (ServletException e) {
+                throw new RuntimeException(e);
+            }
+            servletContext.setAttribute(SCA_NODE_ATTRIBUTE, node);
+        }
+
         return host;
     }
 
