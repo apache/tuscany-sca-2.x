@@ -215,49 +215,11 @@ conditions of the following licenses.
 
 The following components come under Apache Software License 2.0
 
- addressing-1.3.mar
- annogen-0.1.0.jar
- axiom-api-1.2.8.jar
- axiom-dom-1.2.8.jar
- axiom-impl-1.2.8.jar
- axis2-adb-1.4.jar
- axis2-codegen-1.4.jar
- axis2-kernel-1.5.1.jar
- axis2-java2wsdl-1.5.1.jar
- axis2-mtompolicy-1.5.1.jar
- axis2-transport-base-1.0.0.jar
- axis2-transport-local-1.5.1.jar
- axis2-transport-http-1.5.1.jar
- axis2-transport-jms-1.0.0.jar
- axis-ant-1.4.jar
  cglib-2.2.jar
- commons-codec-1.2.jar
- commons-collections-3.2.jar
- commons-discovery-0.4.jar
- commons-fileupload-1.2.jar
- commons-httpclient-3.1.jar
- commons-io-1.4.jar
  commons-logging-api-1.1.jar
- geronimo-activation_1.1_spec-1.0.1.jar
- geronimo-javamail_1.4_spec-1.6.jar
- geronimo-jms_1.1_spec-1.1.jar
- geronimo-jta_1.0.1B_spec-1.0.jar
- geronimo-jta_1.1_spec-1.1.jar
- geronimo-stax-api_1.0_spec-1.0.1.jar
- geronimo-ws-metadata_2.0_spec-1.1.2.jar
  hazelcast-1.8.3.jar
  hazelcast-client-1.8.3.jar
- httpcore-4.0.1.jar
- httpcore-nio-4.0.1.jar
- mex-1.5.1-impl.jar
- neethi-2.0.4.jar
- rampart-core-1.4.jar
- rampart-policy-1.4.jar
  swizzle-stream-1.0.2.jar
- woden-api-1.0M8.jar
- woden-impl-dom-1.0M8.jar
- wss4j-1.5.4.jar
- xmlsec-1.4.3.jar
  XmlSchema-1.4.3.jar
 
 ===============================================================================
@@ -351,56 +313,6 @@ Everyone is permitted to copy and distribute copies of this Agreement, but in or
 
 This Agreement is governed by the laws of the State of New York and the intellectual property laws of the United States of America. No party to this Agreement will bring a legal action under this Agreement more than one year after the cause of action arose. Each party waives its rights to a jury trial in any resulting litigation. 
 
-===============================================================================
-
-backport-util-concurrent-3.1.jar :
-
-The software comprising backport-util-concurrent is based in large
-part on the code from JSR166, and the package dl.util.concurrent.
-The software has been released to the public domain, as explained at:
-http://creativecommons.org/licenses/publicdomain, excepting portions
-of the class
-edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArrayList,
-which were adapted from class java.util.ArrayList, written by Sun
-Microsystems, Inc, which are used with kind permission, and subject
-to the following:
-
-Copyright 2002-2004 Sun Microsystems, Inc. All rights reserved. Use is
-subject to the following license terms.
-
-  "Sun hereby grants you a non-exclusive, worldwide, non-transferrable
-  license to use and distribute the Java Software technologies as part
-  of a larger work in source and binary forms, with or without
-  modification, provided that the following conditions are met:
-
-   -Neither the name of or trademarks of Sun may be used to endorse or
-    promote products derived from the Java Software technology without
-    specific prior written permission.
-
-   -Redistributions of source or binary code must be accompanied by the
-    following notice and disclaimers:
-
-    Portions copyright Sun Microsystems, Inc. Used with kind permission.
-
-    This software is provided AS IS, without a warranty of any kind.  ALL
-    EXPRESS OR IMPLIED CONDITIONS, REPRESENTATIONS AND
-    WARRANTIES, INCLUDING ANY IMPLIED WARRANTY OF
-    MERCHANTABILITY, FITNESS FOR A PARTICULAR PUPOSE OR
-    NON-INFRINGEMENT, ARE HEREBY EXCLUDED. SUN
-    MICROSYSTEMS, INC. AND ITS LICENSORS SHALL NOT BE LIABLE
-    FOR ANY DAMAGES SUFFERED BY LICENSEE AS A RESULT OF
-    USING, MODIFYING OR DISTRIBUTING THE SOFTWARE OR ITS
-    DERIVATIVES. IN NO EVENT WILL SUN MICROSYSTEMS, INC. OR
-    ITS LICENSORS BE LIABLE FOR ANY LOST REVENUE, PROFIT OR
-    DATA, OR FOR DIRECT, INDIRECT,CONSQUENTIAL, INCIDENTAL
-    OR PUNITIVE DAMAGES, HOWEVER CAUSED AND REGARDLESS OF
-    THE THEORY OR LIABILITY, ARISING OUT OF THE USE OF OR
-    INABILITY TO USE SOFTWARE, EVEN IF SUN MICROSYSTEMS, INC.
-    HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
-
-    You acknowledge that Software is not designed, licensed or intended for
-    use in the design, construction, operation or maintenance of any nuclear
-    facility."
 
 ===============================================================================
 
@@ -484,7 +396,7 @@ Revision level 1.1, last updated on 2007/11/19
 
 ================================================================================
 
-The tuscany-assembly-xsd.jar includes XSD files under the following OASIS license:
+The tuscany-base jar includes XSD files under the following OASIS license:
 
 All capitalized terms in the following text have the meanings assigned to them in the OASIS Intellectual 
 Property Rights Policy (the "OASIS IPR Policy"). The full Policy may be found at the OASIS website.
