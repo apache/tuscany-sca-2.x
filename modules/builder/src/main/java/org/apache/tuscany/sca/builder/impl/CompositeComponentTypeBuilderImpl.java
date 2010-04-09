@@ -267,6 +267,9 @@ public class CompositeComponentTypeBuilderImpl {
                 
                 // promote multiplicity
                 reconcileReferenceMultiplicity(componentType, compositeReference, promotedComponentReference, monitor);
+                
+                // check nonOverridable
+                validateNonOverridable(componentType, compositeReference, promotedComponentReference, monitor);
 
                 // promote interface contracts
                 calculatePromotedReferenceInterfaceContract(compositeReference, promotedComponentReference, monitor);
@@ -586,6 +589,31 @@ public class CompositeComponentTypeBuilderImpl {
         } else {
             return true;
         }
-    }    
-
+    }  
+    
+    /**
+     * ASM50042 - Checks that if a component reference with multiplicity="1..1" is marked
+     * as nonOveridable then there are no composite references that promote it
+     * 
+     * @param componentType
+     * @param compositeReference
+     * @param promotedComponentReference
+     * @param monitor
+     */
+    private void validateNonOverridable(ComponentType componentType,
+                                        Reference compositeReference, 
+                                        Reference promotedComponentReference,
+                                        Monitor monitor){
+        if ((promotedComponentReference.getMultiplicity() == Multiplicity.ONE_ONE) &&
+            (((ComponentReference)promotedComponentReference)).isNonOverridable() == true) {
+            Monitor.error(monitor, 
+                    this, 
+                    Messages.ASSEMBLY_VALIDATION,
+                    "CompositeReferencePromotesNonOverridableReference", 
+                    componentType.getURI(), 
+                    compositeReference.getName(),
+                    promotedComponentReference.getName());
+        }
+    }
+    
 } //end class
