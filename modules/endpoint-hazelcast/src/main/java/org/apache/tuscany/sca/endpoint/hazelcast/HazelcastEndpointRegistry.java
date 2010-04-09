@@ -69,6 +69,7 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
     private Map<String, Endpoint> localEndpoints = new ConcurrentHashMap<String, Endpoint>();
     protected MultiMap<String, String> endpointOwners;
     private AssemblyFactory assemblyFactory;
+    private Object shutdownMutex = new Object();
 
     public HazelcastEndpointRegistry(ExtensionPointRegistry registry,
                                      Map<String, String> attributes,
@@ -103,10 +104,12 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
 
     public void stop() {
         if (hazelcastInstance != null) {
-            hazelcastInstance.shutdown();
-            hazelcastInstance = null;
-            endpointMap = null;
-            endpointOwners = null;
+            synchronized (shutdownMutex) {
+                hazelcastInstance.shutdown();
+                hazelcastInstance = null;
+                endpointMap = null;
+                endpointOwners = null;
+            }
         }
     }
 
@@ -215,20 +218,25 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
     }
 
     public void removeEndpoint(Endpoint endpoint) {
-        String localMemberAddr = hazelcastInstance.getCluster().getLocalMember().getInetSocketAddress().toString();
-        String endpointURI = endpoint.getURI();
-        Transaction txn = hazelcastInstance.getTransaction();
-        txn.begin();
-        try {
-            endpointMap.remove(endpointURI);
-            endpointOwners.remove(localMemberAddr, endpointURI);
-            txn.commit();
-        } catch (Throwable e) {
-            txn.rollback();
-            throw new ServiceRuntimeException(e);
+        if (hazelcastInstance == null) {
+            return;
         }
-        localEndpoints.remove(endpointURI);
-        logger.info("Removed endpoint - " + endpoint);
+        synchronized (shutdownMutex) {
+            String localMemberAddr = hazelcastInstance.getCluster().getLocalMember().getInetSocketAddress().toString();
+            String endpointURI = endpoint.getURI();
+            Transaction txn = hazelcastInstance.getTransaction();
+            txn.begin();
+            try {
+                endpointMap.remove(endpointURI);
+                endpointOwners.remove(localMemberAddr, endpointURI);
+                txn.commit();
+            } catch (Throwable e) {
+                txn.rollback();
+                throw new ServiceRuntimeException(e);
+            }
+            localEndpoints.remove(endpointURI);
+            logger.info("Removed endpoint - " + endpoint);
+        }
     }
 
 
@@ -280,17 +288,19 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
         try {
             String memberAddr = event.getMember().getInetSocketAddress().toString();
             if (endpointOwners.containsKey(memberAddr)) {
-                ILock lock = hazelcastInstance.getLock("EndpointOwners/" + memberAddr);
-                lock.lock();
-                try {
-                    if (endpointOwners.containsKey(memberAddr)) {
-                        Collection<String> keys = endpointOwners.remove(memberAddr);
-                        for (Object k : keys) {
-                            endpointMap.remove(k);
+                synchronized (shutdownMutex) {
+                    ILock lock = hazelcastInstance.getLock("EndpointOwners/" + memberAddr);
+                    lock.lock();
+                    try {
+                        if (endpointOwners.containsKey(memberAddr)) {
+                            Collection<String> keys = endpointOwners.remove(memberAddr);
+                            for (Object k : keys) {
+                                endpointMap.remove(k);
+                            }
                         }
+                    } finally {
+                        lock.unlock();
                     }
-                } finally {
-                    lock.unlock();
                 }
             }
         } catch (Exception e) {
