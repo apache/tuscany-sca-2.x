@@ -73,6 +73,9 @@
           <exclude>org.apache.tomcat:annotations-api</exclude>
           <exclude>org.apache.tomcat:juli</exclude>
           <exclude>org.apache.tomcat:servlet-api</exclude>
+          <exclude>org.apache.tuscany.sca:tuscany-tomcat-hook</exclude>
+          <exclude>org.apache.tuscany.sca:tuscany-tomcat-servlet</exclude>
+          <exclude>org.codehaus.swizzle:swizzle-stream</exclude>
       </excludes>
     </dependencySet>
     <dependencySet>
