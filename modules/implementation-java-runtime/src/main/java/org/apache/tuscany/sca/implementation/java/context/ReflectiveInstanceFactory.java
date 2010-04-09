@@ -83,7 +83,7 @@ public class ReflectiveInstanceFactory<T> implements InstanceFactory<T> {
                         if (destroyInvoker != null) {
                             destroyInvoker.invokeEvent(instance);
                         }
-                        throw new ObjectCreationException("Exception invoking injector", e);
+                        throw new ObjectCreationException("Exception invoking injector - " + e.getMessage(), e);
                     }
             }
         }

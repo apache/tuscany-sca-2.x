@@ -23,6 +23,7 @@ import java.lang.reflect.Method;
 
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.core.factory.InstanceWrapper;
+import org.apache.tuscany.sca.core.factory.ObjectCreationException;
 import org.apache.tuscany.sca.core.scope.ScopeContainer;
 import org.apache.tuscany.sca.core.scope.ScopedRuntimeComponent;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
@@ -137,6 +138,8 @@ public class JavaImplementationInvoker implements Invoker {
                 }
             }            
                 
+        } catch (ObjectCreationException e) {
+            throw new ServiceRuntimeException(e.getMessage(), e);
         } catch (Exception e) {
             msg.setFaultBody(e);           
         } finally {

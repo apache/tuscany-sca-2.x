@@ -182,7 +182,17 @@ public final class JAXBContextHelper {
             return createJAXBElement(context, dataType, value);
         } else {
             if (value instanceof JAXBElement) {
-                return ((JAXBElement)value).getValue();
+                Object returnValue = ((JAXBElement)value).getValue();
+                
+                if (returnValue == null){
+                    // TUSCANY-3530
+                    // something went wrong in the transformation that 
+                    // generated the JAXBElement. Have seen this when trying
+                    // to convert a value to a simple type with an incompatible
+                    // value. 
+                    throw new TransformationException("Null returned when trying to convert value to: " + cls.getName());
+                }
+                return returnValue;
             } else {
                 return value;
             }
