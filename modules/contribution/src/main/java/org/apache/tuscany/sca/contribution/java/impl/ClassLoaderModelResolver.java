@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.contribution.java.impl;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
@@ -45,7 +46,7 @@ import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
  * @version $Rev$ $Date$
  */
 public class ClassLoaderModelResolver extends URLClassLoader implements ModelResolver {
-    private Contribution contribution;
+    private WeakReference<Contribution> contribution;
     private ProcessorContext context;
     private Map<String, ModelResolver> importResolvers = new HashMap<String, ModelResolver>();
 
@@ -70,10 +71,10 @@ public class ClassLoaderModelResolver extends URLClassLoader implements ModelRes
 
     public ClassLoaderModelResolver(final Contribution contribution, FactoryExtensionPoint modelFactories) throws IOException {
         super(getContributionURLs(contribution), parentClassLoader(contribution));
-        this.contribution = contribution;
+        this.contribution = new WeakReference<Contribution>(contribution);
         // Index Java import resolvers by package name
         Map<String, List<ModelResolver>> resolverMap = new HashMap<String, List<ModelResolver>>();
-        for (Import import_: this.contribution.getImports()) {
+        for (Import import_: this.contribution.get().getImports()) {
             if (import_ instanceof JavaImport) {
                 JavaImport javaImport = (JavaImport)import_;
                 List<ModelResolver> resolvers = resolverMap.get(javaImport.getPackage());
