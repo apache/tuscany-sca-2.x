@@ -71,12 +71,12 @@ public class Axis2ServiceServlet extends AxisServlet {
 
     public void init(ConfigurationContext configContext) {
         this.tmpconfigContext = configContext;
-        try {
+        //try {
             //super.init(DUMMY_CONFIG);
-        	init(DUMMY_CONFIG);
-        } catch (ServletException e) {
-            throw new RuntimeException(e);
-        }
+        	//init(DUMMY_CONFIG);
+        //} catch (ServletException e) {
+        //    throw new RuntimeException(e);
+        //}
         agent = new TuscanyListingAgent(configContext);
     }
 
