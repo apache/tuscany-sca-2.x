@@ -31,8 +31,10 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.apache.tuscany.sca.node.configuration.DefaultNodeConfigurationFactory;
 import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
@@ -190,6 +192,28 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
             throw new ServiceRuntimeException(e);
         }
         return nodeFactory;
+    }
+
+    public static NodeFactory newInstance(Properties properties) {
+        Map<String, Map<String, String>> attributes = new HashMap<String, Map<String,String>>();
+        for (String key : properties.stringPropertyNames()) {
+            int i = key.lastIndexOf('.');
+            String mk, m2k;
+            if (i > -1) {
+                mk = key.substring(0, i);
+                m2k = key.substring(i+1);
+            } else {
+                mk = "system";
+                m2k = key;
+            }
+            Map<String,String> m2 = attributes.get(mk);
+            if (m2 == null) {
+                m2 = new HashMap<String, String>();
+                attributes.put(mk, m2);
+            }
+            m2.put(m2k, properties.getProperty(key));
+        }
+        return newInstance(attributes);
     }
 
     /**
