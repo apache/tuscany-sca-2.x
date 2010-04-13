@@ -839,9 +839,11 @@
                             <include>**/*TestCase.java</include>
                         </includes>
                         <reportFormat>brief</reportFormat>
+<!--
                         <useFile>false</useFile>
                         <forkMode>once</forkMode>
                         <argLine>-ea -Xmx756m -Xms756m -XX:MaxPermSize=512m</argLine>
+-->
                     </configuration>
                 </plugin>
 
