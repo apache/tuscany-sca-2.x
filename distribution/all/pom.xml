@@ -80,6 +80,10 @@
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
+            <properties>
+                <useDistributionName>false</useDistributionName>
+                <generateAggregatedBundle>false</generateAggregatedBundle>
+            </properties>
             <build>
                  <plugins>
                      <plugin>
@@ -111,6 +115,10 @@
 
         <profile>
             <id>distribution</id>
+            <properties>
+                <useDistributionName>false</useDistributionName>
+                <generateAggregatedBundle>false</generateAggregatedBundle>
+            </properties>
             <build>
                  <plugins>
                      <plugin>
@@ -140,6 +148,16 @@
                 </plugins>
             </build>
         </profile>
+
+        <profile>
+            <id>singlebundle</id>
+            <properties>
+                <useDistributionName>true</useDistributionName>
+                <generateAggregatedBundle>true</generateAggregatedBundle>
+            </properties>
+       </profile>
+
+
     </profiles>
 
     <build>
@@ -157,7 +175,8 @@
                         </goals>
                         <configuration>
                              <targetDirectory>target/modules</targetDirectory>
-                             <useDistributionName>false</useDistributionName>
+                             <useDistributionName>${useDistributionName}</useDistributionName>
+                             <generateAggregatedBundle>${generateAggregatedBundle}</generateAggregatedBundle>
                              <generateManifestJar>true</generateManifestJar>
                              <artifactManifests>
                                  <artifactManifest>
@@ -213,6 +232,15 @@
                               </artifactAggregations-->
                         </configuration>
                     </execution>
+<!--
+                    <execution>
+                        <id>distribution-singlebundle</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                             <goal>aggregate-modules</goal>
+                        </goals>
+                    </execution>
+-->
                 </executions>
                 <dependencies>
                    <dependency>
