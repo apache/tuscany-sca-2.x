@@ -80,9 +80,12 @@ public class DomainDiscoveryService extends AbstractDiscoveryService implements 
 
     public void endpointAdded(Endpoint endpoint) {
         Implementation impl = endpoint.getComponent().getImplementation();
+        
+        /*
         if (!(impl instanceof OSGiImplementation)) {
             return;
         }
+        */
 
         BundleContext bundleContext = null;
         // Remote endpoint doesn't have a bundle

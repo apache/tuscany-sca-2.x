@@ -478,8 +478,10 @@ public class EndpointIntrospector {
                             .getNamespaceURI())) {
                             for (Binding binding : sc.getBindings()) {
                                 if (bindingName.getLocalPart().equals(binding.getName())) {
-                                    bindingMap.put(bindingName, binding);
-                                    break;
+                                    // We need to check duplications
+                                    if (bindingMap.put(bindingName, binding) != null) {
+                                        throw new ServiceRuntimeException("Duplicate binding found: " + bindingName);
+                                    }
                                 }
                             }
                         }

@@ -34,12 +34,17 @@ import java.util.UUID;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 
+import javax.xml.namespace.QName;
+
+import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.deployment.Deployer;
 import org.apache.tuscany.sca.implementation.osgi.SCAConfig;
 import org.apache.tuscany.sca.implementation.osgi.ServiceDescription;
 import org.apache.tuscany.sca.implementation.osgi.ServiceDescriptions;
 import org.apache.tuscany.sca.osgi.remoteserviceadmin.impl.OSGiHelper;
+import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.PolicySet;
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -159,6 +164,7 @@ public class LocalDiscoveryService extends AbstractDiscoveryService implements B
         }
         
         // Add to the extenders before notifying the listeners (the endpoints may references to the config)
+        ExtenderConfiguration.validate(extenders, extender);
         this.extenders.add(extender);
 
         // Notify
@@ -198,6 +204,50 @@ public class LocalDiscoveryService extends AbstractDiscoveryService implements B
 
         public Collection<SCAConfig> getSCAConfigs() {
             return scaConfigs;
+        }
+
+        public static void validate(Collection<ExtenderConfiguration> configs, ExtenderConfiguration newConfig) {
+            Map<QName, Binding> bindings = new HashMap<QName, Binding>();
+            Map<QName, Intent> intents = new HashMap<QName, Intent>();
+            Map<QName, PolicySet> policySets = new HashMap<QName, PolicySet>();
+
+            for (ExtenderConfiguration config : configs) {
+                for (SCAConfig c : config.getSCAConfigs()) {
+                    addBindings(bindings, c);
+                    addIntents(intents, c);
+                    addPolicySets(policySets, c);
+                }
+            }
+            for (SCAConfig c : newConfig.getSCAConfigs()) {
+                addBindings(bindings, c);
+                addIntents(intents, c);
+                addPolicySets(policySets, c);
+            }
+        }
+
+        private static void addIntents(Map<QName, Intent> intents, SCAConfig c) {
+            for (Intent i: c.getIntents()) {
+                if (intents.put(i.getName(), i) != null) {
+                    throw new ServiceRuntimeException("Duplicate intent: " + i.getName());
+                }
+            }
+        }
+        
+        private static void addPolicySets(Map<QName, PolicySet> policySets, SCAConfig c) {
+            for (PolicySet ps: c.getPolicySets()) {
+                if (policySets.put(ps.getName(), ps) != null) {
+                    throw new ServiceRuntimeException("Duplicate policySet: " + ps.getName());
+                }
+            }
+        }
+        
+        private static void addBindings(Map<QName, Binding> bindings, SCAConfig c) {
+            for (Binding b : c.getBindings()) {
+                QName name = new QName(c.getTargetNamespace(), b.getName());
+                if (bindings.put(name, b) != null) {
+                    throw new ServiceRuntimeException("Duplicate binding: " + name);
+                }
+            }
         }
 
     }

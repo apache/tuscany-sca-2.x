@@ -46,7 +46,6 @@ import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
-import org.apache.tuscany.sca.node.management.NodeManager;
 import org.apache.tuscany.sca.runtime.ActivationException;
 import org.apache.tuscany.sca.runtime.CompositeActivator;
 import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
@@ -69,19 +68,19 @@ public class NodeImpl implements Node {
     private CompositeContext compositeContext;
     private Composite domainComposite;
     private NodeConfiguration configuration;
-    private NodeFactoryImpl manager;
+    private NodeFactoryImpl nodeFactory;
     private List<Contribution> contributions;
-    private NodeManager mbean;
+    // private NodeManager mbean;
 
     /**
      * Create a node from the configuration
      * @param manager
      * @param configuration
      */
-    public NodeImpl(NodeFactoryImpl manager, NodeConfiguration configuration) {
+    public NodeImpl(NodeFactoryImpl nodeFactory, NodeConfiguration configuration) {
         super();
         this.configuration = configuration;
-        this.manager = manager;
+        this.nodeFactory = nodeFactory;
     }
     
     /**
@@ -93,7 +92,7 @@ public class NodeImpl implements Node {
     public NodeImpl(NodeFactoryImpl manager, NodeConfiguration configuration, List<Contribution> contributions) {
         super();
         this.configuration = configuration;
-        this.manager = manager;
+        this.nodeFactory = manager;
         this.contributions = new ArrayList<Contribution>(contributions);
     }
 
@@ -104,41 +103,41 @@ public class NodeImpl implements Node {
     public Node start() {
         logger.log(Level.INFO, "Starting node: " + configuration.getURI() + " domain: " + configuration.getDomainURI());
 
-        manager.init();
-        manager.addNode(configuration, this);
-        this.proxyFactory = manager.proxyFactory;
+        nodeFactory.init();
+        nodeFactory.addNode(configuration, this);
+        this.proxyFactory = nodeFactory.proxyFactory;
         
-        DomainRegistryFactory domainRegistryFactory = ExtensibleDomainRegistryFactory.getInstance(manager.registry);
+        DomainRegistryFactory domainRegistryFactory = ExtensibleDomainRegistryFactory.getInstance(nodeFactory.registry);
         EndpointRegistry endpointRegistry =
             domainRegistryFactory.getEndpointRegistry(configuration.getDomainRegistryURI(), configuration
                 .getDomainURI());
         
-        UtilityExtensionPoint utilities = manager.registry.getExtensionPoint(UtilityExtensionPoint.class);
+        UtilityExtensionPoint utilities = nodeFactory.registry.getExtensionPoint(UtilityExtensionPoint.class);
         this.compositeActivator = utilities.getUtility(CompositeActivator.class);
         try {
-            Monitor monitor = manager.monitorFactory.createMonitor();
+            Monitor monitor = nodeFactory.monitorFactory.createMonitor();
             ProcessorContext context = new ProcessorContext(monitor);
             
             // Set up the thead context monitor
-            Monitor tcm = manager.monitorFactory.setContextMonitor(monitor);
+            Monitor tcm = nodeFactory.monitorFactory.setContextMonitor(monitor);
             try {
                 if (contributions == null) {
-                    contributions = manager.loadContributions(configuration, context);
+                    contributions = nodeFactory.loadContributions(configuration, context);
                 }
-                domainComposite = manager.configureNode(configuration, contributions, context);
+                domainComposite = nodeFactory.configureNode(configuration, contributions, context);
 
                 this.compositeContext =
-                    new CompositeContext(manager.registry, 
+                    new CompositeContext(nodeFactory.registry, 
                                          endpointRegistry, 
                                          domainComposite, 
                                          configuration.getDomainURI(), 
                                          configuration.getURI(),
-                                         manager.getDeployer().getSystemDefinitions());
+                                         nodeFactory.getDeployer().getSystemDefinitions());
                 
                 CompositeContext.setThreadCompositeContext(compositeContext);
             } finally {
                 // Reset the thread context monitor
-                manager.monitorFactory.setContextMonitor(tcm);
+                nodeFactory.monitorFactory.setContextMonitor(tcm);
             }
             
             // Activate the composite
@@ -164,7 +163,7 @@ public class NodeImpl implements Node {
                 */
             } catch (Throwable e) {
                 // Ignore the error for now
-                mbean = null;
+                // mbean = null;
                 logger.log(Level.SEVERE, e.getMessage(), e);
             }
 
@@ -207,7 +206,7 @@ public class NodeImpl implements Node {
 
             } // end if
 
-            manager.removeNode(configuration);
+            nodeFactory.removeNode(configuration);
             this.compositeActivator = null;
             this.proxyFactory = null;
             this.domainComposite = null;
@@ -298,7 +297,7 @@ public class NodeImpl implements Node {
     }
 
     public ExtensionPointRegistry getExtensionPointRegistry() {
-        return manager.getExtensionPointRegistry();
+        return nodeFactory.getExtensionPointRegistry();
     }
 
     /**
@@ -341,11 +340,11 @@ public class NodeImpl implements Node {
     private String writeComposite(Composite composite, StAXArtifactProcessor<Composite> compositeProcessor){
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         XMLOutputFactory outputFactory =
-            manager.getExtensionPointRegistry().getExtensionPoint(FactoryExtensionPoint.class)
+            nodeFactory.getExtensionPointRegistry().getExtensionPoint(FactoryExtensionPoint.class)
                 .getFactory(XMLOutputFactory.class);
         
         try {
-            compositeProcessor.write(composite, outputFactory.createXMLStreamWriter(bos), new ProcessorContext(manager.registry));
+            compositeProcessor.write(composite, outputFactory.createXMLStreamWriter(bos), new ProcessorContext(nodeFactory.registry));
         } catch(Exception ex) {
             return ex.toString();
         }
