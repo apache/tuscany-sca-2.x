@@ -51,8 +51,8 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
     private static final Logger logger = Logger.getLogger(DefaultDataBindingExtensionPoint.class.getName());
     private boolean loadedDataBindings;
 
-    public DefaultDataBindingExtensionPoint() {
-    }
+//    public DefaultDataBindingExtensionPoint() {
+//    }
 
     public DefaultDataBindingExtensionPoint(ExtensionPointRegistry registry) {
         this.registry = registry;
@@ -62,6 +62,7 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
         if (id == null) {
             return null;
         }
+        loadDataBindings();
         DataBinding dataBinding = bindings.get(id.toLowerCase());
         if (dataBinding == null) {
             loadDataBindings();

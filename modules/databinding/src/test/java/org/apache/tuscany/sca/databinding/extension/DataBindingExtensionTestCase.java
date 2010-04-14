@@ -25,6 +25,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.databinding.BaseDataBinding;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.DefaultDataBindingExtensionPoint;
@@ -51,7 +52,7 @@ public class DataBindingExtensionTestCase {
         assertFalse(binding1.introspect(dt2, null));
         assertNull(binding1.getWrapperHandler());
         
-        DataBindingExtensionPoint registry = new DefaultDataBindingExtensionPoint();
+        DataBindingExtensionPoint registry = new DefaultDataBindingExtensionPoint(new DefaultExtensionPointRegistry());
         registry.addDataBinding(binding1);
         
         assertNotNull(registry.getDataBinding(Node.class.getName()));
