@@ -43,39 +43,100 @@ public class WSDLFirstTestCase extends TestCase {
     }
     
     public void testCalculator() throws Exception {
-        
         HelloWorldClientLauncher.main(null);
-        
-/*        
-        Foo f = new Foo();
-        Bar b1 = new Bar();
-        b1.setS("petra");
-        b1.setX(1);
-        b1.setY(new Integer(2));
-        b1.setB(Boolean.TRUE);
-        Bar b2 = new Bar();
-        b2.setS("beate");
-        b2.setX(3);
-        b2.setY(new Integer(4));
-        b2.setB(Boolean.FALSE);
-        f.setBars(new Bar[] { b1, b2} );
-       
-        Foo f2 = helloWorld.getGreetingsComplex(f);
-
-        assertEquals("petra", f2.getBars()[0].getS());
-        assertEquals(1, f2.getBars()[0].getX());
-        assertEquals(2, f2.getBars()[0].getY().intValue());
-        assertTrue(f2.getBars()[0].getB().booleanValue());
-        assertEquals("simon", f2.getBars()[1].getS());
-        assertEquals(4, f2.getBars()[1].getX());
-        assertEquals(5, f2.getBars()[1].getY().intValue());
-        assertTrue(f2.getBars()[1].getB().booleanValue());
-*/
+    }  
+    
+    public void testWait1() throws Exception {
+        System.out.println("Press a key");
+        System.in.read();
+    }     
+    
+    public void testCalculator1() throws Exception {
+        HelloWorldClientLauncher.main(null);
+    }     
+    
+    public void testCalculator2() throws Exception {
+        HelloWorldClientLauncher.main(null);
+    }  
+    
+    public void testCalculator3() throws Exception {
+        HelloWorldClientLauncher.main(null);
+    }  
+    
+    public void testCalculator4() throws Exception {
+        HelloWorldClientLauncher.main(null);
     }    
+    
+    public void testCalculator5() throws Exception {
+        HelloWorldClientLauncher.main(null);
+    } 
+    
+    public void testCalculator6() throws Exception {
+        HelloWorldClientLauncher.main(null);
+    } 
+    
+    public void testCalculator7() throws Exception {
+        HelloWorldClientLauncher.main(null);
+    } 
+    
+    public void testCalculator8() throws Exception {
+        HelloWorldClientLauncher.main(null);
+    } 
+    
+    public void testCalculator9() throws Exception {
+        HelloWorldClientLauncher.main(null);
+    } 
+    
+    public void testCalculator10() throws Exception {
+        HelloWorldClientLauncher.main(null);
+    } 
+    
+    public void testCalculator11() throws Exception {
+        HelloWorldClientLauncher.main(null);
+    }  
+    
+    public void testCalculator12() throws Exception {
+        HelloWorldClientLauncher.main(null);
+    }  
+    
+    public void testCalculator13() throws Exception {
+        HelloWorldClientLauncher.main(null);
+    }  
+    
+    public void testCalculator14() throws Exception {
+        HelloWorldClientLauncher.main(null);
+    }    
+    
+    public void testCalculator15() throws Exception {
+        HelloWorldClientLauncher.main(null);
+    } 
+    
+    public void testCalculator16() throws Exception {
+        HelloWorldClientLauncher.main(null);
+    } 
+    
+    public void testCalculator17() throws Exception {
+        HelloWorldClientLauncher.main(null);
+    } 
+    
+    public void testCalculator18() throws Exception {
+        HelloWorldClientLauncher.main(null);
+    } 
+    
+    public void testCalculator19() throws Exception {
+        HelloWorldClientLauncher.main(null);
+    } 
+    
+    public void testCalculator20() throws Exception {
+        HelloWorldClientLauncher.main(null);
+    } 
+    
+   
     
     @Override
     protected void tearDown() throws Exception {
         node.stop();
+        node = null;
     }
 
 }

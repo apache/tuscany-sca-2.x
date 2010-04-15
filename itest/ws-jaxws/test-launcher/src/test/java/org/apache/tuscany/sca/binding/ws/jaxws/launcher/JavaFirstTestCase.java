@@ -71,8 +71,15 @@ public class JavaFirstTestCase extends TestCase {
         assertEquals(5, f2.getBars()[1].getY().intValue());
         assertTrue(f2.getBars()[1].getB().booleanValue());
 */
-    }    
+    }  
     
+/*    
+    public void testWait() throws Exception {
+        System.out.println("Press a key");
+        System.in.read();
+    }
+    
+*/
     @Override
     protected void tearDown() throws Exception {
         node.stop();
