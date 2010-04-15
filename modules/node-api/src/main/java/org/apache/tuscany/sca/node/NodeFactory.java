@@ -21,17 +21,19 @@ package org.apache.tuscany.sca.node;
 
 import static org.apache.tuscany.sca.node.ContributionLocationHelper.getContributionLocations;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.lang.reflect.InvocationTargetException;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -193,27 +195,91 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
         }
         return nodeFactory;
     }
+    
+    protected Properties properties;
 
     public static NodeFactory newInstance(Properties properties) {
-        Map<String, Map<String, String>> attributes = new HashMap<String, Map<String,String>>();
-        for (String key : properties.stringPropertyNames()) {
-            int i = key.lastIndexOf('.');
-            String mk, m2k;
-            if (i > -1) {
-                mk = key.substring(0, i);
-                m2k = key.substring(i+1);
-            } else {
-                mk = "system";
-                m2k = key;
-            }
-            Map<String,String> m2 = attributes.get(mk);
-            if (m2 == null) {
-                m2 = new HashMap<String, String>();
-                attributes.put(mk, m2);
-            }
-            m2.put(m2k, properties.getProperty(key));
+        NodeFactory nodeFactory = null;
+        try {
+            Class<?> factoryClass = getFactoryImplClass();
+            nodeFactory = (NodeFactory)factoryClass.newInstance();
+            nodeFactory.properties = properties;
+        } catch (Exception e) {
+            throw new ServiceRuntimeException(e);
         }
-        return newInstance(attributes);
+        return nodeFactory;
+    }
+
+    public static NodeFactory newInstance(String configURI) {
+        Properties properties;
+        if (configURI == null || configURI.length() < 1) {
+            properties = new Properties();
+        } else if (configURI.startsWith("properties:")) {
+            try {
+                properties = loadProperties(configURI);
+            } catch (IOException e) {
+                throw new ServiceRuntimeException(e);
+            }
+        } else if (configURI.startsWith("uri:")) {
+            properties = parseConfigURI(configURI);
+        } else {
+            properties = new Properties();
+            properties.setProperty("configURI", configURI);
+        }
+        return newInstance(properties);
+    }
+
+    /**
+     * Parse the config URI into a Properties object.
+     * The config URI has the following format:
+     * uri:<domainName>?name=value&...
+     */
+    private static Properties parseConfigURI(String configURI) {
+        Properties properties = new Properties();
+        // TODO:
+        return properties;
+    }
+
+    /**
+     * load the properties from external URL or a relative file
+     * properties:<url to properties file>
+     */
+    private static Properties loadProperties(String configURI) throws IOException {
+
+        String remaining = URI.create(configURI).getSchemeSpecificPart();
+        Properties properties = new Properties();
+        File file = new File(remaining);
+
+        InputStream inputStream = null;
+        if (file.exists()) {
+            inputStream = new FileInputStream(file);
+        } else {
+            URL url = null;
+            try {
+                url = new URL(remaining);
+            } catch (MalformedURLException e) {
+                inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(remaining);
+                if (inputStream == null) {
+                    throw new IOException("File does not exist: " + remaining + ", could not be found on the classpath and is not a valid URL: " + e);
+                }
+            }
+            if (inputStream == null && url != null) {
+                inputStream = url.openStream();
+            }
+        }
+        if (inputStream != null) {
+            properties.load(inputStream);
+            inputStream.close();
+        }
+
+        // append any system properties?
+        try {
+            Properties systemProperties = System.getProperties();
+            properties.putAll(systemProperties);
+        } catch (Exception e) {
+            // ignore security exception
+        }
+        return properties;
     }
 
     /**
@@ -523,4 +589,6 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
     public abstract NodeConfiguration loadConfiguration(InputStream xml, URL base);
 
     public abstract <T> T getExtensionPointRegistry();
+
+    public abstract void init();
 }
