@@ -34,6 +34,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -204,6 +205,7 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
             Class<?> factoryClass = getFactoryImplClass();
             nodeFactory = (NodeFactory)factoryClass.newInstance();
             nodeFactory.properties = properties;
+            nodeFactory.configure(new HashMap<String, Map<String,String>>());
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);
         }
@@ -216,7 +218,7 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
             properties = new Properties();
         } else if (configURI.startsWith("properties:")) {
             try {
-                properties = loadProperties(configURI);
+                properties = loadProperties(configURI.substring("properties:".length()));
             } catch (IOException e) {
                 throw new ServiceRuntimeException(e);
             }
@@ -244,11 +246,10 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
      * load the properties from external URL or a relative file
      * properties:<url to properties file>
      */
-    private static Properties loadProperties(String configURI) throws IOException {
+    private static Properties loadProperties(String propsURL) throws IOException {
 
-        String remaining = URI.create(configURI).getSchemeSpecificPart();
         Properties properties = new Properties();
-        File file = new File(remaining);
+        File file = new File(propsURL);
 
         InputStream inputStream = null;
         if (file.exists()) {
@@ -256,11 +257,11 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
         } else {
             URL url = null;
             try {
-                url = new URL(remaining);
+                url = new URL(propsURL);
             } catch (MalformedURLException e) {
-                inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(remaining);
+                inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(propsURL);
                 if (inputStream == null) {
-                    throw new IOException("File does not exist: " + remaining + ", could not be found on the classpath and is not a valid URL: " + e);
+                    throw new IOException("File does not exist: " + propsURL + ", could not be found on the classpath and is not a valid URL: " + e);
                 }
             }
             if (inputStream == null && url != null) {
