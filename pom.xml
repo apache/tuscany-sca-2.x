@@ -929,10 +929,22 @@
 					<maxmemory>1024m</maxmemory>
 					<tags>
 						<tag>
-							<name>tuscany.extension.spi</name>
-							<!-- extension spi  tag for placing in all valid javadoc places -->
-							<placement>a</placement>
-							<head>Tuscany SPI for Extension Developers</head>
+							<name>tuscany.spi.extension.inheritfrom</name>
+							<!-- extension spi by inheritance tag for placing in classes /interfaces -->
+							<placement>t</placement>
+							<head>Provides part of the Tuscany SPI for Extension Developers by using inheritance</head>
+						</tag>
+						<tag>
+							<name>tuscany.spi.extension.asclient</name>
+							<!-- extension spi by client access tag for placing in classes / interfaces -->
+							<placement>t</placement>
+							<head>Provides part of the Tuscany SPI for Extension Developers by using client calls</head>
+						</tag>
+						<tag>
+							<name>tuscany.spi.extension</name>
+							<!-- extension spi indicator for overviews, packages -->
+							<placement>op</placement> <!-- note: not applicable in t; hence forces use of inheritfrom or asclient -->
+							<head>Elements of the Tuscany SPI for Extension developers are provided.</head>
 						</tag>
 					</tags>
 
