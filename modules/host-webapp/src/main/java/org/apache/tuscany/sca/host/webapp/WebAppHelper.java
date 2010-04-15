@@ -130,16 +130,22 @@ public class WebAppHelper {
     public synchronized static ServletHost init(final ServletContext servletContext) {
         if (host == null) {
             try {
-                factory = NodeFactory.getInstance();
+                
+                String configValue = servletContext.getInitParameter("org.apache.tuscany.sca.config");
+                factory = NodeFactory.newInstance(configValue);
                 ExtensionPointRegistry registry = factory.getExtensionPointRegistry();
                 ServletHostExtensionPoint servletHosts = registry.getExtensionPoint(ServletHostExtensionPoint.class);
                 servletHosts.setWebApp(true);
+                
+                // TODO: why are the init parameters copied to the attributes?
                 for (Enumeration<String> e = servletContext.getInitParameterNames(); e.hasMoreElements();) {
                     String name = e.nextElement();
                     String value = servletContext.getInitParameter(name);
                     servletContext.setAttribute(name, value);
                 }
+
                 host = getServletHost(servletContext);
+
             } catch (ServletException e) {
                 throw new RuntimeException(e);
             }
