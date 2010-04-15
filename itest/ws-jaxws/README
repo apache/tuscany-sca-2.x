@@ -59,14 +59,25 @@ noListener Intent
 -----------------
   ws-makeconnetion?
 
---------------
+
 SOAP1.1 intent
 --------------
+
+
 SOAP1.2 intent
 --------------
+
 MTOM intent
+--------------
 
 callback
 --------
 new OASIS protocol
 WSCallback ws policy
+
+JAXWS Asynch APIs
+-----------------
+
+Streaming
+---------
+Do we need to support?
