@@ -919,4 +919,33 @@
         </pluginManagement>
     </build>
 
+    <reporting>
+        <plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.6.1</version>
+				<configuration>
+					<maxmemory>1024m</maxmemory>
+					<tags>
+						<tag>
+							<name>tuscany.extension.spi</name>
+							<!-- extension spi  tag for placing in all valid javadoc places -->
+							<placement>a</placement>
+							<head>Tuscany SPI for Extension Developers</head>
+						</tag>
+					</tags>
+
+                    <!-- group stuff for addition later, once basic aggregate is working 
+					<groups>
+						<group>
+						  <title>Extension Developer's SPIs</title>
+							<packages>org.apache.tuscany.sca.spi*</packages> 
+						</group>
+					</groups>  -->
+				</configuration>
+			</plugin>
+		</plugins>
+    </reporting>
+
 </project>

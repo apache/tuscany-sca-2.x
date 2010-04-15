@@ -33,6 +33,7 @@ import org.apache.tuscany.sca.policy.PolicySubject;
  * Base implementation class of Implementation model interface
  *
  * @version $Rev$ $Date$
+ * @tuscany.extension.spi By Inheritance
  */
 public abstract class ImplementationImpl extends ComponentTypeImpl implements Implementation, PolicySubject {
     private QName type;
