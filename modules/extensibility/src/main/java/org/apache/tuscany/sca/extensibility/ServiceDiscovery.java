@@ -38,6 +38,9 @@ import org.apache.tuscany.sca.extensibility.impl.LDAPFilter;
  * Services are described using configuration files in META-INF/services.
  * Service description specifies a class name followed by optional properties.
  *
+ * TODO: this is broken as it uses a static INSTANCE but non-static serviceAttributes
+ * and discoverer so the same INSTANCE gets used across NodeFactories and picks up
+ * old values
  *
  * @version $Rev$ $Date$
  */
