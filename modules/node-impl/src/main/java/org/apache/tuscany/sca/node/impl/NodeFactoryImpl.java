@@ -81,6 +81,7 @@ import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.EndpointReferenceBinder;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
 import org.apache.tuscany.sca.runtime.ExtensibleDomainRegistryFactory;
+import org.apache.tuscany.sca.runtime.RuntimeProperties;
 import org.apache.tuscany.sca.work.WorkScheduler;
 import org.oasisopen.sca.ServiceRuntimeException;
 
@@ -233,6 +234,8 @@ public class NodeFactoryImpl extends NodeFactory {
 
         UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
         monitorFactory = utilities.getUtility(MonitorFactory.class);
+
+        utilities.getUtility(RuntimeProperties.class).setProperties(properties);
         
         // Load the Deployer
         deployer = utilities.getUtility(Deployer.class);
