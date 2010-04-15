@@ -196,7 +196,7 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
         return nodeFactory;
     }
     
-    protected Properties properties;
+    protected Properties properties = new Properties();
 
     public static NodeFactory newInstance(Properties properties) {
         NodeFactory nodeFactory = null;
