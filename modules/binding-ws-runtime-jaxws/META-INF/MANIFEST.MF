@@ -52,3 +52,4 @@ Import-Package: javax.security.auth.callback;resolution:=optional,
 Bundle-SymbolicName: org.apache.tuscany.sca.binding.ws.jaxws
 Bundle-DocURL: http://www.apache.org/
 Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6
+Export-Package: org.apache.tuscany.sca.binding.ws.jaxws;version="2.0.0"

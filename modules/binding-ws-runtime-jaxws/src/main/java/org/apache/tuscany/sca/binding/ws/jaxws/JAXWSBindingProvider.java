@@ -26,7 +26,6 @@ import javax.xml.soap.SOAPException;
 import javax.xml.soap.SOAPFactory;
 import javax.xml.soap.SOAPFault;
 import javax.xml.soap.SOAPMessage;
-import javax.xml.ws.Endpoint;
 import javax.xml.ws.Provider;
 import javax.xml.ws.ServiceMode;
 import javax.xml.ws.WebServiceProvider;
@@ -42,7 +41,6 @@ import org.apache.tuscany.sca.interfacedef.util.FaultException;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
-import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.w3c.dom.Element;
@@ -50,15 +48,14 @@ import org.w3c.dom.Node;
 
 @WebServiceProvider
 @ServiceMode(Mode.MESSAGE)
-public class JAXWSServiceBindingProvider implements ServiceBindingProvider, Provider<SOAPMessage> {
+public class JAXWSBindingProvider implements Provider<SOAPMessage> {
     private MessageFactory messageFactory;
     private RuntimeEndpoint endpoint;
     private WebServiceBinding wsBinding;
-    private Endpoint wsEndpoint;
     private javax.xml.soap.MessageFactory soapMessageFactory;
     private SOAPFactory soapFactory;
 
-    public JAXWSServiceBindingProvider(RuntimeEndpoint endpoint,
+    public JAXWSBindingProvider(RuntimeEndpoint endpoint,
                                        ServletHost servletHost,
                                        FactoryExtensionPoint modelFactories,
                                        DataBindingExtensionPoint dataBindings) {
@@ -98,29 +95,17 @@ public class JAXWSServiceBindingProvider implements ServiceBindingProvider, Prov
         // calculation (see above comment). For now just fake the addition of binding 
         // specific processing by adding a root if it's not already present
         if (!wsBinding.getURI().startsWith("http://")) {
-            wsBinding.setURI("http://localhost:8080" + wsBinding.getURI());
+            wsBinding.setURI("http://localhost:8085" + wsBinding.getURI());
         }
         System.out.println("Service URI: " + wsBinding.getURI());
     }
 
     public void start() {
-        // TODO - turn on Axis2 JAXWS support
-        
-        
-        wsEndpoint = Endpoint.create(this);
-        wsEndpoint.publish(wsBinding.getURI());
+        // TODO - do we need this?
     }
 
     public void stop() {
-        wsEndpoint.stop();
-    }
-
-    public InterfaceContract getBindingInterfaceContract() {
-        return wsBinding.getBindingInterfaceContract();
-    }
-
-    public boolean supportsOneWayInvocation() {
-        return true;
+        // TODO - do we need this?
     }
 
     public SOAPMessage invoke(SOAPMessage request) {

@@ -51,7 +51,7 @@ import org.apache.tuscany.sca.invocation.Message;
 import org.w3c.dom.Node;
 
 /**
- * Axis2BindingInvoker uses an Axis2 OperationClient to invoke a remote web service
+ * Uses JAXWS Dispatch to invoke a remote web service
  *
  * @version $Rev$ $Date$
  */
