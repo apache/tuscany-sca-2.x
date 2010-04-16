@@ -73,7 +73,7 @@
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-binding-rss-rome</artifactId>
+            <artifactId>tuscany-binding-rss-runtime</artifactId>
             <version>${tuscany.version}</version>
             <scope>runtime</scope>
         </dependency>
