@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema version="1.0" targetNamespace="http://helloworld/external" xmlns:tns="http://helloworld/external" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:element name="getGreetings" type="tns:getGreetings"/>
+
+  <xs:element name="getGreetingsResponse" type="tns:getGreetingsResponse"/>
+
+  <xs:complexType name="getGreetings">
+    <xs:sequence>
+      <xs:element name="name" type="xs:string" form="qualified" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getGreetingsResponse">
+    <xs:sequence>
+      <xs:element name="getGreetingsReturn" type="xs:string" form="qualified" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>
+

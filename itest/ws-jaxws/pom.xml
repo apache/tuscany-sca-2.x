@@ -30,10 +30,12 @@
     <name>Apache Tuscany SCA iTest WS JAXWS</name>
     
   <modules>
-    <module>common-contribution</module>
-    <module>java-first-contribution</module>
-    <module>wsdl-first-contribution</module>
-    <module>test-launcher</module>
+    <module>contribution-java-first</module>
+    <module>contribution-wsdl-first</module>
+    <module>external-client</module>
+    <module>external-service</module>
+    <module>launcher-ri</module>
+    <!--module>launcher-axis2</module-->
   </modules>
 
 </project>
