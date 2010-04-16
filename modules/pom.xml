@@ -50,6 +50,8 @@
         <module>binding-jsonrpc-runtime</module>
         <module>binding-rmi</module>
         <module>binding-rmi-runtime</module>
+        <module>binding-rss</module>
+        <module>binding-rss-runtime</module>
         <module>binding-sca-runtime</module>
         <module>binding-ws</module>
         <module>binding-ws-runtime-axis2</module>
