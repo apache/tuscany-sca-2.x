@@ -56,6 +56,7 @@
         <module>binding-ws</module>
         <module>binding-ws-runtime-axis2</module>
         <module>binding-ws-runtime-jaxws</module>
+        <module>binding-ws-runtime-jaxws-ri</module>		
         <module>binding-ws-wsdlgen</module>
         <module>builder</module>
         <module>common-http</module>        
