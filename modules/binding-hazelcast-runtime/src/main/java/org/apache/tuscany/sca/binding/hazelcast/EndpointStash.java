@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.binding.hazelcast;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
