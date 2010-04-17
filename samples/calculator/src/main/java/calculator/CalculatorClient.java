@@ -31,8 +31,9 @@ public class CalculatorClient {
 
         Node node = NodeFactory.newInstance().createNode((String)null, new String[] {"target/classes"}).start();
         
+        System.out.println("Retrieving Calculator Service From Node");
         CalculatorService calculatorService = node.getService(CalculatorService.class, "CalculatorServiceComponent");
-        
+        System.out.println("Calling Calculator Operations");
         // Calculate
         System.out.println("3 + 2=" + calculatorService.add(3, 2));
         System.out.println("3 - 2=" + calculatorService.subtract(3, 2));
