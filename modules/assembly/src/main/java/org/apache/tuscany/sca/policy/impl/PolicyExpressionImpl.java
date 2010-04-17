@@ -35,7 +35,8 @@ public class PolicyExpressionImpl implements PolicyExpression {
         return name;
     }
 
-    public <T> T getPolicy() {
+    @SuppressWarnings("unchecked")
+	public <T> T getPolicy() {
         return (T)policy;
     }
 
