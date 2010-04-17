@@ -43,7 +43,8 @@ public class SCAClientFactoryImpl2 extends SCAClientFactory {
         super(domainURI);
     }   
     
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public <T> T getService(Class<T> serviceInterface, String serviceName) throws NoSuchServiceException, NoSuchDomainException {
         
         for (NodeFactory nodeFactory : NodeFactory.getNodeFactories()) {
