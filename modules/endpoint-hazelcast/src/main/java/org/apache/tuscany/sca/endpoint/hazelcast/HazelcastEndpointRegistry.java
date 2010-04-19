@@ -159,6 +159,10 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
         // Disable the Hazelcast shutdown hook as Tuscany has its own and with both there are race conditions
         config.setProperty(GroupProperties.PROP_SHUTDOWNHOOK_ENABLED, "false");
         
+        // By default this is 5 seconds, not sure what the implications are but dropping it down to 1 makes 
+        // things like the samples look much faster
+        config.setProperty(GroupProperties.PROP_WAIT_SECONDS_BEFORE_JOIN, "1");
+
         this.hazelcastInstance = Hazelcast.newHazelcastInstance(config);
     }
 
