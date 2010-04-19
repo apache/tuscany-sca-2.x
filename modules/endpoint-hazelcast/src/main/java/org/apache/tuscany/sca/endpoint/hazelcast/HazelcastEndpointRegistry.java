@@ -232,16 +232,18 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
         synchronized (shutdownMutex) {
             String localMemberAddr = hazelcastInstance.getCluster().getLocalMember().getInetSocketAddress().toString();
             String endpointURI = endpoint.getURI();
-            Transaction txn = hazelcastInstance.getTransaction();
-            txn.begin();
-            try {
-                endpointMap.remove(endpointURI);
+            
+// TODO: seems to be a txn bug in Hazelcast, see http://code.google.com/p/hazelcast/issues/detail?id=258 
+//            Transaction txn = hazelcastInstance.getTransaction();
+//            txn.begin();
+//            try {
                 endpointOwners.remove(localMemberAddr, endpointURI);
-                txn.commit();
-            } catch (Throwable e) {
-                txn.rollback();
-                throw new ServiceRuntimeException(e);
-            }
+                endpointMap.remove(endpointURI);
+//                txn.commit();
+//            } catch (Throwable e) {
+//                txn.rollback();
+//                throw new ServiceRuntimeException(e);
+//            }
             localEndpoints.remove(endpointURI);
             logger.info("Removed endpoint - " + endpoint);
         }
