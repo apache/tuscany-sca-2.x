@@ -26,7 +26,7 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
-    <packaging>zip</packaging>
+    <packaging>jar</packaging>
     <artifactId>sample-helloworld</artifactId>
     <name>Apache Tuscany SCA Sample Helloworld</name>
 
@@ -49,18 +49,10 @@
        <finalName>${artifactId}</finalName>
        <plugins>
          <plugin>
-            <groupId>org.apache.tuscany.maven.plugins</groupId>
-            <artifactId>maven-zip-plugin</artifactId>
-            <version>alpha2</version>
-            <extensions>true</extensions>
-         </plugin>
-
-         <plugin>
              <groupId>org.apache.tuscany.maven.plugins</groupId>
              <artifactId>maven-tuscany-plugin</artifactId>
              <version>2.0-SNAPSHOT</version>
          </plugin>
-
        </plugins>
     </build>
 </project>
