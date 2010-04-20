@@ -20,5 +20,4 @@
 <contribution xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
               xmlns:itest="http://www.tuscany.apache.org/itests/binding/ws/axis2">
    <deployable composite="itest:HelloWorld"/>
-   <import.java package="org.apache.tuscany.sca.binding.ws.jaxws"/>
 </contribution>
