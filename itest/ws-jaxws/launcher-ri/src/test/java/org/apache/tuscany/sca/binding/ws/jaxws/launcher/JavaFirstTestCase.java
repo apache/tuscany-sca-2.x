@@ -37,8 +37,7 @@ public class JavaFirstTestCase extends TestCase {
         HelloWorldServiceLauncher.main(null);
        
         // Start the SCA contribution
-        node = NodeFactory.newInstance().createNode(new Contribution("common", "../common-contribution/target/classes"),
-                                                    new Contribution("java-first", "../java-first-contribution/target/classes"));
+        node = NodeFactory.newInstance().createNode(new Contribution("java-first", "../contribution-java-first/target/classes"));
         node.start();
     }
 
