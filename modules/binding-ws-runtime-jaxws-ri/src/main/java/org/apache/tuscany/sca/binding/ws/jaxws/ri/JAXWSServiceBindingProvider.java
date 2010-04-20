@@ -73,8 +73,6 @@ public class JAXWSServiceBindingProvider implements ServiceBindingProvider {
     }
 
     public void start() {
-        jaxwsBindingProvider.start();
-        
         // create the JAXWS endpoint based on the provider
         wsEndpoint = Endpoint.create(SOAPBinding.SOAP11HTTP_BINDING, jaxwsBindingProvider);
         
@@ -124,10 +122,13 @@ public class JAXWSServiceBindingProvider implements ServiceBindingProvider {
        
         // Start up the endpoint
         wsEndpoint.publish(wsBinding.getURI());
+        
+        jaxwsBindingProvider.start();        
     }
 
     public void stop() {
         jaxwsBindingProvider.stop();
+        wsEndpoint.stop();
     }
 
     public InterfaceContract getBindingInterfaceContract() {

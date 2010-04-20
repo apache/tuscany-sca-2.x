@@ -18,6 +18,10 @@
  */
 package org.apache.tuscany.sca.binding.ws.jaxws;
 
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.wsdl.extensions.soap.SOAPAddress;
 import javax.xml.namespace.QName;
 import javax.xml.soap.Detail;
 import javax.xml.soap.DetailEntry;
@@ -28,6 +32,7 @@ import javax.xml.soap.SOAPFault;
 import javax.xml.soap.SOAPMessage;
 import javax.xml.ws.Provider;
 import javax.xml.ws.ServiceMode;
+import javax.xml.ws.WebServiceContext;
 import javax.xml.ws.WebServiceProvider;
 import javax.xml.ws.Service.Mode;
 
@@ -54,11 +59,14 @@ public class JAXWSBindingProvider implements Provider<SOAPMessage> {
     private WebServiceBinding wsBinding;
     private javax.xml.soap.MessageFactory soapMessageFactory;
     private SOAPFactory soapFactory;
+    
+    @Resource
+    private WebServiceContext context;    
 
     public JAXWSBindingProvider(RuntimeEndpoint endpoint,
-                                       ServletHost servletHost,
-                                       FactoryExtensionPoint modelFactories,
-                                       DataBindingExtensionPoint dataBindings) {
+                                ServletHost servletHost,
+                                FactoryExtensionPoint modelFactories,
+                                DataBindingExtensionPoint dataBindings) {
 
         this.messageFactory = modelFactories.getFactory(MessageFactory.class);
 
@@ -95,7 +103,22 @@ public class JAXWSBindingProvider implements Provider<SOAPMessage> {
         // calculation (see above comment). For now just fake the addition of binding 
         // specific processing by adding a root if it's not already present
         if (!wsBinding.getURI().startsWith("http://")) {
-            wsBinding.setURI("http://localhost:8085" + wsBinding.getURI());
+            String serviceURI = null;
+            
+            // look in the port for the location URL
+            List wsdlPortExtensions = wsBinding.getPort().getExtensibilityElements();
+            for (final Object extension : wsdlPortExtensions) {
+                if (extension instanceof SOAPAddress) {
+                    serviceURI = ((SOAPAddress) extension).getLocationURI();
+                }
+            }     
+            
+            if (serviceURI == null || 
+                !serviceURI.startsWith("http://")){
+                serviceURI = "http://localhost:8080" + wsBinding.getURI();
+            }
+            
+            wsBinding.setURI(serviceURI);
         }
         System.out.println("Binding.ws JAXWS provider - Service URI: " + wsBinding.getURI());
     }
@@ -108,7 +131,7 @@ public class JAXWSBindingProvider implements Provider<SOAPMessage> {
         // TODO - do we need this?
     }
 
-    public SOAPMessage invoke(SOAPMessage request) {
+    public SOAPMessage invoke(SOAPMessage request) {       
         try {
             // Assuming document-literal-wrapper style
             Node root = request.getSOAPBody().getFirstChild();
@@ -128,10 +151,14 @@ public class JAXWSBindingProvider implements Provider<SOAPMessage> {
             Object[] body = new Object[]{root};
             requestMsg.setBody(body);
             requestMsg.setOperation(operation);
+            
             Message responseMsg = endpoint.invoke(operation, requestMsg);
+            
             SOAPMessage response = soapMessageFactory.createMessage();
             if (responseMsg.isFault()) {
-                FaultException fe = responseMsg.getBody();
+                ServiceRuntimeException e = responseMsg.getBody();
+                throw e;
+/*                
                 SOAPFault fault = response.getSOAPBody().addFault(new QName(response.getSOAPBody().getNamespaceURI(), "Server"), "unknown");
                 Detail d = fault.addDetail();
                 DetailEntry de = d.addDetailEntry(fe.getFaultName());
@@ -139,6 +166,7 @@ public class JAXWSBindingProvider implements Provider<SOAPMessage> {
                 if (fe.getMessage() != null) {
                     dece.addTextNode(fe.getMessage());
                 }
+*/
             } else {
                 Element element = responseMsg.getBody();
                 response.getSOAPBody().addChildElement(soapFactory.createElement(element));
@@ -146,6 +174,6 @@ public class JAXWSBindingProvider implements Provider<SOAPMessage> {
             return response;
         } catch (SOAPException e) {
             throw new ServiceRuntimeException(e);
-        }
+        } 
     }
 }
