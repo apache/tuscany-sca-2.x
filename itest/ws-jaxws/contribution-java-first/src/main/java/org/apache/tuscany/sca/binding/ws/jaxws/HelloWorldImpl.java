@@ -21,13 +21,14 @@ package org.apache.tuscany.sca.binding.ws.jaxws;
 
 import javax.jws.WebService;
 
+import org.apache.tuscany.sca.binding.ws.jaxws.external.service.jaxws.HelloWorldService;
 import org.oasisopen.sca.annotation.Reference;
 
 @WebService
 public class HelloWorldImpl implements HelloWorld {
 
     @Reference
-    public HelloWorld helloWorldExternal;
+    public HelloWorldService helloWorldExternal;
     
     public String getGreetings(String s) {
         System.out.println("Entering SCA HelloWorld.getGreetings: " + s);
