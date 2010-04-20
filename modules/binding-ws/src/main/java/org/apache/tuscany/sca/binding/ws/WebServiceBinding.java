@@ -160,7 +160,9 @@ public interface WebServiceBinding extends Binding {
     WSDLDefinition getWSDLDefinition();
 
     /**
-     * Sets the WSDL definition.
+     * Sets the WSDL definition if one was specified by the user in the
+     * composite file
+     * 
      * @param wsdlDefinition the WSDL definition
      */
     void setDefinition(WSDLDefinition wsdlDefinition);
@@ -206,7 +208,9 @@ public interface WebServiceBinding extends Binding {
     Definition getWSDLDocument();
 
     /**
-     * Sets the generated WSDL definitions document.
+     * Sets the generated WSDL definitions document. The WSDL is generated
+     * from the component implementation
+     * 
      * @param definition the generated WSDL definitions document
      */
     void setWSDLDocument(Definition definition);
