@@ -54,7 +54,6 @@ import com.hazelcast.core.MembershipEvent;
 import com.hazelcast.core.MembershipListener;
 import com.hazelcast.core.MultiMap;
 import com.hazelcast.core.Transaction;
-import com.hazelcast.impl.GroupProperties;
 import com.hazelcast.nio.Address;
 
 /**
@@ -157,11 +156,15 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
         config.getMapConfig("default").setNearCacheConfig(new NearCacheConfig(0, 0, "NONE", 0, true));
 
         // Disable the Hazelcast shutdown hook as Tuscany has its own and with both there are race conditions
-        config.setProperty(GroupProperties.PROP_SHUTDOWNHOOK_ENABLED, "false");
+        config.setProperty("hazelcast.shutdownhook.enabled",
+                           // GroupProperties.PROP_SHUTDOWNHOOK_ENABLED, 
+                           "false");
         
         // By default this is 5 seconds, not sure what the implications are but dropping it down to 1 makes 
         // things like the samples look much faster
-        config.setProperty(GroupProperties.PROP_WAIT_SECONDS_BEFORE_JOIN, "1");
+        config.setProperty("hazelcast.wait.seconds.before.join",
+                           // GroupProperties.PROP_WAIT_SECONDS_BEFORE_JOIN, 
+                           "1");
 
         this.hazelcastInstance = Hazelcast.newHazelcastInstance(config);
     }
