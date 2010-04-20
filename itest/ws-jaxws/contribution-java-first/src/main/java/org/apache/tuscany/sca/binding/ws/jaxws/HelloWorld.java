@@ -19,8 +19,6 @@
 
 package org.apache.tuscany.sca.binding.ws.jaxws;
 
-import javax.jws.WebService;
-
 import org.oasisopen.sca.annotation.Remotable;
 
 @Remotable
