@@ -760,6 +760,7 @@
             <configuration>
               <rules>
                 <requirePluginVersions>
+                   <unCheckedPluginList>org.apache.tuscany.maven.plugins:maven-tuscany-plugin</unCheckedPluginList>
                    <message>Best Practice is to always define released plugin versions!</message>
                    <banLatest>true</banLatest>
                    <banRelease>true</banRelease>
