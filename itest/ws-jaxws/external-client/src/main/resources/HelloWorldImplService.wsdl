@@ -12,6 +12,15 @@
   <message name="getGreetingsResponse">
     <part name="parameters" element="tns:getGreetingsResponse"/>
   </message>
+  <message name="getGreetingsException">
+    <part name="parameters" element="tns:getGreetingsException"/>
+  </message>
+  <message name="getGreetingsExceptionResponse">
+    <part name="parameters" element="tns:getGreetingsExceptionResponse"/>
+  </message>
+  <message name="Exception">
+    <part name="fault" element="tns:Exception"/>
+  </message>
   <message name="getGreetingsComplex">
     <part name="parameters" element="tns:getGreetingsComplex"/>
   </message>
@@ -22,6 +31,11 @@
     <operation name="getGreetings">
       <input message="tns:getGreetings"/>
       <output message="tns:getGreetingsResponse"/>
+    </operation>
+    <operation name="getGreetingsException">
+      <input message="tns:getGreetingsException"/>
+      <output message="tns:getGreetingsExceptionResponse"/>
+      <fault message="tns:Exception" name="Exception"/>
     </operation>
     <operation name="getGreetingsComplex">
       <input message="tns:getGreetingsComplex"/>
@@ -39,6 +53,18 @@
         <soap:body use="literal"/>
       </output>
     </operation>
+    <operation name="getGreetingsException">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </fault>
+    </operation>
     <operation name="getGreetingsComplex">
       <soap:operation soapAction=""/>
       <input>
@@ -55,4 +81,6 @@
     </port>
   </service>
 </definitions>
+
+
 

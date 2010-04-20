@@ -35,9 +35,9 @@ public class HelloWorldService {
     @ResponseWrapper(localName = "getGreetingsResponse", targetNamespace = "http://helloworld/external", className = "org.apache.tuscany.sca.binding.ws.jaxws.external.service.GetGreetingsResponse")
     public String getGreetings( @WebParam(name = "name", targetNamespace = "http://helloworld/external")
                                 String name) {
-        System.out.println("Entering External HelloWorld.getGreetings: " + name);
+        System.out.println("Entering External Service HelloWorld.getGreetings: " + name);
         String response = "Hello " + name;
-        System.out.println("Leaving External HelloWorld.getGreetings: " + response);
+        System.out.println("Leaving External Service HelloWorld.getGreetings: " + response);
         return response;
     }
 

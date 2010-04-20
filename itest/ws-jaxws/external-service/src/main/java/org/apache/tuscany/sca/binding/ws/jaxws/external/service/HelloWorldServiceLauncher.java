@@ -23,12 +23,27 @@ import javax.xml.ws.Endpoint;
 
 public class HelloWorldServiceLauncher {
     
-    public static void main(String[] args) throws Exception {
+    public Endpoint endpoint;
+    
+    public HelloWorldServiceLauncher(){
+        
+    }
+    
+    public void createService(){
         System.out.println(">>> Starting external JAXWS service at http://localhost:8086/External/HelloWorld");
         
         // default JVM JAXWS support. 
-        Endpoint.publish("http://localhost:8086/External/HelloWorld",
-                         new HelloWorldService());
-
+        endpoint= Endpoint.publish("http://localhost:8086/External/HelloWorld",
+                                   new HelloWorldService());
     }
+    
+    public void destoryService(){
+        System.out.println(">>> Stopping external JAXWS service at http://localhost:8086/External/HelloWorld");
+        endpoint.stop();
+    }
+    
+    public static void main(String[] args) throws Exception {
+        HelloWorldServiceLauncher launcher = new HelloWorldServiceLauncher();
+        launcher.createService();
+    }    
 }

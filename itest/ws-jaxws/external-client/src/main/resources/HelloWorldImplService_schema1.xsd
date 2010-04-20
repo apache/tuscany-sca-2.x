@@ -1,13 +1,37 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <xs:schema version="1.0" targetNamespace="http://jaxws.ws.binding.sca.tuscany.apache.org/" xmlns:tns="http://jaxws.ws.binding.sca.tuscany.apache.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
+  <xs:element name="Exception" type="tns:Exception"/>
+
   <xs:element name="getGreetings" type="tns:getGreetings"/>
 
   <xs:element name="getGreetingsComplex" type="tns:getGreetingsComplex"/>
 
   <xs:element name="getGreetingsComplexResponse" type="tns:getGreetingsComplexResponse"/>
 
+  <xs:element name="getGreetingsException" type="tns:getGreetingsException"/>
+
+  <xs:element name="getGreetingsExceptionResponse" type="tns:getGreetingsExceptionResponse"/>
+
   <xs:element name="getGreetingsResponse" type="tns:getGreetingsResponse"/>
+
+  <xs:complexType name="getGreetingsException">
+    <xs:sequence>
+      <xs:element name="arg0" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getGreetingsExceptionResponse">
+    <xs:sequence>
+      <xs:element name="return" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="Exception">
+    <xs:sequence>
+      <xs:element name="message" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
 
   <xs:complexType name="getGreetings">
     <xs:sequence>

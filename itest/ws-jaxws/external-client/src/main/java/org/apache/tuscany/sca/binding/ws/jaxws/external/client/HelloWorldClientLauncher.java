@@ -25,23 +25,49 @@ import java.net.URL;
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
 
+import org.apache.tuscany.sca.binding.ws.jaxws.sca.Exception_Exception;
 import org.apache.tuscany.sca.binding.ws.jaxws.sca.HelloWorldImpl;
 
 public class HelloWorldClientLauncher {
     
-    public static void main(String[] args) throws Exception {
+    public HelloWorldImpl wsProxy;
+    
+    public HelloWorldClientLauncher(){
+    }
+    
+    public void createClient() throws Exception{
         System.out.println(">>> Starting external JAXWS client ");
-                
+        
         // default JVM JAXWS support
         QName serviceName = new QName("http://jaxws.ws.binding.sca.tuscany.apache.org/", "HelloWorldImplService");
         QName portName = new QName("http://jaxws.ws.binding.sca.tuscany.apache.org/", "HelloWorldImplPort");
         //URL wsdlLocation = new File("../external-client/target/classes/helloworld-sca.wsdl").toURL();
         URL wsdlLocation = new File("../external-client/target/classes/HelloWorldImplService.wsdl").toURL();
         javax.xml.ws.Service webService = Service.create(wsdlLocation, serviceName);
-        HelloWorldImpl wsProxy = (HelloWorldImpl) webService.getPort(portName, HelloWorldImpl.class);
-        
-        String response = wsProxy.getGreetings("Fred");
-        
-        System.out.println("Leaving external JAXWS client: " + response);
+        wsProxy = (HelloWorldImpl) webService.getPort(portName, HelloWorldImpl.class);
     }
+    
+    public void destroyClient(){
+        System.out.println(">>> Stopping external JAXWS client: ");
+        // TODO 
+    }
+    
+    public String getGreetings(String name){
+        System.out.println("Entering External Client HelloWorld.getGreetings: " + name);
+        String response = wsProxy.getGreetings(name);
+        System.out.println("Leaving External Client HelloWorld.getGreetings: " + response);
+        return response;
+    }
+    
+    public String getGreetingsException(String name) throws Exception_Exception {
+        return wsProxy.getGreetingsException(name);
+    }    
+    
+    public static void main(String[] args) throws Exception {
+        HelloWorldClientLauncher launcher = new HelloWorldClientLauncher();
+        launcher.createClient();
+        launcher.getGreetings("Fred");
+        launcher.destroyClient();
+    }
+    
 }

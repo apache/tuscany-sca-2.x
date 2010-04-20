@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.binding.ws.jaxws;
 import javax.jws.WebService;
 
 import org.apache.tuscany.sca.binding.ws.jaxws.external.service.jaxws.HelloWorldService;
+import org.oasisopen.sca.ServiceRuntimeException;
 import org.oasisopen.sca.annotation.Reference;
 
 @WebService
@@ -36,6 +37,13 @@ public class HelloWorldImpl implements HelloWorld {
         System.out.println("Leaving SCA HelloWorld.getGreetings: " + response);
         return response;
     }
+    
+    public String getGreetingsException(String s) throws ServiceRuntimeException {
+        System.out.println("Entering SCA HelloWorld.getGreetingsException: " + s);
+        String response = helloWorldExternal.getGreetings(s);
+        System.out.println("Leaving SCA HelloWorld.getGreetings: " + response);
+        throw new ServiceRuntimeException(response);
+    }    
 
     public Foo getGreetingsComplex(Foo foo){
         Foo response = null;//helloWorldExternal.getGreetingsComplex(foo);

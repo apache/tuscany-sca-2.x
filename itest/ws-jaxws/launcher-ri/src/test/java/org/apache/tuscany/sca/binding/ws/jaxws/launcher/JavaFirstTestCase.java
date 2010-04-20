@@ -19,26 +19,42 @@
 
 package org.apache.tuscany.sca.binding.ws.jaxws.launcher;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import org.apache.tuscany.sca.binding.ws.jaxws.external.client.HelloWorldClientLauncher;
 import org.apache.tuscany.sca.binding.ws.jaxws.external.service.HelloWorldServiceLauncher;
 import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
-public class JavaFirstTestCase extends TestCase {
+public class JavaFirstTestCase {
 
     private Node node;
+    private HelloWorldServiceLauncher externalService;
+    private HelloWorldClientLauncher externalClient;
 
-    @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         // Start the external service
-        HelloWorldServiceLauncher.main(null);
+        externalService = new HelloWorldServiceLauncher();
+        externalService.createService();
        
         // Start the SCA contribution
         node = NodeFactory.newInstance().createNode(new Contribution("java-first", "../contribution-java-first/target/classes"));
         node.start();
+        
+        // start the external client
+        try {
+            externalClient = new HelloWorldClientLauncher();
+            externalClient.createClient();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw ex;
+        }
     }
 
 /*    
@@ -46,15 +62,25 @@ public class JavaFirstTestCase extends TestCase {
         System.out.println("Press a key");
         System.in.read();
     }
-*/    
+*/
     
-    public void testCalculator() throws Exception {
+    @Test
+    public void testGetGreetings() throws Exception {
+        assertEquals("Hello Fred", externalClient.getGreetings("Fred"));
+    }
+    
+    @Test
+    public void testGetGreetingsException() throws Exception {
         try {
-            HelloWorldClientLauncher.main(null);
+            externalClient.getGreetingsException("Fred");
         } catch (Exception ex) {
-            ex.printStackTrace();
-            throw ex;
+            return;
         }
+        
+        fail("expecting exception");
+    }
+    
+    public void testGetGreetingsComplex() throws Exception {    
         
 /*        
         Foo f = new Foo();
@@ -83,9 +109,11 @@ public class JavaFirstTestCase extends TestCase {
 */
     }  
     
-    @Override
-    protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
         node.stop();
+        externalClient.destroyClient();
+        externalService.destoryService();
     }
 
 }

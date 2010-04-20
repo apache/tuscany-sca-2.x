@@ -19,11 +19,13 @@
 
 package org.apache.tuscany.sca.binding.ws.jaxws;
 
+import org.oasisopen.sca.ServiceRuntimeException;
 import org.oasisopen.sca.annotation.Remotable;
 
 @Remotable
 public interface HelloWorld {
     
     String getGreetings(String s);
+    String getGreetingsException(String s) throws ServiceRuntimeException;
     Foo getGreetingsComplex(Foo foo);
 }
