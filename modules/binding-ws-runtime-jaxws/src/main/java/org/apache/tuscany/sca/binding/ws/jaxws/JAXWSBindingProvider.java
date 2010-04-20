@@ -97,7 +97,7 @@ public class JAXWSBindingProvider implements Provider<SOAPMessage> {
         if (!wsBinding.getURI().startsWith("http://")) {
             wsBinding.setURI("http://localhost:8085" + wsBinding.getURI());
         }
-        System.out.println("Service URI: " + wsBinding.getURI());
+        System.out.println("Binding.ws JAXWS provider - Service URI: " + wsBinding.getURI());
     }
 
     public void start() {
