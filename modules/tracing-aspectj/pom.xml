@@ -31,26 +31,19 @@
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjrt</artifactId>
-            <version>1.6.2</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjlib</artifactId>
-            <version>1.6.2</version>
+            <version>1.6.8</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjweaver</artifactId>
-            <version>1.6.2</version>
+            <version>1.6.8</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
     <build>
         <plugins>
-        <!-- Copy the aspectjweaver jar to avoid surefire problems for
-        directories with space -->
+            <!-- Copy the aspectjweaver jar to avoid surefire problems for directories with space -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
@@ -67,11 +60,10 @@
                                 <artifactItem>
                                     <groupId>org.aspectj</groupId>
                                     <artifactId>aspectjweaver</artifactId>
-                                    <version>1.6.2</version>
+                                    <version>1.6.8</version>
                                     <type>jar</type>
                                     <overWrite>true</overWrite>
-                                    <outputDirectory>${project.build.directory}/dependency
-                                    </outputDirectory>
+                                    <outputDirectory>${project.build.directory}/dependency</outputDirectory>
                                 </artifactItem>
                             </artifactItems>
                         </configuration>
