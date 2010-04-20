@@ -19,6 +19,20 @@
 
 package org.apache.tuscany.sca.binding.ws.axis2;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.util.List;
+
+import javax.wsdl.Definition;
+import javax.wsdl.Port;
+import javax.wsdl.Service;
+import javax.wsdl.extensions.soap.SOAPAddress;
+import javax.wsdl.factory.WSDLFactory;
+import javax.wsdl.xml.WSDLReader;
+import javax.xml.namespace.QName;
+
 import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.binding.ws.axis2.helloworld.HelloWorld;
@@ -31,9 +45,6 @@ public class WSDLPortTestCase extends TestCase {
     private Node node;
     private HelloWorld helloWorld;
 
-    public void testCalculator() throws Exception {
-        assertEquals("Hello petra", helloWorld.getGreetings("petra"));
-    }
 
     @Override
     protected void setUp() throws Exception {
@@ -42,6 +53,43 @@ public class WSDLPortTestCase extends TestCase {
         node.start();
         helloWorld = node.getService(HelloWorld.class, "HelloWorldClient");
     }
+    
+    public void testMessageExchange() throws Exception {
+        assertEquals("Hello petra", helloWorld.getGreetings("petra"));
+    } 
+    
+    public void testQuestionMarkWSDL() throws Exception {
+        InputStream inp = new URL("http://localhost:8085/HelloWorldService/HelloWorld?wsdl").openStream();
+        BufferedReader br = new BufferedReader(new InputStreamReader(inp));
+        String line;
+        while((line = br.readLine()) != null) {
+            System.out.println(line);
+        }
+        br.close();
+
+        WSDLReader wsdlReader = WSDLFactory.newInstance().newWSDLReader();
+        wsdlReader.setFeature("javax.wsdl.verbose",false);
+        wsdlReader.setFeature("javax.wsdl.importDocuments",true);
+
+        Definition definition = wsdlReader.readWSDL("http://localhost:8085/HelloWorldService/HelloWorld?wsdl");
+        assertNotNull(definition);
+        Service service = definition.getService(new QName("http://helloworld",
+                                                          "HelloWorldService"));
+        Port port = service.getPort("HelloWorldSoapPort");
+
+        String endpoint = getEndpoint(port);
+        assertEquals("http://localhost:8085/HelloWorldService/HelloWorld", endpoint);
+    }  
+    
+    protected String getEndpoint(Port port) {
+        List wsdlPortExtensions = port.getExtensibilityElements();
+        for (final Object extension : wsdlPortExtensions) {
+            if (extension instanceof SOAPAddress) {
+                return ((SOAPAddress) extension).getLocationURI();
+            }
+        }
+        throw new RuntimeException("no SOAPAddress");
+    }    
     
     @Override
     protected void tearDown() throws Exception {

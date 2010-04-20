@@ -18,11 +18,19 @@
  */
 package org.apache.tuscany.sca.binding.ws.jaxws.ri;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.wsdl.factory.WSDLFactory;
+import javax.wsdl.xml.WSDLWriter;
+import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamSource;
 import javax.xml.ws.Endpoint;
 import javax.xml.ws.ServiceMode;
 import javax.xml.ws.WebServiceProvider;
@@ -37,6 +45,7 @@ import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
+import org.w3c.dom.Node;
 
 @WebServiceProvider
 @ServiceMode(Mode.MESSAGE)
@@ -65,16 +74,55 @@ public class JAXWSServiceBindingProvider implements ServiceBindingProvider {
 
     public void start() {
         jaxwsBindingProvider.start();
-        wsEndpoint = Endpoint.create(SOAPBinding.SOAP11HTTP_BINDING, jaxwsBindingProvider);
-
-/* TODO - set up WSDL for Provider   
-        List<Source> metadata = new ArrayList<Source>();
-        wsEndpoint.setMetadata(metadata);
-       
-        Map<String, Object> properties = new HashMap<String, Object>();
-        wsEndpoint.setProperties(properties);
-*/        
         
+        // create the JAXWS endpoint based on the provider
+        wsEndpoint = Endpoint.create(SOAPBinding.SOAP11HTTP_BINDING, jaxwsBindingProvider);
+        
+        // TODO - There is something odd in the way that service name is calculated in
+        //        some circumstances
+        //           sometimes getServiceName() returns null
+        //           sometimes getService().getQName returns a QName namespace that doesn't match the WSDL
+        //           sometimes getNamespace() returns null
+        //        So here we delve directly into the WSDL4J model as the Tuscany model isn't up to date
+        String targetNamespace = wsBinding.getWSDLDefinition().getDefinition().getTargetNamespace();
+       
+        //set up WSDL for Provider   
+        List<Source> metadata = new ArrayList<Source>();
+        
+        // WSDL DOM seems to be null here so went with writing out
+        // string version of WSDL and reading it back in again
+        //Node node = wsBinding.getWSDLDefinition().getDefinition().getDocumentationElement();
+        //Source source = new DOMSource(node);
+        
+        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+        try {
+            WSDLWriter writer = WSDLFactory.newInstance().newWSDLWriter();
+            writer.writeWSDL(wsBinding.getWSDLDefinition().getDefinition(), outStream);
+        } catch (Exception ex){
+            ex.printStackTrace();
+        }
+        
+        //System.out.println(outStream.toString());
+        ByteArrayInputStream inStream = new ByteArrayInputStream(outStream.toByteArray());
+        Source source = new StreamSource(inStream);
+        source.setSystemId(targetNamespace);
+             
+        metadata.add(source);
+        
+        Map<String, Object> properties = new HashMap<String, Object>();
+
+        QName portName =  new QName(targetNamespace,
+                                    wsBinding.getPort().getName());
+        properties.put(Endpoint.WSDL_PORT, portName);
+                      
+        QName serviceName = new QName(targetNamespace,
+                                      wsBinding.getService().getQName().getLocalPart());
+        properties.put(Endpoint.WSDL_SERVICE, serviceName);
+        
+        wsEndpoint.setMetadata(metadata);
+        wsEndpoint.setProperties(properties);               
+       
+        // Start up the endpoint
         wsEndpoint.publish(wsBinding.getURI());
     }
 
