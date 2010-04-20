@@ -24,7 +24,7 @@ import javax.xml.ws.Endpoint;
 public class HelloWorldServiceLauncher {
     
     public static void main(String[] args) throws Exception {
-        System.out.println(">>> Starting external JAXWS service");
+        System.out.println(">>> Starting external JAXWS service at http://localhost:8086/External/HelloWorld");
         
         // default JVM JAXWS support. 
         Endpoint.publish("http://localhost:8086/External/HelloWorld",
