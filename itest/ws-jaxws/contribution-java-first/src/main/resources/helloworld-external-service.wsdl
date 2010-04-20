@@ -32,7 +32,7 @@
   </binding>
   <service name="HelloWorldServiceService">
     <port name="HelloWorldServicePort" binding="tns:HelloWorldServicePortBinding">
-      <soap:address location="REPLACE_WITH_ACTUAL_URL"/>
+      <soap:address location="http://localhost:8086/External/HelloWorld"/>
     </port>
   </service>
 </definitions>
