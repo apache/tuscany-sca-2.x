@@ -37,9 +37,15 @@ import org.oasisopen.sca.ServiceRuntimeException;
 public class ExtensibleDomainRegistryFactory implements DomainRegistryFactory {
     private final DomainRegistryFactoryExtensionPoint factories;
     private String[] allSchemes;
+    private String defaultScheme = "tuscany";
 
     public ExtensibleDomainRegistryFactory(ExtensionPointRegistry registry) {
         this.factories = registry.getExtensionPoint(DomainRegistryFactoryExtensionPoint.class);
+        RuntimeProperties ps = registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(RuntimeProperties.class);
+        if (ps.getProperties().containsKey("defaultScheme")) {
+            defaultScheme = ps.getProperties().getProperty("defaultScheme");
+        }
+        
     }
     
     public ExtensibleDomainRegistryFactory(DomainRegistryFactoryExtensionPoint factories) {
@@ -86,8 +92,8 @@ public class ExtensibleDomainRegistryFactory implements DomainRegistryFactory {
                 }
             }
 
-            scheme = "vm";
-            endpointRegistryURI = "vm:" + endpointRegistryURI;
+            scheme = defaultScheme;
+            endpointRegistryURI = scheme + ":" + endpointRegistryURI;
         } else {
             scheme = scheme.toLowerCase();
         }
