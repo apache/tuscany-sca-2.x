@@ -43,8 +43,9 @@
         <dependency>
             <groupId>net.sourceforge.stripes</groupId>
             <artifactId>stripes</artifactId>
-            <version>1.5</version>
+            <version>1.5.2</version>
         </dependency>
+		
         <dependency>
             <groupId>taglibs</groupId>
             <artifactId>standard</artifactId>
