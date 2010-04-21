@@ -197,14 +197,19 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
         return nodeFactory;
     }
     
-    protected Properties properties = new Properties();
+    protected Properties properties;
 
-    public static NodeFactory newInstance(Properties properties) {
+    protected NodeFactory() {
+        this.properties = new Properties();
+        properties.setProperty("defaultScheme", "vm");
+    }
+
+    public static NodeFactory newInstance(Properties configProperties) {
         NodeFactory nodeFactory = null;
         try {
             Class<?> factoryClass = getFactoryImplClass();
             nodeFactory = (NodeFactory)factoryClass.newInstance();
-            nodeFactory.properties = properties;
+            nodeFactory.properties = configProperties;
             nodeFactory.configure(new HashMap<String, Map<String,String>>());
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);
@@ -223,22 +228,40 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
                 throw new ServiceRuntimeException(e);
             }
         } else if (configURI.startsWith("uri:")) {
-            properties = parseConfigURI(configURI);
+            properties = parseConfigURI(configURI.substring("uri:".length()));
         } else {
-            properties = new Properties();
-            properties.setProperty("configURI", configURI);
+            throw new IllegalArgumentException("config should start with 'uri:' or 'properties:'");
         }
         return newInstance(properties);
     }
 
     /**
-     * Parse the config URI into a Properties object.
+     * Parse the config string into a Properties object.
      * The config URI has the following format:
      * uri:<domainName>?name=value&...
      */
     private static Properties parseConfigURI(String configURI) {
         Properties properties = new Properties();
-        // TODO:
+        int qm = configURI.indexOf('?');
+        if (qm < 0) {
+            properties.setProperty("defaultDomainName", configURI);
+        } else {
+            properties.setProperty("defaultDomainName", configURI.substring(0, qm));
+            if (configURI.length() > qm+1) {
+                Map<String, String> params = new HashMap<String, String>();
+                for (String param : configURI.substring(qm+1).split("&")) {
+                    String[] px = param.split("=");
+                    if (px.length == 2) {
+                        params.put(px[0], px[1]);
+                    } else {
+                        params.put(px[0], "");
+                    }
+                }
+                for (String name : params.keySet()) {
+                    properties.setProperty(name, params.get(name));
+                }
+            }
+        }
         return properties;
     }
 
@@ -273,13 +296,6 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
             inputStream.close();
         }
 
-        // append any system properties?
-        try {
-            Properties systemProperties = System.getProperties();
-            properties.putAll(systemProperties);
-        } catch (Exception e) {
-            // ignore security exception
-        }
         return properties;
     }
 
