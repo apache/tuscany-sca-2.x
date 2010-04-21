@@ -46,6 +46,7 @@
             <groupId>net.sourceforge.stripes</groupId>
             <artifactId>stripes</artifactId>
             <version>1.5</version>
+            <scope>provided</scope>
         </dependency>
        
         <dependency>
