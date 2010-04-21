@@ -22,8 +22,13 @@ import java.util.List;
 
 import javax.annotation.Resource;
 import javax.wsdl.extensions.soap.SOAPAddress;
+import javax.xml.namespace.QName;
+import javax.xml.soap.Detail;
+import javax.xml.soap.DetailEntry;
+import javax.xml.soap.SOAPElement;
 import javax.xml.soap.SOAPException;
 import javax.xml.soap.SOAPFactory;
+import javax.xml.soap.SOAPFault;
 import javax.xml.soap.SOAPMessage;
 import javax.xml.ws.Provider;
 import javax.xml.ws.ServiceMode;
@@ -37,6 +42,7 @@ import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.util.FaultException;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
@@ -150,17 +156,18 @@ public class JAXWSBindingProvider implements Provider<SOAPMessage> {
             
             SOAPMessage response = soapMessageFactory.createMessage();
             if (responseMsg.isFault()) {
-                ServiceRuntimeException e = responseMsg.getBody();
-                throw e;
-/*                
-                SOAPFault fault = response.getSOAPBody().addFault(new QName(response.getSOAPBody().getNamespaceURI(), "Server"), "unknown");
+//                ServiceRuntimeException e = responseMsg.getBody();
+//                throw e;
+
+                FaultException fe = responseMsg.getBody();
+                SOAPFault fault = response.getSOAPBody().addFault(new QName(response.getSOAPBody().getNamespaceURI(), "Server"), fe.getMessage());
                 Detail d = fault.addDetail();
                 DetailEntry de = d.addDetailEntry(fe.getFaultName());
                 SOAPElement dece = de.addChildElement("message");
                 if (fe.getMessage() != null) {
                     dece.addTextNode(fe.getMessage());
                 }
-*/
+
             } else {
                 Element element = responseMsg.getBody();
                 response.getSOAPBody().addChildElement(soapFactory.createElement(element));
