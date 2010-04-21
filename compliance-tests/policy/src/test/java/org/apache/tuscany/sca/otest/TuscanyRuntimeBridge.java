@@ -79,7 +79,10 @@ public class TuscanyRuntimeBridge implements RuntimeBridge {
     public boolean startContribution(String contributionLocation, String[] contributionNames) throws Exception {
         try {
             // Tuscany specific code which starts the contribution(s) holding the test
-            launcher = NodeFactory.newInstance();
+            Properties ps = new Properties();
+            ps.setProperty("defaultScheme", "vm");
+            ps.setProperty("org.apache.tuscany.sca.binding.ws.jaxws.ri.JAXWSBindingProviderFactory.defaultPort", "8080");
+            launcher = NodeFactory.newInstance(ps);
 
             Contribution[] contributions = new Contribution[contributionNames.length];
             String[] contributionURIs = getContributionURIs(contributionLocation);
