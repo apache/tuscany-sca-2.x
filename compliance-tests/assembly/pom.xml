@@ -80,20 +80,12 @@
               <!-- Real otest/Tuscany problems -->
               <exclude>**/ASM_5038_TestCase.java</exclude><!--  see TUSCANY-3530 -->
               <exclude>**/ASM_5039_TestCase.java</exclude><!--  see TUSCANY-3530 -->
-              <exclude>**/ASM_6015_TestCase.java</exclude><!--  see TUSCANY-3481 -->
               <exclude>**/ASM_10002_TestCase.java</exclude><!--  see TUSCANY-3503 -->
-
-              <!-- Artifacts of the way we run tests getting messed up in some way TBD -->
-              <exclude>**/ASM_6039_TestCase.java</exclude>
-              <exclude>**/ASM_6040_TestCase.java</exclude>
-              <exclude>**/ASM_6036_TestCase.java</exclude>
 
               <!-- actually is working but the err msgs come out in a different order so the msg text test fails -->
               <exclude>**/ASM_13004_TestCase.java</exclude>
 
-              <!-- Nolonger used, artifact out of date, i'll republish the contributions zip -->
-              <exclude>**/ASM_4001_TestCase.java</exclude>
-              <exclude>**/ASM_12001_TestCase.java</exclude>
+
            </excludes>
          </configuration>
       </plugin>
