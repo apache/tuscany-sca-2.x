@@ -99,8 +99,7 @@ public class NodeFactoryImpl extends NodeFactory {
     protected ExtensionPointRegistry registry;
     protected ProxyFactory proxyFactory;
     protected MonitorFactory monitorFactory;
-
-
+    
     /**
      * Automatically destroy the factory when last node is stopped. Subclasses
      * can set this flag.
@@ -470,6 +469,14 @@ public class NodeFactoryImpl extends NodeFactory {
         ServiceDiscovery discovery = getExtensionPointRegistry().getServiceDiscovery();
         for (Map.Entry<String, Map<String, String>> e : attributes.entrySet()) {
             discovery.setAttribute(e.getKey(), e.getValue());
+        }
+        for (Object o : properties.keySet()) {
+            String p = (String) o;
+            if (p.indexOf('.') > -1) {
+                String serviceType = p.substring(0, p.lastIndexOf('.'));
+                String attribute = p.substring(p.lastIndexOf('.')+1);
+                discovery.setAttribute(serviceType, attribute, properties.getProperty(p));
+            }
         }
         super.configure(attributes);
     }

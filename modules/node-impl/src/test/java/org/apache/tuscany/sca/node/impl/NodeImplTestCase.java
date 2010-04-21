@@ -30,14 +30,18 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.contribution.processor.ValidationSchemaExtensionPoint;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.extensibility.ServiceDeclarationParser;
+import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 import org.apache.tuscany.sca.runtime.DomainRegistryFactoryExtensionPoint;
+import org.apache.tuscany.sca.runtime.RuntimeProperties;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -145,6 +149,63 @@ public class NodeImplTestCase {
         Assert.assertEquals("multicast://200.0.0.100:50000/MyDomain", mapping.get("urn:MyDomain"));
     }
     
+    @Test
+    public void testNodeFactoryProperties() throws Exception {
+        NodeFactoryImpl factory = (NodeFactoryImpl)NodeFactory.newInstance();
+        factory.init();
+        UtilityExtensionPoint utilities = factory.getExtensionPointRegistry().getExtensionPoint(UtilityExtensionPoint.class);
+        Properties ps = utilities.getUtility(RuntimeProperties.class).getProperties();
+        Assert.assertEquals(1, ps.size());
+        Assert.assertEquals("vm", ps.getProperty("defaultScheme"));
+
+        Properties properties = new Properties();
+        properties.setProperty("foo.bla", "some value");
+        factory = (NodeFactoryImpl)NodeFactory.newInstance(properties);
+        factory.init();
+        utilities = factory.getExtensionPointRegistry().getExtensionPoint(UtilityExtensionPoint.class);
+        ps = utilities.getUtility(RuntimeProperties.class).getProperties();
+        Assert.assertEquals(1, ps.size());
+        Assert.assertEquals("some value", ps.getProperty("foo.bla"));
+        
+        factory = (NodeFactoryImpl)NodeFactory.newInstance("properties:test.properties");
+        factory.init();
+        utilities = factory.getExtensionPointRegistry().getExtensionPoint(UtilityExtensionPoint.class);
+        ps = utilities.getUtility(RuntimeProperties.class).getProperties();
+        Assert.assertEquals(1, ps.size());
+        Assert.assertEquals("xyz", ps.getProperty("foo.bla"));
+        
+        factory = (NodeFactoryImpl)NodeFactory.newInstance("uri:foo?k1=v1&k2=v2");
+        factory.init();
+        utilities = factory.getExtensionPointRegistry().getExtensionPoint(UtilityExtensionPoint.class);
+        ps = utilities.getUtility(RuntimeProperties.class).getProperties();
+        Assert.assertEquals(3, ps.size());
+        Assert.assertEquals("foo", ps.getProperty("defaultDomainName"));
+        Assert.assertEquals("v1", ps.getProperty("k1"));
+        Assert.assertEquals("v2", ps.getProperty("k2"));
+        
+        factory = (NodeFactoryImpl)NodeFactory.newInstance("uri:");
+        factory.init();
+        utilities = factory.getExtensionPointRegistry().getExtensionPoint(UtilityExtensionPoint.class);
+        ps = utilities.getUtility(RuntimeProperties.class).getProperties();
+        Assert.assertEquals(1, ps.size());
+        Assert.assertEquals("", ps.getProperty("defaultDomainName"));
+
+        factory = (NodeFactoryImpl)NodeFactory.newInstance("uri:?");
+        factory.init();
+        utilities = factory.getExtensionPointRegistry().getExtensionPoint(UtilityExtensionPoint.class);
+        ps = utilities.getUtility(RuntimeProperties.class).getProperties();
+        Assert.assertEquals(1, ps.size());
+        Assert.assertEquals("", ps.getProperty("defaultDomainName"));
+        
+        factory = (NodeFactoryImpl)NodeFactory.newInstance("uri:?foo");
+        factory.init();
+        utilities = factory.getExtensionPointRegistry().getExtensionPoint(UtilityExtensionPoint.class);
+        ps = utilities.getUtility(RuntimeProperties.class).getProperties();
+        Assert.assertEquals(2, ps.size());
+        Assert.assertEquals("", ps.getProperty("defaultDomainName"));
+        Assert.assertEquals("", ps.getProperty("foo"));
+    }
+
     @Test
     public void testLoadNodeFactoryProperties() throws Exception {
         URL url = getClass().getResource("/org/apache/tuscany/sca/node/configuration/test-node-factory.config");
