@@ -29,7 +29,6 @@ import javax.wsdl.factory.WSDLFactory;
 import javax.wsdl.xml.WSDLWriter;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
-import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.ws.Endpoint;
 import javax.xml.ws.ServiceMode;
@@ -45,7 +44,6 @@ import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
-import org.w3c.dom.Node;
 
 @WebServiceProvider
 @ServiceMode(Mode.MESSAGE)
@@ -61,7 +59,7 @@ public class JAXWSServiceBindingProvider implements ServiceBindingProvider {
     public JAXWSServiceBindingProvider(RuntimeEndpoint endpoint,
                                        ServletHost servletHost,
                                        FactoryExtensionPoint modelFactories,
-                                       DataBindingExtensionPoint dataBindings) {
+                                       DataBindingExtensionPoint dataBindings, String defaultPort) {
         
         this.endpoint = endpoint;
         this.wsBinding = (WebServiceBinding)endpoint.getBinding();
@@ -69,7 +67,8 @@ public class JAXWSServiceBindingProvider implements ServiceBindingProvider {
         jaxwsBindingProvider = new JAXWSBindingProvider(endpoint, 
                                                         servletHost,
                                                         modelFactories,
-                                                        dataBindings);
+                                                        dataBindings,
+                                                        defaultPort);
     }
 
     public void start() {

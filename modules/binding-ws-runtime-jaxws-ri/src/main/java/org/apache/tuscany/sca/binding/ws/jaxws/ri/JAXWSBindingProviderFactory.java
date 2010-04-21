@@ -23,6 +23,7 @@ import java.util.List;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
@@ -31,6 +32,7 @@ import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
+import org.apache.tuscany.sca.runtime.RuntimeProperties;
 
 /**
  * Axis2BindingProviderFactory
@@ -43,6 +45,7 @@ public class JAXWSBindingProviderFactory implements BindingProviderFactory<WebSe
     private FactoryExtensionPoint modelFactories;
     private ServletHost servletHost;
     private DataBindingExtensionPoint dataBindings;
+    private String defaultPort = "8085";
 
     public JAXWSBindingProviderFactory(ExtensionPointRegistry extensionPoints) {
         ServletHostExtensionPoint servletHosts = extensionPoints.getExtensionPoint(ServletHostExtensionPoint.class);
@@ -52,6 +55,12 @@ public class JAXWSBindingProviderFactory implements BindingProviderFactory<WebSe
         }
         modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         dataBindings = extensionPoints.getExtensionPoint(DataBindingExtensionPoint.class);
+
+        RuntimeProperties ps = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class).getUtility(RuntimeProperties.class);
+        String pp = ps.getProperties().getProperty(this.getClass().getName() + ".defaultPort");
+        if (pp != null) {
+            this.defaultPort = ps.getProperties().getProperty(this.getClass().getName() + ".defaultPort");
+        }
     }
 
     public ReferenceBindingProvider createReferenceBindingProvider(RuntimeEndpointReference endpointReference) {
@@ -59,7 +68,7 @@ public class JAXWSBindingProviderFactory implements BindingProviderFactory<WebSe
     }
 
     public ServiceBindingProvider createServiceBindingProvider(RuntimeEndpoint endpoint) {
-        return new JAXWSServiceBindingProvider(endpoint, servletHost, modelFactories, dataBindings);
+        return new JAXWSServiceBindingProvider(endpoint, servletHost, modelFactories, dataBindings, defaultPort);
     }
 
     public Class<WebServiceBinding> getModelType() {
