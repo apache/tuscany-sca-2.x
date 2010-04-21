@@ -220,7 +220,7 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
     public static NodeFactory newInstance(String configURI) {
         Properties properties;
         if (configURI == null || configURI.length() < 1) {
-            properties = new Properties();
+            return newInstance();
         } else if (configURI.startsWith("properties:")) {
             try {
                 properties = loadProperties(configURI.substring("properties:".length()));
