@@ -38,6 +38,7 @@
     </dependencies>
 
   <modules>
+                <module>base</module>
                 <module>builder</module>
                 <module>bpel</module>
                 <module>callback-api</module>
