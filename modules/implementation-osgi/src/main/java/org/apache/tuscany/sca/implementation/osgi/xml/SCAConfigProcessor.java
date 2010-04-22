@@ -128,6 +128,10 @@ public class SCAConfigProcessor extends BaseStAXArtifactProcessor implements StA
                            SCA_CONFIG_QNAME.getNamespaceURI(),
                            SCA_CONFIG_QNAME.getLocalPart(),
                            new XAttr("targetNamespace", definitions.getTargetNamespace()));
+        
+        for (Binding binding : definitions.getBindings()) {
+            processor.write(binding, writer, context);
+        }        
 
         for (Intent policyIntent : definitions.getIntents()) {
             processor.write(policyIntent, writer, context);
