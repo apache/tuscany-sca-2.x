@@ -56,7 +56,6 @@
 
     <modules>
         <module>binding-ws-calculator</module>
-        <module>calculator-rmi</module>
         <module>implementation-java-calculator</module>
         <module>legal-checks</module>
         <module>webapp-helloworld</module>
@@ -65,6 +64,7 @@
         <module>webapp-helloworld-servlet</module>
         <module>webapp-helloworld-stripes</module>
 <!-- 
+        <module>calculator-rmi</module>
         <module>webapp-helloworld-bpel</module>
 -->
     </modules>
