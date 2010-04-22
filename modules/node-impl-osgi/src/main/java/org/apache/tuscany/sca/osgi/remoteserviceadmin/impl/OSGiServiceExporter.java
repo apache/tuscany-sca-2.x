@@ -35,10 +35,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.contribution.Contribution;
+import org.apache.tuscany.sca.implementation.osgi.OSGiProperty;
+import org.apache.tuscany.sca.implementation.osgi.SCAConfig;
+import org.apache.tuscany.sca.implementation.osgi.ServiceDescriptionsFactory;
 import org.apache.tuscany.sca.node.configuration.NodeConfiguration;
 import org.apache.tuscany.sca.node.impl.NodeImpl;
 import org.osgi.framework.BundleContext;
@@ -102,6 +106,9 @@ public class OSGiServiceExporter extends AbstractOSGiServiceHandler implements S
                                                                    .getBundleContext())));
                 service.getExtensions().add(createOSGiProperty(registry, ENDPOINT_SERVICE_ID, reference
                     .getProperty(SERVICE_ID)));
+                
+                // create the org.osgi.sca.config.xml property  
+                service.getExtensions().add(createSCAConfigXMLProperty(reference, properties, service));
 
                 // FIXME: Configure the domain and node URI
                 NodeImpl node = new NodeImpl(nodeFactory, configuration, Collections.singletonList(contribution));
@@ -139,5 +146,18 @@ public class OSGiServiceExporter extends AbstractOSGiServiceHandler implements S
         for (ExportRegistration exportRegistration : exportedServices) {
             exportRegistration.close();
         }
+    }
+    
+    private OSGiProperty createSCAConfigXMLProperty(ServiceReference reference, Map<String, Object> props, ComponentService service){
+    	
+        // create the <sca-config> element
+        String scaConfigXMLString = introspector.instrospectSCAConfig(reference, props, service);
+        
+        // wrap the <sca-config> element in an <xml> element
+        String scaConfigXMLStringWithoutXMLHeader = scaConfigXMLString.substring(scaConfigXMLString.indexOf("><") + 1);
+        scaConfigXMLString = "<xml>" + scaConfigXMLStringWithoutXMLHeader + "</xml>";
+    	
+    	// create and return the OSGI property
+        return createOSGiProperty(registry, "org.osgi.sca.config.xml", scaConfigXMLString);
     }
 }

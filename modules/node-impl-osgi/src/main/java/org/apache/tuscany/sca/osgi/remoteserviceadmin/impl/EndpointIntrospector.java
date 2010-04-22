@@ -21,11 +21,14 @@ package org.apache.tuscany.sca.osgi.remoteserviceadmin.impl;
 
 import static org.apache.tuscany.sca.assembly.Base.SCA11_TUSCANY_NS;
 import static org.apache.tuscany.sca.implementation.osgi.OSGiProperty.SCA_BINDINGS;
+import static org.apache.tuscany.sca.osgi.remoteserviceadmin.impl.OSGiHelper.createOSGiProperty;
 import static org.apache.tuscany.sca.osgi.remoteserviceadmin.impl.OSGiHelper.getStringArray;
 import static org.osgi.framework.Constants.OBJECTCLASS;
 import static org.osgi.framework.Constants.SERVICE_ID;
 
 import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -39,6 +42,7 @@ import java.util.UUID;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Base;
@@ -65,6 +69,7 @@ import org.apache.tuscany.sca.implementation.osgi.OSGiImplementation;
 import org.apache.tuscany.sca.implementation.osgi.OSGiImplementationFactory;
 import org.apache.tuscany.sca.implementation.osgi.OSGiProperty;
 import org.apache.tuscany.sca.implementation.osgi.SCAConfig;
+import org.apache.tuscany.sca.implementation.osgi.ServiceDescriptionsFactory;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
@@ -73,7 +78,9 @@ import org.apache.tuscany.sca.osgi.service.discovery.impl.LocalDiscoveryService;
 import org.apache.tuscany.sca.osgi.service.discovery.impl.LocalDiscoveryService.ExtenderConfiguration;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicyFactory;
+import org.apache.tuscany.sca.policy.PolicySet;
 import org.oasisopen.sca.ServiceRuntimeException;
+import org.oasisopen.sca.annotation.PolicySets;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -91,7 +98,7 @@ public class EndpointIntrospector {
     private ContributionFactory contributionFactory;
     private OSGiImplementationFactory implementationFactory;
     private PolicyFactory policyFactory;
-    // private ExtensionPointRegistry registry;
+    private ExtensionPointRegistry registry;
     private FactoryExtensionPoint factories;
     private ModelResolverExtensionPoint modelResolvers;
     // private StAXArtifactProcessor<Composite> compositeProcessor;
@@ -125,6 +132,7 @@ public class EndpointIntrospector {
      */
     public EndpointIntrospector(BundleContext context, ExtensionPointRegistry registry, ServiceTracker discoveryTracker) {
         super();
+        this.registry = registry;
         // this.context = context;
         this.discoveryTracker = discoveryTracker;
         this.factories = registry.getExtensionPoint(FactoryExtensionPoint.class);
@@ -265,6 +273,48 @@ public class EndpointIntrospector {
         Contribution contribution = generateContribution(bundle, sid, remoteInterfaces, bindings, allIntents, osgiProps);
         return contribution;
     }
+    
+    public String instrospectSCAConfig(ServiceReference reference, Map<String, Object> props, ComponentService service){
+        
+        ServiceDescriptionsFactory serviceDescriptionFactory = registry.getExtensionPoint(ServiceDescriptionsFactory.class);
+        SCAConfig scaConfig = serviceDescriptionFactory.createSCAConfig();
+        
+        // add the binding configurations
+        List<Binding> bindings = scaConfig.getBindings();
+        bindings.addAll(service.getBindings());
+        
+        // add the intent configurations
+        List<Intent> intents = scaConfig.getIntents();
+        intents.addAll(service.getRequiredIntents());
+        
+        // add the policy set configurations
+        List<PolicySet> policySets = scaConfig.getPolicySets();
+        policySets.addAll(service.getPolicySets());
+        
+        // set up the target namespace
+        // TODO - there is a bug in the spec which only allow bindings from one
+        //        namsepace to be included in sca-config element. Here we just 
+        //        the first bindings namespace
+        Map<String, Object> properties = getProperties(reference, props);
+        String[] bindingNames = getStringArray(properties.get(SCA_BINDINGS));
+        if (bindingNames.length > 0){
+            QName firstBindingQName = getQName(bindingNames[0]);
+            scaConfig.setTargetNamespace(firstBindingQName.getNamespaceURI());
+        }        
+        
+        // write the sca config out to XML
+        String scaConfigXMLString = "";
+        
+        try {
+            Writer writer = new StringWriter();
+            deployer.saveXMLDocument(scaConfig, writer, deployer.createMonitor());
+            scaConfigXMLString = writer.toString();
+        } catch (Exception ex){
+            throw new ServiceRuntimeException(ex);
+        }
+        
+        return scaConfigXMLString;
+    }    
     
     /*
     public Contribution loadContribution(Bundle bundle, Composite composite) {
@@ -474,8 +524,8 @@ public class EndpointIntrospector {
             for (ExtenderConfiguration config : discoveryService.getConfigurations()) {
                 for (SCAConfig sc : config.getSCAConfigs()) {
                     for (QName bindingName : bindingNames) {
-                        if ("".equals(bindingName.getNamespaceURI()) || sc.getTargetNamespace().equals(bindingName
-                            .getNamespaceURI())) {
+                        if ("".equals(bindingName.getNamespaceURI()) || 
+                            sc.getTargetNamespace().equals(bindingName.getNamespaceURI())) {
                             for (Binding binding : sc.getBindings()) {
                                 if (bindingName.getLocalPart().equals(binding.getName())) {
                                     // We need to check duplications
