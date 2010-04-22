@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Tool: Bnd-0.0.255
-Bundle-Name: Apache Tuscany SCA JAXWS-based WS Binding Extension
+Bundle-Name: Apache Tuscany SCA JAXWS RI based WS Binding Extension
 Created-By: 1.6.0_07 (Sun Microsystems Inc.)
 Bundle-Vendor: The Apache Software Foundation
 Bundle-Version: 2.0.0
@@ -49,6 +49,6 @@ Import-Package: javax.security.auth.callback;resolution:=optional,
  org.oasisopen.sca.annotation;version="2.0.0";resolution:=optional,
  org.w3c.dom,
  org.xml.sax
-Bundle-SymbolicName: org.apache.tuscany.sca.binding.ws.jaxws
+Bundle-SymbolicName: org.apache.tuscany.sca.binding.ws.jaxws.ri
 Bundle-DocURL: http://www.apache.org/
 Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6
