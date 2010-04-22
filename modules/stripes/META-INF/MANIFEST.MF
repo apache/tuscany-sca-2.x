@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 SCA-Version: 1.1
-Bundle-Name: Apache Tuscany SCA Webapp Host
+Bundle-Name: Apache Tuscany SCA Stripes Extension
 Bundle-Vendor: The Apache Software Foundation
-Bundle-Version: 2.0
+Bundle-Version: 2.0.0
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Stripes
@@ -11,19 +11,19 @@ Import-Package: javax.naming,
  javax.servlet.http,
  javax.servlet.jsp,
  javax.servlet.jsp.tagext,
- net.sourceforge.stripes;version="1.5",
- net.sourceforge.stripes.action;version="1.5",
- net.sourceforge.stripes.config;version="1.5",
- net.sourceforge.stripes.controller;version="1.5",
- net.sourceforge.stripes.exception;version="1.5",
- net.sourceforge.stripes.util;version="1.5",
- org.apache.tuscany.sca.core;version="2.0",
- org.apache.tuscany.sca.host.http;version="2.0",
- org.apache.tuscany.sca.host.webapp;version="2.0",
- org.apache.tuscany.sca.implementation.web.runtime.utils;version="2.0",
+ net.sourceforge.stripes;version="1.5.2",
+ net.sourceforge.stripes.action;version="1.5.2",
+ net.sourceforge.stripes.config;version="1.5.2",
+ net.sourceforge.stripes.controller;version="1.5.2",
+ net.sourceforge.stripes.exception;version="1.5.2",
+ net.sourceforge.stripes.util;version="1.5.2",
+ org.apache.tuscany.sca.core;version="2.0.0",
+ org.apache.tuscany.sca.host.http;version="2.0.0",
+ org.apache.tuscany.sca.host.webapp;version="2.0.0",
+ org.apache.tuscany.sca.implementation.web.runtime.utils;version="2.0.0",
  org.apache.tuscany.sca.node;version="2.0.0",
- org.oasisopen.sca;version="2.0",
- org.oasisopen.sca.annotation;version="2.0"
+ org.oasisopen.sca;version="2.0.0",
+ org.oasisopen.sca.annotation;version="2.0.0"
 Bundle-SymbolicName: org.apache.tuscany.sca.stripes
 Bundle-DocURL: http://www.apache.org/
 Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6
