@@ -38,6 +38,7 @@ import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
 import org.apache.tuscany.sca.runtime.ExtensibleDomainRegistryFactory;
+import org.oasisopen.sca.NoSuchServiceException;
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -71,6 +72,9 @@ public class ReferenceInvoker implements Invoker {
 
     public Message invoke(Message msg) {
         Member owningMember = hzRegistry.getOwningMember(serviceURI);
+        if (owningMember == null) {
+            throw new ServiceRuntimeException("service not found: " + serviceURI);
+        }
         String requestXML = getRequestXML(msg);
         Callable<String> callable = new ServiceInvoker(serviceURI, operation.getName(), requestXML);
         FutureTask<String> task = new DistributedTask<String>(callable, owningMember);
