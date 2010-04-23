@@ -87,7 +87,7 @@ public class DefaultJMSServiceListener implements JMSServiceListener {
             // if using an embedded broker then when shutting down Tuscany the broker may get closed
             // before this stop method is called. I can't see how to detect that so for now just
             // ignore the exception if the message is that the transport is already disposed
-            if (!"Transport disposed.".equals(e.getMessage())) {
+            if ((e.getMessage() == null) || !e.getMessage().contains("disposed")) {
                 throw new JMSBindingException("Error stopping JMSServiceBinding", e);
             }
         }
