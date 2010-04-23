@@ -28,12 +28,12 @@ public class HelloworldSCAClient {
 
     public static void main(String[] args) throws NoSuchDomainException, NoSuchServiceException {
 
-        if (args.length != 3) {
+        if (args.length != 2) {
             System.out.println("Missing args");
             System.out.println("HelloworldSCAClient <domain URI> <name>");
             System.exit(1);
         }
-        String domainURI = args[0];
+        String domainURI= args[0];
         String name = args[1];
         
         SCAClientFactory factory = SCAClientFactory.newInstance(URI.create(domainURI));
