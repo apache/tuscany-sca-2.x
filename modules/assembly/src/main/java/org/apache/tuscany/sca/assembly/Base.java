@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.assembly;
  * Base interface for all assembly model objects.
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.inheritfrom
  */
 public interface Base {
     String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200912";

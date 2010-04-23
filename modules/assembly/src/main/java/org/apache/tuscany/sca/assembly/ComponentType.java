@@ -26,6 +26,7 @@ import org.apache.tuscany.sca.policy.PolicySubject;
  * Describes an implementation and represents its configurable aspects.
  * 
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface ComponentType extends Base, PolicySubject {
 

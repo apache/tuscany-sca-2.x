@@ -29,7 +29,7 @@ import javax.xml.stream.XMLStreamWriter;
  * An artifact processor that can read models from a StAX XMLStreamReader.
  * 
  * @version $Rev$ $Date$
- * @tuscany.spi.extension.asclient
+ * @tuscany.spi.extension.inheritfrom
  */
 public interface StAXArtifactProcessor<M> extends ArtifactProcessor<M> {
 

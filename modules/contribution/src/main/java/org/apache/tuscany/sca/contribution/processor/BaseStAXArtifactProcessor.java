@@ -43,6 +43,7 @@ import org.apache.tuscany.sca.common.xml.stax.StAXHelper;
  * A base class with utility methods for the other artifact processors in this module.
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.inheritfrom
  */
 public abstract class BaseStAXArtifactProcessor {
     private static String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200912";

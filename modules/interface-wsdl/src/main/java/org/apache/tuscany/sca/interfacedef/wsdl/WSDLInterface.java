@@ -29,6 +29,8 @@ import org.apache.tuscany.sca.interfacedef.Interface;
  * Represents a WSDL interface.
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
+ * TODO check this spi tag is valid (indicated by access from implementation.bpel)
  */
 public interface WSDLInterface extends Interface, Base {
 

@@ -30,6 +30,7 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
  * The representation of an SCA contribution.
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface Contribution extends Artifact, Extensible {
 

@@ -30,6 +30,7 @@ import org.apache.tuscany.sca.implementation.bpel.xml.BPELImportElement;
 import org.apache.tuscany.sca.implementation.bpel.xml.BPELPartnerLinkElement;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 
+
 /**
  * The model representing a BPEL process definition.
  *

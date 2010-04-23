@@ -25,6 +25,7 @@ import org.apache.tuscany.sca.contribution.Import;
  * The representation of an XML namespace import.
  * 
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface NamespaceImport extends Import {
 
