@@ -30,6 +30,7 @@ import org.apache.tuscany.sca.extensibility.impl.ClassLoaderDelegate;
 
 /**
  * A utility that controls context class loaders
+ * @tuscany.spi.extension.asclient
  */
 public class ClassLoaderContext {
     private ClassLoader classLoader;

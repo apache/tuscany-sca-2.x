@@ -27,6 +27,7 @@ import org.apache.tuscany.sca.assembly.ComponentService;
  * realization
  * 
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface RuntimeComponentService extends ComponentService {
 }
