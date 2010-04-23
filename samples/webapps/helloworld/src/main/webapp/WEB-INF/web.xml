@@ -24,6 +24,16 @@
 
   <display-name>Apache Tuscany Helloworld Sample</display-name>
 
+  <context-param>
+    <param-name>contributions</param-name>
+    <param-value>/embeddedContributions</param-value>
+  </context-param>
+
+  <init-param>
+    <param-name>contributions</param-name>
+    <param-value>/embeddedContributions</param-value>
+  </init-param>  
+
   <filter>
     <filter-name>tuscany</filter-name> 
     <filter-class>org.apache.tuscany.sca.host.webapp.TuscanyServletFilter</filter-class> 

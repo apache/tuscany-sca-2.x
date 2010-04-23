@@ -43,6 +43,32 @@
     <build>
        <finalName>helloworld</finalName>
        <plugins>
+
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>copy</id>
+                <phase>compile</phase>
+                <goals>
+                  <goal>copy</goal>
+                </goals>
+                <configuration>
+                   <artifactItems>
+                     <artifactItem>
+                       <groupId>org.apache.tuscany.sca</groupId>
+                       <artifactId>sample-helloworld</artifactId>
+                       <version>${pom.version}</version>
+                       <!-- should really go in the target folder but i can't get jetty:run to work using that -->
+                       <outputDirectory>src/main/webapp/embeddedContributions</outputDirectory>
+                     </artifactItem>
+                   </artifactItems>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+
           <plugin>
              <groupId>org.mortbay.jetty</groupId>
              <artifactId>maven-jetty-plugin</artifactId>
