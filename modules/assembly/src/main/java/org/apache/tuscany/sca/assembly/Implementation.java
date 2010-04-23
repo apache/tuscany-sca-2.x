@@ -28,6 +28,7 @@ import org.apache.tuscany.sca.interfacedef.Operation;
  * Represents a component implementation.
  *
  * @version $Rev$ $Date$
+ * @tuscany.spe.extension.inheritfrom
  */
 public interface Implementation extends ComponentType {
     QName getType();

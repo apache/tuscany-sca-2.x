@@ -19,7 +19,6 @@
 package org.apache.tuscany.sca.implementation.java.introspect.impl;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;

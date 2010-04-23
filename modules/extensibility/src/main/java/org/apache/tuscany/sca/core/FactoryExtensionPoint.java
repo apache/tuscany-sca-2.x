@@ -27,6 +27,7 @@ package org.apache.tuscany.sca.core;
  * artifact required in this registry
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface FactoryExtensionPoint {
     

@@ -23,6 +23,7 @@ package org.apache.tuscany.sca.assembly;
  * reference to target services.
  * 
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension
  */
 public enum Multiplicity {
 

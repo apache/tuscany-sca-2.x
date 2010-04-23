@@ -35,6 +35,7 @@ import java.util.List;
  * <li>binding
  * <li>interface
  * </ul>
+ * @tuscany.spi.extension.asclient
  */
 public interface PolicySubject {
     /**

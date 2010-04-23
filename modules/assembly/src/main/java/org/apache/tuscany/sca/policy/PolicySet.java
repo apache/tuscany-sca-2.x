@@ -28,6 +28,7 @@ import javax.xml.xpath.XPathExpression;
  * description of this element.
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface PolicySet {
 

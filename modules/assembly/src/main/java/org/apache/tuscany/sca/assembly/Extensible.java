@@ -24,6 +24,7 @@ import java.util.List;
  * Base interface for extensible assembly model objects.
  * 
  * @version $Rev$ $Date$
+ * @tuscany.spe.extension.inheritfrom
  */
 public interface Extensible extends Base {
 

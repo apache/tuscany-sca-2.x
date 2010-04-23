@@ -28,6 +28,7 @@ import java.util.Map;
  * configuration file corresponding to this declaration.
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface ServiceDeclaration {
     /**

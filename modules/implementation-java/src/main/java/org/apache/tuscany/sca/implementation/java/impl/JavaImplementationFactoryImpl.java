@@ -26,7 +26,6 @@ import java.util.List;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
-import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;

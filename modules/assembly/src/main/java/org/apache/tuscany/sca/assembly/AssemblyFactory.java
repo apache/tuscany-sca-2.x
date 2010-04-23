@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.assembly;
  * A factory for the assembly model
  * 
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface AssemblyFactory {
 

@@ -25,6 +25,7 @@ import javax.xml.namespace.QName;
 
 /**
  * Definition of extension type: binding or implementation
+ * @tuscany.spi.extension.asclient
  */
 public interface ExtensionType {
     QName BINDING_BASE = new QName("http://docs.oasis-open.org/ns/opencsa/sca/200912", "binding");

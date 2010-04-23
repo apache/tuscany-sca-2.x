@@ -27,6 +27,7 @@ import org.apache.tuscany.sca.policy.PolicySubject;
  * Represents a contract. A contract can be either a service or a reference.
  * 
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface Contract extends AbstractContract, PolicySubject, Cloneable {
 

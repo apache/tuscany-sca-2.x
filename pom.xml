@@ -938,14 +938,15 @@
 						</tag>
 						<tag>
 							<name>tuscany.spi.extension.asclient</name>
-							<!-- extension spi by client access tag for placing in classes / interfaces -->
+							<!-- extension spi by client access tag for placing in classes / interfaces. The term client here is used
+							in the OO design sense of any class that calls the methods of another is a client of the latter -->
 							<placement>t</placement>
 							<head>Provides part of the Tuscany SPI for Extension Developers by using client calls</head>
 						</tag>
 						<tag>
 							<name>tuscany.spi.extension</name>
 							<!-- extension spi indicator for overviews, packages -->
-							<placement>op</placement> <!-- note: not applicable in t; hence forces use of inheritfrom or asclient -->
+							<placement>a</placement>
 							<head>Elements of the Tuscany SPI for Extension developers are provided.</head>
 						</tag>
 					</tags>

@@ -26,8 +26,10 @@ import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
  * The registry for the Tuscany core extension points. As the point of contact
  * for all extension artifacts this registry allows loaded extensions to find
  * all other parts of the system and register themselves appropriately.
+ * 
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface ExtensionPointRegistry extends LifeCycleListener {
 

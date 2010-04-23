@@ -46,6 +46,7 @@ import org.apache.tuscany.sca.policy.PolicySubject;
  * A Policy Attach Point processor.
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public class PolicySubjectProcessor extends BaseStAXArtifactProcessor {
     

@@ -28,6 +28,7 @@ import javax.xml.namespace.QName;
  * Utility class that can be used to map XSD types to Java classes and Java classes to XSD types.
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public final class JavaXMLMapper {
     public static final String URI_2001_SCHEMA_XSD = "http://www.w3.org/2001/XMLSchema";

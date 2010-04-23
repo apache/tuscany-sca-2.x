@@ -26,6 +26,7 @@ import java.util.List;
  * components.
  * 
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface Reference extends AbstractReference, Contract {
 

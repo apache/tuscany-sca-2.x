@@ -23,6 +23,7 @@ package org.apache.tuscany.sca.contribution.processor;
  * Denotes an exception while reading artifacts inside an SCA contribution.
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public class ContributionReadException extends ContributionException {
     public static final int UNDEFINED = -1;

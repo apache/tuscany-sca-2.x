@@ -28,6 +28,7 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
  * A monitor for the watching for validation problems
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.inheritfrom
  */
 public abstract class Monitor {
     private static class ContextFinder extends SecurityManager {

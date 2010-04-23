@@ -20,6 +20,7 @@ package org.apache.tuscany.sca.interfacedef;
 
 /**
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public abstract class InvalidInterfaceException extends Exception {
     private static final long serialVersionUID = -3850574026273544538L;

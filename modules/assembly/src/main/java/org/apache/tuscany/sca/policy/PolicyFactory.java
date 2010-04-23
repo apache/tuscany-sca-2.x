@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.policy;
  * A factory for the policy model.
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface PolicyFactory {
 

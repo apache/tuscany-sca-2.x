@@ -25,6 +25,7 @@ package org.apache.tuscany.sca.assembly;
  * implementation may also define a default value for a property.
  * 
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface Property extends AbstractProperty, Cloneable {
 

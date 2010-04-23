@@ -28,6 +28,7 @@ import org.apache.tuscany.sca.assembly.Implementation;
  * A builder that handles any build-time configuration needed by implementations.
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension
  */
 public interface ImplementationBuilder<I extends Implementation> {
 

@@ -31,6 +31,7 @@ import org.apache.tuscany.sca.assembly.Base;
  * and ClassLoaders. This should move to the Java import support module.
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public class ClassReference implements Base {
     

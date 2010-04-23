@@ -24,6 +24,7 @@ package org.apache.tuscany.sca.contribution.processor;
  * Denotes an exception while writing artifacts inside an SCA contribution.
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public class ContributionWriteException extends ContributionException {
     private static final long serialVersionUID = -7459051598906813461L;

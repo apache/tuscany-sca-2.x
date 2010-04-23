@@ -37,6 +37,8 @@ import org.apache.tuscany.sca.extensibility.ServiceHelper;
  * points. As the point of contact for all extension artifacts this registry
  * allows loaded extensions to find all other parts of the system and register
  * themselves appropriately.
+ * 
+ * @tuscany.spi.extension.asclient
  *
  * @version $Rev$ $Date$
  */

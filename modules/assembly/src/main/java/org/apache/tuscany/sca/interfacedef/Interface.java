@@ -29,6 +29,7 @@ import org.apache.tuscany.sca.policy.PolicySubject;
  * portTypes and WSDL 2.0 interfaces.
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.inheritfrom
  */
 public interface Interface extends Cloneable, PolicySubject {
 

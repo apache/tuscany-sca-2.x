@@ -23,6 +23,7 @@ package org.apache.tuscany.sca.monitor;
  * Records an validation problem. 
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface Problem {
 

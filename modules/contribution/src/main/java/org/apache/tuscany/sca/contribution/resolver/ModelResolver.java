@@ -41,6 +41,7 @@ import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
  * and get the in-memory models representing the referenced artifacts.
  * 
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface ModelResolver {
 

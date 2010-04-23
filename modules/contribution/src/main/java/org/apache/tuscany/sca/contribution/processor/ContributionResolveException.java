@@ -23,6 +23,7 @@ package org.apache.tuscany.sca.contribution.processor;
  * Denotes a problem while resolving models inside an SCA contribution.
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public class ContributionResolveException extends ContributionException {
     private static final long serialVersionUID = -7459051598906813461L;

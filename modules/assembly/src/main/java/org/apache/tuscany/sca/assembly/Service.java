@@ -25,6 +25,7 @@ import java.util.List;
  * implementations, so that they are addressable by other components.
  * 
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface Service extends AbstractService, Contract {
     /**

@@ -28,6 +28,7 @@ import org.apache.tuscany.sca.monitor.MonitorFactory;
 
 /**
  * Context for contribution processors
+ * @tuscany.spi.extension.asclient
  */
 public class ProcessorContext {
     protected Contribution contribution;
