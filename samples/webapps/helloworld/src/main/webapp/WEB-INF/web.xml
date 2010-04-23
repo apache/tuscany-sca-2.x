@@ -29,10 +29,10 @@
     <param-value>/embeddedContributions</param-value>
   </context-param>
 
-  <init-param>
-    <param-name>contributions</param-name>
-    <param-value>/embeddedContributions</param-value>
-  </init-param>  
+  <context-param>
+    <param-name>org.apache.tuscany.sca.config</param-name>
+    <param-value>uri:default</param-value>
+  </context-param>
 
   <filter>
     <filter-name>tuscany</filter-name> 
