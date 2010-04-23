@@ -31,6 +31,7 @@ import org.apache.tuscany.sca.policy.PolicySubject;
  * JMS destination.
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface Endpoint extends Base, PolicySubject, Cloneable, Serializable {
     /**

@@ -29,6 +29,8 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
  * @param <KEY> the type of IDs that this container uses to identify its contexts.
  * For example, for COMPOSITE scope this could be the URI of the composite component,
  * or for HTTP Session scope it might be the HTTP session ID.
+ * 
+ * @tuscany.spi.extension.asclient
  */
 public interface ScopeContainer<KEY> {
 

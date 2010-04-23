@@ -55,6 +55,7 @@ import org.xml.sax.ext.LexicalHandler;
  * Helper for DOM
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public class DOMHelper {
     private DocumentBuilderFactory documentBuilderFactory;

@@ -29,6 +29,7 @@ import org.apache.tuscany.sca.interfacedef.Operation;
  * Mediate the data from one type to the other one
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface Mediator {
 

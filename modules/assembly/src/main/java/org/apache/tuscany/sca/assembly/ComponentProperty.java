@@ -24,6 +24,7 @@ import javax.xml.xpath.XPathExpression;
  * Represents a configured property of a component.
  * 
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface ComponentProperty extends Property {
 

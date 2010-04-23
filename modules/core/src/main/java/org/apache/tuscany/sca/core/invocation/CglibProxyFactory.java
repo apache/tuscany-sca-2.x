@@ -41,6 +41,7 @@ import org.oasisopen.sca.ServiceReference;
  * The implementation of a wire service that uses cglib dynamic proxies
  * 
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public class CglibProxyFactory implements ProxyFactory {
     private MessageFactory messageFactory;

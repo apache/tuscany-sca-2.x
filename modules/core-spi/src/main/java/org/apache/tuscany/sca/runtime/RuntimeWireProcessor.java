@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.runtime;
  * Implementations are called after wires are decorated with policy and before they are connected.
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.inheritfrom
  */
 public interface RuntimeWireProcessor {
     /**

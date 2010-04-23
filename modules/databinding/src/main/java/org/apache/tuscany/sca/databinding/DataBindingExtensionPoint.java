@@ -26,6 +26,7 @@ import org.apache.tuscany.sca.interfacedef.Operation;
  * An extension point for data binding extensions.
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface DataBindingExtensionPoint {
 

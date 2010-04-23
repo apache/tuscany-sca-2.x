@@ -25,6 +25,7 @@ package org.apache.tuscany.sca.invocation;
  * service component implementation passes through the phases from top to bottom
  * 
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface Phase {
     

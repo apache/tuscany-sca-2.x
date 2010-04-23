@@ -27,6 +27,7 @@ import org.apache.tuscany.sca.assembly.ComponentReference;
  * realization
  * 
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface RuntimeComponentReference extends ComponentReference {
     /**

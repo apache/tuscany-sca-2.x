@@ -26,6 +26,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
  * An interface for factories that create implementation providers.  
  * 
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.inheritfrom
  */
 public interface ImplementationProviderFactory<M extends Implementation> extends ProviderFactory<M> {
     

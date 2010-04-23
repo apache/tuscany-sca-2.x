@@ -28,6 +28,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
  * into the Tuscany runtime 
  * 
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface ImplementationProvider extends RuntimeProvider {
 

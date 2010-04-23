@@ -27,6 +27,7 @@ import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 
 /**
  * The runtime representation of an endpoint reference
+ * @tuscany.spi.extension.asclient
  */
 public interface RuntimeEndpointReference extends EndpointReference, Invocable, Serializable {
     /**

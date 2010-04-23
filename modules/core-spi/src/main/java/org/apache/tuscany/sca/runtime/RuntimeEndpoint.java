@@ -28,6 +28,7 @@ import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 
 /**
  * The runtime representation of a service endpoint
+ * @tuscany.spi.extension.asclient
  */
 public interface RuntimeEndpoint extends Endpoint, Invocable, Serializable {
     /**

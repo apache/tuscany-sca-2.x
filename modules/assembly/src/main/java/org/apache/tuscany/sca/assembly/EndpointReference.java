@@ -29,6 +29,7 @@ import org.apache.tuscany.sca.policy.PolicySubject;
  * captures the result of specifying one of these things.
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface EndpointReference extends Base, PolicySubject, Cloneable, Serializable {
 

@@ -23,6 +23,7 @@ package org.apache.tuscany.sca.core.invocation;
 /**
  * The extension point to plug in proxy factories
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface ProxyFactoryExtensionPoint {
     

@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.core.factory;
  * Implementations create new instances of a particular type
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface ObjectFactory<T> {
 

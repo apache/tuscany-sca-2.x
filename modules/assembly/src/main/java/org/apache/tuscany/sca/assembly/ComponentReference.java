@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.assembly;
  * An instance of a reference associated with a particular component.
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface ComponentReference extends Reference {
 

@@ -25,6 +25,7 @@ import javax.xml.namespace.QName;
  * The metadata for an XML element or type.
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public class XMLType {
     public static final XMLType UNKNOWN = new XMLType(null, null);

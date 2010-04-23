@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.core.scope;
  * Denotes an error retrieving a target instance
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public class TargetResolutionException extends Exception {
     private static final long serialVersionUID = 2912513650522019405L;

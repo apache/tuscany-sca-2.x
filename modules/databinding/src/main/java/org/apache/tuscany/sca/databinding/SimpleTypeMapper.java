@@ -27,6 +27,7 @@ import org.apache.tuscany.sca.interfacedef.util.TypeInfo;
  * Type Mapper between XML schema simple data types and java objects
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface SimpleTypeMapper {
     /**

@@ -28,6 +28,7 @@ import org.apache.tuscany.sca.runtime.Invocable;
  * Returns proxy instance for a wire callback
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public class CallbackWireObjectFactory<B> implements ObjectFactory<B> {
     private Class<B> businessInterface;

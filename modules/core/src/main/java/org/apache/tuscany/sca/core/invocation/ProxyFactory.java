@@ -27,6 +27,7 @@ import org.oasisopen.sca.ServiceReference;
  * Creates proxies that implement Java interfaces and invocation handlers for fronting wires
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 
 public interface ProxyFactory {

@@ -25,6 +25,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
  * Scoped runtime component
  * 
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface ScopedRuntimeComponent extends RuntimeComponent {
     /**

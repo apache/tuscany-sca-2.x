@@ -31,6 +31,7 @@ import org.apache.tuscany.sca.policy.PolicySubject;
  * Represents an operation on a service interface.
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface Operation extends Cloneable, PolicySubject {
     /**

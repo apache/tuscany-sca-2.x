@@ -27,6 +27,7 @@ import org.apache.tuscany.sca.provider.ImplementationProvider;
  * management for the components
  * 
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.inheritfrom
  */
 public interface ScopedImplementationProvider extends ImplementationProvider {
     /**

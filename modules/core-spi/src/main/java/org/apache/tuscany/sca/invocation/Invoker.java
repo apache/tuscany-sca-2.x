@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.invocation;
  * Synchronous mediation associated with a client- or target- side wire.
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface Invoker {
 

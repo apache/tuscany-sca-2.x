@@ -23,6 +23,7 @@ package org.apache.tuscany.sca.core.factory;
  * Denotes an error creating a new object instance
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public class ObjectCreationException extends RuntimeException {
     private static final long serialVersionUID = -6423113430265944499L;

@@ -27,6 +27,7 @@ import org.apache.tuscany.sca.core.scope.TargetInitializationException;
  * a component for use by the component's associated {@link org.apache.tuscany.sca.core.scope.ScopeContainer}
  * 
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface InstanceWrapper<T> {
 

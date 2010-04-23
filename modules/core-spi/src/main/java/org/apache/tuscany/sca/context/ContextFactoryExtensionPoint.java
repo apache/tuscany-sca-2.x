@@ -23,6 +23,7 @@ package org.apache.tuscany.sca.context;
  * An extension point for context factories. 
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface ContextFactoryExtensionPoint {
     

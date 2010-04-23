@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.assembly;
  * An addressable instance of a service associated with a particular component.
  * 
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface ComponentService extends Service {
 

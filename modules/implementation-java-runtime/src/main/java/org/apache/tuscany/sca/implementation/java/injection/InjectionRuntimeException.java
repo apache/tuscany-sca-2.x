@@ -23,6 +23,7 @@ package org.apache.tuscany.sca.implementation.java.injection;
  * Root unchecked exception for the injection package
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.inheritfrom
  */
 public abstract class InjectionRuntimeException extends RuntimeException {
 	private static final long serialVersionUID = -2264137603099898773L;

@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.core.scope;
  * Denotes an error destroying a target
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public class TargetDestructionException extends TargetResolutionException {
     private static final long serialVersionUID = -6126684147851674709L;

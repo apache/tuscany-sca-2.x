@@ -23,6 +23,7 @@ package org.apache.tuscany.sca.interfacedef;
  * The InterfaceContractMapper is responsible to match interfaces
  * 
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface InterfaceContractMapper {
     /**

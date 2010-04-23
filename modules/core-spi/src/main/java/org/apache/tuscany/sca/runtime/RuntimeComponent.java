@@ -31,6 +31,7 @@ import org.apache.tuscany.sca.provider.PolicyProvider;
  * realization.
  * 
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface RuntimeComponent extends Component {
     /**

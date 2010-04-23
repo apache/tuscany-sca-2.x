@@ -24,6 +24,7 @@ package org.apache.tuscany.sca.core;
  * The extension point for the Tuscany core utility extensions.
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface UtilityExtensionPoint extends LifeCycleListener {
 

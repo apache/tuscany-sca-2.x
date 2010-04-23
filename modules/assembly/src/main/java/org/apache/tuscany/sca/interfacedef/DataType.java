@@ -36,6 +36,7 @@ import java.lang.reflect.Type;
  * the size of a typical instance.
  * 
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface DataType<L> extends Cloneable {
     /**

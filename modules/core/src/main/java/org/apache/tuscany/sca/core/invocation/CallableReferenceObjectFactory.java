@@ -28,6 +28,7 @@ import org.oasisopen.sca.ServiceReference;
  * Uses a wire to return a CallableReference
  * 
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public class CallableReferenceObjectFactory implements ObjectFactory<ServiceReference<?>> {
     private Class<?> businessInterface;

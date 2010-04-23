@@ -40,6 +40,7 @@ import org.apache.tuscany.sca.interfacedef.DataType;
  * the size of a typical instance.
  * 
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public class DataTypeImpl<L> implements DataType<L> {
     private String dataBinding;

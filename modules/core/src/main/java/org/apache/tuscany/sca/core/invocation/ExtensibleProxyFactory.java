@@ -30,6 +30,7 @@ import org.oasisopen.sca.ServiceReference;
  * An extensible proxy factory.
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public class ExtensibleProxyFactory implements ProxyFactory {
     

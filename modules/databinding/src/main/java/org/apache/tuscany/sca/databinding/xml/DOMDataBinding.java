@@ -39,6 +39,7 @@ import org.w3c.dom.Node;
  * DOM DataBinding
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public class DOMDataBinding extends BaseDataBinding {
     public static final String NAME = Node.class.getName();

@@ -25,6 +25,7 @@ import org.oasisopen.sca.RequestContext;
  * Interface implemented by the provider of the RequestContext.
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface RequestContextFactory {
     /**

@@ -28,6 +28,7 @@ import org.apache.tuscany.sca.runtime.Invocable;
  * Uses a wire to return an object instance
  * 
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public class WireObjectFactory<T> implements ObjectFactory<T> {
     private Class<T> interfaze;

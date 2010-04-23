@@ -28,6 +28,7 @@ import org.apache.tuscany.sca.interfacedef.Operation;
  * Represents a request, response, or exception flowing through a wire
  *
  * @version $Rev $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface Message {
 

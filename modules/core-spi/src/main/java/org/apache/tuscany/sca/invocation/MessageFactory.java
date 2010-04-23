@@ -23,6 +23,7 @@ package org.apache.tuscany.sca.invocation;
  * A factory for messages
  *
  * @version $Rev $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface MessageFactory {
 

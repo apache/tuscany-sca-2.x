@@ -25,6 +25,7 @@ import org.oasisopen.sca.ComponentContext;
  * Interface implemented by the provider of the ComponentContext.
  * 
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface ComponentContextFactory {
     /**

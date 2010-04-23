@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.core.scope;
  * The default implementation scopes supported by assemblies.
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public class Scope {
     public static final Scope STATELESS = new Scope("STATELESS");

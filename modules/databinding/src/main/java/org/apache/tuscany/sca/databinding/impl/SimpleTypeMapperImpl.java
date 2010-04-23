@@ -38,6 +38,7 @@ import org.apache.tuscany.sca.interfacedef.util.TypeInfo;
  * Simple type mapper that maps from XSD types to Java Classes and Java Classes to XSD types.
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public class SimpleTypeMapperImpl extends XSDDataTypeConverter implements SimpleTypeMapper {
 
