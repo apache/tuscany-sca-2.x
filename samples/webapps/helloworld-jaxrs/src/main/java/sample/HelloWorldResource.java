@@ -32,12 +32,12 @@ import org.oasisopen.sca.annotation.Reference;
  * Simple example - Hello World!
  * <p/>
  * The SDK dispatches HTTP requests for URI
- * <code>http://[host]:[port]/HelloWorld/rest/world</code>, where
- * <code>HelloWorld</code> is the context root, to this class. A simple Atom
- * entry is returned in HTTP response.
+ * <code>http://[host]:[port]/helloworld-jaxrs/rest/world</code>, where
+ * <code>helloworld-jaxrs</code> is the context root, to this class. A simple 
+ * plain text entry is returned in HTTP response.
  * <p/>
  * The service document is available at URI
- * <code>http://[host]:[port]/HelloWorld/rest</code> but it is empty because
+ * <code>http://[host]:[port]/helloworld-jaxrs/rest</code> but it is empty because
  * this simple demo doesn't contain any collection of resources.
  * <p/>
  * This resource must be registered within a JAX-RS application, this example
