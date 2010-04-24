@@ -26,7 +26,7 @@
 
   <context-param>
     <param-name>contributions</param-name>
-    <param-value>/embeddedContributions</param-value>
+    <param-value>/WEB-INF/sca-contributions</param-value>
   </context-param>
 
   <context-param>
