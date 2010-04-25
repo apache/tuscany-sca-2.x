@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.host.webapp;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Enumeration;
 
@@ -64,7 +65,7 @@ public class WebAppHelper {
     }
 
     @SuppressWarnings("unchecked")
-    private static NodeConfiguration getNodeConfiguration(ServletContext servletContext) throws IOException {
+    private static NodeConfiguration getNodeConfiguration(ServletContext servletContext) throws IOException, URISyntaxException {
         NodeConfiguration configuration = null;
         String nodeConfigURI = (String) servletContext.getAttribute("node.configuration");
         if (nodeConfigURI != null) {
@@ -75,13 +76,21 @@ public class WebAppHelper {
             Enumeration<String> names = servletContext.getAttributeNames();
             while (names.hasMoreElements()) {
                 String name = names.nextElement();
-                if (name.startsWith("contribution.")) {
+                if (name.startsWith("contribution")) {
                     String contrib = (String) servletContext.getAttribute(name);
                     if (contrib != null) {
-                        configuration.addContribution(getResource(servletContext, contrib));
+                        File f = new File(getResource(servletContext, contrib).toURI());
+                        if (f.isDirectory()) {
+                            for (File n : f.listFiles()) {
+                                configuration.addContribution(n.toURI().toURL());
+                            }
+                        } else {
+                            configuration.addContribution(f.toURI().toURL());
+                        }
                     }
                 }
             }
+            
             if (configuration.getContributions().isEmpty()) {
                 // TODO: Which path should be the default root
                 configuration.addContribution(getResource(servletContext, "/"));
@@ -138,8 +147,8 @@ public class WebAppHelper {
                 servletHosts.setWebApp(true);
                 
                 // TODO: why are the init parameters copied to the attributes?
-                for (Enumeration<String> e = servletContext.getInitParameterNames(); e.hasMoreElements();) {
-                    String name = e.nextElement();
+                for (Enumeration<?> e = servletContext.getInitParameterNames(); e.hasMoreElements();) {
+                    String name = (String)e.nextElement();
                     String value = servletContext.getInitParameter(name);
                     servletContext.setAttribute(name, value);
                 }
@@ -195,6 +204,8 @@ public class WebAppHelper {
         try {
             configuration = getNodeConfiguration(servletContext);
         } catch (IOException e) {
+            throw new ServletException(e);
+        } catch (URISyntaxException e) {
             throw new ServletException(e);
         }
         Node node = factory.createNode(configuration).start();
