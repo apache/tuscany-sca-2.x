@@ -48,6 +48,8 @@
         <module>binding-jsonrpc</module>        
         <module>binding-jsonrpc-js-dojo</module>        
         <module>binding-jsonrpc-runtime</module>
+        <module>binding-rest</module>
+        <module>binding-rest-runtime</module>
         <module>binding-rmi</module>
         <module>binding-rmi-runtime</module>
         <module>binding-rss</module>
