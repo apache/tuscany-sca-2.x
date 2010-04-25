@@ -17,28 +17,20 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.http;
+package org.apache.tuscany.sca.binding.rest.impl;
+
+import org.apache.tuscany.sca.binding.rest.RESTBinding;
+import org.apache.tuscany.sca.binding.rest.RESTBindingFactory;
 
 /**
- * Indicates that a resource was not modified.
- * 
+ * Factory for the REST binding model.
+ *
  * @version $Rev$ $Date$
  */
-public class NotModifiedException extends Exception {
-    private static final long serialVersionUID = -5046027674128627383L;
+public class RESTBindingFactoryImpl implements RESTBindingFactory {
 
-    public NotModifiedException() {
+    public RESTBinding createRESTBinding() {
+        return new RESTBindingImpl();
     }
 
-    public NotModifiedException(String message) {
-        super(message);
-    }
-
-    public NotModifiedException(Throwable cause) {
-        super(cause);
-    }
-
-    public NotModifiedException(String message, Throwable cause) {
-        super(message, cause);
-    }
 }

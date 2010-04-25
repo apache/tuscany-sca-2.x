@@ -24,9 +24,9 @@
 	name="testCache">
 
     <component name="HTTPBindingComponent">
-        <implementation.java class="org.apache.tuscany.sca.binding.http.TestBindingCacheImpl"/>
+        <implementation.java class="org.apache.tuscany.sca.binding.rest.TestBindingCacheImpl"/>
     	<service name="TestBindingCacheImpl">
-    		<tuscany:binding.http uri="http://localhost:8085/httpbinding"/>
+    		<tuscany:binding.rest uri="http://localhost:8085/httpbinding"/>
     	</service>
     </component>
 

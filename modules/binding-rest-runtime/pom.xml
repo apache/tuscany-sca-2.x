@@ -32,7 +32,7 @@
     <dependencies>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-binding-http</artifactId>
+            <artifactId>tuscany-binding-rest</artifactId>
             <version>2.0-SNAPSHOT</version>
         </dependency>
 

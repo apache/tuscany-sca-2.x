@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.http.provider;
+package org.apache.tuscany.sca.binding.rest.provider;
 
 import java.io.IOException;
 
@@ -39,7 +39,7 @@ import org.apache.tuscany.sca.invocation.MessageFactory;
  *
  * @version $Rev$ $Date$
  */
-public class HTTPServiceListenerServlet implements Servlet {
+public class RESTServiceListenerServlet implements Servlet {
     transient private Binding binding;
     transient private ServletConfig config;
     transient private MessageFactory messageFactory;
@@ -48,7 +48,7 @@ public class HTTPServiceListenerServlet implements Servlet {
     /**
      * Constructs a new HTTPServiceListenerServlet.
      */
-    public HTTPServiceListenerServlet(Binding binding, Invoker serviceInvoker, MessageFactory messageFactory) {
+    public RESTServiceListenerServlet(Binding binding, Invoker serviceInvoker, MessageFactory messageFactory) {
         this.binding = binding;
         this.serviceInvoker = serviceInvoker;
         this.messageFactory = messageFactory;

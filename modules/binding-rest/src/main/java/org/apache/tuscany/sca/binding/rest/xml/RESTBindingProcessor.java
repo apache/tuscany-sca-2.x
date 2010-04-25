@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.http.xml;
+package org.apache.tuscany.sca.binding.rest.xml;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
@@ -29,8 +29,8 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.OperationSelector;
 import org.apache.tuscany.sca.assembly.WireFormat;
-import org.apache.tuscany.sca.binding.http.HTTPBinding;
-import org.apache.tuscany.sca.binding.http.HTTPBindingFactory;
+import org.apache.tuscany.sca.binding.rest.RESTBinding;
+import org.apache.tuscany.sca.binding.rest.RESTBindingFactory;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
@@ -42,34 +42,34 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 
-public class HTTPBindingProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<HTTPBinding> {
+public class RESTBindingProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<RESTBinding> {
     private static final String NAME = "name";
     private static final String URI = "uri";
 
-    private HTTPBindingFactory httpBindingFactory;
+    private RESTBindingFactory httpBindingFactory;
     private StAXArtifactProcessor<Object> extensionProcessor;
     private StAXAttributeProcessor<Object> extensionAttributeProcessor;
     
 
-    public HTTPBindingProcessor(ExtensionPointRegistry extensionPoints, 
+    public RESTBindingProcessor(ExtensionPointRegistry extensionPoints, 
                                 StAXArtifactProcessor extensionProcessor,
                                 StAXAttributeProcessor extensionAttributeProcessor) {
         FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
-        this.httpBindingFactory = modelFactories.getFactory(HTTPBindingFactory.class);
+        this.httpBindingFactory = modelFactories.getFactory(RESTBindingFactory.class);
         this.extensionProcessor = (StAXArtifactProcessor<Object>)extensionProcessor;
         this.extensionAttributeProcessor = extensionAttributeProcessor;
     }
 
     public QName getArtifactType() {
-        return HTTPBinding.TYPE;
+        return RESTBinding.TYPE;
     }
 
-    public Class<HTTPBinding> getModelType() {
-        return HTTPBinding.class;
+    public Class<RESTBinding> getModelType() {
+        return RESTBinding.class;
     }
 
-    public HTTPBinding read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException, XMLStreamException {
-        HTTPBinding httpBinding = httpBindingFactory.createHTTPBinding();
+    public RESTBinding read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException, XMLStreamException {
+        RESTBinding httpBinding = httpBindingFactory.createRESTBinding();
 
         while(reader.hasNext()) {
             QName elementName = null;
@@ -78,7 +78,7 @@ public class HTTPBindingProcessor extends BaseStAXArtifactProcessor implements S
                 case START_ELEMENT:
                     elementName = reader.getName();
 
-                    if (HTTPBinding.TYPE.equals(elementName)) {
+                    if (RESTBinding.TYPE.equals(elementName)) {
                         String name = getString(reader, NAME);
                         if(name != null) {
                             httpBinding.setName(name);
@@ -101,7 +101,7 @@ public class HTTPBindingProcessor extends BaseStAXArtifactProcessor implements S
                     }
             }
 
-            if (event == END_ELEMENT && HTTPBinding.TYPE.equals(reader.getName())) {
+            if (event == END_ELEMENT && RESTBinding.TYPE.equals(reader.getName())) {
                 break;
             }
 
@@ -114,10 +114,10 @@ public class HTTPBindingProcessor extends BaseStAXArtifactProcessor implements S
         return httpBinding;
     }
 
-    public void write(HTTPBinding httpBinding, XMLStreamWriter writer, ProcessorContext context) throws ContributionWriteException, XMLStreamException {
+    public void write(RESTBinding httpBinding, XMLStreamWriter writer, ProcessorContext context) throws ContributionWriteException, XMLStreamException {
         //writer.writeStartElement(Constants.SCA10_NS, BINDING_HTTP);
 
-        writeStart(writer, HTTPBinding.TYPE.getNamespaceURI(), HTTPBinding.TYPE.getLocalPart());
+        writeStart(writer, RESTBinding.TYPE.getNamespaceURI(), RESTBinding.TYPE.getLocalPart());
 
         // Write binding name
         if (httpBinding.getName() != null) {
@@ -134,7 +134,7 @@ public class HTTPBindingProcessor extends BaseStAXArtifactProcessor implements S
     }
 
 
-    public void resolve(HTTPBinding model, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
+    public void resolve(RESTBinding model, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
         // Should not need to do anything here for now... 
 
     }

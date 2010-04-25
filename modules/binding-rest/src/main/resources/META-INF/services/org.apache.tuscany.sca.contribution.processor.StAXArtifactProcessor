@@ -16,4 +16,4 @@
 # under the License. 
 
 # Implementation class for the artifact processor extension
-org.apache.tuscany.sca.binding.http.xml.HTTPBindingProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.1#binding.http,model=org.apache.tuscany.sca.binding.http.HTTPBinding,factory=org.apache.tuscany.sca.binding.http.HTTPBindingFactory
+org.apache.tuscany.sca.binding.rest.xml.RESTBindingProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.1#binding.rest,model=org.apache.tuscany.sca.binding.rest.RESTBinding,factory=org.apache.tuscany.sca.binding.rest.RESTBindingFactory

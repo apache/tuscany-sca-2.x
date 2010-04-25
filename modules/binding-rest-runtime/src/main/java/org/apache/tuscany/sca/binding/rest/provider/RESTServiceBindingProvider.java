@@ -17,11 +17,11 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.http.provider;
+package org.apache.tuscany.sca.binding.rest.provider;
 
 import javax.servlet.Servlet;
 
-import org.apache.tuscany.sca.binding.http.HTTPBinding;
+import org.apache.tuscany.sca.binding.rest.RESTBinding;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
@@ -45,14 +45,14 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
  *
  * @version $Rev$ $Date$
  */
-public class HTTPServiceBindingProvider implements EndpointProvider {
+public class RESTServiceBindingProvider implements EndpointProvider {
     private ExtensionPointRegistry extensionPoints;
     
     private RuntimeEndpoint endpoint;
     private RuntimeComponent component;
     private RuntimeComponentService service;  
     private InterfaceContract serviceContract;
-    private HTTPBinding binding;
+    private RESTBinding binding;
     private MessageFactory messageFactory;
     
     private OperationSelectorProvider osProvider;
@@ -60,9 +60,9 @@ public class HTTPServiceBindingProvider implements EndpointProvider {
     
     private ServletHost servletHost;
     private String servletMapping;
-    private HTTPBindingListenerServlet bindingListenerServlet;
+    private RESTBindingListenerServlet bindingListenerServlet;
    
-    public HTTPServiceBindingProvider(RuntimeEndpoint endpoint,
+    public RESTServiceBindingProvider(RuntimeEndpoint endpoint,
                                       ExtensionPointRegistry extensionPoints,
                                       MessageFactory messageFactory,
                                       ServletHost servletHost) {
@@ -70,7 +70,7 @@ public class HTTPServiceBindingProvider implements EndpointProvider {
     	this.endpoint = endpoint;
         this.component = (RuntimeComponent)endpoint.getComponent();
         this.service = (RuntimeComponentService)endpoint.getService();
-        this.binding = (HTTPBinding)endpoint.getBinding();
+        this.binding = (RESTBinding)endpoint.getBinding();
         
         this.extensionPoints = extensionPoints;
         this.messageFactory = messageFactory;
@@ -116,7 +116,7 @@ public class HTTPServiceBindingProvider implements EndpointProvider {
     public void start() {
         // Get the invokers for the supported operations
         Servlet servlet = null;
-        bindingListenerServlet = new HTTPBindingListenerServlet(binding, messageFactory );
+        bindingListenerServlet = new RESTBindingListenerServlet(binding, messageFactory );
         for (InvocationChain invocationChain : endpoint.getInvocationChains()) {
             Operation operation = invocationChain.getTargetOperation();
             String operationName = operation.getName();
@@ -154,7 +154,7 @@ public class HTTPServiceBindingProvider implements EndpointProvider {
                 servlet = bindingListenerServlet;
             } else if (operationName.equals("service")) {
                 Invoker serviceInvoker = invocationChain.getHeadInvoker();
-                servlet = new HTTPServiceListenerServlet(binding, serviceInvoker, messageFactory);
+                servlet = new RESTServiceListenerServlet(binding, serviceInvoker, messageFactory);
                 break;
             } 
         }
@@ -189,7 +189,7 @@ public class HTTPServiceBindingProvider implements EndpointProvider {
     }
     
     /**
-     * Add specific http interceptor to invocation chain
+     * Add specific rest interceptor to invocation chain
      */
     public void configure() {
 

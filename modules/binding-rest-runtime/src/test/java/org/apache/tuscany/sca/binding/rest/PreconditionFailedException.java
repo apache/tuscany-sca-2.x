@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.http;
+package org.apache.tuscany.sca.binding.rest;
 
 /**
  * Indicates that a resource was not modified.

@@ -1,17 +1,17 @@
 Manifest-Version: 1.0
-Private-Package: org.apache.tuscany.sca.binding.http.provider;version="2.0.
+Private-Package: org.apache.tuscany.sca.binding.rest.provider;version="2.0.
  0",.;version="2.0.0"
 SCA-Version: 1.1
-Bundle-Name: Apache Tuscany SCA HTTP Binding Runtime
+Bundle-Name: Apache Tuscany SCA REST Binding Runtime
 Bundle-Vendor: The Apache Software Foundation
 Bundle-Version: 2.0.0
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
-Bundle-Description: Apache Tuscany SCA HTTP Binding Runtime
+Bundle-Description: Apache Tuscany SCA REST Binding Runtime
 Import-Package: javax.servlet,
  javax.servlet.http,
  org.apache.tuscany.sca.assembly;version="2.0.0",
- org.apache.tuscany.sca.binding.http;version="2.0.0",
+ org.apache.tuscany.sca.binding.rest;version="2.0.0",
  org.apache.tuscany.sca.common.http;version="2.0.0",
  org.apache.tuscany.sca.core;version="2.0.0",
  org.apache.tuscany.sca.host.http;version="2.0.0",
@@ -20,7 +20,7 @@ Import-Package: javax.servlet,
  org.apache.tuscany.sca.provider;version="2.0.0",
  org.apache.tuscany.sca.runtime;version="2.0.0",
  org.oasisopen.sca.annotation;version="2.0.0"
-Bundle-SymbolicName: org.apache.tuscany.sca.binding.http.runtime
+Bundle-SymbolicName: org.apache.tuscany.sca.binding.rest.runtime
 Bundle-DocURL: http://www.apache.org/
 Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6
 

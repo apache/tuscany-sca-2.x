@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.http;
+package org.apache.tuscany.sca.binding.rest;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -49,7 +49,7 @@ public class TestBindingCacheImpl {
 	 * @param id
 	 * @return
 	 */
-	public InputStream conditionalGet(String id, HTTPCacheContext cacheContext)
+	public InputStream conditionalGet(String id, RESTCacheContext cacheContext)
 			throws NotModifiedException, PreconditionFailedException {
 
 		if (cacheContext != null) {
@@ -99,7 +99,7 @@ public class TestBindingCacheImpl {
 	 * @param id
 	 * @return
 	 */
-	public InputStream conditionalDelete(String id, HTTPCacheContext cacheContext)
+	public InputStream conditionalDelete(String id, RESTCacheContext cacheContext)
 			throws NotModifiedException, PreconditionFailedException {
 
 		if (cacheContext != null) {
@@ -151,7 +151,7 @@ public class TestBindingCacheImpl {
 	 * @param id
 	 * @return
 	 */
-	public HTTPCacheContext conditionalPost(HTTPCacheContext cacheContext)
+	public RESTCacheContext conditionalPost(RESTCacheContext cacheContext)
 			throws NotModifiedException, PreconditionFailedException {
 		String id = "" + (new java.util.Random()).nextInt(Integer.MAX_VALUE);
 
@@ -180,7 +180,7 @@ public class TestBindingCacheImpl {
 		}
 
 		// Return the ETag and LastModfied fields by serialize to a byte array
-		HTTPCacheContext returnContext = new HTTPCacheContext();
+		RESTCacheContext returnContext = new RESTCacheContext();
 		returnContext.setETag( "ETag" + (new java.util.Random()).nextInt(Integer.MAX_VALUE) );
 		returnContext.setLastModified( new Date() );
 		return returnContext;
@@ -202,7 +202,7 @@ public class TestBindingCacheImpl {
 	 * @param id
 	 * @return
 	 */
-	public InputStream conditionalPut(String id, HTTPCacheContext cacheContext)
+	public InputStream conditionalPut(String id, RESTCacheContext cacheContext)
 			throws NotModifiedException, PreconditionFailedException {
 
 		if (cacheContext != null) {

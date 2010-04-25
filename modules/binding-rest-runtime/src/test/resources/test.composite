@@ -26,21 +26,21 @@
     <!-- component name="ResourceServiceComponent">
         <tuscany:implementation.resource location="content"/>
     	<service name="Resource">
-    		<tuscany:binding.http uri="http://localhost:8085/webcontent"/>
+    		<tuscany:binding.rest uri="http://localhost:8085/webcontent"/>
     	</service>
     </component -->
 
     <component name="HTTPServiceComponent">
-        <implementation.java class="org.apache.tuscany.sca.binding.http.TestServiceImpl"/>
+        <implementation.java class="org.apache.tuscany.sca.binding.rest.TestServiceImpl"/>
     	<service name="Servlet">
-    		<tuscany:binding.http uri="http://localhost:8085/httpservice"/>
+    		<tuscany:binding.rest uri="http://localhost:8085/httpservice"/>
     	</service>
     </component>
 
     <component name="HTTPGetComponent">
-        <implementation.java class="org.apache.tuscany.sca.binding.http.TestGetImpl"/>
+        <implementation.java class="org.apache.tuscany.sca.binding.rest.TestGetImpl"/>
     	<service name="TestGetImpl">
-    		<tuscany:binding.http uri="http://localhost:8085/httpget"/>
+    		<tuscany:binding.rest uri="http://localhost:8085/httpget"/>
     	</service>
     </component>
 

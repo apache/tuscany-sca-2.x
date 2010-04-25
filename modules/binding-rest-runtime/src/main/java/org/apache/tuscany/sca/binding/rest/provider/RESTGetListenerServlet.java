@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.http.provider;
+package org.apache.tuscany.sca.binding.rest.provider;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,7 +39,7 @@ import org.apache.tuscany.sca.invocation.MessageFactory;
  *
  * @version $Rev$ $Date$
  */
-public class HTTPGetListenerServlet extends HttpServlet {
+public class RESTGetListenerServlet extends HttpServlet {
     private static final long serialVersionUID = 2865466417329430610L;
     
     private MessageFactory messageFactory;
@@ -48,7 +48,7 @@ public class HTTPGetListenerServlet extends HttpServlet {
     /**
      * Constructs a new HTTPServiceListenerServlet.
      */
-    public HTTPGetListenerServlet(Invoker getInvoker, MessageFactory messageFactory) {
+    public RESTGetListenerServlet(Invoker getInvoker, MessageFactory messageFactory) {
         this.getInvoker = getInvoker;
         this.messageFactory = messageFactory;
     }

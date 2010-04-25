@@ -16,5 +16,5 @@
 # under the License. 
 
 # Implementation class for model factory
-org.apache.tuscany.sca.binding.http.impl.HTTPBindingFactoryImpl
+org.apache.tuscany.sca.binding.rest.impl.RESTBindingFactoryImpl
 

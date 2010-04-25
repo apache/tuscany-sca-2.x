@@ -16,5 +16,4 @@
 # under the License. 
 
 # Implementation class for the binding extension
-org.apache.tuscany.sca.binding.http.provider.HTTPBindingProviderFactory;model=org.apache.tuscany.sca.binding.http.HTTPBinding
-
+org.apache.tuscany.sca.binding.rest.provider.RESTBindingProviderFactory;model=org.apache.tuscany.sca.binding.rest.RESTBinding

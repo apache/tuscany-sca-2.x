@@ -17,17 +17,21 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.http;
+package org.apache.tuscany.sca.binding.rest;
 
-import javax.xml.namespace.QName;
-
-import org.apache.tuscany.sca.assembly.Binding;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 
 /**
- * HTTP binding model.
- * 
+ * Test service implementation that implements a get method.
+ *
  * @version $Rev$ $Date$
-*/
-public interface HTTPBinding extends Binding {
-    QName TYPE = new QName(SCA11_TUSCANY_NS, "binding.http");
+ */
+public class TestGetImpl {
+    
+    public InputStream get(String id) {
+        return new ByteArrayInputStream(("<html><body><p>item=" + id + "</body></html>").getBytes());
+
+    }
+
 }

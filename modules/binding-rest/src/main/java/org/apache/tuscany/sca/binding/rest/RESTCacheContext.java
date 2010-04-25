@@ -17,12 +17,13 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.http;
+package org.apache.tuscany.sca.binding.rest;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
+
 
 /**
  * A class to store cache settings for Atom and HTTP requests and responses.
@@ -36,7 +37,7 @@ import javax.servlet.http.HttpServletRequest;
  * If-Modified-Since, If-Unmodified-Since, If-Range.
 
  */
-public class HTTPCacheContext {
+public class RESTCacheContext {
     public static final SimpleDateFormat RFC822DateFormat = new SimpleDateFormat( "EEE, dd MMM yyyy HH:mm:ss Z" ); // RFC 822 date time
 
     public boolean enabled;
@@ -211,8 +212,8 @@ public class HTTPCacheContext {
      * @param request
      * @return
      */
-    public static HTTPCacheContext getCacheContextFromRequest( HttpServletRequest request ) throws java.text.ParseException {
-        HTTPCacheContext context = new HTTPCacheContext();
+    public static RESTCacheContext getCacheContextFromRequest( HttpServletRequest request ) throws java.text.ParseException {
+        RESTCacheContext context = new RESTCacheContext();
 
         String eTag = request.getHeader( "If-Match" );    	
         if ( eTag != null ) {

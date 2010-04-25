@@ -17,9 +17,9 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.http.provider;
+package org.apache.tuscany.sca.binding.rest.provider;
 
-import org.apache.tuscany.sca.binding.http.HTTPBinding;
+import org.apache.tuscany.sca.binding.rest.RESTBinding;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.host.http.ServletHost;
@@ -33,16 +33,16 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 
 
 /**
- * Factory for HTTP binding providers. 
+ * Factory for REST binding providers. 
  *
  * @version $Rev$ $Date$
  */
-public class HTTPBindingProviderFactory implements BindingProviderFactory<HTTPBinding> {
+public class RESTBindingProviderFactory implements BindingProviderFactory<RESTBinding> {
     private ExtensionPointRegistry extensionPoints;
     private MessageFactory messageFactory;
     private ServletHost servletHost;
     
-    public HTTPBindingProviderFactory(ExtensionPointRegistry extensionPoints) {
+    public RESTBindingProviderFactory(ExtensionPointRegistry extensionPoints) {
         this.extensionPoints = extensionPoints;
         this.servletHost = ServletHostHelper.getServletHost(extensionPoints);
         FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
@@ -50,15 +50,15 @@ public class HTTPBindingProviderFactory implements BindingProviderFactory<HTTPBi
     }
 
     public ReferenceBindingProvider createReferenceBindingProvider(RuntimeEndpointReference endpointReference) {
-    	// Binding HTTP is currently NOT supporting References
+    	// Binding REST is currently NOT supporting References
         return null;
     }
 
     public ServiceBindingProvider createServiceBindingProvider(RuntimeEndpoint endpoint) {
-        return new HTTPServiceBindingProvider(endpoint, extensionPoints, messageFactory, servletHost);
+        return new RESTServiceBindingProvider(endpoint, extensionPoints, messageFactory, servletHost);
     }
     
-    public Class<HTTPBinding> getModelType() {
-        return HTTPBinding.class;
+    public Class<RESTBinding> getModelType() {
+        return RESTBinding.class;
     }
 }

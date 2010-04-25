@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.sca.binding.http;
+package org.apache.tuscany.sca.binding.rest;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -41,7 +41,7 @@ import org.junit.Test;
  * 
  * @version $Rev$ $Date$
  */
-public class HTTPBindingTestCase {
+public class RESTBindingTestCase {
 
     private static final String REQUEST1_HEADER =
         "GET /httpservice/test HTTP/1.0\n" + "Host: localhost\n"
@@ -77,7 +77,7 @@ public class HTTPBindingTestCase {
     @BeforeClass
     public static void setUp() throws Exception {
     	try {
-    		String contribution = ContributionLocationHelper.getContributionLocation(HTTPBindingCacheTestCase.class);
+    		String contribution = ContributionLocationHelper.getContributionLocation(RESTBindingCacheTestCase.class);
     		node = NodeFactory.newInstance().createNode("test.composite", new Contribution("test", contribution));
     		node.start();
     	} catch (Exception e) {

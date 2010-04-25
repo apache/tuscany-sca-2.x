@@ -17,13 +17,13 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.http.impl;
+package org.apache.tuscany.sca.binding.rest.impl;
 
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.OperationSelector;
 import org.apache.tuscany.sca.assembly.WireFormat;
-import org.apache.tuscany.sca.binding.http.HTTPBinding;
+import org.apache.tuscany.sca.binding.rest.RESTBinding;
 
 
 /**
@@ -31,7 +31,7 @@ import org.apache.tuscany.sca.binding.http.HTTPBinding;
  * 
  * @version $Rev$ $Date$
  */
-class HTTPBindingImpl implements HTTPBinding {
+class RESTBindingImpl implements RESTBinding {
 
     private String name;
     private String uri;

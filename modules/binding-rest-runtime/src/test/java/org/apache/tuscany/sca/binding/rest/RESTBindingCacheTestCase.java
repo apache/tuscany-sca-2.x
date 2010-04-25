@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.sca.binding.http;
+package org.apache.tuscany.sca.binding.rest;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -42,7 +42,7 @@ import org.junit.Test;
  * 
  * @version $Rev$ $Date$
  */
-public class HTTPBindingCacheTestCase {
+public class RESTBindingCacheTestCase {
 	// RFC 822 date time
 	protected static final SimpleDateFormat dateFormat = new SimpleDateFormat(
 			"EEE, dd MMM yyyy HH:mm:ss Z");
@@ -64,7 +64,7 @@ public class HTTPBindingCacheTestCase {
 	@BeforeClass
 	public static void setUp() throws Exception {
 		try {
-			String contribution = ContributionLocationHelper.getContributionLocation(HTTPBindingCacheTestCase.class);
+			String contribution = ContributionLocationHelper.getContributionLocation(RESTBindingCacheTestCase.class);
 			node = NodeFactory.newInstance().createNode("testCache.composite", new Contribution("test", contribution));
 			node.start();
 		} catch (Exception e) {

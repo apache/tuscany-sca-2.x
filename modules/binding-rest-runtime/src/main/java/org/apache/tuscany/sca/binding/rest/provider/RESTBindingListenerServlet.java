@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.http.provider;
+package org.apache.tuscany.sca.binding.rest.provider;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,7 +31,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.binding.http.HTTPCacheContext;
+import org.apache.tuscany.sca.binding.rest.RESTCacheContext;
 import org.apache.tuscany.sca.common.http.HTTPContentTypeMapper;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
@@ -43,7 +43,7 @@ import org.apache.tuscany.sca.invocation.MessageFactory;
  *
  * @version $Rev$ $Date$
  */
-public class HTTPBindingListenerServlet extends HttpServlet {
+public class RESTBindingListenerServlet extends HttpServlet {
     private static final long serialVersionUID = 2865466417329430610L;
     
     transient private Binding binding;
@@ -59,9 +59,9 @@ public class HTTPBindingListenerServlet extends HttpServlet {
     private Invoker conditionalDeleteInvoker;
     
     /**
-     * Constructs a new HTTPServiceListenerServlet.
+     * Constructs a new RESTServiceListenerServlet.
      */
-    public HTTPBindingListenerServlet(Binding binding, MessageFactory messageFactory) {
+    public RESTBindingListenerServlet(Binding binding, MessageFactory messageFactory) {
         this.binding = binding;
         this.messageFactory = messageFactory;
     }
@@ -89,9 +89,9 @@ public class HTTPBindingListenerServlet extends HttpServlet {
         String id = path.substring(1);
         
         Message responseMessage = null;
-        HTTPCacheContext cacheContext = null;
+        RESTCacheContext cacheContext = null;
         try { 
-           cacheContext = HTTPCacheContext.getCacheContextFromRequest(request);
+           cacheContext = RESTCacheContext.getCacheContextFromRequest(request);
         } catch (ParseException e) {        	
         }
 
@@ -163,9 +163,9 @@ public class HTTPBindingListenerServlet extends HttpServlet {
         String id = path.substring(1);
         
         Message responseMessage = null;
-        HTTPCacheContext cacheContext = null;
+        RESTCacheContext cacheContext = null;
         try { 
-           cacheContext = HTTPCacheContext.getCacheContextFromRequest(request);
+           cacheContext = RESTCacheContext.getCacheContextFromRequest(request);
         } catch (ParseException e) {        	
         }
         
@@ -229,9 +229,9 @@ public class HTTPBindingListenerServlet extends HttpServlet {
         String id = path.substring(1);
         
         Message responseMessage = null;
-        HTTPCacheContext cacheContext = null;
+        RESTCacheContext cacheContext = null;
         try { 
-           cacheContext = HTTPCacheContext.getCacheContextFromRequest(request);
+           cacheContext = RESTCacheContext.getCacheContextFromRequest(request);
         } catch (ParseException e) {        	
         }
         
@@ -295,9 +295,9 @@ public class HTTPBindingListenerServlet extends HttpServlet {
         // String id = path.substring(1);
         
         Message responseMessage = null;
-        HTTPCacheContext cacheContext = null;
+        RESTCacheContext cacheContext = null;
         try { 
-           cacheContext = HTTPCacheContext.getCacheContextFromRequest(request);
+           cacheContext = RESTCacheContext.getCacheContextFromRequest(request);
         } catch (ParseException e) {        	
         }
         
@@ -333,9 +333,9 @@ public class HTTPBindingListenerServlet extends HttpServlet {
 
         // Test if the ETag and LastModified are returned as a cache context.
     	Object body = responseMessage.getBody();
-    	if ( body.getClass() == HTTPCacheContext.class ) {
+    	if ( body.getClass() == RESTCacheContext.class ) {
     		// Transfer to header if so.
-    		HTTPCacheContext cc = (HTTPCacheContext)responseMessage.getBody();
+    		RESTCacheContext cc = (RESTCacheContext)responseMessage.getBody();
     		if (( cc != null ) && ( cc.isEnabled() )) {
     			String eTag = cc.getETag();
             	if ( eTag != null )

@@ -17,20 +17,20 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.http.impl;
+package org.apache.tuscany.sca.binding.rest;
 
-import org.apache.tuscany.sca.binding.http.HTTPBinding;
-import org.apache.tuscany.sca.binding.http.HTTPBindingFactory;
 
 /**
- * Factory for the HTTP binding model.
+ * Factory for the REST binding model.
  *
  * @version $Rev$ $Date$
  */
-public class HTTPBindingFactoryImpl implements HTTPBindingFactory {
+public interface RESTBindingFactory {
 
-    public HTTPBinding createHTTPBinding() {
-        return new HTTPBindingImpl();
-    }
+    /**
+     * Creates a new REST binding.
+     * @return a new REST binding
+     */
+    RESTBinding createRESTBinding();
 
 }

@@ -17,19 +17,28 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.http;
+package org.apache.tuscany.sca.binding.rest;
 
 /**
- * Factory for the HTTP binding model.
- *
+ * Indicates that a resource was not modified.
+ * 
  * @version $Rev$ $Date$
  */
-public interface HTTPBindingFactory {
+public class NotModifiedException extends Exception {
+    private static final long serialVersionUID = -5046027674128627383L;
 
-    /**
-     * Creates a new HTTP binding.
-     * @return a new HTTP binding
-     */
-    HTTPBinding createHTTPBinding();
+    public NotModifiedException() {
+    }
 
+    public NotModifiedException(String message) {
+        super(message);
+    }
+
+    public NotModifiedException(Throwable cause) {
+        super(cause);
+    }
+
+    public NotModifiedException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }
