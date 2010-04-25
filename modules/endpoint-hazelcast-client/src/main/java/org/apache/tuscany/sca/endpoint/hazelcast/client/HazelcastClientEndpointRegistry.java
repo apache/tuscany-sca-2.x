@@ -19,10 +19,18 @@
 
 package org.apache.tuscany.sca.endpoint.hazelcast.client;
 
+import java.net.BindException;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.ServerSocket;
+import java.util.Enumeration;
 import java.util.Map;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.endpoint.hazelcast.HazelcastEndpointRegistry;
+import org.apache.tuscany.sca.endpoint.hazelcast.RegistryConfig;
+import org.apache.tuscany.sca.runtime.RuntimeProperties;
 
 import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.core.HazelcastInstance;
@@ -47,8 +55,8 @@ public class HazelcastClientEndpointRegistry extends HazelcastEndpointRegistry {
             throw new IllegalStateException("The registry has already been started");
         }
         initHazelcastClientInstance();
-        endpointMap = hazelcastClient.getMap(configURI.getDomainName() + "/Endpoints");
-        endpointOwners = hazelcastClient.getMultiMap(configURI.getDomainName() + "/EndpointOwners");
+        endpointMap = hazelcastClient.getMap(domainURI + "/Endpoints");
+        endpointOwners = hazelcastClient.getMultiMap(domainURI + "/EndpointOwners");
     }
 
     @Override
@@ -61,10 +69,18 @@ public class HazelcastClientEndpointRegistry extends HazelcastEndpointRegistry {
     }
 
     private void initHazelcastClientInstance() {
-        if (configURI.getRemotes().size() < 1) {
+        this.properties = registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(RuntimeProperties.class).getProperties();
+        RegistryConfig rc = new RegistryConfig(properties);
+        if (rc.getWKAs().size() < 1) {
+            String ip = getDefaultWKA();
+            if (ip != null) {
+                rc.getWKAs().add(ip);
+            }
+        }
+        if (rc.getWKAs().size() < 1) {
             throw new IllegalArgumentException("Must specify remote IP address(es) for domain");
         }
-        this.hazelcastClient = HazelcastClient.newHazelcastClient(configURI.getDomainName(), configURI.getPassword(), configURI.getRemotes().toArray(new String[0]));
+        this.hazelcastClient = HazelcastClient.newHazelcastClient(rc.getUserid(), rc.getPassword(), rc.getWKAs().toArray(new String[0]));
     }
 
     @Override
@@ -72,4 +88,32 @@ public class HazelcastClientEndpointRegistry extends HazelcastEndpointRegistry {
         return hazelcastClient;
     }
 
+    /**
+     * See if there's a local IP listening on port 14820
+     */
+    protected static String getDefaultWKA() {
+        try {
+            Enumeration<NetworkInterface> nis = NetworkInterface.getNetworkInterfaces();
+            while (nis.hasMoreElements()) {
+                NetworkInterface ni = nis.nextElement();
+                Enumeration<InetAddress> ips = ni.getInetAddresses();
+                while (ips.hasMoreElements()) {
+                    InetAddress addr = ips.nextElement();
+                    ServerSocket ss = null;
+                    try {
+                        ss = new ServerSocket(14820, 0, addr);
+                    } catch (BindException e) {
+                        return addr.getHostAddress() + ":14820";
+                    } finally {
+                        if (ss != null) {
+                            ss.close();
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+        }
+        return null;
+    }    
+    
 }
