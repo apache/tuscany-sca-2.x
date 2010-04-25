@@ -23,13 +23,6 @@
 	xmlns:sr="http://sample/test"
 	name="test">
 
-    <!-- component name="ResourceServiceComponent">
-        <tuscany:implementation.resource location="content"/>
-    	<service name="Resource">
-    		<tuscany:binding.rest uri="http://localhost:8085/webcontent"/>
-    	</service>
-    </component -->
-
     <component name="HTTPServiceComponent">
         <implementation.java class="org.apache.tuscany.sca.binding.rest.TestServiceImpl"/>
     	<service name="Servlet">

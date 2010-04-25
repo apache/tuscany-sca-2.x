@@ -92,17 +92,33 @@ public class RESTBindingListenerServlet extends HttpServlet {
         RESTCacheContext cacheContext = null;
         try { 
            cacheContext = RESTCacheContext.getCacheContextFromRequest(request);
-        } catch (ParseException e) {        	
+        } catch (ParseException e) { 
+            
+        }
+        
+        if (path == null || path.length() == 0 || path.equals("/")) {
+            
         }
 
         // Route message based on availability of cache info and cache methods
-        if (( cacheContext != null ) && (cacheContext.isEnabled()) && (conditionalGetInvoker != null )) {        
-        	requestMessage.setBody(new Object[] {id, cacheContext});
-        	responseMessage = conditionalGetInvoker.invoke(requestMessage);
+        if (( cacheContext != null ) && (cacheContext.isEnabled()) && (conditionalGetInvoker != null )) {
+            if(id != null && id.length() > 0) {
+                requestMessage.setBody(new Object[] {id, cacheContext});
+            } else {
+                requestMessage.setBody(new Object[] {cacheContext});
+            }
+
+            responseMessage = conditionalGetInvoker.invoke(requestMessage);
         } else {
-        	requestMessage.setBody(new Object[] {id});
-        	responseMessage = getInvoker.invoke(requestMessage);
+            if(id != null && id.length() > 0) {
+                requestMessage.setBody(new Object[] {id});
+            } else {
+                //requestMessage.setBody(new Object[] {id});
+            }
+
+            responseMessage = getInvoker.invoke(requestMessage);
         }
+        
         if (responseMessage.isFault()) {
         	Object body = responseMessage.getBody();
         	

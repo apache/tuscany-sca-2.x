@@ -107,8 +107,8 @@ public class RESTBindingCacheTestCase {
 		int index = 0;
 		String content = "";
 		String request = MessageFormat.format(REQUEST2, "GET", index,
-				"If-Modified-Since", dateFormat.format(new Date(0)), content
-						.getBytes().length, content);
+				"If-Modified-Since", dateFormat.format(new Date(0)), 
+				content.getBytes().length, content);
 		os.write(request.getBytes());
 		os.flush();
 
