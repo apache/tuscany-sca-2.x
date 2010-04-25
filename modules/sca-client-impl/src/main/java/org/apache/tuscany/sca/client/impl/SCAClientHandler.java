@@ -22,7 +22,12 @@ package org.apache.tuscany.sca.client.impl;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.ServerSocket;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.Properties;
 import java.util.UUID;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
@@ -36,6 +41,7 @@ import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.context.CompositeContext;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.invocation.ExtensibleProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactoryExtensionPoint;
@@ -52,6 +58,7 @@ import org.apache.tuscany.sca.runtime.ExtensibleDomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
+import org.apache.tuscany.sca.runtime.RuntimeProperties;
 import org.oasisopen.sca.NoSuchServiceException;
 import org.oasisopen.sca.ServiceRuntimeException;
 
@@ -68,16 +75,21 @@ public class SCAClientHandler implements InvocationHandler {
     }
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        NodeFactoryImpl nodeFactory = (NodeFactoryImpl)NodeFactory.newInstance();
+        NodeFactoryImpl nodeFactory = (NodeFactoryImpl)NodeFactory.newInstance(domainURI);
         try {
             nodeFactory.init();
             
             ExtensionPointRegistry extensionsRegistry = nodeFactory.getExtensionPointRegistry();
+            Properties props = extensionsRegistry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(RuntimeProperties.class).getProperties();
+            props.setProperty("client", "true");
             DomainRegistryFactory domainRegistryFactory = ExtensibleDomainRegistryFactory.getInstance(extensionsRegistry);
             
             String registryURI = domainURI;
 
             // TODO: theres better ways to do this but this gets things working for now
+            if (registryURI.indexOf(":") == -1) {
+                registryURI = "tuscanyclient:" + registryURI;
+            }
             if (registryURI.startsWith("tuscany:")) {
                 registryURI = "tuscanyclient:" + registryURI.substring(8);
             }
@@ -189,4 +201,5 @@ public class SCAClientHandler implements InvocationHandler {
 
         return interfaceContract;
     }    
+    
 }
