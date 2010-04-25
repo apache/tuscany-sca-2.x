@@ -114,19 +114,29 @@ public class RESTBindingProcessor extends BaseStAXArtifactProcessor implements S
         return httpBinding;
     }
 
-    public void write(RESTBinding httpBinding, XMLStreamWriter writer, ProcessorContext context) throws ContributionWriteException, XMLStreamException {
+    public void write(RESTBinding restBinding, XMLStreamWriter writer, ProcessorContext context) throws ContributionWriteException, XMLStreamException {
         //writer.writeStartElement(Constants.SCA10_NS, BINDING_HTTP);
 
         writeStart(writer, RESTBinding.TYPE.getNamespaceURI(), RESTBinding.TYPE.getLocalPart());
 
         // Write binding name
-        if (httpBinding.getName() != null) {
-            writer.writeAttribute(NAME, httpBinding.getName());
+        if (restBinding.getName() != null) {
+            writer.writeAttribute(NAME, restBinding.getName());
         }
 
         // Write binding URI
-        if (httpBinding.getURI() != null) {
-            writer.writeAttribute(URI, httpBinding.getURI());
+        if (restBinding.getURI() != null) {
+            writer.writeAttribute(URI, restBinding.getURI());
+        }
+        
+        // Write operation selectors
+        if ( restBinding.getOperationSelector() != null ) {
+            extensionProcessor.write(restBinding.getOperationSelector(), writer, context);
+        }
+        
+        // Write wire formats
+        if ( restBinding.getRequestWireFormat() != null ) {
+            extensionProcessor.write(restBinding.getRequestWireFormat(), writer, context);
         }
 
         writeEnd(writer);
