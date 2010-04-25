@@ -155,7 +155,7 @@ public class NodeImplTestCase {
         factory.init();
         UtilityExtensionPoint utilities = factory.getExtensionPointRegistry().getExtensionPoint(UtilityExtensionPoint.class);
         Properties ps = utilities.getUtility(RuntimeProperties.class).getProperties();
-        Assert.assertEquals(1, ps.size());
+        Assert.assertEquals(2, ps.size());
         Assert.assertEquals("vm", ps.getProperty("defaultScheme"));
 
         Properties properties = new Properties();
