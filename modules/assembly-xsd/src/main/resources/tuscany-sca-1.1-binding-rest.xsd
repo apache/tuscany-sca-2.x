@@ -38,4 +38,14 @@
             </extension>
         </complexContent>
     </complexType>
+    
+    <!--  wire formats -->
+    <complexType name="WireFormatJSONType">
+      <complexContent>
+         <extension base="sca:WireFormatType"/>
+      </complexContent>
+   </complexType>
+   
+   <element name="wireFormat.json" type="t:WireFormatJSONType" 
+            substitutionGroup="sca:wireFormat"/>
 </schema>
