@@ -19,12 +19,13 @@
 
 package org.apache.tuscany.sca.endpoint.hazelcast;
 
+import java.io.FileNotFoundException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
@@ -33,10 +34,11 @@ import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.LifeCycleListener;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.runtime.BaseEndpointRegistry;
-import org.apache.tuscany.sca.runtime.DomainRegistryURI;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
+import org.apache.tuscany.sca.runtime.RuntimeProperties;
 import org.oasisopen.sca.ServiceRuntimeException;
 
 import com.hazelcast.config.Config;
@@ -62,22 +64,27 @@ import com.hazelcast.nio.Address;
 public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements EndpointRegistry, LifeCycleListener, EntryListener<String, Endpoint>, MembershipListener {
     private final static Logger logger = Logger.getLogger(HazelcastEndpointRegistry.class.getName());
 
-    protected DomainRegistryURI configURI;
-
     private HazelcastInstance hazelcastInstance;
     protected Map<Object, Object> endpointMap;
-    private Map<String, Endpoint> localEndpoints = new ConcurrentHashMap<String, Endpoint>();
+    protected Map<String, Endpoint> localEndpoints = new ConcurrentHashMap<String, Endpoint>();
     protected MultiMap<String, String> endpointOwners;
-    private AssemblyFactory assemblyFactory;
-    private Object shutdownMutex = new Object();
+    protected AssemblyFactory assemblyFactory;
+    protected Object shutdownMutex = new Object();
+    protected Properties properties;
+
+    public HazelcastEndpointRegistry(ExtensionPointRegistry registry, Properties properties, String domainURI) {
+        super(registry, null, null, domainURI);
+        this.assemblyFactory = registry.getExtensionPoint(FactoryExtensionPoint.class).getFactory(AssemblyFactory.class);
+        this.properties = registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(RuntimeProperties.class).getProperties();
+    }
 
     public HazelcastEndpointRegistry(ExtensionPointRegistry registry,
                                      Map<String, String> attributes,
                                      String domainRegistryURI,
                                      String domainURI) {
         super(registry, attributes, domainRegistryURI, domainURI);
-        this.configURI = new DomainRegistryURI(domainRegistryURI);
         this.assemblyFactory = registry.getExtensionPoint(FactoryExtensionPoint.class).getFactory(AssemblyFactory.class);
+        this.properties = registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(RuntimeProperties.class).getProperties();
     }
     
     public HazelcastInstance getHazelcastInstance() {
@@ -88,18 +95,18 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
         if (endpointMap != null) {
             throw new IllegalStateException("The registry has already been started");
         }
-        if (configURI.toString().startsWith("tuscany:vm:")) {
-            endpointMap = new HashMap<Object, Object>();
-        } else {
+//        if (configURI.toString().startsWith("tuscany:vm:")) {
+//            endpointMap = new HashMap<Object, Object>();
+//        } else {
             initHazelcastInstance();
-            IMap imap = hazelcastInstance.getMap(configURI.getDomainName() + "/Endpoints");
+            IMap imap = hazelcastInstance.getMap(domainURI + "/Endpoints");
             imap.addEntryListener(this, true);
             endpointMap = imap;
             
-            endpointOwners = hazelcastInstance.getMultiMap(configURI.getDomainName() + "/EndpointOwners");
+            endpointOwners = hazelcastInstance.getMultiMap(domainURI + "/EndpointOwners");
 
             hazelcastInstance.getCluster().addMembershipListener(this);
-        }
+//        }
     }
 
     public void stop() {
@@ -114,45 +121,12 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
     }
 
     private void initHazelcastInstance() {
-        Config config = new XmlConfigBuilder().build();
+        Config config = getHazelcastConfig();
 
-        config.setPort(configURI.getListenPort());
-        //config.setPortAutoIncrement(false);
-
-        if (configURI.getBindAddress() != null) {
-            config.getNetworkConfig().getInterfaces().setEnabled(true);
-            config.getNetworkConfig().getInterfaces().clear();
-            config.getNetworkConfig().getInterfaces().addInterface(configURI.getBindAddress());
-        }
-
-        config.getGroupConfig().setName(configURI.getDomainName());
-        config.getGroupConfig().setPassword(configURI.getPassword());
-
-        if (configURI.isMulticastDisabled()) {
-            config.getNetworkConfig().getJoin().getMulticastConfig().setEnabled(false);
-        } else {
-            config.getNetworkConfig().getJoin().getMulticastConfig().setEnabled(true);
-            config.getNetworkConfig().getJoin().getMulticastConfig().setMulticastPort(configURI.getMulticastPort());
-            config.getNetworkConfig().getJoin().getMulticastConfig().setMulticastGroup(configURI.getMulticastAddress());
-        }
-        
+        // do this when theres a way to have adders be the key owners
         // config.getMapConfig(configURI.getDomainName() + "/Endpoints").setBackupCount(0);
 
-        if (configURI.getRemotes().size() > 0) {
-            TcpIpConfig tcpconfig = config.getNetworkConfig().getJoin().getTcpIpConfig();
-            tcpconfig.setEnabled(true);
-            List<Address> lsMembers = tcpconfig.getAddresses();
-            lsMembers.clear();
-            for (String addr : configURI.getRemotes()) {
-                String[] ipNPort = addr.split(":");
-                try {
-                    lsMembers.add(new Address(ipNPort[0], Integer.parseInt(ipNPort[1])));
-                } catch (UnknownHostException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }
-        
+        // this caches reads locally
         config.getMapConfig("default").setNearCacheConfig(new NearCacheConfig(0, 0, "NONE", 0, true));
 
         // Disable the Hazelcast shutdown hook as Tuscany has its own and with both there are race conditions
@@ -169,10 +143,61 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
         this.hazelcastInstance = Hazelcast.newHazelcastInstance(config);
     }
 
+    protected Config getHazelcastConfig() {
+        Config config;
+        this.properties = registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(RuntimeProperties.class).getProperties();
+        String configFile = properties.getProperty("hazelcastConfig");
+        if (configFile != null) {
+            try {
+                config = new XmlConfigBuilder(configFile).build();
+            } catch (FileNotFoundException e) {
+                throw new IllegalArgumentException(configFile, e);
+            }
+        } else {
+            config = new XmlConfigBuilder().build();
+            RegistryConfig rc = new RegistryConfig(properties);
+            config.setPort(rc.getBindPort());
+            //config.setPortAutoIncrement(false);
+
+            if (!rc.getBindAddress().equals("*")) {
+                config.getNetworkConfig().getInterfaces().setEnabled(true);
+                config.getNetworkConfig().getInterfaces().clear();
+                config.getNetworkConfig().getInterfaces().addInterface(rc.getBindAddress());
+            }
+
+            config.getGroupConfig().setName(rc.getUserid());
+            config.getGroupConfig().setPassword(rc.getPassword());
+
+            if (rc.isMulticastDisabled()) {
+                config.getNetworkConfig().getJoin().getMulticastConfig().setEnabled(false);
+            } else {
+                config.getNetworkConfig().getJoin().getMulticastConfig().setEnabled(true);
+                config.getNetworkConfig().getJoin().getMulticastConfig().setMulticastPort(rc.getMulticastPort());
+                config.getNetworkConfig().getJoin().getMulticastConfig().setMulticastGroup(rc.getMulticastAddress());
+            }
+            
+            if (rc.getWKAs().size() > 0) {
+                TcpIpConfig tcpconfig = config.getNetworkConfig().getJoin().getTcpIpConfig();
+                tcpconfig.setEnabled(true);
+                List<Address> lsMembers = tcpconfig.getAddresses();
+                lsMembers.clear();
+                for (String addr : rc.getWKAs()) {
+                    String[] ipNPort = addr.split(":");
+                    try {
+                        lsMembers.add(new Address(ipNPort[0], Integer.parseInt(ipNPort[1])));
+                    } catch (UnknownHostException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        }
+        return config;
+    }
+
     public void addEndpoint(Endpoint endpoint) {
         if (findEndpoint(endpoint.getURI()).size() > 0) {
             Member m = getOwningMember(endpoint.getURI());
-            throw new IllegalStateException("Endpoint " + endpoint.getURI() + " already exists in domain " + configURI.getDomainName() + " at " + m.getInetSocketAddress());
+            throw new IllegalStateException("Endpoint " + endpoint.getURI() + " already exists in domain " + domainURI + " at " + m.getInetSocketAddress());
         }
             
         String localMemberAddr = hazelcastInstance.getCluster().getLocalMember().getInetSocketAddress().toString();

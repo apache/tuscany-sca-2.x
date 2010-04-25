@@ -19,9 +19,13 @@
 
 package org.apache.tuscany.sca.endpoint.hazelcast;
 
+import java.util.Properties;
+
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.runtime.BaseDomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
+import org.apache.tuscany.sca.runtime.RuntimeProperties;
 
 /**
  * The utility responsible for finding the endpoint regstry by the scheme and creating instances for the
@@ -30,17 +34,13 @@ import org.apache.tuscany.sca.runtime.EndpointRegistry;
 public class HazelcastDomainRegistryFactory extends BaseDomainRegistryFactory {
     private final static String[] schemes = new String[] {"multicast", "wka", "tuscany", "hazelcast"};
 
-    /**
-     * @param extensionRegistry
-     */
     public HazelcastDomainRegistryFactory(ExtensionPointRegistry registry) {
         super(registry);
     }
 
     protected EndpointRegistry createEndpointRegistry(String endpointRegistryURI, String domainURI) {
-        EndpointRegistry endpointRegistry =
-            new HazelcastEndpointRegistry(registry, null, endpointRegistryURI, domainURI);
-        return endpointRegistry;
+        Properties properties = registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(RuntimeProperties.class).getProperties();
+        return new HazelcastEndpointRegistry(registry, properties, domainURI);
     }
 
     public String[] getSupportedSchemes() {
