@@ -42,22 +42,24 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 
+/**
+ * REST Binding Artifact Processor
+ * 
+ * @version $Rev$ $Date$
+ */
 public class RESTBindingProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<RESTBinding> {
     private static final String NAME = "name";
     private static final String URI = "uri";
 
     private RESTBindingFactory httpBindingFactory;
     private StAXArtifactProcessor<Object> extensionProcessor;
-    private StAXAttributeProcessor<Object> extensionAttributeProcessor;
-    
 
     public RESTBindingProcessor(ExtensionPointRegistry extensionPoints, 
-                                StAXArtifactProcessor extensionProcessor,
-                                StAXAttributeProcessor extensionAttributeProcessor) {
+                                StAXArtifactProcessor<Object> extensionProcessor,
+                                StAXAttributeProcessor<Object> extensionAttributeProcessor) {
         FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         this.httpBindingFactory = modelFactories.getFactory(RESTBindingFactory.class);
         this.extensionProcessor = (StAXArtifactProcessor<Object>)extensionProcessor;
-        this.extensionAttributeProcessor = extensionAttributeProcessor;
     }
 
     public QName getArtifactType() {
