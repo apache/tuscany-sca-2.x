@@ -23,6 +23,7 @@ package org.apache.tuscany.sca.interfacedef;
  * Denotes an illegal callback interface
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 
 public class InvalidCallbackException extends InvalidInterfaceException {

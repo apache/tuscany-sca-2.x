@@ -36,6 +36,7 @@ import org.apache.tuscany.sca.policy.PolicySet;
  * Represents a service interface.
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.inheritfrom
  */
 public class InterfaceImpl implements Interface {
 

@@ -23,6 +23,7 @@ package org.apache.tuscany.sca.interfacedef;
  * This interface represents the mapping between WSDL faults and Java exceptions
  * 
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.inheritfrom
  */
 @SuppressWarnings("unchecked")
 public interface FaultExceptionMapper {

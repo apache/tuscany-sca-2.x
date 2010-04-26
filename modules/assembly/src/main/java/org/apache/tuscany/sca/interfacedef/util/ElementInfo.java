@@ -25,6 +25,7 @@ import javax.xml.namespace.QName;
  * An abstraction of XML schema elements.
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public class ElementInfo {
     private final QName name;

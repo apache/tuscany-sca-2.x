@@ -25,6 +25,7 @@ import javax.xml.namespace.QName;
  * The generic java exception to wrap service faults
  * 
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public class FaultException extends Exception {
     private static final long serialVersionUID = -8002583655240625792L;

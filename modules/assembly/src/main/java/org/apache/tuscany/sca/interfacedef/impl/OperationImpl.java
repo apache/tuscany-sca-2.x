@@ -39,6 +39,7 @@ import org.apache.tuscany.sca.policy.PolicySet;
  * Represents an operation on a service interface.
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.inheritfrom
  */
 public class OperationImpl implements Operation {
 

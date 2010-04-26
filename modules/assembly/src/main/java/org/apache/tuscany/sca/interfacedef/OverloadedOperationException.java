@@ -25,6 +25,7 @@ import java.lang.reflect.Method;
  * an overloaded method.
  * 
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public class OverloadedOperationException extends InvalidInterfaceException {
     private static final long serialVersionUID = -4658711318608885638L;

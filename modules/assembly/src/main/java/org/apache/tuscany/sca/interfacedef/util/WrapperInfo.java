@@ -46,6 +46,7 @@ import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
  * </ul>
  * 
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public class WrapperInfo {
     private ElementInfo inputWrapperElement;

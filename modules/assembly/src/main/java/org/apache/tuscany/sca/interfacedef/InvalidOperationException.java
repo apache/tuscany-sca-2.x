@@ -24,6 +24,7 @@ import java.lang.reflect.Method;
  * Denotes an invalid conversational interface definition
  * 
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public class InvalidOperationException extends InvalidInterfaceException {
 

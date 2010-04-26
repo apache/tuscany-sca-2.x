@@ -19,7 +19,11 @@
 
 package org.apache.tuscany.sca.interfacedef;
 
-
+/**
+ * 
+ * @tuscany.spi.extension.asclient
+ *
+ */
 public class InvalidAnnotationException extends InvalidInterfaceException {
 
     private static final long serialVersionUID = 4923028138353415223L;

@@ -24,6 +24,7 @@ import org.oasisopen.sca.annotation.Remotable;
  * Provides access to a collection of data items.
  * 
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 @Remotable
 public interface Collection <K, D> {
