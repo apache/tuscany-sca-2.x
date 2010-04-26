@@ -26,6 +26,7 @@ import org.apache.tuscany.sca.assembly.Base;
  * Represents an artifact in an SCA contribution.
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface Artifact extends Base {
 

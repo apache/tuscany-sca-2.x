@@ -25,6 +25,7 @@ import javax.xml.namespace.QName;
  * Constants used in SCA assembly XML files.
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension
  */
 public interface Constants {
     String SCA11_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200912";

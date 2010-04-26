@@ -27,6 +27,7 @@ import org.apache.tuscany.sca.policy.PolicySubject;
  * implementation.
  * 
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface Component extends Base, Extensible, PolicySubject, Cloneable {
 

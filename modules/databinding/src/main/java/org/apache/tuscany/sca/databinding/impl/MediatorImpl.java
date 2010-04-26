@@ -61,6 +61,7 @@ import org.oasisopen.sca.ServiceRuntimeException;
  * Default Mediator implementation
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public class MediatorImpl implements Mediator {
     private static final String TARGET_OPERATION = "target.operation";

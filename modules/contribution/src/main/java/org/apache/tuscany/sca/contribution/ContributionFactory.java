@@ -24,6 +24,7 @@ package org.apache.tuscany.sca.contribution;
  * A factory for the contribution model.
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface ContributionFactory {
 

@@ -34,6 +34,7 @@ import org.apache.tuscany.sca.monitor.MonitorFactory;
 
 /**
  * Context for builders
+ * @tuscany.spi.extension.asclient
  */
 public class BuilderContext {
     protected Definitions definitions;
