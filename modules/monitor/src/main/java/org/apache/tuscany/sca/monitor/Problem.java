@@ -27,6 +27,11 @@ package org.apache.tuscany.sca.monitor;
  */
 public interface Problem {
 
+	/**
+	 * 
+	 * @tuscany.spi.extension
+	 *
+	 */
     public enum Severity {
         INFO, WARNING, ERROR
     }

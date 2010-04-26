@@ -24,6 +24,7 @@ import javax.xml.namespace.QName;
  * Represents a binding.
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.inheritfrom
  */
 public interface Binding extends Base, Cloneable {
 

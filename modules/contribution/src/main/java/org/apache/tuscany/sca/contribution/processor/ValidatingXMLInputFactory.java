@@ -38,6 +38,8 @@ public abstract class ValidatingXMLInputFactory extends XMLInputFactory {
      * 
      * @param reader the XMLStreamReader instance
      * @param monitor the current monitor object
+     * 
+     * @tuscany.spi.extension.asclient
      */
     public static void setMonitor(XMLStreamReader reader, Monitor monitor) {
         if (reader instanceof ValidatingXMLStreamReader) {

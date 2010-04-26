@@ -24,6 +24,7 @@ import java.util.Collection;
  * An extension point for URL artifact processors.
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface URLArtifactProcessorExtensionPoint {
     /**
