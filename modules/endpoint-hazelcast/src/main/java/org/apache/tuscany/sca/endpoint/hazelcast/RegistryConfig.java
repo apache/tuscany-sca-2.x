@@ -48,7 +48,7 @@ import java.util.Properties;
  */
 public class RegistryConfig {
     
-    private String bindAddress;
+    private String bindAddress = "*";
     private int bindPort = 14820;
     private boolean multicastDisabled = false;
     private String multicastAddress = "224.5.12.10";
@@ -66,7 +66,10 @@ public class RegistryConfig {
    
         String bindValue = properties.getProperty("bind");
         if (bindValue == null) {
-            this.bindAddress = chooseLocalAddress().getHostAddress();
+            InetAddress addr = chooseLocalAddress();
+            if (addr != null) {
+                this.bindAddress = addr.getHostAddress();
+            }
         } else {
             if (bindValue.indexOf(":") == -1) {
                 this.bindAddress = bindValue;
