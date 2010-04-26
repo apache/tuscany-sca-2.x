@@ -248,7 +248,11 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
         if (qm < 0) {
             properties.setProperty("defaultDomainName", configURI);
         } else {
-            properties.setProperty("defaultDomainName", configURI.substring(0, qm));
+            if (qm == 0) {
+                properties.setProperty("defaultDomainName", "default");
+            } else {
+                properties.setProperty("defaultDomainName", configURI.substring(0, qm));
+            }
             if (configURI.length() > qm+1) {
                 Map<String, String> params = new HashMap<String, String>();
                 for (String param : configURI.substring(qm+1).split("&")) {
