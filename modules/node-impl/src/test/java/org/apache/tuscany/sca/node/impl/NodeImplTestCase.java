@@ -195,14 +195,14 @@ public class NodeImplTestCase {
         utilities = factory.getExtensionPointRegistry().getExtensionPoint(UtilityExtensionPoint.class);
         ps = utilities.getUtility(RuntimeProperties.class).getProperties();
         Assert.assertEquals(1, ps.size());
-        Assert.assertEquals("", ps.getProperty("defaultDomainName"));
+        Assert.assertEquals("default", ps.getProperty("defaultDomainName"));
         
         factory = (NodeFactoryImpl)NodeFactory.newInstance("uri:?foo");
         factory.init();
         utilities = factory.getExtensionPointRegistry().getExtensionPoint(UtilityExtensionPoint.class);
         ps = utilities.getUtility(RuntimeProperties.class).getProperties();
         Assert.assertEquals(2, ps.size());
-        Assert.assertEquals("", ps.getProperty("defaultDomainName"));
+        Assert.assertEquals("default", ps.getProperty("defaultDomainName"));
         Assert.assertEquals("", ps.getProperty("foo"));
     }
 
