@@ -27,6 +27,7 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
  * A factory for creating the runtime artifacts that represent bindings.
  * 
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.inheritfrom
  */
 public interface BindingProviderFactory<M extends Binding> extends ProviderFactory<M> {
 

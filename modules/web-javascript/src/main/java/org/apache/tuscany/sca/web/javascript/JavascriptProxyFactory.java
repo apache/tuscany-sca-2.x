@@ -31,6 +31,7 @@ import org.apache.tuscany.sca.assembly.ComponentReference;
  * client js proxyies
  * 
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface JavascriptProxyFactory {
 

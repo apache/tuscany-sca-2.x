@@ -33,7 +33,8 @@ import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.provider.PolicyProvider;
 
 /**
- * The abstraction of an invocable model that contains invocation chains 
+ * The abstraction of an invocable model that contains invocation chains
+ * @tuscany.spi.extension.asclient 
  */
 public interface Invocable {
     /**

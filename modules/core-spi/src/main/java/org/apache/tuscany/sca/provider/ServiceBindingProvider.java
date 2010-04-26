@@ -26,6 +26,7 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContract;
  * into the Tuscany SCA runtime
  * 
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.inheritfrom
  */
 public interface ServiceBindingProvider extends RuntimeProvider {
 

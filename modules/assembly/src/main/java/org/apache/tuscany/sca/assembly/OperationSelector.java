@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.assembly;
  * Represents an operationSelector
  * 
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface OperationSelector extends Base, Cloneable {
 

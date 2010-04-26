@@ -28,6 +28,7 @@ import org.apache.tuscany.sca.invocation.Invoker;
  * interface to tie into the Tuscany SCA runtime
  * 
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.inheritfrom
  */
 public interface ReferenceBindingProvider extends RuntimeProvider {
     /**

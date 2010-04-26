@@ -21,6 +21,11 @@ package org.apache.tuscany.sca.common.http;
 
 import javax.servlet.http.HttpServletRequest;
 
+/**
+ * 
+ *  @tuscany.spi.extension.asclient
+ *
+ */
 public class HTTPUtil {
 
     /**

@@ -23,6 +23,7 @@ package org.apache.tuscany.sca.data.collection;
  * Represents a key/data pair in a data collection.
  * 
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public class Entry <K, D> {
 

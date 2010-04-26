@@ -28,6 +28,7 @@ import org.apache.tuscany.sca.interfacedef.Operation;
  * A <code>Message</code> is used to pass data associated with an invocation through the chain.
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface InvocationChain {
     /**
