@@ -25,6 +25,7 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 
 /**
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface WireFormatProviderFactory<M extends WireFormat> extends ProviderFactory<M> {
     /**

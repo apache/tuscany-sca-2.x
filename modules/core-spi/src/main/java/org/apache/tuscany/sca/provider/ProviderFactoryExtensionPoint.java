@@ -30,6 +30,7 @@ import java.util.List;
  * generate runtime artifacts from the in memory assembly model. 
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface ProviderFactoryExtensionPoint {
 

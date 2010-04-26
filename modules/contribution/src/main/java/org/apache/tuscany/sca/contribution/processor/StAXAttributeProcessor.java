@@ -30,6 +30,7 @@ import javax.xml.stream.XMLStreamWriter;
  * An artifact processor that can read attributes from a StAX XMLStreamReader.
  * 
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface StAXAttributeProcessor<M> extends ArtifactProcessor<M>{
 
