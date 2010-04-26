@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.assembly.xml;
 
 /**
  * Constants for resource bundle names
+ * @tuscany.spi.extension
  */
 public interface Messages {
     String RESOURCE_BUNDLE = "org.apache.tuscany.sca.assembly.xml.assembly-xml-validation-messages";

@@ -25,6 +25,7 @@ import org.apache.tuscany.sca.policy.PolicySubject;
  * need to apply certain facets such as intents and policysets only to a specific
  * operation provided by a service or reference.
  *
+ * @tuscany.spi.extension.asclient
  * @version $Rev$ $Date$
  */
 public interface ConfiguredOperation extends Base, PolicySubject {

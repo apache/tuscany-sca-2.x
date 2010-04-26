@@ -41,6 +41,7 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
  * Processor for dealing with  'operation' elements from composite definitions
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public class ConfiguredOperationProcessor implements StAXArtifactProcessor<ConfiguredOperation>, Constants{
 

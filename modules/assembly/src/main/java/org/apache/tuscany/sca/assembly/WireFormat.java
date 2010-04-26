@@ -22,7 +22,7 @@ package org.apache.tuscany.sca.assembly;
  * Represents a wireFormat.
  * 
  * @version $Rev$ $Date$
- * @tuscany.spi.extension.asclient
+ * @tuscany.spi.extension.inheritfrom
  */
 public interface WireFormat extends Base, Cloneable {
 
