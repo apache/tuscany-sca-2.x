@@ -21,6 +21,12 @@ package org.apache.tuscany.sca.host.http;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 
+/**
+ * 
+ * @tuscany.spi.extension.asclient
+ *
+ */
+
 public class ServletHostHelper {
 
     public static ServletHost getServletHost(ExtensionPointRegistry extensionPoints) {

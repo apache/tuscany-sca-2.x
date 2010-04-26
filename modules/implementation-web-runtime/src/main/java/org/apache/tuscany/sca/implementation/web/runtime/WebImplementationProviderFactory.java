@@ -18,14 +18,9 @@
  */
 package org.apache.tuscany.sca.implementation.web.runtime;
 
-import java.util.List;
-
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.host.http.DefaultServletHostExtensionPoint;
 import org.apache.tuscany.sca.host.http.ServletHost;
-import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
 import org.apache.tuscany.sca.host.http.ServletHostHelper;
-import org.apache.tuscany.sca.host.webapp.WebAppServletHost;
 import org.apache.tuscany.sca.implementation.web.WebImplementation;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
