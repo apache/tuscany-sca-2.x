@@ -27,7 +27,7 @@ import java.net.URL;
  * An artifact processor that can read models from a URL.
  * 
  * @version $Rev$ $Date$
- * @tuscany.spi.extension.asclient
+ * @tuscany.spi.extension.inheritfrom
  */
 public interface URLArtifactProcessor<M> extends ArtifactProcessor<M> {
 

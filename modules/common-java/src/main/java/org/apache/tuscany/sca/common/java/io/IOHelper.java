@@ -32,6 +32,7 @@ import java.net.URLConnection;
 
 /**
  * Helper class for I/O operations
+ * @tuscany.spi.extension.asclient
  */
 public class IOHelper {
     

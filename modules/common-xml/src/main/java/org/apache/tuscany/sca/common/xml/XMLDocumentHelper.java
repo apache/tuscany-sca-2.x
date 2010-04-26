@@ -30,7 +30,8 @@ import java.net.URLConnection;
 import org.xml.sax.InputSource;
 
 /**
- * @version $Rev$ $Date$
+ * @version $Rev$ $Date$]
+ * @tuscany.spi.extension.asclient
  */
 public class XMLDocumentHelper {
     protected static final int BUFFER_SIZE = 256;

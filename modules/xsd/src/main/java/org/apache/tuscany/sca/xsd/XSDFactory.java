@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.xsd;
  * Factory for XSD definitions
  * 
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface XSDFactory {
     

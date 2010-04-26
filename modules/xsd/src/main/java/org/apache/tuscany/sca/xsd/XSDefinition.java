@@ -35,6 +35,7 @@ import org.w3c.dom.Document;
  * Represents an XML Schema definition.
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface XSDefinition extends Base {
     XmlSchemaCollection getSchemaCollection();

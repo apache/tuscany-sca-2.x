@@ -25,6 +25,7 @@ package org.apache.tuscany.sca.contribution;
  * all contributions.
  * 
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface DefaultImport extends Import {
 }

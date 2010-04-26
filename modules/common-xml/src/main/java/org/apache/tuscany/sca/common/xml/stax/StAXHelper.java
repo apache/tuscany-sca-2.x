@@ -59,6 +59,7 @@ import org.xml.sax.SAXException;
 
 /**
  * Helper class for StAX
+ * @tuscany.spi.extension.asclient
  */
 public class StAXHelper {
     private final XMLInputFactory inputFactory;
@@ -454,6 +455,11 @@ public class StAXHelper {
         return readAttributeFromRoot(reader, filter);
     }
 
+    /**
+     * 
+     * @tuscany.spi.extension.asclient
+     *
+     */
     public static class Attribute {
         private QName element;
         private String name;

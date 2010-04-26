@@ -26,6 +26,7 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContract;
  * Represents an interface contract. InterfaceContractImpl
  * 
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.inheritfrom
  */
 public abstract class InterfaceContractImpl implements InterfaceContract {
     private Interface callInterface;
