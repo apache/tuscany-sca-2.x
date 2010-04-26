@@ -38,7 +38,6 @@ import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.runtime.DomainRegistryFactory;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
 import org.apache.tuscany.sca.runtime.ExtensibleDomainRegistryFactory;
-import org.oasisopen.sca.NoSuchServiceException;
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -93,7 +92,7 @@ public class ReferenceInvoker implements Invoker {
      */
     private ExecutorService getExecutorService() {
         String threadName = Thread.currentThread().getName();
-        if (!threadName.startsWith("hz.executor.")) {
+        if (!threadName.startsWith("hz.executor.") || threadName.indexOf("binding.sca.") == -1) {
             return hzRegistry.getHazelcastInstance().getExecutorService("binding.sca.1");
         } else {
             String oldName = threadName.substring(threadName.lastIndexOf("binding.sca."), threadName.lastIndexOf(".thread-"));
