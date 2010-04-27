@@ -27,6 +27,7 @@ import org.apache.tuscany.sca.interfacedef.Operation;
  * DataBinding represents a data representation, for example, SDO, JAXB and AXIOM
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface DataBinding {
     /**

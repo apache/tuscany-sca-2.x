@@ -37,6 +37,7 @@ import org.apache.tuscany.sca.core.assembly.impl.RuntimeEndpointReferenceImpl;
 /**
  * The runtime version of assembly factory
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public class RuntimeAssemblyFactory extends DefaultAssemblyFactory implements AssemblyFactory {
 

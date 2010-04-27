@@ -43,6 +43,7 @@ import org.apache.tuscany.sca.extensibility.impl.LDAPFilter;
  * old values
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public final class ServiceDiscovery implements ServiceDiscoverer {
     private final static Logger logger = Logger.getLogger(ServiceDiscovery.class.getName());

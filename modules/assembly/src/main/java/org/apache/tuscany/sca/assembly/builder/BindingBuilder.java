@@ -29,6 +29,7 @@ import org.apache.tuscany.sca.assembly.Contract;
  * A builder that handles any build-time configuration needed by bindings.
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.inheritfrom
  */
 public interface BindingBuilder<B extends Binding> {
 

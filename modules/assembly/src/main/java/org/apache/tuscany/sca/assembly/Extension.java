@@ -24,6 +24,7 @@ import javax.xml.namespace.QName;
  * Base interface for storing contents of extensible assembly model objects.
  * 
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface Extension {
 

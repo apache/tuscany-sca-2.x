@@ -23,8 +23,6 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.core.FactoryExtensionPoint;
-import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.host.http.ServletHostHelper;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;

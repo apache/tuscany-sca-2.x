@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.assembly;
  * Represents a composite service.
  * 
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface CompositeService extends Service {
 

@@ -23,6 +23,7 @@ package org.apache.tuscany.sca.contribution.resolver;
  * Extension to assembly model implementations to provide a model resolver.
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface ResolverExtension {
 

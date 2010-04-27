@@ -26,6 +26,7 @@ import org.apache.tuscany.sca.policy.PolicySubject;
  * functions are provided by services and are used by references.
  * 
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface AbstractContract extends Base, Extensible, PolicySubject {
 

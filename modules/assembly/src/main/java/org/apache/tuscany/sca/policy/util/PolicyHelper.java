@@ -34,6 +34,7 @@ import org.apache.tuscany.sca.policy.PolicySubject;
 
 /**
  * A utility that helps to navigate the policy model
+ * @tuscany.spi.extension.asclient
  */
 public class PolicyHelper {
     public PolicySet getPolicySet(PolicySubject subject, QName policySetName) {

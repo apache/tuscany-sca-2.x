@@ -20,7 +20,6 @@
 package org.apache.tuscany.sca.binding.ws.axis2.policy.authentication.basic;
 
 import org.apache.tuscany.sca.assembly.EndpointReference;
-import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.PhasedInterceptor;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.authentication.basic.BasicAuthenticationPolicy;

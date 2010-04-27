@@ -38,7 +38,6 @@ import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.description.AxisService;
 import org.apache.axis2.description.Parameter;
 import org.apache.axis2.transport.http.ListingAgent;
-import org.apache.axis2.transport.http.server.HttpUtils;
 import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaExternal;
 

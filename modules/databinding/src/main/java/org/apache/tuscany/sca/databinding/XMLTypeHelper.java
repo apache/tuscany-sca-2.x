@@ -30,6 +30,7 @@ import org.apache.tuscany.sca.xsd.XSDefinition;
 
 /**
  * XML and schema helper for Java types
+ * @tuscany.spi.extension.asclient
  */
 public interface XMLTypeHelper {
 
