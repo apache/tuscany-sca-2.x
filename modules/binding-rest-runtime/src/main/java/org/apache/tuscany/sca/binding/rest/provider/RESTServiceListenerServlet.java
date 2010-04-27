@@ -24,11 +24,12 @@ import java.io.IOException;
 import javax.servlet.Servlet;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.common.http.HTTPContext;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
@@ -39,7 +40,10 @@ import org.apache.tuscany.sca.invocation.MessageFactory;
  *
  * @version $Rev$ $Date$
  */
-public class RESTServiceListenerServlet implements Servlet {
+public class RESTServiceListenerServlet extends HttpServlet implements Servlet {
+    
+    private static final long serialVersionUID = -5543706958107836637L;
+    
     transient private Binding binding;
     transient private ServletConfig config;
     transient private MessageFactory messageFactory;
@@ -70,9 +74,15 @@ public class RESTServiceListenerServlet implements Servlet {
         
     }
 
-    public void service(ServletRequest request, ServletResponse response) throws ServletException, IOException {
+    @Override
+    public void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HTTPContext bindingContext = new HTTPContext();
+        bindingContext.setHttpRequest(request);
+        bindingContext.setHttpResponse(response);
+        
         // Dispatch the service interaction to the service invoker
         Message requestMessage = messageFactory.createMessage();
+        requestMessage.setBindingContext(bindingContext);
         requestMessage.setBody(new Object[]{request, response});
         Message responseMessage = serviceInvoker.invoke(requestMessage);
         if (responseMessage.isFault()) {            

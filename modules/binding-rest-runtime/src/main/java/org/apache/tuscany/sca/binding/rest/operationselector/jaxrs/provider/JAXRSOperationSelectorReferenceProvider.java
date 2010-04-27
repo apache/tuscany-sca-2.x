@@ -17,36 +17,34 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.rest.wireformat.json.provider;
+package org.apache.tuscany.sca.binding.rest.operationselector.jaxrs.provider;
 
-import org.apache.tuscany.sca.binding.rest.wireformat.json.JSONWireFormat;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.provider.WireFormatProvider;
-import org.apache.tuscany.sca.provider.WireFormatProviderFactory;
-import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
+import org.apache.tuscany.sca.invocation.Interceptor;
+import org.apache.tuscany.sca.invocation.Phase;
+import org.apache.tuscany.sca.provider.OperationSelectorProvider;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 
 /**
- * JSON wire format Provider Factory.
+ * JAXRS operation selector Reference Provider.
  * 
  * @version $Rev$ $Date$
 */
-public class JSONWireFormatProviderFctory implements WireFormatProviderFactory<JSONWireFormat>{
+public class JAXRSOperationSelectorReferenceProvider implements OperationSelectorProvider {
     private ExtensionPointRegistry extensionPoints;
+    private RuntimeEndpointReference endpointReference;
 
-    public JSONWireFormatProviderFctory(ExtensionPointRegistry extensionPoints) {
+    public JAXRSOperationSelectorReferenceProvider(ExtensionPointRegistry extensionPoints, RuntimeEndpointReference endpointReference ) {
         this.extensionPoints = extensionPoints;
+        this.endpointReference = endpointReference;
     }
-    public WireFormatProvider createReferenceWireFormatProvider(RuntimeEndpointReference endpointReference) {
-        return new JSONWireFormatReferenceProvider(extensionPoints, endpointReference);
-    }
-
-    public WireFormatProvider createServiceWireFormatProvider(RuntimeEndpoint endpoint) {
-        return new JSONWireFormatServiceProvider(extensionPoints, endpoint);
+    
+    public Interceptor createInterceptor() {
+        return null;
     }
 
-    public Class<JSONWireFormat> getModelType() {
-        return JSONWireFormat.class;
+    public String getPhase() {
+        return Phase.SERVICE_BINDING_OPERATION_SELECTOR;
     }
 
 }

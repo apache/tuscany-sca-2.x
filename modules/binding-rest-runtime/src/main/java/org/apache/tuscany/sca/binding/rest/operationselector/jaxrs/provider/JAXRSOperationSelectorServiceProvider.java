@@ -17,38 +17,41 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.rest.wireformat.json.provider;
+package org.apache.tuscany.sca.binding.rest.operationselector.jaxrs.provider;
 
+import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.binding.rest.operationselector.jaxrs.JAXRSOperationSelector;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Phase;
-import org.apache.tuscany.sca.provider.WireFormatProvider;
-import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
+import org.apache.tuscany.sca.provider.OperationSelectorProvider;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 
 /**
- * JSON wire format Reference Provider.
+ * JAXRS operation selector Service Provider.
  * 
  * @version $Rev$ $Date$
 */
-public class JSONWireFormatReferenceProvider implements WireFormatProvider {
+public class JAXRSOperationSelectorServiceProvider implements OperationSelectorProvider {
     private ExtensionPointRegistry extensionPoints;
-    private RuntimeEndpointReference endpointReference;
-
-    public JSONWireFormatReferenceProvider(ExtensionPointRegistry extensionPoints,RuntimeEndpointReference endpointReference ) {
+    private RuntimeEndpoint endpoint;
+    
+    private Binding binding;
+    
+    public JAXRSOperationSelectorServiceProvider(ExtensionPointRegistry extensionPoints, RuntimeEndpoint endpoint) {
         this.extensionPoints = extensionPoints;
-        this.endpointReference = endpointReference;
+        this.endpoint = endpoint;
+        this.binding = endpoint.getBinding();
     }
-    public InterfaceContract configureWireFormatInterfaceContract(InterfaceContract interfaceContract) {
-        return null;
-    }
-
+    
     public Interceptor createInterceptor() {
+        if(binding.getOperationSelector() != null && binding.getOperationSelector() instanceof JAXRSOperationSelector) {
+            return new JAXRSOperationSelectorInterceptor(extensionPoints, endpoint);
+        }
         return null;
     }
 
     public String getPhase() {
-        return Phase.REFERENCE_BINDING_WIREFORMAT;
+        return Phase.SERVICE_BINDING_OPERATION_SELECTOR;
     }
-
 }

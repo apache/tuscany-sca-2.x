@@ -28,6 +28,7 @@
 		<service name="Catalog">
 			<tuscany:binding.rest uri="http://localhost:8085/Catalog">
     		    <tuscany:wireFormat.json />
+			    <tuscany:operationSelector.jaxrs />
     		</tuscany:binding.rest>
    		</service>
 		<reference name="currencyConverter" target="CurrencyConverter"/>	

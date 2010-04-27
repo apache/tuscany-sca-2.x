@@ -19,9 +19,13 @@
 
 package services;
 
+import javax.ws.rs.GET;
+
 import org.oasisopen.sca.annotation.Remotable;
 
 @Remotable
 public interface Catalog {
+    
+    @GET
     Item[] get();
 }

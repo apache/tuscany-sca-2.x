@@ -19,8 +19,11 @@
 
 package org.apache.tuscany.sca.binding.rest.provider;
 
+import java.io.BufferedReader;
+import java.io.CharArrayWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URLDecoder;
 import java.text.ParseException;
@@ -33,6 +36,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.binding.rest.RESTCacheContext;
 import org.apache.tuscany.sca.common.http.HTTPContentTypeMapper;
+import org.apache.tuscany.sca.common.http.HTTPContext;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
@@ -45,10 +49,12 @@ import org.apache.tuscany.sca.invocation.MessageFactory;
  */
 public class RESTBindingListenerServlet extends HttpServlet {
     private static final long serialVersionUID = 2865466417329430610L;
-    
-    transient private Binding binding;
 
-    private MessageFactory messageFactory;
+    transient private MessageFactory messageFactory;
+
+    transient private Binding binding;
+    transient private Invoker bindingInvoker;
+
     private Invoker getInvoker;
     private Invoker conditionalGetInvoker;
     private Invoker putInvoker;
@@ -61,15 +67,64 @@ public class RESTBindingListenerServlet extends HttpServlet {
     /**
      * Constructs a new RESTServiceListenerServlet.
      */
-    public RESTBindingListenerServlet(Binding binding, MessageFactory messageFactory) {
+    public RESTBindingListenerServlet(Binding binding, Invoker bindingInvoker, MessageFactory messageFactory) {
         this.binding = binding;
+        this.bindingInvoker = bindingInvoker;
         this.messageFactory = messageFactory;
     }
 
     
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        super.service(request, response);
+        if( binding.getOperationSelector() != null && binding.getRequestWireFormat() != null) {
+            // Decode using the charset in the request if it exists otherwise
+            // use UTF-8 as this is what all browser implementations use.
+            String charset = request.getCharacterEncoding();
+            if (charset == null) {
+                charset = "UTF-8";
+            }
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(request.getInputStream(), charset));
+
+            // Read the request
+            CharArrayWriter data = new CharArrayWriter();
+            char[] buf = new char[4096];
+            int ret;
+            while ((ret = in.read(buf, 0, 4096)) != -1) {
+                data.write(buf, 0, ret);
+            }
+            
+            HTTPContext bindingContext = new HTTPContext();
+            bindingContext.setHttpRequest(request);
+            bindingContext.setHttpResponse(response);
+
+            // Dispatch the service interaction to the service invoker
+            Message requestMessage = messageFactory.createMessage();
+            requestMessage.setBindingContext(bindingContext);
+            if(data.size() > 0) {
+                requestMessage.setBody(new Object[]{data});
+            }
+            
+            Message responseMessage = bindingInvoker.invoke(requestMessage);
+            
+            // return response to client
+            if (responseMessage.isFault()) {            
+                // Turn a fault into an exception
+                //throw new ServletException((Throwable)responseMessage.getBody());
+                Throwable e = (Throwable)responseMessage.getBody();
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());
+            } else {
+                byte[] bout;
+                bout = responseMessage.<Object>getBody().toString().getBytes("UTF-8");
+                response.getOutputStream().write(bout);
+                response.getOutputStream().flush();
+                response.getOutputStream().close();
+            } 
+        } else {
+            super.service(request, response);
+        }
+
+        
     }    
     
     @Override

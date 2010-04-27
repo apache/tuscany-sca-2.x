@@ -34,7 +34,6 @@ import org.junit.Test;
 import services.Catalog;
 import services.Item;
 
-@Ignore
 public class CatalogServiceTestCase {
     private static Node node;
     private static Catalog catalogService;
@@ -63,10 +62,10 @@ public class CatalogServiceTestCase {
     @Test
     public void testPing() throws Exception {
         new Socket("127.0.0.1", 8085);
-         System.in.read();
+        //System.in.read();
     }
     
-    @Test
+    @Ignore
     public void testNewsService() throws Exception {
         Item[] items = catalogService.get();
         

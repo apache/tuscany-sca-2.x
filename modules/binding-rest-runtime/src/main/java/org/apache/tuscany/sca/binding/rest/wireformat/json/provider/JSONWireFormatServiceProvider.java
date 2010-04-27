@@ -35,6 +35,11 @@ import org.apache.tuscany.sca.invocation.Phase;
 import org.apache.tuscany.sca.provider.WireFormatProvider;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 
+/**
+ * JSON wire format service provider.
+ * 
+ * @version $Rev$ $Date$
+*/
 public class JSONWireFormatServiceProvider implements WireFormatProvider {
     private ExtensionPointRegistry extensionPoints;
     private RuntimeEndpoint endpoint;
@@ -46,7 +51,6 @@ public class JSONWireFormatServiceProvider implements WireFormatProvider {
         this.extensionPoints = extensionPoints;
         this.endpoint = endpoint;
         this.binding = endpoint.getBinding();
-        
     }
     
     public InterfaceContract configureWireFormatInterfaceContract(InterfaceContract interfaceContract) {

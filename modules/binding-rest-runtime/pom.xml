@@ -37,6 +37,12 @@
         </dependency>
 
         <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>jsr311-api</artifactId>
+            <version>1.0</version>
+        </dependency>
+        
+        <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-data-api</artifactId>
             <version>2.0-SNAPSHOT</version>
@@ -65,7 +71,7 @@
             <artifactId>tuscany-databinding-json</artifactId>
             <version>2.0-SNAPSHOT</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-host-http</artifactId>
@@ -92,7 +98,14 @@
             <version>2.0-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
-
+        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-interface-java-jaxrs</artifactId>
+            <version>2.0-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
+                        
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-java-runtime</artifactId>
@@ -113,7 +126,6 @@
             <version>4.8.1</version>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
 
     <build>

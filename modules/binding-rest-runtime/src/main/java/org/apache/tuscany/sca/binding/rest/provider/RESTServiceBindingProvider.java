@@ -105,7 +105,7 @@ public class RESTServiceBindingProvider implements EndpointProvider {
             
             // configure data binding
             if (this.wfProvider != null) {
-                wfProvider.configureWireFormatInterfaceContract(service.getInterfaceContract());
+                wfProvider.configureWireFormatInterfaceContract(serviceContract);
             }
         } catch(CloneNotSupportedException e) {
             this.serviceContract = service.getInterfaceContract();
@@ -116,7 +116,8 @@ public class RESTServiceBindingProvider implements EndpointProvider {
     public void start() {
         // Get the invokers for the supported operations
         Servlet servlet = null;
-        bindingListenerServlet = new RESTBindingListenerServlet(binding, messageFactory );
+        Invoker bindingInvoker = endpoint.getBindingInvocationChain().getHeadInvoker();
+        bindingListenerServlet = new RESTBindingListenerServlet(binding, bindingInvoker, messageFactory );
         for (InvocationChain invocationChain : endpoint.getInvocationChains()) {
             Operation operation = invocationChain.getTargetOperation();
             String operationName = operation.getName();
@@ -181,7 +182,7 @@ public class RESTServiceBindingProvider implements EndpointProvider {
     }
 
     public InterfaceContract getBindingInterfaceContract() {
-        return service.getInterfaceContract();
+        return serviceContract;
     }
     
     public boolean supportsOneWayInvocation() {
@@ -195,13 +196,13 @@ public class RESTServiceBindingProvider implements EndpointProvider {
 
         InvocationChain bindingChain = endpoint.getBindingInvocationChain();
 
-        if(osProvider != null) {
-            bindingChain.addInterceptor(Phase.SERVICE_BINDING_OPERATION_SELECTOR, osProvider.createInterceptor());    
-        }
-
         if (wfProvider != null) {
             bindingChain.addInterceptor(Phase.SERVICE_BINDING_WIREFORMAT, wfProvider.createInterceptor());
         }
+        
+        if(osProvider != null) {
+            bindingChain.addInterceptor(Phase.SERVICE_BINDING_OPERATION_SELECTOR, osProvider.createInterceptor());    
+        }        
 
     }
 
