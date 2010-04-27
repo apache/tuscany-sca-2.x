@@ -31,6 +31,7 @@ import org.apache.tuscany.sca.interfacedef.util.XMLType;
  * Transformer to convert data from a simple java object to a databinding's representation
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.inheritfrom
  */
 public abstract class Java2SimpleTypeTransformer<T> extends BaseTransformer<Object, T> implements
         PullTransformer<Object, T> {

@@ -28,6 +28,7 @@ import org.apache.tuscany.sca.interfacedef.Operation;
  * A contract for transformers to deal with wrapping/unwrapping for WSDL wrapper style operations
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.inheritfrom
  */
 public interface WrapperHandler<T> {
     /**

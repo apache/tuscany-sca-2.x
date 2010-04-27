@@ -32,6 +32,7 @@ import org.apache.tuscany.sca.interfacedef.util.XMLType;
  * types to Java Objects
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.inheritfrom
  */
 public abstract class SimpleType2JavaTransformer<T> extends BaseTransformer<T, Object> implements
     PullTransformer<T, Object> {

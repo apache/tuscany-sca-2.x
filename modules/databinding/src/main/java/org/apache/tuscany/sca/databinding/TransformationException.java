@@ -23,6 +23,7 @@ package org.apache.tuscany.sca.databinding;
  * Reports problems during data transformation
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public class TransformationException extends RuntimeException {
 

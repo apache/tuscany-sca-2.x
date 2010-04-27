@@ -25,6 +25,7 @@ package org.apache.tuscany.sca.databinding;
  * @param <R> the target data type
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.inheritfrom
  */
 public interface PullTransformer<S, R> extends Transformer {
     /**

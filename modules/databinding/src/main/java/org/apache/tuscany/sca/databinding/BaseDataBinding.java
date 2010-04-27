@@ -28,6 +28,7 @@ import org.apache.tuscany.sca.interfacedef.util.XMLType;
  * Base Implementation of DataBinding
  * 
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.inheritfrom
  */
 public abstract class BaseDataBinding implements DataBinding {
 

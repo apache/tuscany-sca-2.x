@@ -41,8 +41,14 @@ import javax.xml.namespace.QName;
  * Utility class for XSD data type conversions
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public class XSDDataTypeConverter {
+	/**
+	 * 
+	 * @tuscany.spi.extension.asclient
+	 *
+	 */
     public static final class Base64Binary {
         private static final char[] S_BASE64CHAR =
         {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S',

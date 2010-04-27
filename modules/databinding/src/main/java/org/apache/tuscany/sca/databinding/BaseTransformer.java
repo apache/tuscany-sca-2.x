@@ -24,6 +24,7 @@ package org.apache.tuscany.sca.databinding;
  * transformer registry
  * 
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.inheritfrom
  */
 public abstract class BaseTransformer<S, T> implements Transformer {
 

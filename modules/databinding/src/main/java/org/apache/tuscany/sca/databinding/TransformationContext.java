@@ -27,6 +27,7 @@ import org.apache.tuscany.sca.interfacedef.Operation;
  * Context for data transformation
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface TransformationContext {
 
