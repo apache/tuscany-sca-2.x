@@ -48,6 +48,7 @@ package org.apache.tuscany.sca.core;
  * to shut down.
  * 
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.inheritfrom
  */
 public interface ModuleActivator extends LifeCycleListener {
 
