@@ -26,7 +26,6 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.PhasedInterceptor;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.provider.BasePolicyProvider;
-import org.apache.tuscany.sca.provider.PolicyProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
 /**
