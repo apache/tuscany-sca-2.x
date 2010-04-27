@@ -103,7 +103,7 @@ public interface Interface extends Cloneable, PolicySubject {
     boolean isDynamic();
 
     /**
-     * Get a map of attributes assoicated with the interface
+     * Get a map of attributes associated with the interface
      * @return A map of attributes
      */
     Map<Object, Object> getAttributes();
