@@ -28,6 +28,11 @@ import java.util.List;
 
 import org.apache.tuscany.sca.common.java.collection.CompoundEnumeration;
 
+/**
+ * 
+ * @tuscany.spi.extension.asclient
+ *
+ */
 public class ClassLoaderDelegate extends ClassLoader {
     private final List<ClassLoader> classLoaders = new ArrayList<ClassLoader>();
 

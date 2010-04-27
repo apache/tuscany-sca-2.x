@@ -25,7 +25,6 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 
 import org.apache.tuscany.sca.host.rmi.RMIHost;
-import org.apache.tuscany.sca.invocation.DataExchangeSemantics;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 
