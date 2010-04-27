@@ -53,7 +53,7 @@ public class JAXRSInterfaceProcessorTestCase {
         
         Assert.assertEquals(1,contract.getOperations().size());
         
-        List<Operation> getOperations = (List<Operation>) contract.getAttributes().get(GET.class.getClass());
+        List<Operation> getOperations = (List<Operation>) contract.getAttributes().get(GET.class);
         Assert.assertEquals(1,getOperations.size());
         
         //list operation
