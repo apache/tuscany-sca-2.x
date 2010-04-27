@@ -55,46 +55,46 @@ public class JAXRSJavaInterfaceProcessor implements JavaInterfaceVisitor {
             GET get = method.getAnnotation(GET.class);
             if(get != null) {
                 hasJAXRSAnnotarions = true;
-                operation.getAttributes().put(GET.class.getClass(), true);
+                operation.getAttributes().put(GET.class, true);
                 getOperations.add(operation);
             }
             
             if(! getOperations.isEmpty()) {
-                contract.getAttributes().put(GET.class.getClass(), getOperations);
+                contract.getAttributes().put(GET.class, getOperations);
             }
             
             PUT put = method.getAnnotation(PUT.class);
             if(put != null) {
                 hasJAXRSAnnotarions = true;
-                operation.getAttributes().put(PUT.class.getClass(), true);
+                operation.getAttributes().put(PUT.class, true);
                 putOperations.add(operation);
             }
 
             if(! putOperations.isEmpty()) {
-                contract.getAttributes().put(PUT.class.getClass(), putOperations);
+                contract.getAttributes().put(PUT.class, putOperations);
             }
 
             
             POST post = method.getAnnotation(POST.class);
             if(post != null) {
                 hasJAXRSAnnotarions = true;
-                operation.getAttributes().put(POST.class.getClass(), true);
+                operation.getAttributes().put(POST.class, true);
                 postOperations.add(operation);
             }
             
             if(! postOperations.isEmpty()) {
-                contract.getAttributes().put(POST.class.getClass(), postOperations);
+                contract.getAttributes().put(POST.class, postOperations);
             }
 
             DELETE delete = method.getAnnotation(DELETE.class);
             if(delete != null) {
                 hasJAXRSAnnotarions = true;
-                operation.getAttributes().put(DELETE.class.getClass(), true);
+                operation.getAttributes().put(DELETE.class, true);
                 deleteOperations.add(operation);
             }
 
             if(! deleteOperations.isEmpty()) {
-                contract.getAttributes().put(GET.class.getClass(), deleteOperations);
+                contract.getAttributes().put(GET.class, deleteOperations);
             }
             
         }
