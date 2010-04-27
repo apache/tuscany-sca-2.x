@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.contribution.processor;
  * Base class for exceptions raised by contribution services.
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public class ContributionException extends Exception {
 

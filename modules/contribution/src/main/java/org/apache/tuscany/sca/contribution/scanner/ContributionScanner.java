@@ -32,6 +32,7 @@ import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
  * artifacts in the contribution.
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.inheritfrom
  */
 public interface ContributionScanner {
 
