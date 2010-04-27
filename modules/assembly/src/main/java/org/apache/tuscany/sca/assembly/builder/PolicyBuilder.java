@@ -31,6 +31,7 @@ import org.apache.tuscany.sca.assembly.Implementation;
 /**
  * A builder that is contributed by a specific policy language to validate the configurations
  * for SCA endpoints, endpoint references and component implementations
+ * @tuscany.spi.extension.inheritfrom
  */
 public interface PolicyBuilder<T> {
     /**
