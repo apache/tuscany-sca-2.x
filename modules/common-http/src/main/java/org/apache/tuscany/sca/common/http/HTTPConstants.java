@@ -19,8 +19,12 @@
 
 package org.apache.tuscany.sca.common.http;
 
-public class HTTPConstants {
+public interface HTTPConstants {
     public static final String CHARACTER_ENCODING_UTF8 = "UTF-8";
+    
+    public static final String HTM = "htm";
+    public static final String HTML = "html";
+    public static final String JAVASCRIPT = "js";
     
     public static final String HTML_CONTENT_TYPE = "text/html";
     public static final String JAVASCRIPT_CONTENT_TYPE = "text/javascript";

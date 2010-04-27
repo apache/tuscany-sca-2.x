@@ -26,13 +26,13 @@ import java.util.Map;
  * Utility class to provide default HTTP Content-Type header
  * based on resource type 
  */
-public class HTTPContentTypeMapper {
+public class HTTPContentTypeMapper implements HTTPConstants{
     private static Map<String, String> contentTypeTable = new HashMap<String, String>();
 
     static {
-        contentTypeTable.put("htm", HTTPConstants.HTML_CONTENT_TYPE);
-        contentTypeTable.put("html", HTTPConstants.HTML_CONTENT_TYPE);
-        contentTypeTable.put("js", "text/javascript");
+        contentTypeTable.put(HTM, HTML_CONTENT_TYPE);
+        contentTypeTable.put(HTML, HTML_CONTENT_TYPE);
+        contentTypeTable.put(JAVASCRIPT, JAVASCRIPT_CONTENT_TYPE);
     }
     
     /**
