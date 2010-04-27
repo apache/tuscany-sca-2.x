@@ -36,6 +36,7 @@ import org.apache.tuscany.sca.interfacedef.util.XMLType;
  * DataBinding for Java simple types
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public class SimpleJavaDataBinding extends BaseDataBinding {
     public static final String NAME = "java:simpleType";
