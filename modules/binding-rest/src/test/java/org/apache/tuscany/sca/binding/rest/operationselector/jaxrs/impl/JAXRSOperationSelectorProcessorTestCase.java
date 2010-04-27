@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.rest.wireformat.json.impl;
+package org.apache.tuscany.sca.binding.rest.operationselector.jaxrs.impl;
 
 import java.io.ByteArrayOutputStream;
 import java.io.StringReader;
@@ -26,9 +26,9 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.sca.assembly.WireFormat;
+import org.apache.tuscany.sca.assembly.OperationSelector;
 import org.apache.tuscany.sca.binding.rest.RESTBinding;
-import org.apache.tuscany.sca.binding.rest.wireformat.json.JSONWireFormat;
+import org.apache.tuscany.sca.binding.rest.operationselector.jaxrs.JAXRSOperationSelector;
 import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
@@ -44,11 +44,10 @@ import org.junit.Test;
  * 
  * @version $Rev$ $Date$
  */
-public class JSONWireFormatProcessorTestCase {
-
-    public static final String BINDING_WITH_WIRE_FORMAT = 
+public class JAXRSOperationSelectorProcessorTestCase {
+    public static final String BINDING_WITH_OPERATION_SELECTOR = 
         "<binding.rest xmlns=\"http://tuscany.apache.org/xmlns/sca/1.1\" uri=\"http://localhost:8080/uri\">"
-        +    "<wireFormat.json />"
+        +    "<operationSelector.jaxrs />"
         + "</binding.rest>";
     
     private static XMLInputFactory inputFactory;
@@ -71,28 +70,24 @@ public class JSONWireFormatProcessorTestCase {
     
     /**
      * Tests the APIs:
-     *     public WireFormat getRequstWireFormat();
-     *     public WireFormat getResponseWireFormat();
+     *     public OperationSelector getRequstOperationSelector();
      * 
      * @throws Exception
      */
     @Test
     public void testWireFormat() throws Exception {
-        XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(BINDING_WITH_WIRE_FORMAT));
+        XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(BINDING_WITH_OPERATION_SELECTOR));
         
         RESTBinding binding = (RESTBinding)staxProcessor.read(reader, context);        
         Assert.assertNotNull(binding);
         
-        WireFormat requestWireFormat = binding.getRequestWireFormat();
-        Assert.assertEquals(JSONWireFormat.class, requestWireFormat.getClass().getInterfaces()[0]);
-        
-        WireFormat responseWireFormat = binding.getResponseWireFormat();
-        Assert.assertEquals(JSONWireFormat.class, responseWireFormat.getClass().getInterfaces()[0]);
+        OperationSelector operationSelector = binding.getOperationSelector();
+        Assert.assertEquals(JAXRSOperationSelector.class, operationSelector.getClass().getInterfaces()[0]);        
     }
     
     @Test
     public void testWriteWireFormat() throws Exception {
-        XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(BINDING_WITH_WIRE_FORMAT));
+        XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(BINDING_WITH_OPERATION_SELECTOR));
         
         RESTBinding binding = (RESTBinding)staxProcessor.read(reader, context);
         Assert.assertNotNull(binding);
@@ -102,10 +97,11 @@ public class JSONWireFormatProcessorTestCase {
         staxProcessor.write(binding, bos, context);
 
         // used for debug comparison
-        // System.out.println(BINDING_WITH_WIRE_FORMAT);
+        // System.out.println(BINDING_WITH_OPERATION_SELECTOR);
         // System.out.println(bos.toString());
 
-        Assert.assertEquals(BINDING_WITH_WIRE_FORMAT, bos.toString());      
+        Assert.assertEquals(BINDING_WITH_OPERATION_SELECTOR, bos.toString());      
         
     }      
+
 }
