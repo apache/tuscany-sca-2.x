@@ -48,4 +48,14 @@
    
    <element name="wireFormat.json" type="t:WireFormatJSONType" 
             substitutionGroup="sca:wireFormat"/>
+            
+   <!--  operation selectors -->      
+   <complexType name="OperationSelectorJAXRSType">
+      <complexContent>
+         <extension base="sca:OperationSelectorType"/>
+      </complexContent>
+   </complexType>    
+   <element name="operationSelector.jaxrs" 
+            type="t:OperationSelectorJAXRSType"
+            substitutionGroup="sca:operationSelector"/>              
 </schema>
