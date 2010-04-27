@@ -19,17 +19,13 @@
 
 package org.apache.tuscany.sca.binding.jms.policy.authentication.token.provider;
 
-import java.util.List;
-
 import org.apache.tuscany.sca.assembly.EndpointReference;
 import org.apache.tuscany.sca.binding.jms.policy.authentication.token.JMSTokenAuthenticationPolicy;
-import org.apache.tuscany.sca.binding.jms.policy.header.JMSHeaderPolicy;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Phase;
 import org.apache.tuscany.sca.invocation.PhasedInterceptor;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.provider.BasePolicyProvider;
-import org.apache.tuscany.sca.provider.PolicyProvider;
 
 /**
  * @version $Rev$ $Date$

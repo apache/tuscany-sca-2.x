@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.invocation;
 
 /**
  * An interceptor that is designated to be a given phase
+ * @tuscany.spi.extension.inheritfrom
  */
 public interface PhasedInterceptor extends Interceptor {
     /**

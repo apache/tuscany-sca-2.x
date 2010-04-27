@@ -30,6 +30,7 @@ package org.apache.tuscany.sca.work;
  * </p>
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface WorkScheduler {
 

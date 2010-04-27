@@ -27,8 +27,6 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.provider.PolicyProvider;
 import org.apache.tuscany.sca.provider.PolicyProviderFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
-import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
 /**
  * @version $Rev$ $Date$

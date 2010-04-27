@@ -25,6 +25,7 @@ package org.apache.tuscany.sca.provider;
  * to configure the binding chain. 
  * 
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.inheritfrom
  */
 public interface EndpointReferenceProvider extends ReferenceBindingProvider {
     /**

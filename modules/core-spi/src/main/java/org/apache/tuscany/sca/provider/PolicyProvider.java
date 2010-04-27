@@ -24,6 +24,7 @@ import org.apache.tuscany.sca.invocation.PhasedInterceptor;
 
 /**
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface PolicyProvider extends RuntimeProvider {
     /**

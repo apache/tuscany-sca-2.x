@@ -25,6 +25,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
 /**
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.inheritfrom
  */
 public interface PolicyProviderFactory<M> extends ProviderFactory<M> {
     /**

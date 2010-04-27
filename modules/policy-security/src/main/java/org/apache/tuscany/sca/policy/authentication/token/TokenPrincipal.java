@@ -24,6 +24,7 @@ import java.security.Principal;
 /**
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public class TokenPrincipal implements Principal {
 

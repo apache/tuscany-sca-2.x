@@ -41,6 +41,7 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 
 /**
  * Abstract base class for policy providers
+ * @tuscany.spi.extension.inheritfrom
  */
 public abstract class BasePolicyProvider<T> implements PolicyProvider {
     protected Class<T> policyType;

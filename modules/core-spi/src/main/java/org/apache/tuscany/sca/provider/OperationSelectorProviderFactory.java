@@ -25,7 +25,7 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 
 /**
  * @version $Rev$ $Date$
- * @tuscany.spi.extension.asclient
+ * @tuscany.spi.extension.inheritfrom
  */
 public interface OperationSelectorProviderFactory<M extends OperationSelector> extends ProviderFactory<M> {
     /**

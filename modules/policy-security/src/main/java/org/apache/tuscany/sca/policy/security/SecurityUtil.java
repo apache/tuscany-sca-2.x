@@ -29,6 +29,7 @@ import org.apache.tuscany.sca.invocation.Message;
  * Some utilities for dealing with security information in a Tuscany message
  * 
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public class SecurityUtil {
     

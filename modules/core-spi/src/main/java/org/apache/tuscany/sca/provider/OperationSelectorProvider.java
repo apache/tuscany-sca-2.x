@@ -23,7 +23,7 @@ import org.apache.tuscany.sca.invocation.Interceptor;
 
 /**
  * @version $Rev$ $Date$
- * @tuscany.spi.extension.asclient
+ * @tuscany.spi.extension.inheritfrom
  */
 public interface OperationSelectorProvider {
     /**
