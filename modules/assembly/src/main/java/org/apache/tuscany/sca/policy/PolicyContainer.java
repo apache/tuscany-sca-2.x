@@ -23,6 +23,7 @@ package org.apache.tuscany.sca.policy;
  * other policies
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.inheritfrom
  */
 public interface PolicyContainer {
     /**

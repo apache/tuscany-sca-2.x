@@ -25,6 +25,7 @@ import javax.xml.namespace.QName;
  * and attachments for example WS-Policy
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface PolicyExpression {
     /**

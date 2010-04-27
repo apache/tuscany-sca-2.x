@@ -21,23 +21,11 @@ package org.apache.tuscany.sca.policy.wspolicy;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 import javax.xml.namespace.QName;
 
 import org.apache.neethi.Policy;
-import org.apache.tuscany.sca.assembly.Base;
-import org.apache.tuscany.sca.assembly.Component;
-import org.apache.tuscany.sca.assembly.Endpoint;
-import org.apache.tuscany.sca.assembly.EndpointReference;
-import org.apache.tuscany.sca.assembly.Implementation;
-import org.apache.tuscany.sca.assembly.builder.BuilderContext;
-import org.apache.tuscany.sca.assembly.builder.PolicyBuilder;
 import org.apache.tuscany.sca.policy.PolicyContainer;
-import org.apache.tuscany.sca.policy.PolicyExpression;
-import org.apache.tuscany.sca.policy.PolicySet;
-import org.apache.tuscany.sca.policy.PolicySubject;
-import org.apache.tuscany.sca.policy.wspolicy.xml.WSPolicyProcessor;
 
 /**
  * The WS-Policy model. Currently defers to the Neethi policy model under the covers. 
