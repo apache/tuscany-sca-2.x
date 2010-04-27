@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Export-Package: org.apache.tuscany.sca.interfacedef.java.jaxrs;version="2.0.0"
+SCA-Version: 1.1
+Bundle-Name: Apache Tuscany Java Interface for JAX-RS
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 2.0.0
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Apache Tuscany Java Interface for JAXWS
+Bundle-SymbolicName: org.apache.tuscany.sca.interface.java.jaxrs
+Bundle-DocURL: http://www.apache.org/
+Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6
+Import-Package: org.apache.tuscany.sca.interfacedef,
+ org.apache.tuscany.sca.interfacedef.java,
+ org.apache.tuscany.sca.interfacedef.java.impl,
+ org.apache.tuscany.sca.interfacedef.java.introspect

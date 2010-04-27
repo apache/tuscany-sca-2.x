@@ -100,6 +100,7 @@
         <module>implementation-widget-runtime</module>
         <module>implementation-widget-runtime-dojo</module>
         <module>interface-java</module>
+        <module>interface-java-jaxrs</module>		
         <module>interface-java-jaxws</module>
         <module>interface-wsdl</module>
         <module>launcher</module>
