@@ -24,7 +24,7 @@ package org.apache.tuscany.sca.interfacedef;
  * functions are provided by services and are used by references.
  * 
  * @version $Rev$ $Date$
- * @tuscany.spi.extension.asclient
+ * @tuscany.spi.extension.inheritfrom
  */
 public interface InterfaceContract extends Cloneable {
 
