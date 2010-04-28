@@ -37,6 +37,8 @@ import java.util.Map;
  *             The default is multicast is off if remotes= is specified (only for now due to a Hazelcast limitation that is planned to be fixed), 
  *             otherwise if remotes= is not specified then multicast defaults to 224.5.12.10:51482
  * remotes - a list of ipAddress:port for remote nodes
+ * 
+ * @tuscany.spi.extension.asclient
  *             
  */
 public class DomainRegistryURI {

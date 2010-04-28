@@ -23,6 +23,7 @@ package org.apache.tuscany.sca.core;
  * A listener that responds to the start/stop event of the ExtensionPointRegistry. Tuscany extension
  * points or extensions can implement this interface to receive callbacks when the registry is started
  * or stopped
+ * @tuscany.spi.extension.inheritfrom
  */
 public interface LifeCycleListener {
     /**

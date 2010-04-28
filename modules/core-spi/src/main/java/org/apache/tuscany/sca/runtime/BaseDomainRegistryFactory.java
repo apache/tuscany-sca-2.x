@@ -31,6 +31,7 @@ import org.apache.tuscany.sca.core.LifeCycleListener;
 /**
  * The utility responsible for finding the endpoint regstry by the scheme and creating instances for the
  * given domain
+ * @tuscany.spi.extension.inheritfrom
  */
 public abstract class BaseDomainRegistryFactory implements DomainRegistryFactory, LifeCycleListener {
     protected ExtensionPointRegistry registry;

@@ -33,6 +33,7 @@ import org.apache.tuscany.sca.core.LifeCycleListener;
 
 /**
  * A replicated EndpointRegistry based on Apache Tomcat Tribes
+ * @tuscany.spi.extension.inheritfrom
  */
 public abstract class BaseEndpointRegistry implements EndpointRegistry, LifeCycleListener {
     protected final static Logger logger = Logger.getLogger(BaseEndpointRegistry.class.getName());

@@ -27,6 +27,7 @@ import org.apache.tuscany.sca.assembly.EndpointReference;
 
 /**
  * The EndpointRegistry holds the active service endpoints for the SCA domain
+ * @tuscany.spi.extension.inheritfrom
  */
 public interface EndpointRegistry {
     /**

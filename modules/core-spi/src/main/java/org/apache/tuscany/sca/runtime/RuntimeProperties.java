@@ -20,7 +20,11 @@
 package org.apache.tuscany.sca.runtime;
 
 import java.util.Properties;
-
+/**
+ * 
+ * @tuscany.spi.extension.asclient
+ *
+ */
 public interface RuntimeProperties {
     Properties getProperties();
     void setProperties(Properties properties);
