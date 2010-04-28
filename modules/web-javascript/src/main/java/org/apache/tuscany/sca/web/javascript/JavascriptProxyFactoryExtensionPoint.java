@@ -21,6 +21,11 @@ package org.apache.tuscany.sca.web.javascript;
 
 import javax.xml.namespace.QName;
 
+/**
+ * 
+ * @tuscany.spi.extension.asclient
+ *
+ */
 public interface JavascriptProxyFactoryExtensionPoint {
     /**
      * Add Javascript proxy factory

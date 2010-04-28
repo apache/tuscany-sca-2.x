@@ -27,6 +27,7 @@ import javax.xml.namespace.QName;
  * Widget component script generator extension pointinterface
  * 
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface ComponentJavaScriptGeneratorExtensionPoint {
 

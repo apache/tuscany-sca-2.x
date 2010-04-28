@@ -32,6 +32,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
  * This generates the necessary JavaScript client code into a single JavaScript per component
  * 
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface ComponentJavaScriptGenerator {
     
