@@ -50,6 +50,7 @@ import org.oasisopen.sca.ServiceRuntimeException;
  * with an SCA composite and the SCA contributions required by the composite.
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
     /**

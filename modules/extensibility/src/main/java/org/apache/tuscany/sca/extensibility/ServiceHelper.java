@@ -31,6 +31,7 @@ import org.apache.tuscany.sca.core.LifeCycleListener;
 
 /**
  * A helper for handling service lifecycle and instantiations
+ * @tuscany.spi.extension.asclient
  */
 public class ServiceHelper {
     private ServiceHelper() {

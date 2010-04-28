@@ -29,6 +29,7 @@ import javax.xml.namespace.QName;
 
 /**
  * The configuration for a Node which represents the deployment of an SCA composite application
+ * @tuscany.spi.extension.asclient
  */
 public interface NodeConfiguration {
     String DEFAULT_DOMAIN_URI = "default";

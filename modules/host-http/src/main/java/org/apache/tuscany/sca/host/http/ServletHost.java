@@ -31,7 +31,7 @@ import javax.servlet.Servlet;
  * to handle inbound requests.
  * 
  * @version $Rev$ $Date$
- * @tuscany.spi.extension.asclient
+ * @tuscany.spi.extension.inheritfrom
  */
 public interface ServletHost {
     

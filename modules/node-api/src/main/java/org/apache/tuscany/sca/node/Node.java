@@ -30,6 +30,7 @@ import org.oasisopen.sca.ServiceReference;
  * A node is loaded with an SCA composites. It can start and stop that composite.
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface Node {
     String DEFAULT_DOMAIN_URI = NodeConfiguration.DEFAULT_DOMAIN_URI;
