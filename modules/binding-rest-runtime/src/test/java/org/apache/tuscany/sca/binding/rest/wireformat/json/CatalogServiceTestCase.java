@@ -20,21 +20,33 @@
 package org.apache.tuscany.sca.binding.rest.wireformat.json;
 
 import java.net.Socket;
+import java.net.URLEncoder;
 
+import org.apache.axiom.om.util.Base64;
 import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
+import org.json.JSONObject;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import com.meterware.httpunit.GetMethodWebRequest;
+import com.meterware.httpunit.WebConversation;
+import com.meterware.httpunit.WebRequest;
+import com.meterware.httpunit.WebResponse;
+
 import services.Catalog;
 import services.Item;
 
 public class CatalogServiceTestCase {
+    private static final String SERVICE_URL = "http://localhost:8085/Catalog";
+    
+    private static final String GET_RESPONSE = "[{\"price\":\"$2.99\",\"name\":\"Apple\",\"javaClass\":\"services.Item\"},{\"price\":\"$3.55\",\"name\":\"Orange\",\"javaClass\":\"services.Item\"},{\"price\":\"$1.55\",\"name\":\"Pear\",\"javaClass\":\"services.Item\"}]";
+    
     private static Node node;
     private static Catalog catalogService;
 
@@ -65,15 +77,13 @@ public class CatalogServiceTestCase {
         //System.in.read();
     }
     
-    @Ignore
-    public void testNewsService() throws Exception {
-        Item[] items = catalogService.get();
-        
-        Assert.assertNotNull(items);
-        Assert.assertTrue(items.length > 0);
-        
-        for(int pos = 0; pos < items.length; pos++) {
-            System.out.println(">>> Item[" + pos + "] - " + items[pos].getName() + " - " + items[pos].getPrice());
-        }
+    @Test
+    public void testGetInvocation() throws Exception {        
+        WebConversation wc = new WebConversation();
+        WebRequest request = new GetMethodWebRequest(SERVICE_URL);
+        WebResponse response = wc.getResource(request);
+
+        Assert.assertEquals(200, response.getResponseCode());
+        Assert.assertEquals(GET_RESPONSE, response.getText());
     }
 }
