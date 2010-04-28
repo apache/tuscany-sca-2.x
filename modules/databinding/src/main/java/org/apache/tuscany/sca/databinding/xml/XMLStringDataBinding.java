@@ -29,6 +29,7 @@ import org.apache.tuscany.sca.interfacedef.util.XMLType;
  * A DataBinding for the XML string
  * 
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public class XMLStringDataBinding extends BaseDataBinding {
     public static final String NAME = String.class.getName();

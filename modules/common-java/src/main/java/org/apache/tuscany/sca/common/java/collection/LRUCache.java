@@ -27,6 +27,7 @@ import java.util.Map;
  * @version $Revision$
  * @param <K>
  * @param <V>
+ * @tuscany.spi.extension.asclient
  */
 
 public class LRUCache<K, V> extends LinkedHashMap<K, V> {
