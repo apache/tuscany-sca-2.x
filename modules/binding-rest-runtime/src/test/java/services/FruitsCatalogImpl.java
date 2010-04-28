@@ -19,13 +19,15 @@
 
 package services;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
+import org.oasisopen.sca.annotation.Scope;
 
+@Scope("COMPOSITE")
 public class FruitsCatalogImpl implements Catalog {
     
     @Property
@@ -34,19 +36,29 @@ public class FruitsCatalogImpl implements Catalog {
     @Reference
     public CurrencyConverter currencyConverter;
     
-    private List<Item> catalog = new ArrayList<Item>();
+    private Map<String, Item> catalog = new HashMap<String, Item>();
 
     @Init
     public void init() {
         String currencySymbol = currencyConverter.getCurrencySymbol(currencyCode);
-        catalog.add(new Item("Apple",  currencySymbol + currencyConverter.getConversion("USD", currencyCode, 2.99)));
-        catalog.add(new Item("Orange", currencySymbol + currencyConverter.getConversion("USD", currencyCode, 3.55)));
-        catalog.add(new Item("Pear", currencySymbol + currencyConverter.getConversion("USD", currencyCode, 1.55)));
+        catalog.put("Apple", new Item("Apple",  currencySymbol + currencyConverter.getConversion("USD", currencyCode, 2.99)));
+        catalog.put("Orange", new Item("Orange", currencySymbol + currencyConverter.getConversion("USD", currencyCode, 3.55)));
+        catalog.put("Pear", new Item("Pear", currencySymbol + currencyConverter.getConversion("USD", currencyCode, 1.55)));
     }
 
     public Item[] get() {
         Item[] catalogArray = new Item[catalog.size()];
-        catalog.toArray(catalogArray);
+        catalog.values().toArray(catalogArray);
         return catalogArray;
+    }
+    
+    public void addItem(Item item) {
+        catalog.put(item.getName(),item);
+    }
+    
+    public void updateItem(Item item) {
+        if(catalog.get(item.getName()) != null) {
+            catalog.put(item.getName(), item);
+        }
     }
 }

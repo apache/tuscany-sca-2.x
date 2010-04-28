@@ -19,11 +19,14 @@
 
 package org.apache.tuscany.sca.binding.rest.wireformat.json.provider;
 
+import java.io.CharArrayWriter;
+
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
+import org.json.JSONObject;
 
 /**
  * JSON wire format Interceptor.
@@ -46,6 +49,18 @@ public class JSONWireFormatInterceptor implements Interceptor {
     }
 
     public Message invoke(Message msg) {
+        try {
+            if(msg.getBody() != null) {
+                Object[] args = msg.getBody();
+                CharArrayWriter data = (CharArrayWriter) args[0];
+                
+                JSONObject jsonPayload = new JSONObject(data.toString());
+                msg.setBody(new Object[]{jsonPayload});
+            }
+        } catch(Exception e) {
+            throw new RuntimeException("Unable to parse json paylod: " + msg.getBody().toString());
+        }
+        
         return getNext().invoke(msg);
     }
 

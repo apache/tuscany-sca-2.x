@@ -19,33 +19,34 @@
 
 package org.apache.tuscany.sca.binding.rest.wireformat.json;
 
+import java.io.ByteArrayInputStream;
 import java.net.Socket;
-import java.net.URLEncoder;
 
-import org.apache.axiom.om.util.Base64;
 import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.ContributionLocationHelper;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
-import org.json.JSONObject;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
+import services.Catalog;
+
 import com.meterware.httpunit.GetMethodWebRequest;
+import com.meterware.httpunit.PostMethodWebRequest;
 import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
-import services.Catalog;
-import services.Item;
-
 public class CatalogServiceTestCase {
     private static final String SERVICE_URL = "http://localhost:8085/Catalog";
-    
-    private static final String GET_RESPONSE = "[{\"price\":\"$2.99\",\"name\":\"Apple\",\"javaClass\":\"services.Item\"},{\"price\":\"$3.55\",\"name\":\"Orange\",\"javaClass\":\"services.Item\"},{\"price\":\"$1.55\",\"name\":\"Pear\",\"javaClass\":\"services.Item\"}]";
+
+    private static final String GET_RESPONSE = "[{\"price\":\"$1.55\",\"name\":\"Pear\",\"javaClass\":\"services.Item\"},{\"price\":\"$2.99\",\"name\":\"Apple\",\"javaClass\":\"services.Item\"},{\"price\":\"$3.55\",\"name\":\"Orange\",\"javaClass\":\"services.Item\"}]";
+    private static final String NEW_ITEM = "{\"price\":\"$4.35\",\"name\":\"Grape\"}\"";
+    private static final String GET_NEW_RESPONSE = "[{\"price\":\"$1.55\",\"name\":\"Pear\",\"javaClass\":\"services.Item\"},{\"price\":\"$2.99\",\"name\":\"Apple\",\"javaClass\":\"services.Item\"},{\"price\":\"$3.55\",\"name\":\"Orange\",\"javaClass\":\"services.Item\"},{\"price\":\"$4.35\",\"name\":\"Grape\",\"javaClass\":\"services.Item\"}]";
+    private static final String UPDATED_ITEM = "{\"price\":\"$1.35\",\"name\":\"Grape\"}\"";
+    private static final String GET_UPDATED_RESPONSE = "[{\"price\":\"$1.55\",\"name\":\"Pear\",\"javaClass\":\"services.Item\"},{\"price\":\"$2.99\",\"name\":\"Apple\",\"javaClass\":\"services.Item\"},{\"price\":\"$3.55\",\"name\":\"Orange\",\"javaClass\":\"services.Item\"},{\"price\":\"$1.35\",\"name\":\"Grape\",\"javaClass\":\"services.Item\"}]";    
     
     private static Node node;
     private static Catalog catalogService;
@@ -85,5 +86,48 @@ public class CatalogServiceTestCase {
 
         Assert.assertEquals(200, response.getResponseCode());
         Assert.assertEquals(GET_RESPONSE, response.getText());
+    }
+
+
+    @Test
+    public void testPostInvocation() throws Exception {        
+        //Add new item to catalog
+        WebConversation wc = new WebConversation();
+        WebRequest request   = new PostMethodWebRequest(SERVICE_URL, new ByteArrayInputStream(NEW_ITEM.getBytes("UTF-8")),"application/json");
+        WebResponse response = wc.getResource(request);
+
+        Assert.assertEquals(200, response.getResponseCode());
+        
+        //read new results and expect to get new item back in the response
+        request = new GetMethodWebRequest(SERVICE_URL);
+        response = wc.getResource(request);
+        
+        //for debug purposes
+        //System.out.println(">>>" + GET_UPDATED_RESPONSE);
+        //System.out.println(">>>" + response.getText());
+
+        Assert.assertEquals(200, response.getResponseCode());
+        Assert.assertEquals(GET_NEW_RESPONSE, response.getText());
+    }
+
+    @Test
+    public void testPutInvocation() throws Exception {        
+        //Add new item to catalog
+        WebConversation wc = new WebConversation();
+        WebRequest request   = new PostMethodWebRequest(SERVICE_URL, new ByteArrayInputStream(UPDATED_ITEM.getBytes("UTF-8")),"application/json");
+        WebResponse response = wc.getResource(request);
+
+        Assert.assertEquals(200, response.getResponseCode());
+        
+        //read new results and expect to get new item back in the response
+        request = new GetMethodWebRequest(SERVICE_URL);
+        response = wc.getResource(request);
+        
+        //for debug purposes
+        //System.out.println(">>>" + GET_UPDATED_RESPONSE);
+        //System.out.println(">>>" + response.getText());
+
+        Assert.assertEquals(200, response.getResponseCode());
+        Assert.assertEquals(GET_UPDATED_RESPONSE, response.getText());
     }
 }

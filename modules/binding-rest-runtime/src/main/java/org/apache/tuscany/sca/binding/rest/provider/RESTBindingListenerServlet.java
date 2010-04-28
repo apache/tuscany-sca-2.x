@@ -114,11 +114,14 @@ public class RESTBindingListenerServlet extends HttpServlet {
                 Throwable e = (Throwable)responseMessage.getBody();
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());
             } else {
-                byte[] bout;
-                bout = responseMessage.<Object>getBody().toString().getBytes("UTF-8");
-                response.getOutputStream().write(bout);
-                response.getOutputStream().flush();
-                response.getOutputStream().close();
+                //handle void operations
+                if(responseMessage.getBody() != null) {
+                    byte[] bout;
+                    bout = responseMessage.<Object>getBody().toString().getBytes("UTF-8");
+                    response.getOutputStream().write(bout);
+                    response.getOutputStream().flush();
+                    response.getOutputStream().close();                    
+                }
             } 
         } else {
             super.service(request, response);

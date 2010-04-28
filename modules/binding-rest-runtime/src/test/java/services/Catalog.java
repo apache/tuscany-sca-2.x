@@ -20,6 +20,8 @@
 package services;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 
 import org.oasisopen.sca.annotation.Remotable;
 
@@ -28,4 +30,10 @@ public interface Catalog {
     
     @GET
     Item[] get();
+    
+    @POST
+    void addItem(Item item);
+    
+    @PUT
+    void updateItem(Item item);
 }
