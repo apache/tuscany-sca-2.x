@@ -21,7 +21,10 @@ package org.apache.tuscany.sca.implementation.widget.provider;
 import java.net.URI;
 
 import javax.servlet.Servlet;
+import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.assembly.Base;
+import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.implementation.widget.WidgetImplementation;
@@ -39,6 +42,7 @@ import org.apache.tuscany.sca.web.javascript.ComponentJavaScriptGenerator;
  * @version $Rev$ $Date$
  */
 class WidgetImplementationProvider implements ImplementationProvider {
+    private static final QName BINDING_HTTP = new QName(Base.SCA11_TUSCANY_NS, "binding.http");
     
     private RuntimeComponent component;
     
@@ -109,12 +113,17 @@ class WidgetImplementationProvider implements ImplementationProvider {
      */
     private String getContextRoot() {
         String contextRoot = null;
+        if (servletHost != null) {
+            contextRoot = servletHost.getContextPath();
+        }
         
-        for(ComponentService service : component.getServices()) {
-            if("Widget".equals(service.getName())) {
-                for(org.apache.tuscany.sca.assembly.Binding binding : service.getBindings()) {
-                    if( binding.getClass().getName().contains("HTTPBinding")) {
-                        contextRoot = binding.getURI();
+        if (contextRoot == null) {
+            for (ComponentService service : component.getServices()) {
+                if ("Widget".equals(service.getName())) {
+                    for (Binding binding : service.getBindings()) {
+                        if (binding.getType().equals(BINDING_HTTP)) {
+                            contextRoot = binding.getURI();
+                        }
                     }
                 }
             }
