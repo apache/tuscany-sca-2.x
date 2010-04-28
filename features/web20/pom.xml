@@ -51,6 +51,13 @@
             <artifactId>tuscany-common-http</artifactId>
             <version>2.0-SNAPSHOT</version>
         </dependency>
+
+        <!-- Interface models -->
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-interface-java-jaxrs</artifactId>
+            <version>2.0-SNAPSHOT</version>
+        </dependency>		
         
         <!-- Bindings -->
         <dependency>
@@ -82,6 +89,7 @@
             <artifactId>tuscany-binding-rss-runtime</artifactId>
             <version>2.0-SNAPSHOT</version>
         </dependency>                
+
         <!--Databindings -->
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
