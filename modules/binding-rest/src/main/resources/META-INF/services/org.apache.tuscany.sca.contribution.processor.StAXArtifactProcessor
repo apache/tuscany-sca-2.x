@@ -20,4 +20,5 @@ org.apache.tuscany.sca.binding.rest.xml.RESTBindingProcessor;qname=http://tuscan
 
 # Implementation class for the wireFormat processor extension
 org.apache.tuscany.sca.assembly.xml.DefaultBeanModelProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.1#wireFormat.json,model=org.apache.tuscany.sca.binding.rest.wireformat.json.JSONWireFormat,factory=org.apache.tuscany.sca.binding.rest.wireformat.json.JSONWireFormatFactory
+org.apache.tuscany.sca.assembly.xml.DefaultBeanModelProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.1#wireFormat.xml,model=org.apache.tuscany.sca.binding.rest.wireformat.xml.XMLWireFormat,factory=org.apache.tuscany.sca.binding.rest.wireformat.xml.XMLWireFormatFactory
 org.apache.tuscany.sca.assembly.xml.DefaultBeanModelProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.1#operationSelector.jaxrs,model=org.apache.tuscany.sca.binding.rest.operationselector.jaxrs.JAXRSOperationSelector,factory=org.apache.tuscany.sca.binding.rest.operationselector.jaxrs.JAXRSOperationSelectorFactory 
