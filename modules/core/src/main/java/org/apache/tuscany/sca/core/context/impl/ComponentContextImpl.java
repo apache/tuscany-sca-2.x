@@ -159,14 +159,21 @@ public class ComponentContextImpl implements RuntimeComponentContext {
             // The default binding name is the name of the promoted service
             bindingName = getPromotedService(service).getName();
         }
+        Endpoint returnEp = null;
         List<Endpoint> eps = service.getEndpoints();
         for (Endpoint ep : eps) {
             Binding binding = ep.getBinding();
             if (bindingName.equals(binding.getName()) || binding.getName() == null) {
-                return ep;
+                returnEp = ep;
+                break;
             }
         }
-        return null;
+        //TUSCANY-3543
+        if(returnEp == null) {
+            returnEp = eps.get(0);
+        }
+        
+        return returnEp;
     }
 
     private ComponentService getPromotedService(ComponentService componentService) {
