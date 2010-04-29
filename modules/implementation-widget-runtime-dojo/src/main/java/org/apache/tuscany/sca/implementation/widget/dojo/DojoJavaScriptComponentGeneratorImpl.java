@@ -183,10 +183,10 @@ public class DojoJavaScriptComponentGeneratorImpl implements ComponentJavaScript
         pw.println("if (!window.tuscany) { \n" +
                         "window.tuscany = {}; \n" +
                         "}");
-        pw.println("var tuscany = window.tuscany;");
+        pw.println("var __tuscany  = window.tuscany;");
         
-        pw.println("if (!tuscany.sca) { \n" +
-                        "tuscany.sca = {}; \n" +
+        pw.println("if (!__tuscany .sca) { \n" +
+                        "__tuscany .sca = {}; \n" +
                         "}");
     }
    
@@ -197,15 +197,15 @@ public class DojoJavaScriptComponentGeneratorImpl implements ComponentJavaScript
      * @throws IOException
      */
     private static void generateJavaScriptPropertyFunction(RuntimeComponent component, PrintWriter pw) throws IOException {        
-        pw.println("tuscany.sca.propertyMap = {};");
+        pw.println("__tuscany.sca.propertyMap = {};");
         for(ComponentProperty property : component.getProperties()) {
             String propertyName = property.getName();
 
-            pw.println("tuscany.sca.propertyMap." + propertyName + " = new String(\"" + getPropertyValue(property) + "\");");
+            pw.println("__tuscany.sca.propertyMap." + propertyName + " = new String(\"" + getPropertyValue(property) + "\");");
         }
         
         pw.println("tuscany.sca.Property = function (name) {");
-        pw.println("    return tuscany.sca.propertyMap[name];");
+        pw.println("    return __tuscany.sca.propertyMap[name];");
         pw.println("}");
     }
     
@@ -238,7 +238,7 @@ public class DojoJavaScriptComponentGeneratorImpl implements ComponentJavaScript
      */
     private static void generateJavaScriptReferenceFunction (RuntimeComponent component, JavascriptProxyFactoryExtensionPoint javascriptProxyFactories, PrintWriter pw) throws IOException {
         
-        pw.println("tuscany.sca.referenceMap = {};");
+        pw.println("__tuscany.sca.referenceMap = {};");
         for(ComponentReference reference : component.getReferences()) {
             for(EndpointReference epr : reference.getEndpointReferences()) {
                 Endpoint targetEndpoint = epr.getTargetEndpoint();
@@ -254,13 +254,13 @@ public class DojoJavaScriptComponentGeneratorImpl implements ComponentJavaScript
                     String referenceName = reference.getName();
                     JavascriptProxyFactory jsProxyFactory = javascriptProxyFactories.getProxyFactory(binding.getClass());
                     
-                    pw.println("tuscany.sca.referenceMap." + referenceName + " = new " + jsProxyFactory.createJavascriptReference(reference) + ";");
+                    pw.println("__tuscany.sca.referenceMap." + referenceName + " = new " + jsProxyFactory.createJavascriptReference(reference) + ";");
                 }
             }
         }
         
         pw.println("tuscany.sca.Reference = function (name) {");
-        pw.println("    return tuscany.sca.referenceMap[name];");
+        pw.println("    return __tuscany.sca.referenceMap[name];");
         pw.println("}");
     }
     
