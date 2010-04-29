@@ -84,11 +84,11 @@ class WidgetImplementationProvider implements ImplementationProvider {
     }
 
     public void start() {
-        String contextRoot = getContextRoot();
+        String baseURI = getBaseURI();
 
         // get the ScaDomainScriptServlet, if it doesn't yet exist create one
         // this uses removeServletMapping / addServletMapping as there is no getServletMapping facility
-        scriptURI = URI.create(contextRoot + "/" + this.widgetName + ".js").toString();
+        scriptURI = URI.create(baseURI + "/" + this.widgetName + ".js").toString();
         Servlet servlet = servletHost.getServletMapping(scriptURI);
         if (servlet == null /*|| servlet instanceof HTTPGetListenerServlet*/) {
             WidgetComponentScriptServlet widgetScriptServlet;
@@ -111,25 +111,34 @@ class WidgetImplementationProvider implements ImplementationProvider {
      * Get the contextRoot considering the HTTP Binding URI when in a embedded environment
      * @return
      */
-    private String getContextRoot() {
-        String contextRoot = null;
+    private String getBaseURI() {
+        String baseURI = null;
+        String contextPath = "/";
         if (servletHost != null) {
-            contextRoot = servletHost.getContextPath();
+            contextPath = servletHost.getContextPath();
         }
-        
-        if (contextRoot == null) {
-            for (ComponentService service : component.getServices()) {
-                if ("Widget".equals(service.getName())) {
-                    for (Binding binding : service.getBindings()) {
-                        if (binding.getType().equals(BINDING_HTTP)) {
-                            contextRoot = binding.getURI();
-                        }
+        if (!contextPath.endsWith("/")) {
+            contextPath = contextPath + "/";
+        }
+
+        ComponentService service = component.getService("Widget");
+        if (service != null) {
+            for (Binding binding : service.getBindings()) {
+                if (binding.getType().equals(BINDING_HTTP)) {
+                    String bindingURI = binding.getURI();
+                    URI uri = URI.create(bindingURI);
+                    if (uri.isAbsolute()) {
+                        return bindingURI;
                     }
+                    if (bindingURI.startsWith("/")) {
+                        bindingURI = bindingURI.substring(1);
+                    }
+                    baseURI = contextPath + bindingURI;
                 }
             }
         }
-        
-        return contextRoot == null ? "" : contextRoot;
-    }    
+
+        return baseURI == null ? "" : baseURI;
+    }
 
 }
