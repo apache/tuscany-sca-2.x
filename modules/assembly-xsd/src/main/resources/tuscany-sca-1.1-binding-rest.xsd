@@ -49,6 +49,15 @@
    <element name="wireFormat.json" type="t:WireFormatJSONType" 
             substitutionGroup="sca:wireFormat"/>
             
+   <complexType name="WireFormatXMLType">
+      <complexContent>
+         <extension base="sca:WireFormatType"/>
+      </complexContent>
+   </complexType>
+   
+   <element name="wireFormat.xml" type="t:WireFormatXMLType" 
+            substitutionGroup="sca:wireFormat"/>            
+            
    <!--  operation selectors -->      
    <complexType name="OperationSelectorJAXRSType">
       <complexContent>
