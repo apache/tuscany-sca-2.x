@@ -17,22 +17,34 @@
  * under the License.    
  */
 
-package services;
+package services.customer;
 
-public class CurrencyConverterImpl implements CurrencyConverter {
-    public double getConversion(String fromCurrencyCode, String toCurrencyCode, double amount) {
-        if (toCurrencyCode.equals("USD"))
-            return amount;
-        else if (toCurrencyCode.equals("EUR"))
-            return ((double)Math.round(amount * 0.7256 * 100)) /100;
-        return 0;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.oasisopen.sca.annotation.Init;
+import org.oasisopen.sca.annotation.Scope;
+
+@Scope("COMPOSITE")
+public class CustomerServiceImpl implements CustomerService {
+    private Map<String, Customer> customers = new HashMap<String, Customer>();
+
+    @Init
+    public void init() {
+        customers.put("John", new Customer("John", "John", "john@domain.com"));
     }
 
-    public String getCurrencySymbol(String currencyCode) {
-        if (currencyCode.equals("USD"))
-            return "$";
-        else if (currencyCode.equals("EUR"))
-            return "E"; //"€";
-        return "?";
+    public Customer get() {
+        return customers.values().iterator().next();
+    }
+    
+    public void addCustomer(Customer customer) {
+        customers.put(customer.getName(), customer);
+    }
+    
+    public void updateCustomer(Customer customer) {
+        if(customers.get(customer.getName()) != null) {
+            customers.put(customer.getName(), customer);
+        }
     }
 }

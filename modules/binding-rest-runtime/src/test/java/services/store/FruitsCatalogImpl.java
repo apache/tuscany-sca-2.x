@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package services;
+package services.store;
 
 import java.util.HashMap;
 import java.util.Map;

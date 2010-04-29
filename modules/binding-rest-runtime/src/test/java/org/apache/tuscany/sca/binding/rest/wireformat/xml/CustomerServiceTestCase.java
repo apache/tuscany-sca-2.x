@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.rest.wireformat.json;
+package org.apache.tuscany.sca.binding.rest.wireformat.xml;
 
 import java.io.ByteArrayInputStream;
 import java.net.Socket;
@@ -37,22 +37,20 @@ import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
-public class CatalogServiceTestCase {
-    private static final String SERVICE_URL = "http://localhost:8085/Catalog";
+public class CustomerServiceTestCase {
+    private static final String SERVICE_URL = "http://localhost:8085/Customer";
 
-    private static final String GET_RESPONSE = "[{\"price\":\"$1.55\",\"name\":\"Pear\",\"javaClass\":\"services.store.Item\"},{\"price\":\"$2.99\",\"name\":\"Apple\",\"javaClass\":\"services.store.Item\"},{\"price\":\"$3.55\",\"name\":\"Orange\",\"javaClass\":\"services.store.Item\"}]";
-    private static final String NEW_ITEM = "{\"price\":\"$4.35\",\"name\":\"Grape\"}\"";
-    private static final String GET_NEW_RESPONSE = "[{\"price\":\"$1.55\",\"name\":\"Pear\",\"javaClass\":\"services.store.Item\"},{\"price\":\"$2.99\",\"name\":\"Apple\",\"javaClass\":\"services.store.Item\"},{\"price\":\"$3.55\",\"name\":\"Orange\",\"javaClass\":\"services.store.Item\"},{\"price\":\"$4.35\",\"name\":\"Grape\",\"javaClass\":\"services.store.Item\"}]";
-    private static final String UPDATED_ITEM = "{\"price\":\"$1.35\",\"name\":\"Grape\"}\"";
-    private static final String GET_UPDATED_RESPONSE = "[{\"price\":\"$1.55\",\"name\":\"Pear\",\"javaClass\":\"services.store.Item\"},{\"price\":\"$2.99\",\"name\":\"Apple\",\"javaClass\":\"services.store.Item\"},{\"price\":\"$3.55\",\"name\":\"Orange\",\"javaClass\":\"services.store.Item\"},{\"price\":\"$1.35\",\"name\":\"Grape\",\"javaClass\":\"services.store.Item\"}]";    
+    private static final String GET_RESPONSE = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Customer xmlns:ns2=\"http://customer.services/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"customer\"><email>john@domain.com</email><id>John</id><name>John</name></Customer>";
+    private static final String UPDATED_ITEM = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Customer xmlns:ns2=\"http://customer.services/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"customer\"><email>john@updated-domain.com</email><id>John</id><name>John</name></Customer>";
+    private static final String GET_UPDATED_RESPONSE = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Customer xmlns:ns2=\"http://customer.services/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"customer\"><email>john@updated-domain.com</email><id>John</id><name>John</name></Customer>";    
     
     private static Node node;
 
     @BeforeClass
     public static void init() throws Exception {
         try {
-            String contribution = ContributionLocationHelper.getContributionLocation(CatalogServiceTestCase.class);
-            node = NodeFactory.newInstance().createNode("store.composite", new Contribution("catalog", contribution));
+            String contribution = ContributionLocationHelper.getContributionLocation(CustomerServiceTestCase.class);
+            node = NodeFactory.newInstance().createNode("customer.composite", new Contribution("customer", contribution));
             node.start();
         } catch (Exception e) {
             e.printStackTrace();
@@ -77,32 +75,15 @@ public class CatalogServiceTestCase {
         WebConversation wc = new WebConversation();
         WebRequest request = new GetMethodWebRequest(SERVICE_URL);
         WebResponse response = wc.getResource(request);
+        
+        //for debug purposes
+        //System.out.println(">>>" + GET_RESPONSE);
+        //System.out.println(">>>" + response.getText());
 
         Assert.assertEquals(200, response.getResponseCode());
         Assert.assertEquals(GET_RESPONSE, response.getText());
     }
 
-
-    @Test
-    public void testPostInvocation() throws Exception {        
-        //Add new item to catalog
-        WebConversation wc = new WebConversation();
-        WebRequest request   = new PostMethodWebRequest(SERVICE_URL, new ByteArrayInputStream(NEW_ITEM.getBytes("UTF-8")),"application/json");
-        WebResponse response = wc.getResource(request);
-
-        Assert.assertEquals(200, response.getResponseCode());
-        
-        //read new results and expect to get new item back in the response
-        request = new GetMethodWebRequest(SERVICE_URL);
-        response = wc.getResource(request);
-        
-        //for debug purposes
-        //System.out.println(">>>" + GET_UPDATED_RESPONSE);
-        //System.out.println(">>>" + response.getText());
-
-        Assert.assertEquals(200, response.getResponseCode());
-        Assert.assertEquals(GET_NEW_RESPONSE, response.getText());
-    }
 
     @Test
     public void testPutInvocation() throws Exception {        

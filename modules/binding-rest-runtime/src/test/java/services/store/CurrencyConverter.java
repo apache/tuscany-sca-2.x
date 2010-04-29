@@ -17,23 +17,13 @@
  * under the License.    
  */
 
-package services;
-
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
+package services.store;
 
 import org.oasisopen.sca.annotation.Remotable;
 
 @Remotable
-public interface Catalog {
-    
-    @GET
-    Item[] get();
-    
-    @POST
-    void addItem(Item item);
-    
-    @PUT
-    void updateItem(Item item);
+public interface CurrencyConverter {
+    public double getConversion(String fromCurrenycCode, String toCurrencyCode, double amount);
+
+    public String getCurrencySymbol(String currencyCode);
 }

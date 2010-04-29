@@ -19,23 +19,16 @@
 -->
 <composite	xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
 		xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1"
-		targetNamespace="http://store"
-		name="store">
+		targetNamespace="http://customer"
+		name="customer">
 		
-	<component name="Catalog">
-		<implementation.java class="services.store.FruitsCatalogImpl"/> 
-		<property name="currencyCode">USD</property>
-		<service name="Catalog">
-			<tuscany:binding.rest uri="http://localhost:8085/Catalog">
-    		    <tuscany:wireFormat.json />
+	<component name="CustomerService">
+		<implementation.java class="services.customer.CustomerServiceImpl"/> 
+		<service name="CustomerService">
+			<tuscany:binding.rest uri="http://localhost:8085/Customer">
+    		    <tuscany:wireFormat.xml />
 			    <tuscany:operationSelector.jaxrs />
     		</tuscany:binding.rest>
    		</service>
-		<reference name="currencyConverter" target="CurrencyConverter"/>	
-	</component> 
-    
-	<component name="CurrencyConverter">
-		<implementation.java class="services.store.CurrencyConverterImpl"/>
-	</component>     
-
+	</component>
 </composite>

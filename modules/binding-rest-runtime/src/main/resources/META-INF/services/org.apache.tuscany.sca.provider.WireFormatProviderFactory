@@ -17,3 +17,4 @@
 
 # Implementation class for the wire format provider factory
 org.apache.tuscany.sca.binding.rest.wireformat.json.provider.JSONWireFormatProviderFctory;model=org.apache.tuscany.sca.binding.rest.wireformat.json.JSONWireFormat
+org.apache.tuscany.sca.binding.rest.wireformat.xml.provider.XMLWireFormatProviderFctory;model=org.apache.tuscany.sca.binding.rest.wireformat.xml.XMLWireFormat

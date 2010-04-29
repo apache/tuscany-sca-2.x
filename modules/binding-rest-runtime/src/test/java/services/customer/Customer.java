@@ -17,34 +17,54 @@
  * under the License.    
  */
 
-package services;
+package services.customer;
 
-public class Item {
+
+/**
+ * Customer data
+ */
+public class Customer {
+    private String id;
+    private String email;
     private String name;
-    private String price;
-    
-    public Item() {
+
+    public Customer() {
+        super();
     }
     
-    public Item(String name, String price) {
+    public Customer(String id, String name, String email) {
+        super();
+        this.id = id;
+        this.email = email;
         this.name = name;
-        this.price = price;
     }
-    
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public String getName() {
         return name;
     }
-    
+
     public void setName(String name) {
         this.name = name;
     }
-    
-    public String getPrice() {
-        return price;
-    }
-    
-    public void setPrice(String price) {
-        this.price = price;
+
+    public String toString() {
+        return "id: " + id + " name: " + name + " e-mail: " + email;
     }
 
 }
