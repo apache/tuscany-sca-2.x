@@ -51,7 +51,7 @@ import org.apache.abdera.parser.ParseException;
 import org.apache.abdera.parser.Parser;
 import org.apache.abdera.writer.WriterFactory;
 import org.apache.commons.codec.binary.Base64;
-import org.apache.tuscany.sca.binding.http.HTTPCacheContext;
+import org.apache.tuscany.sca.common.http.HTTPCacheContext;
 import org.apache.tuscany.sca.common.http.HTTPUtil;
 import org.apache.tuscany.sca.data.collection.Entry;
 import org.apache.tuscany.sca.databinding.Mediator;

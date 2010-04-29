@@ -23,6 +23,8 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Date;
 
+import org.apache.tuscany.sca.common.http.HTTPCacheContext;
+
 /**
  * Test service implementation that implements a various conditional HTTP
  * methods. For testing, the id==0 items are very old (Date(0)), not modified,

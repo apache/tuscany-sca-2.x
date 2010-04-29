@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.http;
+package org.apache.tuscany.sca.common.http;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
