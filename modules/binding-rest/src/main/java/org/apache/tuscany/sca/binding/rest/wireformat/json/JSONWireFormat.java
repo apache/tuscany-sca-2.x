@@ -33,7 +33,7 @@ public interface JSONWireFormat extends WireFormat {
     /**
      *  QName representing the JSON Wireformat for REST Binding 
      */
-    public static final QName REST_WIREFORMAT_JSON_QNAME = new QName(SCA11_TUSCANY_NS, "wireFormat.jsonrpc");
+    public static final QName REST_WIREFORMAT_JSON_QNAME = new QName(SCA11_TUSCANY_NS, "wireFormat.json");
     
     /**
      * Return the QName identifying the wire format 
