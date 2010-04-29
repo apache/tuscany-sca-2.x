@@ -30,6 +30,7 @@ import org.apache.tuscany.sca.assembly.Implementation;
  * An extension point for Composite builders.
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface BuilderExtensionPoint {
 

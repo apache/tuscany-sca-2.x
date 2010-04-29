@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.contribution.processor;
  * An extension point for StAX artifact processors.
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface StAXArtifactProcessorExtensionPoint {
     /**
