@@ -27,6 +27,7 @@ import org.apache.tuscany.sca.interfacedef.Interface;
  * Represents a Java interface.
  * 
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface JavaInterface extends Interface, Base {
 

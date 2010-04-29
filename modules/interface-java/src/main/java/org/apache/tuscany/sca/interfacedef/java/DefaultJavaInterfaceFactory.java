@@ -33,6 +33,7 @@ import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceVisitor;
  * A factory for the Java interface model.
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public class DefaultJavaInterfaceFactory extends JavaInterfaceFactoryImpl implements JavaInterfaceFactory {
     private static final Logger logger = Logger.getLogger(DefaultJavaInterfaceFactory.class.getName());

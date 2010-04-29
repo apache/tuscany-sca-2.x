@@ -27,6 +27,7 @@ import org.apache.tuscany.sca.interfacedef.Operation;
  * Represents a Java operation.
  *
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface JavaOperation extends Operation {
 

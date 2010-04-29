@@ -28,6 +28,7 @@ import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceVisitor;
  * Factory for the Java interface model
  * 
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public interface JavaInterfaceFactory {
 

@@ -35,6 +35,7 @@ import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
  * a Java interface
  * 
  * @version $Rev$ $Date$
+ * @tuscany.spi.extension.asclient
  */
 public final class JavaInterfaceUtil {
 
