@@ -19,11 +19,8 @@
 
 package org.apache.tuscany.sca.binding.rest.provider;
 
-import java.io.BufferedReader;
-import java.io.CharArrayWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URLDecoder;
 import java.text.ParseException;
@@ -74,10 +71,32 @@ public class RESTBindingListenerServlet extends HttpServlet {
         this.messageFactory = messageFactory;
     }
 
+    private void write(OutputStream out, Object obj) throws IOException {
+        if (obj == null) {
+            return;
+        }
+        if (obj instanceof String) {
+            out.write(((String)obj).getBytes("UTF-8"));
+        } else if (obj instanceof byte[]) {
+            out.write((byte[])obj);
+        } else if (obj instanceof InputStream) {
+            byte[] buf = new byte[8192];
+            InputStream in = (InputStream)obj;
+            while (true) {
+                int size = in.read(buf);
+                if (size < 0) {
+                    break;
+                }
+                out.write(buf, 0, size);
+            }
+        } else {
+            out.write(obj.toString().getBytes("UTF-8"));
+        }
+    }
     
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        if( binding.getOperationSelector() != null && binding.getRequestWireFormat() != null) {
+        if( binding.getOperationSelector() != null || binding.getRequestWireFormat() != null) {
             // Decode using the charset in the request if it exists otherwise
             // use UTF-8 as this is what all browser implementations use.
             String charset = request.getCharacterEncoding();
@@ -85,6 +104,7 @@ public class RESTBindingListenerServlet extends HttpServlet {
                 charset = "UTF-8";
             }
 
+            /*
             BufferedReader in = new BufferedReader(new InputStreamReader(request.getInputStream(), charset));
 
             // Read the request
@@ -94,6 +114,7 @@ public class RESTBindingListenerServlet extends HttpServlet {
             while ((ret = in.read(buf, 0, 4096)) != -1) {
                 data.write(buf, 0, ret);
             }
+            */
             
             HTTPContext bindingContext = new HTTPContext();
             bindingContext.setHttpRequest(request);
@@ -102,9 +123,14 @@ public class RESTBindingListenerServlet extends HttpServlet {
             // Dispatch the service interaction to the service invoker
             Message requestMessage = messageFactory.createMessage();
             requestMessage.setBindingContext(bindingContext);
+            
+            requestMessage.setBody(new Object[] {request.getInputStream()});
+            
+            /*
             if(data.size() > 0) {
                 requestMessage.setBody(new Object[]{data});
             }
+            */
             
             Message responseMessage = bindingInvoker.invoke(requestMessage);
             
@@ -116,13 +142,9 @@ public class RESTBindingListenerServlet extends HttpServlet {
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());
             } else {
                 //handle void operations
-                if(responseMessage.getBody() != null) {
-                    byte[] bout;
-                    bout = responseMessage.<Object>getBody().toString().getBytes("UTF-8");
-                    response.getOutputStream().write(bout);
-                    response.getOutputStream().flush();
-                    response.getOutputStream().close();                    
-                }
+                write(response.getOutputStream(), responseMessage.getBody());
+                response.getOutputStream().flush();
+                response.getOutputStream().close();                  
             } 
         } else {
             super.service(request, response);

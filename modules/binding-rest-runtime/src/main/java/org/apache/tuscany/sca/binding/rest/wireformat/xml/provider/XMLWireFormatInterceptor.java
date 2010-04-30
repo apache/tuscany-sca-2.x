@@ -19,8 +19,7 @@
 
 package org.apache.tuscany.sca.binding.rest.wireformat.xml.provider;
 
-import java.io.CharArrayReader;
-import java.io.CharArrayWriter;
+import java.io.InputStream;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
@@ -59,8 +58,8 @@ public class XMLWireFormatInterceptor implements Interceptor {
         try {
             if(msg.getBody() != null) {
                 Object[] args = msg.getBody();
-                CharArrayWriter data = (CharArrayWriter) args[0];
-                XMLStreamReader xmlPayload = inputFactory.createXMLStreamReader(new CharArrayReader(data.toCharArray()));
+                InputStream data = (InputStream) args[0];
+                XMLStreamReader xmlPayload = inputFactory.createXMLStreamReader(data);
                 msg.setBody(new Object[]{xmlPayload});
             }
         } catch(Exception e) {

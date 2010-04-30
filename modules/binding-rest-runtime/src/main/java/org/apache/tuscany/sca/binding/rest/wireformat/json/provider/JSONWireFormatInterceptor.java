@@ -19,7 +19,10 @@
 
 package org.apache.tuscany.sca.binding.rest.wireformat.json.provider;
 
-import java.io.CharArrayWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringWriter;
 
 import org.apache.tuscany.sca.common.http.HTTPContext;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
@@ -48,6 +51,20 @@ public class JSONWireFormatInterceptor implements Interceptor {
     public void setNext(Invoker next) {
         this.next = next;
     }
+    
+    private String read(InputStream in) throws IOException {
+        StringWriter sw = new StringWriter();
+        InputStreamReader reader = new InputStreamReader(in, "UTF-8");
+        char[] buf = new char[8192];
+        while (true) {
+            int size = reader.read(buf);
+            if (size < 0) {
+                break;
+            }
+            sw.write(buf, 0, size);
+        }
+        return sw.toString();
+    }
 
     public Message invoke(Message msg) {
         HTTPContext bindingContext = (HTTPContext) msg.getBindingContext();
@@ -55,9 +72,9 @@ public class JSONWireFormatInterceptor implements Interceptor {
         try {
             if(bindingContext.getHttpRequest().getMethod().equalsIgnoreCase("get") == false && bindingContext.getHttpRequest().getMethod().equalsIgnoreCase("delete") == false  && msg.getBody() != null) {
                 Object[] args = msg.getBody();
-                CharArrayWriter data = (CharArrayWriter) args[0];
-                
-                JSONObject jsonPayload = new JSONObject(data.toString());
+                InputStream in = (InputStream) args[0];
+                String data = read(in);
+                JSONObject jsonPayload = new JSONObject(data);
                 msg.setBody(new Object[]{jsonPayload});
             }
         } catch(Exception e) {
