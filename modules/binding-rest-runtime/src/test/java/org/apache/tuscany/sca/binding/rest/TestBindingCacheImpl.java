@@ -23,6 +23,8 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Date;
 
+import org.apache.tuscany.sca.common.http.HTTPCacheContext;
+
 /**
  * Test service implementation that implements a various conditional HTTP
  * methods. For testing, the id==0 items are very old (Date(0)), not modified,
@@ -49,7 +51,7 @@ public class TestBindingCacheImpl {
 	 * @param id
 	 * @return
 	 */
-	public InputStream conditionalGet(String id, RESTCacheContext cacheContext)
+	public InputStream conditionalGet(String id, HTTPCacheContext cacheContext)
 			throws NotModifiedException, PreconditionFailedException {
 
 		if (cacheContext != null) {
@@ -99,7 +101,7 @@ public class TestBindingCacheImpl {
 	 * @param id
 	 * @return
 	 */
-	public InputStream conditionalDelete(String id, RESTCacheContext cacheContext)
+	public InputStream conditionalDelete(String id, HTTPCacheContext cacheContext)
 			throws NotModifiedException, PreconditionFailedException {
 
 		if (cacheContext != null) {
@@ -151,7 +153,7 @@ public class TestBindingCacheImpl {
 	 * @param id
 	 * @return
 	 */
-	public RESTCacheContext conditionalPost(RESTCacheContext cacheContext)
+	public HTTPCacheContext conditionalPost(HTTPCacheContext cacheContext)
 			throws NotModifiedException, PreconditionFailedException {
 		String id = "" + (new java.util.Random()).nextInt(Integer.MAX_VALUE);
 
@@ -180,7 +182,7 @@ public class TestBindingCacheImpl {
 		}
 
 		// Return the ETag and LastModfied fields by serialize to a byte array
-		RESTCacheContext returnContext = new RESTCacheContext();
+		HTTPCacheContext returnContext = new HTTPCacheContext();
 		returnContext.setETag( "ETag" + (new java.util.Random()).nextInt(Integer.MAX_VALUE) );
 		returnContext.setLastModified( new Date() );
 		return returnContext;
@@ -202,7 +204,7 @@ public class TestBindingCacheImpl {
 	 * @param id
 	 * @return
 	 */
-	public InputStream conditionalPut(String id, RESTCacheContext cacheContext)
+	public InputStream conditionalPut(String id, HTTPCacheContext cacheContext)
 			throws NotModifiedException, PreconditionFailedException {
 
 		if (cacheContext != null) {
