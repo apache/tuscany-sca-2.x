@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.binding.rest.wireformat.json.provider;
 
 import java.io.CharArrayWriter;
 
+import org.apache.tuscany.sca.common.http.HTTPContext;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
@@ -49,8 +50,10 @@ public class JSONWireFormatInterceptor implements Interceptor {
     }
 
     public Message invoke(Message msg) {
+        HTTPContext bindingContext = (HTTPContext) msg.getBindingContext();
+        
         try {
-            if(msg.getBody() != null) {
+            if(bindingContext.getHttpRequest().getMethod().equalsIgnoreCase("get") == false && bindingContext.getHttpRequest().getMethod().equalsIgnoreCase("delete") == false  && msg.getBody() != null) {
                 Object[] args = msg.getBody();
                 CharArrayWriter data = (CharArrayWriter) args[0];
                 

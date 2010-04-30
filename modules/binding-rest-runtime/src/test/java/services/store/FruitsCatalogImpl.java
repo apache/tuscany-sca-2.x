@@ -46,10 +46,14 @@ public class FruitsCatalogImpl implements Catalog {
         catalog.put("Pear", new Item("Pear", currencySymbol + currencyConverter.getConversion("USD", currencyCode, 1.55)));
     }
 
-    public Item[] get() {
+    public Item[] getItem() {
         Item[] catalogArray = new Item[catalog.size()];
         catalog.values().toArray(catalogArray);
         return catalogArray;
+    }
+    
+    public Item getItemById(String itemId) {
+        return catalog.get(itemId);
     }
     
     public void addItem(Item item) {
@@ -60,5 +64,11 @@ public class FruitsCatalogImpl implements Catalog {
         if(catalog.get(item.getName()) != null) {
             catalog.put(item.getName(), item);
         }
+    }
+    
+    public void deleteItem(String itemId) {
+        if(catalog.get(itemId) != null) {
+            catalog.remove(itemId);
+        }        
     }
 }

@@ -55,6 +55,7 @@ public class RESTBindingListenerServlet extends HttpServlet {
     transient private Binding binding;
     transient private Invoker bindingInvoker;
 
+    private Invoker invoker;
     private Invoker getInvoker;
     private Invoker conditionalGetInvoker;
     private Invoker putInvoker;
@@ -420,6 +421,16 @@ public class RESTBindingListenerServlet extends HttpServlet {
     		}
     	}
     }
+
+    
+    public void setInvoker(Invoker invoker) {
+        this.invoker = invoker;
+    }
+    
+    public Invoker getInvoker() {
+        return invoker;
+    }
+    
 
     /**
      * @return the getInvoker

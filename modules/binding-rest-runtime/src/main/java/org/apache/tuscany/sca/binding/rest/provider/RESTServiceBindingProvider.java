@@ -98,7 +98,6 @@ public class RESTServiceBindingProvider implements EndpointProvider {
         }
 
         
-        
         //clone the service contract to avoid databinding issues
         try {
             this.serviceContract = (InterfaceContract) service.getInterfaceContract().clone();
@@ -119,45 +118,42 @@ public class RESTServiceBindingProvider implements EndpointProvider {
         Invoker bindingInvoker = endpoint.getBindingInvocationChain().getHeadInvoker();
         bindingListenerServlet = new RESTBindingListenerServlet(binding, bindingInvoker, messageFactory );
         for (InvocationChain invocationChain : endpoint.getInvocationChains()) {
+            
             Operation operation = invocationChain.getTargetOperation();
+            Invoker serviceInvoker = invocationChain.getHeadInvoker();
             String operationName = operation.getName();
-            if (operationName.equals("get")) { 
-                Invoker getInvoker = invocationChain.getHeadInvoker();
-               	bindingListenerServlet.setGetInvoker(getInvoker);
+            
+            if (binding.getOperationSelector() != null || binding.getRequestWireFormat() != null) {
+                bindingListenerServlet.setInvoker(serviceInvoker);
+                servlet = bindingListenerServlet;
+            } else if (operationName.equals("get")) { 
+                bindingListenerServlet.setGetInvoker(serviceInvoker);
                 servlet = bindingListenerServlet;
             } else if (operationName.equals("conditionalGet")) {
-                Invoker conditionalGetInvoker = invocationChain.getHeadInvoker();
-               	bindingListenerServlet.setConditionalGetInvoker(conditionalGetInvoker);
+                bindingListenerServlet.setConditionalGetInvoker(serviceInvoker);
                 servlet = bindingListenerServlet;
             } else if (operationName.equals("delete")) {
-                Invoker deleteInvoker = invocationChain.getHeadInvoker();
-               	bindingListenerServlet.setDeleteInvoker(deleteInvoker);
+                bindingListenerServlet.setDeleteInvoker(serviceInvoker);
                 servlet = bindingListenerServlet;
             } else if (operationName.equals("conditionalDelete")) {
-                Invoker conditionalDeleteInvoker = invocationChain.getHeadInvoker();
-               	bindingListenerServlet.setConditionalDeleteInvoker(conditionalDeleteInvoker);
+                bindingListenerServlet.setConditionalDeleteInvoker(serviceInvoker);
                 servlet = bindingListenerServlet;
             } else if (operationName.equals("put")) {
-                Invoker putInvoker = invocationChain.getHeadInvoker();
-               	bindingListenerServlet.setPutInvoker(putInvoker);
+                bindingListenerServlet.setPutInvoker(serviceInvoker);
                 servlet = bindingListenerServlet;
             } else if (operationName.equals("conditionalPut")) {
-                Invoker conditionalPutInvoker = invocationChain.getHeadInvoker();
-               	bindingListenerServlet.setConditionalPutInvoker(conditionalPutInvoker);
+                bindingListenerServlet.setConditionalPutInvoker(serviceInvoker);
                 servlet = bindingListenerServlet;
             } else if (operationName.equals("post")) {
-                Invoker postInvoker = invocationChain.getHeadInvoker();
-               	bindingListenerServlet.setPostInvoker(postInvoker);
+                bindingListenerServlet.setPostInvoker(serviceInvoker);
                 servlet = bindingListenerServlet;
             } else if (operationName.equals("conditionalPost")) {
-                Invoker conditionalPostInvoker = invocationChain.getHeadInvoker();
-               	bindingListenerServlet.setConditionalPostInvoker(conditionalPostInvoker);
+                bindingListenerServlet.setConditionalPostInvoker(serviceInvoker);
                 servlet = bindingListenerServlet;
             } else if (operationName.equals("service")) {
-                Invoker serviceInvoker = invocationChain.getHeadInvoker();
                 servlet = new RESTServiceListenerServlet(binding, serviceInvoker, messageFactory);
                 break;
-            } 
+            }             
         }
         if (servlet == null) {
             throw new IllegalStateException("No get or service method found on the service");

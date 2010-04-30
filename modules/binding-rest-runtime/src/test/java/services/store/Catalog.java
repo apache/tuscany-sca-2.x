@@ -19,9 +19,12 @@
 
 package services.store;
 
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 
 import org.oasisopen.sca.annotation.Remotable;
 
@@ -30,11 +33,19 @@ import org.oasisopen.sca.annotation.Remotable;
 public interface Catalog {
     
     @GET
-    Item[] get();
+    Item[] getItem();
+    
+    @GET
+    @Path("{id}")
+    Item getItemById(@PathParam("id") String itemId);
     
     @POST
     void addItem(Item item);
     
     @PUT
     void updateItem(Item item);
+    
+    @DELETE
+    @Path("{id}")
+    void deleteItem(@PathParam("id") String itemId);
 }

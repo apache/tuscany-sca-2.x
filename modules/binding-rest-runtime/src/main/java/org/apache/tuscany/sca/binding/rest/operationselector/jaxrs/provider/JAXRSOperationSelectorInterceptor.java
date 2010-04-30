@@ -19,17 +19,22 @@
 
 package org.apache.tuscany.sca.binding.rest.operationselector.jaxrs.provider;
 
+import java.lang.reflect.Method;
+import java.net.URLDecoder;
 import java.util.List;
 
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
 
 import org.apache.tuscany.sca.common.http.HTTPContext;
+import org.apache.tuscany.sca.common.http.HTTPUtil;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
@@ -69,13 +74,34 @@ public class JAXRSOperationSelectorInterceptor implements Interceptor {
     }
 
     public Message invoke(Message msg) {
-        HTTPContext bindingContext = (HTTPContext) msg.getBindingContext();
-        
-        Operation operation = findOperation(bindingContext.getHttpRequest().getMethod());
-        
-        msg.setOperation(operation);
-        
-        return getNext().invoke(msg);
+        try {
+            HTTPContext bindingContext = (HTTPContext) msg.getBindingContext();
+
+            String path = URLDecoder.decode(HTTPUtil.getRequestPath(bindingContext.getHttpRequest()), "UTF-8");
+            
+            if(path.startsWith("/")) {
+                path = path.substring(1);
+            }
+
+            List<Operation> operations = filterOperationsByHttpMethod(interfaceContract, bindingContext.getHttpRequest().getMethod());
+
+            Operation operation = findOperation(path, operations);
+
+            final JavaOperation javaOperation = (JavaOperation) operation;
+            final Method method = javaOperation.getJavaMethod();
+            
+            if(path != null && path.length() > 0) {
+                if(method.getAnnotation(Path.class) != null) {
+                    msg.setBody(new Object[]{path});
+                }
+            }
+            
+            msg.setOperation(operation);
+
+            return getNext().invoke(msg);
+        } catch(Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -84,7 +110,7 @@ public class JAXRSOperationSelectorInterceptor implements Interceptor {
      * @param http_method
      * @return
      */
-    private Operation findOperation(String http_method) {
+    private static List<Operation> filterOperationsByHttpMethod(InterfaceContract interfaceContract, String http_method) {
         List<Operation> operations = null;
         
         if(http_method.equalsIgnoreCase("get")) {
@@ -97,13 +123,35 @@ public class JAXRSOperationSelectorInterceptor implements Interceptor {
             operations = (List<Operation>) interfaceContract.getInterface().getAttributes().get(DELETE.class);
         }
         
-        Operation result = null;
-        if(operations != null) {
-            if(! operations.isEmpty()) {
-                result = operations.get(0);
+        return operations;
+    }
+    
+    /**
+     * Find the operation from the component service contract
+     * @param componentService
+     * @param http_method
+     * @return
+     */
+    private Operation findOperation(String path, List<Operation> operations) {
+        Operation operation = null;
+        
+        for(Operation op : operations) {
+            final JavaOperation javaOperation = (JavaOperation) op;
+            final Method method = javaOperation.getJavaMethod();
+            
+            if(path != null && path.length() > 0) {
+                if(method.getAnnotation(Path.class) != null) {
+                    operation = op;
+                    break;
+                }
+            } else {
+                if(method.getAnnotation(Path.class) == null) {
+                    operation = op;
+                    break;
+                }
             }
         }
-
-        return result;
+        
+        return operation;
     }
 }
