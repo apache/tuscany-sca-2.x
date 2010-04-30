@@ -50,6 +50,57 @@ public class HTTPCacheContext {
     public boolean ifRange;
 
     /**
+     * Gets the cache context information (ETag, LastModified, predicates) from the Http request.
+     * @param request
+     * @return
+     */
+    public static HTTPCacheContext createCacheContextFromRequest( HttpServletRequest request ) throws java.text.ParseException {
+        HTTPCacheContext context = new HTTPCacheContext();
+
+        String eTag = request.getHeader( "If-Match" );          
+        if ( eTag != null ) {
+            context.setETag( eTag );
+            context.setIfMatch( true );
+        }
+        eTag = request.getHeader( "If-None-Match" );            
+        if ( eTag != null ) {
+            context.setETag( eTag );
+            context.setIfNoneMatch( true );
+        }
+        String lastModifiedString = request.getHeader( "If-Modified-Since" );        
+        if ( lastModifiedString != null ) {
+            context.setLastModified( lastModifiedString );
+            context.setIfModifiedSince( true );
+        }
+        lastModifiedString = request.getHeader( "If-Unmodified-Since" );        
+        if ( lastModifiedString != null ) {
+            context.setLastModified( lastModifiedString );
+            context.setIfUnmodifiedSince( true );
+        }
+        lastModifiedString = request.getHeader( "If-Range" );        
+        if ( lastModifiedString != null ) {
+            context.setLastModified( lastModifiedString );
+            context.setIfRange( true );
+        }
+        return context;
+    }
+    
+    /**
+     * Enabled is true whenever ETag, LastModified, or predicate is set.
+     * @return the enabled
+     */
+    public boolean isEnabled() {
+        return enabled;
+    }
+    
+    /**
+     * @param enabled the enabled to set
+     */
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+    
+    /**
      * An ETag is a unique ID for an item. It changes when
      * a field in the item or the update date changes.
      * See HTTP specification for how ETags work:
@@ -206,52 +257,4 @@ public class HTTPCacheContext {
         + sb.toString();
     }
 
-    /**
-     * Gets the cache context information (ETag, LastModified, predicates) from the Http request.
-     * @param request
-     * @return
-     */
-    public static HTTPCacheContext getCacheContextFromRequest( HttpServletRequest request ) throws java.text.ParseException {
-        HTTPCacheContext context = new HTTPCacheContext();
-
-        String eTag = request.getHeader( "If-Match" );    	
-        if ( eTag != null ) {
-            context.setETag( eTag );
-            context.setIfMatch( true );
-        }
-        eTag = request.getHeader( "If-None-Match" );    	
-        if ( eTag != null ) {
-            context.setETag( eTag );
-            context.setIfNoneMatch( true );
-        }
-        String lastModifiedString = request.getHeader( "If-Modified-Since" );        
-        if ( lastModifiedString != null ) {
-            context.setLastModified( lastModifiedString );
-            context.setIfModifiedSince( true );
-        }
-        lastModifiedString = request.getHeader( "If-Unmodified-Since" );        
-        if ( lastModifiedString != null ) {
-            context.setLastModified( lastModifiedString );
-            context.setIfUnmodifiedSince( true );
-        }
-        lastModifiedString = request.getHeader( "If-Range" );        
-        if ( lastModifiedString != null ) {
-            context.setLastModified( lastModifiedString );
-            context.setIfRange( true );
-        }
-        return context;
-    }
-    /**
-     * Enabled is true whenever ETag, LastModified, or predicate is set.
-     * @return the enabled
-     */
-    public boolean isEnabled() {
-        return enabled;
-    }
-    /**
-     * @param enabled the enabled to set
-     */
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
 }

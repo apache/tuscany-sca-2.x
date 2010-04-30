@@ -91,7 +91,7 @@ public class HTTPBindingListenerServlet extends HttpServlet {
         Message responseMessage = null;
         HTTPCacheContext cacheContext = null;
         try { 
-           cacheContext = HTTPCacheContext.getCacheContextFromRequest(request);
+           cacheContext = HTTPCacheContext.createCacheContextFromRequest(request);
         } catch (ParseException e) {        	
         }
 
@@ -165,7 +165,7 @@ public class HTTPBindingListenerServlet extends HttpServlet {
         Message responseMessage = null;
         HTTPCacheContext cacheContext = null;
         try { 
-           cacheContext = HTTPCacheContext.getCacheContextFromRequest(request);
+           cacheContext = HTTPCacheContext.createCacheContextFromRequest(request);
         } catch (ParseException e) {        	
         }
         
@@ -231,7 +231,7 @@ public class HTTPBindingListenerServlet extends HttpServlet {
         Message responseMessage = null;
         HTTPCacheContext cacheContext = null;
         try { 
-           cacheContext = HTTPCacheContext.getCacheContextFromRequest(request);
+           cacheContext = HTTPCacheContext.createCacheContextFromRequest(request);
         } catch (ParseException e) {        	
         }
         
@@ -297,7 +297,7 @@ public class HTTPBindingListenerServlet extends HttpServlet {
         Message responseMessage = null;
         HTTPCacheContext cacheContext = null;
         try { 
-           cacheContext = HTTPCacheContext.getCacheContextFromRequest(request);
+           cacheContext = HTTPCacheContext.createCacheContextFromRequest(request);
         } catch (ParseException e) {        	
         }
         

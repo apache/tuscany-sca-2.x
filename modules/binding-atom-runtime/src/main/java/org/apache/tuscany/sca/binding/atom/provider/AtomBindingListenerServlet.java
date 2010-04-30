@@ -163,7 +163,7 @@ class AtomBindingListenerServlet extends HttpServlet {
         // Test for any cache info in the request
         HTTPCacheContext cacheContext = null;    	
         try { 
-            cacheContext = HTTPCacheContext.getCacheContextFromRequest( request );
+            cacheContext = HTTPCacheContext.createCacheContextFromRequest( request );
         } catch ( java.text.ParseException e ) {    
         }
         // System.out.println( "AtomBindingListener.doGet cache context=" + cacheContext );

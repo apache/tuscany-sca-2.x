@@ -34,7 +34,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.binding.rest.RESTCacheContext;
+import org.apache.tuscany.sca.common.http.HTTPCacheContext;
 import org.apache.tuscany.sca.common.http.HTTPContentTypeMapper;
 import org.apache.tuscany.sca.common.http.HTTPContext;
 import org.apache.tuscany.sca.invocation.Invoker;
@@ -148,9 +148,9 @@ public class RESTBindingListenerServlet extends HttpServlet {
         String id = path.substring(1);
         
         Message responseMessage = null;
-        RESTCacheContext cacheContext = null;
+        HTTPCacheContext cacheContext = null;
         try { 
-           cacheContext = RESTCacheContext.getCacheContextFromRequest(request);
+           cacheContext = HTTPCacheContext.createCacheContextFromRequest(request);
         } catch (ParseException e) { 
             
         }
@@ -238,9 +238,9 @@ public class RESTBindingListenerServlet extends HttpServlet {
         String id = path.substring(1);
         
         Message responseMessage = null;
-        RESTCacheContext cacheContext = null;
+        HTTPCacheContext cacheContext = null;
         try { 
-           cacheContext = RESTCacheContext.getCacheContextFromRequest(request);
+           cacheContext = HTTPCacheContext.createCacheContextFromRequest(request);
         } catch (ParseException e) {        	
         }
         
@@ -304,9 +304,9 @@ public class RESTBindingListenerServlet extends HttpServlet {
         String id = path.substring(1);
         
         Message responseMessage = null;
-        RESTCacheContext cacheContext = null;
+        HTTPCacheContext cacheContext = null;
         try { 
-           cacheContext = RESTCacheContext.getCacheContextFromRequest(request);
+           cacheContext = HTTPCacheContext.createCacheContextFromRequest(request);
         } catch (ParseException e) {        	
         }
         
@@ -370,9 +370,9 @@ public class RESTBindingListenerServlet extends HttpServlet {
         // String id = path.substring(1);
         
         Message responseMessage = null;
-        RESTCacheContext cacheContext = null;
+        HTTPCacheContext cacheContext = null;
         try { 
-           cacheContext = RESTCacheContext.getCacheContextFromRequest(request);
+           cacheContext = HTTPCacheContext.createCacheContextFromRequest(request);
         } catch (ParseException e) {        	
         }
         
@@ -408,9 +408,9 @@ public class RESTBindingListenerServlet extends HttpServlet {
 
         // Test if the ETag and LastModified are returned as a cache context.
     	Object body = responseMessage.getBody();
-    	if ( body.getClass() == RESTCacheContext.class ) {
+    	if ( body.getClass() == HTTPCacheContext.class ) {
     		// Transfer to header if so.
-    		RESTCacheContext cc = (RESTCacheContext)responseMessage.getBody();
+    		HTTPCacheContext cc = (HTTPCacheContext)responseMessage.getBody();
     		if (( cc != null ) && ( cc.isEnabled() )) {
     			String eTag = cc.getETag();
             	if ( eTag != null )
