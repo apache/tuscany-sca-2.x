@@ -28,6 +28,7 @@
             </includes>
             <excludes>
                 <exclude>org.aspectj:aspectjweaver</exclude> 
+                <exclude>org.apache.tuscany.sca.shades:tuscany-base-nodep</exclude> 
             </excludes>
         </fileSet>
 
