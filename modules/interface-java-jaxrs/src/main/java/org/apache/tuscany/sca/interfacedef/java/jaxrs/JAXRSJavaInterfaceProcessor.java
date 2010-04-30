@@ -21,7 +21,6 @@ package org.apache.tuscany.sca.interfacedef.java.jaxrs;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.ws.rs.DELETE;
@@ -48,8 +47,8 @@ public class JAXRSJavaInterfaceProcessor implements JavaInterfaceVisitor {
         
         boolean hasJAXRSAnnotarions = false;
         
-        for (Iterator<Operation> it = contract.getOperations().iterator(); it.hasNext();) {
-            final JavaOperation operation = (JavaOperation)it.next();
+        for (Operation op : contract.getOperations()) {
+            final JavaOperation operation = (JavaOperation)op;
             final Method method = operation.getJavaMethod();
          
             GET get = method.getAnnotation(GET.class);
@@ -58,32 +57,19 @@ public class JAXRSJavaInterfaceProcessor implements JavaInterfaceVisitor {
                 operation.getAttributes().put(GET.class, true);
                 getOperations.add(operation);
             }
-            
-            if(! getOperations.isEmpty()) {
-                contract.getAttributes().put(GET.class, getOperations);
-            }
-            
+
             PUT put = method.getAnnotation(PUT.class);
             if(put != null) {
                 hasJAXRSAnnotarions = true;
                 operation.getAttributes().put(PUT.class, true);
                 putOperations.add(operation);
             }
-
-            if(! putOperations.isEmpty()) {
-                contract.getAttributes().put(PUT.class, putOperations);
-            }
-
             
             POST post = method.getAnnotation(POST.class);
             if(post != null) {
                 hasJAXRSAnnotarions = true;
                 operation.getAttributes().put(POST.class, true);
                 postOperations.add(operation);
-            }
-            
-            if(! postOperations.isEmpty()) {
-                contract.getAttributes().put(POST.class, postOperations);
             }
 
             DELETE delete = method.getAnnotation(DELETE.class);
@@ -92,12 +78,24 @@ public class JAXRSJavaInterfaceProcessor implements JavaInterfaceVisitor {
                 operation.getAttributes().put(DELETE.class, true);
                 deleteOperations.add(operation);
             }
-
-            if(! deleteOperations.isEmpty()) {
-                contract.getAttributes().put(GET.class, deleteOperations);
-            }
-            
         }
+        
+        if(! getOperations.isEmpty()) {
+            contract.getAttributes().put(GET.class, getOperations);
+        }
+
+        if(! putOperations.isEmpty()) {
+            contract.getAttributes().put(PUT.class, putOperations);
+        }
+
+        if(! postOperations.isEmpty()) {
+            contract.getAttributes().put(POST.class, postOperations);
+        }
+
+        if(! deleteOperations.isEmpty()) {
+            contract.getAttributes().put(DELETE.class, deleteOperations);
+        }
+        
         
         // Always set JAX-RS annotated interfaces as remotables
         if (hasJAXRSAnnotarions) {
