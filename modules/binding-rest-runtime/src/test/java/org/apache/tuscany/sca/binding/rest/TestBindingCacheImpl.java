@@ -36,208 +36,164 @@ import org.apache.tuscany.sca.common.http.HTTPCacheContext;
  */
 public class TestBindingCacheImpl {
 
-	/**
-	 * Implements the HTTP get method of the collection implementation.
-	 * @param id
-	 * @return
-	 */
-	public InputStream get(String id) {
-		return new ByteArrayInputStream(
-				("<html><body><p>item=" + id + "</body></html>").getBytes());
-	}
+    /**
+     * Implements the HTTP get method of the collection implementation.
+     * @param id
+     * @return
+     */
+    public InputStream get(String id) {
+        return new ByteArrayInputStream(("<html><body><p>item=" + id + "</body></html>").getBytes());
+    }
 
-	/**
-	 * Implements the HTTP conditional get method of the collection implementation.
-	 * @param id
-	 * @return
-	 */
-	public InputStream conditionalGet(String id, HTTPCacheContext cacheContext)
-			throws NotModifiedException, PreconditionFailedException {
+    /**
+     * Implements the HTTP conditional get method of the collection implementation.
+     * @param id
+     * @return
+     */
+    public InputStream conditionalGet(String id, HTTPCacheContext cacheContext) throws NotModifiedException,
+        PreconditionFailedException {
 
-		if (cacheContext != null) {
-			if (cacheContext.ifModifiedSince) {
-				if ((id.equals("1"))
-						&& (0 > cacheContext.lastModifiedDate
-								.compareTo(new Date())))
-					throw new NotModifiedException("item 1 was modified on "
-							+ new Date());
-			}
-			if (cacheContext.ifUnmodifiedSince) {
-				if ((id.equals("0"))
-						&& (0 > cacheContext.lastModifiedDate
-								.compareTo(new Date())))
-					throw new PreconditionFailedException(
-							"item 0 was modified on " + new Date(0));
-			}
-			if (cacheContext.ifMatch) {
-				if (id.equals("1"))
-					throw new PreconditionFailedException(
-							"item 1 eTag does not match "
-									+ cacheContext.getETag());
-			}
-			if (cacheContext.ifNoneMatch) {
-				if (id.equals("0"))
-					throw new PreconditionFailedException(
-							"item 0 eTag matches " + cacheContext.getETag());
-			}
-		}
-		return new ByteArrayInputStream(
-				("<html><body><p>item=" + id + "</body></html>").getBytes());
-	}
+        if (cacheContext != null) {
+            if (cacheContext.ifModifiedSince) {
+                if ((id.equals("1")) && (0 > cacheContext.lastModifiedDate.compareTo(new Date())))
+                    throw new NotModifiedException("item 1 was modified on " + new Date());
+            }
+            if (cacheContext.ifUnmodifiedSince) {
+                if ((id.equals("0")) && (0 > cacheContext.lastModifiedDate.compareTo(new Date())))
+                    throw new PreconditionFailedException("item 0 was modified on " + new Date(0));
+            }
+            if (cacheContext.ifMatch) {
+                if (id.equals("1"))
+                    throw new PreconditionFailedException("item 1 eTag does not match " + cacheContext.getETag());
+            }
+            if (cacheContext.ifNoneMatch) {
+                if (id.equals("0"))
+                    throw new PreconditionFailedException("item 0 eTag matches " + cacheContext.getETag());
+            }
+        }
+        return new ByteArrayInputStream(("<html><body><p>item=" + id + "</body></html>").getBytes());
+    }
 
-	/**
-	 * Implements the HTTP delete method of the collection implementation.
-	 * @param id
-	 * @return
-	 */
-	public InputStream delete(String id) {
-		return new ByteArrayInputStream(
-				("<html><body><p>deleted item=" + id + "</body></html>")
-						.getBytes());
-	}
+    /**
+     * Implements the HTTP delete method of the collection implementation.
+     * @param id
+     * @return
+     */
+    public InputStream delete(String id) {
+        return new ByteArrayInputStream(("<html><body><p>deleted item=" + id + "</body></html>").getBytes());
+    }
 
-	/**
-	 * Implements the HTTP conditional delete method of the collection implementation.
-	 * @param id
-	 * @return
-	 */
-	public InputStream conditionalDelete(String id, HTTPCacheContext cacheContext)
-			throws NotModifiedException, PreconditionFailedException {
+    /**
+     * Implements the HTTP conditional delete method of the collection implementation.
+     * @param id
+     * @return
+     */
+    public InputStream conditionalDelete(String id, HTTPCacheContext cacheContext) throws NotModifiedException,
+        PreconditionFailedException {
 
-		if (cacheContext != null) {
-			if (cacheContext.ifModifiedSince) {
-				if ((id.equals("1"))
-						&& (0 > cacheContext.lastModifiedDate
-								.compareTo(new Date())))
-					throw new NotModifiedException("item 1 was modified on "
-							+ new Date());
-			}
-			if (cacheContext.ifUnmodifiedSince) {
-				if ((id.equals("0"))
-						&& (0 > cacheContext.lastModifiedDate
-								.compareTo(new Date())))
-					throw new PreconditionFailedException(
-							"item 0 was modified on " + new Date(0));
-			}
-			if (cacheContext.ifMatch) {
-				if (id.equals("1"))
-					throw new PreconditionFailedException(
-							"item 1 eTag does not match "
-									+ cacheContext.getETag());
-			}
-			if (cacheContext.ifNoneMatch) {
-				if (id.equals("0"))
-					throw new PreconditionFailedException(
-							"item 0 eTag matches " + cacheContext.getETag());
-			}
-		}
-		return new ByteArrayInputStream(
-				("<html><body><p>deleted item=" + id + "</body></html>")
-						.getBytes());
-	}
+        if (cacheContext != null) {
+            if (cacheContext.ifModifiedSince) {
+                if ((id.equals("1")) && (0 > cacheContext.lastModifiedDate.compareTo(new Date())))
+                    throw new NotModifiedException("item 1 was modified on " + new Date());
+            }
+            if (cacheContext.ifUnmodifiedSince) {
+                if ((id.equals("0")) && (0 > cacheContext.lastModifiedDate.compareTo(new Date())))
+                    throw new PreconditionFailedException("item 0 was modified on " + new Date(0));
+            }
+            if (cacheContext.ifMatch) {
+                if (id.equals("1"))
+                    throw new PreconditionFailedException("item 1 eTag does not match " + cacheContext.getETag());
+            }
+            if (cacheContext.ifNoneMatch) {
+                if (id.equals("0"))
+                    throw new PreconditionFailedException("item 0 eTag matches " + cacheContext.getETag());
+            }
+        }
+        return new ByteArrayInputStream(("<html><body><p>deleted item=" + id + "</body></html>").getBytes());
+    }
 
-	/**
-	 * Implements the HTTP post method of the collection implementation.
-	 * @param id
-	 * @return
-	 */
-	public InputStream post() {
-		int id = (new java.util.Random()).nextInt(Integer.MAX_VALUE);
-		return new ByteArrayInputStream(
-				("<html><body><p>posted item=" + id + "</body></html>")
-						.getBytes());
-	}
+    /**
+     * Implements the HTTP post method of the collection implementation.
+     * @param id
+     * @return
+     */
+    public InputStream post() {
+        int id = (new java.util.Random()).nextInt(Integer.MAX_VALUE);
+        return new ByteArrayInputStream(("<html><body><p>posted item=" + id + "</body></html>").getBytes());
+    }
 
-	/**
-	 * Implements the HTTP conditional post method of the collection implementation.
-	 * @param id
-	 * @return
-	 */
-	public HTTPCacheContext conditionalPost(HTTPCacheContext cacheContext)
-			throws NotModifiedException, PreconditionFailedException {
-		String id = "" + (new java.util.Random()).nextInt(Integer.MAX_VALUE);
+    /**
+     * Implements the HTTP conditional post method of the collection implementation.
+     * @param id
+     * @return
+     */
+    public HTTPCacheContext conditionalPost(HTTPCacheContext cacheContext) throws NotModifiedException,
+        PreconditionFailedException {
+        String id = "" + (new java.util.Random()).nextInt(Integer.MAX_VALUE);
 
-		if (cacheContext != null) {
-			if (cacheContext.ifModifiedSince) {
-				if (0 >= cacheContext.lastModifiedDate.compareTo(new Date(0)))
-					throw new NotModifiedException("item was modified on "
-							+ new Date());
-			}
-			if (cacheContext.ifUnmodifiedSince) {
-				if ((0 >= cacheContext.lastModifiedDate.compareTo(new Date(0))))
-					throw new PreconditionFailedException(
-							"item was modified on " + new Date(0));
-			}
-			if (cacheContext.ifMatch) {
-				if (cacheContext.getETag().equalsIgnoreCase("ETagNoneMatch"))
-					throw new PreconditionFailedException(
-							"item eTag does not match "
-									+ cacheContext.getETag());
-			}
-			if (cacheContext.ifNoneMatch) {
-				if (cacheContext.getETag().equalsIgnoreCase("ETagMatch"))
-					throw new PreconditionFailedException("item eTag matches "
-							+ cacheContext.getETag());
-			}
-		}
+        if (cacheContext != null) {
+            if (cacheContext.ifModifiedSince) {
+                if (0 >= cacheContext.lastModifiedDate.compareTo(new Date(0)))
+                    throw new NotModifiedException("item was modified on " + new Date());
+            }
+            if (cacheContext.ifUnmodifiedSince) {
+                if ((0 >= cacheContext.lastModifiedDate.compareTo(new Date(0))))
+                    throw new PreconditionFailedException("item was modified on " + new Date(0));
+            }
+            if (cacheContext.ifMatch) {
+                if (cacheContext.getETag().equalsIgnoreCase("ETagNoneMatch"))
+                    throw new PreconditionFailedException("item eTag does not match " + cacheContext.getETag());
+            }
+            if (cacheContext.ifNoneMatch) {
+                if (cacheContext.getETag().equalsIgnoreCase("ETagMatch"))
+                    throw new PreconditionFailedException("item eTag matches " + cacheContext.getETag());
+            }
+        }
 
-		// Return the ETag and LastModfied fields by serialize to a byte array
-		HTTPCacheContext returnContext = new HTTPCacheContext();
-		returnContext.setETag( "ETag" + (new java.util.Random()).nextInt(Integer.MAX_VALUE) );
-		returnContext.setLastModified( new Date() );
-		return returnContext;
-	}
+        // Return the ETag and LastModfied fields by serialize to a byte array
+        HTTPCacheContext returnContext = new HTTPCacheContext();
+        returnContext.setETag("ETag" + (new java.util.Random()).nextInt(Integer.MAX_VALUE));
+        returnContext.setLastModified(new Date());
+        return returnContext;
+    }
 
-	/**
-	 * Implements the HTTP update/put method of the collection implementation.
-	 * @param id
-	 * @return
-	 */
-	public InputStream put(String id) {
-		return new ByteArrayInputStream(
-				("<html><body><p>updated item=" + id + "</body></html>")
-						.getBytes());
-	}
+    /**
+     * Implements the HTTP update/put method of the collection implementation.
+     * @param id
+     * @return
+     */
+    public InputStream put(String id) {
+        return new ByteArrayInputStream(("<html><body><p>updated item=" + id + "</body></html>").getBytes());
+    }
 
-	/**
-	 * Implements the HTTP conditional update/put method of the collection implementation.
-	 * @param id
-	 * @return
-	 */
-	public InputStream conditionalPut(String id, HTTPCacheContext cacheContext)
-			throws NotModifiedException, PreconditionFailedException {
+    /**
+     * Implements the HTTP conditional update/put method of the collection implementation.
+     * @param id
+     * @return
+     */
+    public InputStream conditionalPut(String id, HTTPCacheContext cacheContext) throws NotModifiedException,
+        PreconditionFailedException {
 
-		if (cacheContext != null) {
-			if (cacheContext.ifModifiedSince) {
-				if ((id.equals("1"))
-						&& (0 > cacheContext.lastModifiedDate
-								.compareTo(new Date())))
-					throw new NotModifiedException("item 1 was modified on "
-							+ new Date());
-			}
-			if (cacheContext.ifUnmodifiedSince) {
-				if ((id.equals("0"))
-						&& (0 > cacheContext.lastModifiedDate
-								.compareTo(new Date())))
-					throw new PreconditionFailedException(
-							"item 0 was modified on " + new Date(0));
-			}
-			if (cacheContext.ifMatch) {
-				if (id.equals("1"))
-					throw new PreconditionFailedException(
-							"item 1 eTag does not match "
-									+ cacheContext.getETag());
-			}
-			if (cacheContext.ifNoneMatch) {
-				if (id.equals("0"))
-					throw new PreconditionFailedException(
-							"item 0 eTag matches " + cacheContext.getETag());
-			}
-		}
-		
-		return new ByteArrayInputStream(
-				("<html><body><p>updated item=" + id + "</body></html>")
-						.getBytes());
-	}
+        if (cacheContext != null) {
+            if (cacheContext.ifModifiedSince) {
+                if ((id.equals("1")) && (0 > cacheContext.lastModifiedDate.compareTo(new Date())))
+                    throw new NotModifiedException("item 1 was modified on " + new Date());
+            }
+            if (cacheContext.ifUnmodifiedSince) {
+                if ((id.equals("0")) && (0 > cacheContext.lastModifiedDate.compareTo(new Date())))
+                    throw new PreconditionFailedException("item 0 was modified on " + new Date(0));
+            }
+            if (cacheContext.ifMatch) {
+                if (id.equals("1"))
+                    throw new PreconditionFailedException("item 1 eTag does not match " + cacheContext.getETag());
+            }
+            if (cacheContext.ifNoneMatch) {
+                if (id.equals("0"))
+                    throw new PreconditionFailedException("item 0 eTag matches " + cacheContext.getETag());
+            }
+        }
+
+        return new ByteArrayInputStream(("<html><body><p>updated item=" + id + "</body></html>").getBytes());
+    }
 
 }
