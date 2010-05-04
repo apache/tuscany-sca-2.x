@@ -84,7 +84,7 @@ public class ConstructorProcessor extends BaseJavaClassVisitor {
         
         for (JavaParameterImpl p : parameters) {
             if (!hasAnnotation(p)) {
-                throw new InvalidConstructorException("JCA90003 constructor parameters must have @Property or @Reference annotation");
+                throw new InvalidConstructorException("JCA90003 constructor parameters for class " + type.getName() + " must have @Property or @Reference annotation");
             }
         }
 
