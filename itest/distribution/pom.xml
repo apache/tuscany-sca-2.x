@@ -55,10 +55,10 @@
     </profiles>
 
     <modules>
-        <module>binding-ws-calculator</module>
         <module>implementation-java-calculator</module>
         <module>legal-checks</module>
 <!-- 
+        <module>binding-ws-calculator</module>
         <module>calculator-rmi</module>
 -->
     </modules>
