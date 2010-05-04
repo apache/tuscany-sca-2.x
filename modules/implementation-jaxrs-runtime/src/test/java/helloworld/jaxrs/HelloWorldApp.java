@@ -18,14 +18,6 @@
  */
 package helloworld.jaxrs;
 
-/**
- *
- * The Book web application class that extends Application
- * with the methods getSingletons and getClasses
- *
- * @author Gabriel Mateescu, gabriel@vt.edu
- */
-
 import java.util.HashSet;
 import java.util.Set;
 
