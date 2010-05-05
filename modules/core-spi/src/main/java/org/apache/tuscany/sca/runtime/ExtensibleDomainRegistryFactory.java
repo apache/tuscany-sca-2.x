@@ -79,8 +79,7 @@ public class ExtensibleDomainRegistryFactory implements DomainRegistryFactory {
             }
         }
 
-        URI uri = URI.create(endpointRegistryURI);
-        String scheme = uri.getScheme();
+        String scheme = endpointRegistryURI == null ? null : URI.create(endpointRegistryURI).getScheme();
         if (scheme == null) {
             
             // See if there is a previously created registry for that domain
