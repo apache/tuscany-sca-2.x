@@ -107,7 +107,7 @@
         <dependency>
             <groupId>org.apache.abdera</groupId>
             <artifactId>abdera-core</artifactId>
-            <version>0.4.0-incubating</version> 
+            <version>1.0</version> 
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.geronimo.specs</groupId>
@@ -119,7 +119,7 @@
         <dependency>
            <groupId>org.apache.abdera</groupId>
             <artifactId>abdera-parser</artifactId>
-            <version>0.4.0-incubating</version>
+            <version>1.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>stax</groupId>
@@ -139,19 +139,19 @@
         <dependency>
             <groupId>org.apache.abdera</groupId>
             <artifactId>abdera-client</artifactId>
-            <version>0.4.0-incubating</version> 
+            <version>1.0</version> 
         </dependency>            
                 
         <dependency>
             <groupId>org.apache.abdera</groupId>
             <artifactId>abdera-extensions-main</artifactId>
-            <version>0.4.0-incubating</version> 
+            <version>1.0</version> 
         </dependency>            
                 
         <dependency>
             <groupId>org.apache.abdera</groupId>
             <artifactId>abdera-extensions-json</artifactId>
-            <version>0.4.0-incubating</version> 
+            <version>1.0</version> 
         </dependency>            
 
         <dependency>
