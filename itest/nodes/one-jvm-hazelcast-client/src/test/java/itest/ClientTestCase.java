@@ -40,13 +40,13 @@ import com.hazelcast.core.IMap;
  */
 public class ClientTestCase{
 
-    private static URI domainURI = URI.create("tuscany:OneNodeTestCase?listen=127.0.0.1:14829");
+    private static String domainURI = "uri:OneNodeTestCase?bind=127.0.0.1:14829";
     private static Node node;
     private static HazelcastClient client;
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        node = NodeFactory.getInstance().createNode(domainURI, "../helloworld-service/target/classes", "../helloworld-client/target/classes");
+        node = NodeFactory.newInstance(domainURI).createNode((String)null, new String[]{"../helloworld-service/target/classes", "../helloworld-client/target/classes"});
         node.start();
     }
 
