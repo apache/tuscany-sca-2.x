@@ -141,7 +141,11 @@ public class WebAppHelper {
             try {
                 
                 String configValue = servletContext.getInitParameter("org.apache.tuscany.sca.config");
-                factory = NodeFactory.newInstance(configValue);
+                if (configValue != null) {
+                    factory = NodeFactory.newInstance(configValue);
+                } else {
+                    factory = NodeFactory.newInstance();
+                }
                 ExtensionPointRegistry registry = factory.getExtensionPointRegistry();
                 ServletHostExtensionPoint servletHosts = registry.getExtensionPoint(ServletHostExtensionPoint.class);
                 servletHosts.setWebApp(true);
