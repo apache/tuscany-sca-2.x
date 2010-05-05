@@ -23,6 +23,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.tuscany.sca.node.Node;
+import org.apache.tuscany.sca.node.NodeFactory;
+
 public class DomainNodeMain {
 
     /**
@@ -31,7 +34,7 @@ public class DomainNodeMain {
      */
     public static void main(String[] args) throws Exception {
 
-        String configURI = "vm://defaultDoamin";
+        String configURI = "uri:default";
 
         List<String> contributions = new ArrayList<String>();
         for (int i = 0; i < args.length; i++) {
@@ -47,7 +50,8 @@ public class DomainNodeMain {
             }
         }
 
-        DomainNode node = new DomainNode(configURI, contributions.toArray(new String[contributions.size()]));
+        Node node = NodeFactory.newInstance(configURI).createNode((String)null, contributions.toArray(new String[contributions.size()]));
+        node.start();
 
         System.out.println("Hit enter to stop node...");
         if (System.in.read() == -1) {
