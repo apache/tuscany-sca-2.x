@@ -159,26 +159,28 @@ public class NodeImplTestCase {
         Assert.assertEquals("vm", ps.getProperty("defaultScheme"));
 
         Properties properties = new Properties();
+        properties.setProperty("defaultScheme", "vm");
         properties.setProperty("foo.bla", "some value");
         factory = (NodeFactoryImpl)NodeFactory.newInstance(properties);
         factory.init();
         utilities = factory.getExtensionPointRegistry().getExtensionPoint(UtilityExtensionPoint.class);
         ps = utilities.getUtility(RuntimeProperties.class).getProperties();
-        Assert.assertEquals(1, ps.size());
+        Assert.assertEquals(2, ps.size());
         Assert.assertEquals("some value", ps.getProperty("foo.bla"));
         
         factory = (NodeFactoryImpl)NodeFactory.newInstance("properties:test.properties");
         factory.init();
         utilities = factory.getExtensionPointRegistry().getExtensionPoint(UtilityExtensionPoint.class);
         ps = utilities.getUtility(RuntimeProperties.class).getProperties();
-        Assert.assertEquals(1, ps.size());
+        Assert.assertEquals(2, ps.size());
         Assert.assertEquals("xyz", ps.getProperty("foo.bla"));
         
-        factory = (NodeFactoryImpl)NodeFactory.newInstance("uri:foo?k1=v1&k2=v2");
+        factory = (NodeFactoryImpl)NodeFactory.newInstance("uri:foo?k1=v1&k2=v2&defaultScheme=vm");
         factory.init();
         utilities = factory.getExtensionPointRegistry().getExtensionPoint(UtilityExtensionPoint.class);
         ps = utilities.getUtility(RuntimeProperties.class).getProperties();
-        Assert.assertEquals(3, ps.size());
+        Assert.assertEquals(4, ps.size());
+        Assert.assertEquals("vm", ps.getProperty("defaultScheme"));
         Assert.assertEquals("foo", ps.getProperty("defaultDomainName"));
         Assert.assertEquals("v1", ps.getProperty("k1"));
         Assert.assertEquals("v2", ps.getProperty("k2"));
