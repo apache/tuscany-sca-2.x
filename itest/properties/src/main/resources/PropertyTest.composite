@@ -31,7 +31,7 @@
                
     <property name="number" type="xsd:int">1</property>
     <property name="complex" type="foo:MyComplexType" >
-        <value xsi:type="foo:MyComplexType" >
+        <value>
             <foo:a>a</foo:a>
             <foo:b>b</foo:b>
             <foo:c>c</foo:c>
@@ -89,10 +89,10 @@
 
     <component name="ABComponent">
         <implementation.java class="org.apache.tuscany.sca.itest.ABComponentImpl"/>
-        <property name="a" source="$complex/foo:MyComplexValue/foo:a"/>
-        <property name="b" source="$complex/foo:MyComplexValue/foo:b"/>
-        <property name="f" source="$complex/foo:MyComplexValue/foo:a">f</property>
-        <property name="xpath" source="$complex/foo:MyComplexValue/foo:x/*[local-name()='z']"/>
+        <property name="a" source="$complex/foo:a"/>
+        <property name="b" source="$complex/foo:b"/>
+        <property name="f" source="$complex/foo:a">f</property>
+        <property name="xpath" source="$complex/foo:x/*[local-name()='z']"/>
         <property name="one" source="$number"/>
         <property name="foobar" many="true">
             <value>Apache</value>
@@ -109,19 +109,19 @@
 
     <component name="CDComponent">
         <implementation.java class="org.apache.tuscany.sca.itest.CDComponentImpl"/>
-        <property name="c" source="$complex/foo:MyComplexValue/foo:c"/>
-        <property name="d" source="$complex/foo:MyComplexValue/foo:d"/>
+        <property name="c" source="$complex/foo:c"/>
+        <property name="d" source="$complex/foo:d"/>
         <property name="nosource">aValue</property>
         <property name="fileProperty" file="fileProperty.txt"/>
         <property name="manyValuesFileProperty" many="true" file="manyValuesFileProperty.txt"/>
-        <property name="nonFileProperty"  file="fileProperty.txt" source="$complex/foo:MyComplexValue/foo:c"/>
+        <property name="nonFileProperty"  file="fileProperty.txt" source="$complex/foo:c"/>
         <property name="two" source="$number">25</property>
     </component>
 
     <component name="PropertyComponent">
         <implementation.java class="org.apache.tuscany.sca.itest.PropertyComponentImpl"/>
         <property name="complexPropertyOne" source="$moreComplex"></property>
-        <property name="complexPropertyTwo">
+        <property name="complexPropertyTwo" type="foo:MyMoreComplexType">
             <value>
                 <stringArray>TestString_1</stringArray>
                 <stringArray>TestString_2</stringArray>

@@ -17,7 +17,9 @@
  * specific language governing permissions and limitations
  * under the License.
 -->
-<manyFilePropertyValues>fileValueOne</<manyFilePropertyValues>
-<manyFilePropertyValues>fileValueTwo</<manyFilePropertyValues>
-<manyFilePropertyValues>fileValueThree</<manyFilePropertyValues>
-<manyFilePropertyValues>fileValueFour</<manyFilePropertyValues>
+<value>
+    <manyFilePropertyValues>fileValueOne</manyFilePropertyValues>
+    <manyFilePropertyValues>fileValueTwo</manyFilePropertyValues>
+    <manyFilePropertyValues>fileValueThree</manyFilePropertyValues>
+    <manyFilePropertyValues>fileValueFour</manyFilePropertyValues>
+</value>

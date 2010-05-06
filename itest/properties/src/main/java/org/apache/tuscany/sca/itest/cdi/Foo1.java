@@ -25,11 +25,10 @@ import org.oasisopen.sca.annotation.Service;
 @Service(Bar.class)
 public class Foo1 implements Bar {
 
-    @Property
     protected String bar;
 
-    @Constructor( {"bar"})
-    public Foo1(String b) {
+    @Constructor
+    public Foo1(@Property(name="bar") String b) {
         this.bar = b;
     }
 

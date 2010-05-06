@@ -26,7 +26,7 @@
         <implementation.composite name="foo:PropertyTest" />
         <property name="number">125</property>
         <property name="complex" type="foo:MyComplexType">
-            <value xsi:type="foo:MyComplexType">
+            <value>
                 <foo:a>Overriden A</foo:a>
                 <foo:b>Overriden B</foo:b>
                 <foo:c>Overriden C</foo:c>
