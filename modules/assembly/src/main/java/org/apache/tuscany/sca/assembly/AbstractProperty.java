@@ -132,4 +132,20 @@ public interface AbstractProperty extends Base, Extensible {
      * @param dataType The data type
      */
     void setDataType(DataType dataType);
+    
+    /**
+     * Get the XML schema that represents the type if this property.
+     * Used during property value validation
+     * 
+     * @return
+     */
+    Object getXSDDefinition();
+    
+    /**
+     * Set the XML schema that represents the type if this property.
+     * Used during property value validation
+     * 
+     * @param xsdDefintion
+     */
+    void setXSDDefinition(Object xsdDefintion);
 }

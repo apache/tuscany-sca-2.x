@@ -23,6 +23,8 @@ import java.lang.annotation.ElementType;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +37,7 @@ import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaParameterImpl;
 import org.apache.tuscany.sca.implementation.java.introspect.BaseJavaClassVisitor;
 import org.apache.tuscany.sca.implementation.java.introspect.JavaIntrospectionHelper;
+import org.apache.tuscany.sca.interfacedef.util.JavaXMLMapper;
 
 /**
  * Base class for ImplementationProcessors that handle annotations that add
@@ -206,6 +209,12 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Ba
         Class<?> javaType = element.getType();
         if (javaType.isArray() || Collection.class.isAssignableFrom(javaType)) {
             property.setMany(true);
+            Type type = element.getGenericType();
+            if (type instanceof ParameterizedType){
+                property.setXSDType(JavaXMLMapper.getXMLType((Class)((ParameterizedType)type).getActualTypeArguments()[0]));
+            }
+        } else {
+            property.setXSDType(JavaXMLMapper.getXMLType(javaType));
         }
         return property;
 

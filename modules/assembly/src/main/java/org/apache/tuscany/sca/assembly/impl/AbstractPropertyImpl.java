@@ -37,6 +37,7 @@ public class AbstractPropertyImpl extends ExtensibleImpl implements AbstractProp
     protected boolean many;
     protected boolean mustSupply;
     protected DataType dataType;
+    protected Object xsdDefinition;
 
     /**
      * Constructs a new abstract property.
@@ -98,6 +99,14 @@ public class AbstractPropertyImpl extends ExtensibleImpl implements AbstractProp
 
     public void setDataType(DataType dataType) {
         this.dataType = dataType;
+    }
+    
+    public Object getXSDDefinition() {
+        return xsdDefinition;
+    }
+    
+    public void setXSDDefinition(Object xsdDefinition) {
+        this.xsdDefinition = xsdDefinition;
     }
 
 }

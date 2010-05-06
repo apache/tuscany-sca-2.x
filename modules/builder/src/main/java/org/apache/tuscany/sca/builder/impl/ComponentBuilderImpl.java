@@ -19,17 +19,25 @@
 package org.apache.tuscany.sca.builder.impl;
 
 import java.io.InputStream;
+import java.io.StringReader;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 
+import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
+import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMResult;
+import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXSource;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
@@ -58,18 +66,28 @@ import org.apache.tuscany.sca.assembly.builder.Messages;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
+import org.apache.tuscany.sca.databinding.Mediator;
+import org.apache.tuscany.sca.databinding.impl.MediatorImpl;
+import org.apache.tuscany.sca.databinding.jaxb.JAXBDataBinding;
+import org.apache.tuscany.sca.databinding.xml.DOMDataBinding;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.interfacedef.Compatibility;
+import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.IncompatibleInterfaceContractException;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
+import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
+import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.policy.ExtensionType;
 import org.apache.tuscany.sca.policy.PolicySubject;
+import org.apache.tuscany.sca.xsd.XSDefinition;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 /**
  * @version $Rev$ $Date$
@@ -87,6 +105,7 @@ public class ComponentBuilderImpl {
     protected TransformerFactory transformerFactory;
     private InterfaceContractMapper interfaceContractMapper;
     private BuilderExtensionPoint builders;
+    private Mediator mediator;
 
     public ComponentBuilderImpl(ExtensionPointRegistry registry) {
         UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
@@ -100,6 +119,7 @@ public class ComponentBuilderImpl {
         interfaceContractMapper = utilities.getUtility(InterfaceContractMapper.class);
         policyBuilder = new ComponentPolicyBuilderImpl(registry);
         builders = registry.getExtensionPoint(BuilderExtensionPoint.class);
+        mediator = new MediatorImpl(registry);
     }
 
     public void setComponentTypeBuilder(CompositeComponentTypeBuilderImpl componentTypeBuilder) {
@@ -341,6 +361,9 @@ public class ComponentBuilderImpl {
                               component.getName(), 
                               componentProperty.getName());                
             }
+            
+            // check the property type
+            checkComponentPropertyType(component, componentProperty, monitor);
             
         }
     }
@@ -648,11 +671,104 @@ public class ComponentBuilderImpl {
             }            
         }
     }
+    
+    /**
+     * checks that the component property value is correctly typed when compared with 
+     * the type specified in the composite file property 
+     * 
+     * TODO - Don't yet handle multiplicity
+     *        Need to check composite properties also
+     * 
+     * @param component
+     * @param componentProperty
+     * @param monitor
+     */
+    private void checkComponentPropertyType(Component component, ComponentProperty componentProperty, Monitor monitor) {
+        
+        QName propertyXSDType = componentProperty.getXSDType();
+        QName propertyElementType = componentProperty.getXSDElement();
+        
+        if (propertyXSDType != null){
+            if (propertyXSDType.getNamespaceURI().equals("http://www.w3.org/2001/XMLSchema")) {
+                // The property has a simple schema type so we can uses the 
+                // data binding framework to see if the XML value can be transformed 
+                // into a simple Java value
+                Document source = (Document)componentProperty.getValue();
+                DataType<XMLType> sourceDataType = new DataTypeImpl<XMLType>(DOMDataBinding.NAME, 
+                                                                             Node.class,
+                                                                             new XMLType(null, componentProperty.getXSDType()));
+                DataType<XMLType> targetDataType = new DataTypeImpl<XMLType>(JAXBDataBinding.NAME,
+                                                                             Object.class,
+                                                                             new XMLType(null, componentProperty.getXSDType()));                                                       
+                try {
+                    mediator.mediate(source, sourceDataType, targetDataType, null);
+                } catch (Exception ex){
+                    Monitor.error(monitor, 
+                                  this, 
+                                  Messages.ASSEMBLY_VALIDATION, 
+                                  "PropertyValueDoesNotMatchSimpleType", 
+                                  componentProperty.getName(),
+                                  component.getName(), 
+                                  componentProperty.getXSDType().toString()); 
+                }
+            } else {
+                // The property has a complex schema type so we fluff up a schema 
+                // and use that to validate the property value
+                XSDefinition xsdDefinition = (XSDefinition)componentProperty.getXSDDefinition();
+                
+                if (xsdDefinition != null) {
+                    try {
+                        // create schema factory for XML schema
+                        SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+                                      
+                        Document schemaDom = xsdDefinition.getSchema().getSchemaDocument();
+                        
+                        String valueSchema = "<?xml version=\"1.0\" encoding=\"UTF-8\"?> " +
+                        		             "<schema xmlns=\"http://www.w3.org/2001/XMLSchema\" "+
+                                                     "xmlns:sca=\"http://docs.oasis-open.org/ns/opencsa/sca/200912\" "+
+                                                     "xmlns:__tmp=\"" + componentProperty.getXSDType().getNamespaceURI() + "\" "+
+                                                     "targetNamespace=\"http://docs.oasis-open.org/ns/opencsa/sca/200912\" " +
+                                                     "elementFormDefault=\"qualified\">" +
+                                                 "<import namespace=\"" + componentProperty.getXSDType().getNamespaceURI() + "\"/>" +
+                                                 "<element name=\"value\" type=\"" + "__tmp:" + componentProperty.getXSDType().getLocalPart() + "\"/>" +
+                                             "</schema>";
+                        
+                        Source sources[] = {new DOMSource(schemaDom), new StreamSource(new StringReader(valueSchema))};
+                        
+                        // create a schema for the property based on all the DOMs from the schema collection
+                        // of the namspace of the property type
+                        // TODO - only getting the top level document here
+                        Schema schema = factory.newSchema(sources);
+                        
+                        // get the value child of the property element
+                        Document property = (Document)componentProperty.getValue();
+                        Element value = (Element)property.getDocumentElement().getFirstChild();
+                
+                        // validate the element property/value from the DOM
+                        Validator validator = schema.newValidator();
+                        validator.validate(new DOMSource(value));
+                        
+                    } catch (Exception e) {
+                        Monitor.error(monitor, 
+                                this, 
+                                Messages.ASSEMBLY_VALIDATION, 
+                                "PropertyValueDoesNotMatchComplexType", 
+                                componentProperty.getName(),
+                                component.getName(), 
+                                componentProperty.getXSDType().toString(), 
+                                e.getMessage());
+                    }
+                }
+            }
+        } else if (propertyElementType != null) {
+            // TODO - TUSCANY-3530 - still need to add validation for element type
+            
+        }
+    }    
 
     /**
      * If the property has a source attribute use this to retrieve the value from a 
      * property in the parent composite
-
      * 
      * @param parentCompoent the composite that contains the component
      * @param component
@@ -708,7 +824,8 @@ public class ComponentBuilderImpl {
                                         Messages.ASSEMBLY_VALIDATION,
                                         "PropertyXpathExpressionReturnedNull",
                                         component.getName(),
-                                        componentProperty.getName());
+                                        componentProperty.getName(),
+                                        componentProperty.getSource());
                     }
                 } catch (Exception ex) {
                     Monitor.error(monitor,
@@ -762,9 +879,21 @@ public class ComponentBuilderImpl {
 
                     // TUSCANY-2377, Add a fake value element so it's consistent with
                     // the DOM tree loaded from inside SCDL
-                    Element root = document.createElementNS(null, "value");
-                    root.appendChild(document.getDocumentElement());
-                    document.appendChild(root);
+                    if (!document.getDocumentElement().getLocalName().equals("value")){
+                        Element root = document.createElementNS(null, "value");
+                        root.appendChild(document.getDocumentElement());
+                        
+                        // remove all the child nodes as they will be replaced by 
+                        // the "value" node
+                        NodeList children = document.getChildNodes();
+                        for (int i=0; i < children.getLength(); i++){
+                            document.removeChild(children.item(i));
+                        }
+                        
+                        // add the value node back in
+                        document.appendChild(root);
+                    }
+                    
                     componentProperty.setValue(document);
                 } finally {
                     if (is != null) {
@@ -1050,11 +1179,11 @@ public class ComponentBuilderImpl {
             return false;
         }
 
-        if (value.getFirstChild() == null) {
+        if (value.getDocumentElement() == null) {
             return false;
         }
 
-        if (value.getFirstChild().getChildNodes().getLength() == 0) {
+        if (value.getDocumentElement().getChildNodes().getLength() == 0) {
             return false;
         }
 
@@ -1071,7 +1200,7 @@ public class ComponentBuilderImpl {
         
         if (isPropertyValueSet(property)){
             Document value = (Document)property.getValue();
-            if (value.getFirstChild().getChildNodes().getLength() > 1){
+            if (value.getDocumentElement().getChildNodes().getLength() > 1){
                 return true;
             }
         }

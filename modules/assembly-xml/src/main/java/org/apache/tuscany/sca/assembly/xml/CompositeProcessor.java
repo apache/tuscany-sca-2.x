@@ -62,6 +62,7 @@ import static org.apache.tuscany.sca.assembly.xml.Constants.WIRE_QNAME;
 import static org.apache.tuscany.sca.assembly.xml.Constants.EXTENSION;
 import static org.apache.tuscany.sca.assembly.xml.Constants.EXTENSION_QNAME;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -90,6 +91,7 @@ import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.Wire;
 import org.apache.tuscany.sca.common.xml.xpath.XPathHelper;
 import org.apache.tuscany.sca.contribution.Artifact;
+import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
@@ -108,6 +110,8 @@ import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySubject;
+import org.apache.tuscany.sca.xsd.XSDFactory;
+import org.apache.tuscany.sca.xsd.XSDefinition;
 import org.w3c.dom.Document;
 
 /**
@@ -120,6 +124,7 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
     private PolicyFactory intentAttachPointTypeFactory;
     private StAXAttributeProcessor<Object> extensionAttributeProcessor;
     private ContributionFactory contributionFactory;
+    private XSDFactory xsdFactory;
 
     /**
      * Construct a new composite processor
@@ -135,6 +140,8 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
 
         this.xpathHelper = XPathHelper.getInstance(extensionPoints);
         this.extensionAttributeProcessor = extensionAttributeProcessor;
+        
+        this.xsdFactory = extensionPoints.getExtensionPoint(XSDFactory.class);
     }
 
     /**
@@ -153,6 +160,7 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
         this.contributionFactory = modelFactories.getFactory(ContributionFactory.class);
         this.extensionAttributeProcessor = extensionAttributeProcessor;
 
+        this.xsdFactory = modelFactories.getFactory(XSDFactory.class);
     }
 
     public Composite read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException {
@@ -997,6 +1005,12 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
             //Resolve composite services and references
             resolveContracts(composite, composite.getServices(), resolver, context);
             resolveContracts(composite, composite.getReferences(), resolver, context);
+            
+            for (Property property : composite.getProperties()){
+                resolvePropertyType("composite " + composite.getName().toString(),
+                                    property, 
+                                    context.getContribution(), context);
+            }
 
             // Resolve component implementations, services and references
             for (Component component : composite.getComponents()) {
@@ -1006,6 +1020,7 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                 resolveContracts(component, component.getReferences(), resolver, context);
 
                 for (ComponentProperty componentProperty : component.getProperties()) {
+                    // resolve a reference to a property file
                     if (componentProperty.getFile() != null) {
                         Artifact artifact = contributionFactory.createArtifact();
                         artifact.setURI(componentProperty.getFile());
@@ -1014,6 +1029,11 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                             componentProperty.setFile(artifact.getLocation());
                         }
                     }
+                    
+                    // resolve the reference to a complex property
+                    resolvePropertyType("component " + component.getName(),
+                                        componentProperty, 
+                                        context.getContribution(), context);
                 }
 
                 //resolve component implementation
@@ -1064,6 +1084,37 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
      */
     private static FactoryExtensionPoint modelFactories(ExtensionPointRegistry extensionPoints) {
         return extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
+    }
+    
+    /**
+     * Property elements can have XSD types attributes so, in the case of a complex type, we need to find
+     * the XSD definition that defines that type in the contribution while we still have access to the 
+     * contribution. Later, in the builder, we use this XSD definition to ensure that the property value
+     * is of the correct type
+     * 
+     * @param property
+     * @param contribution
+     */
+    private void resolvePropertyType(String parentName, Property property, Contribution contribution, ProcessorContext context){
+        // resolve the reference to a complex property
+        // we ignore any types in the schema namespace
+        if (property.getXSDType() != null &&
+            property.getXSDType().getNamespaceURI().equals("http://www.w3.org/2001/XMLSchema") != true){
+            XSDefinition xsdDefinition = xsdFactory.createXSDefinition();
+            xsdDefinition.setUnresolved(true);
+            xsdDefinition.setNamespace(property.getXSDType().getNamespaceURI());
+            // some unit tests don't set up contribution and model resolvers properly
+            if (contribution != null && contribution.getModelResolver() != null) {
+                XSDefinition resolved = contribution.getModelResolver().resolveModel(XSDefinition.class, xsdDefinition, context);
+                if (resolved == null || resolved.isUnresolved()){
+                    // raise an error
+                    error(context.getMonitor(), "PropertyTypeNotFound", property, property.getXSDType().toString(), property.getName(), parentName);
+                } else {
+                    // store the schema in the property
+                    property.setXSDDefinition(resolved);
+                }
+            }
+        }
     }
 
 }

@@ -61,6 +61,7 @@ Import-Package: javax.xml.namespace,
  org.apache.tuscany.sca.interfacedef.impl;version="2.0.0",
  org.apache.tuscany.sca.monitor;version="2.0.0",
  org.apache.tuscany.sca.policy;version="2.0.0",
+ org.apache.tuscany.sca.xsd;version="2.0.0",
  org.w3c.dom,
  org.xml.sax;resolution:=optional
 Bundle-SymbolicName: org.apache.tuscany.sca.assembly.xml
