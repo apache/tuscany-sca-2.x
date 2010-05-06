@@ -95,6 +95,15 @@ public class XSDModelResolver implements ModelResolver {
         
         // Lookup a definition for the given namespace, within the contribution
         List<XSDefinition> list = map.get(namespace);
+        
+        if (list == null ||
+            (list != null && list.size() == 0)){
+            // if no schema is found locally delegate to other
+            // contributions via the imports
+            resolved = resolutionDelegation(namespace, context);
+            return modelClass.cast(resolved);
+        }
+        
         XSDefinition modelXSD = null;
         if (list != null && definition.getDocument() != null) {
             // Set the document for the inline schema
@@ -259,6 +268,37 @@ public class XSDModelResolver implements ModelResolver {
         return aggregated;
     }
 
+    private XSDefinition resolutionDelegation(String namespace, ProcessorContext context){
+        // Delegate the resolution to namespace imports
+        XSDefinition resolved = null;                
+        XSDefinition unresolved = new XSDefinitionImpl();
+        unresolved.setUnresolved(true);
+        unresolved.setNamespace(namespace);
+                        
+        for (Import import_ : this.contribution.getImports()) {
+            if (import_ instanceof NamespaceImport) {
+                NamespaceImport namespaceImport = (NamespaceImport)import_;
+                if (namespaceImport.getNamespace().equals(namespace)) {                           
+                    // Delegate the resolution to the namespace import resolver
+                    resolved =
+                        namespaceImport.getModelResolver().resolveModel(XSDefinition.class, (XSDefinition)unresolved, context);
+                    if (!resolved.isUnresolved()) {
+                        return resolved;
+                    }
+                }
+            } else if (import_ instanceof DefaultImport) {
+                // Delegate the resolution to the default import resolver
+                resolved =
+                    import_.getModelResolver().resolveModel(XSDefinition.class, (XSDefinition)unresolved, context);
+                if (!resolved.isUnresolved()) {
+                    return resolved;
+                }
+            }
+        }
+        
+        return resolved;
+    }
+    
     /**
      * URI resolver implementation for XML schema
      */
