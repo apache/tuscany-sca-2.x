@@ -24,12 +24,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import javax.xml.datatype.DatatypeFactory;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.common.java.collection.LRUCache;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
 import org.apache.tuscany.sca.databinding.util.DataTypeHelper;
+import org.apache.tuscany.sca.extensibility.ClassLoaderContext;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
@@ -48,9 +51,21 @@ import commonj.sdo.impl.HelperProvider;
  */
 public final class SDOContextHelper {
     private static final LRUCache<Object, HelperContext> cache = new LRUCache<Object, HelperContext>(1024);
+    
+    private static ExtensionPointRegistry registry = null;
+    private static HelperContext defaultHelperContext;
 
     private SDOContextHelper() {
     }
+    
+    /**
+     * Static method used to set the registry used to locate the SDO implementation provider
+     * MUST be called before using any other methods on this class
+     * @param theRegistry
+     */
+    public static void setRegistry( ExtensionPointRegistry theRegistry ) {
+    	registry = theRegistry;
+    } // end setRegistry
 
     public static HelperContext getHelperContext(TransformationContext context, boolean source) {
         if (context == null) {
@@ -161,10 +176,35 @@ public final class SDOContextHelper {
         }
     }
 
-    public static HelperContext getDefaultHelperContext() {
-        // SDOUtil.createHelperContext();
-        return HelperProvider.getDefaultContext();
-    }
+    public static HelperContext getDefaultHelperContext( ) {
+        // Return a chached value if available...
+    	if( defaultHelperContext != null ) return defaultHelperContext;
+    	
+        // Try to set up TCCL so that SDO Helper Provider service discovery works in OSGi
+    	if( registry == null ) return null;
+    	
+        ClassLoader oldTccl =
+            ClassLoaderContext.setContextClassLoader(SDOContextHelper.class.getClassLoader(),
+                                                     registry.getServiceDiscovery(),
+                                                     // SDO Helper Provider
+                                                     "commonj.sdo.impl.HelperProvider"
+                                                     );
+        try {
+        	// Load the HelperProvider (using the new TCCL) and get the default HelperContext
+        	// cache the returned HelperContext...
+        	ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+        	HelperProvider.setDefaultInstance(tccl);
+        	defaultHelperContext = HelperProvider.getDefaultContext();
+        	return defaultHelperContext;
+        } catch (Exception e ){
+        	e.printStackTrace();
+        	return null;
+        } finally {
+            if (oldTccl != null) {
+                Thread.currentThread().setContextClassLoader(oldTccl);
+            }
+        } // end try
+    } // end getDefaultHelperContext()
 
     public static QName getElement(TransformationContext context) {
         if (context == null) {

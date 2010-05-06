@@ -23,6 +23,7 @@ import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
@@ -51,7 +52,7 @@ public class SDODataBindingTestCase extends TestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        binding = new SDODataBinding();
+        binding = new SDODataBinding(new DefaultExtensionPointRegistry());
         context = HelperProvider.getDefaultContext();
         SdoFactory.INSTANCE.register(context);
     }

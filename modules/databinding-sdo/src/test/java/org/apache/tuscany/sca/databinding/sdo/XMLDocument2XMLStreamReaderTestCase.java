@@ -24,9 +24,11 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.Assert;
 
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
+import org.apache.tuscany.sdo.api.SDOUtil;
 
 import com.example.ipo.sdo.PurchaseOrderType;
 import commonj.sdo.helper.XMLDocument;
@@ -36,7 +38,7 @@ import commonj.sdo.helper.XMLDocument;
  * @version $Rev$ $Date$
  */
 public class XMLDocument2XMLStreamReaderTestCase extends SDOTransformerTestCaseBase {
-
+	
     @Override
     protected DataType<?> getSourceDataType() {
         return new DataTypeImpl<XMLType>(XMLDocument.class.getName(), XMLDocument.class, new XMLType(ORDER_QNAME, null));

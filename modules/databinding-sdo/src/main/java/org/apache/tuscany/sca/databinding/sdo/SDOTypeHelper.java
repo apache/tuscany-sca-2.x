@@ -30,6 +30,7 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.contribution.processor.ProcessorContext;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.databinding.XMLTypeHelper;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Interface;
@@ -62,7 +63,7 @@ public class SDOTypeHelper implements XMLTypeHelper {
     // private Map<String, List<Type>> xsdTypesMap = new HashMap<String, List<Type>>();
     // private Map<String, List<Type>> typesMap = new HashMap<String, List<Type>>();
 
-    public SDOTypeHelper(ProcessorContext context) {
+    public SDOTypeHelper( ProcessorContext context ) {
         super();
 		this.context=context;
 		//Should we use this.context to get helper objects ???
@@ -71,11 +72,14 @@ public class SDOTypeHelper implements XMLTypeHelper {
     }
 	//Should we remove this constructor???? otherwise we context gets created
     public SDOTypeHelper() {
-        super();
+    	this(null);
+        /*
+    	super();
 		this.context=null;
 		//Should we use this.context to get helper objects ???
         typeHelper = SDOContextHelper.getDefaultHelperContext().getTypeHelper();
         xsdHelper = SDOContextHelper.getDefaultHelperContext().getXSDHelper();
+        */
     }
     public TypeInfo getTypeInfo(Class javaType, Object logical) {
         QName xmlType = JavaXMLMapper.getXMLType(javaType);

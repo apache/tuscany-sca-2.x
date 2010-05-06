@@ -24,6 +24,7 @@ import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.OperationImpl;
 import org.apache.tuscany.sca.interfacedef.util.ElementInfo;
@@ -46,6 +47,7 @@ public class SDOWrapperHandlerTestCase extends TestCase {
 
     @Override
     public void setUp() throws Exception {
+    	new SDODataBinding(new DefaultExtensionPointRegistry());
         context = SDOUtil.createHelperContext();
         handler = new SDOWrapperHandler();
     }

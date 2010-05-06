@@ -24,6 +24,7 @@ import java.security.PrivilegedAction;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.databinding.BaseDataBinding;
 import org.apache.tuscany.sca.databinding.WrapperHandler;
 import org.apache.tuscany.sca.databinding.XMLTypeHelper;
@@ -52,8 +53,9 @@ public class SDODataBinding extends BaseDataBinding {
     private WrapperHandler<Object> wrapperHandler;
     private XMLTypeHelper xmlTypeHelper;
 
-    public SDODataBinding() {
+    public SDODataBinding( ExtensionPointRegistry registry ) {
         super(NAME, DataObject.class);
+        SDOContextHelper.setRegistry( registry );
         wrapperHandler = new SDOWrapperHandler();
         xmlTypeHelper = new SDOTypeHelper();
     }
