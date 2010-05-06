@@ -23,8 +23,10 @@ import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.impl.TransformationContextImpl;
+import org.apache.tuscany.sca.databinding.sdo.SDODataBinding;
 import org.apache.tuscany.sca.interfacedef.DataType;
 
 import com.example.ipo.sdo.PurchaseOrderType;
@@ -55,6 +57,7 @@ public abstract class SDOTransformerTestCaseBase extends TestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
+        new SDODataBinding(new DefaultExtensionPointRegistry());
         helperContext = HelperProvider.getDefaultContext();
         SdoFactory.INSTANCE.register(helperContext);
         
