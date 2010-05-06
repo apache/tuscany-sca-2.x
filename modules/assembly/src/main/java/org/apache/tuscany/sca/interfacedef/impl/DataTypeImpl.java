@@ -31,7 +31,7 @@ import org.apache.tuscany.sca.interfacedef.DataType;
  * runtime is written in Java. This may be the same form used by the application
  * but it may not; for example, an application that is performing stream
  * processing may want a physical form such as an
- * {@link java.io.InputStream InputStream} to semantially operate on application
+ * {@link java.io.InputStream InputStream} to semantically operate on application
  * data such as a purchase order. The logical description is that used by the
  * assembly model and is an identifier into some well-known type space; examples
  * may be a Java type represented by its Class or an XML type represented by its
