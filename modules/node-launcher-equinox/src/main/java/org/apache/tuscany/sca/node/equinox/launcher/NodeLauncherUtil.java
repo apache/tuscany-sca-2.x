@@ -1194,9 +1194,11 @@ final class NodeLauncherUtil {
                 return true;
             }
 
-            // Filter out the Tuscany jars - since the development versions of these are used
+            // Filter out the Tuscany SCA jars - since the development versions of these are used
             // from the \target\classes directories...
             if (name.startsWith("tuscany")) {
+            	// tuscany-sdo jars don't form part of the SCA modules...
+            	if (name.startsWith("tuscany-sdo")) return true;
                 return false;
             }
 
