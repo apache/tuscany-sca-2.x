@@ -59,10 +59,8 @@ import static org.apache.tuscany.sca.assembly.xml.Constants.URI;
 import static org.apache.tuscany.sca.assembly.xml.Constants.WIRE;
 import static org.apache.tuscany.sca.assembly.xml.Constants.WIRED_BY_IMPL;
 import static org.apache.tuscany.sca.assembly.xml.Constants.WIRE_QNAME;
-import static org.apache.tuscany.sca.assembly.xml.Constants.EXTENSION;
 import static org.apache.tuscany.sca.assembly.xml.Constants.EXTENSION_QNAME;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
