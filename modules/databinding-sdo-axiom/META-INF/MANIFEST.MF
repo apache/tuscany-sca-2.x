@@ -6,9 +6,9 @@ Bundle-Version: 2.0.0
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Data Binding for SDO
-Import-Package: commonj.sdo,
- commonj.sdo.helper,
- commonj.sdo.impl,
+Import-Package: commonj.sdo;version="2.1",
+ commonj.sdo.helper;version="2.1",
+ commonj.sdo.impl;version="2.1",
  javax.xml.namespace,
  javax.xml.stream,
  org.apache.tuscany.sca.databinding;version="2.0.0",
