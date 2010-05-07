@@ -34,7 +34,8 @@ import javax.servlet.http.HttpServletRequest;
  * http://tools.ietf.org/html/rfc2616
  * Example predicates in HTTP include If-Match, If-None-Match,
  * If-Modified-Since, If-Unmodified-Since, If-Range.
-
+ * 
+ * @version $Rev$ $Date$
  */
 public class HTTPCacheContext {
     public static final SimpleDateFormat RFC822DateFormat = new SimpleDateFormat( "EEE, dd MMM yyyy HH:mm:ss Z" ); // RFC 822 date time

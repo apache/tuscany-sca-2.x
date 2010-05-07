@@ -22,6 +22,11 @@ package org.apache.tuscany.sca.common.http;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * HTTP Context used as binding context in HTTP related bindings
+ * 
+ * @version $Rev$ $Date$
+ */
 public class HTTPContext {
     private HttpServletRequest request;
     private HttpServletResponse response;

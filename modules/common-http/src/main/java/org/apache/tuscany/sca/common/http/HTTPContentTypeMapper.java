@@ -25,6 +25,8 @@ import java.util.Map;
 /**
  * Utility class to provide default HTTP Content-Type header
  * based on resource type 
+ * 
+ * @version $Rev$ $Date$
  */
 public class HTTPContentTypeMapper implements HTTPConstants{
     private static Map<String, String> contentTypeTable = new HashMap<String, String>();
