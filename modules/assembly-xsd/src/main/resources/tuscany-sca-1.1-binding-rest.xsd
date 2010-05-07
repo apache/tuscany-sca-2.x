@@ -26,11 +26,13 @@
     <import namespace="http://docs.oasis-open.org/ns/opencsa/sca/200912" schemaLocation="sca-1.1-cd05.xsd"/>
 
     <element name="binding.rest" type="t:RESTBinding" substitutionGroup="sca:binding"/>
+
     
     <complexType name="RESTBinding">
         <complexContent>
             <extension base="sca:Binding">
                 <sequence>
+                	<element ref="t:http-headers" minOccurs="0" maxOccurs="1"/>
                     <!-- any namespace="##targetNamespace" processContents="lax" minOccurs="0"
                          maxOccurs="unbounded"/ -->
                 </sequence>
@@ -38,6 +40,21 @@
             </extension>
         </complexContent>
     </complexType>
+
+    <complexType name="HTTPHeadersType">
+        <sequence>
+        	<element ref="t:header" minOccurs="0" maxOccurs="unbounded"/>
+        </sequence>
+    </complexType>
+    
+    <element name="http-headers" type="t:HTTPHeadersType"/>
+    
+    <complexType name="HTTPHeaderType">
+        <attribute name="name" type="string" use="required" />
+        <attribute name="value" type="string" use="required" />
+    </complexType>
+
+	<element name="header" type="t:HTTPHeaderType" />
     
     <!--  wire formats -->
     <complexType name="WireFormatJSONType">
