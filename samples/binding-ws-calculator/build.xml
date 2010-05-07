@@ -16,10 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<project name="binding-ws-calculator" default="run"> 
-	
+<project name="binding-ws-calculator" default="run-jse"> 
+	<property name="tuscany.home" value="../.."/>
     <property name="jar.name"   value="sample-binding-ws-calculator.jar" />
     <property name="main.class" value="sample.SampleClientImpl" />
+	
+	<echo>${tuscany.home}</echo>
 
     <target name="init"> 
       <delete quiet="true" includeemptydirs="true"> 
@@ -36,7 +38,7 @@
              target="1.5"
       	     failonerror="true"> 
          <classpath>
-            <fileset dir="../../modules">
+            <fileset dir="${tuscany.home}/modules">
                <include name="tuscany-sca-api-*.jar" />
                <include name="tuscany-node-api-*.jar" />
             </fileset>
@@ -63,5 +65,31 @@
         	<arg value="target/${jar.name}"/> 
         </java>    	
     </target>
+	
+    <target name="run-jse" depends="compile">
+        <java classname="org.apache.tuscany.sca.node.launcher.NodeLauncher"
+              fork="true"
+              failonerror="true">
+            <classpath> 
+               <pathelement location="${tuscany.home}/features/tuscany-sca-manifest.jar"/>
+            </classpath> 
+            <arg value="-ttl"/>
+            <arg value="0"/>
+            <arg value="target/${jar.name}"/> 
+        </java>     
+    </target>
+	
+    <target name="run-osgi" depends="compile">
+        <java classname="org.apache.tuscany.sca.node.equinox.launcher.NodeLauncher"
+              fork="true"
+              failonerror="true">
+            <classpath> 
+               <pathelement location="${tuscany.home}/features/tuscany-sca-manifest.jar"/>
+            </classpath> 
+            <arg value="-ttl"/>
+            <arg value="0"/>
+            <arg value="target/${jar.name}"/> 
+        </java>     
+    </target>	
 
 </project>
