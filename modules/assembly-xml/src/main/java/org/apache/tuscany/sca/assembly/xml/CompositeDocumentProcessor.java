@@ -26,6 +26,8 @@ import java.net.URL;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.transform.stream.StreamSource;
 
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.common.java.io.IOHelper;
@@ -38,13 +40,15 @@ import org.apache.tuscany.sca.contribution.processor.ValidatingXMLInputFactory;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.monitor.Monitor;
+import org.xml.sax.SAXException;
 
 /**
  * A composite processor.
  * 
  * @version $Rev$ $Date$
  */
-public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements URLArtifactProcessor<Composite> {
+public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements URLArtifactProcessor<Composite>,
+                                                                                 XMLStreamConstants {
     private ValidatingXMLInputFactory inputFactory;
     
 
@@ -80,10 +84,10 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
             error(context.getMonitor(), "ContributionReadException", url, ce);
             throw ce;
         } 
-        return read(uri, scdlStream, context);
+        return read(uri, url, scdlStream, context);
     }
 
-    public Composite read(URI uri, InputStream scdlStream, ProcessorContext context) throws ContributionReadException {
+    public Composite read(URI uri, URL url, InputStream scdlStream, ProcessorContext context) throws ContributionReadException {
         try {       
             
             Composite composite = null;
@@ -93,13 +97,20 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
             	monitor.setArtifactName(uri.toString());
             } //end if
             
-            XMLStreamReader reader = inputFactory.createXMLStreamReader(scdlStream);
+            // Set up a StreamSource for the composite file, since this has an associated URL that can be used to
+            // by the parser to find references to other files such as DTDs
+            StreamSource scdlSource = new StreamSource( scdlStream, url.toString() );
+            XMLStreamReader reader = inputFactory.createXMLStreamReader(scdlSource);
+            
+            //XMLStreamReader reader = inputFactory.createXMLStreamReader(scdlStream);
+            
             // set the monitor on the input factory as the standard XMLInputFactory
             // methods used for creating readers don't allow for the context to
             // be passed in
             ValidatingXMLInputFactory.setMonitor(reader, context.getMonitor());
             
-            reader.nextTag();
+            //reader.nextTag();
+            readCompositeFileHeader( reader );
             
             // Read the composite model
             composite = (Composite)extensionProcessor.read(reader, context);
@@ -124,6 +135,35 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
             }
         }
     }
+    
+    /**
+     * Reads the header portion of a composite file - i.e. the section of the file before the
+     * <composite> start tag
+     * In particular handle any DTD declarations
+     * @param reader - an XMLStreamReader which is reading the composite file
+     * @throws XMLStreamException 
+     */
+    private void readCompositeFileHeader( XMLStreamReader reader ) throws XMLStreamException {
+    	    	
+        while (true) {
+        	int event = reader.next();
+
+            if ( event == CHARACTERS
+                || event == CDATA
+                || event == SPACE
+                || event == PROCESSING_INSTRUCTION
+                || event == COMMENT 
+                || event == DTD 
+                || event == ENTITY_DECLARATION )  {
+                continue;
+            } // end if
+            
+            // The first start (or end) element terminates the header scan
+            if (event == START_ELEMENT || event == END_ELEMENT) {
+                return;
+            } // end if
+        } // end while
+    } // end method readCompositeFileHeader
     
     public void resolve(Composite composite, ModelResolver resolver, ProcessorContext context) throws ContributionResolveException {
     	try {
