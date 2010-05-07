@@ -19,11 +19,15 @@
 
 package org.apache.tuscany.sca.binding.rest.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.OperationSelector;
 import org.apache.tuscany.sca.assembly.WireFormat;
 import org.apache.tuscany.sca.binding.rest.RESTBinding;
+import org.apache.tuscany.sca.common.http.HTTPHeader;
 
 
 /**
@@ -35,6 +39,8 @@ class RESTBindingImpl implements RESTBinding {
 
     private String name;
     private String uri;
+    
+    private List<HTTPHeader> httpHeaders = new ArrayList<HTTPHeader>(); 
 
     private WireFormat wireFormat;
     private OperationSelector operationSelector;    
@@ -47,18 +53,22 @@ class RESTBindingImpl implements RESTBinding {
         return name;
     }
 
-    public String getURI() {
-        return uri;
-    }
-
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getURI() {
+        return uri;
     }
 
     public void setURI(String uri) {
         this.uri = uri;
     }
 
+    public List<HTTPHeader> getHttpHeaders() {
+        return this.httpHeaders;
+    }
+    
     public boolean isUnresolved() {
         return false;
     }

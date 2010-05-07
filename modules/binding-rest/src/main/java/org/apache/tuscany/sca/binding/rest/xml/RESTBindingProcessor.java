@@ -27,10 +27,12 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.sca.assembly.Base;
 import org.apache.tuscany.sca.assembly.OperationSelector;
 import org.apache.tuscany.sca.assembly.WireFormat;
 import org.apache.tuscany.sca.binding.rest.RESTBinding;
 import org.apache.tuscany.sca.binding.rest.RESTBindingFactory;
+import org.apache.tuscany.sca.common.http.HTTPHeader;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
@@ -48,7 +50,11 @@ import org.apache.tuscany.sca.core.FactoryExtensionPoint;
  * @version $Rev$ $Date$
  */
 public class RESTBindingProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<RESTBinding> {
+    private static final QName HEADERS_QNAME = new QName(Base.SCA11_TUSCANY_NS, "http-headers");
+    private static final QName HEADER_QNAME = new QName(Base.SCA11_TUSCANY_NS, "header");
+
     private static final String NAME = "name";
+    private static final String VALUE = "value";
     private static final String URI = "uri";
 
     private RESTBindingFactory httpBindingFactory;
@@ -71,41 +77,79 @@ public class RESTBindingProcessor extends BaseStAXArtifactProcessor implements S
     }
 
     public RESTBinding read(XMLStreamReader reader, ProcessorContext context) throws ContributionReadException, XMLStreamException {
-        RESTBinding httpBinding = httpBindingFactory.createRESTBinding();
+        RESTBinding restBinding = httpBindingFactory.createRESTBinding();
 
+        /**
+         *    <tuscany:binding.rest uri="http://localhost:8085/Customer">
+         *       <tuscany:wireFormat.xml />
+         *               <tuscany:operationSelector.jaxrs />
+         *               <tuscany:http-headers>
+         *                  <tuscany:header name="Cache-Control" value="no-cache"/>
+         *                  <tuscany:header name="Expires" value="-1"/> 
+         *               </tuscany:http-headers>
+         *   </tuscany:binding.rest>
+         *
+         */
         while(reader.hasNext()) {
             QName elementName = null;
             int event = reader.getEventType();
             switch (event) {
                 case START_ELEMENT:
                     elementName = reader.getName();
-
-                    if (RESTBinding.TYPE.equals(elementName)) {
+                    
+                    if(RESTBinding.TYPE.equals(elementName)) {
+                        
+                        // binding attributes
                         String name = getString(reader, NAME);
                         if(name != null) {
-                            httpBinding.setName(name);
+                            restBinding.setName(name);
                         }
 
                         String uri = getURIString(reader, URI);
                         if (uri != null) {
-                            httpBinding.setURI(uri);
+                            restBinding.setURI(uri);
                         }
+                        break;
+                        
+                    } else if (HEADERS_QNAME.equals(elementName)) {
+                        
+                        // ignore wrapper element
+                        break;
+                        
+                    } else if (HEADER_QNAME.equals(elementName)) {
+                        
+                        // header name/value pair
+                        String name = getString(reader, NAME);
+                        String value = getURIString(reader, VALUE);
+                        
+                        if(name != null) {
+                            restBinding.getHttpHeaders().add(new HTTPHeader(name, value));
+                        }
+                        break;
+                        
                     } else {
                         // Read an extension element
                         Object extension = extensionProcessor.read(reader, context);
                         if (extension != null) {
                             if (extension instanceof WireFormat) {
-                                httpBinding.setRequestWireFormat((WireFormat)extension);
+                                restBinding.setRequestWireFormat((WireFormat)extension);
                             } else if(extension instanceof OperationSelector) {
-                                httpBinding.setOperationSelector((OperationSelector)extension);
+                                restBinding.setOperationSelector((OperationSelector)extension);
                             }
                         }
+                        break;
                     }
+                    
+                case END_ELEMENT:
+                    elementName = reader.getName();
+
+                    if(RESTBinding.TYPE.equals(elementName)) {
+                        return restBinding;
+                    }
+                    break;
             }
 
-            if (event == END_ELEMENT && RESTBinding.TYPE.equals(reader.getName())) {
-                break;
-            }
+           
 
             // Read the next element
             if (reader.hasNext()) {
@@ -113,7 +157,7 @@ public class RESTBindingProcessor extends BaseStAXArtifactProcessor implements S
             }
         }
 
-        return httpBinding;
+        return restBinding;
     }
 
     public void write(RESTBinding restBinding, XMLStreamWriter writer, ProcessorContext context) throws ContributionWriteException, XMLStreamException {

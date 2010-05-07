@@ -19,9 +19,12 @@
 
 package org.apache.tuscany.sca.binding.rest;
 
+import java.util.List;
+
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.common.http.HTTPHeader;
 
 /**
  * REST binding model.
@@ -30,4 +33,6 @@ import org.apache.tuscany.sca.assembly.Binding;
 */
 public interface RESTBinding extends Binding {
     QName TYPE = new QName(SCA11_TUSCANY_NS, "binding.rest");
+    
+    public List<HTTPHeader> getHttpHeaders();
 }

@@ -24,6 +24,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLDecoder;
 import java.text.ParseException;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -31,9 +34,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.binding.rest.RESTBinding;
 import org.apache.tuscany.sca.common.http.HTTPCacheContext;
 import org.apache.tuscany.sca.common.http.HTTPContentTypeMapper;
 import org.apache.tuscany.sca.common.http.HTTPContext;
+import org.apache.tuscany.sca.common.http.HTTPHeader;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
@@ -49,7 +54,7 @@ public class RESTBindingListenerServlet extends HttpServlet {
 
     transient private MessageFactory messageFactory;
 
-    transient private Binding binding;
+    transient private RESTBinding binding;
     transient private Invoker bindingInvoker;
 
     private Invoker invoker;
@@ -66,7 +71,7 @@ public class RESTBindingListenerServlet extends HttpServlet {
      * Constructs a new RESTServiceListenerServlet.
      */
     public RESTBindingListenerServlet(Binding binding, Invoker bindingInvoker, MessageFactory messageFactory) {
-        this.binding = binding;
+        this.binding = (RESTBinding) binding;
         this.bindingInvoker = bindingInvoker;
         this.messageFactory = messageFactory;
     }
@@ -137,10 +142,26 @@ public class RESTBindingListenerServlet extends HttpServlet {
             // return response to client
             if (responseMessage.isFault()) {            
                 // Turn a fault into an exception
-                //throw new ServletException((Throwable)responseMessage.getBody());
                 Throwable e = (Throwable)responseMessage.getBody();
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());
             } else {
+                
+                for(HTTPHeader header : binding.getHttpHeaders()) {
+                    //treat special headers that need to be calculated
+                    if(header.getName().equalsIgnoreCase("Expires")) {
+                        GregorianCalendar calendar = new GregorianCalendar();
+                        calendar.setTime(new Date());
+                        
+                        calendar.add(Calendar.HOUR, Integer.parseInt(header.getValue()));
+                        
+                        response.setHeader("Expires", HTTPCacheContext.RFC822DateFormat.format( calendar.getTime() ));
+                    } else {
+                        //default behaviour to pass the header value to HTTP response
+                        response.setHeader(header.getName(), header.getValue());
+                    }
+                    
+                }
+                
                 //handle void operations
                 write(response.getOutputStream(), responseMessage.getBody());
                 response.getOutputStream().flush();
