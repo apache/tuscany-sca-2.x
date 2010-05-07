@@ -265,7 +265,7 @@ public class PolicyProcessor extends BaseJavaClassVisitor {
                 return;
             }
             throw new ServiceRuntimeException(
-                                              "Field that is not an SCA reference cannot have policySet/intent annotations: " + field);
+                                              "[JCA70002,JCA70005] Field that is not an SCA reference cannot have policySet/intent annotations: " + field);
         }
     }
 
@@ -278,7 +278,7 @@ public class PolicyProcessor extends BaseJavaClassVisitor {
                 return;
             }
             throw new ServiceRuntimeException(
-                                              "Constructor parameter that is not an SCA reference cannot have policySet/intent annotations: " + parameter);
+                                              "[JCA70002,JCA70005] Constructor parameter that is not an SCA reference cannot have policySet/intent annotations: " + parameter);
         }
     }
 
@@ -296,7 +296,7 @@ public class PolicyProcessor extends BaseJavaClassVisitor {
                 return;
             }
             throw new ServiceRuntimeException(
-                                              "Method that is not an SCA reference cannot have policySet/intent annotations: " + method);
+                                              "[JCA70002,JCA70005] Method that is not an SCA reference cannot have policySet/intent annotations: " + method);
         }
     }
 

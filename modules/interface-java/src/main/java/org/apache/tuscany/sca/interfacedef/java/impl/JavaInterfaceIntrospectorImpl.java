@@ -103,7 +103,7 @@ public class JavaInterfaceIntrospectorImpl {
         
         if (remotable) {
             if (javaInterface.isRemotableSet() && javaInterface.isRemotable() == false) {
-                throw new InvalidAnnotationException("@Remotable annotation present in a interface marked as not remotable in the SCDL", Remotable.class);
+                throw new InvalidAnnotationException("[JCA30005] @Remotable annotation present in a interface marked as not remotable in the SCDL", Remotable.class);
             }
         } else {
             if (javaInterface.isRemotableSet()) {
