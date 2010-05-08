@@ -867,12 +867,17 @@ final class NodeLauncherUtil {
             }
 
             // Collect files under <directory>/lib
+/* SL - this is commented out to prevent the jars in the lib dir being installed as 
+ *      OSGi bundles. There must have been a time (1.x?) when lib jars would have been 
+ *      installed but now the shaded jars live in lib and we don't want to install them
+ *             
             File libDirectory = new File(directoryFile, "lib");
             URL libDirectoryURL = libDirectory.toURI().toURL();
             if (!jarDirectoryURLs.contains(libDirectoryURL) && libDirectory.exists()) {
                 jarDirectoryURLs.add(libDirectoryURL);
                 collectClasspathEntries(libDirectory, jarURLs, filter, true);
             }
+*/            
         }
     }
 
