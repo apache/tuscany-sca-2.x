@@ -185,6 +185,9 @@
                              <useDistributionName>${useDistributionName}</useDistributionName>
                              <generateAggregatedBundle>${generateAggregatedBundle}</generateAggregatedBundle>
                              <generateManifestJar>true</generateManifestJar>
+                             <excludeGroupIds>
+                                 <groupId>org.apache.tuscany.sca.shades</groupId>
+                             </excludeGroupIds>
                              <artifactManifests>
                                  <artifactManifest>
                                      <groupId>org.apache.ws.commons.axiom</groupId>
