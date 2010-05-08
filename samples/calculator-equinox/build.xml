@@ -17,8 +17,12 @@
  * under the License.    
 -->
 <project name="calculator-equinox" default="run">
+	<property name="tuscany.home" value="../.."/>
 	<property name="sample.name" value="${ant.project.name}"/>
 	<property name="sample.jar" value="./target/sample-${sample.name}.jar" />
+	
+	<echo>${java.home}</echo>
+	<echo>${tuscany.home}</echo>
 
 	<target name="init">
 		<mkdir dir="target/classes"/>
@@ -31,7 +35,7 @@
                source="1.5"
                target="1.5">
 			<classpath>
-				<fileset dir="../../features">
+				<fileset dir="${tuscany.home}/features">
 					<include name="tuscany-sca-manifest.jar" />
 				</fileset>
 			</classpath>
@@ -44,7 +48,7 @@
 	</target>
 
 	<target name="run" depends="compile">
-		<java jar="../../features/tuscany-sca-manifest.jar" fork="true" failonerror="true">
+		<java jar="${tuscany.home}/features/tuscany-sca-manifest.jar" fork="true" failonerror="true">
 			<jvmarg value="-Djava.util.logging.config.file=../logging.properties"/>
 			<!-- optional to set the deployable composite -->
 			<arg value="-composite"/>
@@ -57,12 +61,12 @@
 	</target>
 
 	<target name="run-equinox" depends="compile">
-		<java jar="../../features/tuscany-sca-equinox-manifest.jar" fork="true" failonerror="true">
+		<java jar="${tuscany.home}/features/tuscany-sca-equinox-manifest.jar" fork="true" failonerror="true">
 			<jvmarg value="-Djava.util.logging.config.file=../logging.properties"/>
 			<arg value="-composite"/>
 			<arg value="Calculator.composite"/>
 			<arg value="-config"/>
-			<arg value="../../features/configuration"/>
+			<arg value="${tuscany.home}/features/configuration"/>
 			<arg value="-ttl"/>
 			<arg value="0"/>
 			<arg value="${sample.jar}"/>
