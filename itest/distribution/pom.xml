@@ -59,6 +59,7 @@
         <module>legal-checks</module>
         <module>binding-ws-calculator</module>
         <module>calculator-rmi</module>
+        <module>calculator-equinox</module>
     </modules>
 
     <build>
