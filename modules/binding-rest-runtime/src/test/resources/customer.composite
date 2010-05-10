@@ -30,7 +30,8 @@
 			    <tuscany:operationSelector.jaxrs />
 			    <tuscany:http-headers>
 			       <tuscany:header name="Cache-Control" value="no-cache"/>
-			       <tuscany:header name="Expires" value="-1"/> 
+			       <tuscany:header name="Expires" value="-1"/>
+			       <tuscany:header name="X-Tuscany" value="tuscany"/> 
 			    </tuscany:http-headers>
     		</tuscany:binding.rest>
    		</service>

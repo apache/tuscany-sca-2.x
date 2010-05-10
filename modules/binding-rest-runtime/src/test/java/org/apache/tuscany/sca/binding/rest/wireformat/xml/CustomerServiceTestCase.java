@@ -75,13 +75,22 @@ public class CustomerServiceTestCase {
         WebConversation wc = new WebConversation();
         WebRequest request = new GetMethodWebRequest(SERVICE_URL);
         WebResponse response = wc.getResource(request);
+
+        //for debug purposes
+        //list the response headers
+        //for(String headerField : response.getHeaderFieldNames()) {
+        //    System.out.println(">>> Header:" + headerField + " - " + response.getHeaderField(headerField));
+        //}
         
         //for debug purposes
         //System.out.println(">>>" + GET_RESPONSE);
         //System.out.println(">>>" + response.getText());
 
         Assert.assertEquals(200, response.getResponseCode());
+        Assert.assertEquals("no-cache", response.getHeaderField("Cache-Control"));
+        Assert.assertEquals("tuscany", response.getHeaderField("X-Tuscany"));
         Assert.assertEquals(GET_RESPONSE, response.getText());
+        
     }
 
 
