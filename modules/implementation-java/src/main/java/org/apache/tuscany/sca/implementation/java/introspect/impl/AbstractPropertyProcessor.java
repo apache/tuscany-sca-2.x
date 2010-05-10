@@ -113,7 +113,7 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Ba
         	Annotation argAnnotations[] = paramsAnnotations[i];
         	for (int j = 0; j < argAnnotations.length; j++) {
         		if(argAnnotations[j].annotationType() == org.oasisopen.sca.annotation.Property.class) {
-        			throw new IllegalPropertyException("Argument " + (i+1) + " of method " + method.getName() + " in class " + method.getDeclaringClass() + " can not be a Property");
+        			throw new IllegalPropertyException("[JCA90001] Argument " + (i+1) + " of method " + method.getName() + " in class " + method.getDeclaringClass() + " can not be a Property");
         		}
         	}
 		}
@@ -133,7 +133,7 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Ba
         }
 
         if(Modifier.isFinal(field.getModifiers())) {
-            throw new IllegalPropertyException("Final field " + field.getName() +" in class " + field.getDeclaringClass().getName() + " can not be annotated as a Property");
+            throw new IllegalPropertyException("[JCA90011] Final field " + field.getName() +" in class " + field.getDeclaringClass().getName() + " can not be annotated as a Property");
         }
 
         String name = getName(annotation);
@@ -175,14 +175,14 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Ba
                 throw new InvalidConstructorException("Mismatched property name: " + parameter);
             }
             if ("".equals(name) && "".equals(parameter.getName())) {
-                throw new InvalidPropertyException("Missing property name: " + parameter);
+                throw new InvalidPropertyException("[JCA90013] Missing property name: " + parameter);
             }
             if ("".equals(name)) {
                 name = parameter.getName();
             }
             
             if (!getRequired(annotation)) {
-                throw new InvalidPropertyException("JCA_90014 Constructor property must not have required=false: " + type.getName());
+                throw new InvalidPropertyException("[JCA90014] Constructor property must not have required=false: " + type.getName());
             }
 
             JavaElementImpl prop = properties.get(name);

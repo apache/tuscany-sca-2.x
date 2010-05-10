@@ -51,7 +51,7 @@ public class InitProcessor extends BaseJavaClassVisitor {
             return;
         }
         if (method.getParameterTypes().length != 0) {
-            throw new IllegalInitException("Initializer must not have argments", method);
+            throw new IllegalInitException("[JCA90008] Initializer must not have argments", method);
         }
         if(!method.getReturnType().equals(void.class)) {
             throw new IllegalInitException("Initializer must return void.", method);

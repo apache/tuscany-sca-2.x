@@ -50,7 +50,7 @@ public class DestroyProcessor extends BaseJavaClassVisitor {
             return;
         }
         if (method.getParameterTypes().length != 0) {
-            throw new IllegalDestructorException("Destructor must not have argments", method);
+            throw new IllegalDestructorException("[JCA90004] Destructor must not have arguments", method);
         }
         if(!method.getReturnType().equals(void.class)) {
             throw new IllegalDestructorException("Destructor must return void.", method);

@@ -94,7 +94,7 @@ public class ServiceProcessor extends BaseJavaClassVisitor {
         Class<?>[] interfaces = annotation.value();
         if (annotation.names().length > 0) {
             if (annotation.names().length != interfaces.length) {
-                throw new IntrospectionException("JCA90050 The number of Strings in the names attribute array of the @Service annotation MUST match the number of elements in the value attribute array");
+                throw new IntrospectionException("[JCA90050] The number of Strings in the names attribute array of the @Service annotation MUST match the number of elements in the value attribute array");
             }
             Set<String> names = new HashSet<String>();
             names.addAll(Arrays.asList(annotation.names()));
@@ -106,7 +106,7 @@ public class ServiceProcessor extends BaseJavaClassVisitor {
         //validate no scope on servce interface
         for (Class<?> iface : interfaces) {
             if (iface.getAnnotation(org.oasisopen.sca.annotation.Scope.class) != null) {
-                throw new IntrospectionException("JCA90041 @Scope annotation not allowed on service interface " + iface
+                throw new IntrospectionException("[JCA90041] @Scope annotation not allowed on service interface " + iface
                     .getName());
             }
         }
@@ -116,7 +116,7 @@ public class ServiceProcessor extends BaseJavaClassVisitor {
         for (Class<?> iface : interfaces) {
             for (Method m : iface.getMethods()) {
                 if (!hasMethod(m, ms)) {
-                    throw new IntrospectionException("JCA???? Implementation missing service method " + m.getName() + " service interface " + iface.getName());
+                    throw new IntrospectionException("[JCA90042] Implementation missing service method " + m.getName() + " service interface " + iface.getName());
                 }
             }
         }
@@ -150,7 +150,7 @@ public class ServiceProcessor extends BaseJavaClassVisitor {
         }
         
         if (!(annotation.value() == null || annotation.value() == Void.class)) {
-            throw new IllegalCallbackReferenceException("JCA90046 @Callback on field of method must not have any parameters: " + type.getName() + "." + method.getName());
+            throw new IllegalCallbackReferenceException("[JCA90046] @Callback on field of method must not have any parameters: " + type.getName() + "." + method.getName());
         }
         
         if(Modifier.isPrivate(method.getModifiers())) {
@@ -171,7 +171,7 @@ public class ServiceProcessor extends BaseJavaClassVisitor {
             return;
         }
         if (!(annotation.value() == null || annotation.value() == Void.class)) {
-            throw new IllegalCallbackReferenceException("JCA90046 @Callback on field of method must not have any parameters: " + type.getName() + "." + field.getName());
+            throw new IllegalCallbackReferenceException("[JCA90046] @Callback on field of method must not have any parameters: " + type.getName() + "." + field.getName());
         }
         if(Modifier.isPrivate(field.getModifiers())) {
             throw new IllegalCallbackReferenceException("Illegal annotation @Callback found on "+field, field);
