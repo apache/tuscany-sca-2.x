@@ -36,15 +36,56 @@
             <artifactId>tuscany-base</artifactId>
             <version>${pom.version}</version>
         </dependency>
+
+        <!-- Tuscany uses java.util.logging but extensions and dependencies may use 
+             log4j, commons-logging, slf4j, or java.util.logging. So inlcude slf4j 
+             modules for all of those that delegate to java.util.logging. This should
+             mean there's no need for any other logging jars and no conflicts on
+             logging verisons as those are handled transparently by slf4j, and, 
+             everything uses and can be configured just with java.util.logging.
+
         <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging-api</artifactId>
-            <version>1.1</version>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.5.8</version>
         </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>1.5.8</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>log4j-over-slf4j</artifactId>
+            <version>1.5.8</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jdk14</artifactId>
+            <version>1.5.8</version>
+        </dependency>
+        -->
+
+        <dependency>
+            <groupId>org.eclipse</groupId>
+            <artifactId>osgi</artifactId>
+            <version>3.5.0-v20090520</version>
+            <scope>provided</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
         <plugins>
+           <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-jar-plugin</artifactId>
+              <configuration>
+                 <archive>
+                    <manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile>
+                 </archive>
+              </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -58,11 +99,6 @@
                         <configuration>
                            <transformers>
                               <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
-                              <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                 <manifestEntries>
-                                    <Main-Class>org.apache.tuscany.sca.launcher.LauncherMain</Main-Class>
-                                 </manifestEntries>
-                              </transformer> 
                            </transformers>
                         </configuration>
                     </execution>
