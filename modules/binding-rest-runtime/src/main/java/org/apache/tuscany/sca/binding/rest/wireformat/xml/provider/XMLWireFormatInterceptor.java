@@ -24,6 +24,7 @@ import java.io.InputStream;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.sca.common.http.HTTPContext;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.invocation.Interceptor;
@@ -54,12 +55,21 @@ public class XMLWireFormatInterceptor implements Interceptor {
         this.next = next;
     }
 
-    public Message invoke(Message msg) {        
+    public Message invoke(Message msg) {
+        HTTPContext bindingContext = (HTTPContext) msg.getBindingContext();
+        
+        // Decode using the charset in the request if it exists otherwise
+        // use UTF-8 as this is what all browser implementations use.
+        String charset = bindingContext.getHttpRequest().getCharacterEncoding();
+        if (charset == null) {
+            charset = "UTF-8";
+        }
+        
         try {
             if(msg.getBody() != null) {
                 Object[] args = msg.getBody();
                 InputStream data = (InputStream) args[0];
-                XMLStreamReader xmlPayload = inputFactory.createXMLStreamReader(data);
+                XMLStreamReader xmlPayload = inputFactory.createXMLStreamReader(data, charset);
                 msg.setBody(new Object[]{xmlPayload});
             }
         } catch(Exception e) {

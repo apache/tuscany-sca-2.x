@@ -52,7 +52,51 @@ public class JSONWireFormatInterceptor implements Interceptor {
         this.next = next;
     }
     
-    private String read(InputStream in) throws IOException {
+    public Message invoke(Message msg) {
+        HTTPContext bindingContext = (HTTPContext) msg.getBindingContext();
+        
+        // Decode using the charset in the request if it exists otherwise
+        // use UTF-8 as this is what all browser implementations use.
+        String charset = bindingContext.getHttpRequest().getCharacterEncoding();
+        if (charset == null) {
+            charset = "UTF-8";
+        }
+        
+        try {
+            if( isPayloadSupported(bindingContext.getHttpRequest().getMethod()) && msg.getBody() != null) {
+                Object[] args = msg.getBody();
+                InputStream in = (InputStream) args[0];
+                String data = read(in, charset);
+                JSONObject jsonPayload = new JSONObject(data);
+                msg.setBody(new Object[]{jsonPayload});
+            }
+        } catch(Exception e) {
+            throw new RuntimeException("Unable to parse json paylod: " + msg.getBody().toString());
+        }
+        
+        return getNext().invoke(msg);
+    }
+    
+    /**
+     * Check if HTTP Operation should support payload
+     * @param operation
+     * @return
+     */
+    private static boolean isPayloadSupported(String operation) {
+        boolean isGet = "get".equalsIgnoreCase(operation);
+        boolean isDelete = "delete".equalsIgnoreCase(operation);
+        
+        return  isGet == false && isDelete == false;
+    }
+    
+    /**
+     * Read JSON payload from HTTP Request Body
+     * @param in
+     * @param charset
+     * @return
+     * @throws IOException
+     */
+    private static String read(InputStream in, String charset) throws IOException {
         StringWriter sw = new StringWriter();
         InputStreamReader reader = new InputStreamReader(in, "UTF-8");
         char[] buf = new char[8192];
@@ -64,24 +108,6 @@ public class JSONWireFormatInterceptor implements Interceptor {
             sw.write(buf, 0, size);
         }
         return sw.toString();
-    }
-
-    public Message invoke(Message msg) {
-        HTTPContext bindingContext = (HTTPContext) msg.getBindingContext();
-        
-        try {
-            if(bindingContext.getHttpRequest().getMethod().equalsIgnoreCase("get") == false && bindingContext.getHttpRequest().getMethod().equalsIgnoreCase("delete") == false  && msg.getBody() != null) {
-                Object[] args = msg.getBody();
-                InputStream in = (InputStream) args[0];
-                String data = read(in);
-                JSONObject jsonPayload = new JSONObject(data);
-                msg.setBody(new Object[]{jsonPayload});
-            }
-        } catch(Exception e) {
-            throw new RuntimeException("Unable to parse json paylod: " + msg.getBody().toString());
-        }
-        
-        return getNext().invoke(msg);
     }
 
 }
