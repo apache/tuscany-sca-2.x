@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.tuscany.sca.assembly.xsd.Constants;
 import org.apache.tuscany.sca.common.xml.XMLDocumentHelper;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
@@ -365,7 +366,14 @@ public class XSDModelResolver implements ModelResolver {
                         return new InputSource(schemaLocation);
                     }
                 } else {
-                    url = new URL(new URL(baseUri), schemaLocation);
+                    // look to see whether Tuscany has a local version of the
+                    // required schema. It can load the local version rather 
+                    // than going out to the network in order to improve performance
+                    url = Constants.CACHED_XSDS.get(targetNamespace);
+                    
+                    if (url == null) {
+                        url = new URL(new URL(baseUri), schemaLocation);
+                    }
                 }
                 return XMLDocumentHelper.getInputSource(url);
             } catch (IOException e) {

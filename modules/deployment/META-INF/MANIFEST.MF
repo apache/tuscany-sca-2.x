@@ -30,6 +30,7 @@ Import-Package: javax.xml.namespace,
  javax.xml.stream,
  org.apache.tuscany.sca.assembly;version="2.0.0",
  org.apache.tuscany.sca.assembly.builder;version="2.0.0",
+ org.apache.tuscany.sca.assembly.xsd;version="2.0.0",
  org.apache.tuscany.sca.common.java.io;version="2.0.0",
  org.apache.tuscany.sca.common.xml.stax;version="2.0.0",
  org.apache.tuscany.sca.contribution;version="2.0.0",
@@ -43,6 +44,7 @@ Import-Package: javax.xml.namespace,
  org.apache.tuscany.sca.definitions.xml;version="2.0.0",
  org.apache.tuscany.sca.deployment;version="2.0.0",
  org.apache.tuscany.sca.monitor;version="2.0.0",
+ org.apache.tuscany.sca.xsd;version="2.0.0",
  org.oasisopen.sca.annotation;version="2.0.0";resolution:=optional
 Bundle-SymbolicName: org.apache.tuscany.sca.deployment
 Bundle-DocURL: http://www.apache.org/

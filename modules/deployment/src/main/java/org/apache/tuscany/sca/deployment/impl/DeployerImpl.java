@@ -43,6 +43,7 @@ import org.apache.tuscany.sca.assembly.builder.BuilderContext;
 import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
+import org.apache.tuscany.sca.assembly.xsd.Constants;
 import org.apache.tuscany.sca.common.xml.stax.StAXHelper;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
@@ -77,6 +78,8 @@ import org.apache.tuscany.sca.definitions.xml.DefinitionsExtensionPoint;
 import org.apache.tuscany.sca.deployment.Deployer;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
+import org.apache.tuscany.sca.xsd.XSDFactory;
+import org.apache.tuscany.sca.xsd.XSDefinition;
 
 /**
  * 
@@ -98,11 +101,14 @@ public class DeployerImpl implements Deployer {
     protected Definitions systemDefinitions;
     protected ExtensibleURLArtifactProcessor artifactProcessor;
     protected ExtensibleStAXArtifactProcessor staxProcessor;
+    protected ValidationSchemaExtensionPoint validationSchema;
 
     protected MonitorFactory monitorFactory;
 
     protected static final String DEPLOYER_IMPL_VALIDATION_MESSAGES =
         "org.apache.tuscany.sca.deployment.impl.deployer-impl-validation-messages";
+    
+    public static final QName XSD = new QName("http://www.w3.org/2001/XMLSchema", "schema");
 
     /**
      * @param registry
@@ -301,6 +307,9 @@ public class DeployerImpl implements Deployer {
         compositeBuilder =
             compositeBuilders.getCompositeBuilder("org.apache.tuscany.sca.assembly.builder.CompositeBuilder");
 
+        // get the validation schema
+        validationSchema = registry.getExtensionPoint(ValidationSchemaExtensionPoint.class);
+            
         loadSystemContribution(new ProcessorContext(monitorFactory.createMonitor()));
 
         inited = true;
@@ -341,7 +350,7 @@ public class DeployerImpl implements Deployer {
         artifact.setLocation("Derived");
         artifact.setModel(systemDefinitions);
         artifacts.add(artifact);
-        
+                
         // now resolve and add the system contribution
         try {
             contributionProcessor.resolve(systemContribution, modelResolver, context);
@@ -355,6 +364,7 @@ public class DeployerImpl implements Deployer {
         Contribution contribution = contributionFactory.createContribution();
         contribution.setURI(systemContribution.getURI());
         contribution.setLocation(systemContribution.getLocation());
+
         ModelResolver modelResolver = new ExtensibleModelResolver(contribution, modelResolvers, modelFactories);
         contribution.setModelResolver(modelResolver);
         contribution.setUnresolved(true);
@@ -362,6 +372,7 @@ public class DeployerImpl implements Deployer {
         DefinitionsFactory definitionsFactory = modelFactories.getFactory(DefinitionsFactory.class);
         Definitions definitions = definitionsFactory.createDefinitions();
         DefinitionsUtil.aggregate(systemDefinitions, definitions, monitor);
+        
         // create an artifact to represent the system defintions and
         // add it to the contribution
         List<Artifact> artifacts = contribution.getArtifacts();
@@ -370,6 +381,44 @@ public class DeployerImpl implements Deployer {
         artifact.setLocation("Derived");
         artifact.setModel(definitions);
         artifacts.add(artifact);
+        
+        // create resolver entries to represent the SCA schema. We don't create artifacts
+        // in the contribution as the XSD schema are only actually loaded on demand
+        // so as long as they are in the model resolver we are set. We do it on the clone
+        // so that every copy of the system contribution has the schema
+        ProcessorContext context = new ProcessorContext(monitor);
+        XSDFactory xsdFactory = modelFactories.getFactory(XSDFactory.class);
+        List<String> scaSchemas = validationSchema.getSchemas();
+        for (String scaSchemaLocation : scaSchemas){
+            try {
+                URL scaSchemaURL = new URL(scaSchemaLocation);
+                String namespace = staxHelper.readAttribute(scaSchemaURL, XSD, "targetNamespace");
+
+                // if this is the SCA schema store it in the system contribution
+                if (namespace.equals(Constants.SCA11_TUSCANY_NS)){
+                    
+                    // add the schema to the model resolver under the Tuscany namespace
+                    XSDefinition scaSchema = xsdFactory.createXSDefinition();
+                    scaSchema.setUnresolved(true);
+                    scaSchema.setNamespace(namespace);
+                    scaSchema.setLocation(scaSchemaURL.toURI());
+                    scaSchema.setUnresolved(false); 
+//                    modelResolver.addModel(scaSchema, context);
+                    
+                    // we know that the SCA schema's are referenced form the Tuscany schemas so 
+                    // register the schema under the SCA namsepace too
+                    scaSchema = xsdFactory.createXSDefinition();
+                    scaSchema.setUnresolved(true);
+                    scaSchema.setNamespace(Constants.SCA11_NS);
+                    scaSchema.setLocation(scaSchemaURL.toURI());
+                    scaSchema.setUnresolved(false); 
+                    modelResolver.addModel(scaSchema, context);                  
+                }
+            } catch (Exception ex) {
+                throw new IllegalStateException(ex);
+            }
+        }        
+        
         return contribution;
     }
 
