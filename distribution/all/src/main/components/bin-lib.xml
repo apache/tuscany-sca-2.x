@@ -21,9 +21,25 @@
     <dependencySets>
         <dependencySet>
             <outputDirectory>lib</outputDirectory>
+            <useTransitiveDependencies>true</useTransitiveDependencies>
             <unpack>false</unpack>
             <includes>
-                <include>org.apache.tuscany.sca.shades:tuscany-base-nodep</include>
+                <include>org.apache.tuscany.sca.shades:tuscany-base</include>
+                <include>org.apache.ws.commons.schema:XmlSchema</include>
+                <include>cglib:cglib</include>
+                <include>org.apache.tuscany.sca.shades:tuscany-base</include>
+                <include>com.hazelcast:*</include>
+                <include>wsdl4j:wsdl4j</include>
+            </includes>
+        </dependencySet>
+
+        <dependencySet>
+            <outputDirectory>lib/spring</outputDirectory>
+            <useTransitiveDependencies>true</useTransitiveDependencies>
+            <unpack>false</unpack>
+            <includes>
+                <include>org.apache.tuscany.sca.shades:tuscany-spring</include>
+                <include>org.springframework:*</include>
             </includes>
         </dependencySet>
 
