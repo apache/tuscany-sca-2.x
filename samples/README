@@ -1,5 +1,131 @@
 The Apache Tuscany SCA Samples
 ==============================
+
+Structure
+---------
+
+SCA Samples
+  binding-ws-calculator
+  binding-ws-sdo-helloworld
+  binding-sca-calculator
+  binding-rmi-calculator
+    binding-rmi-calculator-reference
+    binding-rmi-calculator-service
+  helloworld
+  implementation-java-calculator
+  implementation-java-helloworld
+  implementation-bpel-helloworld
+  implementation-spring-helloworld
+  scaclient-helloworld
+Tuscany Samples
+  osgi-bundle-calculator
+  dosgi-calculator
+    dosgi-calculator
+    dosgi-calculator-operations
+  dosgi-dynamic-calculator
+    dosgi-dynamic-calculator
+    dosgi-dynamic-calculator-operations
+  launcher-equinox-calculator
+  webapp-calculator
+Application Samples
+  store
+  store-webapp
+Launchers
+  launcher-embedded-jse
+  launcher-embedded-osgi
+  launcher-command-line
+  launcher-sca-client
+  launcher-eclipse - what's this? Just embedded-jse with eclipse project files provided? Do we need?
+
+
+Using the sample contributions
+------------------------------
+contribution build = mvn or ant or IDE in the contribution module
+contribution unit test =  mvn or ant or IDE in the contribution module
+contribution launch = command line (JSE or OSGi), embedded (JSE or OSGi), SCAClient or Eclipse launcher 
+
+
+1/ Use local SCAClinet
+2/ Use remote SCAClient and distributed domian
+3/ Use interoperable binding
+
+Launch Mechanisms
+-----------------
+
+A. running a contribution from the command line
+  Command:   tuscany.bat/.sh
+  Classpath: core, extension and dependency jars
+
+B. running a contribution from Maven
+  Command:   Maven Tuscany plugin with mvn truscany:run
+  Classpath: Maven dependency on core + extension features
+
+Ca. running a contribution from Ant (JSE)
+  Command:   call tuscany.bat/.sh launcher directly
+  Classpath: core, extension and dependency jars
+
+Cb. running a contribution from Ant (OSGi)
+  Command:   tuscany-sca-equinox-manifest.jar
+  Classpath: sca-api, node-api, node-launcher-equinox - TBD
+
+Da. running a contribution from JSE program and from JUnit (JSE)
+  Command:   org.apache.tuscany.sca.node.launcher.NodeLauncher.createNode(...).start()
+  Classpath: core, extension and dependency jars
+
+Db. running a contribution from JSE program and from JUnit (OSGi)
+  Command:   org.apache.tuscany.sca.node.equinox.launcher.NodeLauncher.createNode(...).start()
+  Classpath: sca-api, node-api, node-launcher-equinox - TBD
+
+E. running a contribution from Junit under OSGi in Maven
+  Command:   Maven Tuscany OSGi JUnit plugin
+  Classpath: maven dependency on features
+
+F. running a contribution from OSGi
+  Command:   Package contribution as a bundle that has an activator
+that uses pattern D
+  Classpath: Load the OSGi runtime (Equinox) with
+features/configuration/config.ini
+
+Ga. running a contribution from a webapp (.war as contribution)
+  Command:   web.xml configured to specify filter
+
+ <filter>
+   <filter-name>tuscany</filter-name>
+   <filter-class>org.apache.tuscany.sca.host.webapp.TuscanyServletFilter</filter-class>
+ </filter>
+
+  Classpath: core, extension and dependency jars
+
+Gb. running a contribution from a webapp (contributions inside war)
+  Command:  web.xml configured to specify filter
+
+ <context-param>
+   <param-name>contributions</param-name>
+   <param-value>/WEB-INF/sca-contributions</param-value>
+ </context-param>
+
+ <filter>
+   <filter-name>tuscany</filter-name>
+   <filter-class>org.apache.tuscany.sca.host.webapp.TuscanyServletFilter</filter-class>
+ </filter>
+
+  Classpath: core, extension and dependency jars
+
+H. running a contribution from Tomcat
+  Command:   install tomcat.war, from there install integration
+             I don't remember how contributions are installed.
+  Classpath: pakaged as part of deep integration
+  DEFER
+
+I. running a contribution from eclipse (or any other IDE)
+  Command:   No point and click tool in 2.x for eclipse yet
+             Use Da or Db
+  Classpath:
+  DEFER
+
+
+OLD STUFF
+=========
 The Apache Tuscany SCA samples are built as part of the main Maven build and 
 run, using the provided JUnit test cases, as tests in the Maven build.
 
