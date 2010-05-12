@@ -5,7 +5,7 @@ Structure
 ---------
 
 SCA Samples
-  binding-ws-calculator
+  binding-ws-calculator  B
   binding-ws-sdo-helloworld
   binding-sca-calculator
   binding-rmi-calculator
@@ -18,24 +18,23 @@ SCA Samples
   implementation-spring-helloworld
   scaclient-helloworld
 Tuscany Samples
-  osgi-bundle-calculator
+  osgi-bundle-calculator  E, F?
   dosgi-calculator
     dosgi-calculator
     dosgi-calculator-operations
   dosgi-dynamic-calculator
     dosgi-dynamic-calculator
     dosgi-dynamic-calculator-operations
-  launcher-equinox-calculator
-  webapp-calculator
+  webapp-calculator G?
 Application Samples
   store
   store-webapp
 Launchers
-  launcher-embedded-jse
-  launcher-embedded-osgi
-  launcher-command-line
+  launcher-embedded-jse  B, Ca, Da
+  launcher-embedded-osgi B, Cb, Db, F?
+  launcher-command-line  A
   launcher-sca-client
-  launcher-eclipse - what's this? Just embedded-jse with eclipse project files provided? Do we need?
+  launcher-eclipse - I what's this? Just embedded-jse with eclipse project files provided? Do we need atm?
 
 
 Using the sample contributions
