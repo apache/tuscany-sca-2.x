@@ -18,17 +18,33 @@
  */
 package calculator;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 
-import sample.SampleClientImpl;
-
 /**
- * Test the Calculator composition.
+ * A unit test of the basic Java implementation classes in this contribution 
+ * without using SCA
  */
 public class CalculatorTestCase {
 
     @Test
-    public void testSample() throws Exception {
-        SampleClientImpl.main(null);
+    public void testCalculator() throws Exception {
+        AddService add = new AddServiceImpl();
+        SubtractService subtract = new SubtractServiceImpl();
+        MultiplyService multiply = new MultiplyServiceImpl();
+        DivideService divide = new DivideServiceImpl();
+        
+        CalculatorServiceImpl calculator = new CalculatorServiceImpl();
+        
+        calculator.setAddService(add);
+        calculator.setSubtractService(subtract);
+        calculator.setMultiplyService(multiply);
+        calculator.setDivideService(divide);
+        
+        assertEquals(calculator.add(3, 2), 5.0, 0);
+        assertEquals(calculator.subtract(3, 2), 1.0, 0);
+        assertEquals(calculator.multiply(3, 2), 6.0, 0);
+        assertEquals(calculator.divide(3, 2), 1.5, 0);
     }
 }

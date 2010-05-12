@@ -22,11 +22,6 @@
            xmlns:sample="http://sample"
            name="Calculator">
 
-    <component name="SampleClient">
-		<implementation.java class="calculator.CalculatorClientImpl"/>
-        <reference name="calculatorService" target="CalculatorServiceComponent" />
-    </component>
-
     <component name="CalculatorServiceComponent">
 		<implementation.java class="calculator.CalculatorServiceImpl"/>
         <reference name="addService" >   
