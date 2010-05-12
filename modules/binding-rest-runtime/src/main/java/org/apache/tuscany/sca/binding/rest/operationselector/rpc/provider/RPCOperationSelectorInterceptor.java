@@ -23,14 +23,15 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.QueryParam;
 
 import org.apache.tuscany.sca.common.http.HTTPContext;
 import org.apache.tuscany.sca.common.http.HTTPUtil;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
@@ -76,11 +77,16 @@ public class RPCOperationSelectorInterceptor implements Interceptor {
         try {
             HTTPContext bindingContext = (HTTPContext)msg.getBindingContext();
 
+            if(! "get".equalsIgnoreCase(bindingContext.getHttpRequest().getMethod())) {
+                throw new RuntimeException("RPC Invocation only allowed over HTTP GET operations");
+            }
+
             String path = URLDecoder.decode(HTTPUtil.getRequestPath(bindingContext.getHttpRequest()), "UTF-8");
 
             if (path.startsWith("/")) {
                 path = path.substring(1);
             }
+            
 
             String operationName = bindingContext.getHttpRequest().getParameter("method");
             Operation operation = findOperation( operationName );
@@ -92,12 +98,6 @@ public class RPCOperationSelectorInterceptor implements Interceptor {
             final JavaOperation javaOperation = (JavaOperation)operation;
             final Method method = javaOperation.getJavaMethod();
 
-            List<DataType> operationInputType = operation.getInputType().getLogical();
-            int size = operationInputType.size();
-            for (int i = 0; i < size; i++) {
-                System.out.println(operationInputType.get(i));
-            }
-            
             List<Object> messageParameters = new ArrayList<Object>();
             for(int i=0; i<method.getParameterTypes().length; i++) {
                 for(Annotation annotation : method.getParameterAnnotations()[i]) {
@@ -110,7 +110,6 @@ public class RPCOperationSelectorInterceptor implements Interceptor {
                         } else {
                             messageParameters.add(values);
                         }
-                        
                     }
                 }
             }
@@ -121,7 +120,32 @@ public class RPCOperationSelectorInterceptor implements Interceptor {
             msg.setBody(body);
             msg.setOperation(operation);
 
-            return getNext().invoke(msg);
+            Message responseMessage = getNext().invoke(msg);
+            
+            //set Cache-Control to no-cache to avoid intermediary
+            //proxy/reverse-proxy caches and always hit the server
+            //that would identify if the value was current or not
+            bindingContext.getHttpResponse().setHeader("Cache-Control", "no-cache");
+            bindingContext.getHttpResponse().setHeader("Expires", new Date(0).toGMTString());
+            
+            
+            String eTag = HTTPUtil.calculateHashETag(responseMessage.getBody().toString().getBytes("UTF-8"));
+            
+            // Test request for predicates.
+            String predicate = bindingContext.getHttpRequest().getHeader( "If-Match" );
+            if (( predicate != null ) && ( !predicate.equals(eTag) )) {
+                // No match, should short circuit
+                bindingContext.getHttpResponse().sendError(HttpServletResponse.SC_PRECONDITION_FAILED);
+            }
+            predicate = bindingContext.getHttpRequest().getHeader( "If-None-Match" );
+            if (( predicate != null ) && ( predicate.equals(eTag) )) {
+                // Match, should short circuit
+                bindingContext.getHttpResponse().sendError(HttpServletResponse.SC_NOT_MODIFIED);
+            }
+            
+            bindingContext.getHttpResponse().addHeader("ETag", eTag);
+            
+            return responseMessage;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
