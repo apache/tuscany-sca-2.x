@@ -185,8 +185,8 @@ public class DojoJavaScriptComponentGeneratorImpl implements ComponentJavaScript
                         "}");
         pw.println("var __tuscany  = window.tuscany;");
         
-        pw.println("if (!__tuscany .sca) { \n" +
-                        "__tuscany .sca = {}; \n" +
+        pw.println("if (!__tuscany.sca) { \n" +
+                        "__tuscany.sca = {}; \n" +
                         "}");
     }
    
