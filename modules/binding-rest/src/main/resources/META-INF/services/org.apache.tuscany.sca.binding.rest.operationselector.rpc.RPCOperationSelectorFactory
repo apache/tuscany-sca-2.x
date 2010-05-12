@@ -15,6 +15,5 @@
 # specific language governing permissions and limitations
 # under the License. 
 
-# Implementation class for the wire format provider factory
-org.apache.tuscany.sca.binding.rest.wireformat.json.provider.JSONWireFormatProviderFactory;model=org.apache.tuscany.sca.binding.rest.wireformat.json.JSONWireFormat
-org.apache.tuscany.sca.binding.rest.wireformat.xml.provider.XMLWireFormatProviderFactory;model=org.apache.tuscany.sca.binding.rest.wireformat.xml.XMLWireFormat
+# Implementation class for model factory
+org.apache.tuscany.sca.binding.rest.operationselector.rpc.impl.RPCOperationSelectorFactoryImpl

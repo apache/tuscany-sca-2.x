@@ -17,36 +17,36 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.rest.wireformat.json.provider;
+package org.apache.tuscany.sca.binding.rest.operationselector.rpc.provider;
 
-import org.apache.tuscany.sca.binding.rest.wireformat.json.JSONWireFormat;
+import org.apache.tuscany.sca.binding.rest.operationselector.rpc.RPCOperationSelector;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.provider.WireFormatProvider;
-import org.apache.tuscany.sca.provider.WireFormatProviderFactory;
+import org.apache.tuscany.sca.provider.OperationSelectorProvider;
+import org.apache.tuscany.sca.provider.OperationSelectorProviderFactory;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 
 /**
- * JSON wire format Provider Factory.
+ * RPC operation selector Provider Factory.
  * 
  * @version $Rev$ $Date$
 */
-public class JSONWireFormatProviderFctory implements WireFormatProviderFactory<JSONWireFormat>{
+public class RPCOperationSelectorProviderFactory implements OperationSelectorProviderFactory<RPCOperationSelector>{
     private ExtensionPointRegistry extensionPoints;
 
-    public JSONWireFormatProviderFctory(ExtensionPointRegistry extensionPoints) {
+    public RPCOperationSelectorProviderFactory(ExtensionPointRegistry extensionPoints) {
         this.extensionPoints = extensionPoints;
     }
-    public WireFormatProvider createReferenceWireFormatProvider(RuntimeEndpointReference endpointReference) {
-        return new JSONWireFormatReferenceProvider(extensionPoints, endpointReference);
+    public OperationSelectorProvider createReferenceOperationSelectorProvider(RuntimeEndpointReference endpointReference) {
+        return new RPCOperationSelectorReferenceProvider(extensionPoints, endpointReference);
     }
 
-    public WireFormatProvider createServiceWireFormatProvider(RuntimeEndpoint endpoint) {
-        return new JSONWireFormatServiceProvider(extensionPoints, endpoint);
+    public OperationSelectorProvider createServiceOperationSelectorProvider(RuntimeEndpoint endpoint) {
+        return new RPCOperationSelectorServiceProvider(extensionPoints, endpoint);
     }
 
-    public Class<JSONWireFormat> getModelType() {
-        return JSONWireFormat.class;
+    public Class<RPCOperationSelector> getModelType() {
+        return RPCOperationSelector.class;
     }
 
 }

@@ -84,4 +84,14 @@
    <element name="operationSelector.jaxrs" 
             type="t:OperationSelectorJAXRSType"
             substitutionGroup="sca:operationSelector"/>              
+
+   <complexType name="OperationSelectorRPCType">
+      <complexContent>
+         <extension base="sca:OperationSelectorType"/>
+      </complexContent>
+   </complexType>    
+   <element name="operationSelector.rpc" 
+            type="t:OperationSelectorRPCType"
+            substitutionGroup="sca:operationSelector"/>              
+
 </schema>

@@ -17,36 +17,36 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.rest.operationselector.jaxrs.provider;
+package org.apache.tuscany.sca.binding.rest.wireformat.xml.provider;
 
-import org.apache.tuscany.sca.binding.rest.operationselector.jaxrs.JAXRSOperationSelector;
+import org.apache.tuscany.sca.binding.rest.wireformat.xml.XMLWireFormat;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.provider.OperationSelectorProvider;
-import org.apache.tuscany.sca.provider.OperationSelectorProviderFactory;
+import org.apache.tuscany.sca.provider.WireFormatProvider;
+import org.apache.tuscany.sca.provider.WireFormatProviderFactory;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 
 /**
- * JAXRS operation selector Provider Factory.
+ * XML wire format Provider Factory.
  * 
  * @version $Rev$ $Date$
 */
-public class JAXRSOperationSelectorProviderFctory implements OperationSelectorProviderFactory<JAXRSOperationSelector>{
+public class XMLWireFormatProviderFactory implements WireFormatProviderFactory<XMLWireFormat>{
     private ExtensionPointRegistry extensionPoints;
 
-    public JAXRSOperationSelectorProviderFctory(ExtensionPointRegistry extensionPoints) {
+    public XMLWireFormatProviderFactory(ExtensionPointRegistry extensionPoints) {
         this.extensionPoints = extensionPoints;
     }
-    public OperationSelectorProvider createReferenceOperationSelectorProvider(RuntimeEndpointReference endpointReference) {
-        return new JAXRSOperationSelectorReferenceProvider(extensionPoints, endpointReference);
+    public WireFormatProvider createReferenceWireFormatProvider(RuntimeEndpointReference endpointReference) {
+        return new XMLWireFormatReferenceProvider(extensionPoints, endpointReference);
     }
 
-    public OperationSelectorProvider createServiceOperationSelectorProvider(RuntimeEndpoint endpoint) {
-        return new JAXRSOperationSelectorServiceProvider(extensionPoints, endpoint);
+    public WireFormatProvider createServiceWireFormatProvider(RuntimeEndpoint endpoint) {
+        return new XMLWireFormatServiceProvider(extensionPoints, endpoint);
     }
 
-    public Class<JAXRSOperationSelector> getModelType() {
-        return JAXRSOperationSelector.class;
+    public Class<XMLWireFormat> getModelType() {
+        return XMLWireFormat.class;
     }
 
 }

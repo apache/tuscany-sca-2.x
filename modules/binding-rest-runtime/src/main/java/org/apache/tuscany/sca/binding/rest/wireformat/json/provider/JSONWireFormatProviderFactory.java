@@ -17,9 +17,9 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.rest.wireformat.xml.provider;
+package org.apache.tuscany.sca.binding.rest.wireformat.json.provider;
 
-import org.apache.tuscany.sca.binding.rest.wireformat.xml.XMLWireFormat;
+import org.apache.tuscany.sca.binding.rest.wireformat.json.JSONWireFormat;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.provider.WireFormatProvider;
 import org.apache.tuscany.sca.provider.WireFormatProviderFactory;
@@ -27,26 +27,26 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 
 /**
- * XML wire format Provider Factory.
+ * JSON wire format Provider Factory.
  * 
  * @version $Rev$ $Date$
 */
-public class XMLWireFormatProviderFctory implements WireFormatProviderFactory<XMLWireFormat>{
+public class JSONWireFormatProviderFactory implements WireFormatProviderFactory<JSONWireFormat>{
     private ExtensionPointRegistry extensionPoints;
 
-    public XMLWireFormatProviderFctory(ExtensionPointRegistry extensionPoints) {
+    public JSONWireFormatProviderFactory(ExtensionPointRegistry extensionPoints) {
         this.extensionPoints = extensionPoints;
     }
     public WireFormatProvider createReferenceWireFormatProvider(RuntimeEndpointReference endpointReference) {
-        return new XMLWireFormatReferenceProvider(extensionPoints, endpointReference);
+        return new JSONWireFormatReferenceProvider(extensionPoints, endpointReference);
     }
 
     public WireFormatProvider createServiceWireFormatProvider(RuntimeEndpoint endpoint) {
-        return new XMLWireFormatServiceProvider(extensionPoints, endpoint);
+        return new JSONWireFormatServiceProvider(extensionPoints, endpoint);
     }
 
-    public Class<XMLWireFormat> getModelType() {
-        return XMLWireFormat.class;
+    public Class<JSONWireFormat> getModelType() {
+        return JSONWireFormat.class;
     }
 
 }

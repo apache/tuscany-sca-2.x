@@ -16,4 +16,5 @@
 # under the License. 
 
 # Implementation class for the wire format provider factory
-org.apache.tuscany.sca.binding.rest.operationselector.jaxrs.provider.JAXRSOperationSelectorProviderFctory;model=org.apache.tuscany.sca.binding.rest.operationselector.jaxrs.JAXRSOperationSelector
+org.apache.tuscany.sca.binding.rest.operationselector.jaxrs.provider.JAXRSOperationSelectorProviderFactory;model=org.apache.tuscany.sca.binding.rest.operationselector.jaxrs.JAXRSOperationSelector
+org.apache.tuscany.sca.binding.rest.operationselector.rpc.provider.RPCOperationSelectorProviderFactory;model=org.apache.tuscany.sca.binding.rest.operationselector.rpc.RPCOperationSelector

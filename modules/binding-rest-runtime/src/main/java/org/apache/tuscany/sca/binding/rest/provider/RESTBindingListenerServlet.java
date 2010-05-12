@@ -102,25 +102,6 @@ public class RESTBindingListenerServlet extends HttpServlet {
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         if( binding.getOperationSelector() != null || binding.getRequestWireFormat() != null) {
-            // Decode using the charset in the request if it exists otherwise
-            // use UTF-8 as this is what all browser implementations use.
-            String charset = request.getCharacterEncoding();
-            if (charset == null) {
-                charset = "UTF-8";
-            }
-
-            /*
-            BufferedReader in = new BufferedReader(new InputStreamReader(request.getInputStream(), charset));
-
-            // Read the request
-            CharArrayWriter data = new CharArrayWriter();
-            char[] buf = new char[4096];
-            int ret;
-            while ((ret = in.read(buf, 0, 4096)) != -1) {
-                data.write(buf, 0, ret);
-            }
-            */
-            
             HTTPContext bindingContext = new HTTPContext();
             bindingContext.setHttpRequest(request);
             bindingContext.setHttpResponse(response);
@@ -130,12 +111,6 @@ public class RESTBindingListenerServlet extends HttpServlet {
             requestMessage.setBindingContext(bindingContext);
             
             requestMessage.setBody(new Object[] {request.getInputStream()});
-            
-            /*
-            if(data.size() > 0) {
-                requestMessage.setBody(new Object[]{data});
-            }
-            */
             
             Message responseMessage = bindingInvoker.invoke(requestMessage);
             

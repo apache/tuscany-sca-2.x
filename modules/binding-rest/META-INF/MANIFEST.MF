@@ -1,6 +1,7 @@
 Manifest-Version: 1.0
 Export-Package: org.apache.tuscany.sca.binding.rest;version="2.0.0";uses:="org.apache.tuscany.sca.assembly,javax.xml.namespace,javax.servlet.http",
  org.apache.tuscany.sca.binding.rest.operationselector.jaxrs,
+ org.apache.tuscany.sca.binding.rest.operationselector.rpc,
  org.apache.tuscany.sca.binding.rest.wireformat.json;version="2.0.0",
  org.apache.tuscany.sca.binding.rest.wireformat.xml
 Bundle-Name: Apache Tuscany SCA REST Binding Model
