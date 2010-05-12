@@ -89,20 +89,23 @@ public class StoreTestCase {
     }
 
     @Test
-    @Ignore
     public void testStoreWidget() throws FailingHttpStatusCodeException, MalformedURLException, IOException {
         WebClient webClient = new WebClient(BrowserVersion.FIREFOX_3);
         webClient.setRedirectEnabled(true);
         webClient.setThrowExceptionOnScriptError(false);
-        webClient.waitForBackgroundJavaScript(50000);
-        webClient.waitForBackgroundJavaScriptStartingBefore(50000);
+        //webClient.waitForBackgroundJavaScript(100000);
+        //webClient.waitForBackgroundJavaScriptStartingBefore(100000);
         webClient.setAjaxController(new NicelyResynchronizingAjaxController());
 
         HtmlPage page = (HtmlPage) webClient.getPage("http://localhost:8080/store/store.html");
 
         HtmlForm form = (HtmlForm) page.getFormByName("catalogForm");
 
-
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+        }
+        
         HtmlCheckBoxInput catalogItems = (HtmlCheckBoxInput) form.getInputByName("items");
 
         System.out.println(">>>" + catalogItems.getAttribute("value"));
