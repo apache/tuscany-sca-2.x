@@ -33,7 +33,7 @@
 		<implementation.java class="services.FruitsCatalogImpl"/> 
 		<property name="currencyCode">USD</property>
 		<service name="Catalog">
-			<tuscany:binding.jsonrpc uri="/Catalog"/>
+			<tuscany:binding.jsonrpc uri="http://localhost:8080/sample-store-webapp/Catalog"/>
    		</service>
 		<reference name="currencyConverter" target="CurrencyConverter"/>	
 	</component> 
@@ -41,10 +41,10 @@
 	<component name="ShoppingCart">
 		<implementation.java class="services.ShoppingCartImpl"/>
 		<service name="Cart">
-			<tuscany:binding.atom uri="/ShoppingCart/Cart"/>
+			<tuscany:binding.atom uri="http://localhost:8080/sample-store-webapp/ShoppingCart/Cart"/>
 		</service>    	
 		<service name="Total">
-			<tuscany:binding.jsonrpc uri="/ShoppingCart/Total"/>
+			<tuscany:binding.jsonrpc uri="http://localhost:8080/sample-store-webapp/ShoppingCart/Total"/>
 		</service>    	
 	</component>
     
