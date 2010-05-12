@@ -45,6 +45,7 @@
         <module>manager</module>
         <module>repository</module>
 -->
+        <module>binding-ws</module>
     </modules>
 
 </project>
