@@ -115,9 +115,6 @@ public class RPCOperationSelectorInterceptor implements Interceptor {
                 }
             }
             
-            
-            System.out.println(messageParameters);
-            
             Object[] body = new Object[messageParameters.size()];
             messageParameters.toArray(body);
             
