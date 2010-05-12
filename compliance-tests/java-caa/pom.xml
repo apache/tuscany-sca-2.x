@@ -79,7 +79,6 @@
          <artifactId>maven-surefire-plugin</artifactId>
          <configuration>
            <excludes>
-              <exclude>**/JCA_8007_TestCase.java</exclude><!--  see TUSCANY-3482 -->
            </excludes>
          </configuration>
       </plugin>
