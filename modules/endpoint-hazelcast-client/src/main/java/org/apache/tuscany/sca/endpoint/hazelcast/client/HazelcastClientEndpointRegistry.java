@@ -80,6 +80,7 @@ public class HazelcastClientEndpointRegistry extends HazelcastEndpointRegistry {
         if (rc.getWKAs().size() < 1) {
             throw new IllegalArgumentException("Must specify remote IP address(es) for domain");
         }
+        this.domainURI = rc.getUserid(); // TODO: update to have bothe domain and userid
         this.hazelcastClient = HazelcastClient.newHazelcastClient(rc.getUserid(), rc.getPassword(), rc.getWKAs().toArray(new String[0]));
     }
 
