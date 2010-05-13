@@ -63,6 +63,7 @@ import org.apache.tuscany.sca.assembly.builder.BuilderContext;
 import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
 import org.apache.tuscany.sca.assembly.builder.ImplementationBuilder;
 import org.apache.tuscany.sca.assembly.builder.Messages;
+import org.apache.tuscany.sca.assembly.xsd.Constants;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
@@ -82,6 +83,7 @@ import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.policy.ExtensionType;
 import org.apache.tuscany.sca.policy.PolicySubject;
 import org.apache.tuscany.sca.xsd.XSDefinition;
+import org.apache.ws.commons.schema.XmlSchema;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -690,7 +692,7 @@ public class ComponentBuilderImpl {
         
         if (propertyXSDType != null){
             if (propertyXSDType.getNamespaceURI().equals("http://www.w3.org/2001/XMLSchema")) {
-                // The property has a simple schema type so we can uses the 
+                // The property has a simple schema type so we can use the 
                 // data binding framework to see if the XML value can be transformed 
                 // into a simple Java value
                 Document source = (Document)componentProperty.getValue();
@@ -723,23 +725,42 @@ public class ComponentBuilderImpl {
                                       
                         Document schemaDom = xsdDefinition.getSchema().getSchemaDocument();
                         
-                        String valueSchema = "<?xml version=\"1.0\" encoding=\"UTF-8\"?> " +
-                        		             "<schema xmlns=\"http://www.w3.org/2001/XMLSchema\" "+
-                                                     "xmlns:sca=\"http://docs.oasis-open.org/ns/opencsa/sca/200912\" "+
-                                                     "xmlns:__tmp=\"" + componentProperty.getXSDType().getNamespaceURI() + "\" "+
-                                                     "targetNamespace=\"http://docs.oasis-open.org/ns/opencsa/sca/200912\" " +
-                                                     "elementFormDefault=\"qualified\">" +
-                                                 "<import namespace=\"" + componentProperty.getXSDType().getNamespaceURI() + "\"/>" +
-                                                 "<element name=\"value\" type=\"" + "__tmp:" + componentProperty.getXSDType().getLocalPart() + "\"/>" +
-                                             "</schema>";
+                        String valueSchema = null; 
+                        Schema schema = null;
                         
-                        Source sources[] = {new DOMSource(schemaDom), new StreamSource(new StringReader(valueSchema))};
-                        
-                        // create a schema for the property based on all the DOMs from the schema collection
-                        // of the namspace of the property type
-                        // TODO - only getting the top level document here
-                        Schema schema = factory.newSchema(sources);
-                        
+                        if (componentProperty.getXSDType().getNamespaceURI().equals(Constants.SCA11_NS)){
+                            // include the referenced schema as it's already in the OASIS namespace
+                            valueSchema = "<?xml version=\"1.0\" encoding=\"UTF-8\"?> " +
+                                          "<schema xmlns=\"http://www.w3.org/2001/XMLSchema\" "+
+                                                  "xmlns:sca=\"http://docs.oasis-open.org/ns/opencsa/sca/200912\" "+
+                                                  "xmlns:__tmp=\"" + componentProperty.getXSDType().getNamespaceURI() + "\" "+
+                                                  "targetNamespace=\"http://docs.oasis-open.org/ns/opencsa/sca/200912\" " +
+                                                  "elementFormDefault=\"qualified\">" +
+                                              "<include schemaLocation=\"" + xsdDefinition.getLocation() + "\"/>" +
+//                                              "<element name=\"value\" type=\"" + "__tmp:" + componentProperty.getXSDType().getLocalPart() + "\"/>" +
+                                          "</schema>";
+//                            Source sources[] = {new StreamSource(new StringReader(valueSchema))};
+                            Source sources[] = {new DOMSource(schemaDom)};
+                            schema = factory.newSchema(sources);
+                            
+                            // The SCA schema already contains a "value" element so I can't create this schema
+                            // the SCA value element is an any so return assuming that it validates. 
+                            return; 
+                        } else {
+                            // import the referenced schema
+                            valueSchema = "<?xml version=\"1.0\" encoding=\"UTF-8\"?> " +
+                        		          "<schema xmlns=\"http://www.w3.org/2001/XMLSchema\" "+
+                                                  "xmlns:sca=\"http://docs.oasis-open.org/ns/opencsa/sca/200912\" "+
+                                                  "xmlns:__tmp=\"" + componentProperty.getXSDType().getNamespaceURI() + "\" "+
+                                                  "targetNamespace=\"http://docs.oasis-open.org/ns/opencsa/sca/200912\" " +
+                                                  "elementFormDefault=\"qualified\">" +
+                                              "<import namespace=\"" + componentProperty.getXSDType().getNamespaceURI() + "\"/>" +
+                                              "<element name=\"value\" type=\"" + "__tmp:" + componentProperty.getXSDType().getLocalPart() + "\"/>" +
+                                          "</schema>";
+                            Source sources[] = {new DOMSource(schemaDom), new StreamSource(new StringReader(valueSchema))};
+                            schema = factory.newSchema(sources);
+                        }
+                                                
                         // get the value child of the property element
                         Document property = (Document)componentProperty.getValue();
                         Element value = (Element)property.getDocumentElement().getFirstChild();

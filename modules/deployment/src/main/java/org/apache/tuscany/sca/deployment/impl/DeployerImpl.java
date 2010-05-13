@@ -404,10 +404,10 @@ public class DeployerImpl implements Deployer {
                     scaSchema.setLocation(scaSchemaURL.toURI());
                     scaSchema.setUnresolved(false); 
 //                    modelResolver.addModel(scaSchema, context);
-                    
+                } else if (namespace.equals(Constants.SCA11_NS)) { 
                     // we know that the SCA schema's are referenced form the Tuscany schemas so 
-                    // register the schema under the SCA namsepace too
-                    scaSchema = xsdFactory.createXSDefinition();
+                    // register the schema under the SCA namespace too
+                    XSDefinition scaSchema = xsdFactory.createXSDefinition();
                     scaSchema.setUnresolved(true);
                     scaSchema.setNamespace(Constants.SCA11_NS);
                     scaSchema.setLocation(scaSchemaURL.toURI());
