@@ -20,6 +20,7 @@
 package test.scaclient;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import itest.HelloworldService;
 
 import java.net.URI;
@@ -30,6 +31,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.oasisopen.sca.NoSuchDomainException;
 import org.oasisopen.sca.client.SCAClientFactory;
 
 /**
@@ -52,7 +54,7 @@ public class SCAClientTestCase {
     @Test
     public void testDefault() throws Exception {
 
-        node = NodeFactory.getInstance().createNode(URI.create("SCAClientTestCaseDomain"),(String)null, new String[] {"target/classes"});
+        node = NodeFactory.newInstance().createNode((String)null, new String[] {"target/classes"});
         node.start();
 
         HelloworldService service = SCAClientFactory.newInstance(URI.create("default")).getService(HelloworldService.class, "HelloworldComponent");
@@ -60,30 +62,48 @@ public class SCAClientTestCase {
     }
 
     @Test
+    public void testURIconfig() throws Exception {
+
+        node = NodeFactory.newInstance("uri:somedomain").createNode((String)null, new String[] {"target/classes"});
+        node.start();
+
+        HelloworldService service = SCAClientFactory.newInstance(URI.create("somedomain")).getService(HelloworldService.class, "HelloworldComponent");
+        assertEquals("Hello petra", service.sayHello("petra"));
+        try {
+            service = SCAClientFactory.newInstance(URI.create("nosuchdomain")).getService(HelloworldService.class, "HelloworldComponent");
+            service.sayHello("petra");
+            fail();
+        } catch (Exception e) {
+            if (!(e.getCause() instanceof NoSuchDomainException)) {
+                throw e;
+            }
+        }
+    }
+
+    @Test
     public void testExplicit() throws Exception {
-        node = NodeFactory.getInstance().createNode(URI.create("myFooDomain"), new String[] {"target/classes"});
+        node = NodeFactory.newInstance().createNode(URI.create("myFooDomain"), new String[] {"target/classes"});
         node.start();
 
         HelloworldService service = SCAClientFactory.newInstance(URI.create("myFooDomain")).getService(HelloworldService.class, "HelloworldComponent");
-        String s=  service.sayHello("petra");
         assertEquals("Hello petra", service.sayHello("petra"));
     }
 
     @Test
     public void testExplicitRemote() throws Exception {
-        node = NodeFactory.newInstance().createNode(URI.create("tuscany:myFooDomain?listen=127.0.0.1:14821"), new String[] {"target/classes"});
+        node = NodeFactory.newInstance("uri:myFooDomain?bind=127.0.0.1:14821").createNode((String)null, new String[] {"target/classes"});
         node.start();
 
-        HelloworldService service = SCAClientFactory.newInstance(URI.create("tuscany:myFooDomain?remotes=127.0.0.1:14821")).getService(HelloworldService.class, "HelloworldComponent");
+        HelloworldService service = SCAClientFactory.newInstance(URI.create("uri:myFooDomain?wka=127.0.0.1:14821")).getService(HelloworldService.class, "HelloworldComponent");
         assertEquals("Hello petra", service.sayHello("petra"));
     }
 
     @Test
     public void testExplicitRemote2() throws Exception {
-        node = NodeFactory.getInstance().createNode(URI.create("tuscany:myFooDomain?listen=127.0.0.1:14821"), new String[] {"target/classes"});
+        node = NodeFactory.newInstance("uri:myFooDomain?bind=127.0.0.1:14821").createNode((String)null, new String[] {"target/classes"});
         node.start();
 
-        HelloworldService service = SCAClientFactory.newInstance(URI.create("tuscany:myFooDomain?remotes=127.0.0.1:14821")).getService(HelloworldService.class, "HelloworldComponent");
+        HelloworldService service = SCAClientFactory.newInstance(URI.create("uri:myFooDomain?wka=127.0.0.1:14821")).getService(HelloworldService.class, "HelloworldComponent");
         assertEquals("Hello petra", service.sayHello("petra"));
     }
 
