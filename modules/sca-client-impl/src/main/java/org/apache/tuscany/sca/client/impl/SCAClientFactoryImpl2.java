@@ -47,19 +47,29 @@ public class SCAClientFactoryImpl2 extends SCAClientFactory {
 	@Override
     public <T> T getService(Class<T> serviceInterface, String serviceName) throws NoSuchServiceException, NoSuchDomainException {
         
+        boolean foundDomain = false;
         for (NodeFactory nodeFactory : NodeFactory.getNodeFactories()) {
             for (Node node : ((NodeFactoryImpl)nodeFactory).getNodes().values()) {
                 NodeImpl nodeImpl = (NodeImpl) node;
-                for (Endpoint ep : nodeImpl.getServiceEndpoints()) {
-                    if (ep.matches(serviceName)) {
-                        return node.getService(serviceInterface, serviceName);
+                String nodeDomain = nodeImpl.getConfiguration().getDomainURI();
+                if (nodeDomain.equals(getDomainURI().toString())) {
+                    foundDomain = true;
+                    for (Endpoint ep : nodeImpl.getServiceEndpoints()) {
+                        if (ep.matches(serviceName)) {
+                            return node.getService(serviceInterface, serviceName);
+                        }
                     }
                 }
             }
         }
         
+        // assume that if a local node with the looked for domain name is found then that will  
+        // know about all services in the domain so if the service isn't found then it doesn't exist
+        if (foundDomain) {
+            throw new NoSuchServiceException(serviceName);
+        }
+        
         InvocationHandler handler = new SCAClientHandler(getDomainURI().toString(), serviceName, serviceInterface);
         return (T)Proxy.newProxyInstance(serviceInterface.getClassLoader(), new Class[]{serviceInterface}, handler);
     }
-    
 }
