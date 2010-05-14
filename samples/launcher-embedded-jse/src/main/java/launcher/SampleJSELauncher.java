@@ -19,11 +19,10 @@
 
 package launcher;
 
-import static org.junit.Assert.assertEquals;
-
 import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 import calculator.CalculatorService;
 
@@ -37,7 +36,22 @@ public class SampleJSELauncher {
     public static void main(String[] args) throws Exception {
         SampleJSELauncher launcher = new SampleJSELauncher();
         
-        launcher.launchBindingWSCalculator();
+        String contribution = null;
+        
+        if (args == null || args.length != 1){
+            System.out.println("Please provide the name of the sample contribution to run as a parameter");
+            System.out.println("Running binding-ws-calculator by default");
+            contribution = "binding-ws-calculator";
+        } else {
+            contribution = args[0];
+        }   
+        
+        if (contribution.equals("binding-ws-calculator")){
+            launcher.launchBindingWSCalculator();
+        } else {
+            System.out.println("Sample contribution " + contribution + "not found");
+        }
+        
     }
     
     public Node startNode(Contribution... contributions){
@@ -54,10 +68,10 @@ public class SampleJSELauncher {
         Node node = startNode(new Contribution("c1", "../binding-ws-calculator/target/classes"));
         CalculatorService calculator = node.getService(CalculatorService.class, "CalculatorServiceComponent");
         
-        assertEquals(calculator.add(3, 2), 5.0, 0);
-        assertEquals(calculator.subtract(3, 2), 1.0, 0);
-        assertEquals(calculator.multiply(3, 2), 6.0, 0);
-        assertEquals(calculator.divide(3, 2), 1.5, 0);
+        // TODO - could use JUnit assertions but don't want to have to handle JUnit dependency from Ant script
+        if (calculator.add(3, 2) != 5.0){
+            throw new SampleLauncherException();
+        }
         
         stopNode(node);
     }
