@@ -30,6 +30,7 @@
                 <include>org.apache.tuscany.sca.shades:tuscany-base</include>
                 <include>com.hazelcast:*</include>
                 <include>wsdl4j:wsdl4j</include>
+                <include>org.apache.tuscany.sca:tuscany-sca-api</include>
             </includes>
         </dependencySet>
 
