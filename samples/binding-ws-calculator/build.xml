@@ -37,9 +37,8 @@
              target="1.5"
       	     failonerror="true"> 
          <classpath>
-            <fileset dir="${tuscany.home}/modules">
+            <fileset dir="${tuscany.home}/lib">
                <include name="tuscany-sca-api-*.jar" />
-               <include name="tuscany-node-api-*.jar" />
             </fileset>
          </classpath>
       </javac> 
