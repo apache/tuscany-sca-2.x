@@ -20,15 +20,18 @@ package launcher;
 
 import org.junit.Test;
 
-
-
 /**
- * Test the Calculator composition.
+ * Test sample contributions.
  */
 public class LauncherTestCase {
 
     @Test
-    public void testSample() throws Exception {
-        SampleJSELauncher.main(null);
+    public void testCOntributionBindingSCACalculator() throws Exception {
+        SampleJSELauncher.main(new String[] {"contribution-binding-sca-calculator"});
     }
+    
+    @Test
+    public void testCOntributionBindingWSCalculator() throws Exception {
+        SampleJSELauncher.main(new String[] {"contribution-binding-ws-calculator"});
+    }    
 }

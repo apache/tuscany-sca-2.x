@@ -21,8 +21,6 @@ package launcher;
 
 import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.Node;
-import org.apache.tuscany.sca.node.NodeFactory;
-import org.oasisopen.sca.ServiceRuntimeException;
 
 import calculator.CalculatorService;
 
@@ -31,7 +29,7 @@ import calculator.CalculatorService;
  * This client program shows how to create an embedded SCA runtime, start it,
  * and locate and invoke a SCA component 
  */
-public class SampleJSELauncher {
+public class SampleJSELauncher extends RuntimeIntegration {
     
     public static void main(String[] args) throws Exception {
         SampleJSELauncher launcher = new SampleJSELauncher();
@@ -40,34 +38,45 @@ public class SampleJSELauncher {
         
         if (args == null || args.length != 1){
             System.out.println("Please provide the name of the sample contribution to run as a parameter");
-            System.out.println("Running binding-ws-calculator by default");
-            contribution = "contribution-binding-ws-calculator";
+            System.out.println("Running binding-sca-calculator by default");
+            contribution = "contribution-binding-sca-calculator";
         } else {
             contribution = args[0];
         }   
         
-        if (contribution.equals("contribution-binding-ws-calculator")){
+        if (contribution.equals("contribution-binding-sca-calculator")){
+            launcher.launchBindingSCACalculator();
+        } else if (contribution.equals("contribution-binding-ws-calculator")){
             launcher.launchBindingWSCalculator();
         } else {
             System.out.println("Sample contribution " + contribution + "not found");
         }
+    }
+       
+    /**
+     * The contribution-binding-sca-calculator contribution includes a client component 
+     * that calls the CalculatorServiceComponent from an operation marked by @Init. 
+     */
+    public void launchBindingSCACalculator(){
+        Node node = startNode(new Contribution("c1", "../contribution-binding-sca-calculator/target/classes"));
         
-    }
+        //CalculatorService calculator = node.getService(CalculatorService.class, "CalculatorServiceComponent");
+        // TODO - could use JUnit assertions but don't want to have to handle JUnit dependency from Ant script
+        //double result = calculator.add(3, 2);
+        //System.out.println("3 + 2 = " + result);
+        //if (result != 5.0){
+        //    throw new SampleLauncherException();
+        //}        
+        stopNode(node);
+    }    
     
-    public Node startNode(Contribution... contributions){
-        Node node = NodeFactory.newInstance().createNode(contributions);
-        node.start();
-        return node;
-    }
-    
-    public void stopNode(Node node){
-        node.stop();
-    }
-    
+    /*
+     * Using a Tuscany specific mechanism for getting at local service proxies
+     */
     public void launchBindingWSCalculator(){
         Node node = startNode(new Contribution("c1", "../contribution-binding-ws-calculator/target/classes"));
-        CalculatorService calculator = node.getService(CalculatorService.class, "CalculatorServiceComponent");
         
+        CalculatorService calculator = node.getService(CalculatorService.class, "CalculatorServiceComponent");
         // TODO - could use JUnit assertions but don't want to have to handle JUnit dependency from Ant script
         double result = calculator.add(3, 2);
         System.out.println("3 + 2 = " + result);

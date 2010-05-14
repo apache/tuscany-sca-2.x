@@ -54,7 +54,7 @@
 		<echo>Please use 'ant run-name-of-sample-contribution-to-run' </echo>
     </target>
 
-    <target name="run-contribution-binding-ws-calculator" depends="compile">
+    <target name="run-contribution-binding-sca-calculator" depends="compile">
         <java classname="${main.class}"
               fork="true"
         	  failonerror="true">
@@ -64,8 +64,22 @@
                    <include name="tuscany-sca-manifest.jar" />
                 </fileset>
             </classpath> 
-        	<arg value="contribution-binding-ws-calculator"/> 
+        	<arg value="contribution-binding-sca-calculator"/> 
         </java>    	
     </target>
+	
+    <target name="run-contribution-binding-ws-calculator" depends="compile">
+        <java classname="${main.class}"
+              fork="true"
+              failonerror="true">
+            <classpath>  
+                <pathelement location="target/${jar.name}"/>
+                <fileset dir="${tuscany.home}/features">
+                   <include name="tuscany-sca-manifest.jar" />
+                </fileset>
+            </classpath> 
+            <arg value="contribution-binding-ws-calculator"/> 
+        </java>     
+    </target>	
 
 </project>
