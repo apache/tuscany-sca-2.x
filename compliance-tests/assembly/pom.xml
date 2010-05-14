@@ -78,7 +78,6 @@
          <configuration>
            <excludes>
               <!-- Real otest/Tuscany problems -->
-              <exclude>**/ASM_4005_TestCase.java</exclude><!--  see TUSCANY-xxxx -->
               <exclude>**/ASM_10002_TestCase.java</exclude><!--  see TUSCANY-3503 -->
 
               <!-- actually is working but the err msgs come out in a different order so the msg text test fails -->
