@@ -43,7 +43,6 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-                <module>binding-ws-calculator</module>
                 <module>calculator</module>
                 <module>calculator-equinox</module>
                 <module>calculator-osgi</module>
@@ -76,6 +75,30 @@
                 <module>webapps/helloworld-jsp</module>
                 <module>webapps/helloworld-stripes</module>
                 <module>webapps/helloworld-servlet</module>
+
+                <!-- contributions - SCA samples -->
+
+                <module>contribution-binding-ws-calculator</module>
+
+                <!-- contributions - Tuscany samples -->
+
+                <!-- TODO -->
+
+                <!-- contribution launchers -->
+
+                <!-- don't need to process this as it has just a README in it
+                <module>launcher-command-line</module>
+                -->
+                <module>launcher-embedded-jse</module>
+
+                <!-- don't add yet
+                <module>launcher-embedded-osgi</module>
+                -->
+
+                <!-- Application samples -->
+
+                <!-- TODO -->
+
             </modules>
         </profile>
     </profiles>    

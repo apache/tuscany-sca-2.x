@@ -41,12 +41,12 @@ public class SampleJSELauncher {
         if (args == null || args.length != 1){
             System.out.println("Please provide the name of the sample contribution to run as a parameter");
             System.out.println("Running binding-ws-calculator by default");
-            contribution = "binding-ws-calculator";
+            contribution = "contribution-binding-ws-calculator";
         } else {
             contribution = args[0];
         }   
         
-        if (contribution.equals("binding-ws-calculator")){
+        if (contribution.equals("contribution-binding-ws-calculator")){
             launcher.launchBindingWSCalculator();
         } else {
             System.out.println("Sample contribution " + contribution + "not found");
@@ -65,11 +65,13 @@ public class SampleJSELauncher {
     }
     
     public void launchBindingWSCalculator(){
-        Node node = startNode(new Contribution("c1", "../binding-ws-calculator/target/classes"));
+        Node node = startNode(new Contribution("c1", "../contribution-binding-ws-calculator/target/classes"));
         CalculatorService calculator = node.getService(CalculatorService.class, "CalculatorServiceComponent");
         
         // TODO - could use JUnit assertions but don't want to have to handle JUnit dependency from Ant script
-        if (calculator.add(3, 2) != 5.0){
+        double result = calculator.add(3, 2);
+        System.out.println("3 + 2 = " + result);
+        if (result != 5.0){
             throw new SampleLauncherException();
         }
         

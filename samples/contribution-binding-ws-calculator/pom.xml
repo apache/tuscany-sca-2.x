@@ -25,8 +25,8 @@
         <version>2.0-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
-    <artifactId>sample-binding-ws-calculator</artifactId>
-    <name>Apache Tuscany SCA Sample Binding WS Calculator</name>
+    <artifactId>sample-contribution-binding-ws-calculator</artifactId>
+    <name>Apache Tuscany SCA Sample Binding WS Calculator Contribution</name>
 
     <repositories>
        <repository>
