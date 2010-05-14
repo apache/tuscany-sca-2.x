@@ -94,7 +94,7 @@
         <executions>
           <execution>
             <id>unpack</id>
-            <phase>compile</phase>
+            <phase>test-compile</phase>
             <goals>
               <goal>unpack</goal>
             </goals>
