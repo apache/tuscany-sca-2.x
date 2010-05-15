@@ -78,6 +78,7 @@
 
                 <!-- contributions - SCA samples -->
 
+                <module>contribution-binding-sca-calculator</module>
                 <module>contribution-binding-ws-calculator</module>
 
                 <!-- contributions - Tuscany samples -->
@@ -89,12 +90,10 @@
                 <!-- don't need to process this as it has just a README in it
                 <module>launcher-command-line</module>
                 -->
+<!-- breaking the hudson build
                 <module>launcher-embedded-jse</module>
-
-                <!-- don't add yet
                 <module>launcher-embedded-osgi</module>
-                -->
-
+-->
                 <!-- Application samples -->
 
                 <!-- TODO -->
