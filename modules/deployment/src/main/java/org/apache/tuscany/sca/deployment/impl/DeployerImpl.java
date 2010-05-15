@@ -44,6 +44,7 @@ import org.apache.tuscany.sca.assembly.builder.BuilderExtensionPoint;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.assembly.xsd.Constants;
+import org.apache.tuscany.sca.common.java.io.IOHelper;
 import org.apache.tuscany.sca.common.xml.stax.StAXHelper;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
@@ -401,7 +402,7 @@ public class DeployerImpl implements Deployer {
                     XSDefinition scaSchema = xsdFactory.createXSDefinition();
                     scaSchema.setUnresolved(true);
                     scaSchema.setNamespace(namespace);
-                    scaSchema.setLocation(scaSchemaURL.toURI());
+                    scaSchema.setLocation(IOHelper.toURI(scaSchemaURL));
                     scaSchema.setUnresolved(false); 
 //                    modelResolver.addModel(scaSchema, context);
                 } else if (namespace.equals(Constants.SCA11_NS)) { 
@@ -410,7 +411,7 @@ public class DeployerImpl implements Deployer {
                     XSDefinition scaSchema = xsdFactory.createXSDefinition();
                     scaSchema.setUnresolved(true);
                     scaSchema.setNamespace(Constants.SCA11_NS);
-                    scaSchema.setLocation(scaSchemaURL.toURI());
+                    scaSchema.setLocation(IOHelper.toURI(scaSchemaURL));
                     scaSchema.setUnresolved(false); 
                     modelResolver.addModel(scaSchema, context);                  
                 }
