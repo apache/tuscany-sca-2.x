@@ -255,7 +255,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
             // no definition, heuristically determine constructor
             Constructor[] constructors = clazz.getConstructors();
             if (constructors.length == 0) {
-                throw new NoConstructorException("No public constructor for class");
+                throw new NoConstructorException("[JCI50001] No public constructor for class");
             } else if (constructors.length == 1) {
                 // Only one constructor, take it
                 constructor = constructors[0];
@@ -266,7 +266,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
                         selected = ctor;
                         for (Constructor<T> ctor2 : constructors) {
                             if (selected != ctor2 && allArgsAnnotated(ctor2)) {
-                                throw new InvalidConstructorException("Multiple annotated constructors");
+                                throw new InvalidConstructorException("[JCI50005] Multiple annotated constructors");
                             }
                         }
                     }

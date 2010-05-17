@@ -54,7 +54,7 @@ public class ConstructorProcessor extends BaseJavaClassVisitor {
             type.getConstructors().put(constructor, definition);
             if (constructor.getAnnotation(org.oasisopen.sca.annotation.Constructor.class) != null) {
                 if (found) {
-                    throw new DuplicateConstructorException("Multiple constructors marked with @Constructor", constructor);
+                    throw new DuplicateConstructorException("[JCI50002] Multiple constructors marked with @Constructor", constructor);
                 }
                 found = true;
                 type.setConstructor(definition);
