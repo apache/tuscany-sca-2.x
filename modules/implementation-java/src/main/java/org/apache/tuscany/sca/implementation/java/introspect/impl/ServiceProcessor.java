@@ -89,7 +89,7 @@ public class ServiceProcessor extends BaseJavaClassVisitor {
         }
         
         if (annotation.value().length == 0) {
-            throw new IntrospectionException("JCA90059 The array of interfaces or classes specified by the value attribute of the @Service annotation MUST contain at least one element");
+            throw new IntrospectionException("[JCA90059] The array of interfaces or classes specified by the value attribute of the @Service annotation MUST contain at least one element");
         }
         Class<?>[] interfaces = annotation.value();
         if (annotation.names().length > 0) {
@@ -99,7 +99,7 @@ public class ServiceProcessor extends BaseJavaClassVisitor {
             Set<String> names = new HashSet<String>();
             names.addAll(Arrays.asList(annotation.names()));
             if (names.size() != annotation.names().length) {
-                throw new IntrospectionException("JCA90060 The value of each element in the @Service names array MUST be unique amongst all the other element values in the array");
+                throw new IntrospectionException("[JCA90060] The value of each element in the @Service names array MUST be unique amongst all the other element values in the array");
             }
         }
 
@@ -116,7 +116,7 @@ public class ServiceProcessor extends BaseJavaClassVisitor {
         for (Class<?> iface : interfaces) {
             for (Method m : iface.getMethods()) {
                 if (!hasMethod(m, ms)) {
-                    throw new IntrospectionException("[JCA90042] Implementation missing service method " + m.getName() + " service interface " + iface.getName());
+                    throw new IntrospectionException("[JCA90042,JCI20002] Implementation missing service method " + m.getName() + " service interface " + iface.getName());
                 }
             }
         }

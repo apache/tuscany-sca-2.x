@@ -117,7 +117,7 @@ public class ServiceProcessorTestCase {
             processor.visitClass(BadService.class, type);
             fail();
         } catch (IntrospectionException e) {
-            assertTrue(e.getMessage().startsWith("JCA90059"));
+            assertTrue(e.getMessage().startsWith("[JCA90059]"));
         }
     }
 
