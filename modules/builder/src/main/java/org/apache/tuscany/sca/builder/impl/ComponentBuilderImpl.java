@@ -26,7 +26,6 @@ import java.net.URLConnection;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
-import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Source;
@@ -89,7 +88,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 /**
  * @version $Rev$ $Date$
@@ -695,7 +693,8 @@ public class ComponentBuilderImpl {
                 // The property has a simple schema type so we can use the 
                 // data binding framework to see if the XML value can be transformed 
                 // into a simple Java value
-                Document source = (Document)componentProperty.getValue();
+                Document doc = (Document)componentProperty.getValue();
+                Node source = (doc == null) ? null : doc.getDocumentElement().getFirstChild();
                 DataType<XMLType> sourceDataType = new DataTypeImpl<XMLType>(DOMDataBinding.NAME, 
                                                                              Node.class,
                                                                              new XMLType(null, componentProperty.getXSDType()));
