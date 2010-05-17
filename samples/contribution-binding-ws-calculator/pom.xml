@@ -26,7 +26,7 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <artifactId>sample-contribution-binding-ws-calculator</artifactId>
-    <name>Apache Tuscany SCA Sample Binding WS Calculator Contribution</name>
+    <name>Apache Tuscany SCA Sample Contribution Binding WS Calculator</name>
 
     <repositories>
        <repository>

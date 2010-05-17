@@ -26,7 +26,7 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <artifactId>sample-launcher-embedded-jse</artifactId>
-    <name>Apache Tuscany SCA Sample Embedded Launcher JSE</name>
+    <name>Apache Tuscany SCA Sample Launcher Embedded JSE</name>
 
     <repositories>
        <repository>

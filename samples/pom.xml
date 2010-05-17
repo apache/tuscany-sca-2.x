@@ -90,10 +90,9 @@
                 <!-- don't need to process this as it has just a README in it
                 <module>launcher-command-line</module>
                 -->
-<!-- breaking the hudson build
                 <module>launcher-embedded-jse</module>
                 <module>launcher-embedded-osgi</module>
--->
+
                 <!-- Application samples -->
 
                 <!-- TODO -->
