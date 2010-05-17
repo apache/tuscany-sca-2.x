@@ -27,13 +27,21 @@ import javax.xml.ws.AsyncHandler;
 import javax.xml.ws.Response;
 
 import org.apache.tuscany.sca.invocation.MessageFactory;
+import org.apache.tuscany.sca.runtime.Invocable;
 import org.oasisopen.sca.ServiceReference;
 
 public class AsyncJDKInvocationHandler extends JDKInvocationHandler {
+    
     private static final long serialVersionUID = 1L;
 
     public AsyncJDKInvocationHandler(MessageFactory messageFactory, ServiceReference<?> callableReference) {
         super(messageFactory, callableReference);
+    }
+
+    public AsyncJDKInvocationHandler(MessageFactory messageFactory,
+                                     Class<?> businessInterface,
+                                     Invocable source) {
+        super(messageFactory, businessInterface, source);
     }
 
     @Override

@@ -314,6 +314,13 @@ public class EndpointReferenceBuilderImpl {
                             endpointRef.setTargetEndpoint(createEndpoint(false));
                             endpointRef.setStatus(EndpointReference.Status.RESOLVED_BINDING);
                         }
+                        
+                        if (reference.getCallbackService() != null) {
+                            Endpoint callbackEndpoint =
+                                createEndpoint(component, reference.getCallbackService(), false);
+                            endpointRef.setCallbackEndpoint(callbackEndpoint);
+                        }
+                        
                         reference.getEndpointReferences().add(endpointRef);
                         continue;
                     } // end if
@@ -345,6 +352,11 @@ public class EndpointReferenceBuilderImpl {
                     }
                     
                     endpointRef.setTargetEndpoint(endpoint);   
+                    if (reference.getCallbackService() != null) {
+                        Endpoint callbackEndpoint =
+                            createEndpoint(component, reference.getCallbackService(), false);
+                        endpointRef.setCallbackEndpoint(callbackEndpoint);
+                    }
                     reference.getEndpointReferences().add(endpointRef);
                 }
             }

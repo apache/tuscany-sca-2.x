@@ -251,8 +251,8 @@ public class ComponentContextImpl implements RuntimeComponentContext {
             String bindingName = null;
             int index = serviceName.indexOf('/');
             if (index != -1) {
-                serviceName = serviceName.substring(0, index);
                 bindingName = serviceName.substring(index + 1);
+                serviceName = serviceName.substring(0, index);
             }
             for (ComponentService service : component.getServices()) {
                 if (serviceName.equals(service.getName())) {

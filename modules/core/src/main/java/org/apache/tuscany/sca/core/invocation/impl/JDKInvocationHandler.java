@@ -38,6 +38,7 @@ import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.runtime.Invocable;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
 import org.oasisopen.sca.ServiceReference;
 import org.oasisopen.sca.ServiceRuntimeException;
@@ -48,10 +49,9 @@ import org.oasisopen.sca.ServiceRuntimeException;
 public class JDKInvocationHandler implements InvocationHandler, Serializable {
     private static final long serialVersionUID = -3366410500152201371L;
 
-    protected boolean conversational;
     protected MessageFactory messageFactory;
     protected Endpoint target;
-    protected RuntimeEndpointReference source;
+    protected Invocable source;
     protected ServiceReferenceExt<?> callableReference;
     protected Class<?> businessInterface;
 
@@ -59,7 +59,7 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
 
     protected transient Map<Method, InvocationChain> chains = new IdentityHashMap<Method, InvocationChain>();
 
-    public JDKInvocationHandler(MessageFactory messageFactory, Class<?> businessInterface, RuntimeEndpointReference source) {
+    public JDKInvocationHandler(MessageFactory messageFactory, Class<?> businessInterface, Invocable source) {
         this.messageFactory = messageFactory;
         this.source = source;
         this.businessInterface = businessInterface;
@@ -91,9 +91,12 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
             throw new ServiceRuntimeException("No runtime source is available");
         }
         
-        if (source.isOutOfDate()) {
-            source.rebuild();
-            chains.clear();
+        if (source instanceof RuntimeEndpointReference) {
+            RuntimeEndpointReference epr = (RuntimeEndpointReference)source;
+            if (epr.isOutOfDate()) {
+                epr.rebuild();
+                chains.clear();
+            }
         }
         
         InvocationChain chain = getInvocationChain(method, source);
@@ -188,6 +191,16 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
     }
 
     protected synchronized InvocationChain getInvocationChain(Method method, Invocable source) {
+        if (source instanceof RuntimeEndpoint) {
+            InvocationChain invocationChain = source.getBindingInvocationChain();
+            for (InvocationChain chain : source.getInvocationChains()) {
+                Operation operation = chain.getTargetOperation();
+                if (method.getName().equals(operation.getName())) {
+                    invocationChain.setTargetOperation(operation);
+                }
+            }
+            return source.getBindingInvocationChain();
+        }
         if (fixedWire && chains.containsKey(method)) {
             return chains.get(method);
         }
@@ -213,14 +226,18 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
         this.target = endpoint;
     }
 
-    protected Object invoke(InvocationChain chain, Object[] args, RuntimeEndpointReference source)
+    protected Object invoke(InvocationChain chain, Object[] args, Invocable source)
                          throws Throwable {
         Message msg = messageFactory.createMessage();
-        msg.setFrom(source);
+        if (source instanceof RuntimeEndpointReference) {
+            msg.setFrom((RuntimeEndpointReference)source);
+        }
         if (target != null) {
             msg.setTo(target);
         } else {
-            msg.setTo(source.getTargetEndpoint());
+            if (source instanceof RuntimeEndpointReference) {
+                msg.setTo(((RuntimeEndpointReference)source).getTargetEndpoint());
+            }
         }
         Invoker headInvoker = chain.getHeadInvoker();
         Operation operation = chain.getTargetOperation();

@@ -31,6 +31,7 @@ Import-Package: javax.xml.namespace,
  org.apache.tuscany.sca.policy;version="2.0.0",
  org.apache.tuscany.sca.runtime;version="2.0.0",
  org.apache.tuscany.sca.xsd;version="2.0.0",
+ org.apache.ws.commons.schema,
  org.oasisopen.sca;version="2.0.0",
  org.w3c.dom
 Bundle-SymbolicName: org.apache.tuscany.sca.builder

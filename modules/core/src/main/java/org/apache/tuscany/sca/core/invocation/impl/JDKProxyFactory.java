@@ -40,7 +40,9 @@ import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.runtime.Invocable;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.oasisopen.sca.ServiceReference;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 
 /**
@@ -61,8 +63,24 @@ public class JDKProxyFactory implements ProxyFactory, LifeCycleListener {
      * The original createProxy method assumes that the proxy doesn't want to 
      * share conversation state so sets the conversation object to null
      */
-    public <T> T createProxy(Class<T> interfaze, Invocable wire) throws ProxyCreationException {
-        ServiceReference<T> serviceReference = new ServiceReferenceImpl<T>(interfaze, wire, null);
+    public <T> T createProxy(final Class<T> interfaze, Invocable invocable) throws ProxyCreationException {
+        if (invocable instanceof RuntimeEndpoint) {
+            InvocationHandler handler;
+            if (isAsync(interfaze)) {
+                handler = new AsyncJDKInvocationHandler(messageFactory, interfaze, invocable);
+            } else {
+                handler = new JDKInvocationHandler(messageFactory, interfaze, invocable);
+            }
+            // Allow privileged access to class loader. Requires RuntimePermission in security policy.
+            ClassLoader cl = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+                public ClassLoader run() {
+                   return interfaze.getClassLoader();
+                }
+            });
+            T proxy = interfaze.cast(newProxyInstance(cl, new Class[] {interfaze}, handler));
+            return proxy;
+        }
+        ServiceReference<T> serviceReference = new ServiceReferenceImpl<T>(interfaze, invocable, null);
         return createProxy(serviceReference);
     }
     
@@ -105,7 +123,13 @@ public class JDKProxyFactory implements ProxyFactory, LifeCycleListener {
     }
 
     public <T> T createCallbackProxy(Class<T> interfaze, List<? extends Invocable> wires) throws ProxyCreationException {
-        ServiceReferenceImpl<T> callbackReference = new CallbackServiceReferenceImpl(interfaze, wires);
+        ServiceReferenceImpl<T> callbackReference = null;
+        try {
+            callbackReference = new CallbackServiceReferenceImpl(interfaze, wires);
+        } catch (ServiceRuntimeException e) {
+            // [rfeng] In case that the call is not from a bidirectional interface, the field should be injected with null
+            callbackReference = null;
+        }
         return callbackReference != null ? createCallbackProxy(callbackReference) : null;
     }
 

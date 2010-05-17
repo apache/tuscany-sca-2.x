@@ -35,6 +35,7 @@ import org.apache.tuscany.sca.core.invocation.impl.JDKInvocationHandler;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.runtime.Invocable;
+import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
 import org.oasisopen.sca.ServiceReference;
 
 /**
@@ -51,8 +52,15 @@ public class CglibProxyFactory implements ProxyFactory {
 
     }
 
-    public <T> T createProxy(Class<T> interfaze, Invocable wire) throws ProxyCreationException {
-        ServiceReference<T> serviceReference = new ServiceReferenceImpl(interfaze, wire, null);
+    public <T> T createProxy(final Class<T> interfaze, Invocable invocable) throws ProxyCreationException {
+        if (invocable instanceof RuntimeEndpoint) {
+            Enhancer enhancer = new Enhancer();
+            enhancer.setSuperclass(interfaze);
+            enhancer.setCallback(new CglibMethodInterceptor<T>(interfaze, invocable));
+            Object proxy = enhancer.create();
+            return interfaze.cast(proxy);
+        }        
+        ServiceReference<T> serviceReference = new ServiceReferenceImpl(interfaze, invocable, null);
         return createProxy(serviceReference);
     }
 
@@ -123,6 +131,10 @@ public class CglibProxyFactory implements ProxyFactory {
             invocationHandler = new JDKInvocationHandler(messageFactory, callableReference);
         }
 
+        public CglibMethodInterceptor(Class<?> interfaze, Invocable invocable) {
+            invocationHandler = new JDKInvocationHandler(messageFactory, interfaze, invocable);
+        }
+        
         public CglibMethodInterceptor(ServiceReferenceImpl<T> callbackReference) {
             invocationHandler = new JDKCallbackInvocationHandler(messageFactory, callbackReference);
         }

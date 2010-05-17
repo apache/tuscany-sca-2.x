@@ -40,7 +40,6 @@ import org.apache.tuscany.sca.assembly.builder.PolicyBuilder;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
-import org.apache.tuscany.sca.core.assembly.impl.RuntimeEndpointImpl;
 import org.apache.tuscany.sca.definitions.Definitions;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
@@ -202,9 +201,9 @@ public class EndpointReferenceBinderImpl implements EndpointReferenceBinder {
             // a remote binding
             
             // still need to check that the callback endpoint is set correctly
-            if (hasCallback(endpointReference) &&
-                endpointReference.getCallbackEndpoint() != null &&
-                endpointReference.getCallbackEndpoint().isUnresolved() == true ){
+            if (hasCallback(endpointReference) && 
+                (endpointReference.getCallbackEndpoint() == null 
+                    || endpointReference.getCallbackEndpoint().isUnresolved())) {
                 selectCallbackEndpoint(endpointReference,
                                        endpointReference.getReference().getCallbackService().getEndpoints(),
                                        matchAudit);
