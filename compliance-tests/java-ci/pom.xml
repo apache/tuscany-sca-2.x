@@ -107,7 +107,7 @@
                    <artifactId>oasis-javaci-test-runner</artifactId>
                    <version>1.0-SNAPSHOT</version>
                    <type>jar</type>
-                   <excludes>commons-logging.properties,oasis-sca-tests.properties</excludes>
+                   <excludes>commons-logging.properties,oasis-sca-tests.properties,tuscany-oasis-sca-tests-errors.properties</excludes>
                    <outputDirectory>${project.build.directory}/test-classes</outputDirectory>
                  </artifactItem>
                </artifactItems>
