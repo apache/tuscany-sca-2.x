@@ -22,6 +22,8 @@ import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 
+import javax.wsdl.Operation;
+import javax.wsdl.PortType;
 import javax.xml.namespace.QName;
 
 import org.apache.axiom.om.OMElement;
@@ -33,6 +35,7 @@ import org.apache.axis2.AxisFault;
 import org.apache.axis2.addressing.AddressingConstants;
 import org.apache.axis2.addressing.EndpointReference;
 import org.apache.axis2.addressing.EndpointReferenceHelper;
+import org.apache.axis2.addressing.wsdl.WSDL11ActionHelper;
 import org.apache.axis2.client.OperationClient;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
@@ -40,9 +43,11 @@ import org.apache.axis2.context.MessageContext;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.interfacedef.util.FaultException;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.RuntimeEndpointReference;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 
 /**
@@ -55,6 +60,11 @@ public class Axis2ReferenceBindingInvoker implements Invoker {
     public static final QName QNAME_WSA_FROM =
         new QName(AddressingConstants.Final.WSA_NAMESPACE, 
                   AddressingConstants.WSA_FROM,
+                  AddressingConstants.WSA_DEFAULT_PREFIX);
+    
+    public static final QName QNAME_WSA_ACTION =
+        new QName(AddressingConstants.Final.WSA_NAMESPACE, 
+                  AddressingConstants.WSA_ACTION,
                   AddressingConstants.WSA_DEFAULT_PREFIX);
     
     private RuntimeEndpointReference endpointReference;
@@ -134,6 +144,22 @@ public class Axis2ReferenceBindingInvoker implements Invoker {
                                              QNAME_WSA_FROM,
                                              AddressingConstants.Final.WSA_NAMESPACE);
             sh.addChild(epr);
+            
+            // Create wsa:Action header which is required by ws-addressing spec
+            String action = options.getAction();
+
+            if (action == null) {
+                PortType portType = ((WSDLInterface)wsBinding.getBindingInterfaceContract().getInterface()).getPortType();
+                Operation op = portType.getOperation(wsdlOperationName.getLocalPart(), null, null);
+                action =
+                    WSDL11ActionHelper.getActionFromInputElement(wsBinding.getWSDLDocument(), portType, op, op
+                        .getInput());
+            }
+
+            OMElement actionOM = sev.getOMFactory().createOMElement(QNAME_WSA_ACTION);
+            actionOM.setText(action == null ? "" : action);
+            sh.addChild(actionOM);
+            
             requestMC.setFrom(fromEPR);
         }
 
@@ -141,10 +167,10 @@ public class Axis2ReferenceBindingInvoker implements Invoker {
         // use dynamically specified target endpoint passed in on this call
         if (options.getTo() == null) {
             Endpoint ep = msg.getTo();
-            if (ep != null) {
+            if (ep != null && ep.getBinding() != null) {
                 requestMC.setTo(new EndpointReference(ep.getBinding().getURI()));
             } else {
-                throw new RuntimeException("Unable to determine destination endpoint");
+                throw new ServiceRuntimeException("Unable to determine destination endpoint");
             }
         } else {
             requestMC.setTo(new EndpointReference(options.getTo().getAddress())); 
