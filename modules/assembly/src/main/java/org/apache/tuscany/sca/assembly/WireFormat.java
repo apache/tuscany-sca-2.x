@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.sca.assembly;
 
+import javax.xml.namespace.QName;
+
 /**
  * Represents a wireFormat.
  * 
@@ -25,5 +27,5 @@ package org.apache.tuscany.sca.assembly;
  * @tuscany.spi.extension.inheritfrom
  */
 public interface WireFormat extends Base, Cloneable {
-
+    QName getSchemaName();
 }
