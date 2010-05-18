@@ -554,7 +554,9 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
     private NodeConfiguration createConfiguration(Contribution... contributions) {
         NodeConfigurationFactory factory = this;
         NodeConfiguration configuration = factory.createNodeConfiguration();
-        configuration.setDomainURI(properties.getProperty("defaultDomainName"));
+        if (properties.getProperty("defaultDomainName") != null) {
+            configuration.setDomainURI(properties.getProperty("defaultDomainName"));
+        }
         // Make sure a unique node URI is created for the same node factory
         configuration.setURI(generateNodeURI());
         if (contributions != null) {
