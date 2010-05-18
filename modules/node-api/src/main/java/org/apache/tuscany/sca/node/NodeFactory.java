@@ -195,6 +195,7 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);
         }
+        factories.add(nodeFactory);
         return nodeFactory;
     }
     
@@ -216,6 +217,7 @@ public abstract class NodeFactory extends DefaultNodeConfigurationFactory {
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);
         }
+        factories.add(nodeFactory);
         return nodeFactory;
     }
 
