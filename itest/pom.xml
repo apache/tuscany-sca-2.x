@@ -83,7 +83,7 @@
                 <module>scaclient-api-osgi</module>
                 <module>scaclient-api-remote</module>
                 <module>scopes</module>
-                <module>scdl</module>
+                <!-- module>scdl</module broken with sample refactoring -->
                 <module>services</module>
                 <module>service-reference</module>
                 <module>wires</module>              
