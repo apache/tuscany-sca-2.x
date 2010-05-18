@@ -56,13 +56,13 @@
 
     <modules>
         <module>legal-checks</module>
-        <module>contribution-binding-ws-calculator</module>
-        <module>launcher-embedded-jse</module>
 
 
         <!--module>implementation-java-calculator</module-->
 
 <!--
+        <module>contribution-binding-ws-calculator</module>
+        <module>launcher-embedded-jse</module>
         <module>calculator-rmi</module>
 -->
     </modules>
