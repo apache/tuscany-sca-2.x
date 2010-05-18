@@ -177,7 +177,7 @@ public class WebAppHelper {
     }
 
     private static WebAppServletHost getServletHost(final ServletContext servletContext) throws ServletException {
-        WebAppServletHost host = (WebAppServletHost) getServletHost(factory);
+        WebAppServletHost host = getServletHost(factory);
         host.init(new ServletConfig() {
             public String getInitParameter(String name) {
                 return servletContext.getInitParameter(name);
