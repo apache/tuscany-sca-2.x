@@ -59,6 +59,7 @@
                 <module>distribution</module>
                 <module>exceptions</module>
                 <module>implementation-spring</module>
+                <module>import-export</module>
                 <module>interfaces</module>
                 <module>jms</module>
                 <module>nodes</module>
