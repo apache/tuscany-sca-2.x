@@ -49,15 +49,11 @@ public class SCAClientFactoryImpl2 extends SCAClientFactory {
         
         boolean foundDomain = false;
         for (NodeFactory nodeFactory : NodeFactory.getNodeFactories()) {
-            for (Node node : ((NodeFactoryImpl)nodeFactory).getNodes().values()) {
-                NodeImpl nodeImpl = (NodeImpl) node;
-                String nodeDomain = nodeImpl.getConfiguration().getDomainURI();
-                if (nodeDomain.equals(getDomainURI().toString())) {
-                    foundDomain = true;
-                    for (Endpoint ep : nodeImpl.getServiceEndpoints()) {
-                        if (ep.matches(serviceName)) {
-                            return node.getService(serviceInterface, serviceName);
-                        }
+            for (Node node : ((NodeFactoryImpl)nodeFactory).getNodesInDomain(getDomainName())) {
+                foundDomain = true;
+                for (Endpoint ep : ((NodeImpl)node).getServiceEndpoints()) {
+                    if (ep.matches(serviceName)) {
+                        return node.getService(serviceInterface, serviceName);
                     }
                 }
             }
@@ -71,5 +67,11 @@ public class SCAClientFactoryImpl2 extends SCAClientFactory {
         
         InvocationHandler handler = new SCAClientHandler(getDomainURI().toString(), serviceName, serviceInterface);
         return (T)Proxy.newProxyInstance(serviceInterface.getClassLoader(), new Class[]{serviceInterface}, handler);
+    }
+
+    private String getDomainName() {
+        // TODO: if the domain URI encodes config (eg uri:someDomain?bla=etc) then need to parse the domain name
+        String domainName = getDomainURI().toString();
+        return domainName;
     }
 }
