@@ -25,8 +25,8 @@
         <version>2.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>itest-distribution-calculator-equinox</artifactId>
-    <name>Apache Tuscany SCA iTest Distribution calculator-equinox</name>
+    <artifactId>itest-distribution-contribution-binding-ws-calculator</artifactId>
+    <name>Apache Tuscany SCA iTest Distribution Contribution binding-ws Calculator</name>
 
     <profiles>
         <profile>
@@ -56,6 +56,7 @@
                         </goals>
                         <configuration>
                             <tasks> 
+                                <property name="java.home" value="${java.home}"/>
                                 <property name="tuscany.version" value="${version}" />
                                 <ant antfile="./build.xml" target="run"/>
                             </tasks>
@@ -63,21 +64,6 @@
                     </execution>
                 </executions>
             </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.5</version>
-                    <configuration>
-                        <includes>
-                            <include>**/*TestCase.java</include>
-                        </includes>
-                        <reportFormat>brief</reportFormat>
-                        <useFile>false</useFile>
-                        <forkMode>once</forkMode>
-                        <argLine>-ea -Xmx256m</argLine>
-                        <parallel>off</parallel>
-                    </configuration>
-                </plugin>
         </plugins>
     </build>
 </project>

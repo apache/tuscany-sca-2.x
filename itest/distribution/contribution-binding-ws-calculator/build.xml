@@ -18,6 +18,7 @@
 -->
 <project name="itest-samples" default="run"> 
 	
+	<echo>${java.home}</echo>
 	<!-- 
 	    compile and run each sample as though the user were running
 	    samples from the binary distribution. Here we use ant targets
@@ -30,9 +31,10 @@
     <property name="distro.root" value="../../../distribution/all/target/apache-tuscany-sca-all-${tuscany.version}.dir/tuscany-sca-${tuscany.version}" />
 
     <target name="run"> 
-        <ant antfile="build.xml" 
-             target="run-equinox"
-             dir="${distro.root}/samples/calculator-equinox"/>  	
+    	
+        <ant antfile="build.xml"
+             dir="${distro.root}/samples/contribution-binding-ws-calculator"/>
+
     </target>
 
 </project>

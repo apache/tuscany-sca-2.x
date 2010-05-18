@@ -55,15 +55,16 @@
     </profiles>
 
     <modules>
-        <module>implementation-java-calculator</module>
         <module>legal-checks</module>
-        <!-- comment out during sample re-org
-        <module>binding-ws-calculator</module>
-        -->
+        <module>contribution-binding-ws-calculator</module>
+        <module>launcher-embedded-jse</module>
+
+
+        <!--module>implementation-java-calculator</module-->
+
 <!--
         <module>calculator-rmi</module>
 -->
-        <module>calculator-equinox</module>
     </modules>
 
     <build>

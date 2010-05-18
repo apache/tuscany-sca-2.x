@@ -25,8 +25,8 @@
         <version>2.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>itest-distribution-binding-ws-calculator</artifactId>
-    <name>Apache Tuscany SCA iTest Distribution binding-ws-calculator</name>
+    <artifactId>itest-distribution-launcher-embedded-jse</artifactId>
+    <name>Apache Tuscany SCA iTest Distribution Launcher Embedded JSE</name>
 
     <profiles>
         <profile>
