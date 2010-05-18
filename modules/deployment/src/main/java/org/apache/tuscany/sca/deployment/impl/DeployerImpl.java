@@ -444,7 +444,7 @@ public class DeployerImpl implements Deployer {
         contribution.getDeployables().add(composite);
     }
 
-    public Composite build(List<Contribution> contributions, Map<QName, List<String>> bindingMap, Monitor monitor)
+    public Composite build(List<Contribution> contributions, List<Contribution> allContributions, Map<QName, List<String>> bindingMap, Monitor monitor)
         throws ContributionResolveException, CompositeBuilderException {
         init();
         List<Contribution> contributionList = new ArrayList<Contribution>(contributions);
@@ -504,8 +504,9 @@ public class DeployerImpl implements Deployer {
 
         // Build the contribution dependencies
         Set<Contribution> resolved = new HashSet<Contribution>();
+        
         for (Contribution contribution : contributionList) {
-            buildDependencies(contribution, contributionList, monitor);
+            buildDependencies(contribution, allContributions, monitor);
 
             // Resolve contributions
             for (Contribution dependency : contribution.getDependencies()) {

@@ -78,7 +78,7 @@ public interface Deployer extends LifeCycleListener {
      * @throws ContributionResolveException
      * @throws CompositeBuilderException
      */
-    Composite build(List<Contribution> contributions, Map<QName, List<String>> bindingBaseURIs, Monitor monitor)
+    Composite build(List<Contribution> contributions, List<Contribution> allContributions, Map<QName, List<String>> bindingBaseURIs, Monitor monitor)
         throws ContributionResolveException, CompositeBuilderException;
 
     /**

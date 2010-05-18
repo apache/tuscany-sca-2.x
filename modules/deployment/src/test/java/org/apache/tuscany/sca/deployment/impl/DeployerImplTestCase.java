@@ -79,7 +79,7 @@ public class DeployerImplTestCase {
     public void testBuild() throws Exception {
         Monitor monitor = deployer.createMonitor();
         Contribution contribution = deployer.loadContribution(contributionURL.toURI(), contributionURL, monitor);
-        Composite composite = deployer.build(Arrays.asList(contribution), null, monitor);
+        Composite composite = deployer.build(Arrays.asList(contribution), Arrays.asList(contribution), null, monitor);
         assertTrue(composite != null);
     }
 
