@@ -17,64 +17,41 @@
  * under the License.    
 -->
 
-<project name="calculator" default="run">
+<project name="calculator" default="compile">
+    <property name="tuscany.home" value="../.."/>
+    <property name="jar.name"   value="contribution-binding-sca-calculator.jar" />
+    
+    <echo>${tuscany.home}</echo>
 
-	<property name="jar.name"   value="sample-calculator.jar" />
-	<property name="main.class" value="calculator.CalculatorClient" />
-    <property name="aspectjweaver" value="../../bin/aspectjweaver.jar"/>
-    <property name="manifestjar" value="../../features/tuscany-sca-manifest.jar"/>
-
-	<target name="compile" depends="init">
-		<javac srcdir="src/main/java" destdir="target/classes" debug="on" source="1.5" target="1.5">
-               <classpath>
-                  <fileset dir="../../modules">
-                     <include name="tuscany-sca-api-*.jar" />
-                     <include name="tuscany-node-api-*.jar" />
-                  </fileset>
-               </classpath>
-		</javac>
-		<copy todir="target/classes">
-			<fileset dir="src/main/resources"/>
-		</copy>
-		<jar destfile="target/${jar.name}" basedir="target/classes">
-			<manifest>
-				<attribute name="Main-Class" value="${main.class}" />
-			</manifest>
-		</jar>
-	</target>
-
-	<target name="init">
-		<delete quiet="true" includeemptydirs="true">
-			<fileset dir="target"/>
-		</delete>
-		<mkdir dir="target/classes"/>
-	</target>
-
-	<target name="run" depends="compile">
-		<java classname="org.apache.tuscany.sca.launcher.LauncherMain"
-              fork="true"
-        	  failonerror="true">
-			<classpath>
-				<pathelement location="../../bin/launcher.jar"/>
-			</classpath>
-			<arg value="unmanaged"/>
-			<arg value="target/${jar.name}"/>
-		</java>
-	</target>
-
-	<target name="runtraced" depends="compile">
-		<java classname="calculator.CalculatorClient"
-              fork="true"
-        	  failonerror="true">
-			<classpath>
-                <pathelement location="${manifestjar}"></pathelement>
-                <pathelement location="target/${jar.name}"></pathelement>
-             </classpath>
-            <jvmarg value="-javaagent:${aspectjweaver}"/>
-			<arg value="unmanaged"/>
-			<arg value="target/${jar.name}"/>
-		</java>
-	</target>
+    <target name="init"> 
+      <delete quiet="true" includeemptydirs="true"> 
+         <fileset dir="target"/> 
+      </delete> 
+      <mkdir dir="target/classes"/> 
+    </target>
+    
+    <target name="compile" depends="init">
+      <javac srcdir="src/main/java" 
+             destdir="target/classes" 
+             debug="on"
+             source="1.5"
+             target="1.5"
+             failonerror="true"> 
+         <classpath>
+            <fileset dir="${tuscany.home}/lib">
+               <include name="tuscany-sca-api-*.jar" />
+            </fileset>
+         </classpath>
+      </javac> 
+      <copy todir="target/classes"> 
+         <fileset dir="src/main/resources"/> 
+      </copy> 
+      <jar destfile="target/${jar.name}" basedir="target/classes"> 
+         <manifest>
+            <attribute name="Main-Class" value="${main.class}" /> 
+         </manifest>
+      </jar>        
+    </target>
 </project>
 
 
