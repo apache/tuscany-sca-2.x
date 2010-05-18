@@ -48,6 +48,8 @@ public class SampleJSELauncher extends RuntimeIntegration {
             launcher.launchBindingSCACalculator();
         } else if (contribution.equals("contribution-binding-ws-calculator")){
             launcher.launchBindingWSCalculator();
+        } else if (contribution.equals("contribution-binding-rmi-calculator")){
+            launcher.launchBindingRMICalculator();            
         } else {
             System.out.println("Sample contribution " + contribution + "not found");
         }
@@ -86,5 +88,24 @@ public class SampleJSELauncher extends RuntimeIntegration {
         
         stopNode(node);
     }
+    
+    /*
+     * Using a Tuscany specific mechanism for getting at local service proxies
+     */
+    public void launchBindingRMICalculator(){
+        Node node1 = startNode(new Contribution("c1", "../binding-rmi/contribution-calculator-service/target/classes"));
+        Node node2 = startNode(new Contribution("c1", "../binding-rmi/contribution-calculator-reference/target/classes"));
+        
+        CalculatorService calculator = node2.getService(CalculatorService.class, "CalculatorServiceComponent");
+        // TODO - could use JUnit assertions but don't want to have to handle JUnit dependency from Ant script
+        double result = calculator.add(3, 2);
+        System.out.println("3 + 2 = " + result);
+        if (result != 5.0){
+            throw new SampleLauncherException();
+        }
+        
+        stopNode(node2);
+        stopNode(node1);
+    }    
     
 }
