@@ -31,7 +31,7 @@
     
   <modules>
     <module>args</module>
-    <module>callbacks</module>
+    <!-- module>callbacks</module -->
     <module>defaults</module>
     <module>DynamicReplyQ</module>
     <module>exceptions</module>
