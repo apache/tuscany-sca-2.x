@@ -155,6 +155,16 @@ public class NodeFactoryImpl extends NodeFactory {
         return nodes;
     }
 
+    public List<Node> getNodesInDomain(String domainName) {
+        List<Node> domainNodes = new ArrayList<Node>();
+        for (Node n : nodes.values()) {
+            if (domainName.equals(((NodeImpl)n).getConfiguration().getDomainURI())) {
+                domainNodes.add(n);
+            }
+        }
+        return domainNodes;
+    }
+
     protected Object getNodeKey(NodeConfiguration configuration) {
         return new NodeKey(configuration);
     }
@@ -226,16 +236,16 @@ public class NodeFactoryImpl extends NodeFactory {
 
         getExtensionPointRegistry();
         
-        // Use the runtime-enabled assembly factory
-        FactoryExtensionPoint modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
-        AssemblyFactory assemblyFactory = new RuntimeAssemblyFactory(registry);
-        modelFactories.addFactory(assemblyFactory);
-
         UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
         monitorFactory = utilities.getUtility(MonitorFactory.class);
 
         utilities.getUtility(RuntimeProperties.class).setProperties(properties);
         
+        // Use the runtime-enabled assembly factory
+        FactoryExtensionPoint modelFactories = registry.getExtensionPoint(FactoryExtensionPoint.class);
+        AssemblyFactory assemblyFactory = new RuntimeAssemblyFactory(registry);
+        modelFactories.addFactory(assemblyFactory);
+
         // Load the Deployer
         deployer = utilities.getUtility(Deployer.class);
 
@@ -259,6 +269,12 @@ public class NodeFactoryImpl extends NodeFactory {
             long end = currentTimeMillis();
             logger.fine("The tuscany runtime started in " + (end - start) + " ms.");
         }
+    }
+    
+    public void start() {
+        init();
+        DomainRegistryFactory domainRegistryFactory = ExtensibleDomainRegistryFactory.getInstance(registry);
+        domainRegistryFactory.getEndpointRegistry(properties.getProperty("reguri"), properties.getProperty("defaultDomainName"));
     }
 
     protected ExtensionPointRegistry createExtensionPointRegistry() {
@@ -286,7 +302,9 @@ public class NodeFactoryImpl extends NodeFactory {
         for (BindingConfiguration config : configuration.getBindings()) {
             bindingBaseURIs.put(config.getBindingType(), config.getBaseURIs());
         }
-        Composite domainComposite = deployer.build(contributions, bindingBaseURIs, monitor);
+        List<Contribution> allContributions = getAllContributions();
+        
+        Composite domainComposite = deployer.build(contributions, allContributions, bindingBaseURIs, monitor);
         analyzeProblems(monitor);
         
         // postBuildEndpointReferenceMatching(domainComposite);
@@ -294,6 +312,16 @@ public class NodeFactoryImpl extends NodeFactory {
         return domainComposite;
     }
     
+    private List<Contribution> getAllContributions() {
+        List<Contribution> contributions = new ArrayList<Contribution>();
+        for (NodeFactory f : getNodeFactories()) {
+            for (Node node : ((NodeFactoryImpl)f).getNodes().values()) {
+                contributions.addAll(((NodeImpl)node).getContributions());            
+            }
+        }
+        return contributions;
+    }
+
     // =============================================
     // TODO - TUSCANY-3425
     // post build endpoint reference matching. Give the matching algorithm
