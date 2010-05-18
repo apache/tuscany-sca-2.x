@@ -157,9 +157,11 @@ public class NodeFactoryImpl extends NodeFactory {
 
     public List<Node> getNodesInDomain(String domainName) {
         List<Node> domainNodes = new ArrayList<Node>();
-        for (Node n : nodes.values()) {
-            if (domainName.equals(((NodeImpl)n).getConfiguration().getDomainURI())) {
-                domainNodes.add(n);
+        if (nodes != null) {
+            for (Node n : nodes.values()) {
+                if (domainName.equals(((NodeImpl)n).getConfiguration().getDomainURI())) {
+                    domainNodes.add(n);
+                }
             }
         }
         return domainNodes;
@@ -302,7 +304,7 @@ public class NodeFactoryImpl extends NodeFactory {
         for (BindingConfiguration config : configuration.getBindings()) {
             bindingBaseURIs.put(config.getBindingType(), config.getBaseURIs());
         }
-        List<Contribution> allContributions = getAllContributions();
+        List<Contribution> allContributions = getAllContributions(configuration.getDomainURI());
         
         Composite domainComposite = deployer.build(contributions, allContributions, bindingBaseURIs, monitor);
         analyzeProblems(monitor);
@@ -312,10 +314,10 @@ public class NodeFactoryImpl extends NodeFactory {
         return domainComposite;
     }
     
-    private List<Contribution> getAllContributions() {
+    private List<Contribution> getAllContributions(String domainName) {
         List<Contribution> contributions = new ArrayList<Contribution>();
         for (NodeFactory f : getNodeFactories()) {
-            for (Node node : ((NodeFactoryImpl)f).getNodes().values()) {
+            for (Node node : ((NodeFactoryImpl)f).getNodesInDomain(domainName)) {
                 contributions.addAll(((NodeImpl)node).getContributions());            
             }
         }
