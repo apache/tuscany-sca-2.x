@@ -43,7 +43,6 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-                <module>calculator</module>
                 <module>calculator-osgi</module>
                 <module>calculator-rmi-reference</module>
                 <module>calculator-rmi-service</module>
