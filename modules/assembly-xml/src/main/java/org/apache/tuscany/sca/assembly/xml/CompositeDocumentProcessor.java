@@ -78,7 +78,7 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
         InputStream scdlStream = null;
         
         try {
-            scdlStream = IOHelper.openStream(url);;
+            scdlStream = IOHelper.openStream(url);
         } catch (IOException e) {
             ContributionReadException ce = new ContributionReadException("Exception reading " + uri, e);
             error(context.getMonitor(), "ContributionReadException", url, ce);
@@ -97,19 +97,17 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
             	monitor.setArtifactName(uri.toString());
             } //end if
             
-            // Set up a StreamSource for the composite file, since this has an associated URL that can be used to
-            // by the parser to find references to other files such as DTDs
+            // Set up a StreamSource for the composite file, since this has an associated URL that
+            // can be used by the parser to find references to other files such as DTDs
             StreamSource scdlSource = new StreamSource( scdlStream, url.toString() );
             XMLStreamReader reader = inputFactory.createXMLStreamReader(scdlSource);
-            
-            //XMLStreamReader reader = inputFactory.createXMLStreamReader(scdlStream);
             
             // set the monitor on the input factory as the standard XMLInputFactory
             // methods used for creating readers don't allow for the context to
             // be passed in
             ValidatingXMLInputFactory.setMonitor(reader, context.getMonitor());
             
-            //reader.nextTag();
+            // Read the header (i.e. text before the <composite> element, if any
             readCompositeFileHeader( reader );
             
             // Read the composite model
