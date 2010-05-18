@@ -299,32 +299,7 @@ Private-Package: org.apache.tuscany.sca.interfacedef.wsdl.impl;version
  ,org.apache.tuscany.sca.core.databinding.wire;version="2.0.0",org.apa
  che.tuscany.sca.assembly.builder.impl;version="2.0.0",org.apache.tusc
  any.sca.http.jetty;version="2.0.0"
-Bundle-ClassPath: asm-3.1.jar,wsdl4j-1.6.2.jar,.,hazelcast-client-1.8.
- 3.jar,cglib-2.2.jar,tuscany-endpoint-hazelcast-client-2.0-SNAPSHOT.ja
- r,tuscany-interface-java-2.0-SNAPSHOT.jar,tuscany-common-java-2.0-SNA
- PSHOT.jar,tuscany-builder-2.0-SNAPSHOT.jar,tuscany-assembly-xsd-2.0-S
- NAPSHOT.jar,tuscany-contribution-2.0-SNAPSHOT.jar,tuscany-interface-w
- sdl-2.0-SNAPSHOT.jar,tuscany-sca-api-2.0-SNAPSHOT.jar,tuscany-core-da
- tabinding-2.0-SNAPSHOT.jar,tuscany-node-impl-2.0-SNAPSHOT.jar,tuscany
- -binding-sca-runtime-2.0-SNAPSHOT.jar,tuscany-core-2.0-SNAPSHOT.jar,t
- uscany-implementation-web-2.0-SNAPSHOT.jar,tuscany-implementation-jav
- a-2.0-SNAPSHOT.jar,tuscany-binding-hazelcast-runtime-2.0-SNAPSHOT.jar
- ,tuscany-implementation-java-runtime-2.0-SNAPSHOT.jar,tuscany-assembl
- y-xml-2.0-SNAPSHOT.jar,tuscany-xsd-2.0-SNAPSHOT.jar,tuscany-endpoint-
- hazelcast-2.0-SNAPSHOT.jar,tuscany-wink-2.0-SNAPSHOT.jar,tuscany-comm
- on-xml-2.0-SNAPSHOT.jar,tuscany-monitor-2.0-SNAPSHOT.jar,tuscany-stri
- pes-2.0-SNAPSHOT.jar,tuscany-host-webapp-2.0-SNAPSHOT.jar,tuscany-lau
- ncher-2.0-SNAPSHOT.jar,tuscany-host-http-2.0-SNAPSHOT.jar,XmlSchema-1
- .4.3.jar,tuscany-sca-client-impl-2.0-SNAPSHOT.jar,tuscany-databinding
- -2.0-SNAPSHOT.jar,tuscany-extensibility-2.0-SNAPSHOT.jar,tuscany-asse
- mbly-2.0-SNAPSHOT.jar,tuscany-host-jetty-2.0-SNAPSHOT.jar,tuscany-bin
- ding-ws-wsdlgen-2.0-SNAPSHOT.jar,tuscany-binding-ws-runtime-jaxws-2.0
- -SNAPSHOT.jar,tuscany-domain-node-2.0-SNAPSHOT.jar,tuscany-node-api-2
- .0-SNAPSHOT.jar,tuscany-databinding-jaxb-2.0-SNAPSHOT.jar,tuscany-dep
- loyment-2.0-SNAPSHOT.jar,tuscany-core-spi-2.0-SNAPSHOT.jar,tuscany-bi
- nding-ws-runtime-jaxws-ri-2.0-SNAPSHOT.jar,tuscany-implementation-web
- -runtime-2.0-SNAPSHOT.jar,hazelcast-1.8.3.jar,tuscany-binding-ws-2.0-
- SNAPSHOT.jar,tuscany-interface-java-jaxws-2.0-SNAPSHOT.jar
+Bundle-ClassPath: .
 Bundle-Name: Apache Tuscany Base with No Dependencies
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 DynamicImport-Package: javax.transaction;version="1.1",javax.transacti
