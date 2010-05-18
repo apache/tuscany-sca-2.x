@@ -44,6 +44,7 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
 
 import org.apache.tuscany.sca.common.xml.dom.DOMHelper;
 import org.apache.tuscany.sca.common.xml.stax.impl.StAX2SAXAdapter;
@@ -134,7 +135,10 @@ public class StAXHelper {
 
     public XMLStreamReader createXMLStreamReader(URL url) throws XMLStreamException {
         try {
-            return createXMLStreamReader(openStream(url));
+        	// Set up a StreamSource from the url, since this has an associated URL that
+            // can be used by the parser to find references to other files such as DTDs
+            StreamSource scdlSource = new StreamSource( openStream(url), url.toString() );
+            return inputFactory.createXMLStreamReader(scdlSource);
         } catch (IOException e) {
             throw new XMLStreamException(e);
         }

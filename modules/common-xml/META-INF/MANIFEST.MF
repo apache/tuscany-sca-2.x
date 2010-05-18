@@ -29,7 +29,8 @@ Import-Package: javax.xml.datatype,
  org.xml.sax.helpers
 Bundle-SymbolicName: org.apache.tuscany.sca.common.xml
 Bundle-DocURL: http://www.apache.org/
-Export-Package: org.apache.tuscany.sca.common.xml;version="2.0.0";uses:="org.xml.sax",
+Export-Package: org.apache.tuscany.sca.common.xml;version="2.0.0";
+  uses:="org.xml.sax",
  org.apache.tuscany.sca.common.xml.dom;version="2.0.0";
   uses:="org.xml.sax.ext,
    javax.xml.transform,
