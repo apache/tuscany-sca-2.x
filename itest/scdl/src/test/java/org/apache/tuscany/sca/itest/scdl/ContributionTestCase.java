@@ -51,7 +51,7 @@ public class ContributionTestCase {
         URL url = file.toURI().toURL();
         Monitor monitor = deployer.createMonitor();
         Contribution contribution = deployer.loadContribution(url.toURI(), url, monitor);
-        deployer.build(Arrays.asList(contribution), null, monitor);
+        deployer.build(Arrays.asList(contribution), Arrays.asList(contribution), null, monitor);
         
         // Ferkle around in the contribution verifying it looks as expected
         Assert.assertNotNull(contribution);

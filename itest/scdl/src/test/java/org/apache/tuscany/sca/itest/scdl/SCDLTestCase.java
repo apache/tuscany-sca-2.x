@@ -97,7 +97,7 @@ public class SCDLTestCase {
         r = new URL(r, "../");
         Monitor monitor = deployer.createMonitor();
         Contribution contribution = deployer.loadContribution(URI.create("c1"), r, monitor);
-        deployer.build(Arrays.asList(contribution), null, monitor);
+        deployer.build(Arrays.asList(contribution), Arrays.asList(contribution), null, monitor);
         int i = 0;
         for (Problem p : monitor.getProblems()) {
             System.err.println(i + ": " + p);
