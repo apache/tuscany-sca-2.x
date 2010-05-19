@@ -28,12 +28,12 @@ import org.junit.Test;
 public class LauncherTestCase {
 
     @Test
-    public void testCOntributionBindingSCACalculator() throws Exception {
+    public void testContributionBindingSCACalculator() throws Exception {
         SampleJSELauncher.main(new String[] {"contribution-binding-sca-calculator"});
     }
     
     @Test
-    public void testCOntributionBindingWSCalculator() throws Exception {
+    public void testContributionBindingWSCalculator() throws Exception {
         SampleJSELauncher.main(new String[] {"contribution-binding-ws-calculator"});
     }    
 }
