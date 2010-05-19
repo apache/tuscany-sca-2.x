@@ -32,8 +32,13 @@
 
     <target name="run"> 
     	
-        <ant antfile="build.xml"
-             dir="${distro.root}/samples/launcher-embedded-osgi"/>
+<!-- Seems to be hanging in the console at the end of the OSGi run
+     configure it to run no tests for now
+        <ant dir="${distro.root}/samples/launcher-embedded-osgi"
+             target="run-contribution-binding-sca-calculator"/>
+-->
+
+        <ant dir="${distro.root}/samples/launcher-embedded-osgi"/>
 
     </target>
 
