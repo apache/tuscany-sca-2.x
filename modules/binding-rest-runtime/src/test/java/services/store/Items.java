@@ -17,38 +17,21 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.interfacedef.java.jaxrs;
+package services.store;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import java.util.List;
 
+/**
+ * 
+ */
+public class Items {
+    private List<Item> items;
 
-@Path("myURI")
-@Produces({"application/xml", "application/json"})
-@Consumes({"application/xml", "application/json"})
-public class ResourceWrapper implements Resource {
-    public static Resource delegate;
-
-    public ResourceWrapper() {
-        super();
+    public List<Item> getItems() {
+        return items;
     }
 
-
-    public String get() {
-        return delegate.get();
+    public void setItems(List<Item> items) {
+        this.items = items;
     }
-
-    public void create(String value) {
-        delegate.create(value);
-    }
-
-    public void delete() {
-        delegate.delete();
-    }
-
-    public void update(String value) {
-        delegate.update(value);
-    }
-
 }

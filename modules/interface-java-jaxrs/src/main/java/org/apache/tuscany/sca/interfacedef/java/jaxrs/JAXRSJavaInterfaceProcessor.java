@@ -21,10 +21,15 @@ package org.apache.tuscany.sca.interfacedef.java.jaxrs;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.HEAD;
+import javax.ws.rs.HttpMethod;
+import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 
@@ -35,68 +40,69 @@ import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
 import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceVisitor;
 
 public class JAXRSJavaInterfaceProcessor implements JavaInterfaceVisitor {
+    private static Map<String, Class<?>> mapping = new HashMap<String, Class<?>>();
+    static {
+        mapping.put(HttpMethod.GET, GET.class);
+        mapping.put(HttpMethod.POST, POST.class);
+        mapping.put(HttpMethod.PUT, PUT.class);
+        mapping.put(HttpMethod.DELETE, DELETE.class);
+        mapping.put(HttpMethod.HEAD, HEAD.class);
+        mapping.put(HttpMethod.OPTIONS, OPTIONS.class);
+    }
+
+    private boolean introspectHTTPMethod(JavaOperation operation) {
+        Method method = operation.getJavaMethod();
+
+        String methodName = null;
+        HttpMethod httpMethod = method.getAnnotation(HttpMethod.class);
+        if (httpMethod != null) {
+            methodName = httpMethod.value();
+        }
+        if (method.isAnnotationPresent(GET.class)) {
+            methodName = HttpMethod.GET;
+        } else if (method.isAnnotationPresent(POST.class)) {
+            methodName = HttpMethod.POST;
+        } else if (method.isAnnotationPresent(PUT.class)) {
+            methodName = HttpMethod.PUT;
+        } else if (method.isAnnotationPresent(DELETE.class)) {
+            methodName = HttpMethod.DELETE;
+        } else if (method.isAnnotationPresent(HEAD.class)) {
+            methodName = HttpMethod.HEAD;
+        } else if (method.isAnnotationPresent(OPTIONS.class)) {
+            methodName = HttpMethod.OPTIONS;
+        }
+
+        boolean jaxrs = false;
+        Class<?> type = mapping.get(methodName);
+        if (type != null) {
+            jaxrs = true;
+            operation.getAttributes().put(type, Boolean.TRUE);
+            Map<Object, Object> attrs = operation.getInterface().getAttributes();
+            List<Operation> operations = (List<Operation>)attrs.get(type);
+            if (operations == null) {
+                operations = new ArrayList<Operation>();
+                attrs.put(type, operations);
+                operations.add(operation);
+            } else {
+                operations.add(operation);
+            }
+        }
+
+        return jaxrs;
+
+    }
 
     public void visitInterface(JavaInterface contract) throws InvalidInterfaceException {
-        
-        final Class<?> clazz = contract.getJavaClass();
 
-        List<Operation> getOperations = new ArrayList<Operation>();
-        List<Operation> putOperations = new ArrayList<Operation>();
-        List<Operation> postOperations = new ArrayList<Operation>();
-        List<Operation> deleteOperations = new ArrayList<Operation>();
-        
         boolean hasJAXRSAnnotarions = false;
-        
+
         for (Operation op : contract.getOperations()) {
             final JavaOperation operation = (JavaOperation)op;
-            final Method method = operation.getJavaMethod();
-         
-            GET get = method.getAnnotation(GET.class);
-            if(get != null) {
+            if (introspectHTTPMethod(operation)) {
                 hasJAXRSAnnotarions = true;
-                operation.getAttributes().put(GET.class, true);
-                getOperations.add(operation);
-            }
-
-            PUT put = method.getAnnotation(PUT.class);
-            if(put != null) {
-                hasJAXRSAnnotarions = true;
-                operation.getAttributes().put(PUT.class, true);
-                putOperations.add(operation);
-            }
-            
-            POST post = method.getAnnotation(POST.class);
-            if(post != null) {
-                hasJAXRSAnnotarions = true;
-                operation.getAttributes().put(POST.class, true);
-                postOperations.add(operation);
-            }
-
-            DELETE delete = method.getAnnotation(DELETE.class);
-            if(delete != null) {
-                hasJAXRSAnnotarions = true;
-                operation.getAttributes().put(DELETE.class, true);
-                deleteOperations.add(operation);
             }
         }
-        
-        if(! getOperations.isEmpty()) {
-            contract.getAttributes().put(GET.class, getOperations);
-        }
 
-        if(! putOperations.isEmpty()) {
-            contract.getAttributes().put(PUT.class, putOperations);
-        }
-
-        if(! postOperations.isEmpty()) {
-            contract.getAttributes().put(POST.class, postOperations);
-        }
-
-        if(! deleteOperations.isEmpty()) {
-            contract.getAttributes().put(DELETE.class, deleteOperations);
-        }
-        
-        
         // Always set JAX-RS annotated interfaces as remotables
         if (hasJAXRSAnnotarions) {
             contract.setRemotable(true);

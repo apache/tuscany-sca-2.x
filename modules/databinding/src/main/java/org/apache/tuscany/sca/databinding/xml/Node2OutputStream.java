@@ -25,6 +25,7 @@ import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.databinding.BaseTransformer;
 import org.apache.tuscany.sca.databinding.PushTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
@@ -38,8 +39,14 @@ import org.w3c.dom.Node;
  */
 public class Node2OutputStream extends BaseTransformer<Node, OutputStream> implements
     PushTransformer<Node, OutputStream> {
-    private static final Source2ResultTransformer TRANSFORMER = new Source2ResultTransformer();
 
+    private final Source2ResultTransformer TRANSFORMER;
+    
+    public Node2OutputStream(ExtensionPointRegistry registry) {
+        super();
+        this.TRANSFORMER = new Source2ResultTransformer(registry);
+    }
+    
     public void transform(Node source, OutputStream writer, TransformationContext context) {
         try {
             Source domSource = new DOMSource(source);

@@ -24,6 +24,7 @@ import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.stream.StreamSource;
 
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.databinding.BaseTransformer;
 import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
@@ -36,8 +37,13 @@ import org.w3c.dom.Node;
  * @version $Rev$ $Date$
  */
 public class Reader2Node extends BaseTransformer<Reader, Node> implements PullTransformer<Reader, Node> {
-    private static final Source2ResultTransformer TRANSFORMER = new Source2ResultTransformer();
-
+    private final Source2ResultTransformer TRANSFORMER;
+    
+    public Reader2Node(ExtensionPointRegistry registry) {
+        super();
+        this.TRANSFORMER = new Source2ResultTransformer(registry);
+    }
+    
     public Node transform(Reader source, TransformationContext context) {
         try {
             Source streamSource = new StreamSource(source);

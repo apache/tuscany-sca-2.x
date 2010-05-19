@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.binding.rest.wireformat.json.provider;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.binding.rest.provider.RESTServiceBindingProvider;
 import org.apache.tuscany.sca.binding.rest.wireformat.json.JSONWireFormat;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.databinding.javabeans.SimpleJavaDataBinding;
@@ -30,6 +31,7 @@ import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Phase;
 import org.apache.tuscany.sca.provider.WireFormatProvider;
@@ -46,27 +48,44 @@ public class JSONWireFormatServiceProvider implements WireFormatProvider {
     
     private InterfaceContract serviceContract;
     private Binding binding;
+    private boolean jaxrs;
     
     public JSONWireFormatServiceProvider(ExtensionPointRegistry extensionPoints, RuntimeEndpoint endpoint) {
         this.extensionPoints = extensionPoints;
         this.endpoint = endpoint;
         this.binding = endpoint.getBinding();
+        this.jaxrs = isJAXRSResource();
+    }
+    
+    private boolean isJAXRSResource() {
+        Interface interfaze = endpoint.getComponentServiceInterfaceContract().getInterface();
+        if (interfaze instanceof JavaInterface) {
+            if (RESTServiceBindingProvider.isJAXRSResource(((JavaInterface)interfaze).getJavaClass())) {
+                return true;
+            }
+        } 
+        return false;
     }
     
     public InterfaceContract configureWireFormatInterfaceContract(InterfaceContract interfaceContract) {
         serviceContract = interfaceContract;
         
-        //set JSON databinding
-        setDataBinding(serviceContract.getInterface());
-        
-        //make JSON databinding default
-        serviceContract.getInterface().resetDataBinding(JSONDataBinding.NAME);
+        if (!jaxrs) {
+            //set JSON databinding
+            setDataBinding(serviceContract.getInterface());
+
+            //make JSON databinding default
+            serviceContract.getInterface().resetDataBinding(JSONDataBinding.NAME);
+        }
         
         return serviceContract;
     }
 
     public Interceptor createInterceptor() {
-        if(binding.getRequestWireFormat() != null && binding.getRequestWireFormat() instanceof JSONWireFormat) {
+        if (jaxrs) {
+            return null;
+        }
+        if (binding.getRequestWireFormat() != null && binding.getRequestWireFormat() instanceof JSONWireFormat) {
             return new JSONWireFormatInterceptor(extensionPoints, endpoint);
         }
         return null;

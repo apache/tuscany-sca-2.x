@@ -17,38 +17,33 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.interfacedef.java.jaxrs;
+package org.apache.tuscany.sca.databinding.json.jackson;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import java.io.InputStream;
 
+import org.apache.tuscany.sca.databinding.PullTransformer;
+import org.apache.tuscany.sca.databinding.TransformationContext;
+import org.apache.tuscany.sca.databinding.json.JSONDataBinding;
 
-@Path("myURI")
-@Produces({"application/xml", "application/json"})
-@Consumes({"application/xml", "application/json"})
-public class ResourceWrapper implements Resource {
-    public static Resource delegate;
+/**
+ * 
+ */
+public class InputStream2JSON implements PullTransformer<InputStream, Object> {
 
-    public ResourceWrapper() {
-        super();
+    public String getSourceDataBinding() {
+        return "application/json" + "#" + InputStream.class.getName();
     }
 
-
-    public String get() {
-        return delegate.get();
+    public String getTargetDataBinding() {
+        return JSONDataBinding.NAME;
     }
 
-    public void create(String value) {
-        delegate.create(value);
+    public int getWeight() {
+        return 10;
     }
 
-    public void delete() {
-        delegate.delete();
-    }
-
-    public void update(String value) {
-        delegate.update(value);
+    public Object transform(InputStream source, TransformationContext context) {
+        return JacksonHelper.createJsonParser(source);
     }
 
 }

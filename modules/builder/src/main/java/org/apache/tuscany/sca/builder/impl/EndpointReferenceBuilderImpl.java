@@ -315,11 +315,11 @@ public class EndpointReferenceBuilderImpl {
                             endpointRef.setStatus(EndpointReference.Status.RESOLVED_BINDING);
                         }
                         
-                        if (reference.getCallbackService() != null) {
-                            Endpoint callbackEndpoint =
-                                createEndpoint(component, reference.getCallbackService(), false);
-                            endpointRef.setCallbackEndpoint(callbackEndpoint);
-                        }
+//                        if (reference.getCallbackService() != null) {
+//                            Endpoint callbackEndpoint =
+//                                createEndpoint(component, reference.getCallbackService(), false);
+//                            endpointRef.setCallbackEndpoint(callbackEndpoint);
+//                        }
                         
                         reference.getEndpointReferences().add(endpointRef);
                         continue;
@@ -352,11 +352,11 @@ public class EndpointReferenceBuilderImpl {
                     }
                     
                     endpointRef.setTargetEndpoint(endpoint);   
-                    if (reference.getCallbackService() != null) {
-                        Endpoint callbackEndpoint =
-                            createEndpoint(component, reference.getCallbackService(), false);
-                        endpointRef.setCallbackEndpoint(callbackEndpoint);
-                    }
+//                    if (reference.getCallbackService() != null) {
+//                        Endpoint callbackEndpoint =
+//                            createEndpoint(component, reference.getCallbackService(), false);
+//                        endpointRef.setCallbackEndpoint(callbackEndpoint);
+//                    }
                     reference.getEndpointReferences().add(endpointRef);
                 }
             }

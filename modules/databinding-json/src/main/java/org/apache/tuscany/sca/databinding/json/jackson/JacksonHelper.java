@@ -20,13 +20,18 @@
 package org.apache.tuscany.sca.databinding.json.jackson;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Reader;
 import java.io.StringWriter;
 
+import org.codehaus.jackson.JsonEncoding;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.map.AnnotationIntrospector;
+import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.introspect.JacksonAnnotationIntrospector;
 import org.codehaus.jackson.xc.JaxbAnnotationIntrospector;
@@ -41,6 +46,8 @@ public class JacksonHelper {
         AnnotationIntrospector secondary = new JacksonAnnotationIntrospector();
         AnnotationIntrospector pair = new AnnotationIntrospector.Pair(primary, secondary);
         mapper.getDeserializationConfig().setAnnotationIntrospector(pair);
+        // [rfeng] To avoid complaints about javaClass
+        mapper.getDeserializationConfig().set(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, Boolean.FALSE);
         mapper.getSerializationConfig().setAnnotationIntrospector(pair);
         return mapper;
     }
@@ -79,4 +86,43 @@ public class JacksonHelper {
         }
     }
 
+    public static JsonParser createJsonParser(InputStream content) {
+        JsonFactory jsonFactory = new JsonFactory();
+        try {
+            return jsonFactory.createJsonParser(content);
+        } catch (IOException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+    
+    public static JsonParser createJsonParser(Reader content) {
+        JsonFactory jsonFactory = new JsonFactory();
+        try {
+            return jsonFactory.createJsonParser(content);
+        } catch (IOException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }  
+
+    public static void write(JsonNode node, OutputStream out) {
+        try {
+            JsonFactory jsonFactory = new JsonFactory();
+            JsonGenerator generator = jsonFactory.createJsonGenerator(out, JsonEncoding.UTF8);
+            generator.writeTree(node);
+        } catch (IOException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    public static void write(JsonParser parser, OutputStream out) {
+        try {
+            JsonFactory jsonFactory = new JsonFactory();
+            JsonGenerator generator = jsonFactory.createJsonGenerator(out, JsonEncoding.UTF8);
+            JsonNode node = parser.readValueAs(JsonNode.class);
+            generator.writeTree(node);
+        } catch (IOException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+    
 }

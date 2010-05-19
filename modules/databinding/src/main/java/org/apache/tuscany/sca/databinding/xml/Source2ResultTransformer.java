@@ -22,6 +22,8 @@ import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerFactory;
 
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.databinding.BaseTransformer;
 import org.apache.tuscany.sca.databinding.PushTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
@@ -34,11 +36,17 @@ import org.apache.tuscany.sca.databinding.TransformationException;
  */
 public class Source2ResultTransformer extends BaseTransformer<Source, Result> implements
     PushTransformer<Source, Result> {
-    private static final TransformerFactory FACTORY = TransformerFactory.newInstance();
+    private final TransformerFactory factory;
 
+    public Source2ResultTransformer(ExtensionPointRegistry registry) {
+        super();
+        FactoryExtensionPoint factories = registry.getExtensionPoint(FactoryExtensionPoint.class);
+        factory = factories.getFactory(TransformerFactory.class);
+    }
+    
     public void transform(Source source, Result result, TransformationContext context) {
         try {
-            javax.xml.transform.Transformer transformer = FACTORY.newTransformer();
+            javax.xml.transform.Transformer transformer = factory.newTransformer();
             transformer.transform(source, result);
         } catch (Exception e) {
             throw new TransformationException(e);

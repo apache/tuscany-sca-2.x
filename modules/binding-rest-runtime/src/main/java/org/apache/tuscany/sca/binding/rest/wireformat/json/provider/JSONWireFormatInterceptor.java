@@ -54,7 +54,9 @@ public class JSONWireFormatInterceptor implements Interceptor {
     
     public Message invoke(Message msg) {
         HTTPContext bindingContext = (HTTPContext) msg.getBindingContext();
-        
+        if (bindingContext == null) {
+            return getNext().invoke(msg);
+        }
         // Decode using the charset in the request if it exists otherwise
         // use UTF-8 as this is what all browser implementations use.
         String charset = bindingContext.getHttpRequest().getCharacterEncoding();

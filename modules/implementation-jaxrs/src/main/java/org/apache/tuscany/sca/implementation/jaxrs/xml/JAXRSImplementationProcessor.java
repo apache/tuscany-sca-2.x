@@ -20,11 +20,17 @@ package org.apache.tuscany.sca.implementation.jaxrs.xml;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 
+import javax.ws.rs.Path;
+import javax.ws.rs.core.Application;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.binding.rest.RESTBinding;
+import org.apache.tuscany.sca.binding.rest.RESTBindingFactory;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.contribution.processor.ContributionResolveException;
@@ -37,6 +43,11 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.implementation.jaxrs.JAXRSImplementation;
 import org.apache.tuscany.sca.implementation.jaxrs.JAXRSImplementationFactory;
+import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
+import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
  * Implements a StAX artifact processor for Web implementations.
@@ -45,11 +56,17 @@ public class JAXRSImplementationProcessor extends BaseStAXArtifactProcessor impl
     StAXArtifactProcessor<JAXRSImplementation> {
     private static final QName IMPLEMENTATION_JAXRS = JAXRSImplementation.TYPE;
 
+    private AssemblyFactory assemblyFactory;
     private JAXRSImplementationFactory implementationFactory;
+    private RESTBindingFactory restBindingFactory;
+    private JavaInterfaceFactory javaInterfaceFactory;
 
     public JAXRSImplementationProcessor(ExtensionPointRegistry extensionPoints) {
         FactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
+        this.assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         this.implementationFactory = modelFactories.getFactory(JAXRSImplementationFactory.class);
+        this.restBindingFactory = modelFactories.getFactory(RESTBindingFactory.class);
+        this.javaInterfaceFactory = modelFactories.getFactory(JavaInterfaceFactory.class);
     }
 
     public QName getArtifactType() {
@@ -91,6 +108,44 @@ public class JAXRSImplementationProcessor extends BaseStAXArtifactProcessor impl
         classReference = resolver.resolveModel(ClassReference.class, classReference, context);
         implementation.setApplicationClass(classReference.getJavaClass());
         implementation.setUnresolved(false);
+        
+        Application application;
+        try {
+            application = (Application) implementation.getApplicationClass().newInstance();
+        } catch (Exception e) {
+            throw new ContributionResolveException(e);
+        } 
+        
+        for(Class<?> rootResourceClass: application.getClasses()) {
+            addService(implementation, rootResourceClass);
+        }
+        for(Object rootResource: application.getSingletons()) {
+            addService(implementation, rootResource.getClass());
+        }
+        
+    }
+
+    private void addService(JAXRSImplementation implementation, Class<?> rootResourceClass) {
+        Service service = assemblyFactory.createService();
+        JavaInterfaceContract contract = javaInterfaceFactory.createJavaInterfaceContract();
+        JavaInterface javaInterface;
+        try {
+            javaInterface = javaInterfaceFactory.createJavaInterface(rootResourceClass);
+        } catch (InvalidInterfaceException e) {
+            throw new ServiceRuntimeException(e);
+        }
+        contract.setInterface(javaInterface);
+        service.setInterfaceContract(contract);
+        RESTBinding binding = restBindingFactory.createRESTBinding();
+        // FIXME: The @ApplicationPath is available for JAX-RS 1.1
+        // binding.setURI("/");
+        Path path = rootResourceClass.getAnnotation(Path.class);
+        if (path != null) {
+            binding.setURI(path.value());
+        }
+        service.getBindings().add(binding);
+        service.setName(rootResourceClass.getSimpleName());
+        implementation.getServices().add(service);
     }
 
     public void write(JAXRSImplementation implementation, XMLStreamWriter writer, ProcessorContext context)

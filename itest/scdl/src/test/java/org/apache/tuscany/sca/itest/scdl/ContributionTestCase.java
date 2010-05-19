@@ -47,7 +47,7 @@ public class ContributionTestCase {
     @Test
     public void testRead() throws Exception {
         Deployer deployer = new DefaultDeployer();
-        File file = new File("../../samples/calculator/target/sample-calculator.jar");
+        File file = new File("../../samples/contribution-binding-sca-calculator/target/sample-contribution-binding-sca-calculator.jar");
         URL url = file.toURI().toURL();
         Monitor monitor = deployer.createMonitor();
         Contribution contribution = deployer.loadContribution(url.toURI(), url, monitor);
@@ -56,7 +56,7 @@ public class ContributionTestCase {
         // Ferkle around in the contribution verifying it looks as expected
         Assert.assertNotNull(contribution);
         List<Composite> deployables = contribution.getDeployables();
-        Assert.assertEquals(1, deployables.size());
+        Assert.assertEquals(2, deployables.size());
         Composite calculatorComposte = deployables.get(0);
         Assert.assertEquals("Calculator", calculatorComposte.getName().getLocalPart());
         Assert.assertEquals(5, calculatorComposte.getComponents().size());

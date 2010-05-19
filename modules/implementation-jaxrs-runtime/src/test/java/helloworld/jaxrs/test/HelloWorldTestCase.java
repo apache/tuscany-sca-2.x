@@ -30,13 +30,11 @@ import org.apache.wink.client.ClientResponse;
 import org.apache.wink.client.RestClient;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * 
  */
-@Ignore
 public class HelloWorldTestCase {
     private static Node node;
 
@@ -55,6 +53,8 @@ public class HelloWorldTestCase {
     public void testDummy() {
         RestClient client = new RestClient();
         ClientResponse response = client.resource("http://localhost:8080/world").get();
+        String out = response.getEntity(String.class);
+        System.out.println(out);
         Assert.assertEquals(200, response.getStatusCode());
     }
 

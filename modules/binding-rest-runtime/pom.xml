@@ -35,11 +35,12 @@
             <artifactId>tuscany-binding-rest</artifactId>
             <version>2.0-SNAPSHOT</version>
         </dependency>
+                
 
         <dependency>
             <groupId>javax.ws.rs</groupId>
             <artifactId>jsr311-api</artifactId>
-            <version>1.0</version>
+            <version>1.1</version>
         </dependency>
         
         <dependency>
@@ -60,6 +61,12 @@
             <version>2.0-SNAPSHOT</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-core</artifactId>
+            <version>2.0-SNAPSHOT</version>
+        </dependency>
+        
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-databinding</artifactId>
@@ -109,7 +116,7 @@
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-interface-java-jaxrs</artifactId>
             <version>2.0-SNAPSHOT</version>
-            <scope>test</scope>
+            <scope>compile</scope>
         </dependency>
                         
         <dependency>
@@ -119,6 +126,18 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.wink</groupId>
+            <artifactId>wink-server</artifactId>
+            <version>1.1-incubating</version>
+        </dependency>        
+        
+        <dependency>
+            <groupId>org.apache.wink</groupId>
+            <artifactId>wink-client</artifactId>
+            <version>1.1-incubating</version>
+        </dependency>
+                        
         <dependency>
 	        <groupId>httpunit</groupId>
 	        <artifactId>httpunit</artifactId>

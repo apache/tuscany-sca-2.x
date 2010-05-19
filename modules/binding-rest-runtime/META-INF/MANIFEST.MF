@@ -18,11 +18,17 @@ Import-Package: javax.servlet,
  org.apache.tuscany.sca.binding.rest.wireformat.xml;version="2.0.0",
  org.apache.tuscany.sca.common.http;version="2.0.0",
  org.apache.tuscany.sca.core;version="2.0.0",
+ org.apache.tuscany.sca.databinding;version="2.0.0",
+ org.apache.tuscany.sca.databinding.javabeans;version="2.0.0",
+ org.apache.tuscany.sca.databinding.xml;version="2.0.0",
  org.apache.tuscany.sca.host.http;version="2.0.0",
  org.apache.tuscany.sca.interfacedef;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef.impl;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef.util;version="2.0.0",
  org.apache.tuscany.sca.invocation;version="2.0.0",
  org.apache.tuscany.sca.provider;version="2.0.0",
  org.apache.tuscany.sca.runtime;version="2.0.0",
+ org.oasisopen.sca;version="2.0.0",
  org.oasisopen.sca.annotation;version="2.0.0"
 Bundle-SymbolicName: org.apache.tuscany.sca.binding.rest.runtime
 Bundle-DocURL: http://www.apache.org/

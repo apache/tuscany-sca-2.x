@@ -80,7 +80,7 @@ public class BinaryServiceTestCase {
                                      "application/octet-stream");
         WebResponse response = wc.getResource(request);
 
-        Assert.assertEquals(200, response.getResponseCode());
+        Assert.assertEquals(204, response.getResponseCode());
         
         // Read the content
         request = new GetMethodWebRequest(SERVICE_URL);
@@ -94,7 +94,7 @@ public class BinaryServiceTestCase {
                                      "application/octet-stream");
         response = wc.getResource(request);
 
-        Assert.assertEquals(200, response.getResponseCode());
+        Assert.assertEquals(204, response.getResponseCode());
 
         //read new results and expect to get new item back in the response
         request = new GetMethodWebRequest(SERVICE_URL);

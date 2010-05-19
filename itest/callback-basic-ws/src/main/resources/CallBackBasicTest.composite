@@ -24,9 +24,9 @@
     <component name="CallBackBasicClient">
 		<implementation.java class="org.apache.tuscany.sca.test.CallBackBasicClientImpl"/>
 		<reference name="aCallBackService" target="CallBackBasicService">
-		  <callback>
-		     <binding.ws uri="http://localhost:8084/aCallBackService"/>
-		  </callback>
+		    <callback>
+		      <binding.ws uri="http://localhost:8084/aCallBackService"/>
+		    </callback>
 		</reference>
     </component> 
     
@@ -34,6 +34,9 @@
       <implementation.java class="org.apache.tuscany.sca.test.CallBackBasicServiceImpl"/>
       <service name="CallBackBasicService">
          <binding.ws uri="http://localhost:8085/CallBackBasicService"/>
+         <callback>
+            <binding.ws uri="http://localhost:8084/aCallBackService"/>
+         </callback>
       </service>
     </component>  
   

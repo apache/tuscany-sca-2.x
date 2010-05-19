@@ -19,18 +19,12 @@
 
 package org.apache.tuscany.sca.implementation.jaxrs.provider;
 
-import javax.servlet.Servlet;
-import javax.ws.rs.core.Application;
-
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.implementation.jaxrs.JAXRSImplementation;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
-import org.apache.wink.server.internal.servlet.RestServlet;
-import org.apache.wink.server.utils.RegistrationUtils;
-import org.oasisopen.sca.ServiceRuntimeException;
 
 /**
  * 
@@ -57,6 +51,7 @@ public class JAXRSImplementationProvider implements ImplementationProvider {
     }
 
     public void start() {
+        /*
         RestServlet restServlet = new RestServlet();
         host.addServletMapping("/*", restServlet);
         Application application;
@@ -66,13 +61,16 @@ public class JAXRSImplementationProvider implements ImplementationProvider {
             throw new ServiceRuntimeException(e);
         }
         RegistrationUtils.registerApplication(application, restServlet.getServletContext());
+        */
     }
 
     public void stop() {
+        /*
         Servlet servlet = host.removeServletMapping("/*");
         if (servlet != null) {
             servlet.destroy();
         }
+        */
     }
 
 }

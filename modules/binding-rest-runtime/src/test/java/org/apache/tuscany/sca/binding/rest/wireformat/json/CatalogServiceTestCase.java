@@ -40,11 +40,11 @@ import com.meterware.httpunit.WebResponse;
 public class CatalogServiceTestCase {
     private static final String SERVICE_URL = "http://localhost:8085/Catalog";
 
-    private static final String GET_RESPONSE = "[{\"price\":\"$1.55\",\"name\":\"Pear\",\"javaClass\":\"services.store.Item\"},{\"price\":\"$2.99\",\"name\":\"Apple\",\"javaClass\":\"services.store.Item\"},{\"price\":\"$3.55\",\"name\":\"Orange\",\"javaClass\":\"services.store.Item\"}]";
+    private static final String GET_RESPONSE = "{\"items\":[{\"price\":\"$1.55\",\"name\":\"Pear\"},{\"price\":\"$2.99\",\"name\":\"Apple\"},{\"price\":\"$3.55\",\"name\":\"Orange\"}]}";
     private static final String NEW_ITEM = "{\"price\":\"$4.35\",\"name\":\"Grape\"}\"";
-    private static final String GET_NEW_RESPONSE = "[{\"price\":\"$1.55\",\"name\":\"Pear\",\"javaClass\":\"services.store.Item\"},{\"price\":\"$2.99\",\"name\":\"Apple\",\"javaClass\":\"services.store.Item\"},{\"price\":\"$3.55\",\"name\":\"Orange\",\"javaClass\":\"services.store.Item\"},{\"price\":\"$4.35\",\"name\":\"Grape\",\"javaClass\":\"services.store.Item\"}]";
+    private static final String GET_NEW_RESPONSE = "{\"items\":[{\"price\":\"$1.55\",\"name\":\"Pear\"},{\"price\":\"$2.99\",\"name\":\"Apple\"},{\"price\":\"$3.55\",\"name\":\"Orange\"},{\"price\":\"$4.35\",\"name\":\"Grape\"}]}";
     private static final String UPDATED_ITEM = "{\"price\":\"$1.35\",\"name\":\"Grape\"}\"";
-    private static final String GET_UPDATED_RESPONSE = "[{\"price\":\"$1.55\",\"name\":\"Pear\",\"javaClass\":\"services.store.Item\"},{\"price\":\"$2.99\",\"name\":\"Apple\",\"javaClass\":\"services.store.Item\"},{\"price\":\"$3.55\",\"name\":\"Orange\",\"javaClass\":\"services.store.Item\"},{\"price\":\"$1.35\",\"name\":\"Grape\",\"javaClass\":\"services.store.Item\"}]";    
+    private static final String GET_UPDATED_RESPONSE = "{\"items\":[{\"price\":\"$1.55\",\"name\":\"Pear\"},{\"price\":\"$2.99\",\"name\":\"Apple\"},{\"price\":\"$3.55\",\"name\":\"Orange\"},{\"price\":\"$1.35\",\"name\":\"Grape\"}]}";    
     
     private static Node node;
 
@@ -76,6 +76,7 @@ public class CatalogServiceTestCase {
     public void testGetInvocation() throws Exception {        
         WebConversation wc = new WebConversation();
         WebRequest request = new GetMethodWebRequest(SERVICE_URL);
+        request.setHeaderField("Content-Type", "application/json");
         WebResponse response = wc.getResource(request);
 
         Assert.assertEquals(200, response.getResponseCode());
@@ -88,12 +89,14 @@ public class CatalogServiceTestCase {
         //Add new item to catalog
         WebConversation wc = new WebConversation();
         WebRequest request   = new PostMethodWebRequest(SERVICE_URL, new ByteArrayInputStream(NEW_ITEM.getBytes("UTF-8")),"application/json");
+        request.setHeaderField("Content-Type", "application/json");
         WebResponse response = wc.getResource(request);
 
-        Assert.assertEquals(200, response.getResponseCode());
+        Assert.assertEquals(204, response.getResponseCode());
         
         //read new results and expect to get new item back in the response
         request = new GetMethodWebRequest(SERVICE_URL);
+        request.setHeaderField("Content-Type", "application/json");
         response = wc.getResource(request);
         
         //for debug purposes
@@ -109,12 +112,14 @@ public class CatalogServiceTestCase {
         //Add new item to catalog
         WebConversation wc = new WebConversation();
         WebRequest request   = new PostMethodWebRequest(SERVICE_URL, new ByteArrayInputStream(UPDATED_ITEM.getBytes("UTF-8")),"application/json");
+        request.setHeaderField("Content-Type", "application/json");
         WebResponse response = wc.getResource(request);
 
-        Assert.assertEquals(200, response.getResponseCode());
+        Assert.assertEquals(204, response.getResponseCode());
         
         //read new results and expect to get new item back in the response
         request = new GetMethodWebRequest(SERVICE_URL);
+        request.setHeaderField("Content-Type", "application/json");
         response = wc.getResource(request);
         
         //for debug purposes

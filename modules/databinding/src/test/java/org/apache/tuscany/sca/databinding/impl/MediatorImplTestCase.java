@@ -87,8 +87,8 @@ public class MediatorImplTestCase {
 
         registry.addTransformer(new String2SAX(), true);
         registry.addTransformer(new SAX2DOMPipe(extensionPointRegistry), true);
-        registry.addTransformer(new Node2String(), true);
-        registry.addTransformer(new Node2Writer(), true);
+        registry.addTransformer(new Node2String(extensionPointRegistry), true);
+        registry.addTransformer(new Node2Writer(extensionPointRegistry), true);
 
         mediator = new MediatorImpl(dataBindingRegistry, registry);
     }

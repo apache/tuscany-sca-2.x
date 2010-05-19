@@ -68,7 +68,7 @@ public class DataObject2XMLStreamReaderTestCase extends SDOTransformerTestCaseBa
         XMLStreamReader2Node t2 = new XMLStreamReader2Node(new DefaultExtensionPointRegistry());
         org.w3c.dom.Node node = t2.transform(reader, context);
         assertNotNull(node);
-        Node2String t3 = new Node2String();
+        Node2String t3 = new Node2String(new DefaultExtensionPointRegistry());
         String xml = t3.transform(node, context);
         assertTrue(xml.contains("xmlns:xsi"));
     }

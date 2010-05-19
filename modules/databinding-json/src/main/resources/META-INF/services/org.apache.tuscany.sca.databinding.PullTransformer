@@ -18,15 +18,17 @@
 # Implementation classes for the transformers
 org.apache.tuscany.sca.databinding.json.JSON2XMLStreamReader;source=JSON,target=javax.xml.stream.XMLStreamReader,weight=5000
 org.apache.tuscany.sca.databinding.json.XMLStreamReader2JSON;source=javax.xml.stream.XMLStreamReader,target=JSON,weight=5000,public=false
-org.apache.tuscany.sca.databinding.json.JavaBean2JSON;source=java:complexType,target=JSON,weight=80000,public=false
-org.apache.tuscany.sca.databinding.json.JavaBean2JSON;source=java:simpleType,target=JSON,weight=80000,public=false
+org.apache.tuscany.sca.databinding.json.jackson.Object2JSON;source=java:complexType,target=JSON,weight=90000,public=true
+org.apache.tuscany.sca.databinding.json.jackson.Object2JSON;source=java:simpleType,target=JSON,weight=90000,public=false
 org.apache.tuscany.sca.databinding.json.axiom.JSON2OMElement;source=JSON,target=org.apache.axiom.om.OMElement,weight=500
-org.apache.tuscany.sca.databinding.json.JavaBean2JSON;source=java:array,target=JSON,weight=80000,public=false
-org.apache.tuscany.sca.databinding.json.JavaBean2JSON;source=commonj.sdo.DataObject,target=JSON,weight=80000,public=false
-org.apache.tuscany.sca.databinding.json.JavaBean2JSON;source=javax.xml.bind.JAXBElement,target=JSON,weight=80000,public=false
-org.apache.tuscany.sca.databinding.json.JSON2JavaBean;source=JSON,target=java:complexType,weight=80000,public=false
-org.apache.tuscany.sca.databinding.json.JSON2JavaBean;source=JSON,target=java:simpleType,weight=80000,public=false
-org.apache.tuscany.sca.databinding.json.JSON2JavaBean;source=JSON,target=commonj.sdo.DataObject,weight=80000,public=false
-org.apache.tuscany.sca.databinding.json.JSON2JavaBean;source=JSON,target=javax.xml.bind.JAXBElement,weight=80000,public=false
-org.apache.tuscany.sca.databinding.json.JSON2JavaBean;source=JSON,target=java:array,weight=80000,public=false
+org.apache.tuscany.sca.databinding.json.jackson.Object2JSON;source=java:array,target=JSON,weight=90000,public=false
+org.apache.tuscany.sca.databinding.json.jackson.Object2JSON;source=commonj.sdo.DataObject,target=JSON,weight=90000,public=false
+org.apache.tuscany.sca.databinding.json.jackson.Object2JSON;source=javax.xml.bind.JAXBElement,target=JSON,weight=90000,public=false
+org.apache.tuscany.sca.databinding.json.jackson.JSON2Object;source=JSON,target=java:complexType,weight=90000,public=false
+org.apache.tuscany.sca.databinding.json.jackson.JSON2Object;source=JSON,target=java:simpleType,weight=90000,public=false
+org.apache.tuscany.sca.databinding.json.jackson.JSON2Object;source=JSON,target=commonj.sdo.DataObject,weight=90000,public=false
+org.apache.tuscany.sca.databinding.json.jackson.JSON2Object;source=JSON,target=javax.xml.bind.JAXBElement,weight=90000,public=false
+org.apache.tuscany.sca.databinding.json.jackson.JSON2Object;source=JSON,target=java:array,weight=90000,public=false
+
+org.apache.tuscany.sca.databinding.json.jackson.InputStream2JSON;source=application/json#java.io.InputStream;target=JSON,weight=50,public=true
 

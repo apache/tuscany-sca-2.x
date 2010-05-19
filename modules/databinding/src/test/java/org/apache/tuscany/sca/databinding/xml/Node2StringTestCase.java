@@ -20,6 +20,7 @@ package org.apache.tuscany.sca.databinding.xml;
 
 import org.apache.tuscany.sca.common.xml.dom.DOMHelper;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -32,10 +33,11 @@ public class Node2StringTestCase {
     
     @Test
     public void testTransformation() throws Exception {
-        Document document = DOMHelper.getInstance(new DefaultExtensionPointRegistry()).newDocument();
+        ExtensionPointRegistry registry = new DefaultExtensionPointRegistry();
+        Document document = DOMHelper.getInstance(registry).newDocument();
         Element element = document.createElementNS("http://ns1", "test");
         document.appendChild(element);
 
-        new Node2String().transform(document, null);
+        new Node2String(registry).transform(document, null);
     }
 }

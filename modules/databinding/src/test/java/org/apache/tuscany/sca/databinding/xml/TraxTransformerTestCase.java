@@ -28,6 +28,8 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.net.URL;
 
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Node;
@@ -50,22 +52,23 @@ public class TraxTransformerTestCase {
 
     @Test
     public void testTransformDOM() throws IOException {
+        ExtensionPointRegistry registry = new DefaultExtensionPointRegistry();
         InputStream is = url.openStream();
-        InputStream2Node t1 = new InputStream2Node();
+        InputStream2Node t1 = new InputStream2Node(registry);
         Node node = t1.transform(is, null);
         is.close();
         Writer writer = new StringWriter();
-        Node2Writer t2 = new Node2Writer();
+        Node2Writer t2 = new Node2Writer(registry);
         t2.transform(node, writer, null);
         String str = writer.toString();
         StringReader reader = new StringReader(str);
-        Reader2Node t3 = new Reader2Node();
+        Reader2Node t3 = new Reader2Node(registry);
         node = t3.transform(reader, null);
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        Node2OutputStream t4 = new Node2OutputStream();
+        Node2OutputStream t4 = new Node2OutputStream(registry);
         t4.transform(node, os, null);
         InputSource inputSource = new InputSource(new ByteArrayInputStream(os.toByteArray()));
-        InputSource2Node t5 = new InputSource2Node();
+        InputSource2Node t5 = new InputSource2Node(registry);
         node = t5.transform(inputSource, null);
     }
 

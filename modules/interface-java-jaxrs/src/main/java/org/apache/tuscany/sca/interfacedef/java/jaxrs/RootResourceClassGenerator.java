@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.interfacedef.java.jaxrs;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import org.objectweb.asm.AnnotationVisitor;
@@ -33,19 +34,27 @@ public class RootResourceClassGenerator implements Opcodes {
 
     private static final String DELEGATE_FIELD = "delegate";
 
-    public static Class<?> generateRootResourceClass(Class<?> interfaze, String path) throws Exception {
+    public static Class<?> generateRootResourceClass(Class<?> interfaze, String path, String consumes, String produces) throws Exception {
+        if (!interfaze.isInterface()) {
+            throw new IllegalArgumentException(interfaze + " is not an interface.");
+        }
         GeneratedClassLoader classLoader = new GeneratedClassLoader(interfaze.getClassLoader());
         String interfaceName = interfaze.getName();
         int index = interfaze.getName().lastIndexOf('.');
         String className =
             interfaceName.substring(0, index) + ".Generated" + interfaceName.substring(index + 1) + "Impl";
 
-        byte[] content = generate(interfaze, path);
+        byte[] content = generate(interfaze, path, consumes, produces);
         Class<?> cls = classLoader.getGeneratedClass(className, content);
         return cls;
     }
+    
+    public static void injectProxy(Class<?> generatedResourceClass, Object proxy) throws Exception {
+        Field field = generatedResourceClass.getField("delegate");
+        field.set(null, proxy);
+    }
 
-    public static byte[] generate(Class<?> interfaze, String path) throws Exception {
+    public static byte[] generate(Class<?> interfaze, String path, String consumes, String produces) throws Exception {
         String interfaceName = Type.getInternalName(interfaze);
         int index = interfaceName.lastIndexOf('/');
         String className =
@@ -56,6 +65,7 @@ public class RootResourceClassGenerator implements Opcodes {
         declareClass(cw, interfaceName, className);
 
         annotatePath(cw, path);
+        annotateContentTypes(cw, consumes, produces);
         declareField(cw, interfaceName);
         declareConstructor(cw, className);
 
@@ -141,5 +151,29 @@ public class RootResourceClassGenerator implements Opcodes {
         AnnotationVisitor av = cw.visitAnnotation("Ljavax/ws/rs/Path;", true);
         av.visit("value", path);
         av.visitEnd();
+    }
+    
+    // @Consumes(<contentTypes>)
+    // @Provides(<contentTypes>)
+    private static void annotateContentTypes(ClassWriter cw, String consumes, String produces) {
+        AnnotationVisitor av = null;
+        if (consumes != null) {
+            av = cw.visitAnnotation("Ljavax/ws/rs/Consumes;", true);
+            AnnotationVisitor av1 = av.visitArray("value");
+            for (String s : consumes.split("(,| )")) {
+                av1.visit(null, s.trim());
+            }
+            av1.visitEnd();
+            av.visitEnd();
+        }
+        if (produces != null) {
+            av = cw.visitAnnotation("Ljavax/ws/rs/Produces;", true);
+            AnnotationVisitor av1 = av.visitArray("value");
+            for (String s : produces.split("(,| )")) {
+                av1.visit(null, s.trim());
+            }
+            av1.visitEnd();
+            av.visitEnd();
+        }
     }
 }

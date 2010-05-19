@@ -317,8 +317,9 @@ The following components come under Apache Software License 2.0
  stripes-1.5.2.jar
  tranql-connector-1.1.jar
  tribes-6.0.26.jar
- wink-common-1.0-incubating.jar
- wink-server-1.0-incubating.jar 
+ wink-common-1.1-incubating.jar
+ wink-client-1.1-incubating.jar
+ wink-server-1.1-incubating.jar 
  woden-api-1.0M8.jar
  woden-impl-dom-1.0M8.jar
  wss4j-1.5.4.jar
@@ -700,7 +701,7 @@ jsr250-api-1.0.jar,
 jstl-1.1.2.jar,
 mail-1.4.jar, 
 servlet-api-2.5.jar, 
-jsr311-api-1.0.jar
+jsr311-api-1.1.jar
 
 COMMON DEVELOPMENT AND DISTRIBUTION LICENSE (CDDL) Version 1.0
 
@@ -1495,8 +1496,7 @@ THE POSSIBILITY OF SUCH DAMAGE.
 
 ================================================================================
 
-The slf4j-api-1.5.8.jar, slf4j-jdk14-1.5.8.jar, and slf4j-simple-1.5.8.jar
-are distributed under the license:
+The slf4j-api-1.5.11.jar and slf4j-jdk14-1.5.11.jar are distributed under the license:
 
 Copyright (c) 2004-2008 QOS.ch
  All rights reserved.

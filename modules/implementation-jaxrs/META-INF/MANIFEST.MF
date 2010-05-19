@@ -8,7 +8,9 @@ Bundle-Version: 2.0.0
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Implementation JAXRS Model
-Import-Package: javax.xml.stream;resolution:=optional,
+Import-Package: javax.ws.rs;version="1.0.0",
+ javax.ws.rs.core;version="1.0.0",
+ javax.xml.stream;resolution:=optional,
  org.apache.tuscany.sca.assembly;version="2.0.0",
  org.apache.tuscany.sca.assembly.builder;version="2.0.0",
  org.apache.tuscany.sca.assembly.impl;version="2.0.0",
@@ -18,6 +20,8 @@ Import-Package: javax.xml.stream;resolution:=optional,
  org.apache.tuscany.sca.contribution.resolver;version="2.0.0",
  org.apache.tuscany.sca.core;version="2.0.0",
  org.apache.tuscany.sca.implementation.jaxrs;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef;version="2.0.0",
+ org.apache.tuscany.sca.interfacedef.java;version="2.0.0",
  org.apache.tuscany.sca.monitor;version="2.0.0",
  org.apache.tuscany.sca.policy;version="2.0.0",
  org.apache.tuscany.sca.runtime;version="2.0.0",

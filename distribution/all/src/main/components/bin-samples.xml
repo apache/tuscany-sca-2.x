@@ -49,6 +49,9 @@
                 <include>webapps/helloworld-jsp/**/*</include>
                 <include>webapps/helloworld-servlet/**/*</include>
                 <include>webapps/helloworld-stripes/**/*</include>
+                <include>launcher-embedded-jse/**/*</include>
+                <include>launcher-embedded-osgi/**/*</include>
+                <include>launcher-command-line//**/*</include>
             </includes>
             <excludes>
                 <!-- General file/folders to exclude -->

@@ -133,7 +133,7 @@ public class JSONRPCDataTypeTestCase {
     @Test
     public void testList() throws Exception {
         JSONObject jsonRequest = new JSONObject(
-        "{ \"method\": \"echoList\", \"params\": [ {\"javaClass\": \"java.util.ArrayList\", \"list\": [0,1,2,3,4]}], \"id\": 8}");
+        "{ \"method\": \"echoList\", \"params\": [[0,1,2,3,4]], \"id\": 8}");
 
         WebConversation wc = new WebConversation();
         WebRequest request = new PostMethodWebRequest(SERVICE_URL,
@@ -144,7 +144,7 @@ public class JSONRPCDataTypeTestCase {
 
         JSONObject jsonResp = new JSONObject(response.getText());
 
-        Assert.assertEquals(0, jsonResp.getJSONObject("result").getJSONArray("list").get(0));
+        Assert.assertEquals(0, jsonResp.getJSONArray("result").get(0));
     }
 
     @Test
@@ -186,7 +186,7 @@ public class JSONRPCDataTypeTestCase {
     @Test
     public void testSet() throws Exception {
         JSONObject jsonRequest = new JSONObject(
-        "{ \"method\": \"echoSet\", \"params\": [ {\"javaClass\": \"java.util.HashSet\", \"set\": {\"1\": \"red\", \"2\": \"blue\"}}],\"id\": 11}");
+        "{ \"method\": \"echoSet\", \"params\": [[\"red\", \"blue\"]],\"id\": 11}");
 
         WebConversation wc = new WebConversation();
         WebRequest request = new PostMethodWebRequest(SERVICE_URL,
@@ -197,6 +197,6 @@ public class JSONRPCDataTypeTestCase {
 
         JSONObject jsonResp = new JSONObject(response.getText());
 
-        Assert.assertEquals("red", jsonResp.getJSONObject("result").getJSONObject("set").getString("red"));
+        Assert.assertEquals("red", jsonResp.getJSONArray("result").get(0));
     }
 }

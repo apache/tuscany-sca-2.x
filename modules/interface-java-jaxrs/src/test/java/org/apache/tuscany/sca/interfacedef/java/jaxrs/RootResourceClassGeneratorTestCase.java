@@ -22,7 +22,9 @@ package org.apache.tuscany.sca.interfacedef.java.jaxrs;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -33,10 +35,17 @@ import org.junit.Test;
 public class RootResourceClassGeneratorTestCase {
     @Test
     public void testGenerator() throws Exception {
-        Class<?> cls = RootResourceClassGenerator.generateRootResourceClass(Resource.class, "myURI");
+        Class<?> cls = RootResourceClassGenerator.generateRootResourceClass(Resource.class, "myURI", "application/xml,application/json", "application/xml,application/json");
         Assert.assertTrue(cls.isAnnotationPresent(Path.class));
         Path path = cls.getAnnotation(Path.class);
         Assert.assertEquals("myURI", path.value());
+        
+        Produces produces = cls.getAnnotation(Produces.class);
+        Assert.assertEquals("application/xml", produces.value()[0]);
+
+        Consumes consumes = cls.getAnnotation(Consumes.class);
+        Assert.assertEquals("application/json", consumes.value()[1]);
+        
         Field field = cls.getField("delegate");
         Assert.assertSame(Resource.class, field.getType());
 

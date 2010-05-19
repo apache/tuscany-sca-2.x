@@ -73,7 +73,7 @@ public class PushTransformationTestCase {
             new PipedTransformer<XMLStreamReader, ContentHandler, Node>(t2, new SAX2DOMPipe(registry));
         Node node = t3.transform(reader, null);
         Assert.assertNotNull(node);
-        Node2String t4 = new Node2String();
+        Node2String t4 = new Node2String(registry);
         String xml = t4.transform(node, null);
         Assert.assertTrue(xml != null && xml.indexOf("<shipDate>1999-12-05</shipDate>") != -1);
     }

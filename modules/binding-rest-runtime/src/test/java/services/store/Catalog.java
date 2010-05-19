@@ -33,7 +33,7 @@ import org.oasisopen.sca.annotation.Remotable;
 public interface Catalog {
     
     @GET
-    Item[] getItem();
+    Items getItem();
     
     @GET
     @Path("{id}")

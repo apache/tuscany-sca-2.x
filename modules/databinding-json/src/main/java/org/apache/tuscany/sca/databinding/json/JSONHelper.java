@@ -19,11 +19,14 @@
 
 package org.apache.tuscany.sca.databinding.json;
 
+import java.util.Collection;
+
 import org.apache.tuscany.sca.databinding.json.jackson.JacksonHelper;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.json.JSONArray;
 
 /**
  * @version $Rev$ $Date$
@@ -79,19 +82,22 @@ public class JSONHelper {
         return json;
     }
 
-    public static <T> T toJSON(String json, Class<T> type) {
+    public static Object toJSON(String json, Class<?> type) {
         if (type == JSONObject.class) {
             try {
-                return type.cast(new JSONObject(json));
+                return new JSONObject(json);
             } catch (JSONException e) {
                 throw new IllegalArgumentException(e);
             }
         } else {
             if (type == null) {
-                type = (Class<T>)org.json.JSONObject.class;
+                type = org.json.JSONObject.class;
             }
             try {
-                return type.cast(new org.json.JSONObject(json));
+                if (type == JSONArray.class || type.isArray() || Collection.class.isAssignableFrom(type)) {
+                    return new JSONArray(json);
+                }
+                return new org.json.JSONObject(json);
             } catch (org.json.JSONException e) {
                 throw new IllegalArgumentException(e);
             }

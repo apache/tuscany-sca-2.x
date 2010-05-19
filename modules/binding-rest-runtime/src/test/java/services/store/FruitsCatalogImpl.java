@@ -19,6 +19,7 @@
 
 package services.store;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,10 +47,10 @@ public class FruitsCatalogImpl implements Catalog {
         catalog.put("Pear", new Item("Pear", currencySymbol + currencyConverter.getConversion("USD", currencyCode, 1.55)));
     }
 
-    public Item[] getItem() {
-        Item[] catalogArray = new Item[catalog.size()];
-        catalog.values().toArray(catalogArray);
-        return catalogArray;
+    public Items getItem() {
+        Items items = new Items();
+        items.setItems(new ArrayList<Item>(catalog.values()));
+        return items;
     }
     
     public Item getItemById(String itemId) {

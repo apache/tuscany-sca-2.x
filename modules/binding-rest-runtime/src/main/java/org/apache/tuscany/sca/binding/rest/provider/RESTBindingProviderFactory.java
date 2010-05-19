@@ -50,8 +50,9 @@ public class RESTBindingProviderFactory implements BindingProviderFactory<RESTBi
     }
 
     public ReferenceBindingProvider createReferenceBindingProvider(RuntimeEndpointReference endpointReference) {
+        return new RESTReferenceBindingProvider(extensionPoints, endpointReference);
     	// Binding REST is currently NOT supporting References
-        return null;
+        // throw new UnsupportedOperationException("binding.rest for SCA references is not implemented yet.");
     }
 
     public ServiceBindingProvider createServiceBindingProvider(RuntimeEndpoint endpoint) {

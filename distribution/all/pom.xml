@@ -73,6 +73,7 @@
             <version>1.6.8</version>
         </dependency>
 
+        <!--
         <dependency>
             <groupId>org.apache.tuscany.sca.shades</groupId>
             <artifactId>tuscany-base</artifactId>
@@ -83,6 +84,7 @@
             <artifactId>tuscany-spring</artifactId>
             <version>2.0-SNAPSHOT</version>
         </dependency>
+        -->
 
     </dependencies>
 

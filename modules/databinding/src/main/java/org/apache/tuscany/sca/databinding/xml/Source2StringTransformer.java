@@ -24,6 +24,8 @@ import javax.xml.transform.Source;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.databinding.BaseTransformer;
 import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
@@ -36,11 +38,17 @@ import org.apache.tuscany.sca.databinding.TransformationException;
  */
 public class Source2StringTransformer extends BaseTransformer<Source, String> implements
     PullTransformer<Source, String> {
-    private static final TransformerFactory FACTORY = TransformerFactory.newInstance();
+    private final TransformerFactory factory;
 
+    public Source2StringTransformer(ExtensionPointRegistry registry) {
+        super();
+        FactoryExtensionPoint factories = registry.getExtensionPoint(FactoryExtensionPoint.class);
+        factory = factories.getFactory(TransformerFactory.class);
+    }
+    
     public String transform(Source source, TransformationContext context) {
         try {
-            javax.xml.transform.Transformer transformer = FACTORY.newTransformer();
+            javax.xml.transform.Transformer transformer = factory.newTransformer();
             StringWriter sw = new StringWriter();
             StreamResult result = new StreamResult(sw);
             transformer.transform(source, result);

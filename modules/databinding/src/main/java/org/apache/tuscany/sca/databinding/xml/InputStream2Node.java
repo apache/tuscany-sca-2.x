@@ -24,6 +24,7 @@ import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.sax.SAXSource;
 
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.databinding.BaseTransformer;
 import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
@@ -38,8 +39,14 @@ import org.xml.sax.InputSource;
  */
 public class InputStream2Node extends BaseTransformer<InputStream, Node> implements
     PullTransformer<InputStream, Node> {
-    private static final Source2ResultTransformer TRANSFORMER = new Source2ResultTransformer();
+    private final Source2ResultTransformer TRANSFORMER;
+    
+    public InputStream2Node(ExtensionPointRegistry registry) {
+        super();
+        this.TRANSFORMER = new Source2ResultTransformer(registry);
+    }
 
+    
     public Node transform(InputStream source, TransformationContext context) {
         try {
             Source streamSource = new SAXSource(new InputSource(source));

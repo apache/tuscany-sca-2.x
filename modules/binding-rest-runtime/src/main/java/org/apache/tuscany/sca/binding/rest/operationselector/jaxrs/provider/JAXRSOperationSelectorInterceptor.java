@@ -83,6 +83,11 @@ public class JAXRSOperationSelectorInterceptor implements Interceptor {
     public Message invoke(Message msg) {
         try {
             HTTPContext bindingContext = (HTTPContext)msg.getBindingContext();
+            
+            // By-pass the operation selector
+            if (bindingContext == null) {
+                return getNext().invoke(msg);
+            }
 
             String path = URLDecoder.decode(HTTPUtil.getRequestPath(bindingContext.getHttpRequest()), "UTF-8");
 

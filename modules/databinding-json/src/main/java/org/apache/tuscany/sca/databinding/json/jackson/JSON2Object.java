@@ -54,8 +54,9 @@ public class JSON2Object implements PullTransformer<Object, Object> {
                 return mapper.treeToValue((JsonNode)source, context.getTargetDataType().getPhysical());
             } else if (source instanceof JsonParser) {
                 return mapper.readValue((JsonParser)source, javaType);
+            } else {
+                return mapper.readValue(source.toString(), javaType);
             }
-            return null;
         } catch (Exception e) {
             throw new TransformationException(e);
         }

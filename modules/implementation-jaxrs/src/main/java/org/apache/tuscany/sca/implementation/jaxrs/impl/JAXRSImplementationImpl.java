@@ -18,10 +18,6 @@
  */
 package org.apache.tuscany.sca.implementation.jaxrs.impl;
 
-import java.util.Collections;
-import java.util.List;
-
-import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.impl.ImplementationImpl;
 import org.apache.tuscany.sca.implementation.jaxrs.JAXRSImplementation;
 
@@ -38,11 +34,6 @@ public class JAXRSImplementationImpl extends ImplementationImpl implements JAXRS
      */
     public JAXRSImplementationImpl() {
         super(TYPE);
-    }
-
-    public List<Service> getServices() {
-        // The Web implementation does not offer services
-        return Collections.emptyList();
     }
 
     public String getApplication() {

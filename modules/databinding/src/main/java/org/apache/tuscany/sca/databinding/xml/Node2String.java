@@ -20,6 +20,7 @@ package org.apache.tuscany.sca.databinding.xml;
 
 import java.io.StringWriter;
 
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.databinding.BaseTransformer;
 import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
@@ -32,8 +33,13 @@ import org.w3c.dom.Node;
  * @version $Rev$ $Date$
  */
 public class Node2String extends BaseTransformer<Node, String> implements PullTransformer<Node, String> {
-    private static final Node2Writer TRANSFORMER = new Node2Writer();
-
+    private final Node2Writer TRANSFORMER;
+    
+    public Node2String(ExtensionPointRegistry registry) {
+        super();
+        this.TRANSFORMER = new Node2Writer(registry);
+    }
+    
     public String transform(Node source, TransformationContext context) {
         try {
             StringWriter writer = new StringWriter();
