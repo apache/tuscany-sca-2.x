@@ -62,15 +62,8 @@ public class SampleJSELauncher extends RuntimeIntegration {
      * that calls the CalculatorServiceComponent from an operation marked by @Init. 
      */
     public void launchBindingSCACalculator(){
-        Node node = startNode(new Contribution("c1", "../contribution-binding-sca-calculator/target/classes"));
-        
-        //CalculatorService calculator = node.getService(CalculatorService.class, "CalculatorServiceComponent");
-        // TODO - could use JUnit assertions but don't want to have to handle JUnit dependency from Ant script
-        //double result = calculator.add(3, 2);
-        //System.out.println("3 + 2 = " + result);
-        //if (result != 5.0){
-        //    throw new SampleLauncherException();
-        //}        
+        Node node = startNode(new Contribution("c1", "../contribution-binding-sca-calculator/target/sample-contribution-binding-sca-calculator.jar"));
+              
         stopNode(node);
     }    
     

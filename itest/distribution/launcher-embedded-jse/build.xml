@@ -32,8 +32,9 @@
 
     <target name="run"> 
     	
-        <ant antfile="build.xml"
-             dir="${distro.root}/samples/launcher-embedded-jse"/>
+        <ant dir="${distro.root}/samples/launcher-embedded-jse"
+             target="run-contribution-binding-sca-calculator">
+        </ant>
 
     </target>
 
