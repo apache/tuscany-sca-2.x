@@ -19,7 +19,7 @@
 
 <project name="contribution-binding-rmi-calculator-reference" default="compile">
 
-    <property name="tuscany.home" value="../.."/>
+    <property name="tuscany.home" value="../../.."/>
     <property name="jar.name"   value="contribution-calculator-reference.jar" />
     
     <echo>${tuscany.home}</echo>
