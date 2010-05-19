@@ -56,15 +56,12 @@
 
     <modules>
         <module>legal-checks</module>
-
-
-        <!--module>implementation-java-calculator</module-->
-
-<!--
+        <module>contribution-binding-sca-calculator</module>
         <module>contribution-binding-ws-calculator</module>
+        <module>contribution-binding-rmi-calculator</module>
+        <module>contribution-implementation-java-calculator</module>
         <module>launcher-embedded-jse</module>
-        <module>calculator-rmi</module>
--->
+        <module>launcher-embedded-osgi</module>
     </modules>
 
     <build>

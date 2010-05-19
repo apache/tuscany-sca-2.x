@@ -30,22 +30,10 @@
     <property name="distro.root" value="../../../distribution/all/target/apache-tuscany-sca-all-${tuscany.version}.dir/tuscany-sca-${tuscany.version}" />
 
     <target name="run"> 
-    	
-       <parallel>
-
-            <daemons>
-               <ant antfile="build.xml" 
-                    dir="${distro.root}/samples/calculator-rmi-service"/>
-            </daemons>
-
-            <sequential>
-                <sleep seconds="25"/>
-                <ant antfile="build.xml"
-                     dir="${distro.root}/samples/calculator-rmi-reference"/>
-            </sequential>
-
-       </parallel>    	
-
+        <ant antfile="build.xml"
+             dir="${distro.root}/samples/binding-rmi/contribution-calculator-reference"/>
+        <ant antfile="build.xml"
+             dir="${distro.root}/samples/binding-rmi/contribution-calculator-service"/>
     </target>
 
 </project>
