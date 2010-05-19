@@ -47,7 +47,7 @@ public class ContributionTestCase {
     @Test
     public void testRead() throws Exception {
         Deployer deployer = new DefaultDeployer();
-        File file = new File("../../samples/contribution-binding-sca-calculator/target/sample-contribution-binding-sca-calculator.jar");
+        File file = new File("../../samples/binding-sca/contribution-calculator/target/sample-contribution-binding-sca-calculator.jar");
         URL url = file.toURI().toURL();
         Monitor monitor = deployer.createMonitor();
         Contribution contribution = deployer.loadContribution(url.toURI(), url, monitor);
