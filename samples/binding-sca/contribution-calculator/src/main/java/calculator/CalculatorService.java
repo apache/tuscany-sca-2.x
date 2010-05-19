@@ -1,4 +1,4 @@
-<!--
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,26 +15,23 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.    
--->
-<project name="itest-samples" default="run"> 
-	
-	<echo>${java.home}</echo>
-	<!-- 
-	    compile and run each sample as though the user were running
-	    samples from the binary distribution. Here we use ant targets
-	    in the first instance but for some tests we may want to run 
-	    jars directly or fire up webapp containers and deploy wars. In other cases
-	    we may need to run two samples together to provide reference and 
-	    service sides of the sample.
-	-->
+ */
+package calculator;
 
-    <property name="distro.root" value="../../../distribution/all/target/apache-tuscany-sca-all-${tuscany.version}.dir/tuscany-sca-${tuscany.version}" />
+import org.oasisopen.sca.annotation.Remotable;
 
-    <target name="run"> 
-    	
-        <ant antfile="build.xml"
-    	     dir="${distro.root}/samples/binding-sca/contribution-calculator"/>
-    	
-    </target>
+/**
+ * The Calculator service interface.
+ */
+@Remotable
+public interface CalculatorService {
 
-</project>
+    double add(double n1, double n2);
+
+    double subtract(double n1, double n2);
+
+    double multiply(double n1, double n2);
+
+    double divide(double n1, double n2);
+
+}

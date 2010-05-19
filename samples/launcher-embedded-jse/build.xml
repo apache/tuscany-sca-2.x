@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<project name="binding-ws-calculator" default="run"> 
+<project name="launcher-embedded-jse" default="run"> 
 	<property name="tuscany.home" value="../.."/>
     <property name="jar.name"   value="sample-launcher-embedded-jse.jar" />
     <property name="main.class" value="launcher.SampleJSELauncher" />

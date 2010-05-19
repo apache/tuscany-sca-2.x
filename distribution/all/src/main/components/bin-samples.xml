@@ -28,6 +28,7 @@
                 <include>contribution*/**/*</include>
                 <include>launcher*/**/*</include>
                 <include>binding-rmi/contribution*/**/*</include>
+                <include>binding-sca/contribution*/**/*</include>
                 <include>calculator-osgi/**/*</include>
                 <include>helloworld/**/*</include>
                 <include>helloworld-spring/**/*</include>

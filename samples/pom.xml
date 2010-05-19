@@ -73,9 +73,9 @@
 
                 <!-- contributions - SCA samples -->
 
-                <module>contribution-binding-sca-calculator</module>
-                <module>contribution-binding-ws-calculator</module>
                 <module>binding-rmi</module>
+                <module>binding-sca</module>
+                <module>contribution-binding-ws-calculator</module>
                 <module>contribution-implementation-java-calculator</module>
 
                 <!-- contributions - Tuscany samples -->

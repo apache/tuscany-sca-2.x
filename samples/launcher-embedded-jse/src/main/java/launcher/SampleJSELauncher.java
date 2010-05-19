@@ -62,7 +62,7 @@ public class SampleJSELauncher extends RuntimeIntegration {
      * that calls the CalculatorServiceComponent from an operation marked by @Init. 
      */
     public void launchBindingSCACalculator(){
-        Node node = startNode(new Contribution("c1", "../contribution-binding-sca-calculator/target/sample-contribution-binding-sca-calculator.jar"));
+        Node node = startNode(new Contribution("c1", "../binding-sca/contribution-calculator/target/sample-contribution-binding-sca-calculator.jar"));
               
         stopNode(node);
     }    
