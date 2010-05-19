@@ -33,7 +33,7 @@
     <target name="run"> 
     	
         <ant antfile="build.xml"
-    	     dir="${distro.root}/samples/implementation-java-calculator"/>
+    	     dir="${distro.root}/samples/contribution-implementation-java-calculator"/>
     	
     </target>
 
