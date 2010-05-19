@@ -44,8 +44,6 @@
             </activation>
             <modules>
                 <module>calculator-osgi</module>
-                <module>calculator-rmi-reference</module>
-                <module>calculator-rmi-service</module>
                 <module>dosgi-calculator</module>
                 <module>dosgi-calculator-operations</module>
                 <module>dosgi-dynamic-calculator</module>
@@ -62,7 +60,6 @@
      ********* -->
      
                 <module>helloworld-bpel</module>
-                <module>implementation-java-calculator</module>
                 <module>store</module>
                 <module>store-webapp</module>                
                 <module>webapps/helloworld</module>
@@ -78,6 +75,8 @@
 
                 <module>contribution-binding-sca-calculator</module>
                 <module>contribution-binding-ws-calculator</module>
+                <module>binding-rmi</module>
+                <module>contribution-implementation-java-calculator</module>
 
                 <!-- contributions - Tuscany samples -->
 
