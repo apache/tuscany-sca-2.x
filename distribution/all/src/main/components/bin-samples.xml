@@ -25,13 +25,10 @@
             <includes>
                 <include>README</include>
                 <include>logging.properties</include>
-                <include>build-common.xml</include>
-                <include>binding-ws-calculator/**/*</include>
-                <include>calculator/**/*</include>
-                <include>calculator-equinox/**/*</include>
+                <include>contribution*/**/*</include>
+                <include>launcher*/**/*</include>
+                <include>binding-rmi/contribution*/**/*</include>
                 <include>calculator-osgi/**/*</include>
-                <include>calculator-rmi-reference/**/*</include>
-                <include>calculator-rmi-service/**/*</include>
                 <include>helloworld/**/*</include>
                 <include>helloworld-spring/**/*</include>
                 <include>helloworld-bpel/**/*</include>
