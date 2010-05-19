@@ -95,5 +95,19 @@
             <arg value="contribution-binding-rmi-calculator"/> 
         </java>     
     </target>	
+	
+    <target name="run-contribution-implementation-java-calculator" depends="compile">
+        <java classname="${main.class}"
+              fork="true"
+              failonerror="true">
+            <classpath>  
+                <pathelement location="target/${jar.name}"/>
+                <fileset dir="${tuscany.home}/features">
+                   <include name="tuscany-sca-manifest.jar" />
+                </fileset>
+            </classpath> 
+            <arg value="contribution-implementaton-java-calculator"/> 
+        </java>     
+    </target>	
 
 </project>

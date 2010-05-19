@@ -49,7 +49,9 @@ public class SampleJSELauncher extends RuntimeIntegration {
         } else if (contribution.equals("contribution-binding-ws-calculator")){
             launcher.launchBindingWSCalculator();
         } else if (contribution.equals("contribution-binding-rmi-calculator")){
-            launcher.launchBindingRMICalculator();            
+            launcher.launchBindingRMICalculator();    
+        } else if (contribution.equals("contribution-implementation-java-calculator")){
+            launcher.launchImplementationJavaCalculator();              
         } else {
             System.out.println("Sample contribution " + contribution + "not found");
         }
@@ -106,6 +108,16 @@ public class SampleJSELauncher extends RuntimeIntegration {
         
         stopNode(node2);
         stopNode(node1);
-    }    
+    }   
+    
+    /**
+     * The contribution-binding-sca-calculator contribution includes a client component 
+     * that calls the CalculatorServiceComponent from an operation marked by @Init. 
+     */
+    public void launchImplementationJavaCalculator(){
+        Node node = startNode(new Contribution("c1", "../contribution-implementation-java-calculator/target/classes"));
+               
+        stopNode(node);
+    }      
     
 }
