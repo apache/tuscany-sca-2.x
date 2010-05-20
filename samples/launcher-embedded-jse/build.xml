@@ -20,6 +20,7 @@
 	<property name="tuscany.home" value="../.."/>
     <property name="jar.name"   value="sample-launcher-embedded-jse.jar" />
     <property name="main.class" value="launcher.SampleJSELauncher" />
+	<property name="wait.before.stopping" value="dontWaitBeforeStopping" />
 	
 	<echo>${tuscany.home}</echo>
 
@@ -65,6 +66,7 @@
                 </fileset>
             </classpath> 
         	<arg value="contribution-binding-sca-calculator"/> 
+            <arg value="${wait.before.stopping}"/> 
         </java>    	
     </target>
 	

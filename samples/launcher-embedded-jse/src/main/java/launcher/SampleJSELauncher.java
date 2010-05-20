@@ -26,14 +26,16 @@ import calculator.CalculatorService;
 
 
 /**
- * This client program shows how to create an embedded SCA runtime, start it,
- * and locate and invoke a SCA component 
+ * This client program shows how to create an embedded SCA runtime, load a contribution,
+ * start it and, in some cases, locate and invoke an SCA component 
  */
 public class SampleJSELauncher extends RuntimeIntegration {
     
+    protected boolean waitBeforeStopping = false;
+    
     public static void main(String[] args) throws Exception {
-        SampleJSELauncher launcher = new SampleJSELauncher();
         
+        // get the contribution name from the 1st argument it there is one
         String contribution = null;
         
         if (args == null || args.length != 1){
@@ -43,6 +45,16 @@ public class SampleJSELauncher extends RuntimeIntegration {
         } else {
             contribution = args[0];
         }   
+        
+        // assume that more than one argument means that the caller wants to
+        // keep the SCA application running while other clients use the services
+        boolean waitBeforeStopping = false;
+        
+        if (args != null && args.length > 1 && args[1].equals("waitBeforeStopping")){
+            waitBeforeStopping = true;
+        }
+        
+        SampleJSELauncher launcher = new SampleJSELauncher(waitBeforeStopping);
         
         if (contribution.equals("contribution-binding-sca-calculator")){
             launcher.launchBindingSCACalculator();
@@ -55,6 +67,26 @@ public class SampleJSELauncher extends RuntimeIntegration {
         } else {
             System.out.println("Sample contribution " + contribution + "not found");
         }
+               
+    }
+    
+    public SampleJSELauncher(boolean waitBeforeStopping){
+        this.waitBeforeStopping = waitBeforeStopping;
+    }
+    
+    /**
+     * Wait for user input. Allows us to keep the Tuscany runtime and the SCA application
+     * running while other clients access the services provided 
+     */
+    public void waitBeforeStopping(){
+        if (waitBeforeStopping){
+            try {
+                System.out.println("Press key to continue");
+                int input = System.in.read();
+            } catch (Exception ex) {
+                // do nothing
+            }
+        }
     }
        
     /**
@@ -63,7 +95,7 @@ public class SampleJSELauncher extends RuntimeIntegration {
      */
     public void launchBindingSCACalculator(){
         Node node = startNode(new Contribution("c1", "../binding-sca/contribution-calculator/target/sample-contribution-binding-sca-calculator.jar"));
-              
+        waitBeforeStopping();
         stopNode(node);
     }    
     
@@ -81,6 +113,7 @@ public class SampleJSELauncher extends RuntimeIntegration {
             throw new SampleLauncherException();
         }
         
+        waitBeforeStopping();
         stopNode(node);
     }
     
@@ -99,6 +132,7 @@ public class SampleJSELauncher extends RuntimeIntegration {
             throw new SampleLauncherException();
         }
         
+        waitBeforeStopping();
         stopNode(node2);
         stopNode(node1);
     }   
@@ -109,7 +143,7 @@ public class SampleJSELauncher extends RuntimeIntegration {
      */
     public void launchImplementationJavaCalculator(){
         Node node = startNode(new Contribution("c1", "../contribution-implementation-java-calculator/target/classes"));
-               
+        waitBeforeStopping();
         stopNode(node);
     }      
     
