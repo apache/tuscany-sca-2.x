@@ -1659,8 +1659,9 @@ Revision level 1.1, last updated on 2007/11/19
 
 ================================================================================
 
-The tuscany-assembly-xsd.jar includes XSD files under the following OASIS license:
+The tuscany-assembly-xsd.jar and tuscany-sca-api.jar include files under the following OASIS license:
 
+Copyright (C) OASIS(R) 2005, 2009. All Rights Reserved.
 All capitalized terms in the following text have the meanings assigned to them in the OASIS Intellectual 
 Property Rights Policy (the "OASIS IPR Policy"). The full Policy may be found at the OASIS website.
 This document and translations of it may be copied and furnished to others, and derivative works that 
@@ -1703,6 +1704,9 @@ The names "OASIS",  are trademarks of OASIS, the owner and developer of this spe
 be used only to refer to the organization and its official outputs. OASIS welcomes reference to, and 
 implementation and use of, specifications, while reserving the right to enforce its marks against misleading 
 uses. Please see http://www.oasis-open.org/who/trademark.php for above guidance.
+
+
+================================================================================
 
 The jruby-complete-1.4.0.jar includes files under the following licenses: 
 
