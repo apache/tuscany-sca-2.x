@@ -5,7 +5,7 @@ Structure
 ---------
 
 SCA Samples
-  binding-ws-calculator  B
+  binding-ws-calculator 
   binding-ws-sdo-helloworld
   binding-sca-calculator
   binding-rmi-calculator
@@ -30,11 +30,11 @@ Application Samples
   store
   store-webapp
 Launchers
-  launcher-embedded-jse  B, Ca, Da
-  launcher-embedded-osgi B, Cb, Db, F?
+  launcher-embedded-jse  Ca, Da
+  launcher-embedded-osgi Cb, Db, F?
   launcher-command-line  A
   launcher-sca-client
-  launcher-eclipse - I what's this? Just embedded-jse with eclipse project files provided? Do we need atm?
+  launcher-eclipse - I what's this? Just embedded-jse with eclipse project files provided? Do we need this?
 
 
 Using the sample contributions
@@ -67,11 +67,11 @@ Cb. running a contribution from Ant (OSGi)
   Command:   tuscany-sca-equinox-manifest.jar
   Classpath: sca-api, node-api, node-launcher-equinox - TBD
 
-Da. running a contribution from JSE program and from JUnit (JSE)
+Da. running a contribution from JSE program (or JUnit) (JSE)
   Command:   org.apache.tuscany.sca.node.launcher.NodeLauncher.createNode(...).start()
   Classpath: core, extension and dependency jars
 
-Db. running a contribution from JSE program and from JUnit (OSGi)
+Db. running a contribution from JSE program (or JUnit) (OSGi)
   Command:   org.apache.tuscany.sca.node.equinox.launcher.NodeLauncher.createNode(...).start()
   Classpath: sca-api, node-api, node-launcher-equinox - TBD
 
@@ -121,6 +121,13 @@ I. running a contribution from eclipse (or any other IDE)
              Use Da or Db
   Classpath:
   DEFER
+
+Developing Tuscany
+------------------
+
+J. Developing Tuscany and/or extensions in Eclipse
+
+K. Developing Tuscany and/or extensions in Eclipse PDE
 
 
 OLD STUFF
