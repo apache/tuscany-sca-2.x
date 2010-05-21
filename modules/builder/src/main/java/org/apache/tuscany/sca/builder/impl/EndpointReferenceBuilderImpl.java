@@ -659,6 +659,15 @@ public class EndpointReferenceBuilderImpl {
         endpointRef.setComponent(component);
         endpointRef.setReference(reference);
         endpointRef.setUnresolved(unresolved);
+
+        // [rfeng] Populate the callback endpoints
+        if (reference.getCallbackService() != null) {
+            List<Endpoint> callbackEndpoints = reference.getCallbackService().getEndpoints();
+            if (!callbackEndpoints.isEmpty()) {
+                // [rfeng] FIXME: how to select the callback endpoints?
+                endpointRef.setCallbackEndpoint(callbackEndpoints.get(0));
+            }
+        }
         return endpointRef;
     } // end method createEndpointRef   
 
