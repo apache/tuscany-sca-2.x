@@ -32,10 +32,12 @@ Running the New Style samples
 
 To run a new style sample there are 3 basic steps
 
-1) build the contribution: using either mvn, ant or your IDE
+1) build the contribution: using either the command "mvn", "ant run" or your usual steps to build a
+   module in your IDE
 2) unit test the contribution: if you used mvn or ant in step 1 then you will already have done this;
    if you used an IDE follow your usual steps to run the unit test in the contribution's module
-3) launch the contribution: go to one of the launcher* subdirectoris of the samples root directory= command line (JSE or OSGi), embedded (JSE or OSGi), SCAClient or Eclipse launcher 
+3) launch the contribution: go to one of the launcher* subdirectories of the samples root directory
+   and follow the instructions there to use a launcher to launch your chosen contribution 
 
 [1] http://tuscany.apache.org/documentation-2x/
 
@@ -71,9 +73,6 @@ Launchers
   launcher-command-line  A
   launcher-sca-client
   launcher-eclipse - I what's this? Just embedded-jse with eclipse project files provided? Do we need this?
-
-
-
 
 
 1/ Use local SCAClient
