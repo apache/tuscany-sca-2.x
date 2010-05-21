@@ -3,6 +3,33 @@ The Apache Tuscany SCA Samples
 
 Structure
 ---------
+For the Milestone 5 release of Tuscany SCA Java 2.x we are beginning
+the process of moving to a new structure for samples. Milestone 5 is 
+delivered in a state of partial change over to this new emphasis, and hence
+this README reflects that hybrid state.
+
+There are primarily 3 types of sample; those which focus on pure SCA
+concepts, those which demonstrate features of Tuscany and the last group
+is of samples which give a flavour of more complete, realistic applications.
+
+The new structure focusses on the way in which contributions are used by
+launchers to execute tuscany SCA applications.
+
+In this way you can explore the samples by chosing which launcher you wish
+to invoke which contribution. In the old style of sample this distinction was not clear;
+any given sample contained both launcher and contribution, and the set of samples provided
+represented a small subset of the combinations possible by the new approach.
+
+ 
+Within the SCA category of samples, all the calculator samples, have been
+migrated to this new structure.
+
+Please visit the 2.x documentation in our  website [1] to get a better understanding of SCA
+and Tuscany 2.x
+
+[1] http://tuscany.apache.org/documentation-2x/
+
+
 
 SCA Samples
   binding-ws-calculator 
@@ -44,8 +71,8 @@ contribution unit test =  mvn or ant or IDE in the contribution module
 contribution launch = command line (JSE or OSGi), embedded (JSE or OSGi), SCAClient or Eclipse launcher 
 
 
-1/ Use local SCAClinet
-2/ Use remote SCAClient and distributed domian
+1/ Use local SCAClient
+2/ Use remote SCAClient and distributed domain
 3/ Use interoperable binding
 
 Launch Mechanisms
