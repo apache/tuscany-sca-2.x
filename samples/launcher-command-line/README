@@ -1,6 +1,13 @@
-TODO
+To execute a sample contribution from the command line
 
-There is no code here. 
-Instruct the user to do
+on Windows, from a command prompt in the samples directory, run the command ...
 
-> whatever_the_command_is contributionname
+..\bin\tuscany.bat "contribution-name"
+
+for example
+
+..\bin\tuscany.bat contribution-binding-sca-calculator
+
+or on *nix platforms, from a shell prompt in the samples direcotry, run the command ...
+
+../bin/tuscany.sh contribution-binding-sca-calculator
