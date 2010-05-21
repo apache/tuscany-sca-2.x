@@ -211,7 +211,7 @@ public abstract class Monitor {
             Problem problem =
                 monitor.createProblem(contextClassName,
                                       messageBundle,
-                                      Severity.ERROR,
+                                      Severity.WARNING,
                                       reportingObject,
                                       messageId,
                                       cause);
@@ -242,7 +242,7 @@ public abstract class Monitor {
             Problem problem =
                 monitor.createProblem(contextClassName,
                                       messageBundle,
-                                      Severity.ERROR,
+                                      Severity.WARNING,
                                       reportingObject,
                                       messageId,
                                       cause,
