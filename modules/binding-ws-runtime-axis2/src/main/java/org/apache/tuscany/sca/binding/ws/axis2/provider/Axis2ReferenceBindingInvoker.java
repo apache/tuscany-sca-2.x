@@ -40,7 +40,6 @@ import org.apache.axis2.client.OperationClient;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
 import org.apache.axis2.context.MessageContext;
-import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.interfacedef.util.FaultException;
@@ -132,14 +131,6 @@ public class Axis2ReferenceBindingInvoker implements Invoker {
         operationClient.setOptions(options);
 
         Endpoint callbackEndpoint = msg.getFrom().getCallbackEndpoint();
-        
-        // [rfeng] This is a hack to populate the callback endpoint 
-        if (callbackEndpoint == null) {
-            ComponentService callbackService = msg.getFrom().getReference().getCallbackService();
-            if (callbackService != null && !callbackService.getEndpoints().isEmpty()) {
-                callbackEndpoint = callbackService.getEndpoints().get(0);
-            }
-        }
 
         // add WS-Addressing header
         //FIXME: is there any way to use the Axis2 addressing support for this?
