@@ -27,8 +27,17 @@ migrated to this new structure.
 Please visit the 2.x documentation in our  website [1] to get a better understanding of SCA
 and Tuscany 2.x
 
-[1] http://tuscany.apache.org/documentation-2x/
+Running the New Style samples
+-----------------------------
 
+To run a new style sample there are 3 basic steps
+
+1) build the contribution: using either mvn, ant or your IDE
+2) unit test the contribution: if you used mvn or ant in step 1 then you will already have done this;
+   if you used an IDE follow your usual steps to run the unit test in the contribution's module
+3) launch the contribution: go to one of the launcher* subdirectoris of the samples root directory= command line (JSE or OSGi), embedded (JSE or OSGi), SCAClient or Eclipse launcher 
+
+[1] http://tuscany.apache.org/documentation-2x/
 
 
 SCA Samples
@@ -64,11 +73,7 @@ Launchers
   launcher-eclipse - I what's this? Just embedded-jse with eclipse project files provided? Do we need this?
 
 
-Using the sample contributions
-------------------------------
-contribution build = mvn or ant or IDE in the contribution module
-contribution unit test =  mvn or ant or IDE in the contribution module
-contribution launch = command line (JSE or OSGi), embedded (JSE or OSGi), SCAClient or Eclipse launcher 
+
 
 
 1/ Use local SCAClient
