@@ -66,6 +66,7 @@ public class EndpointRegistryImpl extends BaseEndpointRegistry implements Endpoi
     public synchronized void removeEndpoint(Endpoint endpoint) {
         endpoints.remove(endpoint);
         endpointRemoved(endpoint);
+        logger.info("Remove endpoint - " + endpoint.toString());
     }
 
     public synchronized List<Endpoint> getEndpoints() {
