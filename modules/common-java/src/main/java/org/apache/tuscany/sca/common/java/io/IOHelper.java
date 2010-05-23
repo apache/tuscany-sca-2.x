@@ -147,4 +147,21 @@ public class IOHelper {
         return url;
     }
 
+    /**
+     * Returns a location string as a URL
+     * @param location
+     * @return
+     */
+    public static URL getLocationAsURL(String location) {
+        URI uri = IOHelper.createURI(location);
+        if (uri.getScheme() == null) {
+            uri = new File(location).toURI();
+        }
+        try {
+            return uri.toURL();
+        } catch (MalformedURLException e) {
+            throw new IllegalArgumentException(location, e);
+        }
+    }
+
 }
