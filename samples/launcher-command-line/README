@@ -8,6 +8,6 @@ for example
 
 ..\bin\tuscany.bat contribution-binding-sca-calculator
 
-or on *nix platforms, from a shell prompt in the samples direcotry, run the command ...
+or on *nix platforms, from a shell prompt in the samples directory, run the command ...
 
 ../bin/tuscany.sh contribution-binding-sca-calculator
