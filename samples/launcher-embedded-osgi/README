@@ -1,0 +1,11 @@
+OSGI Sample Launcher
+===================
+
+This directory contains a sample launcher for the running the
+tuscany sample contributions in an OSGI environment.
+
+The README file in the <distribution-unpack-dir>/samples directory provides 
+general instructions about building and running sample contributions using the
+tuscany sample launchers. ( where
+distribution-unpack-dir is the directory in which you unpacked the tuscany
+binary distribution archive)
