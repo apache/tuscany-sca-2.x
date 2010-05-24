@@ -9,3 +9,12 @@ general instructions about building and running sample contributions using the
 tuscany sample launchers. ( where
 distribution-unpack-dir is the directory in which you unpacked the tuscany
 binary distribution archive)
+
+To use this sample OSGI launcher with ant excute the command
+
+ant run-<contributionname>
+
+where run-<contributionname> is one of the targets in the build.xml file
+
+To use this sample launcher to run all of the contributions as junit test cases,
+execute the command "mvn" in the launcher directory.
