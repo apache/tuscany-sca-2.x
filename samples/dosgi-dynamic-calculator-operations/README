@@ -2,9 +2,11 @@ Distributed OSGi Calculator Sample
 ==================================
 This sample implements a distributed calculator using Distributed OSGi (RFC 119) over SCA.
 
-The README in the samples directory (the directory above this) provides
-general instructions about building and running samples. Take a look there
-first.
+The README in the <distribution-unpack-dir>/samples directory provides 
+general instructions about building and running samples. (where
+distribution-unpack-dir is the directory in which you unpacked the tuscany
+binary distribution archive). Take a look there first (noting at you read it that this sample
+is not a new style sample). 
 
 On Windows, run
 java -jar ..\..\modules\osgi-3.5.0-v20090520.jar -configuration ..\..\features\configuration -clean -console
