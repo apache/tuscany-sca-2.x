@@ -340,4 +340,25 @@ public abstract class Monitor {
     public abstract void setArtifactName(String artifactName);
     
     // =====================================================
+
+    /**
+     * Checks the Monitor for any Problems with s severity of ERROR and
+     * if one is found then throw a ValidationException.
+     * This will also call reset() on this Monitor.
+     */
+    public void analyzeProblems() throws ValidationException {
+        try {
+            for (Problem problem : getProblems()) {
+                if ((problem.getSeverity() == Severity.ERROR)) {
+                    if (problem.getCause() != null) {
+                        throw new ValidationException(problem.getCause());
+                    } else {
+                        throw new ValidationException(problem.toString());
+                    }
+                }
+            }
+        } finally {
+            reset();
+        }
+    }
 }
