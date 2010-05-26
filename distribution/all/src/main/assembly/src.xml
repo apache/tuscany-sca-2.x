@@ -39,7 +39,7 @@
                 <exclude>**/target/**/*</exclude>
                 <exclude>**/maven-eclipse.xml</exclude>
             </excludes>
+			<fileMode>0755</fileMode>
         </fileSet>
     </fileSets>
-
 </assembly>
