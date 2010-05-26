@@ -52,7 +52,11 @@
     </target>
 	
 	<target name="run" depends="compile">
-		<echo>Please use 'ant run-name-of-sample-contribution-to-run' </echo>
+		<echo>Please use 'ant run-name-of-sample-contribution-to-run' for example, try one of</echo>
+	    <echo>  'ant run-contribution-binding-sca-calculator' </echo>
+	    <echo>  'ant run-contribution-binding-ws-calculator'  </echo>
+		<echo>  'ant run-contribution-binding-rmi-calculator'  </echo>
+	    <echo>  'ant run-contribution-implementation-java-calculator'  </echo>
     </target>
 
     <target name="run-contribution-binding-sca-calculator" depends="compile">

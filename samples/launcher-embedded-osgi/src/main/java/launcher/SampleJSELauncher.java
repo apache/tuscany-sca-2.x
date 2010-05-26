@@ -19,8 +19,13 @@
 
 package launcher;
 
+import java.net.URI;
+
 import org.apache.tuscany.sca.node.Contribution;
 import org.apache.tuscany.sca.node.Node;
+import org.oasisopen.sca.NoSuchDomainException;
+import org.oasisopen.sca.NoSuchServiceException;
+import org.oasisopen.sca.client.SCAClientFactory;
 
 import calculator.CalculatorService;
 
@@ -51,6 +56,7 @@ public class SampleJSELauncher extends RuntimeIntegration {
         } else {
             System.out.println("Sample contribution " + contribution + "not found");
         }
+
     }
        
     /**
@@ -60,24 +66,17 @@ public class SampleJSELauncher extends RuntimeIntegration {
     public void launchBindingSCACalculator(){
         Node node = startNode(new Contribution("c1", "../binding-sca/contribution-calculator/target/sample-contribution-binding-sca-calculator.jar"));
         
-        //CalculatorService calculator = node.getService(CalculatorService.class, "CalculatorServiceComponent");
-        // TODO - could use JUnit assertions but don't want to have to handle JUnit dependency from Ant script
-        //double result = calculator.add(3, 2);
-        //System.out.println("3 + 2 = " + result);
-        //if (result != 5.0){
-        //    throw new SampleLauncherException();
-        //}        
         stopNode(node);
     }    
     
     /*
      * Using a Tuscany specific mechanism for getting at local service proxies
      */
-    public void launchBindingWSCalculator(){
-        Node node = startNode(new Contribution("c1", "../contribution-binding-ws-calculator/target/classes"));
+    public void launchBindingWSCalculator() throws NoSuchDomainException, NoSuchServiceException{
+        Node node = startNode(new Contribution("c1", "../contribution-binding-ws-calculator/target/sample-contribution-binding-ws-calculator.jar"));
         
         CalculatorService calculator = node.getService(CalculatorService.class, "CalculatorServiceComponent");
-        // TODO - could use JUnit assertions but don't want to have to handle JUnit dependency from Ant script
+               
         double result = calculator.add(3, 2);
         System.out.println("3 + 2 = " + result);
         if (result != 5.0){
