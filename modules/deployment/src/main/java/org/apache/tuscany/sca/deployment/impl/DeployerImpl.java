@@ -423,14 +423,25 @@ public class DeployerImpl implements Deployer {
         return contribution;
     }
 
-    public void attachDeploymentComposite(Contribution contribution, Composite composite, boolean appending) {
+    public String attachDeploymentComposite(Contribution contribution, Composite composite, boolean appending) {
         init();
+        
+        String compositeArtifactURI = composite.getName().getLocalPart() + ".composite";
+
+        if (appending) {
+            // check its not already there
+            for (Artifact a : contribution.getArtifacts()) {
+                if (compositeArtifactURI.equals(a.getURI())) {
+                    throw new IllegalStateException("artifact '" + compositeArtifactURI + "' already exists in contribution: " + contribution.getURI());
+                }
+            }
+        }
+
         // Create an artifact for the deployment composite
         Artifact artifact = contributionFactory.createArtifact();
-        String uri = composite.getName().getLocalPart() + ".composite";
-        artifact.setURI(uri);
+        artifact.setURI(compositeArtifactURI);
 
-        artifact.setLocation(uri);
+        artifact.setLocation(compositeArtifactURI);
         artifact.setModel(composite);
         artifact.setUnresolved(false);
         // Add it to the contribution
@@ -442,6 +453,7 @@ public class DeployerImpl implements Deployer {
             contribution.getDeployables().clear();
         }
         contribution.getDeployables().add(composite);
+        return compositeArtifactURI;
     }
 
     public Composite build(List<Contribution> contributions, List<Contribution> allContributions, Map<QName, List<String>> bindingMap, Monitor monitor)

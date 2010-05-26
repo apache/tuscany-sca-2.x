@@ -66,12 +66,14 @@ public interface Deployer extends LifeCycleListener {
      * @param contribution The target contribution
      * @param composite The deployment composite
      * @param appending A flag to indicate if existing deployable composites in the contribution should be appended or replaced
+     * @return uri of attached composite
      */
-    void attachDeploymentComposite(Contribution contribution, Composite composite, boolean appending);
+    String attachDeploymentComposite(Contribution contribution, Composite composite, boolean appending);
 
     /**
      * Configure a list of contributions to create a composite representing a view of the domain
      * @param contributions
+     * @param allContributions
      * @param bindingBaseURIs
      * @param monitor
      * @return
