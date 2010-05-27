@@ -7,14 +7,14 @@ New Samples Structure
 For the Milestone 5 release of Tuscany SCA Java 2.x we are beginning
 the process of moving to a new structure for samples. Milestone 5 is 
 delivered in a state of partial change over to this new emphasis, and hence
-this README reflects that hybrid state. The individual READMEs at the root of any given sample
-gives an indication whether the sample is in the old or the new style.
+this README reflects that hybrid state. 
 
 There are primarily 3 types of sample; those which focus on pure SCA
 concepts, those which demonstrate features of Tuscany and the last group
 is of samples which give a flavour of more complete, realistic applications.
 
-The new structure focusses on the way in which contributions are used by
+The new structure primarily focusses separating contributions from the way that 
+contributions are launched. The samples demonstrate the way in which contributions are used by
 launchers to execute tuscany SCA applications.
 
 In this way you can explore the samples by chosing which launcher you wish
@@ -22,9 +22,22 @@ to invoke which contribution. In the old style of sample this distinction was no
 any given sample contained both launcher and contribution, and the set of samples provided
 represented a small subset of the combinations possible by the new approach.
 
- 
-Within the SCA category of samples, all the calculator samples, have been
-migrated to this new structure.
+Within the SCA category of samples, most of the calculator samples, have been
+migrated to this new structure as follows.
+
+SCA Samples
+  binding-rmi-calculator
+    contribution-calculator-reference
+    contribution-calculator-service
+  binding-sca
+    contribution-calculator
+  contribution-binding-ws-calculator
+  contribution-implementation-java-calculator
+  calculator-sca-client
+  launcher-command-line 
+  launcher-embedded-jse
+  launcher-embedded-osgi
+  launcher-mvn
 
 Please visit the 2.x documentation in our  website [1] to get a better understanding of SCA
 and Tuscany 2.x
@@ -40,6 +53,9 @@ To run a new style sample there are 3 basic steps
    if you used an IDE follow your usual steps to run the unit test in the contribution's module
 3) launch the contribution: go to one of the launcher* subdirectories of the samples root directory
    and follow the instructions there to use a launcher to launch your chosen contribution 
+
+I the case where you want to exercise the sample contribution with a separate client program, such as
+an application using the SCA client API then there is a 4th step of starting that client applicatin
 
 [1] http://tuscany.apache.org/documentation-2x/
 
@@ -61,33 +77,9 @@ abstraction.  In real life situations you should use SCA to assemble real and
 usually bigger components, and when you do that you'll get all the benefits of 
 SCA, bindings, policies, integration in an SOA environment etc..
 
-Sample Overview
----------------
-The samples generally show off different features of the SCA runtime
-and the extensions that come packaged with it.
-
-binding-ws-calculator              - Calculator running inside a web app also 
-                                     showing webservices binding
-
-calculator (also traced)           - Calculator built with java components and 
-                                     local wires. A second build target shows how to
-                                     execute the sample with Tuscany trace turned on. 
-
-calculator-equinox                 - Calculator running inside a Equinox OSGi runtime
-
-calculator-osgi                    - Calculator running inside a OSGi runtime
-
-calculator-rmi-reference           - The calculator configured to talk RMI to
-                                     the calculator-rmi-service sample
-calculator-rmi-service             - The calculator configured to accept RMI
-                                     requests from calculator-rmi-reference
-
-implementation-java-calculator
-
-
 Sample Layout
 -------------
-All sample directories are organized in the same way based on the default 
+Generally sample directories are organized in the same way based on the default 
 project template provided by Maven. For example, take a look at the calculator 
 sample;
 
@@ -256,21 +248,20 @@ done using Eclipse.
  
 In a new or existing workspace
     Create a new java project to represent the sample you want to work on, e.g.
-        calculator
+        launcher-embedded-jse
     Import all of the sample code and resources into this project, e.g.
-        File, Import and then select tuscany-sca-1.0-incubating\samples\calculator from the filesystem
+        File, Import and then select tuscany-sca-1.0-incubating\samples\launcher-embedded-jse from the filesystem
     Configure the source path to include
         src/main/java
         src/main/resources
     Configure the output folder to be
-        calculator/target
+        target
     Configure the build path to include the manifest jar tuscany-sca-manifiest.jar provided in
         features
-     If you select calculator.CalculatorClient.java and run as "Java Application" you should see
-        3 + 2=5.0
-        3 - 2=1.0
-        3 * 2=6.0
-        3 / 2=1.5
+     For here you have run;
+        the unit test  (loads a sequence of contributions and runs them)
+        SampleJSELauncher (you'll need to add the name of the contribution to run as a parameter)
+        build.xml (you'll need to set tuscany.home to point to distribution\all\target\apache-tuscany-sca-all-2.0-SNAPSHOT.dir\tuscany-sca-2.0-SNAPSHOT) 
 
 The details of how to do this for other development environments will
 vary but the process will be similar. 
