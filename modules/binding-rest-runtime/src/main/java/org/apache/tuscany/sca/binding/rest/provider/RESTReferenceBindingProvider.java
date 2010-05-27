@@ -44,7 +44,7 @@ public class RESTReferenceBindingProvider implements EndpointReferenceProvider {
     }
 
     public Invoker createInvoker(Operation operation) {
-        return new RESTBindingInvoker((RESTBinding)endpointReference.getBinding(), operation);
+        return new RESTBindingInvoker(registry, (RESTBinding)endpointReference.getBinding(), operation);
     }
 
     public InterfaceContract getBindingInterfaceContract() {

@@ -238,6 +238,11 @@ public class OperationImpl implements Operation {
 
         copy.attributes = new ConcurrentHashMap<Object, Object>();
         copy.attributes.putAll(attributes);
+        
+        // [rfeng] We need to clone the wrapper as it holds the databinding information
+        if (wrapper != null) {
+            copy.wrapper = (WrapperInfo)wrapper.clone();
+        }
 
         return copy;
     }

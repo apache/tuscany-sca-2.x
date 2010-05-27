@@ -48,7 +48,7 @@ import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
  * @version $Rev$ $Date$
  * @tuscany.spi.extension.asclient
  */
-public class WrapperInfo {
+public class WrapperInfo implements Cloneable {
     private ElementInfo inputWrapperElement;
 
     private ElementInfo outputWrapperElement;
@@ -187,5 +187,18 @@ public class WrapperInfo {
 
     public void setOutputWrapperType(DataType<XMLType> outputWrapperType) {
         this.outputWrapperType = outputWrapperType;
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        WrapperInfo copy = (WrapperInfo) super.clone();
+        if (inputWrapperType != null) {
+            copy.inputWrapperType = (DataType<XMLType>)inputWrapperType.clone();
+        }
+        if (outputWrapperType != null) {
+            copy.outputWrapperType = (DataType<XMLType>)outputWrapperType.clone();
+        }
+        return copy;
+
     }
 }
