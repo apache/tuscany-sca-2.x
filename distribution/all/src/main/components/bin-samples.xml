@@ -22,35 +22,6 @@
         <fileSet>
             <directory>../../samples</directory>
             <outputDirectory>samples</outputDirectory>
-            <includes>
-                <include>README</include>
-                <include>logging.properties</include>
-                <include>contribution*/**/*</include>
-                <include>launcher*/**/*</include>
-                <include>binding-rmi/contribution*/**/*</include>
-                <include>binding-sca/contribution*/**/*</include>
-                <include>calculator-osgi/**/*</include>
-                <include>helloworld/**/*</include>
-                <include>helloworld-spring/**/*</include>
-                <include>helloworld-bpel/**/*</include>
-                <include>implementation-java-calculator/**/*</include>
-                <include>dosgi-calculator/**/*</include>
-                <include>dosgi-calculator-operations/**/*</include>
-                <include>dosgi-dynamic-calculator/**/*</include>
-                <include>dosgi-dynamic-calculator-operations/**/*</include>
-                <include>webapps/helloworld/**/*</include>
-                <include>webapps/helloworld-bpel/**/*</include>
-                <include>webapps/helloworld-jaxrs/**/*</include>
-                <include>webapps/helloworld-jms/**/*</include>
-                <include>webapps/helloworld-js-client/**/*</include>
-                <include>webapps/helloworld-jsf/**/*</include>
-                <include>webapps/helloworld-jsp/**/*</include>
-                <include>webapps/helloworld-servlet/**/*</include>
-                <include>webapps/helloworld-stripes/**/*</include>
-                <include>launcher-embedded-jse/**/*</include>
-                <include>launcher-embedded-osgi/**/*</include>
-                <include>launcher-command-line//**/*</include>
-            </includes>
             <excludes>
                 <!-- General file/folders to exclude -->
                 <exclude>**/.*</exclude>
@@ -58,29 +29,25 @@
                 <exclude>**/*.log</exclude>
                 <exclude>**/*.svg</exclude>
                 <exclude>**/maven-eclipse.xml</exclude>
-
-                <!-- Sample specific files/folders to exclude -->
-                <exclude>pom.xml</exclude>
-                <!-- exclude>**/target</exclude -->
-                <!-- exclude>**/target/**/*</exclude -->
-                <exclude>*/target/mvn-eclipse-cache.properties</exclude>
-                <exclude>*/target/pom-transformed.xml</exclude>
-                <exclude>*/target/classes</exclude>
-                <exclude>*/target/classes/**/*</exclude>
-                <exclude>*/target/dependency-maven-plugin-markers</exclude>
-                <exclude>*/target/dependency-maven-plugin-markers/**/*</exclude>
-                <exclude>*/target/.felix</exclude>
-                <exclude>*/target/.felix/**/*</exclude>
-                <exclude>*/target/maven-archiver</exclude>
-                <exclude>*/target/maven-archiver/**/*</exclude>
-                <exclude>*/target/test-classes</exclude>
-                <exclude>*/target/test-classes/**/*</exclude>
-                <exclude>*/target/surefire-reports</exclude>
-                <exclude>*/target/surefire-reports/**/*</exclude>
-                <exclude>*/target/surefire-osgi-reports</exclude>
-                <exclude>*/target/surefire-osgi-reports/**/*</exclude>
-                <exclude>webapps/helloworld/target/**/*</exclude>
+                <exclude>**/target/mvn-eclipse-cache.properties</exclude>
+                <exclude>**/target/pom-transformed.xml</exclude>
+                <exclude>**/target/classes</exclude>
+                <exclude>**/target/classes/**/*</exclude>
+                <exclude>**/target/dependency-maven-plugin-markers</exclude>
+                <exclude>**/target/dependency-maven-plugin-markers/**/*</exclude>
+                <exclude>**/target/.felix</exclude>
+                <exclude>**/target/.felix/**/*</exclude>
+                <exclude>**/target/maven-archiver</exclude>
+                <exclude>**/target/maven-archiver/**/*</exclude>
+                <exclude>**/target/test-classes</exclude>
+                <exclude>**/target/test-classes/**/*</exclude>
+                <exclude>**/target/surefire-reports</exclude>
+                <exclude>**/target/surefire-reports/**/*</exclude>
+                <exclude>**/target/surefire-osgi-reports</exclude>
+                <exclude>**/target/surefire-osgi-reports/**/*</exclude>
+                <exclude>webapps/*/target</exclude>
                 <exclude>webapps/*/target/**/*</exclude>
+
             </excludes>
 			<directoryMode>0755</directoryMode>
 			<fileMode>0644</fileMode>
