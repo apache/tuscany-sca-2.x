@@ -18,8 +18,11 @@
  * under the License.
 -->
 <contribution xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
+  xmlns:hw="http://helloworld"
   xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.1">
   
+  <deployable composite="hw:helloworldws"/>
+
   <tuscany:sdo.types namespace="http://helloworld" location="wsdl/helloworld.wsdl"/>
   
 </contribution>
