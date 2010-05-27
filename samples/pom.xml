@@ -41,7 +41,9 @@
                 <module>dosgi-calculator-operations</module>
                 <module>dosgi-dynamic-calculator</module>
                 <module>dosgi-dynamic-calculator-operations</module>
+                <module>calculator-scaclient</module>
                 <module>helloworld</module>
+                <module>helloworld-scaclient</module>
 <!-- *********
     IF YOU ADD ANY SAMPLES THEN ALSO ADD THEM TO 
         distribution\all\src\main\components\bin-samples.xml
@@ -53,6 +55,7 @@
      ********* -->
      
                 <module>helloworld-bpel</module>
+                <module>helloworld-spring</module>
                 <module>store</module>
                 <module>store-webapp</module>                
                 <module>webapps/helloworld</module>
@@ -90,4 +93,5 @@
             </modules>
         </profile>
     </profiles>    
+
 </project>
