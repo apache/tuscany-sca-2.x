@@ -28,13 +28,6 @@
     <artifactId>sample-launcher-embedded-jse</artifactId>
     <name>Apache Tuscany SCA Sample Launcher Embedded JSE</name>
 
-    <repositories>
-       <repository>
-          <id>apache.incubator</id>
-          <url>http://people.apache.org/repo/m2-incubating-repository</url>
-       </repository>
-    </repositories>
-
     <dependencies>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
