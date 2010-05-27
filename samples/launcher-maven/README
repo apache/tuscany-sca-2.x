@@ -1,0 +1,18 @@
+To execute a sample contribution from Maven
+
+look for contributions that have the following configuration in their pom.xml file:
+
+<plugin>
+    <groupId>org.apache.tuscany.maven.plugins</groupId>
+    <artifactId>maven-tuscany-plugin</artifactId>
+    <version>2.0-SNAPSHOT</version>
+</plugin>
+
+For contributions that have this, for example, binding-sca/contribution-calculator, do the following
+
+cd samples/binding-sca/contribution-calculator
+mvn tuscany:run
+
+This will launch the contribution in the Tuscany runtime and then wait. At this point you can use
+other clients to send messages to services that the running SCA applcation exposes, 
+for example, try calculator-scaclient.
