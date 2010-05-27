@@ -54,7 +54,7 @@ public class Object2JSON implements PullTransformer<Object, Object> {
         }
         try {
             String value = mapper.writeValueAsString(source);
-            if (targetType == String.class) {
+            if (targetType == String.class || targetType == Object.class) {
                 return value;
             } else if (JsonNode.class.isAssignableFrom(targetType)) {
                 return JacksonHelper.createJsonParser(value).readValueAsTree();
