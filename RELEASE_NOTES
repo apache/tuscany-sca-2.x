@@ -37,6 +37,17 @@ Overview
      
 See the CHANGES file for a detailed list of the features in this release.
 
+Known Issues
+------------
+
+If when building using the source distribution of tuscany you see build errors 
+relating to use of hazelcast, this is a known issue which occurs in some
+environments where our use of hazelcast doesn't match up with your network
+configuration. If you see these errors please contact us on the mailing list
+as described below. You may wish to build using the
+"mvn -fae"
+command, so that the rest of the build completes before it reports the issue.
+
 Support
 -------
 
