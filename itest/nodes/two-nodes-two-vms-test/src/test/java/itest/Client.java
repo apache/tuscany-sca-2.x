@@ -47,7 +47,7 @@ public class Client {
             throw ex;
         }
         
-//        clientNode = new DomainNode("tribes:default", new String []{"../helloworld-client/target/itest-nodes-helloworld-client-2.0-SNAPSHOT.jar"});
+//        clientNode = new DomainNode("tribes:default", new String []{"../helloworld-client/target/itest-nodes-helloworld-client-2.0-M5-SNAPSHOT.jar"});
     }
 
     @Test

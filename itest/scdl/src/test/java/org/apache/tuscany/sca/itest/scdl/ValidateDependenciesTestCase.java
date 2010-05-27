@@ -34,22 +34,22 @@ import org.junit.Test;
  * geronimo-stax-api_1.0_spec-1.0.1.jar
  * jsr181-api-1.0-MR1.jar
  * junit-4.8.1.jar
- * tuscany-assembly-2.0-SNAPSHOT.jar
- * tuscany-assembly-xml-2.0-SNAPSHOT.jar
- * tuscany-assembly-xsd-2.0-SNAPSHOT.jar
- * tuscany-binding-jms-2.0-SNAPSHOT.jar
- * tuscany-binding-jsonp-2.0-SNAPSHOT.jar
- * tuscany-binding-rmi-2.0-SNAPSHOT.jar
- * tuscany-builder-2.0-SNAPSHOT.jar
- * tuscany-common-java-2.0-SNAPSHOT.jar
- * tuscany-common-xml-2.0-SNAPSHOT.jar
- * tuscany-contribution-2.0-SNAPSHOT.jar
- * tuscany-deployment-2.0-SNAPSHOT.jar
- * tuscany-extensibility-2.0-SNAPSHOT.jar
- * tuscany-implementation-java-2.0-SNAPSHOT.jar
- * tuscany-interface-java-2.0-SNAPSHOT.jar
- * tuscany-monitor-2.0-SNAPSHOT.jar
- * tuscany-sca-api-2.0-SNAPSHOT.jar
+ * tuscany-assembly-2.0-M5-SNAPSHOT.jar
+ * tuscany-assembly-xml-2.0-M5-SNAPSHOT.jar
+ * tuscany-assembly-xsd-2.0-M5-SNAPSHOT.jar
+ * tuscany-binding-jms-2.0-M5-SNAPSHOT.jar
+ * tuscany-binding-jsonp-2.0-M5-SNAPSHOT.jar
+ * tuscany-binding-rmi-2.0-M5-SNAPSHOT.jar
+ * tuscany-builder-2.0-M5-SNAPSHOT.jar
+ * tuscany-common-java-2.0-M5-SNAPSHOT.jar
+ * tuscany-common-xml-2.0-M5-SNAPSHOT.jar
+ * tuscany-contribution-2.0-M5-SNAPSHOT.jar
+ * tuscany-deployment-2.0-M5-SNAPSHOT.jar
+ * tuscany-extensibility-2.0-M5-SNAPSHOT.jar
+ * tuscany-implementation-java-2.0-M5-SNAPSHOT.jar
+ * tuscany-interface-java-2.0-M5-SNAPSHOT.jar
+ * tuscany-monitor-2.0-M5-SNAPSHOT.jar
+ * tuscany-sca-api-2.0-M5-SNAPSHOT.jar
  * wstx-asl-3.2.4.jar
  * 
  * TODO: WS binding drags in all runtime

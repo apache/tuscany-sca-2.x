@@ -148,7 +148,7 @@
 		</plugins>
 	</build>
 	<properties>
-		<tuscany.version>2.0-SNAPSHOT</tuscany.version>
+		<tuscany.version>2.0-M5-SNAPSHOT</tuscany.version>
 		<jetty.version>6.1.18</jetty.version>
 	</properties>
 </project>

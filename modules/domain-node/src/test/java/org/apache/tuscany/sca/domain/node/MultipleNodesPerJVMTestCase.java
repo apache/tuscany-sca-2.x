@@ -43,8 +43,8 @@ public class MultipleNodesPerJVMTestCase{
     
     @Test
     public void testTwoNodesSameDomain() throws Exception {
-        serviceNode = new DomainNode("target/test-classes/itest-nodes-helloworld-service-2.0-SNAPSHOT.jar");
-        clientNode = new DomainNode("target/test-classes/itest-nodes-helloworld-client-2.0-SNAPSHOT.jar");
+        serviceNode = new DomainNode("target/test-classes/itest-nodes-helloworld-service-2.0-M5-SNAPSHOT.jar");
+        clientNode = new DomainNode("target/test-classes/itest-nodes-helloworld-client-2.0-M5-SNAPSHOT.jar");
 
         Helloworld service = SCAClientFactory.newInstance(URI.create("vm://defaultDomain")).getService(Helloworld.class, "HelloworldService");
         assertNotNull(service);
@@ -57,12 +57,12 @@ public class MultipleNodesPerJVMTestCase{
 
     @Test
     public void testTwoNodesDifferentDomains() throws Exception {
-        serviceNode = new DomainNode("vm://fooDomain", new String[]{"target/test-classes/itest-nodes-helloworld-service-2.0-SNAPSHOT.jar"});
+        serviceNode = new DomainNode("vm://fooDomain", new String[]{"target/test-classes/itest-nodes-helloworld-service-2.0-M5-SNAPSHOT.jar"});
         Helloworld service = SCAClientFactory.newInstance(URI.create("vm://fooDomain")).getService(Helloworld.class, "HelloworldService");
         assertNotNull(service);
         assertEquals("Hello Petra", service.sayHello("Petra"));
 
-        clientNode = new DomainNode("vm://barDomain", new String[]{"target/test-classes/itest-nodes-helloworld-client-2.0-SNAPSHOT.jar"});
+        clientNode = new DomainNode("vm://barDomain", new String[]{"target/test-classes/itest-nodes-helloworld-client-2.0-M5-SNAPSHOT.jar"});
         Helloworld client = SCAClientFactory.newInstance(URI.create("vm://barDomain")).getService(Helloworld.class, "HelloworldClient");
         assertNotNull(client);
 
