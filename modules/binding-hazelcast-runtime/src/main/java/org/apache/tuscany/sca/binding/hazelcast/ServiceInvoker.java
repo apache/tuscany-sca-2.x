@@ -30,6 +30,7 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.util.FaultException;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
+import org.oasisopen.sca.NoSuchServiceException;
 import org.oasisopen.sca.ServiceRuntimeException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -51,6 +52,9 @@ public class ServiceInvoker implements Callable<String>, Serializable {
 
     public String call() throws Exception {
         RuntimeEndpoint endpoint = EndpointStash.getEndpoint(serviceURI);
+        if (endpoint == null) {
+            throw new NoSuchServiceException(serviceURI);
+        }
         Operation operation = getRequestOperation(endpoint);
         DOMHelper domHelper = DOMHelper.getInstance(endpoint.getCompositeContext().getExtensionPointRegistry());
         Object[] args = getRequestArgs(domHelper);
