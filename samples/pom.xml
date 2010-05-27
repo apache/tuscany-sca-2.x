@@ -80,8 +80,9 @@
 
                 <!-- contribution launchers -->
 
-                <!-- don't need to process this as it has just a README in it
+                <!-- don't need to process these as they just contain README files
                 <module>launcher-command-line</module>
+                <module>launcher-maven</module>
                 -->
                 <module>launcher-embedded-jse</module>
                 <module>launcher-embedded-osgi</module>
