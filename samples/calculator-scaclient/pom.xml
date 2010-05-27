@@ -61,7 +61,7 @@
              </execution>
            </executions>
            <configuration>
-             <mainClass>sample.HelloworldSCAClient</mainClass>
+             <mainClass>sample.CalculatorSCAClient</mainClass>
            </configuration>
          </plugin>
       </plugins>
