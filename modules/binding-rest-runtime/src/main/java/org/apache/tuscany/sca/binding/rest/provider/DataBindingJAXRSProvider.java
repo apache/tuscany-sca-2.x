@@ -90,8 +90,10 @@ public abstract class DataBindingJAXRSProvider {
     }
 
     protected boolean supports(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
-        return MediaType.APPLICATION_JSON_TYPE.equals(mediaType) || MediaType.APPLICATION_XML_TYPE.equals(mediaType)
-        || MediaType.TEXT_XML_TYPE.equals(mediaType);
+        // Some media types have parameters
+        mediaType = new MediaType(mediaType.getType(), mediaType.getSubtype());
+        return MediaType.APPLICATION_JSON_TYPE.isCompatible(mediaType) || MediaType.APPLICATION_XML_TYPE.isCompatible(mediaType)
+        || MediaType.TEXT_XML_TYPE.isCompatible(mediaType);
     }
 
     protected Object convert(InputStream content, String contentType, Class<?> type) throws IOException {

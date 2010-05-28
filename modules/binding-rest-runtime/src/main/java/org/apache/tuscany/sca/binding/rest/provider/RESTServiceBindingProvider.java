@@ -221,7 +221,7 @@ public class RESTServiceBindingProvider implements EndpointProvider {
             if (isJAXRS) {
                 application = new SimpleApplication(interfaze);
 
-                TuscanyRESTServlet restServlet = new TuscanyRESTServlet(extensionPoints);
+                TuscanyRESTServlet restServlet = new TuscanyRESTServlet(extensionPoints, application.resourceClass);
 
                 // Create our HTTP service listener Servlet and register it with the
                 // Servlet host

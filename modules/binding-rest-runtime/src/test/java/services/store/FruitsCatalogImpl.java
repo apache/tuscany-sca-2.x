@@ -21,6 +21,7 @@ package services.store;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.oasisopen.sca.annotation.Init;
@@ -49,7 +50,12 @@ public class FruitsCatalogImpl implements Catalog {
 
     public Items getItem() {
         Items items = new Items();
-        items.setItems(new ArrayList<Item>(catalog.values()));
+        // Add by order so that we can test in the json array
+        List<Item> list = new ArrayList<Item>();
+        list.add(catalog.get("Pear"));
+        list.add(catalog.get("Apple"));
+        list.add(catalog.get("Orange"));
+        items.setItems(list);
         return items;
     }
     

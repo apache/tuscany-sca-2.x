@@ -22,6 +22,10 @@ package org.apache.tuscany.sca.interfacedef.java.jaxrs;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.HEAD;
+
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.FieldVisitor;
@@ -34,7 +38,8 @@ public class RootResourceClassGenerator implements Opcodes {
 
     private static final String DELEGATE_FIELD = "delegate";
 
-    public static Class<?> generateRootResourceClass(Class<?> interfaze, String path, String consumes, String produces) throws Exception {
+    public static Class<?> generateRootResourceClass(Class<?> interfaze, String path, String consumes, String produces)
+        throws Exception {
         if (!interfaze.isInterface()) {
             throw new IllegalArgumentException(interfaze + " is not an interface.");
         }
@@ -48,7 +53,7 @@ public class RootResourceClassGenerator implements Opcodes {
         Class<?> cls = classLoader.getGeneratedClass(className, content);
         return cls;
     }
-    
+
     public static void injectProxy(Class<?> generatedResourceClass, Object proxy) throws Exception {
         Field field = generatedResourceClass.getField("delegate");
         field.set(null, proxy);
@@ -71,7 +76,7 @@ public class RootResourceClassGenerator implements Opcodes {
 
         for (Method method : interfaze.getMethods()) {
             if (!(method.getDeclaringClass() == Object.class)) {
-                generateMethod(cw, interfaceName, className, method);
+                generateMethod(cw, interfaceName, className, method, consumes, produces);
             }
         }
         cw.visitEnd();
@@ -80,11 +85,17 @@ public class RootResourceClassGenerator implements Opcodes {
     }
 
     // public <ReturnType> method(<Type0> arg0, ..., <TypeN> argN) throws <ExpectionType0>, ..., <ExceptionTypeK>
-    private static void generateMethod(ClassWriter cw, String interfaceName, String className, Method method) {
+    private static void generateMethod(ClassWriter cw,
+                                       String interfaceName,
+                                       String className,
+                                       Method method,
+                                       String consumes,
+                                       String produces) {
         String methodDescriptor = Type.getMethodDescriptor(method);
 
         MethodVisitor mv =
             cw.visitMethod(ACC_PUBLIC, method.getName(), methodDescriptor, null, getExceptionInternalNames(method));
+
         mv.visitCode();
         mv.visitFieldInsn(GETSTATIC, className, DELEGATE_FIELD, getSignature(interfaceName));
         Class<?>[] paramTypes = method.getParameterTypes();
@@ -152,7 +163,7 @@ public class RootResourceClassGenerator implements Opcodes {
         av.visit("value", path);
         av.visitEnd();
     }
-    
+
     // @Consumes(<contentTypes>)
     // @Provides(<contentTypes>)
     private static void annotateContentTypes(ClassWriter cw, String consumes, String produces) {
@@ -168,6 +179,30 @@ public class RootResourceClassGenerator implements Opcodes {
         }
         if (produces != null) {
             av = cw.visitAnnotation("Ljavax/ws/rs/Produces;", true);
+            AnnotationVisitor av1 = av.visitArray("value");
+            for (String s : produces.split("(,| )")) {
+                av1.visit(null, s.trim());
+            }
+            av1.visitEnd();
+            av.visitEnd();
+        }
+    }
+
+    // @Consumes(<contentTypes>)
+    // @Provides(<contentTypes>)
+    private static void annotateContentTypes(MethodVisitor mv, String consumes, String produces) {
+        AnnotationVisitor av = null;
+        if (consumes != null) {
+            av = mv.visitAnnotation("Ljavax/ws/rs/Consumes;", true);
+            AnnotationVisitor av1 = av.visitArray("value");
+            for (String s : consumes.split("(,| )")) {
+                av1.visit(null, s.trim());
+            }
+            av1.visitEnd();
+            av.visitEnd();
+        }
+        if (produces != null) {
+            av = mv.visitAnnotation("Ljavax/ws/rs/Produces;", true);
             AnnotationVisitor av1 = av.visitArray("value");
             for (String s : produces.split("(,| )")) {
                 av1.visit(null, s.trim());
