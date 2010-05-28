@@ -62,7 +62,7 @@ public class DataBindingJAXRSWriter<T> extends DataBindingJAXRSProvider implemen
                         MultivaluedMap<String, Object> httpHeaders,
                         OutputStream entityStream) throws IOException, WebApplicationException {
         DataType dataType = createDataType(type, genericType);
-
+        mediaType = new MediaType(mediaType.getType(), mediaType.getSubtype());
         String dataBinding = OutputStream.class.getName();
         // FIXME: [rfeng] This is a hack to handle application/json
         if (MediaType.APPLICATION_JSON_TYPE.equals(mediaType)) {

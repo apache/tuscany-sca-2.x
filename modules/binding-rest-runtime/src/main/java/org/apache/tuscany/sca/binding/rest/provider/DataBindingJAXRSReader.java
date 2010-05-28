@@ -62,6 +62,7 @@ public class DataBindingJAXRSReader<T> extends DataBindingJAXRSProvider implemen
     
         String dataBinding = null;
         
+        mediaType = new MediaType(mediaType.getType(), mediaType.getSubtype());
         // FIXME: [rfeng] This is a hack to handle application/json
         if (MediaType.APPLICATION_JSON_TYPE.equals(mediaType)) {
             dataBinding = mediaType.toString() + "#" + InputStream.class.getName();

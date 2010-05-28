@@ -24,14 +24,15 @@ import java.util.Enumeration;
 
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.HttpMethod;
+import javax.ws.rs.core.MediaType;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.wink.common.internal.registry.ProvidersRegistry;
+import org.apache.wink.common.internal.registry.metadata.MethodMetadata;
 import org.apache.wink.server.internal.DeploymentConfiguration;
 import org.apache.wink.server.internal.RequestProcessor;
-import org.apache.wink.server.internal.handlers.ServerMessageContext;
+import org.apache.wink.server.internal.registry.ResourceRecord;
 import org.apache.wink.server.internal.servlet.RestServlet;
 
 /**
@@ -40,10 +41,13 @@ import org.apache.wink.server.internal.servlet.RestServlet;
 public class TuscanyRESTServlet extends RestServlet {
     private static final long serialVersionUID = 89997233133964915L;
     private ExtensionPointRegistry registry;
+    private Class<?> resourceClass;
+    private boolean fixed;
 
-    public TuscanyRESTServlet(ExtensionPointRegistry registry) {
+    public TuscanyRESTServlet(ExtensionPointRegistry registry, Class<?> resourceClass) {
         super();
         this.registry = registry;
+        this.resourceClass = resourceClass;
     }
 
     @Override
@@ -52,19 +56,19 @@ public class TuscanyRESTServlet extends RestServlet {
         DeploymentConfiguration config = super.getDeploymentConfiguration();
         // [rfeng] FIXME: This is a hack to fool Apache wink to not remove the servlet path
         config.setFilterConfig(new FilterConfig() {
-            
+
             public ServletContext getServletContext() {
                 return getServletContext();
             }
-            
+
             public Enumeration getInitParameterNames() {
                 return getInitParameterNames();
             }
-            
+
             public String getInitParameter(String arg0) {
                 return getInitParameter(arg0);
             }
-            
+
             public String getFilterName() {
                 return getServletName();
             }
@@ -72,23 +76,50 @@ public class TuscanyRESTServlet extends RestServlet {
         ProvidersRegistry providers = config.getProvidersRegistry();
         providers.addProvider(new DataBindingJAXRSReader(registry), 0.001, true);
         providers.addProvider(new DataBindingJAXRSWriter(registry), 0.001, true);
+
         return config;
+    }
+
+    private synchronized void fixMediaTypes(DeploymentConfiguration config) {
+        if (fixed) {
+            return;
+        }
+        // FIXME: A hacky workaround for https://issues.apache.org/jira/browse/TUSCANY-3572
+        ResourceRecord record = config.getResourceRegistry().getRecord(resourceClass);
+
+        for (MethodMetadata methodMetadata : record.getMetadata().getResourceMethods()) {
+            String method = methodMetadata.getHttpMethod();
+            if (HttpMethod.GET.equals(method) || HttpMethod.HEAD.equals(method) || HttpMethod.DELETE.equals(method)) {
+                methodMetadata.addConsumes(MediaType.APPLICATION_OCTET_STREAM_TYPE);
+                methodMetadata.addConsumes(MediaType.WILDCARD_TYPE);
+            }
+            if (HttpMethod.HEAD.equals(method) || HttpMethod.DELETE.equals(method)) {
+                methodMetadata.addProduces(MediaType.APPLICATION_OCTET_STREAM_TYPE);
+                methodMetadata.addConsumes(MediaType.WILDCARD_TYPE);
+            }
+        }
+        for (MethodMetadata methodMetadata : record.getMetadata().getSubResourceMethods()) {
+            String method = methodMetadata.getHttpMethod();
+            if (HttpMethod.GET.equals(method) || HttpMethod.HEAD.equals(method) || HttpMethod.DELETE.equals(method)) {
+                methodMetadata.addConsumes(MediaType.APPLICATION_OCTET_STREAM_TYPE);
+                methodMetadata.addConsumes(MediaType.WILDCARD_TYPE);
+            }
+            if (HttpMethod.HEAD.equals(method) || HttpMethod.DELETE.equals(method)) {
+                methodMetadata.addProduces(MediaType.APPLICATION_OCTET_STREAM_TYPE);
+                methodMetadata.addConsumes(MediaType.WILDCARD_TYPE);
+            }
+        }
+        fixed = true;
     }
 
     @Override
     public RequestProcessor getRequestProcessor() {
-        return super.getRequestProcessor();
-    }
-
-    public ServerMessageContext createMessageContext(HttpServletRequest request, HttpServletResponse response) {
-        ServerMessageContext messageContext;
-        try {
-            messageContext = new ServerMessageContext(request, response, getDeploymentConfiguration());
-        } catch (Exception e) {
-            throw new IllegalArgumentException(e);
+        RequestProcessor processor = super.getRequestProcessor();
+        // The 1st call returns null
+        if (processor != null) {
+            fixMediaTypes(processor.getConfiguration());
         }
-        return messageContext;
+        return processor;
     }
-    
 
 }
