@@ -1,7 +1,13 @@
 To run an application that uses the SCA client API to send messages to the 
 Calculator service running in the domain do the following
 
-start one of the Calculator based contributions
+First start one of the Calculator based contributions. For example,
+
+cd samples/binding-sca/contribution-calculator
+follow the instructions in the README there
+
+Then run the the SCA client by doing the following:
+
 cd samples/calculator-scaclient
 mvn exec:java
 
