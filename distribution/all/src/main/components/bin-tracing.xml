@@ -22,8 +22,6 @@
             <directory>src/main/release/tracing</directory>
             <outputDirectory>bin</outputDirectory>
             <includes/>
-			<directoryMode>0755</directoryMode>
-			<fileMode>0666</fileMode>
         </fileSet>
     </fileSets>
 
@@ -35,8 +33,6 @@
                 <include>org.aspectj:aspectjweaver</include>
             </includes>
             <outputFileNameMapping>aspectjweaver.jar</outputFileNameMapping>
-			<directoryMode>0755</directoryMode>
-			<fileMode>0666</fileMode>
         </dependencySet>
     </dependencySets>
 

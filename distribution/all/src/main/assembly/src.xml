@@ -40,7 +40,6 @@
                 <exclude>**/maven-eclipse.xml</exclude>
 				<exclude>modules/web-javascript-dojo/src/main/resources/dojo/**</exclude>
             </excludes>
-			<fileMode>0755</fileMode>
         </fileSet>
     </fileSets>
 </assembly>

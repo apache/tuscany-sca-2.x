@@ -47,10 +47,7 @@
                 <exclude>**/target/surefire-osgi-reports/**/*</exclude>
                 <exclude>webapps/*/target</exclude>
                 <exclude>webapps/*/target/**/*</exclude>
-
             </excludes>
-			<directoryMode>0755</directoryMode>
-			<fileMode>0644</fileMode>
         </fileSet>
     </fileSets>
 </component>

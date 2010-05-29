@@ -31,8 +31,6 @@
                 <include>wsdl4j:wsdl4j</include>
                 <include>org.apache.tuscany.sca:tuscany-sca-api</include>
             </includes>
-			<directoryMode>0755</directoryMode>
-			<fileMode>0666</fileMode>
         </dependencySet>
 
         <dependencySet>
@@ -43,8 +41,6 @@
                 <include>org.apache.tuscany.sca.shades:tuscany-spring</include>
                 <include>org.springframework:*</include>
             </includes>
-			<directoryMode>0755</directoryMode>
-			<fileMode>0666</fileMode>
         </dependencySet>
     </dependencySets>
 
