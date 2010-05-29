@@ -30,8 +30,6 @@
                 <exclude>org.aspectj:aspectjweaver</exclude> 
                 <exclude>org.apache.tuscany.sca.shades:*</exclude> 
             </excludes>
-			<directoryMode>0755</directoryMode>
-			<fileMode>0666</fileMode>
         </fileSet>
     </fileSets>
 </component>

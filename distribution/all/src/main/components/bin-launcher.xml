@@ -34,8 +34,6 @@
                 <include>org.apache.tuscany.sca:tuscany-launcher</include>
             </includes>
             <outputFileNameMapping>launcher.jar</outputFileNameMapping>
-			<directoryMode>0755</directoryMode>
-			<fileMode>0666</fileMode>
         </dependencySet>
     </dependencySets>
 

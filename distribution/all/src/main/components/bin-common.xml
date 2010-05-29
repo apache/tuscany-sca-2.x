@@ -28,8 +28,6 @@
                 <include>README</include>
                 <include>RELEASE_NOTES</include>
             </includes>
-			<directoryMode>0755</directoryMode>
-			<fileMode>0666</fileMode>
         </fileSet>
         <fileSet>
             <directory>src/main/release/bin</directory>
@@ -39,8 +37,6 @@
                 <include>LICENSE</include>
                 <include>NOTICE</include>
             </includes>
-			<directoryMode>0755</directoryMode>
-			<fileMode>0666</fileMode>
         </fileSet>
     </fileSets>
 
