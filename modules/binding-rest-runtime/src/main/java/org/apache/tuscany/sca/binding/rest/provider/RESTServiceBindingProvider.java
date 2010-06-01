@@ -283,6 +283,11 @@ public class RESTServiceBindingProvider implements EndpointProvider {
 
                 String uri = endpoint.getBinding().getURI();
                 String path = URI.create(uri).getPath();
+                
+                // FIXME: [rfeng] We need to have a better way to deal with URI template for bindings
+                if(path.startsWith(servletHost.getContextPath())) {
+                    path = path.substring(servletHost.getContextPath().length());
+                }
                 Class<?> cls =
                     RootResourceClassGenerator.generateRootResourceClass(interfaze,
                                                                          path,

@@ -60,6 +60,7 @@ import org.apache.tuscany.sca.invocation.Message;
 import org.apache.wink.client.ClientConfig;
 import org.apache.wink.client.Resource;
 import org.apache.wink.client.RestClient;
+import org.apache.wink.client.handlers.BasicAuthSecurityHandler;
 
 /**
  * 
@@ -101,6 +102,9 @@ public class RESTBindingInvoker implements Invoker {
 
     private RestClient createRestClient() {
         ClientConfig config = new ClientConfig();
+        
+        // configureBasicAuth(config, userName, password);
+        
         config.applications(new Application() {
 
             @Override
@@ -132,6 +136,13 @@ public class RESTBindingInvoker implements Invoker {
             responseType = null;
         }
         return client;
+    }
+
+    private void configureBasicAuth(ClientConfig config, String userName, String password) {
+        BasicAuthSecurityHandler basicAuthSecurityHandler = new BasicAuthSecurityHandler();
+        basicAuthSecurityHandler.setUserName(userName);
+        basicAuthSecurityHandler.setPassword(password);
+        config.handlers(basicAuthSecurityHandler);
     }
 
     public Message invoke(Message msg) {
