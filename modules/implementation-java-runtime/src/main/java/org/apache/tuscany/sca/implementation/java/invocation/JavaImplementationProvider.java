@@ -166,11 +166,4 @@ public class JavaImplementationProvider implements ScopedImplementationProvider 
         return implementation.isEagerInit();
     }
 
-    public long getMaxAge() {
-        return implementation.getMaxAge();
-    }
-
-    public long getMaxIdleTime() {
-        return implementation.getMaxIdleTime();
-    }
 }

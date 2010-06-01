@@ -161,24 +161,4 @@ public interface JavaImplementation extends BaseJavaImplementation {
      */
     void setJavaScope(JavaScopeImpl scope);
 
-    /**
-     * @return the maxAge
-     */
-    long getMaxAge();
-
-    /**
-     * @param maxAge the maxAge to set
-     */
-    void setMaxAge(long maxAge);
-
-    /**
-     * @return the maxIdleTime
-     */
-    long getMaxIdleTime();
-
-    /**
-     * @param maxIdleTime the maxIdleTime to set
-     */
-    void setMaxIdleTime(long maxIdleTime);
-
 }

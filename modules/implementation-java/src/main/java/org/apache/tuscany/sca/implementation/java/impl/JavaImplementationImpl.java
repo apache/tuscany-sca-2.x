@@ -51,8 +51,6 @@ public class JavaImplementationImpl extends BaseJavaImplementationImpl implement
     private boolean eagerInit;
     private boolean allowsPassByReference;
     private List<Method> allowsPassByReferenceMethods = new ArrayList<Method>();
-    private long maxAge = -1;
-    private long maxIdleTime = -1;
     private JavaScopeImpl scope = JavaScopeImpl.STATELESS;
 
     protected JavaImplementationImpl() {
@@ -141,22 +139,6 @@ public class JavaImplementationImpl extends BaseJavaImplementationImpl implement
 
     public void setJavaScope(JavaScopeImpl scope) {
         this.scope = scope;
-    }
-
-    public long getMaxAge() {
-        return maxAge;
-    }
-
-    public void setMaxAge(long maxAge) {
-        this.maxAge = maxAge;
-    }
-
-    public long getMaxIdleTime() {
-        return maxIdleTime;
-    }
-
-    public void setMaxIdleTime(long maxIdleTime) {
-        this.maxIdleTime = maxIdleTime;
     }
 
 }
