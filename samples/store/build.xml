@@ -31,7 +31,7 @@
                source="1.5"
                target="1.5">
             <classpath>
-            	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>
+            	<pathelement location="../../features/tuscany-sca-manifest.jar"/>
             	<fileset refid="3rdparty.jars"/>
             </classpath>
         </javac> 
@@ -50,7 +50,7 @@
               fork="true">
             <classpath>
                 <pathelement path="target/classes"/>
-            	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>
+            	<pathelement location="../../features/tuscany-sca-manifest.jar"/>
             	<fileset refid="3rdparty.jars"/>
             </classpath>
         </java>
@@ -61,7 +61,7 @@
               fork="true">
             <classpath>
             	<pathelement path="target/${test.jar}"/>
-            	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>
+            	<pathelement location="../../features/tuscany-sca-manifest.jar"/>
             	<fileset refid="3rdparty.jars"/>
             </classpath>
         </java>    	
