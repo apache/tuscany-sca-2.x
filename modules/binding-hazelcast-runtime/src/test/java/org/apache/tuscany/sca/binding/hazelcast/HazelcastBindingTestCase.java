@@ -23,8 +23,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
-import java.net.URI;
-
 import org.apache.tuscany.sca.node.Node;
 import org.apache.tuscany.sca.node.NodeFactory;
 import org.junit.AfterClass;
@@ -40,15 +38,15 @@ public class HazelcastBindingTestCase {
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
         // Note use of NodeFactory.newInstance() so as to start separate runtimes
-        serviceNode = NodeFactory.newInstance().createNode(URI.create("tuscany:HazelcastBindingTestCase"), "service.composite", new String[]{"target/test-classes"});
+        serviceNode = NodeFactory.newInstance("uri:HazelcastBindingTestCase?bind=127.0.0.1").createNode("service.composite", new String[]{"target/test-classes"});
         serviceNode.start();
-        clientNode = NodeFactory.newInstance().createNode(URI.create("tuscany:HazelcastBindingTestCase"),  "client.composite", new String[]{"target/test-classes"});
+        clientNode = NodeFactory.newInstance("uri:HazelcastBindingTestCase?bind=127.0.0.1").createNode("client.composite", new String[]{"target/test-classes"});
         clientNode.start();
     }
 
     @Test
     public void testNestedClient() throws Exception {
-        Node client2Node = NodeFactory.newInstance().createNode(URI.create("tuscany:HazelcastBindingTestCase"),  "client2.composite", new String[]{"target/test-classes"});
+        Node client2Node = NodeFactory.newInstance("uri:HazelcastBindingTestCase?bind=127.0.0.1").createNode("client2.composite", new String[]{"target/test-classes"});
         client2Node.start();
         TestService service = client2Node.getService(TestService.class, "TestServiceClient2");
         assertNotNull(service);
