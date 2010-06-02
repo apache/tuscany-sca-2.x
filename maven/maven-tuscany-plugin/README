@@ -1,0 +1,21 @@
+This module is a Maven plugin for starting a Tuscany runtime which runs the project as an SCA contribution.
+
+To configure the project add the following to the SCA contribution's pom.xml:
+
+   <build>
+      ...
+      <plugins>
+         <plugin>
+            <groupId>org.apache.tuscany.maven.plugins</groupId>
+            <artifactId>maven-tuscany-plugin</artifactId>
+         </plugin>
+      ...
+      </plugins>
+   </build>
+
+To run the contribution in Tuscany use "mvn tuscany:run"
+
+Optional parameters are:
+  config - uri string to configure the Tuscany runtime
+  contributions - additional SCA contributions to install along with the project contribution
+

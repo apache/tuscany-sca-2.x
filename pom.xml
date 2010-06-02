@@ -270,6 +270,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
+                <module>maven/maven-tuscany-plugin</module>
                 <module>modules</module>
                 <module>samples</module>
                 <module>itest</module>
@@ -295,6 +296,7 @@
                 <tools.jar>${java.home}/../Classes/classes.jar</tools.jar>
             </properties>
             <modules>
+                <module>maven/maven-tuscany-plugin</module>
                 <module>modules</module>
                 <module>samples</module>
                 <module>itest</module>
@@ -384,6 +386,7 @@
         <profile>
             <id>distribution</id>
             <modules>
+                <module>maven/maven-tuscany-plugin</module>
                 <module>modules</module>
                 <module>samples</module>
                 <module>itest</module>
