@@ -4,12 +4,12 @@ Building the Apache Tuscany SCA source distribution
 Initial Setup
 -------------
 
-1) Install J2SE 5.0 SDK, which can be downloaded from 
-   http://java.sun.com/j2se/1.5.0/download.jsp. Use version of 1.5.0_06 JDK or higher.
+1) Install J2SE 6.x JDK, which can be downloaded from 
+   http://java.sun.com/javase/downloads/index.jsp. 
 
 2) Make sure that your JAVA_HOME environment variable is set to the newly installed 
    JDK location, and that your PATH includes %JAVA_HOME%\bin (windows) or 
-   $JAVA_HOME$/bin (unix).
+   $JAVA_HOME/bin (unix).
 
 3) Install Maven 2.0.7 or higher (2.2.1 recommended), which can be downloaded from 
    http://maven.apache.org/download.html. Make sure that your PATH includes 
