@@ -8,8 +8,13 @@ Bundle-Version: 2.0.0
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA REST Binding Runtime
-Import-Package: javax.servlet,
+Import-Package: javax.jws,
+ javax.servlet,
  javax.servlet.http,
+ javax.ws.rs,
+ javax.ws.rs.core,
+ javax.ws.rs.ext,
+ javax.xml,
  org.apache.tuscany.sca.assembly;version="2.0.0",
  org.apache.tuscany.sca.binding.rest;version="2.0.0",
  org.apache.tuscany.sca.binding.rest.operationselector.jaxrs;version="2.0.0",
@@ -28,6 +33,15 @@ Import-Package: javax.servlet,
  org.apache.tuscany.sca.invocation;version="2.0.0",
  org.apache.tuscany.sca.provider;version="2.0.0",
  org.apache.tuscany.sca.runtime;version="2.0.0",
+ org.apache.wink.client,
+ org.apache.wink.client.handlers,
+ org.apache.wink.common,
+ org.apache.wink.server.utils,
+ org.apache.wink.common.internal.registry,
+ org.apache.wink.common.internal.registry.metadata,
+ org.apache.wink.server.internal,
+ org.apache.wink.server.internal.registry,
+ org.apache.wink.server.internal.servlet,
  org.oasisopen.sca;version="2.0.0",
  org.oasisopen.sca.annotation;version="2.0.0"
 Bundle-SymbolicName: org.apache.tuscany.sca.binding.rest.runtime

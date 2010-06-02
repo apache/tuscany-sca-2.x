@@ -54,6 +54,7 @@ public class TuscanyRESTServlet extends RestServlet {
     public DeploymentConfiguration getDeploymentConfiguration() throws ClassNotFoundException, InstantiationException,
         IllegalAccessException, IOException {
         DeploymentConfiguration config = super.getDeploymentConfiguration();
+
         // [rfeng] FIXME: This is a hack to fool Apache wink to not remove the servlet path
         config.setFilterConfig(new FilterConfig() {
 
@@ -73,6 +74,7 @@ public class TuscanyRESTServlet extends RestServlet {
                 return getServletName();
             }
         });
+
         ProvidersRegistry providers = config.getProvidersRegistry();
         providers.addProvider(new DataBindingJAXRSReader(registry), 0.001, true);
         providers.addProvider(new DataBindingJAXRSWriter(registry), 0.001, true);
