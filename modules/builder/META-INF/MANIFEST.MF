@@ -8,6 +8,7 @@ Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: Apache Tuscany SCA Assembly Model
 Import-Package: javax.xml.namespace,
  javax.xml.parsers,
+ javax.xml.stream,
  javax.xml.transform,
  javax.xml.transform.dom,
  javax.xml.transform.sax,

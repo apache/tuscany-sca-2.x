@@ -35,4 +35,5 @@ Export-Package: org.apache.axis2.dataretrieval;version=1.5.1,org.apach
  ;version=1.5.1,org.apache.axis2.addressing.wsdl;version=1.5.1,org.apa
  che.axis2.classloader;version=1.5.1,org.apache.axis2.description;vers
  ion=1.5.1
+Import-Package: javax.xml.ws
 Eclipse-ExtensibleAPI: true
