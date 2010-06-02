@@ -22,6 +22,10 @@ package org.apache.tuscany.sca.interfacedef.java.jaxrs;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.HEAD;
+
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.FieldVisitor;
