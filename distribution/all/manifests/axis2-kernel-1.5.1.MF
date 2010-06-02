@@ -4,7 +4,7 @@ Bundle-SymbolicName: org.apache.axis2.kernel
 Bundle-Name: org.apache.axis2.kernel
 Bundle-Version: 1.5.1
 DynamicImport-Package: javax.transaction;version="1.1",javax.transacti
- on.xa;version="1.1",*
+ on.xa;version="1.1",javax.xml.ws,*
 Bundle-ClassPath: axis2-kernel-1.5.1.jar
 Export-Package: org.apache.axis2.dataretrieval;version=1.5.1,org.apach
  e.axis2;version=1.5.1,org.apache.axis2.builder;version=1.5.1,org.apac
@@ -35,4 +35,5 @@ Export-Package: org.apache.axis2.dataretrieval;version=1.5.1,org.apach
  ;version=1.5.1,org.apache.axis2.addressing.wsdl;version=1.5.1,org.apa
  che.axis2.classloader;version=1.5.1,org.apache.axis2.description;vers
  ion=1.5.1
+Import-Package: javax.xml.ws
 Eclipse-ExtensibleAPI: true
