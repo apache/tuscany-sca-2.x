@@ -8,6 +8,7 @@ Highlights include:
 - Started improving the layout of the samples to separate contributions from launchers
 - Further improvements to the distributed SCA domain support
 - Improved support for the SCAClient in distributed scenarios
+- Dropped support for JDK 5 
 - Numerous other bug fixes and improvements 
 
 Changes With Apache Tuscany SCA 2.0-M4 November 2009
