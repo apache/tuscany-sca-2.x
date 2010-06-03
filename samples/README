@@ -55,7 +55,7 @@ To run a new style sample there are 3 basic steps
    and follow the instructions there to use a launcher to launch your chosen contribution 
 
 I the case where you want to exercise the sample contribution with a separate client program, such as
-an application using the SCA client API then there is a 4th step of starting that client applicatin
+an application using the SCA client API then there is a 4th step of starting that client application
 
 [1] http://tuscany.apache.org/documentation-2x/
 
