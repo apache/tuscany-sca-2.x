@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.endpoint.hazelcast;
 
+import java.util.Properties;
+
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
@@ -27,7 +29,9 @@ import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
+import org.apache.tuscany.sca.runtime.RuntimeProperties;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -43,13 +47,15 @@ public class MultiRegTestCase {
         FactoryExtensionPoint factories = extensionPoints.getExtensionPoint(FactoryExtensionPoint.class);
         assemblyFactory = factories.getFactory(AssemblyFactory.class);
         scaBindingFactory = factories.getFactory(SCABindingFactory.class);
+        Properties properties = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class).getUtility(RuntimeProperties.class).getProperties();
+        properties.setProperty("bind", "127.0.0.1");
     }
 
     @Test
     public void testReplication() throws Exception {
 
         System.out.println("Starting reg1");
-        HazelcastEndpointRegistry reg1 = new HazelcastEndpointRegistry(extensionPoints, null, "tuscany:foo?listen=127.0.0.1:9876&multicast=off", "bar");
+        HazelcastEndpointRegistry reg1 = new HazelcastEndpointRegistry(extensionPoints, null, null, "bar");
         reg1.start();
 
         System.out.println("Adding ep1");

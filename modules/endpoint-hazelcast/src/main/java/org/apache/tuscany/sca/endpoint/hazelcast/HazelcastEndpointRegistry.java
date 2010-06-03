@@ -75,7 +75,7 @@ public class HazelcastEndpointRegistry extends BaseEndpointRegistry implements E
     public HazelcastEndpointRegistry(ExtensionPointRegistry registry, Properties properties, String domainURI) {
         super(registry, null, null, domainURI);
         this.assemblyFactory = registry.getExtensionPoint(FactoryExtensionPoint.class).getFactory(AssemblyFactory.class);
-        this.properties = registry.getExtensionPoint(UtilityExtensionPoint.class).getUtility(RuntimeProperties.class).getProperties();
+        this.properties = properties;
     }
 
     public HazelcastEndpointRegistry(ExtensionPointRegistry registry,
