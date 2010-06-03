@@ -22,7 +22,10 @@ package org.apache.tuscany.sca.binding.rest.provider;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.net.URI;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -52,6 +55,8 @@ import org.apache.tuscany.sca.assembly.WireFormat;
 import org.apache.tuscany.sca.binding.rest.RESTBinding;
 import org.apache.tuscany.sca.binding.rest.wireformat.json.JSONWireFormat;
 import org.apache.tuscany.sca.binding.rest.wireformat.xml.XMLWireFormat;
+import org.apache.tuscany.sca.common.http.HTTPCacheContext;
+import org.apache.tuscany.sca.common.http.HTTPHeader;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
@@ -222,6 +227,22 @@ public class RESTBindingInvoker implements Invoker {
 
         resource.contentType(getContentType());
         resource.accept(getAccepts());        
+        
+        //handles declarative headers configured on the composite
+        for(HTTPHeader header : binding.getHttpHeaders()) {
+            //treat special headers that need to be calculated
+            if(header.getName().equalsIgnoreCase("Expires")) {
+                GregorianCalendar calendar = new GregorianCalendar();
+                calendar.setTime(new Date());
+
+                calendar.add(Calendar.HOUR, Integer.parseInt(header.getValue()));
+
+                resource.header("Expires", HTTPCacheContext.RFC822DateFormat.format( calendar.getTime() ));
+            } else {
+                //default behaviour to pass the header value to HTTP response
+                resource.header(header.getName(), header.getValue());
+            }
+        }
 
         Object result = resource.invoke(httpMethod, responseType, entity);
         msg.setBody(result);
