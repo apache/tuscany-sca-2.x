@@ -66,7 +66,8 @@ public interface Section10 {
      */
     void installContribution(String uri, String contributionURL, List<String> dependentContributionURIs, boolean deployDeployables) throws ContributionReadException, ActivationException, ValidationException;
     void installContribution(Contribution contribution, List<String> dependentContributionURIs, boolean deployDeployables) throws ContributionReadException, ActivationException, ValidationException;
-
+    /* TODO: also needs a parameter to add a generated sca-contribution document */
+    
     /* Useful short forms of that for when you don't care or have the others (but leave out for now to keep as simple as possible):
     String installContribution(String contributionURL) throws ContributionReadException, ActivationException, ValidationException;
     void installContribution(String uri, String contributionURL) throws ContributionReadException, ActivationException, ValidationException;
