@@ -21,26 +21,31 @@ package org.apache.tuscany.sca.something;
 
 import java.util.Properties;
 
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
+import org.apache.tuscany.sca.core.ModuleActivatorExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
+import org.apache.tuscany.sca.core.assembly.RuntimeAssemblyFactory;
 import org.apache.tuscany.sca.deployment.Deployer;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
-import org.apache.tuscany.sca.node.NodeFactory;
-import org.apache.tuscany.sca.node.impl.NodeFactoryImpl;
 import org.apache.tuscany.sca.runtime.CompositeActivator;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
 import org.apache.tuscany.sca.runtime.ExtensibleDomainRegistryFactory;
+import org.apache.tuscany.sca.runtime.RuntimeProperties;
 import org.apache.tuscany.sca.something.impl.Section10Impl;
+import org.apache.tuscany.sca.work.WorkScheduler;
 
 public class Section10Factory {
 
-    private NodeFactoryImpl nodeFactory;
     private Deployer deployer;
     private ExtensionPointRegistry extensionPointRegistry;
     private MonitorFactory monitorFactory;
     private CompositeActivator compositeActivator;
     private ExtensibleDomainRegistryFactory domainRegistryFactory;
 
+    // TODO: keep this method?
     public static Section10 createSection10() {
         return new Section10Factory().createSection10("default");
     }
@@ -48,18 +53,19 @@ public class Section10Factory {
     public Section10Factory() {
         init(null);
     }
-    
+
     public Section10Factory(Properties config) {
         init(config);
     }
-    
+
     public Section10 createSection10(String domainName) {
         EndpointRegistry endpointRegistry = domainRegistryFactory.getEndpointRegistry("default", domainName);
         return new Section10Impl(domainName, deployer, monitorFactory, compositeActivator, endpointRegistry, extensionPointRegistry);
     }
-    
+
     public void shutdown() {
-        nodeFactory.destroy();
+        deployer.stop();
+        extensionPointRegistry.stop();
     }
 
     protected void init(Properties config) {
@@ -68,13 +74,27 @@ public class Section10Factory {
             config.setProperty("defaultScheme", "vm");
             config.setProperty("defaultDomainName", "default");
         }
-        this.nodeFactory = (NodeFactoryImpl)NodeFactory.newInstance(config);
-        nodeFactory.start();
-        this.deployer = nodeFactory.getDeployer();
-        this.extensionPointRegistry = nodeFactory.getExtensionPointRegistry();
+        this.extensionPointRegistry = new DefaultExtensionPointRegistry();
+        extensionPointRegistry.start();
+
+        FactoryExtensionPoint modelFactories = extensionPointRegistry.getExtensionPoint(FactoryExtensionPoint.class);
+        AssemblyFactory assemblyFactory = new RuntimeAssemblyFactory(extensionPointRegistry);
+        modelFactories.addFactory(assemblyFactory);
+
         UtilityExtensionPoint utilities = extensionPointRegistry.getExtensionPoint(UtilityExtensionPoint.class);
         this.monitorFactory = utilities.getUtility(MonitorFactory.class);
         this.compositeActivator = utilities.getUtility(CompositeActivator.class);
+        this.deployer = utilities.getUtility(Deployer.class);
+        utilities.getUtility(RuntimeProperties.class).setProperties(config);
+        utilities.getUtility(WorkScheduler.class);
+
+        // Initialize the Tuscany module activators
+        // The module activators will be started
+        extensionPointRegistry.getExtensionPoint(ModuleActivatorExtensionPoint.class);
+
         this.domainRegistryFactory = ExtensibleDomainRegistryFactory.getInstance(extensionPointRegistry);
+//        DomainRegistryFactory domainRegistryFactory = ExtensibleDomainRegistryFactory.getInstance(extensionPointRegistry);
+//        domainRegistryFactory.getEndpointRegistry(config.getProperty("reguri"), config.getProperty("defaultDomainName"));
+
     }
 }
