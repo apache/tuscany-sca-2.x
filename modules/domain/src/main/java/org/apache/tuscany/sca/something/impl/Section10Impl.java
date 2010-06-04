@@ -66,24 +66,6 @@ public class Section10Impl implements Section10 {
         this.extensionPointRegistry = extensionPointRegistry;
     }
 
-    public String installContribution(String contributionURL) throws ContributionReadException, ActivationException, ValidationException {
-        installContribution(contributionURL, contributionURL, null, true);
-        return contributionURL;
-    }
-
-    public String installContribution(String contributionURL, boolean deployDeployables) throws ContributionReadException, ActivationException, ValidationException {
-        installContribution(contributionURL, contributionURL, null, deployDeployables);
-        return contributionURL;
-    }
-
-    public void installContribution(String uri, String contributionURL) throws ContributionReadException, ActivationException, ValidationException {
-        installContribution(uri, contributionURL, null, true);
-    }
-
-    public void installContribution(String uri, String contributionURL, List<String> dependentContributionURIs) throws ContributionReadException, ActivationException, ValidationException {
-        installContribution(uri, contributionURL, dependentContributionURIs, true);
-    }
-    
     public void installContribution(String uri, String contributionURL, List<String> dependentContributionURIs, boolean deployDeployables) throws ContributionReadException, ActivationException, ValidationException {
         URL url = IOHelper.getLocationAsURL(contributionURL);
         Monitor monitor = deployer.createMonitor();

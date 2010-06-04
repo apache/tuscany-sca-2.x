@@ -64,15 +64,14 @@ public interface Section10 {
      * @throws ActivationException 
      * @throws ValidationException 
      */
-    void installContribution(String uri, String contributionURL, List<String> dependentContributionURIs) throws ContributionReadException, ActivationException, ValidationException;
+    void installContribution(String uri, String contributionURL, List<String> dependentContributionURIs, boolean deployDeployables) throws ContributionReadException, ActivationException, ValidationException;
+    void installContribution(Contribution contribution, List<String> dependentContributionURIs, boolean deployDeployables) throws ContributionReadException, ActivationException, ValidationException;
 
-    /* and i'd expect short forms of that for when you don't care or have the others:*/
+    /* Useful short forms of that for when you don't care or have the others (but leave out for now to keep as simple as possible):
     String installContribution(String contributionURL) throws ContributionReadException, ActivationException, ValidationException;
     void installContribution(String uri, String contributionURL) throws ContributionReadException, ActivationException, ValidationException;
-    /* autoDeploy indicates whether or not to automatically deploy the deployables defined in sca-contribution.xml */
     String installContribution(String contributionURL, boolean autoDeploy) throws ContributionReadException, ActivationException, ValidationException;
-    void installContribution(String uri, String contributionURL, List<String> dependentContributionURIs, boolean deployDeployables) throws ContributionReadException, ActivationException, ValidationException;
-    void installContribution(Contribution contribution, List<String> dependentContributionURIs, boolean autoDeploy) throws ContributionReadException, ActivationException, ValidationException;
+    */
     
     /**
      * 4577 10.5.1 install Contribution & update Contribution
