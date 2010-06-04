@@ -21,7 +21,6 @@ package org.apache.tuscany.sca.something.impl;
 
 import java.io.Reader;
 import java.net.URI;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -36,6 +35,7 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.common.java.io.IOHelper;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
+import org.apache.tuscany.sca.contribution.ContributionMetadata;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.deployment.Deployer;
@@ -66,14 +66,30 @@ public class Section10Impl implements Section10 {
         this.extensionPointRegistry = extensionPointRegistry;
     }
 
-    public void installContribution(String uri, String contributionURL, List<String> dependentContributionURIs, boolean deployDeployables) throws ContributionReadException, ActivationException, ValidationException {
-        URL url = IOHelper.getLocationAsURL(contributionURL);
+    public void installContribution(String uri, String contributionURL, String metaDataURL, List<String> dependentContributionURIs, boolean deployDeployables) throws ContributionReadException, ActivationException, ValidationException {
         Monitor monitor = deployer.createMonitor();
-        Contribution contribution = deployer.loadContribution(URI.create(uri), url, monitor);
+        Contribution contribution = deployer.loadContribution(URI.create(uri), IOHelper.getLocationAsURL(contributionURL), monitor);
         monitor.analyzeProblems();
+        if (metaDataURL != null) {
+            mergeContributionMetaData(metaDataURL, contribution);
+        }
         installContribution(contribution, dependentContributionURIs, deployDeployables);
     }
 
+    private void mergeContributionMetaData(String metaDataURL, Contribution contribution) throws ValidationException {
+        ContributionMetadata metaData;
+        Monitor monitor = deployer.createMonitor();
+        try {
+            metaData = deployer.loadXMLDocument(IOHelper.getLocationAsURL(metaDataURL), monitor);
+        } catch (Exception e) {
+            throw new ValidationException(e);
+        }
+        monitor.analyzeProblems();
+        contribution.getDeployables().addAll(metaData.getDeployables());
+        contribution.getImports().addAll(metaData.getImports());
+        contribution.getExports().addAll(metaData.getExports());
+    }
+    
     public void installContribution(Contribution contribution, List<String> dependentContributionURIs, boolean deployDeployables) throws ContributionReadException, ActivationException, ValidationException {
         // TODO: dependentContributionURIs
         InstalledContribution ic = new InstalledContribution(contribution.getURI(), contribution.getLocation(), contribution);

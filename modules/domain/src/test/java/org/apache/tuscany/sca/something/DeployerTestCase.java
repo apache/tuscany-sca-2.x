@@ -28,7 +28,6 @@ import javax.xml.stream.XMLStreamException;
 import junit.framework.Assert;
 
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.deployment.Deployer;
@@ -60,7 +59,7 @@ public class DeployerTestCase {
     public void testAddDeploymentComposite() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException, MalformedURLException, XMLStreamException {
         Section10 section10 = Section10Factory.createSection10();
         
-        section10.installContribution("foo", "src/test/resources/sample-helloworld-nodeployable.jar", null, true);
+        section10.installContribution("foo", "src/test/resources/sample-helloworld-nodeployable.jar", null, null, true);
 
         Deployer deployer = section10.getDeployer();
         Monitor monitor = deployer.createMonitor();
