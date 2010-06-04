@@ -168,10 +168,17 @@ public class Section10Impl implements Section10 {
         // TODO Auto-generated method stub
         // is this just removeContribution/installContribution?
     }
+    public void updateContribution(Contribution contribution) {
+        // TODO Auto-generated method stub
+    }
 
     public String updateDeploymentComposite(String uri, Reader compositeXML) {
         // TODO Auto-generated method stub
         // is this removeFromDomainLevelComposite/addDeploymentComposite
+        return null;
+    }
+    public String updateDeploymentComposite(String uri, Composite composite) {
+        // TODO Auto-generated method stub
         return null;
     }
 
@@ -251,15 +258,5 @@ public class Section10Impl implements Section10 {
 
     public Deployer getDeployer() {
         return deployer;
-    }
-
-    public void updateContribution(Contribution contribution) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    public String updateDeploymentComposite(String uri, Composite composite) {
-        // TODO Auto-generated method stub
-        return null;
     }
 }

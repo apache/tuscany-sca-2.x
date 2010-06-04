@@ -23,8 +23,12 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.List;
 
+import javax.xml.stream.XMLStreamException;
+
 import junit.framework.Assert;
 
+import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.deployment.Deployer;
@@ -53,11 +57,20 @@ public class DeployerTestCase {
     }
 
     @Test
-    public void testAddDeploymentComposite() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException, MalformedURLException {
+    public void testAddDeploymentComposite() throws NoSuchServiceException, NoSuchDomainException, ContributionReadException, ActivationException, ValidationException, MalformedURLException, XMLStreamException {
         Section10 section10 = Section10Factory.createSection10();
         
+        section10.installContribution("foo", "src/test/resources/sample-helloworld-nodeployable.jar", null, true);
+
         Deployer deployer = section10.getDeployer();
         Monitor monitor = deployer.createMonitor();
+        Composite composite = deployer.loadXMLDocument(new File("src/test/resources/helloworld2.composite").toURI().toURL(), monitor);
+        monitor.analyzeProblems();
+        composite.setURI("helloworld2.composite");
+        section10.addDeploymentComposite("foo", composite);
+        List<String> dcs = section10.getDeployedCompostes("foo");
+        Assert.assertEquals(1, dcs.size());
+        Assert.assertEquals("foo/helloworld2.composite", dcs.get(0));
     }
 
 }
