@@ -43,5 +43,13 @@
             </includes>
         </dependencySet>
     </dependencySets>
-
+    <fileSets>
+	<fileSet>
+	    <directory>src/main/release/bin/</directory>
+	    <outputDirectory>lib</outputDirectory>
+	    <includes>
+		<include>README</include>
+	    </includes>
+	</fileSet>
+    </fileSets>
 </component>
