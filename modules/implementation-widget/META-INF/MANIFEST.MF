@@ -6,7 +6,8 @@ Export-Package: org.apache.tuscany.sca.implementation.widget;version="2.0.0";
    org.apache.tuscany.sca.contribution.resolver,
    org.apache.tuscany.sca.contribution.processor,
    org.apache.tuscany.sca.core,
-   javax.xml.namespace"
+   javax.xml.namespace",
+ org.apache.tuscany.sca.implementation.widget.javascript;version="2.0.0"
 SCA-Version: 1.1
 Bundle-Name: Apache Tuscany SCA Widget Implementation Model
 Bundle-Vendor: The Apache Software Foundation

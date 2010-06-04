@@ -28,6 +28,7 @@ import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.implementation.widget.WidgetImplementation;
+import org.apache.tuscany.sca.implementation.widget.javascript.WidgetImplementationJavascriptProvider;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
@@ -46,6 +47,7 @@ class WidgetImplementationProvider implements ImplementationProvider {
     
     private RuntimeComponent component;
     
+    private WidgetImplementationJavascriptProvider javascriptProvider;
     private ComponentJavaScriptGenerator javaScriptGenerator;
     private ServletHost servletHost;
     
@@ -59,9 +61,11 @@ class WidgetImplementationProvider implements ImplementationProvider {
      * Constructs a new resource implementation provider.
      */
     WidgetImplementationProvider(RuntimeComponent component, 
-                                 WidgetImplementation implementation, 
+                                 WidgetImplementation implementation,
+                                 WidgetImplementationJavascriptProvider javascriptProvider,
                                  ComponentJavaScriptGenerator javaScriptGenerator, 
                                  ServletHost servletHost) {
+        
         this.component = component;
         
         this.javaScriptGenerator = javaScriptGenerator;
@@ -86,7 +90,6 @@ class WidgetImplementationProvider implements ImplementationProvider {
     public void start() {
         String baseURI = getBaseURI();
 
-        // get the ScaDomainScriptServlet, if it doesn't yet exist create one
         // this uses removeServletMapping / addServletMapping as there is no getServletMapping facility
         scriptURI = URI.create(baseURI + "/" + this.widgetName + ".js").toString();
         Servlet servlet = servletHost.getServletMapping(scriptURI);
@@ -95,6 +98,12 @@ class WidgetImplementationProvider implements ImplementationProvider {
             widgetScriptServlet = new WidgetComponentScriptServlet(this.component, javaScriptGenerator);
             servletHost.addServletMapping(scriptURI, widgetScriptServlet);
         }     
+
+        // If added to the class path, start dojo provider
+        if(javascriptProvider != null) {
+            javascriptProvider.start();
+        }
+        
     }
 
     public void stop() {
@@ -103,6 +112,10 @@ class WidgetImplementationProvider implements ImplementationProvider {
         if (widgetScriptServlet != null) {
             // Remove the Servlet mapping
             servletHost.removeServletMapping(scriptURI);
+        }
+        
+        if(javascriptProvider != null) {
+            javascriptProvider.stop();
         }
     }
     
