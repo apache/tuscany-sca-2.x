@@ -71,7 +71,7 @@ public interface Section10 {
     void installContribution(String uri, String contributionURL) throws ContributionReadException, ActivationException, ValidationException;
     /* autoDeploy indicates whether or not to automatically deploy the deployables defined in sca-contribution.xml */
     String installContribution(String contributionURL, boolean autoDeploy) throws ContributionReadException, ActivationException, ValidationException;
-    void installContribution(String uri, String contributionURL, List<String> dependentContributionURIs, boolean autoDeploy) throws ContributionReadException, ActivationException, ValidationException;
+    void installContribution(String uri, String contributionURL, List<String> dependentContributionURIs, boolean deployDeployables) throws ContributionReadException, ActivationException, ValidationException;
     void installContribution(Contribution contribution, List<String> dependentContributionURIs, boolean autoDeploy) throws ContributionReadException, ActivationException, ValidationException;
     
     /**

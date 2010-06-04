@@ -71,8 +71,8 @@ public class Section10Impl implements Section10 {
         return contributionURL;
     }
 
-    public String installContribution(String contributionURL, boolean autoDeploy) throws ContributionReadException, ActivationException, ValidationException {
-        installContribution(contributionURL, contributionURL, null, autoDeploy);
+    public String installContribution(String contributionURL, boolean deployDeployables) throws ContributionReadException, ActivationException, ValidationException {
+        installContribution(contributionURL, contributionURL, null, deployDeployables);
         return contributionURL;
     }
 
@@ -84,19 +84,19 @@ public class Section10Impl implements Section10 {
         installContribution(uri, contributionURL, dependentContributionURIs, true);
     }
     
-    public void installContribution(String uri, String contributionURL, List<String> dependentContributionURIs, boolean autoDeploy) throws ContributionReadException, ActivationException, ValidationException {
+    public void installContribution(String uri, String contributionURL, List<String> dependentContributionURIs, boolean deployDeployables) throws ContributionReadException, ActivationException, ValidationException {
         URL url = IOHelper.getLocationAsURL(contributionURL);
         Monitor monitor = deployer.createMonitor();
         Contribution contribution = deployer.loadContribution(URI.create(uri), url, monitor);
         monitor.analyzeProblems();
-        installContribution(contribution, dependentContributionURIs, autoDeploy);
+        installContribution(contribution, dependentContributionURIs, deployDeployables);
     }
 
-    public void installContribution(Contribution contribution, List<String> dependentContributionURIs, boolean autoDeploy) throws ContributionReadException, ActivationException, ValidationException {
+    public void installContribution(Contribution contribution, List<String> dependentContributionURIs, boolean deployDeployables) throws ContributionReadException, ActivationException, ValidationException {
         // TODO: dependentContributionURIs
         InstalledContribution ic = new InstalledContribution(contribution.getURI(), contribution.getLocation(), contribution);
         installedContributions.put(contribution.getURI(), ic);
-        if (autoDeploy) {
+        if (deployDeployables) {
             for (Composite c : ic.getDefaultDeployables()) {
                 deployComposite(c, ic);
             }
