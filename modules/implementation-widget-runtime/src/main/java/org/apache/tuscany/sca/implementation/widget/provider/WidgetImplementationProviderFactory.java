@@ -19,9 +19,11 @@
 package org.apache.tuscany.sca.implementation.widget.provider;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.host.http.ServletHostHelper;
 import org.apache.tuscany.sca.implementation.widget.WidgetImplementation;
+import org.apache.tuscany.sca.implementation.widget.javascript.WidgetImplementationJavascriptProvider;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.provider.ImplementationProviderFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -35,21 +37,26 @@ import org.apache.tuscany.sca.web.javascript.ComponentJavaScriptGeneratorExtensi
  */
 public class WidgetImplementationProviderFactory implements ImplementationProviderFactory<WidgetImplementation> {
     private ServletHost servletHost;
-    private ComponentJavaScriptGenerator javaScriptGenerator;
+    
+    private WidgetImplementationJavascriptProvider javascriptProvider;
+    private ComponentJavaScriptGenerator javascriptGenerator;
         
     /**
      * Constructs a resource implementation.
      */
-    public WidgetImplementationProviderFactory(ExtensionPointRegistry extensionPoints) {
-        this.servletHost = ServletHostHelper.getServletHost(extensionPoints);
+    public WidgetImplementationProviderFactory(ExtensionPointRegistry registry) {
+        this.servletHost = ServletHostHelper.getServletHost(registry);
         
-        ComponentJavaScriptGeneratorExtensionPoint javascriptGeneratorExtensionPoint = extensionPoints.getExtensionPoint(ComponentJavaScriptGeneratorExtensionPoint.class);
-        javaScriptGenerator = javascriptGeneratorExtensionPoint.getComponentJavaScriptGenerators().get(0);
+        UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
+        javascriptProvider = utilities.getUtility(WidgetImplementationJavascriptProvider.class);
+        
+        ComponentJavaScriptGeneratorExtensionPoint javascriptGeneratorExtensionPoint = registry.getExtensionPoint(ComponentJavaScriptGeneratorExtensionPoint.class);
+        javascriptGenerator = javascriptGeneratorExtensionPoint.getComponentJavaScriptGenerators().get(0);
         
     }
 
     public ImplementationProvider createImplementationProvider(RuntimeComponent component, WidgetImplementation implementation) {
-        return new WidgetImplementationProvider(component, implementation, javaScriptGenerator, servletHost);
+        return new WidgetImplementationProvider(component, implementation, javascriptProvider, javascriptGenerator, servletHost);
     }
     
     public Class<WidgetImplementation> getModelType() {
