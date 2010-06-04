@@ -46,8 +46,8 @@ public class OneNodeTestCase{
     @Before
     public void setUpBeforeClass() throws Exception {
         domain = new DomainNode();
-        serviceContributionUri = domain.addContribution("target/test-classes/itest-nodes-helloworld-service-2.0-M5-SNAPSHOT.jar");
-        domain.addContribution("target/test-classes/itest-nodes-helloworld-client-2.0-M5-SNAPSHOT.jar");
+        serviceContributionUri = domain.addContribution("target/test-classes/itest-nodes-helloworld-service-2.0.jar");
+        domain.addContribution("target/test-classes/itest-nodes-helloworld-client-2.0.jar");
     }
 
     @Test

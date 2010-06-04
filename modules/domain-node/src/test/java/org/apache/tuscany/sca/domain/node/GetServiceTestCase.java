@@ -40,8 +40,8 @@ public class GetServiceTestCase{
     
     @Test
     public void testTwoNodesSameDomain() throws Exception {
-        serviceNode = new DomainNode("target/test-classes/itest-nodes-helloworld-service-2.0-M5-SNAPSHOT.jar");
-        clientNode = new DomainNode("target/test-classes/itest-nodes-helloworld-client-2.0-M5-SNAPSHOT.jar");
+        serviceNode = new DomainNode("target/test-classes/itest-nodes-helloworld-service-2.0.jar");
+        clientNode = new DomainNode("target/test-classes/itest-nodes-helloworld-client-2.0.jar");
 
         Helloworld service = serviceNode.getService(Helloworld.class, "HelloworldService");
         assertNotNull(service);
@@ -54,12 +54,12 @@ public class GetServiceTestCase{
 
     @Test
     public void testTwoNodesDifferentDomains() throws Exception {
-        serviceNode = new DomainNode("vm://fooDomain", new String[]{"target/test-classes/itest-nodes-helloworld-service-2.0-M5-SNAPSHOT.jar"});
+        serviceNode = new DomainNode("vm://fooDomain", new String[]{"target/test-classes/itest-nodes-helloworld-service-2.0.jar"});
         Helloworld service = serviceNode.getService(Helloworld.class, "HelloworldService");
         assertNotNull(service);
         assertEquals("Hello Petra", service.sayHello("Petra"));
 
-        clientNode = new DomainNode("vm://barDomain", new String[] {"target/test-classes/itest-nodes-helloworld-client-2.0-M5-SNAPSHOT.jar"});
+        clientNode = new DomainNode("vm://barDomain", new String[] {"target/test-classes/itest-nodes-helloworld-client-2.0.jar"});
         Helloworld client = clientNode.getService(Helloworld.class, "HelloworldClient");
         assertNotNull(client);
 

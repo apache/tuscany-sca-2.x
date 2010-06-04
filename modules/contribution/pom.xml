@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
         <artifactId>tuscany-modules</artifactId>
-        <version>2.0-M5-SNAPSHOT</version>
+        <version>2.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>tuscany-contribution</artifactId>
@@ -32,31 +32,31 @@
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-assembly</artifactId>
-            <version>2.0-M5-SNAPSHOT</version>
+            <version>2.0</version>
         </dependency>
         
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-assembly-xsd</artifactId>
-            <version>2.0-M5-SNAPSHOT</version>
+            <version>2.0</version>
         </dependency>
         
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-extensibility</artifactId>
-            <version>2.0-M5-SNAPSHOT</version>
+            <version>2.0</version>
         </dependency>
         
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-common-xml</artifactId>
-            <version>2.0-M5-SNAPSHOT</version>
+            <version>2.0</version>
         </dependency>
         
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-common-java</artifactId>
-            <version>2.0-M5-SNAPSHOT</version>
+            <version>2.0</version>
         </dependency>        
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
