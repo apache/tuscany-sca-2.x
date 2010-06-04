@@ -26,7 +26,9 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
+import org.apache.tuscany.sca.deployment.Deployer;
 import org.apache.tuscany.sca.monitor.ValidationException;
 import org.apache.tuscany.sca.runtime.ActivationException;
 import org.oasisopen.sca.NoSuchServiceException;
@@ -70,6 +72,7 @@ public interface Section10 {
     /* autoDeploy indicates whether or not to automatically deploy the deployables defined in sca-contribution.xml */
     String installContribution(String contributionURL, boolean autoDeploy) throws ContributionReadException, ActivationException, ValidationException;
     void installContribution(String uri, String contributionURL, List<String> dependentContributionURIs, boolean autoDeploy) throws ContributionReadException, ActivationException, ValidationException;
+    void installContribution(Contribution contribution, List<String> dependentContributionURIs, boolean autoDeploy) throws ContributionReadException, ActivationException, ValidationException;
     
     /**
      * 4577 10.5.1 install Contribution & update Contribution
@@ -99,6 +102,7 @@ public interface Section10 {
      * @param contributionURL
      */
     void updateContribution(String uri, String contributionURL);
+    void updateContribution(Contribution contribution);
 
     /**
      * 4599 10.5.2 add Deployment Composite & update Deployment Composite
@@ -122,7 +126,8 @@ public interface Section10 {
      * @throws ActivationException 
      * @throws ValidationException 
      */
-    String addDeploymentComposite(String contriubutionURI, Reader compositeXML) throws ContributionReadException, XMLStreamException, ActivationException, ValidationException;
+    String addDeploymentComposite(String contributionURI, Reader compositeXML) throws ContributionReadException, XMLStreamException, ActivationException, ValidationException;
+    String addDeploymentComposite(String contributionURI, Composite composite) throws ActivationException;
 
     /**
      * 4599 10.5.2 add Deployment Composite & update Deployment Composite
@@ -143,6 +148,7 @@ public interface Section10 {
      * @return
      */
     String updateDeploymentComposite(String uri, Reader compositeXML);
+    String updateDeploymentComposite(String uri, Composite composite);
 
     /**
      * 4611 11.4.310.5.3 remove Contribution
@@ -226,4 +232,5 @@ public interface Section10 {
     
     List<String> getDeployedCompostes(String contributionURI);
     List<String> getInstalledContributions();
+    Deployer getDeployer();
 }

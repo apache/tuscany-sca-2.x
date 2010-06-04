@@ -40,7 +40,6 @@ import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.deployment.Deployer;
 import org.apache.tuscany.sca.monitor.Monitor;
-import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.monitor.ValidationException;
 import org.apache.tuscany.sca.runtime.ActivationException;
 import org.apache.tuscany.sca.runtime.CompositeActivator;
@@ -55,15 +54,13 @@ public class Section10Impl implements Section10 {
     private String domainName;
     private Deployer deployer;
     private Map<String, InstalledContribution> installedContributions = new HashMap<String, InstalledContribution>();
-    private MonitorFactory monitorFactory;
     private CompositeActivator compositeActivator;
     private EndpointRegistry endpointRegistry;
     private ExtensionPointRegistry extensionPointRegistry;
     
-    public Section10Impl(String domainName, Deployer deployer, MonitorFactory monitorFactory, CompositeActivator compositeActivator, EndpointRegistry endpointRegistry, ExtensionPointRegistry extensionPointRegistry) {
+    public Section10Impl(String domainName, Deployer deployer, CompositeActivator compositeActivator, EndpointRegistry endpointRegistry, ExtensionPointRegistry extensionPointRegistry) {
         this.domainName = domainName;
         this.deployer = deployer;
-        this.monitorFactory = monitorFactory;
         this.compositeActivator = compositeActivator;
         this.endpointRegistry = endpointRegistry;
         this.extensionPointRegistry = extensionPointRegistry;
@@ -92,8 +89,13 @@ public class Section10Impl implements Section10 {
         Monitor monitor = deployer.createMonitor();
         Contribution contribution = deployer.loadContribution(URI.create(uri), url, monitor);
         monitor.analyzeProblems();
-        InstalledContribution ic = new InstalledContribution(uri, url.toString(), contribution);
-        installedContributions.put(uri, ic);
+        installContribution(contribution, dependentContributionURIs, autoDeploy);
+    }
+
+    public void installContribution(Contribution contribution, List<String> dependentContributionURIs, boolean autoDeploy) throws ContributionReadException, ActivationException, ValidationException {
+        // TODO: dependentContributionURIs
+        InstalledContribution ic = new InstalledContribution(contribution.getURI(), contribution.getLocation(), contribution);
+        installedContributions.put(contribution.getURI(), ic);
         if (autoDeploy) {
             for (Composite c : ic.getDefaultDeployables()) {
                 deployComposite(c, ic);
@@ -102,15 +104,17 @@ public class Section10Impl implements Section10 {
     }
 
     public String addDeploymentComposite(String contributionURI, Reader compositeXML) throws ContributionReadException, XMLStreamException, ActivationException, ValidationException {
+        Monitor monitor = deployer.createMonitor();
+        Composite composite = deployer.loadXMLDocument(compositeXML, monitor);
+        monitor.analyzeProblems();
+        return addDeploymentComposite(contributionURI, composite);
+    }
+
+    public String addDeploymentComposite(String contributionURI, Composite composite) throws ActivationException {
         InstalledContribution ic = installedContributions.get(contributionURI);
         if (ic == null) {
             throw new IllegalArgumentException("contribution not installed: " + contributionURI);
         }
-
-        Monitor monitor = monitorFactory.createMonitor();
-        Composite composite = deployer.loadXMLDocument(compositeXML, monitor);
-        monitor.analyzeProblems();
-
         String compositeArtifcatURI = deployer.attachDeploymentComposite(ic.getContribution(), composite, true);
         deployComposite(composite, ic);
         return compositeArtifcatURI;
@@ -242,7 +246,7 @@ public class Section10Impl implements Section10 {
             dependentContributions.add(ics.getContribution());
         }
 
-        DeployedComposite dc = new DeployedComposite(c, ic, dependentContributions, deployer, compositeActivator, monitorFactory, endpointRegistry, extensionPointRegistry);
+        DeployedComposite dc = new DeployedComposite(c, ic, dependentContributions, deployer, compositeActivator, endpointRegistry, extensionPointRegistry);
         ic.getDeployedComposites().add(dc);
     }
     
@@ -261,5 +265,19 @@ public class Section10Impl implements Section10 {
             }
         }
         return dependentContributionURIs;
+    }
+
+    public Deployer getDeployer() {
+        return deployer;
+    }
+
+    public void updateContribution(Contribution contribution) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public String updateDeploymentComposite(String uri, Composite composite) {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

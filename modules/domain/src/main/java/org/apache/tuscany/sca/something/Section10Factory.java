@@ -29,7 +29,6 @@ import org.apache.tuscany.sca.core.ModuleActivatorExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.RuntimeAssemblyFactory;
 import org.apache.tuscany.sca.deployment.Deployer;
-import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.runtime.CompositeActivator;
 import org.apache.tuscany.sca.runtime.EndpointRegistry;
 import org.apache.tuscany.sca.runtime.ExtensibleDomainRegistryFactory;
@@ -41,7 +40,6 @@ public class Section10Factory {
 
     private Deployer deployer;
     private ExtensionPointRegistry extensionPointRegistry;
-    private MonitorFactory monitorFactory;
     private CompositeActivator compositeActivator;
     private ExtensibleDomainRegistryFactory domainRegistryFactory;
 
@@ -60,7 +58,7 @@ public class Section10Factory {
 
     public Section10 createSection10(String domainName) {
         EndpointRegistry endpointRegistry = domainRegistryFactory.getEndpointRegistry("default", domainName);
-        return new Section10Impl(domainName, deployer, monitorFactory, compositeActivator, endpointRegistry, extensionPointRegistry);
+        return new Section10Impl(domainName, deployer, compositeActivator, endpointRegistry, extensionPointRegistry);
     }
 
     public void shutdown() {
@@ -82,7 +80,6 @@ public class Section10Factory {
         modelFactories.addFactory(assemblyFactory);
 
         UtilityExtensionPoint utilities = extensionPointRegistry.getExtensionPoint(UtilityExtensionPoint.class);
-        this.monitorFactory = utilities.getUtility(MonitorFactory.class);
         this.compositeActivator = utilities.getUtility(CompositeActivator.class);
         this.deployer = utilities.getUtility(Deployer.class);
         utilities.getUtility(RuntimeProperties.class).setProperties(config);

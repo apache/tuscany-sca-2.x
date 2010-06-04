@@ -34,7 +34,6 @@ import org.apache.tuscany.sca.contribution.processor.ContributionResolveExceptio
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.deployment.Deployer;
 import org.apache.tuscany.sca.monitor.Monitor;
-import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.monitor.ValidationException;
 import org.apache.tuscany.sca.runtime.ActivationException;
 import org.apache.tuscany.sca.runtime.CompositeActivator;
@@ -51,7 +50,6 @@ public class DeployedComposite {
     private CompositeActivator compositeActivator;
     private CompositeContext compositeContext;
     private Deployer deployer;
-    private MonitorFactory monitorFactory;
     private EndpointRegistry endpointRegistry;
     private ExtensionPointRegistry extensionPointRegistry;
 
@@ -60,7 +58,6 @@ public class DeployedComposite {
                              List<Contribution> dependedOnContributions,
                              Deployer deployer,
                              CompositeActivator compositeActivator,
-                             MonitorFactory monitorFactory,
                              EndpointRegistry endpointRegistry,
                              ExtensionPointRegistry extensionPointRegistry) throws ActivationException {
         this.composite = composite;
@@ -68,7 +65,6 @@ public class DeployedComposite {
         this.dependedOnContributions = dependedOnContributions;
         this.deployer = deployer;
         this.compositeActivator = compositeActivator;
-        this.monitorFactory = monitorFactory;
         this.endpointRegistry = endpointRegistry;
         this.extensionPointRegistry = extensionPointRegistry;
         try {
@@ -85,16 +81,17 @@ public class DeployedComposite {
         contribution.get(0).getDeployables().clear();
         contribution.get(0).getDeployables().add(composite);
         
-        Monitor monitor = monitorFactory.createMonitor();
-        Monitor tcm = monitorFactory.setContextMonitor(monitor);
-        try {
+        Monitor monitor = deployer.createMonitor();
+// TODO: is the ContextMonitor neccessary here?         
+//        Monitor tcm = monitorFactory.setContextMonitor(monitor);
+//        try {
             
             domainComposite = deployer.build(contribution, dependedOnContributions, new HashMap<QName, List<String>>(), monitor);
             monitor.analyzeProblems();
 
-        } finally {
-            monitorFactory.setContextMonitor(tcm);
-        }
+//        } finally {
+//            monitorFactory.setContextMonitor(tcm);
+//        }
         
         compositeContext = new CompositeContext(extensionPointRegistry, 
                                                 endpointRegistry, 
