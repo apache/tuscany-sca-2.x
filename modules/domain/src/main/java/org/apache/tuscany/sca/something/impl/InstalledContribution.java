@@ -32,12 +32,14 @@ public class InstalledContribution {
     private Contribution contribution;
     private List<Composite> defaultDeployables = new ArrayList<Composite>();
     private List<DeployedComposite> deployedComposites = new ArrayList<DeployedComposite>();
+    private List<String> dependentContributionURIs;
     
-    public InstalledContribution(String uri, String url, Contribution contribution) {
+    public InstalledContribution(String uri, String url, Contribution contribution, List<String> dependentContributionURIs) {
         this.uri = uri;
         this.url = url;
         this.contribution = contribution;
         this.defaultDeployables = contribution.getDeployables();
+        this.dependentContributionURIs = dependentContributionURIs;
     }
     public Contribution getContribution() {
         return contribution;
@@ -56,5 +58,8 @@ public class InstalledContribution {
     }
     public List<DeployedComposite> getDeployedComposites() {
         return deployedComposites;
+    }
+    public List<String> getDependentContributionURIs() {
+        return dependentContributionURIs;
     }
 }
