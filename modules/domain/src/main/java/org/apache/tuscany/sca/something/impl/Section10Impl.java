@@ -31,6 +31,7 @@ import java.util.Set;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.common.java.io.IOHelper;
 import org.apache.tuscany.sca.contribution.Artifact;
@@ -38,6 +39,7 @@ import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionMetadata;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.FactoryExtensionPoint;
 import org.apache.tuscany.sca.deployment.Deployer;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.ValidationException;
@@ -91,8 +93,7 @@ public class Section10Impl implements Section10 {
     }
     
     public void installContribution(Contribution contribution, List<String> dependentContributionURIs, boolean deployDeployables) throws ContributionReadException, ActivationException, ValidationException {
-        // TODO: dependentContributionURIs
-        InstalledContribution ic = new InstalledContribution(contribution.getURI(), contribution.getLocation(), contribution);
+        InstalledContribution ic = new InstalledContribution(contribution.getURI(), contribution.getLocation(), contribution, dependentContributionURIs);
         installedContributions.put(contribution.getURI(), ic);
         if (deployDeployables) {
             for (Composite c : ic.getDefaultDeployables()) {
@@ -231,6 +232,10 @@ public class Section10Impl implements Section10 {
         return new ArrayList<String>(installedContributions.keySet());
     }
 
+    public InstalledContribution getInstalledContribution(String uri) {
+        return installedContributions.get(uri);
+    }
+
     protected String getContributionUriForArtifact(String artifactURI) {
         String contributionURI = null;
         for (String uri : installedContributions.keySet()) {
@@ -247,8 +252,19 @@ public class Section10Impl implements Section10 {
 
     protected void deployComposite(Composite c, InstalledContribution ic) throws ActivationException {
         List<Contribution> dependentContributions = new ArrayList<Contribution>();
-        for (InstalledContribution ics : installedContributions.values()) {
-            dependentContributions.add(ics.getContribution());
+        if (ic.getDependentContributionURIs() != null) {
+            // if the install specified dependent uris use just those contributions
+            for (String uri : ic.getDependentContributionURIs()) {
+                InstalledContribution dependee = installedContributions.get(uri);
+                if (dependee != null) {
+                    dependentContributions.add(dependee.getContribution());
+                }
+            }
+        } else {
+            // otherwise use all available contributions for dependents
+            for (InstalledContribution ics : installedContributions.values()) {
+                dependentContributions.add(ics.getContribution());
+            }
         }
 
         DeployedComposite dc = new DeployedComposite(c, ic, dependentContributions, deployer, compositeActivator, endpointRegistry, extensionPointRegistry);
@@ -275,4 +291,10 @@ public class Section10Impl implements Section10 {
     public Deployer getDeployer() {
         return deployer;
     }
+
+    public AssemblyFactory getAssemblyFactory() {
+        FactoryExtensionPoint factories = extensionPointRegistry.getExtensionPoint(FactoryExtensionPoint.class);
+        return factories.getFactory(AssemblyFactory.class);
+    }
+
 }
