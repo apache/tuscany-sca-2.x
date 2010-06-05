@@ -28,7 +28,7 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 /**
  * Utility methods to load JMS message processors.
  * 
- * @version $Rev: $ $Date: $
+ * @version $Rev$ $Date$
  */
 public class JMSMessageProcessorUtil {
 

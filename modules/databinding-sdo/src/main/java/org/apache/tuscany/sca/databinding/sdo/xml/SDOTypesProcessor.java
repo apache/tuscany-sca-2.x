@@ -38,7 +38,7 @@ import org.apache.tuscany.sca.databinding.sdo.SDOTypes;
 /**
  * Loader that handles &lt;import.sdo&gt; elements.
  *
- * @version $Rev: 667376 $ $Date: 2008-06-12 23:29:16 -0700 (Thu, 12 Jun 2008) $
+ * @version $Rev$ $Date$
  */
 public class SDOTypesProcessor implements StAXArtifactProcessor<SDOTypes> {
 

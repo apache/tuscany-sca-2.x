@@ -47,7 +47,7 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
 /**
  * ScriptImplementationProcessor
  *
- * @version $Rev: $ $Date: $
+ * @version $Rev$ $Date$
  */
 public class ScriptImplementationProcessor implements StAXArtifactProcessor<ScriptImplementation> {
     private static final QName IMPLEMENTATION_SCRIPT = ScriptImplementation.TYPE;

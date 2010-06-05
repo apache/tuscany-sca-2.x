@@ -31,7 +31,7 @@ import commonj.sdo.Type;
 /**
  * The model object for sdo.types
  *
- * @version $Rev: 537464 $ $Date: 2007-05-12 08:37:14 -0700 (Sat, 12 May 2007) $
+ * @version $Rev$ $Date$
  *
  * This extends the META-INF/sca-contribution.xml to register SDO types from static factory classes or WSDL/XSD files
  *

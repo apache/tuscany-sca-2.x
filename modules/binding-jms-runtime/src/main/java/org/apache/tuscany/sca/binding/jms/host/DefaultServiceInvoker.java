@@ -40,7 +40,7 @@ import org.apache.tuscany.sca.runtime.RuntimeEndpoint;
  * TODO RRB experiement
  * Listener for the JMSBinding.
  * 
- * @version $Rev: 721811 $ $Date: 2008-11-30 13:46:51 +0000 (Sun, 30 Nov 2008) $
+ * @version $Rev$ $Date$
  */
 public class DefaultServiceInvoker implements MessageListener {
 

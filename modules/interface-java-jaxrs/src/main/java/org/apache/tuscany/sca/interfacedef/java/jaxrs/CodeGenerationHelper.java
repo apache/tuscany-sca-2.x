@@ -34,7 +34,7 @@ import java.util.Map;
 import org.objectweb.asm.Opcodes;
 
 /**
- * @version $Rev: 673298 $ $Date: 2008-07-01 23:47:40 -0700 (Tue, 01 Jul 2008) $
+ * @version $Rev$ $Date$
  */
 public class CodeGenerationHelper {
     /**

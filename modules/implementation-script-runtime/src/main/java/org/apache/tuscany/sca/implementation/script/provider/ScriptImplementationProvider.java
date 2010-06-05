@@ -51,7 +51,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 /**
  * An ImplementationProvider for Script implementations.
  *
- * @version $Rev: $ $Date: $
+ * @version $Rev$ $Date$
  */
 public class ScriptImplementationProvider implements ImplementationProvider {
     

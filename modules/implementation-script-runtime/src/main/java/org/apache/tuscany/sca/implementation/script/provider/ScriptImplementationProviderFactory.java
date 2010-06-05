@@ -31,7 +31,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
 /**
  * An ImplementationProviderFactory for Script implementations.
  *
- * @version $Rev: $ $Date: $
+ * @version $Rev$ $Date$
  */
 public class ScriptImplementationProviderFactory implements ImplementationProviderFactory<ScriptImplementation> {
     

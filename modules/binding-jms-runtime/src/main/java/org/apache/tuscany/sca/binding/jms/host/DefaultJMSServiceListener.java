@@ -41,7 +41,7 @@ import org.apache.tuscany.sca.work.WorkScheduler;
 /**
  * Implementation of the JMS service binding provider.
  * 
- * @version $Rev: 721811 $ $Date: 2008-11-30 13:46:51 +0000 (Sun, 30 Nov 2008) $
+ * @version $Rev$ $Date$
  */
 public class DefaultJMSServiceListener implements JMSServiceListener {
     private static final Logger logger = Logger.getLogger(DefaultJMSServiceListener.class.getName());
