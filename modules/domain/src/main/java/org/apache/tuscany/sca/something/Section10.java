@@ -25,12 +25,14 @@ import java.util.List;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.processor.ContributionReadException;
 import org.apache.tuscany.sca.deployment.Deployer;
 import org.apache.tuscany.sca.monitor.ValidationException;
 import org.apache.tuscany.sca.runtime.ActivationException;
+import org.apache.tuscany.sca.something.impl.InstalledContribution;
 import org.oasisopen.sca.NoSuchServiceException;
 
 public interface Section10 {
@@ -231,5 +233,7 @@ public interface Section10 {
     
     List<String> getDeployedCompostes(String contributionURI);
     List<String> getInstalledContributions();
+    InstalledContribution getInstalledContribution(String uri);
     Deployer getDeployer();
+    AssemblyFactory getAssemblyFactory();
 }
