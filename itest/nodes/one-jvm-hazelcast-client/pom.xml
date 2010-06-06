@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
         <artifactId>tuscany-itest</artifactId>
-        <version>2.0-M5-SNAPSHOT</version>
+        <version>2.0-M5</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>itest-nodes-one-jvm-hazelcast-client</artifactId>
@@ -32,32 +32,32 @@
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>itest-nodes-helloworld-iface</artifactId>
-            <version>2.0-M5-SNAPSHOT</version>
+            <version>2.0-M5</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-sca-client-impl</artifactId>
-            <version>2.0-M5-SNAPSHOT</version>
+            <version>2.0-M5</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-endpoint-hazelcast</artifactId>
-            <version>2.0-M5-SNAPSHOT</version>
+            <version>2.0-M5</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-hazelcast-runtime</artifactId>
-            <version>2.0-M5-SNAPSHOT</version>
+            <version>2.0-M5</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-node-impl</artifactId>
-            <version>2.0-M5-SNAPSHOT</version>
+            <version>2.0-M5</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-java-runtime</artifactId>
-            <version>2.0-M5-SNAPSHOT</version>
+            <version>2.0-M5</version>
         </dependency>
         <dependency>
             <groupId>com.hazelcast</groupId>

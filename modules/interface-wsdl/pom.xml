@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
         <artifactId>tuscany-modules</artifactId>
-        <version>2.0-M5-SNAPSHOT</version>
+        <version>2.0-M5</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>tuscany-interface-wsdl</artifactId>
@@ -32,13 +32,13 @@
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-xsd</artifactId>
-            <version>2.0-M5-SNAPSHOT</version>
+            <version>2.0-M5</version>
         </dependency>
         
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-contribution</artifactId>
-            <version>2.0-M5-SNAPSHOT</version>
+            <version>2.0-M5</version>
         </dependency>
 
         <dependency>
@@ -56,13 +56,13 @@
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-assembly-xml</artifactId>
-            <version>2.0-M5-SNAPSHOT</version>
+            <version>2.0-M5</version>
         </dependency>
         
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-sca-runtime</artifactId>
-            <version>2.0-M5-SNAPSHOT</version>
+            <version>2.0-M5</version>
             <scope>test</scope>
         </dependency>        
 
