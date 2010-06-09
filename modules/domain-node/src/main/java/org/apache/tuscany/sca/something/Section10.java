@@ -107,10 +107,10 @@ public interface Section10 {
 
     /**
      * 4599 10.5.2 add Deployment Composite & update Deployment Composite
-     * 4600 Adds or updates a deployment composite using a supplied composite ("composite by value" – a data
+     * 4600 Adds or updates a deployment composite using a supplied composite ("composite by value" - a data
      * 4601 structure, not an existing resource in the Domain) to the contribution identified by a supplied contribution
      * 4602 URI. The added or updated deployment composite is given a relative URI that matches the @name
-     * 4603 attribute of the composite, with a “.composite” suffix. Since all composites run within the context of a
+     * 4603 attribute of the composite, with a ".composite" suffix. Since all composites run within the context of a
      * 4604 installed contribution (any component implementations or other definitions are resolved within that
      * 4605 contribution), this functionality makes it possible for the deployer to create a composite with final
      * 4606 configuration and wiring decisions and add it to an installed contribution without having to modify the
@@ -132,10 +132,10 @@ public interface Section10 {
 
     /**
      * 4599 10.5.2 add Deployment Composite & update Deployment Composite
-     * 4600 Adds or updates a deployment composite using a supplied composite ("composite by value" – a data
+     * 4600 Adds or updates a deployment composite using a supplied composite ("composite by value" - a data
      * 4601 structure, not an existing resource in the Domain) to the contribution identified by a supplied contribution
      * 4602 URI. The added or updated deployment composite is given a relative URI that matches the @name
-     * 4603 attribute of the composite, with a “.composite” suffix. Since all composites run within the context of a
+     * 4603 attribute of the composite, with a ".composite" suffix. Since all composites run within the context of a
      * 4604 installed contribution (any component implementations or other definitions are resolved within that
      * 4605 contribution), this functionality makes it possible for the deployer to create a composite with final
      * 4606 configuration and wiring decisions and add it to an installed contribution without having to modify the
@@ -165,7 +165,7 @@ public interface Section10 {
      * 4677 10.7.1 add To Domain-Level Composite
      * 4678 This functionality adds the composite identified by a supplied URI to the Domain Level Composite. The
      * 4679 supplied composite URI refers to a composite within an installed contribution. The composite's installed
-     * 4680 contribution determines how the composite’s artifacts are resolved (directly and indirectly). The supplied
+     * 4680 contribution determines how the composite's artifacts are resolved (directly and indirectly). The supplied
      * 4681 composite is added to the domain composite with semantics that correspond to the domain-level
      * 4683 components become top-level components and the component services become externally visible
      * 4684 services (eg. they would be present in a WSDL description of the Domain). The meaning of any promoted
