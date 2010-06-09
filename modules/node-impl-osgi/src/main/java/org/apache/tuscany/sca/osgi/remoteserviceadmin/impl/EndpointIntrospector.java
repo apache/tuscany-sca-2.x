@@ -173,7 +173,7 @@ public class EndpointIntrospector {
      * case. That is, if the map contains a key then it will override any case variant
      * of this key in the Service Reference.<p>
      * If the map contains the objectClass or service. id property key in any case
-     * variant, then these properties must not override the Service Reference’s value. This 
+     * variant, then these properties must not override the Service References value. This 
      * implies that the map can provide the service.exported. interfaces, property allowing 
      * the Topology Manager to export any registered service, also services not specifically 
      * marked to be exported.
